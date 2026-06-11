@@ -7,7 +7,7 @@ description: Use this skill when implementing, auditing, or documenting ADA-alig
 
 Use this skill when a project needs accessibility requirements, accessibility review, or ADA-aligned website behavior. Treat WCAG 2.2 AA as the default target unless the user specifies a different standard. WCAG 2.1 AA may be the minimum requirement in some contexts, but this repository should prefer the more current AA target when feasible.
 
-Before declaring a page, component, or workflow accessible, verify the checklist below or document any intentionally deferred items in `docs/checklist.md`.
+Before declaring a page, component, or workflow accessible, verify the checklist below or document any intentionally deferred items in `docs/changelog.jsonl`.
 
 ## Images and Non-Text Content
 

@@ -393,7 +393,6 @@ Install via `@fontsource-variable/geist` and `@fontsource-variable/geist-mono`.
 |----------|------|
 | CSS tokens | `web/src/styles/tokens.css` |
 | Tailwind theme | `web/src/index.css` |
-| Token summary | `docs/design-system.md` |
 | Color details | `docs/skills/ui-frontend/ui/colors.md` |
 | Typography details | `docs/skills/ui-frontend/ui/typography.md` |
 | Anti-generic quality | `docs/skills/ui-frontend/ui/design-quality.md` |

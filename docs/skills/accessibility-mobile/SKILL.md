@@ -7,7 +7,7 @@ description: Use this skill when implementing, auditing, or documenting mobile-f
 
 Use this skill for any website, web app, dashboard, admin panel, or frontend UI that must work well on phones and tablets. Pair it with `ada-compliance` for accessibility requirements and with `ui-frontend` for visual implementation details.
 
-Before declaring a web interface complete, verify the checklist below or document any intentionally deferred items in `docs/checklist.md`.
+Before declaring a web interface complete, verify the checklist below or document any intentionally deferred items in `docs/changelog.jsonl`.
 
 ## Responsive Layout and Viewport
 

@@ -4,18 +4,14 @@ This reference defines approved structures for website projects. Before creating
 
 All website-specific code, assets, and runtime files live under the root `web/` directory. Repository documentation lives under `docs/`.
 
-## Required Planning Files
+## Required Planning
 
-Every website project must create or update:
+Record web architecture decisions in the relevant skills and `docs/changelog.jsonl`:
 
-- `docs/architecture.md`
-- `docs/structure.md`
-- `docs/routes.md`
-- `docs/component-map.md`
-- `docs/data-flow.md`
-- `docs/deployment.md`
-- `docs/design-system.md`
-- `docs/api-contract.md` when backend/API contracts exist
+- Stack and app mode → `docs/skills/website-architecture/SKILL.md`
+- Routes, auth, data flow → `docs/skills/website-architecture/SETUP.md` answers captured in changelog or `docs/plans/`
+- Design tokens → `docs/skills/woven-dusk-design/SKILL.md`
+- UI implementation → `docs/skills/ui-frontend/SKILL.md`
 
 ## Stack Selection
 
@@ -164,7 +160,7 @@ root/
 `-- README.md
 ```
 
-For shadcn/ui, keep copied components in `web/components/ui/`. For Radix UI wrappers, document ownership in `docs/component-map.md`. For TanStack Query, tables, routers, or React Hook Form, document provider and hook ownership.
+For shadcn/ui, keep copied components in `web/components/ui/`. For Radix UI wrappers, document ownership in the relevant skill or changelog. For TanStack Query, tables, routers, or React Hook Form, document provider and hook ownership.
 
 ## Mode F: Flask/Jinja or Flask/HTMX Monolith
 
@@ -298,7 +294,7 @@ root/
 - Shared frontend helpers belong in `lib/`.
 - Server routes belong in backend route modules, Next route handlers, server actions, or framework URL/view files.
 - API schemas, OpenAPI specs, and shared types belong in `shared/contracts/` when frontend and backend both depend on them.
-- Design tokens and visual decisions must be documented in `docs/design-system.md`.
+- Design tokens and visual decisions must be documented in `docs/skills/woven-dusk-design/SKILL.md`.
 
 ## Python Test Layout
 

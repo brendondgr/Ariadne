@@ -1,21 +1,31 @@
 ---
 name: global-project-rules
-description: Universal repository rules for all AI agents. Read before any work in this repository. Covers git workflow, changelog, build verification, documentation maintenance, and required pre-read files.
+description: Universal repository rules for all AI agents. Read before any work in this repository. Covers git workflow, changelog, build verification, commands, and project context.
 ---
 
 # Global Project Rules
 
 Every agent working in this repository must read this skill first, then the relevant domain skill under `docs/skills/`.
 
-## Required Pre-Read Files
+## Required Pre-Read
 
 Before making changes, read:
 
-1. `docs/documentation.md`
-2. `docs/structure.md`
-3. `docs/workflow.md`
-4. `docs/checklist.md`
-5. `docs/changelog.jsonl`
+1. This file
+2. `docs/changelog.jsonl`
+3. The relevant skill under `docs/skills/`
+
+## Project Context
+
+Ariadne is a Python + React/Vite repository:
+
+| Layer | Location | Stack |
+|-------|----------|-------|
+| Agent skills | `docs/skills/` | Canonical instructions |
+| Python utilities | `utils/` | `uv`, Python 3.13+ |
+| Webfront | `web/` | React, Vite, TypeScript, Tailwind, Woven Dusk design |
+
+Supported agents: Claude Code (`.claude/skills/`), OpenAI Codex (`.agents/skills/`), Cursor (`.cursor/rules/`). Agent folders are pointers only — never duplicate instructions outside `docs/skills/`.
 
 ## Operational Rules
 
@@ -24,26 +34,33 @@ Before making changes, read:
 3. Keep an active changelog inside of `docs/changelog.jsonl`. The changelog should be simplistic jsonl that records when changes were made, a high-level overview of what was changed and why (preferably 2-4 sentences AT MAX).
 4. If changes are made to the webfront, always ensure that `npm run build` are executed to ensure that everything compiles/runs correctly.
 
-## Environment
+## Commands
 
-- **Python:** managed with `uv`. Install: `uv sync`. Run scripts: `uv run <script>`.
-- **Web:** `cd web && npm install` then `npm run dev` / `npm run build`.
+```bash
+# Install
+uv sync
+cd web && npm install
 
-## Documentation Maintenance
+# Run
+uv run read-skills
+cd web && npm run dev
 
-Update canonical docs when making relevant changes:
+# Build (required after webfront changes)
+cd web && npm run build
 
-| File | Trigger |
-|------|---------|
-| `docs/documentation.md` | Stack, architecture, status |
-| `docs/structure.md` | Repository tree changes |
-| `docs/workflow.md` | Commands or process changes |
-| `docs/checklist.md` | Task status changes |
-| `docs/changelog.jsonl` | Every major change |
+# Lint
+cd web && npm run lint
+```
+
+## Changelog Format
+
+One JSON object per line in `docs/changelog.jsonl`:
+
+```json
+{"timestamp":"ISO-8601","summary":"What changed (2-4 sentences max).","why":"Why the change was made."}
+```
 
 ## Selected Skills
-
-All canonical skills live under `docs/skills/`:
 
 | Skill | Path |
 |-------|------|
@@ -56,14 +73,4 @@ All canonical skills live under `docs/skills/`:
 | Accessibility mobile | `docs/skills/accessibility-mobile/SKILL.md` |
 | ADA compliance | `docs/skills/ada-compliance/SKILL.md` |
 
-## Supported Agent Tools
-
-- **Claude Code** → `.claude/skills/`
-- **OpenAI Codex** → `.agents/skills/`
-- **Cursor** → `.cursor/rules/`
-
-Agent-specific folders contain pointers only. Never duplicate instructions outside `docs/skills/`.
-
-## Setup Incomplete Until Verified
-
-Do not declare setup or a major milestone complete until the Definition of Done in `docs/checklist.md` has been verified.
+Implementation plans go in `docs/plans/` when needed.

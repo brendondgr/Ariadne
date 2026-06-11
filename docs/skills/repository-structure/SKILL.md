@@ -27,11 +27,7 @@ For websites, dashboards, and web applications, this skill must be paired with `
 ---
 
 ## 1. Documentation (`docs/`)
-All documentation regarding the project, including architecture, setup guides, and structural maps, resides here.
-
-- **Mandatory File:** `docs/structure.md`
-  - This file must be kept up-to-date with the current file structure.
-  - It should detail main sub-folders and primary files, explaining their purpose without including source code.
+Project documentation and agent skills live under `docs/`. Canonical instructions belong in `docs/skills/`. Record structural changes in `docs/changelog.jsonl` and update the relevant skill when the repository tree changes.
 
 ---
 
@@ -102,13 +98,14 @@ We use `uv` as the primary package manager for all Python projects.
     - `oauth.py` – Handles OAuth2 flows.
     - `session.py` – Manages user sessions.
 
-### Directory Summary Table (Sample `docs/structure.md` entry)
+### Directory Summary Table
 
 | File / Folder | Purpose |
 | :--- | :--- |
-| `utils/database.py` | Minimal database connection wrapper. |
-| `utils/payment_engine/` | Sub-folder for complex transaction logic. |
-| `libs/analytics/` | Internal event-tracking package. |
+| `utils/skills/read_yaml.py` | Skill discovery helper |
+| `utils/<domain>/` | Domain-specific Python utilities |
+| `web/` | React/Vite webfront |
+| `docs/skills/` | Canonical agent instructions |
 
 ---
 
