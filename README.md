@@ -6,24 +6,50 @@ This repository implements a proof-of-concept for **ReliaQuest Innovation Challe
 
 **Award period:** June 8, 2026 – October 23, 2026
 
-## Timeline
+## Roadmap
 
-| Phase | Focus | Milestone |
-|-------|-------|-----------|
-| 1 | Data and schema layer — STIX/CAPEC fixtures, source cards, Neo4j + Gremlin graph schemas | Foundation before agents |
-| 2 | Federated planning agent — intent classification, sub-questions, source routing | ITS check-in |
-| 3 | Source query agents — Cypher (Neo4j) and Gremlin specialists with validation and safety | Midpoint review |
-| 4 | Synthesis agent — cross-source joins on ATT&CK/CAPEC IDs, provenance-linked answers | Pitch workshop prep |
-| 5 | End-to-end evaluation and October demonstration | ReliaQuest pitch (Oct 2026) |
+| Weeks | Phase | Task | Difficulty |
+|-------|-------|------|------------|
+| Wk 1–2 | Setup | Environment and tooling setup | Low |
+| Wk 2–3 | Setup | Download and validate public data sources | Low |
+| Wk 3–4 | Data layer | Build Neo4j ATT&CK fixture | Medium |
+| Wk 4–5 | Data layer | Build Gremlin CAPEC fixture | Medium |
+| Wk 5 | Data layer | Author source cards | Low |
 
-By October 2026 the team delivers a working demo that queries ATT&CK and CAPEC as distinct sources, correlates patterns with techniques and mitigations, and evaluates routing, grounding, and provenance. See [`docs/goals.md`](docs/goals.md) for evaluation criteria and risk notes.
+**ITS check-in** — Both graph fixtures live, source cards complete, environment reproducible.
+
+| Weeks | Phase | Task | Difficulty |
+|-------|-------|------|------------|
+| Wk 6–7 | Agents | Federated planning agent | High |
+| Wk 7–8 | Agents | Cypher specialist agent | High |
+| Wk 8–9 | Agents | Gremlin specialist agent | High |
+
+**Midpoint review** — All three agents functional end-to-end on the credential-theft example query flow.
+
+| Weeks | Phase | Task | Difficulty |
+|-------|-------|------|------------|
+| Wk 10 | Agents | Synthesis and reporting agent | High |
+| Wk 10–11 | Agents | End-to-end integration and pipeline wiring | Medium |
+| Wk 11–13 | Evaluation | Component-level evaluation | Medium |
+| Wk 12–13 | Evaluation | End-to-end evaluation and LLM evaluator | Medium |
+
+**Pitch workshop** — Evaluation results compiled, demo stable, narrative prepared.
+
+| Weeks | Phase | Task | Difficulty |
+|-------|-------|------|------------|
+| Wk 14–15 | Evaluation | Bug fixes, iteration, and documentation | Low |
+| Wk 15–16 | Pitch prep | Pitch preparation and final demo | Low |
+
+**October ReliaQuest pitch** — Live demo, evaluation results, and future development roadmap presented.
+
+Task descriptions and rationale: [`docs/goals.md`](docs/goals.md)
 
 ## Documentation
 
 | Document | Description |
 |----------|-------------|
 | [`docs/purpose.md`](docs/purpose.md) | Problem, architecture, data sources, team |
-| [`docs/goals.md`](docs/goals.md) | Deliverables, evaluation criteria, risk notes |
+| [`docs/goals.md`](docs/goals.md) | Full roadmap, evaluation criteria, deliverables |
 | [`docs/changelog.jsonl`](docs/changelog.jsonl) | Project change log |
 | [`docs/skills/global-project-rules/SKILL.md`](docs/skills/global-project-rules/SKILL.md) | Agent workflow rules (read first) |
 
