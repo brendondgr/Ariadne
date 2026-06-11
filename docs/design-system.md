@@ -1,6 +1,10 @@
 # Design System — Woven Dusk
 
-Canonical design tokens for the Ariadne webfront. Full guidance lives in `docs/skills/woven-dusk-design/SKILL.md`.
+Full design guidance lives in the all-in-one skill:
+
+**[`docs/skills/woven-dusk-design/SKILL.md`](skills/woven-dusk-design/SKILL.md)**
+
+This file summarizes implementable tokens for the webfront.
 
 ## Color Palette
 
