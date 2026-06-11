@@ -12,18 +12,22 @@ Every agent working in this repository must read this skill first, then the rele
 Before making changes, read:
 
 1. This file
-2. `docs/changelog.jsonl`
-3. The relevant skill under `docs/skills/`
+2. `docs/purpose.md`
+3. `docs/goals.md`
+4. `docs/changelog.jsonl`
+5. The relevant skill under `docs/skills/`
 
 ## Project Context
 
-Ariadne is a Python + React/Vite repository:
+Ariadne is a **federated agentic graph-database access prototype** for cybersecurity knowledge graphs — routing analyst questions across MITRE ATT&CK (Neo4j/Cypher) and CAPEC (Gremlin) via orchestrated planning, query, and synthesis agents.
 
-| Layer | Location | Stack |
-|-------|----------|-------|
-| Agent skills | `docs/skills/` | Canonical instructions |
-| Python utilities | `utils/` | `uv`, Python 3.13+ |
-| Webfront | `web/` | React, Vite, TypeScript, Tailwind, Woven Dusk design |
+| Layer | Location | Role |
+|-------|----------|------|
+| Project docs | `docs/purpose.md`, `docs/goals.md` | Mission, architecture, timeline |
+| Agent skills | `docs/skills/` | Canonical agent instructions |
+| Python utilities | `utils/` | Domain-specific helpers (`uv`, Python 3.13+) |
+| Webfront | `web/` | Analyst-facing demo UI (React/Vite, Woven Dusk) |
+| Future | TBD per `docs/skills/repository-structure/` | Agent orchestration, graph fixtures, evaluation |
 
 Supported agents: Claude Code (`.claude/skills/`), OpenAI Codex (`.agents/skills/`), Cursor (`.cursor/rules/`). Agent folders are pointers only — never duplicate instructions outside `docs/skills/`.
 
