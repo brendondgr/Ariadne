@@ -17,22 +17,24 @@ logger = logging.getLogger(__name__)
 class DatasetDownloader:
     """Class to manage downloading MITRE ATT&CK and CAPEC datasets."""
 
+    ATTACK_VERSION = "19.0"
+    CAPEC_VERSION = "3.9"
+
     ATTACK_URL = (
         "https://raw.githubusercontent.com/"
         "mitre-attack/attack-stix-data/master/"
-        "enterprise-attack/enterprise-attack.json"
+        f"enterprise-attack/enterprise-attack-{ATTACK_VERSION}.json"
     )
 
     CAPEC_URL = (
-        "https://capec.mitre.org/data/xml/"
-        "capec_latest.xml"
+        f"https://capec.mitre.org/data/xml/capec_v{CAPEC_VERSION}.xml"
     )
 
     def __init__(self, data_dir: str | Path = "data", force: bool = False) -> None:
         self.data_dir = Path(data_dir)
         self.raw_dir = self.data_dir / "raw"
-        self.attack_dir = self.raw_dir / "attack"
-        self.capec_dir = self.raw_dir / "capec"
+        self.attack_dir = self.raw_dir / "attack" / f"v{self.ATTACK_VERSION}"
+        self.capec_dir = self.raw_dir / "capec" / f"v{self.CAPEC_VERSION}"
         self.force = force
 
     def ensure_dirs(self) -> None:
@@ -65,6 +67,17 @@ class DatasetDownloader:
 
         with open(directory / "metadata.json", "w") as f:
             json.dump(metadata, f, indent=2)
+
+    def write_versions_json(self) -> None:
+        """Write versions.json to track pinned versions and download date."""
+        versions = {
+            "attack_version": self.ATTACK_VERSION,
+            "capec_version": self.CAPEC_VERSION,
+            "download_date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+        }
+
+        with open(self.data_dir / "versions.json", "w") as f:
+            json.dump(versions, f, indent=2)
 
     def download_attack(self) -> None:
         """Download and save enterprise-attack dataset."""
@@ -105,3 +118,4 @@ class DatasetDownloader:
         self.ensure_dirs()
         self.download_attack()
         self.download_capec()
+        self.write_versions_json()
