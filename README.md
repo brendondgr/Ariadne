@@ -56,8 +56,9 @@ Task descriptions and rationale: [`docs/goals.md`](docs/goals.md)
 ## Quick Start
 
 ```bash
-# Python
+# Python setup & download datasets
 uv sync
+uv run main.py --download
 uv run read-skills
 
 # Web demo UI

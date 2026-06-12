@@ -16,14 +16,16 @@ logger = logging.getLogger("ariadne.main")
 def setup_logging(job_type: str) -> Path:
     """Set up logging to console and a sequential log file.
 
-    Format: <sequence_number>-<job_type>.log
+    Format: logs/<sequence_number>-<job_type>.log
     """
-    cwd = Path.cwd()
+    logs_dir = Path.cwd() / "logs"
+    logs_dir.mkdir(parents=True, exist_ok=True)
+
     pattern = re.compile(rf"^(\d+)-{job_type}\.log$")
 
     max_num = 0
-    if cwd.exists():
-        for path in cwd.iterdir():
+    if logs_dir.exists():
+        for path in logs_dir.iterdir():
             if path.is_file():
                 match = pattern.match(path.name)
                 if match:
@@ -35,7 +37,7 @@ def setup_logging(job_type: str) -> Path:
                         pass
 
     next_num = max_num + 1
-    log_file = cwd / f"{next_num}-{job_type}.log"
+    log_file = logs_dir / f"{next_num}-{job_type}.log"
 
     # Configure root logger
     root_logger = logging.getLogger()
