@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from utils.graph_loader.main import GraphLoaderNotReadyError, run_graph_command
+from utils.graph_loader.main import run_graph_command
 
 
 def test_cli_help_shows_dataset_and_graph() -> None:
@@ -45,22 +45,21 @@ def test_cli_capec_not_built() -> None:
     assert "CAPEC canonical artifacts are not built yet" in combined
 
 
-@pytest.mark.skipif(
-    not Path("data/graphs/attack/canonical/manifest.json").exists(),
-    reason="ATT&CK artifacts not built",
-)
-def test_cli_attack_neo4j_resolves_before_load_stub() -> None:
-    with pytest.raises(GraphLoaderNotReadyError):
-        run_graph_command(dataset="attack", graph="neo4j")
+def test_cli_attack_neo4j_load_with_memory_backend(monkeypatch: pytest.MonkeyPatch) -> None:
+    if not Path("data/graphs/attack/canonical/manifest.json").exists():
+        pytest.skip("ATT&CK artifacts not built")
 
+    from utils.graph_loader.stores.memory import MemoryGraphStore
 
-@pytest.mark.skipif(
-    not Path("data/graphs/attack/canonical/manifest.json").exists(),
-    reason="ATT&CK artifacts not built",
-)
-def test_cli_attack_verify_resolves_before_verify_stub() -> None:
-    with pytest.raises(GraphLoaderNotReadyError):
-        run_graph_command(dataset="attack", graph="verify")
+    monkeypatch.setattr(
+        "utils.graph_loader.loader.run_preflight",
+        lambda *_a, **_k: None,
+    )
+    monkeypatch.setattr(
+        "utils.graph_loader.loader.create_graph_store",
+        lambda *_a, **_k: MemoryGraphStore(backend="neo4j"),
+    )
+    run_graph_command(dataset="attack", graph="neo4j")
 
 
 def test_cli_graph_health_checks_backends() -> None:
