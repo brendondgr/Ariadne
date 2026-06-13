@@ -12,7 +12,7 @@ This repository implements a proof-of-concept for **ReliaQuest Innovation Challe
 | :---: |-------|-------|------|------------|
 | [x] | Wk 1–2 | Setup | Environment and tooling setup | Low |
 | [x] | Wk 2–3 | Setup | Download and validate public data sources | Low |
-| [ ] | Wk 3–4 | Data layer | Build portable ATT&CK graph artifacts (JSONL, schema, Neo4j CSV/Cypher) | Medium |
+| [x] | Wk 3–4 | Data layer | Build portable ATT&CK graph artifacts (JSONL, schema, Neo4j CSV/Cypher) | Medium |
 | [ ] | Wk 4–5 | Data layer | Build Gremlin CAPEC fixture | Medium |
 | [ ] | Wk 5 | Data layer | Author source cards | Low |
 
