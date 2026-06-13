@@ -1,0 +1,46 @@
+services:
+
+  neo4j:
+    image: neo4j:${NEO4J_VERSION}
+    container_name: ariadne-neo4j
+    restart: unless-stopped
+
+    ports:
+      - "5455:7474"   # Browser
+      - "5456:7687"   # Bolt
+
+    environment:
+      NEO4J_AUTH: neo4j/password
+
+    volumes:
+      - ./neo4j/data:/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:7474 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  gremlin:
+    image: tinkerpop/gremlin-server:${GREMLIN_VERSION}
+    container_name: ariadne-gremlin
+    restart: unless-stopped
+
+    ports:
+      - "6455:8182"
+
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8182 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
+  # future frontend
+  web:
+    profiles:
+      - disabled
+    image: nginx
+    ports:
+      - "4455:80"

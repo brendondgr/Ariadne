@@ -28,6 +28,7 @@ share/python-wheels/
 
 # Virtual environments
 .env
+!docker/.env
 .venv/
 venv/
 ENV/
@@ -110,3 +111,7 @@ data/*
 !data/versions.json
 # Log directories
 logs/
+
+# Docker runtime data (compose layout and version pins stay tracked)
+docker/neo4j/data/*
+!docker/neo4j/data/.gitkeep
