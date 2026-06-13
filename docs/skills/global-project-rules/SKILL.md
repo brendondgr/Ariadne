@@ -23,9 +23,9 @@ Ariadne is a **federated agentic graph-database access prototype** for cybersecu
 
 | Layer | Location | Role |
 |-------|----------|------|
-| Project docs | `docs/purpose.md`, `docs/goals.md` | Mission, architecture, timeline |
+| Project docs | `docs/purpose.md`, `docs/goals.md`, `docs/structure.md` | Mission, architecture, timeline, repo map |
 | Agent skills | `docs/skills/` | Canonical agent instructions |
-| Python utilities | `utils/` | Domain-specific helpers (`uv`, Python 3.13+) |
+| Python utilities | `utils/` | Domain-specific helpers (`download`, `kg_builder`, `graph_loader`, `infrastructure`; `uv`, Python 3.13+) |
 | Webfront | `web/` | Analyst-facing demo UI (React/Vite, Woven Dusk) |
 | Future | TBD per `docs/skills/repository-structure/` | Agent orchestration, graph fixtures, evaluation |
 
@@ -46,12 +46,25 @@ Supported agents: Claude Code (`.claude/skills/`), OpenAI Codex (`.agents/skills
 uv sync
 cd web && npm install
 
+# Data pipeline
+uv run main.py --download
+uv run main.py --build attack          # canonical artifacts + backend exports (no DB writes)
+uv run main.py --docker start          # local Neo4j + Gremlin stack
+
+# Runtime graph loading (requires built artifacts; does not download or rebuild)
+uv run main.py --graph health
+uv run main.py --dataset attack --graph neo4j    # or gremlin | all | verify
+
 # Run
 uv run read-skills
 cd web && npm run dev
 
 # Build (required after webfront changes)
 cd web && npm run build
+
+# Test
+uv run python -m pytest utils/kg_builder/tests/
+uv run python -m pytest utils/graph_loader/tests/
 
 # Lint
 cd web && npm run lint

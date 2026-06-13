@@ -13,8 +13,9 @@ This repository implements a proof-of-concept for **ReliaQuest Innovation Challe
 | [x] | Wk 1–2 | Setup | Environment and tooling setup | Low |
 | [x] | Wk 2–3 | Setup | Download and validate public data sources | Low |
 | [x] | Wk 3–4 | Data layer | Build portable ATT&CK graph artifacts (JSONL, schema, Neo4j CSV/Cypher) | Medium |
+| [x] | Wk 4 | Data layer | Runtime ATT&CK graph loader (Neo4j/Gremlin load, verify, health) | Medium |
 | [ ] | Wk 4–5 | Data layer | Build Gremlin CAPEC fixture | Medium |
-| [ ] | Wk 5 | Data layer | Author source cards | Low |
+| [ ] | Wk 5 | Data layer | Author source cards (ATT&CK card auto-generated; endpoints & safety limits pending) | Low |
 
 **ITS check-in** — Both graph fixtures live, source cards complete, environment reproducible.
 
@@ -50,7 +51,9 @@ Task descriptions and rationale: [`docs/goals.md`](docs/goals.md)
 |----------|-------------|
 | [`docs/purpose.md`](docs/purpose.md) | Problem, architecture, data sources, team |
 | [`docs/goals.md`](docs/goals.md) | Full roadmap, evaluation criteria, deliverables |
+| [`docs/structure.md`](docs/structure.md) | Repository navigation map |
 | [`docs/changelog.jsonl`](docs/changelog.jsonl) | Project change log |
+| [`docs/structure.md`](docs/structure.md) | Repository navigation map |
 | [`docs/skills/global-project-rules/SKILL.md`](docs/skills/global-project-rules/SKILL.md) | Agent workflow rules (read first) |
 
 ## Quick Start
@@ -93,8 +96,8 @@ cd web && npm run build   # required after webfront changes
 
 ```text
 docker/   Neo4j and Gremlin Compose stack (pinned image versions)
-docs/     purpose, goals, skills, changelog, plans
-utils/    Python utilities (by domain)
+docs/     purpose, goals, skills, changelog, plans, structure.md
+utils/    Python utilities (download, kg_builder, graph_loader, infrastructure)
 web/      Analyst-facing demo UI (React/Vite)
 ```
 

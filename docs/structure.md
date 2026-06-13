@@ -108,4 +108,4 @@ Run `cd web && npm run dev`; build with `npm run build` after changes.
 
 ## Not Yet in Repo
 
-Planned per roadmap: federated planner, Cypher/Gremlin specialist agents, synthesis agent, CAPEC graph build, and full evaluation harness. These will land under `utils/` (and possibly `libs/`) as phases complete.
+Planned per roadmap: federated planner, Cypher/Gremlin specialist agents, synthesis agent, CAPEC graph build and loader, full source-card authoring (safety limits, live endpoints), and evaluation harness. ATT&CK runtime loading (`utils/graph_loader/`) is implemented; CAPEC dataset loading fails until CAPEC canonical artifacts exist.
