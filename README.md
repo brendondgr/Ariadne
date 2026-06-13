@@ -72,8 +72,16 @@ uv run main.py --docker start             # pull, start Neo4j + Gremlin, wait un
 uv run main.py --docker status            # show container status
 uv run main.py --docker stop              # stop containers
 
+# Runtime graph loading (requires built artifacts; does not download or rebuild)
+uv run main.py --graph health             # check Neo4j/Gremlin endpoint reachability
+uv run main.py --dataset attack --graph verify   # no-load dataset/runtime verification
+uv run main.py --dataset attack --graph neo4j    # load ATT&CK into Neo4j
+uv run main.py --dataset attack --graph gremlin  # load ATT&CK into Gremlin
+uv run main.py --dataset attack --graph all      # load ATT&CK into both backends
+
 # Run KG builder tests
 uv run python -m pytest utils/kg_builder/tests/
+uv run python -m pytest utils/graph_loader/tests/
 
 # Web demo UI
 cd web && npm install

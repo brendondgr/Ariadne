@@ -9,6 +9,9 @@ import sys
 from pathlib import Path
 
 from utils.download import DatasetDownloader
+from utils.graph_loader.config import GRAPH_ACTIONS
+from utils.graph_loader.main import GraphLoaderNotReadyError, run_graph_command
+from utils.graph_loader.registry import LoaderResolutionError
 from utils.infrastructure import docker_start, docker_status, docker_stop
 from utils.kg_builder import KGBuildRunner
 
@@ -104,6 +107,19 @@ def main() -> None:
         "--gremlin-version",
         help="Override pinned Gremlin image version for --docker start",
     )
+    parser.add_argument(
+        "--dataset",
+        choices=["attack", "capec", "all"],
+        help="Dataset to load or verify from built canonical graph artifacts",
+    )
+    parser.add_argument(
+        "--graph",
+        choices=sorted(GRAPH_ACTIONS),
+        help=(
+            "Graph backend action: load neo4j/gremlin/all, verify without loading, "
+            "or health for infrastructure reachability only"
+        ),
+    )
 
     args = parser.parse_args()
 
@@ -114,6 +130,13 @@ def main() -> None:
         job_type = f"build-{args.build}"
     elif args.docker:
         job_type = f"docker-{args.docker}"
+    elif args.graph is not None:
+        if args.graph == "health":
+            job_type = "graph-health"
+        elif args.dataset:
+            job_type = f"load-{args.dataset}-{args.graph}"
+        else:
+            job_type = "graph-missing-dataset"
     else:
         # If no arguments provided, print help and exit
         parser.print_help()
@@ -154,6 +177,18 @@ def main() -> None:
         elif args.docker == "status":
             docker_status()
             logger.info("Job completed successfully.")
+        elif args.graph is not None:
+            if args.graph != "health" and not args.dataset:
+                parser.error("--dataset is required unless --graph health is used.")
+            if args.dataset == "all" and args.graph not in {"neo4j", "gremlin", "all", "verify"}:
+                parser.error("--dataset all is not supported yet; use attack.")
+            if args.dataset == "all":
+                raise ValueError("--dataset all is not supported yet; use attack.")
+            run_graph_command(dataset=args.dataset, graph=args.graph)
+            logger.info("Job completed successfully.")
+    except (LoaderResolutionError, ValueError, GraphLoaderNotReadyError, ConnectionError) as e:
+        logger.error(str(e))
+        sys.exit(1)
     except Exception as e:
         logger.exception(f"Job {job_type} failed with error: {e}")
         sys.exit(1)
