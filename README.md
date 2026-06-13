@@ -67,6 +67,9 @@ uv run main.py --build attack             # writes data/graphs/attack/
 uv run main.py --build capec              # future work (exits with notice)
 uv run main.py --build all                # ATT&CK build; CAPEC deferred
 
+# Run KG builder tests
+uv run python -m pytest utils/kg_builder/tests/
+
 # Web demo UI
 cd web && npm install
 cd web && npm run dev
@@ -82,3 +85,20 @@ web/      Analyst-facing demo UI (React/Vite)
 ```
 
 Agent pointer folders (`.claude/`, `.agents/`, `.cursor/`) route to canonical instructions under `docs/skills/`.
+
+## ATT&CK Graph Artifacts
+
+`uv run main.py --build attack` converts the pinned Enterprise STIX bundle into a portable, database-neutral artifact bundle. This phase **does not load Neo4j**; a downstream loader can consume the generated files later.
+
+| Output | Description |
+|--------|-------------|
+| `data/processed/pairs/enterprise-attack.json` | Preprocessing checkpoint (metadata, nodes, relationships, counts) |
+| `data/graphs/attack/nodes.jsonl` | Normalized node records (one JSON object per line) |
+| `data/graphs/attack/relationships.jsonl` | Normalized relationship records |
+| `data/graphs/attack/schema.json` | Node-label and relationship-type allowlists |
+| `data/graphs/attack/schema.cypher` | Neo4j-compatible schema description |
+| `data/graphs/attack/constraints.cypher` | Uniqueness constraints per node label |
+| `data/graphs/attack/neo4j_csv/` | CSV files for a future `LOAD CSV` import |
+| `data/graphs/attack/manifest.json` | Counts, source metadata, artifact paths, and SHA-256 hashes |
+
+Generated artifacts under `data/` are gitignored except `data/versions.json`. Rebuild with the same pinned input to reproduce identical counts and file hashes.
