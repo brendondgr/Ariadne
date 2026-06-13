@@ -6,8 +6,6 @@ import os
 import socket
 import subprocess
 import time
-import urllib.error
-import urllib.request
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -27,7 +25,7 @@ SERVICE_CONTAINERS = {
 }
 
 SERVICE_ENDPOINTS = {
-    "neo4j": "http://127.0.0.1:5455",
+    "neo4j": ("127.0.0.1", 5456),
     "gremlin": ("127.0.0.1", 6455),
 }
 
@@ -103,17 +101,6 @@ def _service_states() -> dict[str, str]:
     return states
 
 
-def _http_endpoint_ready(url: str, timeout_seconds: float = 3.0) -> bool:
-    request = urllib.request.Request(url, method="GET")
-    try:
-        with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
-            return 200 <= response.status < 500
-    except urllib.error.HTTPError as exc:
-        return 200 <= exc.code < 500
-    except (urllib.error.URLError, TimeoutError):
-        return False
-
-
 def _tcp_endpoint_ready(host: str, port: int, timeout_seconds: float = 3.0) -> bool:
     try:
         with socket.create_connection((host, port), timeout=timeout_seconds):
@@ -126,12 +113,8 @@ def _service_ready(service: str, compose_state: str) -> bool:
     if compose_state.lower() != "running":
         return False
 
-    endpoint = SERVICE_ENDPOINTS[service]
-    if isinstance(endpoint, tuple):
-        host, port = endpoint
-        return _tcp_endpoint_ready(host, port)
-
-    return _http_endpoint_ready(endpoint)
+    host, port = SERVICE_ENDPOINTS[service]
+    return _tcp_endpoint_ready(host, port)
 
 
 def _compose_running_states() -> dict[str, str]:
@@ -167,16 +150,12 @@ def _wait_for_services(timeout_seconds: int = DEFAULT_START_TIMEOUT_SECONDS) -> 
             for service in SERVICE_LABELS
         ):
             for service, label in SERVICE_LABELS.items():
-                endpoint = SERVICE_ENDPOINTS[service]
-                if isinstance(endpoint, tuple):
-                    host, port = endpoint
-                    target = f"tcp://{host}:{port}"
-                else:
-                    target = endpoint
+                host, port = SERVICE_ENDPOINTS[service]
                 logger.info(
-                    "%s is ready via %s (%s)",
+                    "%s is ready via tcp://%s:%s (%s)",
                     label,
-                    target,
+                    host,
+                    port,
                     SERVICE_CONTAINERS[service],
                 )
             return

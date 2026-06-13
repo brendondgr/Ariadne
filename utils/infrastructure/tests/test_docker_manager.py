@@ -50,16 +50,14 @@ def test_service_states_maps_running_containers() -> None:
     }
 
 
-def test_service_ready_uses_tcp_for_gremlin() -> None:
-    with (
-        patch.object(docker_manager, "_http_endpoint_ready", return_value=True) as http_ready,
-        patch.object(docker_manager, "_tcp_endpoint_ready", return_value=True) as tcp_ready,
-    ):
+def test_service_ready_uses_tcp_for_both_services() -> None:
+    with patch.object(docker_manager, "_tcp_endpoint_ready", return_value=True) as tcp_ready:
         assert docker_manager._service_ready("neo4j", "running") is True
         assert docker_manager._service_ready("gremlin", "running") is True
 
-    http_ready.assert_called_once()
-    tcp_ready.assert_called_once()
+    assert tcp_ready.call_count == 2
+    tcp_ready.assert_any_call("127.0.0.1", 5456)
+    tcp_ready.assert_any_call("127.0.0.1", 6455)
 
 
 def test_docker_start_pulls_up_and_waits() -> None:
