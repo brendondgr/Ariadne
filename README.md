@@ -62,8 +62,8 @@ uv run main.py --download
 uv run read-skills
 
 # Build portable graph artifacts (ATT&CK)
-uv run main.py --build attack --dry-run   # preview artifact paths
-uv run main.py --build attack             # writes data/graphs/attack/
+uv run main.py --build attack --dry-run   # preview canonical and export paths
+uv run main.py --build attack             # writes canonical truth + backend exports
 uv run main.py --build capec              # future work (exits with notice)
 uv run main.py --build all                # ATT&CK build; CAPEC deferred
 
@@ -88,17 +88,21 @@ Agent pointer folders (`.claude/`, `.agents/`, `.cursor/`) route to canonical in
 
 ## ATT&CK Graph Artifacts
 
-`uv run main.py --build attack` converts the pinned Enterprise STIX bundle into a portable, database-neutral artifact bundle. This phase **does not load Neo4j**; a downstream loader can consume the generated files later.
+`uv run main.py --build attack` converts the pinned Enterprise STIX bundle into a **canonical graph interchange layer** plus generated backend exports. Canonical JSONL, schema, and manifest files under `data/graphs/attack/canonical/` are the source of truth; Neo4j and Gremlin outputs under `data/graphs/attack/exports/` are reproducible projections. This phase **does not load Neo4j or Gremlin Server**; downstream loaders consume the generated files later.
 
 | Output | Description |
 |--------|-------------|
 | `data/processed/pairs/enterprise-attack.json` | Preprocessing checkpoint (metadata, nodes, relationships, counts) |
-| `data/graphs/attack/nodes.jsonl` | Normalized node records (one JSON object per line) |
-| `data/graphs/attack/relationships.jsonl` | Normalized relationship records |
-| `data/graphs/attack/schema.json` | Node-label and relationship-type allowlists |
-| `data/graphs/attack/schema.cypher` | Neo4j-compatible schema description |
-| `data/graphs/attack/constraints.cypher` | Uniqueness constraints per node label |
-| `data/graphs/attack/neo4j_csv/` | CSV files for a future `LOAD CSV` import |
-| `data/graphs/attack/manifest.json` | Counts, source metadata, artifact paths, and SHA-256 hashes |
+| `data/graphs/attack/canonical/nodes.jsonl` | Canonical node records with `label` and `labels` (one JSON object per line) |
+| `data/graphs/attack/canonical/relationships.jsonl` | Canonical edge records |
+| `data/graphs/attack/canonical/schema.json` | Node-label and relationship-type allowlists (includes reserved `DataSource`) |
+| `data/graphs/attack/canonical/manifest.json` | Counts, source metadata, canonical paths, export provenance, and SHA-256 hashes |
+| `data/graphs/attack/exports/neo4j/nodes.csv` | Neo4j CSV node import (nested properties JSON-encoded) |
+| `data/graphs/attack/exports/neo4j/relationships.csv` | Neo4j CSV relationship import |
+| `data/graphs/attack/exports/neo4j/schema.cypher` | Neo4j-compatible schema description |
+| `data/graphs/attack/exports/neo4j/constraints.cypher` | Uniqueness constraints per node label |
+| `data/graphs/attack/exports/gremlin/nodes.jsonl` | Gremlin-ready vertex records (nested properties JSON-encoded) |
+| `data/graphs/attack/exports/gremlin/relationships.jsonl` | Gremlin-ready edge records |
+| `data/source_cards/attack.json` | Source registry card for planner and specialist agent routing |
 
 Generated artifacts under `data/` are gitignored except `data/versions.json`. Rebuild with the same pinned input to reproduce identical counts and file hashes.

@@ -26,6 +26,11 @@ def test_preprocess_minimal_fixture() -> None:
     labels = {node.label for node in graph.nodes}
     assert labels == {"Tactic", "Technique", "SubTechnique", "Group", "Software", "Mitigation"}
 
+    for node in graph.nodes:
+        assert node.labels[0] == node.label
+        assert "AttackObject" in node.labels
+        assert "STIXObject" in node.labels
+
     rel_types = {rel.type for rel in graph.relationships}
     assert "USES" in rel_types
     assert "HAS_SUBTECHNIQUE" in rel_types

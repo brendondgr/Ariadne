@@ -9,7 +9,13 @@ from typing import Any
 
 from ..config import BuildConfig
 from ..io import load_json
-from ..models import GraphMetadata, GraphNode, GraphRelationship, NormalizedGraph
+from ..models import (
+    EdgeRecord,
+    GraphMetadata,
+    NodeRecord,
+    NormalizedGraph,
+    attack_canonical_labels,
+)
 from ..schema.attack import neo4j_relationship_type
 
 logger = logging.getLogger(__name__)
@@ -138,9 +144,9 @@ class AttackPreprocessor:
         filtered_deprecated = 0
         filtered_revoked = 0
 
-        nodes: list[GraphNode] = []
-        relationships: list[GraphRelationship] = []
-        node_by_id: dict[str, GraphNode] = {}
+        nodes: list[NodeRecord] = []
+        relationships: list[EdgeRecord] = []
+        node_by_id: dict[str, NodeRecord] = {}
         tactic_by_shortname: dict[str, str] = {}
 
         for obj in objects:
@@ -159,14 +165,19 @@ class AttackPreprocessor:
                 filtered_revoked += 1
                 continue
 
-            node = GraphNode(
+            properties = _node_properties(obj)
+            attack_id = _attack_external_id(obj)
+            if attack_id is not None:
+                properties["attack_id"] = attack_id
+            if obj.get("type"):
+                properties["stix_type"] = obj.get("type")
+
+            node = NodeRecord(
                 id=obj["id"],
                 label=label,
-                attack_id=_attack_external_id(obj),
+                labels=attack_canonical_labels(label),
                 name=obj.get("name"),
-                description=obj.get("description"),
-                stix_type=obj.get("type"),
-                properties=_node_properties(obj),
+                properties=properties,
             )
             nodes.append(node)
             node_by_id[node.id] = node
@@ -197,13 +208,13 @@ class AttackPreprocessor:
                 continue
 
             relationships.append(
-                GraphRelationship(
+                EdgeRecord(
                     id=obj["id"],
                     type=rel_type,
                     source_id=source_id,
                     target_id=target_id,
-                    stix_type="relationship",
                     properties={
+                        "stix_type": "relationship",
                         "relationship_type": rel_type_raw,
                         "description": obj.get("description"),
                     },
@@ -226,13 +237,15 @@ class AttackPreprocessor:
                     continue
                 rel_id = f"derived--has-technique--{tactic_id}--{obj['id']}"
                 relationships.append(
-                    GraphRelationship(
+                    EdgeRecord(
                         id=rel_id,
                         type="HAS_TECHNIQUE",
                         source_id=tactic_id,
                         target_id=obj["id"],
-                        stix_type="derived",
-                        properties={"phase_name": phase.get("phase_name")},
+                        properties={
+                            "stix_type": "derived",
+                            "phase_name": phase.get("phase_name"),
+                        },
                     )
                 )
 

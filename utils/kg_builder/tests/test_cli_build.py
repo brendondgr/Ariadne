@@ -31,4 +31,4 @@ def test_cli_build_all() -> None:
     )
     assert result.returncode == 0
     assert "Skipping CAPEC build" in result.stdout
-    assert Path("data/graphs/attack/manifest.json").exists()
+    assert Path("data/graphs/attack/canonical/manifest.json").exists()

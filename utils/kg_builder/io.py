@@ -47,6 +47,14 @@ def read_jsonl(path: Path) -> Iterator[dict[str, Any]]:
                 yield json.loads(line)
 
 
+def load_canonical_records(
+    nodes_path: Path,
+    relationships_path: Path,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Load canonical node and edge records from JSONL files."""
+    return list(read_jsonl(nodes_path)), list(read_jsonl(relationships_path))
+
+
 def write_text(path: Path, content: str) -> None:
     ensure_dir(path.parent)
     path.write_text(content, encoding="utf-8")

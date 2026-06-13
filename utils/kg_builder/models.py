@@ -7,34 +7,64 @@ from typing import Any
 
 
 @dataclass
-class GraphNode:
-    """Database-neutral graph node."""
+class NodeRecord:
+    """Backend-neutral canonical graph node."""
 
     id: str
     label: str
-    attack_id: str | None = None
+    labels: list[str]
     name: str | None = None
-    description: str | None = None
-    stix_type: str | None = None
     properties: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> NodeRecord:
+        labels = data.get("labels")
+        if labels is None:
+            labels = [data["label"]]
+        return cls(
+            id=data["id"],
+            label=data["label"],
+            labels=list(labels),
+            name=data.get("name"),
+            properties=dict(data.get("properties", {})),
+        )
+
 
 @dataclass
-class GraphRelationship:
-    """Database-neutral directed graph relationship."""
+class EdgeRecord:
+    """Backend-neutral canonical graph edge."""
 
     id: str
     type: str
     source_id: str
     target_id: str
-    stix_type: str | None = None
     properties: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> EdgeRecord:
+        return cls(
+            id=data["id"],
+            type=data["type"],
+            source_id=data["source_id"],
+            target_id=data["target_id"],
+            properties=dict(data.get("properties", {})),
+        )
+
+
+# Backward-compatible aliases used during preprocessing.
+GraphNode = NodeRecord
+GraphRelationship = EdgeRecord
+
+
+def attack_canonical_labels(primary_label: str) -> list[str]:
+    """Return ordered canonical labels for an ATT&CK graph node."""
+    return [primary_label, "AttackObject", "STIXObject"]
 
 
 @dataclass
@@ -57,8 +87,8 @@ class NormalizedGraph:
     """Normalized graph model — database-neutral pipeline boundary."""
 
     metadata: GraphMetadata
-    nodes: list[GraphNode]
-    relationships: list[GraphRelationship]
+    nodes: list[NodeRecord]
+    relationships: list[EdgeRecord]
 
     @property
     def counts(self) -> dict[str, int]:

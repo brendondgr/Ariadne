@@ -16,9 +16,10 @@ class BuildPaths:
     attack_raw_file: Path
     processed_pairs_file: Path
     graph_output_dir: Path
-    graph_jsonl_dir: Path
-    graph_cypher_dir: Path
-    graph_neo4j_csv_dir: Path
+    graph_canonical_dir: Path
+    graph_neo4j_export_dir: Path
+    graph_gremlin_export_dir: Path
+    source_registry_dir: Path
     capec_processed_pairs_file: Path
 
 
@@ -31,6 +32,7 @@ class BuildConfig:
     capec_version: str
     filter_deprecated: bool = True
     filter_revoked: bool = True
+    schema_version: str = "1.0"
 
     @classmethod
     def from_data_dir(cls, data_dir: str | Path = "data") -> BuildConfig:
@@ -60,8 +62,9 @@ class BuildConfig:
             attack_raw_file=attack_raw_dir / "enterprise-attack.json",
             processed_pairs_file=self.data_dir / "processed" / "pairs" / "enterprise-attack.json",
             graph_output_dir=graph_output_dir,
-            graph_jsonl_dir=graph_output_dir / "jsonl",
-            graph_cypher_dir=graph_output_dir / "cypher",
-            graph_neo4j_csv_dir=graph_output_dir / "neo4j_csv",
+            graph_canonical_dir=graph_output_dir / "canonical",
+            graph_neo4j_export_dir=graph_output_dir / "exports" / "neo4j",
+            graph_gremlin_export_dir=graph_output_dir / "exports" / "gremlin",
+            source_registry_dir=self.data_dir / "source_cards",
             capec_processed_pairs_file=self.data_dir / "processed" / "pairs" / "capec.json",
         )
