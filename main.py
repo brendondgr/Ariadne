@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 
 from utils.download import DatasetDownloader
+from utils.infrastructure import docker_start, docker_status, docker_stop
 from utils.kg_builder import KGBuildRunner
 
 logger = logging.getLogger("ariadne.main")
@@ -90,6 +91,19 @@ def main() -> None:
         action="store_true",
         help="Preview build actions without writing artifacts",
     )
+    parser.add_argument(
+        "--docker",
+        choices=["start", "stop", "status"],
+        help="Manage local Neo4j and Gremlin Docker infrastructure",
+    )
+    parser.add_argument(
+        "--neo4j-version",
+        help="Override pinned Neo4j image version for --docker start",
+    )
+    parser.add_argument(
+        "--gremlin-version",
+        help="Override pinned Gremlin image version for --docker start",
+    )
 
     args = parser.parse_args()
 
@@ -98,6 +112,8 @@ def main() -> None:
         job_type = "download"
     elif args.build:
         job_type = f"build-{args.build}"
+    elif args.docker:
+        job_type = f"docker-{args.docker}"
     else:
         # If no arguments provided, print help and exit
         parser.print_help()
@@ -125,6 +141,18 @@ def main() -> None:
             elif args.build == "all":
                 runner.build_all()
 
+            logger.info("Job completed successfully.")
+        elif args.docker == "start":
+            docker_start(
+                neo4j_version=args.neo4j_version,
+                gremlin_version=args.gremlin_version,
+            )
+            logger.info("Job completed successfully.")
+        elif args.docker == "stop":
+            docker_stop()
+            logger.info("Job completed successfully.")
+        elif args.docker == "status":
+            docker_status()
             logger.info("Job completed successfully.")
     except Exception as e:
         logger.exception(f"Job {job_type} failed with error: {e}")
