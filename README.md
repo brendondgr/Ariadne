@@ -126,3 +126,5 @@ Generated artifacts under `data/` are gitignored except `data/versions.json`. Re
 Pinned image versions live in `docker/.env` (`NEO4J_VERSION=5.26`, `GREMLIN_VERSION=3.8.0`). Override at runtime with `--neo4j-version` and `--gremlin-version` on `--docker start`.
 
 Neo4j data persists under `docker/neo4j/data/`. Use `uv run main.py --docker stop` to tear down containers without deleting volumes.
+
+Docker Desktop may label the stack `docker` (from the `docker/` folder). Compose service names are `neo4j` and `gremlin`; the running containers are `ariadne-neo4j` and `ariadne-gremlin` as set in `docker-compose.yml`.

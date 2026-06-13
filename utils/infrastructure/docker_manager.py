@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import socket
 import subprocess
 import time
 import urllib.error
@@ -20,9 +21,14 @@ SERVICE_LABELS = {
     "gremlin": "Gremlin",
 }
 
+SERVICE_CONTAINERS = {
+    "neo4j": "ariadne-neo4j",
+    "gremlin": "ariadne-gremlin",
+}
+
 SERVICE_ENDPOINTS = {
     "neo4j": "http://127.0.0.1:5455",
-    "gremlin": "http://127.0.0.1:6455",
+    "gremlin": ("127.0.0.1", 6455),
 }
 
 DEFAULT_START_TIMEOUT_SECONDS = 180
@@ -83,18 +89,21 @@ def _service_states() -> dict[str, str]:
 
         state = entry.get("State", "unknown")
         health = entry.get("Health", "")
-        if state.lower() == "running":
-            if health:
-                states[service] = health.capitalize()
-            else:
-                states[service] = "Running"
+        container_name = entry.get("Name", SERVICE_CONTAINERS.get(service, service))
+
+        if state.lower() != "running":
+            states[service] = f"{state.capitalize()} ({container_name})"
+            continue
+
+        if health:
+            states[service] = f"{health.capitalize()} ({container_name})"
         else:
-            states[service] = state.capitalize()
+            states[service] = f"Running ({container_name})"
 
     return states
 
 
-def _endpoint_ready(url: str, timeout_seconds: float = 3.0) -> bool:
+def _http_endpoint_ready(url: str, timeout_seconds: float = 3.0) -> bool:
     request = urllib.request.Request(url, method="GET")
     try:
         with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
@@ -105,26 +114,72 @@ def _endpoint_ready(url: str, timeout_seconds: float = 3.0) -> bool:
         return False
 
 
+def _tcp_endpoint_ready(host: str, port: int, timeout_seconds: float = 3.0) -> bool:
+    try:
+        with socket.create_connection((host, port), timeout=timeout_seconds):
+            return True
+    except OSError:
+        return False
+
+
+def _service_ready(service: str, compose_state: str) -> bool:
+    if compose_state.lower() != "running":
+        return False
+
+    endpoint = SERVICE_ENDPOINTS[service]
+    if isinstance(endpoint, tuple):
+        host, port = endpoint
+        return _tcp_endpoint_ready(host, port)
+
+    return _http_endpoint_ready(endpoint)
+
+
+def _compose_running_states() -> dict[str, str]:
+    result = _run_compose("ps", "--format", "json", capture_output=True)
+    states: dict[str, str] = {name: "not running" for name in SERVICE_LABELS}
+
+    if not result.stdout.strip():
+        return states
+
+    for line in result.stdout.splitlines():
+        if not line.strip():
+            continue
+        entry = json.loads(line)
+        service = entry.get("Service", "")
+        if service in states:
+            states[service] = entry.get("State", "unknown").lower()
+
+    return states
+
+
 def _wait_for_services(timeout_seconds: int = DEFAULT_START_TIMEOUT_SECONDS) -> None:
     deadline = time.monotonic() + timeout_seconds
-    logger.info("Waiting for graph infrastructure to become ready...")
+    logger.info(
+        "Waiting for compose services %s (containers: %s) to become ready...",
+        ", ".join(SERVICE_LABELS[service] for service in SERVICE_LABELS),
+        ", ".join(SERVICE_CONTAINERS[service] for service in SERVICE_LABELS),
+    )
 
     while time.monotonic() < deadline:
-        states = _service_states()
-        running = {
-            service: state
-            for service, state in states.items()
-            if state.lower() in {"running", "healthy"}
-        }
-
-        if len(running) == len(SERVICE_LABELS):
-            endpoints_ready = all(
-                _endpoint_ready(SERVICE_ENDPOINTS[service]) for service in SERVICE_LABELS
-            )
-            if endpoints_ready:
-                for service, label in SERVICE_LABELS.items():
-                    logger.info("%s is ready (%s)", label, SERVICE_ENDPOINTS[service])
-                return
+        compose_states = _compose_running_states()
+        if all(
+            _service_ready(service, compose_states[service])
+            for service in SERVICE_LABELS
+        ):
+            for service, label in SERVICE_LABELS.items():
+                endpoint = SERVICE_ENDPOINTS[service]
+                if isinstance(endpoint, tuple):
+                    host, port = endpoint
+                    target = f"tcp://{host}:{port}"
+                else:
+                    target = endpoint
+                logger.info(
+                    "%s is ready via %s (%s)",
+                    label,
+                    target,
+                    SERVICE_CONTAINERS[service],
+                )
+            return
 
         time.sleep(2)
 
@@ -152,7 +207,10 @@ def docker_start(
     logger.info("Pulling Docker images from %s", COMPOSE_FILE)
     _run_compose("pull", env=env)
 
-    logger.info("Starting Neo4j and Gremlin containers")
+    logger.info(
+        "Starting containers %s",
+        " and ".join(SERVICE_CONTAINERS.values()),
+    )
     _run_compose("up", "-d", env=env)
 
     _wait_for_services(timeout_seconds=timeout_seconds)

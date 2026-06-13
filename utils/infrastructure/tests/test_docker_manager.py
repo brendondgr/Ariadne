@@ -21,8 +21,18 @@ def test_compose_paths_point_at_docker_directory() -> None:
 
 def test_service_states_maps_running_containers() -> None:
     payload = [
-        {"Service": "neo4j", "State": "running", "Health": "healthy"},
-        {"Service": "gremlin", "State": "running", "Health": "healthy"},
+        {
+            "Service": "neo4j",
+            "State": "running",
+            "Health": "healthy",
+            "Name": "ariadne-neo4j",
+        },
+        {
+            "Service": "gremlin",
+            "State": "running",
+            "Health": "unhealthy",
+            "Name": "ariadne-gremlin",
+        },
     ]
     completed = subprocess.CompletedProcess(
         args=[],
@@ -34,7 +44,22 @@ def test_service_states_maps_running_containers() -> None:
     with patch.object(docker_manager, "_run_compose", return_value=completed):
         states = docker_manager._service_states()
 
-    assert states == {"neo4j": "Healthy", "gremlin": "Healthy"}
+    assert states == {
+        "neo4j": "Healthy (ariadne-neo4j)",
+        "gremlin": "Unhealthy (ariadne-gremlin)",
+    }
+
+
+def test_service_ready_uses_tcp_for_gremlin() -> None:
+    with (
+        patch.object(docker_manager, "_http_endpoint_ready", return_value=True) as http_ready,
+        patch.object(docker_manager, "_tcp_endpoint_ready", return_value=True) as tcp_ready,
+    ):
+        assert docker_manager._service_ready("neo4j", "running") is True
+        assert docker_manager._service_ready("gremlin", "running") is True
+
+    http_ready.assert_called_once()
+    tcp_ready.assert_called_once()
 
 
 def test_docker_start_pulls_up_and_waits() -> None:
