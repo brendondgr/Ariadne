@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import logging
 import socket
-import sys
 
 from .config import GRAPH_ACTIONS, LoaderConfig
-from .registry import CAPEC_NOT_BUILT_MSG, LoaderResolutionError, resolve_dataset
+from .loader import load_dataset
+from .registry import CAPEC_NOT_BUILT_MSG, LoaderResolutionError
+from .verify import run_dataset_verify as _verify_dataset
 
 logger = logging.getLogger(__name__)
 
@@ -15,10 +16,6 @@ DEFAULT_ENDPOINTS = {
     "neo4j": ("127.0.0.1", 5456),
     "gremlin": ("127.0.0.1", 6455),
 }
-
-
-class GraphLoaderNotReadyError(Exception):
-    """Raised when load orchestration is not yet available."""
 
 
 def _tcp_reachable(host: str, port: int, timeout: float = 3.0) -> bool:
@@ -66,16 +63,8 @@ def run_graph_health(config: LoaderConfig | None = None) -> dict[str, bool]:
 
 
 def run_dataset_verify(dataset: str, config: LoaderConfig | None = None) -> None:
-    """No-load dataset verification — full implementation in verify module."""
-    target = resolve_dataset(dataset, "verify", config)
-    logger.info(
-        "Resolved dataset %s for verification (manifest=%s)",
-        target.dataset,
-        target.manifest_path,
-    )
-    raise GraphLoaderNotReadyError(
-        "Dataset verification orchestration is not wired yet."
-    )
+    """No-load dataset verification."""
+    _verify_dataset(dataset, config=config)
 
 
 def run_dataset_load(
@@ -84,14 +73,15 @@ def run_dataset_load(
     config: LoaderConfig | None = None,
 ) -> None:
     """Load a built dataset into the requested graph backend(s)."""
-    target = resolve_dataset(dataset, graph, config)
+    result = load_dataset(dataset, graph, config=config)
+    if not result.success:
+        errors = [backend.error for backend in result.backends if backend.error]
+        raise RuntimeError("; ".join(error for error in errors if error))
     logger.info(
-        "Resolved dataset %s for %s load (manifest=%s)",
-        target.dataset,
-        graph,
-        target.manifest_path,
+        "Loaded dataset %s into %s",
+        dataset,
+        ", ".join(backend.backend for backend in result.backends if backend.success),
     )
-    raise GraphLoaderNotReadyError("Dataset load orchestration is not wired yet.")
 
 
 def run_graph_command(
@@ -130,7 +120,6 @@ def run_graph_command(
 
 
 def main(argv: list[str] | None = None) -> int:
-    """Entry point for graph loader subcommands (used by tests)."""
     _ = argv
     logger.error("graph_loader.main.main is invoked via root CLI only.")
     return 1

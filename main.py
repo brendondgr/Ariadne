@@ -10,7 +10,7 @@ from pathlib import Path
 
 from utils.download import DatasetDownloader
 from utils.graph_loader.config import GRAPH_ACTIONS
-from utils.graph_loader.main import GraphLoaderNotReadyError, run_graph_command
+from utils.graph_loader.main import run_graph_command
 from utils.graph_loader.registry import LoaderResolutionError
 from utils.infrastructure import docker_start, docker_status, docker_stop
 from utils.kg_builder import KGBuildRunner
@@ -186,7 +186,7 @@ def main() -> None:
                 raise ValueError("--dataset all is not supported yet; use attack.")
             run_graph_command(dataset=args.dataset, graph=args.graph)
             logger.info("Job completed successfully.")
-    except (LoaderResolutionError, ValueError, GraphLoaderNotReadyError, ConnectionError) as e:
+    except (LoaderResolutionError, ValueError, RuntimeError, ConnectionError) as e:
         logger.error(str(e))
         sys.exit(1)
     except Exception as e:
