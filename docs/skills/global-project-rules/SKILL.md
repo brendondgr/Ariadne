@@ -34,9 +34,10 @@ Supported agents: Claude Code (`.claude/skills/`), OpenAI Codex (`.agents/skills
 ## Operational Rules
 
 1. After each major step and validations pass, ensure that git committing occurs.
-2. If working on a separate branch/worktree and EVERYTHING IS FUNCTIONAL 100%, then merge onto the main branch.
-3. Keep an active changelog inside of `docs/changelog.jsonl`. The changelog should be simplistic jsonl that records when changes were made, a high-level overview of what was changed and why (preferably 2-4 sentences AT MAX).
-4. If changes are made to the webfront, always ensure that `npm run build` are executed to ensure that everything compiles/runs correctly.
+2. After all testing is complete for a set of changes, commit them to git and push to GitHub.
+3. If working on a separate branch/worktree and EVERYTHING IS FUNCTIONAL 100%, then merge onto the main branch.
+4. Keep an active changelog inside of `docs/changelog.jsonl`. The changelog should be simplistic jsonl that records when changes were made, a high-level overview of what was changed and why (preferably 2-4 sentences AT MAX).
+5. If changes are made to the webfront, always ensure that `npm run build` are executed to ensure that everything compiles/runs correctly.
 
 ## Commands
 

@@ -52,6 +52,8 @@ class DatasetDownloader:
 
         with requests.get(url, stream=True, timeout=120) as response:
             response.raise_for_status()
+            # GitHub raw serves gzip-encoded bodies; decode_content decompresses on read.
+            response.raw.decode_content = True
 
             with open(destination, "wb") as f:
                 shutil.copyfileobj(response.raw, f)
