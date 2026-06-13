@@ -1,0 +1,103 @@
+{
+  "type": "bundle",
+  "id": "bundle--test-preprocess",
+  "objects": [
+    {
+      "type": "x-mitre-tactic",
+      "id": "x-mitre-tactic--fixture-ta",
+      "name": "Fixture Tactic",
+      "x_mitre_shortname": "fixture-tactic",
+      "x_mitre_deprecated": false,
+      "revoked": false,
+      "external_references": [
+        {"source_name": "mitre-attack", "external_id": "TA9999"}
+      ]
+    },
+    {
+      "type": "attack-pattern",
+      "id": "attack-pattern--fixture-parent",
+      "name": "Fixture Parent Technique",
+      "x_mitre_is_subtechnique": false,
+      "x_mitre_deprecated": false,
+      "revoked": false,
+      "kill_chain_phases": [
+        {"kill_chain_name": "mitre-attack", "phase_name": "fixture-tactic"}
+      ],
+      "external_references": [
+        {"source_name": "mitre-attack", "external_id": "T9999"}
+      ]
+    },
+    {
+      "type": "attack-pattern",
+      "id": "attack-pattern--fixture-sub",
+      "name": "Fixture Sub-Technique",
+      "x_mitre_is_subtechnique": true,
+      "x_mitre_deprecated": false,
+      "revoked": false,
+      "kill_chain_phases": [
+        {"kill_chain_name": "mitre-attack", "phase_name": "fixture-tactic"}
+      ],
+      "external_references": [
+        {"source_name": "mitre-attack", "external_id": "T9999.001"}
+      ]
+    },
+    {
+      "type": "intrusion-set",
+      "id": "intrusion-set--fixture-group",
+      "name": "Fixture Group",
+      "x_mitre_deprecated": false,
+      "revoked": false,
+      "external_references": [
+        {"source_name": "mitre-attack", "external_id": "G9999"}
+      ]
+    },
+    {
+      "type": "malware",
+      "id": "malware--fixture-software",
+      "name": "Fixture Malware",
+      "x_mitre_deprecated": false,
+      "revoked": false,
+      "external_references": [
+        {"source_name": "mitre-attack", "external_id": "S9999"}
+      ]
+    },
+    {
+      "type": "course-of-action",
+      "id": "course-of-action--fixture-mitigation",
+      "name": "Fixture Mitigation",
+      "x_mitre_deprecated": false,
+      "revoked": false,
+      "external_references": [
+        {"source_name": "mitre-attack", "external_id": "M9999"}
+      ]
+    },
+    {
+      "type": "attack-pattern",
+      "id": "attack-pattern--fixture-deprecated",
+      "name": "Deprecated Technique",
+      "x_mitre_deprecated": true,
+      "revoked": false,
+      "external_references": [
+        {"source_name": "mitre-attack", "external_id": "T9998"}
+      ]
+    },
+    {
+      "type": "relationship",
+      "id": "relationship--fixture-uses",
+      "relationship_type": "uses",
+      "source_ref": "intrusion-set--fixture-group",
+      "target_ref": "attack-pattern--fixture-parent",
+      "x_mitre_deprecated": false,
+      "revoked": false
+    },
+    {
+      "type": "relationship",
+      "id": "relationship--fixture-subtech",
+      "relationship_type": "subtechnique-of",
+      "source_ref": "attack-pattern--fixture-sub",
+      "target_ref": "attack-pattern--fixture-parent",
+      "x_mitre_deprecated": false,
+      "revoked": false
+    }
+  ]
+}
