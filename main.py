@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 
 from utils.download import DatasetDownloader
+from utils.kg_builder import KGBuildRunner
 
 logger = logging.getLogger("ariadne.main")
 
@@ -76,12 +77,27 @@ def main() -> None:
         action="store_true",
         help="Force download even if files already exist",
     )
+    parser.add_argument(
+        "--build",
+        choices=["attack", "capec", "all"],
+        help=(
+            "Build portable graph artifacts from raw datasets "
+            "(attack: ATT&CK JSONL/Cypher/CSV bundle; capec: future work)"
+        ),
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Preview build actions without writing artifacts",
+    )
 
     args = parser.parse_args()
 
     # Determine job type
     if args.download:
         job_type = "download"
+    elif args.build:
+        job_type = f"build-{args.build}"
     else:
         # If no arguments provided, print help and exit
         parser.print_help()
@@ -100,6 +116,16 @@ def main() -> None:
 
             logger.info("Job completed successfully.")
             logger.info(f"Data directory: {downloader.data_dir.resolve()}")
+        elif args.build:
+            runner = KGBuildRunner(dry_run=args.dry_run)
+            if args.build == "attack":
+                runner.build_attack()
+            elif args.build == "capec":
+                runner.build_capec()
+            elif args.build == "all":
+                runner.build_all()
+
+            logger.info("Job completed successfully.")
     except Exception as e:
         logger.exception(f"Job {job_type} failed with error: {e}")
         sys.exit(1)

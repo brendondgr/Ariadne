@@ -12,7 +12,7 @@ This repository implements a proof-of-concept for **ReliaQuest Innovation Challe
 | :---: |-------|-------|------|------------|
 | [x] | Wk 1–2 | Setup | Environment and tooling setup | Low |
 | [x] | Wk 2–3 | Setup | Download and validate public data sources | Low |
-| [ ] | Wk 3–4 | Data layer | Build Neo4j ATT&CK fixture | Medium |
+| [ ] | Wk 3–4 | Data layer | Build portable ATT&CK graph artifacts (JSONL, schema, Neo4j CSV/Cypher) | Medium |
 | [ ] | Wk 4–5 | Data layer | Build Gremlin CAPEC fixture | Medium |
 | [ ] | Wk 5 | Data layer | Author source cards | Low |
 
@@ -60,6 +60,12 @@ Task descriptions and rationale: [`docs/goals.md`](docs/goals.md)
 uv sync
 uv run main.py --download
 uv run read-skills
+
+# Build portable graph artifacts (ATT&CK)
+uv run main.py --build attack --dry-run   # preview artifact paths
+uv run main.py --build attack             # writes data/graphs/attack/
+uv run main.py --build capec              # future work (exits with notice)
+uv run main.py --build all                # ATT&CK build; CAPEC deferred
 
 # Web demo UI
 cd web && npm install
