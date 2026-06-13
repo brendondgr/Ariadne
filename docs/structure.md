@@ -17,7 +17,7 @@ Quick map of the Ariadne repo — where things live and what to open first.
 
 ```text
 ariadne/
-├── main.py              # CLI: --download, --build, --docker
+├── main.py              # CLI: --download, --build, --docker, --dataset, --graph
 ├── pyproject.toml       # Python deps & scripts (uv)
 ├── data/                # Datasets & graph artifacts (mostly gitignored)
 ├── docker/              # Neo4j + Gremlin Compose stack
@@ -47,9 +47,10 @@ Agent tool folders (`.cursor/`, `.claude/`, `.agents/`) are **pointers only** �
 |---------|------|
 | `utils/download/` | MITRE ATT&CK & CAPEC dataset downloader |
 | `utils/kg_builder/` | STIX → canonical graph artifacts → Neo4j/Gremlin exports |
+| `utils/graph_loader/` | Runtime load, verify, and health checks for built graph artifacts |
 | `utils/infrastructure/` | Docker Compose lifecycle for local graph DBs |
 
-Tests live alongside each package (e.g. `utils/kg_builder/tests/`). Run with `uv run python -m pytest utils/kg_builder/tests/`.
+Tests live alongside each package (e.g. `utils/kg_builder/tests/`, `utils/graph_loader/tests/`). Run with `uv run python -m pytest utils/kg_builder/tests/` and `uv run python -m pytest utils/graph_loader/tests/`.
 
 ## Data (`data/`)
 
@@ -63,9 +64,10 @@ Tracked in git: `data/versions.json` (pinned ATT&CK v19.0, CAPEC v3.9). Everythi
 | `graphs/attack/canonical/` | Source-of-truth JSONL, schema, manifest |
 | `graphs/attack/exports/neo4j/` | CSV + Cypher for Neo4j import |
 | `graphs/attack/exports/gremlin/` | JSONL for Gremlin import |
+| `graphs/attack/runtime/{neo4j,gremlin}/` | Runtime load manifests after successful live loads |
 | `source_cards/` | Source registry cards for planner agents |
 
-Populate with `uv run main.py --download` then `uv run main.py --build attack`.
+Populate with `uv run main.py --download` then `uv run main.py --build attack`. Load into Docker graph databases with `uv run main.py --docker start` then `uv run main.py --dataset attack --graph neo4j|gremlin|all`.
 
 ## Infrastructure (`docker/`)
 
@@ -95,6 +97,7 @@ Run `cd web && npm run dev`; build with `npm run build` after changes.
 |--------------|--------|
 | Download MITRE data | `utils/download/downloader.py`, `main.py --download` |
 | Build graph artifacts | `utils/kg_builder/`, `main.py --build` |
+| Load live graph databases | `utils/graph_loader/`, `main.py --dataset --graph` |
 | ATT&CK STIX normalization | `utils/kg_builder/preprocess/attack.py` |
 | Neo4j / Gremlin exporters | `utils/kg_builder/exporters/` |
 | Docker graph DB stack | `utils/infrastructure/docker_manager.py`, `docker/` |

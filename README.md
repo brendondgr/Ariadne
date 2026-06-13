@@ -102,7 +102,9 @@ Agent pointer folders (`.claude/`, `.agents/`, `.cursor/`) route to canonical in
 
 ## ATT&CK Graph Artifacts
 
-`uv run main.py --build attack` converts the pinned Enterprise STIX bundle into a **canonical graph interchange layer** plus generated backend exports. Canonical JSONL, schema, and manifest files under `data/graphs/attack/canonical/` are the source of truth; Neo4j and Gremlin outputs under `data/graphs/attack/exports/` are reproducible projections. This phase **does not load Neo4j or Gremlin Server**; downstream loaders consume the generated files later.
+`uv run main.py --build attack` converts the pinned Enterprise STIX bundle into a **canonical graph interchange layer** plus generated backend exports. Canonical JSONL, schema, and manifest files under `data/graphs/attack/canonical/` are the source of truth; Neo4j and Gremlin outputs under `data/graphs/attack/exports/` are reproducible projections.
+
+**Runtime loading** (`uv run main.py --dataset attack --graph neo4j|gremlin|all`) reads only from built canonical artifacts and exports. It does not download raw data or rebuild the graph. Semantic validation runs before any database write. After a successful load, runtime manifests are written under `data/graphs/attack/runtime/`.
 
 | Output | Description |
 |--------|-------------|
@@ -118,6 +120,30 @@ Agent pointer folders (`.claude/`, `.agents/`, `.cursor/`) route to canonical in
 | `data/graphs/attack/exports/gremlin/nodes.jsonl` | Gremlin-ready vertex records (nested properties JSON-encoded) |
 | `data/graphs/attack/exports/gremlin/relationships.jsonl` | Gremlin-ready edge records |
 | `data/source_cards/attack.json` | Source registry card for planner and specialist agent routing |
+| `data/graphs/attack/runtime/neo4j/load-manifest.json` | Runtime Neo4j load record (written after successful load + verification) |
+| `data/graphs/attack/runtime/gremlin/load-manifest.json` | Runtime Gremlin load record (written after successful load + verification) |
+
+## Runtime Graph Loading
+
+Operator sequence:
+
+```bash
+uv run main.py --download
+uv run main.py --build attack
+uv run main.py --docker start
+uv run main.py --dataset attack --graph neo4j    # or gremlin | all
+uv run main.py --graph health                    # infrastructure reachability only
+uv run main.py --dataset attack --graph verify   # no-load artifact + live count checks
+```
+
+| Command | Role |
+|---------|------|
+| `--build attack` | Generate canonical truth + backend exports (no database writes) |
+| `--dataset attack --graph neo4j\|gremlin\|all` | Load built artifacts into live graph databases with idempotent upserts |
+| `--graph health` | TCP reachability check for Neo4j Bolt and Gremlin WebSocket |
+| `--dataset attack --graph verify` | Validate manifest hashes, semantic rules, runtime manifests, and live counts without loading |
+
+Default endpoints: Neo4j `bolt://localhost:5456` (user `neo4j` / password `password`), Gremlin `ws://localhost:6455/gremlin`. Override with `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD`, and `GREMLIN_URI`.
 
 Generated artifacts under `data/` are gitignored except `data/versions.json`. Rebuild with the same pinned input to reproduce identical counts and file hashes.
 
