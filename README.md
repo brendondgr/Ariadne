@@ -67,6 +67,11 @@ uv run main.py --build attack             # writes canonical truth + backend exp
 uv run main.py --build capec              # future work (exits with notice)
 uv run main.py --build all                # ATT&CK build; CAPEC deferred
 
+# Graph database infrastructure (Docker)
+uv run main.py --docker start             # pull, start Neo4j + Gremlin, wait until ready
+uv run main.py --docker status            # show container status
+uv run main.py --docker stop              # stop containers
+
 # Run KG builder tests
 uv run python -m pytest utils/kg_builder/tests/
 
@@ -79,6 +84,7 @@ cd web && npm run build   # required after webfront changes
 ## Repository Layout
 
 ```text
+docker/   Neo4j and Gremlin Compose stack (pinned image versions)
 docs/     purpose, goals, skills, changelog, plans
 utils/    Python utilities (by domain)
 web/      Analyst-facing demo UI (React/Vite)
@@ -106,3 +112,17 @@ Agent pointer folders (`.claude/`, `.agents/`, `.cursor/`) route to canonical in
 | `data/source_cards/attack.json` | Source registry card for planner and specialist agent routing |
 
 Generated artifacts under `data/` are gitignored except `data/versions.json`. Rebuild with the same pinned input to reproduce identical counts and file hashes.
+
+## Graph Database Infrastructure
+
+`uv run main.py --docker start` manages the local Neo4j and Gremlin Server stack via Docker Compose. The CLI pulls pinned images, starts containers in the background, waits until both endpoints respond, prints connection details, and exits.
+
+| Service | Host endpoint | Default credentials |
+|---------|---------------|---------------------|
+| Neo4j Browser | http://localhost:5455 | `neo4j` / `password` |
+| Neo4j Bolt | bolt://localhost:5456 | `neo4j` / `password` |
+| Gremlin Server | http://localhost:6455 | n/a |
+
+Pinned image versions live in `docker/.env` (`NEO4J_VERSION=5.26`, `GREMLIN_VERSION=3.8.0`). Override at runtime with `--neo4j-version` and `--gremlin-version` on `--docker start`.
+
+Neo4j data persists under `docker/neo4j/data/`. Use `uv run main.py --docker stop` to tear down containers without deleting volumes.
