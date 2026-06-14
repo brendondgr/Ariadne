@@ -60,14 +60,19 @@ Tracked in git: `data/versions.json` (pinned ATT&CK v19.0, CAPEC v3.9). Everythi
 |------|----------|
 | `raw/attack/v{version}/` | Downloaded Enterprise STIX JSON |
 | `raw/capec/v{version}/` | Downloaded CAPEC XML |
-| `processed/pairs/` | Preprocessing checkpoints |
-| `graphs/attack/canonical/` | Source-of-truth JSONL, schema, manifest |
+| `processed/pairs/` | Preprocessing checkpoints (`enterprise-attack.json`, `capec.json`) |
+| `processed/discovery/` | CAPEC XML discovery inventories |
+| `graphs/attack/canonical/` | ATT&CK source-of-truth JSONL, schema, manifest |
+| `graphs/capec/canonical/` | CAPEC source-of-truth JSONL, schema, manifest |
 | `graphs/attack/exports/neo4j/` | CSV + Cypher for Neo4j import |
 | `graphs/attack/exports/gremlin/` | JSONL for Gremlin import |
+| `graphs/capec/exports/gremlin/` | Primary CAPEC Gremlin JSONL export |
+| `graphs/capec/exports/neo4j/` | Optional CAPEC Neo4j export |
 | `graphs/attack/runtime/{neo4j,gremlin}/` | Runtime load manifests after successful live loads |
-| `source_cards/` | Source registry cards for planner agents |
+| `graphs/capec/runtime/gremlin/` | CAPEC runtime load manifest after successful Gremlin load |
+| `source_cards/` | Source registry cards for planner agents (`attack.json`, `capec.json`) |
 
-Populate with `uv run main.py --download` then `uv run main.py --build attack`. Load into Docker graph databases with `uv run main.py --docker start` then `uv run main.py --dataset attack --graph neo4j|gremlin|all`.
+Populate with `uv run main.py --download` then `uv run main.py --build attack` and/or `uv run main.py --build capec`. Load into Docker graph databases with `uv run main.py --docker start` then `uv run main.py --dataset attack --graph neo4j|gremlin|all` or `uv run main.py --dataset capec --graph gremlin`.
 
 ## Infrastructure (`docker/`)
 
@@ -99,6 +104,7 @@ Run `cd web && npm run dev`; build with `npm run build` after changes.
 | Build graph artifacts | `utils/kg_builder/`, `main.py --build` |
 | Load live graph databases | `utils/graph_loader/`, `main.py --dataset --graph` |
 | ATT&CK STIX normalization | `utils/kg_builder/preprocess/attack.py` |
+| CAPEC XML normalization | `utils/kg_builder/preprocess/capec.py`, `utils/kg_builder/discovery/` |
 | Neo4j / Gremlin exporters | `utils/kg_builder/exporters/` |
 | Docker graph DB stack | `utils/infrastructure/docker_manager.py`, `docker/` |
 | UI design rules | `docs/skills/woven-dusk-design/SKILL.md` |
@@ -108,4 +114,4 @@ Run `cd web && npm run dev`; build with `npm run build` after changes.
 
 ## Not Yet in Repo
 
-Planned per roadmap: federated planner, Cypher/Gremlin specialist agents, synthesis agent, CAPEC graph build and loader, full source-card authoring (safety limits, live endpoints), and evaluation harness. ATT&CK runtime loading (`utils/graph_loader/`) is implemented; CAPEC dataset loading fails until CAPEC canonical artifacts exist.
+Planned per roadmap: federated planner, Cypher/Gremlin specialist agents, synthesis agent, full source-card authoring (safety limits, live endpoints), and evaluation harness. ATT&CK and CAPEC canonical builds and runtime loading (`utils/kg_builder/`, `utils/graph_loader/`) are implemented; Gremlin is the primary CAPEC runtime backend.

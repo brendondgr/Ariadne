@@ -14,7 +14,7 @@ This repository implements a proof-of-concept for **ReliaQuest Innovation Challe
 | [x] | Wk 2–3 | Setup | Download and validate public data sources | Low |
 | [x] | Wk 3–4 | Data layer | Build portable ATT&CK graph artifacts (JSONL, schema, Neo4j CSV/Cypher) | Medium |
 | [x] | Wk 4 | Data layer | Runtime ATT&CK graph loader (Neo4j/Gremlin load, verify, health) | Medium |
-| [ ] | Wk 4–5 | Data layer | Build Gremlin CAPEC fixture | Medium |
+| [x] | Wk 4–5 | Data layer | Build Gremlin CAPEC fixture | Medium |
 | [ ] | Wk 5 | Data layer | Author source cards (ATT&CK card auto-generated; endpoints & safety limits pending) | Low |
 
 **ITS check-in** — Both graph fixtures live, source cards complete, environment reproducible.
@@ -64,11 +64,11 @@ uv sync
 uv run main.py --download
 uv run read-skills
 
-# Build portable graph artifacts (ATT&CK)
-uv run main.py --build attack --dry-run   # preview canonical and export paths
-uv run main.py --build attack             # writes canonical truth + backend exports
-uv run main.py --build capec              # future work (exits with notice)
-uv run main.py --build all                # ATT&CK build; CAPEC deferred
+# Build portable graph artifacts (ATT&CK and CAPEC)
+uv run main.py --build attack --dry-run   # preview ATT&CK canonical and export paths
+uv run main.py --build attack             # ATT&CK canonical truth + backend exports
+uv run main.py --build capec              # CAPEC canonical truth + backend exports
+uv run main.py --build all                # build ATT&CK and CAPEC artifacts
 
 # Graph database infrastructure (Docker)
 uv run main.py --docker start             # pull, start Neo4j + Gremlin, wait until ready
@@ -81,6 +81,8 @@ uv run main.py --dataset attack --graph verify   # no-load dataset/runtime verif
 uv run main.py --dataset attack --graph neo4j    # load ATT&CK into Neo4j
 uv run main.py --dataset attack --graph gremlin  # load ATT&CK into Gremlin
 uv run main.py --dataset attack --graph all      # load ATT&CK into both backends
+uv run main.py --dataset capec --graph gremlin   # load CAPEC into Gremlin (primary CAPEC backend)
+uv run main.py --dataset capec --graph verify    # no-load CAPEC artifact/runtime verification
 
 # Run KG builder tests
 uv run python -m pytest utils/kg_builder/tests/
@@ -126,6 +128,24 @@ Agent pointer folders (`.claude/`, `.agents/`, `.cursor/`) route to canonical in
 | `data/graphs/attack/runtime/neo4j/load-manifest.json` | Runtime Neo4j load record (written after successful load + verification) |
 | `data/graphs/attack/runtime/gremlin/load-manifest.json` | Runtime Gremlin load record (written after successful load + verification) |
 
+## CAPEC Graph Artifacts
+
+`uv run main.py --build capec` parses the pinned CAPEC v3.9 XML catalog into the same canonical/export/runtime layout as ATT&CK. The full catalog is built for source completeness; CAPEC-to-ATT&CK correlation uses normalized taxonomy mappings (`MAPS_TO` edges to `TaxonomyEntry` nodes with ATT&CK entry IDs).
+
+| Output | Description |
+|--------|-------------|
+| `data/processed/discovery/capec-inventory.json` | Namespace-aware XML path inventory for schema-drift tolerance |
+| `data/processed/pairs/capec.json` | Normalized intermediate entity checkpoint |
+| `data/graphs/capec/canonical/nodes.jsonl` | Canonical CAPEC node records (`AttackPattern`, `Category`, `ExecutionStep`, etc.) |
+| `data/graphs/capec/canonical/relationships.jsonl` | Canonical CAPEC edges (`ChildOf`, `MAPS_TO`, `HAS_EXECUTION_STEP`, …) |
+| `data/graphs/capec/canonical/schema.json` | CAPEC node-label and relationship-type vocabulary |
+| `data/graphs/capec/canonical/manifest.json` | Counts, metadata, export provenance, and SHA-256 hashes |
+| `data/graphs/capec/exports/gremlin/nodes.jsonl` | Gremlin-ready vertex records (primary CAPEC runtime projection) |
+| `data/graphs/capec/exports/gremlin/relationships.jsonl` | Gremlin-ready edge records |
+| `data/graphs/capec/exports/neo4j/` | Optional Neo4j CSV/Cypher projection from the same canonical truth |
+| `data/source_cards/capec.json` | Source registry card (Gremlin runtime backend) |
+| `data/graphs/capec/runtime/gremlin/load-manifest.json` | Runtime Gremlin load record after successful load + verification |
+
 ## Runtime Graph Loading
 
 Operator sequence:
@@ -133,16 +153,20 @@ Operator sequence:
 ```bash
 uv run main.py --download
 uv run main.py --build attack
+uv run main.py --build capec
 uv run main.py --docker start
 uv run main.py --dataset attack --graph neo4j    # or gremlin | all
+uv run main.py --dataset capec --graph gremlin
 uv run main.py --graph health                    # infrastructure reachability only
 uv run main.py --dataset attack --graph verify   # no-load artifact + live count checks
+uv run main.py --dataset capec --graph verify
 ```
 
 | Command | Role |
 |---------|------|
-| `--build attack` | Generate canonical truth + backend exports (no database writes) |
-| `--dataset attack --graph neo4j\|gremlin\|all` | Load built artifacts into live graph databases with idempotent upserts |
+| `--build attack\|capec\|all` | Generate canonical truth + backend exports (no database writes) |
+| `--dataset attack --graph neo4j\|gremlin\|all` | Load ATT&CK built artifacts into live graph databases |
+| `--dataset capec --graph gremlin` | Load CAPEC built artifacts into Gremlin (primary CAPEC backend) |
 | `--graph health` | TCP reachability check for Neo4j Bolt and Gremlin WebSocket |
 | `--dataset attack --graph verify` | Validate manifest hashes, semantic rules, runtime manifests, and live counts without loading |
 
