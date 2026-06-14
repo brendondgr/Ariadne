@@ -23,6 +23,8 @@ CAPEC_RELATIONSHIP_NATURES: frozenset[str] = frozenset(
         "ParentOf",
         "CanPrecede",
         "CanFollow",
+        "PeerOf",
+        "CanAlsoBe",
     }
 )
 
@@ -61,6 +63,8 @@ CAPEC_ALLOWED_EDGE_PATTERNS: dict[str, frozenset[tuple[str, str]]] = {
     "ParentOf": frozenset({("AttackPattern", "AttackPattern")}),
     "CanPrecede": frozenset({("AttackPattern", "AttackPattern")}),
     "CanFollow": frozenset({("AttackPattern", "AttackPattern")}),
+    "PeerOf": frozenset({("AttackPattern", "AttackPattern")}),
+    "CanAlsoBe": frozenset({("AttackPattern", "AttackPattern")}),
     "EXPLOITS_WEAKNESS": frozenset({("AttackPattern", "Weakness")}),
     "MAPS_TO": frozenset({("AttackPattern", "TaxonomyEntry")}),
     "MEMBER_OF": frozenset({("AttackPattern", "Category")}),

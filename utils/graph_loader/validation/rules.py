@@ -45,6 +45,8 @@ CAPEC_EDGE_PATTERNS: frozenset[EdgePattern] = frozenset(
         EdgePattern("AttackPattern", "ParentOf", "AttackPattern"),
         EdgePattern("AttackPattern", "CanPrecede", "AttackPattern"),
         EdgePattern("AttackPattern", "CanFollow", "AttackPattern"),
+        EdgePattern("AttackPattern", "PeerOf", "AttackPattern"),
+        EdgePattern("AttackPattern", "CanAlsoBe", "AttackPattern"),
         EdgePattern("AttackPattern", "EXPLOITS_WEAKNESS", "Weakness"),
         EdgePattern("AttackPattern", "MAPS_TO", "TaxonomyEntry"),
         EdgePattern("AttackPattern", "MEMBER_OF", "Category"),

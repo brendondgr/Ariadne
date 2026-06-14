@@ -36,14 +36,19 @@ def test_cli_build_attack_dry_run() -> None:
     assert "canonical" in result.stdout
 
 
-def test_cli_build_capec_future_work() -> None:
+@pytest.mark.skipif(
+    not Path("data/raw/capec/v3.9/capec_latest.xml").exists(),
+    reason="Real CAPEC dataset not downloaded",
+)
+def test_cli_build_capec() -> None:
     result = subprocess.run(
         [sys.executable, "main.py", "--build", "capec"],
         capture_output=True,
         text=True,
     )
-    assert result.returncode == 2
-    assert "not yet implemented" in result.stdout
+    assert result.returncode == 0
+    assert Path("data/graphs/capec/canonical/manifest.json").exists()
+    assert Path("data/source_cards/capec.json").exists()
 
 
 def test_build_paths_separate_canonical_and_exports(tmp_path: Path) -> None:

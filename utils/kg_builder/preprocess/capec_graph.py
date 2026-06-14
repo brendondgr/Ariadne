@@ -45,6 +45,22 @@ def materialize_capec_graph(checkpoint: CapecPairsCheckpoint) -> NormalizedGraph
             )
         )
 
+    def ensure_external_reference_node(reference_id: str) -> str:
+        node_id = external_reference_node_id(reference_id)
+        if node_id not in node_index:
+            add_node(
+                NodeRecord(
+                    id=node_id,
+                    label="ExternalReference",
+                    labels=capec_canonical_labels("ExternalReference"),
+                    properties={
+                        "id": reference_id,
+                        "resolved_from_reference": True,
+                    },
+                )
+            )
+        return node_id
+
     for external_reference in checkpoint.external_references:
         node_id = external_reference_node_id(external_reference["id"])
         add_node(
@@ -81,6 +97,10 @@ def materialize_capec_graph(checkpoint: CapecPairsCheckpoint) -> NormalizedGraph
             target_ap = related.get("capec_id")
             if target_ap:
                 ensure_attack_pattern_node(str(target_ap))
+        for reference in attack_pattern.get("references", []):
+            ref_id = reference.get("external_reference_id")
+            if ref_id:
+                ensure_external_reference_node(ref_id)
 
     for category in checkpoint.categories:
         node_id = category_node_id(category["id"])
@@ -255,7 +275,7 @@ def materialize_capec_graph(checkpoint: CapecPairsCheckpoint) -> NormalizedGraph
             ref_id = reference.get("external_reference_id")
             if not ref_id:
                 continue
-            ref_node_id = external_reference_node_id(ref_id)
+            ref_node_id = ensure_external_reference_node(ref_id)
             add_edge("HAS_REFERENCE", ap_node_id, ref_node_id)
 
     for view in checkpoint.views:

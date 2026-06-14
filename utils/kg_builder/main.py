@@ -16,8 +16,8 @@ from .exporters.jsonl import export_canonical_artifacts
 from .exporters.neo4j_csv import export_neo4j_csv_artifacts
 from .io import ensure_dir, file_sha256, write_json
 from .preprocess.attack import AttackPreprocessor, load_attack_bundle
-from .preprocess.capec import CAPEC_NOT_IMPLEMENTED_MSG
-from .registry import write_attack_source_card
+from .preprocess.capec import build_capec_graph
+from .registry import write_attack_source_card, write_capec_source_card
 from .validate import (
     validate_canonical_artifacts,
     validate_cross_backend_exports,
@@ -34,6 +34,8 @@ def _build_manifest(
     canonical_paths: dict[str, str],
     export_paths: dict[str, dict[str, str]],
     config: BuildConfig,
+    *,
+    dataset: str = "attack",
 ) -> dict[str, Any]:
     all_artifacts = dict(canonical_paths)
     for backend, paths in export_paths.items():
@@ -41,14 +43,10 @@ def _build_manifest(
             all_artifacts[f"{backend}_{name}"] = path
 
     hashes = {name: file_sha256(Path(path)) for name, path in all_artifacts.items()}
-    return {
+    manifest: dict[str, Any] = {
         "build_timestamp": datetime.now(timezone.utc).isoformat(),
-        "attack_version": config.attack_version,
+        "dataset": dataset,
         "schema_version": config.schema_version,
-        "settings": {
-            "filter_deprecated": config.filter_deprecated,
-            "filter_revoked": config.filter_revoked,
-        },
         "metadata": metadata,
         "counts": graph_counts,
         "canonical": canonical_paths,
@@ -59,6 +57,16 @@ def _build_manifest(
         },
         "hashes": hashes,
     }
+    if dataset == "attack":
+        manifest["attack_version"] = config.attack_version
+        manifest["settings"] = {
+            "filter_deprecated": config.filter_deprecated,
+            "filter_revoked": config.filter_revoked,
+        }
+    else:
+        manifest["capec_version"] = config.capec_version
+        manifest["settings"] = {"build_scope": metadata.get("build_scope", "full_catalog")}
+    return manifest
 
 
 class KGBuildRunner:
@@ -135,6 +143,7 @@ class KGBuildRunner:
             canonical_paths=canonical_paths,
             export_paths=export_paths,
             config=self.config,
+            dataset="attack",
         )
         manifest_path = canonical_dir / "manifest.json"
         write_json(manifest_path, manifest)
@@ -152,11 +161,91 @@ class KGBuildRunner:
         )
 
     def build_capec(self) -> None:
-        """CAPEC graph artifact build — reserved for a future implementation phase."""
-        logger.info(CAPEC_NOT_IMPLEMENTED_MSG)
-        sys.exit(2)
+        """Build canonical CAPEC graph artifacts and backend exports."""
+        paths = self.config.paths()
+        if self.dry_run:
+            logger.info(
+                "Dry run: would build CAPEC canonical graph artifacts "
+                f"from {paths.capec_raw_file} into {paths.capec_graph_canonical_dir} "
+                f"with exports under {paths.capec_graph_output_dir / 'exports'}"
+            )
+            return
+
+        graph = build_capec_graph(self.config)
+        validate_graph(graph)
+
+        canonical_dir = paths.capec_graph_canonical_dir
+        ensure_dir(canonical_dir)
+
+        canonical_file_paths = export_canonical_artifacts(
+            graph,
+            canonical_dir,
+            schema_version=self.config.schema_version,
+        )
+        validate_jsonl_artifacts(
+            canonical_file_paths["nodes"],
+            canonical_file_paths["relationships"],
+        )
+
+        node_records = [n.to_dict() for n in graph.nodes]
+        edge_records = [r.to_dict() for r in graph.relationships]
+
+        neo4j_dir = paths.capec_graph_neo4j_export_dir
+        cypher_paths = export_cypher_artifacts(neo4j_dir, dataset="capec")
+        csv_paths = export_neo4j_csv_artifacts(
+            node_records,
+            edge_records,
+            neo4j_dir,
+            dataset="capec",
+        )
+
+        gremlin_dir = paths.capec_graph_gremlin_export_dir
+        gremlin_paths = export_gremlin_artifacts(node_records, edge_records, gremlin_dir)
+
+        canonical_paths = {
+            "processed_pairs": str(paths.capec_processed_pairs_file),
+            "discovery_report": str(paths.capec_discovery_report_path("inventory")),
+            "nodes_jsonl": str(canonical_file_paths["nodes"]),
+            "relationships_jsonl": str(canonical_file_paths["relationships"]),
+            "schema_json": str(canonical_file_paths["schema"]),
+        }
+        export_paths = {
+            "neo4j": {
+                "nodes_csv": str(csv_paths["nodes"]),
+                "relationships_csv": str(csv_paths["relationships"]),
+                "schema_cypher": str(cypher_paths["schema"]),
+                "constraints_cypher": str(cypher_paths["constraints"]),
+            },
+            "gremlin": {
+                "nodes_jsonl": str(gremlin_paths["nodes"]),
+                "relationships_jsonl": str(gremlin_paths["relationships"]),
+            },
+        }
+
+        manifest = _build_manifest(
+            graph_counts=graph.counts,
+            metadata=graph.metadata.to_dict(),
+            canonical_paths=canonical_paths,
+            export_paths=export_paths,
+            config=self.config,
+            dataset="capec",
+        )
+        manifest_path = canonical_dir / "manifest.json"
+        write_json(manifest_path, manifest)
+
+        validate_canonical_artifacts(canonical_dir)
+        validate_cross_backend_exports(canonical_dir, paths.capec_graph_output_dir / "exports")
+        write_capec_source_card(self.config, manifest_path)
+
+        logger.info(
+            "Built CAPEC artifacts: nodes=%d relationships=%d -> canonical=%s exports=%s",
+            graph.counts["nodes"],
+            graph.counts["relationships"],
+            canonical_dir,
+            paths.capec_graph_output_dir / "exports",
+        )
 
     def build_all(self) -> None:
-        """Build all available graph artifacts; CAPEC remains future work."""
+        """Build ATT&CK and CAPEC canonical graph artifacts."""
         self.build_attack()
-        logger.info("Skipping CAPEC build (future work).")
+        self.build_capec()
