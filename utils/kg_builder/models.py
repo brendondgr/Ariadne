@@ -83,10 +83,28 @@ class GraphMetadata:
 
 
 @dataclass
+class CapecGraphMetadata:
+    """Build metadata for CAPEC graph artifacts."""
+
+    source_path: str
+    dataset: str = "capec"
+    source_version: str = ""
+    source_date: str = ""
+    namespace: str = ""
+    build_scope: str = ""
+    object_count: int = 0
+    quarantined_count: int = 0
+    skipped_count: int = 0
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass
 class NormalizedGraph:
     """Normalized graph model — database-neutral pipeline boundary."""
 
-    metadata: GraphMetadata
+    metadata: GraphMetadata | CapecGraphMetadata
     nodes: list[NodeRecord]
     relationships: list[EdgeRecord]
 
