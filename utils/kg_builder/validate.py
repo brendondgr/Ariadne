@@ -7,17 +7,24 @@ import json
 from pathlib import Path
 from typing import Any
 
+from .dataset import dataset_for_graph
 from .io import load_canonical_records, read_jsonl
 from .models import NormalizedGraph
 from .schema.attack import ATTACK_NODE_LABELS, ATTACK_RELATIONSHIP_TYPES
+from .schema.capec import (
+    CAPEC_ALLOWED_EDGE_PATTERNS,
+    CAPEC_NODE_LABELS,
+    CAPEC_RELATIONSHIP_TYPES,
+    CAPEC_REQUIRED_NODE_PROPERTIES,
+)
 
 
 class ArtifactValidationError(Exception):
     """Raised when graph artifacts fail validation."""
 
 
-def validate_graph(graph: NormalizedGraph) -> None:
-    """Validate normalized graph internal consistency."""
+def validate_attack_graph(graph: NormalizedGraph) -> None:
+    """Validate ATT&CK normalized graph internal consistency."""
     node_ids = {n.id for n in graph.nodes}
     if len(node_ids) != len(graph.nodes):
         raise ArtifactValidationError("Duplicate node ids detected.")
@@ -41,6 +48,74 @@ def validate_graph(graph: NormalizedGraph) -> None:
             raise ArtifactValidationError(
                 f"Relationship {rel.id} missing target node: {rel.target_id}"
             )
+
+
+def validate_capec_graph(graph: NormalizedGraph) -> list[dict[str, Any]]:
+    """Validate CAPEC normalized graph internal consistency."""
+    quarantined: list[dict[str, Any]] = []
+    node_ids = {n.id for n in graph.nodes}
+    if len(node_ids) != len(graph.nodes):
+        raise ArtifactValidationError("Duplicate node ids detected.")
+
+    labels_by_id = {node.id: node.label for node in graph.nodes}
+    for node in graph.nodes:
+        if node.label not in CAPEC_NODE_LABELS:
+            raise ArtifactValidationError(f"Unknown CAPEC node label: {node.label}")
+        if not node.labels or node.labels[0] != node.label:
+            raise ArtifactValidationError(
+                f"Node {node.id} labels[0] must match primary label {node.label!r}"
+            )
+        required = CAPEC_REQUIRED_NODE_PROPERTIES.get(node.label, ("id",))
+        for key in required:
+            if key == "id":
+                continue
+            if key == "name" and not node.name:
+                if node.properties.get("resolved_from_reference"):
+                    continue
+                raise ArtifactValidationError(f"CAPEC node {node.id} missing required name")
+            if key not in ("id", "name") and not (node.properties.get(key) or node.name):
+                raise ArtifactValidationError(
+                    f"CAPEC node {node.id} missing required property {key!r}"
+                )
+
+    for rel in graph.relationships:
+        if rel.type not in CAPEC_RELATIONSHIP_TYPES:
+            raise ArtifactValidationError(f"Unknown CAPEC relationship type: {rel.type}")
+        if rel.source_id not in node_ids:
+            raise ArtifactValidationError(
+                f"Relationship {rel.id} missing source node: {rel.source_id}"
+            )
+        if rel.target_id not in node_ids:
+            raise ArtifactValidationError(
+                f"Relationship {rel.id} missing target node: {rel.target_id}"
+            )
+        allowed_patterns = CAPEC_ALLOWED_EDGE_PATTERNS.get(rel.type, frozenset())
+        pattern = (labels_by_id[rel.source_id], labels_by_id[rel.target_id])
+        if allowed_patterns and pattern not in {(src, tgt) for src, tgt in allowed_patterns}:
+            quarantined.append(
+                {
+                    "relationship_id": rel.id,
+                    "type": rel.type,
+                    "source_label": labels_by_id[rel.source_id],
+                    "target_label": labels_by_id[rel.target_id],
+                    "reason": "illegal_source_target_label_combination",
+                }
+            )
+
+    if quarantined:
+        raise ArtifactValidationError(
+            f"CAPEC graph contains {len(quarantined)} quarantined relationship pattern violations."
+        )
+    return quarantined
+
+
+def validate_graph(graph: NormalizedGraph) -> None:
+    """Validate normalized graph internal consistency for its dataset."""
+    dataset = dataset_for_graph(graph)
+    if dataset == "capec":
+        validate_capec_graph(graph)
+        return
+    validate_attack_graph(graph)
 
 
 def validate_jsonl_artifacts(nodes_path: Path, relationships_path: Path) -> None:
@@ -74,12 +149,13 @@ def validate_canonical_artifacts(canonical_dir: Path) -> dict[str, Any]:
     with open(schema_path, encoding="utf-8") as f:
         schema = json.load(f)
 
+    dataset = schema.get("dataset", "attack")
     for node in nodes:
         if node["label"] not in schema["node_labels"]:
             raise ArtifactValidationError(f"Canonical node label not in schema: {node['label']}")
         if "labels" not in node or not node["labels"]:
             raise ArtifactValidationError(f"Canonical node missing labels: {node['id']}")
-        if "external_references" in node.get("properties", {}):
+        if dataset == "attack" and "external_references" in node.get("properties", {}):
             refs = node["properties"]["external_references"]
             if not isinstance(refs, list):
                 raise ArtifactValidationError(

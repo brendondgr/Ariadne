@@ -170,7 +170,7 @@ def materialize_capec_graph(checkpoint: CapecPairsCheckpoint) -> NormalizedGraph
                     label="ExecutionStep",
                     labels=capec_canonical_labels("ExecutionStep"),
                     name=f"Step {step_number}",
-                    properties={key: value for key, value in step.items() if key != "step"},
+                    properties={"step": step_number, **{key: value for key, value in step.items() if key != "step"}},
                 )
             )
             add_edge("HAS_EXECUTION_STEP", ap_node_id, step_id, step=step_number)

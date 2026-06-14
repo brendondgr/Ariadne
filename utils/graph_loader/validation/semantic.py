@@ -8,6 +8,7 @@ from typing import Any
 
 from utils.kg_builder.io import read_jsonl
 from utils.kg_builder.schema.attack import ATTACK_NODE_LABELS, ATTACK_RELATIONSHIP_TYPES
+from utils.kg_builder.schema.capec import CAPEC_NODE_LABELS, CAPEC_RELATIONSHIP_TYPES
 
 from ..models import SemanticValidationResult
 from .references import (
@@ -18,6 +19,7 @@ from .references import (
 )
 from .rules import (
     ATTACK_EDGE_PATTERNS,
+    CAPEC_EDGE_PATTERNS,
     LABELS_REQUIRING_ATTACK_ID,
     REQUIRED_NODE_PROPERTIES,
 )
@@ -33,11 +35,18 @@ def validate_semantic_graph(
     *,
     schema: dict[str, Any] | None = None,
 ) -> SemanticValidationResult:
-    """Validate domain semantics for an ATT&CK canonical graph."""
+    """Validate domain semantics for a canonical graph dataset."""
     errors: list[str] = []
     schema = schema or {}
-    allowed_labels = set(schema.get("node_labels", ATTACK_NODE_LABELS))
-    allowed_types = set(schema.get("relationship_types", ATTACK_RELATIONSHIP_TYPES))
+    dataset = schema.get("dataset", "attack")
+    if dataset == "capec":
+        allowed_labels = set(schema.get("node_labels", CAPEC_NODE_LABELS))
+        allowed_types = set(schema.get("relationship_types", CAPEC_RELATIONSHIP_TYPES))
+        edge_patterns = CAPEC_EDGE_PATTERNS
+    else:
+        allowed_labels = set(schema.get("node_labels", ATTACK_NODE_LABELS))
+        allowed_types = set(schema.get("relationship_types", ATTACK_RELATIONSHIP_TYPES))
+        edge_patterns = ATTACK_EDGE_PATTERNS
 
     seen_ids: set[str] = set()
     semantic_keys: set[tuple[str, str, str, str]] = set()
@@ -63,17 +72,18 @@ def validate_semantic_graph(
             if required not in node and required not in props:
                 errors.append(f"Node {node_id} missing required property {required!r}")
 
-        if label in LABELS_REQUIRING_ATTACK_ID:
+        if label in LABELS_REQUIRING_ATTACK_ID and dataset == "attack":
             attack_id = props.get("attack_id")
             if not attack_id:
                 errors.append(f"Node {node_id} ({label}) missing attack_id property.")
 
-        if "stix_type" in props and not props.get("stix_type"):
+        if dataset == "attack" and "stix_type" in props and not props.get("stix_type"):
             errors.append(f"Node {node_id} has empty stix_type.")
 
     errors.extend(validate_relationship_endpoints(nodes, edges))
-    errors.extend(validate_tactic_technique_links(nodes, edges))
-    errors.extend(validate_subtechnique_links(nodes, edges))
+    if dataset == "attack":
+        errors.extend(validate_tactic_technique_links(nodes, edges))
+        errors.extend(validate_subtechnique_links(nodes, edges))
 
     for edge in edges:
         rel_type = edge.get("type")
@@ -82,7 +92,7 @@ def validate_semantic_graph(
 
         source_label = labels_by_id.get(edge["source_id"], "")
         target_label = labels_by_id.get(edge["target_id"], "")
-        if not any(pattern_matches(edge, labels_by_id, pattern) for pattern in ATTACK_EDGE_PATTERNS):
+        if not any(pattern_matches(edge, labels_by_id, pattern) for pattern in edge_patterns):
             errors.append(
                 f"Illegal edge pattern {source_label} -[{rel_type}]-> {target_label} "
                 f"on edge {edge['id']}"

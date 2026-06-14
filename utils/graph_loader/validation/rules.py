@@ -38,3 +38,25 @@ REQUIRED_NODE_PROPERTIES = ("id",)
 LABELS_REQUIRING_ATTACK_ID = frozenset(
     {"Technique", "SubTechnique", "Mitigation", "Tactic", "Group", "Software", "Campaign"}
 )
+
+CAPEC_EDGE_PATTERNS: frozenset[EdgePattern] = frozenset(
+    {
+        EdgePattern("AttackPattern", "ChildOf", "AttackPattern"),
+        EdgePattern("AttackPattern", "ParentOf", "AttackPattern"),
+        EdgePattern("AttackPattern", "CanPrecede", "AttackPattern"),
+        EdgePattern("AttackPattern", "CanFollow", "AttackPattern"),
+        EdgePattern("AttackPattern", "EXPLOITS_WEAKNESS", "Weakness"),
+        EdgePattern("AttackPattern", "MAPS_TO", "TaxonomyEntry"),
+        EdgePattern("AttackPattern", "MEMBER_OF", "Category"),
+        EdgePattern("AttackPattern", "IN_VIEW", "View"),
+        EdgePattern("Category", "IN_VIEW", "View"),
+        EdgePattern("AttackPattern", "HAS_EXECUTION_STEP", "ExecutionStep"),
+        EdgePattern("ExecutionStep", "NEXT_STEP", "ExecutionStep"),
+        EdgePattern("AttackPattern", "REQUIRES_SKILL", "Skill"),
+        EdgePattern("AttackPattern", "HAS_CONSEQUENCE", "Consequence"),
+        EdgePattern("AttackPattern", "HAS_MITIGATION", "Mitigation"),
+        EdgePattern("AttackPattern", "HAS_REFERENCE", "ExternalReference"),
+        EdgePattern("Category", "HAS_REFERENCE", "ExternalReference"),
+        EdgePattern("View", "HAS_REFERENCE", "ExternalReference"),
+    }
+)
