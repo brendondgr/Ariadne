@@ -34,15 +34,30 @@ def test_cli_missing_dataset_for_load() -> None:
     assert "--dataset is required" in result.stderr or "--dataset is required" in result.stdout
 
 
-def test_cli_capec_not_built() -> None:
-    result = subprocess.run(
-        [sys.executable, "main.py", "--dataset", "capec", "--graph", "neo4j"],
-        capture_output=True,
-        text=True,
+@pytest.mark.skipif(
+    not Path("data/graphs/capec/canonical/manifest.json").exists(),
+    reason="CAPEC artifacts not built",
+)
+def test_cli_capec_gremlin_load_with_memory_backend(monkeypatch: pytest.MonkeyPatch) -> None:
+    from utils.graph_loader.stores.memory import MemoryGraphStore
+
+    monkeypatch.setattr(
+        "utils.graph_loader.loader.run_preflight",
+        lambda *_a, **_k: None,
     )
-    assert result.returncode == 1
-    combined = result.stdout + result.stderr
-    assert "CAPEC canonical artifacts are not built yet" in combined
+    monkeypatch.setattr(
+        "utils.graph_loader.loader.create_graph_store",
+        lambda *_a, **_k: MemoryGraphStore(backend="gremlin"),
+    )
+    run_graph_command(dataset="capec", graph="gremlin")
+
+
+def test_cli_capec_missing_artifacts(tmp_path: Path) -> None:
+    from utils.graph_loader.config import LoaderConfig
+    from utils.graph_loader.registry import LoaderResolutionError, resolve_dataset
+
+    with pytest.raises(LoaderResolutionError, match="source card"):
+        resolve_dataset("capec", "gremlin", LoaderConfig.from_data_dir(tmp_path / "data"))
 
 
 def test_cli_attack_neo4j_load_with_memory_backend(monkeypatch: pytest.MonkeyPatch) -> None:

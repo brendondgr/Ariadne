@@ -9,10 +9,7 @@ from typing import Any
 
 from .config import LOAD_BACKENDS, LoaderConfig
 
-CAPEC_NOT_BUILT_MSG = (
-    "CAPEC canonical artifacts are not built yet. "
-    "Run `uv run main.py --build capec` after the CAPEC builder is implemented."
-)
+SUPPORTED_DATASETS = frozenset({"attack", "capec"})
 
 
 class LoaderResolutionError(Exception):
@@ -106,10 +103,7 @@ def resolve_dataset(
     config = config or LoaderConfig.from_data_dir()
     dataset = dataset.lower().strip()
 
-    if dataset == "capec":
-        raise LoaderResolutionError(CAPEC_NOT_BUILT_MSG)
-
-    if dataset not in {"attack"}:
+    if dataset not in SUPPORTED_DATASETS:
         raise LoaderResolutionError(f"Unsupported dataset: {dataset}")
 
     source_card_path = config.source_cards_dir() / f"{dataset}.json"

@@ -39,6 +39,36 @@ def test_valid_attack_patterns_pass() -> None:
     assert result.valid, result.errors
 
 
+def test_valid_capec_patterns_pass() -> None:
+    nodes = [
+        {
+            "id": "capec:attack-pattern:1",
+            "label": "AttackPattern",
+            "labels": ["AttackPattern", "CapecObject"],
+            "name": "Pattern 1",
+            "properties": {"id": "1"},
+        },
+        {
+            "id": "capec:attack-pattern:2",
+            "label": "AttackPattern",
+            "labels": ["AttackPattern", "CapecObject"],
+            "name": "Pattern 2",
+            "properties": {"id": "2"},
+        },
+    ]
+    edges = [
+        {
+            "id": "e1",
+            "type": "ChildOf",
+            "source_id": "capec:attack-pattern:1",
+            "target_id": "capec:attack-pattern:2",
+        }
+    ]
+    schema = {"dataset": "capec"}
+    result = validate_semantic_graph(nodes, edges, schema=schema)
+    assert result.valid, result.errors
+
+
 def test_illegal_edge_pattern_fails() -> None:
     nodes = [_node("t1", "Technique", "T1000"), _node("m1", "Mitigation", "M1000")]
     edges = [{"id": "e1", "type": "USES", "source_id": "t1", "target_id": "m1"}]

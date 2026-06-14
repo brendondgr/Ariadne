@@ -27,6 +27,7 @@ def materialize_capec_graph(checkpoint: CapecPairsCheckpoint) -> NormalizedGraph
     nodes: list[NodeRecord] = []
     relationships: list[EdgeRecord] = []
     node_index: dict[str, NodeRecord] = {}
+    edge_ids: set[str] = set()
 
     def add_node(node: NodeRecord) -> None:
         if node.id in node_index:
@@ -35,9 +36,13 @@ def materialize_capec_graph(checkpoint: CapecPairsCheckpoint) -> NormalizedGraph
         nodes.append(node)
 
     def add_edge(rel_type: str, source_id: str, target_id: str, **properties: Any) -> None:
+        edge_id = relationship_id(rel_type, source_id, target_id)
+        if edge_id in edge_ids:
+            return
+        edge_ids.add(edge_id)
         relationships.append(
             EdgeRecord(
-                id=relationship_id(rel_type, source_id, target_id),
+                id=edge_id,
                 type=rel_type,
                 source_id=source_id,
                 target_id=target_id,

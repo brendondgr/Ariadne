@@ -7,7 +7,7 @@ import socket
 
 from .config import GRAPH_ACTIONS, LoaderConfig
 from .loader import load_dataset
-from .registry import CAPEC_NOT_BUILT_MSG, LoaderResolutionError
+from .registry import LoaderResolutionError
 from .verify import run_dataset_verify as _verify_dataset
 
 logger = logging.getLogger(__name__)
@@ -109,8 +109,6 @@ def run_graph_command(
         raise ValueError("--dataset is required unless --graph health is used.")
 
     dataset = dataset.lower()
-    if dataset == "capec":
-        raise LoaderResolutionError(CAPEC_NOT_BUILT_MSG)
 
     if graph == "verify":
         run_dataset_verify(dataset, config)
