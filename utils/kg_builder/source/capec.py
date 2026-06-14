@@ -37,24 +37,12 @@ class CapecSourceContract:
 
 def resolve_capec_xml_path(config: BuildConfig) -> Path:
     """Resolve pinned CAPEC XML from data/versions.json."""
-    return (
-        config.data_dir
-        / "raw"
-        / "capec"
-        / f"v{config.capec_version}"
-        / "capec_latest.xml"
-    )
+    return config.paths().capec_raw_file
 
 
 def resolve_capec_metadata_path(config: BuildConfig) -> Path:
     """Resolve CAPEC download metadata alongside the pinned XML file."""
-    return (
-        config.data_dir
-        / "raw"
-        / "capec"
-        / f"v{config.capec_version}"
-        / "metadata.json"
-    )
+    return config.paths().capec_raw_dir / "metadata.json"
 
 
 def _local_name(tag: str) -> str:
