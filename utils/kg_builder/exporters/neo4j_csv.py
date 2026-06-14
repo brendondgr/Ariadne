@@ -9,7 +9,10 @@ from typing import Any
 
 from ..io import ensure_dir, write_text
 from ..models import EdgeRecord, NodeRecord
-from ..schema.attack import constraints_cypher_lines, schema_cypher_lines
+from ..schema.attack import constraints_cypher_lines as attack_constraints_cypher_lines
+from ..schema.attack import schema_cypher_lines as attack_schema_cypher_lines
+from ..schema.capec import constraints_cypher_lines as capec_constraints_cypher_lines
+from ..schema.capec import schema_cypher_lines as capec_schema_cypher_lines
 
 
 def _primary_label(node: dict[str, Any] | NodeRecord) -> str:
@@ -41,13 +44,20 @@ def _serialize_neo4j_property(value: Any) -> str:
     return str(value)
 
 
-def export_cypher_artifacts(output_dir: Path) -> dict[str, Path]:
+def export_cypher_artifacts(output_dir: Path, *, dataset: str = "attack") -> dict[str, Path]:
     """Write schema.cypher and constraints.cypher to Neo4j export directory."""
+    if dataset == "capec":
+        schema_lines = capec_schema_cypher_lines()
+        constraint_lines = capec_constraints_cypher_lines()
+    else:
+        schema_lines = attack_schema_cypher_lines()
+        constraint_lines = attack_constraints_cypher_lines()
+
     ensure_dir(output_dir)
     schema_path = output_dir / "schema.cypher"
     constraints_path = output_dir / "constraints.cypher"
-    write_text(schema_path, "\n".join(schema_cypher_lines()) + "\n")
-    write_text(constraints_path, "\n".join(constraints_cypher_lines()) + "\n")
+    write_text(schema_path, "\n".join(schema_lines) + "\n")
+    write_text(constraints_path, "\n".join(constraint_lines) + "\n")
     return {"schema": schema_path, "constraints": constraints_path}
 
 
@@ -55,6 +65,8 @@ def export_neo4j_csv_artifacts(
     nodes: list[dict[str, Any]] | list[NodeRecord],
     edges: list[dict[str, Any]] | list[EdgeRecord],
     output_dir: Path,
+    *,
+    dataset: str = "attack",
 ) -> dict[str, Path]:
     """Write Neo4j-compatible CSV files derived from canonical records."""
     ensure_dir(output_dir)
@@ -62,26 +74,29 @@ def export_neo4j_csv_artifacts(
     rels_path = output_dir / "relationships.csv"
 
     with open(nodes_path, "w", encoding="utf-8", newline="") as f:
-        writer = csv.DictWriter(
-            f,
-            fieldnames=["id:ID", "label:LABEL", "name", "attack_id", "stix_type", "properties_json"],
-        )
+        if dataset == "capec":
+            fieldnames = ["id:ID", "label:LABEL", "name", "capec_id", "properties_json"]
+        else:
+            fieldnames = ["id:ID", "label:LABEL", "name", "attack_id", "stix_type", "properties_json"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         for node in nodes:
             if isinstance(node, NodeRecord):
                 node_dict = node.to_dict()
             else:
                 node_dict = node
-            writer.writerow(
-                {
-                    "id:ID": node_dict["id"],
-                    "label:LABEL": _primary_label(node_dict),
-                    "name": node_dict.get("name") or "",
-                    "attack_id": _node_field(node_dict, "attack_id"),
-                    "stix_type": _node_field(node_dict, "stix_type"),
-                    "properties_json": _serialize_neo4j_property(node_dict.get("properties", {})),
-                }
-            )
+            row = {
+                "id:ID": node_dict["id"],
+                "label:LABEL": _primary_label(node_dict),
+                "name": node_dict.get("name") or "",
+                "properties_json": _serialize_neo4j_property(node_dict.get("properties", {})),
+            }
+            if dataset == "capec":
+                row["capec_id"] = _node_field(node_dict, "capec_id")
+            else:
+                row["attack_id"] = _node_field(node_dict, "attack_id")
+                row["stix_type"] = _node_field(node_dict, "stix_type")
+            writer.writerow(row)
 
     with open(rels_path, "w", encoding="utf-8", newline="") as f:
         writer = csv.DictWriter(

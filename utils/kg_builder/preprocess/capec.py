@@ -9,6 +9,7 @@ from pathlib import Path
 from utils.kg_builder.config import BuildConfig
 from utils.kg_builder.discovery.capec_xml import discover_capec_xml, write_capec_discovery_report
 from utils.kg_builder.io import ensure_dir, write_json
+from utils.kg_builder.preprocess.capec_graph import materialize_capec_graph
 from utils.kg_builder.preprocess.capec_models import CapecPairsCheckpoint, CapecPairsMetadata
 from utils.kg_builder.preprocess.capec_parse import (
     local_name,
@@ -17,6 +18,7 @@ from utils.kg_builder.preprocess.capec_parse import (
     normalize_external_reference,
     normalize_view,
 )
+from utils.kg_builder.models import NormalizedGraph
 from utils.kg_builder.source.capec import inspect_capec_source
 
 logger = logging.getLogger(__name__)
@@ -152,6 +154,24 @@ def _collection_elements(
         if local_name(child.tag) == collection_name:
             return [item for item in list(child) if local_name(item.tag) == item_name]
     return []
+
+
+def build_capec_graph(
+    config: BuildConfig,
+    *,
+    xml_path: Path | None = None,
+    write_pairs: bool = True,
+) -> NormalizedGraph:
+    """Discover, normalize, and materialize a CAPEC normalized graph."""
+    discovery_path = run_capec_discovery(config, xml_path=xml_path)
+    checkpoint = normalize_capec_catalog(
+        config,
+        xml_path=xml_path,
+        discovery_report_path=discovery_path,
+    )
+    if write_pairs:
+        write_capec_pairs_checkpoint(checkpoint, config.paths().capec_processed_pairs_file)
+    return materialize_capec_graph(checkpoint)
 
 
 def build_capec_placeholder() -> None:
