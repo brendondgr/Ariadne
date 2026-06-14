@@ -5,24 +5,71 @@
                         Version="3.9"
                         Date="2023-01-24">
    <Attack_Patterns>
-      <Attack_Pattern ID="1" Name="Test Pattern" Abstraction="Standard" Status="Draft">
-         <Description>Fixture attack pattern for source contract tests.</Description>
+      <Attack_Pattern ID="560" Name="Use Alternate Authentication Material" Abstraction="Detailed" Status="Stable">
+         <Description>Use alternate authentication material such as password hashes.</Description>
+         <Related_Attack_Patterns>
+            <Related_Attack_Pattern Nature="ChildOf" CAPEC_ID="122"/>
+         </Related_Attack_Patterns>
+         <Execution_Flow>
+            <Attack_Step>
+               <Step>1</Step>
+               <Phase>Explore</Phase>
+               <Description>Locate credential material.</Description>
+               <Technique>Search local stores</Technique>
+            </Attack_Step>
+            <Attack_Step>
+               <Step>2</Step>
+               <Phase>Exploit</Phase>
+               <Description>Use captured hashes.</Description>
+            </Attack_Step>
+         </Execution_Flow>
+         <Skills_Required>
+            <Skill Level="Medium">Knowledge of authentication protocols.</Skill>
+         </Skills_Required>
+         <Consequences>
+            <Consequence>
+               <Scope>Confidentiality</Scope>
+               <Impact>Gain Privileges</Impact>
+            </Consequence>
+         </Consequences>
+         <Mitigations>
+            <Mitigation>
+               <xhtml:p>Rotate credentials and enforce MFA.</xhtml:p>
+            </Mitigation>
+         </Mitigations>
+         <Related_Weaknesses>
+            <Related_Weakness CWE_ID="522"/>
+         </Related_Weaknesses>
+         <Taxonomy_Mappings>
+            <Taxonomy_Mapping Taxonomy_Name="ATTACK">
+               <Entry_ID>1550.002</Entry_ID>
+               <Entry_Name>Use Alternate Authentication Material: Pass the Hash</Entry_Name>
+            </Taxonomy_Mapping>
+         </Taxonomy_Mappings>
+         <References>
+            <Reference External_Reference_ID="REF-42"/>
+         </References>
       </Attack_Pattern>
    </Attack_Patterns>
    <Categories>
       <Category ID="1" Name="Test Category" Status="Draft">
          <Summary>Fixture category.</Summary>
+         <Relationships>
+            <Has_Member CAPEC_ID="560"/>
+         </Relationships>
       </Category>
    </Categories>
    <Views>
-      <View ID="1000" Name="Test View" Type="Graph" Status="Draft">
+      <View ID="1000" Name="Mechanisms of Attack" Type="Graph" Status="Stable">
          <Objective>Fixture view.</Objective>
+         <Member_Of>1</Member_Of>
       </View>
    </Views>
    <External_References>
-      <External_Reference Reference_ID="REF-1">
+      <External_Reference Reference_ID="REF-42">
          <Author>Fixture Author</Author>
          <Title>Fixture Reference</Title>
+         <Publication_Year>2020</Publication_Year>
       </External_Reference>
    </External_References>
 </Attack_Pattern_Catalog>
