@@ -23,9 +23,21 @@ class SourceCard:
     canonical_dir: str
     exports: dict[str, dict[str, str]]
     endpoints: dict[str, str] = field(default_factory=dict)
+    connection: dict[str, Any] = field(default_factory=dict)
+    safety: dict[str, Any] = field(default_factory=dict)
+    provenance: dict[str, Any] = field(default_factory=dict)
+    entity_descriptions: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
+
+
+def _load_overlay(overlay_path: Path) -> dict[str, Any]:
+    """Load an authored overlay file if it exists; return empty dict otherwise."""
+    if not overlay_path.exists():
+        return {}
+    with open(overlay_path, encoding="utf-8") as f:
+        return json.load(f)
 
 
 def build_attack_source_card(config: BuildConfig, manifest_path: Path) -> SourceCard:
@@ -38,6 +50,7 @@ def build_attack_source_card(config: BuildConfig, manifest_path: Path) -> Source
     with open(schema_path, encoding="utf-8") as f:
         schema = json.load(f)
 
+    overlay = _load_overlay(paths.source_registry_dir / "overlays" / "attack.overlay.json")
     exports = manifest.get("exports", {})
     return SourceCard(
         dataset="attack",
@@ -55,6 +68,10 @@ def build_attack_source_card(config: BuildConfig, manifest_path: Path) -> Source
             "neo4j": "",
             "gremlin": "",
         },
+        connection=overlay.get("connection", {}),
+        safety=overlay.get("safety", {}),
+        provenance=overlay.get("provenance", {}),
+        entity_descriptions=overlay.get("entity_descriptions", {}),
     )
 
 
@@ -68,7 +85,17 @@ def build_capec_source_card(config: BuildConfig, manifest_path: Path) -> SourceC
     with open(schema_path, encoding="utf-8") as f:
         schema = json.load(f)
 
+    overlay = _load_overlay(paths.source_registry_dir / "overlays" / "capec.overlay.json")
     exports = manifest.get("exports", {})
+
+    # Merge generated structural constraints from schema.json into the safety section
+    # so the Gremlin specialist has bounded-traversal data without manual authoring.
+    safety = dict(overlay.get("safety", {}))
+    if "allowed_edge_patterns" in schema:
+        safety["allowed_edge_patterns"] = schema["allowed_edge_patterns"]
+    if "relationship_natures" in schema:
+        safety["relationship_natures"] = schema["relationship_natures"]
+
     return SourceCard(
         dataset="capec",
         canonical_manifest=str(manifest_path),
@@ -85,6 +112,10 @@ def build_capec_source_card(config: BuildConfig, manifest_path: Path) -> SourceC
             "neo4j": "",
             "gremlin": "",
         },
+        connection=overlay.get("connection", {}),
+        safety=safety,
+        provenance=overlay.get("provenance", {}),
+        entity_descriptions=overlay.get("entity_descriptions", {}),
     )
 
 

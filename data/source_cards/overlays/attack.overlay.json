@@ -1,0 +1,50 @@
+{
+  "connection": {
+    "backend": "neo4j",
+    "uri": "bolt://localhost:7687",
+    "database": "neo4j",
+    "auth_env": {
+      "user": "NEO4J_USER",
+      "password": "NEO4J_PASSWORD"
+    },
+    "read_only": true,
+    "timeout_ms": 5000
+  },
+  "safety": {
+    "read_only": true,
+    "max_result_rows": 1000,
+    "max_traversal_depth": 3,
+    "query_timeout_ms": 5000,
+    "disallowed_clauses": ["CREATE", "MERGE", "DELETE", "SET", "REMOVE", "DROP"]
+  },
+  "provenance": {
+    "id_property": "id",
+    "source_ref_property": "external_references",
+    "source_name": "MITRE ATT&CK",
+    "dataset_version": "v19.0",
+    "id_scheme": "technique-id"
+  },
+  "entity_descriptions": {
+    "nodes": {
+      "Technique": "An adversary action or behavior at the atomic level (T-ID); may have sub-techniques.",
+      "SubTechnique": "A more specific variant of a parent Technique (T-ID.NNN).",
+      "Tactic": "A high-level adversary goal (TA-ID) such as Persistence or Exfiltration.",
+      "Group": "A tracked threat actor or intrusion set (G-ID).",
+      "Software": "A tool, malware, or utility used in attacks (S-ID).",
+      "Mitigation": "A defensive measure that reduces technique risk (M-ID).",
+      "DataSource": "A log or telemetry source that can detect technique activity (DS-ID).",
+      "DataComponent": "A specific observable within a DataSource used for detection.",
+      "Campaign": "A named series of intrusion activity attributed to a Group (C-ID).",
+      "Platform": "An operating system or environment where techniques apply."
+    },
+    "relationships": {
+      "USES": "A Group or Software uses a Technique/SubTechnique; a Technique uses Software.",
+      "HAS_TECHNIQUE": "A Tactic contains a Technique.",
+      "HAS_SUBTECHNIQUE": "A Technique contains a SubTechnique.",
+      "MITIGATES": "A Mitigation reduces risk for a Technique.",
+      "DETECTS": "A DataComponent can detect a Technique.",
+      "ATTRIBUTED_TO": "A Campaign is attributed to a Group.",
+      "TARGETS": "A Group or Campaign targets a specific Platform."
+    }
+  }
+}
