@@ -28,9 +28,7 @@ STIX_TYPE_TO_LABEL: dict[str, str] = {
     "tool": "Software",
     "course-of-action": "Mitigation",
     "campaign": "Campaign",
-    "x-mitre-data-source": "DataSource",
     "x-mitre-data-component": "DataComponent",
-    "x-mitre-asset": "Asset",
     "x-mitre-matrix": "Matrix",
 }
 

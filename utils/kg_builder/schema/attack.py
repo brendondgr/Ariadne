@@ -13,9 +13,7 @@ ATTACK_NODE_LABELS: frozenset[str] = frozenset(
         "Software",
         "Mitigation",
         "Campaign",
-        "DataSource",
         "DataComponent",
-        "Asset",
         "Matrix",
     }
 )
