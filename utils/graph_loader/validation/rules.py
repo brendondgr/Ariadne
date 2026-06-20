@@ -30,6 +30,8 @@ ATTACK_EDGE_PATTERNS: frozenset[EdgePattern] = frozenset(
         EdgePattern("Technique", "HAS_SUBTECHNIQUE", "SubTechnique"),
         EdgePattern("Tactic", "HAS_TECHNIQUE", "Technique"),
         EdgePattern("Tactic", "HAS_TECHNIQUE", "SubTechnique"),
+        EdgePattern("DetectionStrategy", "DETECTS", "Technique"),
+        EdgePattern("DetectionStrategy", "DETECTS", "SubTechnique"),
     }
 )
 

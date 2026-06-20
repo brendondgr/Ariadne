@@ -20,6 +20,7 @@ class SourceCard:
     runtime_backend: str
     node_labels: list[str]
     relationship_types: list[str]
+    node_properties: dict[str, Any]
     canonical_dir: str
     exports: dict[str, dict[str, str]]
     endpoints: dict[str, str] = field(default_factory=dict)
@@ -59,6 +60,7 @@ def build_attack_source_card(config: BuildConfig, manifest_path: Path) -> Source
         runtime_backend="neo4j",
         node_labels=schema.get("node_labels", []),
         relationship_types=schema.get("relationship_types", []),
+        node_properties=schema.get("node_properties", {}),
         canonical_dir=str(paths.graph_canonical_dir),
         exports={
             "neo4j": {k: v for k, v in exports.get("neo4j", {}).items()},
@@ -103,6 +105,7 @@ def build_capec_source_card(config: BuildConfig, manifest_path: Path) -> SourceC
         runtime_backend="gremlin",
         node_labels=schema.get("node_labels", []),
         relationship_types=schema.get("relationship_types", []),
+        node_properties=schema.get("node_properties", {}),
         canonical_dir=str(paths.capec_graph_canonical_dir),
         exports={
             "neo4j": {k: v for k, v in exports.get("neo4j", {}).items()},

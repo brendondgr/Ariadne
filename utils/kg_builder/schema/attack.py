@@ -14,6 +14,7 @@ ATTACK_NODE_LABELS: frozenset[str] = frozenset(
         "Mitigation",
         "Campaign",
         "DataComponent",
+        "DetectionStrategy",
         "Matrix",
     }
 )
@@ -25,6 +26,7 @@ ATTACK_RELATIONSHIP_TYPES: frozenset[str] = frozenset(
         "ATTRIBUTED_TO",
         "HAS_SUBTECHNIQUE",
         "HAS_TECHNIQUE",
+        "DETECTS",
     }
 )
 
@@ -33,6 +35,7 @@ _STIX_TO_NEO4J_REL: dict[str, str] = {
     "mitigates": "MITIGATES",
     "attributed-to": "ATTRIBUTED_TO",
     "subtechnique-of": "HAS_SUBTECHNIQUE",
+    "detects": "DETECTS",
 }
 
 

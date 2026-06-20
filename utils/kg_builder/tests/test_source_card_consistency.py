@@ -17,6 +17,7 @@ from pathlib import Path
 
 import pytest
 
+from utils.kg_builder.exporters.jsonl import introspect_node_properties
 from utils.kg_builder.schema.attack import (
     ATTACK_NODE_LABELS,
     ATTACK_RELATIONSHIP_TYPES,
@@ -63,6 +64,8 @@ def test_overlay_descriptions_match_schema(
     This is the source-level contract: prose is authored in the overlay, structure
     is owned by the schema frozensets. If they diverge, the build is wrong.
     """
+    if not overlay_path.exists():
+        pytest.skip(f"{dataset} overlay not present (data/ is gitignored)")
     overlay = _load(overlay_path)
     descriptions = overlay.get("entity_descriptions", {})
 
@@ -79,6 +82,30 @@ def test_overlay_descriptions_match_schema(
         f"relationship_types; undescribed={set(rel_types) - described_rels}, "
         f"phantom={described_rels - set(rel_types)}"
     )
+
+
+def test_introspect_node_properties_types_coverage_example() -> None:
+    """Property introspection reports type, optionality, and a compact example."""
+    nodes = [
+        {"label": "Technique", "properties": {"id": "T1059", "name": "Command",
+                                              "revoked": False}},
+        {"label": "Technique", "properties": {"id": "T1071", "name": "App Layer"}},
+        {"label": "Tactic", "properties": {"id": "TA0002", "rank": 3,
+                                           "blurb": "x" * 200}},
+    ]
+    props = introspect_node_properties(nodes)
+
+    assert set(props) == {"Technique", "Tactic"}
+    # `revoked` appears on only one of two Technique nodes -> optional.
+    assert props["Technique"]["revoked"] == {
+        "type": "boolean", "optional": True, "example": False,
+    }
+    # `id` is on every Technique node -> not optional.
+    assert props["Technique"]["id"]["optional"] is False
+    assert props["Tactic"]["rank"]["type"] == "integer"
+    # Long string examples are truncated with an ellipsis.
+    assert props["Tactic"]["blurb"]["example"].endswith("…")
+    assert len(props["Tactic"]["blurb"]["example"]) <= 121
 
 
 @pytest.mark.parametrize("dataset,_overlay,card_path,node_labels,rel_types", _CARDS)
@@ -110,3 +137,16 @@ def test_generated_card_is_self_consistent(
     assert described_rels == set(card.get("relationship_types", [])), (
         f"{dataset}: card descriptions disagree with its own relationship_types"
     )
+
+    node_properties = card.get("node_properties", {})
+    assert set(node_properties) == set(card.get("node_labels", [])), (
+        f"{dataset}: node_properties keys disagree with node_labels; "
+        f"missing={set(card.get('node_labels', [])) - set(node_properties)}, "
+        f"extra={set(node_properties) - set(card.get('node_labels', []))}"
+    )
+    for label, props in node_properties.items():
+        assert "id" in props, f"{dataset}: {label} has no introspected 'id' property"
+        for key, meta in props.items():
+            assert {"type", "optional", "example"} <= set(meta), (
+                f"{dataset}: {label}.{key} property entry missing type/optional/example"
+            )

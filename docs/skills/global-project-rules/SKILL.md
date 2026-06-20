@@ -33,10 +33,10 @@ Supported agents: Claude Code (`.claude/skills/`), OpenAI Codex (`.agents/skills
 
 ## Operational Rules
 
-1. After each major step and validations pass, ensure that git committing occurs.
-2. After all testing is complete for a set of changes, commit them to git and push to GitHub.
+1. **ALWAYS commit AND push to GitHub at every step of the plan — this is mandatory, not optional.** After each step's changes are made and validations pass, immediately `git commit` and `git push` to the GitHub remote. Do not batch multiple steps into one commit and do not leave work unpushed. Every completed step must end with a pushed commit on GitHub.
+2. After all testing is complete for a set of changes, ensure they are committed and pushed to GitHub (no local-only work should remain).
 3. If working on a separate branch/worktree and EVERYTHING IS FUNCTIONAL 100%, then merge onto the main branch.
-4. Keep an active changelog inside of `docs/changelog.jsonl`. The changelog should be simplistic jsonl that records when changes were made, a high-level overview of what was changed and why (preferably 2-4 sentences AT MAX).
+4. **Always** append a new entry to `docs/changelog.jsonl` for every change — no matter how small or what type (code, docs, config, tests, skills). No change ships without a changelog entry. Each entry is simplistic jsonl recording when the change was made and a high-level overview of what was changed and why (preferably 2-4 sentences AT MAX).
 5. If changes are made to the webfront, always ensure that `npm run build` are executed to ensure that everything compiles/runs correctly.
 
 ## Commands
