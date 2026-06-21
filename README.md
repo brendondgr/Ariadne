@@ -61,6 +61,7 @@ Task descriptions and rationale: [`docs/goals.md`](docs/goals.md)
 ```bash
 # Python setup & download datasets
 uv sync
+cp .env.example .env                      # central config (edit values as needed)
 uv run main.py --download
 uv run read-skills
 
@@ -93,6 +94,32 @@ cd web && npm install
 cd web && npm run dev
 cd web && npm run build   # required after webfront changes
 ```
+
+## Configuration
+
+All tunable settings live in a single, git-ignored `.env` at the repository
+root. Copy the documented template and edit it:
+
+```bash
+cp .env.example .env
+```
+
+[`.env.example`](.env.example) groups every setting into labeled sections —
+dataset versions, data directory, Docker image versions, host ports, Neo4j
+credentials, graph connection URIs, and runtime tuning — and each comment says
+what the value controls and where it is read. Every value is the project
+default, so an unedited `.env` (or no `.env` at all) keeps current behavior.
+
+How it flows:
+
+- **Python** — `main.py` calls `utils.config.load_env()` at startup to load
+  `.env` into the environment; the downloader, KG builder, and graph loader read
+  their values from there with the documented fallbacks.
+- **Docker** — `docker/docker-compose.yml` reads the same variable names with
+  `${VAR:-default}` fallbacks. `utils/infrastructure` layers the root `.env` on
+  top of the committed `docker/.env` base, so root values win.
+
+Real shell/CI environment variables always take precedence over `.env`.
 
 ## Repository Layout
 
@@ -184,7 +211,7 @@ Generated artifacts under `data/` are gitignored except `data/versions.json`. Re
 | Neo4j Bolt | bolt://localhost:5456 | `neo4j` / `password` |
 | Gremlin Server | http://localhost:6455 | n/a |
 
-Pinned image versions live in `docker/.env` (`NEO4J_VERSION=5.26`, `GREMLIN_VERSION=3.8.0`). Override at runtime with `--neo4j-version` and `--gremlin-version` on `--docker start`.
+Pinned image versions, host ports, and credentials are set in the central `.env` (see [Configuration](#configuration)); `docker/.env` is the committed fallback base. Image versions can also be overridden per-run with `--neo4j-version` and `--gremlin-version` on `--docker start`.
 
 Neo4j data persists under `docker/neo4j/data/`. Use `uv run main.py --docker stop` to tear down containers without deleting volumes.
 

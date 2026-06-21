@@ -18,6 +18,7 @@ Quick map of the Ariadne repo — where things live and what to open first.
 ```text
 ariadne/
 ├── main.py              # CLI: --download, --build, --docker, --dataset, --graph
+├── .env.example         # Central project config template (copy to .env)
 ├── pyproject.toml       # Python deps & scripts (uv)
 ├── data/                # Datasets & graph artifacts (mostly gitignored)
 ├── docker/              # Neo4j + Gremlin Compose stack
@@ -78,11 +79,11 @@ Populate with `uv run main.py --download` then `uv run main.py --build attack` a
 
 | Path | Contents |
 |------|----------|
-| `docker-compose.yml` | Neo4j + Gremlin services |
-| `.env` | Pinned image versions (Neo4j 5.26, Gremlin 3.8.0) |
+| `docker-compose.yml` | Neo4j + Gremlin services (parameterized via `${VAR:-default}`) |
+| `.env` | Committed fallback for image versions; overridden by the root [`.env`](../.env.example) |
 | `neo4j/data/` | Persistent Neo4j volume (gitignored) |
 
-Managed via `uv run main.py --docker start|stop|status`.
+Managed via `uv run main.py --docker start|stop|status`. Image versions, host ports, and credentials are configured centrally in the root `.env` — see the [Configuration](../README.md#configuration) section.
 
 ## Web Demo (`web/`)
 
