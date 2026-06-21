@@ -8,11 +8,19 @@ import subprocess
 import time
 from pathlib import Path
 
+from utils.config import ENV_FILE as ROOT_ENV_FILE
+from utils.config import env_int
+
 logger = logging.getLogger(__name__)
 
 DOCKER_DIR = Path(__file__).resolve().parents[2] / "docker"
 COMPOSE_FILE = DOCKER_DIR / "docker-compose.yml"
-ENV_FILE = DOCKER_DIR / ".env"
+ENV_FILE = DOCKER_DIR / ".env"  # committed fallback base layer for compose
+
+# Host ports the local stack is published on (central .env, section 4).
+NEO4J_HTTP_PORT = env_int("NEO4J_HTTP_PORT", 5455)
+NEO4J_BOLT_PORT = env_int("NEO4J_BOLT_PORT", 5456)
+GREMLIN_PORT = env_int("GREMLIN_PORT", 6455)
 
 SERVICE_LABELS = {
     "neo4j": "Neo4j",
@@ -25,11 +33,11 @@ SERVICE_CONTAINERS = {
 }
 
 SERVICE_ENDPOINTS = {
-    "neo4j": ("127.0.0.1", 5456),
-    "gremlin": ("127.0.0.1", 6455),
+    "neo4j": ("127.0.0.1", NEO4J_BOLT_PORT),
+    "gremlin": ("127.0.0.1", GREMLIN_PORT),
 }
 
-DEFAULT_START_TIMEOUT_SECONDS = 180
+DEFAULT_START_TIMEOUT_SECONDS = env_int("ARIADNE_DOCKER_START_TIMEOUT", 180)
 
 
 def _compose_env(
@@ -51,6 +59,13 @@ def _run_compose(
     capture_output: bool = False,
     env: dict[str, str] | None = None,
 ) -> subprocess.CompletedProcess[str]:
+    # Layer env files: docker/.env (committed base) then the root .env
+    # (central source of truth) so root values override the base.
+    env_file_args: list[str] = []
+    for env_file in (ENV_FILE, ROOT_ENV_FILE):
+        if env_file.exists():
+            env_file_args.extend(["--env-file", str(env_file)])
+
     command = [
         "docker",
         "compose",
@@ -58,6 +73,7 @@ def _run_compose(
         str(COMPOSE_FILE),
         "--project-directory",
         str(DOCKER_DIR),
+        *env_file_args,
         *args,
     ]
     logger.debug("Running command: %s", " ".join(command))
@@ -195,9 +211,9 @@ def docker_start(
     _wait_for_services(timeout_seconds=timeout_seconds)
 
     logger.info("Graph infrastructure is running:")
-    logger.info("  Neo4j Browser -> http://localhost:5455")
-    logger.info("  Neo4j Bolt    -> bolt://localhost:5456")
-    logger.info("  Gremlin       -> http://localhost:6455")
+    logger.info("  Neo4j Browser -> http://localhost:%s", NEO4J_HTTP_PORT)
+    logger.info("  Neo4j Bolt    -> bolt://localhost:%s", NEO4J_BOLT_PORT)
+    logger.info("  Gremlin       -> http://localhost:%s", GREMLIN_PORT)
 
 
 def docker_stop() -> None:
