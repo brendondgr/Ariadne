@@ -66,10 +66,23 @@ def create_neo4j_login(
         raise ValueError("Neo4j username must not be empty.")
     if not resolved_password:
         raise ValueError("Neo4j password must not be empty.")
+    if len(resolved_password) < 8:
+        raise ValueError(
+            "Neo4j password must be at least 8 characters. Neo4j 5.x enforces a "
+            "minimum password length and the container crash-loops with "
+            "\"The minimum password length is 8 characters\" otherwise."
+        )
     if "/" in resolved_user:
         raise ValueError(
             "Neo4j username must not contain '/': it breaks the NEO4J_AUTH "
             "\"<user>/<password>\" form."
+        )
+    if resolved_user != "neo4j":
+        raise ValueError(
+            f"Neo4j admin username must be 'neo4j', not {resolved_user!r}. "
+            "Neo4j 5.x only lets NEO4J_AUTH set the password for the built-in "
+            "'neo4j' admin user; a different name makes the container crash-loop "
+            "with \"Invalid admin username, it must be neo4j.\""
         )
 
     written = set_env_values(
