@@ -21,6 +21,7 @@ from utils.graph_loader.main import run_graph_command
 from utils.graph_loader.registry import LoaderResolutionError
 from utils.infrastructure import docker_start, docker_status, docker_stop
 from utils.kg_builder import KGBuildRunner
+from utils.neo4j_login import create_neo4j_login
 
 logger = logging.getLogger("ariadne.main")
 
@@ -115,6 +116,27 @@ def main() -> None:
         help="Override pinned Gremlin image version for --docker start",
     )
     parser.add_argument(
+        "--neo4j-login",
+        action="store_true",
+        help=(
+            "Create/update the Neo4j login in the central .env "
+            "(prompts for URI/user/password unless overridden by the "
+            "--neo4j-uri/--neo4j-user/--neo4j-password flags)"
+        ),
+    )
+    parser.add_argument(
+        "--neo4j-uri",
+        help="Neo4j Bolt URI to store (non-interactive --neo4j-login)",
+    )
+    parser.add_argument(
+        "--neo4j-user",
+        help="Neo4j username to store (non-interactive --neo4j-login)",
+    )
+    parser.add_argument(
+        "--neo4j-password",
+        help="Neo4j password to store (non-interactive --neo4j-login)",
+    )
+    parser.add_argument(
         "--dataset",
         choices=["attack", "capec", "all"],
         help="Dataset to load or verify from built canonical graph artifacts",
@@ -137,6 +159,8 @@ def main() -> None:
         job_type = f"build-{args.build}"
     elif args.docker:
         job_type = f"docker-{args.docker}"
+    elif args.neo4j_login:
+        job_type = "neo4j-login"
     elif args.graph is not None:
         if args.graph == "health":
             job_type = "graph-health"
@@ -183,6 +207,13 @@ def main() -> None:
             logger.info("Job completed successfully.")
         elif args.docker == "status":
             docker_status()
+            logger.info("Job completed successfully.")
+        elif args.neo4j_login:
+            create_neo4j_login(
+                uri=args.neo4j_uri,
+                user=args.neo4j_user,
+                password=args.neo4j_password,
+            )
             logger.info("Job completed successfully.")
         elif args.graph is not None:
             if args.graph != "health" and not args.dataset:
