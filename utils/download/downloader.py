@@ -11,30 +11,49 @@ from pathlib import Path
 
 import requests
 
+from utils.config import env_str
+
 logger = logging.getLogger(__name__)
+
+
+def _attack_url(version: str) -> str:
+    """Build the enterprise-attack STIX bundle URL for a given version."""
+    return (
+        "https://raw.githubusercontent.com/"
+        "mitre-attack/attack-stix-data/master/"
+        f"enterprise-attack/enterprise-attack-{version}.json"
+    )
+
+
+def _capec_url(version: str) -> str:
+    """Build the CAPEC XML catalog URL for a given version."""
+    return f"https://capec.mitre.org/data/xml/capec_v{version}.xml"
 
 
 class DatasetDownloader:
     """Class to manage downloading MITRE ATT&CK and CAPEC datasets."""
 
+    # Class-level defaults. Effective values are resolved per-instance from the
+    # central .env (ATTACK_VERSION / CAPEC_VERSION / ARIADNE_DATA_DIR) in
+    # __init__, falling back to these constants when the env vars are unset.
     ATTACK_VERSION = "19.0"
     CAPEC_VERSION = "3.9"
 
-    ATTACK_URL = (
-        "https://raw.githubusercontent.com/"
-        "mitre-attack/attack-stix-data/master/"
-        f"enterprise-attack/enterprise-attack-{ATTACK_VERSION}.json"
-    )
+    ATTACK_URL = _attack_url(ATTACK_VERSION)
+    CAPEC_URL = _capec_url(CAPEC_VERSION)
 
-    CAPEC_URL = (
-        f"https://capec.mitre.org/data/xml/capec_v{CAPEC_VERSION}.xml"
-    )
+    def __init__(self, data_dir: str | Path | None = None, force: bool = False) -> None:
+        self.attack_version = env_str("ATTACK_VERSION", self.ATTACK_VERSION)
+        self.capec_version = env_str("CAPEC_VERSION", self.CAPEC_VERSION)
+        self.attack_url = _attack_url(self.attack_version)
+        self.capec_url = _capec_url(self.capec_version)
 
-    def __init__(self, data_dir: str | Path = "data", force: bool = False) -> None:
+        if data_dir is None:
+            data_dir = env_str("ARIADNE_DATA_DIR", "data")
         self.data_dir = Path(data_dir)
         self.raw_dir = self.data_dir / "raw"
-        self.attack_dir = self.raw_dir / "attack" / f"v{self.ATTACK_VERSION}"
-        self.capec_dir = self.raw_dir / "capec" / f"v{self.CAPEC_VERSION}"
+        self.attack_dir = self.raw_dir / "attack" / f"v{self.attack_version}"
+        self.capec_dir = self.raw_dir / "capec" / f"v{self.capec_version}"
         self.force = force
 
     def ensure_dirs(self) -> None:
@@ -73,8 +92,8 @@ class DatasetDownloader:
     def write_versions_json(self) -> None:
         """Write versions.json to track pinned versions and download date."""
         versions = {
-            "attack_version": self.ATTACK_VERSION,
-            "capec_version": self.CAPEC_VERSION,
+            "attack_version": self.attack_version,
+            "capec_version": self.capec_version,
             "download_date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
         }
 
@@ -86,18 +105,18 @@ class DatasetDownloader:
         attack_file = self.attack_dir / "enterprise-attack.json"
 
         self.download_file(
-            self.ATTACK_URL,
+            self.attack_url,
             attack_file,
         )
 
-        self.write_metadata(self.attack_dir, self.ATTACK_URL)
+        self.write_metadata(self.attack_dir, self.attack_url)
 
     def download_capec(self) -> None:
         """Download, save, and extract CAPEC dataset."""
-        if self.CAPEC_URL.endswith(".zip"):
+        if self.capec_url.endswith(".zip"):
             zip_path = self.capec_dir / "capec_latest.xml.zip"
             self.download_file(
-                self.CAPEC_URL,
+                self.capec_url,
                 zip_path,
             )
 
@@ -109,11 +128,11 @@ class DatasetDownloader:
         else:
             xml_path = self.capec_dir / "capec_latest.xml"
             self.download_file(
-                self.CAPEC_URL,
+                self.capec_url,
                 xml_path,
             )
 
-        self.write_metadata(self.capec_dir, self.CAPEC_URL)
+        self.write_metadata(self.capec_dir, self.capec_url)
 
     def download_all(self) -> None:
         """Run download process for all datasets."""

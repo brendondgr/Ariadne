@@ -8,6 +8,13 @@ import re
 import sys
 from pathlib import Path
 
+# Load the central .env into the environment BEFORE importing modules whose
+# configuration is resolved at import time, so every setting comes from one
+# place. Real shell/CI env vars still take precedence.
+from utils.config import load_env
+
+load_env()
+
 from utils.download import DatasetDownloader
 from utils.graph_loader.config import GRAPH_ACTIONS
 from utils.graph_loader.main import run_graph_command

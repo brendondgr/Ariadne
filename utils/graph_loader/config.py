@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-import os
 from dataclasses import dataclass
 from pathlib import Path
+
+from utils.config import env_int, env_str
 
 DEFAULT_NEO4J_URI = "bolt://localhost:5456"
 DEFAULT_NEO4J_USER = "neo4j"
@@ -31,15 +32,17 @@ class LoaderConfig:
     gremlin_uri: str = DEFAULT_GREMLIN_URI
 
     @classmethod
-    def from_data_dir(cls, data_dir: str | Path = "data") -> LoaderConfig:
+    def from_data_dir(cls, data_dir: str | Path | None = None) -> LoaderConfig:
+        if data_dir is None:
+            data_dir = env_str("ARIADNE_DATA_DIR", "data")
         root = Path(data_dir)
         return cls(
             data_dir=root,
-            batch_size=int(os.environ.get("ARIADNE_LOAD_BATCH_SIZE", DEFAULT_BATCH_SIZE)),
-            neo4j_uri=os.environ.get("NEO4J_URI", DEFAULT_NEO4J_URI),
-            neo4j_user=os.environ.get("NEO4J_USER", DEFAULT_NEO4J_USER),
-            neo4j_password=os.environ.get("NEO4J_PASSWORD", DEFAULT_NEO4J_PASSWORD),
-            gremlin_uri=os.environ.get("GREMLIN_URI", DEFAULT_GREMLIN_URI),
+            batch_size=env_int("ARIADNE_LOAD_BATCH_SIZE", DEFAULT_BATCH_SIZE),
+            neo4j_uri=env_str("NEO4J_URI", DEFAULT_NEO4J_URI),
+            neo4j_user=env_str("NEO4J_USER", DEFAULT_NEO4J_USER),
+            neo4j_password=env_str("NEO4J_PASSWORD", DEFAULT_NEO4J_PASSWORD),
+            gremlin_uri=env_str("GREMLIN_URI", DEFAULT_GREMLIN_URI),
         )
 
     def source_cards_dir(self) -> Path:
