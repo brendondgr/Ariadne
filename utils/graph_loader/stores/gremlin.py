@@ -23,10 +23,16 @@ def _sanitize_label(label: str) -> str:
     return label
 
 
+def _to_screaming_snake(s: str) -> str:
+    s = re.sub(r"([a-z])([A-Z])", r"\1_\2", s)
+    return s.upper()
+
+
 def _sanitize_rel_type(rel_type: str) -> str:
-    if not _SAFE_REL.match(rel_type):
+    normalized = _to_screaming_snake(rel_type)
+    if not _SAFE_REL.match(normalized):
         raise ValueError(f"Unsafe Gremlin edge label: {rel_type!r}")
-    return rel_type
+    return normalized
 
 
 def vertex_upsert_traversal(node: dict[str, Any]) -> tuple[str, dict[str, Any]]:
