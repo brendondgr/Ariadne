@@ -167,8 +167,8 @@ class GremlinGraphStore(GraphStore):
         label = _sanitize_label(label)
         assert self._client is not None
         result = self._client.submit(
-            "g.V().hasLabel(label).count()",
-            bindings={"label": label},
+            "g.V().hasLabel(vertexLabel).count()",
+            bindings={"vertexLabel": label},
         ).all().result()
         return int(result[0])
 
@@ -186,8 +186,8 @@ class GremlinGraphStore(GraphStore):
         if label:
             label = _sanitize_label(label)
             result = self._client.submit(
-                "g.V().hasLabel(label).limit(1).valueMap(true)",
-                bindings={"label": label},
+                "g.V().hasLabel(vertexLabel).limit(1).valueMap(true)",
+                bindings={"vertexLabel": label},
             ).all().result()
         else:
             result = self._client.submit("g.V().limit(1).valueMap(true)").all().result()
