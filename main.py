@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+import os
 import re
 import sys
 from pathlib import Path
@@ -73,6 +74,21 @@ def setup_logging(job_type: str) -> Path:
     root_logger.addHandler(file_handler)
 
     return log_file
+
+
+def _neo4j_browser_url() -> str:
+    """Derive the Neo4j browser URL from environment variables."""
+    neo4j_uri = os.environ.get("NEO4J_URI", "bolt://localhost:5456")
+    http_port = os.environ.get("NEO4J_HTTP_PORT", "5455")
+
+    host = "localhost"
+    if neo4j_uri.startswith("bolt://"):
+        host_port = neo4j_uri.removeprefix("bolt://").split("/", 1)[0]
+        parsed_host = host_port.split(":")[0]
+        if parsed_host:
+            host = parsed_host
+
+    return f"http://{host}:{http_port}"
 
 
 def main() -> None:
@@ -224,6 +240,10 @@ def main() -> None:
                 raise ValueError("--dataset all is not supported yet; use attack.")
             run_graph_command(dataset=args.dataset, graph=args.graph)
             logger.info("Job completed successfully.")
+            if args.graph in {"neo4j", "all"}:
+                browser_url = _neo4j_browser_url()
+                logger.info("Neo4j browser: %s", browser_url)
+                print(f"\nGraph loaded. View it at: {browser_url}\n")
     except (LoaderResolutionError, ValueError, RuntimeError, ConnectionError) as e:
         logger.error(str(e))
         sys.exit(1)
