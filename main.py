@@ -93,86 +93,160 @@ def _neo4j_browser_url() -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Ariadne federated knowledge graph CLI"
+        description=(
+            "Ariadne federated knowledge graph CLI\n\n"
+            "Use the steps below in order to download data, build artifacts,\n"
+            "start infrastructure, configure credentials, and load graphs.\n"
+            "Each step is independent — only run what you need."
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+TYPICAL WORKFLOW
+----------------
+  Step 1 — Download raw datasets:
+    uv run main.py --download
+    uv run main.py --download --force          # re-download even if files already exist
+
+  Step 2 — Build portable graph artifacts from the raw data:
+    uv run main.py --build attack
+    uv run main.py --build all
+    uv run main.py --build attack --dry-run    # preview what would be written (no changes)
+
+  Step 3 — Start local graph infrastructure (Docker):
+    uv run main.py --docker start
+    uv run main.py --docker status             # see what's running
+    uv run main.py --docker stop               # shut everything down
+
+  Step 4 — Configure Neo4j credentials (saved to .env):
+    uv run main.py --neo4j-login               # interactive prompts
+    uv run main.py --neo4j-login \\             # non-interactive (all flags at once)
+        --neo4j-uri bolt://localhost:5456 \\
+        --neo4j-user neo4j \\
+        --neo4j-password mypassword
+
+  Step 5 — Load data into a graph backend:
+    uv run main.py --graph neo4j --dataset attack
+    uv run main.py --graph gremlin --dataset attack
+    uv run main.py --graph all --dataset attack    # load into both backends
+
+  Step 6 — Verify loaded data or check infrastructure health:
+    uv run main.py --graph verify --dataset attack   # validate data, no reload
+    uv run main.py --graph health                    # ping backends (no dataset needed)
+
+STOP A SPECIFIC BACKEND
+-----------------------
+  uv run main.py --graph-stop neo4j
+  uv run main.py --graph-stop gremlin
+  uv run main.py --graph-stop all
+
+VERSION OVERRIDES (--docker start only)
+----------------------------------------
+  uv run main.py --docker start --neo4j-version 5.18.0
+  uv run main.py --docker start --gremlin-version 3.7.2
+""",
     )
-    parser.add_argument(
+
+    # ── Step 1-2: Data pipeline ───────────────────────────────────────────────
+    data = parser.add_argument_group(
+        "Data Pipeline (steps 1-2)",
+        "Download raw datasets and build portable graph artifacts.",
+    )
+    data.add_argument(
         "--download",
         action="store_true",
-        help="Download datasets (MITRE ATT&CK and CAPEC)",
+        help="Download MITRE ATT&CK and CAPEC datasets",
     )
-    parser.add_argument(
+    data.add_argument(
         "--force",
         action="store_true",
-        help="Force download even if files already exist",
+        help="Re-download even if files already exist (use with --download)",
     )
-    parser.add_argument(
+    data.add_argument(
         "--build",
         choices=["attack", "capec", "all"],
-        help=(
-            "Build portable graph artifacts from raw datasets "
-            "(attack: ATT&CK JSONL/Cypher/CSV bundle; capec: future work)"
-        ),
+        metavar="{attack,capec,all}",
+        help="Build graph artifacts from downloaded data (attack = JSONL/Cypher/CSV bundle)",
     )
-    parser.add_argument(
+    data.add_argument(
         "--dry-run",
         action="store_true",
-        help="Preview build actions without writing artifacts",
+        help="Preview --build actions without writing any files",
     )
-    parser.add_argument(
+
+    # ── Step 3: Infrastructure ────────────────────────────────────────────────
+    infra = parser.add_argument_group(
+        "Infrastructure — Docker (step 3)",
+        "Start, stop, or inspect the local Neo4j and Gremlin containers.",
+    )
+    infra.add_argument(
         "--docker",
         choices=["start", "stop", "status"],
-        help="Manage local Neo4j and Gremlin Docker infrastructure",
+        metavar="{start,stop,status}",
+        help="start: launch containers  |  stop: shut them down  |  status: show what's running",
     )
-    parser.add_argument(
+    infra.add_argument(
         "--neo4j-version",
-        help="Override pinned Neo4j image version for --docker start",
+        metavar="VERSION",
+        help="Override the pinned Neo4j image version (use with --docker start)",
     )
-    parser.add_argument(
+    infra.add_argument(
         "--gremlin-version",
-        help="Override pinned Gremlin image version for --docker start",
+        metavar="VERSION",
+        help="Override the pinned Gremlin image version (use with --docker start)",
     )
-    parser.add_argument(
+
+    # ── Step 4: Credentials ───────────────────────────────────────────────────
+    creds = parser.add_argument_group(
+        "Neo4j Credentials (step 4)",
+        "Save connection details to the central .env file.",
+    )
+    creds.add_argument(
         "--neo4j-login",
         action="store_true",
-        help=(
-            "Create/update the Neo4j login in the central .env "
-            "(prompts for URI/user/password unless overridden by the "
-            "--neo4j-uri/--neo4j-user/--neo4j-password flags)"
-        ),
+        help="Interactively create/update Neo4j credentials in .env",
     )
-    parser.add_argument(
+    creds.add_argument(
         "--neo4j-uri",
-        help="Neo4j Bolt URI to store (non-interactive --neo4j-login)",
+        metavar="URI",
+        help="Bolt URI (e.g. bolt://localhost:5456) — skips the URI prompt with --neo4j-login",
     )
-    parser.add_argument(
+    creds.add_argument(
         "--neo4j-user",
-        help="Neo4j username to store (non-interactive --neo4j-login)",
+        metavar="USER",
+        help="Username — skips the user prompt with --neo4j-login",
     )
-    parser.add_argument(
+    creds.add_argument(
         "--neo4j-password",
-        help="Neo4j password to store (non-interactive --neo4j-login)",
+        metavar="PASSWORD",
+        help="Password — skips the password prompt with --neo4j-login",
     )
-    parser.add_argument(
-        "--dataset",
-        choices=["attack", "capec", "all"],
-        help="Dataset to load or verify from built canonical graph artifacts",
+
+    # ── Steps 5-6: Graph backend ──────────────────────────────────────────────
+    graph = parser.add_argument_group(
+        "Graph Backend (steps 5-6)",
+        "Load data into graph backends, verify loaded data, or stop a backend.",
     )
-    parser.add_argument(
+    graph.add_argument(
         "--graph",
         choices=sorted(GRAPH_ACTIONS),
+        metavar="{neo4j,gremlin,all,verify,health}",
         help=(
-            "Graph backend action: load neo4j/gremlin/all, verify without loading, "
-            "or health for infrastructure reachability only"
+            "neo4j / gremlin / all: load --dataset into that backend\n"
+            "verify: validate already-loaded data (requires --dataset)\n"
+            "health: ping backends only — no --dataset needed"
         ),
     )
-    parser.add_argument(
+    graph.add_argument(
+        "--dataset",
+        choices=["attack", "capec", "all"],
+        metavar="{attack,capec,all}",
+        help="Which dataset to load or verify (required for --graph, except --graph health)",
+    )
+    graph.add_argument(
         "--graph-stop",
         choices=["neo4j", "gremlin", "all"],
-        metavar="BACKEND",
-        help=(
-            "Stop a running graph backend container without removing it. "
-            "Choices: neo4j, gremlin, all"
-        ),
+        metavar="{neo4j,gremlin,all}",
+        help="Stop a running backend container without removing it",
     )
 
     args = parser.parse_args()
