@@ -20,7 +20,7 @@ from utils.download import DatasetDownloader
 from utils.graph_loader.config import GRAPH_ACTIONS
 from utils.graph_loader.main import run_graph_command
 from utils.graph_loader.registry import LoaderResolutionError
-from utils.infrastructure import docker_start, docker_status, docker_stop
+from utils.infrastructure import docker_start, docker_status, docker_stop, docker_stop_service
 from utils.kg_builder import KGBuildRunner
 from utils.neo4j_login import create_neo4j_login
 
@@ -165,6 +165,15 @@ def main() -> None:
             "or health for infrastructure reachability only"
         ),
     )
+    parser.add_argument(
+        "--graph-stop",
+        choices=["neo4j", "gremlin", "all"],
+        metavar="BACKEND",
+        help=(
+            "Stop a running graph backend container without removing it. "
+            "Choices: neo4j, gremlin, all"
+        ),
+    )
 
     args = parser.parse_args()
 
@@ -184,6 +193,8 @@ def main() -> None:
             job_type = f"load-{args.dataset}-{args.graph}"
         else:
             job_type = "graph-missing-dataset"
+    elif args.graph_stop:
+        job_type = f"graph-stop-{args.graph_stop}"
     else:
         # If no arguments provided, print help and exit
         parser.print_help()
@@ -244,6 +255,9 @@ def main() -> None:
                 browser_url = _neo4j_browser_url()
                 logger.info("Neo4j browser: %s", browser_url)
                 print(f"\nGraph loaded. View it at: {browser_url}\n")
+        elif args.graph_stop:
+            docker_stop_service(args.graph_stop)
+            logger.info("Job completed successfully.")
     except (LoaderResolutionError, ValueError, RuntimeError, ConnectionError) as e:
         logger.error(str(e))
         sys.exit(1)

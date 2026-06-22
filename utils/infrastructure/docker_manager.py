@@ -222,6 +222,29 @@ def docker_stop() -> None:
     _run_compose("down")
 
 
+def docker_stop_service(service: str) -> None:
+    """Stop one or all compose-managed graph services without removing them.
+
+    Args:
+        service: ``"neo4j"``, ``"gremlin"``, or ``"all"``.
+    """
+    if service == "all":
+        logger.info("Stopping all graph services")
+        for svc, label in SERVICE_LABELS.items():
+            logger.info("  Stopping %s (%s)", label, SERVICE_CONTAINERS[svc])
+        _run_compose("stop", *SERVICE_LABELS.keys())
+    elif service in SERVICE_LABELS:
+        label = SERVICE_LABELS[service]
+        container = SERVICE_CONTAINERS[service]
+        logger.info("Stopping %s (%s)", label, container)
+        _run_compose("stop", service)
+    else:
+        raise ValueError(
+            f"Unknown graph service {service!r}. "
+            f"Choose from: {', '.join(sorted(SERVICE_LABELS))} or 'all'."
+        )
+
+
 def docker_status() -> dict[str, str]:
     """Return human-readable status for managed services."""
     states = _service_states()
