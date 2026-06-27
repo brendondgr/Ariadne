@@ -68,6 +68,18 @@ def test_single_source_request_routes_one_source() -> None:
     assert evaluate(plan, CARDS, view).ok
 
 
+def test_gloss_only_match_does_not_select_source() -> None:
+    # 'method' hits only CAPEC's AttackPattern *gloss* (no identifier), while the
+    # rest hits ATT&CK identifiers. A lone gloss match must not pull CAPEC in or
+    # fabricate a cross-source join.
+    drafter = DeterministicDrafter()
+    view = make_live_view()  # both live
+    plan = drafter.draft("Show the method an adversary group uses.", CARDS, view)
+    assert plan.target_sources() == {"attack"}
+    assert not plan.joins
+    assert evaluate(plan, CARDS, view).ok
+
+
 def test_feedback_recorded_in_assumptions() -> None:
     drafter = DeterministicDrafter()
     view = make_live_view()

@@ -117,28 +117,32 @@ def _concept_indexes(card: SourceCardView) -> tuple[dict[str, set[str]], dict[st
 
 
 def _match_card(request_tokens: set[str], card: SourceCardView) -> tuple[int, list[str]]:
-    """Return (score, matched_entities) for a card against the request tokens.
+    """Return (id_hits, gloss_hits, matched_entities) for a card.
 
-    Identifier matches are taken first; gloss matches contribute only for tokens
-    that did not already match an identifier and that map to a small, specific
-    set of entities (curbing over-decomposition, briefing §3.2).
+    ``id_hits`` counts request tokens that match an actual node-label or
+    relationship-type **name**; ``gloss_hits`` counts tokens that only match a
+    human description (and map to a small, specific entity set). A source is
+    selected only when it has at least one identifier hit — a lone gloss match
+    is too weak to pull in a whole source and a spurious cross-source join
+    (curbing over-selection, briefing §3.1/§3.2).
     """
     id_index, gloss_index = _concept_indexes(card)
     matched: set[str] = set()
-    hit_tokens = 0
+    id_hits = 0
     for tok in request_tokens:
         entities = id_index.get(tok)
         if entities:
-            hit_tokens += 1
+            id_hits += 1
             matched.update(entities)
+    gloss_hits = 0
     for tok in request_tokens:
         if tok in id_index:
             continue
         entities = gloss_index.get(tok)
         if entities and len(entities) <= _MAX_GLOSS_FANOUT:
-            hit_tokens += 1
+            gloss_hits += 1
             matched.update(entities)
-    return hit_tokens, sorted(matched)
+    return id_hits, gloss_hits, sorted(matched)
 
 
 class DeterministicDrafter:
@@ -156,15 +160,17 @@ class DeterministicDrafter:
         rationale_parts: list[str] = []
         selected_live: list[str] = []
 
-        # Score every source; route to the live ones, flag the down ones.
+        # Score every source. Select only sources with at least one identifier
+        # (label/relationship-name) match; a lone gloss match is too weak.
         scored = {ds: _match_card(request_tokens, card) for ds, card in cards.items()}
         relevant = sorted(
-            (ds for ds, (score, _ents) in scored.items() if score > 0),
-            key=lambda ds: (-scored[ds][0], ds),
+            (ds for ds, (id_hits, _gl, _ents) in scored.items() if id_hits > 0),
+            key=lambda ds: (-scored[ds][0], -scored[ds][1], ds),
         )
 
         for ds in relevant:
-            score, entities = scored[ds]
+            id_hits, gloss_hits, entities = scored[ds]
+            score = id_hits + gloss_hits
             card = cards[ds]
             # Keep only entities truly present in the card (defensive).
             entities = [e for e in entities if card.has_entity(e)]
