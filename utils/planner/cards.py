@@ -73,7 +73,7 @@ class SourceCardView:
 
     def expected_probe_labels(self) -> list[str]:
         """A couple of labels the content probe expects to exist when loaded."""
-        return list(self.node_labels)[:2]
+        return sorted(self.node_labels)[:2]
 
     @classmethod
     def from_card_dict(cls, card: dict[str, Any]) -> "SourceCardView":
