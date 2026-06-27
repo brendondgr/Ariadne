@@ -1,0 +1,29 @@
+{
+  "dataset": "capec",
+  "runtime_backend": "gremlin",
+  "schema_version": "1.0",
+  "canonical_dir": "data/graphs/capec/canonical",
+  "canonical_manifest": "data/graphs/capec/canonical/manifest.json",
+  "node_labels": ["AttackPattern", "TaxonomyEntry", "Weakness", "Mitigation", "Category", "ExecutionStep"],
+  "relationship_types": ["MAPS_TO", "EXPLOITS_WEAKNESS", "HAS_MITIGATION", "ChildOf", "MEMBER_OF", "HAS_EXECUTION_STEP"],
+  "node_properties": {
+    "AttackPattern": {"id": {"type": "string", "optional": false}, "name": {"type": "string", "optional": false}},
+    "TaxonomyEntry": {"entry_id": {"type": "string", "optional": false}, "taxonomy_name": {"type": "string", "optional": false}}
+  },
+  "exports": {"neo4j": {}, "gremlin": {}},
+  "endpoints": {"neo4j": "", "gremlin": ""},
+  "connection": {},
+  "safety": {
+    "allowed_edge_patterns": {
+      "MAPS_TO": [["AttackPattern", "TaxonomyEntry"]],
+      "EXPLOITS_WEAKNESS": [["AttackPattern", "Weakness"]],
+      "HAS_MITIGATION": [["AttackPattern", "Mitigation"]],
+      "ChildOf": [["AttackPattern", "AttackPattern"]],
+      "MEMBER_OF": [["AttackPattern", "Category"]],
+      "HAS_EXECUTION_STEP": [["AttackPattern", "ExecutionStep"]]
+    },
+    "relationship_natures": ["ChildOf"]
+  },
+  "provenance": {},
+  "entity_descriptions": {}
+}

@@ -1,0 +1,20 @@
+{
+  "dataset": "attack",
+  "runtime_backend": "neo4j",
+  "schema_version": "1.0",
+  "canonical_dir": "data/graphs/attack/canonical",
+  "canonical_manifest": "data/graphs/attack/canonical/manifest.json",
+  "node_labels": ["Technique", "SubTechnique", "Tactic", "Mitigation", "Group", "Software"],
+  "relationship_types": ["USES", "MITIGATES", "HAS_TECHNIQUE", "HAS_SUBTECHNIQUE", "ATTRIBUTED_TO"],
+  "node_properties": {
+    "Technique": {"attack_id": {"type": "string", "optional": false}, "name": {"type": "string", "optional": false}},
+    "SubTechnique": {"attack_id": {"type": "string", "optional": false}},
+    "Mitigation": {"attack_id": {"type": "string", "optional": false}}
+  },
+  "exports": {"neo4j": {}, "gremlin": {}},
+  "endpoints": {"neo4j": "", "gremlin": ""},
+  "connection": {},
+  "safety": {},
+  "provenance": {},
+  "entity_descriptions": {}
+}

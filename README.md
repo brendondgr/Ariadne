@@ -21,7 +21,7 @@ This repository implements a proof-of-concept for **ReliaQuest Innovation Challe
 
 | Status | Weeks | Phase | Task | Difficulty |
 | :---: |-------|-------|------|------------|
-| [ ] | Wk 6–7 | Agents | Federated planning agent | High |
+| [x] | Wk 6–7 | Agents | Federated planning agent | High |
 | [ ] | Wk 7–8 | Agents | Cypher specialist agent | High |
 | [ ] | Wk 8–9 | Agents | Gremlin specialist agent | High |
 
@@ -52,6 +52,7 @@ Task descriptions and rationale: [`docs/goals.md`](docs/goals.md)
 | [`docs/purpose.md`](docs/purpose.md) | Problem, architecture, data sources, team |
 | [`docs/goals.md`](docs/goals.md) | Full roadmap, evaluation criteria, deliverables |
 | [`docs/structure.md`](docs/structure.md) | Repository navigation map |
+| [`docs/planner_agent.md`](docs/planner_agent.md) | Planning agent contract, discovery, gate, and plan schema |
 | [`docs/changelog.jsonl`](docs/changelog.jsonl) | Project change log |
 | [`docs/structure.md`](docs/structure.md) | Repository navigation map |
 | [`docs/skills/global-project-rules/SKILL.md`](docs/skills/global-project-rules/SKILL.md) | Agent workflow rules (read first) |
@@ -85,9 +86,15 @@ uv run main.py --dataset attack --graph all      # load ATT&CK into both backend
 uv run main.py --dataset capec --graph gremlin   # load CAPEC into Gremlin (primary CAPEC backend)
 uv run main.py --dataset capec --graph verify    # no-load CAPEC artifact/runtime verification
 
+# Planning agent (reads live graphs, emits a routing plan)
+uv run main.py --plan "Which CAPEC patterns related to credential theft map to ATT&CK techniques, and what mitigations appear for those techniques?"
+uv run main.py --plan-llm --plan "<question>"        # use the local OpenAI-compatible LLM drafter
+uv run python -m utils.planner.evaluation.run_eval   # score the planner on the expected-plan corpus
+
 # Run KG builder tests
 uv run python -m pytest utils/kg_builder/tests/
 uv run python -m pytest utils/graph_loader/tests/
+uv run python -m pytest utils/planner/tests/
 
 # Web demo UI
 cd web && npm install
@@ -126,7 +133,7 @@ Real shell/CI environment variables always take precedence over `.env`.
 ```text
 docker/   Neo4j and Gremlin Compose stack (pinned image versions)
 docs/     purpose, goals, skills, changelog, plans, structure.md
-utils/    Python utilities (download, kg_builder, graph_loader, infrastructure)
+utils/    Python utilities (download, kg_builder, graph_loader, infrastructure, planner)
 web/      Analyst-facing demo UI (React/Vite)
 ```
 
