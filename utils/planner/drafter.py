@@ -77,11 +77,22 @@ def _tokens(text: str) -> set[str]:
     return out
 
 
-def _concept_index(card: SourceCardView) -> dict[str, set[str]]:
-    """Map a concept token -> the set of card entities (labels/rels) it evokes."""
-    index: dict[str, set[str]] = {}
+# A gloss token shared by more than this many entities is too generic to route
+# on (e.g. "attack"/"pattern" appear in most CAPEC glosses), so it is ignored.
+_MAX_GLOSS_FANOUT = 2
 
-    def add(token: str, entity: str) -> None:
+
+def _concept_indexes(card: SourceCardView) -> tuple[dict[str, set[str]], dict[str, set[str]]]:
+    """Build (identifier_index, gloss_index) mapping token -> card entities.
+
+    The identifier index comes from label/relationship names and is the precise
+    routing signal; the gloss index comes from human descriptions and is only a
+    weak hint used for distinctive tokens.
+    """
+    id_index: dict[str, set[str]] = {}
+    gloss_index: dict[str, set[str]] = {}
+
+    def add(index: dict[str, set[str]], token: str, entity: str) -> None:
         if token in _STOPWORDS or len(token) < 3:
             return
         index.setdefault(token, set()).add(entity)
@@ -90,10 +101,10 @@ def _concept_index(card: SourceCardView) -> dict[str, set[str]]:
 
     for label in card.node_labels:
         for tok in _split_identifier(label):
-            add(tok, label)
+            add(id_index, tok, label)
     for rel in card.relationship_types:
         for tok in _split_identifier(rel):
-            add(tok, rel)
+            add(id_index, tok, rel)
 
     glosses = card.entity_descriptions or {}
     for kind in ("nodes", "relationships"):
@@ -101,18 +112,30 @@ def _concept_index(card: SourceCardView) -> dict[str, set[str]]:
             if entity not in card.node_labels and entity not in card.relationship_types:
                 continue
             for tok in _tokens(text):
-                add(tok, entity)
-    return index
+                add(gloss_index, tok, entity)
+    return id_index, gloss_index
 
 
 def _match_card(request_tokens: set[str], card: SourceCardView) -> tuple[int, list[str]]:
-    """Return (score, matched_entities) for a card against the request tokens."""
-    index = _concept_index(card)
+    """Return (score, matched_entities) for a card against the request tokens.
+
+    Identifier matches are taken first; gloss matches contribute only for tokens
+    that did not already match an identifier and that map to a small, specific
+    set of entities (curbing over-decomposition, briefing §3.2).
+    """
+    id_index, gloss_index = _concept_indexes(card)
     matched: set[str] = set()
     hit_tokens = 0
     for tok in request_tokens:
-        entities = index.get(tok)
+        entities = id_index.get(tok)
         if entities:
+            hit_tokens += 1
+            matched.update(entities)
+    for tok in request_tokens:
+        if tok in id_index:
+            continue
+        entities = gloss_index.get(tok)
+        if entities and len(entities) <= _MAX_GLOSS_FANOUT:
             hit_tokens += 1
             matched.update(entities)
     return hit_tokens, sorted(matched)

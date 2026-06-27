@@ -153,3 +153,42 @@ def evaluate(
         )
 
     return GateResult(ok=not reasons, reasons=reasons)
+
+
+def valid_subset(
+    plan: Plan,
+    cards: dict[str, SourceCardView],
+    live_view: LiveSourceView,
+) -> tuple[list[SubQuestion], list, list[tuple[str, str]]]:
+    """Partition a plan into the gate-valid items and the dropped ones.
+
+    Used by the loop to degrade honestly on non-convergence: keep the parts that
+    pass the gate, and surface every dropped sub-question/join as an explicit
+    unsupported part with its reason. Returns (kept_sub_questions, kept_joins,
+    dropped) where ``dropped`` is a list of (description, reason).
+    """
+    kept_sq: list[SubQuestion] = []
+    dropped: list[tuple[str, str]] = []
+    seen: set[str] = set()
+    for sq in plan.sub_questions:
+        reasons = _check_sub_question(sq, cards, live_view)
+        if sq.id in seen:
+            reasons = reasons + [f"duplicate sub-question id {sq.id!r}"]
+        seen.add(sq.id)
+        if reasons:
+            dropped.append((f"sub-question {sq.id} -> {sq.source}: {sq.text}", "; ".join(reasons)))
+        else:
+            kept_sq.append(sq)
+
+    kept_sources = {sq.source for sq in kept_sq}
+    kept_joins = []
+    for join in plan.joins:
+        reasons = _check_join(join, cards, live_view)
+        if not reasons and not set(join.sources).issubset(kept_sources):
+            reasons = ["one or both joined sub-questions were dropped"]
+        if reasons:
+            dropped.append((f"join {join.key!r} on {join.sources}", "; ".join(reasons)))
+        else:
+            kept_joins.append(join)
+
+    return kept_sq, kept_joins, dropped

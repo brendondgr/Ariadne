@@ -10,11 +10,15 @@ self-evaluation gate decides whether it ships.
 
 from __future__ import annotations
 
+from .agent import PlanningAgent
 from .cards import SourceCardView, load_source_cards
 from .config import PlannerConfig
+from .schema import Plan
 
 __all__ = [
+    "PlanningAgent",
     "PlannerConfig",
+    "Plan",
     "SourceCardView",
     "load_source_cards",
 ]
