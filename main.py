@@ -23,6 +23,7 @@ from utils.graph_loader.registry import LoaderResolutionError
 from utils.infrastructure import docker_start, docker_status, docker_stop, docker_stop_service
 from utils.kg_builder import KGBuildRunner
 from utils.neo4j_login import create_neo4j_login
+from utils.planner.cli import run_plan_command
 
 logger = logging.getLogger("ariadne.main")
 
@@ -249,6 +250,22 @@ VERSION OVERRIDES (--docker start only)
         help="Stop a running backend container without removing it",
     )
 
+    # ── Step 7: Planning agent ────────────────────────────────────────────────
+    planner = parser.add_argument_group(
+        "Planning Agent (step 7)",
+        "Read the live graphs and emit a machine-readable routing plan for a question.",
+    )
+    planner.add_argument(
+        "--plan",
+        metavar="QUESTION",
+        help="Plan an analyst question over the live graphs (probes liveness, emits a plan)",
+    )
+    planner.add_argument(
+        "--plan-llm",
+        action="store_true",
+        help="Use the OpenAI-compatible LLM drafter for --plan (default: deterministic)",
+    )
+
     args = parser.parse_args()
 
     # Determine job type
@@ -269,6 +286,8 @@ VERSION OVERRIDES (--docker start only)
             job_type = "graph-missing-dataset"
     elif args.graph_stop:
         job_type = f"graph-stop-{args.graph_stop}"
+    elif args.plan:
+        job_type = "plan"
     else:
         # If no arguments provided, print help and exit
         parser.print_help()
@@ -331,6 +350,11 @@ VERSION OVERRIDES (--docker start only)
                 print(f"\nGraph loaded. View it at: {browser_url}\n")
         elif args.graph_stop:
             docker_stop_service(args.graph_stop)
+            logger.info("Job completed successfully.")
+        elif args.plan:
+            code = run_plan_command(args.plan, use_llm=args.plan_llm)
+            if code == 2:
+                sys.exit(2)
             logger.info("Job completed successfully.")
     except (LoaderResolutionError, ValueError, RuntimeError, ConnectionError) as e:
         logger.error(str(e))
