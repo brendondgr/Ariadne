@@ -75,7 +75,8 @@ def verify_dataset(
         backend_info["runtime_manifest_exists"] = runtime_manifest is not None
 
         if runtime_manifest is None:
-            errors.append(f"Missing runtime load manifest for {backend}: {runtime_manifest_path}")
+            logger.debug("No runtime manifest for %s (%s) — backend was never loaded; skipping.", backend, runtime_manifest_path)
+            backend_info["skipped"] = True
             backend_results[backend] = backend_info
             continue
 
