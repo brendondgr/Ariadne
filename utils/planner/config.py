@@ -60,6 +60,9 @@ class PlannerConfig:
     llm_base_url: str = DEFAULT_LLM_BASE_URL
     llm_model: str = DEFAULT_LLM_MODEL
     llm_timeout_s: float = 30.0
+    # Generous default: the model is a reasoning model that spends tokens before
+    # emitting the JSON plan, so the cap must cover reasoning + the plan.
+    llm_max_tokens: int = 4096
 
     def source_cards_dir(self) -> Path:
         return self.data_dir / "source_cards"
@@ -99,4 +102,5 @@ class PlannerConfig:
             llm_base_url=env_str("PLANNER_LLM_BASE_URL", DEFAULT_LLM_BASE_URL),
             llm_model=env_str("PLANNER_LLM_MODEL", DEFAULT_LLM_MODEL),
             llm_timeout_s=_env_float("PLANNER_LLM_TIMEOUT_S", 30.0),
+            llm_max_tokens=env_int("PLANNER_LLM_MAX_TOKENS", 4096),
         )
