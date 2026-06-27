@@ -227,3 +227,27 @@ def get_live_sources(
     """One-shot probe of every card's liveness (no persistent cache)."""
     probe = LiveSourceProbe(config, store_factory=store_factory)
     return probe.get_live_sources(cards, force=True)
+
+
+def stub_live_view(
+    cards: dict[str, SourceCardView], live: tuple[str, ...] | list[str]
+) -> LiveSourceView:
+    """Build a deterministic live-source view without probing any backend.
+
+    Datasets named in ``live`` are reported reachable. Useful for evaluation and
+    tests, where liveness must be fixed independent of the running stack.
+    """
+    live_set = set(live)
+    sources: dict[str, LiveSource] = {}
+    for ds, card in cards.items():
+        reachable = ds in live_set
+        sources[ds] = LiveSource(
+            dataset=ds,
+            backend=card.runtime_backend,
+            endpoint=f"stub://{ds}",
+            reachable=reachable,
+            node_count=100 if reachable else 0,
+            observed_labels=tuple(card.expected_probe_labels()) if reachable else (),
+            reason="live" if reachable else "stubbed down",
+        )
+    return LiveSourceView(sources)
