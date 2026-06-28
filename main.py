@@ -24,6 +24,7 @@ from utils.infrastructure import docker_start, docker_status, docker_stop, docke
 from utils.kg_builder import KGBuildRunner
 from utils.neo4j_login import create_neo4j_login
 from utils.planner.cli import run_plan_command
+from utils.yolo import YoloRunner
 
 logger = logging.getLogger("ariadne.main")
 
@@ -102,6 +103,11 @@ def main() -> None:
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
+SINGLE-COMMAND SHORTCUT
+-----------------------
+  Run the entire pipeline in one go (download → build → docker → load → verify):
+    uv run main.py --yolo-all
+
 TYPICAL WORKFLOW
 ----------------
   Step 1 — Download raw datasets:
@@ -250,6 +256,21 @@ VERSION OVERRIDES (--docker start only)
         help="Stop a running backend container without removing it",
     )
 
+    # ── Full pipeline shortcut ────────────────────────────────────────────────
+    yolo = parser.add_argument_group(
+        "Full Pipeline (--yolo-all)",
+        "Run the entire pipeline end-to-end: download → build → docker → load → verify.",
+    )
+    yolo.add_argument(
+        "--yolo-all",
+        action="store_true",
+        help=(
+            "Run every pipeline step in sequence: download datasets, build artifacts, "
+            "check credentials, start Docker, load ATT&CK→Neo4j and CAPEC→Gremlin, "
+            "then verify. Already-done steps are skipped automatically."
+        ),
+    )
+
     # ── Step 7: Planning agent ────────────────────────────────────────────────
     planner = parser.add_argument_group(
         "Planning Agent (step 7)",
@@ -269,7 +290,9 @@ VERSION OVERRIDES (--docker start only)
     args = parser.parse_args()
 
     # Determine job type
-    if args.download:
+    if args.yolo_all:
+        job_type = "yolo-all"
+    elif args.download:
         job_type = "download"
     elif args.build:
         job_type = f"build-{args.build}"
@@ -300,7 +323,11 @@ VERSION OVERRIDES (--docker start only)
     logger.info(f"Log file: {log_file}")
 
     try:
-        if args.download:
+        if args.yolo_all:
+            results = YoloRunner().run()
+            if any(r.status == "failed" for r in results):
+                sys.exit(1)
+        elif args.download:
             downloader = DatasetDownloader(force=args.force)
             downloader.download_all()
 
