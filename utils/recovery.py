@@ -176,7 +176,7 @@ def retry_with_backoff(
     base_delay: float = 1.0,
     backoff: float = 2.0,
     should_retry: Callable[[BaseException], bool] | None = None,
-    sleep: Callable[[float], None] = time.sleep,
+    sleep: Callable[[float], None] | None = None,
     on_retry: Callable[[int, BaseException, float], None] | None = None,
 ) -> T:
     """Call ``fn``, retrying on retryable failures with exponential backoff.
@@ -190,6 +190,8 @@ def retry_with_backoff(
     """
     if should_retry is None:
         should_retry = lambda exc: classify_failure(exc) == "transient"  # noqa: E731
+    if sleep is None:
+        sleep = time.sleep
 
     attempt = 0
     delay = base_delay

@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from utils.yolo import StepResult, YoloRunner, print_summary_table
+from utils.yolo import _GUARD_FAILED, StepResult, YoloRunner, print_summary_table
 
 
 # ── table renderer ────────────────────────────────────────────────────────────
@@ -173,3 +173,128 @@ def test_exit_code_1_when_any_failure():
         StepResult("B", status="failed", detail="oops"),
     ]
     assert any(r.status == "failed" for r in results)
+
+
+# ── needs_input status ─────────────────────────────────────────────────────────
+
+
+def test_needs_input_symbol_and_label():
+    r = StepResult("name", status="needs_input")
+    assert r.symbol == "?"
+    assert r.status_label == "NEEDS INPUT"
+
+
+def test_table_reports_needs_input():
+    results = [StepResult("Build", status="needs_input", detail="needs human input: bad schema")]
+    out = _capture_table(results)
+    assert "?" in out
+    assert "need human input" in out
+
+
+# ── _guarded retry / classification ────────────────────────────────────────────
+
+
+def test_guarded_retries_transient_then_succeeds():
+    runner = _make_runner()
+    r = StepResult("step")
+    calls = {"n": 0}
+
+    def action():
+        calls["n"] += 1
+        if calls["n"] < 3:
+            raise ConnectionError("connection refused")
+        return "value"
+
+    buf = io.StringIO()
+    with patch("utils.recovery.time.sleep"), patch("sys.stdout", buf):
+        result = runner._guarded(r, action, retries=3)
+
+    assert result == "value"
+    assert calls["n"] == 3
+    assert r.status == "pending"  # caller sets ok; guard leaves status untouched on success
+
+
+def test_guarded_transient_exhausted_marks_failed():
+    runner = _make_runner()
+    r = StepResult("step")
+
+    def action():
+        raise TimeoutError("still slow")
+
+    with patch("utils.recovery.time.sleep"):
+        result = runner._guarded(r, action, retries=1)
+
+    assert result is _GUARD_FAILED
+    assert r.status == "failed"
+    assert "slow" in r.detail
+
+
+def test_guarded_needs_human_marks_needs_input():
+    runner = _make_runner()
+    r = StepResult("step")
+
+    def action():
+        raise ValueError("totally unexpected condition")
+
+    result = runner._guarded(r, action)
+
+    assert result is _GUARD_FAILED
+    assert r.status == "needs_input"
+    assert "needs human input" in r.detail
+
+
+# ── build step: validate / repair / escalate ───────────────────────────────────
+
+
+def test_build_step_skips_when_existing_artifacts_valid():
+    runner = _make_runner()
+    runner._invalid_canonical_datasets = lambda: []
+    with patch("utils.yolo.KGBuildRunner") as mock_runner:
+        r = runner._step_build()
+    assert r.status == "skipped"
+    assert "validated" in r.detail.lower()
+    mock_runner.assert_not_called()
+
+
+def test_build_step_rebuilds_clean_on_stale_artifacts():
+    runner = _make_runner()
+    runner._invalid_canonical_datasets = lambda: ["attack"]
+    buf = io.StringIO()
+    with patch("utils.yolo.KGBuildRunner") as mock_runner, patch("sys.stdout", buf):
+        r = runner._step_build()
+    assert r.status == "ok"
+    assert "rebuilt clean" in r.detail
+    mock_runner.return_value.build_all.assert_called_once()
+
+
+def test_build_step_escalates_clean_rebuild_failure():
+    runner = _make_runner()
+    runner._invalid_canonical_datasets = lambda: ["attack"]
+    buf = io.StringIO()
+    with patch("utils.yolo.KGBuildRunner") as mock_runner, patch("sys.stdout", buf):
+        mock_runner.return_value.build_all.side_effect = ValueError(
+            "Canonical relationship type not in schema: authored"
+        )
+        r = runner._step_build()
+    assert r.status == "needs_input"
+    assert "needs human input" in r.detail
+
+
+def test_needs_input_in_abort_step_halts_pipeline():
+    runner = _make_runner()
+    runner._step_download = lambda: StepResult("1. Download Datasets", status="ok")
+    runner._step_build = lambda: StepResult(
+        "2. Build Artifacts", status="needs_input", detail="needs human input: x"
+    )
+    runner._step_credentials = MagicMock(side_effect=AssertionError("should not run"))
+    runner._step_docker_start = MagicMock(side_effect=AssertionError("should not run"))
+    runner._step_load_attack = MagicMock(side_effect=AssertionError("should not run"))
+    runner._step_load_capec = MagicMock(side_effect=AssertionError("should not run"))
+    runner._step_verify = MagicMock(side_effect=AssertionError("should not run"))
+
+    buf = io.StringIO()
+    with patch("sys.stdout", buf):
+        results = runner.run()
+
+    assert results[1].status == "needs_input"
+    assert all(r.status == "skipped" for r in results[2:])

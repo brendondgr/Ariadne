@@ -325,7 +325,7 @@ VERSION OVERRIDES (--docker start only)
     try:
         if args.yolo_all:
             results = YoloRunner().run()
-            if any(r.status == "failed" for r in results):
+            if any(r.status in ("failed", "needs_input") for r in results):
                 sys.exit(1)
         elif args.download:
             downloader = DatasetDownloader(force=args.force)
