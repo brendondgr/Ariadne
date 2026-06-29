@@ -31,12 +31,8 @@ export function AppShell({ header, left, center, right }: AppShellProps) {
           {center}
         </main>
 
-        <aside
-          className="flex min-h-0 flex-[0_0_420px] flex-col bg-surface"
-          style={{ boxShadow: "rgba(235,230,220,0.14) -1px 0 0 0" }}
-        >
-          {right}
-        </aside>
+        {/* The right region owns its own <aside> so it can collapse. */}
+        {right}
       </div>
     </div>
   );
