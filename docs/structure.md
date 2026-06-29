@@ -36,6 +36,7 @@ Agent tool folders (`.cursor/`, `.claude/`, `.agents/`) are **pointers only** â€
 |------|----------|
 | `purpose.md`, `goals.md` | Grant context, architecture, roadmap |
 | `planner_agent.md` | Planning agent contract: discovery, gate, drafters, plan schema |
+| `specialist_agents.md` | Query specialists: loop, four swap points, validation, evidence schema, federation, `--query` |
 | `changelog.jsonl` | One JSON line per significant change |
 | `structure.md` | This file |
 | `skills/` | Canonical agent instructions (global rules, UI, planner, etc.) |
@@ -52,6 +53,7 @@ Agent tool folders (`.cursor/`, `.claude/`, `.agents/`) are **pointers only** â€
 | `utils/graph_loader/` | Runtime load, verify, and health checks for built graph artifacts |
 | `utils/infrastructure/` | Docker Compose lifecycle for local graph DBs |
 | `utils/planner/` | Federated planning agent: live-source discovery, plan schema, deterministic self-eval gate, deterministic + OpenAI-compatible drafters, ReAct loop, evaluation |
+| `utils/specialists/` | Source-specific query specialists: shared scaffold + four swap points (builder, validator, connector, normalizer), shared evidence schema, Cypher (ATT&CK/Neo4j) + Gremlin (CAPEC/Gremlin) specialists, federation router |
 
 Tests live alongside each package (e.g. `utils/kg_builder/tests/`, `utils/graph_loader/tests/`, `utils/planner/tests/`). Run with `uv run python -m pytest utils/kg_builder/tests/`, `uv run python -m pytest utils/graph_loader/tests/`, and `uv run python -m pytest utils/planner/tests/`.
 
@@ -104,6 +106,7 @@ Run `cd web && npm run dev`; build with `npm run build` after changes.
 | Looking forâ€¦ | Go toâ€¦ |
 |--------------|--------|
 | Plan a question over live graphs | `utils/planner/`, `main.py --plan`, [`docs/planner_agent.md`](planner_agent.md) |
+| Query live graphs end-to-end | `utils/specialists/`, `main.py --query`, [`docs/specialist_agents.md`](specialist_agents.md), `notebooks/planning-schematic-agents.ipynb` |
 | Download MITRE data | `utils/download/downloader.py`, `main.py --download` |
 | Build graph artifacts | `utils/kg_builder/`, `main.py --build` |
 | Load live graph databases | `utils/graph_loader/`, `main.py --dataset --graph` |
@@ -118,4 +121,4 @@ Run `cd web && npm run dev`; build with `npm run build` after changes.
 
 ## Not Yet in Repo
 
-Planned per roadmap: Cypher/Gremlin specialist agents, synthesis agent, and end-to-end orchestration. ATT&CK and CAPEC canonical builds and runtime loading (`utils/kg_builder/`, `utils/graph_loader/`) and the federated planning agent (`utils/planner/`) are implemented; Gremlin is the primary CAPEC runtime backend.
+Planned per roadmap: the synthesis/reporting agent and full end-to-end pipeline wiring + evaluation. ATT&CK and CAPEC canonical builds and runtime loading (`utils/kg_builder/`, `utils/graph_loader/`), the federated planning agent (`utils/planner/`), and the Cypher/Gremlin query specialists (`utils/specialists/`) are implemented; Gremlin is the primary CAPEC runtime backend.

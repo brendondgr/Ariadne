@@ -53,6 +53,7 @@ Task descriptions and rationale: [`docs/goals.md`](docs/goals.md)
 | [`docs/goals.md`](docs/goals.md) | Full roadmap, evaluation criteria, deliverables |
 | [`docs/structure.md`](docs/structure.md) | Repository navigation map |
 | [`docs/planner_agent.md`](docs/planner_agent.md) | Planning agent contract, discovery, gate, and plan schema |
+| [`docs/specialist_agents.md`](docs/specialist_agents.md) | Query specialists: loop, four swap points, validation, evidence schema, federation, `--query` |
 | [`docs/changelog.jsonl`](docs/changelog.jsonl) | Project change log |
 | [`docs/structure.md`](docs/structure.md) | Repository navigation map |
 | [`docs/skills/global-project-rules/SKILL.md`](docs/skills/global-project-rules/SKILL.md) | Agent workflow rules (read first) |
@@ -91,10 +92,15 @@ uv run main.py --plan "Which CAPEC patterns related to credential theft map to A
 uv run main.py --plan-llm --plan "<question>"        # use the local OpenAI-compatible LLM drafter
 uv run python -m utils.planner.evaluation.run_eval   # score the planner on the expected-plan corpus
 
+# Query specialists (plan, then run the Cypher/Gremlin specialists over the plan)
+uv run main.py --query "Which CAPEC patterns related to credential theft map to ATT&CK techniques, and what mitigations appear for those techniques?"
+uv run --with jupyterlab jupyter lab notebooks/planning-schematic-agents.ipynb   # step-by-step demo
+
 # Run KG builder tests
 uv run python -m pytest utils/kg_builder/tests/
 uv run python -m pytest utils/graph_loader/tests/
 uv run python -m pytest utils/planner/tests/
+uv run python -m pytest utils/specialists/tests/
 
 # Web demo UI
 cd web && npm install
@@ -133,7 +139,7 @@ Real shell/CI environment variables always take precedence over `.env`.
 ```text
 docker/   Neo4j and Gremlin Compose stack (pinned image versions)
 docs/     purpose, goals, skills, changelog, plans, structure.md
-utils/    Python utilities (download, kg_builder, graph_loader, infrastructure, planner)
+utils/    Python utilities (download, kg_builder, graph_loader, infrastructure, planner, specialists)
 web/      Analyst-facing demo UI (React/Vite)
 ```
 
