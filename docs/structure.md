@@ -25,7 +25,7 @@ ariadne/
 ├── docs/                # Project docs, skills, plans
 ├── logs/                # Sequential job logs (gitignored)
 ├── utils/               # Python utilities by domain
-└── web/                 # Analyst demo UI (React/Vite)
+└── web/                 # Analyst demo UI (Next.js App Router)
 ```
 
 Agent tool folders (`.cursor/`, `.claude/`, `.agents/`) are **pointers only** — canonical instructions live under `docs/skills/`.
@@ -104,15 +104,23 @@ Managed via `uv run main.py --docker start|stop|status`. Image versions, host po
 
 ## Web Demo (`web/`)
 
-React/Vite analyst-facing UI using the Woven Dusk design system.
+Next.js (App Router) + TypeScript + Tailwind v4 + Motion analyst-facing UI using
+the Woven Dusk design system — the three-region analyst workbench (header infra
+pills · conversations rail · chat thread with Answer Cards · step-by-step
+inspector). Renders typed mock fixtures of the planner/specialist trace objects
+(`lib/types.ts`, `lib/fixtures.ts`); animations are driven by an event-based
+run-state machine (`lib/runMachine.ts`) ready for a live streaming backend.
 
 | Path | Contents |
 |------|----------|
-| `src/App.tsx` | Root component |
-| `src/styles/tokens.css` | Design tokens |
-| `package.json` | Frontend deps & scripts |
+| `app/page.tsx`, `app/layout.tsx` | App Router root + workbench composition |
+| `app/globals.css` | Woven Dusk tokens (`@theme`) + keyframes |
+| `components/` | `shell/`, `header/`, `left/`, `center/`, `inspector/`, `ui/`, `workbench/` |
+| `lib/types.ts`, `lib/fixtures.ts` | Trace-object types + sample run |
+| `lib/runMachine.ts`, `lib/motion.ts` | Event-based animation seam |
 
-Run `cd web && npm run dev`; build with `npm run build` after changes.
+Run `cd web && npm run dev`; build with `npm run build`, lint with
+`npm run lint`, and test fixtures with `npm test` after changes.
 
 ## Finding Things Fast
 

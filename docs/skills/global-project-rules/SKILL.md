@@ -26,7 +26,7 @@ Ariadne is a **federated agentic graph-database access prototype** for cybersecu
 | Project docs | `docs/purpose.md`, `docs/goals.md`, `docs/structure.md` | Mission, architecture, timeline, repo map |
 | Agent skills | `docs/skills/` | Canonical agent instructions |
 | Python utilities | `utils/` | Domain-specific helpers (`download`, `kg_builder`, `graph_loader`, `infrastructure`; `uv`, Python 3.13+) |
-| Webfront | `web/` | Analyst-facing demo UI (React/Vite, Woven Dusk) |
+| Webfront | `web/` | Analyst-facing demo UI (Next.js App Router + Tailwind v4 + Motion, Woven Dusk) |
 | Future | TBD per `docs/skills/repository-structure/` | Agent orchestration, graph fixtures, evaluation |
 
 Supported agents: Claude Code (`.claude/skills/`), OpenAI Codex (`.agents/skills/`), Cursor (`.cursor/rules/`). Agent folders are pointers only — never duplicate instructions outside `docs/skills/`.
@@ -65,6 +65,7 @@ cd web && npm run build
 # Test
 uv run python -m pytest utils/kg_builder/tests/
 uv run python -m pytest utils/graph_loader/tests/
+cd web && npm test            # webfront fixture/contract tests (Vitest)
 
 # Lint
 cd web && npm run lint

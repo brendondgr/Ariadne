@@ -1,0 +1,144 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Woven Dusk design tokens (Tailwind v4 theme)
+   Mirrors docs/skills/woven-dusk-design/SKILL.md
+   ============================================================ */
+@theme {
+  --color-bg: #1b2122;
+  --color-surface: #222c2a;
+  --color-surface-deep: #1b2122;
+  --color-console: #15191a;
+  --color-primary: #4e9e96;
+  --color-secondary: #c9924a;
+  --color-text: #ebe6dc;
+  --color-text-soft: #d8d4ca;
+  --color-text-muted: #8a9e98;
+  --color-text-faint: #6e817b;
+  --color-text-dim: #5e726c;
+  --color-border: #2d3d3a;
+
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+/* Non-utility tokens (shadows, overlays) */
+:root {
+  --shadow-border: rgba(235, 230, 220, 0.08) 0 0 0 1px;
+  --shadow-border-strong: rgba(235, 230, 220, 0.14) 0 0 0 1px;
+  --shadow-elevation: rgba(0, 0, 0, 0.2) 0 2px 4px;
+  --shadow-card:
+    rgba(235, 230, 220, 0.09) 0 0 0 1px, rgba(0, 0, 0, 0.35) 0 1px 2px,
+    rgba(0, 0, 0, 0.22) 0 10px 30px, rgba(235, 230, 220, 0.05) inset 0 1px 0;
+  --color-focus: #4e9e96;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-feature-settings: "liga" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   Event-based animation keyframes (ported from the mockup)
+   ============================================================ */
+@keyframes ariadne-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.82);
+  }
+}
+@keyframes ariadne-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(78, 158, 150, 0.45);
+  }
+  100% {
+    box-shadow: 0 0 0 7px rgba(78, 158, 150, 0);
+  }
+}
+@keyframes ariadne-skel {
+  0% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.4;
+  }
+}
+
+.animate-pulse-dot {
+  animation: ariadne-pulse 2.4s ease-in-out infinite;
+}
+.animate-skel {
+  animation: ariadne-skel 1.3s ease-in-out infinite;
+}
+
+/* ============================================================
+   Scrollbars
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(235, 230, 220, 0.12);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(235, 230, 220, 0.2);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ============================================================
+   Shared shadow-as-border utilities
+   ============================================================ */
+.shadow-border {
+  box-shadow: var(--shadow-border);
+}
+.shadow-border-strong {
+  box-shadow: var(--shadow-border-strong);
+}
+.shadow-card {
+  box-shadow: var(--shadow-card);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Honor reduced-motion globally for the keyframe helpers */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
