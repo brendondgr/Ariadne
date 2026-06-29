@@ -93,8 +93,9 @@ def test_cli_help_shows_docker_choices() -> None:
     )
     assert result.returncode == 0
     assert "--docker {start,stop,status}" in result.stdout
-    assert "--neo4j-version NEO4J_VERSION" in result.stdout
-    assert "--gremlin-version GREMLIN_VERSION" in result.stdout
+    # main.py declares these options with metavar="VERSION".
+    assert "--neo4j-version VERSION" in result.stdout
+    assert "--gremlin-version VERSION" in result.stdout
 
 
 @pytest.mark.skipif(

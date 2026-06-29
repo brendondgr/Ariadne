@@ -59,7 +59,10 @@ def _prepare_valid_fixture(config) -> None:
     manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
 
 
-def test_verify_fails_without_runtime_manifest(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_verify_skips_backends_without_runtime_manifest(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    # A backend with no runtime load manifest is silently skipped rather than
+    # failing verification (the project loads ATT&CK into Neo4j and CAPEC into
+    # Gremlin, so the other backend legitimately has no manifest).
     config = _write_attack_fixture(tmp_path)
     _prepare_valid_fixture(config)
     monkeypatch.setattr("utils.graph_loader.preflight.verify_manifest_hashes", lambda _p: None)
@@ -68,8 +71,9 @@ def test_verify_fails_without_runtime_manifest(tmp_path: Path, monkeypatch: pyte
         lambda *_a, **_k: {"neo4j": True, "gremlin": True},
     )
     result = verify_dataset("attack", config=config, check_reachability=False)
-    assert not result.passed
-    assert any("runtime load manifest" in err for err in result.errors)
+    assert result.passed
+    assert result.errors == []
+    assert all(br.get("skipped") for br in result.backend_results.values())
 
 
 def test_verify_passes_with_loaded_memory_backend(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
