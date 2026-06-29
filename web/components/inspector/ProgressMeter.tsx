@@ -1,10 +1,15 @@
-import type { WorkbenchRun } from "@/lib/types";
+"use client";
 
-/** Whole-run progress summary above the inspector body. */
+import { motion } from "motion/react";
+import type { WorkbenchRun } from "@/lib/types";
+import { EASE_OUT } from "@/lib/motion";
+import { useWorkbench } from "@/components/workbench/WorkbenchContext";
+
+/** Whole-run progress summary. The bar tracks completed planner stages live. */
 export function ProgressMeter({ run }: { run: WorkbenchRun }) {
-  const stages = run.plannerStages.length;
-  const specialists = run.lanes.length;
-  const done = run.status !== "running" && run.status !== "idle";
+  const { completedStages, totalStages, replaying, statusOf } = useWorkbench();
+  const specialistsDone = run.lanes.filter((l) => statusOf(l.id, "pass") === "pass").length;
+  const fraction = totalStages ? completedStages / totalStages : 1;
 
   return (
     <div
@@ -13,16 +18,18 @@ export function ProgressMeter({ run }: { run: WorkbenchRun }) {
     >
       <div className="mb-[7px] flex items-center justify-between">
         <span className="font-mono text-[11px] text-text-muted">
-          {stages} / {stages} stages · {specialists} specialists complete
+          {completedStages} / {totalStages} stages · {specialistsDone} specialists {specialistsDone === run.lanes.length ? "complete" : "running"}
         </span>
         <span className="font-mono text-[11px] text-primary">
-          {done ? "done" : "running"} · {run.elapsedMs}ms
+          {replaying ? "running" : "done"} · {run.elapsedMs}ms
         </span>
       </div>
       <div className="h-1 overflow-hidden rounded-full bg-[rgba(235,230,220,0.08)]">
-        <div
+        <motion.div
           className="h-full rounded-full"
-          style={{ width: "100%", background: "linear-gradient(90deg,#8A9E98,#4E9E96)" }}
+          style={{ background: "linear-gradient(90deg,#8A9E98,#4E9E96)" }}
+          animate={{ width: `${fraction * 100}%` }}
+          transition={{ duration: 0.4, ease: EASE_OUT }}
         />
       </div>
     </div>

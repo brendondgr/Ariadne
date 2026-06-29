@@ -1,8 +1,10 @@
 "use client";
 
 import { Fragment } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import type { ExitCode, MiniStep, RunStatus } from "@/lib/types";
 import { ACCENT, statusAccent } from "@/lib/ui";
+import { dotAnimate, popIn } from "@/lib/motion";
 import { CheckIcon } from "@/components/ui/icons";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 
@@ -20,12 +22,14 @@ interface MiniStepperProps {
   exitCode: ExitCode;
 }
 
-/** The Probe › Plan › Specialists › Evidence › Answer header strip on the
- *  Answer Card. Each segment jumps the inspector to its stage. */
+/** The Probe › Plan › Specialists › Evidence › Answer header strip. Each dot
+ *  animates as the matching pipeline event fires; the outcome chip pops in
+ *  once the answer stage completes. */
 export function MiniStepper({ steps, status, exitCode }: MiniStepperProps) {
-  const { focusStage } = useWorkbench();
+  const { focusStage, statusOf, replaying } = useWorkbench();
   const chip = STATUS_CHIP[status];
   const chipAccent = ACCENT[chip.accent];
+  const showChip = !replaying || statusOf("answer", "pass") === "pass";
 
   return (
     <div
@@ -35,7 +39,8 @@ export function MiniStepper({ steps, status, exitCode }: MiniStepperProps) {
       <div className="flex flex-1 flex-wrap items-center gap-2">
         {steps.map((step, idx) => {
           const isLast = idx === steps.length - 1;
-          const color = isLast ? "var(--color-text)" : ACCENT[statusAccent(step.status)].fg;
+          const effective = statusOf(step.key, step.status);
+          const color = isLast && effective === "pass" ? "var(--color-text)" : ACCENT[statusAccent(effective)].fg;
           return (
             <Fragment key={step.key}>
               <button
@@ -44,10 +49,10 @@ export function MiniStepper({ steps, status, exitCode }: MiniStepperProps) {
                 className="flex cursor-pointer items-center gap-1.5 border-0 bg-transparent p-0 font-mono text-[10.5px] uppercase tracking-[0.05em] transition-opacity hover:opacity-80"
                 style={{ color }}
               >
-                <span
+                <motion.span
                   aria-hidden
                   className="h-1.5 w-1.5 rounded-full"
-                  style={{ background: ACCENT[statusAccent(step.status)].fg }}
+                  animate={dotAnimate(effective)}
                 />
                 {step.label}
               </button>
@@ -56,13 +61,21 @@ export function MiniStepper({ steps, status, exitCode }: MiniStepperProps) {
           );
         })}
       </div>
-      <span
-        className="flex items-center gap-1.5 rounded-full px-2.5 py-[3px] font-mono text-[10.5px] uppercase tracking-[0.05em]"
-        style={{ color: chipAccent.fg, background: chipAccent.tintBg }}
-      >
-        {status === "answered" && <CheckIcon />}
-        {chip.label(exitCode)}
-      </span>
+      <AnimatePresence>
+        {showChip && (
+          <motion.span
+            variants={popIn}
+            initial="hidden"
+            animate="show"
+            exit="hidden"
+            className="flex items-center gap-1.5 rounded-full px-2.5 py-[3px] font-mono text-[10.5px] uppercase tracking-[0.05em]"
+            style={{ color: chipAccent.fg, background: chipAccent.tintBg }}
+          >
+            {status === "answered" && <CheckIcon />}
+            {chip.label(exitCode)}
+          </motion.span>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

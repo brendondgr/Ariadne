@@ -1,23 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "motion/react";
 import type { WorkbenchRun } from "@/lib/types";
+import { EASE_OUT } from "@/lib/motion";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 import { TraceStage } from "./TraceStage";
 import { SpecialistLane } from "./SpecialistLane";
 
-/** Ordered planner timeline + specialist lanes. Owns planner-stage expansion
- *  and reacts to cross-panel focus requests. */
+/** Ordered planner timeline + specialist lanes. Owns planner-stage expansion,
+ *  reacts to cross-panel focus, and grows the thread as stages complete. */
 export function TraceTab({ run }: { run: WorkbenchRun }) {
-  const { focusStageId, focusNonce } = useWorkbench();
+  const { focusStageId, focusNonce, statusOf, completedStages, totalStages } = useWorkbench();
   const [openMap, setOpenMap] = useState<Record<string, boolean>>(() =>
     Object.fromEntries(
       run.plannerStages.map((s) => [s.id, s.id === "stage-probe" || s.id === "stage-gate"]),
     ),
   );
 
-  // Adjust state during render when a new focus request arrives (the
-  // React-recommended alternative to setting state in an effect).
   const [seenNonce, setSeenNonce] = useState(focusNonce);
   if (focusNonce !== seenNonce) {
     setSeenNonce(focusNonce);
@@ -26,7 +26,6 @@ export function TraceTab({ run }: { run: WorkbenchRun }) {
     }
   }
 
-  // The scroll itself is a genuine DOM side-effect.
   useEffect(() => {
     if (!focusStageId) return;
     document.getElementById(focusStageId)?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -34,16 +33,24 @@ export function TraceTab({ run }: { run: WorkbenchRun }) {
 
   return (
     <div className="relative">
+      {/* the thread: a dim rail with a teal fill that grows as stages pass */}
       <div
         aria-hidden
         className="absolute bottom-[18px] left-2 top-2 w-[1.5px]"
-        style={{ background: "rgba(78,158,150,0.3)" }}
+        style={{ background: "rgba(78,158,150,0.18)" }}
+      />
+      <motion.div
+        aria-hidden
+        className="absolute bottom-[18px] left-2 top-2 w-[1.5px] origin-top bg-primary"
+        animate={{ scaleY: totalStages ? completedStages / totalStages : 1 }}
+        transition={{ duration: 0.4, ease: EASE_OUT }}
       />
 
       {run.plannerStages.map((stage) => (
         <TraceStage
           key={stage.id}
           stage={stage}
+          status={statusOf(stage.id, stage.status)}
           open={!!openMap[stage.id]}
           onToggle={() => setOpenMap((m) => ({ ...m, [stage.id]: !m[stage.id] }))}
         />

@@ -1,10 +1,12 @@
 "use client";
 
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { MotionConfig } from "motion/react";
+import { useRunMachine, type RunMachine } from "@/lib/runMachine";
 
 export type InspectorTab = "trace" | "evidence" | "join" | "raw";
 
-interface WorkbenchState {
+interface WorkbenchState extends RunMachine {
   activeTab: InspectorTab;
   setActiveTab: (tab: InspectorTab) => void;
   /** Inspector stage/lane id requested for focus (from a chip or stepper). */
@@ -23,6 +25,7 @@ export function WorkbenchProvider({ children }: { children: ReactNode }) {
   const [focusStageId, setFocusStageId] = useState<string | null>(null);
   const [focusNonce, setFocusNonce] = useState(0);
   const [inspectorOpen, setInspectorOpen] = useState(true);
+  const machine = useRunMachine();
 
   const focusStage = useCallback((id: string) => {
     setActiveTab("trace");
@@ -33,6 +36,7 @@ export function WorkbenchProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<WorkbenchState>(
     () => ({
+      ...machine,
       activeTab,
       setActiveTab,
       focusStageId,
@@ -41,10 +45,14 @@ export function WorkbenchProvider({ children }: { children: ReactNode }) {
       inspectorOpen,
       setInspectorOpen,
     }),
-    [activeTab, focusStageId, focusNonce, focusStage, inspectorOpen],
+    [machine, activeTab, focusStageId, focusNonce, focusStage, inspectorOpen],
   );
 
-  return <WorkbenchCtx.Provider value={value}>{children}</WorkbenchCtx.Provider>;
+  return (
+    <MotionConfig reducedMotion="user">
+      <WorkbenchCtx.Provider value={value}>{children}</WorkbenchCtx.Provider>
+    </MotionConfig>
+  );
 }
 
 export function useWorkbench(): WorkbenchState {

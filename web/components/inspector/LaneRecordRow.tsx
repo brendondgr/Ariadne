@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import type { LaneRecord } from "@/lib/types";
 import { ACCENT, CONSOLE_BG, SHADOW } from "@/lib/ui";
+import { collapse } from "@/lib/motion";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 
 /** A compact, expandable normalized evidence record inside a specialist lane. */
@@ -25,14 +27,18 @@ export function LaneRecordRow({ record }: { record: LaneRecord }) {
           ▶
         </span>
       </button>
-      {open && (
-        <CodeBlock
-          code={record.json}
-          lang="json"
-          className="rounded-t-none text-[10.5px] leading-[1.6]"
-          style={{ boxShadow: "none" }}
-        />
-      )}
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div variants={collapse} initial="hidden" animate="show" exit="hidden" className="overflow-hidden">
+            <CodeBlock
+              code={record.json}
+              lang="json"
+              className="rounded-t-none text-[10.5px] leading-[1.6]"
+              style={{ boxShadow: "none" }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

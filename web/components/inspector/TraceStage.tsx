@@ -1,13 +1,16 @@
 "use client";
 
-import type { PlannerStage } from "@/lib/types";
-import { ACCENT, statusAccent } from "@/lib/ui";
+import { AnimatePresence, motion } from "motion/react";
+import type { PlannerStage, StageStatus } from "@/lib/types";
+import { ACCENT } from "@/lib/ui";
+import { collapse, dotAnimate } from "@/lib/motion";
 import { CheckIcon, ShieldIcon } from "@/components/ui/icons";
 import { Pill } from "@/components/ui/Pill";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 
 interface TraceStageProps {
   stage: PlannerStage;
+  status: StageStatus;
   open: boolean;
   onToggle: () => void;
 }
@@ -31,11 +34,11 @@ function SummaryLine({ stage }: { stage: PlannerStage }) {
   return <>{stage.summary}</>;
 }
 
-/** A planner-loop stage in the inspector timeline. Marker punches through the
- *  vertical thread; gate carries a shield. */
-export function TraceStage({ stage, open, onToggle }: TraceStageProps) {
-  const accent = ACCENT[statusAccent(stage.status)];
+/** A planner-loop stage in the inspector timeline. The marker animates with
+ *  its status; gate carries a shield. */
+export function TraceStage({ stage, status, open, onToggle }: TraceStageProps) {
   const summaryColor = stage.shield ? ACCENT.teal.fg : "var(--color-text-muted)";
+  const showGlyph = status !== "pending";
 
   return (
     <div id={stage.id} className="relative mb-[9px]">
@@ -45,13 +48,14 @@ export function TraceStage({ stage, open, onToggle }: TraceStageProps) {
         aria-expanded={open}
         className="flex w-full items-start gap-3 border-0 bg-transparent p-0 text-left"
       >
-        <span
+        <motion.span
           aria-hidden
           className="mt-px flex h-[17px] w-[17px] flex-[0_0_auto] items-center justify-center rounded-full text-bg"
-          style={{ background: accent.fg, boxShadow: "0 0 0 3px var(--color-surface)" }}
+          style={{ boxShadow: "0 0 0 3px var(--color-surface)" }}
+          animate={dotAnimate(status)}
         >
-          {stage.shield ? <ShieldIcon size={10} /> : <CheckIcon size={9} />}
-        </span>
+          {showGlyph && (stage.shield ? <ShieldIcon size={10} /> : <CheckIcon size={9} />)}
+        </motion.span>
         <span className="min-w-0 flex-1">
           <span className="flex items-center gap-[7px]">
             <span
@@ -68,16 +72,29 @@ export function TraceStage({ stage, open, onToggle }: TraceStageProps) {
               </Pill>
             )}
           </span>
-          <span className="mt-0.5 block pl-[18px] text-[11.5px]" style={{ color: summaryColor }}>
-            <SummaryLine stage={stage} />
+          <span
+            className="mt-0.5 block pl-[18px] text-[11.5px]"
+            style={{ color: status === "pending" ? "var(--color-text-dim)" : summaryColor }}
+          >
+            {status === "pending" ? "pending…" : <SummaryLine stage={stage} />}
           </span>
         </span>
       </button>
-      {open && (
-        <div className="ml-[29px] mt-2">
-          <CodeBlock code={stage.code} lang={stage.codeLang} emphasis={stage.codeEmphasis} />
-        </div>
-      )}
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            variants={collapse}
+            initial="hidden"
+            animate="show"
+            exit="hidden"
+            className="ml-[29px] overflow-hidden"
+          >
+            <div className="mt-2">
+              <CodeBlock code={stage.code} lang={stage.codeLang} emphasis={stage.codeEmphasis} />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
