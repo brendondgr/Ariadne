@@ -50,14 +50,14 @@ function AnswerSkeleton() {
 /** The structured assistant turn: status stepper, grounded prose with inline
  *  provenance chips, and a footer of join candidates + evidence actions. */
 export function AnswerCard({ run }: { run: WorkbenchRun }) {
-  const { setActiveTab, setInspectorOpen, statusOf, replaying } = useWorkbench();
+  const { setActiveTab, openInspector, statusOf, replaying } = useWorkbench();
   const answered = statusOf("answer", "pass") === "pass";
 
   if (replaying && !answered) return <AnswerSkeleton />;
 
   const openRawJson = () => {
     setActiveTab("raw");
-    setInspectorOpen(true);
+    openInspector();
   };
   const copyEvidence = () => {
     void navigator.clipboard?.writeText(JSON.stringify(run.federated, null, 2));

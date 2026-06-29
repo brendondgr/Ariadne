@@ -14,8 +14,17 @@ interface WorkbenchState extends RunMachine {
   /** Monotonic counter so repeat clicks on the same id still re-trigger focus. */
   focusNonce: number;
   focusStage: (id: string) => void;
+  /** Desktop (lg+) inline inspector open/collapsed. */
   inspectorOpen: boolean;
   setInspectorOpen: (open: boolean) => void;
+  /** Mobile/tablet (<lg) inspector slide-over. Defaults closed. */
+  drawerOpen: boolean;
+  setDrawerOpen: (open: boolean) => void;
+  /** Reveal the inspector on whichever layout is active. */
+  openInspector: () => void;
+  /** Mobile (<md) conversations drawer. */
+  leftOpen: boolean;
+  setLeftOpen: (open: boolean) => void;
 }
 
 const WorkbenchCtx = createContext<WorkbenchState | null>(null);
@@ -25,14 +34,24 @@ export function WorkbenchProvider({ children }: { children: ReactNode }) {
   const [focusStageId, setFocusStageId] = useState<string | null>(null);
   const [focusNonce, setFocusNonce] = useState(0);
   const [inspectorOpen, setInspectorOpen] = useState(true);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [leftOpen, setLeftOpen] = useState(false);
   const machine = useRunMachine();
 
-  const focusStage = useCallback((id: string) => {
-    setActiveTab("trace");
-    setFocusStageId(id);
-    setFocusNonce((n) => n + 1);
+  const openInspector = useCallback(() => {
     setInspectorOpen(true);
+    setDrawerOpen(true);
   }, []);
+
+  const focusStage = useCallback(
+    (id: string) => {
+      setActiveTab("trace");
+      setFocusStageId(id);
+      setFocusNonce((n) => n + 1);
+      openInspector();
+    },
+    [openInspector],
+  );
 
   const value = useMemo<WorkbenchState>(
     () => ({
@@ -44,8 +63,13 @@ export function WorkbenchProvider({ children }: { children: ReactNode }) {
       focusStage,
       inspectorOpen,
       setInspectorOpen,
+      drawerOpen,
+      setDrawerOpen,
+      openInspector,
+      leftOpen,
+      setLeftOpen,
     }),
-    [machine, activeTab, focusStageId, focusNonce, focusStage, inspectorOpen],
+    [machine, activeTab, focusStageId, focusNonce, focusStage, inspectorOpen, drawerOpen, openInspector, leftOpen],
   );
 
   return (

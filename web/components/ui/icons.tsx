@@ -154,6 +154,22 @@ export function ExportIcon({ size = 12, ...props }: IconProps) {
   );
 }
 
+export function MenuIcon({ size = 18, ...props }: IconProps) {
+  return (
+    <svg {...base({ size, ...props })} aria-hidden>
+      <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function CloseIcon({ size = 16, ...props }: IconProps) {
+  return (
+    <svg {...base({ size, ...props })} aria-hidden>
+      <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function LinkIcon({ size = 12, ...props }: IconProps) {
   return (
     <svg {...base({ size, ...props })} aria-hidden>
