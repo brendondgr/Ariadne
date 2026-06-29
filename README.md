@@ -102,6 +102,21 @@ cd web && npm run dev
 cd web && npm run build   # required after webfront changes
 ```
 
+### One-command pipeline
+
+```bash
+uv run main.py --yolo-all   # download → build → docker → load → verify, in order
+```
+
+`--yolo-all` runs the whole pipeline and prints a summary table. It handles
+errors instead of failing on the first one: if a step fails because of an
+artifact that already exists on disk (a stale or partially written canonical
+graph), the existing copy is backed up to `data/graphs/<dataset>/_backups/` and
+the artifact is rebuilt clean; transient errors (connection refused, timeouts)
+are retried with backoff; and non-recoverable problems are flagged as
+`NEEDS INPUT` in the table with a hint, rather than crashing. Already-completed,
+valid steps are skipped automatically.
+
 ## Configuration
 
 All tunable settings live in a single, git-ignored `.env` at the repository
