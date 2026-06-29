@@ -1,18 +1,26 @@
-export default function Page() {
+import { AppShell } from "@/components/shell/AppShell";
+import { HeaderBar } from "@/components/header/HeaderBar";
+import { wmiCapecRun } from "@/lib/fixtures";
+
+/** Placeholder region used until phases 4–5 fill the rails. */
+function RegionStub({ label }: { label: string }) {
   return (
-    <main className="flex h-screen flex-col items-center justify-center gap-3 bg-bg text-text">
-      <span className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
-        Ariadne · Analyst Workbench
+    <div className="flex flex-1 items-center justify-center p-6">
+      <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-text-muted">
+        {label}
       </span>
-      <h1
-        className="font-sans text-5xl font-semibold text-text"
-        style={{ letterSpacing: "-2.4px" }}
-      >
-        Scaffold ready
-      </h1>
-      <p className="font-sans text-sm text-text-muted">
-        Next.js + Tailwind v4 + Motion + Geist — Woven Dusk tokens wired.
-      </p>
-    </main>
+    </div>
+  );
+}
+
+export default function Page() {
+  const run = wmiCapecRun;
+  return (
+    <AppShell
+      header={<HeaderBar liveSources={run.liveSources} />}
+      left={<RegionStub label="Conversations" />}
+      center={<RegionStub label="Chat thread" />}
+      right={<RegionStub label="Inspector" />}
+    />
   );
 }
