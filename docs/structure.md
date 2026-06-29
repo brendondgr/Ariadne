@@ -54,8 +54,21 @@ Agent tool folders (`.cursor/`, `.claude/`, `.agents/`) are **pointers only** �
 | `utils/infrastructure/` | Docker Compose lifecycle for local graph DBs |
 | `utils/planner/` | Federated planning agent: live-source discovery, plan schema, deterministic self-eval gate, deterministic + OpenAI-compatible drafters, ReAct loop, evaluation |
 | `utils/specialists/` | Source-specific query specialists: shared scaffold + four swap points (builder, validator, connector, normalizer), shared evidence schema, Cypher (ATT&CK/Neo4j) + Gremlin (CAPEC/Gremlin) specialists, federation router |
+| `utils/recovery.py` | Pipeline recovery primitives: backup/clean/restore of existing artifacts, failure classification (`stale_state` / `transient` / `needs_human`), bounded retry-with-backoff |
+| `utils/yolo.py` | `--yolo-all` single-command pipeline runner (download → build → docker → load → verify) with self-healing error handling |
 
-Tests live alongside each package (e.g. `utils/kg_builder/tests/`, `utils/graph_loader/tests/`, `utils/planner/tests/`). Run with `uv run python -m pytest utils/kg_builder/tests/`, `uv run python -m pytest utils/graph_loader/tests/`, and `uv run python -m pytest utils/planner/tests/`.
+Tests live alongside each package (e.g. `utils/kg_builder/tests/`, `utils/graph_loader/tests/`, `utils/planner/tests/`); `utils/recovery.py` and `utils/yolo.py` are tested under `utils/graph_loader/tests/` (`test_recovery.py`, `test_yolo.py`). Run with `uv run python -m pytest utils/kg_builder/tests/`, `uv run python -m pytest utils/graph_loader/tests/`, and `uv run python -m pytest utils/planner/tests/`.
+
+### Pipeline error handling
+
+The `--yolo-all` runner is resilient by design. When a step fails because of an
+artifact that already exists on disk (a stale or partially written canonical
+graph), the existing copy is moved to `data/graphs/<dataset>/_backups/canonical-<UTC>`
+and the artifact is rebuilt clean — never silently skipped or left broken.
+Transient errors (connection refused, timeouts) are retried with exponential
+backoff; non-recoverable errors are surfaced as a `NEEDS INPUT` step in the
+summary table with a remediation hint rather than an opaque crash. The `_backups/`
+directories live under the git-ignored `data/` tree.
 
 ## Data (`data/`)
 

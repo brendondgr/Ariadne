@@ -26,8 +26,13 @@ from utils.graph_loader.config import (
 from utils.graph_loader.main import run_graph_command
 from utils.infrastructure import docker_start
 from utils.kg_builder import KGBuildRunner
+from utils.recovery import classify_failure, retry_with_backoff
 
-StepStatus = Literal["ok", "skipped", "failed", "pending"]
+StepStatus = Literal["ok", "skipped", "failed", "needs_input", "pending"]
+
+# Returned by ``YoloRunner._guarded`` when the wrapped action could not be
+# completed; distinguishes a guarded failure from a legitimately ``None`` result.
+_GUARD_FAILED = object()
 
 _COL_STEP = 38
 _COL_STATUS = 10
@@ -43,7 +48,13 @@ class StepResult:
 
     @property
     def symbol(self) -> str:
-        return {"ok": "✓", "skipped": "—", "failed": "✗", "pending": "·"}[self.status]
+        return {
+            "ok": "✓",
+            "skipped": "—",
+            "failed": "✗",
+            "needs_input": "?",
+            "pending": "·",
+        }[self.status]
 
     @property
     def status_label(self) -> str:
@@ -51,6 +62,7 @@ class StepResult:
             "ok": "OK",
             "skipped": "Skipped",
             "failed": "FAILED",
+            "needs_input": "NEEDS INPUT",
             "pending": "Pending",
         }[self.status]
 
@@ -91,9 +103,16 @@ def print_summary_table(results: list[StepResult]) -> None:
     print(bot)
 
     failed = [r for r in results if r.status == "failed"]
+    needs_input = [r for r in results if r.status == "needs_input"]
     if failed:
         names = ", ".join(r.name for r in failed)
-        print(f"\n  ✗ {len(failed)} step(s) failed: {names}\n")
+        print(f"\n  ✗ {len(failed)} step(s) failed: {names}")
+    if needs_input:
+        names = ", ".join(r.name for r in needs_input)
+        print(f"\n  ? {len(needs_input)} step(s) need human input: {names}")
+        print("    Review the detail above, resolve the issue, then re-run --yolo-all.")
+    if failed or needs_input:
+        print()
     else:
         print("\n  All steps completed successfully.\n")
 
@@ -160,6 +179,55 @@ class YoloRunner:
         detail = f" — {r.detail}" if r.detail else ""
         print(f"\r  {r.symbol} [{idx}/{total}] {r.name}{dur}{detail}          ")
 
+    def _note_retry(self, attempt: int, exc: BaseException, delay: float) -> None:
+        print(
+            f"\n    ↻ transient error ({type(exc).__name__}); "
+            f"retry {attempt} in {delay:.0f}s...",
+            flush=True,
+        )
+
+    def _guarded(self, r: StepResult, action, *, retries: int = 2):
+        """Run ``action`` with bounded retry on transient errors.
+
+        On success returns the action's value and records the elapsed time on
+        ``r``. On failure, classifies the error and sets ``r`` accordingly —
+        ``failed`` for transient errors that exhausted their retries,
+        ``needs_input`` for errors that require human intervention — then
+        returns the ``_GUARD_FAILED`` sentinel so the caller can stop.
+        """
+        try:
+            result, dur = self._timed(
+                retry_with_backoff,
+                action,
+                retries=retries,
+                base_delay=2.0,
+                should_retry=lambda exc: classify_failure(exc) == "transient",
+                on_retry=self._note_retry,
+            )
+            r.duration_s = dur
+            return result
+        except Exception as exc:  # noqa: BLE001 — classified into status below
+            if classify_failure(exc) == "needs_human":
+                r.status = "needs_input"
+                r.detail = f"needs human input: {exc}"
+            else:
+                r.status = "failed"
+                r.detail = str(exc)
+            return _GUARD_FAILED
+
+    def _invalid_canonical_datasets(self) -> list[str]:
+        """Return datasets whose on-disk canonical artifacts fail validation."""
+        from utils.kg_builder.validate import validate_canonical_artifacts
+
+        invalid: list[str] = []
+        for dataset in ("attack", "capec"):
+            canonical_dir = self._data_dir / "graphs" / dataset / "canonical"
+            try:
+                validate_canonical_artifacts(canonical_dir)
+            except Exception:  # noqa: BLE001 — any failure means "rebuild this"
+                invalid.append(dataset)
+        return invalid
+
     # ── pipeline steps ───────────────────────────────────────────────────────
 
     def _step_download(self) -> StepResult:
@@ -191,20 +259,42 @@ class YoloRunner:
         capec_manifest = self._data_dir / "graphs" / "capec" / "canonical" / "manifest.json"
         already_built = attack_manifest.exists() and capec_manifest.exists()
 
+        stale: list[str] = []
         if already_built:
-            r.status = "skipped"
-            r.detail = "Canonical manifests already present"
-            return r
+            # "Graph already existing" path: validate the on-disk artifacts. If
+            # they are consistent, skip; if they are stale/corrupt, fall through
+            # to a clean rebuild (the builder backs the old copy up first).
+            stale = self._invalid_canonical_datasets()
+            if not stale:
+                r.status = "skipped"
+                r.detail = "Canonical manifests already present (validated)"
+                return r
+            print(
+                f"\n    ⚠ stale canonical artifacts detected ({', '.join(stale)}); "
+                "backing up and rebuilding clean...",
+                flush=True,
+            )
 
         try:
             runner = KGBuildRunner()
             _, dur = self._timed(runner.build_all)
             r.status = "ok"
-            r.detail = "attack + capec"
             r.duration_s = dur
+            r.detail = (
+                f"rebuilt clean after stale artifacts ({', '.join(stale)})"
+                if stale
+                else "attack + capec"
+            )
         except Exception as exc:
-            r.status = "failed"
-            r.detail = str(exc)
+            if classify_failure(exc) == "transient":
+                r.status = "failed"
+                r.detail = str(exc)
+            else:
+                # A freshly cleaned rebuild that still fails (e.g. schema
+                # validation) is a genuine data/schema bug, not a recoverable
+                # stale-state condition — escalate rather than loop.
+                r.status = "needs_input"
+                r.detail = f"needs human input: {exc}"
         return r
 
     def _step_credentials(self) -> StepResult:
@@ -232,69 +322,77 @@ class YoloRunner:
             r.detail = "Neo4j + Gremlin already running"
             return r
 
-        try:
-            _, dur = self._timed(docker_start)
-            r.status = "ok"
-            r.detail = f"Neo4j :{neo4j_port}, Gremlin :{gremlin_port}"
-            r.duration_s = dur
-        except Exception as exc:
-            r.status = "failed"
-            r.detail = str(exc)
+        if self._guarded(r, docker_start) is _GUARD_FAILED:
+            return r
+        r.status = "ok"
+        r.detail = f"Neo4j :{neo4j_port}, Gremlin :{gremlin_port}"
         return r
 
     def _step_load_attack(self) -> StepResult:
         r = StepResult(self.STEPS[4])
-        try:
-            _, dur = self._timed(run_graph_command, dataset="attack", graph="neo4j")
-            r.duration_s = dur
-            manifest = _read_runtime_manifest(self._config, "attack", "neo4j")
-            if manifest:
-                nodes = manifest.get("nodes_loaded", "?")
-                edges = manifest.get("edges_loaded", "?")
-                r.detail = f"{nodes:,} nodes, {edges:,} relationships"
-            else:
-                r.detail = "loaded"
-            r.status = "ok"
-        except Exception as exc:
-            r.status = "failed"
-            r.detail = str(exc)
+        if (
+            self._guarded(r, lambda: run_graph_command(dataset="attack", graph="neo4j"))
+            is _GUARD_FAILED
+        ):
+            return r
+        manifest = _read_runtime_manifest(self._config, "attack", "neo4j")
+        if manifest:
+            nodes = manifest.get("nodes_loaded", "?")
+            edges = manifest.get("edges_loaded", "?")
+            r.detail = f"{nodes:,} nodes, {edges:,} relationships"
+        else:
+            r.detail = "loaded"
+        r.status = "ok"
         return r
 
     def _step_load_capec(self) -> StepResult:
         r = StepResult(self.STEPS[5])
-        try:
-            _, dur = self._timed(run_graph_command, dataset="capec", graph="gremlin")
-            r.duration_s = dur
-            manifest = _read_runtime_manifest(self._config, "capec", "gremlin")
-            if manifest:
-                nodes = manifest.get("nodes_loaded", "?")
-                r.detail = f"{nodes:,} vertices"
-            else:
-                r.detail = "loaded"
-            r.status = "ok"
-        except Exception as exc:
-            r.status = "failed"
-            r.detail = str(exc)
+        if (
+            self._guarded(r, lambda: run_graph_command(dataset="capec", graph="gremlin"))
+            is _GUARD_FAILED
+        ):
+            return r
+        manifest = _read_runtime_manifest(self._config, "capec", "gremlin")
+        if manifest:
+            nodes = manifest.get("nodes_loaded", "?")
+            r.detail = f"{nodes:,} vertices"
+        else:
+            r.detail = "loaded"
+        r.status = "ok"
         return r
 
     def _step_verify(self) -> StepResult:
         r = StepResult(self.STEPS[6])
         parts: list[str] = []
-        failed = False
+        statuses: list[str] = []
         t0 = time.monotonic()
 
         for dataset, backend in [("attack", "neo4j"), ("capec", "gremlin")]:
             label = "ATT&CK" if dataset == "attack" else "CAPEC"
             try:
-                run_graph_command(dataset=dataset, graph="verify")
+                retry_with_backoff(
+                    lambda d=dataset: run_graph_command(dataset=d, graph="verify"),
+                    retries=2,
+                    base_delay=2.0,
+                    should_retry=lambda exc: classify_failure(exc) == "transient",
+                    on_retry=self._note_retry,
+                )
                 parts.append(f"{label} ✓")
+                statuses.append("ok")
             except Exception as exc:
                 parts.append(f"{label} ✗ ({exc})")
-                failed = True
+                statuses.append(
+                    "needs_input" if classify_failure(exc) == "needs_human" else "failed"
+                )
 
         r.duration_s = time.monotonic() - t0
         r.detail = "  ".join(parts)
-        r.status = "failed" if failed else "ok"
+        if "failed" in statuses:
+            r.status = "failed"
+        elif "needs_input" in statuses:
+            r.status = "needs_input"
+        else:
+            r.status = "ok"
         return r
 
     # ── orchestrator ─────────────────────────────────────────────────────────
@@ -334,7 +432,7 @@ class YoloRunner:
             results.append(r)
             self._print_result(r, step_num)
 
-            if r.status == "failed" and i in ABORT_ON_FAIL:
+            if r.status in ("failed", "needs_input") and i in ABORT_ON_FAIL:
                 aborted = True
 
         print_summary_table(results)
