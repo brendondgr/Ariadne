@@ -79,6 +79,7 @@ class BaseValidator(ABC):
         reasons.extend(self.structural_reasons(query))
         reasons.extend(self.violates_read_only(query, card))
         reasons.extend(self.schema_reasons(query, card))
+        reasons.extend(self.cap_reasons(query, card, limits))
 
         if reasons:
             return ValidationResult(False, query, draft.params, reasons, [])
@@ -105,3 +106,13 @@ class BaseValidator(ABC):
         self, query: str, limits: dict[str, int], card: Any
     ) -> tuple[str, list[str]]:
         """Inject/clamp the row/depth limit; return (query, injected-notes)."""
+
+    # Optional hook (default: no extra cap rejections). Override to *reject* a
+    # query whose hard caps cannot be satisfied by simple injection — e.g. a
+    # traversal already deeper than ``max_traversal_depth`` (briefing §4). Unlike
+    # ``inject_caps`` (which runs only on an otherwise-clean query), this runs in
+    # the reason-collecting phase so an unfixable over-cap query is kept off the DB.
+    def cap_reasons(
+        self, query: str, card: Any, limits: dict[str, int]
+    ) -> list[str]:
+        return []
