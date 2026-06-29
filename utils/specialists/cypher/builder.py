@@ -17,6 +17,27 @@ from ..validation import QueryDraft
 _TECHNIQUE_RE = re.compile(r"^T\d{4}(?:\.\d{3})?$")
 _SUBTECHNIQUE_RE = re.compile(r"^T\d{4}\.\d{3}$")
 
+# When a seedless scan must pick one anchor label, prefer the substantive ATT&CK
+# objects over the single administrative nodes (Matrix) and detection internals.
+_SCAN_LABEL_PRIORITY = (
+    "Technique",
+    "SubTechnique",
+    "Group",
+    "Software",
+    "Mitigation",
+    "Tactic",
+    "Campaign",
+)
+
+
+def _preferred_scan_label(resolved: ResolvedTask) -> str:
+    """Pick the most query-worthy resolved label for a seedless scan."""
+    labels = set(resolved.labels)
+    for label in _SCAN_LABEL_PRIORITY:
+        if label in labels:
+            return label
+    return resolved.primary_label() or "Technique"
+
 
 def _is_technique_id(aid: str) -> bool:
     return bool(_TECHNIQUE_RE.match(aid))
@@ -165,7 +186,7 @@ class CypherQueryBuilder:
 
     def _label_scan(self, resolved: ResolvedTask) -> QueryDraft:
         """MATCH (n:<Label>) RETURN attack_id and name — no seeds."""
-        label = resolved.primary_label() or "Technique"
+        label = _preferred_scan_label(resolved)
         query = (
             f"MATCH (n:{label}) "
             f"RETURN n.attack_id AS id, n.name AS name"
