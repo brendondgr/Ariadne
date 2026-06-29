@@ -1,0 +1,177 @@
+#!/usr/bin/env python3
+"""Gremlin-specific validator for the CAPEC specialist.
+
+The pre-run gate for Gremlin traversals: structural, read-only safety,
+schema conformance (labels, edge types, directions), and cap injection.
+Property graphs have no traversal-time schema enforcement, so this validator
+is deliberately strict — unbounded traversals can exhaust resources.
+"""
+
+from __future__ import annotations
+
+import re
+from typing import Any
+
+from utils.specialists.validation import BaseValidator
+
+# Match hasLabel("X") capturing X.
+_HAS_LABEL_RE = re.compile(r'hasLabel\("([^"]+)"\)')
+# Match out("R"), in("R"), both("R") capturing R.
+_OUT_RE = re.compile(r'\.out\("([^"]+)"\)')
+_IN_RE = re.compile(r'\.in\("([^"]+)"\)')
+_BOTH_RE = re.compile(r'\.both\("([^"]+)"\)')
+# Match trailing .limit(n) capturing n.
+_LIMIT_TRAILING_RE = re.compile(r'\.limit\((\d+)\)\s*$')
+# Count chained traversal steps (out/in/both).
+_TRAVERSAL_STEP_RE = re.compile(r'\.(out|in|both)\(')
+
+
+def _extract_edge_anchors(query: str) -> list[tuple[str, str, str]]:
+    """Return [(direction, rel, anchor_label)] for each traversal step.
+
+    We parse the query left-to-right.  The anchor label is the most recent
+    hasLabel("X") call before the out/in/both step.  This covers the primary
+    shapes built by GremlinQueryBuilder.
+    """
+    results: list[tuple[str, str, str]] = []
+    # Find all hasLabel and out/in/both positions.
+    tokens: list[tuple[int, str, str]] = []  # (pos, kind, value)
+    for m in _HAS_LABEL_RE.finditer(query):
+        tokens.append((m.start(), "label", m.group(1)))
+    for m in _OUT_RE.finditer(query):
+        tokens.append((m.start(), "out", m.group(1)))
+    for m in _IN_RE.finditer(query):
+        tokens.append((m.start(), "in", m.group(1)))
+    for m in _BOTH_RE.finditer(query):
+        tokens.append((m.start(), "both", m.group(1)))
+    tokens.sort(key=lambda t: t[0])
+
+    current_label = ""
+    for _pos, kind, value in tokens:
+        if kind == "label":
+            current_label = value
+        elif kind in ("out", "in", "both"):
+            results.append((kind, value, current_label))
+    return results
+
+
+class GremlinValidator(BaseValidator):
+    """Deterministic pre-run gate for Gremlin queries against CAPEC."""
+
+    kind = "gremlin"
+
+    def structural_reasons(self, query: str) -> list[str]:
+        """Query must start with g.V( or g.E(."""
+        stripped = query.strip()
+        if not (stripped.startswith("g.V(") or stripped.startswith("g.E(")):
+            return ["Gremlin query must start with 'g.V(' or 'g.E('"]
+        return []
+
+    def violates_read_only(self, query: str, card: Any) -> list[str]:
+        """Reject any disallowed step listed in card.safety['disallowed_steps']."""
+        reasons: list[str] = []
+        disallowed: list[str] = (card.safety or {}).get("disallowed_steps", [])
+        for step in disallowed:
+            pattern = re.compile(r'\.' + re.escape(step) + r'\(')
+            if pattern.search(query):
+                reasons.append(
+                    f"disallowed mutating step '.{step}(' found in query"
+                )
+        return reasons
+
+    def schema_reasons(self, query: str, card: Any) -> list[str]:
+        """Validate labels and edge types (including directions) against the card."""
+        reasons: list[str] = []
+        node_labels: frozenset[str] = card.node_labels
+        rel_types: frozenset[str] = card.relationship_types
+        allowed_patterns: dict[str, list[list[str]]] = card.allowed_edge_patterns or {}
+
+        # Validate every hasLabel("X").
+        for m in _HAS_LABEL_RE.finditer(query):
+            label = m.group(1)
+            if label not in node_labels:
+                reasons.append(
+                    f"hasLabel references unknown label {label!r}"
+                )
+
+        # Validate every traversal step and its direction/endpoints.
+        for direction, rel, anchor_label in _extract_edge_anchors(query):
+            if rel not in rel_types:
+                reasons.append(
+                    f".{direction}(\"{rel}\") references unknown relationship type {rel!r}"
+                )
+                continue
+            # Direction/endpoint check: we only check when anchor_label is known.
+            if not anchor_label or anchor_label not in node_labels:
+                continue
+            patterns = allowed_patterns.get(rel, [])
+            if not patterns:
+                reasons.append(
+                    f"relationship {rel!r} has no allowed_edge_patterns in card"
+                )
+                continue
+            # For out(rel) from anchor_label: [anchor_label, *] must exist.
+            # For in(rel) from anchor_label: [*, anchor_label] must exist.
+            # For both(rel): either direction is acceptable.
+            valid_sources = {p[0] for p in patterns if len(p) == 2}
+            valid_targets = {p[1] for p in patterns if len(p) == 2}
+            if direction == "out" and anchor_label not in valid_sources:
+                reasons.append(
+                    f".out(\"{rel}\") from {anchor_label!r} is not an allowed "
+                    f"edge direction (allowed sources: {sorted(valid_sources)})"
+                )
+            elif direction == "in" and anchor_label not in valid_targets:
+                reasons.append(
+                    f".in(\"{rel}\") from {anchor_label!r} is not an allowed "
+                    f"edge direction (allowed targets: {sorted(valid_targets)})"
+                )
+            # both() is permissive — only reject if the label appears in neither role.
+            elif direction == "both":
+                if anchor_label not in valid_sources and anchor_label not in valid_targets:
+                    reasons.append(
+                        f".both(\"{rel}\") from {anchor_label!r} is not an allowed "
+                        f"endpoint for {rel!r}"
+                    )
+
+        return reasons
+
+    def cap_reasons(
+        self, query: str, card: Any, limits: dict[str, int]
+    ) -> list[str]:
+        """Reject an over-deep traversal before it reaches the database.
+
+        Property-graph traversers multiply with each hop, so a traversal already
+        deeper than ``max_traversal_depth`` cannot be made safe by injecting a
+        row ``.limit()`` — it must be rejected outright (briefing §4 point 2).
+        """
+        max_depth: int = limits.get("max_traversal_depth", 3) or 3
+        depth = len(_TRAVERSAL_STEP_RE.findall(query))
+        if depth > max_depth:
+            return [
+                f"traversal depth {depth} exceeds max_traversal_depth {max_depth} "
+                f"(too many chained out/in/both steps)"
+            ]
+        return []
+
+    def inject_caps(
+        self, query: str, limits: dict[str, int], card: Any
+    ) -> tuple[str, list[str]]:
+        """Inject or clamp the trailing .limit(n) to the row cap."""
+        injected: list[str] = []
+        max_rows: int = limits.get("max_result_rows", 1000) or 1000
+
+        m = _LIMIT_TRAILING_RE.search(query)
+        if m is None:
+            # No trailing limit — inject one.
+            capped = query.rstrip() + f".limit({max_rows})"
+            injected.append(f"injected .limit({max_rows})")
+            return capped, injected
+
+        existing = int(m.group(1))
+        if existing > max_rows:
+            # Clamp to the allowed maximum.
+            capped = _LIMIT_TRAILING_RE.sub(f".limit({max_rows})", query)
+            injected.append(f"clamped .limit({existing}) -> .limit({max_rows})")
+            return capped, injected
+
+        return query, injected
