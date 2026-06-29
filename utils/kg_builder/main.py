@@ -17,6 +17,7 @@ from .io import ensure_dir, file_sha256, write_json
 from .preprocess.attack import AttackPreprocessor, load_attack_bundle
 from .preprocess.capec import build_capec_graph
 from .registry import write_attack_source_card, write_capec_source_card
+from utils.recovery import prepare_clean_dir
 from .validate import (
     validate_canonical_artifacts,
     validate_cross_backend_exports,
@@ -99,7 +100,12 @@ class KGBuildRunner:
         logger.info("Wrote processed pairs checkpoint: %s", paths.processed_pairs_file)
 
         canonical_dir = paths.graph_canonical_dir
-        ensure_dir(canonical_dir)
+        backup = prepare_clean_dir(canonical_dir, label="canonical")
+        if backup is not None:
+            logger.info(
+                "Backed up existing ATT&CK canonical artifacts to %s before rebuild",
+                backup.backup,
+            )
 
         canonical_file_paths = export_canonical_artifacts(graph, canonical_dir)
         validate_jsonl_artifacts(
@@ -174,7 +180,12 @@ class KGBuildRunner:
         validate_graph(graph)
 
         canonical_dir = paths.capec_graph_canonical_dir
-        ensure_dir(canonical_dir)
+        backup = prepare_clean_dir(canonical_dir, label="canonical")
+        if backup is not None:
+            logger.info(
+                "Backed up existing CAPEC canonical artifacts to %s before rebuild",
+                backup.backup,
+            )
 
         canonical_file_paths = export_canonical_artifacts(
             graph,
