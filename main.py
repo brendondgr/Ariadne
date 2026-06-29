@@ -24,6 +24,7 @@ from utils.infrastructure import docker_start, docker_status, docker_stop, docke
 from utils.kg_builder import KGBuildRunner
 from utils.neo4j_login import create_neo4j_login
 from utils.planner.cli import run_plan_command
+from utils.specialists.cli import run_query_command
 from utils.yolo import YoloRunner
 
 logger = logging.getLogger("ariadne.main")
@@ -287,6 +288,23 @@ VERSION OVERRIDES (--docker start only)
         help="Use the OpenAI-compatible LLM drafter for --plan (default: deterministic)",
     )
 
+    # ── Steps 8-9: Query specialists ──────────────────────────────────────────
+    specialists = parser.add_argument_group(
+        "Query Specialists (steps 8-9)",
+        "Plan a question, then run the Cypher/Gremlin specialists over the plan "
+        "and print the normalized, provenance-linked evidence.",
+    )
+    specialists.add_argument(
+        "--query",
+        metavar="QUESTION",
+        help="Plan a question and run the source-specific specialists over the live graphs",
+    )
+    specialists.add_argument(
+        "--query-llm",
+        action="store_true",
+        help="Use the OpenAI-compatible LLM drafter when planning for --query",
+    )
+
     args = parser.parse_args()
 
     # Determine job type
@@ -311,6 +329,8 @@ VERSION OVERRIDES (--docker start only)
         job_type = f"graph-stop-{args.graph_stop}"
     elif args.plan:
         job_type = "plan"
+    elif args.query:
+        job_type = "query"
     else:
         # If no arguments provided, print help and exit
         parser.print_help()
@@ -380,6 +400,11 @@ VERSION OVERRIDES (--docker start only)
             logger.info("Job completed successfully.")
         elif args.plan:
             code = run_plan_command(args.plan, use_llm=args.plan_llm)
+            if code == 2:
+                sys.exit(2)
+            logger.info("Job completed successfully.")
+        elif args.query:
+            code = run_query_command(args.query, use_llm=args.query_llm)
             if code == 2:
                 sys.exit(2)
             logger.info("Job completed successfully.")
