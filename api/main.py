@@ -14,7 +14,14 @@ from fastapi import FastAPI
 
 from utils.config import load_env
 
-from .models import DockerStateModel, HealthResponse, LiveSourceModel
+from .models import (
+    ConfigResponse,
+    ConfigUpdateRequest,
+    DockerStateModel,
+    HealthResponse,
+    LiveSourceModel,
+)
+from .services.config import apply_update, read_config
 from .services.health import docker_state, live_sources
 
 # Load the central .env once, mirroring main.py's entry-point behaviour.
@@ -46,3 +53,15 @@ def get_health() -> HealthResponse:
         docker=DockerStateModel(available=available, services=services, reason=reason),
         checked_at=_utcnow_iso(),
     )
+
+
+@app.get("/api/config", response_model=ConfigResponse)
+def get_config() -> ConfigResponse:
+    """Return the resolved LLM and connection settings (Neo4j password redacted)."""
+    return read_config()
+
+
+@app.put("/api/config", response_model=ConfigResponse)
+def put_config(request: ConfigUpdateRequest) -> ConfigResponse:
+    """Persist a partial settings update to ``.env`` and return the new config."""
+    return apply_update(request)
