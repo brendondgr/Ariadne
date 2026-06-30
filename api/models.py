@@ -112,3 +112,14 @@ class ConfigUpdateRequest(BaseModel):
     planner: LLMGroupUpdate | None = None
     specialist: LLMGroupUpdate | None = None
     connection: ConnectionUpdate | None = None
+
+
+# ---------------------------------------------------------------------------
+# Query — the federated pipeline request (streamed back as SSE).
+# ---------------------------------------------------------------------------
+
+
+class QueryRequest(BaseModel):
+    question: str = Field(min_length=1)
+    mode: Literal["plan", "query"] = "query"
+    drafter: Literal["deterministic", "llm"] = "deterministic"

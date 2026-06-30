@@ -11,6 +11,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 from fastapi import FastAPI
+from fastapi.responses import StreamingResponse
 
 from utils.config import load_env
 
@@ -20,9 +21,11 @@ from .models import (
     DockerStateModel,
     HealthResponse,
     LiveSourceModel,
+    QueryRequest,
 )
 from .services.config import apply_update, read_config
 from .services.health import docker_state, live_sources
+from .services.query import stream_query_events
 
 # Load the central .env once, mirroring main.py's entry-point behaviour.
 load_env()
@@ -65,3 +68,18 @@ def get_config() -> ConfigResponse:
 def put_config(request: ConfigUpdateRequest) -> ConfigResponse:
     """Persist a partial settings update to ``.env`` and return the new config."""
     return apply_update(request)
+
+
+@app.post("/api/query")
+def post_query(request: QueryRequest) -> StreamingResponse:
+    """Run the federated pipeline, streaming each stage as a Server-Sent Event."""
+    stream = stream_query_events(
+        request.question,
+        mode=request.mode,
+        use_llm=request.drafter == "llm",
+    )
+    return StreamingResponse(
+        stream,
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
