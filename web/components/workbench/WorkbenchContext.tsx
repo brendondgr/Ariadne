@@ -25,6 +25,10 @@ interface WorkbenchState extends RunMachine {
   /** Mobile (<md) conversations drawer. */
   leftOpen: boolean;
   setLeftOpen: (open: boolean) => void;
+  /** Settings panel (LLM + connection config) open state. */
+  settingsOpen: boolean;
+  setSettingsOpen: (open: boolean) => void;
+  openSettings: () => void;
 }
 
 const WorkbenchCtx = createContext<WorkbenchState | null>(null);
@@ -36,12 +40,15 @@ export function WorkbenchProvider({ children }: { children: ReactNode }) {
   const [inspectorOpen, setInspectorOpen] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [leftOpen, setLeftOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const machine = useRunMachine();
 
   const openInspector = useCallback(() => {
     setInspectorOpen(true);
     setDrawerOpen(true);
   }, []);
+
+  const openSettings = useCallback(() => setSettingsOpen(true), []);
 
   const focusStage = useCallback(
     (id: string) => {
@@ -68,8 +75,11 @@ export function WorkbenchProvider({ children }: { children: ReactNode }) {
       openInspector,
       leftOpen,
       setLeftOpen,
+      settingsOpen,
+      setSettingsOpen,
+      openSettings,
     }),
-    [machine, activeTab, focusStageId, focusNonce, focusStage, inspectorOpen, drawerOpen, openInspector, leftOpen],
+    [machine, activeTab, focusStageId, focusNonce, focusStage, inspectorOpen, drawerOpen, openInspector, leftOpen, settingsOpen, openSettings],
   );
 
   return (

@@ -1,0 +1,419 @@
+/**
+ * Adapter: backend payloads → the {@link WorkbenchRun} view-model.
+ *
+ * The components are a pure function of `WorkbenchRun`; this module is the only
+ * place that knows how the FastAPI service's `to_dict()` shapes (Plan,
+ * FederatedEvidence, the probe/answer SSE payloads) map onto the UI types. Every
+ * builder is a pure function so the run machine (see `runMachine.ts`) can call
+ * them incrementally as events stream in, and `buildRun` assembles the final
+ * turn for tests and the completed state.
+ */
+
+import type {
+  Accent,
+  AnswerContent,
+  AnswerParagraph,
+  AnswerSegment,
+  CodeLang,
+  EvidenceRow,
+  ExitCode,
+  FederatedEvidence,
+  JoinCandidate,
+  JoinIndexEntry,
+  JoinPair,
+  LaneRecord,
+  LiveSource,
+  MicroStep,
+  MiniStep,
+  Plan,
+  PlannerStage,
+  ProbeSource,
+  RunStatus,
+  ServerAnswer,
+  ServerAnswerCross,
+  SpecialistLane,
+  SpecialistResult,
+  SpecialistStep,
+  StageStatus,
+  WorkbenchRun,
+} from "./types";
+
+/* ----------------------------- small helpers ----------------------------- */
+
+const BACKEND_ACCENT: Record<string, Accent> = { neo4j: "teal", gremlin: "amber" };
+const SOURCE_BACKEND: Record<string, "neo4j" | "gremlin"> = { attack: "neo4j", capec: "gremlin" };
+
+function backendOf(result: SpecialistResult): "neo4j" | "gremlin" {
+  const prov = result.records.find((r) => r.provenance)?.provenance;
+  if (prov?.backend === "neo4j" || prov?.backend === "gremlin") return prov.backend;
+  return SOURCE_BACKEND[result.task.source] ?? "neo4j";
+}
+
+function accentOf(backend: string): Accent {
+  return BACKEND_ACCENT[backend] ?? "sage";
+}
+
+function accentForSource(source?: string): Accent {
+  return source ? accentOf(SOURCE_BACKEND[source] ?? "neo4j") : "sage";
+}
+
+function langOf(backend: "neo4j" | "gremlin"): CodeLang {
+  return backend === "neo4j" ? "cypher" : "gremlin";
+}
+
+function deriveJoinKey(plan: Plan | null): string {
+  if (plan?.joins?.length) return plan.joins[0].on || plan.joins[0].key;
+  const sq = plan?.sub_questions.find((s) => s.join_key);
+  return sq?.join_key ?? "external_id";
+}
+
+function unique(values: string[]): string[] {
+  return Array.from(new Set(values));
+}
+
+/* ------------------------------ live sources ------------------------------ */
+
+export function buildLiveSources(probe: ProbeSource[]): LiveSource[] {
+  return probe.map((s) => ({
+    backend: s.backend,
+    status: s.live ? "live" : "down",
+    nodes: s.node_count,
+    reason: s.live ? undefined : s.reason,
+  }));
+}
+
+/* ----------------------------- planner stages ----------------------------- */
+
+export function buildPlannerStages(
+  plan: Plan,
+  probe: ProbeSource[],
+  drafter: "deterministic" | "llm",
+): PlannerStage[] {
+  const liveSources = buildLiveSources(probe);
+  const anyLive = probe.some((s) => s.live);
+
+  const probeCode = JSON.stringify(
+    Object.fromEntries(
+      probe.map((s) => [s.backend, { status: s.live ? "live" : "down", nodes: s.node_count }]),
+    ),
+    null,
+    2,
+  );
+  const probeSummary =
+    probe
+      .map((s) => `${s.backend} ${s.live ? "LIVE" : "DOWN"} · ${s.live ? s.node_count.toLocaleString() : "—"}`)
+      .join(" · ") || "no sources probed";
+
+  const lastTrace = plan.trace.length ? plan.trace[plan.trace.length - 1] : null;
+  const gateOk = lastTrace ? lastTrace.gate_ok : !plan.partial;
+  const joinKey = deriveJoinKey(plan);
+  const entities = unique(plan.sub_questions.flatMap((sq) => sq.entities)).slice(0, 6);
+
+  return [
+    {
+      id: "stage-probe",
+      index: "①",
+      title: "Probe live sources",
+      status: anyLive ? "pass" : "fail",
+      summary: probeSummary,
+      liveSources,
+      code: `# live_sources()\n${probeCode}`,
+      codeLang: "json",
+    },
+    {
+      id: "stage-draft",
+      index: "②",
+      title: "Draft plan",
+      status: "pass",
+      summary: `drafter ${drafter} · ${plan.sub_questions.length} sub-question(s) proposed`,
+      code: `# proposed sub-questions\n${JSON.stringify(
+        plan.sub_questions.map((sq) => sq.text),
+        null,
+        2,
+      )}`,
+      codeLang: "json",
+    },
+    {
+      id: "stage-gate",
+      index: "③",
+      title: "Plan gate",
+      status: gateOk ? "pass" : "partial",
+      summary: gateOk
+        ? `passed · ${plan.trace.length || 1} iteration(s)`
+        : `${lastTrace?.reasons.length ?? 0} rejection(s)`,
+      shield: true,
+      tag: drafter,
+      code: `# EvaluatorTrace · plan_gate\n${JSON.stringify(
+        lastTrace ?? { gate_ok: gateOk, reasons: [] },
+        null,
+        2,
+      )}`,
+      codeLang: "json",
+      codeEmphasis: true,
+    },
+    {
+      id: "stage-emit",
+      index: "④",
+      title: "Emit plan",
+      status: plan.partial ? "partial" : "pass",
+      summary: `entities [${entities.join(", ")}] · join key ${joinKey}`,
+      code: JSON.stringify(
+        {
+          join_keys: plan.joins.map((j) => j.key),
+          unsupported: plan.unsupported.map((u) => u.description),
+          assumptions: plan.assumptions,
+        },
+        null,
+        2,
+      ),
+      codeLang: "json",
+    },
+  ];
+}
+
+/* ------------------------------- lanes ------------------------------------ */
+
+const UI_STEPS: { key: SpecialistStep; label: string }[] = [
+  { key: "intake", label: "intake" },
+  { key: "resolve", label: "resolve" },
+  { key: "draft", label: "draft" },
+  { key: "gate", label: "pre-run gate" },
+  { key: "execute", label: "execute" },
+  { key: "assess", label: "assess" },
+  { key: "normalize", label: "normalize" },
+  { key: "handoff", label: "handoff" },
+];
+
+function laneSteps(result: SpecialistResult): MicroStep[] {
+  const byStep = new Map(result.traces.map((t) => [t.step, t]));
+  const fallback: StageStatus = result.ok ? "pass" : result.partial ? "partial" : "fail";
+  return UI_STEPS.map(({ key, label }) => {
+    const trace = byStep.get(key);
+    const status: StageStatus = trace ? (trace.ok ? "pass" : "fail") : fallback;
+    return { key, label, status, emphasis: key === "gate" || key === "normalize" };
+  });
+}
+
+function laneMs(result: SpecialistResult): number {
+  const exec = result.traces.find((t) => t.step === "execute");
+  const ms = exec?.detail?.["timing_ms"];
+  return typeof ms === "number" ? ms : 0;
+}
+
+function compactRecordJson(label: string, joinValues: string[], provLabel: string): string {
+  return `{ "label":"${label}", "join_values":${JSON.stringify(joinValues)},\n  "provenance":"${provLabel}" }`;
+}
+
+export function buildLane(result: SpecialistResult): SpecialistLane {
+  const backend = backendOf(result);
+  const accent = accentOf(backend);
+  const records: LaneRecord[] = result.records.slice(0, 6).map((rec) => ({
+    id: rec.primary_id || rec.name || "record",
+    accent,
+    name: rec.name,
+    json: compactRecordJson(
+      rec.label,
+      rec.join_values,
+      rec.provenance ? `${rec.provenance.dataset} / ${rec.provenance.backend}` : backend,
+    ),
+  }));
+  return {
+    id: `lane-${backend}`,
+    badge: `${backend === "neo4j" ? "Cypher" : "Gremlin"} · ${result.task.source}`,
+    backend,
+    accent,
+    title: result.task.text || `${result.task.source} specialist`,
+    rows: result.record_count,
+    ms: laneMs(result),
+    language: langOf(backend),
+    query: result.query,
+    steps: laneSteps(result),
+    records,
+  };
+}
+
+/* ------------------------------- answer ----------------------------------- */
+
+function buildJoinPairs(cross: ServerAnswerCross[]): JoinPair[] {
+  return cross.slice(0, 12).map((c) => {
+    const left = c.entries.find((e) => e.source === "capec") ?? c.entries[0];
+    const right =
+      c.entries.find((e) => e.source === "attack") ?? c.entries[1] ?? c.entries[0];
+    return {
+      left: left?.primary_id ?? c.value,
+      leftAccent: accentForSource(left?.source),
+      right: right?.primary_id ?? c.value,
+      rightAccent: accentForSource(right?.source),
+    };
+  });
+}
+
+export function buildAnswer(answer: ServerAnswer | null, joinKey: string): AnswerContent {
+  if (!answer) return { paragraphs: [], joinPairs: [] };
+
+  const paragraphs: AnswerParagraph[] = [];
+  if (answer.headline) paragraphs.push({ segments: [{ kind: "text", text: answer.headline }] });
+
+  for (const section of answer.sections) {
+    const accent = accentOf(section.backend);
+    const segments: AnswerSegment[] = [
+      { kind: "text", text: section.summary + (section.record_ids.length ? "  " : "") },
+    ];
+    section.record_ids.forEach((id, i) => {
+      segments.push({
+        kind: "chip",
+        ref: { id, source: `${section.source}/${section.backend}`, accent, target: `lane-${section.backend}` },
+      });
+      if (i < section.record_ids.length - 1) segments.push({ kind: "text", text: ", " });
+    });
+    paragraphs.push({ segments });
+  }
+
+  if (answer.cross_source.length) {
+    paragraphs.push({
+      segments: [
+        { kind: "text", text: "Cross-source correlation on shared " },
+        { kind: "mono", text: joinKey },
+        { kind: "text", text: `: ${answer.cross_source.length} shared identifier(s).` },
+      ],
+    });
+  }
+
+  if (answer.unsupported?.length) {
+    paragraphs.push({
+      segments: [
+        {
+          kind: "text",
+          text: `Unsupported: ${answer.unsupported.map((u) => u.description).join("; ")}.`,
+        },
+      ],
+    });
+  }
+
+  return { paragraphs, joinPairs: buildJoinPairs(answer.cross_source) };
+}
+
+/* --------------------------- evidence + join tabs ------------------------- */
+
+export function buildEvidenceRows(evidence: FederatedEvidence): EvidenceRow[] {
+  const rows: EvidenceRow[] = [];
+  for (const result of evidence.results) {
+    const accent = accentOf(backendOf(result));
+    for (const rec of result.records) {
+      const prov = rec.provenance;
+      rows.push({
+        id: rec.primary_id || rec.name,
+        accent,
+        label: rec.label,
+        name: rec.name,
+        meta: `join_values: ${JSON.stringify(rec.join_values)} · ${
+          prov ? `${prov.dataset} / ${prov.backend}` : "—"
+        }`,
+      });
+    }
+  }
+  return rows.slice(0, 200);
+}
+
+function pairFromEntries(entries: JoinIndexEntry[], value: string) {
+  const left = entries.find((e) => e.source === "capec") ?? entries[0];
+  const right = entries.find((e) => e.source === "attack") ?? entries[1] ?? entries[0];
+  return {
+    left: left?.primary_id ?? value,
+    leftAccent: accentForSource(left?.source),
+    right: right?.primary_id ?? value,
+    rightAccent: accentForSource(right?.source),
+  };
+}
+
+export function buildJoinIndex(evidence: FederatedEvidence, joinKey: string): JoinCandidate[] {
+  return evidence.cross_source_join_values.slice(0, 200).map((value) => {
+    const pair = pairFromEntries(evidence.join_index[value] ?? [], value);
+    return { ...pair, matchedOn: joinKey, confidence: "high" as const };
+  });
+}
+
+/* ------------------------------- stepper ---------------------------------- */
+
+function buildStepper(
+  plan: Plan | null,
+  evidence: FederatedEvidence | null,
+  liveSources: LiveSource[],
+  status: RunStatus,
+): MiniStep[] {
+  const anyLive = liveSources.some((s) => s.status === "live");
+  const planStatus: StageStatus = plan ? (plan.partial ? "partial" : "pass") : "pending";
+  const specStatus: StageStatus = evidence
+    ? evidence.results.length === 0
+      ? "fail"
+      : evidence.results.every((r) => r.ok) && !evidence.partial
+        ? "pass"
+        : "partial"
+    : "pending";
+  const evidenceStatus: StageStatus = evidence ? (evidence.partial ? "partial" : "pass") : "pending";
+  const answerStatus: StageStatus =
+    status === "answered" ? "pass" : status === "partial" ? "partial" : status === "no_sources" ? "fail" : "pending";
+  const firstLane = evidence?.results[0] ? `lane-${backendOf(evidence.results[0])}` : "stage-gate";
+
+  return [
+    { key: "probe", label: "Probe", status: anyLive ? "pass" : "fail", target: "stage-probe" },
+    { key: "plan", label: "Plan", status: planStatus, target: "stage-gate" },
+    { key: "specialists", label: "Specialists", status: specStatus, target: firstLane },
+    { key: "evidence", label: "Evidence", status: evidenceStatus, target: "stage-emit" },
+    { key: "answer", label: "Answer", status: answerStatus, target: "stage-emit" },
+  ];
+}
+
+/* --------------------------------- buildRun ------------------------------- */
+
+export interface RunInputs {
+  id: string;
+  question: string;
+  mode: "plan" | "query";
+  drafter: "deterministic" | "llm";
+  liveSources: ProbeSource[];
+  plan: Plan | null;
+  evidence: FederatedEvidence | null;
+  answer: ServerAnswer | null;
+  status: RunStatus;
+  exitCode: ExitCode;
+  elapsedMs: number;
+}
+
+function emptyEvidence(request: string): FederatedEvidence {
+  return {
+    request,
+    results: [],
+    unsupported: [],
+    skipped: [],
+    partial: false,
+    join_index: {},
+    cross_source_join_values: [],
+  };
+}
+
+/** Assemble a complete {@link WorkbenchRun} from collected backend payloads. */
+export function buildRun(inputs: RunInputs): WorkbenchRun {
+  const { id, question, mode, drafter, liveSources: probe, plan, evidence, answer, status, exitCode, elapsedMs } = inputs;
+  const joinKey = deriveJoinKey(plan);
+  const wbLive = buildLiveSources(probe);
+
+  return {
+    id,
+    question,
+    mode,
+    drafter,
+    status,
+    exitCode,
+    elapsedMs,
+    liveSources: wbLive,
+    stepper: buildStepper(plan, evidence, wbLive, status),
+    plannerStages: plan ? buildPlannerStages(plan, probe, drafter) : [],
+    lanes: evidence ? evidence.results.map(buildLane) : [],
+    answer: buildAnswer(answer, joinKey),
+    evidence: evidence ? buildEvidenceRows(evidence) : [],
+    joinIndex: evidence ? buildJoinIndex(evidence, joinKey) : [],
+    joinKey,
+    federated: evidence ?? emptyEvidence(question),
+  };
+}

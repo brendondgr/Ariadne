@@ -12,20 +12,23 @@ Quick map of the Ariadne repo — where things live and what to open first.
 | Change history | [`docs/changelog.jsonl`](changelog.jsonl) |
 | Agent rules (read before coding) | [`docs/skills/global-project-rules/SKILL.md`](skills/global-project-rules/SKILL.md) |
 | CLI entry point | [`main.py`](../main.py) |
+| Web workbench launcher (API + UI) | [`app.py`](../app.py) |
 
 ## Top-Level Layout
 
 ```text
 ariadne/
 ├── main.py              # CLI: --download, --build, --docker, --dataset, --graph
+├── app.py               # Launch the web workbench: FastAPI api/ + Next.js web/
 ├── .env.example         # Central project config template (copy to .env)
 ├── pyproject.toml       # Python deps & scripts (uv)
+├── api/                 # FastAPI service wrapping utils/ for the web UI
 ├── data/                # Datasets & graph artifacts (mostly gitignored)
 ├── docker/              # Neo4j + Gremlin Compose stack
 ├── docs/                # Project docs, skills, plans
 ├── logs/                # Sequential job logs (gitignored)
 ├── utils/               # Python utilities by domain
-└── web/                 # Analyst demo UI (Next.js App Router)
+└── web/                 # Analyst workbench UI (Next.js App Router)
 ```
 
 Agent tool folders (`.cursor/`, `.claude/`, `.agents/`) are **pointers only** — canonical instructions live under `docs/skills/`.
@@ -102,25 +105,56 @@ Populate with `uv run main.py --download` then `uv run main.py --build attack` a
 
 Managed via `uv run main.py --docker start|stop|status`. Image versions, host ports, and credentials are configured centrally in the root `.env` — see the [Configuration](../README.md#configuration) section.
 
-## Web Demo (`web/`)
+## Backend API (`api/`)
 
-Next.js (App Router) + TypeScript + Tailwind v4 + Motion analyst-facing UI using
-the Woven Dusk design system — the three-region analyst workbench (header infra
-pills · conversations rail · chat thread with Answer Cards · step-by-step
-inspector). Renders typed mock fixtures of the planner/specialist trace objects
-(`lib/types.ts`, `lib/fixtures.ts`); animations are driven by an event-based
-run-state machine (`lib/runMachine.ts`) ready for a live streaming backend.
+A thin **FastAPI** service that exposes the `utils/` capabilities to the web UI
+without re-implementing any logic. The Next.js app proxies `/api/*` here (same
+origin, no CORS — see `web/next.config.ts` `rewrites`).
+
+| Endpoint | Wraps | Notes |
+|----------|-------|-------|
+| `GET /api/health` | `graph_loader` TCP probe + `infrastructure.docker_status` | Per-backend live/down/starting; never raises |
+| `GET·PUT /api/config` | `PlannerConfig`/`SpecialistConfig.from_env` + `config.set_env_values` | View/edit LLM + connection env; password redacted |
+| `POST /api/query` | `PlanningAgent.plan` → `SpecialistRouter.run_plan` | SSE stream: probe → plan → specialist* → evidence → answer → done |
+| `POST /api/admin` | `docker_*`, `run_graph_command`, `download`, `kg_builder` | SSE log stream for the remaining main.py modes |
+
+| Path | Contents |
+|------|----------|
+| `api/main.py` | FastAPI app + route handlers |
+| `api/models.py` | Pydantic request/response models |
+| `api/services/` | `health.py`, `config.py`, `query.py`, `infra.py` |
+| `api/tests/` | Contract tests (`uv run python -m pytest api/tests/`) |
+
+The query pipeline is synchronous, so the SSE endpoints run it in a worker
+thread and emit a real event at each boundary; the answer is composed
+deterministically from the per-source summaries + join index (the pipeline emits
+evidence, not prose).
+
+## Web Workbench (`web/`)
+
+Next.js (App Router) + TypeScript + Tailwind v4 + Motion analyst UI using the
+Woven Dusk design system — the three-region workbench (header infra pills ·
+conversations rail · chat thread with Answer Cards · step-by-step inspector).
+The composer submits questions to `POST /api/query` and the event-driven run
+machine advances the animated trace from the real SSE events; a settings modal
+edits LLM/connection config and runs infra actions. TypeScript types
+(`lib/types.ts`) mirror the backend `to_dict()` shapes; `lib/fixtures.ts` is the
+idle/demo run.
 
 | Path | Contents |
 |------|----------|
 | `app/page.tsx`, `app/layout.tsx` | App Router root + workbench composition |
 | `app/globals.css` | Woven Dusk tokens (`@theme`) + keyframes |
-| `components/` | `shell/`, `header/`, `left/`, `center/`, `inspector/`, `ui/`, `workbench/` |
-| `lib/types.ts`, `lib/fixtures.ts` | Trace-object types + sample run |
-| `lib/runMachine.ts`, `lib/motion.ts` | Event-based animation seam |
+| `components/` | `shell/`, `header/`, `left/`, `center/`, `inspector/`, `settings/`, `ui/`, `workbench/` |
+| `lib/api.ts` | Typed client + SSE helpers (`getHealth`, `getConfig`, `streamQuery`, `streamAdmin`) |
+| `lib/adapt.ts` | Backend payloads → `WorkbenchRun` view-model |
+| `lib/runMachine.ts`, `lib/motion.ts` | Event-driven run controller + animation variants |
+| `lib/types.ts`, `lib/fixtures.ts` | Trace-object + API types, idle/demo run |
 
-Run `cd web && npm run dev`; build with `npm run build`, lint with
-`npm run lint`, and test fixtures with `npm test` after changes.
+Launch the whole workbench (API + web) from the repo root with `python app.py`
+(`--prod` for a production build, `--port`/`--api-port`/`--host` to override).
+For the web app alone: `cd web && npm run dev`; build with `npm run build`, lint
+with `npm run lint`, and test with `npm test` (adapter + fixture contracts).
 
 ## Finding Things Fast
 
@@ -142,4 +176,12 @@ Run `cd web && npm run dev`; build with `npm run build`, lint with
 
 ## Not Yet in Repo
 
-Planned per roadmap: the synthesis/reporting agent and full end-to-end pipeline wiring + evaluation. ATT&CK and CAPEC canonical builds and runtime loading (`utils/kg_builder/`, `utils/graph_loader/`), the federated planning agent (`utils/planner/`), and the Cypher/Gremlin query specialists (`utils/specialists/`) are implemented; Gremlin is the primary CAPEC runtime backend.
+Planned per roadmap: the synthesis/reporting **agent** (an LLM that turns the
+federated evidence into prose). The web workbench currently composes its answer
+**deterministically** from the specialists' grounded summaries + join index — no
+fabrication — which is the seam that agent would later replace. ATT&CK and CAPEC
+canonical builds and runtime loading (`utils/kg_builder/`, `utils/graph_loader/`),
+the federated planning agent (`utils/planner/`), the Cypher/Gremlin query
+specialists (`utils/specialists/`), the FastAPI service (`api/`), and the wired
+Next.js workbench (`web/`) are implemented; Gremlin is the primary CAPEC runtime
+backend.

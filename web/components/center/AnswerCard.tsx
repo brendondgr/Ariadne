@@ -47,13 +47,29 @@ function AnswerSkeleton() {
   );
 }
 
+/** Shown when the stream fails (network error, backend exception). */
+function AnswerError({ message }: { message: string }) {
+  return (
+    <div
+      className="max-w-[92%] rounded-[4px_13px_13px_13px] bg-surface px-[18px] py-5"
+      style={{ boxShadow: "rgba(201,146,74,0.6) 0 0 0 1px" }}
+    >
+      <div className="mb-2 font-mono text-[11px] uppercase tracking-[0.08em] text-secondary">
+        Query failed
+      </div>
+      <p className="m-0 text-sm leading-[1.6] text-text-soft">{message}</p>
+    </div>
+  );
+}
+
 /** The structured assistant turn: status stepper, grounded prose with inline
  *  provenance chips, and a footer of join candidates + evidence actions. */
 export function AnswerCard({ run }: { run: WorkbenchRun }) {
-  const { setActiveTab, openInspector, statusOf, replaying } = useWorkbench();
+  const { setActiveTab, openInspector, statusOf, replaying, error } = useWorkbench();
   const answered = statusOf("answer", "pass") === "pass";
 
   if (replaying && !answered) return <AnswerSkeleton />;
+  if (error && !replaying) return <AnswerError message={error} />;
 
   const openRawJson = () => {
     setActiveTab("raw");
