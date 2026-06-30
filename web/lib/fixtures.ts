@@ -241,6 +241,7 @@ export const wmiCapecRun: WorkbenchRun = {
   status: "answered",
   exitCode: 0,
   elapsedMs: 318,
+  createdAt: 0,
   liveSources: [
     { backend: "neo4j", status: "live", nodes: 12540 },
     { backend: "gremlin", status: "live", nodes: 8210 },
@@ -477,6 +478,12 @@ export const wmiCapecRun: WorkbenchRun = {
   ],
   joinKey: "external_id",
   federated: FEDERATED,
+  // The seeded demo has no captured probe/plan/answer payloads or event log;
+  // real streamed turns populate these for the Raw JSON tab.
+  rawProbe: [],
+  rawPlan: null,
+  rawAnswer: null,
+  events: [],
 };
 
 export const initialRun = wmiCapecRun;

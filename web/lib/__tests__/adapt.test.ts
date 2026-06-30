@@ -195,6 +195,28 @@ describe("buildRun incremental / partial states", () => {
     expect(run.federated.results).toHaveLength(0);
   });
 
+  it("retains the raw payloads + ordered event log for the Raw JSON tab", () => {
+    const events: import("../types").QueryEvent[] = [
+      { type: "probe", data: { live_sources: PROBE } },
+      { type: "plan", data: { plan: PLAN, target_sources: ["attack", "capec"] } },
+      { type: "evidence", data: { evidence: FED } },
+      { type: "done", data: { status: "answered", exit_code: 0 } },
+    ];
+    const run = buildRun({ ...wmiInputs(), createdAt: 1234, events });
+    expect(run.createdAt).toBe(1234);
+    expect(run.rawPlan).toEqual(PLAN);
+    expect(run.rawProbe).toEqual(PROBE);
+    expect(run.rawAnswer?.status).toBe("answered");
+    expect(run.events.map((e) => e.type)).toEqual(["probe", "plan", "evidence", "done"]);
+  });
+
+  it("defaults raw fields when no events/createdAt are supplied", () => {
+    const run = buildRun(wmiInputs());
+    expect(run.createdAt).toBe(0);
+    expect(run.events).toEqual([]);
+    expect(run.rawProbe).toEqual(PROBE); // probe always mirrors the liveSources input
+  });
+
   it("marks a down backend as down with a reason", () => {
     const sources = buildLiveSources([
       { ...PROBE[0], live: false, node_count: 0, reason: "no TCP connection to 127.0.0.1:5456" },

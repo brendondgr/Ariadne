@@ -28,6 +28,7 @@ import type {
   Plan,
   PlannerStage,
   ProbeSource,
+  QueryEvent,
   RunStatus,
   ServerAnswer,
   ServerAnswerCross,
@@ -378,6 +379,10 @@ export interface RunInputs {
   status: RunStatus;
   exitCode: ExitCode;
   elapsedMs: number;
+  /** Wall-clock submit time; optional so existing callers/tests need no change. */
+  createdAt?: number;
+  /** The ordered SSE event log captured for this turn (Raw JSON event stream). */
+  events?: QueryEvent[];
 }
 
 function emptyEvidence(request: string): FederatedEvidence {
@@ -406,6 +411,7 @@ export function buildRun(inputs: RunInputs): WorkbenchRun {
     status,
     exitCode,
     elapsedMs,
+    createdAt: inputs.createdAt ?? 0,
     liveSources: wbLive,
     stepper: buildStepper(plan, evidence, wbLive, status),
     plannerStages: plan ? buildPlannerStages(plan, probe, drafter) : [],
@@ -415,5 +421,10 @@ export function buildRun(inputs: RunInputs): WorkbenchRun {
     joinIndex: evidence ? buildJoinIndex(evidence, joinKey) : [],
     joinKey,
     federated: evidence ?? emptyEvidence(question),
+    // Raw payloads kept verbatim for the Raw JSON tab + the literal event log.
+    rawProbe: probe,
+    rawPlan: plan,
+    rawAnswer: answer,
+    events: inputs.events ?? [],
   };
 }

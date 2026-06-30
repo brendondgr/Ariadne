@@ -3,7 +3,13 @@ import { Pill } from "@/components/ui/Pill";
 
 /** A single sidebar conversation row. Active rows get a teal thread-edge and a
  *  brighter title; idle rows lighten on hover. */
-export function ConversationItem({ convo }: { convo: ConversationSummary }) {
+export function ConversationItem({
+  convo,
+  onClick,
+}: {
+  convo: ConversationSummary;
+  onClick?: () => void;
+}) {
   const active = !!convo.active;
   const modeAccent = convo.mode === "query" ? "teal" : "sage";
   const modeLabel = convo.mode === "query" ? "Query" : "Plan";
@@ -11,6 +17,7 @@ export function ConversationItem({ convo }: { convo: ConversationSummary }) {
   return (
     <button
       type="button"
+      onClick={onClick}
       aria-current={active ? "page" : undefined}
       className={`group relative mb-0.5 flex w-full flex-col gap-1 rounded-[9px] px-3 py-2.5 text-left transition-colors ${
         active ? "bg-bg pl-[15px]" : "hover:bg-[rgba(27,33,34,0.65)]"

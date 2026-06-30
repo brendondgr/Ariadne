@@ -1,11 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type {
   ExitCode,
   FederatedEvidence,
   Plan,
   ProbeSource,
+  QueryEvent,
   RunStatus,
   ServerAnswer,
   SpecialistResult,
@@ -17,12 +18,13 @@ import { streamQuery, type QueryRequestBody } from "./api";
 import { initialRun } from "./fixtures";
 
 /**
- * The event-driven run controller. `submit()` opens the `/api/query` SSE stream
- * and advances `liveStatus` + rebuilds the `WorkbenchRun` as each real event
- * arrives (probe → plan → per-specialist → evidence → answer → done). The UI
- * animates off `statusOf`, so the same status transitions a live backend emits
- * drive the choreography. `replay()` is the offline demo: a timed sweep over the
- * current run's stages, used by the Run/Replay controls when no query is live.
+ * The event-driven, multi-turn run controller. `submit()` appends a NEW turn to
+ * the conversation and opens the `/api/query` SSE stream, advancing `liveStatus`
+ * + rebuilding that turn's `WorkbenchRun` as each real event arrives
+ * (probe → plan → per-specialist → evidence → answer → done) while also retaining
+ * the literal ordered event log + raw payloads on the turn. Past turns render
+ * statically from their own baked status; only the streaming turn is "live"
+ * (`streamingRunId`). `replay()` is the offline demo over the active turn.
  */
 
 export interface RunFrame {
@@ -59,18 +61,42 @@ export const REPLAY_FRAMES: RunFrame[] = [
 
 const LAST_AT = REPLAY_FRAMES[REPLAY_FRAMES.length - 1].at;
 
+/** A blank turn used as the active-run fallback for a fresh (empty) conversation. */
+export const EMPTY_RUN: WorkbenchRun = buildRun({
+  id: "empty",
+  question: "",
+  mode: "query",
+  drafter: "deterministic",
+  liveSources: [],
+  plan: null,
+  evidence: null,
+  answer: null,
+  status: "idle",
+  exitCode: 0,
+  elapsedMs: 0,
+});
+
 export interface RunMachine {
-  /** The current assistant turn the UI renders. */
+  /** Every assistant turn in the conversation, oldest first. */
+  runs: WorkbenchRun[];
+  /** The selected turn the inspector + header reflect. */
   run: WorkbenchRun;
+  activeRunId: string;
+  /** The turn currently streaming (live animation), or null when idle. */
+  streamingRunId: string | null;
   /** True while a demo replay OR a live query is animating. */
   replaying: boolean;
   /** Last stream error, if any. */
   error: string | null;
   liveStatus: Record<string, StageStatus>;
-  /** Offline demo: replay the current run's stages on a timer. */
+  /** Offline demo: replay the active turn's stages on a timer. */
   replay: () => void;
-  /** Run a real question against the backend, streaming the result. */
+  /** Run a real question against the backend, appending + streaming a new turn. */
   submit: (req: QueryRequestBody) => void;
+  /** Select a turn (drives the inspector + header). */
+  selectRun: (id: string) => void;
+  /** Clear the conversation to a fresh, empty thread. */
+  newConversation: () => void;
   /** Cancel an in-flight query / demo. */
   cancel: () => void;
   /** Effective status for a node: live during replay/stream, else the static value. */
@@ -103,7 +129,9 @@ function inProgressEvidence(
 }
 
 export function useRunMachine(): RunMachine {
-  const [run, setRun] = useState<WorkbenchRun>(initialRun);
+  const [runs, setRuns] = useState<WorkbenchRun[]>([initialRun]);
+  const [activeRunId, setActiveRunId] = useState<string>(initialRun.id);
+  const [streamingRunId, setStreamingRunId] = useState<string | null>(null);
   const [liveStatus, setLiveStatus] = useState<Record<string, StageStatus>>({});
   const [replaying, setReplaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -112,8 +140,8 @@ export function useRunMachine(): RunMachine {
   const abort = useRef<AbortController | null>(null);
   const seq = useRef(0);
 
-  // Accumulators for the in-flight stream.
-  const meta = useRef({ id: "turn-1", question: "", mode: "query" as "plan" | "query", drafter: "deterministic" as "deterministic" | "llm" });
+  // Accumulators for the in-flight stream (the streaming turn).
+  const meta = useRef({ id: "", question: "", mode: "query" as "plan" | "query", drafter: "deterministic" as "deterministic" | "llm" });
   const probe = useRef<ProbeSource[]>([]);
   const plan = useRef<Plan | null>(null);
   const results = useRef<SpecialistResult[]>([]);
@@ -123,6 +151,8 @@ export function useRunMachine(): RunMachine {
   const status = useRef<RunStatus>("running");
   const exitCode = useRef<ExitCode>(0);
   const startedAt = useRef(0);
+  const createdAt = useRef(0);
+  const events = useRef<QueryEvent[]>([]);
 
   const clearTimers = useCallback(() => {
     timers.current.forEach((t) => clearTimeout(t));
@@ -137,6 +167,16 @@ export function useRunMachine(): RunMachine {
     setLiveStatus((prev) => ({ ...prev, ...patch }));
   }, []);
 
+  /** Insert or replace a turn in `runs` by id (preserving order). */
+  const upsertRun = useCallback((built: WorkbenchRun) => {
+    setRuns((prev) =>
+      prev.some((r) => r.id === built.id)
+        ? prev.map((r) => (r.id === built.id ? built : r))
+        : [...prev, built],
+    );
+  }, []);
+
+  /** Rebuild the streaming turn from the current accumulators. */
   const rebuild = useCallback(() => {
     const ev =
       evidence.current ??
@@ -155,30 +195,47 @@ export function useRunMachine(): RunMachine {
       status: status.current,
       exitCode: exitCode.current,
       elapsedMs: startedAt.current ? Math.round(performance.now() - startedAt.current) : 0,
+      createdAt: createdAt.current,
+      events: [...events.current],
     };
-    setRun(buildRun(inputs));
-  }, []);
+    upsertRun(buildRun(inputs));
+  }, [upsertRun]);
 
   const cancel = useCallback(() => {
     clearTimers();
     abort.current?.abort();
     abort.current = null;
     setReplaying(false);
+    setStreamingRunId(null);
   }, [clearTimers]);
 
   useEffect(() => cancel, [cancel]);
 
-  // -- offline demo replay ---------------------------------------------------
+  const selectRun = useCallback((id: string) => setActiveRunId(id), []);
+
+  const newConversation = useCallback(() => {
+    cancel();
+    setError(null);
+    setLiveStatus({});
+    setRuns([]);
+    setActiveRunId("");
+  }, [cancel]);
+
+  // -- offline demo replay (animates the active turn) ------------------------
   const replay = useCallback(() => {
     cancel();
     setReplaying(true);
     setError(null);
     setLiveStatus({});
+    setStreamingRunId(activeRunId);
     for (const frame of REPLAY_FRAMES) {
       pushTimer(() => setLiveStatus((prev) => ({ ...prev, ...frame.set })), frame.at);
     }
-    pushTimer(() => setReplaying(false), LAST_AT + 250);
-  }, [cancel, pushTimer]);
+    pushTimer(() => {
+      setReplaying(false);
+      setStreamingRunId(null);
+    }, LAST_AT + 250);
+  }, [cancel, pushTimer, activeRunId]);
 
   // -- live query ------------------------------------------------------------
   const submit = useCallback(
@@ -189,8 +246,9 @@ export function useRunMachine(): RunMachine {
       setLiveStatus({});
 
       seq.current += 1;
+      const id = `q-${seq.current}`;
       meta.current = {
-        id: `turn-${seq.current}`,
+        id,
         question: req.question,
         mode: req.mode,
         drafter: req.drafter,
@@ -204,10 +262,17 @@ export function useRunMachine(): RunMachine {
       status.current = "running";
       exitCode.current = 0;
       startedAt.current = performance.now();
-      rebuild(); // show the question + an empty in-progress turn immediately
+      createdAt.current = Date.now();
+      events.current = [];
+      setStreamingRunId(id);
+      setActiveRunId(id);
+      rebuild(); // append the question + an empty in-progress turn immediately
 
       const finish = () => {
-        pushTimer(() => setReplaying(false), 320);
+        pushTimer(() => {
+          setReplaying(false);
+          setStreamingRunId(null);
+        }, 320);
         abort.current = null;
       };
 
@@ -217,6 +282,7 @@ export function useRunMachine(): RunMachine {
       void streamQuery(
         req,
         (event) => {
+          events.current = [...events.current, event];
           switch (event.type) {
             case "status": {
               const phase = event.data.phase;
@@ -311,13 +377,23 @@ export function useRunMachine(): RunMachine {
     ? PLANNER_STAGE_IDS.filter((id) => liveStatus[id] === "pass").length
     : PLANNER_STAGE_IDS.length;
 
+  const run = useMemo(
+    () => runs.find((r) => r.id === activeRunId) ?? runs[runs.length - 1] ?? EMPTY_RUN,
+    [runs, activeRunId],
+  );
+
   return {
+    runs,
     run,
+    activeRunId,
+    streamingRunId,
     replaying,
     error,
     liveStatus,
     replay,
     submit,
+    selectRun,
+    newConversation,
     cancel,
     statusOf,
     completedStages,

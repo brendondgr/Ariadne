@@ -279,6 +279,8 @@ export interface WorkbenchRun {
   status: RunStatus;
   exitCode: ExitCode;
   elapsedMs: number;
+  /** Wall-clock ms (Date.now) the turn was submitted; 0 for the seeded demo. */
+  createdAt: number;
   liveSources: LiveSource[];
   stepper: MiniStep[];
   plannerStages: PlannerStage[];
@@ -289,6 +291,12 @@ export interface WorkbenchRun {
   joinKey: string;
   /** Canonical bundle for the Raw JSON tab — the real `to_dict()` shape. */
   federated: FederatedEvidence;
+  /** Raw backend payloads retained verbatim for the Raw JSON tab (Phase 4). */
+  rawProbe: ProbeSource[];
+  rawPlan: Plan | null;
+  rawAnswer: ServerAnswer | null;
+  /** The literal ordered SSE event log for this turn — the pipeline start to finish. */
+  events: QueryEvent[];
 }
 
 /** A sidebar conversation summary. */

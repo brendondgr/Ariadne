@@ -63,13 +63,18 @@ function AnswerError({ message }: { message: string }) {
 }
 
 /** The structured assistant turn: status stepper, grounded prose with inline
- *  provenance chips, and a footer of join candidates + evidence actions. */
-export function AnswerCard({ run }: { run: WorkbenchRun }) {
+ *  provenance chips, and a footer of join candidates + evidence actions.
+ *
+ *  `live` is true only for the turn currently streaming; past turns render
+ *  statically from their own baked status so they don't react to the global
+ *  stream state. */
+export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boolean }) {
   const { setActiveTab, openInspector, statusOf, replaying, error } = useWorkbench();
-  const answered = statusOf("answer", "pass") === "pass";
+  const cardReplaying = live && replaying;
+  const answered = live ? statusOf("answer", "pass") === "pass" : run.status !== "running";
 
-  if (replaying && !answered) return <AnswerSkeleton />;
-  if (error && !replaying) return <AnswerError message={error} />;
+  if (cardReplaying && !answered) return <AnswerSkeleton />;
+  if (error && live && !replaying) return <AnswerError message={error} />;
 
   const openRawJson = () => {
     setActiveTab("raw");
@@ -82,12 +87,12 @@ export function AnswerCard({ run }: { run: WorkbenchRun }) {
   return (
     <motion.div
       variants={fadeSlideUp}
-      initial={replaying ? "hidden" : false}
+      initial={cardReplaying ? "hidden" : false}
       animate="show"
       className="max-w-[92%] overflow-hidden rounded-[4px_13px_13px_13px] bg-surface"
       style={{ boxShadow: SHADOW.answerCard }}
     >
-      <MiniStepper steps={run.stepper} status={run.status} exitCode={run.exitCode} />
+      <MiniStepper steps={run.stepper} status={run.status} exitCode={run.exitCode} live={live} />
 
       <div className="px-[18px] pb-4 pt-[18px] text-sm leading-[1.62] text-text-soft">
         {run.answer.paragraphs.map((p, i) => (

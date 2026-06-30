@@ -16,7 +16,9 @@ import { RawJsonTab } from "./RawJsonTab";
 /** The inspector's inner content (header, tabs, meter, tab body), shared by the
  *  desktop inline panel and the mobile slide-over drawer. */
 export function InspectorContent({ run, onClose }: { run: WorkbenchRun; onClose: () => void }) {
-  const { activeTab } = useWorkbench();
+  const { activeTab, runs, activeRunId } = useWorkbench();
+  const turnIndex = runs.findIndex((r) => r.id === activeRunId);
+  const turnLabel = turnIndex >= 0 ? `turn #${turnIndex + 1}` : "no turn";
   return (
     <div className="flex h-full min-h-0 w-full flex-col">
       <div className="flex-[0_0_auto] px-4 pt-[13px]">
@@ -25,7 +27,7 @@ export function InspectorContent({ run, onClose }: { run: WorkbenchRun; onClose:
             <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-text-muted">
               Inspector
             </span>
-            <span className="text-[12px] text-[#c9c6bd]">— turn #1</span>
+            <span className="text-[12px] text-[#c9c6bd]">— {turnLabel}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <RunController />
