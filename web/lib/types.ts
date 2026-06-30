@@ -300,3 +300,103 @@ export interface ConversationSummary {
   group: string;
   active?: boolean;
 }
+
+/* ============================================================
+ * API wire types (mirrors of the FastAPI service responses/events)
+ * ============================================================ */
+
+/** One backend in `GET /api/health`. */
+export interface ApiLiveSource {
+  backend: string;
+  status: "live" | "down" | "starting";
+  uri: string;
+  nodes?: number | null;
+  reason?: string | null;
+}
+
+export interface ApiHealth {
+  sources: ApiLiveSource[];
+  docker: { available: boolean; services: Record<string, string>; reason?: string | null };
+  checked_at: string;
+}
+
+/** Resolved LLM settings for one agent in `GET /api/config`. */
+export interface ApiLLMGroup {
+  enabled: boolean;
+  base_url: string;
+  model: string;
+  timeout_s: number;
+  max_tokens: number;
+}
+
+export interface ApiConfig {
+  llm: { planner: ApiLLMGroup; specialist: ApiLLMGroup };
+  connection: {
+    neo4j_uri: string;
+    neo4j_user: string;
+    neo4j_password_set: boolean;
+    gremlin_uri: string;
+  };
+}
+
+/** Partial update body for `PUT /api/config`. */
+export interface ApiConfigUpdate {
+  planner?: Partial<Omit<ApiLLMGroup, never>>;
+  specialist?: Partial<Omit<ApiLLMGroup, never>>;
+  connection?: {
+    neo4j_uri?: string;
+    neo4j_user?: string;
+    neo4j_password?: string;
+    gremlin_uri?: string;
+  };
+}
+
+/** One live source as emitted by the `probe` SSE event (richer than ApiLiveSource). */
+export interface ProbeSource {
+  dataset: string;
+  backend: string;
+  endpoint: string;
+  live: boolean;
+  node_count: number;
+  observed_labels: string[];
+  reason: string;
+}
+
+/** One section of the server-composed answer (`answer` SSE event). */
+export interface ServerAnswerSection {
+  source: string;
+  backend: string;
+  ok: boolean;
+  partial: boolean;
+  summary: string;
+  record_ids: string[];
+  record_count: number;
+}
+
+export interface ServerAnswerCross {
+  value: string;
+  entries: JoinIndexEntry[];
+}
+
+export interface ServerAnswer {
+  headline: string;
+  sections: ServerAnswerSection[];
+  cross_source: ServerAnswerCross[];
+  unsupported: UnsupportedPart[];
+  status?: RunStatus;
+  exit_code?: ExitCode;
+}
+
+/** The discriminated union of Server-Sent Events `POST /api/query` emits. */
+export type QueryEvent =
+  | { type: "status"; data: { phase: string; message?: string; count?: number } }
+  | { type: "probe"; data: { live_sources: ProbeSource[] } }
+  | { type: "plan"; data: { plan: Plan; target_sources: string[] } }
+  | { type: "specialist"; data: { result: SpecialistResult; index: number; total: number } }
+  | { type: "skipped"; data: { sub_question: string; source: string; reason: string } }
+  | { type: "evidence"; data: { evidence: FederatedEvidence } }
+  | { type: "answer"; data: ServerAnswer }
+  | { type: "done"; data: { status: RunStatus; exit_code: ExitCode; message?: string } }
+  | { type: "error"; data: { message: string } };
+
+export type QueryEventType = QueryEvent["type"];
