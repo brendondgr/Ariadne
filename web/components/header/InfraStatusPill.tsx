@@ -18,15 +18,21 @@ export function InfraStatusPill({ source }: { source: LiveSource }) {
 
   const detail =
     source.status === "live"
-      ? `${STATE_LABEL.live} · ${source.nodes?.toLocaleString() ?? "—"}`
+      ? source.nodes != null
+        ? `${STATE_LABEL.live} · ${source.nodes.toLocaleString()}`
+        : STATE_LABEL.live
       : source.status === "down"
-        ? `${STATE_LABEL.down}${source.reason ? ` · ${source.reason}` : ""}`
+        ? STATE_LABEL.down
         : STATE_LABEL.starting;
 
   return (
     <div
       title={`${source.backend} · ${
-        source.status === "live" ? `${source.nodes?.toLocaleString()} nodes loaded` : source.status
+        source.status === "live"
+          ? source.nodes != null
+            ? `${source.nodes.toLocaleString()} nodes loaded`
+            : "reachable"
+          : source.reason ?? source.status
       }`}
       className="flex items-center gap-[7px] rounded-full py-1 pl-[9px] pr-[11px]"
       style={{ background: a.tintBg, boxShadow: `${a.ring} 0 0 0 1px` }}

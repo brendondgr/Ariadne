@@ -6,6 +6,7 @@ import { ConversationsPanel } from "@/components/left/ConversationsPanel";
 import { ChatThread } from "@/components/center/ChatThread";
 import { InspectorPanel } from "@/components/inspector/InspectorPanel";
 import { InspectorDrawer } from "@/components/inspector/InspectorDrawer";
+import { SettingsPanel } from "@/components/settings/SettingsPanel";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 import { conversations } from "@/lib/conversations";
 
@@ -20,12 +21,15 @@ export function Workbench() {
   const activeTitle = conversations.find((c) => c.active)?.title ?? "Conversation";
 
   return (
-    <AppShell
-      header={<HeaderBar liveSources={run.liveSources} />}
-      left={<ConversationsPanel conversations={conversations} />}
-      center={<ChatThread title={activeTitle} run={run} />}
-      inspector={<InspectorPanel run={run} />}
-      inspectorDrawer={<InspectorDrawer run={run} />}
-    />
+    <>
+      <AppShell
+        header={<HeaderBar liveSources={run.liveSources} />}
+        left={<ConversationsPanel conversations={conversations} />}
+        center={<ChatThread title={activeTitle} run={run} />}
+        inspector={<InspectorPanel run={run} />}
+        inspectorDrawer={<InspectorDrawer run={run} />}
+      />
+      <SettingsPanel />
+    </>
   );
 }

@@ -170,6 +170,20 @@ export function CloseIcon({ size = 16, ...props }: IconProps) {
   );
 }
 
+export function GearIcon({ size = 16, ...props }: IconProps) {
+  return (
+    <svg {...base({ size, ...props })} aria-hidden>
+      <circle cx="12" cy="12" r="3.2" stroke="currentColor" strokeWidth="1.5" />
+      <path
+        d="M12 2.5v3M12 18.5v3M21.5 12h-3M5.5 12h-3M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1M18.7 18.7l-2.1-2.1M7.4 7.4 5.3 5.3"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 export function LinkIcon({ size = 12, ...props }: IconProps) {
   return (
     <svg {...base({ size, ...props })} aria-hidden>

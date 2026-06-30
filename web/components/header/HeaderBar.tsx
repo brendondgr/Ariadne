@@ -1,6 +1,9 @@
+"use client";
+
 import type { LiveSource } from "@/lib/types";
-import { ThreadGlyph, UserIcon } from "@/components/ui/icons";
-import { InfraStatusPill } from "./InfraStatusPill";
+import { GearIcon, ThreadGlyph } from "@/components/ui/icons";
+import { useWorkbench } from "@/components/workbench/WorkbenchContext";
+import { InfraStatusBar } from "./InfraStatusBar";
 import { RunPipelineButton } from "./RunPipelineButton";
 import { MobileMenuButton } from "./MobileMenuButton";
 
@@ -8,9 +11,11 @@ interface HeaderBarProps {
   liveSources: LiveSource[];
 }
 
-/** Sticky top bar: wordmark + thread glyph, live infra status pills, the
- *  Run Pipeline action, and the Neo4j credentials entry point. */
+/** Sticky top bar: wordmark + thread glyph, live infra status pills (polled),
+ *  the Run Pipeline action, and the Settings entry point. */
 export function HeaderBar({ liveSources }: HeaderBarProps) {
+  const { openSettings } = useWorkbench();
+
   return (
     <header
       className="z-[5] flex h-[58px] flex-[0_0_auto] items-center gap-3 bg-surface px-3 sm:gap-[18px] sm:px-[18px]"
@@ -27,9 +32,7 @@ export function HeaderBar({ liveSources }: HeaderBarProps) {
       </div>
 
       <div className="ml-1.5 hidden items-center gap-[9px] md:flex">
-        {liveSources.map((source) => (
-          <InfraStatusPill key={source.backend} source={source} />
-        ))}
+        <InfraStatusBar fallback={liveSources} />
       </div>
 
       <div className="flex-1" />
@@ -39,11 +42,12 @@ export function HeaderBar({ liveSources }: HeaderBarProps) {
       </div>
       <button
         type="button"
-        title="Neo4j login / credentials"
-        aria-label="Neo4j login and credentials"
-        className="flex h-9 w-9 items-center justify-center rounded-lg border-0 bg-transparent text-text-muted shadow-border-strong transition-[box-shadow] hover:shadow-[rgba(78,158,150,0.6)_0_0_0_1px]"
+        onClick={openSettings}
+        title="Settings — LLM and connection configuration"
+        aria-label="Open settings"
+        className="flex h-9 w-9 items-center justify-center rounded-lg border-0 bg-transparent text-text-muted shadow-border-strong transition-[box-shadow,color] hover:text-primary hover:shadow-[rgba(78,158,150,0.6)_0_0_0_1px]"
       >
-        <UserIcon />
+        <GearIcon />
       </button>
     </header>
   );
