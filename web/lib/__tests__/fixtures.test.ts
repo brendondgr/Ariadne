@@ -5,12 +5,10 @@ import type { SpecialistStep } from "../types";
 const EXPECTED_STEPS: SpecialistStep[] = [
   "intake",
   "resolve",
-  "draft",
   "gate",
   "execute",
   "assess",
   "normalize",
-  "handoff",
 ];
 
 describe("wmiCapecRun fixture", () => {
@@ -36,7 +34,7 @@ describe("wmiCapecRun fixture", () => {
     expect(gate?.shield).toBe(true);
   });
 
-  it("runs two specialist lanes, each with all eight micro-steps", () => {
+  it("runs two specialist lanes, each with all six canonical micro-steps", () => {
     expect(wmiCapecRun.lanes).toHaveLength(2);
     for (const lane of wmiCapecRun.lanes) {
       expect(lane.steps.map((s) => s.key)).toEqual(EXPECTED_STEPS);

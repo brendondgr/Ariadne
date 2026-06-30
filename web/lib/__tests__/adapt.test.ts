@@ -12,12 +12,10 @@ import type {
 const EXPECTED_STEPS: SpecialistStep[] = [
   "intake",
   "resolve",
-  "draft",
   "gate",
   "execute",
   "assess",
   "normalize",
-  "handoff",
 ];
 
 const FED: FederatedEvidence = wmiCapecRun.federated;
@@ -127,7 +125,7 @@ describe("buildRun adapter", () => {
     expect(run.plannerStages.find((s) => s.id === "stage-probe")?.status).toBe("pass");
   });
 
-  it("builds one lane per source with all eight micro-steps and the right accent", () => {
+  it("builds one lane per source with all six canonical micro-steps and the right accent", () => {
     expect(run.lanes.map((l) => l.id)).toEqual(["lane-neo4j", "lane-gremlin"]);
     const [neo, grem] = run.lanes;
     expect(neo.accent).toBe("teal");
@@ -169,6 +167,20 @@ describe("buildRun adapter", () => {
     expect(run.answer.joinPairs).toHaveLength(2);
     const hasChip = run.answer.paragraphs.some((p) => p.segments.some((s) => s.kind === "chip"));
     expect(hasChip).toBe(true);
+  });
+
+  it("each lane has traceEntries, task.entities populated, and includes a normalize entry", () => {
+    for (const lane of run.lanes) {
+      expect(lane.traceEntries.length).toBeGreaterThanOrEqual(1);
+      expect(lane.traceEntries.some((e) => e.step === "normalize")).toBe(true);
+      expect(lane.task.entities.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("buildPlannerStages gate stage code includes the full iteration trace", () => {
+    const gateStage = run.plannerStages.find((s) => s.id === "stage-gate");
+    expect(gateStage).toBeDefined();
+    expect(gateStage!.code).toContain("iteration");
   });
 });
 

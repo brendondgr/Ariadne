@@ -61,16 +61,14 @@ export interface Plan {
   trace: PlanTraceIteration[];
 }
 
-/** The eight checkpoints of the specialist loop, in order. */
+/** The six canonical checkpoints of the specialist loop, in order. */
 export type SpecialistStep =
   | "intake"
   | "resolve"
-  | "draft"
   | "gate"
   | "execute"
   | "assess"
-  | "normalize"
-  | "handoff";
+  | "normalize";
 
 /** Deterministic grade emitted at a specialist checkpoint. */
 export interface EvaluatorTrace {
@@ -187,13 +185,33 @@ export interface PlannerStage {
   codeEmphasis?: boolean;
 }
 
-/** A single one of the eight specialist micro-steps. */
+/** A single one of the six specialist micro-steps (deduped canonical pill row). */
 export interface MicroStep {
   key: SpecialistStep;
   label: string;
   status: StageStatus;
   /** The two never-cut checkpoints (pre-run gate, normalize) get emphasis. */
   emphasis?: boolean;
+}
+
+/** One evaluator trace entry surfaced in the trace tab (includes repeats for gate/execute retries). */
+export interface LaneTraceEntry {
+  step: SpecialistStep;
+  label: string;
+  status: StageStatus;
+  emphasis: boolean;
+  reasons: string[];
+  detailJson: string;
+}
+
+/** Per-specialist task metadata surfaced in the trace tab. */
+export interface LaneTask {
+  source: string;
+  entities: string[];
+  seedIds: string[];
+  joinKey: string | null;
+  rationale: string;
+  limitsJson: string;
 }
 
 /** A compact evidence record as shown inside a specialist lane. */
@@ -217,6 +235,12 @@ export interface SpecialistLane {
   query: string;
   steps: MicroStep[];
   records: LaneRecord[];
+  /** Full task metadata for the task section. */
+  task: LaneTask;
+  /** All evaluator trace entries in order (includes gate/execute retries). */
+  traceEntries: LaneTraceEntry[];
+  /** Error message if the specialist failed, null otherwise. */
+  error: string | null;
 }
 
 /** A reference to evidence, rendered as an inline provenance chip. */

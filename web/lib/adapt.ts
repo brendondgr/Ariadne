@@ -22,6 +22,8 @@ import type {
   JoinIndexEntry,
   JoinPair,
   LaneRecord,
+  LaneTask,
+  LaneTraceEntry,
   LiveSource,
   MicroStep,
   MiniStep,
@@ -128,7 +130,14 @@ export function buildPlannerStages(
       status: "pass",
       summary: `drafter ${drafter} · ${plan.sub_questions.length} sub-question(s) proposed`,
       code: `# proposed sub-questions\n${JSON.stringify(
-        plan.sub_questions.map((sq) => sq.text),
+        plan.sub_questions.map((sq) => ({
+          id: sq.id,
+          source: sq.source,
+          text: sq.text,
+          entities: sq.entities,
+          join_key: sq.join_key,
+          rationale: sq.rationale,
+        })),
         null,
         2,
       )}`,
@@ -141,14 +150,10 @@ export function buildPlannerStages(
       status: gateOk ? "pass" : "partial",
       summary: gateOk
         ? `passed · ${plan.trace.length || 1} iteration(s)`
-        : `${lastTrace?.reasons.length ?? 0} rejection(s)`,
+        : `${lastTrace?.reasons.length ?? 0} rejection(s) · ${plan.trace.length || 1} iteration(s)`,
       shield: true,
       tag: drafter,
-      code: `# EvaluatorTrace · plan_gate\n${JSON.stringify(
-        lastTrace ?? { gate_ok: gateOk, reasons: [] },
-        null,
-        2,
-      )}`,
+      code: `# plan gate iterations\n${JSON.stringify(plan.trace, null, 2)}`,
       codeLang: "json",
       codeEmphasis: true,
     },
@@ -160,9 +165,10 @@ export function buildPlannerStages(
       summary: `entities [${entities.join(", ")}] · join key ${joinKey}`,
       code: JSON.stringify(
         {
-          join_keys: plan.joins.map((j) => j.key),
-          unsupported: plan.unsupported.map((u) => u.description),
+          joins: plan.joins.map((j) => ({ key: j.key, sources: j.sources, on: j.on })),
+          unsupported: plan.unsupported.map((u) => ({ description: u.description, reason: u.reason })),
           assumptions: plan.assumptions,
+          rationale: plan.rationale,
         },
         null,
         2,
@@ -174,25 +180,68 @@ export function buildPlannerStages(
 
 /* ------------------------------- lanes ------------------------------------ */
 
+/** Six canonical specialist checkpoints in order — no draft, no handoff. */
 const UI_STEPS: { key: SpecialistStep; label: string }[] = [
   { key: "intake", label: "intake" },
   { key: "resolve", label: "resolve" },
-  { key: "draft", label: "draft" },
   { key: "gate", label: "pre-run gate" },
   { key: "execute", label: "execute" },
   { key: "assess", label: "assess" },
   { key: "normalize", label: "normalize" },
-  { key: "handoff", label: "handoff" },
 ];
 
+function stepLabel(step: SpecialistStep): string {
+  const found = UI_STEPS.find((s) => s.key === step);
+  return found ? found.label : step;
+}
+
 function laneSteps(result: SpecialistResult): MicroStep[] {
-  const byStep = new Map(result.traces.map((t) => [t.step, t]));
+  // For the deduped pill row, use the LAST trace for each canonical step.
+  const byStep = new Map<SpecialistStep, (typeof result.traces)[0]>();
+  for (const t of result.traces) {
+    byStep.set(t.step, t);
+  }
   const fallback: StageStatus = result.ok ? "pass" : result.partial ? "partial" : "fail";
   return UI_STEPS.map(({ key, label }) => {
     const trace = byStep.get(key);
     const status: StageStatus = trace ? (trace.ok ? "pass" : "fail") : fallback;
     return { key, label, status, emphasis: key === "gate" || key === "normalize" };
   });
+}
+
+/** Build all evaluator trace entries in order, INCLUDING repeats (gate/execute retries). */
+export function buildTraceEntries(result: SpecialistResult): LaneTraceEntry[] {
+  const fallback: StageStatus = result.ok ? "pass" : result.partial ? "partial" : "fail";
+  if (!result.traces || result.traces.length === 0) {
+    return UI_STEPS.map(({ key, label }) => ({
+      step: key,
+      label,
+      status: fallback,
+      emphasis: key === "gate" || key === "normalize",
+      reasons: [],
+      detailJson: "{}",
+    }));
+  }
+  return result.traces.map((t) => ({
+    step: t.step,
+    label: stepLabel(t.step),
+    status: t.ok ? "pass" : "fail",
+    emphasis: t.step === "gate" || t.step === "normalize",
+    reasons: t.reasons,
+    detailJson: JSON.stringify(t.detail, null, 2),
+  }));
+}
+
+/** Build per-specialist task metadata for the Task section. */
+export function buildLaneTask(task: SpecialistResult["task"]): LaneTask {
+  return {
+    source: task.source,
+    entities: task.entities,
+    seedIds: task.seed_ids,
+    joinKey: task.join_key,
+    rationale: task.rationale,
+    limitsJson: JSON.stringify(task.limits, null, 2),
+  };
 }
 
 function laneMs(result: SpecialistResult): number {
@@ -230,6 +279,9 @@ export function buildLane(result: SpecialistResult): SpecialistLane {
     query: result.query,
     steps: laneSteps(result),
     records,
+    task: buildLaneTask(result.task),
+    traceEntries: buildTraceEntries(result),
+    error: result.error ?? null,
   };
 }
 

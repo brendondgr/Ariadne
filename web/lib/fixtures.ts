@@ -1,3 +1,4 @@
+import { buildLaneTask, buildTraceEntries } from "./adapt";
 import type {
   EvidenceRecord,
   FederatedEvidence,
@@ -218,12 +219,10 @@ const ALL_STEPS_PASS = (
   [
     ["intake", "intake"],
     ["resolve", "resolve"],
-    ["draft", "draft"],
     ["gate", "pre-run gate"],
     ["execute", "execute"],
     ["assess", "assess"],
     ["normalize", "normalize"],
-    ["handoff", "handoff"],
   ] as const
 ).map(([key, label]) => ({
   key,
@@ -328,6 +327,9 @@ export const wmiCapecRun: WorkbenchRun = {
       language: "cypher",
       query: NEO4J_QUERY,
       steps: ALL_STEPS_PASS,
+      task: buildLaneTask(NEO4J_RESULT.task),
+      traceEntries: buildTraceEntries(NEO4J_RESULT),
+      error: null,
       records: [
         {
           id: "T1047",
@@ -356,6 +358,9 @@ export const wmiCapecRun: WorkbenchRun = {
       language: "gremlin",
       query: GREMLIN_QUERY,
       steps: ALL_STEPS_PASS,
+      task: buildLaneTask(GREMLIN_RESULT.task),
+      traceEntries: buildTraceEntries(GREMLIN_RESULT),
+      error: null,
       records: [
         {
           id: "CAPEC-549",
