@@ -1,18 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type KeyboardEvent } from "react";
 import { SHADOW } from "@/lib/ui";
 import { SendArrow } from "@/components/ui/icons";
+import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 
 type Mode = "plan" | "query";
 type Drafter = "deterministic" | "llm";
 
 /** The docked composer: question input, Plan/Full-answer mode toggle, the
- *  deterministic/LLM drafter toggle, and Send. (Submit is wired to the run
- *  machine in a later phase.) */
+ *  deterministic/LLM drafter toggle, and Send — wired to the run machine's
+ *  `submit`, which streams the live `/api/query` pipeline. */
 export function Composer() {
+  const { submit, replaying } = useWorkbench();
+  const [question, setQuestion] = useState("");
   const [mode, setMode] = useState<Mode>("query");
   const [drafter, setDrafter] = useState<Drafter>("deterministic");
+
+  const canSend = question.trim().length > 0 && !replaying;
+
+  const send = () => {
+    if (!canSend) return;
+    submit({ question: question.trim(), mode, drafter });
+  };
+
+  const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      send();
+    }
+  };
 
   return (
     <div className="flex-[0_0_auto] px-[22px] pb-[18px] pt-3">
@@ -22,9 +39,13 @@ export function Composer() {
       >
         <textarea
           rows={1}
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          onKeyDown={onKeyDown}
+          disabled={replaying}
           aria-label="Ask an analyst question"
           placeholder="Ask an analyst question about the federated knowledge graph…"
-          className="mb-3 w-full resize-none border-0 bg-transparent px-0.5 pt-0.5 text-sm text-text outline-none placeholder:text-text-faint"
+          className="mb-3 w-full resize-none border-0 bg-transparent px-0.5 pt-0.5 text-sm text-text outline-none placeholder:text-text-faint disabled:opacity-60"
         />
         <div className="flex items-center gap-2.5">
           {/* mode toggle */}
@@ -79,9 +100,11 @@ export function Composer() {
 
           <button
             type="button"
-            className="flex items-center gap-[7px] rounded-lg border-0 bg-primary px-[15px] py-2 font-mono text-xs font-semibold text-bg transition-colors hover:bg-[#5bb0a7]"
+            onClick={send}
+            disabled={!canSend}
+            className="flex items-center gap-[7px] rounded-lg border-0 bg-primary px-[15px] py-2 font-mono text-xs font-semibold text-bg transition-colors hover:bg-[#5bb0a7] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Send
+            {replaying ? "Running…" : "Send"}
             <SendArrow />
           </button>
         </div>
