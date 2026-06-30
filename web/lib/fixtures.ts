@@ -1,3 +1,4 @@
+import { buildLaneTask, buildTraceEntries } from "./adapt";
 import type {
   EvidenceRecord,
   FederatedEvidence,
@@ -218,12 +219,10 @@ const ALL_STEPS_PASS = (
   [
     ["intake", "intake"],
     ["resolve", "resolve"],
-    ["draft", "draft"],
     ["gate", "pre-run gate"],
     ["execute", "execute"],
     ["assess", "assess"],
     ["normalize", "normalize"],
-    ["handoff", "handoff"],
   ] as const
 ).map(([key, label]) => ({
   key,
@@ -241,6 +240,7 @@ export const wmiCapecRun: WorkbenchRun = {
   status: "answered",
   exitCode: 0,
   elapsedMs: 318,
+  createdAt: 0,
   liveSources: [
     { backend: "neo4j", status: "live", nodes: 12540 },
     { backend: "gremlin", status: "live", nodes: 8210 },
@@ -327,20 +327,27 @@ export const wmiCapecRun: WorkbenchRun = {
       language: "cypher",
       query: NEO4J_QUERY,
       steps: ALL_STEPS_PASS,
+      task: buildLaneTask(NEO4J_RESULT.task),
+      traceEntries: buildTraceEntries(NEO4J_RESULT),
+      error: null,
       records: [
         {
           id: "T1047",
           accent: "teal",
           name: "Windows Management Instrumentation",
-          json: `{ "label":"Technique", "join_values":["T1047"],
-  "provenance":"ATT&CK v19.0 / neo4j" }`,
+          json: `{ "label":"Technique", "join_values":["T1047"],\n  "provenance":"ATT&CK v19.0 / neo4j" }`,
+          fullJson: JSON.stringify(ATTACK_RECORDS[0], null, 2),
+          query: NEO4J_QUERY,
+          provenanceMeta: "attack/neo4j · technique--01 · 2026-06-29 19:00:00Z",
         },
         {
           id: "T1546.003",
           accent: "teal",
           name: "WMI Event Subscription",
-          json: `{ "label":"Technique", "join_values":["T1546.003"],
-  "provenance":"ATT&CK v19.0 / neo4j" }`,
+          json: `{ "label":"Technique", "join_values":["T1546.003"],\n  "provenance":"ATT&CK v19.0 / neo4j" }`,
+          fullJson: JSON.stringify(ATTACK_RECORDS[1], null, 2),
+          query: NEO4J_QUERY,
+          provenanceMeta: "attack/neo4j · technique--02 · 2026-06-29 19:00:00Z",
         },
       ],
     },
@@ -355,20 +362,27 @@ export const wmiCapecRun: WorkbenchRun = {
       language: "gremlin",
       query: GREMLIN_QUERY,
       steps: ALL_STEPS_PASS,
+      task: buildLaneTask(GREMLIN_RESULT.task),
+      traceEntries: buildTraceEntries(GREMLIN_RESULT),
+      error: null,
       records: [
         {
           id: "CAPEC-549",
           accent: "amber",
           name: "Local Execution of Code",
-          json: `{ "label":"AttackPattern", "join_values":["T1047"],
-  "provenance":"CAPEC v3.9 / gremlin" }`,
+          json: `{ "label":"AttackPattern", "join_values":["T1047"],\n  "provenance":"CAPEC v3.9 / gremlin" }`,
+          fullJson: JSON.stringify(CAPEC_RECORDS[0], null, 2),
+          query: GREMLIN_QUERY,
+          provenanceMeta: "capec/gremlin · capec--549 · 2026-06-29 19:00:00Z",
         },
         {
           id: "CAPEC-563",
           accent: "amber",
           name: "Add Malicious File to Shared Webroot",
-          json: `{ "label":"AttackPattern", "join_values":["T1546.003"],
-  "provenance":"CAPEC v3.9 / gremlin" }`,
+          json: `{ "label":"AttackPattern", "join_values":["T1546.003"],\n  "provenance":"CAPEC v3.9 / gremlin" }`,
+          fullJson: JSON.stringify(CAPEC_RECORDS[1], null, 2),
+          query: GREMLIN_QUERY,
+          provenanceMeta: "capec/gremlin · capec--563 · 2026-06-29 19:00:00Z",
         },
       ],
     },
@@ -434,6 +448,12 @@ export const wmiCapecRun: WorkbenchRun = {
       label: "Technique",
       name: "Windows Management Instrumentation",
       meta: 'join_values: ["T1047"] · ATT&CK v19.0 / neo4j',
+      idScheme: "attack-id",
+      backend: "neo4j",
+      joinValues: ["T1047"],
+      provenanceQuery: NEO4J_QUERY,
+      provenanceMeta: "attack/neo4j · technique--01 · 2026-06-29 19:00:00Z",
+      fullJson: JSON.stringify(ATTACK_RECORDS[0], null, 2),
     },
     {
       id: "T1546.003",
@@ -441,6 +461,12 @@ export const wmiCapecRun: WorkbenchRun = {
       label: "Technique",
       name: "WMI Event Subscription",
       meta: 'join_values: ["T1546.003"] · ATT&CK v19.0 / neo4j',
+      idScheme: "attack-id",
+      backend: "neo4j",
+      joinValues: ["T1546.003"],
+      provenanceQuery: NEO4J_QUERY,
+      provenanceMeta: "attack/neo4j · technique--02 · 2026-06-29 19:00:00Z",
+      fullJson: JSON.stringify(ATTACK_RECORDS[1], null, 2),
     },
     {
       id: "CAPEC-549",
@@ -448,6 +474,12 @@ export const wmiCapecRun: WorkbenchRun = {
       label: "AttackPattern",
       name: "Local Execution of Code",
       meta: 'join_values: ["T1047"] · CAPEC v3.9 / gremlin',
+      idScheme: "capec-id",
+      backend: "gremlin",
+      joinValues: ["T1047"],
+      provenanceQuery: GREMLIN_QUERY,
+      provenanceMeta: "capec/gremlin · capec--549 · 2026-06-29 19:00:00Z",
+      fullJson: JSON.stringify(CAPEC_RECORDS[0], null, 2),
     },
     {
       id: "CAPEC-563",
@@ -455,6 +487,12 @@ export const wmiCapecRun: WorkbenchRun = {
       label: "AttackPattern",
       name: "Add Malicious File to Shared Webroot",
       meta: 'join_values: ["T1546.003"] · CAPEC v3.9 / gremlin',
+      idScheme: "capec-id",
+      backend: "gremlin",
+      joinValues: ["T1546.003"],
+      provenanceQuery: GREMLIN_QUERY,
+      provenanceMeta: "capec/gremlin · capec--563 · 2026-06-29 19:00:00Z",
+      fullJson: JSON.stringify(CAPEC_RECORDS[1], null, 2),
     },
   ],
   joinIndex: [
@@ -477,6 +515,12 @@ export const wmiCapecRun: WorkbenchRun = {
   ],
   joinKey: "external_id",
   federated: FEDERATED,
+  // The seeded demo has no captured probe/plan/answer payloads or event log;
+  // real streamed turns populate these for the Raw JSON tab.
+  rawProbe: [],
+  rawPlan: null,
+  rawAnswer: null,
+  events: [],
 };
 
 export const initialRun = wmiCapecRun;

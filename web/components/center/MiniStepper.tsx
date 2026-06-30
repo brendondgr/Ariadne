@@ -20,16 +20,19 @@ interface MiniStepperProps {
   steps: MiniStep[];
   status: RunStatus;
   exitCode: ExitCode;
+  /** True only for the streaming turn; past turns render their baked statuses. */
+  live?: boolean;
 }
 
 /** The Probe › Plan › Specialists › Evidence › Answer header strip. Each dot
  *  animates as the matching pipeline event fires; the outcome chip pops in
  *  once the answer stage completes. */
-export function MiniStepper({ steps, status, exitCode }: MiniStepperProps) {
+export function MiniStepper({ steps, status, exitCode, live = true }: MiniStepperProps) {
   const { focusStage, statusOf, replaying } = useWorkbench();
   const chip = STATUS_CHIP[status];
   const chipAccent = ACCENT[chip.accent];
-  const showChip = !replaying || statusOf("answer", "pass") === "pass";
+  const stepperReplaying = live && replaying;
+  const showChip = !stepperReplaying || statusOf("answer", "pass") === "pass";
 
   return (
     <div
@@ -39,7 +42,7 @@ export function MiniStepper({ steps, status, exitCode }: MiniStepperProps) {
       <div className="flex flex-1 flex-wrap items-center gap-2">
         {steps.map((step, idx) => {
           const isLast = idx === steps.length - 1;
-          const effective = statusOf(step.key, step.status);
+          const effective = live ? statusOf(step.key, step.status) : step.status;
           const color = isLast && effective === "pass" ? "var(--color-text)" : ACCENT[statusAccent(effective)].fg;
           return (
             <Fragment key={step.key}>

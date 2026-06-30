@@ -61,16 +61,14 @@ export interface Plan {
   trace: PlanTraceIteration[];
 }
 
-/** The eight checkpoints of the specialist loop, in order. */
+/** The six canonical checkpoints of the specialist loop, in order. */
 export type SpecialistStep =
   | "intake"
   | "resolve"
-  | "draft"
   | "gate"
   | "execute"
   | "assess"
-  | "normalize"
-  | "handoff";
+  | "normalize";
 
 /** Deterministic grade emitted at a specialist checkpoint. */
 export interface EvaluatorTrace {
@@ -187,7 +185,7 @@ export interface PlannerStage {
   codeEmphasis?: boolean;
 }
 
-/** A single one of the eight specialist micro-steps. */
+/** A single one of the six specialist micro-steps (deduped canonical pill row). */
 export interface MicroStep {
   key: SpecialistStep;
   label: string;
@@ -196,12 +194,39 @@ export interface MicroStep {
   emphasis?: boolean;
 }
 
+/** One evaluator trace entry surfaced in the trace tab (includes repeats for gate/execute retries). */
+export interface LaneTraceEntry {
+  step: SpecialistStep;
+  label: string;
+  status: StageStatus;
+  emphasis: boolean;
+  reasons: string[];
+  detailJson: string;
+}
+
+/** Per-specialist task metadata surfaced in the trace tab. */
+export interface LaneTask {
+  source: string;
+  entities: string[];
+  seedIds: string[];
+  joinKey: string | null;
+  rationale: string;
+  limitsJson: string;
+}
+
 /** A compact evidence record as shown inside a specialist lane. */
 export interface LaneRecord {
   id: string;
   accent: Accent;
   name: string;
+  /** @deprecated kept for backwards compatibility with the static fixture; prefer fullJson */
   json: string;
+  /** The entire EvidenceRecord pretty-printed as JSON. */
+  fullJson: string;
+  /** The provenance query that produced this record (provenance.query or ""). */
+  query: string;
+  /** Compact "dataset/backend · record_id · timestamp" provenance string, or "—". */
+  provenanceMeta: string;
 }
 
 /** One specialist lane (Cypher/neo4j or Gremlin/capec). */
@@ -217,6 +242,12 @@ export interface SpecialistLane {
   query: string;
   steps: MicroStep[];
   records: LaneRecord[];
+  /** Full task metadata for the task section. */
+  task: LaneTask;
+  /** All evaluator trace entries in order (includes gate/execute retries). */
+  traceEntries: LaneTraceEntry[];
+  /** Error message if the specialist failed, null otherwise. */
+  error: string | null;
 }
 
 /** A reference to evidence, rendered as an inline provenance chip. */
@@ -258,6 +289,18 @@ export interface EvidenceRow {
   label: string;
   name: string;
   meta: string;
+  /** id_scheme from the original EvidenceRecord. */
+  idScheme: string;
+  /** Backend that produced this record (neo4j | gremlin). */
+  backend: string;
+  /** join_values from the original EvidenceRecord. */
+  joinValues: string[];
+  /** The provenance query, or null if no provenance. */
+  provenanceQuery: string | null;
+  /** Compact "dataset/backend · record_id · timestamp" string, or "—". */
+  provenanceMeta: string;
+  /** The ENTIRE EvidenceRecord pretty-printed as JSON. */
+  fullJson: string;
 }
 
 /** A candidate in the Join Index tab. */
@@ -279,6 +322,8 @@ export interface WorkbenchRun {
   status: RunStatus;
   exitCode: ExitCode;
   elapsedMs: number;
+  /** Wall-clock ms (Date.now) the turn was submitted; 0 for the seeded demo. */
+  createdAt: number;
   liveSources: LiveSource[];
   stepper: MiniStep[];
   plannerStages: PlannerStage[];
@@ -289,6 +334,12 @@ export interface WorkbenchRun {
   joinKey: string;
   /** Canonical bundle for the Raw JSON tab — the real `to_dict()` shape. */
   federated: FederatedEvidence;
+  /** Raw backend payloads retained verbatim for the Raw JSON tab (Phase 4). */
+  rawProbe: ProbeSource[];
+  rawPlan: Plan | null;
+  rawAnswer: ServerAnswer | null;
+  /** The literal ordered SSE event log for this turn — the pipeline start to finish. */
+  events: QueryEvent[];
 }
 
 /** A sidebar conversation summary. */
@@ -409,8 +460,10 @@ export type AdminAction =
   | "graph-health"
   | "graph-load"
   | "graph-verify"
+  | "graph-stop"
   | "data-download"
-  | "data-build";
+  | "data-build"
+  | "yolo-all";
 
 export interface AdminActionBody {
   action: AdminAction;

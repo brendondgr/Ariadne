@@ -22,12 +22,15 @@ import type {
   JoinIndexEntry,
   JoinPair,
   LaneRecord,
+  LaneTask,
+  LaneTraceEntry,
   LiveSource,
   MicroStep,
   MiniStep,
   Plan,
   PlannerStage,
   ProbeSource,
+  QueryEvent,
   RunStatus,
   ServerAnswer,
   ServerAnswerCross,
@@ -127,7 +130,14 @@ export function buildPlannerStages(
       status: "pass",
       summary: `drafter ${drafter} · ${plan.sub_questions.length} sub-question(s) proposed`,
       code: `# proposed sub-questions\n${JSON.stringify(
-        plan.sub_questions.map((sq) => sq.text),
+        plan.sub_questions.map((sq) => ({
+          id: sq.id,
+          source: sq.source,
+          text: sq.text,
+          entities: sq.entities,
+          join_key: sq.join_key,
+          rationale: sq.rationale,
+        })),
         null,
         2,
       )}`,
@@ -140,14 +150,10 @@ export function buildPlannerStages(
       status: gateOk ? "pass" : "partial",
       summary: gateOk
         ? `passed · ${plan.trace.length || 1} iteration(s)`
-        : `${lastTrace?.reasons.length ?? 0} rejection(s)`,
+        : `${lastTrace?.reasons.length ?? 0} rejection(s) · ${plan.trace.length || 1} iteration(s)`,
       shield: true,
       tag: drafter,
-      code: `# EvaluatorTrace · plan_gate\n${JSON.stringify(
-        lastTrace ?? { gate_ok: gateOk, reasons: [] },
-        null,
-        2,
-      )}`,
+      code: `# plan gate iterations\n${JSON.stringify(plan.trace, null, 2)}`,
       codeLang: "json",
       codeEmphasis: true,
     },
@@ -159,9 +165,10 @@ export function buildPlannerStages(
       summary: `entities [${entities.join(", ")}] · join key ${joinKey}`,
       code: JSON.stringify(
         {
-          join_keys: plan.joins.map((j) => j.key),
-          unsupported: plan.unsupported.map((u) => u.description),
+          joins: plan.joins.map((j) => ({ key: j.key, sources: j.sources, on: j.on })),
+          unsupported: plan.unsupported.map((u) => ({ description: u.description, reason: u.reason })),
           assumptions: plan.assumptions,
+          rationale: plan.rationale,
         },
         null,
         2,
@@ -173,19 +180,27 @@ export function buildPlannerStages(
 
 /* ------------------------------- lanes ------------------------------------ */
 
+/** Six canonical specialist checkpoints in order — no draft, no handoff. */
 const UI_STEPS: { key: SpecialistStep; label: string }[] = [
   { key: "intake", label: "intake" },
   { key: "resolve", label: "resolve" },
-  { key: "draft", label: "draft" },
   { key: "gate", label: "pre-run gate" },
   { key: "execute", label: "execute" },
   { key: "assess", label: "assess" },
   { key: "normalize", label: "normalize" },
-  { key: "handoff", label: "handoff" },
 ];
 
+function stepLabel(step: SpecialistStep): string {
+  const found = UI_STEPS.find((s) => s.key === step);
+  return found ? found.label : step;
+}
+
 function laneSteps(result: SpecialistResult): MicroStep[] {
-  const byStep = new Map(result.traces.map((t) => [t.step, t]));
+  // For the deduped pill row, use the LAST trace for each canonical step.
+  const byStep = new Map<SpecialistStep, (typeof result.traces)[0]>();
+  for (const t of result.traces) {
+    byStep.set(t.step, t);
+  }
   const fallback: StageStatus = result.ok ? "pass" : result.partial ? "partial" : "fail";
   return UI_STEPS.map(({ key, label }) => {
     const trace = byStep.get(key);
@@ -194,10 +209,51 @@ function laneSteps(result: SpecialistResult): MicroStep[] {
   });
 }
 
+/** Build all evaluator trace entries in order, INCLUDING repeats (gate/execute retries). */
+export function buildTraceEntries(result: SpecialistResult): LaneTraceEntry[] {
+  const fallback: StageStatus = result.ok ? "pass" : result.partial ? "partial" : "fail";
+  if (!result.traces || result.traces.length === 0) {
+    return UI_STEPS.map(({ key, label }) => ({
+      step: key,
+      label,
+      status: fallback,
+      emphasis: key === "gate" || key === "normalize",
+      reasons: [],
+      detailJson: "{}",
+    }));
+  }
+  return result.traces.map((t) => ({
+    step: t.step,
+    label: stepLabel(t.step),
+    status: t.ok ? "pass" : "fail",
+    emphasis: t.step === "gate" || t.step === "normalize",
+    reasons: t.reasons,
+    detailJson: JSON.stringify(t.detail, null, 2),
+  }));
+}
+
+/** Build per-specialist task metadata for the Task section. */
+export function buildLaneTask(task: SpecialistResult["task"]): LaneTask {
+  return {
+    source: task.source,
+    entities: task.entities,
+    seedIds: task.seed_ids,
+    joinKey: task.join_key,
+    rationale: task.rationale,
+    limitsJson: JSON.stringify(task.limits, null, 2),
+  };
+}
+
 function laneMs(result: SpecialistResult): number {
   const exec = result.traces.find((t) => t.step === "execute");
   const ms = exec?.detail?.["timing_ms"];
   return typeof ms === "number" ? ms : 0;
+}
+
+function buildProvenanceMeta(prov: import("./types").Provenance | null | undefined): string {
+  if (!prov) return "—";
+  const ts = prov.timestamp ? prov.timestamp.replace("T", " ").replace(/\.\d+Z$/, "Z") : "—";
+  return `${prov.dataset}/${prov.backend} · ${prov.record_id} · ${ts}`;
 }
 
 function compactRecordJson(label: string, joinValues: string[], provLabel: string): string {
@@ -207,15 +263,20 @@ function compactRecordJson(label: string, joinValues: string[], provLabel: strin
 export function buildLane(result: SpecialistResult): SpecialistLane {
   const backend = backendOf(result);
   const accent = accentOf(backend);
-  const records: LaneRecord[] = result.records.slice(0, 6).map((rec) => ({
+  // ALL records — no cap
+  const records: LaneRecord[] = result.records.map((rec) => ({
     id: rec.primary_id || rec.name || "record",
     accent,
     name: rec.name,
+    // Keep legacy json field for backwards compat with static fixture
     json: compactRecordJson(
       rec.label,
       rec.join_values,
       rec.provenance ? `${rec.provenance.dataset} / ${rec.provenance.backend}` : backend,
     ),
+    fullJson: JSON.stringify(rec, null, 2),
+    query: rec.provenance?.query ?? "",
+    provenanceMeta: buildProvenanceMeta(rec.provenance),
   }));
   return {
     id: `lane-${backend}`,
@@ -229,6 +290,9 @@ export function buildLane(result: SpecialistResult): SpecialistLane {
     query: result.query,
     steps: laneSteps(result),
     records,
+    task: buildLaneTask(result.task),
+    traceEntries: buildTraceEntries(result),
+    error: result.error ?? null,
   };
 }
 
@@ -298,7 +362,9 @@ export function buildAnswer(answer: ServerAnswer | null, joinKey: string): Answe
 export function buildEvidenceRows(evidence: FederatedEvidence): EvidenceRow[] {
   const rows: EvidenceRow[] = [];
   for (const result of evidence.results) {
-    const accent = accentOf(backendOf(result));
+    const backend = backendOf(result);
+    const accent = accentOf(backend);
+    // ALL records — no cap
     for (const rec of result.records) {
       const prov = rec.provenance;
       rows.push({
@@ -309,10 +375,16 @@ export function buildEvidenceRows(evidence: FederatedEvidence): EvidenceRow[] {
         meta: `join_values: ${JSON.stringify(rec.join_values)} · ${
           prov ? `${prov.dataset} / ${prov.backend}` : "—"
         }`,
+        idScheme: rec.id_scheme,
+        backend,
+        joinValues: rec.join_values,
+        provenanceQuery: rec.provenance?.query ?? null,
+        provenanceMeta: buildProvenanceMeta(rec.provenance),
+        fullJson: JSON.stringify(rec, null, 2),
       });
     }
   }
-  return rows.slice(0, 200);
+  return rows;
 }
 
 function pairFromEntries(entries: JoinIndexEntry[], value: string) {
@@ -378,6 +450,10 @@ export interface RunInputs {
   status: RunStatus;
   exitCode: ExitCode;
   elapsedMs: number;
+  /** Wall-clock submit time; optional so existing callers/tests need no change. */
+  createdAt?: number;
+  /** The ordered SSE event log captured for this turn (Raw JSON event stream). */
+  events?: QueryEvent[];
 }
 
 function emptyEvidence(request: string): FederatedEvidence {
@@ -406,6 +482,7 @@ export function buildRun(inputs: RunInputs): WorkbenchRun {
     status,
     exitCode,
     elapsedMs,
+    createdAt: inputs.createdAt ?? 0,
     liveSources: wbLive,
     stepper: buildStepper(plan, evidence, wbLive, status),
     plannerStages: plan ? buildPlannerStages(plan, probe, drafter) : [],
@@ -415,5 +492,10 @@ export function buildRun(inputs: RunInputs): WorkbenchRun {
     joinIndex: evidence ? buildJoinIndex(evidence, joinKey) : [],
     joinKey,
     federated: evidence ?? emptyEvidence(question),
+    // Raw payloads kept verbatim for the Raw JSON tab + the literal event log.
+    rawProbe: probe,
+    rawPlan: plan,
+    rawAnswer: answer,
+    events: inputs.events ?? [],
   };
 }

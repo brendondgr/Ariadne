@@ -66,6 +66,68 @@ export function TraceTab({ run }: { run: WorkbenchRun }) {
       {run.lanes.map((lane) => (
         <SpecialistLane key={lane.id} lane={lane} />
       ))}
+
+      {/* Skipped & unsupported — only rendered when there is data */}
+      {(run.federated.skipped.length > 0 || run.federated.unsupported.length > 0) && (
+        <div className="mt-4">
+          <div className="mb-2 flex items-center gap-2">
+            <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-text-muted">
+              Skipped &amp; unsupported
+            </span>
+            <span className="h-px flex-1 bg-[rgba(235,230,220,0.08)]" />
+          </div>
+
+          {run.federated.skipped.length > 0 && (
+            <div className="mb-3">
+              <div className="mb-1 font-mono text-[9px] uppercase tracking-[0.08em] text-text-muted">
+                Skipped sub-questions
+              </div>
+              <div className="flex flex-col gap-[4px]">
+                {run.federated.skipped.map((item, i) => {
+                  const source = typeof item["source"] === "string" ? item["source"] : "";
+                  const reason = typeof item["reason"] === "string" ? item["reason"] : JSON.stringify(item);
+                  const subQ = typeof item["sub_question"] === "string" ? item["sub_question"] : "";
+                  return (
+                    <div
+                      key={i}
+                      className="rounded-[6px] px-2.5 py-[6px] font-mono text-[10.5px]"
+                      style={{ background: "rgba(201,146,74,0.07)", color: "var(--color-text-muted)" }}
+                    >
+                      {source && (
+                        <span style={{ color: "rgba(201,146,74,0.85)" }} className="mr-1.5">
+                          {source}
+                        </span>
+                      )}
+                      {subQ && <span className="mr-1.5 text-[#c9c6bd]">{subQ}</span>}
+                      <span>· {reason}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {run.federated.unsupported.length > 0 && (
+            <div>
+              <div className="mb-1 font-mono text-[9px] uppercase tracking-[0.08em] text-text-muted">
+                Unsupported parts
+              </div>
+              <div className="flex flex-col gap-[4px]">
+                {run.federated.unsupported.map((item, i) => (
+                  <div
+                    key={i}
+                    className="rounded-[6px] px-2.5 py-[6px] font-mono text-[10.5px]"
+                    style={{ background: "rgba(201,146,74,0.07)", color: "var(--color-text-muted)" }}
+                  >
+                    <span className="mr-1.5 text-[#c9c6bd]">{item.description}</span>
+                    <span>· {item.reason}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

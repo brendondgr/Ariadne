@@ -12,12 +12,10 @@ import type {
 const EXPECTED_STEPS: SpecialistStep[] = [
   "intake",
   "resolve",
-  "draft",
   "gate",
   "execute",
   "assess",
   "normalize",
-  "handoff",
 ];
 
 const FED: FederatedEvidence = wmiCapecRun.federated;
@@ -127,7 +125,7 @@ describe("buildRun adapter", () => {
     expect(run.plannerStages.find((s) => s.id === "stage-probe")?.status).toBe("pass");
   });
 
-  it("builds one lane per source with all eight micro-steps and the right accent", () => {
+  it("builds one lane per source with all six canonical micro-steps and the right accent", () => {
     expect(run.lanes.map((l) => l.id)).toEqual(["lane-neo4j", "lane-gremlin"]);
     const [neo, grem] = run.lanes;
     expect(neo.accent).toBe("teal");
@@ -170,6 +168,20 @@ describe("buildRun adapter", () => {
     const hasChip = run.answer.paragraphs.some((p) => p.segments.some((s) => s.kind === "chip"));
     expect(hasChip).toBe(true);
   });
+
+  it("each lane has traceEntries, task.entities populated, and includes a normalize entry", () => {
+    for (const lane of run.lanes) {
+      expect(lane.traceEntries.length).toBeGreaterThanOrEqual(1);
+      expect(lane.traceEntries.some((e) => e.step === "normalize")).toBe(true);
+      expect(lane.task.entities.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("buildPlannerStages gate stage code includes the full iteration trace", () => {
+    const gateStage = run.plannerStages.find((s) => s.id === "stage-gate");
+    expect(gateStage).toBeDefined();
+    expect(gateStage!.code).toContain("iteration");
+  });
 });
 
 describe("buildRun incremental / partial states", () => {
@@ -195,6 +207,28 @@ describe("buildRun incremental / partial states", () => {
     expect(run.federated.results).toHaveLength(0);
   });
 
+  it("retains the raw payloads + ordered event log for the Raw JSON tab", () => {
+    const events: import("../types").QueryEvent[] = [
+      { type: "probe", data: { live_sources: PROBE } },
+      { type: "plan", data: { plan: PLAN, target_sources: ["attack", "capec"] } },
+      { type: "evidence", data: { evidence: FED } },
+      { type: "done", data: { status: "answered", exit_code: 0 } },
+    ];
+    const run = buildRun({ ...wmiInputs(), createdAt: 1234, events });
+    expect(run.createdAt).toBe(1234);
+    expect(run.rawPlan).toEqual(PLAN);
+    expect(run.rawProbe).toEqual(PROBE);
+    expect(run.rawAnswer?.status).toBe("answered");
+    expect(run.events.map((e) => e.type)).toEqual(["probe", "plan", "evidence", "done"]);
+  });
+
+  it("defaults raw fields when no events/createdAt are supplied", () => {
+    const run = buildRun(wmiInputs());
+    expect(run.createdAt).toBe(0);
+    expect(run.events).toEqual([]);
+    expect(run.rawProbe).toEqual(PROBE); // probe always mirrors the liveSources input
+  });
+
   it("marks a down backend as down with a reason", () => {
     const sources = buildLiveSources([
       { ...PROBE[0], live: false, node_count: 0, reason: "no TCP connection to 127.0.0.1:5456" },
@@ -203,5 +237,166 @@ describe("buildRun incremental / partial states", () => {
     expect(sources[0].status).toBe("down");
     expect(sources[0].reason).toContain("no TCP connection");
     expect(sources[1].status).toBe("live");
+  });
+});
+
+describe("Phase 3: no-cap evidence rows and full provenance fields", () => {
+  it("builds 250 evidence rows with no cap from a 250-record result", () => {
+    const syntheticRecords = Array.from({ length: 250 }, (_, i) => ({
+      primary_id: `T${1000 + i}`,
+      id_scheme: "attack-id",
+      label: "Technique",
+      name: `Synthetic Technique ${i}`,
+      properties: { index: i },
+      related: [] as Record<string, unknown>[],
+      join_values: [`T${1000 + i}`],
+      provenance: {
+        source: "MITRE ATT&CK Enterprise",
+        dataset: "attack",
+        backend: "neo4j",
+        query: "MATCH (t:Technique) RETURN t LIMIT 1000",
+        record_id: `technique--${i}`,
+        timestamp: "2026-06-29T19:00:00+00:00",
+      },
+    }));
+
+    const bigFed: FederatedEvidence = {
+      request: "synthetic 250-record query",
+      results: [
+        {
+          task: {
+            sub_question_id: "sq-big",
+            source: "attack",
+            text: "all techniques",
+            entities: ["ATT&CK"],
+            limits: { max_traversal_depth: 3, max_result_rows: 1000, query_timeout_ms: 5000 },
+            join_key: null,
+            seed_ids: [],
+            rationale: "Test no-cap behavior.",
+          },
+          query: "MATCH (t:Technique) RETURN t LIMIT 1000",
+          records: syntheticRecords,
+          record_count: 250,
+          summary: "250 records",
+          traces: [],
+          ok: true,
+          partial: false,
+          error: null,
+          join_values: [],
+        },
+      ],
+      unsupported: [],
+      skipped: [],
+      partial: false,
+      join_index: {},
+      cross_source_join_values: [],
+    };
+
+    const run = buildRun({
+      id: "turn-big",
+      question: "synthetic 250-record query",
+      mode: "query",
+      drafter: "deterministic",
+      liveSources: PROBE,
+      plan: null,
+      evidence: bigFed,
+      answer: null,
+      status: "answered",
+      exitCode: 0,
+      elapsedMs: 0,
+    });
+
+    expect(run.evidence).toHaveLength(250);
+    for (const row of run.evidence) {
+      expect(row.fullJson).toBeTruthy();
+      expect(row.fullJson.length).toBeGreaterThan(10);
+      expect(row.provenanceQuery).toBe("MATCH (t:Technique) RETURN t LIMIT 1000");
+    }
+  });
+
+  it("evidence rows carry idScheme, backend, joinValues, and provenanceMeta from the fixture", () => {
+    const run = buildRun(wmiInputs());
+    const t1047 = run.evidence.find((e) => e.id === "T1047")!;
+    expect(t1047.idScheme).toBe("attack-id");
+    expect(t1047.backend).toBe("neo4j");
+    expect(t1047.joinValues).toEqual(["T1047"]);
+    expect(t1047.provenanceMeta).toContain("attack");
+    expect(t1047.provenanceMeta).toContain("neo4j");
+    expect(t1047.fullJson).toContain("T1047");
+  });
+
+  it("lane records carry fullJson and query — no 6-record cap", () => {
+    const manyRecords = Array.from({ length: 20 }, (_, i) => ({
+      primary_id: `CAPEC-${600 + i}`,
+      id_scheme: "capec-id",
+      label: "AttackPattern",
+      name: `Pattern ${i}`,
+      properties: {},
+      related: [] as Record<string, unknown>[],
+      join_values: [] as string[],
+      provenance: {
+        source: "MITRE CAPEC",
+        dataset: "capec",
+        backend: "gremlin",
+        query: "g.V().hasLabel('AttackPattern').limit(1000)",
+        record_id: `capec--${600 + i}`,
+        timestamp: "2026-06-29T19:00:00+00:00",
+      },
+    }));
+
+    const fed: FederatedEvidence = {
+      request: "capec with 20 records",
+      results: [
+        {
+          task: {
+            sub_question_id: "sq-capec-20",
+            source: "capec",
+            text: "all patterns",
+            entities: ["CAPEC"],
+            limits: { max_traversal_depth: 3, max_result_rows: 1000, query_timeout_ms: 5000 },
+            join_key: null,
+            seed_ids: [],
+            rationale: "Test no-6-cap behavior for lanes.",
+          },
+          query: "g.V().hasLabel('AttackPattern').limit(1000)",
+          records: manyRecords,
+          record_count: 20,
+          summary: "20 capec records",
+          traces: [],
+          ok: true,
+          partial: false,
+          error: null,
+          join_values: [],
+        },
+      ],
+      unsupported: [],
+      skipped: [],
+      partial: false,
+      join_index: {},
+      cross_source_join_values: [],
+    };
+
+    const run = buildRun({
+      id: "turn-capec-20",
+      question: "capec 20",
+      mode: "query",
+      drafter: "deterministic",
+      liveSources: PROBE,
+      plan: null,
+      evidence: fed,
+      answer: null,
+      status: "answered",
+      exitCode: 0,
+      elapsedMs: 0,
+    });
+
+    expect(run.lanes).toHaveLength(1);
+    const lane = run.lanes[0];
+    expect(lane.records).toHaveLength(20); // no 6-record cap
+    for (const rec of lane.records) {
+      expect(rec.fullJson).toBeTruthy();
+      expect(rec.fullJson).toContain("AttackPattern");
+      expect(rec.query).toBe("g.V().hasLabel('AttackPattern').limit(1000)");
+    }
   });
 });

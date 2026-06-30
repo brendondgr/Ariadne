@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { motion } from "motion/react";
 import type { WorkbenchRun } from "@/lib/types";
 import { tabFade } from "@/lib/motion";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
@@ -16,7 +16,9 @@ import { RawJsonTab } from "./RawJsonTab";
 /** The inspector's inner content (header, tabs, meter, tab body), shared by the
  *  desktop inline panel and the mobile slide-over drawer. */
 export function InspectorContent({ run, onClose }: { run: WorkbenchRun; onClose: () => void }) {
-  const { activeTab } = useWorkbench();
+  const { activeTab, runs, activeRunId } = useWorkbench();
+  const turnIndex = runs.findIndex((r) => r.id === activeRunId);
+  const turnLabel = turnIndex >= 0 ? `turn #${turnIndex + 1}` : "no turn";
   return (
     <div className="flex h-full min-h-0 w-full flex-col">
       <div className="flex-[0_0_auto] px-4 pt-[13px]">
@@ -25,7 +27,7 @@ export function InspectorContent({ run, onClose }: { run: WorkbenchRun; onClose:
             <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-text-muted">
               Inspector
             </span>
-            <span className="text-[12px] text-[#c9c6bd]">— turn #1</span>
+            <span className="text-[12px] text-[#c9c6bd]">— {turnLabel}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <RunController />
@@ -46,14 +48,15 @@ export function InspectorContent({ run, onClose }: { run: WorkbenchRun; onClose:
       <ProgressMeter run={run} />
 
       <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-6 pt-3.5">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div key={activeTab} variants={tabFade} initial="hidden" animate="show" exit="exit">
-            {activeTab === "trace" && <TraceTab run={run} />}
-            {activeTab === "evidence" && <EvidenceTab evidence={run.evidence} />}
-            {activeTab === "join" && <JoinIndexTab candidates={run.joinIndex} joinKey={run.joinKey} />}
-            {activeTab === "raw" && <RawJsonTab federated={run.federated} />}
-          </motion.div>
-        </AnimatePresence>
+        {/* Remount + fade the active tab on switch. No exit animation / no
+            AnimatePresence mode="wait" here: the trace tab's heavy nested-motion
+            subtree never settled its exit, which stalled tab switching. */}
+        <motion.div key={activeTab} variants={tabFade} initial="hidden" animate="show">
+          {activeTab === "trace" && <TraceTab run={run} />}
+          {activeTab === "evidence" && <EvidenceTab evidence={run.evidence} />}
+          {activeTab === "join" && <JoinIndexTab candidates={run.joinIndex} joinKey={run.joinKey} />}
+          {activeTab === "raw" && <RawJsonTab run={run} />}
+        </motion.div>
       </div>
     </div>
   );

@@ -136,8 +136,10 @@ AdminAction = Literal[
     "graph-health",
     "graph-load",
     "graph-verify",
+    "graph-stop",
     "data-download",
     "data-build",
+    "yolo-all",
 ]
 
 

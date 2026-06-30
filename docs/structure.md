@@ -115,8 +115,8 @@ origin, no CORS — see `web/next.config.ts` `rewrites`).
 |----------|-------|-------|
 | `GET /api/health` | `graph_loader` TCP probe + `infrastructure.docker_status` | Per-backend live/down/starting; never raises |
 | `GET·PUT /api/config` | `PlannerConfig`/`SpecialistConfig.from_env` + `config.set_env_values` | View/edit LLM + connection env; password redacted |
-| `POST /api/query` | `PlanningAgent.plan` → `SpecialistRouter.run_plan` | SSE stream: probe → plan → specialist* → evidence → answer → done |
-| `POST /api/admin` | `docker_*`, `run_graph_command`, `download`, `kg_builder` | SSE log stream for the remaining main.py modes |
+| `POST /api/query` | `PlanningAgent.plan` → `SpecialistRouter.run_plan` | SSE stream: probe → plan → specialist* → evidence → answer → done. Each event carries the full `to_dict()` payload (plan trace, raw query, every record + provenance, evaluator traces) |
+| `POST /api/admin` | `docker_*`, `run_graph_command`, `docker_stop_service`, `YoloRunner`, `download`, `kg_builder` | SSE log stream for every remaining main.py mode — docker start/stop/status, graph health/load/verify/**stop**, data download/build, and **`--yolo-all`** |
 
 | Path | Contents |
 |------|----------|
@@ -134,10 +134,18 @@ evidence, not prose).
 
 Next.js (App Router) + TypeScript + Tailwind v4 + Motion analyst UI using the
 Woven Dusk design system — the three-region workbench (header infra pills ·
-conversations rail · chat thread with Answer Cards · step-by-step inspector).
-The composer submits questions to `POST /api/query` and the event-driven run
-machine advances the animated trace from the real SSE events; a settings modal
-edits LLM/connection config and runs infra actions. TypeScript types
+conversations rail · **multi-turn** chat thread with Answer Cards · step-by-step
+inspector). The composer submits questions to `POST /api/query`; the event-driven
+run machine appends a new turn per question (the rail lists real turns; selecting
+one drives the inspector) and advances the animated trace from the real SSE
+events, retaining the literal ordered event log + raw plan/probe/answer per turn.
+The inspector surfaces the **full** pipeline: the Trace tab shows the planner
+iteration history and, per specialist, the six evaluator steps with their
+reasons/detail, the task metadata, and the validated query; the Evidence tab
+shows every record (filter + incremental reveal, no cap) expandable to full
+properties + provenance query; the Raw JSON tab switches across Plan / Probe /
+Evidence / Answer / the literal **event stream**. A settings modal edits
+LLM/connection config and runs every infra action. TypeScript types
 (`lib/types.ts`) mirror the backend `to_dict()` shapes; `lib/fixtures.ts` is the
 idle/demo run.
 
