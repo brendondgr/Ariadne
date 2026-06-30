@@ -219,7 +219,14 @@ export interface LaneRecord {
   id: string;
   accent: Accent;
   name: string;
+  /** @deprecated kept for backwards compatibility with the static fixture; prefer fullJson */
   json: string;
+  /** The entire EvidenceRecord pretty-printed as JSON. */
+  fullJson: string;
+  /** The provenance query that produced this record (provenance.query or ""). */
+  query: string;
+  /** Compact "dataset/backend · record_id · timestamp" provenance string, or "—". */
+  provenanceMeta: string;
 }
 
 /** One specialist lane (Cypher/neo4j or Gremlin/capec). */
@@ -282,6 +289,18 @@ export interface EvidenceRow {
   label: string;
   name: string;
   meta: string;
+  /** id_scheme from the original EvidenceRecord. */
+  idScheme: string;
+  /** Backend that produced this record (neo4j | gremlin). */
+  backend: string;
+  /** join_values from the original EvidenceRecord. */
+  joinValues: string[];
+  /** The provenance query, or null if no provenance. */
+  provenanceQuery: string | null;
+  /** Compact "dataset/backend · record_id · timestamp" string, or "—". */
+  provenanceMeta: string;
+  /** The ENTIRE EvidenceRecord pretty-printed as JSON. */
+  fullJson: string;
 }
 
 /** A candidate in the Join Index tab. */

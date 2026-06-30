@@ -250,6 +250,12 @@ function laneMs(result: SpecialistResult): number {
   return typeof ms === "number" ? ms : 0;
 }
 
+function buildProvenanceMeta(prov: import("./types").Provenance | null | undefined): string {
+  if (!prov) return "—";
+  const ts = prov.timestamp ? prov.timestamp.replace("T", " ").replace(/\.\d+Z$/, "Z") : "—";
+  return `${prov.dataset}/${prov.backend} · ${prov.record_id} · ${ts}`;
+}
+
 function compactRecordJson(label: string, joinValues: string[], provLabel: string): string {
   return `{ "label":"${label}", "join_values":${JSON.stringify(joinValues)},\n  "provenance":"${provLabel}" }`;
 }
@@ -257,15 +263,20 @@ function compactRecordJson(label: string, joinValues: string[], provLabel: strin
 export function buildLane(result: SpecialistResult): SpecialistLane {
   const backend = backendOf(result);
   const accent = accentOf(backend);
-  const records: LaneRecord[] = result.records.slice(0, 6).map((rec) => ({
+  // ALL records — no cap
+  const records: LaneRecord[] = result.records.map((rec) => ({
     id: rec.primary_id || rec.name || "record",
     accent,
     name: rec.name,
+    // Keep legacy json field for backwards compat with static fixture
     json: compactRecordJson(
       rec.label,
       rec.join_values,
       rec.provenance ? `${rec.provenance.dataset} / ${rec.provenance.backend}` : backend,
     ),
+    fullJson: JSON.stringify(rec, null, 2),
+    query: rec.provenance?.query ?? "",
+    provenanceMeta: buildProvenanceMeta(rec.provenance),
   }));
   return {
     id: `lane-${backend}`,
@@ -351,7 +362,9 @@ export function buildAnswer(answer: ServerAnswer | null, joinKey: string): Answe
 export function buildEvidenceRows(evidence: FederatedEvidence): EvidenceRow[] {
   const rows: EvidenceRow[] = [];
   for (const result of evidence.results) {
-    const accent = accentOf(backendOf(result));
+    const backend = backendOf(result);
+    const accent = accentOf(backend);
+    // ALL records — no cap
     for (const rec of result.records) {
       const prov = rec.provenance;
       rows.push({
@@ -362,10 +375,16 @@ export function buildEvidenceRows(evidence: FederatedEvidence): EvidenceRow[] {
         meta: `join_values: ${JSON.stringify(rec.join_values)} · ${
           prov ? `${prov.dataset} / ${prov.backend}` : "—"
         }`,
+        idScheme: rec.id_scheme,
+        backend,
+        joinValues: rec.join_values,
+        provenanceQuery: rec.provenance?.query ?? null,
+        provenanceMeta: buildProvenanceMeta(rec.provenance),
+        fullJson: JSON.stringify(rec, null, 2),
       });
     }
   }
-  return rows.slice(0, 200);
+  return rows;
 }
 
 function pairFromEntries(entries: JoinIndexEntry[], value: string) {

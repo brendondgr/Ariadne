@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "motion/react";
 import type { SpecialistLane as Lane } from "@/lib/types";
-import { ACCENT, SHADOW } from "@/lib/ui";
+import { ACCENT, CONSOLE_BG, SHADOW } from "@/lib/ui";
 import { popIn, staggerContainer } from "@/lib/motion";
 import { Pill } from "@/components/ui/Pill";
 import { CodeBlock } from "@/components/ui/CodeBlock";
@@ -11,12 +12,16 @@ import { LaneRecordRow } from "./LaneRecordRow";
 import { LaneTraceRow } from "./LaneTraceRow";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 
+const INITIAL_RECORDS = 8;
+const RECORDS_PAGE = 8;
+
 /** One source-specific specialist lane. The six canonical micro-step checkpoints
  *  cascade in once the lane's pipeline event activates. Also shows the full
  *  evaluator trace (with retries) and per-specialist task metadata. */
 export function SpecialistLane({ lane }: { lane: Lane }) {
   const { statusOf } = useWorkbench();
   const active = statusOf(lane.id, "pass") !== "pending";
+  const [recordsRevealed, setRecordsRevealed] = useState(INITIAL_RECORDS);
 
   /** Build a compact task JSON for display. */
   const taskJson = JSON.stringify(
@@ -30,6 +35,9 @@ export function SpecialistLane({ lane }: { lane: Lane }) {
     null,
     2,
   );
+
+  const visibleRecords = lane.records.slice(0, recordsRevealed);
+  const remainingRecords = lane.records.length - visibleRecords.length;
 
   return (
     <div
@@ -109,15 +117,36 @@ export function SpecialistLane({ lane }: { lane: Lane }) {
           ))}
         </div>
 
-        {/* Evidence records */}
+        {/* Evidence records — incremental reveal, never silently cap */}
         <div className="mb-1.5 font-mono text-[9.5px] uppercase tracking-[0.08em] text-text-muted">
-          Evidence records
+          Evidence records ({lane.records.length} total · showing {visibleRecords.length})
         </div>
         <div className="flex flex-col gap-[5px]">
-          {lane.records.map((record) => (
-            <LaneRecordRow key={record.id} record={record} />
+          {visibleRecords.map((record) => (
+            <LaneRecordRow key={record.id} record={record} language={lane.language} />
           ))}
         </div>
+
+        {/* Show-more affordance */}
+        {remainingRecords > 0 && (
+          <div className="mt-2 flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setRecordsRevealed((r) => r + RECORDS_PAGE)}
+              className="rounded-lg px-3 py-1 font-mono text-[10.5px] text-text-muted hover:text-text"
+              style={{ boxShadow: SHADOW.hairline, background: CONSOLE_BG }}
+            >
+              Show {Math.min(RECORDS_PAGE, remainingRecords)} more
+            </button>
+            <button
+              type="button"
+              onClick={() => setRecordsRevealed(lane.records.length)}
+              className="font-mono text-[10.5px] text-text-muted hover:text-text"
+            >
+              Show all ({lane.records.length})
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
