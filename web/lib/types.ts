@@ -400,3 +400,28 @@ export type QueryEvent =
   | { type: "error"; data: { message: string } };
 
 export type QueryEventType = QueryEvent["type"];
+
+/** Admin (infra/data/graph) action request body for `POST /api/admin`. */
+export type AdminAction =
+  | "docker-status"
+  | "docker-start"
+  | "docker-stop"
+  | "graph-health"
+  | "graph-load"
+  | "graph-verify"
+  | "data-download"
+  | "data-build";
+
+export interface AdminActionBody {
+  action: AdminAction;
+  dataset?: "attack" | "capec" | "all";
+  graph?: "neo4j" | "gremlin" | "all";
+  force?: boolean;
+  dry_run?: boolean;
+}
+
+/** SSE events streamed by `POST /api/admin`. */
+export type AdminEvent =
+  | { type: "status"; data: { action: string; message?: string } }
+  | { type: "log"; data: { line: string; level: string } }
+  | { type: "done"; data: { ok: boolean; message: string } & Record<string, unknown> };

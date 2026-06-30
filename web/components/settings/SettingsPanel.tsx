@@ -6,6 +6,7 @@ import { getConfig, putConfig } from "@/lib/api";
 import { SHADOW } from "@/lib/ui";
 import { CloseIcon } from "@/components/ui/icons";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
+import { InfraActions } from "./InfraActions";
 
 type Agent = "planner" | "specialist";
 
@@ -253,6 +254,8 @@ export function SettingsPanel() {
                   <Field label="Gremlin URI" value={form.connection.gremlin_uri} onChange={(v) => patchConn({ gremlin_uri: v })} placeholder="ws://localhost:6455/gremlin" />
                 </div>
               </fieldset>
+
+              <InfraActions />
             </>
           ) : loading ? (
             <p className="py-6 text-center font-mono text-xs text-text-muted">Loading configuration…</p>

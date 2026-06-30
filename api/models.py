@@ -123,3 +123,29 @@ class QueryRequest(BaseModel):
     question: str = Field(min_length=1)
     mode: Literal["plan", "query"] = "query"
     drafter: Literal["deterministic", "llm"] = "deterministic"
+
+
+# ---------------------------------------------------------------------------
+# Admin — infrastructure / data / graph actions (mirrors main.py modes).
+# ---------------------------------------------------------------------------
+
+AdminAction = Literal[
+    "docker-status",
+    "docker-start",
+    "docker-stop",
+    "graph-health",
+    "graph-load",
+    "graph-verify",
+    "data-download",
+    "data-build",
+]
+
+
+class AdminActionRequest(BaseModel):
+    action: AdminAction
+    dataset: Literal["attack", "capec", "all"] | None = None
+    graph: Literal["neo4j", "gremlin", "all"] | None = None
+    force: bool = False
+    dry_run: bool = False
+    neo4j_version: str | None = None
+    gremlin_version: str | None = None

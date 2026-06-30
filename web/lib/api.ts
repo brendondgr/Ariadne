@@ -6,7 +6,14 @@
  * `NEXT_PUBLIC_API_BASE` only to point the browser at a non-proxied host.
  */
 
-import type { ApiConfig, ApiConfigUpdate, ApiHealth, QueryEvent, QueryEventType } from "./types";
+import type {
+  AdminActionBody,
+  AdminEvent,
+  ApiConfig,
+  ApiConfigUpdate,
+  ApiHealth,
+  QueryEvent,
+} from "./types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "";
 
@@ -45,45 +52,30 @@ export interface QueryRequestBody {
   drafter: "deterministic" | "llm";
 }
 
-const KNOWN_EVENTS: QueryEventType[] = [
-  "status",
-  "probe",
-  "plan",
-  "specialist",
-  "skipped",
-  "evidence",
-  "answer",
-  "done",
-  "error",
-];
-
-/** Parse one raw SSE frame (`event:`/`data:` lines) into a {@link QueryEvent}. */
-export function parseSseFrame(frame: string): QueryEvent | null {
+/** Parse one raw SSE frame (`event:`/`data:` lines) into `{ type, data }`. */
+export function parseSseFrame(frame: string): { type: string; data: unknown } | null {
   let event = "message";
   const dataLines: string[] = [];
   for (const line of frame.split("\n")) {
     if (line.startsWith("event:")) event = line.slice(6).trim();
     else if (line.startsWith("data:")) dataLines.push(line.slice(5).trim());
   }
-  if (!dataLines.length || !KNOWN_EVENTS.includes(event as QueryEventType)) return null;
+  if (!dataLines.length) return null;
   try {
-    return { type: event, data: JSON.parse(dataLines.join("\n")) } as QueryEvent;
+    return { type: event, data: JSON.parse(dataLines.join("\n")) };
   } catch {
     return null;
   }
 }
 
-/**
- * POST a question and stream the pipeline's Server-Sent Events, invoking
- * `onEvent` for each parsed frame. Resolves when the stream closes; pass an
- * `AbortSignal` to cancel an in-flight run.
- */
-export async function streamQuery(
-  body: QueryRequestBody,
-  onEvent: (event: QueryEvent) => void,
+/** POST `body` to `path` and invoke `onFrame` for each parsed SSE frame. */
+async function postSseStream(
+  path: string,
+  body: unknown,
+  onFrame: (frame: { type: string; data: unknown }) => void,
   signal?: AbortSignal,
 ): Promise<void> {
-  const res = await fetch(url("/api/query"), {
+  const res = await fetch(url(path), {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "text/event-stream" },
     body: JSON.stringify(body),
@@ -91,7 +83,7 @@ export async function streamQuery(
   });
 
   if (!res.ok || !res.body) {
-    throw new Error(`POST /api/query failed: ${res.status} ${res.statusText}`);
+    throw new Error(`POST ${path} failed: ${res.status} ${res.statusText}`);
   }
 
   const reader = res.body.getReader();
@@ -103,19 +95,40 @@ export async function streamQuery(
       const { value, done } = await reader.read();
       if (done) break;
       buffer += decoder.decode(value, { stream: true });
-
       // SSE frames are delimited by a blank line.
       let sep: number;
       while ((sep = buffer.indexOf("\n\n")) !== -1) {
         const frame = buffer.slice(0, sep);
         buffer = buffer.slice(sep + 2);
         const parsed = parseSseFrame(frame);
-        if (parsed) onEvent(parsed);
+        if (parsed) onFrame(parsed);
       }
     }
     const tail = parseSseFrame(buffer);
-    if (tail) onEvent(tail);
+    if (tail) onFrame(tail);
   } finally {
     reader.releaseLock();
   }
+}
+
+/**
+ * POST a question and stream the pipeline's Server-Sent Events, invoking
+ * `onEvent` for each parsed frame. Resolves when the stream closes; pass an
+ * `AbortSignal` to cancel an in-flight run.
+ */
+export function streamQuery(
+  body: QueryRequestBody,
+  onEvent: (event: QueryEvent) => void,
+  signal?: AbortSignal,
+): Promise<void> {
+  return postSseStream("/api/query", body, (frame) => onEvent(frame as QueryEvent), signal);
+}
+
+/** Run an admin (infra/data/graph) action, streaming its log + done events. */
+export function streamAdmin(
+  body: AdminActionBody,
+  onEvent: (event: AdminEvent) => void,
+  signal?: AbortSignal,
+): Promise<void> {
+  return postSseStream("/api/admin", body, (frame) => onEvent(frame as AdminEvent), signal);
 }

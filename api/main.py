@@ -16,6 +16,7 @@ from fastapi.responses import StreamingResponse
 from utils.config import load_env
 
 from .models import (
+    AdminActionRequest,
     ConfigResponse,
     ConfigUpdateRequest,
     DockerStateModel,
@@ -25,6 +26,7 @@ from .models import (
 )
 from .services.config import apply_update, read_config
 from .services.health import docker_state, live_sources
+from .services.infra import stream_admin_action
 from .services.query import stream_query_events
 
 # Load the central .env once, mirroring main.py's entry-point behaviour.
@@ -77,6 +79,25 @@ def post_query(request: QueryRequest) -> StreamingResponse:
         request.question,
         mode=request.mode,
         use_llm=request.drafter == "llm",
+    )
+    return StreamingResponse(
+        stream,
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
+
+
+@app.post("/api/admin")
+def post_admin(request: AdminActionRequest) -> StreamingResponse:
+    """Run an infrastructure/data/graph action, streaming its logs as SSE."""
+    stream = stream_admin_action(
+        request.action,
+        dataset=request.dataset,
+        graph=request.graph,
+        force=request.force,
+        dry_run=request.dry_run,
+        neo4j_version=request.neo4j_version,
+        gremlin_version=request.gremlin_version,
     )
     return StreamingResponse(
         stream,
