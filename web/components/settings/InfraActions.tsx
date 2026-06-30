@@ -9,6 +9,7 @@ type Dataset = "attack" | "capec" | "all";
 type Graph = "neo4j" | "gremlin" | "all";
 
 const NEEDS_DATASET: AdminAction[] = ["graph-load", "graph-verify", "data-build"];
+const NEEDS_GRAPH: AdminAction[] = ["graph-load", "graph-stop"];
 
 const BUTTONS: { group: string; actions: { action: AdminAction; label: string; danger?: boolean }[] }[] = [
   {
@@ -25,6 +26,7 @@ const BUTTONS: { group: string; actions: { action: AdminAction; label: string; d
       { action: "graph-health", label: "Health" },
       { action: "graph-load", label: "Load" },
       { action: "graph-verify", label: "Verify" },
+      { action: "graph-stop", label: "Stop", danger: true },
     ],
   },
   {
@@ -33,6 +35,10 @@ const BUTTONS: { group: string; actions: { action: AdminAction; label: string; d
       { action: "data-download", label: "Download" },
       { action: "data-build", label: "Build" },
     ],
+  },
+  {
+    group: "Pipeline",
+    actions: [{ action: "yolo-all", label: "yolo-all (full pipeline)", danger: true }],
   },
 ];
 
@@ -60,7 +66,7 @@ export function InfraActions() {
     const body: AdminActionBody = {
       action,
       ...(NEEDS_DATASET.includes(action) ? { dataset } : {}),
-      ...(action === "graph-load" ? { graph } : {}),
+      ...(NEEDS_GRAPH.includes(action) ? { graph } : {}),
     };
     try {
       await streamAdmin(body, (event) => {
@@ -84,7 +90,8 @@ export function InfraActions() {
 
       <p className="mb-2.5 mt-1 text-[11.5px] leading-snug text-text-muted">
         Host operations from <span className="font-mono text-text-soft">main.py</span> — Docker, dataset
-        downloads/builds, and graph loads. Output streams below; success depends on the host.
+        downloads/builds, graph load/verify/stop, and the full <span className="font-mono text-text-soft">--yolo-all</span>
+        pipeline. Output streams below; success depends on the host.
       </p>
 
       <div className="mb-2.5 flex flex-wrap items-center gap-2">

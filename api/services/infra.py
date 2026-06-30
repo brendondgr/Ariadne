@@ -17,7 +17,7 @@ import threading
 from typing import Any, Iterator
 
 from utils.graph_loader.main import run_graph_command
-from utils.infrastructure import docker_start, docker_status, docker_stop
+from utils.infrastructure import docker_start, docker_status, docker_stop, docker_stop_service
 
 from .health import live_sources
 
@@ -92,6 +92,24 @@ def _dispatch(action: str, **kw: Any) -> dict[str, Any]:
             raise ValueError(f"data-build target must be attack/capec/all, got {target!r}")
         builder[target]()
         return {}
+    if action == "graph-stop":
+        target = kw.get("graph")
+        if not target:
+            raise ValueError("graph-stop requires 'graph' (neo4j|gremlin|all)")
+        docker_stop_service(target)
+        return {"action": "graph-stop", "service": target}
+    if action == "yolo-all":
+        from utils.yolo import YoloRunner
+
+        results = YoloRunner().run()
+        failed = [r.name for r in results if r.status == "failed"]
+        needs_input = [r.name for r in results if r.status == "needs_input"]
+        return {
+            "action": "yolo-all",
+            "steps": len(results),
+            "failed": failed,
+            "needs_input": needs_input,
+        }
     raise ValueError(f"unknown admin action {action!r}")
 
 

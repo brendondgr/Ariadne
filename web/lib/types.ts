@@ -460,8 +460,10 @@ export type AdminAction =
   | "graph-health"
   | "graph-load"
   | "graph-verify"
+  | "graph-stop"
   | "data-download"
-  | "data-build";
+  | "data-build"
+  | "yolo-all";
 
 export interface AdminActionBody {
   action: AdminAction;
