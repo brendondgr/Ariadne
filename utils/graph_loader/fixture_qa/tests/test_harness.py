@@ -89,6 +89,25 @@ def _build_attack_dataset(tmp_path: Path) -> LoaderConfig:
         ),
         encoding="utf-8",
     )
+    # Orphan fixture: t2 is a live orphan by construction (no edges touch it).
+    (expected_dir / "attack_orphans.json").write_text(
+        json.dumps(
+            {
+                "dataset": "attack",
+                "policy": "exclude-at-load",
+                "matrix_tactic_count": 0,
+                "expected_dead_orphans": {},
+                "allowed_orphan_label_counts": {},
+                "allowed_live_orphans": {
+                    "attack-pattern--t2": {
+                        "label": "Technique",
+                        "reason": "synthetic dead-end",
+                    }
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
     for name in ("nodes.jsonl", "relationships.jsonl"):
         (gremlin_dir / name).write_text("{}\n", encoding="utf-8")
 

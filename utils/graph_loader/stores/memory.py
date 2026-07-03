@@ -108,6 +108,15 @@ class MemoryGraphStore(GraphStore):
             dangling_edges=dangling, nodes_missing_id=missing, details=details
         )
 
+    def orphan_ids(self, limit: int = 5000) -> list[str]:
+        connected: set[str] = set()
+        for edge in self._edges:
+            connected.add(edge.get("source_id"))
+            connected.add(edge.get("target_id"))
+        return sorted(
+            node_id for node_id in self._nodes if node_id not in connected
+        )[:limit]
+
     def snapshot_counts(self) -> CountSummary:
         labels: dict[str, int] = {}
         for node in self._nodes.values():

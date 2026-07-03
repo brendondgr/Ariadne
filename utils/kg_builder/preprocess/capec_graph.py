@@ -283,11 +283,20 @@ def materialize_capec_graph(checkpoint: CapecPairsCheckpoint) -> NormalizedGraph
             ref_node_id = ensure_external_reference_node(ref_id)
             add_edge("HAS_REFERENCE", ap_node_id, ref_node_id)
 
+    # View members share the CAPEC-ID number space between categories and
+    # attack patterns, so each member is resolved against the checkpoint sets.
+    known_category_ids = {str(category["id"]) for category in checkpoint.categories}
+    known_pattern_ids = {
+        str(attack_pattern["id"]) for attack_pattern in checkpoint.attack_patterns
+    }
     for view in checkpoint.views:
         view_id = view_node_id(view["id"])
-        for member in view.get("member_of", []):
-            category_id = category_node_id(str(member))
-            add_edge("IN_VIEW", category_id, view_id)
+        for member in view.get("members", []):
+            member_id = str(member)
+            if member_id in known_category_ids:
+                add_edge("IN_VIEW", category_node_id(member_id), view_id)
+            elif member_id in known_pattern_ids:
+                add_edge("IN_VIEW", attack_pattern_node_id(member_id), view_id)
 
     nodes = sorted(node_index.values(), key=lambda node: node.id)
     relationships.sort(key=lambda rel: (rel.type, rel.id))
