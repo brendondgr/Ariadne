@@ -124,9 +124,9 @@ export function GraphCanvas({
           nodeLabel={(n) => (n as FGNode).name || (n as FGNode).id}
           nodeCanvasObjectMode={() => "replace"}
           nodeCanvasObject={nodeCanvasObject}
-          // Links — subtle, low opacity for ~21k edge datasets
-          linkColor={() => "rgba(138,158,152,0.18)"}
-          linkWidth={0.5}
+          // Links — per-relationship-type translucent color (baked in FGLink.color)
+          linkColor={(l) => (l as FGLink).color}
+          linkWidth={0.6}
           // No directional arrows / particles — performance
           // Simulation settling
           cooldownTicks={100}

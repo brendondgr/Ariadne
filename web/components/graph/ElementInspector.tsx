@@ -143,11 +143,16 @@ function LinkInspector({ link }: { link: FGLink & Record<string, unknown> }) {
 
   return (
     <div className="flex flex-col gap-2">
-      {/* Type heading */}
+      {/* Type heading — colored to match the relationship-type swatch */}
       <p
-        className="font-mono text-[12px] font-medium uppercase tracking-[0.06em]"
-        style={{ color: "var(--color-primary)" }}
+        className="flex items-center gap-1.5 font-mono text-[12px] font-medium uppercase tracking-[0.06em]"
+        style={{ color: link.typeColor ?? "var(--color-primary)" }}
       >
+        <span
+          className="inline-block h-2 w-2 flex-shrink-0 rounded-full"
+          style={{ background: link.typeColor ?? "var(--color-primary)" }}
+          aria-hidden="true"
+        />
         {link.type}
       </p>
 

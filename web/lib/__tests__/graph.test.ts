@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
   LABEL_PALETTE,
   labelColor,
+  edgeTypeColorMap,
+  hexToRgba,
   toForceGraphData,
 } from "../graph";
 import type { GraphPayload } from "../types";
@@ -72,6 +74,43 @@ describe("labelColor", () => {
 });
 
 /* -------------------------------------------------------------------------- */
+/* edgeTypeColor + hexToRgba                                                    */
+/* -------------------------------------------------------------------------- */
+
+describe("edgeTypeColorMap", () => {
+  const attackTypes = [
+    "USES", "ATTRIBUTED_TO", "MITIGATES", "DETECTS", "HAS_TECHNIQUE", "HAS_SUBTECHNIQUE",
+  ];
+
+  it("assigns a UNIQUE palette color to each type (no collisions ≤ palette size)", () => {
+    const map = edgeTypeColorMap(attackTypes);
+    const colors = [...map.values()];
+    expect(colors).toHaveLength(attackTypes.length);
+    // Every assigned color is distinct
+    expect(new Set(colors).size).toBe(attackTypes.length);
+    // and every color is a palette member
+    for (const c of colors) expect(LABEL_PALETTE).toContain(c);
+  });
+
+  it("is stable regardless of input order (sorts internally)", () => {
+    const a = edgeTypeColorMap(attackTypes);
+    const b = edgeTypeColorMap([...attackTypes].reverse());
+    for (const t of attackTypes) expect(a.get(t)).toBe(b.get(t));
+  });
+
+  it("dedupes repeated types", () => {
+    const map = edgeTypeColorMap(["USES", "USES", "DETECTS"]);
+    expect(map.size).toBe(2);
+  });
+});
+
+describe("hexToRgba", () => {
+  it("converts a #rrggbb hex to an rgba string at the given alpha", () => {
+    expect(hexToRgba("#4e9e96", 0.5)).toBe("rgba(78, 158, 150, 0.5)");
+  });
+});
+
+/* -------------------------------------------------------------------------- */
 /* toForceGraphData — basic mapping                                           */
 /* -------------------------------------------------------------------------- */
 
@@ -90,6 +129,19 @@ describe("toForceGraphData — basic mapping", () => {
       expect(typeof node.color).toBe("string");
       expect(LABEL_PALETTE).toContain(node.color);
     }
+  });
+
+  it("each link has a translucent rgba color and a solid palette typeColor", () => {
+    const { links } = toForceGraphData(payload);
+    for (const link of links) {
+      expect(link.color).toMatch(/^rgba\(\d+, \d+, \d+, [\d.]+\)$/);
+      expect(LABEL_PALETTE).toContain(link.typeColor);
+    }
+    // Distinct relationship types yield distinct colors (unique assignment)
+    const uses = links.find((l) => l.type === "USES");
+    const attributed = links.find((l) => l.type === "ATTRIBUTED_TO");
+    expect(uses?.color).not.toBe(attributed?.color);
+    expect(uses?.typeColor).not.toBe(attributed?.typeColor);
   });
 
   it("each link has sourceId and targetId matching the original string ids", () => {
