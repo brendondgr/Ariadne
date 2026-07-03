@@ -44,7 +44,7 @@ Full component contracts: [`docs/planner_agent.md`](docs/planner_agent.md), [`do
 - **Bounded, validated queries** — each specialist enforces its own safety limits and validates queries before execution; no unbounded traversals reach the live graph.
 - **Reproducible graph artifacts** — a canonical (JSONL + schema + manifest) → export (Neo4j CSV/Cypher, Gremlin JSONL) → runtime layering, sha256-pinned to the raw source, with a fixture-QA harness that reconciles raw == manifest == live before agents ever query it.
 - **Self-healing pipeline runner** (`--yolo-all`) — classifies failures as stale-state (auto-backup + rebuild), transient (retry with backoff), or needs-human (surfaced, not crashed on), instead of failing the whole run on the first error.
-- **Analyst web workbench** — a Next.js graph explorer for visually inspecting the federated results, not just CLI output.
+- **Analyst web workbench** — a Next.js app with two surfaces: a **chat view** that streams the live plan → query → evidence → answer pipeline, and an **interactive graph explorer** — switch between the ATT&CK/Neo4j and CAPEC/Gremlin graphs, render every node and edge on canvas, search by node title/description or edge type, filter by node/relationship type, and click any element to inspect its properties.
 
 ## Setup
 
@@ -88,7 +88,7 @@ All settings live in a single git-ignored `.env` (`cp .env.example .env` — eve
 
 ## Status
 
-Data layer and the federated planning agent are complete; specialist agents are in progress toward a working end-to-end credential-theft query flow at the midpoint review. See the [week-by-week roadmap](#roadmap--week-by-week) at the bottom for the full milestone checklist.
+The data layer, the federated planning agent, and both query specialists (Cypher over Neo4j, Gremlin over a Neptune-style server) are complete and run end-to-end against the live stack. An analyst web workbench sits on top — a chat view over the live pipeline plus an interactive graph explorer. Next up: the synthesis/reporting prose agent and formal component + end-to-end evaluation. See the [week-by-week roadmap](#roadmap--week-by-week) at the bottom for the full milestone checklist.
 
 ## Documentation
 
@@ -139,10 +139,10 @@ Full task rationale in [`docs/goals.md`](docs/goals.md); change history in [`doc
 | Status | Weeks | Phase | Task | Difficulty |
 | :---: |-------|-------|------|------------|
 | ✅ | Wk 6–7 | Agents | Federated planning agent | High |
-| ⬜ | Wk 7–8 | Agents | Cypher specialist agent | High |
-| ⬜ | Wk 8–9 | Agents | Gremlin specialist agent | High |
+| ✅ | Wk 7–8 | Agents | Cypher specialist agent | High |
+| ✅ | Wk 8–9 | Agents | Gremlin specialist agent | High |
 
-**Midpoint review** — All three agents functional end-to-end on the credential-theft example query flow.
+**Midpoint review** — All three agents (planner + Cypher + Gremlin) functional and running end-to-end against the live Neo4j + Gremlin stack.
 
 | Status | Weeks | Phase | Task | Difficulty |
 | :---: |-------|-------|------|------------|
