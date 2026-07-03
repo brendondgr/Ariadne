@@ -30,6 +30,7 @@ from ..loader import _expected_counts
 from ..registry import resolve_dataset
 from ..stores.factory import create_graph_store
 from .composite_keys import composite_key_checks, constraint_check
+from .cross_db import cross_db_resolution_checks
 from .orphans import (
     attack_named_regressions,
     capec_hierarchy_checks,
@@ -69,6 +70,7 @@ class FixtureQAReport:
     errors: list[str] = field(default_factory=list)
     identity: dict[str, Any] = field(default_factory=dict)
     orphans: dict[str, Any] = field(default_factory=dict)
+    cross_db: dict[str, Any] = field(default_factory=dict)
 
     def as_dict(self) -> dict[str, Any]:
         data = asdict(self)
@@ -242,6 +244,22 @@ def run_fixture_qa(
             capec_hierarchy_checks(target.nodes_path, target.relationships_path)
         )
 
+    # 5. cross-database join-key resolution (CAPEC -> ATT&CK), when the attack
+    #    canonical artifact is available alongside the capec one.
+    resolution: dict[str, Any] = {}
+    if dataset == "capec":
+        attack_nodes_path = (
+            loader_config.data_dir / "graphs" / "attack" / "canonical" / "nodes.jsonl"
+        )
+        if attack_nodes_path.exists():
+            resolution_checks, resolution = cross_db_resolution_checks(
+                target.nodes_path,
+                target.relationships_path,
+                attack_nodes_path,
+                expected_dir,
+            )
+            checks.extend(resolution_checks)
+
     # 5 + 6. manifest -> live reconciliation and referential integrity per loaded backend.
     live: dict[str, Any] = {}
     for backend in sorted(LOAD_BACKENDS):
@@ -330,6 +348,7 @@ def run_fixture_qa(
             "live_orphans": orphan_scan["live_orphans"],
             "total": len(orphan_scan["orphan_ids"]),
         },
+        cross_db=resolution,
     )
 
     if write_report:
