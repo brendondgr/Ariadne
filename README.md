@@ -15,9 +15,10 @@ This repository implements a proof-of-concept for **ReliaQuest Innovation Challe
 | [x] | Wk 3–4 | Data layer | Build portable ATT&CK graph artifacts (JSONL, schema, Neo4j CSV/Cypher) | Medium |
 | [x] | Wk 4 | Data layer | Runtime ATT&CK graph loader (Neo4j/Gremlin load, verify, health) | Medium |
 | [x] | Wk 4–5 | Data layer | Build Gremlin CAPEC fixture | Medium |
+| [x] | Wk 4–5 | Data layer | Fixture-QA harness (raw==manifest==live) + sha256-pinned data snapshot | Medium |
 | [ ] | Wk 5 | Data layer | Author source cards (ATT&CK card auto-generated; endpoints & safety limits pending) | Low |
 
-**ITS check-in** — Both graph fixtures live, source cards complete, environment reproducible.
+**ITS check-in** — Both graph fixtures live and QA-reconciled against the pinned ATT&CK v19.0 / CAPEC v3.9 snapshot, source cards complete, environment reproducible.
 
 | Status | Weeks | Phase | Task | Difficulty |
 | :---: |-------|-------|------|------------|

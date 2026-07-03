@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from ..config import ADAPTER_VERSION
-from ..models import AdapterMetadata, CountSummary
+from ..models import AdapterMetadata, CountSummary, ReferentialIntegrityResult
 from .base import GraphStore
 
 
@@ -75,6 +75,23 @@ class MemoryGraphStore(GraphStore):
             if label is None or node.get("label") == label:
                 return node
         return None
+
+    def referential_integrity(self) -> ReferentialIntegrityResult:
+        missing = sum(1 for node in self._nodes.values() if not node.get("id"))
+        dangling = sum(
+            1
+            for edge in self._edges
+            if edge.get("source_id") not in self._nodes
+            or edge.get("target_id") not in self._nodes
+        )
+        details: list[str] = []
+        if dangling:
+            details.append(f"{dangling} edges reference a missing node id")
+        if missing:
+            details.append(f"{missing} nodes have no id property")
+        return ReferentialIntegrityResult(
+            dangling_edges=dangling, nodes_missing_id=missing, details=details
+        )
 
     def snapshot_counts(self) -> CountSummary:
         labels: dict[str, int] = {}

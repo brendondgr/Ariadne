@@ -10,7 +10,7 @@ from typing import Any
 from utils.kg_builder.io import read_jsonl
 
 from ..config import ADAPTER_VERSION
-from ..models import AdapterMetadata
+from ..models import AdapterMetadata, ReferentialIntegrityResult
 from .base import GraphStore
 
 _SAFE_LABEL = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
@@ -180,6 +180,26 @@ class GremlinGraphStore(GraphStore):
             bindings={"edgeLabel": rel_type},
         ).all().result()
         return int(result[0])
+
+    def referential_integrity(self) -> ReferentialIntegrityResult:
+        assert self._client is not None
+        missing = int(
+            self._client.submit("g.V().not(has('id')).count()").all().result()[0]
+        )
+        dangling = int(
+            self._client.submit(
+                "g.E().where(__.or(__.outV().not(has('id')), "
+                "__.inV().not(has('id')))).count()"
+            ).all().result()[0]
+        )
+        details: list[str] = []
+        if dangling:
+            details.append(f"{dangling} edges have an endpoint vertex with no id property")
+        if missing:
+            details.append(f"{missing} vertices have no id property")
+        return ReferentialIntegrityResult(
+            dangling_edges=dangling, nodes_missing_id=missing, details=details
+        )
 
     def sample_node(self, label: str | None = None) -> dict[str, Any] | None:
         assert self._client is not None

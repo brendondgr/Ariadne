@@ -14,7 +14,7 @@ DEFAULT_GREMLIN_URI = "ws://localhost:6455/gremlin"
 
 SUPPORTED_DATASETS = frozenset({"attack", "capec"})
 LOAD_BACKENDS = frozenset({"neo4j", "gremlin"})
-GRAPH_ACTIONS = frozenset({"neo4j", "gremlin", "all", "verify", "health"})
+GRAPH_ACTIONS = frozenset({"neo4j", "gremlin", "all", "verify", "fixture-qa", "health"})
 
 DEFAULT_BATCH_SIZE = 500
 ADAPTER_VERSION = "0.1.0"

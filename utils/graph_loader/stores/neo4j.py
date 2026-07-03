@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from ..config import ADAPTER_VERSION
-from ..models import AdapterMetadata
+from ..models import AdapterMetadata, ReferentialIntegrityResult
 from .base import GraphStore
 
 _SAFE_LABEL = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
@@ -179,6 +179,29 @@ class Neo4jGraphStore(GraphStore):
         with self._driver.session() as session:
             record = session.run(f"MATCH ()-[r:{rel_type}]->() RETURN count(r) AS c").single()
             return int(record["c"])
+
+    def referential_integrity(self) -> ReferentialIntegrityResult:
+        assert self._driver is not None
+        with self._driver.session() as session:
+            dangling = int(
+                session.run(
+                    "MATCH (a)-[r]->(b) WHERE a.id IS NULL OR b.id IS NULL "
+                    "RETURN count(r) AS c"
+                ).single()["c"]
+            )
+            missing = int(
+                session.run(
+                    "MATCH (n) WHERE n.id IS NULL RETURN count(n) AS c"
+                ).single()["c"]
+            )
+        details: list[str] = []
+        if dangling:
+            details.append(f"{dangling} edges have an endpoint with no id property")
+        if missing:
+            details.append(f"{missing} nodes have no id property")
+        return ReferentialIntegrityResult(
+            dangling_edges=dangling, nodes_missing_id=missing, details=details
+        )
 
     def sample_node(self, label: str | None = None) -> dict[str, Any] | None:
         assert self._driver is not None

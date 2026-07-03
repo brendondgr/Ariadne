@@ -51,9 +51,9 @@ Agent tool folders (`.cursor/`, `.claude/`, `.agents/`) are **pointers only** �
 
 | Package | Role |
 |---------|------|
-| `utils/download/` | MITRE ATT&CK & CAPEC dataset downloader |
-| `utils/kg_builder/` | STIX → canonical graph artifacts → Neo4j/Gremlin exports |
-| `utils/graph_loader/` | Runtime load, verify, and health checks for built graph artifacts |
+| `utils/download/` | MITRE ATT&CK & CAPEC dataset downloader; records a sha256 snapshot pin (`--pin` backfills existing files) |
+| `utils/kg_builder/` | STIX → canonical graph artifacts → Neo4j/Gremlin exports; `snapshot.py` gates builds on the pinned raw-source checksum |
+| `utils/graph_loader/` | Runtime load, verify, and health checks; `fixture_qa/` reconciles raw==manifest==live + referential integrity |
 | `utils/infrastructure/` | Docker Compose lifecycle for local graph DBs |
 | `utils/planner/` | Federated planning agent: live-source discovery, plan schema, deterministic self-eval gate, deterministic + OpenAI-compatible drafters, ReAct loop, evaluation |
 | `utils/specialists/` | Source-specific query specialists: shared scaffold + four swap points (builder, validator, connector, normalizer), shared evidence schema, Cypher (ATT&CK/Neo4j) + Gremlin (CAPEC/Gremlin) specialists, federation router |
@@ -73,9 +73,33 @@ backoff; non-recoverable errors are surfaced as a `NEEDS INPUT` step in the
 summary table with a remediation hint rather than an opaque crash. The `_backups/`
 directories live under the git-ignored `data/` tree.
 
+### Fixture QA and snapshot pinning
+
+Two safeguards keep the fixtures trustworthy before agents ever touch them.
+
+**Fixture-QA harness** (`utils/graph_loader/fixture_qa/`, `uv run main.py --graph
+fixture-qa --dataset <ds>`) independently reconciles three views of a graph —
+raw MITRE source, canonical build manifest, and the live database. It recounts
+node labels straight from the raw STIX/XML (deliberately not via the build
+preprocessors, so a systematic drop is catchable), asserts `raw == manifest ==
+live`, runs a live referential-integrity check (zero dangling edges, zero id-less
+nodes) via `GraphStore.referential_integrity()`, and verifies revoked/deprecated
+handling (ATT&CK excludes them and records the counts; CAPEC loads the full
+catalog with a filterable `Status` property). It writes
+`data/graphs/<ds>/runtime/fixture-qa-report.json` and exits non-zero on any
+mismatch. Verified state: ATT&CK 2611 nodes / 21739 edges, CAPEC 4888 / 6917,
+both with zero dangling edges.
+
+**Snapshot pinning** records the sha256 of each raw source in `data/versions.json`
+(and per-source `metadata.json`), so builds run only from the exact ATT&CK v19.0
+and CAPEC v3.9 files. `utils/kg_builder/snapshot.py` recomputes and compares the
+checksum at the top of every build and fails fast if MITRE silently shipped a new
+revision; the pin also surfaces in source-card `provenance.raw_sha256`. Pin an
+existing on-disk snapshot with `uv run main.py --pin`.
+
 ## Data (`data/`)
 
-Tracked in git: `data/versions.json` (pinned ATT&CK v19.0, CAPEC v3.9). Everything else is generated locally.
+Tracked in git: `data/versions.json` (pinned ATT&CK v19.0, CAPEC v3.9, with sha256 source checksums). Everything else is generated locally.
 
 | Path | Contents |
 |------|----------|
@@ -173,6 +197,8 @@ with `npm run lint`, and test with `npm test` (adapter + fixture contracts).
 | Download MITRE data | `utils/download/downloader.py`, `main.py --download` |
 | Build graph artifacts | `utils/kg_builder/`, `main.py --build` |
 | Load live graph databases | `utils/graph_loader/`, `main.py --dataset --graph` |
+| Fixture-QA (raw==manifest==live) | `utils/graph_loader/fixture_qa/`, `main.py --graph fixture-qa --dataset <ds>` |
+| Pin the data snapshot (sha256) | `utils/kg_builder/snapshot.py`, `utils/download/downloader.py`, `main.py --pin` |
 | ATT&CK STIX normalization | `utils/kg_builder/preprocess/attack.py` |
 | CAPEC XML normalization | `utils/kg_builder/preprocess/capec.py`, `utils/kg_builder/discovery/` |
 | Neo4j / Gremlin exporters | `utils/kg_builder/exporters/` |

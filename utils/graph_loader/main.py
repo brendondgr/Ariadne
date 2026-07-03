@@ -6,6 +6,7 @@ import logging
 import socket
 
 from .config import GRAPH_ACTIONS, LoaderConfig
+from .fixture_qa.harness import run_fixture_qa_command as _fixture_qa
 from .loader import load_dataset
 from .registry import LoaderResolutionError
 from .verify import run_dataset_verify as _verify_dataset
@@ -67,6 +68,11 @@ def run_dataset_verify(dataset: str, config: LoaderConfig | None = None) -> None
     _verify_dataset(dataset, config=config)
 
 
+def run_dataset_fixture_qa(dataset: str, config: LoaderConfig | None = None) -> None:
+    """Fixture-QA reconciliation: raw source == manifest == live graph."""
+    _fixture_qa(dataset, config=config)
+
+
 def run_dataset_load(
     dataset: str,
     graph: str,
@@ -112,6 +118,10 @@ def run_graph_command(
 
     if graph == "verify":
         run_dataset_verify(dataset, config)
+        return
+
+    if graph == "fixture-qa":
+        run_dataset_fixture_qa(dataset, config)
         return
 
     run_dataset_load(dataset, graph, config)
