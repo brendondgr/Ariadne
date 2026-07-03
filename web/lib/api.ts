@@ -12,6 +12,8 @@ import type {
   ApiConfig,
   ApiConfigUpdate,
   ApiHealth,
+  GraphDataset,
+  GraphPayload,
   QueryEvent,
 } from "./types";
 
@@ -35,6 +37,10 @@ export function getHealth(signal?: AbortSignal): Promise<ApiHealth> {
 
 export function getConfig(signal?: AbortSignal): Promise<ApiConfig> {
   return getJson<ApiConfig>("/api/config", { signal });
+}
+
+export function getGraph(dataset: GraphDataset, signal?: AbortSignal): Promise<GraphPayload> {
+  return getJson<GraphPayload>(`/api/graph/${dataset}`, { signal });
 }
 
 export function putConfig(update: ApiConfigUpdate, signal?: AbortSignal): Promise<ApiConfig> {
