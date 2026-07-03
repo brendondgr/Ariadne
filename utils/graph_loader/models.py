@@ -37,6 +37,19 @@ class VerifyLoadedGraphResult:
 
 
 @dataclass(frozen=True)
+class ReferentialIntegrityResult:
+    """Live referential-integrity check for a loaded graph."""
+
+    dangling_edges: int
+    nodes_missing_id: int
+    details: list[str] = field(default_factory=list)
+
+    @property
+    def passed(self) -> bool:
+        return self.dangling_edges == 0 and self.nodes_missing_id == 0
+
+
+@dataclass(frozen=True)
 class AdapterMetadata:
     """Metadata about a graph store adapter."""
 

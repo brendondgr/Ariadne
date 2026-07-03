@@ -5,7 +5,12 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any
 
-from ..models import AdapterMetadata, CountSummary, VerifyLoadedGraphResult
+from ..models import (
+    AdapterMetadata,
+    CountSummary,
+    ReferentialIntegrityResult,
+    VerifyLoadedGraphResult,
+)
 
 
 class GraphStore(ABC):
@@ -59,6 +64,14 @@ class GraphStore(ABC):
     @abstractmethod
     def sample_node(self, label: str | None = None) -> dict[str, Any] | None:
         """Return a representative node for spot checks."""
+
+    @abstractmethod
+    def referential_integrity(self) -> ReferentialIntegrityResult:
+        """Return live counts of dangling edges and id-less nodes.
+
+        A healthy fixture has zero of both: every edge connects two nodes that
+        exist and every node carries the canonical ``id`` used as the join key.
+        """
 
     def verify_loaded_graph(self, expected: CountSummary) -> VerifyLoadedGraphResult:
         """Compare live counts against canonical manifest expectations."""
