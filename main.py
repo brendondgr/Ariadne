@@ -138,8 +138,9 @@ TYPICAL WORKFLOW
     uv run main.py --graph all --dataset attack    # load into both backends
 
   Step 6 — Verify loaded data or check infrastructure health:
-    uv run main.py --graph verify --dataset attack   # validate data, no reload
-    uv run main.py --graph health                    # ping backends (no dataset needed)
+    uv run main.py --graph verify --dataset attack     # validate data, no reload
+    uv run main.py --graph fixture-qa --dataset attack # reconcile raw==manifest==live + integrity
+    uv run main.py --graph health                      # ping backends (no dataset needed)
 
 STOP A SPECIFIC BACKEND
 -----------------------
