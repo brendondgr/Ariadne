@@ -7,6 +7,7 @@ import { ChatThread } from "@/components/center/ChatThread";
 import { InspectorPanel } from "@/components/inspector/InspectorPanel";
 import { InspectorDrawer } from "@/components/inspector/InspectorDrawer";
 import { SettingsPanel } from "@/components/settings/SettingsPanel";
+import { GraphExplorer } from "@/components/graph/GraphExplorer";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 import type { ConversationSummary } from "@/lib/types";
 
@@ -28,7 +29,7 @@ function relTime(ts: number): string {
  * its history stay in sync without any region knowing about the stream itself.
  */
 export function Workbench() {
-  const { runs, run, activeRunId, streamingRunId, selectRun, newConversation } = useWorkbench();
+  const { runs, run, activeRunId, streamingRunId, selectRun, newConversation, view } = useWorkbench();
 
   // Newest turn first in the rail.
   const items: ConversationSummary[] = [...runs]
@@ -56,17 +57,22 @@ export function Workbench() {
           />
         }
         center={
-          <ChatThread
-            title={activeTitle}
-            runs={runs}
-            activeRun={run}
-            activeRunId={activeRunId}
-            streamingRunId={streamingRunId}
-            onSelectRun={selectRun}
-          />
+          view === "graphs" ? (
+            <GraphExplorer />
+          ) : (
+            <ChatThread
+              title={activeTitle}
+              runs={runs}
+              activeRun={run}
+              activeRunId={activeRunId}
+              streamingRunId={streamingRunId}
+              onSelectRun={selectRun}
+            />
+          )
         }
         inspector={<InspectorPanel run={run} />}
         inspectorDrawer={<InspectorDrawer run={run} />}
+        hideRails={view === "graphs"}
       />
       <SettingsPanel />
     </>
