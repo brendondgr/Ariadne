@@ -185,9 +185,12 @@ on a canvas via `react-force-graph-2d` (`GraphCanvas`, dynamically imported
 filters-only — node-type + relationship-type toggles (each with a color swatch
 and count) — and the **right** (`GraphDetailsSidebar`) appears only when a node
 or edge is clicked, showing that element's full properties via `ElementInspector`
-with a close control. Pure transforms live in `lib/graph.ts` (`labelColor`,
-`edgeTypeColorMap` — unique color per sorted relationship type, `toForceGraphData`
-— drops dangling links when filtering). When Graphs is active the shell hides the
+with a close control. A top `GraphSearchBar` filters the graph by node
+name/description and edge type, committing its query 1s after the last keystroke
+(debounced) or immediately on the Search button / Enter. Pure transforms live in
+`lib/graph.ts` (`labelColor`, `edgeTypeColorMap` — unique color per sorted
+relationship type, `nodeMatchesQuery`, `toForceGraphData` — applies the search +
+filters and drops dangling links). When Graphs is active the shell hides the
 conversations rail and chat inspector (`AppShell` `hideRails`).
 
 | Path | Contents |
@@ -195,7 +198,7 @@ conversations rail and chat inspector (`AppShell` `hideRails`).
 | `app/page.tsx`, `app/layout.tsx` | App Router root + workbench composition |
 | `app/globals.css` | Woven Dusk tokens (`@theme`) + keyframes |
 | `components/` | `shell/`, `header/`, `left/`, `center/`, `inspector/`, `settings/`, `graph/`, `ui/`, `workbench/` |
-| `components/graph/` | `GraphExplorer`, `GraphSecondaryNav`, `GraphSidebar` (filters), `GraphDetailsSidebar` (on-select), `GraphCanvas`, `ElementInspector` |
+| `components/graph/` | `GraphExplorer`, `GraphSecondaryNav`, `GraphSearchBar`, `GraphSidebar` (filters), `GraphDetailsSidebar` (on-select), `GraphCanvas`, `ElementInspector` |
 | `lib/api.ts` | Typed client + SSE helpers (`getHealth`, `getConfig`, `getGraph`, `streamQuery`, `streamAdmin`) |
 | `lib/graph.ts` | Pure graph-view transforms (`labelColor`, `toForceGraphData`) |
 | `lib/adapt.ts` | Backend payloads → `WorkbenchRun` view-model |

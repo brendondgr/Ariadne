@@ -4,6 +4,7 @@ import {
   labelColor,
   edgeTypeColorMap,
   hexToRgba,
+  nodeMatchesQuery,
   toForceGraphData,
 } from "../graph";
 import type { GraphPayload } from "../types";
@@ -294,5 +295,85 @@ describe("toForceGraphData — edge cases", () => {
     const b = toForceGraphData(payload);
     expect(a.nodes).not.toBe(b.nodes);
     expect(a.links).not.toBe(b.links);
+  });
+});
+
+/* -------------------------------------------------------------------------- */
+/* nodeMatchesQuery + search filtering                                         */
+/* -------------------------------------------------------------------------- */
+
+describe("nodeMatchesQuery", () => {
+  const node = {
+    id: "attack-pattern--abc",
+    label: "Technique",
+    labels: ["Technique"],
+    name: "Scheduled Task",
+    properties: { description: "Adversaries may abuse the Windows Task Scheduler." },
+  };
+
+  it("empty query matches everything", () => {
+    expect(nodeMatchesQuery(node, "")).toBe(true);
+  });
+  it("matches on name (case-insensitive, lowercased query)", () => {
+    expect(nodeMatchesQuery(node, "scheduled")).toBe(true);
+  });
+  it("matches on description", () => {
+    expect(nodeMatchesQuery(node, "task scheduler")).toBe(true);
+  });
+  it("matches on id and label", () => {
+    expect(nodeMatchesQuery(node, "attack-pattern")).toBe(true);
+    expect(nodeMatchesQuery(node, "technique")).toBe(true);
+  });
+  it("returns false when nothing matches", () => {
+    expect(nodeMatchesQuery(node, "zzz-nomatch")).toBe(false);
+  });
+});
+
+describe("toForceGraphData — search query", () => {
+  it("empty query leaves the graph unchanged", () => {
+    const payload = makePayload();
+    const { nodes, links } = toForceGraphData(payload, { query: "   " });
+    expect(nodes).toHaveLength(4);
+    expect(links).toHaveLength(4);
+  });
+
+  it("filters to nodes matching the query by name", () => {
+    // n3 is 'Mal-A'; searching 'mal' should keep only n3 (isolated → no links)
+    const { nodes, links } = toForceGraphData(makePayload(), { query: "mal" });
+    expect(nodes.map((n) => n.id)).toEqual(["n3"]);
+    expect(links).toHaveLength(0);
+  });
+
+  it("keeps edges between two matched nodes", () => {
+    // Search 'T10' matches n1 (T1047) and n2 (T1059) — no edge between them,
+    // but both connect only to n3/n4 which are filtered out.
+    const { nodes } = toForceGraphData(makePayload(), { query: "T10" });
+    expect(new Set(nodes.map((n) => n.id))).toEqual(new Set(["n1", "n2"]));
+  });
+
+  it("an edge-type match pulls in that edge's endpoints", () => {
+    // 'ATTRIBUTED_TO' edges connect n4→n1 and n4→n2; searching the type shows
+    // those endpoints and the matching edges even though no node text matches.
+    const { nodes, links } = toForceGraphData(makePayload(), { query: "attributed" });
+    expect(new Set(nodes.map((n) => n.id))).toEqual(new Set(["n1", "n2", "n4"]));
+    expect(links.every((l) => l.type === "ATTRIBUTED_TO")).toBe(true);
+    expect(links).toHaveLength(2);
+  });
+
+  it("search composes with hiddenTypes", () => {
+    // Match the ATTRIBUTED_TO endpoints but hide the type → nodes shown by
+    // edge-type match disappear (no node text match, type hidden).
+    const { nodes, links } = toForceGraphData(makePayload(), {
+      query: "attributed",
+      hiddenTypes: new Set(["ATTRIBUTED_TO"]),
+    });
+    expect(nodes).toHaveLength(0);
+    expect(links).toHaveLength(0);
+  });
+
+  it("no match yields an empty graph", () => {
+    const { nodes, links } = toForceGraphData(makePayload(), { query: "zzz-nomatch" });
+    expect(nodes).toHaveLength(0);
+    expect(links).toHaveLength(0);
   });
 });
