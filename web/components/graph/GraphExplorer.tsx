@@ -1,17 +1,33 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { GraphPayload } from "@/lib/types";
+import type { FGNode, FGLink } from "@/lib/graph";
+import { toForceGraphData } from "@/lib/graph";
 import { getGraph } from "@/lib/api";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 import { GraphSecondaryNav } from "./GraphSecondaryNav";
 import { GraphSidebar } from "./GraphSidebar";
+import { GraphCanvas } from "./GraphCanvas";
+import type { SelectedElement } from "./ElementInspector";
+
+/** Filter + selection state scoped to a specific dataset key. */
+interface DatasetFilters {
+  hiddenLabels: Set<string>;
+  hiddenTypes: Set<string>;
+  selected: SelectedElement;
+}
+
+const EMPTY_FILTERS: DatasetFilters = {
+  hiddenLabels: new Set(),
+  hiddenTypes: new Set(),
+  selected: null,
+};
 
 /**
  * Top-level graph-explorer surface. Fills the <main> region:
  * - Secondary nav at top (dataset switcher + live counts)
  * - Flex row: GraphSidebar left + canvas region right
- * Canvas is a styled placeholder — the real canvas renders in the next step.
  */
 export function GraphExplorer() {
   const { graphDataset } = useWorkbench();
@@ -19,6 +35,16 @@ export function GraphExplorer() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [retryKey, setRetryKey] = useState(0);
+
+  // All filter + selection state stored in a single map keyed by dataset.
+  // Reading with a new key naturally returns undefined → falls back to EMPTY_FILTERS.
+  // This avoids any useEffect-setState patterns the strict lint rules prohibit.
+  const [filtersByDataset, setFiltersByDataset] = useState<
+    Record<string, DatasetFilters>
+  >({});
+
+  const filters = filtersByDataset[graphDataset] ?? EMPTY_FILTERS;
+  const { hiddenLabels, hiddenTypes, selected } = filters;
 
   // Track the abort controller so cleanup/dataset-change aborts in-flight fetch
   const abortRef = useRef<AbortController | null>(null);
@@ -57,7 +83,86 @@ export function GraphExplorer() {
     setRetryKey((k) => k + 1);
   };
 
+  /** Merge a partial update into the current dataset's filter state. */
+  const updateFilters = useCallback(
+    (patch: Partial<DatasetFilters>) => {
+      setFiltersByDataset((prev) => ({
+        ...prev,
+        [graphDataset]: { ...(prev[graphDataset] ?? EMPTY_FILTERS), ...patch },
+      }));
+    },
+    [graphDataset],
+  );
+
+  // Compute filtered force-graph data
+  const fgData = useMemo(
+    () =>
+      payload
+        ? toForceGraphData(payload, { hiddenLabels, hiddenTypes })
+        : null,
+    [payload, hiddenLabels, hiddenTypes],
+  );
+
+  // Filter callbacks (stable references)
+  const handleToggleLabel = useCallback(
+    (label: string, hidden: boolean) => {
+      setFiltersByDataset((prev) => {
+        const cur = prev[graphDataset] ?? EMPTY_FILTERS;
+        const next = new Set(cur.hiddenLabels);
+        if (hidden) next.add(label);
+        else next.delete(label);
+        return { ...prev, [graphDataset]: { ...cur, hiddenLabels: next } };
+      });
+    },
+    [graphDataset],
+  );
+
+  const handleToggleType = useCallback(
+    (type: string, hidden: boolean) => {
+      setFiltersByDataset((prev) => {
+        const cur = prev[graphDataset] ?? EMPTY_FILTERS;
+        const next = new Set(cur.hiddenTypes);
+        if (hidden) next.add(type);
+        else next.delete(type);
+        return { ...prev, [graphDataset]: { ...cur, hiddenTypes: next } };
+      });
+    },
+    [graphDataset],
+  );
+
+  const handleResetFilters = useCallback(() => {
+    updateFilters({ hiddenLabels: new Set(), hiddenTypes: new Set() });
+  }, [updateFilters]);
+
+  const handleSelectNode = useCallback(
+    (node: FGNode) => {
+      updateFilters({ selected: { kind: "node", node } });
+    },
+    [updateFilters],
+  );
+
+  const handleSelectLink = useCallback(
+    (link: FGLink) => {
+      updateFilters({
+        selected: { kind: "link", link: link as FGLink & Record<string, unknown> },
+      });
+    },
+    [updateFilters],
+  );
+
   const datasetLabel = graphDataset === "attack" ? "ATT&CK" : "CAPEC";
+
+  // Visible counts (after filtering)
+  const visibleCounts = fgData
+    ? { nodes: fgData.nodes.length, links: fgData.links.length }
+    : null;
+
+  const selectedId =
+    selected?.kind === "node"
+      ? selected.node.id
+      : selected?.kind === "link"
+        ? selected.link.id
+        : null;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
@@ -66,7 +171,15 @@ export function GraphExplorer() {
 
       {/* Body row: sidebar + canvas */}
       <div className="flex min-h-0 flex-1 overflow-hidden">
-        <GraphSidebar payload={payload} />
+        <GraphSidebar
+          payload={payload}
+          hiddenLabels={hiddenLabels}
+          hiddenTypes={hiddenTypes}
+          onToggleLabel={handleToggleLabel}
+          onToggleType={handleToggleType}
+          onResetFilters={handleResetFilters}
+          selected={selected}
+        />
 
         {/* Canvas region */}
         <div className="relative flex min-h-0 min-w-0 flex-1 p-4">
@@ -78,6 +191,21 @@ export function GraphExplorer() {
                 "rgba(235,230,220,0.08) 0px 0px 0px 1px, rgba(0,0,0,0.25) 0px 2px 8px, rgba(0,0,0,0.15) 0px 8px 24px -8px",
             }}
           >
+            {/* Visible count badge */}
+            {visibleCounts && !loading && !error && fgData && fgData.nodes.length > 0 && (
+              <div
+                className="absolute right-3 top-3 z-10 rounded-md px-2 py-1 font-mono text-[10px] tabular-nums"
+                style={{
+                  background: "rgba(21,25,26,0.85)",
+                  color: "var(--color-text-muted)",
+                  boxShadow: "rgba(235,230,220,0.08) 0 0 0 1px",
+                  fontFeatureSettings: '"tnum"',
+                }}
+              >
+                {visibleCounts.nodes.toLocaleString()} nodes · {visibleCounts.links.toLocaleString()} edges
+              </div>
+            )}
+
             {loading && (
               <CanvasLoading label={datasetLabel} />
             )}
@@ -90,8 +218,17 @@ export function GraphExplorer() {
               <CanvasEmpty />
             )}
 
-            {!loading && !error && payload && payload.counts.nodes > 0 && (
-              <CanvasPlaceholder payload={payload} />
+            {!loading && !error && fgData && fgData.nodes.length === 0 && payload && payload.counts.nodes > 0 && (
+              <CanvasAllFiltered />
+            )}
+
+            {!loading && !error && fgData && fgData.nodes.length > 0 && (
+              <GraphCanvas
+                data={fgData}
+                onSelectNode={handleSelectNode}
+                onSelectLink={handleSelectLink}
+                selectedId={selectedId}
+              />
             )}
           </div>
         </div>
@@ -157,37 +294,10 @@ function CanvasEmpty() {
   );
 }
 
-function CanvasPlaceholder({ payload }: { payload: GraphPayload }) {
+function CanvasAllFiltered() {
   return (
-    <div
-      className="flex flex-col items-center gap-4 rounded-lg px-8 py-6 text-center"
-      style={{
-        background: "rgba(235,230,220,0.03)",
-        boxShadow: "rgba(235,230,220,0.08) 0 0 0 1px",
-      }}
-    >
-      {/* Backend · dataset badge */}
-      <span
-        className="inline-block rounded-full px-3 py-0.5 font-mono text-[10px] uppercase tracking-[0.1em]"
-        style={{
-          background: "rgba(78,158,150,0.12)",
-          color: "var(--color-primary)",
-          boxShadow: "rgba(78,158,150,0.35) 0 0 0 1px",
-        }}
-      >
-        {payload.backend} · {payload.dataset}
-      </span>
-
-      <p
-        className="font-sans text-[15px] font-medium"
-        style={{ color: "var(--color-text)", letterSpacing: "-0.02em" }}
-      >
-        {payload.counts.nodes.toLocaleString()} nodes · {payload.counts.relationships.toLocaleString()} edges
-      </p>
-
-      <p className="font-mono text-[11px] leading-relaxed" style={{ color: "var(--color-text-muted)", maxWidth: 320 }}>
-        Graph data loaded — canvas renders in the next step.
-      </p>
-    </div>
+    <p className="font-mono text-[12px] uppercase tracking-[0.08em]" style={{ color: "var(--color-text-muted)" }}>
+      All nodes filtered. Adjust filters to show the graph.
+    </p>
   );
 }
