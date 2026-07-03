@@ -1,154 +1,108 @@
 # Ariadne
 
-Ariadne is a federated agentic graph-database system that threads together cybersecurity knowledge graphs to guide analysts through the labyrinth of interconnected adversary techniques, patterns, and mitigations. Named after Ariadne who guided Theseus through a maze to escape the Minotaur.
+Live, read-only federated querying across cybersecurity knowledge graphs that don't share a query language — one agentic layer plans, queries, and synthesizes analyst-facing answers across engines instead of forcing an offline merge into a single graph.
 
-This repository implements a proof-of-concept for **ReliaQuest Innovation Challenge Fund — Challenge Three: Knowledge Graph Integration**. The prototype federates queries across MITRE ATT&CK Enterprise STIX (Neo4j/Cypher) and MITRE CAPEC attack patterns (Gremlin Server, Neptune-style), using an orchestrator and source-specific agents to plan, query, and synthesize analyst-facing answers with full provenance.
+Named after Ariadne, who guided Theseus through a maze — this system threads together adversary technique, attack-pattern, and mitigation knowledge graphs to guide analysts through the same kind of labyrinth.
 
-**Award period:** June 8, 2026 – October 23, 2026
+**Funded by:** ReliaQuest Innovation Challenge Fund — Challenge Three: Knowledge Graph Integration (award period June 8 – October 23, 2026)
+
+## Overview
+
+Cybersecurity teams increasingly rely on knowledge graphs to represent adversary techniques, attack patterns, and mitigations, but those sources live on different engines with different schemas and query languages — cross-source correlation today usually means manual lookups or an offline ETL into one graph. Most existing federation approaches assume a single engine or require that translation step up front.
+
+Ariadne instead reads schema and metadata from each live source and routes queries natively per engine — Cypher against Neo4j, Gremlin against a Neptune-style server — reconciling the results by shared identifiers (ATT&CK technique IDs, CAPEC IDs) rather than a shared index. Grounding comes entirely from schema descriptions, source metadata, and executed queries; **no vector index or embedding store** is built from the graph data.
+
+## Architecture
+
+Four components, each independently testable:
+
+1. **Data & schema layer** — per-source cards (connection details, schema, provenance fields, safety limits) plus reproducible ATT&CK and CAPEC fixtures, sha256-pinned against the raw source snapshot.
+2. **Federated planning agent** — reads the source cards, classifies analyst intent, and emits a machine-readable plan (target sources, sub-questions, join keys, traversal limits) rather than routing by free-text guess.
+3. **Source-specific query agents** — a Cypher specialist (Neo4j) and a Gremlin specialist (bounded traversals), each validating its own queries, enforcing safety constraints, and returning normalized, evidence-linked summaries.
+4. **Synthesis & reporting agent** *(in progress)* — reconciles partial evidence across sources by joining on shared IDs, flags conflicts, and assembles a provenance-linked answer.
+
+**Example flow** — *"Which CAPEC patterns related to credential theft map to ATT&CK techniques, and what mitigations appear for those techniques?"*
+Planner emits a CAPEC sub-task and an ATT&CK sub-task → Gremlin specialist finds CAPEC-560/565 mapping to T1555 → Cypher specialist retrieves T1555's mitigations (M1026, M1027) → synthesis agent joins on the ATT&CK ID and returns a provenance-linked answer.
+
+Full component contracts: [`docs/planner_agent.md`](docs/planner_agent.md), [`docs/specialist_agents.md`](docs/specialist_agents.md).
+
+## Tech Stack
+
+- **Python 3.13**, `uv` for env/dependency management
+- **Neo4j** (Cypher) + **Gremlin Server**, Neptune-style — two backends with genuinely different query models, not two configs of the same one
+- **FastAPI** — thin API layer wrapping the Python agents for the web workbench
+- **Next.js / React** (`react-force-graph-2d`) — analyst-facing graph explorer UI
+- **Docker Compose** — pinned local Neo4j + Gremlin stack
+
+## Key Features
+
+- **Plan-first routing** — the planning agent emits a structured, machine-checkable plan (not a free-text guess) before any specialist runs a query.
+- **Bounded, validated queries** — each specialist enforces its own safety limits and validates queries before execution; no unbounded traversals reach the live graph.
+- **Reproducible graph artifacts** — a canonical (JSONL + schema + manifest) → export (Neo4j CSV/Cypher, Gremlin JSONL) → runtime layering, sha256-pinned to the raw source, with a fixture-QA harness that reconciles raw == manifest == live before agents ever query it.
+- **Self-healing pipeline runner** (`--yolo-all`) — classifies failures as stale-state (auto-backup + rebuild), transient (retry with backoff), or needs-human (surfaced, not crashed on), instead of failing the whole run on the first error.
+- **Analyst web workbench** — a Next.js graph explorer for visually inspecting the federated results, not just CLI output.
+
+## Setup
+
+```bash
+# Python setup & dataset download
+uv sync
+cp .env.example .env
+uv run main.py --download
+uv run read-skills
+
+# Build canonical graph artifacts (ATT&CK + CAPEC)
+uv run main.py --build all
+
+# Local graph databases (Docker)
+uv run main.py --docker start
+
+# Load built artifacts into the live databases
+uv run main.py --dataset attack --graph all
+uv run main.py --dataset capec --graph gremlin
+
+# Ask a federated question
+uv run main.py --query "Which CAPEC patterns related to credential theft map to ATT&CK techniques, and what mitigations appear for those techniques?"
+
+# Web workbench (FastAPI + Next.js)
+cd web && npm install && npm run dev
+```
+
+Or the whole download → build → docker → load → verify pipeline in one shot:
+
+```bash
+uv run main.py --yolo-all
+```
+
+All settings live in a single git-ignored `.env` (`cp .env.example .env` — every value defaults to current behavior). Full CLI reference, output artifact tables, and Docker endpoint details: [`docs/structure.md`](docs/structure.md).
+
+## Challenges & Design Decisions
+
+**One plan schema, two query languages.** Cypher and Gremlin don't share a traversal model, so the planner can't emit engine-specific queries itself without becoming two planners. It instead emits an engine-agnostic plan (sub-questions, entities, join keys, traversal limits) and pushes engine-specific query construction down into each specialist — keeping the planner swappable and the specialists independently testable.
+
+**Reproducibility against a live, external data source.** MITRE ATT&CK and CAPEC change over time, but agent behavior needs to be reproducible for evaluation. The build pipeline pins a sha256 snapshot of the raw source at download time and gates every rebuild on that pin, with a fixture-QA harness that checks raw == manifest == live before anything is loaded — catching schema drift before it reaches an agent instead of after.
 
 ## Roadmap
 
-| Status | Weeks | Phase | Task | Difficulty |
-| :---: |-------|-------|------|------------|
-| [x] | Wk 1–2 | Setup | Environment and tooling setup | Low |
-| [x] | Wk 2–3 | Setup | Download and validate public data sources | Low |
-| [x] | Wk 3–4 | Data layer | Build portable ATT&CK graph artifacts (JSONL, schema, Neo4j CSV/Cypher) | Medium |
-| [x] | Wk 4 | Data layer | Runtime ATT&CK graph loader (Neo4j/Gremlin load, verify, health) | Medium |
-| [x] | Wk 4–5 | Data layer | Build Gremlin CAPEC fixture | Medium |
-| [x] | Wk 4–5 | Data layer | Fixture-QA harness (raw==manifest==live) + sha256-pinned data snapshot | Medium |
-| [ ] | Wk 5 | Data layer | Author source cards (ATT&CK card auto-generated; endpoints & safety limits pending) | Low |
-
-**ITS check-in** — Both graph fixtures live and QA-reconciled against the pinned ATT&CK v19.0 / CAPEC v3.9 snapshot, source cards complete, environment reproducible.
-
-| Status | Weeks | Phase | Task | Difficulty |
-| :---: |-------|-------|------|------------|
-| [x] | Wk 6–7 | Agents | Federated planning agent | High |
-| [ ] | Wk 7–8 | Agents | Cypher specialist agent | High |
-| [ ] | Wk 8–9 | Agents | Gremlin specialist agent | High |
-
-**Midpoint review** — All three agents functional end-to-end on the credential-theft example query flow.
-
-| Status | Weeks | Phase | Task | Difficulty |
-| :---: |-------|-------|------|------------|
-| [ ] | Wk 10 | Agents | Synthesis and reporting agent | High |
-| [ ] | Wk 10–11 | Agents | End-to-end integration and pipeline wiring | Medium |
-| [ ] | Wk 11–13 | Evaluation | Component-level evaluation | Medium |
-| [ ] | Wk 12–13 | Evaluation | End-to-end evaluation and LLM evaluator | Medium |
-
-**Pitch workshop** — Evaluation results compiled, demo stable, narrative prepared.
-
-| Status | Weeks | Phase | Task | Difficulty |
-| :---: |-------|-------|------|------------|
-| [ ] | Wk 14–15 | Evaluation | Bug fixes, iteration, and documentation | Low |
-| [ ] | Wk 15–16 | Pitch prep | Pitch preparation and final demo | Low |
-
-**October ReliaQuest pitch** — Live demo, evaluation results, and future development roadmap presented.
-
-Task descriptions and rationale: [`docs/goals.md`](docs/goals.md)
+Data layer and the federated planning agent are complete; specialist agents are in progress toward a working end-to-end credential-theft query flow at the midpoint review. Full milestone table and evaluation criteria: [`docs/goals.md`](docs/goals.md). Change history: [`docs/changelog.jsonl`](docs/changelog.jsonl).
 
 ## Documentation
 
 | Document | Description |
-|----------|-------------|
+|----------|--------------|
 | [`docs/purpose.md`](docs/purpose.md) | Problem, architecture, data sources, team |
 | [`docs/goals.md`](docs/goals.md) | Full roadmap, evaluation criteria, deliverables |
-| [`docs/structure.md`](docs/structure.md) | Repository navigation map |
-| [`docs/planner_agent.md`](docs/planner_agent.md) | Planning agent contract, discovery, gate, and plan schema |
-| [`docs/specialist_agents.md`](docs/specialist_agents.md) | Query specialists: loop, four swap points, validation, evidence schema, federation, `--query` |
-| [`docs/changelog.jsonl`](docs/changelog.jsonl) | Project change log |
-| [`docs/structure.md`](docs/structure.md) | Repository navigation map |
+| [`docs/structure.md`](docs/structure.md) | Repository navigation map, full CLI/output reference |
+| [`docs/planner_agent.md`](docs/planner_agent.md) | Planning agent contract, discovery, gate, plan schema |
+| [`docs/specialist_agents.md`](docs/specialist_agents.md) | Query specialists: loop, validation, evidence schema, federation |
 | [`docs/skills/global-project-rules/SKILL.md`](docs/skills/global-project-rules/SKILL.md) | Agent workflow rules (read first) |
 
-## Quick Start
+## Team
 
-```bash
-# Python setup & download datasets
-uv sync
-cp .env.example .env                      # central config (edit values as needed)
-uv run main.py --download
-uv run read-skills
-
-# Build portable graph artifacts (ATT&CK and CAPEC)
-uv run main.py --build attack --dry-run   # preview ATT&CK canonical and export paths
-uv run main.py --build attack             # ATT&CK canonical truth + backend exports
-uv run main.py --build capec              # CAPEC canonical truth + backend exports
-uv run main.py --build all                # build ATT&CK and CAPEC artifacts
-
-# Graph database infrastructure (Docker)
-uv run main.py --docker start             # pull, start Neo4j + Gremlin, wait until ready
-uv run main.py --docker status            # show container status
-uv run main.py --docker stop              # stop containers
-
-# Runtime graph loading (requires built artifacts; does not download or rebuild)
-uv run main.py --graph health             # check Neo4j/Gremlin endpoint reachability
-uv run main.py --dataset attack --graph verify   # no-load dataset/runtime verification
-uv run main.py --dataset attack --graph neo4j    # load ATT&CK into Neo4j
-uv run main.py --dataset attack --graph gremlin  # load ATT&CK into Gremlin
-uv run main.py --dataset attack --graph all      # load ATT&CK into both backends
-uv run main.py --dataset capec --graph gremlin   # load CAPEC into Gremlin (primary CAPEC backend)
-uv run main.py --dataset capec --graph verify    # no-load CAPEC artifact/runtime verification
-
-# Planning agent (reads live graphs, emits a routing plan)
-uv run main.py --plan "Which CAPEC patterns related to credential theft map to ATT&CK techniques, and what mitigations appear for those techniques?"
-uv run main.py --plan-llm --plan "<question>"        # use the local OpenAI-compatible LLM drafter
-uv run python -m utils.planner.evaluation.run_eval   # score the planner on the expected-plan corpus
-
-# Query specialists (plan, then run the Cypher/Gremlin specialists over the plan)
-uv run main.py --query "Which CAPEC patterns related to credential theft map to ATT&CK techniques, and what mitigations appear for those techniques?"
-uv run --with jupyterlab jupyter lab notebooks/planning-schematic-agents.ipynb   # step-by-step demo
-
-# Run KG builder tests
-uv run python -m pytest utils/kg_builder/tests/
-uv run python -m pytest utils/graph_loader/tests/
-uv run python -m pytest utils/planner/tests/
-uv run python -m pytest utils/specialists/tests/
-
-# Web demo UI
-cd web && npm install
-cd web && npm run dev
-cd web && npm run build   # required after webfront changes
-```
-
-### One-command pipeline
-
-```bash
-uv run main.py --yolo-all   # download → build → docker → load → verify, in order
-```
-
-`--yolo-all` runs the whole pipeline and prints a summary table. It handles
-errors instead of failing on the first one: if a step fails because of an
-artifact that already exists on disk (a stale or partially written canonical
-graph), the existing copy is backed up to `data/graphs/<dataset>/_backups/` and
-the artifact is rebuilt clean; transient errors (connection refused, timeouts)
-are retried with backoff; and non-recoverable problems are flagged as
-`NEEDS INPUT` in the table with a hint, rather than crashing. Already-completed,
-valid steps are skipped automatically.
-
-## Configuration
-
-All tunable settings live in a single, git-ignored `.env` at the repository
-root. Copy the documented template and edit it:
-
-```bash
-cp .env.example .env
-```
-
-[`.env.example`](.env.example) groups every setting into labeled sections —
-dataset versions, data directory, Docker image versions, host ports, Neo4j
-credentials, graph connection URIs, and runtime tuning — and each comment says
-what the value controls and where it is read. Every value is the project
-default, so an unedited `.env` (or no `.env` at all) keeps current behavior.
-
-How it flows:
-
-- **Python** — `main.py` calls `utils.config.load_env()` at startup to load
-  `.env` into the environment; the downloader, KG builder, and graph loader read
-  their values from there with the documented fallbacks.
-- **Docker** — `docker/docker-compose.yml` reads the same variable names with
-  `${VAR:-default}` fallbacks. `utils/infrastructure` layers the root `.env` on
-  top of the committed `docker/.env` base, so root values win.
-
-Real shell/CI environment variables always take precedence over `.env`.
+| Role | Person |
+|------|--------|
+| Principal Investigator | Olmo S. Zavala Romero — Assistant Professor, FSU Department of Scientific Computing |
+| Graduate RA / technical lead | Brendon DGR — prototype implementation, evaluation, documentation |
 
 ## Repository Layout
 
@@ -156,92 +110,8 @@ Real shell/CI environment variables always take precedence over `.env`.
 docker/   Neo4j and Gremlin Compose stack (pinned image versions)
 docs/     purpose, goals, skills, changelog, plans, structure.md
 utils/    Python utilities (download, kg_builder, graph_loader, infrastructure, planner, specialists)
-web/      Analyst-facing demo UI (React/Vite)
+api/      FastAPI service wrapping utils/ for the web UI
+web/      Analyst-facing graph explorer (Next.js)
 ```
 
 Agent pointer folders (`.claude/`, `.agents/`, `.cursor/`) route to canonical instructions under `docs/skills/`.
-
-## ATT&CK Graph Artifacts
-
-`uv run main.py --build attack` converts the pinned Enterprise STIX bundle into a **canonical graph interchange layer** plus generated backend exports. Canonical JSONL, schema, and manifest files under `data/graphs/attack/canonical/` are the source of truth; Neo4j and Gremlin outputs under `data/graphs/attack/exports/` are reproducible projections.
-
-**Runtime loading** (`uv run main.py --dataset attack --graph neo4j|gremlin|all`) reads only from built canonical artifacts and exports. It does not download raw data or rebuild the graph. Semantic validation runs before any database write. After a successful load, runtime manifests are written under `data/graphs/attack/runtime/`.
-
-| Output | Description |
-|--------|-------------|
-| `data/processed/pairs/enterprise-attack.json` | Preprocessing checkpoint (metadata, nodes, relationships, counts) |
-| `data/graphs/attack/canonical/nodes.jsonl` | Canonical node records with `label` and `labels` (one JSON object per line) |
-| `data/graphs/attack/canonical/relationships.jsonl` | Canonical edge records |
-| `data/graphs/attack/canonical/schema.json` | Node-label and relationship-type allowlists (includes reserved `DataSource`) |
-| `data/graphs/attack/canonical/manifest.json` | Counts, source metadata, canonical paths, export provenance, and SHA-256 hashes |
-| `data/graphs/attack/exports/neo4j/nodes.csv` | Neo4j CSV node import (nested properties JSON-encoded) |
-| `data/graphs/attack/exports/neo4j/relationships.csv` | Neo4j CSV relationship import |
-| `data/graphs/attack/exports/neo4j/schema.cypher` | Neo4j-compatible schema description |
-| `data/graphs/attack/exports/neo4j/constraints.cypher` | Uniqueness constraints per node label |
-| `data/graphs/attack/exports/gremlin/nodes.jsonl` | Gremlin-ready vertex records (nested properties JSON-encoded) |
-| `data/graphs/attack/exports/gremlin/relationships.jsonl` | Gremlin-ready edge records |
-| `data/source_cards/attack.json` | Source registry card for planner and specialist agent routing |
-| `data/graphs/attack/runtime/neo4j/load-manifest.json` | Runtime Neo4j load record (written after successful load + verification) |
-| `data/graphs/attack/runtime/gremlin/load-manifest.json` | Runtime Gremlin load record (written after successful load + verification) |
-
-## CAPEC Graph Artifacts
-
-`uv run main.py --build capec` parses the pinned CAPEC v3.9 XML catalog into the same canonical/export/runtime layout as ATT&CK. The full catalog is built for source completeness; CAPEC-to-ATT&CK correlation uses normalized taxonomy mappings (`MAPS_TO` edges to `TaxonomyEntry` nodes with ATT&CK entry IDs).
-
-| Output | Description |
-|--------|-------------|
-| `data/processed/discovery/capec-inventory.json` | Namespace-aware XML path inventory for schema-drift tolerance |
-| `data/processed/pairs/capec.json` | Normalized intermediate entity checkpoint |
-| `data/graphs/capec/canonical/nodes.jsonl` | Canonical CAPEC node records (`AttackPattern`, `Category`, `ExecutionStep`, etc.) |
-| `data/graphs/capec/canonical/relationships.jsonl` | Canonical CAPEC edges (`ChildOf`, `MAPS_TO`, `HAS_EXECUTION_STEP`, …) |
-| `data/graphs/capec/canonical/schema.json` | CAPEC node-label and relationship-type vocabulary |
-| `data/graphs/capec/canonical/manifest.json` | Counts, metadata, export provenance, and SHA-256 hashes |
-| `data/graphs/capec/exports/gremlin/nodes.jsonl` | Gremlin-ready vertex records (primary CAPEC runtime projection) |
-| `data/graphs/capec/exports/gremlin/relationships.jsonl` | Gremlin-ready edge records |
-| `data/graphs/capec/exports/neo4j/` | Optional Neo4j CSV/Cypher projection from the same canonical truth |
-| `data/source_cards/capec.json` | Source registry card (Gremlin runtime backend) |
-| `data/graphs/capec/runtime/gremlin/load-manifest.json` | Runtime Gremlin load record after successful load + verification |
-
-## Runtime Graph Loading
-
-Operator sequence:
-
-```bash
-uv run main.py --download
-uv run main.py --build attack
-uv run main.py --build capec
-uv run main.py --docker start
-uv run main.py --dataset attack --graph neo4j    # or gremlin | all
-uv run main.py --dataset capec --graph gremlin
-uv run main.py --graph health                    # infrastructure reachability only
-uv run main.py --dataset attack --graph verify   # no-load artifact + live count checks
-uv run main.py --dataset capec --graph verify
-```
-
-| Command | Role |
-|---------|------|
-| `--build attack\|capec\|all` | Generate canonical truth + backend exports (no database writes) |
-| `--dataset attack --graph neo4j\|gremlin\|all` | Load ATT&CK built artifacts into live graph databases |
-| `--dataset capec --graph gremlin` | Load CAPEC built artifacts into Gremlin (primary CAPEC backend) |
-| `--graph health` | TCP reachability check for Neo4j Bolt and Gremlin WebSocket |
-| `--dataset attack --graph verify` | Validate manifest hashes, semantic rules, runtime manifests, and live counts without loading |
-
-Default endpoints: Neo4j `bolt://localhost:5456` (user `neo4j` / password `password`), Gremlin `ws://localhost:6455/gremlin`. Override with `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD`, and `GREMLIN_URI`.
-
-Generated artifacts under `data/` are gitignored except `data/versions.json`. Rebuild with the same pinned input to reproduce identical counts and file hashes.
-
-## Graph Database Infrastructure
-
-`uv run main.py --docker start` manages the local Neo4j and Gremlin Server stack via Docker Compose. The CLI pulls pinned images, starts containers in the background, waits until both endpoints respond, prints connection details, and exits.
-
-| Service | Host endpoint | Default credentials |
-|---------|---------------|---------------------|
-| Neo4j Browser | http://localhost:5455 | `neo4j` / `password` |
-| Neo4j Bolt | bolt://localhost:5456 | `neo4j` / `password` |
-| Gremlin Server | http://localhost:6455 | n/a |
-
-Pinned image versions, host ports, and credentials are set in the central `.env` (see [Configuration](#configuration)); `docker/.env` is the committed fallback base. Image versions can also be overridden per-run with `--neo4j-version` and `--gremlin-version` on `--docker start`.
-
-Neo4j data persists under `docker/neo4j/data/`. Use `uv run main.py --docker stop` to tear down containers without deleting volumes.
-
-Docker Desktop may label the stack `docker` (from the `docker/` folder). Compose service names are `neo4j` and `gremlin`; the running containers are `ariadne-neo4j` and `ariadne-gremlin` as set in `docker-compose.yml`.
