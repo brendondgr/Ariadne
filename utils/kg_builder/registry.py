@@ -8,7 +8,28 @@ from pathlib import Path
 from typing import Any
 
 from .config import BuildConfig
+from .io import read_jsonl
 from .snapshot import read_pinned_checksum
+
+
+def _canonical_collision_set(nodes_path: Path) -> dict[str, list[str]]:
+    """ATT&CK ids appearing under more than one stix_type in the canonical
+    artifact. Expected empty under the exclude-at-load policy; enumerated here
+    (not hand-typed) so the card always reflects the measured state."""
+    if not nodes_path.exists():
+        return {}
+    types_by_id: dict[str, set[str]] = {}
+    for node in read_jsonl(nodes_path):
+        props = node.get("properties", {})
+        attack_id = props.get("attack_id")
+        stix_type = props.get("stix_type")
+        if attack_id and stix_type:
+            types_by_id.setdefault(attack_id, set()).add(stix_type)
+    return {
+        attack_id: sorted(types)
+        for attack_id, types in sorted(types_by_id.items())
+        if len(types) > 1
+    }
 
 
 def _pinned_provenance(config: BuildConfig, dataset: str) -> dict[str, Any]:
@@ -40,6 +61,7 @@ class SourceCard:
     safety: dict[str, Any] = field(default_factory=dict)
     provenance: dict[str, Any] = field(default_factory=dict)
     entity_descriptions: dict[str, Any] = field(default_factory=dict)
+    identity: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -86,6 +108,17 @@ def build_attack_source_card(config: BuildConfig, manifest_path: Path) -> Source
         safety=overlay.get("safety", {}),
         provenance={**_pinned_provenance(config, "attack"), **overlay.get("provenance", {})},
         entity_descriptions=overlay.get("entity_descriptions", {}),
+        identity={
+            # Auto-generated base: the join-key contract and the measured
+            # collision set; policy statements come from the overlay.
+            "join_key": ["attack_id", "stix_type"],
+            "unique_backstop": "id",
+            "constraints": ["attack_stix_id_unique", "attack_id_type_unique"],
+            "known_collisions": _canonical_collision_set(
+                paths.graph_canonical_dir / "nodes.jsonl"
+            ),
+            **overlay.get("identity", {}),
+        },
     )
 
 
@@ -131,6 +164,12 @@ def build_capec_source_card(config: BuildConfig, manifest_path: Path) -> SourceC
         safety=safety,
         provenance={**_pinned_provenance(config, "capec"), **overlay.get("provenance", {})},
         entity_descriptions=overlay.get("entity_descriptions", {}),
+        identity={
+            "join_key": ["capec_id"],
+            "unique_backstop": "id",
+            "constraints": ["capec_object_id_unique"],
+            **overlay.get("identity", {}),
+        },
     )
 
 

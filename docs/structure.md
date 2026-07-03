@@ -87,8 +87,42 @@ nodes) via `GraphStore.referential_integrity()`, and verifies revoked/deprecated
 handling (ATT&CK excludes them and records the counts; CAPEC loads the full
 catalog with a filterable `Status` property). It writes
 `data/graphs/<ds>/runtime/fixture-qa-report.json` and exits non-zero on any
-mismatch. Verified state: ATT&CK 2611 nodes / 21739 edges, CAPEC 4888 / 6917,
-both with zero dangling edges.
+mismatch. Verified state: ATT&CK 4369 nodes / 27669 edges (14 checks), CAPEC
+4888 / 6984 (11 checks), both with zero dangling edges.
+
+**Composite join-key enforcement** (`fixture_qa/composite_keys.py`). An ATT&CK
+ID is never an identity on its own — the identity is the pair `(attack_id,
+stix_type)`, or equivalently the STIX UUID (`id`); the raw v19 bundle has 224
+IDs that appear under two types (live `attack-pattern` + deprecated
+`course-of-action`). Neo4j enforces this with graph-wide constraints
+(`attack_stix_id_unique`, `attack_id_type_unique` on `:AttackObject`); the
+harness enumerates the collision set independently from the raw bundle and the
+canonical artifact and exact-matches both against the checked-in fixture
+`fixture_qa/expected/attack_collisions.json`, asserts identity-property
+existence, and verifies the constraints live via
+`GraphStore.list_constraint_names()`. The contract is published in each source
+card's `identity` block (auto-generated join key + measured collisions;
+hand-authored policy in the overlay).
+
+**Orphan / island resolution** (`fixture_qa/orphans.py`). Every zero-degree
+node must be explained: dead objects match the recorded policy (ATT&CK
+exclude-at-load → zero; CAPEC load-and-tag → the known deprecated counts), and
+live orphans must exactly equal the checked-in allow-lists
+(`fixture_qa/expected/{attack,capec}_orphans.json` — ATT&CK: 8 DataComponents
+unreferenced anywhere in v19; CAPEC: 9 implicit filter views + 52 uncited
+ExternalReferences). The v19 embedded references are wired at build time
+(`Matrix -HAS_TACTIC-> Tactic`, `DetectionStrategy -HAS_ANALYTIC-> Analytic
+-MONITORS-> DataComponent`, CAPEC `IN_VIEW` from `Has_Member`), and named
+regressions assert Matrix→15 Tactics, every live DataComponent connected, and
+a ChildOf hierarchy that is AttackPattern-only and acyclic. Live orphan sets
+(`GraphStore.orphan_ids()`) must equal the canonical scan exactly.
+
+**Cross-database resolution** (`fixture_qa/cross_db.py`). Every CAPEC `ATTACK`
+taxonomy mapping must resolve under `(attack_id, stix_type='attack-pattern')`
+— never digits alone. The baseline (`fixture_qa/expected/capec_attack_resolution.json`)
+records 179/189 unique technique ids resolving (the 10 misses are the
+revoked-in-v19 T1562 family and Mobile-only T1513); the named CAPEC-555
+regression asserts it maps to exactly T1021, T1114.002, T1133.
 
 **Snapshot pinning** records the sha256 of each raw source in `data/versions.json`
 (and per-source `metadata.json`), so builds run only from the exact ATT&CK v19.0

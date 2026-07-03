@@ -356,3 +356,27 @@ def test_rebuild_does_not_erase_authored_values(tmp_path: Path) -> None:
     assert first_written["connection"] == second_written["connection"]
     assert first_written["provenance"] == second_written["provenance"]
     assert first_written["safety"] == second_written["safety"]
+
+
+def test_source_cards_carry_identity_contract() -> None:
+    import json
+    from pathlib import Path
+
+    attack_card_path = Path("data/source_cards/attack.json")
+    capec_card_path = Path("data/source_cards/capec.json")
+    if not attack_card_path.exists() or not capec_card_path.exists():
+        import pytest
+
+        pytest.skip("source cards not built")
+
+    attack = json.loads(attack_card_path.read_text())["identity"]
+    assert attack["join_key"] == ["attack_id", "stix_type"]
+    assert attack["unique_backstop"] == "id"
+    assert "attack_id_type_unique" in attack["constraints"]
+    # Exclude-at-load means the canonical collision set must be empty.
+    assert attack["known_collisions"] == {}
+    assert "policy" in attack and "not_traversable" in attack
+
+    capec = json.loads(capec_card_path.read_text())["identity"]
+    assert capec["join_key"] == ["capec_id"]
+    assert "policy" in capec and "not_traversable" in capec
