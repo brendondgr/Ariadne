@@ -141,12 +141,13 @@ origin, no CORS — see `web/next.config.ts` `rewrites`).
 | `GET·PUT /api/config` | `PlannerConfig`/`SpecialistConfig.from_env` + `config.set_env_values` | View/edit LLM + connection env; password redacted |
 | `POST /api/query` | `PlanningAgent.plan` → `SpecialistRouter.run_plan` | SSE stream: probe → plan → specialist* → evidence → answer → done. Each event carries the full `to_dict()` payload (plan trace, raw query, every record + provenance, evaluator traces) |
 | `POST /api/admin` | `docker_*`, `run_graph_command`, `docker_stop_service`, `YoloRunner`, `download`, `kg_builder` | SSE log stream for every remaining main.py mode — docker start/stop/status, graph health/load/verify/**stop**, data download/build, and **`--yolo-all`** |
+| `GET /api/graph/{dataset}` | Canonical `nodes.jsonl` + `relationships.jsonl` for `attack`\|`capec` | Full node/edge payload for the graph view — strips `external_references` and truncates `description` to keep it light; 404 if canonical files are absent |
 
 | Path | Contents |
 |------|----------|
 | `api/main.py` | FastAPI app + route handlers |
 | `api/models.py` | Pydantic request/response models |
-| `api/services/` | `health.py`, `config.py`, `query.py`, `infra.py` |
+| `api/services/` | `health.py`, `config.py`, `query.py`, `infra.py`, `graph.py` |
 | `api/tests/` | Contract tests (`uv run python -m pytest api/tests/`) |
 
 The query pipeline is synchronous, so the SSE endpoints run it in a worker
@@ -173,12 +174,27 @@ LLM/connection config and runs every infra action. TypeScript types
 (`lib/types.ts`) mirror the backend `to_dict()` shapes; `lib/fixtures.ts` is the
 idle/demo run.
 
+A header **Chat / Graphs** toggle (`components/header/ViewToggle.tsx`, view state
+in `workbench/WorkbenchContext.tsx`) switches the main region between the chat
+workbench and a dedicated **graph explorer** (`components/graph/`). The explorer
+loads a whole graph from `GET /api/graph/{dataset}`, switches between the
+ATT&CK (Neo4j) and CAPEC (Gremlin) datasets, and renders **every node and edge**
+on a canvas via `react-force-graph-2d` (`GraphCanvas`, dynamically imported
+`ssr:false`). Nodes are colored by label; a sidebar (`GraphSidebar`) carries the
+label legend, node-type + relationship-type filters, and an `ElementInspector`
+that shows the full properties of a clicked node or edge. Pure transforms live in
+`lib/graph.ts` (`labelColor`, `toForceGraphData` — drops dangling links when
+filtering). When Graphs is active the shell hides the conversations rail and
+inspector (`AppShell` `hideRails`).
+
 | Path | Contents |
 |------|----------|
 | `app/page.tsx`, `app/layout.tsx` | App Router root + workbench composition |
 | `app/globals.css` | Woven Dusk tokens (`@theme`) + keyframes |
-| `components/` | `shell/`, `header/`, `left/`, `center/`, `inspector/`, `settings/`, `ui/`, `workbench/` |
-| `lib/api.ts` | Typed client + SSE helpers (`getHealth`, `getConfig`, `streamQuery`, `streamAdmin`) |
+| `components/` | `shell/`, `header/`, `left/`, `center/`, `inspector/`, `settings/`, `graph/`, `ui/`, `workbench/` |
+| `components/graph/` | `GraphExplorer`, `GraphSecondaryNav`, `GraphSidebar`, `GraphCanvas`, `ElementInspector` |
+| `lib/api.ts` | Typed client + SSE helpers (`getHealth`, `getConfig`, `getGraph`, `streamQuery`, `streamAdmin`) |
+| `lib/graph.ts` | Pure graph-view transforms (`labelColor`, `toForceGraphData`) |
 | `lib/adapt.ts` | Backend payloads → `WorkbenchRun` view-model |
 | `lib/runMachine.ts`, `lib/motion.ts` | Event-driven run controller + animation variants |
 | `lib/types.ts`, `lib/fixtures.ts` | Trace-object + API types, idle/demo run |
