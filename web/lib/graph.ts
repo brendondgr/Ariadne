@@ -132,6 +132,23 @@ export interface ForceGraphData {
 export interface ToForceGraphOpts {
   hiddenLabels?: Set<string>;
   hiddenTypes?: Set<string>;
+  /** Free-text search; matches node name/id/label/description and edge type. */
+  query?: string;
+}
+
+/**
+ * Does a node match the (already lowercased) search query? Matches its name, id,
+ * any label, or its (server-truncated) `description` property. An empty query
+ * matches everything.
+ */
+export function nodeMatchesQuery(node: GraphNode, q: string): boolean {
+  if (!q) return true;
+  if (node.name && node.name.toLowerCase().includes(q)) return true;
+  if (node.id.toLowerCase().includes(q)) return true;
+  if (node.labels.some((l) => l.toLowerCase().includes(q))) return true;
+  const desc = node.properties?.description;
+  if (typeof desc === "string" && desc.toLowerCase().includes(q)) return true;
+  return false;
 }
 
 /**
@@ -147,17 +164,39 @@ export function toForceGraphData(
   opts: ToForceGraphOpts = {},
 ): ForceGraphData {
   const { hiddenLabels, hiddenTypes } = opts;
+  const query = (opts.query ?? "").trim().toLowerCase();
 
   // Unique color per relationship type (shared with the sidebar legend).
   const typeColors = edgeTypeColorMap(payload.edges.map((e) => e.type));
 
-  // Build the filtered node list and an O(1) lookup set of surviving ids
-  const nodes: FGNode[] = [];
-  const survivingIds = new Set<string>();
+  // `passesLabel` is the label-filter gate; a node can only ever be shown if it
+  // passes it. Search then narrows further (below).
+  const passesLabel = (node: GraphNode) => !hiddenLabels || !hiddenLabels.has(node.label);
+  const nodeById = new Map(payload.nodes.map((n) => [n.id, n]));
 
+  // Determine the surviving node id set.
+  //  - No query: every label-passing node.
+  //  - Query: nodes whose text matches, PLUS the endpoints of any non-hidden
+  //    edge whose `type` matches the query (so a matched edge shows its nodes).
+  const survivingIds = new Set<string>();
   for (const node of payload.nodes) {
-    if (hiddenLabels && hiddenLabels.has(node.label)) continue;
-    survivingIds.add(node.id);
+    if (passesLabel(node) && nodeMatchesQuery(node, query)) survivingIds.add(node.id);
+  }
+  if (query) {
+    for (const edge of payload.edges) {
+      if (hiddenTypes && hiddenTypes.has(edge.type)) continue;
+      if (!edge.type.toLowerCase().includes(query)) continue;
+      const s = nodeById.get(edge.source);
+      const t = nodeById.get(edge.target);
+      if (s && passesLabel(s)) survivingIds.add(edge.source);
+      if (t && passesLabel(t)) survivingIds.add(edge.target);
+    }
+  }
+
+  // Build the node list from the surviving ids.
+  const nodes: FGNode[] = [];
+  for (const node of payload.nodes) {
+    if (!survivingIds.has(node.id)) continue;
     nodes.push({
       ...node,
       color: labelColor(node.label),
@@ -169,7 +208,7 @@ export function toForceGraphData(
 
   for (const edge of payload.edges) {
     if (hiddenTypes && hiddenTypes.has(edge.type)) continue;
-    // Drop if either endpoint was removed — no dangling links
+    // Drop if either endpoint is not visible — no dangling links
     if (!survivingIds.has(edge.source)) continue;
     if (!survivingIds.has(edge.target)) continue;
 

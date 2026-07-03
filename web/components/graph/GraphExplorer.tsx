@@ -9,6 +9,7 @@ import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 import { GraphSecondaryNav } from "./GraphSecondaryNav";
 import { GraphSidebar } from "./GraphSidebar";
 import { GraphDetailsSidebar } from "./GraphDetailsSidebar";
+import { GraphSearchBar } from "./GraphSearchBar";
 import { GraphCanvas } from "./GraphCanvas";
 import type { SelectedElement } from "./ElementInspector";
 
@@ -17,12 +18,15 @@ interface DatasetFilters {
   hiddenLabels: Set<string>;
   hiddenTypes: Set<string>;
   selected: SelectedElement;
+  /** Committed free-text search query. */
+  query: string;
 }
 
 const EMPTY_FILTERS: DatasetFilters = {
   hiddenLabels: new Set(),
   hiddenTypes: new Set(),
   selected: null,
+  query: "",
 };
 
 /**
@@ -45,7 +49,7 @@ export function GraphExplorer() {
   >({});
 
   const filters = filtersByDataset[graphDataset] ?? EMPTY_FILTERS;
-  const { hiddenLabels, hiddenTypes, selected } = filters;
+  const { hiddenLabels, hiddenTypes, selected, query } = filters;
 
   // Track the abort controller so cleanup/dataset-change aborts in-flight fetch
   const abortRef = useRef<AbortController | null>(null);
@@ -99,9 +103,9 @@ export function GraphExplorer() {
   const fgData = useMemo(
     () =>
       payload
-        ? toForceGraphData(payload, { hiddenLabels, hiddenTypes })
+        ? toForceGraphData(payload, { hiddenLabels, hiddenTypes, query })
         : null,
-    [payload, hiddenLabels, hiddenTypes],
+    [payload, hiddenLabels, hiddenTypes, query],
   );
 
   // Filter callbacks (stable references)
@@ -155,6 +159,13 @@ export function GraphExplorer() {
     updateFilters({ selected: null });
   }, [updateFilters]);
 
+  const handleSearch = useCallback(
+    (q: string) => {
+      updateFilters({ query: q });
+    },
+    [updateFilters],
+  );
+
   const datasetLabel = graphDataset === "attack" ? "ATT&CK" : "CAPEC";
 
   // Visible counts (after filtering)
@@ -173,6 +184,14 @@ export function GraphExplorer() {
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       {/* Secondary nav — dataset switcher */}
       <GraphSecondaryNav counts={payload?.counts ?? null} />
+
+      {/* Search bar — filters the graph by node title/description + edge type */}
+      <GraphSearchBar
+        key={graphDataset}
+        value={query}
+        onSearch={handleSearch}
+        disabled={!payload}
+      />
 
       {/* Body row: sidebar + canvas */}
       <div className="flex min-h-0 flex-1 overflow-hidden">
@@ -223,7 +242,7 @@ export function GraphExplorer() {
             )}
 
             {!loading && !error && fgData && fgData.nodes.length === 0 && payload && payload.counts.nodes > 0 && (
-              <CanvasAllFiltered />
+              <CanvasAllFiltered query={query} />
             )}
 
             {!loading && !error && fgData && fgData.nodes.length > 0 && (
@@ -301,10 +320,12 @@ function CanvasEmpty() {
   );
 }
 
-function CanvasAllFiltered() {
+function CanvasAllFiltered({ query }: { query: string }) {
   return (
-    <p className="font-mono text-[12px] uppercase tracking-[0.08em]" style={{ color: "var(--color-text-muted)" }}>
-      All nodes filtered. Adjust filters to show the graph.
+    <p className="max-w-sm px-6 text-center font-mono text-[12px] uppercase tracking-[0.08em]" style={{ color: "var(--color-text-muted)" }}>
+      {query
+        ? `No nodes or edges match “${query}”. Refine the search or clear it.`
+        : "All nodes filtered. Adjust filters to show the graph."}
     </p>
   );
 }
