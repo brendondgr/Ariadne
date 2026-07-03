@@ -69,4 +69,16 @@ def constraints_cypher_lines() -> list[str]:
             f"CREATE CONSTRAINT attack_{label.lower()}_id IF NOT EXISTS "
             f"FOR (n:{label}) REQUIRE n.id IS UNIQUE;"
         )
+    # Identity contract: the STIX UUID (id) is the globally-unique backstop, and
+    # (attack_id, stix_type) is the composite join key — an ATT&CK ID alone is
+    # not unique across object types (e.g. T1055 can be both an attack-pattern
+    # and a deprecated course-of-action).
+    lines.append(
+        "CREATE CONSTRAINT attack_stix_id_unique IF NOT EXISTS "
+        "FOR (n:AttackObject) REQUIRE n.id IS UNIQUE;"
+    )
+    lines.append(
+        "CREATE CONSTRAINT attack_id_type_unique IF NOT EXISTS "
+        "FOR (n:AttackObject) REQUIRE (n.attack_id, n.stix_type) IS UNIQUE;"
+    )
     return lines
