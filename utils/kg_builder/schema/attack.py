@@ -15,6 +15,7 @@ ATTACK_NODE_LABELS: frozenset[str] = frozenset(
         "Campaign",
         "DataComponent",
         "DetectionStrategy",
+        "Analytic",
         "Matrix",
     }
 )
@@ -27,6 +28,9 @@ ATTACK_RELATIONSHIP_TYPES: frozenset[str] = frozenset(
         "HAS_SUBTECHNIQUE",
         "HAS_TECHNIQUE",
         "DETECTS",
+        "HAS_TACTIC",
+        "HAS_ANALYTIC",
+        "MONITORS",
     }
 )
 

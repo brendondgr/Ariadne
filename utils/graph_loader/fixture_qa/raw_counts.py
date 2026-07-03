@@ -40,6 +40,7 @@ _STIX_TYPE_TO_LABEL: dict[str, str] = {
     "campaign": "Campaign",
     "x-mitre-data-component": "DataComponent",
     "x-mitre-detection-strategy": "DetectionStrategy",
+    "x-mitre-analytic": "Analytic",
     "x-mitre-matrix": "Matrix",
 }
 
