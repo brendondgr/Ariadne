@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
 
 from utils.config import load_env
@@ -20,11 +20,14 @@ from .models import (
     ConfigResponse,
     ConfigUpdateRequest,
     DockerStateModel,
+    GraphDataset,
+    GraphPayloadResponse,
     HealthResponse,
     LiveSourceModel,
     QueryRequest,
 )
 from .services.config import apply_update, read_config
+from .services.graph import load_canonical_graph
 from .services.health import docker_state, live_sources
 from .services.infra import stream_admin_action
 from .services.query import stream_query_events
@@ -104,3 +107,13 @@ def post_admin(request: AdminActionRequest) -> StreamingResponse:
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
+
+
+@app.get("/api/graph/{dataset}", response_model=GraphPayloadResponse)
+def get_graph(dataset: GraphDataset) -> GraphPayloadResponse:
+    """Return nodes and edges from the canonical graph files for visualization."""
+    try:
+        payload = load_canonical_graph(dataset)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    return GraphPayloadResponse(**payload)

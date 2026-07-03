@@ -151,3 +151,39 @@ class AdminActionRequest(BaseModel):
     dry_run: bool = False
     neo4j_version: str | None = None
     gremlin_version: str | None = None
+
+
+# ---------------------------------------------------------------------------
+# Graph visualization — canonical file-based graph payload.
+# ---------------------------------------------------------------------------
+
+GraphDataset = Literal["attack", "capec"]
+
+
+class GraphNodeModel(BaseModel):
+    id: str
+    label: str
+    labels: list[str]
+    name: str
+    properties: dict
+
+
+class GraphEdgeModel(BaseModel):
+    id: str
+    source: str
+    target: str
+    type: str
+
+
+class GraphCountsModel(BaseModel):
+    nodes: int
+    relationships: int
+
+
+class GraphPayloadResponse(BaseModel):
+    dataset: str
+    backend: str
+    counts: GraphCountsModel
+    nodes_by_label: dict[str, int]
+    nodes: list[GraphNodeModel]
+    edges: list[GraphEdgeModel]

@@ -473,6 +473,36 @@ export interface AdminActionBody {
   dry_run?: boolean;
 }
 
+/* ============================================================
+ * Graph API types (GET /api/graph/{dataset})
+ * ============================================================ */
+
+export type GraphDataset = "attack" | "capec";
+
+export interface GraphNode {
+  id: string;
+  label: string;
+  labels: string[];
+  name: string;
+  properties: Record<string, unknown>;
+}
+
+export interface GraphEdge {
+  id: string;
+  source: string;
+  target: string;
+  type: string;
+}
+
+export interface GraphPayload {
+  dataset: string;
+  backend: string;
+  counts: { nodes: number; relationships: number };
+  nodes_by_label: Record<string, number>;
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+}
+
 /** SSE events streamed by `POST /api/admin`. */
 export type AdminEvent =
   | { type: "status"; data: { action: string; message?: string } }

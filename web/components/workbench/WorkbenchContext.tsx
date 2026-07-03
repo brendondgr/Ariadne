@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 import { MotionConfig } from "motion/react";
 import { useRunMachine, type RunMachine } from "@/lib/runMachine";
+import type { GraphDataset } from "@/lib/types";
 
 export type InspectorTab = "trace" | "evidence" | "join" | "raw";
 
@@ -29,6 +30,12 @@ interface WorkbenchState extends RunMachine {
   settingsOpen: boolean;
   setSettingsOpen: (open: boolean) => void;
   openSettings: () => void;
+  /** App-wide view toggle: chat workbench or graphs explorer. */
+  view: "chat" | "graphs";
+  setView: (v: "chat" | "graphs") => void;
+  /** Active graph dataset selection. */
+  graphDataset: GraphDataset;
+  setGraphDataset: (d: GraphDataset) => void;
 }
 
 const WorkbenchCtx = createContext<WorkbenchState | null>(null);
@@ -41,6 +48,8 @@ export function WorkbenchProvider({ children }: { children: ReactNode }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [leftOpen, setLeftOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [view, setView] = useState<"chat" | "graphs">("chat");
+  const [graphDataset, setGraphDataset] = useState<GraphDataset>("attack");
   const machine = useRunMachine();
 
   const openInspector = useCallback(() => {
@@ -78,8 +87,12 @@ export function WorkbenchProvider({ children }: { children: ReactNode }) {
       settingsOpen,
       setSettingsOpen,
       openSettings,
+      view,
+      setView,
+      graphDataset,
+      setGraphDataset,
     }),
-    [machine, activeTab, focusStageId, focusNonce, focusStage, inspectorOpen, drawerOpen, openInspector, leftOpen, settingsOpen, openSettings],
+    [machine, activeTab, focusStageId, focusNonce, focusStage, inspectorOpen, drawerOpen, openInspector, leftOpen, settingsOpen, openSettings, view, graphDataset],
   );
 
   return (

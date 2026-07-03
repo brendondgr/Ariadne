@@ -6,6 +6,7 @@ import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 import { InfraStatusBar } from "./InfraStatusBar";
 import { RunPipelineButton } from "./RunPipelineButton";
 import { MobileMenuButton } from "./MobileMenuButton";
+import { ViewToggle } from "./ViewToggle";
 
 interface HeaderBarProps {
   liveSources: LiveSource[];
@@ -26,16 +27,15 @@ export function HeaderBar({ liveSources }: HeaderBarProps) {
       <div className="flex items-center gap-[11px]">
         <ThreadGlyph />
         <span className="text-lg font-semibold tracking-[-0.5px]">Ariadne</span>
-        <span className="ml-0.5 hidden rounded-full px-[7px] py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-text-muted shadow-border sm:inline">
-          Analyst Workbench
-        </span>
       </div>
 
-      <div className="ml-1.5 hidden items-center gap-[9px] md:flex">
-        <InfraStatusBar fallback={liveSources} />
-      </div>
+      <ViewToggle />
 
       <div className="flex-1" />
+
+      <div className="hidden items-center gap-[9px] md:flex">
+        <InfraStatusBar fallback={liveSources} />
+      </div>
 
       <div className="hidden sm:block">
         <RunPipelineButton />
