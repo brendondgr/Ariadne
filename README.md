@@ -6,6 +6,10 @@ Named after Ariadne, who guided Theseus through a maze — this system threads t
 
 **Funded by:** ReliaQuest Innovation Challenge Fund — Challenge Three: Knowledge Graph Integration (award period June 8 – October 23, 2026)
 
+<p align="center">
+  <img src="docs/assets/architecture.svg" alt="Ariadne federated agentic query flow: an analyst question is planned, routed to Cypher and Gremlin specialists over Neo4j and Gremlin, then synthesized into a provenance-linked answer" width="100%">
+</p>
+
 ## Overview
 
 Cybersecurity teams increasingly rely on knowledge graphs to represent adversary techniques, attack patterns, and mitigations, but those sources live on different engines with different schemas and query languages — cross-source correlation today usually means manual lookups or an offline ETL into one graph. Most existing federation approaches assume a single engine or require that translation step up front.
@@ -14,7 +18,7 @@ Ariadne instead reads schema and metadata from each live source and routes queri
 
 ## Architecture
 
-Four components, each independently testable:
+The diagram above shows the runtime flow end to end. Four components, each independently testable:
 
 1. **Data & schema layer** — per-source cards (connection details, schema, provenance fields, safety limits) plus reproducible ATT&CK and CAPEC fixtures, sha256-pinned against the raw source snapshot.
 2. **Federated planning agent** — reads the source cards, classifies analyst intent, and emits a machine-readable plan (target sources, sub-questions, join keys, traversal limits) rather than routing by free-text guess.
@@ -82,9 +86,9 @@ All settings live in a single git-ignored `.env` (`cp .env.example .env` — eve
 
 **Reproducibility against a live, external data source.** MITRE ATT&CK and CAPEC change over time, but agent behavior needs to be reproducible for evaluation. The build pipeline pins a sha256 snapshot of the raw source at download time and gates every rebuild on that pin, with a fixture-QA harness that checks raw == manifest == live before anything is loaded — catching schema drift before it reaches an agent instead of after.
 
-## Roadmap
+## Status
 
-Data layer and the federated planning agent are complete; specialist agents are in progress toward a working end-to-end credential-theft query flow at the midpoint review. Full milestone table and evaluation criteria: [`docs/goals.md`](docs/goals.md). Change history: [`docs/changelog.jsonl`](docs/changelog.jsonl).
+Data layer and the federated planning agent are complete; specialist agents are in progress toward a working end-to-end credential-theft query flow at the midpoint review. See the [week-by-week roadmap](#roadmap--week-by-week) at the bottom for the full milestone checklist.
 
 ## Documentation
 
@@ -115,3 +119,43 @@ web/      Analyst-facing graph explorer (Next.js)
 ```
 
 Agent pointer folders (`.claude/`, `.agents/`, `.cursor/`) route to canonical instructions under `docs/skills/`.
+
+## Roadmap — Week by Week
+
+Full task rationale in [`docs/goals.md`](docs/goals.md); change history in [`docs/changelog.jsonl`](docs/changelog.jsonl).
+
+| Status | Weeks | Phase | Task | Difficulty |
+| :---: |-------|-------|------|------------|
+| ✅ | Wk 1–2 | Setup | Environment and tooling setup | Low |
+| ✅ | Wk 2–3 | Setup | Download and validate public data sources | Low |
+| ✅ | Wk 3–4 | Data layer | Build portable ATT&CK graph artifacts (JSONL, schema, Neo4j CSV/Cypher) | Medium |
+| ✅ | Wk 4 | Data layer | Runtime ATT&CK graph loader (Neo4j/Gremlin load, verify, health) | Medium |
+| ✅ | Wk 4–5 | Data layer | Build Gremlin CAPEC fixture | Medium |
+| ✅ | Wk 4–5 | Data layer | Fixture-QA harness (raw==manifest==live) + sha256-pinned data snapshot | Medium |
+| ⬜ | Wk 5 | Data layer | Author source cards (ATT&CK card auto-generated; endpoints & safety limits pending) | Low |
+
+**ITS check-in** — Both graph fixtures live and QA-reconciled against the pinned ATT&CK v19.0 / CAPEC v3.9 snapshot, source cards complete, environment reproducible.
+
+| Status | Weeks | Phase | Task | Difficulty |
+| :---: |-------|-------|------|------------|
+| ✅ | Wk 6–7 | Agents | Federated planning agent | High |
+| ⬜ | Wk 7–8 | Agents | Cypher specialist agent | High |
+| ⬜ | Wk 8–9 | Agents | Gremlin specialist agent | High |
+
+**Midpoint review** — All three agents functional end-to-end on the credential-theft example query flow.
+
+| Status | Weeks | Phase | Task | Difficulty |
+| :---: |-------|-------|------|------------|
+| ⬜ | Wk 10 | Agents | Synthesis and reporting agent | High |
+| ⬜ | Wk 10–11 | Agents | End-to-end integration and pipeline wiring | Medium |
+| ⬜ | Wk 11–13 | Evaluation | Component-level evaluation | Medium |
+| ⬜ | Wk 12–13 | Evaluation | End-to-end evaluation and LLM evaluator | Medium |
+
+**Pitch workshop** — Evaluation results compiled, demo stable, narrative prepared.
+
+| Status | Weeks | Phase | Task | Difficulty |
+| :---: |-------|-------|------|------------|
+| ⬜ | Wk 14–15 | Evaluation | Bug fixes, iteration, and documentation | Low |
+| ⬜ | Wk 15–16 | Pitch prep | Pitch preparation and final demo | Low |
+
+**October ReliaQuest pitch** — Live demo, evaluation results, and future development roadmap presented.
