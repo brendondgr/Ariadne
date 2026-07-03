@@ -29,6 +29,7 @@ from ..config import LOAD_BACKENDS, LoaderConfig
 from ..loader import _expected_counts
 from ..registry import resolve_dataset
 from ..stores.factory import create_graph_store
+from .composite_keys import composite_key_checks, constraint_check
 from .raw_counts import RawCounts, raw_counts_for
 
 logger = logging.getLogger(__name__)
@@ -59,6 +60,7 @@ class FixtureQAReport:
     live: dict[str, Any]
     report_path: str | None = None
     errors: list[str] = field(default_factory=list)
+    identity: dict[str, Any] = field(default_factory=dict)
 
     def as_dict(self) -> dict[str, Any]:
         data = asdict(self)
@@ -165,6 +167,7 @@ def run_fixture_qa(
     build_config: BuildConfig | None = None,
     store_factory: Callable[..., Any] | None = None,
     write_report: bool = True,
+    expected_dir: Path | None = None,
 ) -> FixtureQAReport:
     """Run the full fixture-QA reconciliation for one dataset."""
     loader_config = loader_config or LoaderConfig.from_data_dir()
@@ -201,7 +204,16 @@ def run_fixture_qa(
         _revoked_deprecated_check(dataset, raw, manifest, target.nodes_path)
     )
 
-    # 3 + 4. manifest -> live reconciliation and referential integrity per loaded backend.
+    # 3. composite (attack_id, stix_type) join-key checks against the
+    #    checked-in collision fixture (attack only).
+    identity: dict[str, Any] = {}
+    if dataset == "attack":
+        key_checks, identity = composite_key_checks(
+            build_config, target.nodes_path, expected_dir
+        )
+        checks.extend(key_checks)
+
+    # 4 + 5. manifest -> live reconciliation and referential integrity per loaded backend.
     live: dict[str, Any] = {}
     for backend in sorted(LOAD_BACKENDS):
         backend_target = target.backends.get(backend)
@@ -241,6 +253,11 @@ def run_fixture_qa(
                     else "; ".join(integrity.details),
                 )
             )
+            live_constraints = store.list_constraint_names()
+            backend_live["constraints"] = live_constraints
+            check = constraint_check(dataset, backend, live_constraints)
+            if check is not None:
+                checks.append(check)
         except Exception as exc:  # pragma: no cover - live failure path
             checks.append(
                 CheckResult(f"live_query[{backend}]", False, f"live query failed: {exc}")
@@ -273,6 +290,7 @@ def run_fixture_qa(
         },
         live=live,
         errors=errors,
+        identity=identity,
     )
 
     if write_report:
