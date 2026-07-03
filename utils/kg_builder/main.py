@@ -17,6 +17,7 @@ from .io import ensure_dir, file_sha256, write_json
 from .preprocess.attack import AttackPreprocessor, load_attack_bundle
 from .preprocess.capec import build_capec_graph
 from .registry import write_attack_source_card, write_capec_source_card
+from .snapshot import verify_pinned_snapshot
 from utils.recovery import prepare_clean_dir
 from .validate import (
     validate_canonical_artifacts,
@@ -87,6 +88,7 @@ class KGBuildRunner:
             )
             return
 
+        verify_pinned_snapshot(self.config, "attack")
         loaded = load_attack_bundle(self.config)
         graph = AttackPreprocessor(self.config).preprocess(
             loaded.bundle,
@@ -176,6 +178,7 @@ class KGBuildRunner:
             )
             return
 
+        verify_pinned_snapshot(self.config, "capec")
         graph = build_capec_graph(self.config)
         validate_graph(graph)
 

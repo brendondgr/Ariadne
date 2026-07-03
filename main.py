@@ -22,6 +22,7 @@ from utils.graph_loader.main import run_graph_command
 from utils.graph_loader.registry import LoaderResolutionError
 from utils.infrastructure import docker_start, docker_status, docker_stop, docker_stop_service
 from utils.kg_builder import KGBuildRunner
+from utils.kg_builder.registry import write_attack_source_card, write_capec_source_card
 from utils.neo4j_login import create_neo4j_login
 from utils.planner.cli import run_plan_command
 from utils.specialists.cli import run_query_command
@@ -171,6 +172,12 @@ VERSION OVERRIDES (--docker start only)
         help="Re-download even if files already exist (use with --download)",
     )
     data.add_argument(
+        "--pin",
+        action="store_true",
+        help="Pin the snapshot: record sha256 checksums of the raw files already on "
+        "disk into metadata.json and versions.json (no re-download)",
+    )
+    data.add_argument(
         "--build",
         choices=["attack", "capec", "all"],
         metavar="{attack,capec,all}",
@@ -313,6 +320,8 @@ VERSION OVERRIDES (--docker start only)
         job_type = "yolo-all"
     elif args.download:
         job_type = "download"
+    elif args.pin:
+        job_type = "pin-snapshot"
     elif args.build:
         job_type = f"build-{args.build}"
     elif args.docker:
@@ -354,6 +363,26 @@ VERSION OVERRIDES (--docker start only)
 
             logger.info("Job completed successfully.")
             logger.info(f"Data directory: {downloader.data_dir.resolve()}")
+        elif args.pin:
+            downloader = DatasetDownloader()
+            checksums = downloader.pin_snapshot()
+            for dataset, record in checksums.items():
+                logger.info(
+                    "Pinned %s: sha256=%s (%s bytes)",
+                    dataset,
+                    record.get("sha256"),
+                    record.get("size_bytes"),
+                )
+            # Regenerate source cards so provenance carries the pinned checksum.
+            runner = KGBuildRunner()
+            write_attack_source_card(
+                runner.config, runner.config.paths().graph_canonical_dir / "manifest.json"
+            )
+            write_capec_source_card(
+                runner.config,
+                runner.config.paths().capec_graph_canonical_dir / "manifest.json",
+            )
+            logger.info("Job completed successfully.")
         elif args.build:
             runner = KGBuildRunner(dry_run=args.dry_run)
             if args.build == "attack":

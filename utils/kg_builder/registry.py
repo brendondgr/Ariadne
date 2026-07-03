@@ -8,6 +8,18 @@ from pathlib import Path
 from typing import Any
 
 from .config import BuildConfig
+from .snapshot import read_pinned_checksum
+
+
+def _pinned_provenance(config: BuildConfig, dataset: str) -> dict[str, Any]:
+    """Provenance fields recording the pinned raw-source snapshot."""
+    pinned = read_pinned_checksum(config.data_dir, dataset)
+    version = config.attack_version if dataset == "attack" else config.capec_version
+    return {
+        "dataset_version": f"v{version}",
+        "raw_sha256": pinned,
+        "snapshot_pinned": pinned is not None,
+    }
 
 
 @dataclass
@@ -72,7 +84,7 @@ def build_attack_source_card(config: BuildConfig, manifest_path: Path) -> Source
         },
         connection=overlay.get("connection", {}),
         safety=overlay.get("safety", {}),
-        provenance=overlay.get("provenance", {}),
+        provenance={**_pinned_provenance(config, "attack"), **overlay.get("provenance", {})},
         entity_descriptions=overlay.get("entity_descriptions", {}),
     )
 
@@ -117,7 +129,7 @@ def build_capec_source_card(config: BuildConfig, manifest_path: Path) -> SourceC
         },
         connection=overlay.get("connection", {}),
         safety=safety,
-        provenance=overlay.get("provenance", {}),
+        provenance={**_pinned_provenance(config, "capec"), **overlay.get("provenance", {})},
         entity_descriptions=overlay.get("entity_descriptions", {}),
     )
 

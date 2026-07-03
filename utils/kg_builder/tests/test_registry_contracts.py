@@ -333,7 +333,12 @@ def test_overlay_absent_yields_empty_authored_sections(tmp_path: Path) -> None:
     card = build_attack_source_card(config, manifest_path)
     assert card.connection == {}
     assert card.safety == {}
-    assert card.provenance == {}
+    # Provenance always carries the snapshot pin (no overlay -> unpinned defaults).
+    assert card.provenance == {
+        "dataset_version": "v19.0",
+        "raw_sha256": None,
+        "snapshot_pinned": False,
+    }
     assert card.entity_descriptions == {}
 
 
