@@ -229,12 +229,21 @@ def normalize_view(
         "source_path": f"{source_path}/Views/View[@ID='{entity_id}']",
         **attributes_dict(element, ("Name", "Type", "Status")),
         "objective": child_texts(element, "Objective")[0] if child_texts(element, "Objective") else None,
-        "member_of": child_texts(element, "Member_Of"),
+        "members": [],
     }
+
+    # Graph-type views enumerate members as <Members><Has_Member CAPEC_ID=...>;
+    # filter-type views define membership implicitly and stay member-less.
+    members = child_elements(element, "Members")
+    if members:
+        record["members"] = [
+            member.attrib.get("CAPEC_ID")
+            for member in child_elements(members[0], "Has_Member")
+        ]
 
     for child in list(element):
         name = local_name(child.tag)
-        if name not in {"Objective", "Member_Of"}:
+        if name not in {"Objective", "Members"}:
             record_unmapped(
                 unmapped_fields,
                 entity_type="view",

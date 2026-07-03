@@ -60,3 +60,25 @@ def test_idempotent_edge_upsert() -> None:
     store.upsert_edges([edge])
     store.upsert_edges([edge])
     assert store.count_edges() == 1
+
+
+def test_memory_store_constraint_names(tmp_path) -> None:
+    from pathlib import Path
+
+    constraints = tmp_path / "constraints.cypher"
+    constraints.write_text(
+        "// generated\n"
+        "CREATE CONSTRAINT attack_stix_id_unique IF NOT EXISTS "
+        "FOR (n:AttackObject) REQUIRE n.id IS UNIQUE;\n"
+        "CREATE CONSTRAINT attack_id_type_unique IF NOT EXISTS "
+        "FOR (n:AttackObject) REQUIRE (n.attack_id, n.stix_type) IS UNIQUE;\n",
+        encoding="utf-8",
+    )
+    store = MemoryGraphStore()
+    store.connect()
+    assert store.list_constraint_names() == []
+    store.ensure_schema({"constraints_cypher": str(constraints)})
+    assert store.list_constraint_names() == [
+        "attack_id_type_unique",
+        "attack_stix_id_unique",
+    ]

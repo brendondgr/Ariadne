@@ -32,13 +32,28 @@ ATTACK_EDGE_PATTERNS: frozenset[EdgePattern] = frozenset(
         EdgePattern("Tactic", "HAS_TECHNIQUE", "SubTechnique"),
         EdgePattern("DetectionStrategy", "DETECTS", "Technique"),
         EdgePattern("DetectionStrategy", "DETECTS", "SubTechnique"),
+        EdgePattern("Matrix", "HAS_TACTIC", "Tactic"),
+        EdgePattern("DetectionStrategy", "HAS_ANALYTIC", "Analytic"),
+        EdgePattern("Analytic", "MONITORS", "DataComponent"),
     }
 )
 
 REQUIRED_NODE_PROPERTIES = ("id",)
 
 LABELS_REQUIRING_ATTACK_ID = frozenset(
-    {"Technique", "SubTechnique", "Mitigation", "Tactic", "Group", "Software", "Campaign"}
+    {
+        "Technique",
+        "SubTechnique",
+        "Mitigation",
+        "Tactic",
+        "Group",
+        "Software",
+        "Campaign",
+        "DataComponent",
+        "DetectionStrategy",
+        "Analytic",
+        "Matrix",
+    }
 )
 
 CAPEC_EDGE_PATTERNS: frozenset[EdgePattern] = frozenset(

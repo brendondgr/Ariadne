@@ -203,6 +203,21 @@ class Neo4jGraphStore(GraphStore):
             dangling_edges=dangling, nodes_missing_id=missing, details=details
         )
 
+    def orphan_ids(self, limit: int = 5000) -> list[str]:
+        assert self._driver is not None
+        with self._driver.session() as session:
+            result = session.run(
+                "MATCH (n) WHERE NOT (n)--() RETURN n.id AS id ORDER BY id LIMIT $limit",
+                limit=limit,
+            )
+            return [str(record["id"]) for record in result]
+
+    def list_constraint_names(self) -> list[str]:
+        assert self._driver is not None
+        with self._driver.session() as session:
+            result = session.run("SHOW CONSTRAINTS YIELD name RETURN name")
+            return sorted(str(record["name"]) for record in result)
+
     def sample_node(self, label: str | None = None) -> dict[str, Any] | None:
         assert self._driver is not None
         if label:

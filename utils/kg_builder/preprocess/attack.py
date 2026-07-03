@@ -30,6 +30,7 @@ STIX_TYPE_TO_LABEL: dict[str, str] = {
     "campaign": "Campaign",
     "x-mitre-data-component": "DataComponent",
     "x-mitre-detection-strategy": "DetectionStrategy",
+    "x-mitre-analytic": "Analytic",
     "x-mitre-matrix": "Matrix",
 }
 
@@ -247,6 +248,64 @@ class AttackPreprocessor:
                         },
                     )
                 )
+
+        # Embedded references are connections that live inside another object
+        # rather than as standalone STIX relationship objects; a loader that
+        # only walks the relationship list leaves these nodes stranded.
+        for obj in objects:
+            if obj.get("id") not in node_by_id:
+                continue
+
+            stix_type = obj.get("type")
+            if stix_type == "x-mitre-matrix":
+                for tactic_ref in obj.get("tactic_refs", []):
+                    if tactic_ref not in node_by_id:
+                        continue
+                    relationships.append(
+                        EdgeRecord(
+                            id=f"derived--has-tactic--{obj['id']}--{tactic_ref}",
+                            type="HAS_TACTIC",
+                            source_id=obj["id"],
+                            target_id=tactic_ref,
+                            properties={"stix_type": "derived"},
+                        )
+                    )
+            elif stix_type == "x-mitre-detection-strategy":
+                for analytic_ref in obj.get("x_mitre_analytic_refs", []):
+                    if analytic_ref not in node_by_id:
+                        continue
+                    relationships.append(
+                        EdgeRecord(
+                            id=f"derived--has-analytic--{obj['id']}--{analytic_ref}",
+                            type="HAS_ANALYTIC",
+                            source_id=obj["id"],
+                            target_id=analytic_ref,
+                            properties={"stix_type": "derived"},
+                        )
+                    )
+            elif stix_type == "x-mitre-analytic":
+                log_sources_by_component: dict[str, list[str]] = {}
+                for log_source in obj.get("x_mitre_log_source_references", []):
+                    component_ref = log_source.get("x_mitre_data_component_ref")
+                    if component_ref not in node_by_id:
+                        continue
+                    name = log_source.get("name")
+                    sources = log_sources_by_component.setdefault(component_ref, [])
+                    if name and name not in sources:
+                        sources.append(name)
+                for component_ref, source_names in sorted(log_sources_by_component.items()):
+                    relationships.append(
+                        EdgeRecord(
+                            id=f"derived--monitors--{obj['id']}--{component_ref}",
+                            type="MONITORS",
+                            source_id=obj["id"],
+                            target_id=component_ref,
+                            properties={
+                                "stix_type": "derived",
+                                "log_source_names": sorted(source_names),
+                            },
+                        )
+                    )
 
         nodes.sort(key=lambda n: n.id)
         relationships.sort(key=lambda r: (r.type, r.source_id, r.target_id, r.id))

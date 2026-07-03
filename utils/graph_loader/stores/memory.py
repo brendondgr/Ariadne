@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import re
+from pathlib import Path
 from typing import Any
 
 from ..config import ADAPTER_VERSION
@@ -19,6 +21,7 @@ class MemoryGraphStore(GraphStore):
         self._nodes: dict[str, dict[str, Any]] = {}
         self._edges: list[dict[str, Any]] = []
         self._edge_keys: set[tuple[str, str, str, str]] = set()
+        self._constraint_names: list[str] = []
 
     @property
     def metadata(self) -> AdapterMetadata:
@@ -38,7 +41,19 @@ class MemoryGraphStore(GraphStore):
         return self._connected
 
     def ensure_schema(self, schema_artifacts: dict[str, Any]) -> None:
-        _ = schema_artifacts
+        constraints_path = (schema_artifacts or {}).get("constraints_cypher")
+        if constraints_path is None:
+            return
+        try:
+            text = Path(constraints_path).read_text(encoding="utf-8")
+        except OSError:
+            return
+        self._constraint_names = sorted(
+            set(re.findall(r"CREATE CONSTRAINT (\w+) IF NOT EXISTS", text))
+        )
+
+    def list_constraint_names(self) -> list[str]:
+        return list(self._constraint_names)
 
     def upsert_nodes(self, nodes: list[dict[str, Any]]) -> int:
         written = 0
@@ -92,6 +107,15 @@ class MemoryGraphStore(GraphStore):
         return ReferentialIntegrityResult(
             dangling_edges=dangling, nodes_missing_id=missing, details=details
         )
+
+    def orphan_ids(self, limit: int = 5000) -> list[str]:
+        connected: set[str] = set()
+        for edge in self._edges:
+            connected.add(edge.get("source_id"))
+            connected.add(edge.get("target_id"))
+        return sorted(
+            node_id for node_id in self._nodes if node_id not in connected
+        )[:limit]
 
     def snapshot_counts(self) -> CountSummary:
         labels: dict[str, int] = {}

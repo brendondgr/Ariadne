@@ -29,6 +29,15 @@ from ..config import LOAD_BACKENDS, LoaderConfig
 from ..loader import _expected_counts
 from ..registry import resolve_dataset
 from ..stores.factory import create_graph_store
+from .composite_keys import composite_key_checks, constraint_check
+from .cross_db import cross_db_resolution_checks
+from .orphans import (
+    attack_named_regressions,
+    capec_hierarchy_checks,
+    live_orphan_check,
+    load_expected_orphans,
+    orphan_checks,
+)
 from .raw_counts import RawCounts, raw_counts_for
 
 logger = logging.getLogger(__name__)
@@ -59,6 +68,9 @@ class FixtureQAReport:
     live: dict[str, Any]
     report_path: str | None = None
     errors: list[str] = field(default_factory=list)
+    identity: dict[str, Any] = field(default_factory=dict)
+    orphans: dict[str, Any] = field(default_factory=dict)
+    cross_db: dict[str, Any] = field(default_factory=dict)
 
     def as_dict(self) -> dict[str, Any]:
         data = asdict(self)
@@ -165,6 +177,7 @@ def run_fixture_qa(
     build_config: BuildConfig | None = None,
     store_factory: Callable[..., Any] | None = None,
     write_report: bool = True,
+    expected_dir: Path | None = None,
 ) -> FixtureQAReport:
     """Run the full fixture-QA reconciliation for one dataset."""
     loader_config = loader_config or LoaderConfig.from_data_dir()
@@ -201,7 +214,53 @@ def run_fixture_qa(
         _revoked_deprecated_check(dataset, raw, manifest, target.nodes_path)
     )
 
-    # 3 + 4. manifest -> live reconciliation and referential integrity per loaded backend.
+    # 3. composite (attack_id, stix_type) join-key checks against the
+    #    checked-in collision fixture (attack only).
+    identity: dict[str, Any] = {}
+    if dataset == "attack":
+        key_checks, identity = composite_key_checks(
+            build_config, target.nodes_path, expected_dir
+        )
+        checks.extend(key_checks)
+
+    # 4. orphan / island checks: dead-vs-live split against the recorded
+    #    policy, exact-match allow-list, and the named regressions.
+    island_checks, orphan_scan = orphan_checks(
+        dataset, target.nodes_path, target.relationships_path, expected_dir
+    )
+    checks.extend(island_checks)
+    try:
+        expected_orphans = load_expected_orphans(dataset, expected_dir)
+    except FileNotFoundError:
+        expected_orphans = {}
+    if dataset == "attack" and expected_orphans:
+        checks.extend(
+            attack_named_regressions(
+                target.nodes_path, target.relationships_path, expected_orphans
+            )
+        )
+    if dataset == "capec":
+        checks.extend(
+            capec_hierarchy_checks(target.nodes_path, target.relationships_path)
+        )
+
+    # 5. cross-database join-key resolution (CAPEC -> ATT&CK), when the attack
+    #    canonical artifact is available alongside the capec one.
+    resolution: dict[str, Any] = {}
+    if dataset == "capec":
+        attack_nodes_path = (
+            loader_config.data_dir / "graphs" / "attack" / "canonical" / "nodes.jsonl"
+        )
+        if attack_nodes_path.exists():
+            resolution_checks, resolution = cross_db_resolution_checks(
+                target.nodes_path,
+                target.relationships_path,
+                attack_nodes_path,
+                expected_dir,
+            )
+            checks.extend(resolution_checks)
+
+    # 5 + 6. manifest -> live reconciliation and referential integrity per loaded backend.
     live: dict[str, Any] = {}
     for backend in sorted(LOAD_BACKENDS):
         backend_target = target.backends.get(backend)
@@ -241,6 +300,16 @@ def run_fixture_qa(
                     else "; ".join(integrity.details),
                 )
             )
+            live_constraints = store.list_constraint_names()
+            backend_live["constraints"] = live_constraints
+            check = constraint_check(dataset, backend, live_constraints)
+            if check is not None:
+                checks.append(check)
+            live_ids = store.orphan_ids()
+            backend_live["orphans"] = len(live_ids)
+            checks.append(
+                live_orphan_check(backend, live_ids, orphan_scan["orphan_ids"])
+            )
         except Exception as exc:  # pragma: no cover - live failure path
             checks.append(
                 CheckResult(f"live_query[{backend}]", False, f"live query failed: {exc}")
@@ -273,6 +342,13 @@ def run_fixture_qa(
         },
         live=live,
         errors=errors,
+        identity=identity,
+        orphans={
+            "dead_by_label": orphan_scan["dead_by_label"],
+            "live_orphans": orphan_scan["live_orphans"],
+            "total": len(orphan_scan["orphan_ids"]),
+        },
+        cross_db=resolution,
     )
 
     if write_report:

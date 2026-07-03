@@ -201,6 +201,14 @@ class GremlinGraphStore(GraphStore):
             dangling_edges=dangling, nodes_missing_id=missing, details=details
         )
 
+    def orphan_ids(self, limit: int = 5000) -> list[str]:
+        assert self._client is not None
+        result = self._client.submit(
+            "g.V().not(__.bothE()).values('id').order().limit(maxRows)",
+            bindings={"maxRows": limit},
+        ).all().result()
+        return [str(value) for value in result]
+
     def sample_node(self, label: str | None = None) -> dict[str, Any] | None:
         assert self._client is not None
         if label:

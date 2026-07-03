@@ -65,8 +65,49 @@ def _build_attack_dataset(tmp_path: Path) -> LoaderConfig:
         json.dumps({"schema_version": "1.0", "node_labels": ["Technique", "Group"],
                     "relationship_types": ["USES"]}), encoding="utf-8"
     )
-    for name in ("nodes.csv", "relationships.csv", "schema.cypher", "constraints.cypher"):
+    for name in ("nodes.csv", "relationships.csv", "schema.cypher"):
         (neo4j_dir / name).write_text("x\n", encoding="utf-8")
+    (neo4j_dir / "constraints.cypher").write_text(
+        "CREATE CONSTRAINT attack_stix_id_unique IF NOT EXISTS "
+        "FOR (n:AttackObject) REQUIRE n.id IS UNIQUE;\n"
+        "CREATE CONSTRAINT attack_id_type_unique IF NOT EXISTS "
+        "FOR (n:AttackObject) REQUIRE (n.attack_id, n.stix_type) IS UNIQUE;\n",
+        encoding="utf-8",
+    )
+    # Expected collision fixture matching the synthetic bundle (no collisions).
+    expected_dir = data_dir / "expected"
+    expected_dir.mkdir(parents=True)
+    (expected_dir / "attack_collisions.json").write_text(
+        json.dumps(
+            {
+                "dataset": "attack",
+                "raw_collision_count": 0,
+                "raw_collisions": {},
+                "canonical_collision_count": 0,
+                "canonical_collisions": {},
+            }
+        ),
+        encoding="utf-8",
+    )
+    # Orphan fixture: t2 is a live orphan by construction (no edges touch it).
+    (expected_dir / "attack_orphans.json").write_text(
+        json.dumps(
+            {
+                "dataset": "attack",
+                "policy": "exclude-at-load",
+                "matrix_tactic_count": 0,
+                "expected_dead_orphans": {},
+                "allowed_orphan_label_counts": {},
+                "allowed_live_orphans": {
+                    "attack-pattern--t2": {
+                        "label": "Technique",
+                        "reason": "synthetic dead-end",
+                    }
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
     for name in ("nodes.jsonl", "relationships.jsonl"):
         (gremlin_dir / name).write_text("{}\n", encoding="utf-8")
 
@@ -120,6 +161,9 @@ def _memory_store_factory(nodes, edges):
     def factory(backend, target, config):
         store = MemoryGraphStore(backend=backend)
         store.connect()
+        backend_target = target.backends.get(backend)
+        if backend_target is not None:
+            store.ensure_schema(backend_target.export_files)
         store.upsert_nodes(nodes)
         store.upsert_edges(edges)
         return store
@@ -132,6 +176,7 @@ def test_harness_passes_when_everything_reconciles(tmp_path: Path) -> None:
         "attack",
         loader_config=config,
         store_factory=_memory_store_factory(_CANONICAL_NODES, _CANONICAL_EDGES),
+        expected_dir=config.data_dir / "expected",
     )
     assert report.passed, report.errors
     names = {c.name for c in report.checks}
@@ -140,6 +185,10 @@ def test_harness_passes_when_everything_reconciles(tmp_path: Path) -> None:
     assert "no_revoked_deprecated_leakage" in names
     assert "manifest_vs_live_counts[neo4j]" in names
     assert "referential_integrity[neo4j]" in names
+    assert "identity_properties_present" in names
+    assert "composite_pair_unique_in_canonical" in names
+    assert "collision_set_matches_expected" in names
+    assert "constraints_exist[neo4j]" in names
     # report artifact written
     assert Path(report.report_path).exists()
 
@@ -152,6 +201,7 @@ def test_harness_detects_live_count_drift(tmp_path: Path) -> None:
         loader_config=config,
         store_factory=_memory_store_factory(_CANONICAL_NODES[:2], _CANONICAL_EDGES),
         write_report=False,
+        expected_dir=config.data_dir / "expected",
     )
     assert not report.passed
     assert any("manifest_vs_live_counts" in e for e in report.errors)
@@ -167,6 +217,7 @@ def test_harness_detects_dangling_edge(tmp_path: Path) -> None:
         loader_config=config,
         store_factory=_memory_store_factory(_CANONICAL_NODES, bad_edges),
         write_report=False,
+        expected_dir=config.data_dir / "expected",
     )
     assert not report.passed
     assert any("referential_integrity" in e for e in report.errors)
@@ -186,3 +237,54 @@ def test_command_raises_on_failure(tmp_path: Path, monkeypatch) -> None:
     )
     with pytest.raises(FixtureQAError):
         run_fixture_qa_command("attack", config=config)
+
+
+def test_harness_detects_collision_drift(tmp_path: Path) -> None:
+    config = _build_attack_dataset(tmp_path)
+    # A second live attack-pattern claiming T1 under a different STIX type is
+    # legitimate; the same pair twice is not — but collision drift is the
+    # fixture-level regression: expected fixture says no collisions, canonical
+    # now has one.
+    nodes_path = config.data_dir / "graphs" / "attack" / "canonical" / "nodes.jsonl"
+    drifted = dict(_CANONICAL_NODES[0])
+    drifted = {
+        "id": "course-of-action--t1",
+        "label": "Mitigation",
+        "labels": ["Mitigation"],
+        "properties": {"attack_id": "T1", "stix_type": "course-of-action"},
+    }
+    with open(nodes_path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(drifted) + "\n")
+
+    report = run_fixture_qa(
+        "attack",
+        loader_config=config,
+        store_factory=_memory_store_factory(_CANONICAL_NODES, _CANONICAL_EDGES),
+        write_report=False,
+        expected_dir=config.data_dir / "expected",
+    )
+    assert not report.passed
+    assert any("collision_set_matches_expected" in e for e in report.errors)
+
+
+def test_harness_detects_missing_constraint(tmp_path: Path) -> None:
+    config = _build_attack_dataset(tmp_path)
+    constraints_path = (
+        config.data_dir / "graphs" / "attack" / "exports" / "neo4j" / "constraints.cypher"
+    )
+    # Live DB lost the composite constraint (simulated by an artifact without it).
+    constraints_path.write_text(
+        "CREATE CONSTRAINT attack_stix_id_unique IF NOT EXISTS "
+        "FOR (n:AttackObject) REQUIRE n.id IS UNIQUE;\n",
+        encoding="utf-8",
+    )
+    report = run_fixture_qa(
+        "attack",
+        loader_config=config,
+        store_factory=_memory_store_factory(_CANONICAL_NODES, _CANONICAL_EDGES),
+        write_report=False,
+        expected_dir=config.data_dir / "expected",
+    )
+    assert not report.passed
+    assert any("constraints_exist[neo4j]" in e and "attack_id_type_unique" in e
+               for e in report.errors)

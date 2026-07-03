@@ -73,6 +73,23 @@ class GraphStore(ABC):
         exist and every node carries the canonical ``id`` used as the join key.
         """
 
+    @abstractmethod
+    def orphan_ids(self, limit: int = 5000) -> list[str]:
+        """Return ids of nodes with no edges in either direction (islands).
+
+        Every returned id must be explained: either a documented allow-list
+        entry (declared not-traversable in the source card) or a loader bug.
+        """
+
+    def list_constraint_names(self) -> list[str]:
+        """Return names of live schema constraints.
+
+        Backends without schema constraints (Gremlin/TinkerPop) return an empty
+        list; the fixture-QA harness only asserts constraint presence on
+        backends that report support via a non-empty result.
+        """
+        return []
+
     def verify_loaded_graph(self, expected: CountSummary) -> VerifyLoadedGraphResult:
         """Compare live counts against canonical manifest expectations."""
         actual = CountSummary(

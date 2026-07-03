@@ -107,6 +107,11 @@ def constraints_cypher_lines() -> list[str]:
             f"CREATE CONSTRAINT capec_{label.lower()}_id IF NOT EXISTS "
             f"FOR (n:{label}) REQUIRE n.id IS UNIQUE;"
         )
+    # Shared-label backstop mirroring attack_stix_id_unique on :AttackObject.
+    lines.append(
+        "CREATE CONSTRAINT capec_object_id_unique IF NOT EXISTS "
+        "FOR (n:CapecObject) REQUIRE n.id IS UNIQUE;"
+    )
     return lines
 
 
