@@ -2,9 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { GraphPayload } from "@/lib/types";
-import { labelColor } from "@/lib/graph";
-import { ElementInspector } from "./ElementInspector";
-import type { SelectedElement } from "./ElementInspector";
+import { labelColor, edgeTypeColorMap } from "@/lib/graph";
 
 /* -------------------------------------------------------------------------- */
 /* Props                                                                       */
@@ -17,7 +15,6 @@ interface GraphSidebarProps {
   onToggleLabel: (label: string, hidden: boolean) => void;
   onToggleType: (type: string, hidden: boolean) => void;
   onResetFilters: () => void;
-  selected: SelectedElement;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -148,7 +145,6 @@ export function GraphSidebar({
   onToggleLabel,
   onToggleType,
   onResetFilters,
-  selected,
 }: GraphSidebarProps) {
   // Sort labels descending by count
   const labelEntries: [string, number][] = payload
@@ -165,6 +161,12 @@ export function GraphSidebar({
     return [...counts.entries()].sort(([, a], [, b]) => b - a);
   }, [payload]);
 
+  // Unique color per relationship type — shared with the canvas (same function).
+  const typeColors = useMemo(
+    () => edgeTypeColorMap(payload ? payload.edges.map((e) => e.type) : []),
+    [payload],
+  );
+
   const filtersActive =
     hiddenLabels.size > 0 || hiddenTypes.size > 0;
 
@@ -174,148 +176,78 @@ export function GraphSidebar({
       style={{ boxShadow: "rgba(235,230,220,0.10) 1px 0 0 0" }}
     >
       {/* ------------------------------------------------------------------ */}
-      {/* Graph legend section                                                */}
+      {/* Filters section — the sole content of the left sidebar              */}
       {/* ------------------------------------------------------------------ */}
       <div
-        className="flex min-h-0 flex-col border-b border-transparent"
+        className="flex flex-shrink-0 items-center justify-between px-4 pb-2 pt-4"
         style={{ boxShadow: "rgba(235,230,220,0.08) 0 1px 0 0" }}
       >
-        <div className="flex items-center justify-between px-4 pb-2 pt-4">
-          <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-text-muted">
-            Graph
-          </span>
-          {payload && (
-            <span className="font-mono text-[10px] tabular-nums text-text-muted" style={{ fontFeatureSettings: '"tnum"' }}>
-              {payload.backend}
-            </span>
-          )}
-        </div>
-
-        {/* Node label legend */}
-        <div className="min-h-0 overflow-y-auto px-4 pb-3">
-          {!payload ? (
-            <div className="flex flex-col gap-0.5">
-              {Array.from({ length: 6 }).map((_, i) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders have no meaningful key
-                <SkeletonRow key={i} />
-              ))}
-            </div>
-          ) : labelEntries.length === 0 ? (
-            <p className="pt-1 font-mono text-[11px] text-text-muted">
-              No node labels found.
-            </p>
-          ) : (
-            <ul className="flex flex-col gap-0.5" aria-label="Node labels">
-              {labelEntries.map(([label, count]) => (
-                <li key={label} className="flex items-center justify-between gap-2 py-[5px]">
-                  <div className="flex items-center gap-2">
-                    {/* Color swatch — wired to the canvas palette */}
-                    <span
-                      className="inline-block h-2 w-2 flex-shrink-0 rounded-full"
-                      style={{ background: labelColor(label) }}
-                      aria-hidden="true"
-                    />
-                    <span className="font-mono text-[11px] text-text-soft">
-                      {label}
-                    </span>
-                  </div>
-                  <span
-                    className="font-mono text-[11px] tabular-nums text-text-muted"
-                    style={{ fontFeatureSettings: '"tnum"' }}
-                  >
-                    {count.toLocaleString()}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Filters section                                                     */}
-      {/* ------------------------------------------------------------------ */}
-      <div
-        className="flex flex-col border-b border-transparent"
-        style={{ boxShadow: "rgba(235,230,220,0.08) 0 1px 0 0" }}
-      >
-        <div className="flex items-center justify-between px-4 pb-1 pt-3">
-          <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-text-muted">
-            Filters
-          </span>
-          {filtersActive && (
-            <button
-              type="button"
-              onClick={onResetFilters}
-              className="font-mono text-[10px] uppercase tracking-[0.06em] transition-opacity hover:opacity-90 focus-visible:outline-none"
-              style={{ color: "var(--color-secondary)" }}
-            >
-              Reset
-            </button>
-          )}
-        </div>
-
-        <div className="max-h-[240px] min-h-0 overflow-y-auto px-4 pb-3">
-          {!payload ? (
-            <div className="flex flex-col gap-0.5">
-              {Array.from({ length: 4 }).map((_, i) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders
-                <SkeletonRow key={i} />
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-col gap-1">
-              {/* Node types */}
-              {labelEntries.length > 0 && (
-                <CollapsibleSection label="Node types">
-                  {labelEntries.map(([label, count]) => (
-                    <FilterRow
-                      key={label}
-                      id={`filter-label-${label}`}
-                      label={label}
-                      count={count}
-                      checked={!hiddenLabels.has(label)}
-                      onToggle={(checked) => onToggleLabel(label, !checked)}
-                      color={labelColor(label)}
-                    />
-                  ))}
-                </CollapsibleSection>
-              )}
-
-              {/* Relationship types */}
-              {edgeTypeCounts.length > 0 && (
-                <CollapsibleSection label="Relationship types">
-                  {edgeTypeCounts.map(([type, count]) => (
-                    <FilterRow
-                      key={type}
-                      id={`filter-type-${type}`}
-                      label={type}
-                      count={count}
-                      checked={!hiddenTypes.has(type)}
-                      onToggle={(checked) => onToggleType(type, !checked)}
-                    />
-                  ))}
-                </CollapsibleSection>
-              )}
-
-              {labelEntries.length === 0 && edgeTypeCounts.length === 0 && (
-                <p className="font-mono text-[11px] text-text-muted">
-                  No filters available.
-                </p>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Inspection section                                                  */}
-      {/* ------------------------------------------------------------------ */}
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pb-4 pt-3">
-        <span className="pb-2 font-mono text-[10px] uppercase tracking-[0.1em] text-text-muted">
-          Inspection
+        <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-text-muted">
+          Filters
         </span>
-        <ElementInspector selected={selected} />
+        {payload && filtersActive && (
+          <button
+            type="button"
+            onClick={onResetFilters}
+            className="font-mono text-[10px] uppercase tracking-[0.06em] transition-opacity hover:opacity-90 focus-visible:outline-none"
+            style={{ color: "var(--color-secondary)" }}
+          >
+            Reset
+          </button>
+        )}
+      </div>
+
+      <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4 pt-3">
+        {!payload ? (
+          <div className="flex flex-col gap-0.5">
+            {Array.from({ length: 8 }).map((_, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders
+              <SkeletonRow key={i} />
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-1">
+            {/* Node types */}
+            {labelEntries.length > 0 && (
+              <CollapsibleSection label="Node types">
+                {labelEntries.map(([label, count]) => (
+                  <FilterRow
+                    key={label}
+                    id={`filter-label-${label}`}
+                    label={label}
+                    count={count}
+                    checked={!hiddenLabels.has(label)}
+                    onToggle={(checked) => onToggleLabel(label, !checked)}
+                    color={labelColor(label)}
+                  />
+                ))}
+              </CollapsibleSection>
+            )}
+
+            {/* Relationship types */}
+            {edgeTypeCounts.length > 0 && (
+              <CollapsibleSection label="Relationship types">
+                {edgeTypeCounts.map(([type, count]) => (
+                  <FilterRow
+                    key={type}
+                    id={`filter-type-${type}`}
+                    label={type}
+                    count={count}
+                    checked={!hiddenTypes.has(type)}
+                    onToggle={(checked) => onToggleType(type, !checked)}
+                    color={typeColors.get(type)}
+                  />
+                ))}
+              </CollapsibleSection>
+            )}
+
+            {labelEntries.length === 0 && edgeTypeCounts.length === 0 && (
+              <p className="font-mono text-[11px] text-text-muted">
+                No filters available.
+              </p>
+            )}
+          </div>
+        )}
       </div>
     </aside>
   );

@@ -8,6 +8,7 @@ import { getGraph } from "@/lib/api";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 import { GraphSecondaryNav } from "./GraphSecondaryNav";
 import { GraphSidebar } from "./GraphSidebar";
+import { GraphDetailsSidebar } from "./GraphDetailsSidebar";
 import { GraphCanvas } from "./GraphCanvas";
 import type { SelectedElement } from "./ElementInspector";
 
@@ -150,6 +151,10 @@ export function GraphExplorer() {
     [updateFilters],
   );
 
+  const handleCloseDetails = useCallback(() => {
+    updateFilters({ selected: null });
+  }, [updateFilters]);
+
   const datasetLabel = graphDataset === "attack" ? "ATT&CK" : "CAPEC";
 
   // Visible counts (after filtering)
@@ -178,7 +183,6 @@ export function GraphExplorer() {
           onToggleLabel={handleToggleLabel}
           onToggleType={handleToggleType}
           onResetFilters={handleResetFilters}
-          selected={selected}
         />
 
         {/* Canvas region */}
@@ -232,6 +236,9 @@ export function GraphExplorer() {
             )}
           </div>
         </div>
+
+        {/* Right sidebar — appears only when a node/edge is selected */}
+        <GraphDetailsSidebar selected={selected} onClose={handleCloseDetails} />
       </div>
     </div>
   );

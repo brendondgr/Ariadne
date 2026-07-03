@@ -10,32 +10,28 @@ import type { GraphPayload, GraphNode } from "./types";
 /* -------------------------------------------------------------------------- */
 
 /**
- * A curated set of ~10 muted colors fitting the Woven Dusk dark dusky
- * teal/amber theme. Avoid neon; prefer muted, dark-background-readable tones.
- *
- * Hex values:
- *  teal    #4e9e96  — primary brand
- *  amber   #c9924a  — secondary brand
- *  sage    #7aab8c  — muted green
- *  clay    #b07a5c  — muted terracotta
- *  slate   #6a82a8  — muted slate-blue
- *  rose    #a37884  — muted rose-taupe
- *  moss    #8da870  — muted olive/moss
- *  steel   #5b8fa0  — steel teal variant
- *  sand    #a09060  — warm sand
- *  lavender #8a7aab — muted lavender
+ * A curated set of 16 muted, hue-separated colors fitting the Woven Dusk dark
+ * dusky teal/amber theme. Avoid neon; prefer muted, dark-background-readable
+ * tones. 16 entries so the largest relationship-type set (CAPEC has 14) gets a
+ * unique color with no wraparound collisions.
  */
 export const LABEL_PALETTE: string[] = [
-  "#4e9e96", // teal
-  "#c9924a", // amber
+  "#4e9e96", // teal (primary brand)
+  "#c9924a", // amber (secondary brand)
   "#7aab8c", // sage
-  "#b07a5c", // clay
+  "#b07a5c", // clay / terracotta
   "#6a82a8", // slate-blue
   "#a37884", // rose-taupe
   "#8da870", // moss
   "#5b8fa0", // steel teal
   "#a09060", // sand
   "#8a7aab", // lavender
+  "#c07d76", // coral
+  "#9a9a55", // olive
+  "#6aa46f", // green
+  "#7b7fbf", // indigo
+  "#a778b0", // orchid
+  "#bd77a0", // pink
 ];
 
 /**
@@ -58,6 +54,33 @@ function hashLabel(label: string): number {
 export function labelColor(label: string): string {
   const idx = hashLabel(label) % LABEL_PALETTE.length;
   return LABEL_PALETTE[idx];
+}
+
+/**
+ * Assign a UNIQUE palette color to each distinct relationship type.
+ *
+ * Unlike the hash-based `labelColor`, this maps the sorted set of types to
+ * palette slots by index, so no two relationship types collide (up to
+ * `LABEL_PALETTE.length` types). The result is stable for a given set of types
+ * because the input is sorted before assignment. Both the sidebar legend and the
+ * canvas derive their colors from this single function so they always agree.
+ */
+export function edgeTypeColorMap(types: Iterable<string>): Map<string, string> {
+  const unique = [...new Set(types)].sort();
+  const map = new Map<string, string>();
+  unique.forEach((type, i) => {
+    map.set(type, LABEL_PALETTE[i % LABEL_PALETTE.length]);
+  });
+  return map;
+}
+
+/** Convert a `#rrggbb` hex color to an `rgba()` string at the given alpha. */
+export function hexToRgba(hex: string, alpha: number): string {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -87,6 +110,10 @@ export interface FGLink {
   source: string;
   target: string;
   type: string;
+  /** Translucent per-relationship-type color for the canvas link stroke. */
+  color: string;
+  /** Solid per-relationship-type color (for the inspector heading/swatch). */
+  typeColor: string;
   /** Original source node id — survives force-graph's mutation of `source`. */
   sourceId: string;
   /** Original target node id — survives force-graph's mutation of `target`. */
@@ -121,6 +148,9 @@ export function toForceGraphData(
 ): ForceGraphData {
   const { hiddenLabels, hiddenTypes } = opts;
 
+  // Unique color per relationship type (shared with the sidebar legend).
+  const typeColors = edgeTypeColorMap(payload.edges.map((e) => e.type));
+
   // Build the filtered node list and an O(1) lookup set of surviving ids
   const nodes: FGNode[] = [];
   const survivingIds = new Set<string>();
@@ -143,11 +173,14 @@ export function toForceGraphData(
     if (!survivingIds.has(edge.source)) continue;
     if (!survivingIds.has(edge.target)) continue;
 
+    const solid = typeColors.get(edge.type) ?? LABEL_PALETTE[0];
     links.push({
       id: edge.id,
       source: edge.source,
       target: edge.target,
       type: edge.type,
+      color: hexToRgba(solid, 0.55),
+      typeColor: solid,
       sourceId: edge.source,
       targetId: edge.target,
     });
