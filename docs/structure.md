@@ -180,19 +180,22 @@ workbench and a dedicated **graph explorer** (`components/graph/`). The explorer
 loads a whole graph from `GET /api/graph/{dataset}`, switches between the
 ATT&CK (Neo4j) and CAPEC (Gremlin) datasets, and renders **every node and edge**
 on a canvas via `react-force-graph-2d` (`GraphCanvas`, dynamically imported
-`ssr:false`). Nodes are colored by label; a sidebar (`GraphSidebar`) carries the
-label legend, node-type + relationship-type filters, and an `ElementInspector`
-that shows the full properties of a clicked node or edge. Pure transforms live in
-`lib/graph.ts` (`labelColor`, `toForceGraphData` — drops dangling links when
-filtering). When Graphs is active the shell hides the conversations rail and
-inspector (`AppShell` `hideRails`).
+`ssr:false`). Nodes are colored by label and each relationship type gets a
+**unique** color. The layout is two sidebars: the **left** (`GraphSidebar`) is
+filters-only — node-type + relationship-type toggles (each with a color swatch
+and count) — and the **right** (`GraphDetailsSidebar`) appears only when a node
+or edge is clicked, showing that element's full properties via `ElementInspector`
+with a close control. Pure transforms live in `lib/graph.ts` (`labelColor`,
+`edgeTypeColorMap` — unique color per sorted relationship type, `toForceGraphData`
+— drops dangling links when filtering). When Graphs is active the shell hides the
+conversations rail and chat inspector (`AppShell` `hideRails`).
 
 | Path | Contents |
 |------|----------|
 | `app/page.tsx`, `app/layout.tsx` | App Router root + workbench composition |
 | `app/globals.css` | Woven Dusk tokens (`@theme`) + keyframes |
 | `components/` | `shell/`, `header/`, `left/`, `center/`, `inspector/`, `settings/`, `graph/`, `ui/`, `workbench/` |
-| `components/graph/` | `GraphExplorer`, `GraphSecondaryNav`, `GraphSidebar`, `GraphCanvas`, `ElementInspector` |
+| `components/graph/` | `GraphExplorer`, `GraphSecondaryNav`, `GraphSidebar` (filters), `GraphDetailsSidebar` (on-select), `GraphCanvas`, `ElementInspector` |
 | `lib/api.ts` | Typed client + SSE helpers (`getHealth`, `getConfig`, `getGraph`, `streamQuery`, `streamAdmin`) |
 | `lib/graph.ts` | Pure graph-view transforms (`labelColor`, `toForceGraphData`) |
 | `lib/adapt.ts` | Backend payloads → `WorkbenchRun` view-model |
