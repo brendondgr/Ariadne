@@ -8,11 +8,14 @@ verified answer is checked at the *answer* layer:
 - every rendered claim is verified-supported (unsupported-claim rate == 0),
 - non-empty questions produce at least one cited claim,
 - every ``expect_empty`` negative produces an abstention that carries the
-  executed query as proof — and no claims at all.
+  executed query as proof — and no claims at all,
+- every ``expect_boundary`` negative (Step 7: e.g. ICS-only Assets) produces a
+  boundary abstention — no claims, no invented query proof, the statement
+  naming what the source doesn't model.
 
 This measures the goals.md synthesis metrics (faithfulness, groundedness,
-unsupported-claim rate) over the same 45 AI-verified questions that gate the
-specialists. Skips when the live stack is unreachable.
+unsupported-claim rate) over the same AI-verified questions that gate the
+specialists (53 as of Step 7). Skips when the live stack is unreachable.
 """
 
 from __future__ import annotations
@@ -91,6 +94,22 @@ def _check_answer(entry: dict, result, answer) -> list[str]:
         problems.append(f"unsupported claim survived drafting: {claim.text!r} — {verdict.reasons}")
     if report.unsupported_claim_rate != 0.0:
         problems.append(f"unsupported-claim rate {report.unsupported_claim_rate:.0%} != 0%")
+
+    if entry["assertions"].get("expect_boundary"):
+        # Honest schema-boundary refusal: abstain without inventing proof.
+        if answer.claims:
+            problems.append(f"expected boundary abstention, got {len(answer.claims)} claim(s)")
+        if len(answer.abstentions) != 1:
+            problems.append(f"expected 1 abstention, got {len(answer.abstentions)}")
+        else:
+            abst = answer.abstentions[0]
+            if abst.query:
+                problems.append(f"boundary abstention invented a query proof: {abst.query!r}")
+            if "doesn't establish" not in abst.statement:
+                problems.append(f"abstention statement not honest-form: {abst.statement!r}")
+            if "no query was executed" not in abst.statement:
+                problems.append(f"statement does not name the boundary: {abst.statement!r}")
+        return problems
 
     if entry["assertions"].get("expect_empty"):
         if answer.claims:
