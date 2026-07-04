@@ -1,9 +1,12 @@
-import { buildLaneTask, buildTraceEntries } from "./adapt";
+import { buildLaneTask, buildRun, buildTraceEntries } from "./adapt";
 import type {
   EvidenceRecord,
   FederatedEvidence,
   Limits,
+  Plan,
+  ProbeSource,
   Provenance,
+  ServerAnswer,
   SpecialistResult,
   WorkbenchRun,
 } from "./types";
@@ -523,4 +526,185 @@ export const wmiCapecRun: WorkbenchRun = {
   events: [],
 };
 
+/* ---------------------------------------------------------------------------
+ * Second seeded turn: a deprecated-CAPEC lookup that honestly returns empty.
+ *
+ * CAPEC-557 ("DEPRECATED: Schedule Software To Run") is a retired pattern. Since
+ * the build now EXCLUDES Deprecated/Obsolete CAPEC entries at load
+ * (exclude-at-load, mirroring ATT&CK), the pattern is absent from the loaded
+ * graph — so the Gremlin lookup runs cleanly and returns zero records, and the
+ * answer is an honest, grounded abstention rather than an invented result.
+ * This turn demonstrates that behavior end to end (green pipeline, 0 records).
+ * ------------------------------------------------------------------------- */
+
+const DEPRECATED_GREMLIN_QUERY = `g.V().hasLabel('AttackPattern').has('capec_id','557')
+ .elementMap()
+ .limit(1000)`;
+
+const DEPRECATED_PROBE: ProbeSource[] = [
+  {
+    dataset: "attack",
+    backend: "neo4j",
+    endpoint: "bolt://localhost:5456",
+    live: true,
+    node_count: 4369,
+    observed_labels: ["Technique", "Mitigation", "Group", "Tactic"],
+    reason: "",
+  },
+  {
+    dataset: "capec",
+    backend: "gremlin",
+    endpoint: "ws://localhost:6455/gremlin",
+    live: true,
+    node_count: 4769,
+    observed_labels: ["AttackPattern", "Category", "View", "Weakness"],
+    reason: "",
+  },
+];
+
+const DEPRECATED_PLAN: Plan = {
+  request: "Does the deprecated pattern CAPEC-557 map to any ATT&CK techniques?",
+  sub_questions: [
+    {
+      id: "sq-1",
+      source: "capec",
+      text: "Look up CAPEC-557 and its ATT&CK taxonomy mappings",
+      entities: ["CAPEC-557"],
+      limits: LIMITS,
+      join_key: "attack-technique-id",
+      rationale: "A single CAPEC lookup answers whether the pattern exists and what it maps to.",
+    },
+  ],
+  joins: [],
+  unsupported: [],
+  assumptions: [],
+  rationale: "Only CAPEC is queried; nothing to correlate until a pattern is found.",
+  partial: false,
+  trace: [
+    {
+      iteration: 1,
+      drafter: "deterministic",
+      gate_ok: true,
+      reasons: [],
+      sub_questions: 1,
+      unsupported: 0,
+    },
+  ],
+};
+
+const DEPRECATED_RESULT: SpecialistResult = {
+  task: {
+    sub_question_id: "sq-1",
+    source: "capec",
+    text: "Look up CAPEC-557 and its ATT&CK taxonomy mappings",
+    entities: ["CAPEC-557"],
+    limits: LIMITS,
+    join_key: "attack-technique-id",
+    seed_ids: ["CAPEC-557"],
+    rationale: "Resolve the pattern before attempting any cross-source join.",
+  },
+  query: DEPRECATED_GREMLIN_QUERY,
+  records: [],
+  record_count: 0,
+  summary:
+    "No node matches CAPEC-557 — it is Deprecated and excluded from the loaded catalog at build (exclude-at-load).",
+  traces: [
+    { step: "intake", ok: true, reasons: [], detail: { source: "capec", card: "capec" } },
+    {
+      step: "resolve",
+      ok: true,
+      reasons: [],
+      detail: {
+        labels: ["AttackPattern"],
+        relationships: [],
+        seed_ids: ["CAPEC-557"],
+        join_key: "attack-technique-id",
+      },
+    },
+    {
+      step: "gate",
+      ok: true,
+      reasons: [],
+      detail: {
+        attempt: 1,
+        template: "capec_lookup",
+        query: DEPRECATED_GREMLIN_QUERY,
+        injected: ["limit(1000)"],
+      },
+    },
+    { step: "execute", ok: true, reasons: [], detail: { row_count: 0, timing_ms: 23 } },
+    { step: "assess", ok: true, reasons: ["empty result set — ran cleanly"], detail: { row_count: 0 } },
+    { step: "normalize", ok: true, reasons: [], detail: { record_count: 0 } },
+  ],
+  ok: true,
+  partial: false,
+  error: null,
+  join_values: [],
+};
+
+const DEPRECATED_FEDERATED: FederatedEvidence = {
+  request: "Does the deprecated pattern CAPEC-557 map to any ATT&CK techniques?",
+  results: [DEPRECATED_RESULT],
+  unsupported: [
+    {
+      description: "CAPEC-557 → ATT&CK mapping",
+      reason:
+        "CAPEC-557 is Deprecated; retired CAPEC entries are excluded at load, so no such node exists in the graph.",
+    },
+  ],
+  skipped: [],
+  partial: false,
+  join_index: {},
+  cross_source_join_values: [],
+};
+
+const DEPRECATED_ANSWER: ServerAnswer = {
+  headline:
+    "The loaded CAPEC graph doesn't establish this: CAPEC-557 (“DEPRECATED: Schedule Software To Run”) is a retired pattern, excluded at load, so the lookup returns no records.",
+  sections: [
+    {
+      source: "capec",
+      backend: "gremlin",
+      ok: true,
+      partial: false,
+      summary:
+        "CAPEC-557 returned 0 records — the pattern is Deprecated and is excluded from the loaded catalog (exclude-at-load, mirroring ATT&CK).",
+      record_ids: [],
+      record_count: 0,
+    },
+  ],
+  cross_source: [],
+  unsupported: [
+    {
+      description: "CAPEC-557 → ATT&CK mapping",
+      reason:
+        "CAPEC-557 is Deprecated; retired CAPEC entries are excluded at load, so no such node exists in the graph.",
+    },
+  ],
+  status: "answered",
+  exit_code: 0,
+};
+
+/**
+ * The abstention turn, assembled the same way the live stream builds a turn:
+ * pure {@link buildRun} over probe + plan + evidence + answer payloads.
+ */
+export const deprecatedCapecRun: WorkbenchRun = buildRun({
+  id: "turn-2",
+  question: "Does the deprecated pattern CAPEC-557 map to any ATT&CK techniques?",
+  mode: "query",
+  drafter: "deterministic",
+  liveSources: DEPRECATED_PROBE,
+  plan: DEPRECATED_PLAN,
+  evidence: DEPRECATED_FEDERATED,
+  answer: DEPRECATED_ANSWER,
+  status: "answered",
+  exitCode: 0,
+  elapsedMs: 176,
+  createdAt: 0,
+});
+
 export const initialRun = wmiCapecRun;
+
+/** Both seeded turns of the opening conversation, oldest first. */
+export const seededRuns: WorkbenchRun[] = [wmiCapecRun, deprecatedCapecRun];

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { wmiCapecRun } from "../fixtures";
+import { deprecatedCapecRun, seededRuns, wmiCapecRun } from "../fixtures";
 import type { SpecialistStep } from "../types";
 
 const EXPECTED_STEPS: SpecialistStep[] = [
@@ -70,5 +70,39 @@ describe("wmiCapecRun fixture", () => {
         expect(p.source && p.dataset && p.backend && p.query && p.record_id && p.timestamp).toBeTruthy();
       }
     }
+  });
+});
+
+describe("deprecatedCapecRun fixture (exclude-at-load abstention)", () => {
+  it("is a seeded follow-up turn in the opening conversation", () => {
+    expect(seededRuns.map((r) => r.id)).toEqual(["turn-1", "turn-2"]);
+    expect(seededRuns[1]).toBe(deprecatedCapecRun);
+  });
+
+  it("runs cleanly (answered, exit 0) yet returns zero records", () => {
+    expect(deprecatedCapecRun.status).toBe("answered");
+    expect(deprecatedCapecRun.exitCode).toBe(0);
+    expect(deprecatedCapecRun.federated.partial).toBe(false);
+    const totalRecords = deprecatedCapecRun.federated.results.reduce(
+      (n, r) => n + r.record_count,
+      0,
+    );
+    expect(totalRecords).toBe(0);
+    expect(deprecatedCapecRun.evidence).toHaveLength(0);
+    // The single CAPEC specialist ran without error — an honest empty, not a failure.
+    expect(deprecatedCapecRun.federated.results).toHaveLength(1);
+    expect(deprecatedCapecRun.federated.results[0].ok).toBe(true);
+  });
+
+  it("carries the query as proof and an exclude-at-load abstention", () => {
+    const capec = deprecatedCapecRun.federated.results[0];
+    expect(capec.query.length).toBeGreaterThan(0);
+    expect(deprecatedCapecRun.federated.unsupported).toHaveLength(1);
+    expect(deprecatedCapecRun.federated.unsupported[0].reason.toLowerCase()).toContain(
+      "excluded at load",
+    );
+    // No fabricated cross-source join for a pattern that does not exist.
+    expect(deprecatedCapecRun.joinIndex).toHaveLength(0);
+    expect(deprecatedCapecRun.answer.joinPairs).toHaveLength(0);
   });
 });
