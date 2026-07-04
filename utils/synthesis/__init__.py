@@ -19,6 +19,7 @@ from __future__ import annotations
 
 from .composer import DeterministicComposer
 from .config import SynthesisConfig
+from .factory import HybridComposer, select_composer, synthesize
 from .contracts import (
     Abstention,
     Citation,
@@ -35,7 +36,10 @@ __all__ = [
     "Claim",
     "ClaimVerdict",
     "DeterministicComposer",
+    "HybridComposer",
     "SynthesisConfig",
+    "select_composer",
+    "synthesize",
     "SynthesizedAnswer",
     "VerificationReport",
     "verify_answer",

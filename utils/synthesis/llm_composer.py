@@ -1,0 +1,229 @@
+#!/usr/bin/env python3
+"""OpenAI-compatible LLM composer (the hybrid LLM path).
+
+Posts the federated evidence bundle to a configurable OpenAI-compatible
+endpoint and parses the reply into a ``SynthesizedAnswer`` draft of structured
+claims-with-citations. The prompt shows the model *only* retrieved records and
+requires every claim to cite them — but nothing here is trusted: the draft
+flows through the same deterministic ``verify_answer`` pass as the mechanical
+composer, which cuts anything the evidence does not support and enforces
+abstention on honest empties.
+
+On any transport, HTTP, or parse failure it raises ``ComposerUnavailable`` so
+the hybrid factory can fall back to the deterministic composer.
+"""
+
+from __future__ import annotations
+
+import json
+import logging
+
+from utils.specialists.federation import FederatedEvidence
+
+from .config import SynthesisConfig
+from .contracts import Abstention, Claim, SynthesizedAnswer
+
+logger = logging.getLogger("ariadne.synthesis.llm")
+
+
+class ComposerUnavailable(Exception):
+    """Raised when the LLM endpoint cannot produce a usable draft."""
+
+
+_SYSTEM_PROMPT = """\
+You are the synthesis agent for a federated graph-database system. You are \
+given the ONLY evidence that exists: records retrieved from live graph \
+sources, with provenance. You write the analyst-facing answer as structured, \
+checkable claims. A deterministic verifier will check every claim against the \
+records; any claim it cannot ground WILL be cut.
+
+Rules you MUST follow:
+- Every claim MUST cite records from EVIDENCE RECORDS via (source, primary_id).
+- Every identifier a claim asserts MUST appear in "entity_ids" and MUST come \
+from the cited records (their primary ids, join values, or related ids). \
+Never introduce an identifier that is not in the evidence.
+- Use kind "correlation" ONLY for identifiers listed under CROSS-SOURCE JOIN \
+VALUES; use kind "fact" otherwise.
+- For every sub-question under EMPTY SUB-QUESTIONS, add an abstention that \
+plainly states the sources don't establish it. Do NOT write claims about \
+those sub-questions and do NOT guess.
+- Never state more than the records show. If the evidence is thin, say less.
+
+Output ONLY a single JSON object (no prose, no markdown fences) with this shape:
+{
+  "headline": "<one-sentence summary of what the evidence establishes>",
+  "claims": [
+    {"text": "<one checkable sentence>",
+     "citations": [{"source": "<dataset>", "primary_id": "<id>"}],
+     "entity_ids": ["<every identifier the sentence asserts>"],
+     "kind": "fact" | "correlation",
+     "sub_question_id": "<originating sub-question id or empty>"}
+  ],
+  "abstentions": [
+    {"sub_question_id": "<id>", "source": "<dataset>",
+     "statement": "<the sources don't establish this, stated plainly>"}
+  ]
+}
+"""
+
+# Bound the evidence context: per-record related entries and total records per
+# result are capped so the prompt stays within the model's context window.
+_MAX_RECORDS_PER_RESULT = 50
+_MAX_RELATED_PER_RECORD = 30
+
+
+def _record_line(record) -> str:
+    entry = {
+        "primary_id": record.primary_id,
+        "label": record.label,
+        "name": record.name,
+        "join_values": list(record.join_values),
+        "related": [
+            {k: v for k, v in rel.items() if k in ("id", "entry_id", "name")}
+            for rel in record.related[:_MAX_RELATED_PER_RECORD]
+        ],
+    }
+    return json.dumps(entry, ensure_ascii=False)
+
+
+def build_messages(evidence: FederatedEvidence) -> list[dict[str, str]]:
+    """Build the chat messages for one composition (pure; testable without HTTP)."""
+    blocks: list[str] = []
+    empties: list[str] = []
+    for result in evidence.results:
+        task = result.task
+        if result.records:
+            shown = result.records[:_MAX_RECORDS_PER_RESULT]
+            lines = "\n".join(f"    {_record_line(r)}" for r in shown)
+            more = (
+                f"\n    ... {len(result.records) - len(shown)} more record(s) omitted"
+                if len(result.records) > len(shown)
+                else ""
+            )
+            blocks.append(
+                f"- sub_question {task.sub_question_id} (source={task.source}): "
+                f"{task.text}\n  records:\n{lines}{more}"
+            )
+        elif result.ok:
+            empties.append(
+                f"- sub_question {task.sub_question_id} (source={task.source}): "
+                f"{task.text}"
+            )
+
+    context = [
+        f"ANALYST REQUEST:\n{evidence.request}",
+        "",
+        "EVIDENCE RECORDS (the only facts that exist):",
+        "\n".join(blocks) if blocks else "  (none)",
+        "",
+        "CROSS-SOURCE JOIN VALUES (identifiers corroborated by 2+ sources):",
+        ", ".join(evidence.cross_source_join_values()) or "  (none)",
+        "",
+        "EMPTY SUB-QUESTIONS (ran cleanly, zero records — MUST abstain):",
+        "\n".join(empties) if empties else "  (none)",
+    ]
+    return [
+        {"role": "system", "content": _SYSTEM_PROMPT},
+        {"role": "user", "content": "\n".join(context)},
+    ]
+
+
+def extract_json_object(text: str) -> dict:
+    """Extract the first balanced top-level JSON object from model output."""
+    if not text:
+        raise ComposerUnavailable("empty model response")
+    start = text.find("{")
+    if start == -1:
+        raise ComposerUnavailable("no JSON object in model response")
+    depth = 0
+    in_string = False
+    escape = False
+    for i in range(start, len(text)):
+        ch = text[i]
+        if in_string:
+            if escape:
+                escape = False
+            elif ch == "\\":
+                escape = True
+            elif ch == '"':
+                in_string = False
+            continue
+        if ch == '"':
+            in_string = True
+        elif ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                blob = text[start : i + 1]
+                try:
+                    return json.loads(blob)
+                except json.JSONDecodeError as exc:
+                    raise ComposerUnavailable(f"invalid JSON in response: {exc}") from exc
+    raise ComposerUnavailable("unbalanced JSON object in model response")
+
+
+def parse_answer(data: dict, evidence: FederatedEvidence) -> SynthesizedAnswer:
+    """Turn the model's JSON into an (unverified) ``SynthesizedAnswer`` draft."""
+    claims = [Claim.from_dict(c) for c in data.get("claims", []) or []]
+    abstentions = [
+        Abstention.from_dict(a) for a in data.get("abstentions", []) or []
+    ]
+    return SynthesizedAnswer(
+        request=evidence.request,
+        headline=str(data.get("headline", "") or ""),
+        claims=claims,
+        abstentions=abstentions,
+        composer="llm",
+    )
+
+
+class OpenAICompatibleComposer:
+    """Composes answers via a configurable OpenAI-compatible chat endpoint."""
+
+    name = "llm"
+
+    def __init__(self, config: SynthesisConfig) -> None:
+        self._config = config
+
+    @property
+    def endpoint(self) -> str:
+        return self._config.llm_base_url.rstrip("/") + "/chat/completions"
+
+    def _post(self, messages: list[dict[str, str]]) -> str:
+        import requests
+
+        payload = {
+            "model": self._config.llm_model,
+            "messages": messages,
+            "temperature": 0,
+            "max_tokens": self._config.llm_max_tokens,
+        }
+        try:
+            resp = requests.post(
+                self.endpoint, json=payload, timeout=self._config.llm_timeout_s
+            )
+        except requests.RequestException as exc:
+            raise ComposerUnavailable(f"request failed: {exc}") from exc
+        if resp.status_code != 200:
+            raise ComposerUnavailable(f"HTTP {resp.status_code}: {resp.text[:200]}")
+        try:
+            body = resp.json()
+            content = body["choices"][0]["message"]["content"]
+        except (ValueError, KeyError, IndexError, TypeError) as exc:
+            raise ComposerUnavailable(f"unexpected response shape: {exc}") from exc
+        if not content:
+            raise ComposerUnavailable("model returned no content (raise max_tokens?)")
+        return content
+
+    def compose(self, evidence: FederatedEvidence) -> SynthesizedAnswer:
+        messages = build_messages(evidence)
+        content = self._post(messages)
+        data = extract_json_object(content)
+        answer = parse_answer(data, evidence)
+        logger.info(
+            "LLM composed %d claim(s), %d abstention(s)",
+            len(answer.claims),
+            len(answer.abstentions),
+        )
+        return answer
