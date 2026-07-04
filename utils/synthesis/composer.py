@@ -29,11 +29,34 @@ from .config import SynthesisConfig
 from .contracts import Abstention, Citation, Claim, SynthesizedAnswer
 
 
-def abstention_statement(source: str, text: str) -> str:
-    """The canonical abstention sentence for one empty-but-clean sub-question."""
+def abstention_statement(source: str, text: str, query: str = "") -> str:
+    """The canonical abstention sentence for one empty-but-clean sub-question.
+
+    Two honest-empty shapes exist: a query that ran cleanly and matched
+    nothing (proof = the executed query), and a schema boundary where no
+    query could express the question at all (proof = the specialist's
+    boundary trace; ``query`` is empty by design).
+    """
+    if query:
+        return (
+            f"The {source} source doesn't establish this — the executed query ran "
+            f"cleanly and returned no matching records for: {text}"
+        )
     return (
-        f"The {source} source doesn't establish this — the executed query ran "
-        f"cleanly and returned no matching records for: {text}"
+        f"The {source} source doesn't establish this — it doesn't model the "
+        f"entities this question asks about, so no query was executed for: {text}"
+    )
+
+
+def abstention_for(result: SpecialistResult) -> Abstention:
+    """The enforced abstention for one empty-but-ok specialist result."""
+    return Abstention(
+        sub_question_id=result.task.sub_question_id,
+        source=result.task.source,
+        statement=abstention_statement(
+            result.task.source, result.task.text, result.query
+        ),
+        query=result.query,
     )
 
 
@@ -99,16 +122,7 @@ class DeterministicComposer:
             if result.records:
                 claims.append(_fact_claim(result, cap))
             elif result.ok:
-                abstentions.append(
-                    Abstention(
-                        sub_question_id=result.task.sub_question_id,
-                        source=result.task.source,
-                        statement=abstention_statement(
-                            result.task.source, result.task.text
-                        ),
-                        query=result.query,
-                    )
-                )
+                abstentions.append(abstention_for(result))
             else:
                 notes.append(
                     f"The {result.task.source} specialist failed and contributed "
