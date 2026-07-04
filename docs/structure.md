@@ -58,12 +58,15 @@ Agent tool folders (`.cursor/`, `.claude/`, `.agents/`) are **pointers only** �
 | `utils/planner/` | Federated planning agent: live-source discovery, plan schema, deterministic self-eval gate, deterministic + OpenAI-compatible drafters, ReAct loop, evaluation |
 | `utils/specialists/` | Source-specific query specialists: shared scaffold + four swap points (builder, validator, connector, normalizer), shared evidence schema, Cypher (ATT&CK/Neo4j) + Gremlin (CAPEC/Gremlin) specialists, federation router |
 | `utils/specialists/evalset/` | Step 5 golden evalset: `gold_bank.py` materializes gold answers from the pinned raw snapshot (independent of `kg_builder`, mirrors the exclude-at-load policy); `questions.py` + `compile_banks.py` compile 45 single-source questions into machine-checkable banks (SpecialistTask payload + ID-set assertions + expected builder template). Committed artifacts live in `utils/specialists/tests/golden/` (`gold_bank.json`, `attack_questions.json`, `capec_questions.json`, `VERIFICATION.md` — a 90-agent two-way independent re-derivation report, 45/45 agree) |
+| `utils/synthesis/` | Synthesis agent (Step 6): composes the final answer as structured claims-with-citations (`composer.py` deterministic always-on; `llm_composer.py` OpenAI-compatible behind `SYNTHESIS_LLM_*` env vars with hybrid fallback in `factory.py`), then an **always-deterministic** verification pass (`verifier.py`) checks every claim against the retrieved evidence records — uncited, unresolvable, or ungrounded claims are cut from the rendered prose and kept flagged; empty-but-ok sub-questions yield enforced abstentions ("the sources don't establish this") with the executed query as proof. `synthesize()` in `factory.py` is the single compose+verify entry point; `grounding.py` holds the shared backend-agnostic id normalization |
 | `utils/recovery.py` | Pipeline recovery primitives: backup/clean/restore of existing artifacts, failure classification (`stale_state` / `transient` / `needs_human`), bounded retry-with-backoff |
 | `utils/yolo.py` | `--yolo-all` single-command pipeline runner (download → build → docker → load → verify) with self-healing error handling |
 
 Tests live alongside each package (e.g. `utils/kg_builder/tests/`, `utils/graph_loader/tests/`, `utils/planner/tests/`); `utils/recovery.py` and `utils/yolo.py` are tested under `utils/graph_loader/tests/` (`test_recovery.py`, `test_yolo.py`). Run with `uv run python -m pytest utils/kg_builder/tests/`, `uv run python -m pytest utils/graph_loader/tests/`, and `uv run python -m pytest utils/planner/tests/`.
 
 The golden live suites (`utils/specialists/tests/test_golden_attack.py`, `test_golden_capec.py`) parameterize every bank question through the real specialists against the live Docker stack (marked `live`/`integration`, skipped when unreachable); `utils/specialists/evalset/tests/` holds the no-DB layer (gold-bank anchor regressions, per-entry routing checks, bank staleness guards). The runner (`tests/golden_runner.py`) asserts answer *correctness* — ID-set containment, exact names/properties, bounded scans, honest empties — not merely that the query ran. Gremlin queries speak the loaded graph's SCREAMING_SNAKE edge convention via `utils.graph_loader.stores.gremlin.gremlin_edge_label()`; the specialist builder and validator translate card vocabulary (e.g. CAPEC `ChildOf` → `CHILD_OF`) through that single function. Regenerate golden artifacts with `uv run python -m utils.specialists.evalset.gold_bank` and `... .compile_banks`.
+
+The synthesis layer reuses the same banks one level up: `utils/synthesis/tests/test_golden_synthesis.py` runs all 45 questions through specialist → `synthesize()` live and asserts the *answer* layer — unsupported-claim rate 0%, every rendered claim cited, and every `expect_empty` negative producing exactly one abstention whose query proof equals the executed query (the goals.md faithfulness/groundedness/unsupported-claim-rate metrics as executable checks). The hermetic synthesis tests (`utils/synthesis/tests/`) include adversarial verifier cases: fabricated identifiers, citations to never-retrieved records, claims against empty sources, and false abstentions over real evidence must all be cut or repaired.
 
 ### Pipeline error handling
 
@@ -269,12 +272,13 @@ with `npm run lint`, and test with `npm test` (adapter + fixture contracts).
 
 ## Not Yet in Repo
 
-Planned per roadmap: the synthesis/reporting **agent** (an LLM that turns the
-federated evidence into prose). The web workbench currently composes its answer
-**deterministically** from the specialists' grounded summaries + join index — no
-fabrication — which is the seam that agent would later replace. ATT&CK and CAPEC
-canonical builds and runtime loading (`utils/kg_builder/`, `utils/graph_loader/`),
-the federated planning agent (`utils/planner/`), the Cypher/Gremlin query
-specialists (`utils/specialists/`), the FastAPI service (`api/`), and the wired
+Planned per roadmap: analyst-facing tables, figures, and network diagrams from
+the synthesis layer, and the web UI rendering of the verified claims
+(`answer.synthesis` is already in the API payload; the workbench still renders
+the deterministic sections). ATT&CK and CAPEC canonical builds and runtime
+loading (`utils/kg_builder/`, `utils/graph_loader/`), the federated planning
+agent (`utils/planner/`), the Cypher/Gremlin query specialists
+(`utils/specialists/`), the synthesis agent with claim verification and
+abstention (`utils/synthesis/`), the FastAPI service (`api/`), and the wired
 Next.js workbench (`web/`) are implemented; Gremlin is the primary CAPEC runtime
 backend.
