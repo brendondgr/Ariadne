@@ -17,6 +17,9 @@ from pathlib import Path
 from utils.planner.agent import PlanningAgent
 from utils.planner.config import PlannerConfig
 
+from utils.synthesis.config import SynthesisConfig
+from utils.synthesis.factory import synthesize
+
 from .config import SpecialistConfig
 from .federation import SpecialistRouter
 
@@ -84,6 +87,29 @@ def run_query_command(
     cross = evidence.cross_source_join_values()
     if cross:
         print(f"\n=== Cross-source join candidates (for synthesis) ===\n  {cross}")
+
+    # 3. Synthesize: claims-with-citations, verified against the evidence.
+    answer = synthesize(evidence, SynthesisConfig.from_env())
+    print("\n=== Synthesized answer (verified) ===")
+    print(f"  {answer.headline}")
+    for claim in answer.rendered_claims():
+        cites = ", ".join(f"{c.source}:{c.primary_id}" for c in claim.citations)
+        print(f"  + [{claim.kind}] {claim.text}  [cites: {cites}]")
+    for abst in answer.abstentions:
+        print(f"  ~ [{abst.source}] {abst.statement}")
+        print(f"      proof (executed query): {abst.query or '(none)'}")
+    for claim, verdict in answer.flagged_claims():
+        print(f"  x CUT: {claim.text}  ({'; '.join(verdict.reasons)})")
+    for note in answer.notes:
+        print(f"  ! {note}")
+    if answer.fallback_reason:
+        print(f"  (composer fallback: {answer.fallback_reason})")
+    report = answer.verification
+    print(
+        f"  verification: {report.supported_count}/{len(report.verdicts)} claim(s) "
+        f"supported, unsupported rate {report.unsupported_claim_rate:.0%}, "
+        f"{report.repaired_abstentions} abstention repair(s)"
+    )
 
     print("\n=== Federated evidence bundle (JSON) ===")
     print(json.dumps(evidence.to_dict(), indent=2))

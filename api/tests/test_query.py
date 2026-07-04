@@ -162,6 +162,64 @@ def test_query_mode_event_order_and_shapes() -> None:
     assert done == {"status": "answered", "exit_code": 0}
 
 
+def test_answer_carries_verified_synthesis() -> None:
+    agent = _StubAgent(
+        cards={"attack": object(), "capec": object()},
+        live_view=_live_view(),
+        plan=_two_source_plan(),
+    )
+    specialists = {
+        "attack": _StubSpecialist(_result("attack", "T1047", "T1047", "neo4j")),
+        "capec": _StubSpecialist(_result("capec", "CAPEC-549", "T1047", "gremlin")),
+    }
+    events = _collect(
+        query_service.stream_query_events("q", mode="query", agent=agent, specialists=specialists)
+    )
+    synthesis = dict(events)["answer"]["synthesis"]
+
+    # Verified: every deterministic claim is supported, nothing was cut.
+    assert synthesis["composer"] == "deterministic"
+    assert synthesis["verification"]["ok"] is True
+    assert synthesis["verification"]["unsupported_claim_rate"] == 0.0
+    assert synthesis["claims"] and all(
+        c["verdict"]["verdict"] == "supported" for c in synthesis["claims"]
+    )
+    assert all(c["citations"] for c in synthesis["claims"])
+    # The T1047 cross-source join surfaces as a correlation claim.
+    kinds = {c["kind"] for c in synthesis["claims"]}
+    assert kinds == {"fact", "correlation"}
+    assert synthesis["abstentions"] == []
+
+
+def test_honest_empty_source_abstains_with_query_proof() -> None:
+    empty = SpecialistResult(
+        task=SpecialistTask(sub_question_id="sq-capec", source="capec", text="patterns",
+                            limits={"max_result_rows": 50}),
+        query="g.V().has('capec_id', 'CAPEC-99999')",
+        records=[], summary="", ok=True,
+    )
+    agent = _StubAgent(
+        cards={"attack": object(), "capec": object()},
+        live_view=_live_view(),
+        plan=_two_source_plan(),
+    )
+    specialists = {
+        "attack": _StubSpecialist(_result("attack", "T1047", "T1047", "neo4j")),
+        "capec": _StubSpecialist(empty),
+    }
+    events = _collect(
+        query_service.stream_query_events("q", mode="query", agent=agent, specialists=specialists)
+    )
+    synthesis = dict(events)["answer"]["synthesis"]
+
+    assert len(synthesis["abstentions"]) == 1
+    abst = synthesis["abstentions"][0]
+    assert abst["source"] == "capec"
+    assert abst["query"] == "g.V().has('capec_id', 'CAPEC-99999')"
+    assert "doesn't establish" in abst["statement"]
+    assert synthesis["verification"]["ok"] is True
+
+
 def test_plan_mode_skips_specialists() -> None:
     agent = _StubAgent({"attack": object(), "capec": object()}, _live_view(), _two_source_plan())
     events = _collect(query_service.stream_query_events("q", mode="plan", agent=agent))

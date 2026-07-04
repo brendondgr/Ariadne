@@ -12,10 +12,12 @@ each boundary the pipeline exposes:
 The per-specialist loop mirrors ``federation.SpecialistRouter.run_plan`` (using
 the public ``build_specialist``) so each source's evidence can be emitted as it
 completes, rather than only after the whole bundle is built. The pipeline emits
-*evidence, not prose*; the ``answer`` event is composed here deterministically
-from the grounded per-source summaries and the cross-source join index — no
-model invents text. This is also the seam where a future synthesis agent would
-plug in.
+*evidence, not prose*; the ``answer`` event keeps the deterministic per-source
+sections and join index the UI renders today, and additionally carries the
+synthesis agent's verified answer under ``answer.synthesis`` — structured
+claims-with-citations that passed the deterministic verification pass, enforced
+abstentions ("the sources don't establish this") with the executed query as
+proof, and the per-claim verdicts for anything that was cut.
 
 The generator is synchronous on purpose: Starlette iterates a sync generator via
 its threadpool, so the blocking graph queries never stall the event loop (health
@@ -36,6 +38,8 @@ from utils.specialists import build_specialist
 from utils.specialists.config import SpecialistConfig
 from utils.specialists.contracts import SpecialistResult, SpecialistTask
 from utils.specialists.federation import FederatedEvidence
+from utils.synthesis.config import SynthesisConfig
+from utils.synthesis.factory import synthesize
 
 logger = logging.getLogger("ariadne.api.query")
 
@@ -290,7 +294,8 @@ def stream_query_events(
         )
         yield _sse("evidence", {"evidence": evidence.to_dict()})
 
-        # 5. Compose the grounded answer from summaries + the join index.
+        # 5. Compose the grounded answer, then run the synthesis agent's
+        # claim-by-claim verification pass over the same evidence.
         status, exit_code = _status_and_exit(
             cards_present=True, mode="query", plan=plan, evidence=evidence
         )
@@ -299,15 +304,20 @@ def stream_query_events(
             {"value": value, "entries": join_index.get(value, [])}
             for value in evidence.cross_source_join_values()
         ]
+        yield _sse(
+            "status",
+            {"phase": "answering", "message": "Composing and verifying the grounded answer"},
+        )
+        synthesized = synthesize(evidence, SynthesisConfig.from_env())
         answer = {
             "headline": _headline(status, evidence, cross),
             "sections": _answer_sections(results),
             "cross_source": cross,
             "unsupported": list(evidence.unsupported),
+            "synthesis": synthesized.to_dict(),
             "status": status,
             "exit_code": exit_code,
         }
-        yield _sse("status", {"phase": "answering", "message": "Composing the grounded answer"})
         yield _sse("answer", answer)
         yield _sse("done", {"status": status, "exit_code": exit_code})
 
