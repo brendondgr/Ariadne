@@ -97,9 +97,11 @@ def test_capec_564_mapping_inherits_nothing(gold: dict) -> None:
     assert gold["capec"]["hierarchy"]["CAPEC-564"]["ChildOf"] == ["CAPEC-542"]
 
 
-def test_capec_557_is_deprecated(gold: dict) -> None:
+def test_capec_557_is_excluded_at_load(gold: dict) -> None:
+    # CAPEC-557 is Deprecated; under exclude-at-load it is recorded in the
+    # deprecated ledger but dropped from the retrievable pattern set.
     assert "CAPEC-557" in gold["capec"]["deprecated"]
-    assert gold["capec"]["patterns"]["CAPEC-557"]["status"] == "Deprecated"
+    assert "CAPEC-557" not in gold["capec"]["patterns"]
 
 
 # -- ATT&CK anchors -------------------------------------------------------------

@@ -207,46 +207,6 @@
    }
   },
   {
-   "id": "C-LKP-06",
-   "tier": "easy",
-   "question": "Look up CAPEC-557 (DEPRECATED: Schedule Software To Run) \u2014 abstraction and status.",
-   "expected_template": "capec_lookup",
-   "task": {
-    "sub_question_id": "C-LKP-06",
-    "source": "capec",
-    "text": "What is CAPEC pattern CAPEC-557?",
-    "entities": [
-     "AttackPattern"
-    ],
-    "limits": {
-     "max_traversal_depth": 3,
-     "max_result_rows": 300,
-     "query_timeout_ms": 5000
-    },
-    "join_key": null,
-    "seed_ids": [
-     "CAPEC-557"
-    ],
-    "rationale": "golden evalset"
-   },
-   "assertions": {
-    "min_records": 1,
-    "max_records": 1,
-    "must_include_ids": [
-     "CAPEC-557"
-    ],
-    "expect_names": {
-     "CAPEC-557": "DEPRECATED: Schedule Software To Run"
-    },
-    "expect_properties": {
-     "CAPEC-557": {
-      "Abstraction": "Detailed",
-      "Status": "Deprecated"
-     }
-    }
-   }
-  },
-  {
    "id": "C-CWE-01",
    "tier": "medium",
    "question": "Which CWE weaknesses does CAPEC-555 exploit?",
@@ -723,6 +683,33 @@
     "join_key": null,
     "seed_ids": [
      "CAPEC-99999"
+    ],
+    "rationale": "golden evalset"
+   },
+   "assertions": {
+    "expect_empty": true
+   }
+  },
+  {
+   "id": "C-NEG-02",
+   "tier": "adversarial",
+   "question": "Look up deprecated CAPEC-557 \u2014 excluded at load, must return empty.",
+   "expected_template": "capec_lookup",
+   "task": {
+    "sub_question_id": "C-NEG-02",
+    "source": "capec",
+    "text": "What is CAPEC pattern CAPEC-557?",
+    "entities": [
+     "AttackPattern"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-557"
     ],
     "rationale": "golden evalset"
    },

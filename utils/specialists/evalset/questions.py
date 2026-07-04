@@ -45,7 +45,9 @@ LOOKUP_ANCHORS = (
     ("S0154", "Software"),
 )
 CAMPAIGN_ANCHORS = ("C0027", "C0001")  # Step 7 gap: Campaign coverage
-CAPEC_LOOKUP_ANCHORS = ("CAPEC-555", "CAPEC-116", "CAPEC-98", "CAPEC-163", "CAPEC-70", "CAPEC-557")
+# CAPEC-557 is Deprecated -> excluded at load; it is exercised as a negative
+# (C-NEG-02, expect-empty) rather than a positive lookup.
+CAPEC_LOOKUP_ANCHORS = ("CAPEC-555", "CAPEC-116", "CAPEC-98", "CAPEC-163", "CAPEC-70")
 CAPEC_CWE_ANCHORS = ("CAPEC-555", "CAPEC-98", "CAPEC-66")
 CAPEC_PARENT_ANCHORS = ("CAPEC-98", "CAPEC-564", "CAPEC-555")
 CAPEC_PRECEDE_ANCHORS = ("CAPEC-98", "CAPEC-555")
@@ -389,6 +391,24 @@ def build_capec_questions(gold: dict[str, Any]) -> list[dict[str, Any]]:
                 "C-NEG-01", "capec",
                 "What is CAPEC pattern CAPEC-99999?",
                 ("AttackPattern",), ("CAPEC-99999",),
+            ),
+            "assertions": {"expect_empty": True},
+        }
+    )
+
+    # -- retired id: excluded at load, must not be retrievable ---------------------------
+    if "CAPEC-557" not in capec["deprecated"]:
+        raise ValueError("CAPEC-557 is no longer retired — deprecated-exclusion anchor invalid")
+    questions.append(
+        {
+            "id": "C-NEG-02",
+            "tier": "adversarial",
+            "question": "Look up deprecated CAPEC-557 — excluded at load, must return empty.",
+            "expected_template": "capec_lookup",
+            "task": _task(
+                "C-NEG-02", "capec",
+                "What is CAPEC pattern CAPEC-557?",
+                ("AttackPattern",), ("CAPEC-557",),
             ),
             "assertions": {"expect_empty": True},
         }

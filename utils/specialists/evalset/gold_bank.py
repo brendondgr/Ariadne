@@ -11,8 +11,10 @@ Policy mirrored from the source-card identity block (policy, not code):
   - ATT&CK: exclude-at-load — every revoked or x_mitre_deprecated object is
     excluded, and so is every relationship that is itself revoked/deprecated
     or references an excluded endpoint.
-  - CAPEC: load-and-tag — Deprecated patterns stay in the bank with their
-    Status so negative questions can target them.
+  - CAPEC: exclude-at-load — patterns whose Status is Deprecated or Obsolete
+    are excluded from the bank (and edges pointing at them pruned), mirroring
+    the graph. Their ids are recorded under ``deprecated`` so negative
+    questions can assert they are NOT retrievable.
 
 Regenerate with:
     uv run python -m utils.specialists.evalset.gold_bank
@@ -54,6 +56,10 @@ STIX_TYPE_TO_LABEL: dict[str, str] = {
 # The inverse child map (who declares ChildOf me) lives separately in
 # `children`; it is not reachable by the current out()-only builder templates.
 CAPEC_DECLARED_NATURES = ("ChildOf", "CanPrecede", "CanAlsoBe", "PeerOf", "CanFollow", "ParentOf")
+
+# CAPEC Status values excluded at load (mirrors the graph build and the
+# fixture-QA `_CAPEC_DEAD_STATUSES`).
+CAPEC_RETIRED_STATUSES = frozenset({"Deprecated", "Obsolete"})
 
 
 def _attack_external_id(obj: dict[str, Any]) -> str | None:
@@ -178,9 +184,22 @@ def parse_capec_xml(xml_path: Path) -> dict[str, Any]:
     deprecated: list[str] = []
 
     entries = patterns_el.findall("c:Attack_Pattern", CAPEC_NS)
+
+    # First pass: identify retired ids (Deprecated/Obsolete) so the bank can
+    # mirror the graph's exclude-at-load policy — retired patterns are dropped
+    # and no edge may point at them.
+    retired: set[str] = {
+        f"CAPEC-{p.get('ID')}"
+        for p in entries
+        if p.get("Status") in CAPEC_RETIRED_STATUSES
+    }
+
     for p in entries:
         cid = f"CAPEC-{p.get('ID')}"
         status = p.get("Status")
+        if cid in retired:
+            deprecated.append(cid)
+            continue  # excluded from the graph -> excluded from the bank
         patterns[cid] = {
             "name": p.get("Name"),
             "abstraction": p.get("Abstraction"),
@@ -188,8 +207,6 @@ def parse_capec_xml(xml_path: Path) -> dict[str, Any]:
             "typical_severity": _capec_text(p, "Typical_Severity"),
             "likelihood_of_attack": _capec_text(p, "Likelihood_Of_Attack"),
         }
-        if status == "Deprecated":
-            deprecated.append(cid)
 
         rw = p.find("c:Related_Weaknesses", CAPEC_NS)
         if rw is not None:
@@ -203,6 +220,8 @@ def parse_capec_xml(xml_path: Path) -> dict[str, Any]:
         if rap is not None:
             for rel in rap.findall("c:Related_Attack_Pattern", CAPEC_NS):
                 nature, other = rel.get("Nature"), f"CAPEC-{rel.get('CAPEC_ID')}"
+                if other in retired:
+                    continue  # graph prunes edges to retired endpoints
                 if nature in CAPEC_DECLARED_NATURES:
                     hierarchy.setdefault(cid, {}).setdefault(nature, set()).add(other)
                 if nature == "ChildOf":

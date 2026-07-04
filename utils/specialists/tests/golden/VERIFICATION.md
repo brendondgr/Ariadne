@@ -3,6 +3,14 @@
 Independent AI re-derivation of every golden-bank claim from the pinned raw
 snapshot (ATT&CK v19.0 STIX bundle, CAPEC v3.9 XML), run 2026-07-04.
 
+> **Addendum (CAPEC exclude-at-load).** When CAPEC moved to exclude-at-load
+> (Deprecated/Obsolete entries dropped at build), the CAPEC-557 positive lookup
+> `C-LKP-06` was retired and replaced by `C-NEG-02`, a deterministic
+> `expect_empty` negative asserting the now-excluded CAPEC-557 is not
+> retrievable. `C-NEG-02` is verified by construction — CAPEC-557 has Status
+> Deprecated and is absent from the built graph — rather than by the two-agent
+> pass above.
+
 ## Method
 
 - Every one of the 45 bank questions was restated as a factual claim about the
@@ -51,7 +59,6 @@ snapshot (ATT&CK v19.0 STIX bundle, CAPEC v3.9 XML), run 2026-07-04.
 | C-LKP-03 | agree | agree |
 | C-LKP-04 | agree | agree |
 | C-LKP-05 | agree | agree |
-| C-LKP-06 | agree | agree |
 | C-CWE-01 | agree | agree |
 | C-CWE-02 | agree | agree |
 | C-CWE-03 | agree | agree |
@@ -66,6 +73,7 @@ snapshot (ATT&CK v19.0 STIX bundle, CAPEC v3.9 XML), run 2026-07-04.
 | C-MAP-04 | agree | agree |
 | C-MAP-NEG-01 | agree | agree |
 | C-NEG-01 | agree | agree |
+| C-NEG-02 | agree | agree |
 | C-SCN-01 | agree | agree |
 
 ## Known limitations recorded during evalset construction
