@@ -103,3 +103,56 @@ def test_multiple_empties_each_get_their_own_abstention():
         ("q1", "Q1"),
         ("q2", "Q2"),
     }
+
+
+# -- schema-boundary abstentions (Step 7) --------------------------------------
+
+
+def _boundary_evidence():
+    # A boundary refusal: the specialist executed NO query because the source
+    # doesn't model the asked-about entity (e.g. Asset, ICS-only).
+    return make_evidence(
+        [
+            make_result(
+                records=[],
+                ok=True,
+                query="",
+                text="What assets does technique T1047 target?",
+            )
+        ]
+    )
+
+
+def test_boundary_refusal_abstains_with_boundary_statement():
+    answer = verify_answer(SynthesizedAnswer(request="q"), _boundary_evidence())
+    assert len(answer.abstentions) == 1
+    abst = answer.abstentions[0]
+    assert abst.query == ""  # no query is the honest proof shape here
+    assert "doesn't establish" in abst.statement
+    assert "doesn't model" in abst.statement
+    assert "no query was executed" in abst.statement
+    # And it must NOT claim a query ran cleanly.
+    assert "ran cleanly" not in abst.statement
+
+
+def test_fabricated_query_proof_on_boundary_is_stripped():
+    # An LLM composer inventing a plausible query as "proof" for a boundary
+    # sub-question is repaired: the enforced abstention carries no query.
+    supplied = Abstention(
+        sub_question_id="q1",
+        source="attack",
+        statement="No assets found.",
+        query="MATCH (t:Technique)-[:TARGETS]->(a:Asset) RETURN a",
+    )
+    answer = verify_answer(
+        SynthesizedAnswer(request="q", abstentions=[supplied]), _boundary_evidence()
+    )
+    assert len(answer.abstentions) == 1
+    assert answer.abstentions[0].query == ""
+    assert answer.verification.repaired_abstentions == 1
+
+
+def test_genuine_empty_still_requires_the_executed_query_wording():
+    answer = verify_answer(SynthesizedAnswer(request="q"), _empty_evidence())
+    assert "ran cleanly" in answer.abstentions[0].statement
+    assert answer.abstentions[0].query == _QUERY

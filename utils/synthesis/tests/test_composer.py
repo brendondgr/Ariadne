@@ -60,7 +60,8 @@ def test_honest_empty_becomes_abstention_with_executed_query():
     abst = answer.abstentions[0]
     assert abst.query == query
     assert abst.source == "attack"
-    assert abst.statement == abstention_statement("attack", "mitigations of T9999?")
+    assert abst.statement == abstention_statement("attack", "mitigations of T9999?", query)
+    assert "ran cleanly" in abst.statement
     assert "doesn't establish" in abst.statement
     assert "question(s) the sources don't establish" in answer.headline
 

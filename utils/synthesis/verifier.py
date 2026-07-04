@@ -34,7 +34,7 @@ from __future__ import annotations
 from utils.specialists.contracts import EvidenceRecord, SpecialistResult
 from utils.specialists.federation import FederatedEvidence
 
-from .composer import abstention_statement
+from .composer import abstention_for
 from .contracts import (
     Abstention,
     Citation,
@@ -143,14 +143,7 @@ def _enforce_abstentions(
         prior = supplied.pop(sq, None)
         if prior is None:
             repairs += 1
-            enforced.append(
-                Abstention(
-                    sub_question_id=sq,
-                    source=result.task.source,
-                    statement=abstention_statement(result.task.source, result.task.text),
-                    query=result.query,
-                )
-            )
+            enforced.append(abstention_for(result))
             continue
         if prior.query != result.query or prior.source != result.task.source:
             repairs += 1

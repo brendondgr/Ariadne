@@ -79,6 +79,15 @@ def test_entry_resolves_and_routes_to_expected_template(entry: dict) -> None:
     task = SpecialistTask.from_dict(entry["task"])
     card = _CARDS[task.source]
     resolved = resolve(task, card)
+    if entry["assertions"].get("expect_boundary"):
+        # Boundary entries deliberately name an entity the card doesn't model;
+        # the specialist must refuse before the builder is ever consulted.
+        assert entry["expected_template"] == "boundary_refusal"
+        assert resolved.unknown_entities, (
+            f"{entry['id']}: boundary entry but every entity resolved — "
+            f"the refusal would never fire"
+        )
+        return
     assert not resolved.unknown_entities, (
         f"{entry['id']}: entities unknown to the card: {resolved.unknown_entities}"
     )
@@ -94,15 +103,16 @@ def test_entry_resolves_and_routes_to_expected_template(entry: dict) -> None:
 
 def test_assertions_are_well_formed() -> None:
     allowed = {
-        "min_records", "max_records", "expect_empty", "must_include_ids",
-        "must_include_related", "forbid_ids", "expect_names", "expect_properties",
+        "min_records", "max_records", "expect_empty", "expect_boundary",
+        "must_include_ids", "must_include_related", "forbid_ids",
+        "expect_names", "expect_properties",
     }
     for entry in _all_entries():
         assertions = entry["assertions"]
         assert assertions, f"{entry['id']}: no assertions"
         unknown = set(assertions) - allowed
         assert not unknown, f"{entry['id']}: unknown assertion keys {unknown}"
-        if not assertions.get("expect_empty"):
+        if not assertions.get("expect_empty") and not assertions.get("expect_boundary"):
             assert (
                 "min_records" in assertions or "must_include_ids" in assertions
             ), f"{entry['id']}: non-negative entries need a records floor"

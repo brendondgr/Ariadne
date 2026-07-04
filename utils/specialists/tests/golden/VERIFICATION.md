@@ -76,6 +76,34 @@ snapshot (ATT&CK v19.0 STIX bundle, CAPEC v3.9 XML), run 2026-07-04.
 | C-NEG-02 | agree | agree |
 | C-SCN-01 | agree | agree |
 
+## Step 7 additions (run 2026-07-04, same method)
+
+The eight Step 7 entries (campaign relationship coverage + boundary negatives)
+were audited with the identical protocol: two independent adversarial agents —
+verifier A restricted to jq/grep/sed/awk, verifier B writing its own Python
+parsers — re-deriving every claim from `data/raw/` only, forbidden from
+reading `utils/specialists/` or `utils/synthesis/`.
+
+**8 / 8 claims verified — 16 / 16 verdicts `agree`, zero discrepancies.**
+
+| Question | Verifier A (jq/grep) | Verifier B (python) |
+|---|---|---|
+| A-CMP-TEC-01 | agree | agree |
+| A-CMP-TEC-02 | agree | agree |
+| A-CMP-TEC-03 | agree | agree |
+| A-CMP-ATT-01 | agree | agree |
+| A-CMP-ATT-02 | agree | agree |
+| A-CMP-NEG-01 | agree | agree |
+| A-AST-01 | agree | agree |
+| A-AST-02 | agree | agree |
+
+Independently derived counts agreed exactly with the gold bank: C0027 uses 10
+live top-level techniques, C0024 24, C0001 13; attribution sets are exactly
+C0027 → {G1015} and C0028 → {G0034}; no live object carries external id C9999;
+and the Enterprise bundle contains **zero** `x-mitre-asset` objects — the
+premise of the A-AST boundary questions (Assets are ICS-only, so the honest
+answer is a schema-boundary refusal, which also live-tests Step 6 abstention).
+
 ## Known limitations recorded during evalset construction
 
 These are *system* gaps the golden suite exposed, not gold-answer errors:

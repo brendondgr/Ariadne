@@ -133,6 +133,33 @@ def test_campaign_c0027_present(gold: dict) -> None:
     assert gold["attack"]["objects"]["C0027"]["label"] == "Campaign"
 
 
+def test_campaign_census_matches_v19(gold: dict) -> None:
+    # Enterprise ATT&CK v19 carries exactly 56 live Campaign objects —
+    # confirmed against both the raw bundle and the loaded graph.
+    campaigns = [
+        aid for aid, obj in gold["attack"]["objects"].items() if obj["label"] == "Campaign"
+    ]
+    assert len(campaigns) == 56
+    # 55 of them declare `uses` edges to attack-patterns; 25 are attributed.
+    assert len(gold["attack"]["campaign_techniques"]) == 55
+    assert len(gold["attack"]["campaign_attribution"]) == 25
+
+
+def test_campaign_attribution_anchors(gold: dict) -> None:
+    # Verified against attack.mitre.org (v19): C0027 (Triton SIS Attack)
+    # is attributed to G1015; C0028 to G0034 (Sandworm Team).
+    attribution = gold["attack"]["campaign_attribution"]
+    assert attribution["C0027"] == ["G1015"]
+    assert attribution["C0028"] == ["G0034"]
+
+
+def test_campaign_techniques_are_technique_ids(gold: dict) -> None:
+    for cid, t_ids in gold["attack"]["campaign_techniques"].items():
+        assert cid.startswith("C"), cid
+        assert t_ids, f"{cid} maps to no techniques"
+        assert all(t.startswith("T") and not t.startswith("TA") for t in t_ids), cid
+
+
 def test_id_collision_hygiene(gold: dict) -> None:
     # T1055 (technique) and M1055 (mitigation) are distinct objects.
     assert gold["attack"]["objects"]["T1055"]["label"] == "Technique"
