@@ -443,8 +443,47 @@ export const wmiCapecRun: WorkbenchRun = {
       { left: "CAPEC-549", leftAccent: "amber", right: "T1047", rightAccent: "teal" },
       { left: "CAPEC-563", leftAccent: "amber", right: "T1546.003", rightAccent: "teal" },
     ],
-    // Populated with the verified-synthesis view in the fixtures phase below.
-    synthesis: null,
+    // The verified-synthesis view (Step 6/7): every claim cited, 3/3 supported.
+    synthesis: {
+      headline: "Grounded answer from 2 source(s); 1 cross-source correlation.",
+      claims: [
+        {
+          text: "Found ATT&CK record T1047: Windows Management Instrumentation.",
+          kind: "fact",
+          chips: [
+            { id: "T1047", source: "attack/neo4j", accent: "teal", target: "lane-neo4j" },
+          ],
+        },
+        {
+          text: "Found 2 CAPEC record(s) including CAPEC-549, CAPEC-563.",
+          kind: "fact",
+          chips: [
+            { id: "CAPEC-549", source: "capec/gremlin", accent: "amber", target: "lane-gremlin" },
+            { id: "CAPEC-563", source: "capec/gremlin", accent: "amber", target: "lane-gremlin" },
+          ],
+        },
+        {
+          text: "The identifier T1047 is corroborated across attack and capec (2 record(s) share it).",
+          kind: "correlation",
+          chips: [
+            { id: "T1047", source: "attack/neo4j", accent: "teal", target: "lane-neo4j" },
+            { id: "CAPEC-549", source: "capec/gremlin", accent: "amber", target: "lane-gremlin" },
+          ],
+        },
+      ],
+      abstentions: [],
+      flagged: [],
+      notes: [],
+      composer: "deterministic",
+      fallbackReason: null,
+      verification: {
+        supported: 3,
+        total: 3,
+        unsupportedRate: 0,
+        repairedAbstentions: 0,
+        ok: true,
+      },
+    },
   },
   evidence: [
     {
@@ -683,6 +722,39 @@ const DEPRECATED_ANSWER: ServerAnswer = {
         "CAPEC-557 is Deprecated; retired CAPEC entries are excluded at load, so no such node exists in the graph.",
     },
   ],
+  // The verified synthesis (Step 6): zero claims, one honest abstention whose
+  // proof is the exact executed Gremlin query — the shape SynthesizedAnswer
+  // .to_dict() emits on the live `answer` event.
+  synthesis: {
+    request: "Does the deprecated pattern CAPEC-557 map to any ATT&CK techniques?",
+    headline:
+      "No records were returned by the routed specialists; 1 question(s) the sources don't establish.",
+    claims: [],
+    rendered_claims: [],
+    abstentions: [
+      {
+        sub_question_id: "sq-1",
+        source: "capec",
+        statement:
+          "The capec source doesn't establish this — the executed query ran cleanly and returned no matching records for: Look up CAPEC-557 and its ATT&CK taxonomy mappings",
+        query: DEPRECATED_GREMLIN_QUERY,
+      },
+    ],
+    notes: [
+      "The planner marked 1 part unsupported: CAPEC-557 → ATT&CK mapping.",
+    ],
+    composer: "deterministic",
+    fallback_reason: null,
+    verification: {
+      verdicts: [],
+      claim_count: 0,
+      supported_count: 0,
+      unsupported_count: 0,
+      unsupported_claim_rate: 0,
+      repaired_abstentions: 0,
+      ok: true,
+    },
+  },
   status: "answered",
   exit_code: 0,
 };

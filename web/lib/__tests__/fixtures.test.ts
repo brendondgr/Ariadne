@@ -106,3 +106,28 @@ describe("deprecatedCapecRun fixture (exclude-at-load abstention)", () => {
     expect(deprecatedCapecRun.answer.joinPairs).toHaveLength(0);
   });
 });
+
+describe("seeded turns carry the verified synthesis view (Step 7b)", () => {
+  it("wmi turn: three supported cited claims, clean verification", () => {
+    const synth = wmiCapecRun.answer.synthesis;
+    expect(synth).not.toBeNull();
+    expect(synth!.claims).toHaveLength(3);
+    expect(synth!.claims.every((c) => c.chips.length > 0)).toBe(true);
+    expect(synth!.claims.map((c) => c.kind)).toContain("correlation");
+    expect(synth!.abstentions).toHaveLength(0);
+    expect(synth!.flagged).toHaveLength(0);
+    expect(synth!.verification).toMatchObject({ supported: 3, total: 3, ok: true });
+  });
+
+  it("deprecated-CAPEC turn: pure abstention with the executed query as proof", () => {
+    const synth = deprecatedCapecRun.answer.synthesis;
+    expect(synth).not.toBeNull();
+    expect(synth!.claims).toHaveLength(0);
+    expect(synth!.abstentions).toHaveLength(1);
+    const abst = synth!.abstentions[0];
+    expect(abst.statement).toContain("doesn't establish");
+    expect(abst.query).toContain("capec_id");
+    expect(abst.query).toContain("557");
+    expect(synth!.verification).toMatchObject({ supported: 0, total: 0, ok: true });
+  });
+});
