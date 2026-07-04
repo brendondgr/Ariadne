@@ -45,9 +45,9 @@ _STIX_TYPE_TO_LABEL: dict[str, str] = {
 }
 
 _CAPEC_NS = "http://capec.mitre.org/capec-3"
-# CAPEC statuses that mark a pattern as retired. The build loads them (full
-# catalog); the harness records how many so the source card can tell specialists
-# to filter on the ``Status`` property.
+# CAPEC statuses that mark an entry as retired. The build now EXCLUDES them at
+# load (mirroring ATT&CK's exclude-at-load policy), so this recount must exclude
+# them too for raw == manifest reconciliation to hold.
 _CAPEC_RETIRED_STATUSES = frozenset({"Deprecated", "Obsolete"})
 
 
@@ -126,8 +126,17 @@ def _local_name(tag: str) -> str:
     return tag.rsplit("}", 1)[-1]
 
 
-def capec_raw_counts(config: BuildConfig) -> RawCounts:
-    """Recount CAPEC primary entities straight from the raw XML catalog."""
+def capec_raw_counts(
+    config: BuildConfig,
+    *,
+    filter_deprecated: bool = True,
+) -> RawCounts:
+    """Recount CAPEC primary entities straight from the raw XML catalog.
+
+    Retired entries (``Status`` Deprecated/Obsolete) are excluded to mirror the
+    build's exclude-at-load policy, so the recount reconciles against the
+    manifest and live counts.
+    """
     source_path = _require(config.paths().capec_raw_file, "capec")
     root = ET.parse(source_path).getroot()
     ns = {"c": _CAPEC_NS}
@@ -136,15 +145,24 @@ def capec_raw_counts(config: BuildConfig) -> RawCounts:
     categories = root.findall(".//c:Categories/c:Category", ns)
     views = root.findall(".//c:Views/c:View", ns)
 
+    def _retired(elements: list[ET.Element]) -> int:
+        if not filter_deprecated:
+            return 0
+        return sum(1 for el in elements if el.get("Status") in _CAPEC_RETIRED_STATUSES)
+
+    retired_ap = _retired(attack_patterns)
+    retired_cat = _retired(categories)
+    retired_view = _retired(views)
+    retired_total = retired_ap + retired_cat + retired_view
+
     status_counts: Counter[str] = Counter(
         ap.get("Status", "Unknown") for ap in attack_patterns
     )
-    retired = sum(status_counts[s] for s in _CAPEC_RETIRED_STATUSES if s in status_counts)
 
     nodes_by_label = {
-        "AttackPattern": len(attack_patterns),
-        "Category": len(categories),
-        "View": len(views),
+        "AttackPattern": len(attack_patterns) - retired_ap,
+        "Category": len(categories) - retired_cat,
+        "View": len(views) - retired_view,
     }
     # Rough object tally across primary + extracted collections for provenance.
     object_count = len(attack_patterns) + len(categories) + len(views)
@@ -155,12 +173,13 @@ def capec_raw_counts(config: BuildConfig) -> RawCounts:
         object_count=object_count,
         nodes_by_label=nodes_by_label,
         primary_labels=frozenset(nodes_by_label),
-        excluded={},  # CAPEC loads the full catalog; nothing excluded.
+        excluded={"deprecated": retired_total},
         notes=[
-            "CAPEC loads the full catalog (build_scope=full_catalog); "
-            f"{retired} retired attack patterns "
-            f"({', '.join(f'{s}={status_counts[s]}' for s in sorted(_CAPEC_RETIRED_STATUSES) if s in status_counts) or 'none'}) "
-            "are loaded with their Status property so specialists can filter them.",
+            "CAPEC excludes retired entries at load (mirroring ATT&CK's "
+            f"exclude-at-load policy): {retired_total} retired entries dropped "
+            f"({retired_ap} AttackPattern, {retired_cat} Category, {retired_view} View; "
+            f"attack-pattern statuses "
+            f"{', '.join(f'{s}={status_counts[s]}' for s in sorted(_CAPEC_RETIRED_STATUSES) if s in status_counts) or 'none'}).",
             "Only primary top-level entities (AttackPattern/Category/View) are "
             "recounted from raw; extracted child nodes are checked manifest-vs-live.",
         ],

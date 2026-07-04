@@ -101,11 +101,20 @@ def test_capec_raw_counts_primary_entities(tmp_path: Path) -> None:
     counts = capec_raw_counts(config)
 
     assert counts.dataset == "capec"
-    assert counts.nodes_by_label == {"AttackPattern": 4, "Category": 1, "View": 2}
+    # retired attack patterns (Deprecated + Obsolete) are excluded at load
+    assert counts.nodes_by_label == {"AttackPattern": 2, "Category": 1, "View": 2}
     assert counts.primary_labels == frozenset({"AttackPattern", "Category", "View"})
-    assert counts.excluded == {}  # full catalog, nothing excluded
+    assert counts.excluded == {"deprecated": 2}
     # retired count surfaced in notes (Deprecated=1, Obsolete=1)
     assert any("Deprecated=1" in n and "Obsolete=1" in n for n in counts.notes)
+
+
+def test_capec_raw_counts_can_disable_filter(tmp_path: Path) -> None:
+    config = _write_capec_xml(tmp_path)
+    counts = capec_raw_counts(config, filter_deprecated=False)
+    # with filtering off, retired patterns are counted as usual
+    assert counts.nodes_by_label == {"AttackPattern": 4, "Category": 1, "View": 2}
+    assert counts.excluded == {"deprecated": 0}
 
 
 def test_raw_counts_for_dispatch_and_missing(tmp_path: Path) -> None:

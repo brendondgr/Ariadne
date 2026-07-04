@@ -5,8 +5,9 @@ Orphans come in two opposite kinds, and they demand opposite fixes:
 
 * **Dead-object orphans (expected).** The node is revoked/deprecated; MITRE's
   data model kills every relationship whose endpoint is dead, so a correct
-  loader leaves the object stranded. ATT&CK excludes these at load (so zero
-  are expected); CAPEC loads the full catalog and tags them via ``Status``.
+  loader leaves the object stranded. Both ATT&CK and CAPEC exclude these at load
+  (ATT&CK via ``revoked``/``x_mitre_deprecated``, CAPEC via ``Status`` in
+  {Deprecated, Obsolete}), so zero dead orphans are expected for either.
 * **Live orphans (bugs, unless declared).** A live node with no edges means a
   connection mechanism the loader is not reading — or, rarely, an object the
   pinned snapshot genuinely never references, which must then be declared in
@@ -97,8 +98,8 @@ def orphan_checks(
         checks.append(CheckResult("orphans_match_expected", False, str(exc)))
         return checks, scan
 
-    # 1. Dead orphans match the recorded policy exactly (zero for ATT&CK's
-    #    exclude-at-load; the known deprecated counts for CAPEC's load-and-tag).
+    # 1. Dead orphans match the recorded policy exactly (zero for both ATT&CK
+    #    and CAPEC now that each excludes retired/revoked objects at load).
     expected_dead = dict(expected.get("expected_dead_orphans", {}))
     actual_dead = scan["dead_by_label"]
     checks.append(

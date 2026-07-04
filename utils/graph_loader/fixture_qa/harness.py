@@ -32,6 +32,7 @@ from ..stores.factory import create_graph_store
 from .composite_keys import composite_key_checks, constraint_check
 from .cross_db import cross_db_resolution_checks
 from .orphans import (
+    _CAPEC_DEAD_STATUSES,
     attack_named_regressions,
     capec_hierarchy_checks,
     live_orphan_check,
@@ -147,24 +148,32 @@ def _revoked_deprecated_check(
             )
         )
     elif dataset == "capec":
-        # CAPEC loads the full catalog; retired patterns must carry a filterable
-        # Status property so specialists can exclude them.
-        with_status = 0
-        without_status = 0
-        for node in read_jsonl(nodes_path):
-            if node.get("label") != "AttackPattern":
-                continue
-            props = node.get("properties", {})
-            if props.get("Status") or node.get("Status"):
-                with_status += 1
-            else:
-                without_status += 1
+        # CAPEC now excludes retired entries at load (mirroring ATT&CK). The
+        # recount's retired total must equal the manifest's skipped_count...
+        meta = manifest.get("metadata", {})
+        m_skipped = int(meta.get("skipped_count", -1))
+        r_dep = raw.excluded.get("deprecated", 0)
         checks.append(
             CheckResult(
-                "capec_attack_patterns_have_status",
-                without_status == 0 and with_status > 0,
-                f"{with_status} AttackPattern nodes carry a Status property, "
-                f"{without_status} missing it (specialists filter on Status)",
+                "excluded_counts_raw_vs_manifest",
+                m_skipped == r_dep,
+                f"raw(retired={r_dep}) manifest(skipped_count={m_skipped})",
+            )
+        )
+        # ...and no Deprecated/Obsolete entry may survive into the canonical
+        # artifact (and therefore the live DB).
+        leaked = 0
+        for node in read_jsonl(nodes_path):
+            props = node.get("properties", {})
+            status = props.get("Status") or node.get("Status")
+            if status in _CAPEC_DEAD_STATUSES:
+                leaked += 1
+        checks.append(
+            CheckResult(
+                "no_retired_leakage",
+                leaked == 0,
+                f"{leaked} Deprecated/Obsolete nodes present in canonical artifact "
+                "(expected 0)",
             )
         )
     return checks
