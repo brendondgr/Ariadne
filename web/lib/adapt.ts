@@ -34,10 +34,12 @@ import type {
   RunStatus,
   ServerAnswer,
   ServerAnswerCross,
+  ServerSynthesis,
   SpecialistLane,
   SpecialistResult,
   SpecialistStep,
   StageStatus,
+  SynthesisView,
   WorkbenchRun,
 } from "./types";
 
@@ -312,8 +314,64 @@ function buildJoinPairs(cross: ServerAnswerCross[]): JoinPair[] {
   });
 }
 
+/** Project the verified `answer.synthesis` payload into its UI view.
+ *
+ *  Renders only what the verifier let through: `rendered_claims` (supported)
+ *  become cited claims, unsupported claims surface in `flagged` with the
+ *  verdict reasons, and abstentions keep their proof shape — the executed
+ *  query, or `query: null` for a schema-boundary refusal (Step 7) where no
+ *  query could express the question. */
+export function buildSynthesis(synthesis: ServerSynthesis | null | undefined): SynthesisView | null {
+  if (!synthesis) return null;
+
+  const claims = synthesis.rendered_claims.map((claim) => ({
+    text: claim.text,
+    kind: claim.kind,
+    chips: claim.citations.map((c) => {
+      const backend = SOURCE_BACKEND[c.source] ?? "neo4j";
+      return {
+        id: c.primary_id,
+        source: `${c.source}/${backend}`,
+        accent: accentForSource(c.source),
+        target: `lane-${backend}`,
+      };
+    }),
+  }));
+
+  const abstentions = synthesis.abstentions.map((a) => ({
+    source: a.source,
+    accent: accentForSource(a.source),
+    statement: a.statement,
+    query: a.query || null,
+  }));
+
+  const flagged = synthesis.claims
+    .filter((claim) => claim.verdict && claim.verdict.verdict !== "supported")
+    .map((claim) => ({ text: claim.text, reasons: claim.verdict?.reasons ?? [] }));
+
+  const report = synthesis.verification;
+  return {
+    headline: synthesis.headline,
+    claims,
+    abstentions,
+    flagged,
+    notes: synthesis.notes,
+    composer: synthesis.composer,
+    fallbackReason: synthesis.fallback_reason,
+    verification: report
+      ? {
+          supported: report.supported_count,
+          total: report.claim_count,
+          unsupportedRate: report.unsupported_claim_rate,
+          repairedAbstentions: report.repaired_abstentions,
+          ok: report.ok,
+        }
+      : null,
+  };
+}
+
 export function buildAnswer(answer: ServerAnswer | null, joinKey: string): AnswerContent {
-  if (!answer) return { paragraphs: [], joinPairs: [] };
+  if (!answer) return { paragraphs: [], joinPairs: [], synthesis: null };
 
   const paragraphs: AnswerParagraph[] = [];
   if (answer.headline) paragraphs.push({ segments: [{ kind: "text", text: answer.headline }] });
@@ -354,7 +412,11 @@ export function buildAnswer(answer: ServerAnswer | null, joinKey: string): Answe
     });
   }
 
-  return { paragraphs, joinPairs: buildJoinPairs(answer.cross_source) };
+  return {
+    paragraphs,
+    joinPairs: buildJoinPairs(answer.cross_source),
+    synthesis: buildSynthesis(answer.synthesis),
+  };
 }
 
 /* --------------------------- evidence + join tabs ------------------------- */

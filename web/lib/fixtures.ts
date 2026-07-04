@@ -443,6 +443,8 @@ export const wmiCapecRun: WorkbenchRun = {
       { left: "CAPEC-549", leftAccent: "amber", right: "T1047", rightAccent: "teal" },
       { left: "CAPEC-563", leftAccent: "amber", right: "T1546.003", rightAccent: "teal" },
     ],
+    // Populated with the verified-synthesis view in the fixtures phase below.
+    synthesis: null,
   },
   evidence: [
     {

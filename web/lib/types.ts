@@ -277,9 +277,52 @@ export interface JoinPair {
   rightAccent: Accent;
 }
 
+/** One verified-supported claim rendered in the answer card. */
+export interface SynthesisClaimView {
+  text: string;
+  kind: "fact" | "correlation";
+  /** Citation chips — one per (source, primary_id) the claim cites. */
+  chips: ProvenanceRef[];
+}
+
+/** One honest abstention rendered in the answer card. */
+export interface SynthesisAbstentionView {
+  source: string;
+  accent: Accent;
+  statement: string;
+  /** The executed-query proof, or null for a schema-boundary refusal. */
+  query: string | null;
+}
+
+/** A claim the verifier cut, kept visible as the audit trail. */
+export interface FlaggedClaimView {
+  text: string;
+  reasons: string[];
+}
+
+/** UI-ready projection of the `answer.synthesis` payload. */
+export interface SynthesisView {
+  headline: string;
+  claims: SynthesisClaimView[];
+  abstentions: SynthesisAbstentionView[];
+  flagged: FlaggedClaimView[];
+  notes: string[];
+  composer: string;
+  fallbackReason: string | null;
+  verification: {
+    supported: number;
+    total: number;
+    unsupportedRate: number;
+    repairedAbstentions: number;
+    ok: boolean;
+  } | null;
+}
+
 export interface AnswerContent {
   paragraphs: AnswerParagraph[];
   joinPairs: JoinPair[];
+  /** Verified synthesis view, or null when the payload predates Step 6. */
+  synthesis: SynthesisView | null;
 }
 
 /** A normalized evidence record row in the Evidence tab. */
@@ -429,11 +472,71 @@ export interface ServerAnswerCross {
   entries: JoinIndexEntry[];
 }
 
+/* ------------------------------------------------------------------
+ * Verified synthesis payload (`answer.synthesis`) — exact mirror of
+ * utils/synthesis SynthesizedAnswer.to_dict() (Steps 6–7).
+ * ------------------------------------------------------------------ */
+
+export interface SynthesisCitation {
+  source: string;
+  primary_id: string;
+  record_id: string;
+}
+
+export interface SynthesisVerdict {
+  verdict: "supported" | "unsupported";
+  reasons: string[];
+}
+
+export interface SynthesisClaim {
+  text: string;
+  citations: SynthesisCitation[];
+  entity_ids: string[];
+  kind: "fact" | "correlation";
+  sub_question_id: string;
+  /** Present on `claims` entries (null before verification); absent on `rendered_claims`. */
+  verdict?: SynthesisVerdict | null;
+}
+
+/** An honest "the sources don't establish this". `query` is the executed-query
+ *  proof — empty for a schema-boundary refusal where no query could express
+ *  the question (e.g. ICS-only Assets against the Enterprise source). */
+export interface SynthesisAbstention {
+  sub_question_id: string;
+  source: string;
+  statement: string;
+  query: string;
+}
+
+export interface SynthesisVerification {
+  verdicts: SynthesisVerdict[];
+  claim_count: number;
+  supported_count: number;
+  unsupported_count: number;
+  unsupported_claim_rate: number;
+  repaired_abstentions: number;
+  ok: boolean;
+}
+
+export interface ServerSynthesis {
+  request: string;
+  headline: string;
+  claims: SynthesisClaim[];
+  rendered_claims: SynthesisClaim[];
+  abstentions: SynthesisAbstention[];
+  notes: string[];
+  composer: string;
+  fallback_reason: string | null;
+  verification: SynthesisVerification | null;
+}
+
 export interface ServerAnswer {
   headline: string;
   sections: ServerAnswerSection[];
   cross_source: ServerAnswerCross[];
   unsupported: UnsupportedPart[];
+  /** Verified synthesis (Step 6+). Optional: absent on pre-Step-6 payloads. */
+  synthesis?: ServerSynthesis | null;
   status?: RunStatus;
   exit_code?: ExitCode;
 }

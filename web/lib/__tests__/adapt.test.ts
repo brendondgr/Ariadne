@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { buildLiveSources, buildRun, type RunInputs } from "../adapt";
+import { buildLiveSources, buildRun, buildSynthesis, type RunInputs } from "../adapt";
 import { wmiCapecRun } from "../fixtures";
 import type {
   FederatedEvidence,
   Plan,
   ProbeSource,
   ServerAnswer,
+  ServerSynthesis,
   SpecialistStep,
 } from "../types";
 
@@ -398,5 +399,119 @@ describe("Phase 3: no-cap evidence rows and full provenance fields", () => {
       expect(rec.fullJson).toContain("AttackPattern");
       expect(rec.query).toBe("g.V().hasLabel('AttackPattern').limit(1000)");
     }
+  });
+});
+
+describe("buildSynthesis: the verified answer view", () => {
+  const SYNTHESIS: ServerSynthesis = {
+    request: "Which mitigations does ATT&CK list for T1047?",
+    headline: "Verified answer with 1 supported claim.",
+    claims: [
+      {
+        text: "T1047 is mitigated by M1038.",
+        citations: [{ source: "attack", primary_id: "T1047", record_id: "attack:T1047" }],
+        entity_ids: ["T1047", "M1038"],
+        kind: "fact",
+        sub_question_id: "sq-1",
+        verdict: { verdict: "supported", reasons: [] },
+      },
+      {
+        text: "T1047 is mitigated by the invented M9999.",
+        citations: [{ source: "attack", primary_id: "T1047", record_id: "attack:T1047" }],
+        entity_ids: ["M9999"],
+        kind: "fact",
+        sub_question_id: "sq-1",
+        verdict: {
+          verdict: "unsupported",
+          reasons: ["claim asserts M9999 but no cited record grounds it"],
+        },
+      },
+    ],
+    rendered_claims: [
+      {
+        text: "T1047 is mitigated by M1038.",
+        citations: [{ source: "attack", primary_id: "T1047", record_id: "attack:T1047" }],
+        entity_ids: ["T1047", "M1038"],
+        kind: "fact",
+        sub_question_id: "sq-1",
+      },
+    ],
+    abstentions: [
+      {
+        sub_question_id: "sq-2",
+        source: "capec",
+        statement:
+          "The capec source doesn't establish this — the executed query ran cleanly and returned no matching records for: CAPEC-99999",
+        query: "g.V().has('capec_id','CAPEC-99999').elementMap().limit(1000)",
+      },
+      {
+        sub_question_id: "sq-3",
+        source: "attack",
+        statement:
+          "The attack source doesn't establish this — it doesn't model the entities this question asks about, so no query was executed for: assets of T1047",
+        query: "",
+      },
+    ],
+    notes: ["one specialist was skipped"],
+    composer: "llm",
+    fallback_reason: "LLM composer unavailable (connection refused)",
+    verification: {
+      verdicts: [
+        { verdict: "supported", reasons: [] },
+        { verdict: "unsupported", reasons: ["ungrounded M9999"] },
+      ],
+      claim_count: 2,
+      supported_count: 1,
+      unsupported_count: 1,
+      unsupported_claim_rate: 0.5,
+      repaired_abstentions: 1,
+      ok: false,
+    },
+  };
+
+  it("maps rendered claims to cited chips with source accents", () => {
+    const view = buildSynthesis(SYNTHESIS);
+    expect(view).not.toBeNull();
+    expect(view!.claims).toHaveLength(1);
+    const claim = view!.claims[0];
+    expect(claim.text).toContain("M1038");
+    expect(claim.chips).toEqual([
+      { id: "T1047", source: "attack/neo4j", accent: "teal", target: "lane-neo4j" },
+    ]);
+  });
+
+  it("keeps cut claims visible in flagged with the verdict reasons", () => {
+    const view = buildSynthesis(SYNTHESIS)!;
+    expect(view.flagged).toHaveLength(1);
+    expect(view.flagged[0].text).toContain("M9999");
+    expect(view.flagged[0].reasons[0]).toContain("no cited record");
+  });
+
+  it("preserves the two abstention proof shapes: executed query vs boundary", () => {
+    const view = buildSynthesis(SYNTHESIS)!;
+    expect(view.abstentions).toHaveLength(2);
+    expect(view.abstentions[0].query).toContain("CAPEC-99999");
+    expect(view.abstentions[0].accent).toBe("amber");
+    // Boundary refusal: no invented query proof.
+    expect(view.abstentions[1].query).toBeNull();
+    expect(view.abstentions[1].statement).toContain("no query was executed");
+  });
+
+  it("summarizes verification and composer fallback", () => {
+    const view = buildSynthesis(SYNTHESIS)!;
+    expect(view.verification).toEqual({
+      supported: 1,
+      total: 2,
+      unsupportedRate: 0.5,
+      repairedAbstentions: 1,
+      ok: false,
+    });
+    expect(view.composer).toBe("llm");
+    expect(view.fallbackReason).toContain("unavailable");
+  });
+
+  it("returns null when the payload predates Step 6", () => {
+    expect(buildSynthesis(null)).toBeNull();
+    expect(buildSynthesis(undefined)).toBeNull();
   });
 });
