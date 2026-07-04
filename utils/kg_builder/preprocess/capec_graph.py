@@ -21,13 +21,47 @@ from utils.kg_builder.preprocess.capec_ids import (
 from utils.kg_builder.preprocess.capec_models import CapecPairsCheckpoint
 from utils.kg_builder.schema.capec import capec_canonical_labels
 
+# CAPEC ``Status`` values that mark an entry as retired. Mirrors ATT&CK's
+# exclude-at-load policy for deprecated/revoked objects: retired attack patterns,
+# categories, and views (and their exclusive children/edges) are dropped during
+# the canonical build so they never surface as islands downstream. Kept in sync
+# with ``utils.graph_loader.fixture_qa`` (``_CAPEC_DEAD_STATUSES``).
+CAPEC_RETIRED_STATUSES = frozenset({"Deprecated", "Obsolete"})
 
-def materialize_capec_graph(checkpoint: CapecPairsCheckpoint) -> NormalizedGraph:
-    """Translate normalized CAPEC checkpoint records into canonical graph records."""
+
+def materialize_capec_graph(
+    checkpoint: CapecPairsCheckpoint,
+    *,
+    filter_deprecated: bool = True,
+) -> NormalizedGraph:
+    """Translate normalized CAPEC checkpoint records into canonical graph records.
+
+    When ``filter_deprecated`` is true (the default) every attack pattern,
+    category, and view whose ``Status`` is ``Deprecated`` or ``Obsolete`` is
+    excluded, along with its exclusive child nodes and any edge that would point
+    at it — mirroring ATT&CK's exclude-at-load policy so retired entries never
+    enter the canonical graph.
+    """
     nodes: list[NodeRecord] = []
     relationships: list[EdgeRecord] = []
     node_index: dict[str, NodeRecord] = {}
     edge_ids: set[str] = set()
+
+    def _retired(records: list[dict[str, Any]]) -> set[str]:
+        if not filter_deprecated:
+            return set()
+        return {
+            str(record["id"])
+            for record in records
+            if record.get("Status") in CAPEC_RETIRED_STATUSES
+        }
+
+    retired_pattern_ids = _retired(checkpoint.attack_patterns)
+    retired_category_ids = _retired(checkpoint.categories)
+    retired_view_ids = _retired(checkpoint.views)
+    skipped_count = (
+        len(retired_pattern_ids) + len(retired_category_ids) + len(retired_view_ids)
+    )
 
     def add_node(node: NodeRecord) -> None:
         if node.id in node_index:
@@ -82,7 +116,10 @@ def materialize_capec_graph(checkpoint: CapecPairsCheckpoint) -> NormalizedGraph
             )
         )
 
-    def ensure_attack_pattern_node(capec_id: str, *, name: str | None = None) -> str:
+    def ensure_attack_pattern_node(capec_id: str, *, name: str | None = None) -> str | None:
+        """Create/return an AttackPattern node id, or ``None`` if the id is retired."""
+        if str(capec_id) in retired_pattern_ids:
+            return None
         node_id = attack_pattern_node_id(str(capec_id))
         if node_id not in node_index:
             add_node(
@@ -97,6 +134,8 @@ def materialize_capec_graph(checkpoint: CapecPairsCheckpoint) -> NormalizedGraph
         return node_id
 
     for attack_pattern in checkpoint.attack_patterns:
+        if str(attack_pattern["id"]) in retired_pattern_ids:
+            continue
         ensure_attack_pattern_node(attack_pattern["id"], name=attack_pattern.get("Name"))
         for related in attack_pattern.get("related_attack_patterns", []):
             target_ap = related.get("capec_id")
@@ -108,6 +147,8 @@ def materialize_capec_graph(checkpoint: CapecPairsCheckpoint) -> NormalizedGraph
                 ensure_external_reference_node(ref_id)
 
     for category in checkpoint.categories:
+        if str(category["id"]) in retired_category_ids:
+            continue
         node_id = category_node_id(category["id"])
         add_node(
             NodeRecord(
@@ -124,6 +165,8 @@ def materialize_capec_graph(checkpoint: CapecPairsCheckpoint) -> NormalizedGraph
         )
         for member_id in category.get("members", []):
             member_node_id = ensure_attack_pattern_node(str(member_id))
+            if member_node_id is None:
+                continue
             add_edge(
                 "MEMBER_OF",
                 member_node_id,
@@ -131,6 +174,8 @@ def materialize_capec_graph(checkpoint: CapecPairsCheckpoint) -> NormalizedGraph
             )
 
     for view in checkpoint.views:
+        if str(view["id"]) in retired_view_ids:
+            continue
         node_id = view_node_id(view["id"])
         add_node(
             NodeRecord(
@@ -148,6 +193,8 @@ def materialize_capec_graph(checkpoint: CapecPairsCheckpoint) -> NormalizedGraph
 
     for attack_pattern in checkpoint.attack_patterns:
         ap_id = attack_pattern["id"]
+        if str(ap_id) in retired_pattern_ids:
+            continue
         ap_node_id = ensure_attack_pattern_node(ap_id, name=attack_pattern.get("Name"))
         existing = node_index[ap_node_id]
         node_index[ap_node_id] = NodeRecord(
@@ -178,7 +225,7 @@ def materialize_capec_graph(checkpoint: CapecPairsCheckpoint) -> NormalizedGraph
         for related in attack_pattern.get("related_attack_patterns", []):
             nature = related.get("nature")
             target_ap = related.get("capec_id")
-            if nature and target_ap:
+            if nature and target_ap and str(target_ap) not in retired_pattern_ids:
                 add_edge(
                     nature,
                     ap_node_id,
@@ -285,11 +332,21 @@ def materialize_capec_graph(checkpoint: CapecPairsCheckpoint) -> NormalizedGraph
 
     # View members share the CAPEC-ID number space between categories and
     # attack patterns, so each member is resolved against the checkpoint sets.
-    known_category_ids = {str(category["id"]) for category in checkpoint.categories}
+    # Retired categories/patterns are excluded from the resolvable sets so no
+    # IN_VIEW edge is drawn to a node that was dropped.
+    known_category_ids = {
+        str(category["id"])
+        for category in checkpoint.categories
+        if str(category["id"]) not in retired_category_ids
+    }
     known_pattern_ids = {
-        str(attack_pattern["id"]) for attack_pattern in checkpoint.attack_patterns
+        str(attack_pattern["id"])
+        for attack_pattern in checkpoint.attack_patterns
+        if str(attack_pattern["id"]) not in retired_pattern_ids
     }
     for view in checkpoint.views:
+        if str(view["id"]) in retired_view_ids:
+            continue
         view_id = view_node_id(view["id"])
         for member in view.get("members", []):
             member_id = str(member)
@@ -309,5 +366,6 @@ def materialize_capec_graph(checkpoint: CapecPairsCheckpoint) -> NormalizedGraph
         build_scope=checkpoint.metadata.build_scope,
         object_count=sum(checkpoint.counts.values()),
         quarantined_count=checkpoint.counts["unmapped_fields"],
+        skipped_count=skipped_count,
     )
     return NormalizedGraph(metadata=metadata, nodes=nodes, relationships=relationships)

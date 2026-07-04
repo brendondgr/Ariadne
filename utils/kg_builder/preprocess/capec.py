@@ -171,7 +171,7 @@ def build_capec_graph(
     )
     if write_pairs:
         write_capec_pairs_checkpoint(checkpoint, config.paths().capec_processed_pairs_file)
-    return materialize_capec_graph(checkpoint)
+    return materialize_capec_graph(checkpoint, filter_deprecated=config.filter_deprecated)
 
 
 def build_capec_placeholder() -> None:
