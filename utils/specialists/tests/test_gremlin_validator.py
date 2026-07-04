@@ -250,11 +250,12 @@ class TestPositiveRoundTrips:
 
 class TestDepthCap:
     def test_rejects_over_depth_traversal(self, validator, card, limits):
-        # Four chained ChildOf hops (AttackPattern->AttackPattern is schema-valid)
+        # Four chained CHILD_OF hops (AttackPattern->AttackPattern is schema-valid)
         # exceed max_traversal_depth=3 and must be rejected before execution.
+        # Queries speak the loaded graph's SCREAMING_SNAKE edge convention.
         query = (
             'g.V().hasLabel("AttackPattern")'
-            '.out("ChildOf").out("ChildOf").out("ChildOf").out("ChildOf")'
+            '.out("CHILD_OF").out("CHILD_OF").out("CHILD_OF").out("CHILD_OF")'
             '.elementMap().limit(10)'
         )
         result = _validate(validator, card, limits, query)
@@ -265,8 +266,20 @@ class TestDepthCap:
         # Exactly three hops is within the cap.
         query = (
             'g.V().hasLabel("AttackPattern")'
-            '.out("ChildOf").out("ChildOf").out("ChildOf")'
+            '.out("CHILD_OF").out("CHILD_OF").out("CHILD_OF")'
             '.elementMap().limit(10)'
         )
         result = _validate(validator, card, limits, query)
         assert result.ok, result.reasons
+
+    def test_rejects_card_vocabulary_edge_labels(self, validator, card, limits):
+        # The loaded graph has no 'ChildOf' edges (they load as CHILD_OF), so a
+        # query using the card's source vocabulary would run clean and return
+        # zero rows — exactly the silent-wrong-answer class the gate must stop.
+        query = (
+            'g.V().hasLabel("AttackPattern")'
+            '.out("ChildOf").elementMap().limit(10)'
+        )
+        result = _validate(validator, card, limits, query)
+        assert not result.ok
+        assert any("unknown relationship type" in r for r in result.reasons)

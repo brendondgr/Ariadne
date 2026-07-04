@@ -35,6 +35,18 @@ def _sanitize_rel_type(rel_type: str) -> str:
     return normalized
 
 
+def gremlin_edge_label(rel_type: str) -> str:
+    """Public name for the loader's edge-label convention.
+
+    Canonical relationship types keep the source vocabulary (CAPEC declares
+    CamelCase natures like ``ChildOf``), but every edge is loaded under the
+    SCREAMING_SNAKE form (``CHILD_OF``). Anything that writes Gremlin queries
+    against the loaded graph must translate through this function — the
+    specialists' builder/validator import it so the convention cannot drift.
+    """
+    return _sanitize_rel_type(rel_type)
+
+
 def vertex_upsert_traversal(node: dict[str, Any]) -> tuple[str, dict[str, Any]]:
     """Return a Gremlin traversal and bindings for idempotent vertex upsert."""
     label = _sanitize_label(node["label"])

@@ -12,6 +12,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from utils.graph_loader.stores.gremlin import gremlin_edge_label
 from utils.specialists.validation import BaseValidator
 
 # Match hasLabel("X") capturing X.
@@ -83,8 +84,17 @@ class GremlinValidator(BaseValidator):
         """Validate labels and edge types (including directions) against the card."""
         reasons: list[str] = []
         node_labels: frozenset[str] = card.node_labels
-        rel_types: frozenset[str] = card.relationship_types
-        allowed_patterns: dict[str, list[list[str]]] = card.allowed_edge_patterns or {}
+        # The card records source-vocabulary relationship names (e.g. CAPEC's
+        # CamelCase ChildOf); the loaded graph carries the SCREAMING_SNAKE
+        # form. Queries speak the graph convention, so card names are matched
+        # through the same normalization the loader applies at load time.
+        rel_types: frozenset[str] = frozenset(
+            gremlin_edge_label(r) for r in card.relationship_types
+        )
+        allowed_patterns_raw: dict[str, list[list[str]]] = card.allowed_edge_patterns or {}
+        allowed_patterns: dict[str, list[list[str]]] = {
+            gremlin_edge_label(r): p for r, p in allowed_patterns_raw.items()
+        }
 
         # Validate every hasLabel("X").
         for m in _HAS_LABEL_RE.finditer(query):

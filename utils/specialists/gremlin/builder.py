@@ -12,6 +12,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from utils.graph_loader.stores.gremlin import gremlin_edge_label
 from utils.specialists.resolve import ResolvedTask
 from utils.specialists.validation import QueryDraft
 
@@ -119,16 +120,17 @@ class GremlinQueryBuilder:
         lim = resolved.task.max_rows()
         params: dict[str, Any] = {"ids": ids}
 
+        edge = gremlin_edge_label(rel)  # loaded graphs use SCREAMING_SNAKE labels
         if target_label:
             query = (
                 f'g.V().hasLabel("AttackPattern").has("id", within(ids)).as("ap")'
-                f'.out("{rel}").hasLabel("{target_label}").as("nbr")'
+                f'.out("{edge}").hasLabel("{target_label}").as("nbr")'
                 f'.select("ap","nbr").by(elementMap()).limit({lim})'
             )
         else:
             query = (
                 f'g.V().hasLabel("AttackPattern").has("id", within(ids)).as("ap")'
-                f'.out("{rel}").as("nbr")'
+                f'.out("{edge}").as("nbr")'
                 f'.select("ap","nbr").by(elementMap()).limit({lim})'
             )
         return QueryDraft(
