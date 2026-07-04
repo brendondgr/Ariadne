@@ -11,42 +11,16 @@ the ID-set assertions here even though it raised no error anywhere.
 
 from __future__ import annotations
 
-import re
 from typing import Any
 
-from utils.specialists.contracts import EvidenceRecord, SpecialistResult
+from utils.specialists.contracts import EvidenceRecord
+from utils.specialists.contracts import SpecialistResult
 from utils.specialists.evidence import check_contract
 
-_GREMLIN_CAPEC_RE = re.compile(r"^capec:attack-pattern:(\d+)$")
-_GREMLIN_CWE_RE = re.compile(r"^cwe:(\d+)$")
+# Shared with the synthesis verifier so both layers ground ids identically.
+from utils.synthesis.grounding import id_pool, normalize_id
 
-
-def normalize_id(value: str) -> str:
-    """Canonicalize backend id forms so assertions are backend-agnostic."""
-    value = (value or "").strip()
-    m = _GREMLIN_CAPEC_RE.match(value)
-    if m:
-        return f"CAPEC-{m.group(1)}"
-    m = _GREMLIN_CWE_RE.match(value)
-    if m:
-        return f"CWE-{m.group(1)}"
-    return value
-
-
-def id_pool(records: list[EvidenceRecord]) -> set[str]:
-    """Every id a result exposes: primary ids, join values, related ids."""
-    pool: set[str] = set()
-    for r in records:
-        if r.primary_id:
-            pool.add(normalize_id(r.primary_id))
-        for jv in r.join_values:
-            pool.add(normalize_id(jv))
-        for rel in r.related:
-            for key in ("id", "entry_id"):
-                v = rel.get(key)
-                if v:
-                    pool.add(normalize_id(str(v)))
-    return pool
+__all__ = ["normalize_id", "id_pool", "check_assertions", "check_traces"]
 
 
 def _prop_value(record: EvidenceRecord, key: str) -> Any:

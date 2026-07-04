@@ -27,6 +27,7 @@ from .contracts import (
     SynthesizedAnswer,
     VerificationReport,
 )
+from .verifier import verify_answer
 
 __all__ = [
     "Abstention",
@@ -37,4 +38,5 @@ __all__ = [
     "SynthesisConfig",
     "SynthesizedAnswer",
     "VerificationReport",
+    "verify_answer",
 ]
