@@ -16,12 +16,19 @@ from utils.specialists.resolve import ResolvedTask
 from utils.specialists.validation import QueryDraft
 
 # Relationships that fan out from AttackPattern to direct neighbours.
+# The hierarchy natures (ChildOf, CanPrecede) are declared-direction only:
+# the graph stores edges exactly as the CAPEC XML declares them and never
+# materializes inverses, so out("ChildOf") answers "what is X's parent" and
+# out("CanPrecede") answers "what can X precede". ParentOf/CanFollow stay
+# unroutable until the builder learns in()-traversals.
 _AP_NEIGHBOR_RELS = frozenset({
     "EXPLOITS_WEAKNESS",
     "HAS_MITIGATION",
     "HAS_EXECUTION_STEP",
     "HAS_CONSEQUENCE",
     "REQUIRES_SKILL",
+    "ChildOf",
+    "CanPrecede",
 })
 
 # Mapping from relationship name to expected target label (for meta).
