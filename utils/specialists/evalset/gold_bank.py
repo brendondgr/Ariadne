@@ -109,6 +109,8 @@ def parse_attack_bundle(bundle_path: Path) -> dict[str, Any]:
     technique_mitigations: dict[str, set[str]] = {}
     group_techniques: dict[str, set[str]] = {}
     subtechniques: dict[str, set[str]] = {}
+    campaign_techniques: dict[str, set[str]] = {}
+    campaign_attribution: dict[str, set[str]] = {}
 
     for obj in objects:
         if obj.get("type") != "relationship" or _is_excluded(obj):
@@ -126,6 +128,10 @@ def parse_attack_bundle(bundle_path: Path) -> dict[str, Any]:
             group_techniques.setdefault(src_id, set()).add(tgt_id)
         elif rel == "subtechnique-of":
             subtechniques.setdefault(tgt_id, set()).add(src_id)
+        elif rel == "uses" and live[src]["type"] == "campaign" and live[tgt]["type"] == "attack-pattern":
+            campaign_techniques.setdefault(src_id, set()).add(tgt_id)
+        elif rel == "attributed-to" and live[src]["type"] == "campaign" and live[tgt]["type"] == "intrusion-set":
+            campaign_attribution.setdefault(src_id, set()).add(tgt_id)
 
     # HAS_TECHNIQUE is derived, not a STIX relationship: tactic shortname
     # matched against each live attack-pattern's mitre-attack kill chain phases.
@@ -155,6 +161,8 @@ def parse_attack_bundle(bundle_path: Path) -> dict[str, Any]:
         "group_techniques": {k: sorted(v) for k, v in sorted(group_techniques.items())},
         "tactic_techniques": {k: sorted(v) for k, v in sorted(tactic_techniques.items())},
         "subtechniques": {k: sorted(v) for k, v in sorted(subtechniques.items())},
+        "campaign_techniques": {k: sorted(v) for k, v in sorted(campaign_techniques.items())},
+        "campaign_attribution": {k: sorted(v) for k, v in sorted(campaign_attribution.items())},
     }
 
 
@@ -279,7 +287,9 @@ def main() -> None:
         f"  attack: {len(attack['objects'])} objects, "
         f"{len(attack['technique_mitigations'])} techniques w/ mitigations, "
         f"{len(attack['group_techniques'])} groups, "
-        f"{len(attack['tactic_techniques'])} tactics"
+        f"{len(attack['tactic_techniques'])} tactics, "
+        f"{len(attack['campaign_techniques'])} campaigns w/ techniques, "
+        f"{len(attack['campaign_attribution'])} campaigns w/ attribution"
     )
     print(
         f"  capec: {len(capec['patterns'])} patterns, "
