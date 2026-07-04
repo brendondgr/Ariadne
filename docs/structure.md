@@ -217,6 +217,18 @@ LLM/connection config and runs every infra action. TypeScript types
 (`lib/types.ts`) mirror the backend `to_dict()` shapes; `lib/fixtures.ts` is the
 idle/demo run.
 
+Each Answer Card renders the Step 6/7 **verified answer** from
+`answer.synthesis` (`SynthesisBlock` in `components/center/AnswerCard.tsx`,
+adapted by `buildSynthesis` in `lib/adapt.ts`): a verification pill
+(`N/M claims verified · X% unsupported`, teal when clean, amber when the
+verifier cut claims or repaired abstentions), the rendered claims with
+clickable citation chips, honest abstentions with their proof — the executed
+query in mono, or the named schema boundary ("no query executed") for
+Step 7 refusals such as ICS-only Assets — plus struck-through
+cut-by-verifier claims with reasons and the composer-fallback note. Both
+seeded demo turns carry synthesis views, so the trust surface shows without a
+live backend; payloads without `synthesis` (pre-Step-6) simply omit the block.
+
 A header **Chat / Graphs** toggle (`components/header/ViewToggle.tsx`, view state
 in `workbench/WorkbenchContext.tsx`) switches the main region between the chat
 workbench and a dedicated **graph explorer** (`components/graph/`). The explorer
