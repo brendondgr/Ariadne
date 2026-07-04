@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Deterministic Cypher query builder for the MITRE ATT&CK / Neo4j specialist.
 
-Picks one of five intent templates based on the resolved task and always
+Picks one of seven intent templates based on the resolved task and always
 produces a query that will pass ``CypherValidator`` by construction — real
 card labels/edges, parameterised values, an explicit LIMIT placeholder.
 """
@@ -50,9 +50,10 @@ def _all_subtechnique(ids: tuple[str, ...]) -> bool:
 class CypherQueryBuilder:
     """Drafts a bounded Cypher query from a resolved task.
 
-    The five intent templates — ``technique_mitigations``, ``group_techniques``,
-    ``tactic_techniques``, ``node_lookup``, and ``label_scan`` — cover the common
-    ATT&CK query patterns.  The builder picks deterministically; ``feedback`` from
+    The seven intent templates — ``technique_mitigations``,
+    ``campaign_attribution``, ``campaign_techniques``, ``group_techniques``,
+    ``tactic_techniques``, ``node_lookup``, and ``label_scan`` — cover the
+    common ATT&CK query patterns.  The builder picks deterministically; ``feedback`` from
     a failed gate attempt is accepted but the deterministic path should already
     pass without needing it.
     """
@@ -73,24 +74,38 @@ class CypherQueryBuilder:
         has_tactic = "Tactic" in resolved.labels or "Tactic" in (
             resolved.task.entities or ()
         )
+        has_campaign = "Campaign" in resolved.labels or "Campaign" in (
+            resolved.task.entities or ()
+        )
+        has_technique_entity = bool(
+            {"Technique", "SubTechnique"}
+            & (set(resolved.labels) | set(resolved.task.entities or ()))
+        )
 
         # 1. Technique → mitigations (most specific: seeds + Mitigation in scope)
         if has_technique_seeds and has_mitigation:
             return self._technique_mitigations(technique_ids, resolved)
 
-        # 2. Group → techniques
+        # 2. Campaign edges — must outrank the Group branch, which would
+        # otherwise capture a Campaign+Group attribution task.
+        if has_campaign and has_group:
+            return self._campaign_attribution(resolved)
+        if has_campaign and has_technique_entity:
+            return self._campaign_techniques(resolved)
+
+        # 3. Group → techniques
         if has_group:
             return self._group_techniques(resolved)
 
-        # 3. Tactic → techniques
+        # 4. Tactic → techniques
         if has_tactic:
             return self._tactic_techniques(resolved)
 
-        # 4. Seed ids present but no compound edge intent → node lookup
+        # 5. Seed ids present but no compound edge intent → node lookup
         if resolved.seed_ids:
             return self._node_lookup(resolved)
 
-        # 5. Fallback: label scan (no seeds)
+        # 6. Fallback: label scan (no seeds)
         return self._label_scan(resolved)
 
     # -- intent builders -------------------------------------------------------
@@ -140,6 +155,56 @@ class CypherQueryBuilder:
             query=query,
             params=params,
             template="group_techniques",
+            meta={"seed_ids": seed_ids},
+        )
+
+    def _campaign_techniques(self, resolved: ResolvedTask) -> QueryDraft:
+        """MATCH (Campaign)-[:USES]->(Technique)."""
+        seed_ids = list(resolved.seed_ids)
+        if seed_ids:
+            query = (
+                "MATCH (c:Campaign)-[:USES]->(t:Technique) "
+                "WHERE c.attack_id IN $ids "
+                "RETURN c.attack_id AS campaign_id, c.name AS campaign_name, "
+                "t.attack_id AS technique_id, t.name AS technique_name"
+            )
+            params: dict[str, Any] = {"ids": seed_ids}
+        else:
+            query = (
+                "MATCH (c:Campaign)-[:USES]->(t:Technique) "
+                "RETURN c.attack_id AS campaign_id, c.name AS campaign_name, "
+                "t.attack_id AS technique_id, t.name AS technique_name"
+            )
+            params = {}
+        return QueryDraft(
+            query=query,
+            params=params,
+            template="campaign_techniques",
+            meta={"seed_ids": seed_ids},
+        )
+
+    def _campaign_attribution(self, resolved: ResolvedTask) -> QueryDraft:
+        """MATCH (Campaign)-[:ATTRIBUTED_TO]->(Group)."""
+        seed_ids = list(resolved.seed_ids)
+        if seed_ids:
+            query = (
+                "MATCH (c:Campaign)-[:ATTRIBUTED_TO]->(g:Group) "
+                "WHERE c.attack_id IN $ids "
+                "RETURN c.attack_id AS campaign_id, c.name AS campaign_name, "
+                "g.attack_id AS group_id, g.name AS group_name"
+            )
+            params: dict[str, Any] = {"ids": seed_ids}
+        else:
+            query = (
+                "MATCH (c:Campaign)-[:ATTRIBUTED_TO]->(g:Group) "
+                "RETURN c.attack_id AS campaign_id, c.name AS campaign_name, "
+                "g.attack_id AS group_id, g.name AS group_name"
+            )
+            params = {}
+        return QueryDraft(
+            query=query,
+            params=params,
+            template="campaign_attribution",
             meta={"seed_ids": seed_ids},
         )
 

@@ -49,7 +49,10 @@ class CypherNormalizer:
         # Detect the template from column names in the first row
         if rows and "technique_id" in rows[0] and "mitigation_id" in rows[0]:
             return self._normalize_technique_mitigations(rows, query, card, id_scheme)
-        # group_techniques / tactic_techniques have technique_id column
+        # campaign_attribution has campaign_id + group_id columns
+        if rows and "campaign_id" in rows[0] and "group_id" in rows[0]:
+            return self._normalize_campaign_attribution(rows, query, card, id_scheme)
+        # group_techniques / tactic_techniques / campaign_techniques have technique_id
         if rows and "technique_id" in rows[0]:
             return self._normalize_technique_rows(rows, query, card, id_scheme)
         # node_lookup / label_scan
@@ -89,6 +92,41 @@ class CypherNormalizer:
                     name=info["technique_name"],
                     related=info["mitigations"],
                     join_values=join_values,
+                )
+            )
+        return records
+
+    def _normalize_campaign_attribution(
+        self,
+        rows: list[dict[str, Any]],
+        query: str,
+        card: Any,
+        id_scheme: str,
+    ) -> list[EvidenceRecord]:
+        """Group attribution rows by campaign_id into one record per campaign."""
+        groups: dict[str, dict[str, Any]] = defaultdict(
+            lambda: {"campaign_name": "", "groups": []}
+        )
+        for row in rows:
+            cid = str(row.get("campaign_id") or "")
+            groups[cid]["campaign_name"] = str(row.get("campaign_name") or "")
+            gid = str(row.get("group_id") or "")
+            gname = str(row.get("group_name") or "")
+            if gid:
+                groups[cid]["groups"].append({"id": gid, "name": gname})
+
+        records: list[EvidenceRecord] = []
+        for cid, info in groups.items():
+            records.append(
+                emit_record(
+                    card=card,
+                    query=query,
+                    record_id=cid,
+                    primary_id=cid,
+                    id_scheme=id_scheme,
+                    label="Campaign",
+                    name=info["campaign_name"],
+                    related=info["groups"],
                 )
             )
         return records

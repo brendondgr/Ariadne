@@ -180,6 +180,37 @@ class QuerySpecialist:
             )
         )
 
+        # Schema-boundary refusal: an entity the card doesn't model means no
+        # query can express the question as asked. Answering with whatever the
+        # known entities *can* express would be answering a different question
+        # — the wrong-but-plausible failure. Return an honest empty instead:
+        # ok, zero records, no query executed, the boundary named in the trace.
+        if resolved.unknown_entities:
+            unknown = ", ".join(resolved.unknown_entities)
+            traces.append(
+                EvaluatorTrace(
+                    "boundary",
+                    ok=True,
+                    reasons=[
+                        f"entities not modeled by the {self.card.dataset} source: {unknown}"
+                    ],
+                    detail={"unknown_entities": list(resolved.unknown_entities)},
+                )
+            )
+            return SpecialistResult(
+                task=task,
+                query="",
+                records=[],
+                summary=(
+                    f"The {self.card.dataset} source doesn't model {unknown} — "
+                    f"no query can express this question against its schema."
+                ),
+                traces=traces,
+                ok=True,
+                partial=False,
+                error=None,
+            )
+
         limits = self._effective_limits(task)
         return self._loop(task, resolved, limits, traces)
 
