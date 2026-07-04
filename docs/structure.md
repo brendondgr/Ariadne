@@ -90,11 +90,14 @@ node labels straight from the raw STIX/XML (deliberately not via the build
 preprocessors, so a systematic drop is catchable), asserts `raw == manifest ==
 live`, runs a live referential-integrity check (zero dangling edges, zero id-less
 nodes) via `GraphStore.referential_integrity()`, and verifies revoked/deprecated
-handling (ATT&CK excludes them and records the counts; CAPEC loads the full
-catalog with a filterable `Status` property). It writes
-`data/graphs/<ds>/runtime/fixture-qa-report.json` and exits non-zero on any
-mismatch. Verified state: ATT&CK 4369 nodes / 27669 edges (14 checks), CAPEC
-4888 / 6984 (11 checks), both with zero dangling edges.
+handling (both ATT&CK and CAPEC exclude retired objects at load and record the
+counts — ATT&CK via `revoked`/`x_mitre_deprecated`, CAPEC via `Status` in
+{Deprecated, Obsolete}; the harness reconciles the raw retired total against the
+manifest `skipped_count` and asserts zero retired nodes leak into the artifact).
+It writes `data/graphs/<ds>/runtime/fixture-qa-report.json` and exits non-zero on
+any mismatch. Verified state: ATT&CK 4369 nodes / 27669 edges (14 checks), CAPEC
+4769 / 6972 (11 checks; 114 retired entries excluded — 57 AttackPattern + 57
+Category), both with zero dangling edges.
 
 **Composite join-key enforcement** (`fixture_qa/composite_keys.py`). An ATT&CK
 ID is never an identity on its own — the identity is the pair `(attack_id,
@@ -111,8 +114,8 @@ card's `identity` block (auto-generated join key + measured collisions;
 hand-authored policy in the overlay).
 
 **Orphan / island resolution** (`fixture_qa/orphans.py`). Every zero-degree
-node must be explained: dead objects match the recorded policy (ATT&CK
-exclude-at-load → zero; CAPEC load-and-tag → the known deprecated counts), and
+node must be explained: dead objects match the recorded policy (both ATT&CK and
+CAPEC exclude-at-load → zero dead orphans), and
 live orphans must exactly equal the checked-in allow-lists
 (`fixture_qa/expected/{attack,capec}_orphans.json` — ATT&CK: 8 DataComponents
 unreferenced anywhere in v19; CAPEC: 9 implicit filter views + 52 uncited
