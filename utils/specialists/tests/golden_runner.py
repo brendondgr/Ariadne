@@ -35,6 +35,20 @@ def check_assertions(result: SpecialistResult, assertions: dict[str, Any]) -> li
     problems: list[str] = []
     records = result.records
 
+    if assertions.get("expect_boundary"):
+        # Schema-boundary refusal: honest empty with NO query executed —
+        # the source doesn't model the asked-about entity at all.
+        if records:
+            got = sorted(id_pool(records))[:10]
+            problems.append(f"expected boundary refusal, got {len(records)} records ({got})")
+        if not result.ok:
+            problems.append(f"expected ok=True on boundary refusal, got error={result.error!r}")
+        if result.query:
+            problems.append(f"expected no executed query, got {result.query!r}")
+        if "doesn't model" not in result.summary:
+            problems.append(f"summary does not name the boundary: {result.summary!r}")
+        return problems
+
     if assertions.get("expect_empty"):
         if records:
             got = sorted(id_pool(records))[:10]
@@ -91,6 +105,18 @@ def check_assertions(result: SpecialistResult, assertions: dict[str, Any]) -> li
 
 def check_traces(result: SpecialistResult, assertions: dict[str, Any]) -> list[str]:
     """Gate and execute must always pass; assess/normalize only for non-empties."""
+    steps = [t.step for t in result.traces]
+    if assertions.get("expect_boundary"):
+        # A boundary refusal must stop before the gate: no query drafted,
+        # gated, or executed — the refusal is the answer.
+        problems = []
+        if "boundary" not in steps:
+            problems.append(f"no boundary trace recorded (steps: {steps})")
+        for banned in ("gate", "execute"):
+            if banned in steps:
+                problems.append(f"boundary refusal must not reach {banned!r} (steps: {steps})")
+        return problems
+
     required = {"gate", "execute"} if assertions.get("expect_empty") else {
         "gate", "execute", "assess", "normalize",
     }

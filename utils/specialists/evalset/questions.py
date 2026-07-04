@@ -2,14 +2,17 @@
 """Authored question archetypes for the Step 5 golden banks.
 
 Every entry here is single-source and restricted to intents the deterministic
-builders can express today (Cypher: technique_mitigations, group_techniques,
-tactic_techniques, node_lookup, label_scan; Gremlin: capec_lookup,
-capec_neighbors, capec_maps_to, capec_scan). Gold IDs are resolved from the
-committed gold bank at compile time — never typed by hand (Step 7 discipline).
+builders can express today (Cypher: technique_mitigations, campaign_techniques,
+campaign_attribution, group_techniques, tactic_techniques, node_lookup,
+label_scan; Gremlin: capec_lookup, capec_neighbors, capec_maps_to, capec_scan).
+Gold IDs are resolved from the committed gold bank at compile time — never
+typed by hand (Step 7 discipline).
 
 Assertion vocabulary (consumed by the golden live-test runner):
   min_records / max_records  — bounds on len(result.records)
   expect_empty               — records must be empty AND result.ok True
+  expect_boundary            — schema-boundary refusal: empty, ok, NO query
+                               executed, summary names the unmodeled entity
   must_include_ids           — subset of the returned primary-id pool
   must_include_related       — subset of the related/join-value id pool
   forbid_ids                 — must NOT appear anywhere in the id pool
@@ -44,7 +47,10 @@ LOOKUP_ANCHORS = (
     ("T1566", "Technique"),
     ("S0154", "Software"),
 )
-CAMPAIGN_ANCHORS = ("C0027", "C0001")  # Step 7 gap: Campaign coverage
+CAMPAIGN_ANCHORS = ("C0027", "C0001")  # lookups; relationship coverage below (Step 7)
+CAMPAIGN_TECH_ANCHORS = ("C0027", "C0024", "C0001")  # C0027, SolarWinds, Frankenstein
+CAMPAIGN_ATTR_ANCHORS = ("C0027", "C0028")  # → G1015, → G0034 (web-verified anchors)
+ASSET_BOUNDARY_ANCHORS = ("T1047", "T1490")  # Assets are ICS-only: honest refusal due
 CAPEC_LOOKUP_ANCHORS = ("CAPEC-555", "CAPEC-116", "CAPEC-98", "CAPEC-163", "CAPEC-70", "CAPEC-557")
 CAPEC_CWE_ANCHORS = ("CAPEC-555", "CAPEC-98", "CAPEC-66")
 CAPEC_PARENT_ANCHORS = ("CAPEC-98", "CAPEC-564", "CAPEC-555")
@@ -192,6 +198,49 @@ def build_attack_questions(gold: dict[str, Any]) -> list[dict[str, Any]]:
             }
         )
 
+    # -- campaign -> techniques used (Step 7: relationship coverage) ---------------
+    for i, cid in enumerate(CAMPAIGN_TECH_ANCHORS, start=1):
+        top5 = _top_level_techniques(gold, attack["campaign_techniques"][cid], 5)
+        cname = attack["objects"][cid]["name"]
+        questions.append(
+            {
+                "id": f"A-CMP-TEC-{i:02d}",
+                "tier": "medium",
+                "question": f"Which techniques did campaign {cid} ({cname}) use?",
+                "expected_template": "campaign_techniques",
+                "task": _task(
+                    f"A-CMP-TEC-{i:02d}", "attack",
+                    f"Which techniques did ATT&CK campaign {cid} use?",
+                    ("Campaign", "Technique"), (cid,),
+                ),
+                "assertions": {"min_records": 5, "must_include_ids": top5},
+            }
+        )
+
+    # -- campaign -> attributed group (Step 7: relationship coverage) --------------
+    for i, cid in enumerate(CAMPAIGN_ATTR_ANCHORS, start=1):
+        groups = attack["campaign_attribution"][cid]
+        cname = attack["objects"][cid]["name"]
+        questions.append(
+            {
+                "id": f"A-CMP-ATT-{i:02d}",
+                "tier": "medium",
+                "question": f"Which group is campaign {cid} ({cname}) attributed to?",
+                "expected_template": "campaign_attribution",
+                "task": _task(
+                    f"A-CMP-ATT-{i:02d}", "attack",
+                    f"Which group is ATT&CK campaign {cid} attributed to?",
+                    ("Campaign", "Group"), (cid,),
+                ),
+                "assertions": {
+                    "min_records": 1,
+                    "max_records": 1,
+                    "must_include_ids": [cid],
+                    "must_include_related": list(groups),
+                },
+            }
+        )
+
     # -- label scan (cap check: LIMIT must bound the result) ----------------------
     questions.append(
         {
@@ -237,6 +286,43 @@ def build_attack_questions(gold: dict[str, Any]) -> list[dict[str, Any]]:
             "assertions": {"expect_empty": True},
         }
     )
+    questions.append(
+        {
+            "id": "A-CMP-NEG-01",
+            "tier": "adversarial",
+            "question": "Techniques for nonexistent campaign C9999 — must return empty.",
+            "expected_template": "campaign_techniques",
+            "task": _task(
+                "A-CMP-NEG-01", "attack",
+                "Which techniques did ATT&CK campaign C9999 use?",
+                ("Campaign", "Technique"), ("C9999",),
+            ),
+            "assertions": {"expect_empty": True},
+        }
+    )
+
+    # -- negative Asset questions (Step 7): Assets exist only in ICS ATT&CK, so the
+    # right answer is an honest schema-boundary refusal — no substitute query, no
+    # invented asset list. These double as a live test of Step 6 abstention.
+    for i, tid in enumerate(ASSET_BOUNDARY_ANCHORS, start=1):
+        name = attack["objects"][tid]["name"]
+        questions.append(
+            {
+                "id": f"A-AST-{i:02d}",
+                "tier": "adversarial",
+                "question": (
+                    f"What assets does {tid} ({name}) target? "
+                    f"(ICS-only concept — must refuse honestly, not invent)"
+                ),
+                "expected_template": "boundary_refusal",
+                "task": _task(
+                    f"A-AST-{i:02d}", "attack",
+                    f"What assets does technique {tid} target?",
+                    ("Technique", "Asset"), (tid,),
+                ),
+                "assertions": {"expect_boundary": True},
+            }
+        )
     return questions
 
 

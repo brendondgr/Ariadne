@@ -765,6 +765,181 @@
    }
   },
   {
+   "id": "A-CMP-TEC-01",
+   "tier": "medium",
+   "question": "Which techniques did campaign C0027 (C0027) use?",
+   "expected_template": "campaign_techniques",
+   "task": {
+    "sub_question_id": "A-CMP-TEC-01",
+    "source": "attack",
+    "text": "Which techniques did ATT&CK campaign C0027 use?",
+    "entities": [
+     "Campaign",
+     "Technique"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "C0027"
+    ],
+    "rationale": "golden evalset"
+   },
+   "assertions": {
+    "min_records": 5,
+    "must_include_ids": [
+     "T1046",
+     "T1047",
+     "T1090",
+     "T1102",
+     "T1105"
+    ]
+   }
+  },
+  {
+   "id": "A-CMP-TEC-02",
+   "tier": "medium",
+   "question": "Which techniques did campaign C0024 (SolarWinds Compromise) use?",
+   "expected_template": "campaign_techniques",
+   "task": {
+    "sub_question_id": "A-CMP-TEC-02",
+    "source": "attack",
+    "text": "Which techniques did ATT&CK campaign C0024 use?",
+    "entities": [
+     "Campaign",
+     "Technique"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "C0024"
+    ],
+    "rationale": "golden evalset"
+   },
+   "assertions": {
+    "min_records": 5,
+    "must_include_ids": [
+     "T1005",
+     "T1018",
+     "T1047",
+     "T1057",
+     "T1069"
+    ]
+   }
+  },
+  {
+   "id": "A-CMP-TEC-03",
+   "tier": "medium",
+   "question": "Which techniques did campaign C0001 (Frankenstein) use?",
+   "expected_template": "campaign_techniques",
+   "task": {
+    "sub_question_id": "A-CMP-TEC-03",
+    "source": "attack",
+    "text": "Which techniques did ATT&CK campaign C0001 use?",
+    "entities": [
+     "Campaign",
+     "Technique"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "C0001"
+    ],
+    "rationale": "golden evalset"
+   },
+   "assertions": {
+    "min_records": 5,
+    "must_include_ids": [
+     "T1005",
+     "T1016",
+     "T1020",
+     "T1033",
+     "T1041"
+    ]
+   }
+  },
+  {
+   "id": "A-CMP-ATT-01",
+   "tier": "medium",
+   "question": "Which group is campaign C0027 (C0027) attributed to?",
+   "expected_template": "campaign_attribution",
+   "task": {
+    "sub_question_id": "A-CMP-ATT-01",
+    "source": "attack",
+    "text": "Which group is ATT&CK campaign C0027 attributed to?",
+    "entities": [
+     "Campaign",
+     "Group"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "C0027"
+    ],
+    "rationale": "golden evalset"
+   },
+   "assertions": {
+    "min_records": 1,
+    "max_records": 1,
+    "must_include_ids": [
+     "C0027"
+    ],
+    "must_include_related": [
+     "G1015"
+    ]
+   }
+  },
+  {
+   "id": "A-CMP-ATT-02",
+   "tier": "medium",
+   "question": "Which group is campaign C0028 (2015 Ukraine Electric Power Attack) attributed to?",
+   "expected_template": "campaign_attribution",
+   "task": {
+    "sub_question_id": "A-CMP-ATT-02",
+    "source": "attack",
+    "text": "Which group is ATT&CK campaign C0028 attributed to?",
+    "entities": [
+     "Campaign",
+     "Group"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "C0028"
+    ],
+    "rationale": "golden evalset"
+   },
+   "assertions": {
+    "min_records": 1,
+    "max_records": 1,
+    "must_include_ids": [
+     "C0028"
+    ],
+    "must_include_related": [
+     "G0034"
+    ]
+   }
+  },
+  {
    "id": "A-SCN-01",
    "tier": "easy",
    "question": "List ATT&CK software entries (bounded scan).",
@@ -843,6 +1018,90 @@
    },
    "assertions": {
     "expect_empty": true
+   }
+  },
+  {
+   "id": "A-CMP-NEG-01",
+   "tier": "adversarial",
+   "question": "Techniques for nonexistent campaign C9999 \u2014 must return empty.",
+   "expected_template": "campaign_techniques",
+   "task": {
+    "sub_question_id": "A-CMP-NEG-01",
+    "source": "attack",
+    "text": "Which techniques did ATT&CK campaign C9999 use?",
+    "entities": [
+     "Campaign",
+     "Technique"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "C9999"
+    ],
+    "rationale": "golden evalset"
+   },
+   "assertions": {
+    "expect_empty": true
+   }
+  },
+  {
+   "id": "A-AST-01",
+   "tier": "adversarial",
+   "question": "What assets does T1047 (Windows Management Instrumentation) target? (ICS-only concept \u2014 must refuse honestly, not invent)",
+   "expected_template": "boundary_refusal",
+   "task": {
+    "sub_question_id": "A-AST-01",
+    "source": "attack",
+    "text": "What assets does technique T1047 target?",
+    "entities": [
+     "Technique",
+     "Asset"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "T1047"
+    ],
+    "rationale": "golden evalset"
+   },
+   "assertions": {
+    "expect_boundary": true
+   }
+  },
+  {
+   "id": "A-AST-02",
+   "tier": "adversarial",
+   "question": "What assets does T1490 (Inhibit System Recovery) target? (ICS-only concept \u2014 must refuse honestly, not invent)",
+   "expected_template": "boundary_refusal",
+   "task": {
+    "sub_question_id": "A-AST-02",
+    "source": "attack",
+    "text": "What assets does technique T1490 target?",
+    "entities": [
+     "Technique",
+     "Asset"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "T1490"
+    ],
+    "rationale": "golden evalset"
+   },
+   "assertions": {
+    "expect_boundary": true
    }
   }
  ]
