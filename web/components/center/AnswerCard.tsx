@@ -2,7 +2,7 @@
 
 import { Fragment } from "react";
 import { motion } from "motion/react";
-import type { AnswerParagraph, WorkbenchRun } from "@/lib/types";
+import type { AnswerParagraph, SynthesisView, WorkbenchRun } from "@/lib/types";
 import { SHADOW } from "@/lib/ui";
 import { fadeSlideUp } from "@/lib/motion";
 import { CopyIcon, ExportIcon, LinkIcon } from "@/components/ui/icons";
@@ -25,6 +25,121 @@ function Paragraph({ paragraph }: { paragraph: AnswerParagraph }) {
         return <ProvenanceChip key={i} refData={seg.ref} />;
       })}
     </p>
+  );
+}
+
+/** Pill summarizing the verification pass: teal when everything the composer
+ *  wrote survived, amber when the verifier had to cut claims or repair
+ *  abstentions — honesty is the feature, so repairs are shown, not hidden. */
+function VerificationPill({ synthesis }: { synthesis: SynthesisView }) {
+  const v = synthesis.verification;
+  if (!v) return null;
+  const clean = v.ok && v.repairedAbstentions === 0;
+  const tone = clean
+    ? { color: "#4E9E96", ring: "rgba(78,158,150,0.5)", bg: "rgba(78,158,150,0.1)" }
+    : { color: "#C9924A", ring: "rgba(201,146,74,0.5)", bg: "rgba(201,146,74,0.1)" };
+  const parts = [
+    `${v.supported}/${v.total} claim${v.total === 1 ? "" : "s"} verified`,
+    `${Math.round(v.unsupportedRate * 100)}% unsupported`,
+  ];
+  if (v.repairedAbstentions) parts.push(`${v.repairedAbstentions} abstention repair(s)`);
+  return (
+    <span
+      className="inline-flex items-center rounded-full px-2 py-px font-mono text-[10.5px]"
+      style={{ color: tone.color, background: tone.bg, boxShadow: `${tone.ring} 0 0 0 1px` }}
+    >
+      {parts.join(" · ")}
+    </span>
+  );
+}
+
+/** The Step 6/7 trust surface: verified claims with citations, honest
+ *  abstentions with their proof (the executed query — or the named schema
+ *  boundary when no query could express the question), and the audit trail of
+ *  claims the verifier cut. */
+function SynthesisBlock({ synthesis }: { synthesis: SynthesisView }) {
+  return (
+    <div className="px-[18px] py-[13px]" style={{ boxShadow: SHADOW.insetBottom }}>
+      <div className="mb-[9px] flex flex-wrap items-center gap-2">
+        <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-text-muted">
+          Verified answer
+        </span>
+        <VerificationPill synthesis={synthesis} />
+      </div>
+
+      {synthesis.claims.map((claim, i) => (
+        <p key={`claim-${i}`} className="m-0 mb-2 text-[13px] leading-[1.6] text-text-soft">
+          <span className="mr-1.5 font-mono text-[10px] uppercase tracking-[0.06em] text-text-muted">
+            {claim.kind === "correlation" ? "corr" : "fact"}
+          </span>
+          {claim.text}{" "}
+          {claim.chips.map((chip, j) => (
+            <span key={j} className="mr-1">
+              <ProvenanceChip refData={chip} />
+            </span>
+          ))}
+        </p>
+      ))}
+
+      {synthesis.abstentions.map((abst, i) => (
+        <div
+          key={`abst-${i}`}
+          className="mb-2 rounded-[8px] px-3 py-2.5"
+          style={{ boxShadow: SHADOW.hairline, background: "rgba(235,230,220,0.03)" }}
+        >
+          <p className="m-0 text-[13px] leading-[1.55] text-text-soft">{abst.statement}</p>
+          <div className="mt-1.5 font-mono text-[11px] leading-[1.5] text-[#c9c6bd]">
+            {abst.query ? (
+              <>
+                <span className="uppercase tracking-[0.06em] text-text-muted">
+                  proof · executed query
+                </span>
+                <div className="whitespace-pre-wrap break-all">{abst.query}</div>
+              </>
+            ) : (
+              <span className="uppercase tracking-[0.06em] text-text-muted">
+                proof · no query executed — the {abst.source} source doesn&apos;t model this
+              </span>
+            )}
+          </div>
+        </div>
+      ))}
+
+      {synthesis.flagged.map((flag, i) => (
+        <div
+          key={`flag-${i}`}
+          className="mb-2 rounded-[8px] px-3 py-2.5"
+          style={{
+            boxShadow: "rgba(201,146,74,0.45) 0 0 0 1px",
+            background: "rgba(201,146,74,0.06)",
+          }}
+        >
+          <div className="mb-0.5 font-mono text-[10px] uppercase tracking-[0.06em] text-secondary">
+            Cut by verifier
+          </div>
+          <p className="m-0 text-[13px] leading-[1.55] text-text-soft line-through decoration-[rgba(201,146,74,0.6)]">
+            {flag.text}
+          </p>
+          {flag.reasons.length > 0 && (
+            <p className="m-0 mt-1 font-mono text-[11px] text-text-muted">
+              {flag.reasons.join("; ")}
+            </p>
+          )}
+        </div>
+      ))}
+
+      {synthesis.notes.map((note, i) => (
+        <p key={`note-${i}`} className="m-0 mb-1 font-mono text-[11px] text-text-muted">
+          ! {note}
+        </p>
+      ))}
+
+      {synthesis.fallbackReason && (
+        <p className="m-0 font-mono text-[11px] text-text-muted">
+          composer: {synthesis.composer} — {synthesis.fallbackReason}
+        </p>
+      )}
+    </div>
   );
 }
 
@@ -99,6 +214,8 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
           <Paragraph key={i} paragraph={p} />
         ))}
       </div>
+
+      {run.answer.synthesis && <SynthesisBlock synthesis={run.answer.synthesis} />}
 
       <div className="px-[18px] py-[13px]" style={{ boxShadow: SHADOW.insetBottom }}>
         <div className="mb-[9px] font-mono text-[10px] uppercase tracking-[0.08em] text-text-muted">
