@@ -2,18 +2,29 @@
 
 ``utils.graph_loader.main.run_graph_health`` raises ``ConnectionError`` as soon
 as any backend is unreachable, which is the wrong shape for a polling endpoint —
-the UI needs a per-backend verdict, not an all-or-nothing exception. This module
-performs the same fast TCP reachability probe per backend (no driver, no
-credentials, short timeout) and folds in Docker container state so a backend that
-is booting can be reported as ``starting`` rather than ``down``.
+the UI needs a per-backend verdict, not an all-or-nothing exception.
+
+A bare TCP probe is not enough: a container can accept connections while its graph
+is empty or its credentials are wrong, which would falsely read as *live*. So this
+module combines two signals — a fast TCP reachability probe (to tell ``down`` from
+``starting`` via Docker state) and the planner's **content** probe (node counts +
+expected labels, the same verdict the real query pipeline trusts). A backend is
+only ``live`` when its port is reachable *and* its graph is actually loaded;
+otherwise it is ``down`` with the reason (empty graph, auth failure, …). The
+content probe carries a short TTL cache, reused here so the 5s UI poll does not
+hammer the backends. Any failure to run the content probe degrades gracefully to
+the TCP verdict — this module never raises.
 """
 
 from __future__ import annotations
 
+import logging
 import socket
 from dataclasses import dataclass
 
 from utils.graph_loader.config import LoaderConfig
+
+logger = logging.getLogger("ariadne.api.health")
 
 # Endpoint fallbacks mirror utils.graph_loader.main.DEFAULT_ENDPOINTS.
 _DEFAULT_ENDPOINTS: dict[str, tuple[str, int]] = {
@@ -32,6 +43,7 @@ class SourceHealth:
     status: str  # "live" | "down" | "starting"
     uri: str
     reason: str | None = None
+    nodes: int | None = None
 
 
 def _endpoint_from_uri(uri: str, fallback: tuple[str, int]) -> tuple[str, int]:
@@ -80,14 +92,63 @@ def _is_starting(docker_available: bool, services: dict[str, str], backend: str)
     return any(token in state for token in ("running", "starting", "created", "restarting"))
 
 
+@dataclass(frozen=True)
+class _ContentVerdict:
+    """Per-backend graph-loaded verdict distilled from the planner content probe."""
+
+    loaded: bool
+    nodes: int
+    reason: str | None
+
+
+# One planner agent is reused across polls so its short-TTL probe cache absorbs the
+# 5s UI refresh instead of reconnecting to both graphs every time. Built lazily and
+# rebuilt only if construction fails (bad config, missing cards, …).
+_content_agent = None  # type: ignore[var-annotated]
+
+
+def _content_verdicts() -> dict[str, _ContentVerdict] | None:
+    """Return {backend: verdict} from the planner content probe, or None on failure.
+
+    The probe checks node counts and expected labels — the same "is the graph
+    actually loaded" test the query pipeline uses — so a reachable-but-empty or
+    unauthorized backend is reported as not loaded. Never raises; on any error it
+    returns ``None`` and the caller degrades to the bare TCP verdict.
+    """
+    global _content_agent
+    try:
+        if _content_agent is None:
+            from utils.planner.agent import PlanningAgent
+
+            _content_agent = PlanningAgent()
+        view = _content_agent.live_sources()
+    except Exception as exc:  # noqa: BLE001 - health must never raise; degrade to TCP
+        logger.info("content probe unavailable; falling back to TCP verdict: %s", exc)
+        _content_agent = None  # force a rebuild next call in case config changed
+        return None
+
+    verdicts: dict[str, _ContentVerdict] = {}
+    for src in view.sources.values():
+        prior = verdicts.get(src.backend)
+        # A backend is loaded if any of its datasets is; keep the richest node count.
+        loaded = bool(src.live) or (prior.loaded if prior else False)
+        nodes = max(int(src.node_count), prior.nodes if prior else 0)
+        reason = None if loaded else (src.reason or (prior.reason if prior else None))
+        verdicts[src.backend] = _ContentVerdict(loaded=loaded, nodes=nodes, reason=reason)
+    return verdicts
+
+
 def live_sources(config: LoaderConfig | None = None) -> list[SourceHealth]:
     """Probe each graph backend and return a per-backend health verdict.
 
-    Never raises: an unreachable backend is reported as ``down`` (or ``starting``
-    when its Docker container is up but the port is not accepting yet).
+    A backend is ``live`` only when its port is reachable *and* its graph is
+    actually loaded (the planner content probe confirms node counts / labels).
+    Reachable but empty/unauthorized reads as ``down`` with the reason; a booting
+    container reads as ``starting``. Never raises.
     """
     config = config or LoaderConfig.from_data_dir()
     docker_available, services, _ = docker_state()
+    verdicts = _content_verdicts()
 
     probes = (
         ("neo4j", config.neo4j_uri),
@@ -97,16 +158,35 @@ def live_sources(config: LoaderConfig | None = None) -> list[SourceHealth]:
     results: list[SourceHealth] = []
     for backend, uri in probes:
         host, port = _endpoint_from_uri(uri, _DEFAULT_ENDPOINTS[backend])
-        if _tcp_reachable(host, port):
-            results.append(SourceHealth(backend=backend, status="live", uri=uri))
-        elif _is_starting(docker_available, services, backend):
-            results.append(
-                SourceHealth(
-                    backend=backend,
-                    status="starting",
-                    uri=uri,
-                    reason=f"container up; endpoint {host}:{port} not accepting yet",
+        if not _tcp_reachable(host, port):
+            if _is_starting(docker_available, services, backend):
+                results.append(
+                    SourceHealth(
+                        backend=backend,
+                        status="starting",
+                        uri=uri,
+                        reason=f"container up; endpoint {host}:{port} not accepting yet",
+                    )
                 )
+            else:
+                results.append(
+                    SourceHealth(
+                        backend=backend,
+                        status="down",
+                        uri=uri,
+                        reason=f"no TCP connection to {host}:{port}",
+                    )
+                )
+            continue
+
+        # Port is reachable — the graph must also be loaded to count as live.
+        verdict = verdicts.get(backend) if verdicts is not None else None
+        if verdict is None:
+            # Content probe unavailable: trust reachability alone (legacy behaviour).
+            results.append(SourceHealth(backend=backend, status="live", uri=uri))
+        elif verdict.loaded:
+            results.append(
+                SourceHealth(backend=backend, status="live", uri=uri, nodes=verdict.nodes)
             )
         else:
             results.append(
@@ -114,7 +194,8 @@ def live_sources(config: LoaderConfig | None = None) -> list[SourceHealth]:
                     backend=backend,
                     status="down",
                     uri=uri,
-                    reason=f"no TCP connection to {host}:{port}",
+                    reason=verdict.reason or "backend reachable but graph not loaded",
+                    nodes=verdict.nodes,
                 )
             )
     return results

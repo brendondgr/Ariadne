@@ -38,6 +38,40 @@ def test_live_sources_never_raises_when_backends_down() -> None:
             assert s.reason  # a down source explains why
 
 
+def test_reachable_but_empty_graph_reads_as_down(monkeypatch) -> None:
+    # The core fix: a backend whose port is open but whose graph is NOT loaded
+    # must read as down (not a false "live"), carrying the reason and node count.
+    monkeypatch.setattr(health, "_tcp_reachable", lambda host, port, timeout=2.0: True)
+    monkeypatch.setattr(health, "docker_state", lambda: (True, {}, None))
+    monkeypatch.setattr(
+        health,
+        "_content_verdicts",
+        lambda: {
+            "neo4j": health._ContentVerdict(loaded=True, nodes=2611, reason=None),
+            "gremlin": health._ContentVerdict(
+                loaded=False, nodes=0, reason="backend up but graph empty (nodes=0 < 1)"
+            ),
+        },
+    )
+
+    sources = {s.backend: s for s in health.live_sources()}
+    assert sources["neo4j"].status == "live" and sources["neo4j"].nodes == 2611
+    assert sources["gremlin"].status == "down"
+    assert sources["gremlin"].nodes == 0
+    assert "empty" in (sources["gremlin"].reason or "")
+
+
+def test_content_probe_failure_degrades_to_tcp(monkeypatch) -> None:
+    # If the content probe can't run, a reachable port still reports live so the
+    # endpoint never regresses to a hard failure.
+    monkeypatch.setattr(health, "_tcp_reachable", lambda host, port, timeout=2.0: True)
+    monkeypatch.setattr(health, "docker_state", lambda: (True, {}, None))
+    monkeypatch.setattr(health, "_content_verdicts", lambda: None)
+
+    for s in health.live_sources():
+        assert s.status == "live"
+
+
 def test_health_endpoint_shape_is_well_formed(monkeypatch) -> None:
     monkeypatch.setattr(
         main,

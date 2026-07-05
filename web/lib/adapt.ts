@@ -106,7 +106,7 @@ export function buildPlannerStages(
   );
   const probeSummary =
     probe
-      .map((s) => `${s.backend} ${s.live ? "LIVE" : "DOWN"} · ${s.live ? s.node_count.toLocaleString() : "—"}`)
+      .map((s) => `${s.backend} ${s.live ? "LIVE" : "DEAD"} · ${s.live ? s.node_count.toLocaleString() : "—"}`)
       .join(" · ") || "no sources probed";
 
   const lastTrace = plan.trace.length ? plan.trace[plan.trace.length - 1] : null;

@@ -4,7 +4,7 @@ import { StatusDot } from "@/components/ui/StatusDot";
 
 const STATE_LABEL: Record<LiveSource["status"], string> = {
   live: "LIVE",
-  down: "DOWN",
+  down: "DEAD",
   starting: "STARTING…",
 };
 
