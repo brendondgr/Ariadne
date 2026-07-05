@@ -52,7 +52,7 @@ def get_health() -> HealthResponse:
     available, services, reason = docker_state()
     sources = [
         LiveSourceModel(
-            backend=s.backend, status=s.status, uri=s.uri, reason=s.reason
+            backend=s.backend, status=s.status, uri=s.uri, reason=s.reason, nodes=s.nodes
         )
         for s in live_sources()
     ]
