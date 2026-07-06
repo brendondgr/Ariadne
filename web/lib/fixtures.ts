@@ -484,6 +484,14 @@ export const wmiCapecRun: WorkbenchRun = {
         ok: true,
       },
     },
+    timings: [
+      { label: "plan", ms: 4 },
+      { label: "attack", ms: 38 },
+      { label: "capec", ms: 51 },
+      { label: "synthesis", ms: 2 },
+      { label: "total", ms: 128 },
+    ],
+    sequencingNotes: [],
   },
   evidence: [
     {

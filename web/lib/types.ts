@@ -129,14 +129,35 @@ export interface JoinIndexEntry {
   name: string;
 }
 
+/** One dependent-sequencing audit entry: a declared-join consumer that was
+ *  seeded from (or skipped because of) its producer's harvested join values. */
+export interface SequencingEntry {
+  consumer: string;
+  producer: string;
+  seed_count: number;
+  truncated: boolean;
+  skipped: string | null;
+}
+
 export interface FederatedEvidence {
   request: string;
   results: SpecialistResult[];
   unsupported: UnsupportedPart[];
   skipped: Record<string, unknown>[];
   partial: boolean;
+  /** Optional: absent on pre-integration payloads and older fixtures. */
+  sequencing?: SequencingEntry[];
   join_index: Record<string, JoinIndexEntry[]>;
   cross_source_join_values: string[];
+}
+
+/** Per-stage wall-clock timings the pipeline records (plan → specialists →
+ *  synthesis → total). Emitted on the `answer` and `done` events. */
+export interface PipelineTimings {
+  plan_ms?: number;
+  specialists?: { sub_question: string; source: string; ms: number }[];
+  synthesis_ms?: number;
+  total_ms?: number;
 }
 
 /* ============================================================
@@ -323,6 +344,10 @@ export interface AnswerContent {
   joinPairs: JoinPair[];
   /** Verified synthesis view, or null when the payload predates Step 6. */
   synthesis: SynthesisView | null;
+  /** Per-stage latency chips ("plan 12ms", …), or null when unavailable. */
+  timings: { label: string; ms: number }[] | null;
+  /** Human-readable dependent-sequencing notes (producer→consumer seeding). */
+  sequencingNotes: string[];
 }
 
 /** A normalized evidence record row in the Evidence tab. */
@@ -537,6 +562,8 @@ export interface ServerAnswer {
   unsupported: UnsupportedPart[];
   /** Verified synthesis (Step 6+). Optional: absent on pre-Step-6 payloads. */
   synthesis?: ServerSynthesis | null;
+  /** Per-stage pipeline latency (Wk 10–11+). Optional on older payloads. */
+  timings?: PipelineTimings;
   status?: RunStatus;
   exit_code?: ExitCode;
 }
@@ -550,7 +577,7 @@ export type QueryEvent =
   | { type: "skipped"; data: { sub_question: string; source: string; reason: string } }
   | { type: "evidence"; data: { evidence: FederatedEvidence } }
   | { type: "answer"; data: ServerAnswer }
-  | { type: "done"; data: { status: RunStatus; exit_code: ExitCode; message?: string } }
+  | { type: "done"; data: { status: RunStatus; exit_code: ExitCode; message?: string; timings?: PipelineTimings } }
   | { type: "error"; data: { message: string } };
 
 export type QueryEventType = QueryEvent["type"];

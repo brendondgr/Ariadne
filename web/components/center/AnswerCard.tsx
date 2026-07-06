@@ -217,6 +217,25 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
 
       {run.answer.synthesis && <SynthesisBlock synthesis={run.answer.synthesis} />}
 
+      {(run.answer.sequencingNotes.length > 0 || run.answer.timings) && (
+        <div className="px-[18px] pb-2.5">
+          {run.answer.sequencingNotes.map((note, i) => (
+            <div key={i} className="mb-1 font-mono text-[10.5px] text-text-muted">
+              ⇢ sequenced: {note}
+            </div>
+          ))}
+          {run.answer.timings && (
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10.5px] text-text-muted">
+              {run.answer.timings.map((t, i) => (
+                <span key={i}>
+                  {t.label} <span className="text-text-soft">{Math.round(t.ms)}ms</span>
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="px-[18px] py-[13px]" style={{ boxShadow: SHADOW.insetBottom }}>
         <div className="mb-[9px] font-mono text-[10px] uppercase tracking-[0.08em] text-text-muted">
           Cross-source join candidates
