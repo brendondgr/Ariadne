@@ -37,7 +37,15 @@ from utils.planner.config import PlannerConfig
 from utils.specialists import build_specialist
 from utils.specialists.config import SpecialistConfig
 from utils.specialists.contracts import SpecialistResult, SpecialistTask
-from utils.specialists.federation import FederatedEvidence, bundle_evidence, status_and_exit
+from utils.specialists.federation import (
+    FederatedEvidence,
+    bundle_evidence,
+    dependency_map,
+    dependency_skip_result,
+    execution_order,
+    harvest_seed_ids,
+    status_and_exit,
+)
 from utils.synthesis.config import SynthesisConfig
 from utils.synthesis.factory import synthesize
 
@@ -243,10 +251,15 @@ def stream_query_events(
             },
         )
 
+        # Mirrors federation.SpecialistRouter.run_plan: declared-join consumers
+        # run after their producer, seeded with its harvested join values.
         results: list[SpecialistResult] = []
         skipped: list[dict[str, Any]] = []
+        sequencing: list[dict[str, Any]] = []
+        deps = dependency_map(plan)
+        by_id: dict[str, SpecialistResult] = {}
         total = len(plan.sub_questions)
-        for index, sq in enumerate(plan.sub_questions):
+        for index, sq in enumerate(execution_order(plan)):
             specialist = _specialist_for(sq.source, agent.cards, specialist_config, specialists)
             if specialist is None:
                 skip = {
@@ -257,15 +270,66 @@ def stream_query_events(
                 skipped.append(skip)
                 yield _sse("skipped", skip)
                 continue
-            result = specialist.run(SpecialistTask.from_sub_question(sq))
+
+            seed_ids: tuple[str, ...] = ()
+            producer_id = deps.get(sq.id)
+            if producer_id:
+                producer = by_id.get(producer_id)
+                if producer is None or not producer.ok:
+                    reason = (
+                        "it was not run" if producer is None
+                        else f"it failed ({producer.error or 'no valid evidence'})"
+                    )
+                    result = dependency_skip_result(
+                        SpecialistTask.from_sub_question(sq),
+                        producer_id=producer_id, reason=reason,
+                    )
+                    results.append(result)
+                    by_id[sq.id] = result
+                    sequencing.append(
+                        {"consumer": sq.id, "producer": producer_id,
+                         "seed_count": 0, "truncated": False, "skipped": reason}
+                    )
+                    yield _sse(
+                        "specialist",
+                        {"result": result.to_dict(), "index": index, "total": total},
+                    )
+                    continue
+                seed_ids, truncated = harvest_seed_ids(
+                    producer, cap=sq.limits.max_result_rows
+                )
+                if not seed_ids:
+                    reason = "it returned no join values"
+                    result = dependency_skip_result(
+                        SpecialistTask.from_sub_question(sq),
+                        producer_id=producer_id, reason=reason,
+                    )
+                    results.append(result)
+                    by_id[sq.id] = result
+                    sequencing.append(
+                        {"consumer": sq.id, "producer": producer_id,
+                         "seed_count": 0, "truncated": False, "skipped": reason}
+                    )
+                    yield _sse(
+                        "specialist",
+                        {"result": result.to_dict(), "index": index, "total": total},
+                    )
+                    continue
+                sequencing.append(
+                    {"consumer": sq.id, "producer": producer_id,
+                     "seed_count": len(seed_ids), "truncated": truncated, "skipped": None}
+                )
+
+            result = specialist.run(SpecialistTask.from_sub_question(sq, seed_ids=seed_ids))
             results.append(result)
+            by_id[sq.id] = result
             yield _sse(
                 "specialist",
                 {"result": result.to_dict(), "index": index, "total": total},
             )
 
         # 4. Bundle through the one shared rule (same code the router and CLI use).
-        evidence = bundle_evidence(plan, results, skipped)
+        evidence = bundle_evidence(plan, results, skipped, sequencing)
         yield _sse("evidence", {"evidence": evidence.to_dict()})
 
         # 5. Compose the grounded answer, then run the synthesis agent's

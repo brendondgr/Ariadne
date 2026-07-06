@@ -19,11 +19,12 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from utils.planner.cards import SourceCardView, load_source_cards
-from utils.planner.schema import Plan
+from utils.planner.join_keys import get_join_key
+from utils.planner.schema import Plan, SubQuestion
 
 from . import build_specialist
 from .config import SpecialistConfig
-from .contracts import SpecialistResult, SpecialistTask
+from .contracts import EvaluatorTrace, SpecialistResult, SpecialistTask
 
 
 @dataclass
@@ -35,6 +36,9 @@ class FederatedEvidence:
     unsupported: list[dict[str, Any]] = field(default_factory=list)
     skipped: list[dict[str, Any]] = field(default_factory=list)
     partial: bool = False
+    # Dependent-sequencing audit trail: one entry per consumer sub-question
+    # that was seeded from (or skipped because of) a producer's join values.
+    sequencing: list[dict[str, Any]] = field(default_factory=list)
 
     def by_source(self) -> dict[str, list[SpecialistResult]]:
         out: dict[str, list[SpecialistResult]] = {}
@@ -80,15 +84,116 @@ class FederatedEvidence:
             "unsupported": list(self.unsupported),
             "skipped": list(self.skipped),
             "partial": self.partial,
+            "sequencing": list(self.sequencing),
             "join_index": self.join_index(),
             "cross_source_join_values": self.cross_source_join_values(),
         }
+
+
+# -- dependent sequencing (join-derived ordering) ---------------------------
+#
+# The proposal's flagship flow is dependent: "retrieve mitigations FOR THOSE
+# IDS" — the ATT&CK task consumes the T-IDs the CAPEC task produces. Ordering
+# is derived from the declared join's canonical key, never invented: the
+# endpoint that reaches the key via a mapping edge (``via_edge``) *produces*
+# join values; the endpoint whose records natively carry the key *consumes*
+# them as seed ids. With exactly two endpoints the dependency is acyclic by
+# construction. Independent sub-questions keep the existing order unchanged.
+
+
+def dependency_map(plan: Plan) -> dict[str, str]:
+    """Map consumer sub-question id -> producer sub-question id, per declared join."""
+    by_source: dict[str, SubQuestion] = {sq.source: sq for sq in plan.sub_questions}
+    deps: dict[str, str] = {}
+    for join in plan.joins:
+        key = get_join_key(join.key)
+        if key is None:
+            continue
+        producer_ds = consumer_ds = None
+        for endpoint in key.endpoints:
+            if endpoint.via_edge:
+                producer_ds = endpoint.dataset
+            else:
+                consumer_ds = endpoint.dataset
+        producer = by_source.get(producer_ds or "")
+        consumer = by_source.get(consumer_ds or "")
+        if producer is not None and consumer is not None and producer.id != consumer.id:
+            deps[consumer.id] = producer.id
+    return deps
+
+
+def execution_order(plan: Plan) -> list[SubQuestion]:
+    """Plan order with each join's producer hoisted before its consumer."""
+    deps = dependency_map(plan)
+    ordered: list[SubQuestion] = []
+    placed: set[str] = set()
+    by_id = {sq.id: sq for sq in plan.sub_questions}
+
+    def place(sq: SubQuestion) -> None:
+        if sq.id in placed:
+            return
+        producer_id = deps.get(sq.id)
+        if producer_id and producer_id in by_id:
+            place(by_id[producer_id])
+        ordered.append(sq)
+        placed.add(sq.id)
+
+    for sq in plan.sub_questions:
+        place(sq)
+    return ordered
+
+
+def harvest_seed_ids(
+    producer: SpecialistResult, *, cap: int
+) -> tuple[tuple[str, ...], bool]:
+    """The producer's join values as consumer seeds, deterministic and bounded.
+
+    Returns ``(seed_ids, truncated)``. Truncation is honest — it is recorded in
+    the sequencing audit trail, never silent — and keeps the consumer's query
+    inside its own ``max_result_rows`` bound.
+    """
+    values = sorted({v for r in producer.records for v in r.join_values})
+    if cap and len(values) > cap:
+        return tuple(values[:cap]), True
+    return tuple(values), False
+
+
+def dependency_skip_result(
+    task: SpecialistTask, *, producer_id: str, reason: str
+) -> SpecialistResult:
+    """An honest empty for a consumer whose producer yielded no join values.
+
+    Mirrors the schema-boundary refusal shape: ok, zero records, NO query
+    executed, the dependency named in the trace — so synthesis renders an
+    abstention rather than the consumer running a broad unseeded query.
+    """
+    return SpecialistResult(
+        task=task,
+        query="",
+        records=[],
+        summary=(
+            f"Skipped: this sub-question depends on {producer_id} for its seed "
+            f"identifiers, but {reason}."
+        ),
+        traces=[
+            EvaluatorTrace(
+                "dependency",
+                ok=True,
+                reasons=[f"producer {producer_id}: {reason}"],
+                detail={"producer": producer_id},
+            )
+        ],
+        ok=True,
+        partial=False,
+        error=None,
+    )
 
 
 def bundle_evidence(
     plan: Plan,
     results: list[SpecialistResult],
     skipped: list[dict[str, Any]],
+    sequencing: list[dict[str, Any]] | None = None,
 ) -> FederatedEvidence:
     """Bundle specialist results for one plan — the *only* place the federated
     ``partial`` flag is computed. The router, the CLI, and the API all bundle
@@ -106,6 +211,7 @@ def bundle_evidence(
         unsupported=[u.to_dict() for u in plan.unsupported],
         skipped=skipped,
         partial=partial,
+        sequencing=list(sequencing or []),
     )
 
 
@@ -163,11 +269,20 @@ class SpecialistRouter:
         return specialist
 
     def run_plan(self, plan: Plan) -> FederatedEvidence:
-        """Dispatch every sub-question to its specialist and bundle the evidence."""
+        """Dispatch every sub-question to its specialist and bundle the evidence.
+
+        Sub-questions bound by a declared join run in dependency order: the
+        producer first, its T-prefixed join values injected as the consumer's
+        ``seed_ids`` (bounded by the consumer's own row limit). Independent
+        sub-questions run exactly as before.
+        """
         results: list[SpecialistResult] = []
         skipped: list[dict[str, Any]] = []
+        sequencing: list[dict[str, Any]] = []
+        deps = dependency_map(plan)
+        by_id: dict[str, SpecialistResult] = {}
 
-        for sq in plan.sub_questions:
+        for sq in execution_order(plan):
             specialist = self._specialist_for(sq.source)
             if specialist is None:
                 skipped.append(
@@ -178,10 +293,47 @@ class SpecialistRouter:
                     }
                 )
                 continue
-            task = SpecialistTask.from_sub_question(sq)
-            results.append(specialist.run(task))
 
-        return bundle_evidence(plan, results, skipped)
+            seed_ids: tuple[str, ...] = ()
+            producer_id = deps.get(sq.id)
+            if producer_id:
+                producer = by_id.get(producer_id)
+                task = SpecialistTask.from_sub_question(sq)
+                if producer is None or not producer.ok:
+                    reason = (
+                        "it was not run" if producer is None
+                        else f"it failed ({producer.error or 'no valid evidence'})"
+                    )
+                    result = dependency_skip_result(task, producer_id=producer_id, reason=reason)
+                    results.append(result)
+                    by_id[sq.id] = result
+                    sequencing.append(
+                        {"consumer": sq.id, "producer": producer_id,
+                         "seed_count": 0, "truncated": False, "skipped": reason}
+                    )
+                    continue
+                seed_ids, truncated = harvest_seed_ids(producer, cap=sq.limits.max_result_rows)
+                if not seed_ids:
+                    reason = "it returned no join values"
+                    result = dependency_skip_result(task, producer_id=producer_id, reason=reason)
+                    results.append(result)
+                    by_id[sq.id] = result
+                    sequencing.append(
+                        {"consumer": sq.id, "producer": producer_id,
+                         "seed_count": 0, "truncated": False, "skipped": reason}
+                    )
+                    continue
+                sequencing.append(
+                    {"consumer": sq.id, "producer": producer_id,
+                     "seed_count": len(seed_ids), "truncated": truncated, "skipped": None}
+                )
+
+            task = SpecialistTask.from_sub_question(sq, seed_ids=seed_ids)
+            result = specialist.run(task)
+            results.append(result)
+            by_id[sq.id] = result
+
+        return bundle_evidence(plan, results, skipped, sequencing)
 
 
 def run_plan(

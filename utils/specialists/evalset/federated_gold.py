@@ -25,14 +25,16 @@ import json
 from pathlib import Path
 from typing import Any
 
+from ..concepts import CONCEPT_ANCHORS
 from .gold_bank import GOLDEN_DIR, load_gold_bank
 
 FEDERATED_GOLD_PATH = GOLDEN_DIR / "federated_gold.json"
 
 # The committed selection rule: a CAPEC pattern is "credential-theft related"
-# when its name contains one of these anchors (case-insensitive). Reviewable
-# by hand; the resulting ids are derived from the snapshot, never typed.
-ANCHOR_TERMS: tuple[str, ...] = ("credential", "password", "authentication")
+# when its name contains one of these anchors (case-insensitive). The terms are
+# the SAME committed vocabulary the pipeline's builder scopes its query with
+# (utils/specialists/concepts.py), so gold and pipeline cannot drift.
+ANCHOR_TERMS: tuple[str, ...] = CONCEPT_ANCHORS["credential theft"]
 
 
 def select_credential_theft_patterns(capec: dict[str, Any]) -> dict[str, str]:

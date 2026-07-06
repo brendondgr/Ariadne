@@ -121,6 +121,19 @@ def _check_join(
             f"{label}: key {join.key!r} is not the canonical bridge "
             f"(expected {resolved.name!r})"
         )
+    else:
+        # Dependent sequencing derives its order from the key's endpoints:
+        # exactly one producer (reaches the key via a mapping edge) and one
+        # consumer (carries the key natively). Two endpoints, one direction —
+        # acyclic by construction; anything else is a mis-declared key.
+        producers = [e.dataset for e in resolved.endpoints if e.via_edge]
+        consumers = [e.dataset for e in resolved.endpoints if not e.via_edge]
+        if len(producers) != 1 or len(consumers) != 1:
+            reasons.append(
+                f"{label}: canonical key must declare exactly one producing and "
+                f"one consuming endpoint (got producers={producers}, "
+                f"consumers={consumers})"
+            )
     return reasons
 
 

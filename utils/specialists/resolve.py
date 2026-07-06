@@ -17,6 +17,7 @@ from typing import Any
 
 from utils.planner.join_keys import get_join_key
 
+from .concepts import concept_terms
 from .contracts import SpecialistTask
 
 # ATT&CK identifier shapes. Order matters: longer/letter-prefixed forms first so
@@ -53,6 +54,10 @@ class ResolvedTask:
     join_key: str | None = None
     join_endpoint: Any | None = None
     stix_types: dict[str, str] = field(default_factory=dict)
+    # Anchor terms for concepts the text names (committed vocabulary in
+    # ``concepts.py``, never model output) — lets a builder scope a query to a
+    # fuzzy concept like "credential theft".
+    concept_terms: tuple[str, ...] = ()
 
     @property
     def has_join(self) -> bool:
@@ -143,4 +148,5 @@ def resolve(task: SpecialistTask, card: Any) -> ResolvedTask:
         join_key=join_key,
         join_endpoint=join_endpoint,
         stix_types=card_stix_types(card),
+        concept_terms=concept_terms(text),
     )
