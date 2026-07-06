@@ -8,7 +8,7 @@ const EVENTS: StampedQueryEvent[] = [
     type: "probe",
     data: {
       live_sources: [
-        { dataset: "attack", backend: "neo4j", endpoint: "bolt://x", live: true, node_count: 4369, observed_labels: [], reason: null },
+        { dataset: "attack", backend: "neo4j", endpoint: "bolt://x", live: true, node_count: 4369, observed_labels: [], reason: "" },
         { dataset: "capec", backend: "gremlin", endpoint: "ws://y", live: false, node_count: 0, observed_labels: [], reason: "down" },
       ],
     },

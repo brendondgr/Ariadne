@@ -201,7 +201,10 @@ describe("buildRun incremental / partial states", () => {
       elapsedMs: 0,
     });
     expect(run.plannerStages).toHaveLength(4);
-    expect(run.lanes).toHaveLength(0);
+    // Routed sub-questions surface immediately as in-flight placeholder lanes
+    // (querying shimmer) until their specialist result arrives.
+    expect(run.lanes.length).toBeGreaterThan(0);
+    expect(run.lanes.every((l) => l.placeholder && l.records.length === 0)).toBe(true);
     expect(run.evidence).toHaveLength(0);
     expect(run.answer.paragraphs).toHaveLength(0);
     // An empty-but-valid bundle keeps the Raw JSON tab happy.

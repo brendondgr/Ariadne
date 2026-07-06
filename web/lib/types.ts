@@ -282,6 +282,8 @@ export interface SpecialistLane {
   records: LaneRecord[];
   /** Live arrival metadata (null for demo turns / pre-integration payloads). */
   arrival?: LaneArrival | null;
+  /** True for a synthesized in-flight lane (specialist started, no result yet). */
+  placeholder?: boolean;
   /** Full task metadata for the task section. */
   task: LaneTask;
   /** All evaluator trace entries in order (includes gate/execute retries). */
