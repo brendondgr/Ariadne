@@ -2,12 +2,13 @@
 
 import { Fragment } from "react";
 import { motion } from "motion/react";
-import type { AnswerParagraph, SynthesisView, WorkbenchRun } from "@/lib/types";
+import type { AnswerParagraph, SynthesisView, WorkbenchRun, StampedQueryEvent } from "@/lib/types";
 import { SHADOW } from "@/lib/ui";
 import { fadeSlideUp } from "@/lib/motion";
 import { CopyIcon, ExportIcon, LinkIcon } from "@/components/ui/icons";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 import { MiniStepper } from "./MiniStepper";
+import { LiveTicker } from "./LiveTicker";
 import { ProvenanceChip } from "./ProvenanceChip";
 import { JoinChip } from "./JoinChip";
 
@@ -144,7 +145,7 @@ function SynthesisBlock({ synthesis }: { synthesis: SynthesisView }) {
 }
 
 /** Skeleton shown while the run streams, before the answer stage completes. */
-function AnswerSkeleton() {
+function AnswerSkeleton({ events = [] }: { events?: StampedQueryEvent[] }) {
   return (
     <div
       className="max-w-[92%] rounded-[4px_13px_13px_13px] bg-surface px-[18px] py-5"
@@ -157,6 +158,9 @@ function AnswerSkeleton() {
         <div className="animate-skel h-3 w-[92%] rounded bg-[rgba(235,230,220,0.08)]" />
         <div className="animate-skel h-3 w-[78%] rounded bg-[rgba(235,230,220,0.08)]" />
         <div className="animate-skel h-3 w-[85%] rounded bg-[rgba(235,230,220,0.08)]" />
+      </div>
+      <div className="mt-4">
+        <LiveTicker events={events} streaming />
       </div>
     </div>
   );
@@ -188,7 +192,7 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
   const cardReplaying = live && replaying;
   const answered = live ? statusOf("answer", "pass") === "pass" : run.status !== "running";
 
-  if (cardReplaying && !answered) return <AnswerSkeleton />;
+  if (cardReplaying && !answered) return <AnswerSkeleton events={run.events} />;
   if (error && live && !replaying) return <AnswerError message={error} />;
 
   const openRawJson = () => {
@@ -216,6 +220,12 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
       </div>
 
       {run.answer.synthesis && <SynthesisBlock synthesis={run.answer.synthesis} />}
+
+      {run.events.length > 0 && (
+        <div className="px-[18px] pb-1">
+          <LiveTicker events={run.events} streaming={cardReplaying} />
+        </div>
+      )}
 
       {(run.answer.sequencingNotes.length > 0 || run.answer.timings) && (
         <div className="px-[18px] pb-2.5">
