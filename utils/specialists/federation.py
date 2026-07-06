@@ -85,6 +85,51 @@ class FederatedEvidence:
         }
 
 
+def bundle_evidence(
+    plan: Plan,
+    results: list[SpecialistResult],
+    skipped: list[dict[str, Any]],
+) -> FederatedEvidence:
+    """Bundle specialist results for one plan — the *only* place the federated
+    ``partial`` flag is computed. The router, the CLI, and the API all bundle
+    through here so their degradation semantics cannot drift.
+    """
+    partial = (
+        bool(plan.partial)
+        or bool(plan.unsupported)
+        or bool(skipped)
+        or any((not r.ok) or r.partial for r in results)
+    )
+    return FederatedEvidence(
+        request=plan.request,
+        results=results,
+        unsupported=[u.to_dict() for u in plan.unsupported],
+        skipped=skipped,
+        partial=partial,
+    )
+
+
+def status_and_exit(
+    *,
+    cards_present: bool,
+    mode: str = "query",
+    plan: Plan | None = None,
+    evidence: FederatedEvidence | None = None,
+) -> tuple[str, int]:
+    """One status/exit-code rule for every pipeline entry point.
+
+    Exit 2 only when no source cards exist; else 1 when the plan (plan mode) or
+    the evidence bundle (query mode) is partial, 0 when clean.
+    """
+    if not cards_present:
+        return "no_sources", 2
+    if mode == "plan":
+        assert plan is not None
+        return ("partial", 1) if plan.partial else ("answered", 0)
+    assert evidence is not None
+    return ("partial", 1) if evidence.partial else ("answered", 0)
+
+
 class SpecialistRouter:
     """Routes a planner ``Plan`` through the source-specific specialists."""
 
@@ -136,19 +181,7 @@ class SpecialistRouter:
             task = SpecialistTask.from_sub_question(sq)
             results.append(specialist.run(task))
 
-        partial = (
-            bool(plan.partial)
-            or bool(plan.unsupported)
-            or bool(skipped)
-            or any((not r.ok) or r.partial for r in results)
-        )
-        return FederatedEvidence(
-            request=plan.request,
-            results=results,
-            unsupported=[u.to_dict() for u in plan.unsupported],
-            skipped=skipped,
-            partial=partial,
-        )
+        return bundle_evidence(plan, results, skipped)
 
 
 def run_plan(

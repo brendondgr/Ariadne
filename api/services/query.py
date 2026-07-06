@@ -37,7 +37,7 @@ from utils.planner.config import PlannerConfig
 from utils.specialists import build_specialist
 from utils.specialists.config import SpecialistConfig
 from utils.specialists.contracts import SpecialistResult, SpecialistTask
-from utils.specialists.federation import FederatedEvidence
+from utils.specialists.federation import FederatedEvidence, bundle_evidence, status_and_exit
 from utils.synthesis.config import SynthesisConfig
 from utils.synthesis.factory import synthesize
 
@@ -123,18 +123,6 @@ def _headline(status: str, evidence: FederatedEvidence | None, cross: list[dict[
     if evidence.unsupported:
         parts.append(f"{len(evidence.unsupported)} part(s) unsupported")
     return "; ".join(parts) + "."
-
-
-def _status_and_exit(
-    *, cards_present: bool, mode: str, plan: Any, evidence: FederatedEvidence | None
-) -> tuple[str, int]:
-    """Mirror the CLI: exit 2 only when no source cards; else 1 if partial, 0 if clean."""
-    if not cards_present:
-        return "no_sources", 2
-    if mode == "plan":
-        return ("partial", 1) if plan.partial else ("answered", 0)
-    assert evidence is not None
-    return ("partial", 1) if evidence.partial else ("answered", 0)
 
 
 def _plan_answer(plan: Any) -> dict[str, Any]:
@@ -234,9 +222,7 @@ def stream_query_events(
         )
 
         if mode == "plan":
-            status, exit_code = _status_and_exit(
-                cards_present=True, mode="plan", plan=plan, evidence=None
-            )
+            status, exit_code = status_and_exit(cards_present=True, mode="plan", plan=plan)
             answer = _plan_answer(plan)
             yield _sse("status", {"phase": "answering", "message": "Composing plan summary"})
             yield _sse("answer", {**answer, "status": status, "exit_code": exit_code})
@@ -278,27 +264,13 @@ def stream_query_events(
                 {"result": result.to_dict(), "index": index, "total": total},
             )
 
-        # 4. Bundle (mirrors federation.SpecialistRouter.run_plan's partial rule).
-        partial = (
-            bool(plan.partial)
-            or bool(plan.unsupported)
-            or bool(skipped)
-            or any((not r.ok) or r.partial for r in results)
-        )
-        evidence = FederatedEvidence(
-            request=plan.request,
-            results=results,
-            unsupported=[u.to_dict() for u in plan.unsupported],
-            skipped=skipped,
-            partial=partial,
-        )
+        # 4. Bundle through the one shared rule (same code the router and CLI use).
+        evidence = bundle_evidence(plan, results, skipped)
         yield _sse("evidence", {"evidence": evidence.to_dict()})
 
         # 5. Compose the grounded answer, then run the synthesis agent's
         # claim-by-claim verification pass over the same evidence.
-        status, exit_code = _status_and_exit(
-            cards_present=True, mode="query", plan=plan, evidence=evidence
-        )
+        status, exit_code = status_and_exit(cards_present=True, evidence=evidence)
         join_index = evidence.join_index()
         cross = [
             {"value": value, "entries": join_index.get(value, [])}

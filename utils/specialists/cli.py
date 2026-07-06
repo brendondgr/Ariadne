@@ -21,7 +21,7 @@ from utils.synthesis.config import SynthesisConfig
 from utils.synthesis.factory import synthesize
 
 from .config import SpecialistConfig
-from .federation import SpecialistRouter
+from .federation import SpecialistRouter, status_and_exit
 
 logger = logging.getLogger("ariadne.specialists.cli")
 
@@ -114,4 +114,4 @@ def run_query_command(
     print("\n=== Federated evidence bundle (JSON) ===")
     print(json.dumps(evidence.to_dict(), indent=2))
 
-    return 1 if evidence.partial else 0
+    return status_and_exit(cards_present=True, evidence=evidence)[1]
