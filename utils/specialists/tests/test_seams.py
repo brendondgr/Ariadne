@@ -160,21 +160,22 @@ def test_seam_partial_rule_single_source_of_truth() -> None:
 
 
 def test_seam_cli_and_api_bundle_through_the_shared_helper() -> None:
-    """Drift guard: neither entry point re-implements the partial rule inline."""
+    """Drift guard: both entry points delegate orchestration to iter_pipeline,
+    and the partial rule exists exactly once, in the shared federation helper."""
     import inspect
 
     import api.services.query as api_query
     import utils.specialists.cli as spec_cli
     import utils.specialists.federation as federation
+    import utils.specialists.pipeline as pipeline
 
     api_src = inspect.getsource(api_query)
     cli_src = inspect.getsource(spec_cli)
-    assert "bundle_evidence" in api_src
-    assert "status_and_exit" in api_src and "status_and_exit" in cli_src
-    # The literal rule exists exactly once, in the shared helper.
+    assert "iter_pipeline" in api_src and "iter_pipeline" in cli_src
     rule = "any((not r.ok) or r.partial for r in results)"
     assert rule in inspect.getsource(federation.bundle_evidence)
-    assert rule not in api_src and rule not in cli_src
+    for src in (api_src, cli_src, inspect.getsource(pipeline)):
+        assert rule not in src
 
 
 # -- Seam 4: FederatedEvidence → SynthesizedAnswer ---------------------------

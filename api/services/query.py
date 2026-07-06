@@ -1,53 +1,35 @@
 """Stream the federated query pipeline as Server-Sent Events.
 
-The pipeline (``PlanningAgent.plan`` → specialists → ``FederatedEvidence``) is
-synchronous and blocking, so this module reuses the exact composition
-``utils.specialists.cli.run_query_command`` performs and yields a real event at
-each boundary the pipeline exposes:
+The pipeline composition lives in ``utils.specialists.pipeline`` — the single
+orchestrator the CLI shares — and yields an event at each boundary:
 
     status(probing) → probe → status(planning) → plan
       → status(querying) → specialist*/skipped* → evidence
       → status(answering) → answer → done
 
-The per-specialist loop mirrors ``federation.SpecialistRouter.run_plan`` (using
-the public ``build_specialist``) so each source's evidence can be emitted as it
-completes, rather than only after the whole bundle is built. The pipeline emits
-*evidence, not prose*; the ``answer`` event keeps the deterministic per-source
-sections and join index the UI renders today, and additionally carries the
-synthesis agent's verified answer under ``answer.synthesis`` — structured
-claims-with-citations that passed the deterministic verification pass, enforced
-abstentions ("the sources don't establish this") with the executed query as
-proof, and the per-claim verdicts for anything that was cut.
+This module only *presents* those events: each raw-object payload is shaped
+into the JSON contract the web UI consumes. The pipeline emits *evidence, not
+prose*; the ``answer`` event keeps the deterministic per-source sections and
+join index the UI renders today, and additionally carries the synthesis
+agent's verified answer under ``answer.synthesis`` plus the per-stage
+``timings`` the pipeline recorded (plan, each specialist, synthesis, total).
 
-The generator is synchronous on purpose: Starlette iterates a sync generator via
-its threadpool, so the blocking graph queries never stall the event loop (health
-polling and other requests stay responsive).
+The generator is synchronous on purpose: Starlette iterates a sync generator
+via its threadpool, so the blocking graph queries never stall the event loop
+(health polling and other requests stay responsive).
 """
 
 from __future__ import annotations
 
-import dataclasses
 import json
 import logging
-from pathlib import Path
 from typing import Any, Iterator
 
 from utils.planner.agent import PlanningAgent
-from utils.planner.config import PlannerConfig
-from utils.specialists import build_specialist
 from utils.specialists.config import SpecialistConfig
-from utils.specialists.contracts import SpecialistResult, SpecialistTask
-from utils.specialists.federation import (
-    FederatedEvidence,
-    bundle_evidence,
-    dependency_map,
-    dependency_skip_result,
-    execution_order,
-    harvest_seed_ids,
-    status_and_exit,
-)
-from utils.synthesis.config import SynthesisConfig
-from utils.synthesis.factory import synthesize
+from utils.specialists.contracts import SpecialistResult
+from utils.specialists.federation import FederatedEvidence
+from utils.specialists.pipeline import PipelineRun, iter_pipeline
 
 logger = logging.getLogger("ariadne.api.query")
 
@@ -158,23 +140,6 @@ def _plan_answer(plan: Any) -> dict[str, Any]:
     }
 
 
-def _specialist_for(
-    source: str,
-    cards: dict[str, Any],
-    config: SpecialistConfig,
-    injected: dict[str, Any] | None,
-) -> Any | None:
-    if injected and source in injected:
-        return injected[source]
-    card = cards.get(source)
-    if card is None:
-        return None
-    try:
-        return build_specialist(source, card, config)
-    except ValueError:
-        return None
-
-
 def stream_query_events(
     question: str,
     *,
@@ -196,166 +161,72 @@ def stream_query_events(
             yield _sse("error", {"message": "Question must not be empty."})
             return
 
-        if agent is None:
-            overrides: dict[str, object] = {"llm_enabled": use_llm}
-            if data_dir is not None:
-                overrides["data_dir"] = Path(data_dir)
-            planner_config = dataclasses.replace(PlannerConfig.from_env(), **overrides)
-            agent = PlanningAgent(planner_config)
-
-        # No source cards → nothing can be answered (CLI exit 2).
-        if not agent.cards:
-            yield _sse("status", {"phase": "probing", "message": "Checking source cards"})
-            yield _sse(
-                "done",
-                {
-                    "status": "no_sources",
-                    "exit_code": 2,
-                    "message": "No source cards found. Build them with: uv run main.py --build all",
-                },
-            )
-            return
-
-        # 1. Probe live sources (real content probe: node counts + labels).
-        yield _sse("status", {"phase": "probing", "message": "Probing live graph backends"})
-        live_view = agent.live_sources()
-        yield _sse("probe", {"live_sources": _live_sources_payload(live_view)})
-
-        # 2. Plan (re-probe hits the short-TTL cache from step 1).
-        yield _sse("status", {"phase": "planning", "message": "Planning and routing the question"})
-        plan = agent.plan(question)
-        yield _sse(
-            "plan",
-            {"plan": plan.to_dict(), "target_sources": sorted(plan.target_sources())},
-        )
-
-        if mode == "plan":
-            status, exit_code = status_and_exit(cards_present=True, mode="plan", plan=plan)
-            answer = _plan_answer(plan)
-            yield _sse("status", {"phase": "answering", "message": "Composing plan summary"})
-            yield _sse("answer", {**answer, "status": status, "exit_code": exit_code})
-            yield _sse("done", {"status": status, "exit_code": exit_code})
-            return
-
-        # 3. Run each routed specialist, emitting evidence as it completes.
-        if specialist_config is None:
-            specialist_config = dataclasses.replace(
-                SpecialistConfig.from_env(data_dir=data_dir), llm_enabled=use_llm
-            )
-        yield _sse(
-            "status",
-            {
-                "phase": "querying",
-                "message": "Querying source specialists",
-                "count": len(plan.sub_questions),
-            },
-        )
-
-        # Mirrors federation.SpecialistRouter.run_plan: declared-join consumers
-        # run after their producer, seeded with its harvested join values.
-        results: list[SpecialistResult] = []
-        skipped: list[dict[str, Any]] = []
-        sequencing: list[dict[str, Any]] = []
-        deps = dependency_map(plan)
-        by_id: dict[str, SpecialistResult] = {}
-        total = len(plan.sub_questions)
-        for index, sq in enumerate(execution_order(plan)):
-            specialist = _specialist_for(sq.source, agent.cards, specialist_config, specialists)
-            if specialist is None:
-                skip = {
-                    "sub_question": sq.id,
-                    "source": sq.source,
-                    "reason": f"no specialist available for source {sq.source!r}",
+        run = PipelineRun(question=question, mode=mode)
+        for event, payload in iter_pipeline(
+            question,
+            mode=mode,
+            use_llm=use_llm,
+            data_dir=data_dir,
+            agent=agent,
+            specialists=specialists,
+            specialist_config=specialist_config,
+            run=run,
+        ):
+            if event == "status":
+                yield _sse("status", payload)
+            elif event == "probe":
+                yield _sse("probe", {"live_sources": _live_sources_payload(payload["live_view"])})
+            elif event == "plan":
+                plan = payload["plan"]
+                yield _sse(
+                    "plan",
+                    {"plan": plan.to_dict(), "target_sources": sorted(plan.target_sources())},
+                )
+            elif event == "skipped":
+                yield _sse("skipped", payload)
+            elif event == "specialist":
+                yield _sse(
+                    "specialist",
+                    {
+                        "result": payload["result"].to_dict(),
+                        "index": payload["index"],
+                        "total": payload["total"],
+                    },
+                )
+            elif event == "evidence":
+                yield _sse("evidence", {"evidence": payload["evidence"].to_dict()})
+            elif event == "answer":
+                plan, evidence = payload["plan"], payload["evidence"]
+                status, exit_code = payload["status"], payload["exit_code"]
+                if evidence is None:  # plan mode
+                    answer = _plan_answer(plan)
+                else:
+                    join_index = evidence.join_index()
+                    cross = [
+                        {"value": value, "entries": join_index.get(value, [])}
+                        for value in evidence.cross_source_join_values()
+                    ]
+                    answer = {
+                        "headline": _headline(status, evidence, cross),
+                        "sections": _answer_sections(evidence.results),
+                        "cross_source": cross,
+                        "unsupported": list(evidence.unsupported),
+                        "synthesis": payload["synthesized"].to_dict(),
+                    }
+                yield _sse(
+                    "answer",
+                    {**answer, "status": status, "exit_code": exit_code,
+                     "timings": run.timings},
+                )
+            elif event == "done":
+                done: dict[str, Any] = {
+                    "status": payload["status"],
+                    "exit_code": payload["exit_code"],
+                    "timings": payload.get("timings", {}),
                 }
-                skipped.append(skip)
-                yield _sse("skipped", skip)
-                continue
-
-            seed_ids: tuple[str, ...] = ()
-            producer_id = deps.get(sq.id)
-            if producer_id:
-                producer = by_id.get(producer_id)
-                if producer is None or not producer.ok:
-                    reason = (
-                        "it was not run" if producer is None
-                        else f"it failed ({producer.error or 'no valid evidence'})"
-                    )
-                    result = dependency_skip_result(
-                        SpecialistTask.from_sub_question(sq),
-                        producer_id=producer_id, reason=reason,
-                    )
-                    results.append(result)
-                    by_id[sq.id] = result
-                    sequencing.append(
-                        {"consumer": sq.id, "producer": producer_id,
-                         "seed_count": 0, "truncated": False, "skipped": reason}
-                    )
-                    yield _sse(
-                        "specialist",
-                        {"result": result.to_dict(), "index": index, "total": total},
-                    )
-                    continue
-                seed_ids, truncated = harvest_seed_ids(
-                    producer, cap=sq.limits.max_result_rows
-                )
-                if not seed_ids:
-                    reason = "it returned no join values"
-                    result = dependency_skip_result(
-                        SpecialistTask.from_sub_question(sq),
-                        producer_id=producer_id, reason=reason,
-                    )
-                    results.append(result)
-                    by_id[sq.id] = result
-                    sequencing.append(
-                        {"consumer": sq.id, "producer": producer_id,
-                         "seed_count": 0, "truncated": False, "skipped": reason}
-                    )
-                    yield _sse(
-                        "specialist",
-                        {"result": result.to_dict(), "index": index, "total": total},
-                    )
-                    continue
-                sequencing.append(
-                    {"consumer": sq.id, "producer": producer_id,
-                     "seed_count": len(seed_ids), "truncated": truncated, "skipped": None}
-                )
-
-            result = specialist.run(SpecialistTask.from_sub_question(sq, seed_ids=seed_ids))
-            results.append(result)
-            by_id[sq.id] = result
-            yield _sse(
-                "specialist",
-                {"result": result.to_dict(), "index": index, "total": total},
-            )
-
-        # 4. Bundle through the one shared rule (same code the router and CLI use).
-        evidence = bundle_evidence(plan, results, skipped, sequencing)
-        yield _sse("evidence", {"evidence": evidence.to_dict()})
-
-        # 5. Compose the grounded answer, then run the synthesis agent's
-        # claim-by-claim verification pass over the same evidence.
-        status, exit_code = status_and_exit(cards_present=True, evidence=evidence)
-        join_index = evidence.join_index()
-        cross = [
-            {"value": value, "entries": join_index.get(value, [])}
-            for value in evidence.cross_source_join_values()
-        ]
-        yield _sse(
-            "status",
-            {"phase": "answering", "message": "Composing and verifying the grounded answer"},
-        )
-        synthesized = synthesize(evidence, SynthesisConfig.from_env())
-        answer = {
-            "headline": _headline(status, evidence, cross),
-            "sections": _answer_sections(results),
-            "cross_source": cross,
-            "unsupported": list(evidence.unsupported),
-            "synthesis": synthesized.to_dict(),
-            "status": status,
-            "exit_code": exit_code,
-        }
-        yield _sse("answer", answer)
-        yield _sse("done", {"status": status, "exit_code": exit_code})
+                if payload.get("message"):
+                    done["message"] = payload["message"]
+                yield _sse("done", done)
 
     except Exception as exc:  # noqa: BLE001 - any pipeline failure becomes a clean error event
         logger.exception("query pipeline failed")
