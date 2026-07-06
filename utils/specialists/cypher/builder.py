@@ -113,15 +113,29 @@ class CypherQueryBuilder:
     def _technique_mitigations(
         self, technique_ids: list[str], resolved: ResolvedTask
     ) -> QueryDraft:
-        """MATCH (Technique/SubTechnique)<-[:MITIGATES]-(Mitigation)."""
-        # Use SubTechnique anchor when every seed is a sub-technique
+        """MATCH (Technique/SubTechnique) with OPTIONAL MITIGATES mitigations.
+
+        The anchor covers both labels so a mixed seed set (parents plus
+        sub-techniques, e.g. one harvested from a CAPEC producer) misses
+        nothing, and the mitigation hop is OPTIONAL so a technique with no
+        MITIGATES edges still returns — an honest empty mitigation list, not
+        a silently dropped technique.
+        """
         if _all_subtechnique(tuple(technique_ids)):
             anchor = "SubTechnique"
-        else:
+            match = f"MATCH (t:{anchor}) WHERE t.attack_id IN $ids "
+        elif all(not _SUBTECHNIQUE_RE.match(i) for i in technique_ids):
             anchor = "Technique"
+            match = f"MATCH (t:{anchor}) WHERE t.attack_id IN $ids "
+        else:
+            anchor = "Technique|SubTechnique"
+            match = (
+                "MATCH (t) WHERE (t:Technique OR t:SubTechnique) "
+                "AND t.attack_id IN $ids "
+            )
         query = (
-            f"MATCH (t:{anchor})<-[:MITIGATES]-(m:Mitigation) "
-            f"WHERE t.attack_id IN $ids "
+            f"{match}"
+            f"OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) "
             f"RETURN t.attack_id AS technique_id, t.name AS technique_name, "
             f"m.attack_id AS mitigation_id, m.name AS mitigation_name"
         )

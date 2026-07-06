@@ -27,6 +27,7 @@ import type {
   LiveSource,
   MicroStep,
   MiniStep,
+  PipelineTimings,
   Plan,
   PlannerStage,
   ProbeSource,
@@ -370,8 +371,34 @@ export function buildSynthesis(synthesis: ServerSynthesis | null | undefined): S
   };
 }
 
-export function buildAnswer(answer: ServerAnswer | null, joinKey: string): AnswerContent {
-  if (!answer) return { paragraphs: [], joinPairs: [], synthesis: null };
+/** Project the pipeline's per-stage timings into ordered latency chips. */
+export function buildTimings(timings: PipelineTimings | null | undefined): AnswerContent["timings"] {
+  if (!timings) return null;
+  const chips: { label: string; ms: number }[] = [];
+  if (timings.plan_ms !== undefined) chips.push({ label: "plan", ms: timings.plan_ms });
+  for (const s of timings.specialists ?? []) chips.push({ label: s.source, ms: s.ms });
+  if (timings.synthesis_ms !== undefined) chips.push({ label: "synthesis", ms: timings.synthesis_ms });
+  if (timings.total_ms !== undefined) chips.push({ label: "total", ms: timings.total_ms });
+  return chips.length ? chips : null;
+}
+
+/** Human-readable dependent-sequencing notes from the evidence audit trail. */
+export function buildSequencingNotes(evidence: FederatedEvidence | null): string[] {
+  return (evidence?.sequencing ?? []).map((s) =>
+    s.skipped
+      ? `${s.consumer} skipped — producer ${s.producer}: ${s.skipped}`
+      : `${s.consumer} seeded with ${s.seed_count} join value(s) from ${s.producer}` +
+        (s.truncated ? " (truncated)" : ""),
+  );
+}
+
+export function buildAnswer(
+  answer: ServerAnswer | null,
+  joinKey: string,
+  evidence: FederatedEvidence | null = null,
+): AnswerContent {
+  if (!answer)
+    return { paragraphs: [], joinPairs: [], synthesis: null, timings: null, sequencingNotes: [] };
 
   const paragraphs: AnswerParagraph[] = [];
   if (answer.headline) paragraphs.push({ segments: [{ kind: "text", text: answer.headline }] });
@@ -416,6 +443,8 @@ export function buildAnswer(answer: ServerAnswer | null, joinKey: string): Answe
     paragraphs,
     joinPairs: buildJoinPairs(answer.cross_source),
     synthesis: buildSynthesis(answer.synthesis),
+    timings: buildTimings(answer.timings),
+    sequencingNotes: buildSequencingNotes(evidence),
   };
 }
 
@@ -549,7 +578,7 @@ export function buildRun(inputs: RunInputs): WorkbenchRun {
     stepper: buildStepper(plan, evidence, wbLive, status),
     plannerStages: plan ? buildPlannerStages(plan, probe, drafter) : [],
     lanes: evidence ? evidence.results.map(buildLane) : [],
-    answer: buildAnswer(answer, joinKey),
+    answer: buildAnswer(answer, joinKey, evidence),
     evidence: evidence ? buildEvidenceRows(evidence) : [],
     joinIndex: evidence ? buildJoinIndex(evidence, joinKey) : [],
     joinKey,

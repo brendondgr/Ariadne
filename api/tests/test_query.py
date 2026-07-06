@@ -159,7 +159,13 @@ def test_query_mode_event_order_and_shapes() -> None:
     assert len(answer["cross_source"]) == 1 and answer["cross_source"][0]["value"] == "T1047"
 
     done = dict(events)["done"]
-    assert done == {"status": "answered", "exit_code": 0}
+    assert done["status"] == "answered" and done["exit_code"] == 0
+    # Per-stage latency (Wk 10-11): plan, each specialist, synthesis, total.
+    timings = done["timings"]
+    assert {"plan_ms", "specialists", "synthesis_ms", "total_ms"} <= set(timings)
+    assert len(timings["specialists"]) == 2
+    # The answer event mirrors the same timings for the UI.
+    assert dict(events)["answer"]["timings"] == timings
 
 
 def test_answer_carries_verified_synthesis() -> None:

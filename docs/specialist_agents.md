@@ -111,6 +111,15 @@ in the `ATTACK` taxonomy (the live `MAPS_TO` set also contains `WASC` entries).
 A `SpecialistResult` carries the validated query, the records, a grounded
 summary, the evaluator traces, and (per record) full provenance.
 
+> **Integration-frozen seams (Wk 10–11).** The four boundary contracts are frozen as the
+> end-to-end integration seams and guarded by contract tests: `Plan → SpecialistTask`
+> (`from_sub_question`, no silent field drops), `Specialist → SpecialistResult`
+> (`EvidenceRecord` + non-null `Provenance`, ATTACK-only join values from Gremlin),
+> `results → FederatedEvidence` (one shared `partial` rule), and
+> `FederatedEvidence → SynthesizedAnswer` (every rendered claim resolves to a retrieved
+> record; empties abstain with query proof). Changes to these shapes require updating the
+> seam tests deliberately.
+
 ## Federation (weaving into the planner)
 
 `federation.py` takes a planner `Plan` and routes each sub-question to the
@@ -119,6 +128,41 @@ specialist serving its source, returning a `FederatedEvidence` bundle with a
 cross-source candidate). The handoff is **evidence, not prose**: the federation
 indexes the join; it does **not** perform the cross-source join or compose the
 final answer — that remains the synthesis agent's job.
+
+**Dependent sequencing (Wk 10–11).** Sub-questions bound by a declared join run
+in dependency order, derived from the canonical key's endpoints — the endpoint
+that reaches the key via a mapping edge (CAPEC via `MAPS_TO`) *produces* join
+values; the endpoint whose records natively carry the key (ATT&CK `attack_id`)
+*consumes* them. The producer runs first; its T-prefixed `join_values` are
+harvested, deduped, sorted, capped at the consumer's `max_result_rows` (honest
+truncation, recorded), and injected as the consumer task's `seed_ids`. A
+producer that fails or yields zero join values skips the consumer into a
+dependency abstention (ok, zero records, NO query executed, the dependency
+named in the trace) — never a broad unseeded query. Each seeded/skipped
+consumer is recorded in `FederatedEvidence.sequencing`. Independent
+sub-questions run exactly as before. The A-vs-B decision (parallel+join vs
+sequencing) was made on evidence: the parallel run failed the snapshot-derived
+credential-theft gold (0/64 mitigation pairs, 84-vs-18 correlation set); the
+sequenced run reproduces it exactly (see `docs/changelog.jsonl` and
+`utils/specialists/tests/golden/option{A,B}_verdict.json`).
+
+**One pipeline orchestrator.** `pipeline.py` owns the whole composition —
+probe → plan → sequenced specialists → bundle → synthesize — as
+`iter_pipeline()`, a synchronous generator yielding raw-object events at every
+boundary; `run_pipeline()` drains it into a `PipelineRun`. The CLI
+(`cli.py::run_query_command`) and the API (`api/services/query.py`) are pure
+presentation over the same events, so status/exit semantics cannot diverge
+(`bundle_evidence()`/`status_and_exit()` in `federation.py` are the single
+partial/exit rule). The run records per-stage wall-clock timings (`plan_ms`,
+per-specialist `ms`, `synthesis_ms`, `total_ms`) for the Wk 11–13 evaluation,
+and `PIPELINE_TIMEOUT_S` (default 120 s) bounds multi-hop runs by honestly
+skipping specialists that would start past the deadline.
+
+**Concept vocabulary.** `concepts.py` holds the committed concept→anchor-term
+map (e.g. "credential theft" → credential/password/authentication). The
+Gremlin `capec_maps_to` template scopes its name filter with these terms, and
+`evalset/federated_gold.py` selects the expected pattern set with the *same*
+terms — one source of truth, so the pipeline and its gold cannot drift.
 
 ## Configuration
 

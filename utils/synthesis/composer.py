@@ -29,23 +29,40 @@ from .config import SynthesisConfig
 from .contracts import Abstention, Citation, Claim, SynthesizedAnswer
 
 
-def abstention_statement(source: str, text: str, query: str = "") -> str:
+def abstention_statement(
+    source: str, text: str, query: str = "", *, dependency: str = ""
+) -> str:
     """The canonical abstention sentence for one empty-but-clean sub-question.
 
-    Two honest-empty shapes exist: a query that ran cleanly and matched
-    nothing (proof = the executed query), and a schema boundary where no
-    query could express the question at all (proof = the specialist's
-    boundary trace; ``query`` is empty by design).
+    Three honest-empty shapes exist: a query that ran cleanly and matched
+    nothing (proof = the executed query), a schema boundary where no query
+    could express the question at all (proof = the specialist's boundary
+    trace; ``query`` is empty by design), and a dependency skip where the
+    producing sub-question yielded no seed identifiers (proof = the
+    federation's dependency trace; ``query`` again empty by design).
     """
     if query:
         return (
             f"The {source} source doesn't establish this — the executed query ran "
             f"cleanly and returned no matching records for: {text}"
         )
+    if dependency:
+        return (
+            f"The {source} source doesn't establish this — the sub-question it "
+            f"depends on ({dependency}) produced no seed identifiers, so no query "
+            f"was executed for: {text}"
+        )
     return (
         f"The {source} source doesn't establish this — it doesn't model the "
         f"entities this question asks about, so no query was executed for: {text}"
     )
+
+
+def _dependency_producer(result: SpecialistResult) -> str:
+    for trace in result.traces:
+        if trace.step == "dependency":
+            return str((trace.detail or {}).get("producer", ""))
+    return ""
 
 
 def abstention_for(result: SpecialistResult) -> Abstention:
@@ -54,7 +71,10 @@ def abstention_for(result: SpecialistResult) -> Abstention:
         sub_question_id=result.task.sub_question_id,
         source=result.task.source,
         statement=abstention_statement(
-            result.task.source, result.task.text, result.query
+            result.task.source,
+            result.task.text,
+            result.query,
+            dependency=_dependency_producer(result),
         ),
         query=result.query,
     )

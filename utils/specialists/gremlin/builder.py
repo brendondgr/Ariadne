@@ -151,6 +151,14 @@ class GremlinQueryBuilder:
         if resolved.seed_ids:
             params["ids"] = [_capec_gremlin_id(s) for s in resolved.seed_ids]
             anchor = 'g.V().hasLabel("AttackPattern").has("id", within(ids))'
+        elif resolved.concept_terms:
+            # Scope the mapping scan to the concept the question names
+            # (committed vocabulary in concepts.py) instead of every pattern.
+            pattern = "|".join(resolved.concept_terms)
+            anchor = (
+                'g.V().hasLabel("AttackPattern")'
+                f'.has("name", TextP.regex("(?i).*({pattern}).*"))'
+            )
         else:
             anchor = 'g.V().hasLabel("AttackPattern")'
 

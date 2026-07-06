@@ -88,7 +88,7 @@ All settings live in a single git-ignored `.env` (`cp .env.example .env` — eve
 
 ## Status
 
-The data layer, the federated planning agent, and both query specialists (Cypher over Neo4j, Gremlin over a Neptune-style server) are complete and run end-to-end against the live stack. An analyst web workbench sits on top — a chat view over the live pipeline plus an interactive graph explorer. Next up: the synthesis/reporting prose agent and formal component + end-to-end evaluation. See the [week-by-week roadmap](#roadmap--week-by-week) at the bottom for the full milestone checklist.
+The data layer, the federated planning agent, both query specialists (Cypher over Neo4j, Gremlin over a Neptune-style server), the verifying synthesis agent, and the end-to-end pipeline integration are complete: one `run_pipeline` orchestrator (shared by the CLI and the API) runs plan → dependency-sequenced specialists → verified synthesis with per-stage latency, and the proposal's flagship credential-theft flow matches its snapshot-derived gold live (18/18 cross-source correlations, 64/64 technique→mitigation pairs, unsupported-claim rate 0%). An analyst web workbench sits on top — a chat view over the live pipeline plus an interactive graph explorer. Next up: formal component + end-to-end evaluation. See the [week-by-week roadmap](#roadmap--week-by-week) at the bottom for the full milestone checklist.
 
 ## Documentation
 
@@ -146,8 +146,8 @@ Full task rationale in [`docs/goals.md`](docs/goals.md); change history in [`doc
 
 | Status | Weeks | Phase | Task | Difficulty |
 | :---: |-------|-------|------|------------|
-| ⬜ | Wk 10 | Agents | Synthesis and reporting agent | High |
-| ⬜ | Wk 10–11 | Agents | End-to-end integration and pipeline wiring | Medium |
+| ✅ | Wk 10 | Agents | Synthesis and reporting agent | High |
+| ✅ | Wk 10–11 | Agents | End-to-end integration and pipeline wiring | Medium |
 | ⬜ | Wk 11–13 | Evaluation | Component-level evaluation | Medium |
 | ⬜ | Wk 12–13 | Evaluation | End-to-end evaluation and LLM evaluator | Medium |
 

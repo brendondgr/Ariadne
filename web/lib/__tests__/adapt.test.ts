@@ -515,3 +515,53 @@ describe("buildSynthesis: the verified answer view", () => {
     expect(buildSynthesis(undefined)).toBeNull();
   });
 });
+
+describe("buildTimings / buildSequencingNotes (Wk 10-11 integration)", () => {
+  it("projects pipeline timings into ordered latency chips", async () => {
+    const { buildTimings } = await import("../adapt");
+    expect(
+      buildTimings({
+        plan_ms: 3.2,
+        specialists: [
+          { sub_question: "q1", source: "capec", ms: 41 },
+          { sub_question: "q2", source: "attack", ms: 12 },
+        ],
+        synthesis_ms: 0.4,
+        total_ms: 90.1,
+      }),
+    ).toEqual([
+      { label: "plan", ms: 3.2 },
+      { label: "capec", ms: 41 },
+      { label: "attack", ms: 12 },
+      { label: "synthesis", ms: 0.4 },
+      { label: "total", ms: 90.1 },
+    ]);
+    expect(buildTimings(null)).toBeNull();
+    expect(buildTimings(undefined)).toBeNull();
+    expect(buildTimings({})).toBeNull();
+  });
+
+  it("renders sequencing audit entries as readable notes", async () => {
+    const { buildSequencingNotes } = await import("../adapt");
+    const evidence = {
+      request: "q",
+      results: [],
+      unsupported: [],
+      skipped: [],
+      partial: false,
+      sequencing: [
+        { consumer: "q2", producer: "q1", seed_count: 18, truncated: false, skipped: null },
+        { consumer: "q3", producer: "q1", seed_count: 0, truncated: false, skipped: "it returned no join values" },
+      ],
+      join_index: {},
+      cross_source_join_values: [],
+    };
+    expect(buildSequencingNotes(evidence)).toEqual([
+      "q2 seeded with 18 join value(s) from q1",
+      "q3 skipped — producer q1: it returned no join values",
+    ]);
+    // Pre-integration payloads (no sequencing field) yield no notes.
+    expect(buildSequencingNotes({ ...evidence, sequencing: undefined })).toEqual([]);
+    expect(buildSequencingNotes(null)).toEqual([]);
+  });
+});
