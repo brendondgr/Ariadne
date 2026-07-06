@@ -565,3 +565,52 @@ describe("buildTimings / buildSequencingNotes (Wk 10-11 integration)", () => {
     expect(buildSequencingNotes(null)).toEqual([]);
   });
 });
+
+describe("lane arrival metadata (Wk live-animation)", () => {
+  it("threads laneMeta into lanes and stamps record order", () => {
+    const base = wmiCapecRun;
+    const evidence = base.federated;
+    const inputs: RunInputs = {
+      id: "t1",
+      question: evidence.request,
+      mode: "query",
+      drafter: "deterministic",
+      liveSources: [],
+      plan: null,
+      evidence,
+      answer: null,
+      status: "answered",
+      exitCode: 0,
+      elapsedMs: 1200,
+      laneMeta: {
+        "lane-neo4j": {
+          subQuestion: "q2",
+          startedMs: 300,
+          arrivedMs: 950,
+          seedCount: 18,
+          producer: "q1",
+          order: 2,
+        },
+      },
+    };
+    const run = buildRun(inputs);
+    const neo = run.lanes.find((l) => l.id === "lane-neo4j");
+    expect(neo?.arrival).toEqual({
+      subQuestion: "q2",
+      startedMs: 300,
+      arrivedMs: 950,
+      seedCount: 18,
+      producer: "q1",
+      order: 2,
+    });
+    // Lanes without metadata stay null (demo turns, older payloads).
+    const grem = run.lanes.find((l) => l.id === "lane-gremlin");
+    expect(grem?.arrival ?? null).toBeNull();
+    // Every record carries its 1-based emission order.
+    for (const lane of run.lanes) {
+      expect(lane.records.map((r) => r.order)).toEqual(
+        lane.records.map((_, i) => i + 1),
+      );
+    }
+  });
+});

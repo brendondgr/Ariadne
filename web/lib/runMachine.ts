@@ -4,13 +4,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type {
   ExitCode,
   FederatedEvidence,
+  LaneArrival,
   Plan,
   ProbeSource,
-  QueryEvent,
   RunStatus,
   ServerAnswer,
   SpecialistResult,
   StageStatus,
+  StampedQueryEvent,
   WorkbenchRun,
 } from "./types";
 import { buildRun, type RunInputs } from "./adapt";
@@ -153,7 +154,10 @@ export function useRunMachine(): RunMachine {
   const exitCode = useRef<ExitCode>(0);
   const startedAt = useRef(0);
   const createdAt = useRef(0);
-  const events = useRef<QueryEvent[]>([]);
+  const events = useRef<StampedQueryEvent[]>([]);
+  // Live arrival metadata per lane id, stamped as SSE events land.
+  const laneMeta = useRef<Record<string, LaneArrival>>({});
+  const arrivalCount = useRef(0);
 
   const clearTimers = useCallback(() => {
     timers.current.forEach((t) => clearTimeout(t));
@@ -198,6 +202,7 @@ export function useRunMachine(): RunMachine {
       elapsedMs: startedAt.current ? Math.round(performance.now() - startedAt.current) : 0,
       createdAt: createdAt.current,
       events: [...events.current],
+      laneMeta: { ...laneMeta.current },
     };
     upsertRun(buildRun(inputs));
   }, [upsertRun]);
@@ -265,6 +270,8 @@ export function useRunMachine(): RunMachine {
       startedAt.current = performance.now();
       createdAt.current = Date.now();
       events.current = [];
+      laneMeta.current = {};
+      arrivalCount.current = 0;
       setStreamingRunId(id);
       setActiveRunId(id);
       rebuild(); // append the question + an empty in-progress turn immediately
@@ -283,7 +290,8 @@ export function useRunMachine(): RunMachine {
       void streamQuery(
         req,
         (event) => {
-          events.current = [...events.current, event];
+          const receivedMs = Math.round(performance.now() - startedAt.current);
+          events.current = [...events.current, { ...event, receivedMs }];
           switch (event.type) {
             case "status": {
               const phase = event.data.phase;
@@ -306,15 +314,44 @@ export function useRunMachine(): RunMachine {
               pushTimer(() => mergeStatus({ "stage-emit": "pass", plan: "pass" }), 280);
               rebuild();
               break;
+            case "specialist-start": {
+              // The pipeline announces the run the moment it starts — light the
+              // lane up as running (or resolve it instantly for announced skips).
+              const backend = event.data.source === "capec" ? "gremlin" : "neo4j";
+              laneMeta.current[`lane-${backend}`] = {
+                subQuestion: event.data.sub_question,
+                startedMs: receivedMs,
+                arrivedMs: null,
+                seedCount: event.data.seed_count,
+                producer: event.data.producer,
+                order: null,
+              };
+              if (!event.data.skipped) {
+                mergeStatus({ specialists: "running", [`lane-${backend}`]: "running" });
+              }
+              rebuild();
+              break;
+            }
             case "specialist": {
               results.current = [...results.current, event.data.result];
               const backend = backendOf(event.data.result);
+              const laneId = `lane-${backend}`;
+              arrivalCount.current += 1;
+              const started = laneMeta.current[laneId];
+              laneMeta.current[laneId] = {
+                subQuestion: event.data.result.task.sub_question_id,
+                startedMs: started?.startedMs ?? null,
+                arrivedMs: receivedMs,
+                seedCount: started?.seedCount ?? 0,
+                producer: started?.producer ?? null,
+                order: arrivalCount.current,
+              };
               const laneStatus: StageStatus = event.data.result.ok
                 ? "pass"
                 : event.data.result.partial
                   ? "partial"
                   : "fail";
-              mergeStatus({ specialists: "running", [`lane-${backend}`]: laneStatus });
+              mergeStatus({ specialists: "running", [laneId]: laneStatus });
               rebuild();
               break;
             }
