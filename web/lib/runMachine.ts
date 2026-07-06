@@ -15,7 +15,6 @@ import type {
 } from "./types";
 import { buildRun, type RunInputs } from "./adapt";
 import { streamQuery, type QueryRequestBody } from "./api";
-import { initialRun, seededRuns } from "./fixtures";
 
 /**
  * The event-driven, multi-turn run controller. `submit()` appends a NEW turn to
@@ -129,8 +128,10 @@ function inProgressEvidence(
 }
 
 export function useRunMachine(): RunMachine {
-  const [runs, setRuns] = useState<WorkbenchRun[]>(seededRuns);
-  const [activeRunId, setActiveRunId] = useState<string>(initialRun.id);
+  // Start on a clean, empty thread — no seeded demo turns. Real turns arrive
+  // via submit(); the empty state is the same one newConversation() produces.
+  const [runs, setRuns] = useState<WorkbenchRun[]>([]);
+  const [activeRunId, setActiveRunId] = useState<string>("");
   const [streamingRunId, setStreamingRunId] = useState<string | null>(null);
   const [liveStatus, setLiveStatus] = useState<Record<string, StageStatus>>({});
   const [replaying, setReplaying] = useState(false);

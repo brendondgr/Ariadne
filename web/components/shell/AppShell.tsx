@@ -41,7 +41,7 @@ export function AppShell({ header, left, center, inspector, inspectorDrawer, hid
           <>
             {/* desktop conversations rail */}
             <aside
-              className="hidden min-h-0 flex-[0_0_268px] flex-col bg-surface md:flex"
+              className="hidden min-h-0 min-w-0 flex-[0_0_212px] flex-col bg-surface md:flex"
               style={{ boxShadow: "rgba(235,230,220,0.14) 1px 0 0 0" }}
             >
               {left}

@@ -33,28 +33,32 @@ export function TraceTab({ run }: { run: WorkbenchRun }) {
 
   return (
     <div className="relative">
-      {/* the thread: a dim rail with a teal fill that grows as stages pass */}
-      <div
-        aria-hidden
-        className="absolute bottom-[18px] left-2 top-2 w-[1.5px]"
-        style={{ background: "rgba(78,158,150,0.18)" }}
-      />
-      <motion.div
-        aria-hidden
-        className="absolute bottom-[18px] left-2 top-2 w-[1.5px] origin-top bg-primary"
-        animate={{ scaleY: totalStages ? completedStages / totalStages : 1 }}
-        transition={{ duration: 0.4, ease: EASE_OUT }}
-      />
-
-      {run.plannerStages.map((stage) => (
-        <TraceStage
-          key={stage.id}
-          stage={stage}
-          status={statusOf(stage.id, stage.status)}
-          open={!!openMap[stage.id]}
-          onToggle={() => setOpenMap((m) => ({ ...m, [stage.id]: !m[stage.id] }))}
+      {/* planner timeline — the rail is bounded to the planner stages so it does
+          not trail down into the Specialists section past the last stage */}
+      <div className="relative">
+        {/* the thread: a dim rail with a teal fill that grows as stages pass */}
+        <div
+          aria-hidden
+          className="absolute bottom-[18px] left-2 top-2 w-[1.5px]"
+          style={{ background: "rgba(78,158,150,0.18)" }}
         />
-      ))}
+        <motion.div
+          aria-hidden
+          className="absolute bottom-[18px] left-2 top-2 w-[1.5px] origin-top bg-primary"
+          animate={{ scaleY: totalStages ? completedStages / totalStages : 1 }}
+          transition={{ duration: 0.4, ease: EASE_OUT }}
+        />
+
+        {run.plannerStages.map((stage) => (
+          <TraceStage
+            key={stage.id}
+            stage={stage}
+            status={statusOf(stage.id, stage.status)}
+            open={!!openMap[stage.id]}
+            onToggle={() => setOpenMap((m) => ({ ...m, [stage.id]: !m[stage.id] }))}
+          />
+        ))}
+      </div>
 
       <div className="mb-2.5 ml-0.5 mt-4 flex items-center gap-2">
         <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-text-muted">
