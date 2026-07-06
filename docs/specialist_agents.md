@@ -111,6 +111,15 @@ in the `ATTACK` taxonomy (the live `MAPS_TO` set also contains `WASC` entries).
 A `SpecialistResult` carries the validated query, the records, a grounded
 summary, the evaluator traces, and (per record) full provenance.
 
+> **Integration-frozen seams (Wk 10–11).** The four boundary contracts are frozen as the
+> end-to-end integration seams and guarded by contract tests: `Plan → SpecialistTask`
+> (`from_sub_question`, no silent field drops), `Specialist → SpecialistResult`
+> (`EvidenceRecord` + non-null `Provenance`, ATTACK-only join values from Gremlin),
+> `results → FederatedEvidence` (one shared `partial` rule), and
+> `FederatedEvidence → SynthesizedAnswer` (every rendered claim resolves to a retrieved
+> record; empties abstain with query proof). Changes to these shapes require updating the
+> seam tests deliberately.
+
 ## Federation (weaving into the planner)
 
 `federation.py` takes a planner `Plan` and routes each sub-question to the

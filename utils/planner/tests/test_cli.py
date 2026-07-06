@@ -60,3 +60,14 @@ def test_cli_handles_no_cards(capsys) -> None:
     out = capsys.readouterr().out
     assert "No source cards" in out
     assert code == 2
+
+
+def test_cli_summary_shows_per_source_limits_from_cards(capsys) -> None:
+    code = run_plan_command(DEMO, agent=_agent())
+    out = capsys.readouterr().out
+    # every routed sub-question reports its bounds, sourced from the card
+    limit_lines = [ln for ln in out.splitlines() if ln.strip().startswith("limits[")]
+    assert limit_lines, "summary must show per-sub-question limits"
+    assert all("(from card)" in ln for ln in limit_lines)
+    assert any("rows=1000" in ln and "timeout_ms=5000" in ln for ln in limit_lines)
+    assert code == 0

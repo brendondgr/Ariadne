@@ -58,6 +58,15 @@ def run_plan_command(
     drafter = plan.trace[-1]["drafter"] if plan.trace else "?"
     print(f"  drafter: {drafter} | iterations: {len(plan.trace)} | partial: {plan.partial}")
     print(f"  routed to: {sorted(plan.target_sources()) or '(none)'}")
+    for sq in plan.sub_questions:
+        limits = sq.limits
+        card = agent.cards.get(sq.source)
+        origin = "card" if card and limits.to_dict() == card.limits() else "fallback"
+        print(
+            f"  limits[{sq.id} -> {sq.source}]: depth={limits.max_traversal_depth}"
+            f" rows={limits.max_result_rows} timeout_ms={limits.query_timeout_ms}"
+            f" (from {origin})"
+        )
     if plan.joins:
         print(f"  joins: {[j.key for j in plan.joins]}")
     if plan.unsupported:

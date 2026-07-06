@@ -69,3 +69,18 @@ def test_default_safety_for_backend_distinct_per_backend() -> None:
     assert "disallowed_clauses" in default_safety_for_backend("neo4j")
     assert "disallowed_steps" in default_safety_for_backend("gremlin")
     assert "disallowed_clauses" not in default_safety_for_backend("gremlin")
+
+
+def test_card_limits_agree_with_specialist_env_defaults() -> None:
+    """Integration seam guard: the planner gate and the specialist connectors
+    must draw the same bounds — a card/env mismatch is a latent integration bug."""
+    from pathlib import Path
+
+    from utils.specialists.config import SpecialistConfig
+
+    spec = SpecialistConfig(data_dir=Path("data"))
+    for backend in ("neo4j", "gremlin"):
+        safety = default_safety_for_backend(backend)
+        assert safety["max_result_rows"] == spec.max_result_rows
+        assert safety["query_timeout_ms"] == spec.query_timeout_ms
+        assert safety["max_traversal_depth"] > 0
