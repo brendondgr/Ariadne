@@ -4,7 +4,7 @@ The pipeline composition lives in ``utils.specialists.pipeline`` — the single
 orchestrator the CLI shares — and yields an event at each boundary:
 
     status(probing) → probe → status(planning) → plan
-      → status(querying) → specialist*/skipped* → evidence
+      → status(querying) → (specialist-start → specialist)*/skipped* → evidence
       → status(answering) → answer → done
 
 This module only *presents* those events: each raw-object payload is shaped
@@ -184,6 +184,8 @@ def stream_query_events(
                 )
             elif event == "skipped":
                 yield _sse("skipped", payload)
+            elif event == "specialist-start":
+                yield _sse("specialist-start", payload)
             elif event == "specialist":
                 yield _sse(
                     "specialist",

@@ -573,6 +573,18 @@ export type QueryEvent =
   | { type: "status"; data: { phase: string; message?: string; count?: number } }
   | { type: "probe"; data: { live_sources: ProbeSource[] } }
   | { type: "plan"; data: { plan: Plan; target_sources: string[] } }
+  | {
+      type: "specialist-start";
+      data: {
+        sub_question: string;
+        source: string;
+        index: number;
+        total: number;
+        seed_count: number;
+        producer: string | null;
+        skipped: string | null;
+      };
+    }
   | { type: "specialist"; data: { result: SpecialistResult; index: number; total: number } }
   | { type: "skipped"; data: { sub_question: string; source: string; reason: string } }
   | { type: "evidence"; data: { evidence: FederatedEvidence } }

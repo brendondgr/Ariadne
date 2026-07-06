@@ -111,7 +111,10 @@ def iter_pipeline(
 
     Event order matches the streaming contract the web UI consumes:
     status(probing) → probe → status(planning) → plan → status(querying)
-    → specialist*/skipped* → evidence → status(answering) → answer → done.
+    → (specialist-start → specialist)*/skipped* → evidence
+    → status(answering) → answer → done. ``specialist-start`` fires the moment
+    a specialist is about to run (with its seeding info), so a UI can animate
+    "now querying <source>" truthfully.
     Pass ``run`` to have the outcome recorded on a caller-owned ``PipelineRun``.
     """
     run = run if run is not None else PipelineRun(question=question, mode=mode)
@@ -218,12 +221,22 @@ def iter_pipeline(
                 by_id[sq.id] = result
                 sequencing.append({"consumer": sq.id, "producer": producer_id,
                                    "seed_count": 0, "truncated": False, "skipped": reason})
+                yield ("specialist-start", {"sub_question": sq.id, "source": sq.source,
+                                            "index": index, "total": total,
+                                            "seed_count": 0, "producer": producer_id,
+                                            "skipped": reason})
                 yield ("specialist", {"result": result, "index": index, "total": total})
                 continue
             sequencing.append({"consumer": sq.id, "producer": producer_id,
                                "seed_count": len(seed_ids), "truncated": truncated,
                                "skipped": None})
 
+        # Announce the run the moment it is true — the UI animates "now
+        # querying <source>" off this, so it must precede the blocking call.
+        yield ("specialist-start", {"sub_question": sq.id, "source": sq.source,
+                                    "index": index, "total": total,
+                                    "seed_count": len(seed_ids),
+                                    "producer": producer_id, "skipped": None})
         t0 = time.monotonic()
         result = specialist.run(SpecialistTask.from_sub_question(sq, seed_ids=seed_ids))
         specialist_timings.append({

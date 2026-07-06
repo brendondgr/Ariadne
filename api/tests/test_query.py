@@ -132,8 +132,13 @@ def test_query_mode_event_order_and_shapes() -> None:
     # Ordered sequence the run machine relies on.
     assert types == [
         "status", "probe", "status", "plan", "status",
-        "specialist", "specialist", "evidence", "status", "answer", "done",
+        "specialist-start", "specialist", "specialist-start", "specialist",
+        "evidence", "status", "answer", "done",
     ]
+
+    starts = [d for e, d in events if e == "specialist-start"]
+    assert [s["index"] for s in starts] == [0, 1]
+    assert {"sub_question", "source", "seed_count", "producer", "skipped"} <= set(starts[0])
 
     probe = dict(events)["probe"]
     assert len(probe["live_sources"]) == 2
