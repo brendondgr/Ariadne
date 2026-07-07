@@ -304,13 +304,20 @@ with `npm run lint`, and test with `npm test` (adapter + fixture contracts).
 
 ## Not Yet in Repo
 
-Planned per roadmap: analyst-facing tables, figures, and network diagrams from
-the synthesis layer, and the web UI rendering of the verified claims
-(`answer.synthesis` is already in the API payload; the workbench still renders
-the deterministic sections). ATT&CK and CAPEC canonical builds and runtime
-loading (`utils/kg_builder/`, `utils/graph_loader/`), the federated planning
-agent (`utils/planner/`), the Cypher/Gremlin query specialists
-(`utils/specialists/`), the synthesis agent with claim verification and
-abstention (`utils/synthesis/`), the FastAPI service (`api/`), and the wired
-Next.js workbench (`web/`) are implemented; Gremlin is the primary CAPEC runtime
-backend.
+ATT&CK and CAPEC canonical builds and runtime loading (`utils/kg_builder/`,
+`utils/graph_loader/`), the federated planning agent (`utils/planner/`), the
+Cypher/Gremlin query specialists (`utils/specialists/`), the synthesis agent
+with claim verification and abstention (`utils/synthesis/`), the FastAPI service
+(`api/`), and the wired Next.js workbench (`web/`) are implemented; Gremlin is
+the primary CAPEC runtime backend. The analyst-facing output (Deliverable #4) is
+delivered: the verified claims render in the workbench, plus a per-answer claim
+table (`web/components/center/ClaimTable.tsx`) and a compact
+CAPEC–ATT&CK–mitigation network plot (`web/components/center/AnswerNetworkPlot.tsx`,
+edges from `web/lib/synthesisGraph.ts`, reusing the force-graph renderer). The
+plot's edges are provenance-exact when the synthesis payload carries them
+(`SynthesizedAnswer.edges`, derived and verifier-pruned in
+`utils/synthesis/verifier.py`) and fall back to a labelled "derived" view
+inferred from the join index otherwise.
+
+Remaining roadmap polish: richer figure types (e.g. tactic/mitigation matrices)
+and technique→mitigation edges as provenance-exact rather than inferred.
