@@ -132,7 +132,7 @@ Full task rationale in [`docs/goals.md`](docs/goals.md); change history in [`doc
 | ✅ | Wk 4 | Data layer | Runtime ATT&CK graph loader (Neo4j/Gremlin load, verify, health) | Medium |
 | ✅ | Wk 4–5 | Data layer | Build Gremlin CAPEC fixture | Medium |
 | ✅ | Wk 4–5 | Data layer | Fixture-QA harness (raw==manifest==live) + sha256-pinned data snapshot | Medium |
-| ⬜ | Wk 5 | Data layer | Author source cards (ATT&CK card auto-generated; endpoints & safety limits pending) | Low |
+| ✅ | Wk 5 | Data layer | Author source cards (auto-generated base + hand-authored overlays: connection, provenance, safety limits) | Low |
 
 **ITS check-in** — Both graph fixtures live and QA-reconciled against the pinned ATT&CK v19.0 / CAPEC v3.9 snapshot, source cards complete, environment reproducible.
 
