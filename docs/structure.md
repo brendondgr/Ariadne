@@ -59,7 +59,7 @@ Agent tool folders (`.cursor/`, `.claude/`, `.agents/`) are **pointers only** �
 | `utils/specialists/` | Source-specific query specialists: shared scaffold + four swap points (builder, validator, connector, normalizer), shared evidence schema, Cypher (ATT&CK/Neo4j) + Gremlin (CAPEC/Gremlin) specialists, federation router with join-derived dependent sequencing (producer's join values seed the consumer's `seed_ids`), committed concept vocabulary (`concepts.py`), and the single pipeline orchestrator (`pipeline.py`: `iter_pipeline`/`run_pipeline` — probe → plan → sequenced specialists → bundle → synthesize with per-stage timings and `PIPELINE_TIMEOUT_S`) shared by the CLI and the API |
 | `utils/specialists/evalset/` | The 120-question golden catalogue (Steps 5/7/10): `gold_bank.py` materializes gold answers from the pinned raw snapshot (independent of `kg_builder`, mirrors the exclude-at-load policy), including the Step 10 join maps (`technique_tactics`, `cwe_to_capec`, detection remodel maps `technique_detections`/`detection_analytics`/`datacomponent_analytics`, `software_techniques`, `excluded_ids`, CAPEC `execution_steps`/`skills`/`consequences`); `questions.py` compiles 80 single-source questions (46 ATT&CK + 34 CAPEC, each carrying the full snapshot-derived `ex_gold` set the EX scorer consumes) and `federated_questions.py` compiles 40 federated cross-source questions whose defining `must_correlate` assertion is the compile-time **intersection** of CAPEC ATTACK-taxonomy mappings and ATT&CK-side existence — never hand-keyed. Census: 120 total, 1/3 federated, tiers 22 easy / 52 medium / 24 hard / 22 adversarial (pinned by `tests/test_banks.py`). Committed artifacts live in `utils/specialists/tests/golden/` (`gold_bank.json`, `attack_questions.json`, `capec_questions.json`, `federated_questions.json`, `VERIFICATION.md` — two-way independent AI re-derivation reports: 45/45 Step 5 + 8/8 Step 7 + 93/93 Step 10 claims, all agree). Wk 11–13 adds the component scorers here: `score_validity.py` (query validity VA — draft+gate each question hermetically, first-pass/post-retry rates), `score_execution.py` (execution accuracy EX — live result set vs the `ex_gold` block, exact-set-match + precision/recall with an error taxonomy), `score_safety.py` (bounded-execution adherence audit + adversarial gate probes), and `latency.py` (segmented, staged p50/p95/p99 with bootstrap CIs) |
 | `utils/synthesis/` | Synthesis agent (Step 6): composes the final answer as structured claims-with-citations (`composer.py` deterministic always-on; `llm_composer.py` OpenAI-compatible behind `SYNTHESIS_LLM_*` env vars with hybrid fallback in `factory.py`), then an **always-deterministic** verification pass (`verifier.py`) checks every claim against the retrieved evidence records — uncited, unresolvable, or ungrounded claims are cut from the rendered prose and kept flagged; empty-but-ok sub-questions yield enforced abstentions ("the sources don't establish this") with the executed query as proof. `synthesize()` in `factory.py` is the single compose+verify entry point; `grounding.py` holds the shared backend-agnostic id normalization |
-| `utils/evaluation/` | Component-level evaluation (Wk 11–13): `stats.py` shared percentile / Wilson-binomial / seeded-bootstrap CIs; `component_report.py` + `run_component_eval.py` assemble the planner ×4 and specialist ×4 scores into one citable report (`docs/evaluation/component-evaluation.{md,json}`, via `uv run main.py --component-eval`) |
+| `utils/evaluation/` | Component-level evaluation (Wk 11–13): `stats.py` shared percentile / Wilson-binomial / seeded-bootstrap CIs; `component_report.py` + `run_component_eval.py` assemble the planner ×4 and specialist ×4 scores into one citable report (`docs/evaluation/component-evaluation.{md,json}`, via `uv run main.py --component-eval`). **End-to-end evaluation (Wk 12–13)**: `score_e2e.py` drives the 120-question golden catalogue through the real `run_pipeline` and grades the four `goals.md` e2e metrics — cross-source answer accuracy (live `cross_source_join_values` vs snapshot `must_correlate`), CAPEC→ATT&CK mapping recall, provenance correctness (citations resolve to complete, executed-query records), analyst inspectability (claim→record→query chains + abstention proofs); `e2e_report.py` + `run_e2e_eval.py` assemble `docs/evaluation/e2e-evaluation.{md,json}` via `uv run main.py --e2e-eval [--judge] [--no-live]`. **LLM evaluator** `llm_judge/` is the proposal's LLM-as-judge (faithfulness/groundedness/evidence-sufficiency): opt-in behind `EVAL_LLM_*`, mirroring the synthesis composer, with a `DeterministicJudge` proxy that fills the same metric keys so the LLM-off build stays byte-reproducible (the "no metric depends on an LLM judge" invariant holds unless an operator opts in); when enabled it samples ≤`EVAL_LLM_SAMPLE_SIZE` answers and labels its non-reproducible scores. Committed baseline report: 120 cases, cross-source 30/30 exact, negatives 10/10 no-fabrication, mapping recall 113/113, provenance + inspectability at ceiling |
 | `utils/recovery.py` | Pipeline recovery primitives: backup/clean/restore of existing artifacts, failure classification (`stale_state` / `transient` / `needs_human`), bounded retry-with-backoff |
 | `utils/yolo.py` | `--yolo-all` single-command pipeline runner (download → build → docker → load → verify) with self-healing error handling |
 
@@ -186,16 +186,18 @@ origin, no CORS — see `web/next.config.ts` `rewrites`).
 | Endpoint | Wraps | Notes |
 |----------|-------|-------|
 | `GET /api/health` | `graph_loader` TCP probe + `infrastructure.docker_status` | Per-backend live/down/starting; never raises |
-| `GET·PUT /api/config` | `PlannerConfig`/`SpecialistConfig.from_env` + `config.set_env_values` | View/edit LLM + connection env; password redacted |
+| `GET·PUT /api/config` | `PlannerConfig`/`SpecialistConfig`/`SynthesisConfig`/`EvalConfig.from_env` + `config.set_env_values` | View/edit all four LLM groups (planner/specialist/synthesis/eval) + connection env; password redacted |
 | `POST /api/query` | `PlanningAgent.plan` → `SpecialistRouter.run_plan` | SSE stream: probe → plan → specialist* → evidence → answer → done. Each event carries the full `to_dict()` payload (plan trace, raw query, every record + provenance, evaluator traces) |
 | `POST /api/admin` | `docker_*`, `run_graph_command`, `docker_stop_service`, `YoloRunner`, `download`, `kg_builder` | SSE log stream for every remaining main.py mode — docker start/stop/status, graph health/load/verify/**stop**, data download/build, and **`--yolo-all`** |
 | `GET /api/graph/{dataset}` | Canonical `nodes.jsonl` + `relationships.jsonl` for `attack`\|`capec` | Full node/edge payload for the graph view — strips `external_references` and truncates `description` to keep it light; 404 if canonical files are absent |
+| `GET /api/evaluation` | Reads committed `component-evaluation.json` + `e2e-evaluation.json` from disk | Always available (no stack needed); per-report `available` flags so the dashboard degrades gracefully |
+| `POST /api/eval-run` | `run_e2e_eval` in a worker thread | SSE log stream + terminal `done` carrying the fresh headline metrics; reuses the admin-runner pattern (slow, needs both backends) |
 
 | Path | Contents |
 |------|----------|
 | `api/main.py` | FastAPI app + route handlers |
 | `api/models.py` | Pydantic request/response models |
-| `api/services/` | `health.py`, `config.py`, `query.py`, `infra.py`, `graph.py` |
+| `api/services/` | `health.py`, `config.py`, `query.py`, `infra.py`, `graph.py`, `evaluation.py` |
 | `api/tests/` | Contract tests (`uv run python -m pytest api/tests/`) |
 
 The query pipeline is synchronous, so the SSE endpoints run it in a worker
@@ -305,12 +307,13 @@ with `npm run lint`, and test with `npm test` (adapter + fixture contracts).
 ## Not Yet in Repo
 
 Planned per roadmap: analyst-facing tables, figures, and network diagrams from
-the synthesis layer, and the web UI rendering of the verified claims
-(`answer.synthesis` is already in the API payload; the workbench still renders
-the deterministic sections). ATT&CK and CAPEC canonical builds and runtime
-loading (`utils/kg_builder/`, `utils/graph_loader/`), the federated planning
-agent (`utils/planner/`), the Cypher/Gremlin query specialists
+the synthesis layer, the migration guide for a new query language (openCypher /
+GQL), and the pitch/demo materials (Wk 14–16). ATT&CK and CAPEC canonical builds
+and runtime loading (`utils/kg_builder/`, `utils/graph_loader/`), the federated
+planning agent (`utils/planner/`), the Cypher/Gremlin query specialists
 (`utils/specialists/`), the synthesis agent with claim verification and
-abstention (`utils/synthesis/`), the FastAPI service (`api/`), and the wired
-Next.js workbench (`web/`) are implemented; Gremlin is the primary CAPEC runtime
-backend.
+abstention (`utils/synthesis/`), component **and end-to-end** evaluation with an
+opt-in LLM evaluator (`utils/evaluation/`, `--component-eval` / `--e2e-eval`),
+the FastAPI service (`api/`), and the wired Next.js workbench (`web/`, with Chat
+/ Graphs / **Evaluation** views) are implemented; Gremlin is the primary CAPEC
+runtime backend.

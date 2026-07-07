@@ -1,0 +1,4624 @@
+{
+  "meta": {
+    "attack_version": "19.0",
+    "capec_version": "3.9",
+    "generated_note": "full report (live), judge=proxy"
+  },
+  "definitions": {
+    "cross_source_answer_accuracy": "Live cross-source join values vs the snapshot-derived must_correlate set (exact-set-match + precision/recall/F1); negatives must surface none.",
+    "capec_attack_mapping_recall": "Of the resolvable ATT&CK technique ids a CAPEC pattern maps to, the fraction the pipeline surfaced on the CAPEC side (micro-averaged).",
+    "provenance_correctness": "Fraction of rendered-claim citations resolving to a retrieved record whose provenance is complete and whose recorded query was executed; abstentions must carry a truthful proof.",
+    "analyst_inspectability": "Mean of citation coverage, claim->record->query traceability, and abstention-proof completeness across every answer."
+  },
+  "e2e": {
+    "live": true,
+    "overall": {
+      "cross_source_accuracy": {
+        "positives": 30,
+        "exact_match": {
+          "k": 30,
+          "n": 30,
+          "rate": 1.0,
+          "ci_low": 0.8865,
+          "ci_high": 1.0
+        },
+        "mean_precision": 1.0,
+        "mean_recall": 1.0,
+        "mean_f1": 1.0,
+        "negatives": 10,
+        "no_fabrication_rate": {
+          "k": 10,
+          "n": 10,
+          "rate": 1.0,
+          "ci_low": 0.7225,
+          "ci_high": 1.0
+        }
+      },
+      "mapping_recall": {
+        "entries": 30,
+        "gold_mappings": 113,
+        "found_mappings": 113,
+        "micro_recall": 1.0,
+        "mean_recall": 1.0
+      },
+      "provenance_correctness": {
+        "answers": 120,
+        "mean_citation_provenance_rate": 1.0,
+        "fully_provenanced": {
+          "k": 120,
+          "n": 120,
+          "rate": 1.0,
+          "ci_low": 0.969,
+          "ci_high": 1.0
+        }
+      },
+      "analyst_inspectability": {
+        "answers": 120,
+        "mean_inspectability": 1.0,
+        "mean_citation_coverage": 1.0,
+        "mean_traceability": 1.0,
+        "mean_abstention_proofs": 1.0
+      },
+      "llm_judge": {
+        "source": "deterministic",
+        "llm_covered": 0,
+        "answers_scored": 120,
+        "mean_faithfulness": 1.0,
+        "mean_groundedness": 1.0,
+        "mean_evidence_sufficiency": 1.0,
+        "mean_unsupported_claim_rate": 0.0,
+        "verdicts": [
+          {
+            "question_id": "F-CTM-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-CTM-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-CTM-03",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-CTM-04",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-CTM-05",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-CTM-06",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-CTM-07",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-CTM-08",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-CTM-09",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-CTM-10",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-CTT-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-CTT-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-CTT-03",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-CTT-04",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-CTT-05",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-CTT-06",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-REV-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-REV-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-REV-03",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-REV-04",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-REV-05",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-REV-06",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-CWE-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-CWE-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-CWE-03",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-CWE-04",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-CWE-05",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-NEG-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-NEG-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-NEG-03",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-NEG-04",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-NEG-05",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-NEG-06",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-PART-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-PART-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-PART-03",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-PART-04",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-FAN-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-FAN-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "F-FAN-03",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-MIT-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-MIT-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-MIT-03",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-MIT-04",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-MIT-05",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-MIT-06",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-MIT-07",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-MIT-08",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-GRP-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-GRP-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-GRP-03",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-GRP-04",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-TAC-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-TAC-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-TAC-03",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-LKP-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-LKP-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-LKP-03",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-LKP-04",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-CMP-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-CMP-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-CMP-TEC-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-CMP-TEC-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-CMP-TEC-03",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-CMP-ATT-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-CMP-ATT-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-SCN-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-NEG-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-NEG-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-CMP-NEG-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-AST-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-AST-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-DET-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-DET-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-DET-03",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-SW-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-SW-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-SW-03",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-SUB-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-SUB-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-MC-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-MC-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-MC-03",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-DCA-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-EXC-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "A-EXC-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-LKP-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-LKP-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-LKP-03",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-LKP-04",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-LKP-05",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-CWE-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-CWE-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-CWE-03",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-HIE-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-HIE-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-HIE-03",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-PRE-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-PRE-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-MAP-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-MAP-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-MAP-03",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-MAP-04",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-MAP-NEG-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-NEG-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-NEG-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-SCN-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-EXE-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-EXE-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-EXE-03",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-CSQ-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-CSQ-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-SKL-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-ABS-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-ABS-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-ABS-03",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-CWE2-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-CWE2-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-DEP-01",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          },
+          {
+            "question_id": "C-DEP-02",
+            "source": "deterministic",
+            "faithfulness": 1.0,
+            "groundedness": 1.0,
+            "evidence_sufficiency": 1.0,
+            "unsupported_claim_rate": 0.0,
+            "reasons": [
+              "deterministic proxy: mechanical checks against evidence"
+            ]
+          }
+        ]
+      }
+    },
+    "by_tier": {
+      "adversarial": {
+        "cross_source_accuracy": {
+          "positives": 0,
+          "exact_match": {
+            "k": 0,
+            "n": 0,
+            "rate": 0.0,
+            "ci_low": 0.0,
+            "ci_high": 0.0
+          },
+          "mean_precision": 0.0,
+          "mean_recall": 0.0,
+          "mean_f1": 0.0,
+          "negatives": 10,
+          "no_fabrication_rate": {
+            "k": 10,
+            "n": 10,
+            "rate": 1.0,
+            "ci_low": 0.7225,
+            "ci_high": 1.0
+          }
+        },
+        "mapping_recall": {
+          "entries": 0,
+          "gold_mappings": 0,
+          "found_mappings": 0,
+          "micro_recall": 1.0,
+          "mean_recall": 0.0
+        },
+        "provenance_correctness": {
+          "answers": 22,
+          "mean_citation_provenance_rate": 1.0,
+          "fully_provenanced": {
+            "k": 22,
+            "n": 22,
+            "rate": 1.0,
+            "ci_low": 0.8513,
+            "ci_high": 1.0
+          }
+        },
+        "analyst_inspectability": {
+          "answers": 22,
+          "mean_inspectability": 1.0,
+          "mean_citation_coverage": 1.0,
+          "mean_traceability": 1.0,
+          "mean_abstention_proofs": 1.0
+        },
+        "llm_judge": {
+          "source": "deterministic",
+          "llm_covered": 0,
+          "answers_scored": 0,
+          "mean_faithfulness": 0.0,
+          "mean_groundedness": 0.0,
+          "mean_evidence_sufficiency": 0.0,
+          "mean_unsupported_claim_rate": 0.0,
+          "verdicts": []
+        }
+      },
+      "easy": {
+        "cross_source_accuracy": {
+          "positives": 0,
+          "exact_match": {
+            "k": 0,
+            "n": 0,
+            "rate": 0.0,
+            "ci_low": 0.0,
+            "ci_high": 0.0
+          },
+          "mean_precision": 0.0,
+          "mean_recall": 0.0,
+          "mean_f1": 0.0,
+          "negatives": 0,
+          "no_fabrication_rate": {
+            "k": 0,
+            "n": 0,
+            "rate": 1.0,
+            "ci_low": 0.0,
+            "ci_high": 1.0
+          }
+        },
+        "mapping_recall": {
+          "entries": 0,
+          "gold_mappings": 0,
+          "found_mappings": 0,
+          "micro_recall": 1.0,
+          "mean_recall": 0.0
+        },
+        "provenance_correctness": {
+          "answers": 22,
+          "mean_citation_provenance_rate": 1.0,
+          "fully_provenanced": {
+            "k": 22,
+            "n": 22,
+            "rate": 1.0,
+            "ci_low": 0.8513,
+            "ci_high": 1.0
+          }
+        },
+        "analyst_inspectability": {
+          "answers": 22,
+          "mean_inspectability": 1.0,
+          "mean_citation_coverage": 1.0,
+          "mean_traceability": 1.0,
+          "mean_abstention_proofs": 1.0
+        },
+        "llm_judge": {
+          "source": "deterministic",
+          "llm_covered": 0,
+          "answers_scored": 0,
+          "mean_faithfulness": 0.0,
+          "mean_groundedness": 0.0,
+          "mean_evidence_sufficiency": 0.0,
+          "mean_unsupported_claim_rate": 0.0,
+          "verdicts": []
+        }
+      },
+      "hard": {
+        "cross_source_accuracy": {
+          "positives": 18,
+          "exact_match": {
+            "k": 18,
+            "n": 18,
+            "rate": 1.0,
+            "ci_low": 0.8241,
+            "ci_high": 1.0
+          },
+          "mean_precision": 1.0,
+          "mean_recall": 1.0,
+          "mean_f1": 1.0,
+          "negatives": 0,
+          "no_fabrication_rate": {
+            "k": 0,
+            "n": 0,
+            "rate": 1.0,
+            "ci_low": 0.0,
+            "ci_high": 1.0
+          }
+        },
+        "mapping_recall": {
+          "entries": 18,
+          "gold_mappings": 98,
+          "found_mappings": 98,
+          "micro_recall": 1.0,
+          "mean_recall": 1.0
+        },
+        "provenance_correctness": {
+          "answers": 24,
+          "mean_citation_provenance_rate": 1.0,
+          "fully_provenanced": {
+            "k": 24,
+            "n": 24,
+            "rate": 1.0,
+            "ci_low": 0.862,
+            "ci_high": 1.0
+          }
+        },
+        "analyst_inspectability": {
+          "answers": 24,
+          "mean_inspectability": 1.0,
+          "mean_citation_coverage": 1.0,
+          "mean_traceability": 1.0,
+          "mean_abstention_proofs": 1.0
+        },
+        "llm_judge": {
+          "source": "deterministic",
+          "llm_covered": 0,
+          "answers_scored": 0,
+          "mean_faithfulness": 0.0,
+          "mean_groundedness": 0.0,
+          "mean_evidence_sufficiency": 0.0,
+          "mean_unsupported_claim_rate": 0.0,
+          "verdicts": []
+        }
+      },
+      "medium": {
+        "cross_source_accuracy": {
+          "positives": 12,
+          "exact_match": {
+            "k": 12,
+            "n": 12,
+            "rate": 1.0,
+            "ci_low": 0.7575,
+            "ci_high": 1.0
+          },
+          "mean_precision": 1.0,
+          "mean_recall": 1.0,
+          "mean_f1": 1.0,
+          "negatives": 0,
+          "no_fabrication_rate": {
+            "k": 0,
+            "n": 0,
+            "rate": 1.0,
+            "ci_low": 0.0,
+            "ci_high": 1.0
+          }
+        },
+        "mapping_recall": {
+          "entries": 12,
+          "gold_mappings": 15,
+          "found_mappings": 15,
+          "micro_recall": 1.0,
+          "mean_recall": 1.0
+        },
+        "provenance_correctness": {
+          "answers": 52,
+          "mean_citation_provenance_rate": 1.0,
+          "fully_provenanced": {
+            "k": 52,
+            "n": 52,
+            "rate": 1.0,
+            "ci_low": 0.9312,
+            "ci_high": 1.0
+          }
+        },
+        "analyst_inspectability": {
+          "answers": 52,
+          "mean_inspectability": 1.0,
+          "mean_citation_coverage": 1.0,
+          "mean_traceability": 1.0,
+          "mean_abstention_proofs": 1.0
+        },
+        "llm_judge": {
+          "source": "deterministic",
+          "llm_covered": 0,
+          "answers_scored": 0,
+          "mean_faithfulness": 0.0,
+          "mean_groundedness": 0.0,
+          "mean_evidence_sufficiency": 0.0,
+          "mean_unsupported_claim_rate": 0.0,
+          "verdicts": []
+        }
+      }
+    },
+    "cases": [
+      {
+        "id": "F-CTM-01",
+        "kind": "federated",
+        "tier": "hard",
+        "category": "F-CTM",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 6,
+          "n_got": 6
+        },
+        "mapping_recall": {
+          "gold": 6,
+          "found": 6,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 19,
+          "compliant": 19,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-CTM-02",
+        "kind": "federated",
+        "tier": "hard",
+        "category": "F-CTM",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 3,
+          "n_got": 3
+        },
+        "mapping_recall": {
+          "gold": 3,
+          "found": 3,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 10,
+          "compliant": 10,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-CTM-03",
+        "kind": "federated",
+        "tier": "hard",
+        "category": "F-CTM",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 3,
+          "n_got": 3
+        },
+        "mapping_recall": {
+          "gold": 3,
+          "found": 3,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 10,
+          "compliant": 10,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-CTM-04",
+        "kind": "federated",
+        "tier": "hard",
+        "category": "F-CTM",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 5,
+          "n_got": 5
+        },
+        "mapping_recall": {
+          "gold": 5,
+          "found": 5,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 16,
+          "compliant": 16,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-CTM-05",
+        "kind": "federated",
+        "tier": "hard",
+        "category": "F-CTM",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 3,
+          "n_got": 3
+        },
+        "mapping_recall": {
+          "gold": 3,
+          "found": 3,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 10,
+          "compliant": 10,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-CTM-06",
+        "kind": "federated",
+        "tier": "hard",
+        "category": "F-CTM",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 3,
+          "n_got": 3
+        },
+        "mapping_recall": {
+          "gold": 3,
+          "found": 3,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 10,
+          "compliant": 10,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-CTM-07",
+        "kind": "federated",
+        "tier": "hard",
+        "category": "F-CTM",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 1,
+          "n_got": 1
+        },
+        "mapping_recall": {
+          "gold": 1,
+          "found": 1,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 4,
+          "compliant": 4,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-CTM-08",
+        "kind": "federated",
+        "tier": "hard",
+        "category": "F-CTM",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 1,
+          "n_got": 1
+        },
+        "mapping_recall": {
+          "gold": 1,
+          "found": 1,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 4,
+          "compliant": 4,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-CTM-09",
+        "kind": "federated",
+        "tier": "hard",
+        "category": "F-CTM",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 1,
+          "n_got": 1
+        },
+        "mapping_recall": {
+          "gold": 1,
+          "found": 1,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 4,
+          "compliant": 4,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-CTM-10",
+        "kind": "federated",
+        "tier": "hard",
+        "category": "F-CTM",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 1,
+          "n_got": 1
+        },
+        "mapping_recall": {
+          "gold": 1,
+          "found": 1,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 4,
+          "compliant": 4,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-CTT-01",
+        "kind": "federated",
+        "tier": "medium",
+        "category": "F-CTT",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 2,
+          "n_got": 2
+        },
+        "mapping_recall": {
+          "gold": 2,
+          "found": 2,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 7,
+          "compliant": 7,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-CTT-02",
+        "kind": "federated",
+        "tier": "medium",
+        "category": "F-CTT",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 1,
+          "n_got": 1
+        },
+        "mapping_recall": {
+          "gold": 1,
+          "found": 1,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 4,
+          "compliant": 4,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-CTT-03",
+        "kind": "federated",
+        "tier": "medium",
+        "category": "F-CTT",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 1,
+          "n_got": 1
+        },
+        "mapping_recall": {
+          "gold": 1,
+          "found": 1,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 4,
+          "compliant": 4,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-CTT-04",
+        "kind": "federated",
+        "tier": "medium",
+        "category": "F-CTT",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 1,
+          "n_got": 1
+        },
+        "mapping_recall": {
+          "gold": 1,
+          "found": 1,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 4,
+          "compliant": 4,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-CTT-05",
+        "kind": "federated",
+        "tier": "medium",
+        "category": "F-CTT",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 2,
+          "n_got": 2
+        },
+        "mapping_recall": {
+          "gold": 2,
+          "found": 2,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 7,
+          "compliant": 7,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-CTT-06",
+        "kind": "federated",
+        "tier": "medium",
+        "category": "F-CTT",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 2,
+          "n_got": 2
+        },
+        "mapping_recall": {
+          "gold": 2,
+          "found": 2,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 7,
+          "compliant": 7,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-REV-01",
+        "kind": "federated",
+        "tier": "medium",
+        "category": "F-REV",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 1,
+          "n_got": 1
+        },
+        "mapping_recall": {
+          "gold": 1,
+          "found": 1,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 8,
+          "compliant": 8,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-REV-02",
+        "kind": "federated",
+        "tier": "medium",
+        "category": "F-REV",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 1,
+          "n_got": 1
+        },
+        "mapping_recall": {
+          "gold": 1,
+          "found": 1,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 4,
+          "compliant": 4,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-REV-03",
+        "kind": "federated",
+        "tier": "medium",
+        "category": "F-REV",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 1,
+          "n_got": 1
+        },
+        "mapping_recall": {
+          "gold": 1,
+          "found": 1,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 4,
+          "compliant": 4,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-REV-04",
+        "kind": "federated",
+        "tier": "medium",
+        "category": "F-REV",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 1,
+          "n_got": 1
+        },
+        "mapping_recall": {
+          "gold": 1,
+          "found": 1,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 4,
+          "compliant": 4,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-REV-05",
+        "kind": "federated",
+        "tier": "medium",
+        "category": "F-REV",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 1,
+          "n_got": 1
+        },
+        "mapping_recall": {
+          "gold": 1,
+          "found": 1,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 4,
+          "compliant": 4,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-REV-06",
+        "kind": "federated",
+        "tier": "medium",
+        "category": "F-REV",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 1,
+          "n_got": 1
+        },
+        "mapping_recall": {
+          "gold": 1,
+          "found": 1,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 4,
+          "compliant": 4,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-CWE-01",
+        "kind": "federated",
+        "tier": "hard",
+        "category": "F-CWE",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 12,
+          "n_got": 12
+        },
+        "mapping_recall": {
+          "gold": 12,
+          "found": 12,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 40,
+          "compliant": 40,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-CWE-02",
+        "kind": "federated",
+        "tier": "hard",
+        "category": "F-CWE",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 8,
+          "n_got": 8
+        },
+        "mapping_recall": {
+          "gold": 8,
+          "found": 8,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 32,
+          "compliant": 32,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-CWE-03",
+        "kind": "federated",
+        "tier": "hard",
+        "category": "F-CWE",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 11,
+          "n_got": 11
+        },
+        "mapping_recall": {
+          "gold": 11,
+          "found": 11,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 38,
+          "compliant": 38,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-CWE-04",
+        "kind": "federated",
+        "tier": "hard",
+        "category": "F-CWE",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 14,
+          "n_got": 14
+        },
+        "mapping_recall": {
+          "gold": 14,
+          "found": 14,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 44,
+          "compliant": 44,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-CWE-05",
+        "kind": "federated",
+        "tier": "hard",
+        "category": "F-CWE",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 10,
+          "n_got": 10
+        },
+        "mapping_recall": {
+          "gold": 10,
+          "found": 10,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 36,
+          "compliant": 36,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-NEG-01",
+        "kind": "federated",
+        "tier": "adversarial",
+        "category": "F-NEG",
+        "correlation": {
+          "negative": true,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 0,
+          "n_got": 0
+        },
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 0,
+          "compliant": 0,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-NEG-02",
+        "kind": "federated",
+        "tier": "adversarial",
+        "category": "F-NEG",
+        "correlation": {
+          "negative": true,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 0,
+          "n_got": 0
+        },
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 0,
+          "compliant": 0,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-NEG-03",
+        "kind": "federated",
+        "tier": "adversarial",
+        "category": "F-NEG",
+        "correlation": {
+          "negative": true,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 0,
+          "n_got": 0
+        },
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 0,
+          "compliant": 0,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-NEG-04",
+        "kind": "federated",
+        "tier": "adversarial",
+        "category": "F-NEG",
+        "correlation": {
+          "negative": true,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 0,
+          "n_got": 0
+        },
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 0,
+          "compliant": 0,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-NEG-05",
+        "kind": "federated",
+        "tier": "adversarial",
+        "category": "F-NEG",
+        "correlation": {
+          "negative": true,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 0,
+          "n_got": 0
+        },
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 0,
+          "compliant": 0,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-NEG-06",
+        "kind": "federated",
+        "tier": "adversarial",
+        "category": "F-NEG",
+        "correlation": {
+          "negative": true,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 0,
+          "n_got": 0
+        },
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 0,
+          "compliant": 0,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-PART-01",
+        "kind": "federated",
+        "tier": "adversarial",
+        "category": "F-PART",
+        "correlation": {
+          "negative": true,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 0,
+          "n_got": 0
+        },
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-PART-02",
+        "kind": "federated",
+        "tier": "adversarial",
+        "category": "F-PART",
+        "correlation": {
+          "negative": true,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 0,
+          "n_got": 0
+        },
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-PART-03",
+        "kind": "federated",
+        "tier": "adversarial",
+        "category": "F-PART",
+        "correlation": {
+          "negative": true,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 0,
+          "n_got": 0
+        },
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-PART-04",
+        "kind": "federated",
+        "tier": "adversarial",
+        "category": "F-PART",
+        "correlation": {
+          "negative": true,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 0,
+          "n_got": 0
+        },
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 0,
+          "compliant": 0,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-FAN-01",
+        "kind": "federated",
+        "tier": "hard",
+        "category": "F-FAN",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 5,
+          "n_got": 5
+        },
+        "mapping_recall": {
+          "gold": 5,
+          "found": 5,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 20,
+          "compliant": 20,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-FAN-02",
+        "kind": "federated",
+        "tier": "hard",
+        "category": "F-FAN",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 5,
+          "n_got": 5
+        },
+        "mapping_recall": {
+          "gold": 5,
+          "found": 5,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 18,
+          "compliant": 18,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "F-FAN-03",
+        "kind": "federated",
+        "tier": "hard",
+        "category": "F-FAN",
+        "correlation": {
+          "negative": false,
+          "exact": true,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "n_expected": 6,
+          "n_got": 6
+        },
+        "mapping_recall": {
+          "gold": 6,
+          "found": 6,
+          "recall": 1.0,
+          "missing": []
+        },
+        "provenance": {
+          "citations": 21,
+          "compliant": 21,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-MIT-01",
+        "kind": "single",
+        "tier": "easy",
+        "category": "A-MIT",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-MIT-02",
+        "kind": "single",
+        "tier": "easy",
+        "category": "A-MIT",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-MIT-03",
+        "kind": "single",
+        "tier": "easy",
+        "category": "A-MIT",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-MIT-04",
+        "kind": "single",
+        "tier": "easy",
+        "category": "A-MIT",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-MIT-05",
+        "kind": "single",
+        "tier": "easy",
+        "category": "A-MIT",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-MIT-06",
+        "kind": "single",
+        "tier": "easy",
+        "category": "A-MIT",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-MIT-07",
+        "kind": "single",
+        "tier": "easy",
+        "category": "A-MIT",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-MIT-08",
+        "kind": "single",
+        "tier": "easy",
+        "category": "A-MIT",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-GRP-01",
+        "kind": "single",
+        "tier": "medium",
+        "category": "A-GRP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 8,
+          "compliant": 8,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-GRP-02",
+        "kind": "single",
+        "tier": "medium",
+        "category": "A-GRP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 8,
+          "compliant": 8,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-GRP-03",
+        "kind": "single",
+        "tier": "medium",
+        "category": "A-GRP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 8,
+          "compliant": 8,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-GRP-04",
+        "kind": "single",
+        "tier": "medium",
+        "category": "A-GRP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 8,
+          "compliant": 8,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-TAC-01",
+        "kind": "single",
+        "tier": "medium",
+        "category": "A-TAC",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 8,
+          "compliant": 8,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-TAC-02",
+        "kind": "single",
+        "tier": "medium",
+        "category": "A-TAC",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 8,
+          "compliant": 8,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-TAC-03",
+        "kind": "single",
+        "tier": "medium",
+        "category": "A-TAC",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 8,
+          "compliant": 8,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-LKP-01",
+        "kind": "single",
+        "tier": "easy",
+        "category": "A-LKP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-LKP-02",
+        "kind": "single",
+        "tier": "easy",
+        "category": "A-LKP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-LKP-03",
+        "kind": "single",
+        "tier": "easy",
+        "category": "A-LKP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-LKP-04",
+        "kind": "single",
+        "tier": "easy",
+        "category": "A-LKP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-CMP-01",
+        "kind": "single",
+        "tier": "easy",
+        "category": "A-CMP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-CMP-02",
+        "kind": "single",
+        "tier": "easy",
+        "category": "A-CMP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-CMP-TEC-01",
+        "kind": "single",
+        "tier": "medium",
+        "category": "A-CMP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 8,
+          "compliant": 8,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-CMP-TEC-02",
+        "kind": "single",
+        "tier": "medium",
+        "category": "A-CMP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 8,
+          "compliant": 8,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-CMP-TEC-03",
+        "kind": "single",
+        "tier": "medium",
+        "category": "A-CMP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 8,
+          "compliant": 8,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-CMP-ATT-01",
+        "kind": "single",
+        "tier": "medium",
+        "category": "A-CMP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-CMP-ATT-02",
+        "kind": "single",
+        "tier": "medium",
+        "category": "A-CMP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-SCN-01",
+        "kind": "single",
+        "tier": "easy",
+        "category": "A-SCN",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 8,
+          "compliant": 8,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-NEG-01",
+        "kind": "single",
+        "tier": "adversarial",
+        "category": "A-NEG",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 0,
+          "compliant": 0,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-NEG-02",
+        "kind": "single",
+        "tier": "adversarial",
+        "category": "A-NEG",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 0,
+          "compliant": 0,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-CMP-NEG-01",
+        "kind": "single",
+        "tier": "adversarial",
+        "category": "A-CMP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 0,
+          "compliant": 0,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-AST-01",
+        "kind": "single",
+        "tier": "adversarial",
+        "category": "A-AST",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 0,
+          "compliant": 0,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-AST-02",
+        "kind": "single",
+        "tier": "adversarial",
+        "category": "A-AST",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 0,
+          "compliant": 0,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-DET-01",
+        "kind": "single",
+        "tier": "medium",
+        "category": "A-DET",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-DET-02",
+        "kind": "single",
+        "tier": "medium",
+        "category": "A-DET",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-DET-03",
+        "kind": "single",
+        "tier": "medium",
+        "category": "A-DET",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-SW-01",
+        "kind": "single",
+        "tier": "medium",
+        "category": "A-SW",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-SW-02",
+        "kind": "single",
+        "tier": "medium",
+        "category": "A-SW",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-SW-03",
+        "kind": "single",
+        "tier": "medium",
+        "category": "A-SW",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-SUB-01",
+        "kind": "single",
+        "tier": "medium",
+        "category": "A-SUB",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-SUB-02",
+        "kind": "single",
+        "tier": "medium",
+        "category": "A-SUB",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-MC-01",
+        "kind": "single",
+        "tier": "hard",
+        "category": "A-MC",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 7,
+          "compliant": 7,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-MC-02",
+        "kind": "single",
+        "tier": "hard",
+        "category": "A-MC",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 8,
+          "compliant": 8,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-MC-03",
+        "kind": "single",
+        "tier": "hard",
+        "category": "A-MC",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 6,
+          "compliant": 6,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-DCA-01",
+        "kind": "single",
+        "tier": "easy",
+        "category": "A-DCA",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-EXC-01",
+        "kind": "single",
+        "tier": "adversarial",
+        "category": "A-EXC",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 0,
+          "compliant": 0,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "A-EXC-02",
+        "kind": "single",
+        "tier": "adversarial",
+        "category": "A-EXC",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 0,
+          "compliant": 0,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-LKP-01",
+        "kind": "single",
+        "tier": "easy",
+        "category": "C-LKP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-LKP-02",
+        "kind": "single",
+        "tier": "easy",
+        "category": "C-LKP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-LKP-03",
+        "kind": "single",
+        "tier": "easy",
+        "category": "C-LKP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-LKP-04",
+        "kind": "single",
+        "tier": "easy",
+        "category": "C-LKP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-LKP-05",
+        "kind": "single",
+        "tier": "easy",
+        "category": "C-LKP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-CWE-01",
+        "kind": "single",
+        "tier": "medium",
+        "category": "C-CWE",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-CWE-02",
+        "kind": "single",
+        "tier": "medium",
+        "category": "C-CWE",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-CWE-03",
+        "kind": "single",
+        "tier": "medium",
+        "category": "C-CWE",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-HIE-01",
+        "kind": "single",
+        "tier": "medium",
+        "category": "C-HIE",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-HIE-02",
+        "kind": "single",
+        "tier": "medium",
+        "category": "C-HIE",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-HIE-03",
+        "kind": "single",
+        "tier": "medium",
+        "category": "C-HIE",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-PRE-01",
+        "kind": "single",
+        "tier": "medium",
+        "category": "C-PRE",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-PRE-02",
+        "kind": "single",
+        "tier": "medium",
+        "category": "C-PRE",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-MAP-01",
+        "kind": "single",
+        "tier": "medium",
+        "category": "C-MAP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-MAP-02",
+        "kind": "single",
+        "tier": "medium",
+        "category": "C-MAP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-MAP-03",
+        "kind": "single",
+        "tier": "medium",
+        "category": "C-MAP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-MAP-04",
+        "kind": "single",
+        "tier": "medium",
+        "category": "C-MAP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-MAP-NEG-01",
+        "kind": "single",
+        "tier": "adversarial",
+        "category": "C-MAP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 0,
+          "compliant": 0,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-NEG-01",
+        "kind": "single",
+        "tier": "adversarial",
+        "category": "C-NEG",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 0,
+          "compliant": 0,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-NEG-02",
+        "kind": "single",
+        "tier": "adversarial",
+        "category": "C-NEG",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 0,
+          "compliant": 0,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-SCN-01",
+        "kind": "single",
+        "tier": "easy",
+        "category": "C-SCN",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 8,
+          "compliant": 8,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-EXE-01",
+        "kind": "single",
+        "tier": "medium",
+        "category": "C-EXE",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-EXE-02",
+        "kind": "single",
+        "tier": "medium",
+        "category": "C-EXE",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-EXE-03",
+        "kind": "single",
+        "tier": "medium",
+        "category": "C-EXE",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-CSQ-01",
+        "kind": "single",
+        "tier": "medium",
+        "category": "C-CSQ",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-CSQ-02",
+        "kind": "single",
+        "tier": "medium",
+        "category": "C-CSQ",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-SKL-01",
+        "kind": "single",
+        "tier": "medium",
+        "category": "C-SKL",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-ABS-01",
+        "kind": "single",
+        "tier": "hard",
+        "category": "C-ABS",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-ABS-02",
+        "kind": "single",
+        "tier": "hard",
+        "category": "C-ABS",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-ABS-03",
+        "kind": "single",
+        "tier": "hard",
+        "category": "C-ABS",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-CWE2-01",
+        "kind": "single",
+        "tier": "medium",
+        "category": "C-CWE2",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-CWE2-02",
+        "kind": "single",
+        "tier": "medium",
+        "category": "C-CWE2",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 1,
+          "compliant": 1,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-DEP-01",
+        "kind": "single",
+        "tier": "adversarial",
+        "category": "C-DEP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 0,
+          "compliant": 0,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      },
+      {
+        "id": "C-DEP-02",
+        "kind": "single",
+        "tier": "adversarial",
+        "category": "C-DEP",
+        "correlation": null,
+        "mapping_recall": null,
+        "provenance": {
+          "citations": 0,
+          "compliant": 0,
+          "citation_provenance_rate": 1.0,
+          "abstention_proof_ok": true,
+          "fully_provenanced": true
+        },
+        "inspectability": {
+          "citation_coverage": 1.0,
+          "traceability": 1.0,
+          "abstention_proofs": 1.0,
+          "inspectability": 1.0
+        }
+      }
+    ]
+  },
+  "diagnosis": [
+    "All end-to-end metrics at ceiling on the scored catalogue; the assembled pipeline matches the snapshot-derived gold."
+  ]
+}
