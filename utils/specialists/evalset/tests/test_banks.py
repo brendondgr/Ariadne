@@ -168,6 +168,30 @@ def test_federated_bank_census() -> None:
     assert total == 120, f"catalogue is {total}, expected exactly 120"
 
 
+def test_catalogue_census_source_and_tier_split() -> None:
+    """The Step 10 definition of done: exactly 120 entries with the recorded
+    source and tier distribution. A drift here is a deliberate catalogue
+    change and must update this census (and the docs) explicitly."""
+    from collections import Counter
+
+    attack = _bank_questions(ATTACK_BANK_PATH)
+    capec = _bank_questions(CAPEC_BANK_PATH)
+    assert len(attack) == 46
+    assert len(capec) == 34
+    assert len(_FEDERATED) == 40
+
+    tiers = Counter(e["tier"] for e in attack + capec + _FEDERATED)
+    assert tiers == {
+        "easy": 22,
+        "medium": 52,
+        "hard": 24,
+        "adversarial": 22,
+    }, f"tier split drifted: {dict(tiers)}"
+    # Federated tiers specifically: the hard/adversarial weighting is the point.
+    fed_tiers = Counter(e["tier"] for e in _FEDERATED)
+    assert fed_tiers == {"hard": 18, "medium": 12, "adversarial": 10}
+
+
 def test_federated_entries_are_cross_source() -> None:
     for entry in _FEDERATED:
         assert sorted(entry["sources"]) == ["attack", "capec"], entry["id"]
