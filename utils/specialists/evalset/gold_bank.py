@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any
@@ -61,6 +62,15 @@ CAPEC_DECLARED_NATURES = ("ChildOf", "CanPrecede", "CanAlsoBe", "PeerOf", "CanFo
 # fixture-QA `_CAPEC_DEAD_STATUSES`).
 CAPEC_RETIRED_STATUSES = frozenset({"Deprecated", "Obsolete"})
 
+# Mirrors kg_builder.preprocess.capec_ids._slug (policy contract): sub-element
+# node ids (execution steps / skills / consequences) are derived, so the gold
+# must express them exactly as the loaded graph does.
+_SLUG_RE = re.compile(r"[^A-Za-z0-9._-]+")
+
+
+def _slug(value: str) -> str:
+    return _SLUG_RE.sub("_", value.strip())
+
 
 def _attack_external_id(obj: dict[str, Any]) -> str | None:
     for ref in obj.get("external_references", []):
@@ -93,11 +103,24 @@ def parse_attack_bundle(bundle_path: Path) -> dict[str, Any]:
     tactic_by_shortname: dict[str, str] = {}
     objects_map: dict[str, dict[str, Any]] = {}
 
+    excluded_ids: set[str] = set()
+
     for obj in objects:
         if obj.get("type") == "relationship":
             continue
         label = _node_label(obj)
-        if label is None or _is_excluded(obj):
+        if label is None:
+            continue
+        if _is_excluded(obj):
+            # Revoked/deprecated objects the graph excludes at load. Their ids
+            # are kept so negative questions can assert they are NOT
+            # retrievable (honest empty, not a fabricated record). IDs still
+            # carried by any live object are subtracted below — legacy
+            # course-of-action objects reused technique T-numbers (e.g. the
+            # deprecated "Credential Dumping Mitigation" carries T1003).
+            attack_id = _attack_external_id(obj)
+            if attack_id:
+                excluded_ids.add(attack_id)
             continue
         live[obj["id"]] = obj
         attack_id = _attack_external_id(obj)
@@ -117,6 +140,8 @@ def parse_attack_bundle(bundle_path: Path) -> dict[str, Any]:
     subtechniques: dict[str, set[str]] = {}
     campaign_techniques: dict[str, set[str]] = {}
     campaign_attribution: dict[str, set[str]] = {}
+    software_techniques: dict[str, set[str]] = {}
+    technique_detections: dict[str, set[str]] = {}
 
     for obj in objects:
         if obj.get("type") != "relationship" or _is_excluded(obj):
@@ -138,6 +163,10 @@ def parse_attack_bundle(bundle_path: Path) -> dict[str, Any]:
             campaign_techniques.setdefault(src_id, set()).add(tgt_id)
         elif rel == "attributed-to" and live[src]["type"] == "campaign" and live[tgt]["type"] == "intrusion-set":
             campaign_attribution.setdefault(src_id, set()).add(tgt_id)
+        elif rel == "uses" and live[src]["type"] in ("malware", "tool") and live[tgt]["type"] == "attack-pattern":
+            software_techniques.setdefault(src_id, set()).add(tgt_id)
+        elif rel == "detects" and live[src]["type"] == "x-mitre-detection-strategy" and live[tgt]["type"] == "attack-pattern":
+            technique_detections.setdefault(tgt_id, set()).add(src_id)
 
     # HAS_TECHNIQUE is derived, not a STIX relationship: tactic shortname
     # matched against each live attack-pattern's mitre-attack kill chain phases.
@@ -147,6 +176,7 @@ def parse_attack_bundle(bundle_path: Path) -> dict[str, Any]:
         for uuid in tactic_by_shortname.values()
         if uuid in attack_id_by_uuid
     }
+    technique_tactics: dict[str, set[str]] = {}
     for obj in live.values():
         if obj["type"] != "attack-pattern":
             continue
@@ -160,6 +190,29 @@ def parse_attack_bundle(bundle_path: Path) -> dict[str, Any]:
             ta_id = tactic_id_by_uuid.get(tactic_uuid or "")
             if ta_id:
                 tactic_techniques.setdefault(ta_id, set()).add(t_id)
+                technique_tactics.setdefault(t_id, set()).add(ta_id)
+
+    # v19 detection remodel: DetectionStrategy -> Analytic (embedded
+    # x_mitre_analytic_refs) and DataComponent -> the Analytics monitoring it
+    # (embedded x_mitre_log_source_references). Both are embedded-ref edges,
+    # not STIX relationship objects, so they are derived here directly.
+    detection_analytics: dict[str, set[str]] = {}
+    datacomponent_analytics: dict[str, set[str]] = {}
+    for obj in live.values():
+        obj_id = attack_id_by_uuid.get(obj["id"])
+        if not obj_id:
+            continue
+        if obj["type"] == "x-mitre-detection-strategy":
+            for ref in obj.get("x_mitre_analytic_refs", []):
+                an_id = attack_id_by_uuid.get(ref) if ref in live else None
+                if an_id:
+                    detection_analytics.setdefault(obj_id, set()).add(an_id)
+        elif obj["type"] == "x-mitre-analytic":
+            for source_ref in obj.get("x_mitre_log_source_references", []):
+                dc_ref = source_ref.get("x_mitre_data_component_ref")
+                dc_id = attack_id_by_uuid.get(dc_ref) if dc_ref in live else None
+                if dc_id:
+                    datacomponent_analytics.setdefault(dc_id, set()).add(obj_id)
 
     return {
         "objects": objects_map,
@@ -169,6 +222,12 @@ def parse_attack_bundle(bundle_path: Path) -> dict[str, Any]:
         "subtechniques": {k: sorted(v) for k, v in sorted(subtechniques.items())},
         "campaign_techniques": {k: sorted(v) for k, v in sorted(campaign_techniques.items())},
         "campaign_attribution": {k: sorted(v) for k, v in sorted(campaign_attribution.items())},
+        "software_techniques": {k: sorted(v) for k, v in sorted(software_techniques.items())},
+        "technique_detections": {k: sorted(v) for k, v in sorted(technique_detections.items())},
+        "detection_analytics": {k: sorted(v) for k, v in sorted(detection_analytics.items())},
+        "datacomponent_analytics": {k: sorted(v) for k, v in sorted(datacomponent_analytics.items())},
+        "technique_tactics": {k: sorted(v) for k, v in sorted(technique_tactics.items())},
+        "excluded_ids": sorted(excluded_ids - set(objects_map)),
     }
 
 
@@ -190,6 +249,9 @@ def parse_capec_xml(xml_path: Path) -> dict[str, Any]:
     children: dict[str, set[str]] = {}
     attack_mappings: dict[str, list[str]] = {}
     deprecated: list[str] = []
+    execution_steps: dict[str, list[dict[str, Any]]] = {}
+    skills: dict[str, list[dict[str, Any]]] = {}
+    consequences: dict[str, list[dict[str, Any]]] = {}
 
     entries = patterns_el.findall("c:Attack_Pattern", CAPEC_NS)
 
@@ -235,6 +297,53 @@ def parse_capec_xml(xml_path: Path) -> dict[str, Any]:
                 if nature == "ChildOf":
                     children.setdefault(other, set()).add(cid)
 
+        num = p.get("ID")
+
+        # Execution flow: ordered steps with the derived node ids the loaded
+        # graph exposes (capec:attack-pattern:<n>:step:<step>). Repeated step
+        # numbers collapse onto one node id in the graph, so node ids are
+        # deduplicated while document order is preserved.
+        flow = p.find("c:Execution_Flow", CAPEC_NS)
+        if flow is not None:
+            steps: list[dict[str, Any]] = []
+            for step_el in flow.findall("c:Attack_Step", CAPEC_NS):
+                step_no_el = step_el.find("c:Step", CAPEC_NS)
+                phase_el = step_el.find("c:Phase", CAPEC_NS)
+                step_no = (step_no_el.text if step_no_el is not None else None) or "0"
+                steps.append(
+                    {
+                        "step": step_no,
+                        "phase": phase_el.text if phase_el is not None else None,
+                        "node_id": f"capec:attack-pattern:{num}:step:{_slug(str(step_no))}",
+                    }
+                )
+            if steps:
+                execution_steps[cid] = steps
+
+        skills_el = p.find("c:Skills_Required", CAPEC_NS)
+        if skills_el is not None:
+            entries = [
+                {
+                    "level": s.get("Level"),
+                    "node_id": f"capec:attack-pattern:{num}:skill:{i}",
+                }
+                for i, s in enumerate(skills_el.findall("c:Skill", CAPEC_NS), start=1)
+            ]
+            if entries:
+                skills[cid] = entries
+
+        cons_el = p.find("c:Consequences", CAPEC_NS)
+        if cons_el is not None:
+            entries = [
+                {
+                    "scopes": [sc.text for sc in c.findall("c:Scope", CAPEC_NS) if sc.text],
+                    "node_id": f"capec:attack-pattern:{num}:consequence:{i}",
+                }
+                for i, c in enumerate(cons_el.findall("c:Consequence", CAPEC_NS), start=1)
+            ]
+            if entries:
+                consequences[cid] = entries
+
         tm = p.find("c:Taxonomy_Mappings", CAPEC_NS)
         if tm is not None:
             t_ids = set()
@@ -247,8 +356,25 @@ def parse_capec_xml(xml_path: Path) -> dict[str, Any]:
             if t_ids:
                 attack_mappings[cid] = sorted(t_ids)
 
+    # Inverse CWE map (the CWE -> CAPEC bridge the federated chain questions
+    # traverse). Derived purely by inverting the declared Related_Weaknesses.
+    cwe_to_capec: dict[str, set[str]] = {}
+    for cid, cwes in related_weaknesses.items():
+        for cwe in cwes:
+            cwe_to_capec.setdefault(cwe, set()).add(cid)
+
+    def _capec_sort(items: dict[str, Any]) -> dict[str, Any]:
+        return dict(sorted(items.items(), key=lambda kv: int(kv[0].split("-")[1])))
+
     return {
         "patterns": dict(sorted(patterns.items(), key=lambda kv: int(kv[0].split("-")[1]))),
+        "execution_steps": _capec_sort(execution_steps),
+        "skills": _capec_sort(skills),
+        "consequences": _capec_sort(consequences),
+        "cwe_to_capec": {
+            cwe: sorted(ids, key=lambda c: int(c.split("-")[1]))
+            for cwe, ids in sorted(cwe_to_capec.items(), key=lambda kv: int(kv[0].split("-")[1]))
+        },
         "related_weaknesses": dict(sorted(related_weaknesses.items(), key=lambda kv: int(kv[0].split("-")[1]))),
         "hierarchy": {
             cid: {nature: sorted(ids) for nature, ids in sorted(natures.items())}
@@ -308,11 +434,21 @@ def main() -> None:
         f"{len(attack['group_techniques'])} groups, "
         f"{len(attack['tactic_techniques'])} tactics, "
         f"{len(attack['campaign_techniques'])} campaigns w/ techniques, "
-        f"{len(attack['campaign_attribution'])} campaigns w/ attribution"
+        f"{len(attack['campaign_attribution'])} campaigns w/ attribution, "
+        f"{len(attack['software_techniques'])} software w/ techniques, "
+        f"{len(attack['technique_detections'])} techniques w/ detections, "
+        f"{len(attack['detection_analytics'])} strategies w/ analytics, "
+        f"{len(attack['datacomponent_analytics'])} data components monitored, "
+        f"{len(attack['technique_tactics'])} techniques w/ tactics, "
+        f"{len(attack['excluded_ids'])} excluded ids"
     )
     print(
         f"  capec: {len(capec['patterns'])} patterns, "
         f"{len(capec['attack_mappings'])} with ATT&CK mappings, "
+        f"{len(capec['execution_steps'])} with execution steps, "
+        f"{len(capec['skills'])} with skills, "
+        f"{len(capec['consequences'])} with consequences, "
+        f"{len(capec['cwe_to_capec'])} CWEs bridged, "
         f"{len(capec['deprecated'])} deprecated"
     )
 

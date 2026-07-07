@@ -181,6 +181,102 @@ def test_canonical_object_count_matches_fixture_qa(gold: dict) -> None:
     assert len(gold["attack"]["objects"]) == 4369
 
 
+# -- Step 10 maps: detection remodel, software, tactics, exclusions --------------
+
+
+def test_technique_tactics_anchors(gold: dict) -> None:
+    # Kill-chain-phase derivation, inverse of tactic_techniques: WMI is
+    # Execution-only, Phishing is Initial Access, Brute Force is Credential
+    # Access (verified against attack.mitre.org v19).
+    tt = gold["attack"]["technique_tactics"]
+    assert tt["T1047"] == ["TA0002"]
+    assert tt["T1566"] == ["TA0001"]
+    assert tt["T1110"] == ["TA0006"]
+    # Consistency: every technique->tactic pair mirrors tactic->technique.
+    for t_id, ta_ids in tt.items():
+        for ta in ta_ids:
+            assert t_id in gold["attack"]["tactic_techniques"][ta]
+
+
+def test_software_techniques_anchors(gold: dict) -> None:
+    st = gold["attack"]["software_techniques"]
+    # S0002 (Mimikatz) uses the OS Credential Dumping sub-techniques.
+    assert "T1003.001" in st["S0002"]
+    assert "T1003.002" in st["S0002"]
+    # Every key is a software id, every value a technique id.
+    for sid, t_ids in st.items():
+        assert sid.startswith("S"), sid
+        assert all(t.startswith("T") and not t.startswith("TA") for t in t_ids), sid
+
+
+def test_detection_chain_anchors(gold: dict) -> None:
+    # v19 detection remodel: T1047 is detected by strategy DET0364, whose
+    # analytics include AN1031 (derived from detects + x_mitre_analytic_refs).
+    assert gold["attack"]["technique_detections"]["T1047"] == ["DET0364"]
+    assert "AN1031" in gold["attack"]["detection_analytics"]["DET0364"]
+    # Every strategy in the technique map carries at least one analytic.
+    for det_ids in gold["attack"]["technique_detections"].values():
+        for det in det_ids:
+            assert gold["attack"]["detection_analytics"].get(det), det
+
+
+def test_datacomponent_analytics_census(gold: dict) -> None:
+    dca = gold["attack"]["datacomponent_analytics"]
+    # 98 of the 106 live data components are monitored by >=1 analytic.
+    assert len(dca) == 98
+    for dc_id, an_ids in dca.items():
+        assert dc_id.startswith("DC"), dc_id
+        assert all(an.startswith("AN") for an in an_ids), dc_id
+
+
+def test_excluded_ids_are_honest_negatives(gold: dict) -> None:
+    exc = gold["attack"]["excluded_ids"]
+    # T1002 (Data Compressed) and T1004 (Winlogon Helper DLL) were retired.
+    assert "T1002" in exc
+    assert "T1004" in exc
+    # No excluded id may still be carried by a live object (legacy
+    # course-of-action objects reused technique T-numbers).
+    assert not set(exc) & set(gold["attack"]["objects"])
+
+
+# -- Step 10 CAPEC maps: execution flow, skills, consequences, CWE bridge --------
+
+
+def test_capec_66_execution_flow(gold: dict) -> None:
+    # CAPEC-66 (SQL Injection): 4 steps — Explore, Experiment x2, Exploit.
+    steps = gold["capec"]["execution_steps"]["CAPEC-66"]
+    assert [(s["step"], s["phase"]) for s in steps] == [
+        ("1", "Explore"),
+        ("2", "Experiment"),
+        ("3", "Experiment"),
+        ("4", "Exploit"),
+    ]
+    assert steps[0]["node_id"] == "capec:attack-pattern:66:step:1"
+
+
+def test_capec_98_skills_and_consequences(gold: dict) -> None:
+    assert gold["capec"]["skills"]["CAPEC-98"] == [
+        {"level": "Medium", "node_id": "capec:attack-pattern:98:skill:1"}
+    ]
+    cons = gold["capec"]["consequences"]["CAPEC-66"]
+    assert len(cons) == 4
+    assert cons[0]["node_id"] == "capec:attack-pattern:66:consequence:1"
+    assert cons[0]["scopes"] == ["Integrity"]
+
+
+def test_cwe_to_capec_bridge(gold: dict) -> None:
+    # CWE-89 (SQL Injection) bridges to CAPEC-66 among others; the inverse map
+    # must agree with the declared related_weaknesses.
+    assert "CAPEC-66" in gold["capec"]["cwe_to_capec"]["CWE-89"]
+    for cwe, cids in gold["capec"]["cwe_to_capec"].items():
+        for cid in cids:
+            assert cwe in gold["capec"]["related_weaknesses"][cid]
+    # No retired pattern may appear in the bridge.
+    deprecated = set(gold["capec"]["deprecated"])
+    for cids in gold["capec"]["cwe_to_capec"].values():
+        assert not deprecated & set(cids)
+
+
 # -- determinism ----------------------------------------------------------------
 
 
