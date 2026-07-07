@@ -44,6 +44,13 @@ class ExpectedCase:
     # sub-question per expected source; set it when a source needs more than one.
     expected_sub_question_count: int | None = None
     split: str = "dev"
+    # Provenance: "curated" (hand-reviewed anchors) or "generated" (derived from
+    # the specialist banks by build_corpus.py). Reported separately so the small
+    # curated regression set is never conflated with the larger measurement set.
+    origin: str = "curated"
+    # Difficulty tier of the source question ("easy"/"medium"/""), for tiered
+    # reporting. Curated anchors carry "" (mixed / hand-authored).
+    tier: str = ""
 
     @classmethod
     def from_dict(cls, data: dict) -> "ExpectedCase":
@@ -59,6 +66,8 @@ class ExpectedCase:
             expects_partial=bool(data.get("expects_partial", False)),
             expected_sub_question_count=None if raw_count is None else int(raw_count),
             split=str(data.get("split", "dev")),
+            origin=str(data.get("origin", "curated")),
+            tier=str(data.get("tier", "")),
         )
 
 
@@ -73,9 +82,14 @@ class _FixedProbe(LiveSourceProbe):
 
 
 def load_corpus(split: str | None = None) -> list[ExpectedCase]:
-    """Load all expected-plan cases, optionally filtered by split."""
+    """Load all expected-plan cases, optionally filtered by split.
+
+    Curated anchors live in ``expected_plans/*.json``; generated cases live in
+    ``expected_plans/generated/*.json`` (see build_corpus.py). Both are globbed
+    recursively so the loader picks up either without further wiring.
+    """
     cases: list[ExpectedCase] = []
-    for path in sorted(EXPECTED_PLANS_DIR.glob("*.json")):
+    for path in sorted(EXPECTED_PLANS_DIR.rglob("*.json")):
         with open(path, encoding="utf-8") as f:
             cases.append(ExpectedCase.from_dict(json.load(f)))
     if split is not None:

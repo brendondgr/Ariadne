@@ -38,6 +38,8 @@ class CaseScore:
 
     name: str
     split: str
+    origin: str
+    tier: str
     source_precision: float
     source_recall: float
     unnecessary_source_calls: int
@@ -77,6 +79,8 @@ class CaseScore:
         return {
             "name": self.name,
             "split": self.split,
+            "origin": self.origin,
+            "tier": self.tier,
             "passed": self.passed,
             "source_precision": round(self.source_precision, 3),
             "source_recall": round(self.source_recall, 3),
@@ -154,6 +158,8 @@ def score_plan(
     return CaseScore(
         name=case.name,
         split=case.split,
+        origin=case.origin,
+        tier=case.tier,
         source_precision=source_precision,
         source_recall=source_recall,
         unnecessary_source_calls=len(unnecessary),
