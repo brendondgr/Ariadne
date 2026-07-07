@@ -40,10 +40,14 @@ class ExpectedCase:
     expects_join: bool = False
     expects_unsupported: bool = False
     expects_partial: bool = False
+    # Optional decomposition gold. When ``None`` the scorer defaults to one
+    # sub-question per expected source; set it when a source needs more than one.
+    expected_sub_question_count: int | None = None
     split: str = "dev"
 
     @classmethod
     def from_dict(cls, data: dict) -> "ExpectedCase":
+        raw_count = data.get("expected_sub_question_count")
         return cls(
             name=str(data["name"]),
             request=str(data["request"]),
@@ -53,6 +57,7 @@ class ExpectedCase:
             expects_join=bool(data.get("expects_join", False)),
             expects_unsupported=bool(data.get("expects_unsupported", False)),
             expects_partial=bool(data.get("expects_partial", False)),
+            expected_sub_question_count=None if raw_count is None else int(raw_count),
             split=str(data.get("split", "dev")),
         )
 

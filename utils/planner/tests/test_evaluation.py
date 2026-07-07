@@ -89,6 +89,80 @@ def test_scorer_checks_honesty_flags() -> None:
     assert score.unsupported_correct and score.partial_correct
 
 
+# -- sub-question-quality decomposition -------------------------------------
+
+
+def test_decomposition_rewards_correct_routing_count_dependency() -> None:
+    plan = Plan(
+        request="r",
+        sub_questions=[SubQuestion("q1", "capec", "x", ["AttackPattern", "MAPS_TO"], Limits(3, 1000, 5000))],
+    )
+    score = score_plan(plan, _case(), CARDS, make_live_view())
+    assert score.count_correct and score.routing_correct and score.dependency_correct
+    assert score.decomposition_score == 1.0
+    assert score.sub_question_count == 1
+    assert score.expected_sub_question_count == 1  # defaults to len(expected_sources)
+    assert score.sub_question_quality == 1.0
+
+
+def test_decomposition_flags_wrong_routing() -> None:
+    # routes to attack when only capec was expected
+    plan = Plan(
+        request="r",
+        sub_questions=[SubQuestion("q1", "attack", "x", ["Technique"], Limits(3, 1000, 5000))],
+    )
+    score = score_plan(plan, _case(expected_sources=["capec"]), CARDS, make_live_view())
+    assert not score.routing_correct
+    assert score.decomposition_score < 1.0
+
+
+def test_decomposition_flags_wrong_count_override() -> None:
+    # one sub-question emitted but the case demands two
+    plan = Plan(
+        request="r",
+        sub_questions=[SubQuestion("q1", "capec", "x", ["AttackPattern", "MAPS_TO"], Limits(3, 1000, 5000))],
+    )
+    score = score_plan(plan, _case(expected_sub_question_count=2), CARDS, make_live_view())
+    assert not score.count_correct
+    assert score.expected_sub_question_count == 2
+
+
+def test_decomposition_flags_missing_multihop_dependency() -> None:
+    # multi-hop question but the plan declared no join
+    plan = Plan(
+        request="r",
+        sub_questions=[SubQuestion("q1", "capec", "x", ["AttackPattern", "MAPS_TO"], Limits(3, 1000, 5000))],
+    )
+    score = score_plan(plan, _case(expects_join=True), CARDS, make_live_view())
+    assert not score.dependency_correct
+
+
+def test_aggregate_reports_decomposition_metrics() -> None:
+    results = run_corpus(CARDS)
+    agg = aggregate([s for _c, _p, s in results])
+    for key in (
+        "mean_sub_question_quality",
+        "mean_decomposition_score",
+        "routing_accuracy_rate",
+        "count_accuracy_rate",
+        "dependency_accuracy_rate",
+    ):
+        assert key in agg
+    assert agg["routing_accuracy_rate"] == 1.0
+    assert agg["dependency_accuracy_rate"] == 1.0
+
+
+def test_expected_sub_question_count_roundtrips_through_dict() -> None:
+    case = ExpectedCase.from_dict(
+        {"name": "n", "request": "r", "expected_sources": ["capec"],
+         "expected_sub_question_count": 3}
+    )
+    assert case.expected_sub_question_count == 3
+    # absent -> None (scorer then defaults to len(expected_sources))
+    case2 = ExpectedCase.from_dict({"name": "n", "request": "r", "expected_sources": ["capec"]})
+    assert case2.expected_sub_question_count is None
+
+
 # -- corpus regression ------------------------------------------------------
 
 
