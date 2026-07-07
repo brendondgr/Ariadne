@@ -31,6 +31,8 @@ hide evidence behind a false "the sources don't establish this".
 
 from __future__ import annotations
 
+import re
+
 from utils.specialists.contracts import EvidenceRecord, SpecialistResult
 from utils.specialists.federation import FederatedEvidence
 
@@ -40,10 +42,14 @@ from .contracts import (
     Citation,
     Claim,
     ClaimVerdict,
+    SynthesisEdge,
     SynthesizedAnswer,
     VerificationReport,
 )
 from .grounding import id_pool, normalize_id
+
+_CAPEC_RE = re.compile(r"^capec-\d+$", re.IGNORECASE)
+_TECHNIQUE_RE = re.compile(r"^t\d{4}(?:\.\d{3})?$", re.IGNORECASE)
 
 
 def _records_by_source(evidence: FederatedEvidence) -> dict[str, list[EvidenceRecord]]:
@@ -162,6 +168,63 @@ def _enforce_abstentions(
     return enforced, repairs
 
 
+def _supported_id_pool(
+    claims: list[Claim], verdicts: list[ClaimVerdict]
+) -> set[str]:
+    """Normalized ids that appear in a *supported* claim — the only endpoints an
+    edge may connect. A cut claim's ids never enter the pool, so any edge that
+    depended on it is pruned."""
+    pool: set[str] = set()
+    for claim, verdict in zip(claims, verdicts):
+        if not verdict.supported:
+            continue
+        for citation in claim.citations:
+            pool.add(normalize_id(citation.primary_id))
+        for entity in claim.entity_ids:
+            pool.add(normalize_id(entity))
+    return pool
+
+
+def _synthesis_edges(
+    evidence: FederatedEvidence, supported_ids: set[str]
+) -> list[SynthesisEdge]:
+    """Provenance-exact CAPEC→ATT&CK edges from the cross-source join index.
+
+    A join value present under more than one source means the CAPEC pattern and
+    the ATT&CK technique that both carry it genuinely map to each other — no
+    cross-product guessing. Each edge is kept only when *both* endpoints survive
+    in a supported claim (``supported_ids``), so the plot never shows topology
+    the verifier cut.
+    """
+    join_index = evidence.join_index()
+    edges: list[SynthesisEdge] = []
+    seen: set[tuple[str, str]] = set()
+
+    for value in evidence.cross_source_join_values():
+        entries = join_index.get(value, [])
+        capec_ids = [e["primary_id"] for e in entries if _CAPEC_RE.match(normalize_id(e["primary_id"]))]
+        technique_ids = [
+            e["primary_id"] for e in entries if _TECHNIQUE_RE.match(normalize_id(e["primary_id"]))
+        ]
+        # The shared join value is itself the ATT&CK id even when no record's
+        # primary_id equals it — use it as a target too.
+        if _TECHNIQUE_RE.match(normalize_id(value)):
+            if normalize_id(value) not in {normalize_id(t) for t in technique_ids}:
+                technique_ids.append(value)
+
+        for capec in capec_ids:
+            for technique in technique_ids:
+                nc, nt = normalize_id(capec), normalize_id(technique)
+                if nc == nt or nc not in supported_ids or nt not in supported_ids:
+                    continue
+                if (nc, nt) in seen:
+                    continue
+                seen.add((nc, nt))
+                edges.append(SynthesisEdge(source_id=capec, target_id=technique, rel="mapsTo"))
+
+    return edges
+
+
 def verify_answer(
     answer: SynthesizedAnswer, evidence: FederatedEvidence
 ) -> SynthesizedAnswer:
@@ -177,5 +240,8 @@ def verify_answer(
     answer.abstentions = abstentions
     answer.verification = VerificationReport(
         verdicts=verdicts, repaired_abstentions=repairs
+    )
+    answer.edges = _synthesis_edges(
+        evidence, _supported_id_pool(answer.claims, verdicts)
     )
     return answer
