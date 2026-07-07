@@ -12,6 +12,7 @@ import { LiveTicker } from "./LiveTicker";
 import { currentPhaseMessage } from "@/lib/ticker";
 import { ProvenanceChip } from "./ProvenanceChip";
 import { JoinChip } from "./JoinChip";
+import { ClaimTable } from "./ClaimTable";
 
 function Paragraph({ paragraph }: { paragraph: AnswerParagraph }) {
   return (
@@ -228,6 +229,8 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
       </div>
 
       {run.answer.synthesis && <SynthesisBlock synthesis={run.answer.synthesis} />}
+
+      {run.answer.synthesis && <ClaimTable synthesis={run.answer.synthesis} />}
 
       {run.events.length > 0 && (
         <div className="px-[18px] pb-1">
