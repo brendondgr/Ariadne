@@ -313,6 +313,22 @@ VERSION OVERRIDES (--docker start only)
         help="Use the OpenAI-compatible LLM drafter when planning for --query",
     )
 
+    evaluation = parser.add_argument_group(
+        "Evaluation (Wk 11-13)",
+        "Score the planner and the two specialists against snapshot-derived gold "
+        "and write the component-evaluation report (deterministic, no LLM judge).",
+    )
+    evaluation.add_argument(
+        "--component-eval",
+        action="store_true",
+        help="Run component-level evaluation -> docs/evaluation/component-evaluation.{md,json}",
+    )
+    evaluation.add_argument(
+        "--no-live",
+        action="store_true",
+        help="With --component-eval, skip the live EX + latency scorers",
+    )
+
     args = parser.parse_args()
 
     # Determine job type
@@ -341,6 +357,8 @@ VERSION OVERRIDES (--docker start only)
         job_type = "plan"
     elif args.query:
         job_type = "query"
+    elif args.component_eval:
+        job_type = "component-eval"
     else:
         # If no arguments provided, print help and exit
         parser.print_help()
@@ -437,6 +455,10 @@ VERSION OVERRIDES (--docker start only)
             code = run_query_command(args.query, use_llm=args.query_llm)
             if code == 2:
                 sys.exit(2)
+            logger.info("Job completed successfully.")
+        elif args.component_eval:
+            from utils.evaluation.run_component_eval import main as run_component_eval
+            run_component_eval(["--no-live"] if args.no_live else [])
             logger.info("Job completed successfully.")
     except (LoaderResolutionError, ValueError, RuntimeError, ConnectionError) as e:
         logger.error(str(e))
