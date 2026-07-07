@@ -104,6 +104,39 @@ and the Enterprise bundle contains **zero** `x-mitre-asset` objects — the
 premise of the A-AST boundary questions (Assets are ICS-only, so the honest
 answer is a schema-boundary refusal, which also live-tests Step 6 abstention).
 
+## Step 10 additions (run 2026-07-07, same method)
+
+The 67 Step 10 entries — Slice B (14 ATT&CK: detection chains, software usage,
+sub-technique hierarchy, 2-predicate tactic×mitigation, data-component
+analytics, retired-id negatives), Slice C (13 CAPEC: execution flows,
+consequences/skills, abstraction chains, extra CWE coverage, deprecated
+negatives), and Slice A (40 federated: CAPEC→technique→mitigation/tactic,
+reverse joins, CWE→CAPEC→ATT&CK chains, no-mapping negatives, partials,
+fan-in unions) — were audited with the identical protocol, expressed as **93
+machine-checkable claims** (one per single-source entry; per federated entry a
+`must_correlate` intersection claim plus its mitigation/tactic-union and
+reverse-pattern side claims; negatives as no-mapping claims).
+
+Two independent adversarial agents — verifier A restricted to a CLI toolchain
+(jq/grep/sed/awk/xmlstarlet), verifier B writing its own stdlib-Python parsers —
+re-derived every claim from `data/raw/` only, forbidden from reading
+`utils/` or any committed bank. Verdicts were then machine-compared (exact
+set/sequence equality) against the committed gold and against each other.
+
+**93 / 93 claims verified by BOTH verifiers — 186 / 186 verdicts `agree`,
+zero discrepancies, zero A-vs-B derivation disagreements.**
+
+Notable independently confirmed censuses: the three detection chains
+(T1047→DET0364→AN1031; T1110→DET0463; T1566→DET0070), Mimikatz S0002 using 17
+techniques, the tactic×mitigation intersections (TA0006×M1027 = 7 techniques,
+TA0002×M1038 = 9, TA0006×M1041 = 6), DC0084 monitored by 9 analytics, T1002/
+T1004 carried only by retired objects, CAPEC-66's 4-step execution flow
+(Explore→Experiment×2→Exploit), all three Detailed→Standard→Meta abstraction
+chains, every federated `must_correlate` intersection (e.g. CWE-522 bridging
+10 mapped patterns to 12 live T-IDs), and the six verified no-mapping
+negatives (incl. CAPEC-66 and CAPEC-116, which carry no ATTACK taxonomy
+mapping at all).
+
 ## Known limitations recorded during evalset construction
 
 These are *system* gaps the golden suite exposed, not gold-answer errors:
