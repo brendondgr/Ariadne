@@ -14,8 +14,10 @@ import os
 from pathlib import Path
 
 from utils.config import set_env_values
+from utils.evaluation.llm_judge.config import EvalConfig
 from utils.planner.config import PlannerConfig
 from utils.specialists.config import SpecialistConfig
+from utils.synthesis.config import SynthesisConfig
 
 from ..models import (
     ConfigResponse,
@@ -42,6 +44,20 @@ _LLM_ENV_KEYS: dict[str, dict[str, str]] = {
         "timeout_s": "SPECIALIST_LLM_TIMEOUT_S",
         "max_tokens": "SPECIALIST_LLM_MAX_TOKENS",
     },
+    "synthesis": {
+        "enabled": "SYNTHESIS_LLM_ENABLED",
+        "base_url": "SYNTHESIS_LLM_BASE_URL",
+        "model": "SYNTHESIS_LLM_MODEL",
+        "timeout_s": "SYNTHESIS_LLM_TIMEOUT_S",
+        "max_tokens": "SYNTHESIS_LLM_MAX_TOKENS",
+    },
+    "eval": {
+        "enabled": "EVAL_LLM_ENABLED",
+        "base_url": "EVAL_LLM_BASE_URL",
+        "model": "EVAL_LLM_MODEL",
+        "timeout_s": "EVAL_LLM_TIMEOUT_S",
+        "max_tokens": "EVAL_LLM_MAX_TOKENS",
+    },
 }
 
 _CONNECTION_ENV_KEYS = {
@@ -52,7 +68,7 @@ _CONNECTION_ENV_KEYS = {
 }
 
 
-def _group(cfg: PlannerConfig | SpecialistConfig) -> LLMGroup:
+def _group(cfg: PlannerConfig | SpecialistConfig | SynthesisConfig | EvalConfig) -> LLMGroup:
     return LLMGroup(
         enabled=cfg.llm_enabled,
         base_url=cfg.llm_base_url,
@@ -67,7 +83,12 @@ def read_config() -> ConfigResponse:
     planner = PlannerConfig.from_env()
     specialist = SpecialistConfig.from_env()
     return ConfigResponse(
-        llm=LLMConfig(planner=_group(planner), specialist=_group(specialist)),
+        llm=LLMConfig(
+            planner=_group(planner),
+            specialist=_group(specialist),
+            synthesis=_group(SynthesisConfig.from_env()),
+            eval=_group(EvalConfig.from_env()),
+        ),
         connection=ConnectionConfig(
             neo4j_uri=planner.neo4j_uri,
             neo4j_user=planner.neo4j_user,
@@ -98,6 +119,8 @@ def collect_updates(request: ConfigUpdateRequest) -> dict[str, str]:
     updates: dict[str, str] = {}
     _collect_group_updates("planner", request.planner, updates)
     _collect_group_updates("specialist", request.specialist, updates)
+    _collect_group_updates("synthesis", request.synthesis, updates)
+    _collect_group_updates("eval", request.eval, updates)
     if request.connection is not None:
         for field, env_key in _CONNECTION_ENV_KEYS.items():
             value = getattr(request.connection, field)

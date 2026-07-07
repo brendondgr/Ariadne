@@ -53,6 +53,8 @@ class LLMGroup(BaseModel):
 class LLMConfig(BaseModel):
     planner: LLMGroup
     specialist: LLMGroup
+    synthesis: LLMGroup
+    eval: LLMGroup
 
 
 class ConnectionConfig(BaseModel):
@@ -111,6 +113,8 @@ class ConnectionUpdate(BaseModel):
 class ConfigUpdateRequest(BaseModel):
     planner: LLMGroupUpdate | None = None
     specialist: LLMGroupUpdate | None = None
+    synthesis: LLMGroupUpdate | None = None
+    eval: LLMGroupUpdate | None = None
     connection: ConnectionUpdate | None = None
 
 
@@ -187,3 +191,30 @@ class GraphPayloadResponse(BaseModel):
     nodes_by_label: dict[str, int]
     nodes: list[GraphNodeModel]
     edges: list[GraphEdgeModel]
+
+
+# ---------------------------------------------------------------------------
+# Evaluation — read the committed reports; run the e2e eval live (SSE).
+# ---------------------------------------------------------------------------
+
+
+class EvaluationReportResponse(BaseModel):
+    """The latest committed evaluation reports for the dashboard.
+
+    Both blocks are the reports' own JSON (already shaped by the report
+    builders and mirrored in ``web/lib/types.ts``), so they are typed loosely as
+    ``dict`` here. ``available`` is false for a report whose file is absent.
+    """
+
+    component_available: bool
+    e2e_available: bool
+    component: dict | None = None
+    e2e: dict | None = None
+
+
+class EvalRunRequest(BaseModel):
+    """Trigger a live end-to-end evaluation run (streamed back as SSE)."""
+
+    live: bool = True
+    judge: bool = False
+    limit: int | None = Field(default=None, ge=1)

@@ -20,6 +20,8 @@ from .models import (
     ConfigResponse,
     ConfigUpdateRequest,
     DockerStateModel,
+    EvalRunRequest,
+    EvaluationReportResponse,
     GraphDataset,
     GraphPayloadResponse,
     HealthResponse,
@@ -27,6 +29,7 @@ from .models import (
     QueryRequest,
 )
 from .services.config import apply_update, read_config
+from .services.evaluation import read_evaluation_report, stream_eval_run
 from .services.graph import load_canonical_graph
 from .services.health import docker_state, live_sources
 from .services.infra import stream_admin_action
@@ -117,3 +120,22 @@ def get_graph(dataset: GraphDataset) -> GraphPayloadResponse:
     except FileNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     return GraphPayloadResponse(**payload)
+
+
+@app.get("/api/evaluation", response_model=EvaluationReportResponse)
+def get_evaluation() -> EvaluationReportResponse:
+    """Return the latest committed component + end-to-end evaluation reports."""
+    return EvaluationReportResponse(**read_evaluation_report())
+
+
+@app.post("/api/eval-run")
+def post_eval_run(request: EvalRunRequest) -> StreamingResponse:
+    """Re-run the end-to-end evaluation live, streaming progress as SSE."""
+    stream = stream_eval_run(
+        live=request.live, judge=request.judge, limit=request.limit
+    )
+    return StreamingResponse(
+        stream,
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
