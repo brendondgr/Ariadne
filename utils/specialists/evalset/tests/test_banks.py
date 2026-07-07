@@ -18,6 +18,7 @@ from utils.specialists.cypher.builder import CypherQueryBuilder
 from utils.specialists.evalset.compile_banks import (
     ATTACK_BANK_PATH,
     CAPEC_BANK_PATH,
+    FEDERATED_BANK_PATH,
     compile_banks,
     load_bank,
 )
@@ -127,12 +128,16 @@ def test_bank_ids_unique_and_counts() -> None:
 
 
 def test_banks_are_fresh() -> None:
-    attack_bank, capec_bank = compile_banks()
+    attack_bank, capec_bank, federated_bank = compile_banks()
     assert attack_bank == json.loads(ATTACK_BANK_PATH.read_text()), (
         "attack_questions.json is stale — regenerate with "
         "`uv run python -m utils.specialists.evalset.compile_banks`"
     )
     assert capec_bank == json.loads(CAPEC_BANK_PATH.read_text())
+    assert federated_bank == json.loads(FEDERATED_BANK_PATH.read_text()), (
+        "federated_questions.json is stale — regenerate with "
+        "`uv run python -m utils.specialists.evalset.compile_banks`"
+    )
 
 
 def test_negative_anchor_capec_116_still_negative() -> None:
@@ -140,3 +145,158 @@ def test_negative_anchor_capec_116_still_negative() -> None:
     # bank must contain the abstention question.
     entries = {e["id"]: e for e in _bank_questions(CAPEC_BANK_PATH)}
     assert entries["C-MAP-NEG-01"]["assertions"] == {"expect_empty": True}
+
+
+# -- federated bank invariants (Slice A) ------------------------------------------
+
+_FEDERATED = _bank_questions(FEDERATED_BANK_PATH)
+_FED_SIDE_KEYS = {
+    "min_records", "max_records", "expect_empty", "expect_boundary",
+    "must_include_ids", "must_include_related", "forbid_ids",
+    "expect_names", "expect_properties",
+    # federated-only vocabulary:
+    "expect_dependency_skip", "expect_skipped",
+}
+
+
+def test_federated_bank_census() -> None:
+    ids = [e["id"] for e in _FEDERATED]
+    assert len(ids) == len(set(ids))
+    assert len(_FEDERATED) == 40
+    # Full catalogue: 120 questions, exactly one third federated.
+    total = len(_all_entries()) + len(_FEDERATED)
+    assert total == 120, f"catalogue is {total}, expected exactly 120"
+
+
+def test_federated_entries_are_cross_source() -> None:
+    for entry in _FEDERATED:
+        assert sorted(entry["sources"]) == ["attack", "capec"], entry["id"]
+        subs = entry["sub_questions"]
+        assert {s["source"] for s in subs} == {"attack", "capec"}, entry["id"]
+        assert entry["hops"] >= 1
+        assert entry["gold_provenance"] == {
+            "attack_version": "19.0", "capec_version": "3.9",
+        }, entry["id"]
+
+
+def test_federated_assertions_are_well_formed() -> None:
+    for entry in _FEDERATED:
+        assertions = entry["assertions"]
+        assert "must_correlate" in assertions, entry["id"]
+        if assertions.get("expect_no_correlation"):
+            assert assertions["must_correlate"] == [], entry["id"]
+        else:
+            assert assertions["must_correlate"], (
+                f"{entry['id']}: positive federated entry with empty must_correlate"
+            )
+        for side in ("capec", "attack"):
+            block = assertions[side]
+            unknown = set(block) - _FED_SIDE_KEYS
+            assert not unknown, f"{entry['id']}.{side}: unknown keys {unknown}"
+
+
+def test_federated_sequencing_declares_one_producer_one_consumer() -> None:
+    for entry in _FEDERATED:
+        subs = {s["id"]: s for s in entry["sub_questions"]}
+        seeded = [s for s in subs.values() if s.get("seed_from")]
+        if entry["sequenced"]:
+            assert len(seeded) == 1, entry["id"]
+            consumer = seeded[0]
+            assert consumer["source"] == "attack", entry["id"]
+            assert consumer["seed_from"] in subs, entry["id"]
+            assert subs[consumer["seed_from"]]["source"] == "capec", entry["id"]
+            # Sequenced consumers must not carry ids in text — their seeds are
+            # harvested join values, never text extraction.
+            producer_text_ids = [w for w in consumer["text"].split() if w.startswith("T")]
+            assert not any(
+                w.strip("?.,").replace(".", "").lstrip("T").isdigit()
+                for w in producer_text_ids
+            ), f"{entry['id']}: consumer text carries technique ids"
+        else:
+            assert not seeded, entry["id"]
+
+
+def test_federated_must_correlate_is_the_computed_intersection() -> None:
+    """Re-derive every must_correlate set from the gold bank maps: the
+    CAPEC-side ATTACK-taxonomy mappings intersected with ATT&CK-side
+    existence. Zero hand-keyed join values."""
+    from utils.specialists.evalset.gold_bank import load_gold_bank
+
+    gold = load_gold_bank()
+    capec, attack = gold["capec"], gold["attack"]
+    reverse: dict[str, list[str]] = {}
+    for cid, t_ids in capec["attack_mappings"].items():
+        for t in t_ids:
+            reverse.setdefault(t, []).append(cid)
+
+    for entry in _FEDERATED:
+        want = entry["assertions"]["must_correlate"]
+        prefix = entry["id"].rsplit("-", 1)[0]
+        capec_text = next(
+            s["text"] for s in entry["sub_questions"] if s["source"] == "capec"
+        )
+        if prefix in ("F-CTM", "F-CTT", "F-NEG", "F-FAN"):
+            cids = [w.strip("?.,()") for w in capec_text.split() if w.startswith("CAPEC-")]
+            derived = sorted(
+                {
+                    t
+                    for c in cids
+                    for t in capec["attack_mappings"].get(c, [])
+                    if t in attack["objects"]
+                }
+            )
+            assert want == derived, f"{entry['id']}: {want} != derived {derived}"
+        elif prefix == "F-REV":
+            tids = [w.strip("?.,()") for w in capec_text.split() if w.startswith("T")]
+            assert len(tids) == 1 and want == tids, entry["id"]
+            assert reverse.get(tids[0]), entry["id"]
+        elif prefix == "F-CWE":
+            cwes = [w.strip("?.,()") for w in capec_text.split() if w.startswith("CWE-")]
+            assert len(cwes) == 1, entry["id"]
+            derived = sorted(
+                {
+                    t
+                    for c in capec["cwe_to_capec"].get(cwes[0], [])
+                    for t in capec["attack_mappings"].get(c, [])
+                    if t in attack["objects"]
+                }
+            )
+            assert want == derived, f"{entry['id']}: {want} != derived {derived}"
+        elif prefix == "F-PART":
+            assert want == [], entry["id"]
+        else:
+            pytest.fail(f"unknown federated prefix {prefix}")
+
+
+@pytest.mark.parametrize(
+    "entry",
+    [e for e in _FEDERATED],
+    ids=lambda e: e["id"],
+)
+def test_federated_sub_questions_route_to_expected_templates(entry: dict) -> None:
+    """Producers route from their own text; sequenced consumers route once the
+    harvested seeds are injected (simulated here with the must_correlate set)."""
+    for sub in entry["sub_questions"]:
+        card = _CARDS[sub["source"]]
+        seed_ids: tuple[str, ...] = ()
+        if sub.get("seed_from"):
+            seeds = entry["assertions"]["must_correlate"] or ["T1047"]
+            seed_ids = tuple(seeds)
+        task = SpecialistTask(
+            sub_question_id=sub["id"],
+            source=sub["source"],
+            text=sub["text"],
+            entities=tuple(sub["entities"]),
+            seed_ids=seed_ids,
+            join_key=sub.get("join_key"),
+            limits=sub["limits"],
+        )
+        resolved = resolve(task, card)
+        if sub["expected_template"] == "boundary_refusal":
+            assert resolved.unknown_entities, entry["id"]
+            continue
+        draft = _BUILDERS[sub["source"]].build(resolved)
+        assert draft.template == sub["expected_template"], (
+            f"{entry['id']}/{sub['id']}: routed to {draft.template!r}, "
+            f"bank expects {sub['expected_template']!r}"
+        )

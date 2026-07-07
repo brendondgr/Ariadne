@@ -1,0 +1,3399 @@
+{
+ "meta": {
+  "attack_version": "19.0",
+  "capec_version": "3.9",
+  "gold_bank": "gold_bank.json",
+  "generator": "utils/specialists/evalset/compile_banks.py"
+ },
+ "questions": [
+  {
+   "id": "F-CTM-01",
+   "tier": "hard",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK techniques does CAPEC-150 (Collect Data from Common Resource Locations) map to, and what mitigations apply to those techniques?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-150 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1003",
+     "T1119",
+     "T1213",
+     "T1530",
+     "T1555",
+     "T1602"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-150"
+     ],
+     "must_include_related": [
+      "T1003",
+      "T1119",
+      "T1213",
+      "T1530",
+      "T1555",
+      "T1602"
+     ]
+    },
+    "attack": {
+     "min_records": 6,
+     "max_records": 6,
+     "must_include_ids": [
+      "T1003",
+      "T1119",
+      "T1213",
+      "T1530",
+      "T1555",
+      "T1602"
+     ],
+     "must_include_related": [
+      "M1015",
+      "M1017",
+      "M1018",
+      "M1022",
+      "M1025",
+      "M1026",
+      "M1027",
+      "M1028",
+      "M1029",
+      "M1030",
+      "M1031",
+      "M1032",
+      "M1037",
+      "M1040",
+      "M1041",
+      "M1043",
+      "M1047",
+      "M1051",
+      "M1054",
+      "M1060"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-CTM-02",
+   "tier": "hard",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK techniques does CAPEC-555 (Remote Services with Stolen Credentials) map to, and what mitigations apply to those techniques?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-555 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1021",
+     "T1114.002",
+     "T1133"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-555"
+     ],
+     "must_include_related": [
+      "T1021",
+      "T1114.002",
+      "T1133"
+     ]
+    },
+    "attack": {
+     "min_records": 3,
+     "max_records": 3,
+     "must_include_ids": [
+      "T1021",
+      "T1114.002",
+      "T1133"
+     ],
+     "must_include_related": [
+      "M1018",
+      "M1021",
+      "M1027",
+      "M1030",
+      "M1032",
+      "M1035",
+      "M1041",
+      "M1042",
+      "M1047",
+      "M1060"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-CTM-03",
+   "tier": "hard",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK techniques does CAPEC-593 (Session Hijacking) map to, and what mitigations apply to those techniques?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-593 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1185",
+     "T1550.001",
+     "T1563"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-593"
+     ],
+     "must_include_related": [
+      "T1185",
+      "T1550.001",
+      "T1563"
+     ]
+    },
+    "attack": {
+     "min_records": 3,
+     "max_records": 3,
+     "must_include_ids": [
+      "T1185",
+      "T1550.001",
+      "T1563"
+     ],
+     "must_include_related": [
+      "M1013",
+      "M1017",
+      "M1018",
+      "M1021",
+      "M1026",
+      "M1027",
+      "M1030",
+      "M1036",
+      "M1041",
+      "M1042",
+      "M1047"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-CTM-04",
+   "tier": "hard",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK techniques does CAPEC-639 (Probe System Files) map to, and what mitigations apply to those techniques?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-639 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1039",
+     "T1552.001",
+     "T1552.003",
+     "T1552.004",
+     "T1552.006"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-639"
+     ],
+     "must_include_related": [
+      "T1039",
+      "T1552.001",
+      "T1552.003",
+      "T1552.004",
+      "T1552.006"
+     ]
+    },
+    "attack": {
+     "min_records": 5,
+     "max_records": 5,
+     "must_include_ids": [
+      "T1039",
+      "T1552.001",
+      "T1552.003",
+      "T1552.004",
+      "T1552.006"
+     ],
+     "must_include_related": [
+      "M1015",
+      "M1017",
+      "M1022",
+      "M1027",
+      "M1028",
+      "M1041",
+      "M1047",
+      "M1051"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-CTM-05",
+   "tier": "hard",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK techniques does CAPEC-21 (Exploitation of Trusted Identifiers) map to, and what mitigations apply to those techniques?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-21 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1134",
+     "T1528",
+     "T1539"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-21"
+     ],
+     "must_include_related": [
+      "T1134",
+      "T1528",
+      "T1539"
+     ]
+    },
+    "attack": {
+     "min_records": 3,
+     "max_records": 3,
+     "must_include_ids": [
+      "T1134",
+      "T1528",
+      "T1539"
+     ],
+     "must_include_related": [
+      "M1017",
+      "M1018",
+      "M1021",
+      "M1026",
+      "M1032",
+      "M1047",
+      "M1051",
+      "M1054"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-CTM-06",
+   "tier": "hard",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK techniques does CAPEC-665 (Exploitation of Thunderbolt Protection Flaws) map to, and what mitigations apply to those techniques?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-665 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1211",
+     "T1542.002",
+     "T1556"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-665"
+     ],
+     "must_include_related": [
+      "T1211",
+      "T1542.002",
+      "T1556"
+     ]
+    },
+    "attack": {
+     "min_records": 3,
+     "max_records": 3,
+     "must_include_ids": [
+      "T1211",
+      "T1542.002",
+      "T1556"
+     ],
+     "must_include_related": [
+      "M1018",
+      "M1019",
+      "M1022",
+      "M1024",
+      "M1025",
+      "M1026",
+      "M1027",
+      "M1028",
+      "M1032",
+      "M1047",
+      "M1048",
+      "M1050",
+      "M1051"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-CTM-07",
+   "tier": "hard",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK techniques does CAPEC-600 (Credential Stuffing) map to, and what mitigations apply to those techniques?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-600 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1110.004"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-600"
+     ],
+     "must_include_related": [
+      "T1110.004"
+     ]
+    },
+    "attack": {
+     "min_records": 1,
+     "max_records": 1,
+     "must_include_ids": [
+      "T1110.004"
+     ],
+     "must_include_related": [
+      "M1018",
+      "M1027",
+      "M1032",
+      "M1036"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-CTM-08",
+   "tier": "hard",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK techniques does CAPEC-644 (Use of Captured Hashes (Pass The Hash)) map to, and what mitigations apply to those techniques?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-644 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1550.002"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-644"
+     ],
+     "must_include_related": [
+      "T1550.002"
+     ]
+    },
+    "attack": {
+     "min_records": 1,
+     "max_records": 1,
+     "must_include_ids": [
+      "T1550.002"
+     ],
+     "must_include_related": [
+      "M1018",
+      "M1026",
+      "M1051",
+      "M1052"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-CTM-09",
+   "tier": "hard",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK techniques does CAPEC-645 (Use of Captured Tickets (Pass The Ticket)) map to, and what mitigations apply to those techniques?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-645 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1550.003"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-645"
+     ],
+     "must_include_related": [
+      "T1550.003"
+     ]
+    },
+    "attack": {
+     "min_records": 1,
+     "max_records": 1,
+     "must_include_ids": [
+      "T1550.003"
+     ],
+     "must_include_related": [
+      "M1015",
+      "M1018",
+      "M1026",
+      "M1027"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-CTM-10",
+   "tier": "hard",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK techniques does CAPEC-652 (Use of Known Kerberos Credentials) map to, and what mitigations apply to those techniques?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-652 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1558"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-652"
+     ],
+     "must_include_related": [
+      "T1558"
+     ]
+    },
+    "attack": {
+     "min_records": 1,
+     "max_records": 1,
+     "must_include_ids": [
+      "T1558"
+     ],
+     "must_include_related": [
+      "M1015",
+      "M1026",
+      "M1027",
+      "M1041",
+      "M1043",
+      "M1047"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-CTT-01",
+   "tier": "medium",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK tactics do the techniques mapped from CAPEC-98 (Phishing) belong to?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-98 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "Which tactics do those techniques belong to?",
+     "entities": [
+      "Tactic",
+      "Technique"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_tactics",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1566",
+     "T1598"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-98"
+     ],
+     "must_include_related": [
+      "T1566",
+      "T1598"
+     ]
+    },
+    "attack": {
+     "min_records": 2,
+     "max_records": 2,
+     "must_include_ids": [
+      "T1566",
+      "T1598"
+     ],
+     "must_include_related": [
+      "TA0001",
+      "TA0043"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-CTT-02",
+   "tier": "medium",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK tactics do the techniques mapped from CAPEC-49 (Password Brute Forcing) belong to?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-49 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "Which tactics do those techniques belong to?",
+     "entities": [
+      "Tactic",
+      "Technique"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_tactics",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1110.001"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-49"
+     ],
+     "must_include_related": [
+      "T1110.001"
+     ]
+    },
+    "attack": {
+     "min_records": 1,
+     "max_records": 1,
+     "must_include_ids": [
+      "T1110.001"
+     ],
+     "must_include_related": [
+      "TA0006"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-CTT-03",
+   "tier": "medium",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK tactics do the techniques mapped from CAPEC-565 (Password Spraying) belong to?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-565 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "Which tactics do those techniques belong to?",
+     "entities": [
+      "Tactic",
+      "Technique"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_tactics",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1110.003"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-565"
+     ],
+     "must_include_related": [
+      "T1110.003"
+     ]
+    },
+    "attack": {
+     "min_records": 1,
+     "max_records": 1,
+     "must_include_ids": [
+      "T1110.003"
+     ],
+     "must_include_related": [
+      "TA0006"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-CTT-04",
+   "tier": "medium",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK tactics do the techniques mapped from CAPEC-633 (Token Impersonation) belong to?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-633 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "Which tactics do those techniques belong to?",
+     "entities": [
+      "Tactic",
+      "Technique"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_tactics",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1134"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-633"
+     ],
+     "must_include_related": [
+      "T1134"
+     ]
+    },
+    "attack": {
+     "min_records": 1,
+     "max_records": 1,
+     "must_include_ids": [
+      "T1134"
+     ],
+     "must_include_related": [
+      "TA0004",
+      "TA0005"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-CTT-05",
+   "tier": "medium",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK tactics do the techniques mapped from CAPEC-13 (Subverting Environment Variable Values) belong to?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-13 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "Which tactics do those techniques belong to?",
+     "entities": [
+      "Tactic",
+      "Technique"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_tactics",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1574.006",
+     "T1574.007"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-13"
+     ],
+     "must_include_related": [
+      "T1574.006",
+      "T1574.007"
+     ]
+    },
+    "attack": {
+     "min_records": 2,
+     "max_records": 2,
+     "must_include_ids": [
+      "T1574.006",
+      "T1574.007"
+     ],
+     "must_include_related": [
+      "TA0002",
+      "TA0005"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-CTT-06",
+   "tier": "medium",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK tactics do the techniques mapped from CAPEC-37 (Retrieve Embedded Sensitive Data) belong to?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-37 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "Which tactics do those techniques belong to?",
+     "entities": [
+      "Tactic",
+      "Technique"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_tactics",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1005",
+     "T1552.004"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-37"
+     ],
+     "must_include_related": [
+      "T1005",
+      "T1552.004"
+     ]
+    },
+    "attack": {
+     "min_records": 2,
+     "max_records": 2,
+     "must_include_ids": [
+      "T1005",
+      "T1552.004"
+     ],
+     "must_include_related": [
+      "TA0006",
+      "TA0009"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-REV-01",
+   "tier": "medium",
+   "hops": 1,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": false,
+   "partial_mode": null,
+   "question": "Which CAPEC patterns map to ATT&CK technique T1040 (Network Sniffing), and what is that technique?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which CAPEC patterns map to ATT&CK technique T1040?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_reverse_maps"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What is ATT&CK technique T1040?",
+     "entities": [
+      "Technique"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": null,
+     "rationale": "federated golden evalset",
+     "expected_template": "node_lookup"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1040"
+    ],
+    "capec": {
+     "min_records": 3,
+     "must_include_ids": [
+      "CAPEC-57",
+      "CAPEC-65",
+      "CAPEC-158"
+     ],
+     "must_include_related": [
+      "T1040"
+     ]
+    },
+    "attack": {
+     "min_records": 1,
+     "max_records": 1,
+     "must_include_ids": [
+      "T1040"
+     ],
+     "expect_names": {
+      "T1040": "Network Sniffing"
+     }
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-REV-02",
+   "tier": "medium",
+   "hops": 1,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": false,
+   "partial_mode": null,
+   "question": "Which CAPEC patterns map to ATT&CK technique T1566 (Phishing), and what is that technique?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which CAPEC patterns map to ATT&CK technique T1566?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_reverse_maps"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What is ATT&CK technique T1566?",
+     "entities": [
+      "Technique"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": null,
+     "rationale": "federated golden evalset",
+     "expected_template": "node_lookup"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1566"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-98"
+     ],
+     "must_include_related": [
+      "T1566"
+     ]
+    },
+    "attack": {
+     "min_records": 1,
+     "max_records": 1,
+     "must_include_ids": [
+      "T1566"
+     ],
+     "expect_names": {
+      "T1566": "Phishing"
+     }
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-REV-03",
+   "tier": "medium",
+   "hops": 1,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": false,
+   "partial_mode": null,
+   "question": "Which CAPEC patterns map to ATT&CK technique T1110.001 (Password Guessing), and what is that technique?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which CAPEC patterns map to ATT&CK technique T1110.001?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_reverse_maps"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What is ATT&CK technique T1110.001?",
+     "entities": [
+      "SubTechnique"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": null,
+     "rationale": "federated golden evalset",
+     "expected_template": "node_lookup"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1110.001"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-49"
+     ],
+     "must_include_related": [
+      "T1110.001"
+     ]
+    },
+    "attack": {
+     "min_records": 1,
+     "max_records": 1,
+     "must_include_ids": [
+      "T1110.001"
+     ],
+     "expect_names": {
+      "T1110.001": "Password Guessing"
+     }
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-REV-04",
+   "tier": "medium",
+   "hops": 1,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": false,
+   "partial_mode": null,
+   "question": "Which CAPEC patterns map to ATT&CK technique T1021 (Remote Services), and what is that technique?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which CAPEC patterns map to ATT&CK technique T1021?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_reverse_maps"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What is ATT&CK technique T1021?",
+     "entities": [
+      "Technique"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": null,
+     "rationale": "federated golden evalset",
+     "expected_template": "node_lookup"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1021"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-555"
+     ],
+     "must_include_related": [
+      "T1021"
+     ]
+    },
+    "attack": {
+     "min_records": 1,
+     "max_records": 1,
+     "must_include_ids": [
+      "T1021"
+     ],
+     "expect_names": {
+      "T1021": "Remote Services"
+     }
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-REV-05",
+   "tier": "medium",
+   "hops": 1,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": false,
+   "partial_mode": null,
+   "question": "Which CAPEC patterns map to ATT&CK technique T1133 (External Remote Services), and what is that technique?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which CAPEC patterns map to ATT&CK technique T1133?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_reverse_maps"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What is ATT&CK technique T1133?",
+     "entities": [
+      "Technique"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": null,
+     "rationale": "federated golden evalset",
+     "expected_template": "node_lookup"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1133"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-555"
+     ],
+     "must_include_related": [
+      "T1133"
+     ]
+    },
+    "attack": {
+     "min_records": 1,
+     "max_records": 1,
+     "must_include_ids": [
+      "T1133"
+     ],
+     "expect_names": {
+      "T1133": "External Remote Services"
+     }
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-REV-06",
+   "tier": "medium",
+   "hops": 1,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": false,
+   "partial_mode": null,
+   "question": "Which CAPEC patterns map to ATT&CK technique T1114.002 (Remote Email Collection), and what is that technique?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which CAPEC patterns map to ATT&CK technique T1114.002?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_reverse_maps"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What is ATT&CK technique T1114.002?",
+     "entities": [
+      "SubTechnique"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": null,
+     "rationale": "federated golden evalset",
+     "expected_template": "node_lookup"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1114.002"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-555"
+     ],
+     "must_include_related": [
+      "T1114.002"
+     ]
+    },
+    "attack": {
+     "min_records": 1,
+     "max_records": 1,
+     "must_include_ids": [
+      "T1114.002"
+     ],
+     "expect_names": {
+      "T1114.002": "Remote Email Collection"
+     }
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-CWE-01",
+   "tier": "hard",
+   "hops": 3,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which CAPEC patterns exploit weakness CWE-522, which ATT&CK techniques do they map to, and what mitigations apply?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which attack patterns exploit CWE-522 and which ATT&CK techniques do they map to?",
+     "entities": [
+      "Weakness",
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "cwe_chain"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1021",
+     "T1021.002",
+     "T1078",
+     "T1110.004",
+     "T1114.002",
+     "T1133",
+     "T1543",
+     "T1550.002",
+     "T1550.003",
+     "T1552.004",
+     "T1558",
+     "T1558.003"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-474",
+      "CAPEC-509",
+      "CAPEC-551",
+      "CAPEC-555",
+      "CAPEC-560",
+      "CAPEC-561",
+      "CAPEC-600",
+      "CAPEC-644",
+      "CAPEC-645",
+      "CAPEC-652"
+     ],
+     "must_include_related": [
+      "CWE-522"
+     ]
+    },
+    "attack": {
+     "min_records": 12,
+     "max_records": 12,
+     "must_include_ids": [
+      "T1021",
+      "T1021.002",
+      "T1078",
+      "T1110.004",
+      "T1114.002",
+      "T1133",
+      "T1543",
+      "T1550.002",
+      "T1550.003",
+      "T1552.004",
+      "T1558",
+      "T1558.003"
+     ],
+     "must_include_related": [
+      "M1013",
+      "M1015",
+      "M1017",
+      "M1018",
+      "M1021",
+      "M1022",
+      "M1026",
+      "M1027",
+      "M1028",
+      "M1030",
+      "M1032",
+      "M1033",
+      "M1035",
+      "M1036",
+      "M1037",
+      "M1040",
+      "M1041",
+      "M1042",
+      "M1043",
+      "M1045",
+      "M1047",
+      "M1051",
+      "M1052",
+      "M1054",
+      "M1060"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-CWE-02",
+   "tier": "hard",
+   "hops": 3,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which CAPEC patterns exploit weakness CWE-287, which ATT&CK techniques do they map to, and what mitigations apply?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which attack patterns exploit CWE-287 and which ATT&CK techniques do they map to?",
+     "entities": [
+      "Weakness",
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "cwe_chain"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1040",
+     "T1134",
+     "T1185",
+     "T1505.003",
+     "T1548",
+     "T1550.001",
+     "T1557",
+     "T1563"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-57",
+      "CAPEC-94",
+      "CAPEC-114",
+      "CAPEC-115",
+      "CAPEC-593",
+      "CAPEC-633",
+      "CAPEC-650"
+     ],
+     "must_include_related": [
+      "CWE-287"
+     ]
+    },
+    "attack": {
+     "min_records": 8,
+     "max_records": 8,
+     "must_include_ids": [
+      "T1040",
+      "T1134",
+      "T1185",
+      "T1505.003",
+      "T1548",
+      "T1550.001",
+      "T1557",
+      "T1563"
+     ],
+     "must_include_related": [
+      "M1013",
+      "M1017",
+      "M1018",
+      "M1021",
+      "M1022",
+      "M1026",
+      "M1027",
+      "M1028",
+      "M1030",
+      "M1031",
+      "M1032",
+      "M1035",
+      "M1036",
+      "M1037",
+      "M1038",
+      "M1041",
+      "M1042",
+      "M1047",
+      "M1051",
+      "M1052"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-CWE-03",
+   "tier": "hard",
+   "hops": 3,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which CAPEC patterns exploit weakness CWE-294, which ATT&CK techniques do they map to, and what mitigations apply?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which attack patterns exploit CWE-294 and which ATT&CK techniques do they map to?",
+     "entities": [
+      "Weakness",
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "cwe_chain"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1021",
+     "T1021.002",
+     "T1114.002",
+     "T1133",
+     "T1134.001",
+     "T1550.002",
+     "T1550.003",
+     "T1550.004",
+     "T1557",
+     "T1558",
+     "T1558.003"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-60",
+      "CAPEC-94",
+      "CAPEC-509",
+      "CAPEC-555",
+      "CAPEC-561",
+      "CAPEC-644",
+      "CAPEC-645",
+      "CAPEC-652"
+     ],
+     "must_include_related": [
+      "CWE-294"
+     ]
+    },
+    "attack": {
+     "min_records": 11,
+     "max_records": 11,
+     "must_include_ids": [
+      "T1021",
+      "T1021.002",
+      "T1114.002",
+      "T1133",
+      "T1134.001",
+      "T1550.002",
+      "T1550.003",
+      "T1550.004",
+      "T1557",
+      "T1558",
+      "T1558.003"
+     ],
+     "must_include_related": [
+      "M1015",
+      "M1017",
+      "M1018",
+      "M1021",
+      "M1026",
+      "M1027",
+      "M1030",
+      "M1031",
+      "M1032",
+      "M1035",
+      "M1037",
+      "M1041",
+      "M1042",
+      "M1043",
+      "M1047",
+      "M1051",
+      "M1052",
+      "M1054",
+      "M1060"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-CWE-04",
+   "tier": "hard",
+   "hops": 3,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which CAPEC patterns exploit weakness CWE-308, which ATT&CK techniques do they map to, and what mitigations apply?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which attack patterns exploit CWE-308 and which ATT&CK techniques do they map to?",
+     "entities": [
+      "Weakness",
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "cwe_chain"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1021",
+     "T1021.002",
+     "T1078",
+     "T1078.001",
+     "T1110.001",
+     "T1110.002",
+     "T1110.003",
+     "T1110.004",
+     "T1114.002",
+     "T1133",
+     "T1550.002",
+     "T1550.003",
+     "T1558",
+     "T1558.003"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-49",
+      "CAPEC-55",
+      "CAPEC-70",
+      "CAPEC-509",
+      "CAPEC-555",
+      "CAPEC-560",
+      "CAPEC-561",
+      "CAPEC-565",
+      "CAPEC-600",
+      "CAPEC-644",
+      "CAPEC-645",
+      "CAPEC-652"
+     ],
+     "must_include_related": [
+      "CWE-308"
+     ]
+    },
+    "attack": {
+     "min_records": 14,
+     "max_records": 14,
+     "must_include_ids": [
+      "T1021",
+      "T1021.002",
+      "T1078",
+      "T1078.001",
+      "T1110.001",
+      "T1110.002",
+      "T1110.003",
+      "T1110.004",
+      "T1114.002",
+      "T1133",
+      "T1550.002",
+      "T1550.003",
+      "T1558",
+      "T1558.003"
+     ],
+     "must_include_related": [
+      "M1013",
+      "M1015",
+      "M1017",
+      "M1018",
+      "M1021",
+      "M1026",
+      "M1027",
+      "M1030",
+      "M1032",
+      "M1035",
+      "M1036",
+      "M1037",
+      "M1041",
+      "M1042",
+      "M1043",
+      "M1047",
+      "M1051",
+      "M1052",
+      "M1060"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-CWE-05",
+   "tier": "hard",
+   "hops": 3,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which CAPEC patterns exploit weakness CWE-521, which ATT&CK techniques do they map to, and what mitigations apply?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which attack patterns exploit CWE-521 and which ATT&CK techniques do they map to?",
+     "entities": [
+      "Weakness",
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "cwe_chain"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1021",
+     "T1021.002",
+     "T1078.001",
+     "T1110",
+     "T1110.001",
+     "T1110.002",
+     "T1110.003",
+     "T1114.002",
+     "T1133",
+     "T1558.003"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-49",
+      "CAPEC-55",
+      "CAPEC-70",
+      "CAPEC-112",
+      "CAPEC-509",
+      "CAPEC-555",
+      "CAPEC-561",
+      "CAPEC-565"
+     ],
+     "must_include_related": [
+      "CWE-521"
+     ]
+    },
+    "attack": {
+     "min_records": 10,
+     "max_records": 10,
+     "must_include_ids": [
+      "T1021",
+      "T1021.002",
+      "T1078.001",
+      "T1110",
+      "T1110.001",
+      "T1110.002",
+      "T1110.003",
+      "T1114.002",
+      "T1133",
+      "T1558.003"
+     ],
+     "must_include_related": [
+      "M1018",
+      "M1021",
+      "M1026",
+      "M1027",
+      "M1030",
+      "M1032",
+      "M1035",
+      "M1036",
+      "M1037",
+      "M1041",
+      "M1042",
+      "M1047",
+      "M1051",
+      "M1060"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-NEG-01",
+   "tier": "adversarial",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK techniques does CAPEC-116 (Excavation) map to, and what mitigations apply? (verified: NO mapping \u2014 the join must be an honest empty, never a fabricated correlation)",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-116 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [],
+    "expect_no_correlation": true,
+    "capec": {
+     "expect_empty": true
+    },
+    "attack": {
+     "expect_dependency_skip": true
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-NEG-02",
+   "tier": "adversarial",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK techniques does CAPEC-66 (SQL Injection) map to, and what mitigations apply? (verified: NO mapping \u2014 the join must be an honest empty, never a fabricated correlation)",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-66 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [],
+    "expect_no_correlation": true,
+    "capec": {
+     "expect_empty": true
+    },
+    "attack": {
+     "expect_dependency_skip": true
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-NEG-03",
+   "tier": "adversarial",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK techniques does CAPEC-3 (Using Leading 'Ghost' Character Sequences to Bypass Input Filters) map to, and what mitigations apply? (verified: NO mapping \u2014 the join must be an honest empty, never a fabricated correlation)",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-3 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [],
+    "expect_no_correlation": true,
+    "capec": {
+     "expect_empty": true
+    },
+    "attack": {
+     "expect_dependency_skip": true
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-NEG-04",
+   "tier": "adversarial",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK techniques does CAPEC-7 (Blind SQL Injection) map to, and what mitigations apply? (verified: NO mapping \u2014 the join must be an honest empty, never a fabricated correlation)",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-7 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [],
+    "expect_no_correlation": true,
+    "capec": {
+     "expect_empty": true
+    },
+    "attack": {
+     "expect_dependency_skip": true
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-NEG-05",
+   "tier": "adversarial",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK techniques does CAPEC-16 (Dictionary-based Password Attack) map to, and what mitigations apply? (verified: NO mapping \u2014 the join must be an honest empty, never a fabricated correlation)",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-16 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [],
+    "expect_no_correlation": true,
+    "capec": {
+     "expect_empty": true
+    },
+    "attack": {
+     "expect_dependency_skip": true
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-NEG-06",
+   "tier": "adversarial",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK techniques does CAPEC-18 (XSS Targeting Non-Script Elements) map to, and what mitigations apply? (verified: NO mapping \u2014 the join must be an honest empty, never a fabricated correlation)",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-18 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [],
+    "expect_no_correlation": true,
+    "capec": {
+     "expect_empty": true
+    },
+    "attack": {
+     "expect_dependency_skip": true
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-PART-01",
+   "tier": "adversarial",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": false,
+   "partial_mode": "boundary",
+   "question": "Which CAPEC patterns map to T1021, and what assets does it target? (Assets are ICS-only: the attack side must refuse honestly while the CAPEC side stays intact)",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which CAPEC patterns map to ATT&CK technique T1021?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_reverse_maps"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What assets does technique T1021 target?",
+     "entities": [
+      "Technique",
+      "Asset"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": null,
+     "rationale": "federated golden evalset",
+     "expected_template": "boundary_refusal"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [],
+    "expect_no_correlation": true,
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-555"
+     ],
+     "must_include_related": [
+      "T1021"
+     ]
+    },
+    "attack": {
+     "expect_boundary": true
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-PART-02",
+   "tier": "adversarial",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": false,
+   "partial_mode": "boundary",
+   "question": "Which CAPEC patterns map to T1566, and what assets does it target? (Assets are ICS-only: the attack side must refuse honestly while the CAPEC side stays intact)",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which CAPEC patterns map to ATT&CK technique T1566?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_reverse_maps"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What assets does technique T1566 target?",
+     "entities": [
+      "Technique",
+      "Asset"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": null,
+     "rationale": "federated golden evalset",
+     "expected_template": "boundary_refusal"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [],
+    "expect_no_correlation": true,
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-98"
+     ],
+     "must_include_related": [
+      "T1566"
+     ]
+    },
+    "attack": {
+     "expect_boundary": true
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-PART-03",
+   "tier": "adversarial",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": "attack_down",
+   "question": "With the ATT&CK source down: CAPEC-555 mappings must still answer; the mitigation side degrades to an honest skip.",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-555 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [],
+    "expect_no_correlation": true,
+    "expect_partial": true,
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-555"
+     ],
+     "must_include_related": [
+      "T1021",
+      "T1114.002",
+      "T1133"
+     ]
+    },
+    "attack": {
+     "expect_skipped": true
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-PART-04",
+   "tier": "adversarial",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": "capec_down",
+   "question": "With the CAPEC source down: the CAPEC-555 producer never runs, so the seeded ATT&CK side must degrade to a dependency abstention \u2014 no broad unseeded query.",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-555 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [],
+    "expect_no_correlation": true,
+    "expect_partial": true,
+    "capec": {
+     "expect_skipped": true
+    },
+    "attack": {
+     "expect_dependency_skip": true
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-FAN-01",
+   "tier": "hard",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK techniques do CAPEC-19, CAPEC-35, CAPEC-448 map to (they overlap), and what mitigations apply to the deduplicated union?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques do CAPEC-19, CAPEC-35, CAPEC-448 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1027.006",
+     "T1027.009",
+     "T1546.004",
+     "T1546.016",
+     "T1564.009"
+    ],
+    "capec": {
+     "min_records": 3,
+     "must_include_ids": [
+      "CAPEC-19",
+      "CAPEC-35",
+      "CAPEC-448"
+     ],
+     "must_include_related": [
+      "T1027.006",
+      "T1027.009",
+      "T1546.004",
+      "T1546.016",
+      "T1564.009"
+     ]
+    },
+    "attack": {
+     "min_records": 5,
+     "max_records": 5,
+     "must_include_ids": [
+      "T1027.006",
+      "T1027.009",
+      "T1546.004",
+      "T1546.016",
+      "T1564.009"
+     ],
+     "must_include_related": [
+      "M1013",
+      "M1022",
+      "M1040",
+      "M1048",
+      "M1049"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-FAN-02",
+   "tier": "hard",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK techniques do CAPEC-13, CAPEC-640 map to (they overlap), and what mitigations apply to the deduplicated union?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques do CAPEC-13, CAPEC-640 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1505.005",
+     "T1574.006",
+     "T1574.007",
+     "T1574.013",
+     "T1620"
+    ],
+    "capec": {
+     "min_records": 2,
+     "must_include_ids": [
+      "CAPEC-13",
+      "CAPEC-640"
+     ],
+     "must_include_related": [
+      "T1505.005",
+      "T1574.006",
+      "T1574.007",
+      "T1574.013",
+      "T1620"
+     ]
+    },
+    "attack": {
+     "min_records": 5,
+     "max_records": 5,
+     "must_include_ids": [
+      "T1505.005",
+      "T1574.006",
+      "T1574.007",
+      "T1574.013",
+      "T1620"
+     ],
+     "must_include_related": [
+      "M1022",
+      "M1024",
+      "M1028",
+      "M1038",
+      "M1040",
+      "M1047"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  },
+  {
+   "id": "F-FAN-03",
+   "tier": "hard",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK techniques do CAPEC-37, CAPEC-639 map to (they overlap), and what mitigations apply to the deduplicated union?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques do CAPEC-37, CAPEC-639 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "federated golden evalset",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1005",
+     "T1039",
+     "T1552.001",
+     "T1552.003",
+     "T1552.004",
+     "T1552.006"
+    ],
+    "capec": {
+     "min_records": 2,
+     "must_include_ids": [
+      "CAPEC-37",
+      "CAPEC-639"
+     ],
+     "must_include_related": [
+      "T1005",
+      "T1039",
+      "T1552.001",
+      "T1552.003",
+      "T1552.004",
+      "T1552.006"
+     ]
+    },
+    "attack": {
+     "min_records": 6,
+     "max_records": 6,
+     "must_include_ids": [
+      "T1005",
+      "T1039",
+      "T1552.001",
+      "T1552.003",
+      "T1552.004",
+      "T1552.006"
+     ],
+     "must_include_related": [
+      "M1015",
+      "M1017",
+      "M1022",
+      "M1027",
+      "M1028",
+      "M1041",
+      "M1047",
+      "M1051",
+      "M1057"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   }
+  }
+ ]
+}

@@ -128,9 +128,16 @@ def resolve(task: SpecialistTask, card: Any) -> ResolvedTask:
     if card.dataset == "attack":
         native = list(_extract_attack_seed_ids(text))
     elif card.dataset == "capec":
-        # CWE ids are CAPEC-native anchors too: the graph's Weakness vertices
-        # seed the CWE -> CAPEC -> ATT&CK chain template.
-        native = [*capec_ids, *extract_cwe_ids(text)]
+        # Prioritized CAPEC-native anchors: CAPEC ids first; else CWE ids (the
+        # Weakness vertices seeding the CWE -> CAPEC -> ATT&CK chain); else
+        # ATT&CK technique ids (the TaxonomyEntry anchors seeding the reverse
+        # MAPS_TO join). Priority, not union, so a text naming both a pattern
+        # and a technique anchors on the pattern.
+        native = (
+            list(capec_ids)
+            or list(extract_cwe_ids(text))
+            or list(attack_ids)
+        )
     else:
         native = []
     # Seed ids the planner already attached win first, then text-extracted ones.

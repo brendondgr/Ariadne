@@ -97,3 +97,30 @@ def test_resolve_attack_text_does_not_gain_cwe_seeds() -> None:
     resolved = resolve(task, card)
     assert "CWE-522" not in resolved.seed_ids
     assert "T1110" in resolved.seed_ids
+
+
+def test_resolve_capec_falls_back_to_technique_seeds() -> None:
+    # A capec task naming only a T-id anchors the reverse MAPS_TO join.
+    card = fixture_card("capec")
+    task = SpecialistTask(
+        sub_question_id="q-rev",
+        source="capec",
+        text="Which CAPEC patterns map to ATT&CK technique T1040?",
+        entities=("AttackPattern", "TaxonomyEntry"),
+        join_key="attack-technique-id",
+    )
+    resolved = resolve(task, card)
+    assert resolved.seed_ids == ("T1040",)
+
+
+def test_resolve_capec_prefers_capec_ids_over_other_shapes() -> None:
+    card = fixture_card("capec")
+    task = SpecialistTask(
+        sub_question_id="q-mixed",
+        source="capec",
+        text="Does CAPEC-555 map to T1021 (see CWE-522)?",
+        entities=("AttackPattern", "TaxonomyEntry"),
+        join_key="attack-technique-id",
+    )
+    resolved = resolve(task, card)
+    assert resolved.seed_ids == ("CAPEC-555",)
