@@ -9,6 +9,7 @@ import { CopyIcon, ExportIcon, LinkIcon } from "@/components/ui/icons";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 import { MiniStepper } from "./MiniStepper";
 import { LiveTicker } from "./LiveTicker";
+import { currentPhaseMessage } from "@/lib/ticker";
 import { ProvenanceChip } from "./ProvenanceChip";
 import { JoinChip } from "./JoinChip";
 
@@ -211,7 +212,14 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
       className="max-w-[92%] overflow-hidden rounded-[4px_13px_13px_13px] bg-surface"
       style={{ boxShadow: SHADOW.answerCard }}
     >
-      <MiniStepper steps={run.stepper} status={run.status} exitCode={run.exitCode} live={live} />
+      <MiniStepper
+        steps={run.stepper}
+        status={run.status}
+        exitCode={run.exitCode}
+        live={live}
+        phase={currentPhaseMessage(run.events)}
+        createdAt={run.createdAt}
+      />
 
       <div className="px-[18px] pb-4 pt-[18px] text-sm leading-[1.62] text-text-soft">
         {run.answer.paragraphs.map((p, i) => (

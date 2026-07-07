@@ -259,8 +259,20 @@ conversations rail and chat inspector (`AppShell` `hideRails`).
 | `lib/api.ts` | Typed client + SSE helpers (`getHealth`, `getConfig`, `getGraph`, `streamQuery`, `streamAdmin`) |
 | `lib/graph.ts` | Pure graph-view transforms (`labelColor`, `toForceGraphData`) |
 | `lib/adapt.ts` | Backend payloads → `WorkbenchRun` view-model |
-| `lib/runMachine.ts`, `lib/motion.ts` | Event-driven run controller + animation variants |
+| `lib/runMachine.ts`, `lib/motion.ts` | Event-driven run controller + animation variants; stamps every SSE event with elapsed-ms at arrival and tracks per-lane `LaneArrival` (started/arrived/seeds/order) off the `specialist-start` event |
+| `lib/ticker.ts` | Pure SSE-event → narration projection for the live activity ticker (`describeEvent`, `tickerLines`, `currentPhaseMessage`) |
 | `lib/types.ts`, `lib/fixtures.ts` | Trace-object + API types, idle/demo run |
+
+The live run is visibly animated end to end: `LiveTicker`
+(`components/center/LiveTicker.tsx`) narrates every pipeline event
+terminal-style with its arrival time inside the answer skeleton (collapsing to
+an "activity log" disclosure once done), the `MiniStepper` shows a crossfading
+phase caption with a ticking elapsed counter, routed sub-questions surface
+immediately as shimmer placeholder lanes ("queued" → "querying <backend>…",
+with the seeded-with-N-ids note for sequenced consumers) until their result
+arrives, and records then reveal with a staggered pop-in carrying `#k`
+emission-order badges plus an "arrived #order at +X.Xs" caption — all gated on
+`statusOf`/`replaying` so past turns render statically.
 
 Launch the whole workbench (API + web) from the repo root with `python app.py`
 (`--prod` for a production build, `--port`/`--api-port`/`--host` to override).

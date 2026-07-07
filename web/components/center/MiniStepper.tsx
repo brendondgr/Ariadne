@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import type { ExitCode, MiniStep, RunStatus } from "@/lib/types";
 import { ACCENT, statusAccent } from "@/lib/ui";
@@ -22,12 +22,33 @@ interface MiniStepperProps {
   exitCode: ExitCode;
   /** True only for the streaming turn; past turns render their baked statuses. */
   live?: boolean;
+  /** Current phase message from the latest status event (live turns). */
+  phase?: string | null;
+  /** Wall-clock submit time — drives the ticking elapsed counter. */
+  createdAt?: number;
+}
+
+/** Ticking elapsed label ("3.2s") while the stream is live. */
+function TickingElapsed({ since }: { since: number }) {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const t = window.setInterval(() => setNow(Date.now()), 100);
+    return () => window.clearInterval(t);
+  }, []);
+  return <span>{Math.max(0, (now - since) / 1000).toFixed(1)}s</span>;
 }
 
 /** The Probe › Plan › Specialists › Evidence › Answer header strip. Each dot
  *  animates as the matching pipeline event fires; the outcome chip pops in
  *  once the answer stage completes. */
-export function MiniStepper({ steps, status, exitCode, live = true }: MiniStepperProps) {
+export function MiniStepper({
+  steps,
+  status,
+  exitCode,
+  live = true,
+  phase = null,
+  createdAt = 0,
+}: MiniStepperProps) {
   const { focusStage, statusOf, replaying } = useWorkbench();
   const chip = STATUS_CHIP[status];
   const chipAccent = ACCENT[chip.accent];
@@ -64,7 +85,31 @@ export function MiniStepper({ steps, status, exitCode, live = true }: MiniSteppe
           );
         })}
       </div>
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
+        {!showChip && (
+          <motion.span
+            key={phase ?? "working"}
+            initial={{ opacity: 0, y: 3 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -3 }}
+            transition={{ duration: 0.2 }}
+            className="flex items-center gap-1.5 font-mono text-[10.5px] text-text-muted"
+          >
+            <motion.span
+              aria-hidden
+              className="h-1.5 w-1.5 rounded-full"
+              style={{ background: ACCENT.teal.fg }}
+              animate={{ opacity: [1, 0.35, 1], scale: [1, 0.82, 1] }}
+              transition={{ duration: 1.1, repeat: Infinity }}
+            />
+            {phase ?? "working…"}
+            {createdAt > 0 && (
+              <span className="text-text-soft">
+                · <TickingElapsed since={createdAt} />
+              </span>
+            )}
+          </motion.span>
+        )}
         {showChip && (
           <motion.span
             variants={popIn}

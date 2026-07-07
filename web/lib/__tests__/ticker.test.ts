@@ -78,3 +78,16 @@ describe("describeEvent / tickerLines", () => {
     expect(line?.accent).toBe("amber");
   });
 });
+
+describe("currentPhaseMessage", () => {
+  it("returns the latest status message, else null", async () => {
+    const { currentPhaseMessage } = await import("../ticker");
+    expect(currentPhaseMessage(EVENTS)).toBe("probing");
+    const withMsg: StampedQueryEvent[] = [
+      ...EVENTS,
+      { type: "status", data: { phase: "querying", message: "Querying source specialists" } },
+    ];
+    expect(currentPhaseMessage(withMsg)).toBe("Querying source specialists");
+    expect(currentPhaseMessage([])).toBeNull();
+  });
+});

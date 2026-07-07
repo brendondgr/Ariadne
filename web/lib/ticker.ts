@@ -140,3 +140,14 @@ export function tickerLines(events: StampedQueryEvent[]): TickerLine[] {
     .map((event, i) => describeEvent(event, i))
     .filter((line): line is TickerLine => line !== null);
 }
+
+/** The latest phase message from the captured status events, or null. */
+export function currentPhaseMessage(events: StampedQueryEvent[]): string | null {
+  for (let i = events.length - 1; i >= 0; i--) {
+    const event = events[i];
+    if (event.type === "status") {
+      return event.data.message ?? event.data.phase ?? null;
+    }
+  }
+  return null;
+}
