@@ -324,9 +324,19 @@ VERSION OVERRIDES (--docker start only)
         help="Run component-level evaluation -> docs/evaluation/component-evaluation.{md,json}",
     )
     evaluation.add_argument(
+        "--e2e-eval",
+        action="store_true",
+        help="Run end-to-end evaluation (Wk 12-13) -> docs/evaluation/e2e-evaluation.{md,json}",
+    )
+    evaluation.add_argument(
+        "--judge",
+        action="store_true",
+        help="With --e2e-eval, enable the opt-in LLM judge (else deterministic proxy)",
+    )
+    evaluation.add_argument(
         "--no-live",
         action="store_true",
-        help="With --component-eval, skip the live EX + latency scorers",
+        help="With --component-eval / --e2e-eval, skip the live scorers",
     )
 
     args = parser.parse_args()
@@ -359,6 +369,8 @@ VERSION OVERRIDES (--docker start only)
         job_type = "query"
     elif args.component_eval:
         job_type = "component-eval"
+    elif args.e2e_eval:
+        job_type = "e2e-eval"
     else:
         # If no arguments provided, print help and exit
         parser.print_help()
@@ -459,6 +471,15 @@ VERSION OVERRIDES (--docker start only)
         elif args.component_eval:
             from utils.evaluation.run_component_eval import main as run_component_eval
             run_component_eval(["--no-live"] if args.no_live else [])
+            logger.info("Job completed successfully.")
+        elif args.e2e_eval:
+            from utils.evaluation.run_e2e_eval import main as run_e2e_eval
+            e2e_args: list[str] = []
+            if args.no_live:
+                e2e_args.append("--no-live")
+            if args.judge:
+                e2e_args.append("--judge")
+            run_e2e_eval(e2e_args)
             logger.info("Job completed successfully.")
     except (LoaderResolutionError, ValueError, RuntimeError, ConnectionError) as e:
         logger.error(str(e))

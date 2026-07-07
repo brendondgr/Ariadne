@@ -363,6 +363,7 @@ def build_e2e(cases: list[E2ECase], judge: JudgeReport) -> dict[str, Any]:
         subset = [c for c in cases if c.tier == tier]
         by_tier[tier] = aggregate(subset, JudgeReport())
     return {
+        "live": True,
         "overall": overall,
         "by_tier": by_tier,
         "cases": [c.to_dict() for c in cases],
@@ -456,7 +457,16 @@ def score_e2e(
 
     config = SpecialistConfig.from_env()
     synth_config = SynthesisConfig()  # deterministic composer; verifier always on
-    router = SpecialistRouter(config)
+    # One router per degradation mode, mirroring the federated golden fixture:
+    # partial-degradation entries must run with the failed source absent, or
+    # both sides answer and a correlation the scenario forbids would appear.
+    full = SpecialistRouter(config)
+    routers = {
+        None: full,
+        "boundary": full,
+        "attack_down": SpecialistRouter(config, cards=full.cards, specialists={"attack": None}),
+        "capec_down": SpecialistRouter(config, cards=full.cards, specialists={"capec": None}),
+    }
     federated, attack_q, capec_q = _load_banks()
 
     def _keep(entry: dict) -> bool:
@@ -469,13 +479,14 @@ def score_e2e(
     if limit is not None:
         fed_entries = fed_entries[:limit]
     for entry in fed_entries:
+        router = routers[entry["partial_mode"]]
         evidence, answer = run_federated(entry, router, synth_config)
         cases.append(evaluate_case(entry, evidence, answer, kind="federated"))
         judge_items.append((entry["id"], answer, evidence))
 
     if include_single:
         for source, entries in (("attack", attack_q), ("capec", capec_q)):
-            specialist = router._specialist_for(source)
+            specialist = full._specialist_for(source)
             if specialist is None:
                 continue
             single = [e for e in entries if _keep(e)]
@@ -487,6 +498,4 @@ def score_e2e(
                 judge_items.append((entry["id"], answer, evidence))
 
     judge = judge_run(judge_items, judge_config or EvalConfig.from_env())
-    report = build_e2e(cases, judge)
-    report["live"] = True
-    return report
+    return build_e2e(cases, judge)
