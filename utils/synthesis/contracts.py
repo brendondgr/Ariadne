@@ -82,6 +82,37 @@ class Claim:
 
 
 @dataclass(frozen=True)
+class SynthesisEdge:
+    """One provenance-exact relationship between two cited entities.
+
+    Derived mechanically from the federation join index during the verification
+    pass and pruned to endpoints that survive in supported claims — so the
+    per-answer network plot draws only topology the verifier stands behind,
+    with no frontend cross-product guessing. ``rel`` names the relationship
+    (``mapsTo`` for CAPEC pattern → ATT&CK technique).
+    """
+
+    source_id: str       # e.g. "CAPEC-555"
+    target_id: str       # e.g. "T1021"
+    rel: str = "mapsTo"  # "mapsTo" | "mitigatedBy"
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "source_id": self.source_id,
+            "target_id": self.target_id,
+            "rel": self.rel,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "SynthesisEdge":
+        return cls(
+            source_id=str(data.get("source_id", "")),
+            target_id=str(data.get("target_id", "")),
+            rel=str(data.get("rel", "mapsTo") or "mapsTo"),
+        )
+
+
+@dataclass(frozen=True)
 class Abstention:
     """An honest "the sources don't establish this", with the query as proof.
 
@@ -184,6 +215,9 @@ class SynthesizedAnswer:
     composer: str = "deterministic"      # "deterministic" | "llm"
     fallback_reason: str | None = None   # set when the LLM path fell back
     verification: VerificationReport | None = None
+    # Provenance-exact relationships for the per-answer network plot, derived
+    # and pruned during verification. Empty on an unverified draft.
+    edges: list[SynthesisEdge] = field(default_factory=list)
 
     def rendered_claims(self) -> list[Claim]:
         """Claims safe to show as fact: verified and supported.
@@ -226,4 +260,5 @@ class SynthesizedAnswer:
             "composer": self.composer,
             "fallback_reason": self.fallback_reason,
             "verification": self.verification.to_dict() if self.verification else None,
+            "edges": [e.to_dict() for e in self.edges],
         }
