@@ -111,7 +111,9 @@ def test_event_order_matches_streaming_contract() -> None:
     core = [e for e in events if e != "status"]
     assert core[:2] == ["probe", "plan"]
     assert core[-3:] == ["evidence", "answer", "done"]
-    assert all(e == "specialist" for e in core[2:-3])
+    # Each specialist run is announced the moment it starts, then resolved.
+    middle = core[2:-3]
+    assert middle == ["specialist-start", "specialist"] * (len(middle) // 2)
 
 
 # -- degradation modes --------------------------------------------------------

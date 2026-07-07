@@ -240,6 +240,8 @@ export interface LaneRecord {
   id: string;
   accent: Accent;
   name: string;
+  /** 1-based emission order within the specialist's result (arrival order). */
+  order?: number;
   /** @deprecated kept for backwards compatibility with the static fixture; prefer fullJson */
   json: string;
   /** The entire EvidenceRecord pretty-printed as JSON. */
@@ -248,6 +250,21 @@ export interface LaneRecord {
   query: string;
   /** Compact "dataset/backend · record_id · timestamp" provenance string, or "—". */
   provenanceMeta: string;
+}
+
+/** Live arrival metadata for one specialist lane, stamped client-side. */
+export interface LaneArrival {
+  subQuestion: string;
+  /** Elapsed ms when the specialist-start event arrived (query began). */
+  startedMs: number | null;
+  /** Elapsed ms when the result event arrived (records landed). */
+  arrivedMs: number | null;
+  /** Seeds injected by dependent sequencing (0 for producers/independent). */
+  seedCount: number;
+  /** Producer sub-question id when this lane was a sequenced consumer. */
+  producer: string | null;
+  /** 1-based order this lane's result arrived in, among all results. */
+  order: number | null;
 }
 
 /** One specialist lane (Cypher/neo4j or Gremlin/capec). */
@@ -263,6 +280,10 @@ export interface SpecialistLane {
   query: string;
   steps: MicroStep[];
   records: LaneRecord[];
+  /** Live arrival metadata (null for demo turns / pre-integration payloads). */
+  arrival?: LaneArrival | null;
+  /** True for a synthesized in-flight lane (specialist started, no result yet). */
+  placeholder?: boolean;
   /** Full task metadata for the task section. */
   task: LaneTask;
   /** All evaluator trace entries in order (includes gate/execute retries). */
@@ -407,7 +428,7 @@ export interface WorkbenchRun {
   rawPlan: Plan | null;
   rawAnswer: ServerAnswer | null;
   /** The literal ordered SSE event log for this turn — the pipeline start to finish. */
-  events: QueryEvent[];
+  events: StampedQueryEvent[];
 }
 
 /** A sidebar conversation summary. */
@@ -573,6 +594,18 @@ export type QueryEvent =
   | { type: "status"; data: { phase: string; message?: string; count?: number } }
   | { type: "probe"; data: { live_sources: ProbeSource[] } }
   | { type: "plan"; data: { plan: Plan; target_sources: string[] } }
+  | {
+      type: "specialist-start";
+      data: {
+        sub_question: string;
+        source: string;
+        index: number;
+        total: number;
+        seed_count: number;
+        producer: string | null;
+        skipped: string | null;
+      };
+    }
   | { type: "specialist"; data: { result: SpecialistResult; index: number; total: number } }
   | { type: "skipped"; data: { sub_question: string; source: string; reason: string } }
   | { type: "evidence"; data: { evidence: FederatedEvidence } }
@@ -581,6 +614,9 @@ export type QueryEvent =
   | { type: "error"; data: { message: string } };
 
 export type QueryEventType = QueryEvent["type"];
+
+/** A captured SSE event stamped with elapsed-ms at browser arrival. */
+export type StampedQueryEvent = QueryEvent & { receivedMs?: number };
 
 /** Admin (infra/data/graph) action request body for `POST /api/admin`. */
 export type AdminAction =

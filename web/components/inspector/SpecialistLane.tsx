@@ -19,9 +19,48 @@ const RECORDS_PAGE = 8;
  *  cascade in once the lane's pipeline event activates. Also shows the full
  *  evaluator trace (with retries) and per-specialist task metadata. */
 export function SpecialistLane({ lane }: { lane: Lane }) {
-  const { statusOf } = useWorkbench();
-  const active = statusOf(lane.id, "pass") !== "pending";
+  const { statusOf, replaying } = useWorkbench();
+  const status = statusOf(lane.id, "pass");
+  const active = status !== "pending";
   const [recordsRevealed, setRecordsRevealed] = useState(INITIAL_RECORDS);
+
+  // In-flight lane: the plan routed it but its result hasn't arrived yet.
+  if (lane.placeholder) {
+    const started = lane.arrival?.startedMs != null;
+    const seeds = lane.arrival?.seedCount ?? 0;
+    const caption = started
+      ? `querying ${lane.backend}…${seeds ? ` (seeded with ${seeds} id(s) from ${lane.arrival?.producer})` : ""}`
+      : "queued — waiting to run";
+    return (
+      <div
+        id={lane.id}
+        className="mb-3 overflow-hidden rounded-[11px] bg-bg"
+        style={{ boxShadow: SHADOW.lightRing }}
+      >
+        <div
+          className="flex items-center gap-[9px] px-[13px] py-[11px]"
+          style={{ boxShadow: SHADOW.insetTop }}
+        >
+          <Pill accent={lane.accent} className="px-2 py-0.5 text-[9.5px] tracking-[0.06em]">
+            {lane.badge}
+          </Pill>
+          <span className="flex-1 text-[12.5px] font-semibold">{lane.title}</span>
+          <motion.span
+            className="font-mono text-[11px] text-text-muted"
+            animate={started ? { opacity: [1, 0.35, 1] } : undefined}
+            transition={{ duration: 1.1, repeat: Infinity }}
+          >
+            {caption}
+          </motion.span>
+        </div>
+        <div className="flex flex-col gap-2 px-[13px] pb-[13px] pt-1">
+          <div className="animate-skel h-3 w-[88%] rounded bg-[rgba(235,230,220,0.08)]" />
+          <div className="animate-skel h-3 w-[72%] rounded bg-[rgba(235,230,220,0.08)]" />
+          <div className="animate-skel h-3 w-[80%] rounded bg-[rgba(235,230,220,0.08)]" />
+        </div>
+      </div>
+    );
+  }
 
   /** Build a compact task JSON for display. */
   const taskJson = JSON.stringify(
@@ -120,12 +159,25 @@ export function SpecialistLane({ lane }: { lane: Lane }) {
         {/* Evidence records — incremental reveal, never silently cap */}
         <div className="mb-1.5 font-mono text-[9.5px] uppercase tracking-[0.08em] text-text-muted">
           Evidence records ({lane.records.length} total · showing {visibleRecords.length})
+          {lane.arrival?.arrivedMs != null && (
+            <span className="normal-case tracking-normal">
+              {" "}· arrived {lane.arrival.order ? `#${lane.arrival.order} ` : ""}at +
+              {(lane.arrival.arrivedMs / 1000).toFixed(1)}s
+            </span>
+          )}
         </div>
-        <div className="flex flex-col gap-[5px]">
+        <motion.div
+          className="flex flex-col gap-[5px]"
+          variants={staggerContainer}
+          initial={replaying ? "hidden" : false}
+          animate="show"
+        >
           {visibleRecords.map((record) => (
-            <LaneRecordRow key={record.id} record={record} language={lane.language} />
+            <motion.div key={record.id} variants={popIn}>
+              <LaneRecordRow key={record.id} record={record} language={lane.language} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Show-more affordance */}
         {remainingRecords > 0 && (

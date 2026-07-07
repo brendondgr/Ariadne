@@ -31,7 +31,8 @@ import type {
   Plan,
   PlannerStage,
   ProbeSource,
-  QueryEvent,
+  LaneArrival,
+  StampedQueryEvent,
   RunStatus,
   ServerAnswer,
   ServerAnswerCross,
@@ -263,14 +264,18 @@ function compactRecordJson(label: string, joinValues: string[], provLabel: strin
   return `{ "label":"${label}", "join_values":${JSON.stringify(joinValues)},\n  "provenance":"${provLabel}" }`;
 }
 
-export function buildLane(result: SpecialistResult): SpecialistLane {
+export function buildLane(
+  result: SpecialistResult,
+  arrival: LaneArrival | null = null,
+): SpecialistLane {
   const backend = backendOf(result);
   const accent = accentOf(backend);
   // ALL records — no cap
-  const records: LaneRecord[] = result.records.map((rec) => ({
+  const records: LaneRecord[] = result.records.map((rec, i) => ({
     id: rec.primary_id || rec.name || "record",
     accent,
     name: rec.name,
+    order: i + 1,
     // Keep legacy json field for backwards compat with static fixture
     json: compactRecordJson(
       rec.label,
@@ -295,6 +300,7 @@ export function buildLane(result: SpecialistResult): SpecialistLane {
     records,
     task: buildLaneTask(result.task),
     traceEntries: buildTraceEntries(result),
+    arrival,
     error: result.error ?? null,
   };
 }
@@ -544,7 +550,9 @@ export interface RunInputs {
   /** Wall-clock submit time; optional so existing callers/tests need no change. */
   createdAt?: number;
   /** The ordered SSE event log captured for this turn (Raw JSON event stream). */
-  events?: QueryEvent[];
+  events?: StampedQueryEvent[];
+  /** Live arrival metadata per lane id ("lane-neo4j"/"lane-gremlin"). */
+  laneMeta?: Record<string, LaneArrival>;
 }
 
 function emptyEvidence(request: string): FederatedEvidence {
@@ -560,6 +568,49 @@ function emptyEvidence(request: string): FederatedEvidence {
 }
 
 /** Assemble a complete {@link WorkbenchRun} from collected backend payloads. */
+/** Lanes from returned results, plus in-flight placeholders while streaming:
+ *  a routed sub-question with no result yet renders as a live "querying…"
+ *  shimmer lane (only while the run status is still "running"). */
+function buildLanes(inputs: RunInputs, evidence: FederatedEvidence | null) {
+  const lanes = (evidence?.results ?? []).map((r) =>
+    buildLane(r, inputs.laneMeta?.[`lane-${backendOf(r)}`] ?? null),
+  );
+  if (inputs.status !== "running" || !inputs.plan) return lanes;
+  const have = new Set(lanes.map((l) => l.id));
+  for (const sq of inputs.plan.sub_questions) {
+    const backend: "neo4j" | "gremlin" = sq.source === "capec" ? "gremlin" : "neo4j";
+    const id = `lane-${backend}`;
+    if (have.has(id)) continue;
+    have.add(id);
+    lanes.push({
+      id,
+      badge: `${backend === "neo4j" ? "Cypher" : "Gremlin"} · ${sq.source}`,
+      backend,
+      accent: accentOf(backend),
+      title: sq.text || `${sq.source} specialist`,
+      rows: 0,
+      ms: 0,
+      language: langOf(backend),
+      query: "",
+      steps: [],
+      records: [],
+      task: {
+        source: sq.source,
+        entities: sq.entities ?? [],
+        seedIds: [],
+        joinKey: sq.join_key ?? null,
+        rationale: sq.rationale ?? "",
+        limitsJson: JSON.stringify(sq.limits ?? {}),
+      },
+      traceEntries: [],
+      arrival: inputs.laneMeta?.[id] ?? null,
+      error: null,
+      placeholder: true,
+    });
+  }
+  return lanes;
+}
+
 export function buildRun(inputs: RunInputs): WorkbenchRun {
   const { id, question, mode, drafter, liveSources: probe, plan, evidence, answer, status, exitCode, elapsedMs } = inputs;
   const joinKey = deriveJoinKey(plan);
@@ -577,7 +628,7 @@ export function buildRun(inputs: RunInputs): WorkbenchRun {
     liveSources: wbLive,
     stepper: buildStepper(plan, evidence, wbLive, status),
     plannerStages: plan ? buildPlannerStages(plan, probe, drafter) : [],
-    lanes: evidence ? evidence.results.map(buildLane) : [],
+    lanes: buildLanes(inputs, evidence),
     answer: buildAnswer(answer, joinKey, evidence),
     evidence: evidence ? buildEvidenceRows(evidence) : [],
     joinIndex: evidence ? buildJoinIndex(evidence, joinKey) : [],

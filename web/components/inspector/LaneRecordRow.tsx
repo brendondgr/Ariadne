@@ -24,6 +24,11 @@ export function LaneRecordRow({
         aria-expanded={open}
         className="flex w-full items-center gap-[9px] border-0 bg-transparent px-2.5 py-[7px] text-left font-mono text-[11px]"
       >
+        {record.order !== undefined && (
+          <span className="w-[26px] shrink-0 text-right text-[9.5px] text-text-muted">
+            #{record.order}
+          </span>
+        )}
         <span style={{ color: ACCENT[record.accent].fg }}>{record.id}</span>
         <span className="flex-1 text-[#c9c6bd]">{record.name}</span>
         <span
