@@ -357,12 +357,19 @@ export function buildSynthesis(synthesis: ServerSynthesis | null | undefined): S
     .filter((claim) => claim.verdict && claim.verdict.verdict !== "supported")
     .map((claim) => ({ text: claim.text, reasons: claim.verdict?.reasons ?? [] }));
 
+  const edges = (synthesis.edges ?? []).map((e) => ({
+    source: e.source_id,
+    target: e.target_id,
+    rel: e.rel,
+  }));
+
   const report = synthesis.verification;
   return {
     headline: synthesis.headline,
     claims,
     abstentions,
     flagged,
+    edges,
     notes: synthesis.notes,
     composer: synthesis.composer,
     fallbackReason: synthesis.fallback_reason,

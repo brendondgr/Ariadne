@@ -18,7 +18,10 @@ function claim(over: Partial<SynthesisView["claims"][number]>): SynthesisView["c
   return { text: "", kind: "fact", chips: [], entityIds: [], ...over };
 }
 
-function view(claims: SynthesisView["claims"]): SynthesisView {
+function view(
+  claims: SynthesisView["claims"],
+  edges: SynthesisView["edges"] = [],
+): SynthesisView {
   return {
     headline: "",
     claims,
@@ -28,6 +31,7 @@ function view(claims: SynthesisView["claims"]): SynthesisView {
     composer: "deterministic",
     fallbackReason: null,
     verification: null,
+    edges,
   };
 }
 
@@ -95,6 +99,49 @@ describe("deriveEdges (inference mode)", () => {
   it("drops self-loops and never emits an edge for a lone id", () => {
     const edges = deriveEdges([claim({ entityIds: ["T1047"] })], []);
     expect(edges).toHaveLength(0);
+  });
+});
+
+/* -------------------------------------------------------------------------- */
+/* deriveEdges — explicit mode (Option B)                                      */
+/* -------------------------------------------------------------------------- */
+
+describe("deriveEdges (explicit mode)", () => {
+  it("uses the payload's exact edges verbatim and skips inference", () => {
+    // Inference would produce CAPEC-549→T1047 from JOINS; explicit overrides it
+    // with a different exact set, proving inference is bypassed.
+    const explicit = [{ source: "CAPEC-999", target: "T9999", rel: "mapsTo" }];
+    const edges = deriveEdges([], JOINS, explicit);
+    expect(edges).toEqual([
+      { id: "CAPEC-999__mapsTo__T9999", source: "CAPEC-999", target: "T9999", type: "mapsTo" },
+    ]);
+  });
+
+  it("falls back to inference when the explicit set is empty", () => {
+    const edges = deriveEdges([], JOINS, []);
+    expect(edges.length).toBe(2); // both join pairs
+    expect(edges.every((e) => e.type === REL_MAPS_TO)).toBe(true);
+  });
+
+  it("carries the backend rel type onto the graph edge", () => {
+    const explicit = [{ source: "T1047", target: "M1038", rel: REL_MITIGATED_BY }];
+    const edges = deriveEdges([], [], explicit);
+    expect(edges[0].type).toBe(REL_MITIGATED_BY);
+  });
+});
+
+describe("synthesisToGraphPayload with explicit edges", () => {
+  it("prefers the payload edges over inference and includes their endpoints as nodes", () => {
+    const v = view(
+      [claim({ kind: "correlation", entityIds: ["CAPEC-1", "T1000"] })],
+      [{ source: "CAPEC-1", target: "T1000", rel: "mapsTo" }],
+    );
+    const payload = synthesisToGraphPayload(v, []);
+    expect(payload.edges).toEqual([
+      { id: "CAPEC-1__mapsTo__T1000", source: "CAPEC-1", target: "T1000", type: "mapsTo" },
+    ]);
+    const ids = payload.nodes.map((n) => n.id).sort();
+    expect(ids).toEqual(["CAPEC-1", "T1000"]);
   });
 });
 

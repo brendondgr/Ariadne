@@ -331,6 +331,15 @@ export interface SynthesisClaimView {
   entityIds: string[];
 }
 
+/** A provenance-exact relationship for the network plot, projected from the
+ *  backend `SynthesisEdge`. Present only on Option-B payloads; when empty the
+ *  plot falls back to inferring edges. */
+export interface SynthesisGraphEdge {
+  source: string;
+  target: string;
+  rel: string;
+}
+
 /** One honest abstention rendered in the answer card. */
 export interface SynthesisAbstentionView {
   source: string;
@@ -362,6 +371,9 @@ export interface SynthesisView {
     repairedAbstentions: number;
     ok: boolean;
   } | null;
+  /** Provenance-exact network-plot edges (Option B). Empty on older payloads,
+   *  in which case the plot infers edges from the join index + co-citation. */
+  edges: SynthesisGraphEdge[];
 }
 
 export interface AnswerContent {
@@ -568,6 +580,12 @@ export interface SynthesisVerification {
   ok: boolean;
 }
 
+export interface ServerSynthesisEdge {
+  source_id: string;
+  target_id: string;
+  rel: string;
+}
+
 export interface ServerSynthesis {
   request: string;
   headline: string;
@@ -578,6 +596,8 @@ export interface ServerSynthesis {
   composer: string;
   fallback_reason: string | null;
   verification: SynthesisVerification | null;
+  /** Provenance-exact edges (Option B). Optional: absent on pre-edge payloads. */
+  edges?: ServerSynthesisEdge[];
 }
 
 export interface ServerAnswer {

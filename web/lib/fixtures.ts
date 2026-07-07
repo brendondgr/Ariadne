@@ -486,6 +486,11 @@ export const wmiCapecRun: WorkbenchRun = {
         repairedAbstentions: 0,
         ok: true,
       },
+      // Provenance-exact edges (Option B): the verifier's CAPEC→ATT&CK mappings.
+      edges: [
+        { source: "CAPEC-549", target: "T1047", rel: "mapsTo" },
+        { source: "CAPEC-563", target: "T1546.003", rel: "mapsTo" },
+      ],
     },
     timings: [
       { label: "plan", ms: 4 },

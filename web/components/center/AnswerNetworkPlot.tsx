@@ -3,7 +3,11 @@
 import { useMemo, useState } from "react";
 import type { JoinPair, SynthesisView } from "@/lib/types";
 import { labelColor, toForceGraphData } from "@/lib/graph";
-import { synthesisToGraphPayload, isRenderableSubgraph } from "@/lib/synthesisGraph";
+import {
+  synthesisToGraphPayload,
+  isRenderableSubgraph,
+  isProvenanceExact,
+} from "@/lib/synthesisGraph";
 import { SHADOW } from "@/lib/ui";
 import { GraphCanvas } from "@/components/graph/GraphCanvas";
 
@@ -35,6 +39,7 @@ export function AnswerNetworkPlot({
 
   const legend = Object.entries(payload.nodes_by_label);
   const abstentions = synthesis.abstentions.length;
+  const exact = isProvenanceExact(synthesis);
 
   return (
     <div className="px-[18px] py-[13px]" style={{ boxShadow: SHADOW.insetBottom }}>
@@ -46,7 +51,8 @@ export function AnswerNetworkPlot({
           className="inline-flex items-center rounded-full px-2 py-px font-mono text-[10px] text-text-muted"
           style={{ boxShadow: SHADOW.hairline }}
         >
-          derived · {payload.counts.nodes} nodes · {payload.counts.relationships} edges
+          {exact ? "provenance-exact" : "derived"} · {payload.counts.nodes} nodes ·{" "}
+          {payload.counts.relationships} edges
         </span>
       </div>
 
@@ -78,8 +84,9 @@ export function AnswerNetworkPlot({
       </div>
 
       <p className="m-0 mt-2 font-mono text-[10.5px] leading-[1.5] text-text-muted">
-        Edges inferred from the federation join index and within-claim
-        co-citation — a derived view, not provenance-exact.
+        {exact
+          ? "Edges are the verifier's provenance-exact CAPEC→ATT&CK mappings from the federation join index."
+          : "Edges inferred from the federation join index and within-claim co-citation — a derived view, not provenance-exact."}
         {abstentions > 0 && ` ${abstentions} abstention(s) omitted (absence, not shown as nodes).`}
       </p>
     </div>

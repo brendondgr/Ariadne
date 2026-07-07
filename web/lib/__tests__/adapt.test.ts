@@ -456,6 +456,7 @@ describe("buildSynthesis: the verified answer view", () => {
       },
     ],
     notes: ["one specialist was skipped"],
+    edges: [{ source_id: "CAPEC-555", target_id: "T1047", rel: "mapsTo" }],
     composer: "llm",
     fallback_reason: "LLM composer unavailable (connection refused)",
     verification: {
@@ -483,6 +484,11 @@ describe("buildSynthesis: the verified answer view", () => {
     ]);
     // entity_ids are carried through for the network plot's edge derivation.
     expect(claim.entityIds).toEqual(["T1047", "M1038"]);
+  });
+
+  it("projects provenance-exact edges (source_id/target_id → source/target)", () => {
+    const view = buildSynthesis(SYNTHESIS)!;
+    expect(view.edges).toEqual([{ source: "CAPEC-555", target: "T1047", rel: "mapsTo" }]);
   });
 
   it("keeps cut claims visible in flagged with the verdict reasons", () => {

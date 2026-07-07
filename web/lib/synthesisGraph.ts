@@ -16,7 +16,14 @@
  * unit-testable in isolation.
  */
 
-import type { GraphEdge, GraphNode, GraphPayload, JoinPair, SynthesisView } from "./types";
+import type {
+  GraphEdge,
+  GraphNode,
+  GraphPayload,
+  JoinPair,
+  SynthesisGraphEdge,
+  SynthesisView,
+} from "./types";
 
 export type EntityKind = "capec" | "technique" | "mitigation" | "other";
 
@@ -55,9 +62,14 @@ export const REL_MAPS_TO = "mapsTo";
 export const REL_MITIGATED_BY = "mitigatedBy";
 
 /**
- * Derive the plot's edges. INFERENCE MODE (Option A):
- *  - CAPEC→ATT&CK from the federation join index (`joinPairs`) — exact and
- *    already typed by the adapter, oriented pattern→technique.
+ * Derive the plot's edges. Two modes behind one seam:
+ *
+ * EXPLICIT MODE (Option B): when the payload carries provenance-exact `explicit`
+ * edges (verifier-derived, verifier-pruned), use them verbatim — no inference.
+ *
+ * INFERENCE MODE (Option A, the fallback when `explicit` is empty):
+ *  - CAPEC→ATT&CK from the federation join index (`joinPairs`) — oriented
+ *    pattern→technique regardless of pair order.
  *  - technique→mitigation from within-claim co-citation (a claim that cites
  *    both a `T####` and an `M####` asserts the mitigation link).
  *  - CAPEC→ATT&CK also inferred from a claim co-citing both (redundant with the
@@ -65,13 +77,23 @@ export const REL_MITIGATED_BY = "mitigatedBy";
  *
  * Edges are de-duplicated by (source, type, target). Self-loops are dropped.
  */
-export function deriveEdges(claims: SynthesisView["claims"], joinPairs: JoinPair[]): GraphEdge[] {
+export function deriveEdges(
+  claims: SynthesisView["claims"],
+  joinPairs: JoinPair[],
+  explicit: SynthesisGraphEdge[] = [],
+): GraphEdge[] {
   const edges = new Map<string, GraphEdge>();
   const add = (source: string, target: string, type: string) => {
     if (!source || !target || source === target) return;
     const id = `${source}__${type}__${target}`;
     if (!edges.has(id)) edges.set(id, { id, source, target, type });
   };
+
+  // Option B: trust the verifier's exact edges; skip all inference.
+  if (explicit.length > 0) {
+    for (const e of explicit) add(e.source, e.target, e.rel);
+    return [...edges.values()];
+  }
 
   // Join index → CAPEC→ATT&CK, oriented pattern→technique regardless of order.
   for (const p of joinPairs) {
@@ -110,7 +132,7 @@ export function synthesisToGraphPayload(
   synthesis: SynthesisView,
   joinPairs: JoinPair[],
 ): GraphPayload {
-  const edges = deriveEdges(synthesis.claims, joinPairs);
+  const edges = deriveEdges(synthesis.claims, joinPairs, synthesis.edges);
 
   const ids = new Set<string>();
   for (const claim of synthesis.claims) for (const id of claimIds(claim)) ids.add(id);
@@ -142,4 +164,10 @@ export function synthesisToGraphPayload(
  *  disconnected pair carries no CAPEC–ATT&CK–mitigation story). */
 export function isRenderableSubgraph(payload: GraphPayload): boolean {
   return payload.edges.length > 0 && payload.nodes.length >= 2;
+}
+
+/** Whether the plot's edges are the backend's provenance-exact set (Option B)
+ *  rather than frontend-inferred (Option A). Drives the plot's honesty label. */
+export function isProvenanceExact(synthesis: SynthesisView): boolean {
+  return synthesis.edges.length > 0;
 }
