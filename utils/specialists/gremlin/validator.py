@@ -15,12 +15,15 @@ from typing import Any
 from utils.graph_loader.stores.gremlin import gremlin_edge_label
 from utils.specialists.validation import BaseValidator
 
-# Match hasLabel("X") capturing X.
-_HAS_LABEL_RE = re.compile(r'hasLabel\("([^"]+)"\)')
-# Match out("R"), in("R"), both("R") capturing R.
-_OUT_RE = re.compile(r'\.out\("([^"]+)"\)')
-_IN_RE = re.compile(r'\.in\("([^"]+)"\)')
-_BOTH_RE = re.compile(r'\.both\("([^"]+)"\)')
+# Match hasLabel('X')/hasLabel("X") capturing X. Both quote styles are valid
+# Gremlin/Groovy string literals; validating only double quotes would let a
+# single-quoted unknown label bypass schema conformance (found by an adversarial
+# gate probe — see utils/specialists/tests/fixtures/adversarial_probes.py).
+_HAS_LABEL_RE = re.compile(r"""hasLabel\(["']([^"']+)["']\)""")
+# Match out('R')/out("R"), in(...), both(...) capturing R.
+_OUT_RE = re.compile(r"""\.out\(["']([^"']+)["']\)""")
+_IN_RE = re.compile(r"""\.in\(["']([^"']+)["']\)""")
+_BOTH_RE = re.compile(r"""\.both\(["']([^"']+)["']\)""")
 # Match trailing .limit(n) capturing n.
 _LIMIT_TRAILING_RE = re.compile(r'\.limit\((\d+)\)\s*$')
 # Count chained traversal steps (out/in/both).

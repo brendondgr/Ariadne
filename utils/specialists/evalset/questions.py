@@ -516,7 +516,137 @@ def build_attack_questions(gold: dict[str, Any]) -> list[dict[str, Any]]:
                 "assertions": {"expect_empty": True},
             }
         )
+    for q in questions:
+        _attach_ex_gold(q, gold)
     return questions
+
+
+# -- Execution-Accuracy (EX) gold ----------------------------------------------
+#
+# The assertions above spot-check a subset (top-5 for large fan-outs); EX needs
+# the COMPLETE expected result set. This derives it from the same gold bank, so
+# EX stays snapshot-derived. ``pool`` says which id surface of the result to
+# compare the gold against:
+#   "node"      the looked-up node itself (lookups; expected == the seed)
+#   "neighbors" every id the result exposes except the seed inputs
+#               (traversals: a technique's mitigations, a group's techniques …)
+#   "join"      the T-prefixed ATTACK join values only (capec_maps_to), so the
+#               score is not diluted by a pattern's WASC/other taxonomy mappings
+# Scans and boundary refusals carry no set gold (EX is a cardinality bound / a
+# refusal check for them).
+
+# template -> id surface the answer lives on
+_POOL_BY_TEMPLATE = {
+    "node_lookup": "node",
+    "capec_lookup": "node",
+    "technique_mitigations": "neighbors",
+    "group_techniques": "neighbors",
+    "tactic_techniques": "neighbors",
+    "campaign_techniques": "neighbors",
+    "campaign_attribution": "neighbors",
+    "capec_neighbors": "neighbors",
+    "capec_maps_to": "join",
+    # Step 10 templates:
+    "technique_detection": "neighbors",
+    "software_techniques": "neighbors",
+    "subtechnique_parent": "neighbors",
+    "tactic_technique_mitigations": "neighbors",
+    "technique_tactics": "neighbors",
+    "datacomponent_analytics": "neighbors",
+    "capec_hierarchy_chain": "neighbors",
+}
+
+
+def _ex_gold(pool: str, expected: list[str], scheme: str) -> dict[str, Any]:
+    return {"pool": pool, "expected": sorted(set(expected)), "scheme": scheme}
+
+
+def _attach_ex_gold(q: dict[str, Any], gold: dict[str, Any]) -> None:
+    a, c = gold["attack"], gold["capec"]
+    tmpl = q["expected_template"]
+    task = q["task"]
+    entities = task["entities"]
+    seed = task["seed_ids"][0] if task["seed_ids"] else None
+    assertions = q["assertions"]
+    scheme = "attack" if task["source"] == "attack" else "capec"
+
+    if assertions.get("expect_boundary"):
+        return  # EX = a correct schema-boundary refusal, scored separately
+    if tmpl in ("label_scan", "capec_scan"):
+        return  # EX = the cardinality bound (min/max_records)
+    pool = _POOL_BY_TEMPLATE.get(tmpl)
+    if pool is None:
+        return
+    if assertions.get("expect_empty"):
+        q["ex_gold"] = _ex_gold(pool, [], scheme)
+        return
+
+    # The technique-fanout templates return top-level Techniques only (the
+    # builder rolls sub-technique USES up to their parent, matching the bank's
+    # _top_level_techniques anchor), so the EX gold is the top-level slice —
+    # comparing against the raw STIX set (which counts every sub-technique USES)
+    # would penalise a correct roll-up.
+    def _top_level(ids: list[str]) -> list[str]:
+        objs = a["objects"]
+        return [i for i in ids if objs.get(i, {}).get("label") == "Technique"]
+
+    if tmpl == "technique_mitigations":
+        expected = a["technique_mitigations"][seed]
+    elif tmpl == "group_techniques":
+        expected = _top_level(a["group_techniques"][seed])
+    elif tmpl == "tactic_techniques":
+        expected = _top_level(a["tactic_techniques"][seed])
+    elif tmpl == "campaign_techniques":
+        expected = _top_level(a["campaign_techniques"][seed])
+    elif tmpl == "campaign_attribution":
+        expected = a["campaign_attribution"][seed]
+    elif tmpl in ("node_lookup", "capec_lookup"):
+        expected = [seed]
+    elif tmpl == "capec_maps_to":
+        expected = c["attack_mappings"].get(seed, [])
+    elif tmpl == "capec_neighbors":
+        if "Weakness" in entities or "EXPLOITS_WEAKNESS" in entities:
+            expected = c["related_weaknesses"][seed]
+        elif "HAS_EXECUTION_STEP" in entities:
+            expected = [s["node_id"] for s in c["execution_steps"][seed]]
+        elif "HAS_CONSEQUENCE" in entities:
+            expected = [x["node_id"] for x in c["consequences"][seed]]
+        elif "REQUIRES_SKILL" in entities:
+            expected = [s["node_id"] for s in c["skills"][seed]]
+        elif "ChildOf" in entities:
+            expected = c["hierarchy"][seed]["ChildOf"]
+        elif "CanPrecede" in entities:
+            expected = c["hierarchy"][seed]["CanPrecede"]
+        else:
+            return
+    elif tmpl == "technique_detection":
+        dets = a["technique_detections"][seed]
+        expected = [*dets, *(an for d in dets for an in a["detection_analytics"][d])]
+    elif tmpl == "software_techniques":
+        # This template returns sub-techniques too (no parent roll-up).
+        expected = a["software_techniques"][seed]
+    elif tmpl == "subtechnique_parent":
+        if "." in seed:  # sub-technique seed -> the answer is its parent
+            expected = [p for p, kids in a["subtechniques"].items() if seed in kids]
+        else:  # parent seed -> the answer is its sub-techniques
+            expected = a["subtechniques"][seed]
+    elif tmpl == "tactic_technique_mitigations":
+        ta = next(s for s in task["seed_ids"] if s.startswith("TA"))
+        m = next(s for s in task["seed_ids"] if s.startswith("M"))
+        expected = [
+            t for t in _top_level(a["tactic_techniques"][ta])
+            if m in a["technique_mitigations"].get(t, [])
+        ]
+    elif tmpl == "technique_tactics":
+        expected = a["technique_tactics"][seed]
+    elif tmpl == "datacomponent_analytics":
+        expected = a["datacomponent_analytics"][seed]
+    elif tmpl == "capec_hierarchy_chain":
+        parents = c["hierarchy"][seed]["ChildOf"]
+        expected = [*parents, *(gp for p in parents for gp in c["hierarchy"][p]["ChildOf"])]
+    else:
+        return
+    q["ex_gold"] = _ex_gold(pool, expected, scheme)
 
 
 def build_capec_questions(gold: dict[str, Any]) -> list[dict[str, Any]]:
@@ -844,4 +974,6 @@ def build_capec_questions(gold: dict[str, Any]) -> list[dict[str, Any]]:
                 "assertions": {"expect_empty": True},
             }
         )
+    for q in questions:
+        _attach_ex_gold(q, gold)
     return questions

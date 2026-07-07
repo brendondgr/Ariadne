@@ -245,8 +245,10 @@ class QuerySpecialist:
         connected = False
         try:
             for attempt in range(1, self.max_retries + 2):
+                gate_started = time.perf_counter()
                 draft = self.builder.build(resolved, feedback)
                 result = self.validator.validate(draft, self.card, limits)
+                gate_ms = round((time.perf_counter() - gate_started) * 1000, 3)
                 traces.append(
                     EvaluatorTrace(
                         "gate",
@@ -257,6 +259,7 @@ class QuerySpecialist:
                             "template": draft.template,
                             "query": result.query,
                             "injected": list(result.injected),
+                            "timing_ms": gate_ms,
                         },
                     )
                 )
@@ -288,14 +291,17 @@ class QuerySpecialist:
                     )
                 )
 
+                assess_started = time.perf_counter()
                 assessment = assess_rows(rows, resolved)
                 traces.append(
                     EvaluatorTrace(
                         "assess", ok=assessment.ok, reasons=list(assessment.reasons),
-                        detail=assessment.detail,
+                        detail={**assessment.detail,
+                                "timing_ms": round((time.perf_counter() - assess_started) * 1000, 3)},
                     )
                 )
 
+                normalize_started = time.perf_counter()
                 records = self.normalizer.normalize(rows, resolved, result.query, self.card)
                 contract = check_contract(records)
                 join_problems = join_integrity_problems(records, resolved)
@@ -304,7 +310,8 @@ class QuerySpecialist:
                         "normalize",
                         ok=not contract and not join_problems,
                         reasons=[*contract, *join_problems],
-                        detail={"record_count": len(records)},
+                        detail={"record_count": len(records),
+                                "timing_ms": round((time.perf_counter() - normalize_started) * 1000, 3)},
                     )
                 )
                 summary = self.normalizer.summarize(records, resolved)
