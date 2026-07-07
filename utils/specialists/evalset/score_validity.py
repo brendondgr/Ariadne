@@ -110,9 +110,11 @@ def build_specialists(config: SpecialistConfig | None = None) -> dict[str, Any]:
 
     Raises FileNotFoundError if the cards are not built — callers (tests) skip.
     """
+    from utils.config import load_env
     from utils.specialists.cypher.specialist import build_cypher_specialist
     from utils.specialists.gremlin.specialist import build_gremlin_specialist
 
+    load_env()  # populate NEO4J_*/GREMLIN_* like the golden fixtures do
     cfg = config or SpecialistConfig.from_env()
     out: dict[str, Any] = {}
     for source, path in SOURCE_CARDS.items():
