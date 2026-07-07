@@ -85,6 +85,11 @@ def extract_capec_ids(text: str) -> tuple[str, ...]:
     return _dedupe([f"CAPEC-{m.group(1)}" for m in _CAPEC_RE.finditer(text or "")])
 
 
+def extract_cwe_ids(text: str) -> tuple[str, ...]:
+    """Return every CWE id mentioned, normalised to ``CWE-N``."""
+    return _dedupe([f"CWE-{m.group(1)}" for m in _CWE_RE.finditer(text or "")])
+
+
 def _extract_attack_seed_ids(text: str) -> tuple[str, ...]:
     found: list[str] = []
     for _label, pattern in _ATTACK_ID_PATTERNS:
@@ -123,7 +128,9 @@ def resolve(task: SpecialistTask, card: Any) -> ResolvedTask:
     if card.dataset == "attack":
         native = list(_extract_attack_seed_ids(text))
     elif card.dataset == "capec":
-        native = list(capec_ids)
+        # CWE ids are CAPEC-native anchors too: the graph's Weakness vertices
+        # seed the CWE -> CAPEC -> ATT&CK chain template.
+        native = [*capec_ids, *extract_cwe_ids(text)]
     else:
         native = []
     # Seed ids the planner already attached win first, then text-extracted ones.

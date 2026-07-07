@@ -20,6 +20,7 @@ from utils.specialists.evidence import emit_record
 from utils.specialists.resolve import ResolvedTask
 
 _CAPEC_ID_FROM_STR_RE = re.compile(r"capec:attack-pattern:(\d+)")
+_CWE_GREMLIN_RE = re.compile(r"^cwe:(\d+)$")
 
 try:
     from gremlin_python.process.traversal import T as GremlinT
@@ -38,6 +39,14 @@ def _primary_id_from_gremlin_id(gremlin_id: str) -> str:
     m = _CAPEC_ID_FROM_STR_RE.match(gremlin_id or "")
     if m:
         return f"CAPEC-{m.group(1)}"
+    return gremlin_id
+
+
+def _cwe_primary_id(gremlin_id: str) -> str:
+    """Convert 'cwe:89' -> 'CWE-89'. Falls back to raw string."""
+    m = _CWE_GREMLIN_RE.match(gremlin_id or "")
+    if m:
+        return f"CWE-{m.group(1)}"
     return gremlin_id
 
 
@@ -92,7 +101,12 @@ class GremlinNormalizer:
             return []
 
         # Detect result shape from the first non-empty row.
+        # Check most-specific shapes first.
         first = rows[0]
+        if "w" in first and "ap" in first and "tax" in first:
+            return self._normalize_cwe_chain(rows, resolved, query, card)
+        if "ap" in first and "parent" in first and "grandparent" in first:
+            return self._normalize_hierarchy_chain(rows, resolved, query, card)
         if "ap" in first and "tax" in first:
             return self._normalize_maps_to(rows, resolved, query, card)
         if "ap" in first and "nbr" in first:
@@ -282,6 +296,138 @@ class GremlinNormalizer:
                     properties=grp["props"],
                     related=grp["related"],
                     join_values=tuple(grp["join_values"]),
+                )
+            )
+        return records
+
+    def _normalize_cwe_chain(
+        self,
+        rows: list[dict[str, Any]],
+        resolved: ResolvedTask,
+        query: str,
+        card: Any,
+    ) -> list[EvidenceRecord]:
+        """cwe_chain rows: {"w":.., "ap":.., "tax":..}
+
+        One record per unique AttackPattern anchor.
+        related = unique CWE ids from w elements.
+        join_values = T-prefixed ATTACK taxonomy entry_ids (same rule as maps_to).
+        """
+        id_scheme: str = card.provenance.get("id_scheme", "capec-id")
+        groups: dict[str, dict[str, Any]] = {}
+        for row in rows:
+            ap_m = _row_as_dict(row.get("ap", {}))
+            w_m = _row_as_dict(row.get("w", {}))
+            tax_m = _row_as_dict(row.get("tax", {}))
+
+            gid = _safe_str(ap_m.get("id", ""))
+            primary_id = _primary_id_from_gremlin_id(gid)
+            name = _safe_str(ap_m.get("name", ""))
+            label = _get_label(ap_m) or "AttackPattern"
+            record_id = _get_record_id(ap_m) or gid
+
+            if primary_id not in groups:
+                groups[primary_id] = {
+                    "record_id": record_id,
+                    "primary_id": primary_id,
+                    "name": name,
+                    "label": label,
+                    "props": _string_props(ap_m),
+                    "join_values": [],
+                    "related": [],
+                    "_cwe_ids_seen": set(),
+                }
+
+            # Collect CWE related entries (deduplicated).
+            w_gid = _safe_str(w_m.get("id", ""))
+            cwe_primary = _cwe_primary_id(w_gid)
+            if cwe_primary not in groups[primary_id]["_cwe_ids_seen"]:
+                groups[primary_id]["_cwe_ids_seen"].add(cwe_primary)
+                groups[primary_id]["related"].append({"id": cwe_primary})
+
+            # Collect T-prefixed ATTACK join_values (same logic as maps_to).
+            taxonomy_name = _safe_str(tax_m.get("taxonomy_name", ""))
+            entry_id = _safe_str(tax_m.get("entry_id", ""))
+            if taxonomy_name == "ATTACK" and entry_id:
+                t_value = f"T{entry_id}" if not entry_id.startswith("T") else entry_id
+                if t_value not in groups[primary_id]["join_values"]:
+                    groups[primary_id]["join_values"].append(t_value)
+
+        records: list[EvidenceRecord] = []
+        for grp in groups.values():
+            records.append(
+                emit_record(
+                    card=card,
+                    query=query,
+                    record_id=grp["record_id"],
+                    primary_id=grp["primary_id"],
+                    id_scheme=id_scheme,
+                    label=grp["label"],
+                    name=grp["name"],
+                    properties=grp["props"],
+                    related=grp["related"],
+                    join_values=tuple(grp["join_values"]),
+                )
+            )
+        return records
+
+    def _normalize_hierarchy_chain(
+        self,
+        rows: list[dict[str, Any]],
+        resolved: ResolvedTask,
+        query: str,
+        card: Any,
+    ) -> list[EvidenceRecord]:
+        """hierarchy_chain rows: {"ap":.., "parent":.., "grandparent":..}
+
+        One record per unique ap anchor.
+        related = unique [{"id": CAPEC-nn of parent}, {"id": CAPEC-nn of grandparent}].
+        No join_values.
+        """
+        id_scheme: str = card.provenance.get("id_scheme", "capec-id")
+        groups: dict[str, dict[str, Any]] = {}
+        for row in rows:
+            ap_m = _row_as_dict(row.get("ap", {}))
+            parent_m = _row_as_dict(row.get("parent", {}))
+            gp_m = _row_as_dict(row.get("grandparent", {}))
+
+            gid = _safe_str(ap_m.get("id", ""))
+            primary_id = _primary_id_from_gremlin_id(gid)
+            name = _safe_str(ap_m.get("name", ""))
+            label = _get_label(ap_m) or "AttackPattern"
+            record_id = _get_record_id(ap_m) or gid
+
+            if primary_id not in groups:
+                groups[primary_id] = {
+                    "record_id": record_id,
+                    "primary_id": primary_id,
+                    "name": name,
+                    "label": label,
+                    "props": _string_props(ap_m),
+                    "related": [],
+                    "_related_ids_seen": set(),
+                }
+
+            for ancestor_m in (parent_m, gp_m):
+                anc_gid = _safe_str(ancestor_m.get("id", ""))
+                anc_primary = _primary_id_from_gremlin_id(anc_gid)
+                if anc_primary and anc_primary not in groups[primary_id]["_related_ids_seen"]:
+                    groups[primary_id]["_related_ids_seen"].add(anc_primary)
+                    groups[primary_id]["related"].append({"id": anc_primary})
+
+        records: list[EvidenceRecord] = []
+        for grp in groups.values():
+            records.append(
+                emit_record(
+                    card=card,
+                    query=query,
+                    record_id=grp["record_id"],
+                    primary_id=grp["primary_id"],
+                    id_scheme=id_scheme,
+                    label=grp["label"],
+                    name=grp["name"],
+                    properties=grp["props"],
+                    related=grp["related"],
                 )
             )
         return records

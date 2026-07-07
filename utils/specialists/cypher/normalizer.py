@@ -47,11 +47,31 @@ class CypherNormalizer:
         id_scheme = card.provenance.get("id_scheme", "attack-id")
 
         # Detect the template from column names in the first row
+        # NEW: technique_detection — technique_id + detection_id (must check before
+        # the generic technique_id+mitigation_id branch)
+        if rows and "technique_id" in rows[0] and "detection_id" in rows[0]:
+            return self._normalize_technique_detection(rows, query, card, id_scheme)
+        # NEW: tactic_technique_mitigations — tactic_id + technique_id + mitigation_id
+        # (check BEFORE the generic technique_id+mitigation_id branch)
+        if rows and "tactic_id" in rows[0] and "mitigation_id" in rows[0]:
+            return self._normalize_tactic_technique_mitigations(rows, query, card, id_scheme)
         if rows and "technique_id" in rows[0] and "mitigation_id" in rows[0]:
             return self._normalize_technique_mitigations(rows, query, card, id_scheme)
         # campaign_attribution has campaign_id + group_id columns
         if rows and "campaign_id" in rows[0] and "group_id" in rows[0]:
             return self._normalize_campaign_attribution(rows, query, card, id_scheme)
+        # NEW: software_techniques — software_id + technique_id
+        if rows and "software_id" in rows[0] and "technique_id" in rows[0]:
+            return self._normalize_software_techniques(rows, query, card, id_scheme)
+        # NEW: subtechnique_parent — parent_id + subtechnique_id
+        if rows and "parent_id" in rows[0] and "subtechnique_id" in rows[0]:
+            return self._normalize_subtechnique_parent(rows, query, card, id_scheme)
+        # NEW: datacomponent_analytics — datacomponent_id + analytic_id
+        if rows and "datacomponent_id" in rows[0] and "analytic_id" in rows[0]:
+            return self._normalize_datacomponent_analytics(rows, query, card, id_scheme)
+        # NEW: technique_tactics — technique_id + in_tactic_id
+        if rows and "technique_id" in rows[0] and "in_tactic_id" in rows[0]:
+            return self._normalize_technique_tactics(rows, query, card, id_scheme)
         # group_techniques / tactic_techniques / campaign_techniques have technique_id
         if rows and "technique_id" in rows[0]:
             return self._normalize_technique_rows(rows, query, card, id_scheme)
@@ -91,6 +111,252 @@ class CypherNormalizer:
                     label="Technique",
                     name=info["technique_name"],
                     related=info["mitigations"],
+                    join_values=join_values,
+                )
+            )
+        return records
+
+    def _normalize_technique_detection(
+        self,
+        rows: list[dict[str, Any]],
+        query: str,
+        card: Any,
+        id_scheme: str,
+    ) -> list[EvidenceRecord]:
+        """Group detection rows by technique_id; collect detection + analytic as related."""
+        groups: dict[str, dict[str, Any]] = defaultdict(
+            lambda: {"technique_name": "", "related": [], "_seen": set()}
+        )
+        for row in rows:
+            tid = str(row.get("technique_id") or "")
+            groups[tid]["technique_name"] = str(row.get("technique_name") or "")
+            det_id = str(row.get("detection_id") or "")
+            det_name = str(row.get("detection_name") or "")
+            an_id = str(row.get("analytic_id") or "")
+            an_name = str(row.get("analytic_name") or "")
+            seen = groups[tid]["_seen"]
+            if det_id and det_id not in seen:
+                seen.add(det_id)
+                groups[tid]["related"].append({"id": det_id, "name": det_name})
+            if an_id and an_id not in seen:
+                seen.add(an_id)
+                groups[tid]["related"].append({"id": an_id, "name": an_name})
+
+        records: list[EvidenceRecord] = []
+        for tid, info in groups.items():
+            join_values = (tid,) if _is_technique_id(tid) else ()
+            records.append(
+                emit_record(
+                    card=card,
+                    query=query,
+                    record_id=tid,
+                    primary_id=tid,
+                    id_scheme=id_scheme,
+                    label="Technique",
+                    name=info["technique_name"],
+                    related=info["related"],
+                    join_values=join_values,
+                )
+            )
+        return records
+
+    def _normalize_tactic_technique_mitigations(
+        self,
+        rows: list[dict[str, Any]],
+        query: str,
+        card: Any,
+        id_scheme: str,
+    ) -> list[EvidenceRecord]:
+        """Group tactic+mitigation rows by technique_id; related = unique tactic + mitigation dicts."""
+        groups: dict[str, dict[str, Any]] = defaultdict(
+            lambda: {"technique_name": "", "related": [], "_seen": set()}
+        )
+        for row in rows:
+            tid = str(row.get("technique_id") or "")
+            groups[tid]["technique_name"] = str(row.get("technique_name") or "")
+            seen = groups[tid]["_seen"]
+            tac_id = str(row.get("tactic_id") or "")
+            tac_name = str(row.get("tactic_name") or "")
+            mit_id = str(row.get("mitigation_id") or "")
+            mit_name = str(row.get("mitigation_name") or "")
+            if tac_id and tac_id not in seen:
+                seen.add(tac_id)
+                groups[tid]["related"].append({"id": tac_id, "name": tac_name})
+            if mit_id and mit_id not in seen:
+                seen.add(mit_id)
+                groups[tid]["related"].append({"id": mit_id, "name": mit_name})
+
+        records: list[EvidenceRecord] = []
+        for tid, info in groups.items():
+            join_values = (tid,) if _is_technique_id(tid) else ()
+            records.append(
+                emit_record(
+                    card=card,
+                    query=query,
+                    record_id=tid,
+                    primary_id=tid,
+                    id_scheme=id_scheme,
+                    label="Technique",
+                    name=info["technique_name"],
+                    related=info["related"],
+                    join_values=join_values,
+                )
+            )
+        return records
+
+    def _normalize_software_techniques(
+        self,
+        rows: list[dict[str, Any]],
+        query: str,
+        card: Any,
+        id_scheme: str,
+    ) -> list[EvidenceRecord]:
+        """Group software_techniques rows by software_id; related = unique technique dicts."""
+        groups: dict[str, dict[str, Any]] = defaultdict(
+            lambda: {"software_name": "", "techniques": [], "_seen": set()}
+        )
+        for row in rows:
+            sid = str(row.get("software_id") or "")
+            groups[sid]["software_name"] = str(row.get("software_name") or "")
+            tid = str(row.get("technique_id") or "")
+            tname = str(row.get("technique_name") or "")
+            seen = groups[sid]["_seen"]
+            if tid and tid not in seen:
+                seen.add(tid)
+                groups[sid]["techniques"].append({"id": tid, "name": tname})
+
+        records: list[EvidenceRecord] = []
+        for sid, info in groups.items():
+            # join_values = tuple of unique technique ids matching T-pattern
+            join_values = tuple(
+                t["id"] for t in info["techniques"] if _is_technique_id(t["id"])
+            )
+            records.append(
+                emit_record(
+                    card=card,
+                    query=query,
+                    record_id=sid,
+                    primary_id=sid,
+                    id_scheme=id_scheme,
+                    label="Software",
+                    name=info["software_name"],
+                    related=info["techniques"],
+                    join_values=join_values,
+                )
+            )
+        return records
+
+    def _normalize_subtechnique_parent(
+        self,
+        rows: list[dict[str, Any]],
+        query: str,
+        card: Any,
+        id_scheme: str,
+    ) -> list[EvidenceRecord]:
+        """Group subtechnique_parent rows by parent_id; related = unique subtechnique dicts."""
+        groups: dict[str, dict[str, Any]] = defaultdict(
+            lambda: {"parent_name": "", "subtechniques": [], "_seen": set()}
+        )
+        for row in rows:
+            pid = str(row.get("parent_id") or "")
+            groups[pid]["parent_name"] = str(row.get("parent_name") or "")
+            stid = str(row.get("subtechnique_id") or "")
+            stname = str(row.get("subtechnique_name") or "")
+            seen = groups[pid]["_seen"]
+            if stid and stid not in seen:
+                seen.add(stid)
+                groups[pid]["subtechniques"].append({"id": stid, "name": stname})
+
+        records: list[EvidenceRecord] = []
+        for pid, info in groups.items():
+            join_values = (pid,) if _is_technique_id(pid) else ()
+            records.append(
+                emit_record(
+                    card=card,
+                    query=query,
+                    record_id=pid,
+                    primary_id=pid,
+                    id_scheme=id_scheme,
+                    label="Technique",
+                    name=info["parent_name"],
+                    related=info["subtechniques"],
+                    join_values=join_values,
+                )
+            )
+        return records
+
+    def _normalize_datacomponent_analytics(
+        self,
+        rows: list[dict[str, Any]],
+        query: str,
+        card: Any,
+        id_scheme: str,
+    ) -> list[EvidenceRecord]:
+        """Group datacomponent_analytics rows by datacomponent_id; related = unique analytic dicts."""
+        groups: dict[str, dict[str, Any]] = defaultdict(
+            lambda: {"datacomponent_name": "", "analytics": [], "_seen": set()}
+        )
+        for row in rows:
+            dcid = str(row.get("datacomponent_id") or "")
+            groups[dcid]["datacomponent_name"] = str(row.get("datacomponent_name") or "")
+            aid = str(row.get("analytic_id") or "")
+            aname = str(row.get("analytic_name") or "")
+            seen = groups[dcid]["_seen"]
+            if aid and aid not in seen:
+                seen.add(aid)
+                groups[dcid]["analytics"].append({"id": aid, "name": aname})
+
+        records: list[EvidenceRecord] = []
+        for dcid, info in groups.items():
+            records.append(
+                emit_record(
+                    card=card,
+                    query=query,
+                    record_id=dcid,
+                    primary_id=dcid,
+                    id_scheme=id_scheme,
+                    label="DataComponent",
+                    name=info["datacomponent_name"],
+                    related=info["analytics"],
+                    join_values=(),
+                )
+            )
+        return records
+
+    def _normalize_technique_tactics(
+        self,
+        rows: list[dict[str, Any]],
+        query: str,
+        card: Any,
+        id_scheme: str,
+    ) -> list[EvidenceRecord]:
+        """Group technique_tactics rows by technique_id; related = unique tactic dicts."""
+        groups: dict[str, dict[str, Any]] = defaultdict(
+            lambda: {"technique_name": "", "tactics": [], "_seen": set()}
+        )
+        for row in rows:
+            tid = str(row.get("technique_id") or "")
+            groups[tid]["technique_name"] = str(row.get("technique_name") or "")
+            itac_id = str(row.get("in_tactic_id") or "")
+            itac_name = str(row.get("in_tactic_name") or "")
+            seen = groups[tid]["_seen"]
+            if itac_id and itac_id not in seen:
+                seen.add(itac_id)
+                groups[tid]["tactics"].append({"id": itac_id, "name": itac_name})
+
+        records: list[EvidenceRecord] = []
+        for tid, info in groups.items():
+            join_values = (tid,) if _is_technique_id(tid) else ()
+            records.append(
+                emit_record(
+                    card=card,
+                    query=query,
+                    record_id=tid,
+                    primary_id=tid,
+                    id_scheme=id_scheme,
+                    label="Technique",
+                    name=info["technique_name"],
+                    related=info["tactics"],
                     join_values=join_values,
                 )
             )

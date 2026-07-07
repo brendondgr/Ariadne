@@ -49,6 +49,8 @@ _REL_TARGET_LABEL: dict[str, str] = {
 }
 
 _CAPEC_NUM_RE = re.compile(r"CAPEC-(\d+)", re.IGNORECASE)
+_CWE_NUM_RE = re.compile(r"^CWE-(\d+)$", re.IGNORECASE)
+_ATTACK_ENTRY_RE = re.compile(r"^T(\d{4}(?:\.\d{3})?)$", re.IGNORECASE)
 
 
 def _capec_gremlin_id(capec_id: str) -> str:
@@ -88,7 +90,19 @@ class GremlinQueryBuilder:
         has_join = resolved.has_join or resolved.join_key == "attack-technique-id"
         neighbor_rel = _resolve_neighbor_rel(resolved)
 
+        # NEW: capec_hierarchy_chain — two or more "ChildOf" in raw entities AND seeds.
+        if (
+            has_seeds
+            and resolved.task.entities.count("ChildOf") >= 2
+        ):
+            return self._capec_hierarchy_chain(resolved)
+
         if has_join:
+            # Split by seed shape before falling through to existing capec_maps_to.
+            if has_seeds and all(_CWE_NUM_RE.match(s) for s in resolved.seed_ids):
+                return self._cwe_chain(resolved)
+            if has_seeds and all(_ATTACK_ENTRY_RE.match(s) for s in resolved.seed_ids):
+                return self._capec_reverse_maps(resolved)
             return self._capec_maps_to(resolved)
         if has_seeds and neighbor_rel:
             return self._capec_neighbors(resolved, neighbor_rel)
@@ -175,6 +189,78 @@ class GremlinQueryBuilder:
             meta={
                 "anchor_label": "AttackPattern",
                 "neighbor_label": "TaxonomyEntry",
+                "rel": "MAPS_TO",
+            },
+        )
+
+    def _capec_hierarchy_chain(self, resolved: ResolvedTask) -> QueryDraft:
+        ids = [_capec_gremlin_id(s) for s in resolved.seed_ids]
+        lim = resolved.task.max_rows()
+        params: dict[str, Any] = {"ids": ids}
+        child_of_edge = gremlin_edge_label("ChildOf")
+        query = (
+            'g.V().hasLabel("AttackPattern").has("id", within(ids)).as("ap")'
+            f'.out("{child_of_edge}").hasLabel("AttackPattern").as("parent")'
+            f'.out("{child_of_edge}").hasLabel("AttackPattern").as("grandparent")'
+            f'.select("ap","parent","grandparent").by(elementMap()).limit({lim})'
+        )
+        return QueryDraft(
+            query=query,
+            params=params,
+            template="capec_hierarchy_chain",
+            expected_nonempty=bool(ids),
+            meta={
+                "anchor_label": "AttackPattern",
+                "rel": child_of_edge,
+            },
+        )
+
+    def _cwe_chain(self, resolved: ResolvedTask) -> QueryDraft:
+        cwe_ids = [
+            f"cwe:{_CWE_NUM_RE.match(s).group(1)}"  # type: ignore[union-attr]
+            for s in resolved.seed_ids
+        ]
+        lim = resolved.task.max_rows()
+        params: dict[str, Any] = {"cweIds": cwe_ids}
+        query = (
+            'g.V().hasLabel("Weakness").has("id", within(cweIds)).as("w")'
+            '.in("EXPLOITS_WEAKNESS").hasLabel("AttackPattern").as("ap")'
+            '.out("MAPS_TO").hasLabel("TaxonomyEntry").has("taxonomy_name","ATTACK").as("tax")'
+            f'.select("w","ap","tax").by(elementMap()).limit({lim})'
+        )
+        return QueryDraft(
+            query=query,
+            params=params,
+            template="cwe_chain",
+            expected_nonempty=bool(cwe_ids),
+            meta={
+                "anchor_label": "Weakness",
+                "neighbor_label": "TaxonomyEntry",
+                "rel": "EXPLOITS_WEAKNESS",
+            },
+        )
+
+    def _capec_reverse_maps(self, resolved: ResolvedTask) -> QueryDraft:
+        entry_ids = [
+            _ATTACK_ENTRY_RE.match(s).group(1)  # type: ignore[union-attr]
+            for s in resolved.seed_ids
+        ]
+        lim = resolved.task.max_rows()
+        params: dict[str, Any] = {"entryIds": entry_ids}
+        query = (
+            'g.V().hasLabel("TaxonomyEntry").has("taxonomy_name","ATTACK")'
+            '.has("entry_id", within(entryIds)).as("tax")'
+            '.in("MAPS_TO").hasLabel("AttackPattern").as("ap")'
+            f'.select("ap","tax").by(elementMap()).limit({lim})'
+        )
+        return QueryDraft(
+            query=query,
+            params=params,
+            template="capec_reverse_maps",
+            expected_nonempty=bool(entry_ids),
+            meta={
+                "anchor_label": "TaxonomyEntry",
+                "neighbor_label": "AttackPattern",
                 "rel": "MAPS_TO",
             },
         )

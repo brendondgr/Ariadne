@@ -436,3 +436,350 @@ class TestLiveGremlin:
 
         # Contract must pass.
         assert check_contract(result.records) == []
+
+
+# ---------------------------------------------------------------------------
+# NEW templates — routing, normalizer, non-regression
+# ---------------------------------------------------------------------------
+
+# -- Helpers ------------------------------------------------------------------
+
+def _make_resolved(task: SpecialistTask, *, join_endpoint: Any = None) -> Any:
+    """Build a ResolvedTask directly for routing tests (no live card needed)."""
+    from utils.specialists.resolve import ResolvedTask
+    return ResolvedTask(
+        task=task,
+        dataset="capec",
+        seed_ids=task.seed_ids,
+        join_key=task.join_key,
+        join_endpoint=join_endpoint,
+    )
+
+
+def _fake_join_endpoint():
+    """Return a truthy sentinel so has_join evaluates True."""
+    class _EP:
+        dataset = "capec"
+    return _EP()
+
+
+# -- Template: capec_hierarchy_chain -----------------------------------------
+
+class TestCapecHierarchyChain:
+    """Two ChildOf entities in task.entities + seeds → capec_hierarchy_chain."""
+
+    def _hierarchy_task(self, **overrides: Any) -> SpecialistTask:
+        base = dict(
+            sub_question_id="q-hier-1",
+            source="capec",
+            text="What is the parent and grandparent of CAPEC-66?",
+            entities=("AttackPattern", "ChildOf", "ChildOf"),
+            limits={"max_traversal_depth": 3, "max_result_rows": 50, "query_timeout_ms": 5000},
+            join_key=None,
+            seed_ids=("CAPEC-66",),
+        )
+        base.update(overrides)
+        return SpecialistTask(**base)  # type: ignore[arg-type]
+
+    def test_routes_to_hierarchy_chain(self):
+        task = self._hierarchy_task()
+        resolved = _make_resolved(task)
+        builder = GremlinQueryBuilder()
+        draft = builder.build(resolved)
+        assert draft.template == "capec_hierarchy_chain"
+
+    def test_query_contains_two_childof_hops(self):
+        from utils.graph_loader.stores.gremlin import gremlin_edge_label
+        child_of_edge = gremlin_edge_label("ChildOf")
+        task = self._hierarchy_task()
+        resolved = _make_resolved(task)
+        draft = GremlinQueryBuilder().build(resolved)
+        assert draft.query.count(f'.out("{child_of_edge}")') == 2
+        assert '"ap"' in draft.query
+        assert '"parent"' in draft.query
+        assert '"grandparent"' in draft.query
+
+    def test_query_passes_validator(self, card):
+        task = self._hierarchy_task()
+        resolved = _make_resolved(task)
+        draft = GremlinQueryBuilder().build(resolved)
+        validator = GremlinValidator()
+        reasons = (
+            validator.structural_reasons(draft.query)
+            + validator.violates_read_only(draft.query, card)
+            + validator.schema_reasons(draft.query, card)
+        )
+        assert reasons == [], f"validator rejected: {reasons}"
+
+    def test_normalizer_hierarchy_rows(self, card):
+        """Rows with ap/parent/grandparent → one record with two related entries."""
+        rows = [
+            {
+                "ap": _ap_row(66, "SQL Injection"),
+                "parent": _ap_row(100, "Overflow Buffers"),
+                "grandparent": _ap_row(92, "Forced Integer Overflow"),
+            },
+        ]
+        normalizer = GremlinNormalizer()
+        records = normalizer.normalize(rows, resolved=None, query="q", card=card)  # type: ignore[arg-type]
+        assert len(records) == 1
+        rec = records[0]
+        assert rec.primary_id == "CAPEC-66"
+        related_ids = {r["id"] for r in rec.related}
+        assert "CAPEC-100" in related_ids
+        assert "CAPEC-92" in related_ids
+        assert rec.join_values == ()
+
+    def test_normalizer_hierarchy_deduplicates_ancestors(self, card):
+        """Same parent/grandparent across two rows should not duplicate related."""
+        rows = [
+            {
+                "ap": _ap_row(66, "SQL Injection"),
+                "parent": _ap_row(100, "Overflow Buffers"),
+                "grandparent": _ap_row(92, "Forced Integer Overflow"),
+            },
+            {
+                "ap": _ap_row(66, "SQL Injection"),
+                "parent": _ap_row(100, "Overflow Buffers"),
+                "grandparent": _ap_row(92, "Forced Integer Overflow"),
+            },
+        ]
+        normalizer = GremlinNormalizer()
+        records = normalizer.normalize(rows, resolved=None, query="q", card=card)  # type: ignore[arg-type]
+        assert len(records) == 1
+        assert len(records[0].related) == 2
+
+    def test_normalizer_hierarchy_contract(self, card):
+        rows = [
+            {
+                "ap": _ap_row(66, "SQL Injection"),
+                "parent": _ap_row(100, "Overflow Buffers"),
+                "grandparent": _ap_row(92, "Forced Integer Overflow"),
+            },
+        ]
+        normalizer = GremlinNormalizer()
+        records = normalizer.normalize(rows, resolved=None, query="q", card=card)  # type: ignore[arg-type]
+        assert check_contract(records) == []
+
+
+# -- Template: cwe_chain ------------------------------------------------------
+
+class TestCweChain:
+    """CWE-seeded + join_key → cwe_chain."""
+
+    def _cwe_task(self, **overrides: Any) -> SpecialistTask:
+        base = dict(
+            sub_question_id="q-cwe-1",
+            source="capec",
+            text="Which ATT&CK techniques exploit CWE-89?",
+            entities=("Weakness", "AttackPattern", "TaxonomyEntry", "EXPLOITS_WEAKNESS", "MAPS_TO"),
+            limits={"max_traversal_depth": 3, "max_result_rows": 50, "query_timeout_ms": 5000},
+            join_key="attack-technique-id",
+            seed_ids=("CWE-89",),
+        )
+        base.update(overrides)
+        return SpecialistTask(**base)  # type: ignore[arg-type]
+
+    def test_routes_to_cwe_chain(self):
+        task = self._cwe_task()
+        resolved = _make_resolved(task, join_endpoint=_fake_join_endpoint())
+        draft = GremlinQueryBuilder().build(resolved)
+        assert draft.template == "cwe_chain"
+
+    def test_cwe_id_converted_to_gremlin_form(self):
+        task = self._cwe_task()
+        resolved = _make_resolved(task, join_endpoint=_fake_join_endpoint())
+        draft = GremlinQueryBuilder().build(resolved)
+        assert "cweIds" in draft.params
+        assert "cwe:89" in draft.params["cweIds"]
+
+    def test_query_passes_validator(self, card):
+        task = self._cwe_task()
+        resolved = _make_resolved(task, join_endpoint=_fake_join_endpoint())
+        draft = GremlinQueryBuilder().build(resolved)
+        validator = GremlinValidator()
+        reasons = (
+            validator.structural_reasons(draft.query)
+            + validator.violates_read_only(draft.query, card)
+            + validator.schema_reasons(draft.query, card)
+        )
+        assert reasons == [], f"validator rejected: {reasons}"
+
+    def test_normalizer_cwe_chain_rows(self, card):
+        """Rows with w/ap/tax → one record per ap, related CWEs, T-prefixed join_values."""
+        rows = [
+            {
+                "w": _weakness_row(89),
+                "ap": _ap_row(66, "SQL Injection"),
+                "tax": _tax_row("1190.001", "ATTACK"),
+            },
+            {
+                "w": _weakness_row(89),
+                "ap": _ap_row(66, "SQL Injection"),
+                "tax": _tax_row("1059", "ATTACK"),
+            },
+        ]
+        normalizer = GremlinNormalizer()
+        records = normalizer.normalize(rows, resolved=None, query="q", card=card)  # type: ignore[arg-type]
+        assert len(records) == 1
+        rec = records[0]
+        assert rec.primary_id == "CAPEC-66"
+        related_ids = {r["id"] for r in rec.related}
+        assert "CWE-89" in related_ids
+        assert "T1190.001" in rec.join_values
+        assert "T1059" in rec.join_values
+
+    def test_normalizer_cwe_chain_multiple_aps(self, card):
+        """Multiple attack patterns under one CWE → one record each."""
+        rows = [
+            {
+                "w": _weakness_row(89),
+                "ap": _ap_row(66, "SQL Injection"),
+                "tax": _tax_row("1190", "ATTACK"),
+            },
+            {
+                "w": _weakness_row(89),
+                "ap": _ap_row(110, "SQL Injection via SOAP Parameter Tampering"),
+                "tax": _tax_row("1190", "ATTACK"),
+            },
+        ]
+        normalizer = GremlinNormalizer()
+        records = normalizer.normalize(rows, resolved=None, query="q", card=card)  # type: ignore[arg-type]
+        assert len(records) == 2
+        primary_ids = {r.primary_id for r in records}
+        assert "CAPEC-66" in primary_ids
+        assert "CAPEC-110" in primary_ids
+
+    def test_normalizer_cwe_chain_wasc_not_in_join_values(self, card):
+        """WASC entries in tax must not produce join_values."""
+        rows = [
+            {
+                "w": _weakness_row(89),
+                "ap": _ap_row(66, "SQL Injection"),
+                "tax": _tax_row("19", "WASC"),
+            },
+        ]
+        normalizer = GremlinNormalizer()
+        records = normalizer.normalize(rows, resolved=None, query="q", card=card)  # type: ignore[arg-type]
+        assert len(records) == 1
+        assert records[0].join_values == ()
+
+    def test_normalizer_cwe_chain_contract(self, card):
+        rows = [
+            {
+                "w": _weakness_row(89),
+                "ap": _ap_row(66, "SQL Injection"),
+                "tax": _tax_row("1190", "ATTACK"),
+            },
+        ]
+        normalizer = GremlinNormalizer()
+        records = normalizer.normalize(rows, resolved=None, query="q", card=card)  # type: ignore[arg-type]
+        assert check_contract(records) == []
+
+
+# -- Template: capec_reverse_maps ---------------------------------------------
+
+class TestCapecReverseMaps:
+    """T-prefixed seed + join_key → capec_reverse_maps; rows shape matches maps_to path."""
+
+    def _reverse_task(self, **overrides: Any) -> SpecialistTask:
+        base = dict(
+            sub_question_id="q-rev-1",
+            source="capec",
+            text="Which CAPEC patterns map to T1190?",
+            entities=("TaxonomyEntry", "AttackPattern", "MAPS_TO"),
+            limits={"max_traversal_depth": 3, "max_result_rows": 50, "query_timeout_ms": 5000},
+            join_key="attack-technique-id",
+            seed_ids=("T1190",),
+        )
+        base.update(overrides)
+        return SpecialistTask(**base)  # type: ignore[arg-type]
+
+    def test_routes_to_capec_reverse_maps(self):
+        task = self._reverse_task()
+        resolved = _make_resolved(task, join_endpoint=_fake_join_endpoint())
+        draft = GremlinQueryBuilder().build(resolved)
+        assert draft.template == "capec_reverse_maps"
+
+    def test_t_prefix_stripped_to_entry_id(self):
+        task = self._reverse_task()
+        resolved = _make_resolved(task, join_endpoint=_fake_join_endpoint())
+        draft = GremlinQueryBuilder().build(resolved)
+        assert "entryIds" in draft.params
+        assert "1190" in draft.params["entryIds"]
+
+    def test_subtechnique_seed_stripped_correctly(self):
+        task = self._reverse_task(seed_ids=("T1574.010",))
+        resolved = _make_resolved(task, join_endpoint=_fake_join_endpoint())
+        draft = GremlinQueryBuilder().build(resolved)
+        assert "1574.010" in draft.params["entryIds"]
+
+    def test_query_passes_validator(self, card):
+        task = self._reverse_task()
+        resolved = _make_resolved(task, join_endpoint=_fake_join_endpoint())
+        draft = GremlinQueryBuilder().build(resolved)
+        validator = GremlinValidator()
+        reasons = (
+            validator.structural_reasons(draft.query)
+            + validator.violates_read_only(draft.query, card)
+            + validator.schema_reasons(draft.query, card)
+        )
+        assert reasons == [], f"validator rejected: {reasons}"
+
+    def test_normalizer_reverse_maps_rows_use_maps_to_path(self, card):
+        """Rows with ap+tax from capec_reverse_maps feed the existing maps_to normalizer."""
+        rows = [
+            {"ap": _ap_row(66, "SQL Injection"), "tax": _tax_row("1190", "ATTACK")},
+        ]
+        normalizer = GremlinNormalizer()
+        records = normalizer.normalize(rows, resolved=None, query="q", card=card)  # type: ignore[arg-type]
+        assert len(records) == 1
+        assert records[0].primary_id == "CAPEC-66"
+        assert "T1190" in records[0].join_values
+
+    def test_normalizer_reverse_maps_contract(self, card):
+        rows = [
+            {"ap": _ap_row(66, "SQL Injection"), "tax": _tax_row("1190", "ATTACK")},
+        ]
+        normalizer = GremlinNormalizer()
+        records = normalizer.normalize(rows, resolved=None, query="q", card=card)  # type: ignore[arg-type]
+        assert check_contract(records) == []
+
+
+# -- Non-regression tests -----------------------------------------------------
+
+class TestNonRegressionRouting:
+    """Existing routes must not be displaced by the new branches."""
+
+    def test_capec_seeded_maps_to_still_routes_capec_maps_to(self):
+        """A CAPEC-seeded maps_to task routes capec_maps_to (not reverse or cwe)."""
+        task = _make_maps_to_task()  # seed_ids=("CAPEC-1",), join_key="attack-technique-id"
+        from utils.specialists.resolve import ResolvedTask
+        resolved = ResolvedTask(
+            task=task,
+            dataset="capec",
+            seed_ids=task.seed_ids,
+            join_key=task.join_key,
+            join_endpoint=_fake_join_endpoint(),
+        )
+        draft = GremlinQueryBuilder().build(resolved)
+        assert draft.template == "capec_maps_to"
+
+    def test_single_childof_neighbor_still_routes_capec_neighbors(self):
+        """A task with exactly one ChildOf entity still routes capec_neighbors."""
+        task = _make_task(
+            entities=("AttackPattern", "ChildOf"),
+            seed_ids=("CAPEC-66",),
+            join_key=None,
+        )
+        from utils.specialists.resolve import ResolvedTask
+        resolved = ResolvedTask(
+            task=task,
+            dataset="capec",
+            seed_ids=task.seed_ids,
+            relationships=("ChildOf",),
+            join_key=None,
+            join_endpoint=None,
+        )
+        draft = GremlinQueryBuilder().build(resolved)
+        assert draft.template == "capec_neighbors"

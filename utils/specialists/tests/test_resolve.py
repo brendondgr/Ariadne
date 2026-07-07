@@ -63,3 +63,37 @@ def test_resolve_attack_does_not_confuse_tactic_with_technique() -> None:
     assert "T1003" in resolved.seed_ids
     # TA0006 must not also appear as a bare technique id.
     assert "T0006" not in resolved.seed_ids
+
+
+def test_extract_cwe_ids_normalises_to_dash_form() -> None:
+    from utils.specialists.resolve import extract_cwe_ids
+
+    assert extract_cwe_ids("CWE-89 and cwe 522, CWE-89 again") == ("CWE-89", "CWE-522")
+
+
+def test_resolve_capec_extracts_cwe_seeds_from_text() -> None:
+    # CWE ids are CAPEC-native seeds (the Weakness vertices anchoring the
+    # CWE -> CAPEC -> ATT&CK chain); CAPEC ids still come first when both appear.
+    card = fixture_card("capec")
+    task = SpecialistTask(
+        sub_question_id="q-cwe",
+        source="capec",
+        text="Which attack patterns exploit CWE-522 and map to ATT&CK techniques?",
+        entities=("Weakness", "AttackPattern", "TaxonomyEntry"),
+        join_key="attack-technique-id",
+    )
+    resolved = resolve(task, card)
+    assert resolved.seed_ids == ("CWE-522",)
+
+
+def test_resolve_attack_text_does_not_gain_cwe_seeds() -> None:
+    card = fixture_card("attack")
+    task = SpecialistTask(
+        sub_question_id="q-cwe-a",
+        source="attack",
+        text="Does CWE-522 relate to T1110?",
+        entities=("Technique",),
+    )
+    resolved = resolve(task, card)
+    assert "CWE-522" not in resolved.seed_ids
+    assert "T1110" in resolved.seed_ids

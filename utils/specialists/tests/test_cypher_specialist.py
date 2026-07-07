@@ -313,3 +313,461 @@ def test_live_t1047_mitigations():
     for rec in result.records:
         for val in rec.join_values:
             assert t_re.match(val), f"Malformed join value: {val!r}"
+
+
+# ===========================================================================
+# Step-10 new template tests
+# ===========================================================================
+
+_LIMITS = {"max_traversal_depth": 3, "max_result_rows": 100, "query_timeout_ms": 5000}
+
+
+def _resolve(task):
+    from utils.specialists.resolve import resolve
+    return resolve(task, fixture_card("attack"))
+
+
+def _validate(draft):
+    """Return the validated result; caller asserts result.ok."""
+    validator = CypherValidator()
+    card = fixture_card("attack")
+    return validator.validate(draft, card, _LIMITS)
+
+
+# ---------------------------------------------------------------------------
+# 1. technique_detection
+# ---------------------------------------------------------------------------
+
+
+def test_routing_technique_detection(card):
+    """Technique seeds + DetectionStrategy entity → technique_detection template."""
+    task = SpecialistTask(
+        sub_question_id="q-td-1",
+        source="attack",
+        text="How is T1059 detected?",
+        entities=("Technique", "DetectionStrategy"),
+        limits=_LIMITS,
+        seed_ids=("T1059",),
+    )
+    resolved = _resolve(task)
+    builder = CypherQueryBuilder()
+    draft = builder.build(resolved)
+    assert draft.template == "technique_detection"
+    result = _validate(draft)
+    assert result.ok, result.reasons
+
+
+def test_normalizer_technique_detection(card):
+    """Rows with technique_id+detection_id group by technique; related includes detection + analytic."""
+    rows = [
+        {
+            "technique_id": "T1059",
+            "technique_name": "Command and Scripting Interpreter",
+            "detection_id": "DET0001",
+            "detection_name": "Process Monitoring",
+            "analytic_id": "AN0001",
+            "analytic_name": "Powershell Analytic",
+        },
+        {
+            "technique_id": "T1059",
+            "technique_name": "Command and Scripting Interpreter",
+            "detection_id": "DET0001",
+            "detection_name": "Process Monitoring",
+            "analytic_id": None,
+            "analytic_name": None,
+        },
+    ]
+    normalizer = CypherNormalizer()
+    task = SpecialistTask(
+        sub_question_id="q-td-n",
+        source="attack",
+        text="How is T1059 detected?",
+        entities=("Technique", "DetectionStrategy"),
+        limits=_LIMITS,
+        seed_ids=("T1059",),
+    )
+    resolved = _resolve(task)
+    records = normalizer.normalize(rows, resolved, "FAKE QUERY", card)
+    assert len(records) == 1
+    rec = records[0]
+    assert rec.primary_id == "T1059"
+    assert rec.label == "Technique"
+    assert rec.join_values == ("T1059",)
+    related_ids = {r["id"] for r in rec.related}
+    assert "DET0001" in related_ids
+    assert "AN0001" in related_ids
+
+
+def test_routing_technique_detection_subtechnique(card):
+    """Sub-technique seeds + DetectionStrategy → technique_detection (SubTechnique anchor)."""
+    task = SpecialistTask(
+        sub_question_id="q-td-sub",
+        source="attack",
+        text="Detection for T1059.001?",
+        entities=("SubTechnique", "DetectionStrategy"),
+        limits=_LIMITS,
+        seed_ids=("T1059.001",),
+    )
+    resolved = _resolve(task)
+    builder = CypherQueryBuilder()
+    draft = builder.build(resolved)
+    assert draft.template == "technique_detection"
+    result = _validate(draft)
+    assert result.ok, result.reasons
+
+
+# ---------------------------------------------------------------------------
+# 2. subtechnique_parent
+# ---------------------------------------------------------------------------
+
+
+def test_routing_subtechnique_parent(card):
+    """HAS_SUBTECHNIQUE relationship + seeds → subtechnique_parent template."""
+    task = SpecialistTask(
+        sub_question_id="q-sp-1",
+        source="attack",
+        text="What is the parent of T1059.001?",
+        entities=("HAS_SUBTECHNIQUE",),
+        limits=_LIMITS,
+        seed_ids=("T1059.001",),
+    )
+    resolved = _resolve(task)
+    builder = CypherQueryBuilder()
+    draft = builder.build(resolved)
+    assert draft.template == "subtechnique_parent"
+    result = _validate(draft)
+    assert result.ok, result.reasons
+
+
+def test_normalizer_subtechnique_parent(card):
+    """Rows with parent_id+subtechnique_id group by parent; related = subtechnique dicts."""
+    rows = [
+        {
+            "parent_id": "T1059",
+            "parent_name": "Command and Scripting Interpreter",
+            "subtechnique_id": "T1059.001",
+            "subtechnique_name": "PowerShell",
+        },
+        {
+            "parent_id": "T1059",
+            "parent_name": "Command and Scripting Interpreter",
+            "subtechnique_id": "T1059.003",
+            "subtechnique_name": "Windows Command Shell",
+        },
+    ]
+    normalizer = CypherNormalizer()
+    task = SpecialistTask(
+        sub_question_id="q-sp-n",
+        source="attack",
+        text="sub of T1059",
+        entities=("HAS_SUBTECHNIQUE",),
+        limits=_LIMITS,
+        seed_ids=("T1059",),
+    )
+    resolved = _resolve(task)
+    records = normalizer.normalize(rows, resolved, "FAKE QUERY", card)
+    assert len(records) == 1
+    rec = records[0]
+    assert rec.primary_id == "T1059"
+    assert rec.label == "Technique"
+    assert rec.join_values == ("T1059",)
+    related_ids = {r["id"] for r in rec.related}
+    assert "T1059.001" in related_ids
+    assert "T1059.003" in related_ids
+
+
+# ---------------------------------------------------------------------------
+# 3. software_techniques
+# ---------------------------------------------------------------------------
+
+
+def test_routing_software_techniques(card):
+    """Software + Technique entities + S-seed → software_techniques template."""
+    task = SpecialistTask(
+        sub_question_id="q-st-1",
+        source="attack",
+        text="What techniques does S0002 use?",
+        entities=("Software", "Technique"),
+        limits=_LIMITS,
+        seed_ids=("S0002",),
+    )
+    resolved = _resolve(task)
+    builder = CypherQueryBuilder()
+    draft = builder.build(resolved)
+    assert draft.template == "software_techniques"
+    result = _validate(draft)
+    assert result.ok, result.reasons
+
+
+def test_normalizer_software_techniques(card):
+    """Rows with software_id+technique_id group by software; join_values = T-ids."""
+    rows = [
+        {
+            "software_id": "S0002",
+            "software_name": "Mimikatz",
+            "technique_id": "T1003",
+            "technique_name": "OS Credential Dumping",
+        },
+        {
+            "software_id": "S0002",
+            "software_name": "Mimikatz",
+            "technique_id": "T1550",
+            "technique_name": "Use Alternate Auth Material",
+        },
+    ]
+    normalizer = CypherNormalizer()
+    task = SpecialistTask(
+        sub_question_id="q-st-n",
+        source="attack",
+        text="S0002 techniques",
+        entities=("Software", "Technique"),
+        limits=_LIMITS,
+        seed_ids=("S0002",),
+    )
+    resolved = _resolve(task)
+    records = normalizer.normalize(rows, resolved, "FAKE QUERY", card)
+    assert len(records) == 1
+    rec = records[0]
+    assert rec.primary_id == "S0002"
+    assert rec.label == "Software"
+    related_ids = {r["id"] for r in rec.related}
+    assert "T1003" in related_ids
+    assert "T1550" in related_ids
+    assert "T1003" in rec.join_values
+    assert "T1550" in rec.join_values
+
+
+# Non-regression: Software-only entity (node_lookup)
+def test_nonregression_software_only_node_lookup(card):
+    """entities=(Software,) with S0154 seed must still route node_lookup, not software_techniques."""
+    task = SpecialistTask(
+        sub_question_id="q-nr-sw",
+        source="attack",
+        text="What is S0154?",
+        entities=("Software",),
+        limits=_LIMITS,
+        seed_ids=("S0154",),
+    )
+    resolved = _resolve(task)
+    builder = CypherQueryBuilder()
+    draft = builder.build(resolved)
+    assert draft.template == "node_lookup"
+
+
+# ---------------------------------------------------------------------------
+# 4. tactic_technique_mitigations
+# ---------------------------------------------------------------------------
+
+
+def test_routing_tactic_technique_mitigations(card):
+    """TA seed + M seed + Tactic + Mitigation entities → tactic_technique_mitigations."""
+    task = SpecialistTask(
+        sub_question_id="q-ttm-1",
+        source="attack",
+        text="Mitigations for techniques in TA0002 matching M1038?",
+        entities=("Tactic", "Mitigation"),
+        limits=_LIMITS,
+        seed_ids=("TA0002", "M1038"),
+    )
+    resolved = _resolve(task)
+    builder = CypherQueryBuilder()
+    draft = builder.build(resolved)
+    assert draft.template == "tactic_technique_mitigations"
+    result = _validate(draft)
+    assert result.ok, result.reasons
+    assert "tactic_ids" in draft.params
+    assert "mitigation_ids" in draft.params
+    assert draft.params["tactic_ids"] == ["TA0002"]
+    assert draft.params["mitigation_ids"] == ["M1038"]
+
+
+def test_normalizer_tactic_technique_mitigations(card):
+    """Rows with tactic_id+technique_id+mitigation_id group by technique; related = tactic + mitigation."""
+    rows = [
+        {
+            "tactic_id": "TA0002",
+            "tactic_name": "Execution",
+            "technique_id": "T1059",
+            "technique_name": "Command and Scripting Interpreter",
+            "mitigation_id": "M1038",
+            "mitigation_name": "Execution Prevention",
+        },
+    ]
+    normalizer = CypherNormalizer()
+    task = SpecialistTask(
+        sub_question_id="q-ttm-n",
+        source="attack",
+        text="TA0002 M1038",
+        entities=("Tactic", "Mitigation"),
+        limits=_LIMITS,
+        seed_ids=("TA0002", "M1038"),
+    )
+    resolved = _resolve(task)
+    records = normalizer.normalize(rows, resolved, "FAKE QUERY", card)
+    assert len(records) == 1
+    rec = records[0]
+    assert rec.primary_id == "T1059"
+    assert rec.join_values == ("T1059",)
+    related_ids = {r["id"] for r in rec.related}
+    assert "TA0002" in related_ids
+    assert "M1038" in related_ids
+
+
+# Non-regression: Tactic + Technique seeds → tactic_techniques (not tactic_technique_mitigations)
+def test_nonregression_tactic_techniques_still_routes(card):
+    """entities=(Tactic, Technique) with TA seed → tactic_techniques (no M seed)."""
+    task = SpecialistTask(
+        sub_question_id="q-nr-tt",
+        source="attack",
+        text="Techniques in TA0002?",
+        entities=("Tactic", "Technique"),
+        limits=_LIMITS,
+        seed_ids=("TA0002",),
+    )
+    resolved = _resolve(task)
+    builder = CypherQueryBuilder()
+    draft = builder.build(resolved)
+    # No T-seeds present, so technique_tactics does not fire; no M seeds so
+    # tactic_technique_mitigations does not fire → falls through to tactic_techniques
+    assert draft.template == "tactic_techniques"
+
+
+# ---------------------------------------------------------------------------
+# 5. technique_tactics
+# ---------------------------------------------------------------------------
+
+
+def test_routing_technique_tactics(card):
+    """Tactic entity + T-seeds → technique_tactics template."""
+    task = SpecialistTask(
+        sub_question_id="q-ttac-1",
+        source="attack",
+        text="Which tactics contain T1059?",
+        entities=("Tactic", "Technique"),
+        limits=_LIMITS,
+        seed_ids=("T1059",),
+    )
+    resolved = _resolve(task)
+    builder = CypherQueryBuilder()
+    draft = builder.build(resolved)
+    assert draft.template == "technique_tactics"
+    result = _validate(draft)
+    assert result.ok, result.reasons
+
+
+def test_normalizer_technique_tactics(card):
+    """Rows with technique_id+in_tactic_id group by technique; related = tactic dicts."""
+    rows = [
+        {
+            "technique_id": "T1059",
+            "technique_name": "Command and Scripting Interpreter",
+            "in_tactic_id": "TA0002",
+            "in_tactic_name": "Execution",
+        },
+        {
+            "technique_id": "T1059",
+            "technique_name": "Command and Scripting Interpreter",
+            "in_tactic_id": "TA0011",
+            "in_tactic_name": "Command and Control",
+        },
+    ]
+    normalizer = CypherNormalizer()
+    task = SpecialistTask(
+        sub_question_id="q-ttac-n",
+        source="attack",
+        text="T1059 tactics",
+        entities=("Tactic", "Technique"),
+        limits=_LIMITS,
+        seed_ids=("T1059",),
+    )
+    resolved = _resolve(task)
+    records = normalizer.normalize(rows, resolved, "FAKE QUERY", card)
+    assert len(records) == 1
+    rec = records[0]
+    assert rec.primary_id == "T1059"
+    assert rec.label == "Technique"
+    assert rec.join_values == ("T1059",)
+    related_ids = {r["id"] for r in rec.related}
+    assert "TA0002" in related_ids
+    assert "TA0011" in related_ids
+
+
+# ---------------------------------------------------------------------------
+# 6. datacomponent_analytics
+# ---------------------------------------------------------------------------
+
+
+def test_routing_datacomponent_analytics(card):
+    """DataComponent + Analytic entities + DC-seed → datacomponent_analytics template."""
+    task = SpecialistTask(
+        sub_question_id="q-dca-1",
+        source="attack",
+        text="Analytics monitoring DC0001?",
+        entities=("DataComponent", "Analytic"),
+        limits=_LIMITS,
+        seed_ids=("DC0001",),
+    )
+    resolved = _resolve(task)
+    builder = CypherQueryBuilder()
+    draft = builder.build(resolved)
+    assert draft.template == "datacomponent_analytics"
+    result = _validate(draft)
+    assert result.ok, result.reasons
+
+
+def test_normalizer_datacomponent_analytics(card):
+    """Rows with datacomponent_id+analytic_id group by DC; no join_values."""
+    rows = [
+        {
+            "datacomponent_id": "DC0001",
+            "datacomponent_name": "Network Connection Creation",
+            "analytic_id": "AN0010",
+            "analytic_name": "Suspicious Outbound Connection",
+        },
+        {
+            "datacomponent_id": "DC0001",
+            "datacomponent_name": "Network Connection Creation",
+            "analytic_id": "AN0011",
+            "analytic_name": "Beacon Detection",
+        },
+    ]
+    normalizer = CypherNormalizer()
+    task = SpecialistTask(
+        sub_question_id="q-dca-n",
+        source="attack",
+        text="Analytics for DC0001",
+        entities=("DataComponent", "Analytic"),
+        limits=_LIMITS,
+        seed_ids=("DC0001",),
+    )
+    resolved = _resolve(task)
+    records = normalizer.normalize(rows, resolved, "FAKE QUERY", card)
+    assert len(records) == 1
+    rec = records[0]
+    assert rec.primary_id == "DC0001"
+    assert rec.label == "DataComponent"
+    assert rec.join_values == ()
+    related_ids = {r["id"] for r in rec.related}
+    assert "AN0010" in related_ids
+    assert "AN0011" in related_ids
+
+
+# ---------------------------------------------------------------------------
+# Non-regression: existing templates still route correctly
+# ---------------------------------------------------------------------------
+
+
+def test_nonregression_technique_mitigations_still_routes(card):
+    """entities=(Technique, Mitigation) with T seed → technique_mitigations."""
+    task = SpecialistTask(
+        sub_question_id="q-nr-tm",
+        source="attack",
+        text="What mitigates T1047?",
+        entities=("Technique", "Mitigation"),
+        limits=_LIMITS,
+        seed_ids=("T1047",),
+    )
+    resolved = _resolve(task)
+    builder = CypherQueryBuilder()
+    draft = builder.build(resolved)
+    assert draft.template == "technique_mitigations"
