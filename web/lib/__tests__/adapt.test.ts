@@ -481,6 +481,8 @@ describe("buildSynthesis: the verified answer view", () => {
     expect(claim.chips).toEqual([
       { id: "T1047", source: "attack/neo4j", accent: "teal", target: "lane-neo4j" },
     ]);
+    // entity_ids are carried through for the network plot's edge derivation.
+    expect(claim.entityIds).toEqual(["T1047", "M1038"]);
   });
 
   it("keeps cut claims visible in flagged with the verdict reasons", () => {

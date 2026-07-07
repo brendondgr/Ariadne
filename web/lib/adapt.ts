@@ -343,6 +343,7 @@ export function buildSynthesis(synthesis: ServerSynthesis | null | undefined): S
         target: `lane-${backend}`,
       };
     }),
+    entityIds: [...claim.entity_ids],
   }));
 
   const abstentions = synthesis.abstentions.map((a) => ({

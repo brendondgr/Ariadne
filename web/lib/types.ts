@@ -325,6 +325,10 @@ export interface SynthesisClaimView {
   kind: "fact" | "correlation";
   /** Citation chips — one per (source, primary_id) the claim cites. */
   chips: ProvenanceRef[];
+  /** The identifiers the sentence asserts (`entity_ids` on the backend claim).
+   *  Carried through even where the UI doesn't yet display them so the network
+   *  plot's edge-derivation has a stable id set to work from. */
+  entityIds: string[];
 }
 
 /** One honest abstention rendered in the answer card. */
