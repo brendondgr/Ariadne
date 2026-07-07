@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 // The FastAPI service the front end proxies to. app.py runs it on this port;
 // override with API_PORT (or API_ORIGIN for a fully-qualified host).
-const API_ORIGIN = process.env.API_ORIGIN ?? `http://127.0.0.1:${process.env.API_PORT ?? "8000"}`;
+const API_ORIGIN = process.env.API_ORIGIN ?? `http://127.0.0.1:${process.env.API_PORT ?? "16501"}`;
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,

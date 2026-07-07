@@ -15,7 +15,7 @@ is the default; ``--prod`` does a production ``next build`` then serves.
 
 Examples
 --------
-    python app.py                  # dev: API :8000 + web on http://localhost:3000
+    python app.py                  # dev: API :16501 + web on http://localhost:16500
     python app.py --port 4000      # web on a different port
     python app.py --api-port 8800  # API on a different port (proxy follows)
     python app.py --host 0.0.0.0   # expose the web app on the local network
@@ -39,8 +39,8 @@ logger = logging.getLogger("ariadne.app")
 
 ROOT = Path(__file__).resolve().parent
 WEB_DIR = ROOT / "web"
-DEFAULT_PORT = 3000
-DEFAULT_API_PORT = 8000
+DEFAULT_PORT = 16500
+DEFAULT_API_PORT = 16501
 
 
 def _find_npm() -> str:

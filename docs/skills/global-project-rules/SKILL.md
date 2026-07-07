@@ -60,7 +60,7 @@ uv run main.py --dataset attack --graph neo4j    # or gremlin | all | verify
 # Run
 uv run read-skills
 python app.py                 # web workbench: FastAPI api/ + Next.js web/ (--prod for production)
-cd web && npm run dev         # web app alone (expects the API on :8000)
+cd web && npm run dev         # web app alone (expects the API on :16501)
 
 # Build (required after webfront changes)
 cd web && npm run build
