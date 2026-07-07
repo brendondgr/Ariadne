@@ -12,6 +12,8 @@ import type {
   ApiConfig,
   ApiConfigUpdate,
   ApiHealth,
+  EvaluationReport,
+  EvalRunEvent,
   GraphDataset,
   GraphPayload,
   QueryEvent,
@@ -41,6 +43,10 @@ export function getConfig(signal?: AbortSignal): Promise<ApiConfig> {
 
 export function getGraph(dataset: GraphDataset, signal?: AbortSignal): Promise<GraphPayload> {
   return getJson<GraphPayload>(`/api/graph/${dataset}`, { signal });
+}
+
+export function getEvaluation(signal?: AbortSignal): Promise<EvaluationReport> {
+  return getJson<EvaluationReport>("/api/evaluation", { signal });
 }
 
 export function putConfig(update: ApiConfigUpdate, signal?: AbortSignal): Promise<ApiConfig> {
@@ -137,4 +143,19 @@ export function streamAdmin(
   signal?: AbortSignal,
 ): Promise<void> {
   return postSseStream("/api/admin", body, (frame) => onEvent(frame as AdminEvent), signal);
+}
+
+export interface EvalRunBody {
+  live: boolean;
+  judge: boolean;
+  limit?: number;
+}
+
+/** Re-run the end-to-end evaluation live, streaming its progress + done event. */
+export function streamEvalRun(
+  body: EvalRunBody,
+  onEvent: (event: EvalRunEvent) => void,
+  signal?: AbortSignal,
+): Promise<void> {
+  return postSseStream("/api/eval-run", body, (frame) => onEvent(frame as EvalRunEvent), signal);
 }

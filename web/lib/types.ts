@@ -470,7 +470,12 @@ export interface ApiLLMGroup {
 }
 
 export interface ApiConfig {
-  llm: { planner: ApiLLMGroup; specialist: ApiLLMGroup };
+  llm: {
+    planner: ApiLLMGroup;
+    specialist: ApiLLMGroup;
+    synthesis: ApiLLMGroup;
+    eval: ApiLLMGroup;
+  };
   connection: {
     neo4j_uri: string;
     neo4j_user: string;
@@ -483,6 +488,8 @@ export interface ApiConfig {
 export interface ApiConfigUpdate {
   planner?: Partial<Omit<ApiLLMGroup, never>>;
   specialist?: Partial<Omit<ApiLLMGroup, never>>;
+  synthesis?: Partial<Omit<ApiLLMGroup, never>>;
+  eval?: Partial<Omit<ApiLLMGroup, never>>;
   connection?: {
     neo4j_uri?: string;
     neo4j_user?: string;
@@ -490,6 +497,89 @@ export interface ApiConfigUpdate {
     gremlin_uri?: string;
   };
 }
+
+/* -------------------------------------------------------------------------- */
+/* Evaluation dashboard — mirrors utils/evaluation report JSON + SSE events.  */
+/* -------------------------------------------------------------------------- */
+
+/** A rate with a Wilson CI, as the report emits it. */
+export interface RateCI {
+  k: number;
+  n: number;
+  rate: number;
+  ci_low: number;
+  ci_high: number;
+}
+
+/** The `overall` block of the e2e report (utils/evaluation/score_e2e.aggregate). */
+export interface E2EOverall {
+  cross_source_accuracy: {
+    positives: number;
+    exact_match: RateCI;
+    mean_precision: number;
+    mean_recall: number;
+    mean_f1: number;
+    negatives: number;
+    no_fabrication_rate: RateCI;
+  };
+  mapping_recall: {
+    entries: number;
+    gold_mappings: number;
+    found_mappings: number;
+    micro_recall: number;
+    mean_recall: number;
+  };
+  provenance_correctness: {
+    answers: number;
+    mean_citation_provenance_rate: number;
+    fully_provenanced: RateCI;
+  };
+  analyst_inspectability: {
+    answers: number;
+    mean_inspectability: number;
+    mean_citation_coverage: number;
+    mean_traceability: number;
+    mean_abstention_proofs: number;
+  };
+  llm_judge: {
+    source: string;
+    llm_covered: number;
+    answers_scored: number;
+    mean_faithfulness: number;
+    mean_groundedness: number;
+    mean_evidence_sufficiency: number;
+    mean_unsupported_claim_rate: number;
+  };
+}
+
+export interface E2EReport {
+  live: boolean;
+  overall?: E2EOverall;
+  by_tier?: Record<string, E2EOverall>;
+  cases?: unknown[];
+}
+
+/** The full e2e report file (utils/evaluation/e2e_report.build_json). */
+export interface E2EReportFile {
+  meta: { attack_version: string; capec_version: string; generated_note: string };
+  definitions: Record<string, string>;
+  e2e: E2EReport;
+  diagnosis: string[];
+}
+
+/** `GET /api/evaluation` response. */
+export interface EvaluationReport {
+  component_available: boolean;
+  e2e_available: boolean;
+  component: Record<string, unknown> | null;
+  e2e: E2EReportFile | null;
+}
+
+/** SSE events streamed by `POST /api/eval-run`. */
+export type EvalRunEvent =
+  | { type: "status"; data: { message: string } }
+  | { type: "log"; data: { line: string; level: string } }
+  | { type: "done"; data: { ok: boolean; message: string; metrics?: Record<string, unknown> } };
 
 /** One live source as emitted by the `probe` SSE event (richer than ApiLiveSource). */
 export interface ProbeSource {

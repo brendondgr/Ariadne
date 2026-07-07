@@ -30,9 +30,9 @@ interface WorkbenchState extends RunMachine {
   settingsOpen: boolean;
   setSettingsOpen: (open: boolean) => void;
   openSettings: () => void;
-  /** App-wide view toggle: chat workbench or graphs explorer. */
-  view: "chat" | "graphs";
-  setView: (v: "chat" | "graphs") => void;
+  /** App-wide view toggle: chat workbench, graphs explorer, or evaluation. */
+  view: "chat" | "graphs" | "evaluation";
+  setView: (v: "chat" | "graphs" | "evaluation") => void;
   /** Active graph dataset selection. */
   graphDataset: GraphDataset;
   setGraphDataset: (d: GraphDataset) => void;
@@ -48,7 +48,7 @@ export function WorkbenchProvider({ children }: { children: ReactNode }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [leftOpen, setLeftOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [view, setView] = useState<"chat" | "graphs">("chat");
+  const [view, setView] = useState<"chat" | "graphs" | "evaluation">("chat");
   const [graphDataset, setGraphDataset] = useState<GraphDataset>("attack");
   const machine = useRunMachine();
 

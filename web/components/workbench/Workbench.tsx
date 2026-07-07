@@ -8,6 +8,7 @@ import { InspectorPanel } from "@/components/inspector/InspectorPanel";
 import { InspectorDrawer } from "@/components/inspector/InspectorDrawer";
 import { SettingsPanel } from "@/components/settings/SettingsPanel";
 import { GraphExplorer } from "@/components/graph/GraphExplorer";
+import { EvaluationDashboard } from "@/components/evaluation/EvaluationDashboard";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 import type { ConversationSummary } from "@/lib/types";
 
@@ -59,6 +60,8 @@ export function Workbench() {
         center={
           view === "graphs" ? (
             <GraphExplorer />
+          ) : view === "evaluation" ? (
+            <EvaluationDashboard />
           ) : (
             <ChatThread
               title={activeTitle}
@@ -72,7 +75,7 @@ export function Workbench() {
         }
         inspector={<InspectorPanel run={run} />}
         inspectorDrawer={<InspectorDrawer run={run} />}
-        hideRails={view === "graphs"}
+        hideRails={view === "graphs" || view === "evaluation"}
       />
       <SettingsPanel />
     </>

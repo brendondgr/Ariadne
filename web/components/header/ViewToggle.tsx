@@ -6,9 +6,10 @@ import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 const SEGMENTS = [
   { value: "chat", label: "Chat" },
   { value: "graphs", label: "Graphs" },
+  { value: "evaluation", label: "Evaluation" },
 ] as const;
 
-/** App-wide segmented view toggle: Chat | Graphs.
+/** App-wide segmented view toggle: Chat | Graphs | Evaluation.
  *
  *  Accessibility: role="radiogroup" container; each segment is a
  *  role="radio" button. ArrowLeft/ArrowRight move between segments.

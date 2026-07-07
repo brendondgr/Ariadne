@@ -1,14 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { ApiConfig, ApiConfigUpdate } from "@/lib/types";
+import type { ApiConfig, ApiConfigUpdate, ApiLLMGroup } from "@/lib/types";
 import { getConfig, putConfig } from "@/lib/api";
 import { SHADOW } from "@/lib/ui";
 import { CloseIcon } from "@/components/ui/icons";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 import { InfraActions } from "./InfraActions";
 
-type Agent = "planner" | "specialist";
+type Agent = "planner" | "specialist" | "synthesis" | "eval";
+
+const AGENTS: Agent[] = ["planner", "specialist", "synthesis", "eval"];
 
 interface GroupForm {
   enabled: boolean;
@@ -21,11 +23,13 @@ interface GroupForm {
 interface Form {
   planner: GroupForm;
   specialist: GroupForm;
+  synthesis: GroupForm;
+  eval: GroupForm;
   connection: { neo4j_uri: string; neo4j_user: string; neo4j_password: string; gremlin_uri: string };
 }
 
 function toForm(c: ApiConfig): Form {
-  const group = (g: ApiConfig["llm"]["planner"]): GroupForm => ({
+  const group = (g: ApiLLMGroup): GroupForm => ({
     enabled: g.enabled,
     base_url: g.base_url,
     model: g.model,
@@ -35,6 +39,8 @@ function toForm(c: ApiConfig): Form {
   return {
     planner: group(c.llm.planner),
     specialist: group(c.llm.specialist),
+    synthesis: group(c.llm.synthesis),
+    eval: group(c.llm.eval),
     connection: {
       neo4j_uri: c.connection.neo4j_uri,
       neo4j_user: c.connection.neo4j_user,
@@ -43,6 +49,14 @@ function toForm(c: ApiConfig): Form {
     },
   };
 }
+
+/** Human labels for the LLM sections (eval = the LLM-as-judge). */
+const AGENT_LABEL: Record<Agent, string> = {
+  planner: "planner",
+  specialist: "specialist",
+  synthesis: "synthesis",
+  eval: "evaluator (judge)",
+};
 
 const LABEL = "mb-1 block font-mono text-[10px] uppercase tracking-[0.08em] text-text-muted";
 const INPUT =
@@ -87,7 +101,7 @@ function LLMSection({
   return (
     <fieldset className="m-0 rounded-lg border-0 p-3.5" style={{ boxShadow: SHADOW.border }}>
       <legend className="flex items-center gap-2 px-1 font-mono text-[11px] uppercase tracking-[0.08em] text-text-soft">
-        {agent} LLM
+        {AGENT_LABEL[agent]} LLM
         <button
           type="button"
           role="switch"
@@ -182,6 +196,8 @@ export function SettingsPanel() {
     const update: ApiConfigUpdate = {
       planner: groupUpdate(form.planner),
       specialist: groupUpdate(form.specialist),
+      synthesis: groupUpdate(form.synthesis),
+      eval: groupUpdate(form.eval),
       connection: {
         neo4j_uri: form.connection.neo4j_uri,
         neo4j_user: form.connection.neo4j_user,
@@ -232,8 +248,14 @@ export function SettingsPanel() {
         <div className="flex flex-col gap-4 px-5 py-4">
           {form ? (
             <>
-              <LLMSection agent="planner" form={form.planner} onChange={(p) => patchGroup("planner", p)} />
-              <LLMSection agent="specialist" form={form.specialist} onChange={(p) => patchGroup("specialist", p)} />
+              {AGENTS.map((agent) => (
+                <LLMSection
+                  key={agent}
+                  agent={agent}
+                  form={form[agent]}
+                  onChange={(p) => patchGroup(agent, p)}
+                />
+              ))}
 
               <fieldset className="m-0 rounded-lg border-0 p-3.5" style={{ boxShadow: SHADOW.border }}>
                 <legend className="px-1 font-mono text-[11px] uppercase tracking-[0.08em] text-text-soft">
