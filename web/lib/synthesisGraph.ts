@@ -17,6 +17,7 @@
  */
 
 import type {
+  FederatedEvidence,
   GraphEdge,
   GraphNode,
   GraphPayload,
@@ -117,6 +118,58 @@ export function deriveEdges(
   return [...edges.values()];
 }
 
+/** Human-readable detail for one entity id, projected from the turn's federated
+ *  evidence. Lets the plot label nodes with real names and show their
+ *  properties (description, provenance, join values) in the inspector. */
+export interface EntityDetail {
+  name: string;
+  label: string;
+  properties: Record<string, unknown>;
+}
+
+/**
+ * Build an `id → EntityDetail` lookup from a turn's federated evidence.
+ *
+ * The rich source is every specialist record (`results[].records[]`), which
+ * carries the entity's `name`, `label`, and full `properties` (description,
+ * etc.). Join-index entries (`join_index[*]`) are a name-only fallback for the
+ * cross-source endpoints that never surfaced as a full record. Records win over
+ * join-index entries because they carry properties. No React, no canvas imports:
+ * unit-testable in isolation.
+ */
+export function buildEntityDetails(
+  federated: FederatedEvidence | null | undefined,
+): Map<string, EntityDetail> {
+  const details = new Map<string, EntityDetail>();
+  if (!federated) return details;
+
+  // Name-only fallback first, so full records overwrite it below.
+  for (const entries of Object.values(federated.join_index ?? {})) {
+    for (const entry of entries) {
+      if (entry.primary_id && !details.has(entry.primary_id)) {
+        details.set(entry.primary_id, {
+          name: entry.name || entry.primary_id,
+          label: "",
+          properties: {},
+        });
+      }
+    }
+  }
+
+  for (const result of federated.results ?? []) {
+    for (const rec of result.records) {
+      if (!rec.primary_id) continue;
+      details.set(rec.primary_id, {
+        name: rec.name || rec.primary_id,
+        label: rec.label ?? "",
+        properties: rec.properties ?? {},
+      });
+    }
+  }
+
+  return details;
+}
+
 function countByLabel(nodes: GraphNode[]): Record<string, number> {
   const out: Record<string, number> = {};
   for (const n of nodes) out[n.label] = (out[n.label] ?? 0) + 1;
@@ -131,6 +184,7 @@ function countByLabel(nodes: GraphNode[]): Record<string, number> {
 export function synthesisToGraphPayload(
   synthesis: SynthesisView,
   joinPairs: JoinPair[],
+  details?: Map<string, EntityDetail>,
 ): GraphPayload {
   const edges = deriveEdges(synthesis.claims, joinPairs, synthesis.edges);
 
@@ -146,8 +200,18 @@ export function synthesisToGraphPayload(
   }
 
   const nodes: GraphNode[] = [...ids].map((id) => {
+    // `label` (the palette key) always comes from the id's canonical prefix so
+    // the color legend stays stable; only the display name and properties are
+    // enriched from the evidence, when present.
     const { label } = classifyEntity(id);
-    return { id, label, labels: [label], name: id, properties: {} };
+    const detail = details?.get(id);
+    return {
+      id,
+      label,
+      labels: [label],
+      name: detail?.name || id,
+      properties: detail?.properties ?? {},
+    };
   });
 
   return {
