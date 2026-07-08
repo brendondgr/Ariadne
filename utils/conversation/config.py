@@ -11,7 +11,7 @@ keeping LLM-off builds reproducible.
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 from utils.config import data_dir, env_bool, env_int, env_str
@@ -68,11 +68,24 @@ class ConversationLLMConfig:
 
     @classmethod
     def from_env(cls) -> "ConversationLLMConfig":
+        # Inherit the endpoint/model the operator already configured for the
+        # pipeline (the synthesis LLM group) so the conversation layer uses the
+        # same single LLM without a second round of setup. ``CONVERSATION_LLM_*``
+        # still overrides when an operator wants a distinct endpoint.
         return cls(
             enabled=env_bool("CONVERSATION_LLM_ENABLED", False),
-            base_url=env_str("CONVERSATION_LLM_BASE_URL", DEFAULT_LLM_BASE_URL),
-            model=env_str("CONVERSATION_LLM_MODEL", DEFAULT_LLM_MODEL),
-            timeout_s=_env_float("CONVERSATION_LLM_TIMEOUT_S", 30.0),
+            base_url=env_str(
+                "CONVERSATION_LLM_BASE_URL",
+                env_str("SYNTHESIS_LLM_BASE_URL", DEFAULT_LLM_BASE_URL),
+            ),
+            model=env_str(
+                "CONVERSATION_LLM_MODEL",
+                env_str("SYNTHESIS_LLM_MODEL", DEFAULT_LLM_MODEL),
+            ),
+            timeout_s=_env_float(
+                "CONVERSATION_LLM_TIMEOUT_S",
+                _env_float("SYNTHESIS_LLM_TIMEOUT_S", 30.0),
+            ),
             max_tokens=env_int("CONVERSATION_LLM_MAX_TOKENS", 1024),
         )
 
@@ -102,3 +115,16 @@ class ConversationConfig:
             history_turns=env_int("CONVERSATION_HISTORY_TURNS", 12),
             db_path=str(conversation_db_path()),
         )
+
+    def with_llm_enabled(self, enabled: bool) -> "ConversationConfig":
+        """Return a copy with the conversation LLM turned on when ``enabled``.
+
+        The workbench's drafter toggle (``drafter == "llm"``) drives the whole
+        agentic flow: when a turn uses the LLM, the orchestration (reference
+        resolution), router (quick-vs-graph), and answer agents use it too —
+        reusing the inherited endpoint. An explicit ``CONVERSATION_LLM_ENABLED``
+        stays on regardless. Deterministic turns keep the reproducible path.
+        """
+        if enabled and not self.llm.enabled:
+            return replace(self, llm=replace(self.llm, enabled=True))
+        return self

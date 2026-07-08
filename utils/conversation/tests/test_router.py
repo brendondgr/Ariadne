@@ -78,6 +78,33 @@ def test_llm_error_defaults_to_graph():
     assert route == ROUTE_GRAPH
 
 
+def test_fenced_json_reply_parses():
+    reply = '```json\n{"route": "quick", "reason": "recall"}\n```'
+    route, reason = classify_route("q", [], _cfg(), _StubLLM(reply))
+    assert route == ROUTE_QUICK
+    assert reason == "recall"
+
+
+def test_lenient_prose_reply_picks_single_keyword():
+    route, _ = classify_route("q", [], _cfg(), _StubLLM("I think this should be quick."))
+    assert route == ROUTE_QUICK
+    route, _ = classify_route("q", [], _cfg(), _StubLLM("This needs the graph."))
+    assert route == ROUTE_GRAPH
+
+
+def test_ambiguous_prose_defaults_to_graph():
+    # Mentions both words with no JSON -> cannot decide -> safe default.
+    route, _ = classify_route(
+        "q", [], _cfg(), _StubLLM("could be quick or need the graph")
+    )
+    assert route == ROUTE_GRAPH
+
+
+def test_llm_error_reason_names_the_error():
+    _, reason = classify_route("q", [], _cfg(), _StubLLM(fail=True))
+    assert "error" in reason.lower()
+
+
 def test_router_node_writes_state_and_trace():
     node = make_router_node(_cfg(), _StubLLM('{"route": "quick", "reason": "r"}'))
     out = node({"question": "hi", "resolved_question": "hi", "history": []})

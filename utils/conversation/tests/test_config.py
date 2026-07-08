@@ -64,3 +64,29 @@ def test_db_path_defaults_under_data_dir(monkeypatch):
 def test_llm_config_endpoint_strips_trailing_slash():
     cfg = ConversationLLMConfig(base_url="http://host:1/v1/")
     assert cfg.endpoint == "http://host:1/v1/chat/completions"
+
+
+def test_llm_config_inherits_synthesis_endpoint(monkeypatch):
+    monkeypatch.delenv("CONVERSATION_LLM_BASE_URL", raising=False)
+    monkeypatch.delenv("CONVERSATION_LLM_MODEL", raising=False)
+    monkeypatch.setenv("SYNTHESIS_LLM_BASE_URL", "http://my-llm:9000/v1")
+    monkeypatch.setenv("SYNTHESIS_LLM_MODEL", "synthesis-model")
+    cfg = ConversationLLMConfig.from_env()
+    assert cfg.base_url == "http://my-llm:9000/v1"
+    assert cfg.model == "synthesis-model"
+
+
+def test_conversation_base_url_override_beats_synthesis(monkeypatch):
+    monkeypatch.setenv("CONVERSATION_LLM_BASE_URL", "http://own:1/v1")
+    monkeypatch.setenv("SYNTHESIS_LLM_BASE_URL", "http://synth:2/v1")
+    assert ConversationLLMConfig.from_env().base_url == "http://own:1/v1"
+
+
+def test_with_llm_enabled_turns_on_when_drafter_is_llm():
+    cfg = ConversationConfig(llm=ConversationLLMConfig(enabled=False))
+    assert cfg.with_llm_enabled(True).llm.enabled is True
+    # Deterministic turns stay deterministic.
+    assert cfg.with_llm_enabled(False).llm.enabled is False
+    # Explicitly-enabled config is unchanged (and returns as-is).
+    on = ConversationConfig(llm=ConversationLLMConfig(enabled=True))
+    assert on.with_llm_enabled(False).llm.enabled is True
