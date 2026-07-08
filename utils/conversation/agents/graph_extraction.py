@@ -66,6 +66,10 @@ def _stream_forward() -> Callable[[str, dict[str, Any]], None] | None:
         return None
 
     def forward(event: str, payload: dict[str, Any]) -> None:
+        # The pipeline's terminal `done` is suppressed: the conversation graph
+        # emits its own terminal `done` after the Answer/finalize nodes.
+        if event == "done":
+            return
         writer((event, payload))
 
     return forward

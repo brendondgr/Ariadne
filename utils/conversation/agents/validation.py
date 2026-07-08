@@ -19,7 +19,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from utils.conversation.agents._common import extract_json_object
+from utils.conversation.agents._common import emit_event, extract_json_object
 from utils.conversation.config import ConversationConfig
 from utils.conversation.llm import ConversationLLM, LLMUnavailable
 from utils.synthesis.contracts import SynthesizedAnswer
@@ -95,10 +95,23 @@ def make_validation_node(
 
         # Hard cap: after this many attempts, always accept and move on.
         if attempts >= config.max_validation_iters:
+            reason = "retry cap reached — accepting best evidence"
+            emit_event(
+                (
+                    "validation",
+                    {
+                        "verdict": VERDICT_PASS,
+                        "reason": reason,
+                        "missing": [],
+                        "iteration": attempts,
+                        "capped": True,
+                    },
+                )
+            )
             return {
                 "validation_iterations": attempts,
                 "validation_verdict": VERDICT_PASS,
-                "validation_reason": "retry cap reached — accepting best evidence",
+                "validation_reason": reason,
                 "validation_missing": [],
                 "trace": [
                     {"node": "validation", "verdict": VERDICT_PASS, "capped": True}
@@ -107,6 +120,18 @@ def make_validation_node(
 
         verdict, reason, missing = evaluate_sufficiency(
             question, state.get("answer"), config, client
+        )
+        emit_event(
+            (
+                "validation",
+                {
+                    "verdict": verdict,
+                    "reason": reason,
+                    "missing": missing,
+                    "iteration": attempts,
+                    "capped": False,
+                },
+            )
         )
         out: dict[str, Any] = {
             "validation_iterations": attempts,

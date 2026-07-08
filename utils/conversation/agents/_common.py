@@ -7,6 +7,20 @@ import json
 from typing import Any
 
 
+def emit_event(chunk: tuple[str, dict[str, Any]]) -> None:
+    """Emit a custom stream event when running inside a LangGraph stream.
+
+    A no-op when called outside a graph run (e.g. unit tests invoking a node
+    directly), so nodes stay directly callable.
+    """
+    try:
+        from langgraph.config import get_stream_writer
+
+        get_stream_writer()(chunk)
+    except (ImportError, RuntimeError):
+        pass
+
+
 def recent_history(
     history: list[dict[str, Any]] | None, limit: int
 ) -> list[dict[str, Any]]:

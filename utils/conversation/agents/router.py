@@ -15,6 +15,7 @@ from __future__ import annotations
 from typing import Any
 
 from utils.conversation.agents._common import (
+    emit_event,
     known_facts,
     render_history_messages,
 )
@@ -99,6 +100,7 @@ def make_router_node(
         route, reason = classify_route(
             question, state.get("history"), config, client
         )
+        emit_event(("route", {"decision": route, "reason": reason}))
         return {
             "route": route,
             "route_reason": reason,

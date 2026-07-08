@@ -20,6 +20,7 @@ from __future__ import annotations
 from typing import Any
 
 from utils.conversation.agents._common import (
+    emit_event,
     known_facts,
     render_history_messages,
 )
@@ -140,6 +141,7 @@ def make_answer_node(
             "composer": composer,
             "grounded": bool(_grounded_text(answer)) or state.get("route") == ROUTE_QUICK,
         }
+        emit_event(("final", final))
         return {
             "final_answer": final_answer,
             "final": final,
