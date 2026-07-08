@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  ALL_SEARCH_FIELDS,
   LABEL_PALETTE,
   labelColor,
   edgeTypeColorMap,
+  expandByHops,
   hexToRgba,
   nodeMatchesQuery,
   toForceGraphData,
@@ -375,5 +377,164 @@ describe("toForceGraphData — search query", () => {
     const { nodes, links } = toForceGraphData(makePayload(), { query: "zzz-nomatch" });
     expect(nodes).toHaveLength(0);
     expect(links).toHaveLength(0);
+  });
+});
+
+/* -------------------------------------------------------------------------- */
+/* Field-scoped search                                                         */
+/* -------------------------------------------------------------------------- */
+
+describe("nodeMatchesQuery — field scoping", () => {
+  const node = {
+    id: "attack-pattern--abc",
+    label: "Technique",
+    labels: ["Technique"],
+    name: "Scheduled Task",
+    properties: { description: "Adversaries may abuse the Windows Task Scheduler." },
+  };
+
+  it("undefined and empty field sets behave like all fields", () => {
+    expect(nodeMatchesQuery(node, "scheduled", undefined)).toBe(true);
+    expect(nodeMatchesQuery(node, "scheduled", [])).toBe(true);
+    expect(nodeMatchesQuery(node, "scheduled", ALL_SEARCH_FIELDS)).toBe(true);
+  });
+
+  it("name-only scope matches the name but not id/description/label", () => {
+    expect(nodeMatchesQuery(node, "scheduled", ["name"])).toBe(true);
+    expect(nodeMatchesQuery(node, "attack-pattern", ["name"])).toBe(false);
+    expect(nodeMatchesQuery(node, "adversaries", ["name"])).toBe(false);
+    expect(nodeMatchesQuery(node, "technique", ["name"])).toBe(false);
+  });
+
+  it("id-only scope matches only the id", () => {
+    expect(nodeMatchesQuery(node, "attack-pattern", ["id"])).toBe(true);
+    expect(nodeMatchesQuery(node, "scheduled", ["id"])).toBe(false);
+  });
+
+  it("description-only scope matches only the description", () => {
+    expect(nodeMatchesQuery(node, "adversaries", ["description"])).toBe(true);
+    expect(nodeMatchesQuery(node, "scheduled", ["description"])).toBe(false);
+  });
+
+  it("label-only scope matches only the labels", () => {
+    expect(nodeMatchesQuery(node, "technique", ["label"])).toBe(true);
+    expect(nodeMatchesQuery(node, "scheduled", ["label"])).toBe(false);
+  });
+
+  it("the type field alone never matches a node", () => {
+    expect(nodeMatchesQuery(node, "scheduled", ["type"])).toBe(false);
+  });
+});
+
+describe("toForceGraphData — field scoping", () => {
+  it("excluding the type field disables edge-type seeding", () => {
+    const { nodes } = toForceGraphData(makePayload(), {
+      query: "attributed",
+      fields: ["name", "id", "description", "label"],
+    });
+    expect(nodes).toHaveLength(0);
+  });
+
+  it("type-only scope shows a matched edge's endpoints and nothing else", () => {
+    const { nodes, links } = toForceGraphData(makePayload(), {
+      query: "attributed",
+      fields: ["type"],
+    });
+    expect(new Set(nodes.map((n) => n.id))).toEqual(new Set(["n1", "n2", "n4"]));
+    expect(links.every((l) => l.type === "ATTRIBUTED_TO")).toBe(true);
+  });
+
+  it("name-only scope ignores id matches", () => {
+    const byName = toForceGraphData(makePayload(), { query: "mal", fields: ["name"] });
+    expect(byName.nodes.map((n) => n.id)).toEqual(["n3"]);
+    const byId = toForceGraphData(makePayload(), { query: "n1", fields: ["name"] });
+    expect(byId.nodes).toHaveLength(0);
+  });
+});
+
+/* -------------------------------------------------------------------------- */
+/* Hop expansion                                                               */
+/* -------------------------------------------------------------------------- */
+
+describe("expandByHops", () => {
+  const edges = makePayload().edges;
+  const allowAll = () => true;
+
+  it("hops = 0 returns the seeds unchanged", () => {
+    const out = expandByHops(new Set(["n3"]), edges, 0, allowAll, allowAll);
+    expect(out).toEqual(new Set(["n3"]));
+  });
+
+  it("expands one hop over undirected edges", () => {
+    const out = expandByHops(new Set(["n3"]), edges, 1, allowAll, allowAll);
+    expect(out).toEqual(new Set(["n3", "n1", "n2"]));
+  });
+
+  it("expands two hops transitively", () => {
+    const out = expandByHops(new Set(["n3"]), edges, 2, allowAll, allowAll);
+    expect(out).toEqual(new Set(["n3", "n1", "n2", "n4"]));
+  });
+
+  it("never crosses a disallowed edge type", () => {
+    const out = expandByHops(
+      new Set(["n3"]), edges, 3, allowAll, (type) => type !== "USES",
+    );
+    expect(out).toEqual(new Set(["n3"]));
+  });
+
+  it("never reveals a disallowed node but can pass beyond seeds it already holds", () => {
+    const out = expandByHops(
+      new Set(["n3"]), edges, 2, (id) => id !== "n1", allowAll,
+    );
+    // n1 blocked; n2 reached hop 1, n4 reached hop 2 via n2.
+    expect(out).toEqual(new Set(["n3", "n2", "n4"]));
+  });
+
+  it("empty seeds stay empty", () => {
+    const out = expandByHops(new Set(), edges, 3, allowAll, allowAll);
+    expect(out.size).toBe(0);
+  });
+});
+
+describe("toForceGraphData — hops neighborhood", () => {
+  it("hops = 0 (default) keeps only the matches", () => {
+    const { nodes } = toForceGraphData(makePayload(), { query: "mal" });
+    expect(nodes.map((n) => n.id)).toEqual(["n3"]);
+  });
+
+  it("hops = 1 shows the match plus direct neighbors and connecting edges", () => {
+    const { nodes, links } = toForceGraphData(makePayload(), { query: "mal", hops: 1 });
+    expect(new Set(nodes.map((n) => n.id))).toEqual(new Set(["n1", "n2", "n3"]));
+    expect(new Set(links.map((l) => l.id))).toEqual(new Set(["e1", "e2"]));
+  });
+
+  it("hops = 2 reaches the whole component", () => {
+    const { nodes, links } = toForceGraphData(makePayload(), { query: "mal", hops: 2 });
+    expect(nodes).toHaveLength(4);
+    expect(links).toHaveLength(4);
+  });
+
+  it("hops never traverses hidden edge types", () => {
+    const { nodes } = toForceGraphData(makePayload(), {
+      query: "mal",
+      hops: 2,
+      hiddenTypes: new Set(["USES"]),
+    });
+    expect(nodes.map((n) => n.id)).toEqual(["n3"]);
+  });
+
+  it("hops never reveals hidden-label nodes", () => {
+    const { nodes } = toForceGraphData(makePayload(), {
+      query: "mal",
+      hops: 1,
+      hiddenLabels: new Set(["Technique"]),
+    });
+    expect(nodes.map((n) => n.id)).toEqual(["n3"]);
+  });
+
+  it("hops without a query leaves the graph unchanged", () => {
+    const { nodes, links } = toForceGraphData(makePayload(), { hops: 3 });
+    expect(nodes).toHaveLength(4);
+    expect(links).toHaveLength(4);
   });
 });

@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { GraphPayload } from "@/lib/types";
-import type { FGNode, FGLink } from "@/lib/graph";
-import { toForceGraphData } from "@/lib/graph";
+import type { FGNode, FGLink, SearchField } from "@/lib/graph";
+import { ALL_SEARCH_FIELDS, toForceGraphData } from "@/lib/graph";
 import { getGraph } from "@/lib/api";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 import { GraphSecondaryNav } from "./GraphSecondaryNav";
@@ -20,6 +20,10 @@ interface DatasetFilters {
   selected: SelectedElement;
   /** Committed free-text search query. */
   query: string;
+  /** Neighborhood reach around matches, in jumps (0 = matches only). */
+  hops: number;
+  /** Which fields the query matches against. */
+  fields: Set<SearchField>;
 }
 
 const EMPTY_FILTERS: DatasetFilters = {
@@ -27,6 +31,8 @@ const EMPTY_FILTERS: DatasetFilters = {
   hiddenTypes: new Set(),
   selected: null,
   query: "",
+  hops: 0,
+  fields: new Set(ALL_SEARCH_FIELDS),
 };
 
 /**
@@ -49,7 +55,7 @@ export function GraphExplorer() {
   >({});
 
   const filters = filtersByDataset[graphDataset] ?? EMPTY_FILTERS;
-  const { hiddenLabels, hiddenTypes, selected, query } = filters;
+  const { hiddenLabels, hiddenTypes, selected, query, hops, fields } = filters;
 
   // Track the abort controller so cleanup/dataset-change aborts in-flight fetch
   const abortRef = useRef<AbortController | null>(null);
@@ -103,9 +109,9 @@ export function GraphExplorer() {
   const fgData = useMemo(
     () =>
       payload
-        ? toForceGraphData(payload, { hiddenLabels, hiddenTypes, query })
+        ? toForceGraphData(payload, { hiddenLabels, hiddenTypes, query, hops, fields })
         : null,
-    [payload, hiddenLabels, hiddenTypes, query],
+    [payload, hiddenLabels, hiddenTypes, query, hops, fields],
   );
 
   // Filter callbacks (stable references)
@@ -166,6 +172,20 @@ export function GraphExplorer() {
     [updateFilters],
   );
 
+  const handleHopsChange = useCallback(
+    (h: number) => {
+      updateFilters({ hops: h });
+    },
+    [updateFilters],
+  );
+
+  const handleFieldsChange = useCallback(
+    (f: Set<SearchField>) => {
+      updateFilters({ fields: f });
+    },
+    [updateFilters],
+  );
+
   const datasetLabel = graphDataset === "attack" ? "ATT&CK" : "CAPEC";
 
   // Visible counts (after filtering)
@@ -183,13 +203,18 @@ export function GraphExplorer() {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       {/* Secondary nav — dataset switcher */}
-      <GraphSecondaryNav counts={payload?.counts ?? null} />
+      <GraphSecondaryNav />
 
-      {/* Search bar — filters the graph by node title/description + edge type */}
+      {/* Toolbar line — jumps, field scope, search, and node/edge counts */}
       <GraphSearchBar
         key={graphDataset}
         value={query}
         onSearch={handleSearch}
+        hops={hops}
+        onHopsChange={handleHopsChange}
+        fields={fields}
+        onFieldsChange={handleFieldsChange}
+        counts={payload?.counts ?? null}
         disabled={!payload}
       />
 
