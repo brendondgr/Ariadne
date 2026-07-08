@@ -22,9 +22,12 @@ const ACCENT_TEXT: Record<string, string> = {
 export function LiveTicker({
   events,
   streaming,
+  alwaysOpen = false,
 }: {
   events: StampedQueryEvent[];
   streaming: boolean;
+  /** Render the expanded log without the collapse affordance (e.g. in a tab). */
+  alwaysOpen?: boolean;
 }) {
   const lines = tickerLines(events);
   const [open, setOpen] = useState(false);
@@ -42,7 +45,7 @@ export function LiveTicker({
 
   const total = lines[lines.length - 1]?.time ?? "";
 
-  if (!streaming && !open) {
+  if (!alwaysOpen && !streaming && !open) {
     return (
       <button
         type="button"
@@ -57,7 +60,7 @@ export function LiveTicker({
 
   return (
     <div className="mb-2.5 rounded-[9px] bg-bg/60 px-3 py-2.5" style={{ boxShadow: "rgba(235, 230, 220, 0.08) 0px 0px 0px 1px" }}>
-      {!streaming && (
+      {!streaming && !alwaysOpen && (
         <button
           type="button"
           onClick={() => setOpen(false)}

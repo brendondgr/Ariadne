@@ -48,6 +48,12 @@ export const ACCENT: Record<Accent, AccentTokens> = {
   },
 };
 
+/** Milliseconds → a compact seconds label: `26.2s`, `1.3s`, `0.05s`. */
+export function formatSeconds(ms: number): string {
+  const s = ms / 1000;
+  return `${s >= 1 ? s.toFixed(1) : s.toFixed(2)}s`;
+}
+
 /** Map a {@link StageStatus} to its display accent. */
 export function statusAccent(
   status: "pending" | "running" | "pass" | "partial" | "fail",

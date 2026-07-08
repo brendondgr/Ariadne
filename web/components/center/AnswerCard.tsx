@@ -2,19 +2,20 @@
 
 import { Fragment, useState } from "react";
 import { motion } from "motion/react";
-import type { AnswerParagraph, SynthesisView, WorkbenchRun, StampedQueryEvent } from "@/lib/types";
-import { SHADOW } from "@/lib/ui";
+import type { AnswerParagraph, SynthesisView, WorkbenchRun } from "@/lib/types";
+import { SHADOW, formatSeconds } from "@/lib/ui";
 import { fadeSlideUp } from "@/lib/motion";
 import { CheckIcon, CopyIcon, ExportIcon, LinkIcon } from "@/components/ui/icons";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 import { MiniStepper } from "./MiniStepper";
 import { LiveTicker } from "./LiveTicker";
+import { LiveAnswerStatus } from "./LiveAnswerStatus";
 import { currentPhaseMessage } from "@/lib/ticker";
 import { ProvenanceChip } from "./ProvenanceChip";
 import { JoinChip } from "./JoinChip";
-import { ClaimTable } from "./ClaimTable";
-import { AnswerNetworkPlot } from "./AnswerNetworkPlot";
-import { CollapsibleSection } from "./CollapsibleSection";
+import { ClaimTableBody } from "./ClaimTable";
+import { NetworkPlotBody, networkPlotMeta } from "./AnswerNetworkPlot";
+import { SectionTabs, type TabDef } from "./SectionTabs";
 
 function Paragraph({ paragraph }: { paragraph: AnswerParagraph }) {
   return (
@@ -58,16 +59,17 @@ function VerificationPill({ synthesis }: { synthesis: SynthesisView }) {
   );
 }
 
-/** The Step 6/7 trust surface: verified claims with citations, honest
- *  abstentions with their proof (the executed query — or the named schema
- *  boundary when no query could express the question), and the audit trail of
- *  claims the verifier cut. */
-function SynthesisBlock({ synthesis }: { synthesis: SynthesisView }) {
+/** The Verified Answers tab body: the verification pill, verified claims with
+ *  citations, honest abstentions with their proof (the executed query — or the
+ *  named schema boundary when no query could express the question), and the
+ *  audit trail of claims the verifier cut. */
+function SynthesisBody({ synthesis }: { synthesis: SynthesisView }) {
   return (
-    <CollapsibleSection
-      label="Verified answer"
-      accessory={<VerificationPill synthesis={synthesis} />}
-    >
+    <div>
+      <div className="mb-2.5">
+        <VerificationPill synthesis={synthesis} />
+      </div>
+
       {synthesis.claims.map((claim, i) => (
         <p key={`claim-${i}`} className="m-0 mb-2 text-[13px] leading-[1.6] text-text-soft">
           <span className="mr-1.5 font-mono text-[10px] uppercase tracking-[0.06em] text-text-muted">
@@ -140,28 +142,32 @@ function SynthesisBlock({ synthesis }: { synthesis: SynthesisView }) {
           composer: {synthesis.composer} — {synthesis.fallbackReason}
         </p>
       )}
-    </CollapsibleSection>
+    </div>
   );
 }
 
-/** Skeleton shown while the run streams, before the answer stage completes. */
-function AnswerSkeleton({ events = [] }: { events?: StampedQueryEvent[] }) {
+/** The Evidence tab body: the per-source "Found …" prose plus the cross-source
+ *  join candidates. */
+function EvidenceBody({ run }: { run: WorkbenchRun }) {
   return (
-    <div
-      className="max-w-[92%] rounded-[4px_13px_13px_13px] bg-surface px-[18px] py-5"
-      style={{ boxShadow: SHADOW.border }}
-    >
-      <div className="mb-4 font-mono text-[11px] uppercase tracking-[0.08em] text-text-muted">
-        Probing sources · running specialists…
+    <div>
+      <div className="text-sm leading-[1.62] text-text-soft">
+        {run.answer.paragraphs.map((p, i) => (
+          <Paragraph key={i} paragraph={p} />
+        ))}
       </div>
-      <div className="flex flex-col gap-2.5">
-        <div className="animate-skel h-3 w-[92%] rounded bg-[rgba(235,230,220,0.08)]" />
-        <div className="animate-skel h-3 w-[78%] rounded bg-[rgba(235,230,220,0.08)]" />
-        <div className="animate-skel h-3 w-[85%] rounded bg-[rgba(235,230,220,0.08)]" />
-      </div>
-      <div className="mt-4">
-        <LiveTicker events={events} streaming />
-      </div>
+      {run.answer.joinPairs.length > 0 && (
+        <div className="mt-3">
+          <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.08em] text-text-muted">
+            Cross-source join candidates
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {run.answer.joinPairs.map((pair, i) => (
+              <JoinChip key={i} pair={pair} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -181,8 +187,10 @@ function AnswerError({ message }: { message: string }) {
   );
 }
 
-/** The structured assistant turn: status stepper, grounded prose with inline
- *  provenance chips, and a footer of join candidates + evidence actions.
+/** The structured assistant turn: status stepper, the natural-language answer (or
+ *  a live "what it's doing" status while streaming), tabbed detail containers
+ *  that appear as information is extracted, and a footer of actions + per-stage
+ *  timings.
  *
  *  `live` is true only for the turn currently streaming; past turns render
  *  statically from their own baked status so they don't react to the global
@@ -193,8 +201,8 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
   const [exported, setExported] = useState(false);
   const cardReplaying = live && replaying;
   const answered = live ? statusOf("answer", "pass") === "pass" : run.status !== "running";
+  const working = live && !answered;
 
-  if (cardReplaying && !answered) return <AnswerSkeleton events={run.events} />;
   if (error && live && !replaying) return <AnswerError message={error} />;
 
   const openRawJson = () => {
@@ -226,6 +234,50 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
     window.setTimeout(() => setExported(false), 1600);
   };
 
+  // Tabs appear only as their data becomes available (progressive disclosure).
+  const syn = run.answer.synthesis;
+  const net = syn ? networkPlotMeta(syn, run.answer.joinPairs) : null;
+  const tabs: TabDef[] = [];
+  if (run.answer.paragraphs.length > 0) {
+    tabs.push({
+      id: "evidence",
+      label: "Evidence",
+      badge: run.answer.paragraphs.length,
+      content: <EvidenceBody run={run} />,
+    });
+  }
+  if (syn) {
+    tabs.push({
+      id: "verified",
+      label: "Verified Answers",
+      badge: syn.verification ? `${syn.verification.supported}/${syn.verification.total}` : undefined,
+      content: <SynthesisBody synthesis={syn} />,
+    });
+  }
+  if (syn && syn.claims.length > 0) {
+    tabs.push({
+      id: "claim",
+      label: "Claim Table",
+      badge: syn.claims.length,
+      content: <ClaimTableBody synthesis={syn} />,
+    });
+  }
+  if (syn && net?.renderable) {
+    tabs.push({
+      id: "network",
+      label: "Network Plot",
+      badge: net.nodeCount,
+      content: <NetworkPlotBody synthesis={syn} joinPairs={run.answer.joinPairs} />,
+    });
+  }
+  if (run.events.length > 0) {
+    tabs.push({
+      id: "logs",
+      label: "Logs",
+      content: <LiveTicker events={run.events} streaming={cardReplaying} alwaysOpen />,
+    });
+  }
+
   return (
     <motion.div
       variants={fadeSlideUp}
@@ -243,69 +295,37 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
         createdAt={run.createdAt}
       />
 
-      {run.answer.synthesis ? (
-        <>
-          {/* The natural-language final answer — always open, read first. */}
-          <div className="px-[18px] pb-4 pt-[18px]">
+      {/* The answer surface: live status while working, else the final answer. */}
+      <div className="px-[18px] pb-4 pt-[18px]">
+        {working ? (
+          <LiveAnswerStatus events={run.events} createdAt={run.createdAt} />
+        ) : syn ? (
+          <>
             <div className="mb-[9px] font-mono text-[10px] uppercase tracking-[0.08em] text-text-muted">
               Final answer
             </div>
             <p className="m-0 text-sm leading-[1.62] text-text-soft">
-              {run.answer.synthesis.narrative || run.answer.synthesis.headline}
+              {syn.narrative || syn.headline}
             </p>
-          </div>
-
-          {/* The per-source "Found …" evidence — collapsed by default. */}
-          {run.answer.paragraphs.length > 0 && (
-            <CollapsibleSection label="Retrieved evidence" count={run.answer.paragraphs.length}>
-              <div className="text-sm leading-[1.62] text-text-soft">
-                {run.answer.paragraphs.map((p, i) => (
-                  <Paragraph key={i} paragraph={p} />
-                ))}
-              </div>
-            </CollapsibleSection>
-          )}
-
-          <SynthesisBlock synthesis={run.answer.synthesis} />
-          <ClaimTable synthesis={run.answer.synthesis} />
-          <AnswerNetworkPlot synthesis={run.answer.synthesis} joinPairs={run.answer.joinPairs} />
-        </>
-      ) : (
-        /* Plan-mode / pre-synthesis payloads carry no narrative — show prose directly. */
-        <div className="px-[18px] pb-4 pt-[18px] text-sm leading-[1.62] text-text-soft">
-          {run.answer.paragraphs.map((p, i) => (
-            <Paragraph key={i} paragraph={p} />
-          ))}
-        </div>
-      )}
-
-      {run.events.length > 0 && (
-        <div className="px-[18px] pb-1">
-          <LiveTicker events={run.events} streaming={cardReplaying} />
-        </div>
-      )}
-
-      {run.answer.timings && (
-        <div className="px-[18px] pb-2.5">
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10.5px] text-text-muted">
-            {run.answer.timings.map((t, i) => (
-              <span key={i}>
-                {t.label} <span className="text-text-soft">{Math.round(t.ms)}ms</span>
-              </span>
+          </>
+        ) : (
+          <div className="text-sm leading-[1.62] text-text-soft">
+            {run.answer.paragraphs.map((p, i) => (
+              <Paragraph key={i} paragraph={p} />
             ))}
           </div>
-        </div>
+        )}
+      </div>
+
+      {tabs.length > 0 && (
+        <SectionTabs tabs={tabs} preferredId="network" streamingFallbackId="logs" />
       )}
 
-      <div className="px-[18px] py-[13px]" style={{ boxShadow: SHADOW.insetBottom }}>
-        <div className="mb-[9px] font-mono text-[10px] uppercase tracking-[0.08em] text-text-muted">
-          Cross-source join candidates
-        </div>
-        <div className="mb-3.5 flex flex-wrap gap-2">
-          {run.answer.joinPairs.map((pair, i) => (
-            <JoinChip key={i} pair={pair} />
-          ))}
-        </div>
+      {/* Footer: actions on the left, per-stage timings (seconds) on the right. */}
+      <div
+        className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-[18px] py-[13px]"
+        style={{ boxShadow: SHADOW.insetTop }}
+      >
         <div className="flex items-center gap-3.5">
           <button
             type="button"
@@ -336,6 +356,16 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
             {exported ? "Exported" : "Export"}
           </button>
         </div>
+
+        {run.answer.timings && (
+          <div className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1 font-mono text-[10.5px] text-text-muted">
+            {run.answer.timings.map((t, i) => (
+              <span key={i}>
+                {t.label} <span className="text-text-soft">{formatSeconds(t.ms)}</span>
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </motion.div>
   );

@@ -3,24 +3,23 @@
 import type { SynthesisView } from "@/lib/types";
 import { SHADOW } from "@/lib/ui";
 import { ProvenanceChip } from "./ProvenanceChip";
-import { CollapsibleSection } from "./CollapsibleSection";
 
-/** Deliverable #4 — the analyst-facing table.
+/** Deliverable #4 — the analyst-facing table body (rendered inside the Claim
+ *  Table tab).
  *
  *  A scannable, structured view of the same verified claims the prose block
  *  renders: one row per supported claim (kind, the sentence, and its citation
- *  chips). Cut claims and abstentions stay in `SynthesisBlock`'s audit trail —
+ *  chips). Cut claims and abstentions stay in the Verified Answers audit trail —
  *  the table only tabulates what the verifier let through, so it never presents
  *  unverified topology as fact.
  *
  *  Renders nothing when there are no supported claims (an abstention-only or
  *  fully-cut answer has nothing to tabulate). */
-export function ClaimTable({ synthesis }: { synthesis: SynthesisView }) {
+export function ClaimTableBody({ synthesis }: { synthesis: SynthesisView }) {
   if (synthesis.claims.length === 0) return null;
 
   return (
-    <CollapsibleSection label="Claim table" count={synthesis.claims.length}>
-      <div className="overflow-x-auto">
+    <div className="overflow-x-auto">
         <table className="w-full border-collapse text-left">
           <thead>
             <tr>
@@ -66,7 +65,6 @@ export function ClaimTable({ synthesis }: { synthesis: SynthesisView }) {
             ))}
           </tbody>
         </table>
-      </div>
-    </CollapsibleSection>
+    </div>
   );
 }

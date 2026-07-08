@@ -10,14 +10,25 @@ import {
 import { SHADOW } from "@/lib/ui";
 import { GraphCanvas } from "@/components/graph/GraphCanvas";
 
-/** Deliverable #4 — the compact CAPEC–ATT&CK–mitigation network plot.
+/** Whether the per-answer subgraph is worth plotting, plus its node/link counts.
+ *  Lets the answer card decide if the Network Plot tab should appear (and its
+ *  badge) without rendering the canvas. */
+export function networkPlotMeta(synthesis: SynthesisView, joinPairs: JoinPair[]) {
+  const payload = synthesisToGraphPayload(synthesis, joinPairs);
+  return {
+    renderable: isRenderableSubgraph(payload),
+    nodeCount: payload.counts.nodes,
+    linkCount: payload.counts.relationships,
+  };
+}
+
+/** Deliverable #4 — the compact CAPEC–ATT&CK–mitigation network plot body
+ *  (rendered inside the Network Plot tab).
  *
  *  Reuses the whole-graph force-graph engine (`toForceGraphData` + `GraphCanvas`)
- *  over a per-answer subgraph derived from the verified claims. Today the edges
- *  are INFERRED (join index + within-claim co-citation), so the plot is labelled
- *  "derived" — it must never read as provenance-exact ground truth. Option B
- *  swaps the edge source for explicit composer edges and relabels it. */
-export function AnswerNetworkPlot({
+ *  over a per-answer subgraph derived from the verified claims' provenance-exact
+ *  edges. Renders nothing when there is nothing worth plotting. */
+export function NetworkPlotBody({
   synthesis,
   joinPairs,
 }: {
@@ -38,24 +49,9 @@ export function AnswerNetworkPlot({
 
   const legend = Object.entries(payload.nodes_by_label);
   const abstentions = synthesis.abstentions.length;
-  const nodeCount = payload.counts.nodes;
-  const linkCount = payload.counts.relationships;
 
   return (
-    <div className="px-[18px] py-[13px]" style={{ boxShadow: SHADOW.insetBottom }}>
-      {/* Always shown (not collapsible) — the plot is the visual payoff. */}
-      <div className="mb-[9px] flex flex-wrap items-center gap-2">
-        <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-text-muted">
-          Network plot
-        </span>
-        <span
-          className="inline-flex items-center rounded-full px-2 py-px font-mono text-[10px] text-text-muted"
-          style={{ boxShadow: SHADOW.hairline }}
-        >
-          {nodeCount} node{nodeCount === 1 ? "" : "s"} · {linkCount} link{linkCount === 1 ? "" : "s"}
-        </span>
-      </div>
-
+    <div>
       {/* Legend: node type → palette color (shared with the canvas). */}
       <div className="mb-2 flex flex-wrap gap-x-3 gap-y-1">
         {legend.map(([label, count]) => (
