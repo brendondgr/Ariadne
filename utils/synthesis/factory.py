@@ -21,7 +21,6 @@ from .config import SynthesisConfig
 from .contracts import SynthesizedAnswer
 from .llm_composer import ComposerUnavailable, OpenAICompatibleComposer
 from .narrator import compose_narrative
-from .verifier import verify_answer
 
 logger = logging.getLogger("ariadne.synthesis.factory")
 
@@ -89,12 +88,16 @@ def synthesize(
     """
     config = config or SynthesisConfig.from_env()
     composer = composer or DeterministicComposer(config)
-    answer = verify_answer(composer.compose(evidence), evidence)
-    _apply_llm_narrative(answer, evidence, config)
-    return answer
+    # The chain runs as a LangGraph subgraph (compose → verify → narrate);
+    # imported here because utils.orchestration imports this module.
+    from utils.orchestration.agents.synthesis.graph import build_synthesis_graph
+
+    graph = build_synthesis_graph(composer, config)
+    out = graph.invoke({"evidence": evidence})
+    return out["answer"]
 
 
-def _apply_llm_narrative(
+def apply_llm_narrative(
     answer: SynthesizedAnswer, evidence: FederatedEvidence, config: SynthesisConfig
 ) -> None:
     """Best-effort: replace the narrative with an LLM-written prose answer.

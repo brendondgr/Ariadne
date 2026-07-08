@@ -81,10 +81,13 @@ class PlanningState(TypedDict, total=False):
 
 
 class SynthesisState(TypedDict, total=False):
-    """State for the compose → narrate → verify synthesis subgraph."""
+    """State for the compose → verify → narrate synthesis subgraph.
+
+    Verification runs *before* the best-effort LLM narrative, mirroring
+    ``synthesize()``: the verifier gates claims; the narrator only rewrites
+    the prose ``narrative`` on the already-verified answer.
+    """
 
     evidence: FederatedEvidence
     draft: SynthesizedAnswer  # composed claims, pre-verification
-    narrative: str | None  # LLM prose (None when disabled/unavailable)
-    narrative_fallback: str | None  # reason the narrator was skipped/failed
-    answer: SynthesizedAnswer  # the verified final answer
+    answer: SynthesizedAnswer  # verified answer (narrative applied last)
