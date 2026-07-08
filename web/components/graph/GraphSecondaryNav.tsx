@@ -3,21 +3,15 @@
 import type { GraphDataset } from "@/lib/types";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 
-interface GraphSecondaryNavProps {
-  counts: { nodes: number; relationships: number } | null;
-}
-
 const DATASETS: { id: GraphDataset; label: string; sublabel: string }[] = [
   { id: "attack", label: "ATT&CK", sublabel: "Neo4j · attack" },
   { id: "capec",  label: "CAPEC",  sublabel: "Gremlin · capec" },
 ];
 
-export function GraphSecondaryNav({ counts }: GraphSecondaryNavProps) {
+// Node/edge counts moved onto the search toolbar line (GraphSearchBar) so
+// they sit beside the control that changes what is visible.
+export function GraphSecondaryNav() {
   const { graphDataset, setGraphDataset } = useWorkbench();
-
-  const countSummary = counts
-    ? `${counts.nodes.toLocaleString()} nodes · ${counts.relationships.toLocaleString()} edges`
-    : "—";
 
   return (
     <nav
@@ -80,14 +74,6 @@ export function GraphSecondaryNav({ counts }: GraphSecondaryNavProps) {
           );
         })}
       </div>
-
-      {/* Count summary */}
-      <span
-        className="font-mono text-[11px] tabular-nums"
-        style={{ color: "var(--color-text-muted)", fontFeatureSettings: '"tnum"' }}
-      >
-        {countSummary}
-      </span>
     </nav>
   );
 }
