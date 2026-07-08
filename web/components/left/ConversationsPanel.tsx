@@ -1,29 +1,47 @@
-import type { ConversationSummary } from "@/lib/types";
+import type { ConversationSummaryDTO } from "@/lib/types";
+import { dateBucket, relativeTimeLabel, type DateBucket } from "@/lib/ui";
 import { PlusIcon } from "@/components/ui/icons";
 import { ConversationItem } from "./ConversationItem";
 
-/** Group conversations by their `group` label, preserving first-seen order. */
-function groupConversations(convos: ConversationSummary[]) {
-  const groups: { label: string; items: ConversationSummary[] }[] = [];
-  for (const convo of convos) {
-    let group = groups.find((g) => g.label === convo.group);
-    if (!group) {
-      group = { label: convo.group, items: [] };
-      groups.push(group);
-    }
-    group.items.push(convo);
+const BUCKET_ORDER: DateBucket[] = ["Today", "Yesterday", "Previous 7 days", "Older"];
+
+/** Group persisted threads into real date buckets by `updated_at`, in the
+ *  canonical Today → Yesterday → Previous 7 days → Older order. Buckets with
+ *  no threads are omitted. */
+function groupByDate(conversations: ConversationSummaryDTO[]) {
+  const byBucket = new Map<DateBucket, ConversationSummaryDTO[]>();
+  for (const convo of conversations) {
+    const bucket = dateBucket(convo.updated_at);
+    const list = byBucket.get(bucket);
+    if (list) list.push(convo);
+    else byBucket.set(bucket, [convo]);
   }
-  return groups;
+  return BUCKET_ORDER.filter((b) => byBucket.has(b)).map((label) => ({
+    label,
+    items: byBucket.get(label)!,
+  }));
 }
 
 interface ConversationsPanelProps {
-  conversations: ConversationSummary[];
+  conversations: ConversationSummaryDTO[];
+  activeId: string;
+  loading?: boolean;
   onSelect?: (id: string) => void;
   onNew?: () => void;
+  onRename?: (id: string, title: string) => void;
+  onDelete?: (id: string) => void;
 }
 
-export function ConversationsPanel({ conversations, onSelect, onNew }: ConversationsPanelProps) {
-  const groups = groupConversations(conversations);
+export function ConversationsPanel({
+  conversations,
+  activeId,
+  loading = false,
+  onSelect,
+  onNew,
+  onRename,
+  onDelete,
+}: ConversationsPanelProps) {
+  const groups = groupByDate(conversations);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col px-3.5 pb-4 pt-[18px]">
@@ -43,9 +61,14 @@ export function ConversationsPanel({ conversations, onSelect, onNew }: Conversat
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col gap-px overflow-y-auto pr-0.5">
-        {conversations.length === 0 && (
+        {loading && conversations.length === 0 && (
           <p className="px-1 pt-2 font-mono text-[11px] leading-relaxed text-text-dim">
-            No turns yet — ask a question to start.
+            Loading conversations…
+          </p>
+        )}
+        {!loading && conversations.length === 0 && (
+          <p className="px-1 pt-2 font-mono text-[11px] leading-relaxed text-text-dim">
+            No conversations yet — ask a question to start one.
           </p>
         )}
         {groups.map((group) => (
@@ -56,8 +79,14 @@ export function ConversationsPanel({ conversations, onSelect, onNew }: Conversat
             {group.items.map((convo) => (
               <ConversationItem
                 key={convo.id}
-                convo={convo}
+                id={convo.id}
+                title={convo.title}
+                timeLabel={relativeTimeLabel(convo.updated_at)}
+                turnCount={convo.turn_count}
+                active={convo.id === activeId}
                 onClick={onSelect ? () => onSelect(convo.id) : undefined}
+                onRename={onRename ? (title) => onRename(convo.id, title) : undefined}
+                onDelete={onDelete ? () => onDelete(convo.id) : undefined}
               />
             ))}
           </div>
