@@ -35,6 +35,35 @@ def test_error_lines_highlighted_in_color_mode():
     assert "\x1b[31m" in plain  # red
 
 
+def test_real_error_tokens_detected():
+    from utils.launcher.display import looks_like_error
+
+    for line in (
+        "ERROR: kaboom",
+        "TypeError: x is not a function",
+        "Unhandled Runtime Error",
+        "⨯ Another next dev server is already running.",
+        "npm install failed (exit 1)",
+        "Traceback (most recent call last):",
+    ):
+        assert looks_like_error(line), line
+
+
+def test_camelcase_component_names_are_not_errors():
+    """Next's dev-overlay React tree spams identifiers containing 'Error' —
+    they must neither be shown by the always-show-errors rule nor painted red."""
+    from utils.launcher.display import looks_like_error
+
+    for line in (
+        "  <AppDevOverlayErrorBoundary globalError={[...]}>",
+        "    <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>",
+        "      <RedirectErrorBoundary router={{...}}>",
+        "  <ReplaySsrOnlyErrors>",
+        "<HotReload globalError={[...]} webSocket={WebSocket}>",
+    ):
+        assert not looks_like_error(line), line
+
+
 def test_use_color_respects_no_color_and_tty(monkeypatch):
     class NotTty(io.StringIO):
         def isatty(self):

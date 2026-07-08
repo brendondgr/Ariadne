@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 import threading
 from dataclasses import dataclass
@@ -32,7 +33,19 @@ _ANSI = {
     "green": "\x1b[32m",
 }
 
-_ERROR_MARKERS = ("error", "exception", "traceback", "failed", "fatal", "unhandled")
+# Real error lines, not CamelCase identifiers: `AppDevOverlayErrorBoundary`
+# and friends stream constantly from the Next dev overlay and must NOT count.
+# `\berror\b` needs a word boundary (so `ErrorBoundary` inside one identifier
+# doesn't match); `\w+error:` catches `TypeError:`-style prefixes; `⨯` is
+# Next's own failure glyph.
+_ERROR_RE = re.compile(
+    r"(?i)(?:\berror\b|\w+error:|\bexception\b|\btraceback\b|\bfailed\b|\bfatal\b|\bunhandled\b|⨯)"
+)
+
+
+def looks_like_error(line: str) -> bool:
+    """True for genuine error/failure lines worth always showing (and painting red)."""
+    return bool(_ERROR_RE.search(line))
 
 
 def use_color(stream: IO[str] | None = None) -> bool:
@@ -56,7 +69,7 @@ def format_line(source: str, line: str, *, color: bool) -> str:
     )
     tag = _paint(f"[{source}]".ljust(_TAG_WIDTH), tag_color, enabled=color)
     body = line.rstrip("\n")
-    if any(marker in body.lower() for marker in _ERROR_MARKERS):
+    if looks_like_error(body):
         body = _paint(body, "red", enabled=color)
     return f"{tag}{body}"
 
@@ -81,8 +94,7 @@ def stream_output(
             body = line.rstrip("\n")
             if not body:
                 continue
-            is_error = any(m in body.lower() for m in _ERROR_MARKERS)
-            if filter_fn is not None and not filter_fn(body) and not is_error:
+            if filter_fn is not None and not filter_fn(body) and not looks_like_error(body):
                 continue
             emit(format_line(source, body, color=color))
         stream.close()
