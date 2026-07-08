@@ -42,10 +42,31 @@ _QUICK_SYSTEM = (
 _GRAPH_SYSTEM = (
     "You are a cybersecurity assistant continuing a conversation. A grounded, "
     "verified answer to the user's question was produced from the knowledge "
-    "graphs and is provided below as GROUNDED ANSWER. Rewrite it into a natural, "
-    "conversational reply that connects to what was discussed earlier. Preserve "
-    "every fact exactly; do NOT add, drop, or alter any technique id, name, "
-    "mapping, or mitigation. Do not invent citations."
+    "graphs and is provided below as GROUNDED ANSWER, followed by GRAPH EVIDENCE "
+    "DETAILS — the actual node/edge metadata retrieved from ATT&CK/CAPEC "
+    "(names, descriptions, key attributes, and related entries). Write a natural, "
+    "conversational reply that connects to what was discussed earlier and, when "
+    "the user asks for more detail or context, draws on the EVIDENCE DETAILS "
+    "(especially the descriptions) to be genuinely informative. If the primary "
+    "entity's details have already been covered, offer a concrete next step by "
+    "naming the specific related/mapped entities from the EVIDENCE DETAILS (e.g. "
+    "the techniques it maps to) that you could look up next. Use ONLY the "
+    "GROUNDED ANSWER and EVIDENCE DETAILS — do not add, drop, or alter any id, "
+    "name, mapping, or mitigation, and do not invent anything beyond them."
+)
+
+# How much of each node description to include, and how many records to brief.
+_MAX_DESC_CHARS = 600
+_MAX_BRIEF_RECORDS = 10
+# Short, human-meaningful attributes worth surfacing alongside a description.
+_BRIEF_ATTRS = (
+    "Abstraction",
+    "Status",
+    "tactic",
+    "tactics",
+    "platforms",
+    "x_mitre_platforms",
+    "detection",
 )
 
 
@@ -53,6 +74,64 @@ def _grounded_text(answer: SynthesizedAnswer | None) -> str:
     if answer is None:
         return ""
     return (answer.narrative or answer.headline or "").strip()
+
+
+def _truncate(text: str, limit: int) -> str:
+    text = " ".join(str(text).split())
+    if len(text) <= limit:
+        return text
+    return text[:limit].rsplit(" ", 1)[0].rstrip(",.;:") + "…"
+
+
+def evidence_brief(evidence: Any) -> str:
+    """Distil the retrieved records into grounded detail lines for the answer LLM.
+
+    Surfaces the node metadata the synthesis one-liner omits — descriptions, a
+    few key attributes, and related entries — so a "tell me more" follow-up has
+    real, provenance-backed material to draw on. Everything here came from the
+    graph; the answer agent is told to use only it.
+    """
+    if evidence is None:
+        return ""
+    lines: list[str] = []
+    seen: set[str] = set()
+    for result in getattr(evidence, "results", []) or []:
+        for rec in getattr(result, "records", []) or []:
+            key = rec.primary_id or rec.name
+            if not key or key in seen:
+                continue
+            seen.add(key)
+            props = rec.properties or {}
+            head = f"- {rec.primary_id or rec.name}"
+            if rec.name and rec.name != rec.primary_id:
+                head += f" ({rec.name})"
+            if rec.label:
+                head += f" [{rec.label}]"
+            parts = [head]
+            desc = str(props.get("description", "")).strip()
+            if desc:
+                parts.append(f": {_truncate(desc, _MAX_DESC_CHARS)}")
+            attrs = [
+                f"{k}: {_truncate(props[k], 80)}"
+                for k in _BRIEF_ATTRS
+                if props.get(k)
+            ]
+            if attrs:
+                parts.append(f" [{'; '.join(attrs)}]")
+            related = [
+                str(r.get("name") or r.get("id"))
+                for r in (rec.related or [])
+                if r.get("name") or r.get("id")
+            ][:8]
+            if related:
+                parts.append(f" Related: {', '.join(related)}.")
+            join_values = [str(v) for v in (rec.join_values or []) if str(v)][:8]
+            if join_values:
+                parts.append(f" Maps to: {', '.join(join_values)}.")
+            lines.append("".join(parts))
+            if len(lines) >= _MAX_BRIEF_RECORDS:
+                return "\n".join(lines)
+    return "\n".join(lines)
 
 
 def compose_answer(
@@ -69,7 +148,9 @@ def compose_answer(
 
     if route == ROUTE_QUICK:
         return _compose_quick(question, history, facts, config, client)
-    return _compose_graph(question, history, state.get("answer"), config, client)
+    return _compose_graph(
+        question, history, state.get("answer"), state.get("evidence"), config, client
+    )
 
 
 def _compose_quick(question, history, facts, config, client) -> tuple[str, str]:
@@ -98,7 +179,9 @@ def _compose_quick(question, history, facts, config, client) -> tuple[str, str]:
     )
 
 
-def _compose_graph(question, history, answer, config, client) -> tuple[str, str]:
+def _compose_graph(
+    question, history, answer, evidence, config, client
+) -> tuple[str, str]:
     grounded = _grounded_text(answer)
     if not grounded:
         grounded = (
@@ -107,17 +190,17 @@ def _compose_graph(question, history, answer, config, client) -> tuple[str, str]
         )
         return grounded, "deterministic"
     if client.enabled:
+        brief = evidence_brief(evidence)
+        user_content = f"Question: {question}\n\nGROUNDED ANSWER:\n{grounded}"
+        if brief:
+            user_content += (
+                "\n\nGRAPH EVIDENCE DETAILS (retrieved node/edge metadata — use "
+                "these for depth; do not go beyond them):\n" + brief
+            )
         messages = (
             [{"role": "system", "content": _GRAPH_SYSTEM}]
             + render_history_messages(history, config.history_turns)
-            + [
-                {
-                    "role": "user",
-                    "content": (
-                        f"Question: {question}\n\nGROUNDED ANSWER:\n{grounded}"
-                    ),
-                }
-            ]
+            + [{"role": "user", "content": user_content}]
         )
         try:
             return client.complete(messages, max_tokens=config.llm.max_tokens), "llm"
