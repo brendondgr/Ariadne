@@ -145,6 +145,27 @@ export function streamAdmin(
   return postSseStream("/api/admin", body, (frame) => onEvent(frame as AdminEvent), signal);
 }
 
+export interface ConversationQueryBody {
+  question: string;
+  conversation_id: string;
+  mode: "plan" | "query";
+  drafter: "deterministic" | "llm";
+}
+
+/**
+ * POST a question to the memory-inclusive conversation pipeline and stream its
+ * Server-Sent Events. Same event shapes as {@link streamQuery} plus the
+ * conversation-native `context`/`route`/`validation`/`final`/`conversation`
+ * events (see `QueryEvent` in `./types`).
+ */
+export function streamConversation(
+  body: ConversationQueryBody,
+  onEvent: (event: QueryEvent) => void,
+  signal?: AbortSignal,
+): Promise<void> {
+  return postSseStream("/api/conversation-query", body, (frame) => onEvent(frame as QueryEvent), signal);
+}
+
 export interface EvalRunBody {
   live: boolean;
   judge: boolean;

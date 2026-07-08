@@ -447,9 +447,17 @@ export interface WorkbenchRun {
   rawAnswer: ServerAnswer | null;
   /** The literal ordered SSE event log for this turn — the pipeline start to finish. */
   events: StampedQueryEvent[];
+  /** The conversational reply (from `final` / stored `payload.final_answer`), or
+   *  null for turns predating the conversational path (e.g. offline demo turns). */
+  reply?: ConversationalReply | null;
+  /** Route decision for this turn ("quick" answered from memory, "graph" ran the
+   *  federated pipeline), or null before the `route` event has arrived. */
+  route?: "quick" | "graph" | null;
+  /** Latest validation-gate verdict for this turn (retries surface the last one). */
+  validation?: ValidationResult | null;
 }
 
-/** A sidebar conversation summary. */
+/** A sidebar conversation summary (view-model row). */
 export interface ConversationSummary {
   id: string;
   title: string;
@@ -457,6 +465,75 @@ export interface ConversationSummary {
   timeLabel: string;
   group: string;
   active?: boolean;
+}
+
+/* ============================================================
+ * Persisted conversation threads (GET/POST/PATCH/DELETE /api/conversations)
+ * ============================================================ */
+
+/** `ConversationSummary` as the backend emits it (`api/models.py`). Named with
+ *  a `DTO` suffix so it doesn't collide with the sidebar view-model above. */
+export interface ConversationSummaryDTO {
+  id: string;
+  title: string;
+  created_at: string;
+  updated_at: string;
+  turn_count: number;
+}
+
+export interface ValidationResult {
+  verdict: "pass" | "insufficient";
+  reason: string;
+  missing: string[];
+  iteration: number;
+  capped?: boolean;
+}
+
+/** One replayable transformed SSE event captured on a stored assistant turn. */
+export interface StoredTurnEvent {
+  type: string;
+  data: unknown;
+}
+
+/** The assistant turn's stored payload (`api/services/conversations.py::_persist_turn`). */
+export interface AssistantPayload {
+  final_answer: string;
+  route: "quick" | "graph";
+  route_reason: string;
+  resolved_question: string;
+  validation: ValidationResult | null;
+  facts: string[];
+  status: string;
+  exit_code: number;
+  events: StoredTurnEvent[];
+}
+
+/** One turn (user or assistant) as stored/returned by `GET /api/conversations/{id}`. */
+export interface StoredTurn {
+  id: string;
+  conversation_id: string;
+  seq: number;
+  role: "user" | "assistant";
+  created_at: string;
+  question: string | null;
+  payload: AssistantPayload | null;
+  mode: "plan" | "query" | null;
+  drafter: "deterministic" | "llm" | null;
+  route: "quick" | "graph" | null;
+}
+
+/** `GET /api/conversations/{id}` response: the summary plus all its turns. */
+export interface ConversationDetailDTO extends ConversationSummaryDTO {
+  turns: StoredTurn[];
+}
+
+/** The conversational reply rendered as the primary assistant bubble, projected
+ *  from the `final` SSE event or a stored turn's `payload.final_answer`. */
+export interface ConversationalReply {
+  text: string;
+  route: "quick" | "graph";
+  composer: string;
+  grounded: boolean;
 }
 
 /* ============================================================
@@ -748,7 +825,24 @@ export type QueryEvent =
   | { type: "evidence"; data: { evidence: FederatedEvidence } }
   | { type: "answer"; data: ServerAnswer }
   | { type: "done"; data: { status: RunStatus; exit_code: ExitCode; message?: string; timings?: PipelineTimings } }
-  | { type: "error"; data: { message: string } };
+  | { type: "error"; data: { message: string } }
+  | { type: "context"; data: { resolved_question: string; rewritten: boolean } }
+  | { type: "route"; data: { decision: "quick" | "graph"; reason: string } }
+  | {
+      type: "validation";
+      data: {
+        verdict: "pass" | "insufficient";
+        reason: string;
+        missing: string[];
+        iteration: number;
+        capped?: boolean;
+      };
+    }
+  | {
+      type: "final";
+      data: { final_answer: string; route: "quick" | "graph"; composer: "llm" | "deterministic"; grounded: boolean };
+    }
+  | { type: "conversation"; data: { conversation_id: string; title?: string } };
 
 export type QueryEventType = QueryEvent["type"];
 
