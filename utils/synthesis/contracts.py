@@ -209,6 +209,11 @@ class SynthesizedAnswer:
 
     request: str
     headline: str = ""
+    # A direct, natural-language answer to the analyst's question, grounded in
+    # the gathered evidence — the LLM composer writes it; the deterministic
+    # composer assembles it from the claim sentences. The verified claim table
+    # remains the trust surface; this is the readable answer above it.
+    narrative: str = ""
     claims: list[Claim] = field(default_factory=list)
     abstentions: list[Abstention] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
@@ -253,6 +258,7 @@ class SynthesizedAnswer:
         return {
             "request": self.request,
             "headline": self.headline,
+            "narrative": self.narrative,
             "claims": claims,
             "rendered_claims": [c.to_dict() for c in self.rendered_claims()],
             "abstentions": [a.to_dict() for a in self.abstentions],

@@ -21,8 +21,10 @@ from __future__ import annotations
 import logging
 import socket
 from dataclasses import dataclass
+from urllib.parse import urlparse
 
 from utils.graph_loader.config import LoaderConfig
+from utils.synthesis.config import SynthesisConfig
 
 logger = logging.getLogger("ariadne.api.health")
 
@@ -44,6 +46,71 @@ class SourceHealth:
     uri: str
     reason: str | None = None
     nodes: int | None = None
+
+
+@dataclass(frozen=True)
+class LlmHealth:
+    """Reachability verdict for the synthesis LLM endpoint (the drafter LLM).
+
+    ``status`` is ``live`` when the configured OpenAI-compatible endpoint's
+    host:port accepts a TCP connection, ``down`` otherwise — the same fast,
+    never-raising probe the graph backends use. ``enabled`` reflects whether the
+    LLM is turned on in config; ``live``/``down`` is about reachability so the
+    header pill tells the analyst the truth regardless of the toggle.
+    """
+
+    status: str  # "live" | "down"
+    base_url: str
+    model: str
+    enabled: bool
+    reason: str | None = None
+
+
+def _http_host_port(url: str) -> tuple[str, int] | None:
+    """Extract (host, port) from an http(s) base URL, defaulting the port."""
+    try:
+        parsed = urlparse(url)
+    except (ValueError, TypeError):
+        return None
+    if parsed.scheme not in ("http", "https") or not parsed.hostname:
+        return None
+    port = parsed.port or (443 if parsed.scheme == "https" else 80)
+    return parsed.hostname, port
+
+
+def llm_health(config: SynthesisConfig | None = None) -> LlmHealth:
+    """Probe the synthesis LLM endpoint's reachability. Never raises.
+
+    A live endpoint means an analyst who selects the LLM drafter will actually
+    reach a model; a down endpoint means the pipeline would fall back to the
+    deterministic composer. Reachability is a fast TCP probe of the base URL's
+    host:port (mirrors the graph health check).
+    """
+    config = config or SynthesisConfig.from_env()
+    hostport = _http_host_port(config.llm_base_url)
+    if hostport is None:
+        return LlmHealth(
+            status="down",
+            base_url=config.llm_base_url,
+            model=config.llm_model,
+            enabled=config.llm_enabled,
+            reason=f"unparseable LLM base_url: {config.llm_base_url!r}",
+        )
+    host, port = hostport
+    if _tcp_reachable(host, port):
+        return LlmHealth(
+            status="live",
+            base_url=config.llm_base_url,
+            model=config.llm_model,
+            enabled=config.llm_enabled,
+        )
+    return LlmHealth(
+        status="down",
+        base_url=config.llm_base_url,
+        model=config.llm_model,
+        enabled=config.llm_enabled,
+        reason=f"no TCP connection to {host}:{port}",
+    )
 
 
 def _endpoint_from_uri(uri: str, fallback: tuple[str, int]) -> tuple[str, int]:

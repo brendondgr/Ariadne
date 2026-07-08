@@ -26,12 +26,13 @@ from .models import (
     GraphPayloadResponse,
     HealthResponse,
     LiveSourceModel,
+    LlmHealthModel,
     QueryRequest,
 )
 from .services.config import apply_update, read_config
 from .services.evaluation import read_evaluation_report, stream_eval_run
 from .services.graph import load_canonical_graph
-from .services.health import docker_state, live_sources
+from .services.health import docker_state, live_sources, llm_health
 from .services.infra import stream_admin_action
 from .services.query import stream_query_events
 
@@ -59,9 +60,17 @@ def get_health() -> HealthResponse:
         )
         for s in live_sources()
     ]
+    llm = llm_health()
     return HealthResponse(
         sources=sources,
         docker=DockerStateModel(available=available, services=services, reason=reason),
+        llm=LlmHealthModel(
+            status=llm.status,
+            base_url=llm.base_url,
+            model=llm.model,
+            enabled=llm.enabled,
+            reason=llm.reason,
+        ),
         checked_at=_utcnow_iso(),
     )
 

@@ -33,6 +33,19 @@ def test_result_with_records_becomes_cited_fact_claim():
     assert answer.composer == "deterministic"
 
 
+def test_narrative_assembles_claim_sentences_into_prose():
+    evidence = make_evidence(
+        [make_result(records=[make_record("T1047", name="WMI")], summary="WMI matched.")]
+    )
+    answer = _compose(evidence)
+    assert answer.narrative == "WMI matched."
+
+
+def test_narrative_is_honest_when_no_evidence():
+    answer = _compose(make_evidence([make_result(records=[], summary="", ok=False)]))
+    assert "no evidence" in answer.narrative.lower()
+
+
 def test_missing_summary_gets_generated_text_still_cited():
     evidence = make_evidence([make_result(records=[make_record("T1566")], summary="")])
     claim = _compose(evidence).claims[0]

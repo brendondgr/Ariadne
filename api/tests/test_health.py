@@ -13,9 +13,11 @@ from fastapi.testclient import TestClient
 import api.main as main
 from api.main import app
 from api.services import health
-from api.services.health import SourceHealth
+from api.services.health import LlmHealth, SourceHealth
 
 client = TestClient(app)
+
+_LLM_LIVE = LlmHealth(status="live", base_url="http://localhost:9090/v1", model="m", enabled=True)
 
 
 def test_endpoint_from_uri_parses_bolt_ws_and_fallback() -> None:
@@ -72,7 +74,35 @@ def test_content_probe_failure_degrades_to_tcp(monkeypatch) -> None:
         assert s.status == "live"
 
 
+def test_http_host_port_parses_and_defaults() -> None:
+    assert health._http_host_port("http://localhost:9090/v1") == ("localhost", 9090)
+    assert health._http_host_port("https://api.example.com/v1") == ("api.example.com", 443)
+    assert health._http_host_port("http://host/v1") == ("host", 80)
+    # A non-http scheme (or garbage) is not probeable.
+    assert health._http_host_port("bolt://localhost:5456") is None
+    assert health._http_host_port("not a url") is None
+
+
+def test_llm_health_reports_live_when_reachable(monkeypatch) -> None:
+    from utils.synthesis.config import SynthesisConfig
+
+    cfg = SynthesisConfig(llm_enabled=True, llm_base_url="http://localhost:9090/v1", llm_model="m")
+    monkeypatch.setattr(health, "_tcp_reachable", lambda host, port, timeout=2.0: True)
+    verdict = health.llm_health(cfg)
+    assert verdict.status == "live" and verdict.enabled is True and verdict.model == "m"
+
+
+def test_llm_health_reports_down_when_unreachable(monkeypatch) -> None:
+    from utils.synthesis.config import SynthesisConfig
+
+    cfg = SynthesisConfig(llm_base_url="http://localhost:9090/v1")
+    monkeypatch.setattr(health, "_tcp_reachable", lambda host, port, timeout=2.0: False)
+    verdict = health.llm_health(cfg)
+    assert verdict.status == "down" and verdict.reason
+
+
 def test_health_endpoint_shape_is_well_formed(monkeypatch) -> None:
+    monkeypatch.setattr(main, "llm_health", lambda: _LLM_LIVE)
     monkeypatch.setattr(
         main,
         "live_sources",
@@ -101,10 +131,12 @@ def test_health_endpoint_shape_is_well_formed(monkeypatch) -> None:
     assert grem["status"] == "down" and grem["reason"]
     assert body["docker"]["available"] is True
     assert body["docker"]["services"]["neo4j"].startswith("Running")
+    assert body["llm"]["status"] == "live" and body["llm"]["enabled"] is True
     assert "checked_at" in body and body["checked_at"]
 
 
 def test_health_endpoint_handles_docker_unavailable(monkeypatch) -> None:
+    monkeypatch.setattr(main, "llm_health", lambda: _LLM_LIVE)
     monkeypatch.setattr(
         main,
         "live_sources",
@@ -127,4 +159,6 @@ def test_health_endpoint_real_call_does_not_raise() -> None:
     # End-to-end through the real service (DBs down in CI): still a clean 200.
     resp = client.get("/api/health")
     assert resp.status_code == 200
-    assert len(resp.json()["sources"]) == 2
+    body = resp.json()
+    assert len(body["sources"]) == 2
+    assert body["llm"]["status"] in {"live", "down"}

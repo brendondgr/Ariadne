@@ -259,8 +259,16 @@ def iter_pipeline(
     run.status, run.exit_code = status_and_exit(cards_present=True, evidence=evidence)
     yield ("status", {"phase": "answering",
                       "message": "Composing and verifying the grounded answer"})
+    # When the LLM drafter is selected, the LLM is used throughout — including
+    # synthesis. The drafter toggle governs synthesis's ``llm_enabled`` so
+    # "selected" means used everywhere, not just planner/specialists. An
+    # explicitly injected ``synthesis_config`` (tests) is always respected.
+    if synthesis_config is None:
+        synthesis_config = dataclasses.replace(
+            SynthesisConfig.from_env(), llm_enabled=use_llm
+        )
     t0 = time.monotonic()
-    answer = synthesize(evidence, synthesis_config or SynthesisConfig.from_env())
+    answer = synthesize(evidence, synthesis_config)
     run.timings["synthesis_ms"] = round((time.monotonic() - t0) * 1000, 3)
     run.answer = answer
     run.timings["total_ms"] = round((time.monotonic() - t_start) * 1000, 3)

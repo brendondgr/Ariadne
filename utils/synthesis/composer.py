@@ -165,11 +165,28 @@ class DeterministicComposer:
         return SynthesizedAnswer(
             request=evidence.request,
             headline=_headline(evidence, claims, abstentions),
+            narrative=_narrative(claims, abstentions),
             claims=claims,
             abstentions=abstentions,
             notes=notes,
             composer=self.name,
         )
+
+
+def _narrative(claims: list[Claim], abstentions: list[Abstention]) -> str:
+    """A readable prose answer assembled from the grounded claim sentences.
+
+    The LLM composer writes a free-prose ``final_answer``; without an LLM this
+    stitches the same evidence-backed claim sentences (facts first, then
+    cross-source correlations) and honest abstentions into one paragraph, so the
+    UI always has a natural-language answer to show above the claim table.
+    """
+    facts = [c.text for c in claims if c.kind == "fact"]
+    correlations = [c.text for c in claims if c.kind == "correlation"]
+    parts = [*facts, *correlations, *(a.statement for a in abstentions)]
+    if not parts:
+        return "The routed sources returned no evidence for this question."
+    return " ".join(parts)
 
 
 def _headline(
