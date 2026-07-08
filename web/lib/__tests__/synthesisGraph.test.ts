@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  buildEntityDetails,
   classifyEntity,
   deriveEdges,
   isRenderableSubgraph,
@@ -8,7 +9,14 @@ import {
   REL_MITIGATED_BY,
 } from "../synthesisGraph";
 import { toForceGraphData } from "../graph";
-import type { JoinPair, SynthesisView } from "../types";
+import type {
+  EvidenceRecord,
+  FederatedEvidence,
+  JoinIndexEntry,
+  JoinPair,
+  SpecialistResult,
+  SynthesisView,
+} from "../types";
 
 /* -------------------------------------------------------------------------- */
 /* Helpers                                                                     */
@@ -39,6 +47,57 @@ const JOINS: JoinPair[] = [
   { left: "CAPEC-549", leftAccent: "amber", right: "T1047", rightAccent: "teal" },
   { left: "CAPEC-563", leftAccent: "amber", right: "T1546.003", rightAccent: "teal" },
 ];
+
+function record(over: Partial<EvidenceRecord>): EvidenceRecord {
+  return {
+    primary_id: "",
+    id_scheme: "",
+    label: "",
+    name: "",
+    properties: {},
+    related: [],
+    join_values: [],
+    provenance: null,
+    ...over,
+  };
+}
+
+function fed(over: Partial<FederatedEvidence>): FederatedEvidence {
+  return {
+    request: "",
+    results: [],
+    unsupported: [],
+    skipped: [],
+    partial: false,
+    join_index: {},
+    cross_source_join_values: [],
+    ...over,
+  };
+}
+
+function resultWith(records: EvidenceRecord[]): SpecialistResult {
+  return {
+    task: {
+      sub_question_id: "",
+      source: "",
+      text: "",
+      entities: [],
+      limits: { max_traversal_depth: 0, max_result_rows: 0, query_timeout_ms: 0 },
+      join_key: null,
+      seed_ids: [],
+      rationale: "",
+    },
+    query: "",
+    records,
+    record_count: records.length,
+    summary: "",
+    traces: [],
+    ok: true,
+    partial: false,
+    error: null,
+    join_values: [],
+  };
+}
 
 /* -------------------------------------------------------------------------- */
 /* classifyEntity                                                              */
@@ -208,5 +267,117 @@ describe("isRenderableSubgraph", () => {
   it("is true once there is at least one edge between two nodes", () => {
     const payload = synthesisToGraphPayload(view([]), JOINS);
     expect(isRenderableSubgraph(payload)).toBe(true);
+  });
+});
+
+/* -------------------------------------------------------------------------- */
+/* buildEntityDetails                                                          */
+/* -------------------------------------------------------------------------- */
+
+describe("buildEntityDetails", () => {
+  it("returns an empty map for missing evidence", () => {
+    expect(buildEntityDetails(null).size).toBe(0);
+    expect(buildEntityDetails(undefined).size).toBe(0);
+  });
+
+  it("projects name/label/properties from specialist records", () => {
+    const details = buildEntityDetails(
+      fed({
+        results: [
+          resultWith([
+            record({
+              primary_id: "T1047",
+              name: "Windows Management Instrumentation",
+              label: "ATT&CK Technique",
+              properties: { description: "Adversaries may abuse WMI…" },
+            }),
+          ]),
+        ],
+      }),
+    );
+    expect(details.get("T1047")).toEqual({
+      name: "Windows Management Instrumentation",
+      label: "ATT&CK Technique",
+      properties: { description: "Adversaries may abuse WMI…" },
+    });
+  });
+
+  it("falls back to a join-index name (no properties) when there is no record", () => {
+    const entries: JoinIndexEntry[] = [
+      { source: "capec", primary_id: "CAPEC-549", name: "Local Execution of Code" },
+    ];
+    const details = buildEntityDetails(fed({ join_index: { T1047: entries } }));
+    expect(details.get("CAPEC-549")).toEqual({
+      name: "Local Execution of Code",
+      label: "",
+      properties: {},
+    });
+  });
+
+  it("prefers the record over a join-index entry for the same id", () => {
+    const entries: JoinIndexEntry[] = [
+      { source: "attack", primary_id: "T1047", name: "join-name" },
+    ];
+    const details = buildEntityDetails(
+      fed({
+        join_index: { key: entries },
+        results: [
+          resultWith([
+            record({ primary_id: "T1047", name: "record-name", properties: { a: 1 } }),
+          ]),
+        ],
+      }),
+    );
+    expect(details.get("T1047")?.name).toBe("record-name");
+    expect(details.get("T1047")?.properties).toEqual({ a: 1 });
+  });
+});
+
+/* -------------------------------------------------------------------------- */
+/* synthesisToGraphPayload — node enrichment                                   */
+/* -------------------------------------------------------------------------- */
+
+describe("synthesisToGraphPayload node enrichment", () => {
+  const details = buildEntityDetails(
+    fed({
+      results: [
+        resultWith([
+          record({
+            primary_id: "T1047",
+            name: "Windows Management Instrumentation",
+            label: "ATT&CK Technique",
+            properties: { description: "desc" },
+          }),
+        ]),
+      ],
+    }),
+  );
+
+  it("stamps the real name and properties onto a matched node", () => {
+    const payload = synthesisToGraphPayload(view([]), JOINS, details);
+    const t1047 = payload.nodes.find((n) => n.id === "T1047");
+    expect(t1047?.name).toBe("Windows Management Instrumentation");
+    expect(t1047?.properties).toEqual({ description: "desc" });
+  });
+
+  it("keeps the palette label from the id prefix, not the evidence label", () => {
+    const payload = synthesisToGraphPayload(view([]), JOINS, details);
+    const t1047 = payload.nodes.find((n) => n.id === "T1047");
+    expect(t1047?.label).toBe("ATT&CK Technique");
+    expect(t1047?.labels).toEqual(["ATT&CK Technique"]);
+  });
+
+  it("falls back to the id as name when no detail matches", () => {
+    const payload = synthesisToGraphPayload(view([]), JOINS, details);
+    const capec = payload.nodes.find((n) => n.id === "CAPEC-563");
+    expect(capec?.name).toBe("CAPEC-563");
+    expect(capec?.properties).toEqual({});
+  });
+
+  it("behaves identically to the pre-enrichment call when details are omitted", () => {
+    const payload = synthesisToGraphPayload(view([]), JOINS);
+    const t1047 = payload.nodes.find((n) => n.id === "T1047");
+    expect(t1047?.name).toBe("T1047");
+    expect(t1047?.properties).toEqual({});
   });
 });

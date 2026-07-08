@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "motion/react";
 import type { AnswerParagraph, SynthesisView, WorkbenchRun } from "@/lib/types";
 import { SHADOW, formatSeconds } from "@/lib/ui";
@@ -25,6 +25,7 @@ import { ProvenanceChip } from "./ProvenanceChip";
 import { JoinChip } from "./JoinChip";
 import { ClaimTableBody } from "./ClaimTable";
 import { NetworkPlotBody, networkPlotMeta } from "./AnswerNetworkPlot";
+import { buildEntityDetails } from "@/lib/synthesisGraph";
 import { SectionTabs, type TabDef } from "./SectionTabs";
 import { RefText } from "./RefText";
 
@@ -213,6 +214,13 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
   const cardReplaying = live && replaying;
   const answered = live ? statusOf("answer", "pass") === "pass" : run.status !== "running";
   const working = live && !answered;
+  // Real names/descriptions for the network-plot nodes, projected once per turn
+  // from the federated evidence the turn already carries. Must run before any
+  // conditional return to keep hook order stable.
+  const entityDetails = useMemo(
+    () => buildEntityDetails(run.federated),
+    [run.federated],
+  );
 
   if (error && live && !replaying) return <AnswerError message={error} />;
 
@@ -282,7 +290,13 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
       label: "Network Plot",
       icon: <NetworkIcon />,
       badge: net.nodeCount,
-      content: <NetworkPlotBody synthesis={syn} joinPairs={run.answer.joinPairs} />,
+      content: (
+        <NetworkPlotBody
+          synthesis={syn}
+          joinPairs={run.answer.joinPairs}
+          entityDetails={entityDetails}
+        />
+      ),
     });
   }
   if (run.events.length > 0) {

@@ -32,6 +32,9 @@ interface GraphCanvasProps {
   data: ForceGraphData;
   onSelectNode: (node: FGNode) => void;
   onSelectLink: (link: FGLink) => void;
+  /** Called when the empty canvas background is clicked (e.g. to deselect).
+   *  Optional — surfaces that don't need click-to-deselect omit it. */
+  onBackgroundClick?: () => void;
   /** Id of the currently-selected element for highlight ring. */
   selectedId?: string | null;
 }
@@ -44,6 +47,7 @@ export function GraphCanvas({
   data,
   onSelectNode,
   onSelectLink,
+  onBackgroundClick,
   selectedId,
 }: GraphCanvasProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -137,6 +141,7 @@ export function GraphCanvas({
           // Selection callbacks
           onNodeClick={(n) => onSelectNode(n as FGNode)}
           onLinkClick={(l) => onSelectLink(l as unknown as FGLink)}
+          onBackgroundClick={onBackgroundClick ? () => onBackgroundClick() : undefined}
         />
       )}
     </div>
