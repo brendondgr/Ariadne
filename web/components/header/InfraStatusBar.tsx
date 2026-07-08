@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { LiveSource } from "@/lib/types";
+import type { ApiLlmHealth, LiveSource } from "@/lib/types";
 import { getHealth } from "@/lib/api";
 import { InfraStatusPill } from "./InfraStatusPill";
 
@@ -12,6 +12,7 @@ import { InfraStatusPill } from "./InfraStatusPill";
  */
 export function InfraStatusBar({ fallback }: { fallback: LiveSource[] }) {
   const [sources, setSources] = useState<LiveSource[]>(fallback);
+  const [llm, setLlm] = useState<ApiLlmHealth | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -29,6 +30,7 @@ export function InfraStatusBar({ fallback }: { fallback: LiveSource[] }) {
             reason: s.reason ?? undefined,
           })),
         );
+        setLlm(health.llm ?? null);
       } catch {
         // Keep the last-known status if a poll fails (backend restart, etc.).
       }
@@ -48,6 +50,17 @@ export function InfraStatusBar({ fallback }: { fallback: LiveSource[] }) {
       {sources.map((source) => (
         <InfraStatusPill key={source.backend} source={source} />
       ))}
+      {llm && (
+        <InfraStatusPill
+          source={{
+            backend: "llm",
+            status: llm.status,
+            reason:
+              llm.reason ??
+              (llm.enabled ? `${llm.model} · reachable` : `${llm.model} · endpoint reachable (LLM drafter off by default)`),
+          }}
+        />
+      )}
     </>
   );
 }

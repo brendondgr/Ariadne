@@ -3,6 +3,7 @@
 import type { SynthesisView } from "@/lib/types";
 import { SHADOW } from "@/lib/ui";
 import { ProvenanceChip } from "./ProvenanceChip";
+import { CollapsibleSection } from "./CollapsibleSection";
 
 /** Deliverable #4 — the analyst-facing table.
  *
@@ -18,10 +19,7 @@ export function ClaimTable({ synthesis }: { synthesis: SynthesisView }) {
   if (synthesis.claims.length === 0) return null;
 
   return (
-    <div className="px-[18px] py-[13px]" style={{ boxShadow: SHADOW.insetBottom }}>
-      <div className="mb-[9px] font-mono text-[10px] uppercase tracking-[0.08em] text-text-muted">
-        Claim table
-      </div>
+    <CollapsibleSection label="Claim table" count={synthesis.claims.length}>
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-left">
           <thead>
@@ -69,6 +67,6 @@ export function ClaimTable({ synthesis }: { synthesis: SynthesisView }) {
           </tbody>
         </table>
       </div>
-    </div>
+    </CollapsibleSection>
   );
 }

@@ -446,6 +446,10 @@ export const wmiCapecRun: WorkbenchRun = {
     // The verified-synthesis view (Step 6/7): every claim cited, 3/3 supported.
     synthesis: {
       headline: "Grounded answer from 2 source(s); 1 cross-source correlation.",
+      narrative:
+        "ATT&CK technique T1047 (Windows Management Instrumentation) is present, and " +
+        "two CAPEC attack patterns (CAPEC-549, CAPEC-563) relate to it. T1047 is " +
+        "corroborated across both the ATT&CK and CAPEC sources.",
       claims: [
         {
           text: "Found ATT&CK record T1047: Windows Management Instrumentation.",
@@ -745,6 +749,8 @@ const DEPRECATED_ANSWER: ServerAnswer = {
     request: "Does the deprecated pattern CAPEC-557 map to any ATT&CK techniques?",
     headline:
       "No records were returned by the routed specialists; 1 question(s) the sources don't establish.",
+    narrative:
+      "The CAPEC source doesn't establish this — the executed query ran cleanly and returned no matching records for CAPEC-557's ATT&CK mappings.",
     claims: [],
     rendered_claims: [],
     abstentions: [

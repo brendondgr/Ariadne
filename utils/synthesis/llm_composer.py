@@ -52,6 +52,9 @@ those sub-questions and do NOT guess.
 Output ONLY a single JSON object (no prose, no markdown fences) with this shape:
 {
   "headline": "<one-sentence summary of what the evidence establishes>",
+  "final_answer": "<a direct, natural-language answer to the ANALYST REQUEST, \
+written for a human analyst, grounded ONLY in the evidence records — 1-4 \
+sentences; if the evidence does not answer the question, say so plainly>",
   "claims": [
     {"text": "<one checkable sentence>",
      "citations": [{"source": "<dataset>", "primary_id": "<id>"}],
@@ -172,6 +175,7 @@ def parse_answer(data: dict, evidence: FederatedEvidence) -> SynthesizedAnswer:
     return SynthesizedAnswer(
         request=evidence.request,
         headline=str(data.get("headline", "") or ""),
+        narrative=str(data.get("final_answer", "") or ""),
         claims=claims,
         abstentions=abstentions,
         composer="llm",

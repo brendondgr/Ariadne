@@ -358,6 +358,8 @@ export interface FlaggedClaimView {
 /** UI-ready projection of the `answer.synthesis` payload. */
 export interface SynthesisView {
   headline: string;
+  /** The natural-language final answer shown above the claim table. */
+  narrative: string;
   claims: SynthesisClaimView[];
   abstentions: SynthesisAbstentionView[];
   flagged: FlaggedClaimView[];
@@ -470,9 +472,19 @@ export interface ApiLiveSource {
   reason?: string | null;
 }
 
+/** Reachability of the synthesis LLM endpoint (drives the header LLM pill). */
+export interface ApiLlmHealth {
+  status: "live" | "down";
+  base_url: string;
+  model: string;
+  enabled: boolean;
+  reason?: string | null;
+}
+
 export interface ApiHealth {
   sources: ApiLiveSource[];
   docker: { available: boolean; services: Record<string, string>; reason?: string | null };
+  llm: ApiLlmHealth;
   checked_at: string;
 }
 
@@ -679,6 +691,8 @@ export interface ServerSynthesisEdge {
 export interface ServerSynthesis {
   request: string;
   headline: string;
+  /** Natural-language answer to the question. Optional: absent on pre-narrative payloads. */
+  narrative?: string;
   claims: SynthesisClaim[];
   rendered_claims: SynthesisClaim[];
   abstentions: SynthesisAbstention[];

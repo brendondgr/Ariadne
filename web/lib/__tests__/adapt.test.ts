@@ -409,6 +409,7 @@ describe("buildSynthesis: the verified answer view", () => {
   const SYNTHESIS: ServerSynthesis = {
     request: "Which mitigations does ATT&CK list for T1047?",
     headline: "Verified answer with 1 supported claim.",
+    narrative: "ATT&CK lists mitigation M1038 for technique T1047.",
     claims: [
       {
         text: "T1047 is mitigated by M1038.",
@@ -489,6 +490,17 @@ describe("buildSynthesis: the verified answer view", () => {
   it("projects provenance-exact edges (source_id/target_id → source/target)", () => {
     const view = buildSynthesis(SYNTHESIS)!;
     expect(view.edges).toEqual([{ source: "CAPEC-555", target: "T1047", rel: "mapsTo" }]);
+  });
+
+  it("carries the natural-language narrative through as the final answer", () => {
+    const view = buildSynthesis(SYNTHESIS)!;
+    expect(view.narrative).toBe("ATT&CK lists mitigation M1038 for technique T1047.");
+  });
+
+  it("defaults narrative to empty string on a pre-narrative payload", () => {
+    const { narrative: _omit, ...legacy } = SYNTHESIS;
+    void _omit;
+    expect(buildSynthesis(legacy as ServerSynthesis).narrative).toBe("");
   });
 
   it("keeps cut claims visible in flagged with the verdict reasons", () => {

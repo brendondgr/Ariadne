@@ -29,9 +29,20 @@ class DockerStateModel(BaseModel):
     reason: str | None = None
 
 
+class LlmHealthModel(BaseModel):
+    """Reachability of the synthesis LLM endpoint for the header status pill."""
+
+    status: Literal["live", "down"]
+    base_url: str
+    model: str
+    enabled: bool
+    reason: str | None = None
+
+
 class HealthResponse(BaseModel):
     sources: list[LiveSourceModel]
     docker: DockerStateModel
+    llm: LlmHealthModel
     checked_at: str
 
 

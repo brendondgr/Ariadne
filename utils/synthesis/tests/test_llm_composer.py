@@ -130,6 +130,18 @@ def test_parse_answer_builds_llm_draft():
     assert answer.verification is None  # a draft, not a verdict
 
 
+def test_parse_answer_reads_final_answer_as_narrative():
+    data = {"headline": "h", "final_answer": "T1047 is WMI.", "claims": []}
+    answer = parse_answer(data, _evidence())
+    assert answer.narrative == "T1047 is WMI."
+
+
+def test_prompt_requests_a_final_answer():
+    from utils.synthesis.llm_composer import _SYSTEM_PROMPT
+
+    assert "final_answer" in _SYSTEM_PROMPT
+
+
 # -- HTTP failure modes ---------------------------------------------------
 
 
