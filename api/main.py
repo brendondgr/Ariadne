@@ -19,6 +19,12 @@ from .models import (
     AdminActionRequest,
     ConfigResponse,
     ConfigUpdateRequest,
+    ConversationCreateRequest,
+    ConversationDetail,
+    ConversationListResponse,
+    ConversationQueryRequest,
+    ConversationRenameRequest,
+    ConversationSummary,
     DockerStateModel,
     EvalRunRequest,
     EvaluationReportResponse,
@@ -29,6 +35,7 @@ from .models import (
     LlmHealthModel,
     QueryRequest,
 )
+from .services import conversations as conversations_service
 from .services.config import apply_update, read_config
 from .services.evaluation import read_evaluation_report, stream_eval_run
 from .services.graph import load_canonical_graph
@@ -92,6 +99,65 @@ def post_query(request: QueryRequest) -> StreamingResponse:
     """Run the federated pipeline, streaming each stage as a Server-Sent Event."""
     stream = stream_query_events(
         request.question,
+        mode=request.mode,
+        use_llm=request.drafter == "llm",
+    )
+    return StreamingResponse(
+        stream,
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
+
+
+@app.get("/api/conversations", response_model=ConversationListResponse)
+def get_conversations() -> ConversationListResponse:
+    """List saved conversation threads, most-recently-updated first."""
+    return ConversationListResponse(
+        conversations=conversations_service.list_conversations()
+    )
+
+
+@app.post("/api/conversations", response_model=ConversationSummary)
+def post_conversation(request: ConversationCreateRequest) -> ConversationSummary:
+    """Create a new (empty) conversation thread."""
+    return ConversationSummary(**conversations_service.create_conversation(request.title))
+
+
+@app.get("/api/conversations/{conversation_id}", response_model=ConversationDetail)
+def get_conversation(conversation_id: str) -> ConversationDetail:
+    """Return a thread with all of its turns for rehydration."""
+    detail = conversations_service.get_conversation(conversation_id)
+    if detail is None:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    return ConversationDetail(**detail)
+
+
+@app.patch("/api/conversations/{conversation_id}", response_model=ConversationSummary)
+def patch_conversation(
+    conversation_id: str, request: ConversationRenameRequest
+) -> ConversationSummary:
+    """Rename a conversation thread."""
+    renamed = conversations_service.rename_conversation(conversation_id, request.title)
+    if renamed is None:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    return ConversationSummary(**renamed)
+
+
+@app.delete("/api/conversations/{conversation_id}")
+def delete_conversation(conversation_id: str) -> dict[str, bool]:
+    """Delete a conversation thread and its turns."""
+    deleted = conversations_service.delete_conversation(conversation_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    return {"deleted": True}
+
+
+@app.post("/api/conversation-query")
+def post_conversation_query(request: ConversationQueryRequest) -> StreamingResponse:
+    """Run one memory-inclusive conversational turn, streaming it as SSE."""
+    stream = conversations_service.stream_conversation_events(
+        request.question,
+        request.conversation_id,
         mode=request.mode,
         use_llm=request.drafter == "llm",
     )

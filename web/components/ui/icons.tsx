@@ -245,3 +245,33 @@ export function LogsIcon({ size = 13, ...props }: IconProps) {
     </svg>
   );
 }
+
+/** Rename — a pencil. Used on the sidebar conversation row's rename action. */
+export function PencilIcon({ size = 12, ...props }: IconProps) {
+  return (
+    <svg {...base({ size, ...props })} aria-hidden>
+      <path
+        d="M15.5 4.5l4 4L8 20H4v-4L15.5 4.5z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/** Delete — a trash can. Used on the sidebar conversation row's delete action. */
+export function TrashIcon({ size = 12, ...props }: IconProps) {
+  return (
+    <svg {...base({ size, ...props })} aria-hidden>
+      <path
+        d="M4 7h16M9 7V4.5h6V7M7 7l1 12.5h8L17 7"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}

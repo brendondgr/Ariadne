@@ -15,6 +15,7 @@ import type {
   AnswerParagraph,
   AnswerSegment,
   CodeLang,
+  ConversationalReply,
   EvidenceRow,
   ExitCode,
   FederatedEvidence,
@@ -42,6 +43,7 @@ import type {
   SpecialistStep,
   StageStatus,
   SynthesisView,
+  ValidationResult,
   WorkbenchRun,
 } from "./types";
 
@@ -562,6 +564,12 @@ export interface RunInputs {
   events?: StampedQueryEvent[];
   /** Live arrival metadata per lane id ("lane-neo4j"/"lane-gremlin"). */
   laneMeta?: Record<string, LaneArrival>;
+  /** The conversational reply (from `final` / stored `payload.final_answer`). */
+  reply?: ConversationalReply | null;
+  /** Route decision for this turn ("quick" | "graph"), from the `route` event. */
+  route?: "quick" | "graph" | null;
+  /** Latest validation-gate verdict (retries overwrite with the last one). */
+  validation?: ValidationResult | null;
 }
 
 function emptyEvidence(request: string): FederatedEvidence {
@@ -648,5 +656,8 @@ export function buildRun(inputs: RunInputs): WorkbenchRun {
     rawPlan: plan,
     rawAnswer: answer,
     events: inputs.events ?? [],
+    reply: inputs.reply ?? null,
+    route: inputs.route ?? null,
+    validation: inputs.validation ?? null,
   };
 }

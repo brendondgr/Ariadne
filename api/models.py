@@ -159,6 +159,55 @@ class QueryRequest(BaseModel):
 
 
 # ---------------------------------------------------------------------------
+# Conversations — persisted, memory-inclusive threads.
+# ---------------------------------------------------------------------------
+
+
+class ConversationSummary(BaseModel):
+    id: str
+    title: str
+    created_at: str
+    updated_at: str
+    turn_count: int = 0
+
+
+class ConversationTurn(BaseModel):
+    id: str
+    conversation_id: str
+    seq: int
+    role: str
+    created_at: str
+    question: str | None = None
+    payload: dict | None = None
+    mode: str | None = None
+    drafter: str | None = None
+    route: str | None = None
+
+
+class ConversationDetail(ConversationSummary):
+    turns: list[ConversationTurn] = Field(default_factory=list)
+
+
+class ConversationListResponse(BaseModel):
+    conversations: list[ConversationSummary] = Field(default_factory=list)
+
+
+class ConversationCreateRequest(BaseModel):
+    title: str | None = None
+
+
+class ConversationRenameRequest(BaseModel):
+    title: str = Field(min_length=1)
+
+
+class ConversationQueryRequest(BaseModel):
+    question: str = Field(min_length=1)
+    conversation_id: str = Field(min_length=1)
+    mode: Literal["plan", "query"] = "query"
+    drafter: Literal["deterministic", "llm"] = "deterministic"
+
+
+# ---------------------------------------------------------------------------
 # Admin — infrastructure / data / graph actions (mirrors main.py modes).
 # ---------------------------------------------------------------------------
 

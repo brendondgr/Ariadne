@@ -25,7 +25,7 @@ Ariadne is a **federated agentic graph-database access prototype** for cybersecu
 |-------|----------|------|
 | Project docs | `docs/purpose.md`, `docs/goals.md`, `docs/structure.md` | Mission, architecture, timeline, repo map |
 | Agent skills | `docs/skills/` | Canonical agent instructions |
-| Python utilities | `utils/` | Domain-specific helpers (`download`, `kg_builder`, `graph_loader`, `infrastructure`, `planner`, `specialists`, `synthesis`, `evaluation`, `orchestration` — the LangGraph pipeline super-graph, `launcher` — the app.py phases; `uv`, Python 3.13+) |
+| Python utilities | `utils/` | Domain-specific helpers (`download`, `kg_builder`, `graph_loader`, `infrastructure`, `planner`, `specialists`, `synthesis`, `evaluation`, `orchestration` — the LangGraph pipeline super-graph, `conversation` — the LangGraph conversational memory layer (persisted threads + router/validation/answer wrapping the pipeline), `launcher` — the app.py phases; `uv`, Python 3.13+) |
 | Web API | `api/` | FastAPI service wrapping `utils/` for the UI (health, config, query SSE, admin SSE) |
 | Webfront | `web/` | Analyst workbench UI (Next.js App Router + Tailwind v4 + Motion, Woven Dusk); proxies `/api/*` to `api/` |
 | Launcher | `app.py` | Starts the FastAPI service + Next.js app together (`python app.py`) |

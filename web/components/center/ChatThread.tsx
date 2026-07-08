@@ -1,8 +1,22 @@
+"use client";
+
+import { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import type { WorkbenchRun } from "@/lib/types";
+import { collapse } from "@/lib/motion";
 import { ThreadHeader } from "./ThreadHeader";
 import { UserMessage } from "./UserMessage";
+import { ReplyMessage } from "./ReplyMessage";
 import { AnswerCard } from "./AnswerCard";
 import { Composer } from "./Composer";
+
+/** A graph-path turn has grounded content worth showing beneath the reply
+ *  bubble once it has evidence or an answer payload; a quick-path turn (or one
+ *  still probing/planning with nothing back yet) has none. */
+function hasGroundedContent(run: WorkbenchRun): boolean {
+  if (run.reply && run.reply.route === "quick") return false;
+  return run.federated.results.length > 0 || run.answer.paragraphs.length > 0 || run.rawAnswer !== null;
+}
 
 interface ChatThreadProps {
   title: string;
@@ -16,8 +30,15 @@ interface ChatThreadProps {
   onSelectRun: (id: string) => void;
 }
 
-/** A question + its answer card. Clicking anywhere selects the turn so the
- *  inspector follows it. Only the streaming turn animates (`live`). */
+/** A question + its assistant reply. Clicking anywhere selects the turn so the
+ *  inspector follows it. Only the streaming turn animates (`live`).
+ *
+ *  Render order: the user's question bubble, then the conversational REPLY
+ *  bubble (`run.reply.text`) as the primary assistant message, then — only for
+ *  graph-path turns with grounded content — the existing tabbed `AnswerCard`
+ *  beneath it, collapsed by default so the reply stays the focal point. A
+ *  turn with no `reply` yet (mid-stream, or a pre-conversational fixture) just
+ *  shows the grounded card, matching the previous behavior. */
 function TurnBlock({
   run,
   active,
@@ -29,6 +50,9 @@ function TurnBlock({
   live: boolean;
   onSelect: () => void;
 }) {
+  const [cardOpen, setCardOpen] = useState(false);
+  const grounded = hasGroundedContent(run);
+
   return (
     <div
       onClick={onSelect}
@@ -37,7 +61,33 @@ function TurnBlock({
       }`}
     >
       <UserMessage text={run.question} />
-      <AnswerCard run={run} live={live} />
+      {run.reply ? (
+        <>
+          <ReplyMessage
+            run={run}
+            live={live}
+            hasGroundedCard={grounded}
+            cardOpen={cardOpen}
+            onToggleCard={() => setCardOpen((v) => !v)}
+          />
+          <AnimatePresence initial={false}>
+            {grounded && cardOpen && (
+              <motion.div
+                key="grounded-card"
+                variants={collapse}
+                initial="hidden"
+                animate="show"
+                exit="hidden"
+                className="overflow-hidden"
+              >
+                <AnswerCard run={run} live={live} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </>
+      ) : (
+        <AnswerCard run={run} live={live} />
+      )}
     </div>
   );
 }
