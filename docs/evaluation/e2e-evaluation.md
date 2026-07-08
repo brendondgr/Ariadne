@@ -1,6 +1,6 @@
 # End-to-End Evaluation
 
-ATT&CK 19.0 · CAPEC 3.9 · full report (live), judge=proxy
+ATT&CK 19.0 · CAPEC 3.9 · full report (live), judge=llm
 
 The assembled pipeline (probe → plan → specialists → synthesis) scored against snapshot-derived gold. The four end-to-end metrics and the unsupported-claim rate are deterministic and reproducible; the LLM judge's qualitative scores are opt-in and labeled where they contribute.
 
@@ -36,11 +36,11 @@ The assembled pipeline (probe → plan → specialists → synthesis) scored aga
 
 ## LLM Evaluator (judge)
 
-Source: **deterministic** (deterministic proxy — reproducible)
+Source: **mixed** (10 LLM verdicts — NON-reproducible)
 
 - mean faithfulness: 1.0
 - mean groundedness: 1.0
-- mean evidence sufficiency: 1.0
+- mean evidence sufficiency: 0.97
 - mean unsupported-claim rate: 0.0 (deterministic)
 
 ## By tier
@@ -54,4 +54,4 @@ Source: **deterministic** (deterministic proxy — reproducible)
 
 ## What this diagnoses
 
-- All end-to-end metrics at ceiling on the scored catalogue; the assembled pipeline matches the snapshot-derived gold.
+- LLM judge contributed 10 verdict(s) (source=mixed); those qualitative scores are NON-reproducible — the deterministic proxy covers the rest.

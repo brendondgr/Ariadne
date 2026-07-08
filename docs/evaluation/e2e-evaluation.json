@@ -2,7 +2,7 @@
   "meta": {
     "attack_version": "19.0",
     "capec_version": "3.9",
-    "generated_note": "full report (live), judge=proxy"
+    "generated_note": "full report (live), judge=llm"
   },
   "definitions": {
     "cross_source_answer_accuracy": "Live cross-source join values vs the snapshot-derived must_correlate set (exact-set-match + precision/recall/F1); negatives must surface none.",
@@ -60,12 +60,12 @@
         "mean_abstention_proofs": 1.0
       },
       "llm_judge": {
-        "source": "deterministic",
-        "llm_covered": 0,
+        "source": "mixed",
+        "llm_covered": 10,
         "answers_scored": 120,
         "mean_faithfulness": 1.0,
         "mean_groundedness": 1.0,
-        "mean_evidence_sufficiency": 1.0,
+        "mean_evidence_sufficiency": 0.97,
         "mean_unsupported_claim_rate": 0.0,
         "verdicts": [
           {
@@ -81,35 +81,35 @@
           },
           {
             "question_id": "F-CTM-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
-            "evidence_sufficiency": 1.0,
+            "evidence_sufficiency": 0.4,
             "unsupported_claim_rate": 0.0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies the ATT&CK techniques mapped to CAPEC-555, but it completely ignores the second part of the question regarding the mitigations, despite the evidence records providing them."
             ]
           },
           {
             "question_id": "F-CTM-03",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
-            "evidence_sufficiency": 1.0,
+            "evidence_sufficiency": 0.4,
             "unsupported_claim_rate": 0.0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies the ATT&CK techniques mapped to CAPEC-593, but it completely fails to address the second part of the question regarding the mitigations for those techniques, despite the evidence records providing that information."
             ]
           },
           {
             "question_id": "F-CTM-04",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
-            "evidence_sufficiency": 1.0,
+            "evidence_sufficiency": 0.5,
             "unsupported_claim_rate": 0.0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies the ATT&CK techniques mapped to CAPEC-639, but it completely ignores the second part of the question regarding mitigations, despite the evidence records (q2) containing the relevant mitigation IDs for those techniques."
             ]
           },
           {
@@ -125,13 +125,13 @@
           },
           {
             "question_id": "F-CTM-06",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
-            "evidence_sufficiency": 1.0,
+            "evidence_sufficiency": 0.5,
             "unsupported_claim_rate": 0.0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies the ATT&CK techniques mapped to CAPEC-665, but it completely fails to address the second part of the question regarding the mitigations associated with those techniques, despite the evidence records containing that information."
             ]
           },
           {
@@ -180,13 +180,13 @@
           },
           {
             "question_id": "F-CTT-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
-            "evidence_sufficiency": 1.0,
+            "evidence_sufficiency": 0.3,
             "unsupported_claim_rate": 0.0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer identifies the ATT&CK techniques (T1566, T1598) mapped from CAPEC-98, but it fails to answer the core question regarding the 'tactics' (TA0001 Initial Access and TA0043 Reconnaissance), despite this information being explicitly available in the evidence records."
             ]
           },
           {
@@ -235,57 +235,57 @@
           },
           {
             "question_id": "F-CTT-06",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
-            "evidence_sufficiency": 1.0,
+            "evidence_sufficiency": 0.3,
             "unsupported_claim_rate": 0.0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer identifies the ATT&CK techniques mapped from CAPEC-37, but it fails to provide the actual ATT&CK tactics (Collection and Credential Access) explicitly mentioned in the evidence records for those techniques."
             ]
           },
           {
             "question_id": "F-REV-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately identifies the three CAPEC patterns mapping to T1040 and correctly identifies the name of the technique using the provided evidence."
             ]
           },
           {
             "question_id": "F-REV-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately identifies the mapping from CAPEC-98 to T1566 and correctly identifies T1566 as Phishing based on the provided evidence records."
             ]
           },
           {
             "question_id": "F-REV-03",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately identifies the mapping from CAPEC-49 to T1110.001 and correctly names the technique based on the provided evidence."
             ]
           },
           {
             "question_id": "F-REV-04",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately identifies the mapping from CAPEC-555 to T1021 and correctly identifies the name of technique T1021 based on the provided evidence."
             ]
           },
           {
@@ -4619,6 +4619,6 @@
     ]
   },
   "diagnosis": [
-    "All end-to-end metrics at ceiling on the scored catalogue; the assembled pipeline matches the snapshot-derived gold."
+    "LLM judge contributed 10 verdict(s) (source=mixed); those qualitative scores are NON-reproducible \u2014 the deterministic proxy covers the rest."
   ]
 }
