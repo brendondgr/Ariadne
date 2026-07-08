@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { SHADOW } from "@/lib/ui";
 import { SendArrow } from "@/components/ui/icons";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
@@ -12,13 +12,33 @@ type Drafter = "deterministic" | "llm";
  *  deterministic/LLM drafter toggle, and Send — wired to the run machine's
  *  `submit`, which streams the live `/api/query` pipeline. */
 export function Composer() {
-  const { submit, replaying } = useWorkbench();
+  const { submit, replaying, registerComposerFill } = useWorkbench();
   const [question, setQuestion] = useState("");
   const [mode, setMode] = useState<Mode>("query");
   // Default to the LLM drafter: it produces the natural-language final answer
   // (planner + specialists + synthesis narrator all use the LLM). Falls back to
   // the deterministic pipeline automatically when the endpoint is unreachable.
   const [drafter, setDrafter] = useState<Drafter>("llm");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Register the imperative fill handler a clicked reference (elsewhere in the
+  // answer) invokes via `setComposerDraft`. It fills and focuses but never
+  // auto-sends — the analyst reviews/edits (and can adjust mode/drafter) first.
+  // The setState here runs from the click event, not during render/effect.
+  useEffect(() => {
+    registerComposerFill((text) => {
+      setQuestion(text);
+      const el = textareaRef.current;
+      if (el) {
+        el.focus();
+        // Caret at the end so an edit appends naturally.
+        const end = text.length;
+        el.setSelectionRange(end, end);
+        el.scrollIntoView({ block: "nearest" });
+      }
+    });
+    return () => registerComposerFill(null);
+  }, [registerComposerFill]);
 
   const canSend = question.trim().length > 0 && !replaying;
 
@@ -41,6 +61,7 @@ export function Composer() {
         style={{ boxShadow: SHADOW.composer }}
       >
         <textarea
+          ref={textareaRef}
           rows={1}
           value={question}
           onChange={(e) => setQuestion(e.target.value)}

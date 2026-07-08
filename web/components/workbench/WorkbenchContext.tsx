@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from "react";
 import { MotionConfig } from "motion/react";
 import { useRunMachine, type RunMachine } from "@/lib/runMachine";
 import type { GraphDataset } from "@/lib/types";
@@ -36,6 +36,13 @@ interface WorkbenchState extends RunMachine {
   /** Active graph dataset selection. */
   graphDataset: GraphDataset;
   setGraphDataset: (d: GraphDataset) => void;
+  /** Pre-fill the composer input with `text` and focus it (does not send).
+   *  Used by clicked references in an answer to seed a follow-up question. */
+  setComposerDraft: (text: string) => void;
+  /** The composer registers its fill handler here on mount; `setComposerDraft`
+   *  invokes it. An imperative channel (not derived state) so a click event
+   *  drives the input without the composer syncing via a state-in-effect. */
+  registerComposerFill: (fn: ((text: string) => void) | null) => void;
 }
 
 const WorkbenchCtx = createContext<WorkbenchState | null>(null);
@@ -50,7 +57,15 @@ export function WorkbenchProvider({ children }: { children: ReactNode }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [view, setView] = useState<"chat" | "graphs" | "evaluation">("chat");
   const [graphDataset, setGraphDataset] = useState<GraphDataset>("attack");
+  const composerFillRef = useRef<((text: string) => void) | null>(null);
   const machine = useRunMachine();
+
+  const registerComposerFill = useCallback((fn: ((text: string) => void) | null) => {
+    composerFillRef.current = fn;
+  }, []);
+  const setComposerDraft = useCallback((text: string) => {
+    composerFillRef.current?.(text);
+  }, []);
 
   const openInspector = useCallback(() => {
     setInspectorOpen(true);
@@ -91,8 +106,10 @@ export function WorkbenchProvider({ children }: { children: ReactNode }) {
       setView,
       graphDataset,
       setGraphDataset,
+      setComposerDraft,
+      registerComposerFill,
     }),
-    [machine, activeTab, focusStageId, focusNonce, focusStage, inspectorOpen, drawerOpen, openInspector, leftOpen, settingsOpen, openSettings, view, graphDataset],
+    [machine, activeTab, focusStageId, focusNonce, focusStage, inspectorOpen, drawerOpen, openInspector, leftOpen, settingsOpen, openSettings, view, graphDataset, setComposerDraft, registerComposerFill],
   );
 
   return (
