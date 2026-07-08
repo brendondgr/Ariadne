@@ -37,10 +37,6 @@ from utils.conversation.config import ConversationConfig
 from utils.conversation.llm import ConversationLLM
 from utils.conversation.state import ConversationState
 
-# A persist hook (Step 6) runs at finalize: it records the turn and returns the
-# thread title. ``(state, status, exit_code) -> title``.
-PersistHook = Callable[..., str]
-
 
 def _route_decider(state: dict[str, Any]) -> str:
     return ROUTE_QUICK if state.get("route") == ROUTE_QUICK else "graph"
@@ -50,28 +46,23 @@ def _validation_decider(state: dict[str, Any]) -> str:
     return "retry" if state.get("validation_verdict") == VERDICT_INSUFFICIENT else "done"
 
 
-def _make_finalize_node(persist: PersistHook | None):
-    def finalize_node(state: dict[str, Any]) -> dict[str, Any]:
-        if state.get("route") == ROUTE_QUICK:
-            status, exit_code = "answered", 0
-        else:
-            status = state.get("status") or "answered"
-            exit_code = int(state.get("exit_code", 0))
+def _finalize_node(state: dict[str, Any]) -> dict[str, Any]:
+    """Emit the terminal ``conversation`` + ``done`` events for the turn.
 
-        title = ""
-        if persist is not None:
-            title = persist(state, status=status, exit_code=exit_code) or ""
+    The thread title is assigned by the API service after the stream completes
+    (it owns persistence); the client refreshes the thread list on ``done``.
+    """
+    if state.get("route") == ROUTE_QUICK:
+        status, exit_code = "answered", 0
+    else:
+        status = state.get("status") or "answered"
+        exit_code = int(state.get("exit_code", 0))
 
-        emit_event(
-            (
-                "conversation",
-                {"conversation_id": state.get("conversation_id", ""), "title": title},
-            )
-        )
-        emit_event(("done", {"status": status, "exit_code": exit_code}))
-        return {"status": status, "exit_code": exit_code}
-
-    return finalize_node
+    emit_event(
+        ("conversation", {"conversation_id": state.get("conversation_id", "")})
+    )
+    emit_event(("done", {"status": status, "exit_code": exit_code}))
+    return {"status": status, "exit_code": exit_code}
 
 
 def build_conversation_graph(
@@ -82,7 +73,6 @@ def build_conversation_graph(
     router_client: ConversationLLM | None = None,
     validation_client: ConversationLLM | None = None,
     answer_client: ConversationLLM | None = None,
-    persist: PersistHook | None = None,
     pipeline_kwargs: dict[str, Any] | None = None,
 ):
     """Compile the conversational orchestration graph."""
@@ -95,7 +85,7 @@ def build_conversation_graph(
     )
     graph.add_node("validation", make_validation_node(config, validation_client))
     graph.add_node("answer", make_answer_node(config, answer_client))
-    graph.add_node("finalize", _make_finalize_node(persist))
+    graph.add_node("finalize", _finalize_node)
 
     graph.add_edge(START, "orchestration")
     graph.add_edge("orchestration", "router")

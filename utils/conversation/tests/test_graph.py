@@ -175,26 +175,16 @@ def test_retry_cap_forces_pass():
     assert validations[-1]["capped"] is True
 
 
-def test_persist_hook_supplies_conversation_title():
+def test_conversation_event_carries_id():
     canned = PipelineRun(
         question="q", answer=SynthesizedAnswer(request="q", narrative="b"),
         status="answered", exit_code=0,
     )
-    seen = {}
-
-    def persist(state, *, status, exit_code):
-        seen["status"] = status
-        seen["final_answer"] = state.get("final_answer")
-        return "Auto Title"
-
     events = list(
         iter_conversation(
-            "q", conversation_id="c1", history=[],
-            runner=_runner_forwarding(canned), persist=persist,
+            "q", conversation_id="c-xyz", history=[],
+            runner=_runner_forwarding(canned),
         )
     )
     convo = dict(events)["conversation"]
-    assert convo["title"] == "Auto Title"
-    assert convo["conversation_id"] == "c1"
-    assert seen["status"] == "answered"
-    assert seen["final_answer"] == "b"
+    assert convo["conversation_id"] == "c-xyz"
