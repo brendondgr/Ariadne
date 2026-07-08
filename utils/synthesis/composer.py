@@ -173,20 +173,46 @@ class DeterministicComposer:
         )
 
 
-def _narrative(claims: list[Claim], abstentions: list[Abstention]) -> str:
-    """A readable prose answer assembled from the grounded claim sentences.
+def _summarize_ids(ids: list[str], cap: int = 8) -> str:
+    """`"A, B, C, and 5 more"` — a compact, readable identifier list."""
+    seen: dict[str, None] = {}
+    for i in ids:
+        seen.setdefault(i, None)
+    uniq = list(seen)
+    shown = uniq[:cap]
+    listed = ", ".join(shown)
+    extra = len(uniq) - len(shown)
+    return f"{listed}, and {extra} more" if extra > 0 else listed
 
-    The LLM composer writes a free-prose ``final_answer``; without an LLM this
-    stitches the same evidence-backed claim sentences (facts first, then
-    cross-source correlations) and honest abstentions into one paragraph, so the
-    UI always has a natural-language answer to show above the claim table.
+
+def _narrative(claims: list[Claim], abstentions: list[Abstention]) -> str:
+    """A readable prose answer assembled from the grounded claims.
+
+    The LLM narrator writes the fluent answer when the LLM is on; without it this
+    is the fallback. It keeps each source's one-line fact summary, then collapses
+    the (often many) cross-source correlations into a single sentence naming a few
+    identifiers instead of repeating "X is corroborated …" once per id, and adds
+    honest abstentions — so the UI always has a readable answer above the table.
     """
-    facts = [c.text for c in claims if c.kind == "fact"]
-    correlations = [c.text for c in claims if c.kind == "correlation"]
-    parts = [*facts, *correlations, *(a.statement for a in abstentions)]
-    if not parts:
+    facts = [c.text.rstrip(".") for c in claims if c.kind == "fact"]
+    correlation_ids = [i for c in claims if c.kind == "correlation" for i in c.entity_ids]
+
+    sentences = list(facts)
+    if correlation_ids:
+        n = len(set(correlation_ids))
+        sentences.append(
+            f"{n} identifier{'' if n == 1 else 's'} are corroborated across both "
+            f"CAPEC and ATT&CK ({_summarize_ids(correlation_ids)})"
+        )
+
+    if not sentences and not abstentions:
         return "The routed sources returned no evidence for this question."
-    return " ".join(parts)
+    body = ". ".join(s for s in sentences if s)
+    if body:
+        body += "."
+    if abstentions:
+        body = (body + " " + " ".join(a.statement for a in abstentions)).strip()
+    return body
 
 
 def _headline(

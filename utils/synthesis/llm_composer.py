@@ -89,8 +89,12 @@ def _record_line(record) -> str:
     return json.dumps(entry, ensure_ascii=False)
 
 
-def build_messages(evidence: FederatedEvidence) -> list[dict[str, str]]:
-    """Build the chat messages for one composition (pure; testable without HTTP)."""
+def build_evidence_context(evidence: FederatedEvidence) -> str:
+    """The user-message body: request + retrieved records + joins + empties.
+
+    Shared by the claims composer and the prose narrator so both reason over the
+    exact same evidence framing (pure; testable without HTTP).
+    """
     blocks: list[str] = []
     empties: list[str] = []
     for result in evidence.results:
@@ -125,9 +129,14 @@ def build_messages(evidence: FederatedEvidence) -> list[dict[str, str]]:
         "EMPTY SUB-QUESTIONS (ran cleanly, zero records — MUST abstain):",
         "\n".join(empties) if empties else "  (none)",
     ]
+    return "\n".join(context)
+
+
+def build_messages(evidence: FederatedEvidence) -> list[dict[str, str]]:
+    """Build the chat messages for one composition (pure; testable without HTTP)."""
     return [
         {"role": "system", "content": _SYSTEM_PROMPT},
-        {"role": "user", "content": "\n".join(context)},
+        {"role": "user", "content": build_evidence_context(evidence)},
     ]
 
 

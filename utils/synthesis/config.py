@@ -39,7 +39,7 @@ class SynthesisConfig:
     llm_base_url: str = DEFAULT_LLM_BASE_URL
     llm_model: str = DEFAULT_LLM_MODEL
     llm_timeout_s: float = 30.0
-    llm_max_tokens: int = 4096
+    llm_max_tokens: int = 8192
     # How many record citations a single claim may carry (mirrors the API's
     # inline-citation cap so answers stay readable).
     max_citations: int = 8

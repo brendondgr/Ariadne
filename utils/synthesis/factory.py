@@ -20,6 +20,7 @@ from .composer import DeterministicComposer
 from .config import SynthesisConfig
 from .contracts import SynthesizedAnswer
 from .llm_composer import ComposerUnavailable, OpenAICompatibleComposer
+from .narrator import compose_narrative
 from .verifier import verify_answer
 
 logger = logging.getLogger("ariadne.synthesis.factory")
@@ -83,4 +84,28 @@ def synthesize(
     """
     config = config or SynthesisConfig.from_env()
     composer = composer or select_composer(config)
-    return verify_answer(composer.compose(evidence), evidence)
+    answer = verify_answer(composer.compose(evidence), evidence)
+    _apply_llm_narrative(answer, evidence, config)
+    return answer
+
+
+def _apply_llm_narrative(
+    answer: SynthesizedAnswer, evidence: FederatedEvidence, config: SynthesisConfig
+) -> None:
+    """Best-effort: replace the narrative with an LLM-written prose answer.
+
+    Runs only when the LLM is enabled and we don't already have a good LLM
+    narrative (the claims composer's own ``final_answer`` when it succeeded).
+    A dedicated small prose call is reliable where the full claims-JSON call
+    truncates; on any failure the deterministic narrative is kept and the reason
+    recorded.
+    """
+    if not config.llm_enabled:
+        return
+    if answer.composer == "llm" and answer.narrative.strip():
+        return  # the claims composer already produced a fluent LLM answer
+    try:
+        answer.narrative = compose_narrative(evidence, config)
+    except ComposerUnavailable as exc:
+        logger.info("LLM narrator unavailable (%s); keeping deterministic answer", exc)
+        answer.fallback_reason = answer.fallback_reason or f"LLM narrator unavailable ({exc})"

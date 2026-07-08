@@ -15,7 +15,10 @@ export function Composer() {
   const { submit, replaying } = useWorkbench();
   const [question, setQuestion] = useState("");
   const [mode, setMode] = useState<Mode>("query");
-  const [drafter, setDrafter] = useState<Drafter>("deterministic");
+  // Default to the LLM drafter: it produces the natural-language final answer
+  // (planner + specialists + synthesis narrator all use the LLM). Falls back to
+  // the deterministic pipeline automatically when the endpoint is unreachable.
+  const [drafter, setDrafter] = useState<Drafter>("llm");
 
   const canSend = question.trim().length > 0 && !replaying;
 
