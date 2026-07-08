@@ -6,10 +6,10 @@ import { labelColor, toForceGraphData } from "@/lib/graph";
 import {
   synthesisToGraphPayload,
   isRenderableSubgraph,
-  isProvenanceExact,
 } from "@/lib/synthesisGraph";
 import { SHADOW } from "@/lib/ui";
 import { GraphCanvas } from "@/components/graph/GraphCanvas";
+import { CollapsibleSection } from "./CollapsibleSection";
 
 /** Deliverable #4 — the compact CAPEC–ATT&CK–mitigation network plot.
  *
@@ -39,23 +39,14 @@ export function AnswerNetworkPlot({
 
   const legend = Object.entries(payload.nodes_by_label);
   const abstentions = synthesis.abstentions.length;
-  const exact = isProvenanceExact(synthesis);
+  const nodeCount = payload.counts.nodes;
+  const linkCount = payload.counts.relationships;
 
   return (
-    <div className="px-[18px] py-[13px]" style={{ boxShadow: SHADOW.insetBottom }}>
-      <div className="mb-[9px] flex flex-wrap items-center gap-2">
-        <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-text-muted">
-          Network plot
-        </span>
-        <span
-          className="inline-flex items-center rounded-full px-2 py-px font-mono text-[10px] text-text-muted"
-          style={{ boxShadow: SHADOW.hairline }}
-        >
-          {exact ? "provenance-exact" : "derived"} · {payload.counts.nodes} nodes ·{" "}
-          {payload.counts.relationships} edges
-        </span>
-      </div>
-
+    <CollapsibleSection
+      label="Network plot"
+      count={`${nodeCount} node${nodeCount === 1 ? "" : "s"} · ${linkCount} link${linkCount === 1 ? "" : "s"}`}
+    >
       {/* Legend: node type → palette color (shared with the canvas). */}
       <div className="mb-2 flex flex-wrap gap-x-3 gap-y-1">
         {legend.map(([label, count]) => (
@@ -84,11 +75,9 @@ export function AnswerNetworkPlot({
       </div>
 
       <p className="m-0 mt-2 font-mono text-[10.5px] leading-[1.5] text-text-muted">
-        {exact
-          ? "Edges are the verifier's provenance-exact CAPEC→ATT&CK mappings from the federation join index."
-          : "Edges inferred from the federation join index and within-claim co-citation — a derived view, not provenance-exact."}
-        {abstentions > 0 && ` ${abstentions} abstention(s) omitted (absence, not shown as nodes).`}
+        Each line links a CAPEC attack pattern to the ATT&CK technique it maps to.
+        {abstentions > 0 && ` Questions the sources couldn't answer aren't drawn here.`}
       </p>
-    </div>
+    </CollapsibleSection>
   );
 }

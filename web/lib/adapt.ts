@@ -366,6 +366,7 @@ export function buildSynthesis(synthesis: ServerSynthesis | null | undefined): S
   const report = synthesis.verification;
   return {
     headline: synthesis.headline,
+    narrative: synthesis.narrative ?? "",
     claims,
     abstentions,
     flagged,

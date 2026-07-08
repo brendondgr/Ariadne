@@ -1,11 +1,11 @@
 "use client";
 
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { motion } from "motion/react";
 import type { AnswerParagraph, SynthesisView, WorkbenchRun, StampedQueryEvent } from "@/lib/types";
 import { SHADOW } from "@/lib/ui";
 import { fadeSlideUp } from "@/lib/motion";
-import { CopyIcon, ExportIcon, LinkIcon } from "@/components/ui/icons";
+import { CheckIcon, CopyIcon, ExportIcon, LinkIcon } from "@/components/ui/icons";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 import { MiniStepper } from "./MiniStepper";
 import { LiveTicker } from "./LiveTicker";
@@ -14,6 +14,7 @@ import { ProvenanceChip } from "./ProvenanceChip";
 import { JoinChip } from "./JoinChip";
 import { ClaimTable } from "./ClaimTable";
 import { AnswerNetworkPlot } from "./AnswerNetworkPlot";
+import { CollapsibleSection } from "./CollapsibleSection";
 
 function Paragraph({ paragraph }: { paragraph: AnswerParagraph }) {
   return (
@@ -63,14 +64,10 @@ function VerificationPill({ synthesis }: { synthesis: SynthesisView }) {
  *  claims the verifier cut. */
 function SynthesisBlock({ synthesis }: { synthesis: SynthesisView }) {
   return (
-    <div className="px-[18px] py-[13px]" style={{ boxShadow: SHADOW.insetBottom }}>
-      <div className="mb-[9px] flex flex-wrap items-center gap-2">
-        <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-text-muted">
-          Verified answer
-        </span>
-        <VerificationPill synthesis={synthesis} />
-      </div>
-
+    <CollapsibleSection
+      label="Verified answer"
+      accessory={<VerificationPill synthesis={synthesis} />}
+    >
       {synthesis.claims.map((claim, i) => (
         <p key={`claim-${i}`} className="m-0 mb-2 text-[13px] leading-[1.6] text-text-soft">
           <span className="mr-1.5 font-mono text-[10px] uppercase tracking-[0.06em] text-text-muted">
@@ -143,7 +140,7 @@ function SynthesisBlock({ synthesis }: { synthesis: SynthesisView }) {
           composer: {synthesis.composer} — {synthesis.fallbackReason}
         </p>
       )}
-    </div>
+    </CollapsibleSection>
   );
 }
 
@@ -192,6 +189,8 @@ function AnswerError({ message }: { message: string }) {
  *  stream state. */
 export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boolean }) {
   const { setActiveTab, openInspector, statusOf, replaying, error } = useWorkbench();
+  const [copied, setCopied] = useState(false);
+  const [exported, setExported] = useState(false);
   const cardReplaying = live && replaying;
   const answered = live ? statusOf("answer", "pass") === "pass" : run.status !== "running";
 
@@ -202,8 +201,29 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
     setActiveTab("raw");
     openInspector();
   };
-  const copyEvidence = () => {
-    void navigator.clipboard?.writeText(JSON.stringify(run.federated, null, 2));
+  const copyEvidence = async () => {
+    try {
+      await navigator.clipboard?.writeText(JSON.stringify(run.federated, null, 2));
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch {
+      // Clipboard blocked (insecure context / permissions) — leave state as-is.
+    }
+  };
+  const exportEvidence = () => {
+    const blob = new Blob([JSON.stringify(run.federated, null, 2)], {
+      type: "application/json",
+    });
+    const href = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = href;
+    a.download = `ariadne-evidence-${run.id}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(href);
+    setExported(true);
+    window.setTimeout(() => setExported(false), 1600);
   };
 
   return (
@@ -223,18 +243,40 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
         createdAt={run.createdAt}
       />
 
-      <div className="px-[18px] pb-4 pt-[18px] text-sm leading-[1.62] text-text-soft">
-        {run.answer.paragraphs.map((p, i) => (
-          <Paragraph key={i} paragraph={p} />
-        ))}
-      </div>
+      {run.answer.synthesis ? (
+        <>
+          {/* The natural-language final answer — always open, read first. */}
+          <div className="px-[18px] pb-4 pt-[18px]">
+            <div className="mb-[9px] font-mono text-[10px] uppercase tracking-[0.08em] text-text-muted">
+              Final answer
+            </div>
+            <p className="m-0 text-sm leading-[1.62] text-text-soft">
+              {run.answer.synthesis.narrative || run.answer.synthesis.headline}
+            </p>
+          </div>
 
-      {run.answer.synthesis && <SynthesisBlock synthesis={run.answer.synthesis} />}
+          {/* The per-source "Found …" evidence — collapsed by default. */}
+          {run.answer.paragraphs.length > 0 && (
+            <CollapsibleSection label="Retrieved evidence" count={run.answer.paragraphs.length}>
+              <div className="text-sm leading-[1.62] text-text-soft">
+                {run.answer.paragraphs.map((p, i) => (
+                  <Paragraph key={i} paragraph={p} />
+                ))}
+              </div>
+            </CollapsibleSection>
+          )}
 
-      {run.answer.synthesis && <ClaimTable synthesis={run.answer.synthesis} />}
-
-      {run.answer.synthesis && (
-        <AnswerNetworkPlot synthesis={run.answer.synthesis} joinPairs={run.answer.joinPairs} />
+          <SynthesisBlock synthesis={run.answer.synthesis} />
+          <ClaimTable synthesis={run.answer.synthesis} />
+          <AnswerNetworkPlot synthesis={run.answer.synthesis} joinPairs={run.answer.joinPairs} />
+        </>
+      ) : (
+        /* Plan-mode / pre-synthesis payloads carry no narrative — show prose directly. */
+        <div className="px-[18px] pb-4 pt-[18px] text-sm leading-[1.62] text-text-soft">
+          {run.answer.paragraphs.map((p, i) => (
+            <Paragraph key={i} paragraph={p} />
+          ))}
+        </div>
       )}
 
       {run.events.length > 0 && (
@@ -243,22 +285,15 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
         </div>
       )}
 
-      {(run.answer.sequencingNotes.length > 0 || run.answer.timings) && (
+      {run.answer.timings && (
         <div className="px-[18px] pb-2.5">
-          {run.answer.sequencingNotes.map((note, i) => (
-            <div key={i} className="mb-1 font-mono text-[10.5px] text-text-muted">
-              ⇢ sequenced: {note}
-            </div>
-          ))}
-          {run.answer.timings && (
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10.5px] text-text-muted">
-              {run.answer.timings.map((t, i) => (
-                <span key={i}>
-                  {t.label} <span className="text-text-soft">{Math.round(t.ms)}ms</span>
-                </span>
-              ))}
-            </div>
-          )}
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10.5px] text-text-muted">
+            {run.answer.timings.map((t, i) => (
+              <span key={i}>
+                {t.label} <span className="text-text-soft">{Math.round(t.ms)}ms</span>
+              </span>
+            ))}
+          </div>
         </div>
       )}
 
@@ -283,17 +318,22 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
           <button
             type="button"
             onClick={copyEvidence}
+            aria-live="polite"
             className="inline-flex items-center gap-1.5 border-0 bg-transparent p-0 font-mono text-[11.5px] text-text-muted transition-colors hover:text-text"
+            style={{ color: copied ? "var(--color-primary)" : undefined }}
           >
-            <CopyIcon />
-            Copy
+            {copied ? <CheckIcon /> : <CopyIcon />}
+            {copied ? "Copied" : "Copy"}
           </button>
           <button
             type="button"
+            onClick={exportEvidence}
+            aria-live="polite"
             className="inline-flex items-center gap-1.5 border-0 bg-transparent p-0 font-mono text-[11.5px] text-text-muted transition-colors hover:text-text"
+            style={{ color: exported ? "var(--color-primary)" : undefined }}
           >
-            <ExportIcon />
-            Export
+            {exported ? <CheckIcon /> : <ExportIcon />}
+            {exported ? "Exported" : "Export"}
           </button>
         </div>
       </div>
