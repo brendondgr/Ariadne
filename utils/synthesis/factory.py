@@ -81,9 +81,14 @@ def synthesize(
     The returned answer always carries a ``VerificationReport``; unsupported
     claims are already flagged and excluded from ``rendered_claims()``, and
     abstentions are enforced against the evidence.
+
+    Claims are composed **deterministically** (grounded by construction, fast,
+    and correct — nothing to fabricate). When the LLM is enabled, its role is the
+    natural-language ``narrative`` via the dedicated prose narrator: reliable and
+    cheap, where regenerating the full claims JSON over large evidence truncates.
     """
     config = config or SynthesisConfig.from_env()
-    composer = composer or select_composer(config)
+    composer = composer or DeterministicComposer(config)
     answer = verify_answer(composer.compose(evidence), evidence)
     _apply_llm_narrative(answer, evidence, config)
     return answer

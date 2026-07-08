@@ -23,6 +23,7 @@ from utils.synthesis.llm_composer import (
     extract_json_object,
     parse_answer,
 )
+from utils.synthesis.verifier import verify_answer
 
 from ._fixtures import make_evidence, make_record, make_result
 
@@ -221,7 +222,10 @@ def test_synthesize_cuts_llm_fabrication_and_enforces_abstention(monkeypatch):
     }
     _stub_post(monkeypatch, response=_chat_response(fabricated))
     evidence = _evidence()
-    answer = synthesize(evidence, SynthesisConfig(llm_enabled=True))
+    # The LLM claims composer's output flows through the same deterministic
+    # verifier, which cuts anything the evidence does not ground.
+    draft = OpenAICompatibleComposer(SynthesisConfig()).compose(evidence)
+    answer = verify_answer(draft, evidence)
 
     assert answer.composer == "llm"
     assert answer.verification is not None
