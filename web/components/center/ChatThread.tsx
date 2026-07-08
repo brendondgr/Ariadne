@@ -115,7 +115,7 @@ export function ChatThread({
 }: ChatThreadProps) {
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-      <ThreadHeader title={title} run={activeRun} />
+      <ThreadHeader title={title} run={activeRun} runs={runs} />
       <div className="flex flex-1 flex-col gap-3 overflow-y-auto px-[14px] pb-2 pt-6">
         {runs.length === 0 ? (
           <EmptyThread />
