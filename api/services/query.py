@@ -140,6 +140,72 @@ def _plan_answer(plan: Any) -> dict[str, Any]:
     }
 
 
+def render_pipeline_event(
+    event: str, payload: dict[str, Any], run: PipelineRun
+) -> tuple[str, dict[str, Any]] | None:
+    """Shape one raw pipeline ``(event, payload)`` into the ``(name, json)`` UI contract.
+
+    Shared by ``stream_query_events`` and the conversation service so both present
+    the pipeline identically. Returns ``None`` for events with no UI rendering.
+    """
+    if event == "status":
+        return "status", payload
+    if event == "probe":
+        return "probe", {"live_sources": _live_sources_payload(payload["live_view"])}
+    if event == "plan":
+        plan = payload["plan"]
+        return "plan", {
+            "plan": plan.to_dict(),
+            "target_sources": sorted(plan.target_sources()),
+        }
+    if event == "skipped":
+        return "skipped", payload
+    if event == "specialist-start":
+        return "specialist-start", payload
+    if event == "specialist":
+        return "specialist", {
+            "result": payload["result"].to_dict(),
+            "index": payload["index"],
+            "total": payload["total"],
+        }
+    if event == "evidence":
+        return "evidence", {"evidence": payload["evidence"].to_dict()}
+    if event == "answer":
+        plan, evidence = payload["plan"], payload["evidence"]
+        status, exit_code = payload["status"], payload["exit_code"]
+        if evidence is None:  # plan mode
+            answer = _plan_answer(plan)
+        else:
+            join_index = evidence.join_index()
+            cross = [
+                {"value": value, "entries": join_index.get(value, [])}
+                for value in evidence.cross_source_join_values()
+            ]
+            answer = {
+                "headline": _headline(status, evidence, cross),
+                "sections": _answer_sections(evidence.results),
+                "cross_source": cross,
+                "unsupported": list(evidence.unsupported),
+                "synthesis": payload["synthesized"].to_dict(),
+            }
+        return "answer", {
+            **answer,
+            "status": status,
+            "exit_code": exit_code,
+            "timings": run.timings,
+        }
+    if event == "done":
+        done: dict[str, Any] = {
+            "status": payload["status"],
+            "exit_code": payload["exit_code"],
+            "timings": payload.get("timings", {}),
+        }
+        if payload.get("message"):
+            done["message"] = payload["message"]
+        return "done", done
+    return None
+
+
 def stream_query_events(
     question: str,
     *,
@@ -172,63 +238,9 @@ def stream_query_events(
             specialist_config=specialist_config,
             run=run,
         ):
-            if event == "status":
-                yield _sse("status", payload)
-            elif event == "probe":
-                yield _sse("probe", {"live_sources": _live_sources_payload(payload["live_view"])})
-            elif event == "plan":
-                plan = payload["plan"]
-                yield _sse(
-                    "plan",
-                    {"plan": plan.to_dict(), "target_sources": sorted(plan.target_sources())},
-                )
-            elif event == "skipped":
-                yield _sse("skipped", payload)
-            elif event == "specialist-start":
-                yield _sse("specialist-start", payload)
-            elif event == "specialist":
-                yield _sse(
-                    "specialist",
-                    {
-                        "result": payload["result"].to_dict(),
-                        "index": payload["index"],
-                        "total": payload["total"],
-                    },
-                )
-            elif event == "evidence":
-                yield _sse("evidence", {"evidence": payload["evidence"].to_dict()})
-            elif event == "answer":
-                plan, evidence = payload["plan"], payload["evidence"]
-                status, exit_code = payload["status"], payload["exit_code"]
-                if evidence is None:  # plan mode
-                    answer = _plan_answer(plan)
-                else:
-                    join_index = evidence.join_index()
-                    cross = [
-                        {"value": value, "entries": join_index.get(value, [])}
-                        for value in evidence.cross_source_join_values()
-                    ]
-                    answer = {
-                        "headline": _headline(status, evidence, cross),
-                        "sections": _answer_sections(evidence.results),
-                        "cross_source": cross,
-                        "unsupported": list(evidence.unsupported),
-                        "synthesis": payload["synthesized"].to_dict(),
-                    }
-                yield _sse(
-                    "answer",
-                    {**answer, "status": status, "exit_code": exit_code,
-                     "timings": run.timings},
-                )
-            elif event == "done":
-                done: dict[str, Any] = {
-                    "status": payload["status"],
-                    "exit_code": payload["exit_code"],
-                    "timings": payload.get("timings", {}),
-                }
-                if payload.get("message"):
-                    done["message"] = payload["message"]
-                yield _sse("done", done)
+            rendered = render_pipeline_event(event, payload, run)
+            if rendered is not None:
+                yield _sse(*rendered)
 
     except Exception as exc:  # noqa: BLE001 - any pipeline failure becomes a clean error event
         logger.exception("query pipeline failed")

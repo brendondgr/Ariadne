@@ -31,17 +31,20 @@ def iter_conversation(
     use_llm: bool = False,
     config: ConversationConfig | None = None,
     graph: Any | None = None,
+    run: PipelineRun | None = None,
     **build_kwargs: Any,
 ) -> Iterator[tuple[str, dict[str, Any]]]:
     """Yield ``(event, payload)`` for one conversational turn.
 
-    ``build_kwargs`` are forwarded to :func:`build_conversation_graph` (e.g.
-    injected clients, an alternate extraction ``runner``, or a ``persist`` hook).
+    Pass ``run`` (a caller-owned ``PipelineRun``) to read ``run.timings`` while
+    rendering the forwarded pipeline ``answer``/``done`` events. ``build_kwargs``
+    are forwarded to :func:`build_conversation_graph` (e.g. injected clients or an
+    alternate extraction ``runner``).
     """
     config = config or ConversationConfig.from_env()
     compiled = graph or build_conversation_graph(config, **build_kwargs)
 
-    run = PipelineRun(question=question, mode=mode)
+    run = run if run is not None else PipelineRun(question=question, mode=mode)
     init: dict[str, Any] = {
         "question": question,
         "history": history or [],
