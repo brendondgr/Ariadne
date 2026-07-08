@@ -87,8 +87,15 @@ def build_pipeline_graph(
     specialists: dict[str, Any] | None,
     specialist_config: SpecialistConfig,
     synthesis_config: SynthesisConfig,
+    *,
+    orch: OrchestrationConfig | None = None,
 ) -> CompiledStateGraph:
-    """Compile the super-graph for one request's collaborators."""
+    """Compile the super-graph for one request's collaborators.
+
+    With ``ORCH_CHECKPOINTER`` on, the graph compiles with an in-memory
+    checkpointer (one thread per query run) for interactive graph debugging;
+    off by default — queries are request-scoped.
+    """
 
     def check_cards(state: PipelineState) -> dict[str, Any]:
         if agent.cards:
@@ -213,6 +220,12 @@ def build_pipeline_graph(
     graph.add_edge("specialists", "bundle")
     graph.add_edge("bundle", "synthesize")
     graph.add_edge("synthesize", END)
+
+    orch = orch or OrchestrationConfig.from_env()
+    if orch.checkpointer:
+        from langgraph.checkpoint.memory import InMemorySaver
+
+        return graph.compile(checkpointer=InMemorySaver())
     return graph.compile()
 
 
@@ -260,17 +273,22 @@ def iter_pipeline(
             SynthesisConfig.from_env(), llm_enabled=use_llm
         )
 
-    graph = build_pipeline_graph(agent, specialists, specialist_config, synthesis_config)
     orch = OrchestrationConfig.from_env()
+    graph = build_pipeline_graph(
+        agent, specialists, specialist_config, synthesis_config, orch=orch
+    )
     init: dict[str, Any] = {
         "question": question, "mode": mode, "use_llm": use_llm,
         "deadline": deadline, "started_at": started_at, "cursor": 0, "run": run,
     }
+    config: dict[str, Any] = {"recursion_limit": orch.recursion_limit}
+    if orch.checkpointer:  # one thread per query run
+        config["configurable"] = {"thread_id": f"query-{id(run)}-{int(started_at * 1000)}"}
     for _namespace, chunk in graph.stream(
         init,
         stream_mode="custom",
         subgraphs=True,
-        config={"recursion_limit": orch.recursion_limit},
+        config=config,
     ):
         yield chunk
 

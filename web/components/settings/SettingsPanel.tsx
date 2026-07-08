@@ -20,12 +20,19 @@ interface GroupForm {
   max_tokens: string;
 }
 
+interface OrchForm {
+  checkpointer: boolean;
+  recursion_limit: string;
+  pipeline_timeout_s: string;
+}
+
 interface Form {
   planner: GroupForm;
   specialist: GroupForm;
   synthesis: GroupForm;
   eval: GroupForm;
   connection: { neo4j_uri: string; neo4j_user: string; neo4j_password: string; gremlin_uri: string };
+  orchestration: OrchForm;
 }
 
 function toForm(c: ApiConfig): Form {
@@ -46,6 +53,11 @@ function toForm(c: ApiConfig): Form {
       neo4j_user: c.connection.neo4j_user,
       neo4j_password: "",
       gremlin_uri: c.connection.gremlin_uri,
+    },
+    orchestration: {
+      checkpointer: c.orchestration.checkpointer,
+      recursion_limit: String(c.orchestration.recursion_limit),
+      pipeline_timeout_s: String(c.orchestration.pipeline_timeout_s),
     },
   };
 }
@@ -179,6 +191,8 @@ export function SettingsPanel() {
     setForm((f) => (f ? { ...f, [agent]: { ...f[agent], ...patch } } : f));
   const patchConn = (patch: Partial<Form["connection"]>) =>
     setForm((f) => (f ? { ...f, connection: { ...f.connection, ...patch } } : f));
+  const patchOrch = (patch: Partial<OrchForm>) =>
+    setForm((f) => (f ? { ...f, orchestration: { ...f.orchestration, ...patch } } : f));
 
   const groupUpdate = (g: GroupForm) => ({
     enabled: g.enabled,
@@ -203,6 +217,11 @@ export function SettingsPanel() {
         neo4j_user: form.connection.neo4j_user,
         gremlin_uri: form.connection.gremlin_uri,
         ...(form.connection.neo4j_password ? { neo4j_password: form.connection.neo4j_password } : {}),
+      },
+      orchestration: {
+        checkpointer: form.orchestration.checkpointer,
+        recursion_limit: Number(form.orchestration.recursion_limit),
+        pipeline_timeout_s: Number(form.orchestration.pipeline_timeout_s),
       },
     };
     try {
@@ -274,6 +293,40 @@ export function SettingsPanel() {
                     />
                   </div>
                   <Field label="Gremlin URI" value={form.connection.gremlin_uri} onChange={(v) => patchConn({ gremlin_uri: v })} placeholder="ws://localhost:6455/gremlin" />
+                </div>
+              </fieldset>
+
+              <fieldset className="m-0 rounded-lg border-0 p-3.5" style={{ boxShadow: SHADOW.border }}>
+                <legend className="flex items-center gap-2 px-1 font-mono text-[11px] uppercase tracking-[0.08em] text-text-soft">
+                  Orchestration (LangGraph)
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={form.orchestration.checkpointer}
+                    onClick={() => patchOrch({ checkpointer: !form.orchestration.checkpointer })}
+                    className="rounded-full px-2 py-0.5 text-[10px] transition-colors"
+                    style={{
+                      background: form.orchestration.checkpointer ? "rgba(78,158,150,0.18)" : "rgba(138,158,152,0.12)",
+                      color: form.orchestration.checkpointer ? "var(--color-primary)" : "var(--color-text-muted)",
+                      boxShadow: SHADOW.border,
+                    }}
+                  >
+                    {form.orchestration.checkpointer ? "checkpointer on" : "checkpointer off"}
+                  </button>
+                </legend>
+                <div className="mt-2 grid grid-cols-2 gap-2.5">
+                  <Field
+                    label="Recursion limit"
+                    value={form.orchestration.recursion_limit}
+                    onChange={(v) => patchOrch({ recursion_limit: v })}
+                    type="number"
+                  />
+                  <Field
+                    label="Pipeline timeout (s)"
+                    value={form.orchestration.pipeline_timeout_s}
+                    onChange={(v) => patchOrch({ pipeline_timeout_s: v })}
+                    type="number"
+                  />
                 </div>
               </fieldset>
 

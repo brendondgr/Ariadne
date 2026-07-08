@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """CLI glue for the end-to-end planner → specialists → synthesis flow.
 
-Keeps ``main.py`` thin: the composition itself lives in ``pipeline.py``
-(the single orchestrator the API shares); this module only *prints* each
+Keeps ``main.py`` thin: the composition itself lives in the LangGraph
+super-graph (``utils.orchestration.main``, the single orchestrator the API
+shares); this module only *prints* each
 boundary event — live sources, the plan, per-specialist evidence, the verified
 synthesized answer, per-stage timings, and the machine-readable bundle.
 """
@@ -12,7 +13,7 @@ from __future__ import annotations
 import json
 import logging
 
-from .pipeline import PipelineRun, iter_pipeline
+from utils.orchestration.main import PipelineRun, iter_pipeline
 
 logger = logging.getLogger("ariadne.specialists.cli")
 

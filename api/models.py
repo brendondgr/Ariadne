@@ -77,9 +77,18 @@ class ConnectionConfig(BaseModel):
     gremlin_uri: str
 
 
+class OrchestrationGroup(BaseModel):
+    """Resolved LangGraph orchestration settings (utils/orchestration)."""
+
+    checkpointer: bool
+    recursion_limit: int
+    pipeline_timeout_s: float
+
+
 class ConfigResponse(BaseModel):
     llm: LLMConfig
     connection: ConnectionConfig
+    orchestration: OrchestrationGroup
 
 
 def _validate_http_url(value: str | None) -> str | None:
@@ -121,12 +130,21 @@ class ConnectionUpdate(BaseModel):
         return v
 
 
+class OrchestrationUpdate(BaseModel):
+    """Partial update for the orchestration settings; every field is optional."""
+
+    checkpointer: bool | None = None
+    recursion_limit: int | None = Field(default=None, ge=1)
+    pipeline_timeout_s: float | None = Field(default=None, gt=0)
+
+
 class ConfigUpdateRequest(BaseModel):
     planner: LLMGroupUpdate | None = None
     specialist: LLMGroupUpdate | None = None
     synthesis: LLMGroupUpdate | None = None
     eval: LLMGroupUpdate | None = None
     connection: ConnectionUpdate | None = None
+    orchestration: OrchestrationUpdate | None = None
 
 
 # ---------------------------------------------------------------------------

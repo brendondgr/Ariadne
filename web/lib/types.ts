@@ -497,6 +497,13 @@ export interface ApiLLMGroup {
   max_tokens: number;
 }
 
+/** Resolved LangGraph orchestration settings in `GET /api/config`. */
+export interface ApiOrchestrationGroup {
+  checkpointer: boolean;
+  recursion_limit: number;
+  pipeline_timeout_s: number;
+}
+
 export interface ApiConfig {
   llm: {
     planner: ApiLLMGroup;
@@ -510,6 +517,7 @@ export interface ApiConfig {
     neo4j_password_set: boolean;
     gremlin_uri: string;
   };
+  orchestration: ApiOrchestrationGroup;
 }
 
 /** Partial update body for `PUT /api/config`. */
@@ -524,6 +532,7 @@ export interface ApiConfigUpdate {
     neo4j_password?: string;
     gremlin_uri?: string;
   };
+  orchestration?: Partial<ApiOrchestrationGroup>;
 }
 
 /* -------------------------------------------------------------------------- */

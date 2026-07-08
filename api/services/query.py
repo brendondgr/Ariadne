@@ -25,11 +25,11 @@ import json
 import logging
 from typing import Any, Iterator
 
+from utils.orchestration.main import PipelineRun, iter_pipeline
 from utils.planner.agent import PlanningAgent
 from utils.specialists.config import SpecialistConfig
 from utils.specialists.contracts import SpecialistResult
 from utils.specialists.federation import FederatedEvidence
-from utils.specialists.pipeline import PipelineRun, iter_pipeline
 
 logger = logging.getLogger("ariadne.api.query")
 

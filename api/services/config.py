@@ -15,6 +15,8 @@ from pathlib import Path
 
 from utils.config import set_env_values
 from utils.evaluation.llm_judge.config import EvalConfig
+from utils.orchestration.config import OrchestrationConfig
+from utils.orchestration.main import pipeline_timeout_s
 from utils.planner.config import PlannerConfig
 from utils.specialists.config import SpecialistConfig
 from utils.synthesis.config import SynthesisConfig
@@ -26,6 +28,7 @@ from ..models import (
     LLMConfig,
     LLMGroup,
     LLMGroupUpdate,
+    OrchestrationGroup,
 )
 
 # Single source of truth mapping update fields -> env var names, per agent.
@@ -67,6 +70,12 @@ _CONNECTION_ENV_KEYS = {
     "gremlin_uri": "GREMLIN_URI",
 }
 
+_ORCH_ENV_KEYS = {
+    "checkpointer": "ORCH_CHECKPOINTER",
+    "recursion_limit": "ORCH_RECURSION_LIMIT",
+    "pipeline_timeout_s": "PIPELINE_TIMEOUT_S",
+}
+
 
 def _group(cfg: PlannerConfig | SpecialistConfig | SynthesisConfig | EvalConfig) -> LLMGroup:
     return LLMGroup(
@@ -75,6 +84,15 @@ def _group(cfg: PlannerConfig | SpecialistConfig | SynthesisConfig | EvalConfig)
         model=cfg.llm_model,
         timeout_s=cfg.llm_timeout_s,
         max_tokens=cfg.llm_max_tokens,
+    )
+
+
+def _orchestration_group() -> OrchestrationGroup:
+    orch = OrchestrationConfig.from_env()
+    return OrchestrationGroup(
+        checkpointer=orch.checkpointer,
+        recursion_limit=orch.recursion_limit,
+        pipeline_timeout_s=pipeline_timeout_s(),
     )
 
 
@@ -95,6 +113,7 @@ def read_config() -> ConfigResponse:
             neo4j_password_set=bool(os.environ.get("NEO4J_PASSWORD")),
             gremlin_uri=planner.gremlin_uri,
         ),
+        orchestration=_orchestration_group(),
     )
 
 
@@ -121,6 +140,11 @@ def collect_updates(request: ConfigUpdateRequest) -> dict[str, str]:
     _collect_group_updates("specialist", request.specialist, updates)
     _collect_group_updates("synthesis", request.synthesis, updates)
     _collect_group_updates("eval", request.eval, updates)
+    if request.orchestration is not None:
+        for field, env_key in _ORCH_ENV_KEYS.items():
+            value = getattr(request.orchestration, field)
+            if value is not None:
+                updates[env_key] = _to_env_str(value)
     if request.connection is not None:
         for field, env_key in _CONNECTION_ENV_KEYS.items():
             value = getattr(request.connection, field)
