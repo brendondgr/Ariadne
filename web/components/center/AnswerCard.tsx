@@ -5,7 +5,17 @@ import { motion } from "motion/react";
 import type { AnswerParagraph, SynthesisView, WorkbenchRun } from "@/lib/types";
 import { SHADOW, formatSeconds } from "@/lib/ui";
 import { fadeSlideUp } from "@/lib/motion";
-import { CheckIcon, CopyIcon, ExportIcon, LinkIcon } from "@/components/ui/icons";
+import {
+  CheckIcon,
+  CopyIcon,
+  EvidenceIcon,
+  ExportIcon,
+  LinkIcon,
+  LogsIcon,
+  NetworkIcon,
+  TableIcon,
+  VerifiedIcon,
+} from "@/components/ui/icons";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 import { MiniStepper } from "./MiniStepper";
 import { LiveTicker } from "./LiveTicker";
@@ -242,6 +252,7 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
     tabs.push({
       id: "evidence",
       label: "Evidence",
+      icon: <EvidenceIcon />,
       badge: run.answer.paragraphs.length,
       content: <EvidenceBody run={run} />,
     });
@@ -250,6 +261,7 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
     tabs.push({
       id: "verified",
       label: "Verified Answers",
+      icon: <VerifiedIcon />,
       badge: syn.verification ? `${syn.verification.supported}/${syn.verification.total}` : undefined,
       content: <SynthesisBody synthesis={syn} />,
     });
@@ -258,6 +270,7 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
     tabs.push({
       id: "claim",
       label: "Claim Table",
+      icon: <TableIcon />,
       badge: syn.claims.length,
       content: <ClaimTableBody synthesis={syn} />,
     });
@@ -266,6 +279,7 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
     tabs.push({
       id: "network",
       label: "Network Plot",
+      icon: <NetworkIcon />,
       badge: net.nodeCount,
       content: <NetworkPlotBody synthesis={syn} joinPairs={run.answer.joinPairs} />,
     });
@@ -274,6 +288,7 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
     tabs.push({
       id: "logs",
       label: "Logs",
+      icon: <LogsIcon />,
       content: <LiveTicker events={run.events} streaming={cardReplaying} alwaysOpen />,
     });
   }

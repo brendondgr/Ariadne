@@ -7,6 +7,8 @@ import { SHADOW } from "@/lib/ui";
 export interface TabDef {
   id: string;
   label: string;
+  /** Leading icon for the tab (matches the section). */
+  icon?: ReactNode;
   /** Small count shown beside the label (e.g. claim count, node count). */
   badge?: ReactNode;
   content: ReactNode;
@@ -50,14 +52,20 @@ export function SectionTabs({
 
   return (
     <div style={{ boxShadow: SHADOW.insetBottom }}>
-      {/* The thin tab strip — the only thing visible when everything is closed. */}
-      <div className="flex flex-wrap items-center gap-1.5 px-[14px] py-2">
+      {/* The tab bar — sits on a baseline hairline; the only thing visible when
+          all panels are closed. Active tab is tinted with a teal underline. */}
+      <div
+        className="flex flex-wrap items-stretch gap-0.5 px-[10px] pt-1.5"
+        style={{ boxShadow: SHADOW.insetBottom }}
+        role="tablist"
+      >
         {tabs.map((t) => {
           const on = t.id === active;
           return (
             <motion.button
               key={t.id}
               type="button"
+              role="tab"
               layout
               initial={{ opacity: 0, y: 3 }}
               animate={{ opacity: 1, y: 0 }}
@@ -66,19 +74,34 @@ export function SectionTabs({
                 e.stopPropagation();
                 toggle(t.id);
               }}
-              aria-pressed={on}
-              className="inline-flex items-center gap-1.5 rounded-full border-0 px-2.5 py-[3px] font-mono text-[10.5px] uppercase tracking-[0.05em] transition-colors"
-              style={
-                on
-                  ? { color: "#4E9E96", background: "rgba(78,158,150,0.12)", boxShadow: "rgba(78,158,150,0.4) 0 0 0 1px" }
-                  : { color: "var(--color-text-muted)", background: "transparent", boxShadow: SHADOW.hairline }
-              }
+              aria-selected={on}
+              className="relative inline-flex items-center gap-1.5 rounded-t-[7px] border-0 bg-transparent px-3 py-2 font-mono text-[10.5px] uppercase tracking-[0.05em] transition-colors hover:text-text"
+              style={{
+                color: on ? "#4E9E96" : "var(--color-text-muted)",
+                background: on ? "rgba(78,158,150,0.08)" : "transparent",
+              }}
             >
+              {t.icon && <span className="flex shrink-0 items-center">{t.icon}</span>}
               {t.label}
               {t.badge != null && (
-                <span className="text-text-soft" style={on ? { color: "#4E9E96" } : undefined}>
+                <span
+                  className="rounded-full px-1.5 py-px text-[9.5px] leading-none"
+                  style={{
+                    color: on ? "#4E9E96" : "var(--color-text-soft)",
+                    background: on ? "rgba(78,158,150,0.15)" : "rgba(235,230,220,0.06)",
+                  }}
+                >
                   {t.badge}
                 </span>
+              )}
+              {on && (
+                <motion.span
+                  aria-hidden
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="absolute inset-x-2 -bottom-px h-[2px] rounded-full"
+                  style={{ background: "#4E9E96" }}
+                />
               )}
             </motion.button>
           );
@@ -95,7 +118,7 @@ export function SectionTabs({
             transition={{ duration: 0.24 }}
             className="overflow-hidden"
           >
-            <div className="px-[18px] pb-[15px] pt-1">{activeTab.content}</div>
+            <div className="px-[18px] pb-[15px] pt-3">{activeTab.content}</div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -191,3 +191,57 @@ export function LinkIcon({ size = 12, ...props }: IconProps) {
     </svg>
   );
 }
+
+const S = { stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round" } as const;
+
+/** Evidence — a document with lines. */
+export function EvidenceIcon({ size = 13, ...props }: IconProps) {
+  return (
+    <svg {...base({ size, ...props })} aria-hidden>
+      <path d="M6 3h8l4 4v14H6z" {...S} />
+      <path d="M14 3v4h4M9 12h6M9 16h6" {...S} />
+    </svg>
+  );
+}
+
+/** Verified — a shield with a check. */
+export function VerifiedIcon({ size = 13, ...props }: IconProps) {
+  return (
+    <svg {...base({ size, ...props })} aria-hidden>
+      <path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z" {...S} />
+      <path d="M9 12l2 2 4-4" {...S} />
+    </svg>
+  );
+}
+
+/** Claim table — a grid. */
+export function TableIcon({ size = 13, ...props }: IconProps) {
+  return (
+    <svg {...base({ size, ...props })} aria-hidden>
+      <rect x="3.5" y="4.5" width="17" height="15" rx="1.5" {...S} />
+      <path d="M3.5 10h17M3.5 15h17M10 4.5v15" {...S} />
+    </svg>
+  );
+}
+
+/** Network plot — connected nodes. */
+export function NetworkIcon({ size = 13, ...props }: IconProps) {
+  return (
+    <svg {...base({ size, ...props })} aria-hidden>
+      <path d="M7 7l5 4M17 7l-5 4M12 11v6" {...S} />
+      <circle cx="7" cy="6" r="2.2" {...S} />
+      <circle cx="17" cy="6" r="2.2" {...S} />
+      <circle cx="12" cy="18" r="2.2" {...S} />
+    </svg>
+  );
+}
+
+/** Logs — a terminal / list. */
+export function LogsIcon({ size = 13, ...props }: IconProps) {
+  return (
+    <svg {...base({ size, ...props })} aria-hidden>
+      <rect x="3.5" y="4.5" width="17" height="15" rx="1.5" {...S} />
+      <path d="M7 9l2.5 2L7 13M12 14h4" {...S} />
+    </svg>
+  );
+}

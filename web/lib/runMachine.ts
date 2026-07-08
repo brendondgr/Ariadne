@@ -299,6 +299,9 @@ export function useRunMachine(): RunMachine {
               else if (phase === "planning") mergeStatus({ plan: "running", "stage-draft": "running" });
               else if (phase === "querying") mergeStatus({ specialists: "running" });
               else if (phase === "answering") mergeStatus({ answer: "running" });
+              // Rebuild so the live status label advances the moment a phase is
+              // announced — otherwise it lags behind the slow LLM step in progress.
+              rebuild();
               break;
             }
             case "probe":
