@@ -45,6 +45,9 @@ class PipelineState(TypedDict, total=False):
     use_llm: bool
     deadline: float  # time.monotonic() deadline for the whole run
     started_at: float  # time.monotonic() at run start (for total_ms)
+    # The caller-owned PipelineRun, mutated at the same boundaries the
+    # pre-LangGraph pipeline did (SSE reads run.timings mid-stream).
+    run: Any
 
     # Probe / plan stages (overwrite).
     live_view: LiveSourceView
