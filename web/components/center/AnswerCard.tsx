@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { motion } from "motion/react";
 import type { AnswerParagraph, SynthesisView, WorkbenchRun } from "@/lib/types";
 import { SHADOW, formatSeconds } from "@/lib/ui";
@@ -26,12 +26,13 @@ import { JoinChip } from "./JoinChip";
 import { ClaimTableBody } from "./ClaimTable";
 import { NetworkPlotBody, networkPlotMeta } from "./AnswerNetworkPlot";
 import { SectionTabs, type TabDef } from "./SectionTabs";
+import { RefText } from "./RefText";
 
 function Paragraph({ paragraph }: { paragraph: AnswerParagraph }) {
   return (
     <p className="m-0 mb-3 last:mb-0">
       {paragraph.segments.map((seg, i) => {
-        if (seg.kind === "text") return <Fragment key={i}>{seg.text}</Fragment>;
+        if (seg.kind === "text") return <RefText key={i} text={seg.text} />;
         if (seg.kind === "mono")
           return (
             <span key={i} className="font-mono text-[12px] text-[#c9c6bd]">
@@ -85,7 +86,7 @@ function SynthesisBody({ synthesis }: { synthesis: SynthesisView }) {
           <span className="mr-1.5 font-mono text-[10px] uppercase tracking-[0.06em] text-text-muted">
             {claim.kind === "correlation" ? "corr" : "fact"}
           </span>
-          {claim.text}{" "}
+          <RefText text={claim.text} />{" "}
           {claim.chips.map((chip, j) => (
             <span key={j} className="mr-1">
               <ProvenanceChip refData={chip} />
@@ -320,7 +321,7 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
               Final answer
             </div>
             <p className="m-0 text-sm leading-[1.62] text-text-soft">
-              {syn.narrative || syn.headline}
+              <RefText text={syn.narrative || syn.headline} />
             </p>
           </>
         ) : (

@@ -3,6 +3,7 @@
 import type { SynthesisView } from "@/lib/types";
 import { SHADOW } from "@/lib/ui";
 import { ProvenanceChip } from "./ProvenanceChip";
+import { RefText } from "./RefText";
 
 /** Deliverable #4 — the analyst-facing table body (rendered inside the Claim
  *  Table tab).
@@ -52,7 +53,7 @@ export function ClaimTableBody({ synthesis }: { synthesis: SynthesisView }) {
                   </span>
                 </td>
                 <td className="py-2 pr-3 align-top text-[12.5px] leading-[1.5] text-text-soft">
-                  {claim.text}
+                  <RefText text={claim.text} />
                 </td>
                 <td className="py-2 align-top">
                   <span className="flex flex-wrap gap-1">
