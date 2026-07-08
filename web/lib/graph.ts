@@ -129,26 +129,110 @@ export interface ForceGraphData {
 /* toForceGraphData                                                            */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * A portion of the graph's text the search can be scoped to. `name`, `id`,
+ * `description`, and `label` scope node matching; `type` scopes the edge-type
+ * matching that pulls a matched edge's endpoints into view.
+ */
+export type SearchField = "name" | "id" | "description" | "label" | "type";
+
+export const ALL_SEARCH_FIELDS: readonly SearchField[] = [
+  "name",
+  "id",
+  "description",
+  "label",
+  "type",
+];
+
+/** Normalize the opts value: undefined/empty means "search every field". */
+function toFieldSet(fields?: Iterable<SearchField>): Set<SearchField> {
+  const set = new Set(fields ?? []);
+  return set.size > 0 ? set : new Set(ALL_SEARCH_FIELDS);
+}
+
 export interface ToForceGraphOpts {
   hiddenLabels?: Set<string>;
   hiddenTypes?: Set<string>;
   /** Free-text search; matches node name/id/label/description and edge type. */
   query?: string;
+  /**
+   * Which fields the query is matched against. Undefined or empty means all
+   * fields — today's behavior.
+   */
+  fields?: Iterable<SearchField>;
+  /**
+   * Neighborhood reach: also show every node within this many hops of a
+   * match (0 = matches only). Ignored when the query is empty.
+   */
+  hops?: number;
 }
 
 /**
- * Does a node match the (already lowercased) search query? Matches its name, id,
- * any label, or its (server-truncated) `description` property. An empty query
- * matches everything.
+ * Does a node match the (already lowercased) search query on the given
+ * fields? Defaults to every field: name, id, any label, and the
+ * (server-truncated) `description` property. An empty query matches
+ * everything.
  */
-export function nodeMatchesQuery(node: GraphNode, q: string): boolean {
+export function nodeMatchesQuery(
+  node: GraphNode,
+  q: string,
+  fields?: Iterable<SearchField>,
+): boolean {
   if (!q) return true;
-  if (node.name && node.name.toLowerCase().includes(q)) return true;
-  if (node.id.toLowerCase().includes(q)) return true;
-  if (node.labels.some((l) => l.toLowerCase().includes(q))) return true;
-  const desc = node.properties?.description;
-  if (typeof desc === "string" && desc.toLowerCase().includes(q)) return true;
+  const scope = toFieldSet(fields);
+  if (scope.has("name") && node.name && node.name.toLowerCase().includes(q)) return true;
+  if (scope.has("id") && node.id.toLowerCase().includes(q)) return true;
+  if (scope.has("label") && node.labels.some((l) => l.toLowerCase().includes(q))) return true;
+  if (scope.has("description")) {
+    const desc = node.properties?.description;
+    if (typeof desc === "string" && desc.toLowerCase().includes(q)) return true;
+  }
   return false;
+}
+
+/**
+ * BFS-expand a seed node-id set to everything reachable within `hops` edges
+ * (undirected). Traversal never crosses an edge `edgeAllowed` rejects and
+ * never reveals a node `nodeAllowed` rejects, so hidden relationship types
+ * and hidden labels stay authoritative. Returns a new set containing the
+ * seeds plus every reached node.
+ */
+export function expandByHops(
+  seeds: ReadonlySet<string>,
+  edges: readonly { source: string; target: string; type: string }[],
+  hops: number,
+  nodeAllowed: (id: string) => boolean,
+  edgeAllowed: (type: string) => boolean,
+): Set<string> {
+  const reached = new Set(seeds);
+  if (hops <= 0 || reached.size === 0) return reached;
+
+  // Undirected adjacency over the allowed edges only.
+  const adjacency = new Map<string, string[]>();
+  const link = (a: string, b: string) => {
+    const list = adjacency.get(a);
+    if (list) list.push(b);
+    else adjacency.set(a, [b]);
+  };
+  for (const edge of edges) {
+    if (!edgeAllowed(edge.type)) continue;
+    link(edge.source, edge.target);
+    link(edge.target, edge.source);
+  }
+
+  let frontier = [...reached];
+  for (let depth = 0; depth < hops && frontier.length > 0; depth++) {
+    const next: string[] = [];
+    for (const id of frontier) {
+      for (const neighbor of adjacency.get(id) ?? []) {
+        if (reached.has(neighbor) || !nodeAllowed(neighbor)) continue;
+        reached.add(neighbor);
+        next.push(neighbor);
+      }
+    }
+    frontier = next;
+  }
+  return reached;
 }
 
 /**
@@ -165,6 +249,8 @@ export function toForceGraphData(
 ): ForceGraphData {
   const { hiddenLabels, hiddenTypes } = opts;
   const query = (opts.query ?? "").trim().toLowerCase();
+  const fields = toFieldSet(opts.fields);
+  const hops = opts.hops ?? 0;
 
   // Unique color per relationship type (shared with the sidebar legend).
   const typeColors = edgeTypeColorMap(payload.edges.map((e) => e.type));
@@ -178,11 +264,11 @@ export function toForceGraphData(
   //  - No query: every label-passing node.
   //  - Query: nodes whose text matches, PLUS the endpoints of any non-hidden
   //    edge whose `type` matches the query (so a matched edge shows its nodes).
-  const survivingIds = new Set<string>();
+  let survivingIds = new Set<string>();
   for (const node of payload.nodes) {
-    if (passesLabel(node) && nodeMatchesQuery(node, query)) survivingIds.add(node.id);
+    if (passesLabel(node) && nodeMatchesQuery(node, query, fields)) survivingIds.add(node.id);
   }
-  if (query) {
+  if (query && fields.has("type")) {
     for (const edge of payload.edges) {
       if (hiddenTypes && hiddenTypes.has(edge.type)) continue;
       if (!edge.type.toLowerCase().includes(query)) continue;
@@ -191,6 +277,21 @@ export function toForceGraphData(
       if (s && passesLabel(s)) survivingIds.add(edge.source);
       if (t && passesLabel(t)) survivingIds.add(edge.target);
     }
+  }
+
+  // Neighborhood reach: grow the matched set outward by N hops, never
+  // crossing hidden edge types or revealing hidden-label nodes.
+  if (query && hops > 0) {
+    survivingIds = expandByHops(
+      survivingIds,
+      payload.edges,
+      hops,
+      (id) => {
+        const node = nodeById.get(id);
+        return !!node && passesLabel(node);
+      },
+      (type) => !hiddenTypes || !hiddenTypes.has(type),
+    );
   }
 
   // Build the node list from the surviving ids.
