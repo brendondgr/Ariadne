@@ -19,8 +19,9 @@ Quick map of the Ariadne repo — where things live and what to open first.
 ```text
 ariadne/
 ├── main.py              # CLI: --download, --build, --docker, --dataset, --graph
-├── app.py               # Launch the web workbench: FastAPI api/ + Next.js web/
+├── app.py               # Launch the web workbench: preflight → API + web → status board → smoke
 ├── .env.example         # Central project config template (copy to .env)
+├── langgraph.json       # LangGraph Studio config (`langgraph dev` → visual graph debugger)
 ├── pyproject.toml       # Python deps & scripts (uv)
 ├── api/                 # FastAPI service wrapping utils/ for the web UI
 ├── data/                # Datasets & graph artifacts (mostly gitignored)
@@ -56,7 +57,9 @@ Agent tool folders (`.cursor/`, `.claude/`, `.agents/`) are **pointers only** �
 | `utils/graph_loader/` | Runtime load, verify, and health checks; `fixture_qa/` reconciles raw==manifest==live + referential integrity |
 | `utils/infrastructure/` | Docker Compose lifecycle for local graph DBs |
 | `utils/planner/` | Federated planning agent: live-source discovery, plan schema, deterministic self-eval gate, deterministic + OpenAI-compatible drafters, ReAct loop, evaluation |
-| `utils/specialists/` | Source-specific query specialists: shared scaffold + four swap points (builder, validator, connector, normalizer), shared evidence schema, Cypher (ATT&CK/Neo4j) + Gremlin (CAPEC/Gremlin) specialists, federation router with join-derived dependent sequencing (producer's join values seed the consumer's `seed_ids`), committed concept vocabulary (`concepts.py`), and the single pipeline orchestrator (`pipeline.py`: `iter_pipeline`/`run_pipeline` — probe → plan → sequenced specialists → bundle → synthesize with per-stage timings and `PIPELINE_TIMEOUT_S`) shared by the CLI and the API |
+| `utils/orchestration/` | **The pipeline orchestrator — a LangGraph `StateGraph`.** `main.py` wires the super-graph (check_cards → probe → plan → mode-conditional → specialists subgraph → bundle → synthesize) and streams the exact `status`/`probe`/`plan`/`skipped`/`specialist-start`/`specialist`/`evidence`/`answer`/`done` event vocabulary via `get_stream_writer`; `iter_pipeline`/`run_pipeline`/`PipelineRun` live here (with `PIPELINE_TIMEOUT_S` and per-stage timings preserved). `state.py` defines `PipelineState`/`PlanningState`/`SynthesisState` over the existing frozen contracts; `agents/planner` is the draft→gate→revise/degrade loop, `agents/specialists` the sequential dependency-ordered execution cycle (deliberately not a `Send` fan-out — deterministic ordering backs the committed eval baselines), `agents/synthesis` the compose→verify→narrate chain (verification is an unconditional edge). `config.py` reads `ORCH_CHECKPOINTER` (opt-in `InMemorySaver`) and `ORCH_RECURSION_LIMIT`; `studio.py` + root `langgraph.json` expose the compiled graph to `langgraph dev` |
+| `utils/launcher/` | The `app.py` phases: `preflight.py` (ordered `CheckResult`s with named remediations — toolchain, ports, web deps, source cards, Neo4j/Gremlin content probes, LLM endpoint, and a LangGraph super-graph **compile check** so wiring errors abort at boot), `display.py` (prefixed `[api]`/`[web]` ANSI child-log streaming with error highlighting, TTY/`NO_COLOR` fallback, and the boxed status board), `supervise.py` (readiness gating: API `/api/health` poll → web port poll → ready; crash reports show the dead child's output tail), `smoke.py` (startup SSE smoke query — plan-mode default, `--smoke full`, `--no-smoke`) |
+| `utils/specialists/` | Source-specific query specialists: shared scaffold + four swap points (builder, validator, connector, normalizer), shared evidence schema, Cypher (ATT&CK/Neo4j) + Gremlin (CAPEC/Gremlin) specialists, federation router with join-derived dependent sequencing (producer's join values seed the consumer's `seed_ids`), and committed concept vocabulary (`concepts.py`). `pipeline.py` is now a compatibility re-export shim — the orchestration itself moved to `utils/orchestration/main.py` in the LangGraph migration |
 | `utils/specialists/evalset/` | The 120-question golden catalogue (Steps 5/7/10): `gold_bank.py` materializes gold answers from the pinned raw snapshot (independent of `kg_builder`, mirrors the exclude-at-load policy), including the Step 10 join maps (`technique_tactics`, `cwe_to_capec`, detection remodel maps `technique_detections`/`detection_analytics`/`datacomponent_analytics`, `software_techniques`, `excluded_ids`, CAPEC `execution_steps`/`skills`/`consequences`); `questions.py` compiles 80 single-source questions (46 ATT&CK + 34 CAPEC, each carrying the full snapshot-derived `ex_gold` set the EX scorer consumes) and `federated_questions.py` compiles 40 federated cross-source questions whose defining `must_correlate` assertion is the compile-time **intersection** of CAPEC ATTACK-taxonomy mappings and ATT&CK-side existence — never hand-keyed. Census: 120 total, 1/3 federated, tiers 22 easy / 52 medium / 24 hard / 22 adversarial (pinned by `tests/test_banks.py`). Committed artifacts live in `utils/specialists/tests/golden/` (`gold_bank.json`, `attack_questions.json`, `capec_questions.json`, `federated_questions.json`, `VERIFICATION.md` — two-way independent AI re-derivation reports: 45/45 Step 5 + 8/8 Step 7 + 93/93 Step 10 claims, all agree). Wk 11–13 adds the component scorers here: `score_validity.py` (query validity VA — draft+gate each question hermetically, first-pass/post-retry rates), `score_execution.py` (execution accuracy EX — live result set vs the `ex_gold` block, exact-set-match + precision/recall with an error taxonomy), `score_safety.py` (bounded-execution adherence audit + adversarial gate probes), and `latency.py` (segmented, staged p50/p95/p99 with bootstrap CIs) |
 | `utils/synthesis/` | Synthesis agent (Step 6): composes the final answer as structured claims-with-citations (`composer.py` deterministic always-on; `llm_composer.py` OpenAI-compatible behind `SYNTHESIS_LLM_*` env vars with hybrid fallback in `factory.py`), then an **always-deterministic** verification pass (`verifier.py`) checks every claim against the retrieved evidence records — uncited, unresolvable, or ungrounded claims are cut from the rendered prose and kept flagged; empty-but-ok sub-questions yield enforced abstentions ("the sources don't establish this") with the executed query as proof. `synthesize()` in `factory.py` is the single compose+verify entry point; `grounding.py` holds the shared backend-agnostic id normalization |
 | `utils/evaluation/` | Component-level evaluation (Wk 11–13): `stats.py` shared percentile / Wilson-binomial / seeded-bootstrap CIs; `component_report.py` + `run_component_eval.py` assemble the planner ×4 and specialist ×4 scores into one citable report (`docs/evaluation/component-evaluation.{md,json}`, via `uv run main.py --component-eval`). **End-to-end evaluation (Wk 12–13)**: `score_e2e.py` drives the 120-question golden catalogue through the real `run_pipeline` and grades the four `goals.md` e2e metrics — cross-source answer accuracy (live `cross_source_join_values` vs snapshot `must_correlate`), CAPEC→ATT&CK mapping recall, provenance correctness (citations resolve to complete, executed-query records), analyst inspectability (claim→record→query chains + abstention proofs); `e2e_report.py` + `run_e2e_eval.py` assemble `docs/evaluation/e2e-evaluation.{md,json}` via `uv run main.py --e2e-eval [--judge] [--no-live]`. **LLM evaluator** `llm_judge/` is the proposal's LLM-as-judge (faithfulness/groundedness/evidence-sufficiency): opt-in behind `EVAL_LLM_*`, mirroring the synthesis composer, with a `DeterministicJudge` proxy that fills the same metric keys so the LLM-off build stays byte-reproducible (the "no metric depends on an LLM judge" invariant holds unless an operator opts in); when enabled it samples ≤`EVAL_LLM_SAMPLE_SIZE` answers and labels its non-reproducible scores. Committed baseline report: 120 cases, cross-source 30/30 exact, negatives 10/10 no-fabrication, mapping recall 113/113, provenance + inspectability at ceiling |
@@ -200,8 +203,9 @@ origin, no CORS — see `web/next.config.ts` `rewrites`).
 | `api/services/` | `health.py`, `config.py`, `query.py`, `infra.py`, `graph.py`, `evaluation.py` |
 | `api/tests/` | Contract tests (`uv run python -m pytest api/tests/`) |
 
-The query pipeline is synchronous, so the SSE endpoints run it in a worker
-thread and emit a real event at each boundary; the answer is composed
+The query pipeline (the compiled LangGraph super-graph in
+`utils/orchestration/main.py`) is synchronous, so the SSE endpoints run it in a
+worker thread and emit a real event at each boundary; the answer is composed
 deterministically from the per-source summaries + join index (the pipeline emits
 evidence, not prose).
 
@@ -281,8 +285,13 @@ emission-order badges plus an "arrived #order at +X.Xs" caption — all gated on
 
 Launch the whole workbench (API + web) from the repo root with `python app.py`
 (`--prod` for a production build, `--port`/`--api-port`/`--host` to override).
-For the web app alone: `cd web && npm run dev`; build with `npm run build`, lint
-with `npm run lint`, and test with `npm test` (adapter + fixture contracts).
+The launcher preflights the stack (including a LangGraph compile check), gates
+startup on the API health endpoint and the web port actually serving, prints a
+per-subsystem status board with remediations, and proves the pipeline with a
+startup SSE smoke query (`--smoke full` / `--no-smoke`; `--verbose` for raw
+child output) — see `utils/launcher/`. For the web app alone: `cd web && npm
+run dev`; build with `npm run build`, lint with `npm run lint`, and test with
+`npm test` (adapter + fixture contracts).
 
 ## Finding Things Fast
 
