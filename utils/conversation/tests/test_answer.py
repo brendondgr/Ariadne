@@ -5,10 +5,44 @@ from __future__ import annotations
 
 from dataclasses import replace
 
-from utils.conversation.agents.answer import compose_answer, make_answer_node
+from utils.conversation.agents.answer import (
+    compose_answer,
+    evidence_brief,
+    make_answer_node,
+)
 from utils.conversation.config import ConversationConfig, ConversationLLMConfig
 from utils.conversation.llm import LLMUnavailable
+from utils.specialists.contracts import EvidenceRecord
 from utils.synthesis.contracts import SynthesizedAnswer
+
+
+class _Result:
+    def __init__(self, records):
+        self.records = records
+
+
+class _Evidence:
+    def __init__(self, results):
+        self.results = results
+
+
+def _capec98_evidence():
+    rec = EvidenceRecord(
+        primary_id="CAPEC-98",
+        id_scheme="capec-id",
+        label="AttackPattern",
+        name="Phishing",
+        properties={
+            "description": "Phishing is a social engineering technique where an attacker masquerades as a legitimate entity.",
+            "Abstraction": "Standard",
+            "Status": "Draft",
+        },
+        related=[
+            {"id": "x", "name": "Phishing", "label": "TaxonomyEntry"},
+            {"id": "y", "name": "Phishing for Information"},
+        ],
+    )
+    return _Evidence([_Result([rec])])
 
 
 class _StubLLM:
@@ -89,6 +123,57 @@ def test_quick_path_llm_answers_from_memory():
     text, composer = compose_answer(state, _cfg(), _StubLLM("Earlier we established fact A."))
     assert composer == "llm"
     assert "fact A" in text
+
+
+def test_evidence_brief_surfaces_description_and_related():
+    brief = evidence_brief(_capec98_evidence())
+    assert "CAPEC-98" in brief
+    assert "social engineering technique" in brief
+    assert "Abstraction: Standard" in brief
+    assert "Phishing for Information" in brief
+
+
+def test_evidence_brief_none_is_empty():
+    assert evidence_brief(None) == ""
+
+
+def test_graph_path_feeds_evidence_details_to_llm():
+    seen = {}
+
+    class _Capture:
+        enabled = True
+
+        def complete(self, messages, **kwargs):
+            seen["content"] = messages[-1]["content"]
+            return "Here's more on phishing."
+
+    ans = SynthesizedAnswer(request="q", narrative="CAPEC-98 maps to T1566 and T1598.")
+    state = {
+        "route": "graph",
+        "question": "tell me more",
+        "answer": ans,
+        "evidence": _capec98_evidence(),
+    }
+    text, composer = compose_answer(state, _cfg(), _Capture())
+    assert composer == "llm"
+    # The retrieved description reached the model as grounded detail.
+    assert "GRAPH EVIDENCE DETAILS" in seen["content"]
+    assert "social engineering technique" in seen["content"]
+
+
+def test_graph_path_without_evidence_omits_brief():
+    seen = {}
+
+    class _Capture:
+        enabled = True
+
+        def complete(self, messages, **kwargs):
+            seen["content"] = messages[-1]["content"]
+            return "ok"
+
+    ans = SynthesizedAnswer(request="q", narrative="body")
+    compose_answer({"route": "graph", "question": "q", "answer": ans}, _cfg(), _Capture())
+    assert "GRAPH EVIDENCE DETAILS" not in seen["content"]
 
 
 def test_answer_node_writes_final_payload_and_trace():
