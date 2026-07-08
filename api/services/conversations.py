@@ -120,7 +120,7 @@ def stream_conversation_events(
     runner) for tests.
     """
     store = store or get_store()
-    config = config or ConversationConfig.from_env()
+    config = (config or ConversationConfig.from_env()).with_llm_enabled(use_llm)
     drafter = "llm" if use_llm else "deterministic"
 
     try:

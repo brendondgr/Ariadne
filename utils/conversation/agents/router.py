@@ -75,19 +75,47 @@ def classify_route(
             }
         ]
     )
+    # A network/timeout error is distinct from an unparseable reply — surface the
+    # real cause instead of a blanket "unavailable" so a flaky endpoint is
+    # diagnosable. Either way the grounding-safe default is graph extraction.
     try:
         raw = client.complete(messages, max_tokens=200)
-        from utils.conversation.agents._common import extract_json_object
+    except LLMUnavailable as exc:
+        return ROUTE_GRAPH, f"router LLM error ({exc}) — defaulting to graph"
 
-        data = extract_json_object(raw)
-    except (LLMUnavailable, ValueError):
-        return ROUTE_GRAPH, "router LLM unavailable — defaulting to graph extraction"
-
-    route = str(data.get("route", "")).strip().lower()
-    reason = str(data.get("reason", "")).strip() or "router decision"
+    route, reason = _parse_route(raw)
     if route not in (ROUTE_QUICK, ROUTE_GRAPH):
-        return ROUTE_GRAPH, "unrecognized route — defaulting to graph extraction"
+        return ROUTE_GRAPH, "router reply unparseable — defaulting to graph"
     return route, reason
+
+
+def _parse_route(raw: str) -> tuple[str, str]:
+    """Extract ``(route, reason)`` from a model reply.
+
+    Prefers a JSON object (``{"route": ..., "reason": ...}``, possibly inside a
+    ```` ```json ```` fence). Falls back to a lenient keyword scan so a model
+    that answers in prose ("route: quick because …") still yields a decision.
+    """
+    from utils.conversation.agents._common import extract_json_object
+
+    try:
+        data = extract_json_object(raw)
+        route = str(data.get("route", "")).strip().lower()
+        reason = str(data.get("reason", "")).strip() or "router decision"
+        if route in (ROUTE_QUICK, ROUTE_GRAPH):
+            return route, reason
+    except ValueError:
+        pass
+
+    # Lenient fallback: pick whichever decision word appears first, if only one
+    # is present (avoids guessing when the reasoning mentions both).
+    low = raw.lower()
+    has_quick, has_graph = ROUTE_QUICK in low, "graph" in low
+    if has_quick and not has_graph:
+        return ROUTE_QUICK, "router decision (lenient parse)"
+    if has_graph and not has_quick:
+        return ROUTE_GRAPH, "router decision (lenient parse)"
+    return "", "router reply unparseable"
 
 
 def make_router_node(
