@@ -74,6 +74,7 @@ class PlanningState(TypedDict, total=False):
     iteration: int
     feedback: list[str] | None
     last_plan: Plan | None
+    drafter_used: str
     gate_ok: bool
     trace: Annotated[list[dict], operator.add]
     plan: Plan  # the final (converged or degraded) plan

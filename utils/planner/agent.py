@@ -15,6 +15,12 @@
    never a degenerate plan emitted as success (briefing §5.3).
 
 Every iteration is recorded in the plan's ``trace`` for inspectability.
+
+The loop itself runs as a LangGraph subgraph
+(``utils.orchestration.agents.planner``): draft → gate → conditional edge back
+to draft with feedback, or on to finalize/degrade. This class is the stable
+facade — it owns the collaborators (cards, drafter, probe) and the public
+contract; the graph owns the control flow.
 """
 
 from __future__ import annotations
@@ -23,11 +29,11 @@ import logging
 
 from .cards import SourceCardView, load_source_cards
 from .config import PlannerConfig
+from .degrade import degrade_to_partial
 from .discovery import LiveSourceProbe, LiveSourceView
 from .drafter import PlanDrafter
 from .drafter_factory import select_drafter
-from .gate import evaluate, valid_subset
-from .schema import Plan, UnsupportedPart
+from .schema import Plan
 
 logger = logging.getLogger("ariadne.planner.agent")
 
@@ -47,6 +53,7 @@ class PlanningAgent:
         self._cards = cards if cards is not None else load_source_cards(self._config.data_dir)
         self._drafter = drafter or select_drafter(self._config)
         self._probe = probe or LiveSourceProbe(self._config)
+        self._graph = None  # compiled lazily; collaborators are fixed at init
 
     @property
     def cards(self) -> dict[str, SourceCardView]:
@@ -56,40 +63,30 @@ class PlanningAgent:
         """Return the current (cached-per-TTL) live-source view."""
         return self._probe.get_live_sources(self._cards)
 
+    def _compiled(self):
+        if self._graph is None:
+            # Imported here: utils.orchestration imports planner modules, so a
+            # top-level import would be circular.
+            from utils.orchestration.agents.planner.graph import build_planning_graph
+            from utils.orchestration.config import OrchestrationConfig
+
+            self._graph = (
+                build_planning_graph(self._drafter, self._cards, self._config.max_iterations),
+                OrchestrationConfig.from_env(),
+            )
+        return self._graph
+
     def plan(self, request: str) -> Plan:
         # Re-probe per request (short TTL cache amortises bursts).
         live_view = self._probe.get_live_sources(self._cards)
-        feedback: list[str] | None = None
-        trace: list[dict] = []
-        last_plan: Plan | None = None
-
-        for iteration in range(1, self._config.max_iterations + 1):
-            plan = self._drafter.draft(request, self._cards, live_view, feedback)
-            result = evaluate(plan, self._cards, live_view)
-            drafter_used = getattr(self._drafter, "last_used", "") or type(self._drafter).__name__
-            trace.append(
-                {
-                    "iteration": iteration,
-                    "drafter": drafter_used,
-                    "gate_ok": result.ok,
-                    "reasons": list(result.reasons),
-                    "sub_questions": len(plan.sub_questions),
-                    "unsupported": len(plan.unsupported),
-                }
-            )
-            last_plan = plan
-            if result.ok:
-                logger.info("plan converged on iteration %d (%s)", iteration, drafter_used)
-                plan.trace = trace
-                return plan
-            logger.info(
-                "iteration %d rejected (%d reason(s)); revising", iteration, len(result.reasons)
-            )
-            feedback = result.reasons
-
-        # Exhausted the cap — degrade honestly rather than loop or fabricate.
-        logger.info("max iterations reached; degrading to partial plan")
-        return self._degrade(last_plan, request, live_view, feedback or [], trace)
+        if self._config.max_iterations <= 0:  # defensive: no drafts allowed
+            return self._degrade(None, request, live_view, [], [])
+        graph, orch = self._compiled()
+        out = graph.invoke(
+            {"request": request, "live_view": live_view, "iteration": 0, "feedback": None},
+            config={"recursion_limit": orch.recursion_limit},
+        )
+        return out["plan"]
 
     def _degrade(
         self,
@@ -99,34 +96,8 @@ class PlanningAgent:
         reasons: list[str],
         trace: list[dict],
     ) -> Plan:
-        if plan is None:  # defensive: cap was 0
-            plan = Plan(request=request)
-        kept_sq, kept_joins, dropped = valid_subset(plan, self._cards, live_view)
-        degraded = Plan(
-            request=request,
-            sub_questions=kept_sq,
-            joins=kept_joins,
-            unsupported=list(plan.unsupported),
-            assumptions=list(plan.assumptions),
-            rationale=plan.rationale,
-            partial=True,
-            trace=trace,
+        """Kept for compatibility; the graph's degrade node uses the same helper."""
+        return degrade_to_partial(
+            plan, request, live_view, reasons, trace,
+            cards=self._cards, max_iterations=self._config.max_iterations,
         )
-        for description, reason in dropped:
-            degraded.unsupported.append(
-                UnsupportedPart(description=description, reason=f"unresolved: {reason}")
-            )
-        if degraded.is_empty():
-            degraded.unsupported.append(
-                UnsupportedPart(
-                    description=request,
-                    reason=(
-                        "planner could not produce a routable plan within "
-                        f"{self._config.max_iterations} iterations: " + "; ".join(reasons)
-                    ),
-                )
-            )
-        degraded.assumptions.append(
-            f"degraded to partial plan after {self._config.max_iterations} iterations"
-        )
-        return degraded
