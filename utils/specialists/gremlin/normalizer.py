@@ -22,6 +22,11 @@ from utils.specialists.resolve import ResolvedTask
 _CAPEC_ID_FROM_STR_RE = re.compile(r"capec:attack-pattern:(\d+)")
 _CWE_GREMLIN_RE = re.compile(r"^cwe:(\d+)$")
 
+# Cap the typed neighbors carried on a dossier record (the true total is kept).
+_DOSSIER_NEIGHBOR_CAP = 25
+# Description + a few human-meaningful attributes lifted onto the dossier record.
+_DOSSIER_ATTRS = ("description", "Abstraction", "Status", "typical_severity", "likelihood_of_attack")
+
 try:
     from gremlin_python.process.traversal import T as GremlinT
     _T_ID = GremlinT.id
@@ -109,6 +114,8 @@ class GremlinNormalizer:
             return self._normalize_hierarchy_chain(rows, resolved, query, card)
         if "ap" in first and "tax" in first:
             return self._normalize_maps_to(rows, resolved, query, card)
+        if "node" in first and "out" in first and "in" in first:
+            return self._normalize_dossier(rows, resolved, query, card)
         if "ap" in first and "nbr" in first:
             return self._normalize_neighbors(rows, resolved, query, card)
         # Single flat rows (capec_lookup, capec_scan).
@@ -167,6 +174,76 @@ class GremlinNormalizer:
                     label=label,
                     name=name,
                     properties=props,
+                )
+            )
+        return records
+
+    def _normalize_dossier(
+        self,
+        rows: list[dict[str, Any]],
+        resolved: ResolvedTask,
+        query: str,
+        card: Any,
+    ) -> list[EvidenceRecord]:
+        """capec_dossier rows: {"node":<elementMap>, "out":[...], "in":[...]}.
+
+        One rich record per entity: the description (+ a few attrs) into
+        ``properties`` so evidence_brief surfaces them, and the out/in edges into
+        ``related`` as ``{id, name, type, direction, label}`` — the same shape the
+        Cypher dossier produces, so the memory formatter is backend-agnostic.
+        """
+        id_scheme: str = card.provenance.get("id_scheme", "capec-id")
+        records: list[EvidenceRecord] = []
+        for row in rows:
+            node = _row_as_dict(row.get("node", {}))
+            gid = _safe_str(node.get("id", ""))
+            primary_id = _primary_id_from_gremlin_id(gid)
+            name = _safe_str(node.get("name", ""))
+            label = _get_label(node) or "AttackPattern"
+            node_props = _string_props(node)
+
+            properties: dict[str, Any] = {}
+            for key in _DOSSIER_ATTRS:
+                value = node_props.get(key)
+                if value not in (None, "", [], {}):
+                    properties[key] = _safe_str(value) if key == "description" else value
+
+            related: list[dict[str, Any]] = []
+            for edge, direction in (
+                (row.get("out") or [], "out"),
+                (row.get("in") or [], "in"),
+            ):
+                for e in edge:
+                    e = _row_as_dict(e)
+                    other = _row_as_dict(e.get("other", {}))
+                    node_id = _primary_id_from_gremlin_id(_safe_str(other.get("id", "")))
+                    node_name = _safe_str(other.get("name", ""))
+                    if not node_id and not node_name:
+                        continue
+                    related.append(
+                        {
+                            "id": node_id,
+                            "name": node_name,
+                            "type": _safe_str(e.get("rel", "")),
+                            "direction": direction,
+                            "label": _get_label(other),
+                        }
+                    )
+
+            neighbor_total = len(related)
+            properties["neighbor_total"] = neighbor_total
+            properties["neighbors_truncated"] = neighbor_total > _DOSSIER_NEIGHBOR_CAP
+            records.append(
+                emit_record(
+                    card=card,
+                    query=query,
+                    record_id=_get_record_id(node) or gid,
+                    primary_id=primary_id,
+                    id_scheme=id_scheme,
+                    label=label,
+                    name=name,
+                    properties=properties,
+                    related=related[:_DOSSIER_NEIGHBOR_CAP],
                 )
             )
         return records

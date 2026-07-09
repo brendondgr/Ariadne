@@ -13,7 +13,7 @@ import re
 from typing import Any
 
 from utils.graph_loader.stores.gremlin import gremlin_edge_label
-from utils.specialists.resolve import ResolvedTask
+from utils.specialists.resolve import ResolvedTask, is_dossier_intent
 from utils.specialists.validation import QueryDraft
 
 # Relationships that fan out from AttackPattern to direct neighbours.
@@ -107,6 +107,10 @@ class GremlinQueryBuilder:
         if has_seeds and neighbor_rel:
             return self._capec_neighbors(resolved, neighbor_rel)
         if has_seeds:
+            # A single-entity deep dive fetches the full node + a typed 1-hop
+            # neighborhood; a bare lookup stays lean (elementMap only).
+            if is_dossier_intent(resolved.task.text):
+                return self._capec_dossier(resolved)
             return self._capec_lookup(resolved)
         return self._capec_scan(resolved)
 
@@ -126,6 +130,33 @@ class GremlinQueryBuilder:
             template="capec_lookup",
             expected_nonempty=bool(ids),
             meta={"anchor_label": "AttackPattern"},
+        )
+
+    def _capec_dossier(self, resolved: ResolvedTask) -> QueryDraft:
+        """Full vertex (elementMap, incl. description) + its typed 1-hop neighbors.
+
+        ``project`` returns, per anchor, the node's elementMap and its outgoing
+        and incoming edges (each as ``{rel: <label>, other: <elementMap>}``). The
+        untyped ``outE()``/``inE()`` surface every edge kind and, having no label
+        argument, sidestep the schema gate's relationship-type/direction checks —
+        the Gremlin analogue of the Cypher dossier's untyped ``-[r]-``.
+        """
+        ids = [_capec_gremlin_id(s) for s in resolved.seed_ids]
+        lim = resolved.task.max_rows()
+        query = (
+            'g.V().hasLabel("AttackPattern").has("id", within(ids))'
+            '.project("node","out","in")'
+            ".by(elementMap())"
+            '.by(outE().project("rel","other").by(label()).by(inV().elementMap()).fold())'
+            '.by(inE().project("rel","other").by(label()).by(outV().elementMap()).fold())'
+            f".limit({lim})"
+        )
+        return QueryDraft(
+            query=query,
+            params={"ids": ids},
+            template="capec_dossier",
+            expected_nonempty=bool(ids),
+            meta={"anchor_label": "AttackPattern", "seed_ids": list(resolved.seed_ids)},
         )
 
     def _capec_neighbors(self, resolved: ResolvedTask, rel: str) -> QueryDraft:

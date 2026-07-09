@@ -783,3 +783,56 @@ class TestNonRegressionRouting:
         )
         draft = GremlinQueryBuilder().build(resolved)
         assert draft.template == "capec_neighbors"
+
+
+# ---------------------------------------------------------------------------
+# capec_dossier: single-entity deep dive (full node + typed 1-hop)
+# ---------------------------------------------------------------------------
+
+
+class TestCapecDossier:
+    def test_routing_capec_dossier_on_describe_intent(self, card, limits):
+        from utils.specialists.resolve import resolve
+
+        task = _make_task(
+            text="Tell me more about CAPEC-98.",
+            entities=("AttackPattern",),
+            join_key=None,
+            seed_ids=("CAPEC-98",),
+        )
+        resolved = resolve(task, card)
+        draft = GremlinQueryBuilder().build(resolved)
+        assert draft.template == "capec_dossier"
+        assert draft.params["ids"] == ["capec:attack-pattern:98"]
+        assert GremlinValidator().validate(draft, card, limits).ok
+
+    def test_bare_lookup_stays_capec_lookup(self, card):
+        from utils.specialists.resolve import resolve
+
+        task = _make_task(text="CAPEC-98", entities=("AttackPattern",), join_key=None, seed_ids=("CAPEC-98",))
+        draft = GremlinQueryBuilder().build(resolve(task, card))
+        assert draft.template == "capec_lookup"
+
+    def test_normalizer_dossier_builds_typed_related_and_description(self, card):
+        from utils.specialists.resolve import resolve
+
+        rows = [
+            {
+                "node": {"id": "capec:attack-pattern:98", "label": "AttackPattern", "name": "Phishing",
+                         "description": "A social engineering technique."},
+                "out": [
+                    {"rel": "CAN_PRECEDE", "other": {"id": "capec:attack-pattern:89", "label": "AttackPattern", "name": "Pharming"}},
+                ],
+                "in": [
+                    {"rel": "CHILD_OF", "other": {"id": "capec:attack-pattern:163", "label": "AttackPattern", "name": "Spear Phishing"}},
+                ],
+            }
+        ]
+        task = _make_task(text="Tell me more about CAPEC-98.", entities=("AttackPattern",), join_key=None, seed_ids=("CAPEC-98",))
+        rec = GremlinNormalizer().normalize(rows, resolve(task, card), "FAKE", card)[0]
+        assert rec.primary_id == "CAPEC-98"
+        assert rec.properties["description"] == "A social engineering technique."
+        assert rec.properties["neighbor_total"] == 2
+        by_id = {r["id"]: r for r in rec.related}
+        assert by_id["CAPEC-89"]["type"] == "CAN_PRECEDE" and by_id["CAPEC-89"]["direction"] == "out"
+        assert by_id["CAPEC-163"]["type"] == "CHILD_OF" and by_id["CAPEC-163"]["direction"] == "in"

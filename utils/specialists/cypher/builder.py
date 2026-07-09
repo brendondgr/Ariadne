@@ -11,7 +11,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from ..resolve import ResolvedTask
+from ..resolve import ResolvedTask, is_dossier_intent
 from ..validation import QueryDraft
 
 _TECHNIQUE_RE = re.compile(r"^T\d{4}(?:\.\d{3})?$")
@@ -43,16 +43,6 @@ def _preferred_scan_label(resolved: ResolvedTask) -> str:
     return resolved.primary_label() or "Technique"
 
 
-# A single-entity "tell me about this" question routes to the dossier template
-# (full node + a capped, typed 1-hop neighborhood) instead of the bare id/name
-# node_lookup. Kept deliberately explicit so a generic lookup task never trips it.
-_DOSSIER_INTENT_RE = re.compile(
-    r"\b(?:details?|describe[sd]?|description|information|overview|explain|"
-    r"definition|define|elaborate|tell me (?:more|about)|more (?:on|about|details)|"
-    r"learn more|dive (?:in|deeper)|full (?:record|profile|picture))\b",
-    re.IGNORECASE,
-)
-
 # How many typed neighbors the dossier query returns; the true total is reported
 # alongside so a hub node is marked "+N more" rather than silently truncated.
 _DOSSIER_NEIGHBOR_CAP = 25
@@ -76,7 +66,7 @@ def _wants_dossier(resolved: ResolvedTask) -> bool:
     """True when a seeded, non-join task reads as a single-entity deep dive."""
     if resolved.has_join:
         return False
-    return bool(_DOSSIER_INTENT_RE.search(resolved.task.text or ""))
+    return is_dossier_intent(resolved.task.text)
 
 
 def _dossier_label(resolved: ResolvedTask) -> str:

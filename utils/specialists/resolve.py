@@ -38,6 +38,21 @@ _TECHNIQUE_RE = re.compile(r"\bT\d{4}(?:\.\d{3})?\b")
 _CAPEC_RE = re.compile(r"\bCAPEC[-\s]?(\d+)\b", re.IGNORECASE)
 _CWE_RE = re.compile(r"\bCWE[-\s]?(\d+)\b", re.IGNORECASE)
 
+# A single-entity "tell me about this" question — routes a seeded, non-join task
+# to the dossier path (full node + capped typed 1-hop) in either builder. Kept
+# explicit so a plain id lookup never trips it. Shared so Cypher and Gremlin agree.
+_DOSSIER_INTENT_RE = re.compile(
+    r"\b(?:details?|describe[sd]?|description|information|overview|explain|"
+    r"definition|define|elaborate|tell me (?:more|about)|more (?:on|about|details)|"
+    r"learn more|dive (?:in|deeper)|full (?:record|profile|picture))\b",
+    re.IGNORECASE,
+)
+
+
+def is_dossier_intent(text: str) -> bool:
+    """True when the task text reads as a single-entity deep dive."""
+    return bool(_DOSSIER_INTENT_RE.search(text or ""))
+
 
 @dataclass(frozen=True)
 class ResolvedTask:
