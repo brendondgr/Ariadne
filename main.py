@@ -338,6 +338,17 @@ VERSION OVERRIDES (--docker start only)
         action="store_true",
         help="With --component-eval / --e2e-eval, skip the live scorers",
     )
+    evaluation.add_argument(
+        "--golden-eval",
+        nargs=argparse.REMAINDER,
+        default=None,
+        metavar="HARNESS_ARGS",
+        help=(
+            "Run the decoupled golden-eval harness (run->judge->report). All "
+            "following args forward to it, e.g. "
+            "--golden-eval --stage all --set attack --llm --limit 3"
+        ),
+    )
 
     args = parser.parse_args()
 
@@ -371,6 +382,8 @@ VERSION OVERRIDES (--docker start only)
         job_type = "component-eval"
     elif args.e2e_eval:
         job_type = "e2e-eval"
+    elif args.golden_eval is not None:
+        job_type = "golden-eval"
     else:
         # If no arguments provided, print help and exit
         parser.print_help()
@@ -480,6 +493,12 @@ VERSION OVERRIDES (--docker start only)
             if args.judge:
                 e2e_args.append("--judge")
             run_e2e_eval(e2e_args)
+            logger.info("Job completed successfully.")
+        elif args.golden_eval is not None:
+            from utils.evaluation.harness.cli import main as run_golden_eval
+            code = run_golden_eval(args.golden_eval)
+            if code:
+                sys.exit(code)
             logger.info("Job completed successfully.")
     except (LoaderResolutionError, ValueError, RuntimeError, ConnectionError) as e:
         logger.error(str(e))
