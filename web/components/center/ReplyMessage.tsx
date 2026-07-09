@@ -52,12 +52,17 @@ export function ReplyMessage({
   hasGroundedCard,
   cardOpen,
   onToggleCard,
+  docked = false,
 }: {
   run: WorkbenchRun;
   live: boolean;
   hasGroundedCard: boolean;
   cardOpen: boolean;
   onToggleCard: () => void;
+  /** When true, the reply is the head section of a unified turn container (its
+   *  bubble chrome — max-width, rounding, surface, shadow — is supplied by the
+   *  parent) so the evidence card can extend seamlessly beneath it. */
+  docked?: boolean;
 }) {
   const [copied, setCopied] = useState(false);
   const reply = run.reply;
@@ -78,8 +83,12 @@ export function ReplyMessage({
       variants={fadeSlideUp}
       initial={live ? "hidden" : false}
       animate="show"
-      className="max-w-[92%] overflow-hidden rounded-[4px_13px_13px_13px] bg-surface px-[18px] py-4"
-      style={{ boxShadow: SHADOW.answerCard }}
+      className={
+        docked
+          ? "px-[18px] py-4"
+          : "max-w-[92%] overflow-hidden rounded-[4px_13px_13px_13px] bg-surface px-[18px] py-4"
+      }
+      style={docked ? undefined : { boxShadow: SHADOW.answerCard }}
     >
       <div className="mb-2 flex flex-wrap items-center gap-1.5">
         <RouteIndicator route={reply.route} />
