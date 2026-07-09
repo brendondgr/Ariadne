@@ -110,6 +110,11 @@ def apply_llm_narrative(
     """
     if not config.llm_enabled:
         return
+    if not answer.claims:
+        # No grounded fact to narrate: keep the deterministic clarification
+        # (an honest, actionable "couldn't find X — name it or give an id")
+        # rather than let the model write prose over an empty evidence set.
+        return
     if answer.composer == "llm" and answer.narrative.strip():
         return  # the claims composer already produced a fluent LLM answer
     try:

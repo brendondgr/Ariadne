@@ -42,6 +42,14 @@ def test_build_messages_includes_feedback() -> None:
     assert "fix the limits" in msgs[1]["content"]
 
 
+def test_system_prompt_states_definitional_name_rule() -> None:
+    # The prompt must tell the model a "what is <name>?" question is answerable
+    # by name, not something to mark unsupported.
+    system = build_messages(DEMO, CARDS, make_live_view())[0]["content"]
+    assert "DEFINITIONAL" in system
+    assert "resolves entities by name" in system
+
+
 # -- JSON extraction --------------------------------------------------------
 
 
@@ -153,6 +161,38 @@ def test_hybrid_falls_back_to_deterministic() -> None:
     assert hybrid.last_used == "DeterministicDrafter"
     assert any("fallback" in a for a in plan.assumptions)
     assert evaluate(plan, CARDS, view).ok
+
+
+class UnsupportedOnlyDrafter:
+    """Succeeds (no transport error) but routes nothing — mimics the LLM marking
+    a definitional question 'incomplete/unsupported'."""
+
+    def draft(self, request, cards, live_view, feedback=None):
+        from utils.planner.schema import Plan, UnsupportedPart
+
+        plan = Plan(request=request)
+        plan.unsupported.append(UnsupportedPart(description="What", reason="incomplete"))
+        plan.partial = True
+        return plan
+
+
+def test_hybrid_floor_rescues_definitional_when_primary_routes_nothing() -> None:
+    hybrid = HybridDrafter(UnsupportedOnlyDrafter(), DeterministicDrafter())
+    view = make_live_view()
+    plan = hybrid.draft("What is Phishing?", CARDS, view)
+    assert plan.sub_questions  # deterministic floor rescued the definitional turn
+    assert hybrid.last_used == "DeterministicDrafter"
+    assert any("floor" in a for a in plan.assumptions)
+    assert evaluate(plan, CARDS, view).ok
+
+
+def test_hybrid_keeps_primary_when_floor_also_routes_nothing() -> None:
+    # A non-definitional, out-of-scope question: the deterministic floor also
+    # routes nothing, so the primary plan (and its reasons) is preserved.
+    hybrid = HybridDrafter(UnsupportedOnlyDrafter(), DeterministicDrafter())
+    plan = hybrid.draft("List all Kubernetes pods.", CARDS, make_live_view())
+    assert not plan.sub_questions
+    assert hybrid.last_used == "UnsupportedOnlyDrafter"
 
 
 def test_select_drafter_defaults_to_deterministic() -> None:

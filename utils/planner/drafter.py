@@ -229,6 +229,46 @@ class DeterministicDrafter:
                         for sq in plan.sub_questions
                     ]
 
+        # Definitional rescue: a "what is X" / "define X" question names an
+        # entity by its human name, which is not a label token, so the keyword
+        # router above selected nothing. Route a join-free name-lookup
+        # sub-question to every live source so the specialist's name-dossier can
+        # resolve the entity by name (the id-less analogue of a seeded lookup).
+        # It fires only on this dead end, so it never changes a plan the keyword
+        # router could already build.
+        # Lazy import avoids a package-init import cycle (specialists.resolve
+        # imports planner.join_keys, which pulls in this module at import time).
+        from utils.specialists.resolve import is_definitional_intent
+
+        if not plan.sub_questions and is_definitional_intent(request):
+            for ds in sorted(cards):
+                if not live_view.is_live(ds):
+                    continue
+                card = cards[ds]
+                probe = [e for e in card.expected_probe_labels()[:1] if e]
+                if not probe:
+                    continue
+                plan.sub_questions.append(
+                    SubQuestion(
+                        id=f"q{len(plan.sub_questions) + 1}",
+                        source=ds,
+                        text=request,
+                        entities=probe,
+                        limits=Limits(**card.limits()),
+                        rationale=(
+                            f"{ds} name lookup for a definitional question "
+                            "(no id/label term matched; resolve by entity name)"
+                        ),
+                    )
+                )
+                selected_live.append(ds)
+                rationale_parts.append(f"definitional name lookup routed to {ds}")
+            if plan.sub_questions:
+                plan.assumptions.append(
+                    "no schema term matched; routed a name lookup for the named "
+                    "entity to each live source"
+                )
+
         # Nothing matched at all: honestly mark the whole request unsupported.
         if not plan.sub_questions and not plan.unsupported:
             plan.unsupported.append(

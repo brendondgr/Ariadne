@@ -12,10 +12,19 @@ from utils.synthesis.composer import DeterministicComposer
 from utils.synthesis.config import SynthesisConfig
 from utils.synthesis.contracts import SynthesizedAnswer
 from utils.synthesis.factory import synthesize
+from utils.synthesis.tests._fixtures import make_evidence, make_record, make_result
 
 
 def _evidence() -> FederatedEvidence:
     return FederatedEvidence(request="q", results=[], unsupported=[], skipped=[])
+
+
+def _evidence_with_claim() -> FederatedEvidence:
+    """Evidence that yields a grounded claim, so the LLM narrator actually runs
+    (it is skipped by design when there is no claim to narrate)."""
+    return make_evidence(
+        [make_result(records=[make_record("T1047", name="WMI")], summary="WMI matched.")]
+    )
 
 
 def test_verifier_always_runs_over_the_composed_draft():
@@ -49,7 +58,7 @@ def test_llm_on_unreachable_narrator_keeps_deterministic_answer():
         llm_enabled=True, llm_base_url="http://127.0.0.1:1/v1", llm_timeout_s=0.2
     )
     graph = build_synthesis_graph(DeterministicComposer(config), config)
-    out = graph.invoke({"evidence": _evidence()})
+    out = graph.invoke({"evidence": _evidence_with_claim()})
     answer = out["answer"]
     assert answer.narrative, "deterministic narrative must survive"
     assert answer.fallback_reason and "narrator unavailable" in answer.fallback_reason
