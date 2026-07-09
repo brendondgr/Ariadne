@@ -57,7 +57,7 @@ export function MiniStepper({
 
   return (
     <div
-      className="flex items-center gap-0 bg-[rgba(27,33,34,0.6)] px-4 py-3"
+      className="flex items-center gap-0 bg-[rgba(14,15,17,0.6)] px-4 py-3"
       style={{ boxShadow: "rgba(235,230,220,0.07) 0 -1px 0 0 inset" }}
     >
       <div className="flex flex-1 flex-wrap items-center gap-2">

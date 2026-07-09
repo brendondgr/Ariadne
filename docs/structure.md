@@ -219,13 +219,19 @@ Woven Dusk design system — the three-region workbench (header infra pills ·
 conversations rail · **multi-turn** chat thread with Answer Cards · step-by-step
 inspector). The composer submits questions to `POST /api/conversation-query`; the
 event-driven run machine appends a new turn per question and renders a
-**conversational reply bubble** (from the `final` event) over the collapsible
-grounded Answer Card. The left rail lists **persisted, memory-inclusive threads**
-(from `/api/conversations`) grouped by date — selecting one rehydrates its turns
-(replaying each stored turn's events through the shared reducer), "New" creates a
-real thread, and rows rename/delete; a new thread is LLM-auto-titled on its first
-message. Each turn still advances the animated trace from the real SSE events,
-retaining the literal ordered event log + raw plan/probe/answer.
+**conversational reply bubble** (from the `final` event); its collapsible grounded
+Answer Card ("Show evidence & sources") **extends the same container** rather than
+floating as a separate card. The left rail lists **persisted, memory-inclusive
+threads** (from `/api/conversations`) as compact date-grouped **pills** (title only,
+no turn/time metadata) — selecting a completed thread rehydrates its turns (replaying
+each stored turn's events through the shared reducer) while a still-streaming thread
+shows its live progress; "New" creates a real thread, and rows rename/delete; a new
+thread is LLM-auto-titled (2–5 words) on its first message. Queries run in the
+**background**: the run machine keys each in-flight stream by conversation id, so
+switching chats never cancels a running query — a busy chat shows a spinning
+**swirl** in the rail and resumes its live trace when reselected. Each turn still
+advances the animated trace from the real SSE events, retaining the literal ordered
+event log + raw plan/probe/answer.
 The inspector surfaces the **full** pipeline: the Trace tab shows the planner
 iteration history and, per specialist, the six evaluator steps with their
 reasons/detail, the task metadata, and the validated query; the Evidence tab

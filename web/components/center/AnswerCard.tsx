@@ -207,7 +207,18 @@ function AnswerError({ message }: { message: string }) {
  *  `live` is true only for the turn currently streaming; past turns render
  *  statically from their own baked status so they don't react to the global
  *  stream state. */
-export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boolean }) {
+export function AnswerCard({
+  run,
+  live = true,
+  docked = false,
+}: {
+  run: WorkbenchRun;
+  live?: boolean;
+  /** When true, the card renders as the lower section of a unified turn
+   *  container (the reply supplies the surface + shadow above it), so it drops
+   *  its own max-width / rounding / surface / shadow and extends seamlessly. */
+  docked?: boolean;
+}) {
   const { setActiveTab, openInspector, statusOf, replaying, error } = useWorkbench();
   const [copied, setCopied] = useState(false);
   const [exported, setExported] = useState(false);
@@ -311,10 +322,14 @@ export function AnswerCard({ run, live = true }: { run: WorkbenchRun; live?: boo
   return (
     <motion.div
       variants={fadeSlideUp}
-      initial={cardReplaying ? "hidden" : false}
+      initial={!docked && cardReplaying ? "hidden" : false}
       animate="show"
-      className="max-w-[92%] overflow-hidden rounded-[4px_13px_13px_13px] bg-surface"
-      style={{ boxShadow: SHADOW.answerCard }}
+      className={
+        docked
+          ? "overflow-hidden"
+          : "max-w-[92%] overflow-hidden rounded-[4px_13px_13px_13px] bg-surface"
+      }
+      style={docked ? undefined : { boxShadow: SHADOW.answerCard }}
     >
       <MiniStepper
         steps={run.stepper}

@@ -13,17 +13,26 @@ from utils.conversation.config import ConversationConfig
 from utils.conversation.llm import ConversationLLM, LLMUnavailable
 
 _MAX_TITLE_CHARS = 60
+_MAX_TITLE_WORDS = 5
 
+# Deliberately short/lightweight so the first-turn title completion returns as
+# fast as possible (paired with a small max_tokens in `title_for`).
 _SYSTEM = (
-    "You name a conversation thread for a cybersecurity knowledge-graph "
-    "assistant. Given the user's first message, return a short, specific title "
-    "of at most 6 words. No quotes, no trailing punctuation, Title Case. Return "
-    "ONLY the title."
+    "Title this cybersecurity graph query in 2-5 words. "
+    "Title Case, no quotes, no punctuation. Reply with ONLY the title."
 )
 
 
 def _clean(text: str) -> str:
     return " ".join(text.strip().split())
+
+
+def _clamp_words(title: str) -> str:
+    """Bound a generated title to at most ``_MAX_TITLE_WORDS`` words."""
+    words = title.split()
+    if len(words) <= _MAX_TITLE_WORDS:
+        return title
+    return " ".join(words[:_MAX_TITLE_WORDS])
 
 
 def deterministic_title(question: str) -> str:
@@ -52,10 +61,10 @@ def title_for(
         {"role": "user", "content": question},
     ]
     try:
-        raw = client.complete(messages, max_tokens=32, temperature=0.3)
+        raw = client.complete(messages, max_tokens=16, temperature=0.3)
     except LLMUnavailable:
         return deterministic_title(question)
-    title = _clean(raw).strip('"').rstrip(",.;:")
+    title = _clamp_words(_clean(raw).strip('"').rstrip(",.;:"))
     if not title:
         return deterministic_title(question)
     if len(title) > _MAX_TITLE_CHARS:

@@ -33,15 +33,19 @@ What distinguishes this system is its shadow-as-border philosophy. On dark surfa
 
 ### Woven Dusk Core
 
+> **Base neutralized (2026-07):** per analyst direction the base canvas was
+> de-greened to neutral black/dark-gray. Teal (`#4E9E96`) and amber (`#C9924A`)
+> remain the *only* accents — green now appears as a highlight, never as the base.
+
 | Role | Hex | CSS Variable | Usage |
 |------|-----|--------------|-------|
-| Background | `#1B2122` | `--color-bg` | Page canvas — charcoal with green undertone |
-| Surface | `#222C2A` | `--color-surface` | Cards, panels — dark moss |
+| Background | `#0E0F11` | `--color-bg` | Page canvas — near-black neutral |
+| Surface | `#17181A` | `--color-surface` | Cards, panels — dark gray |
 | Primary accent | `#4E9E96` | `--color-primary` | CTAs, links, focus — oxidized teal |
 | Secondary accent | `#C9924A` | `--color-secondary` | Warm highlights — antique amber |
-| Text primary | `#EBE6DC` | `--color-text` | Headings, body — warm off-white |
-| Text secondary | `#8A9E98` | `--color-text-muted` | Captions, metadata — greyed sage |
-| Border / divider | `#2D3D3A` | `--color-border` | Dividers, input borders — soft moss |
+| Text primary | `#ECEBE8` | `--color-text` | Headings, body — near-neutral off-white |
+| Text secondary | `#9A9A97` | `--color-text-muted` | Captions, metadata — neutral gray |
+| Border / divider | `#2A2B2E` | `--color-border` | Dividers, input borders — neutral gray |
 
 ### Workflow Accent Colors
 
@@ -99,13 +103,13 @@ Syntax highlighting on dark surfaces:
 
 ```css
 :root {
-  --color-bg: #1B2122;
-  --color-surface: #222C2A;
+  --color-bg: #0E0F11;
+  --color-surface: #17181A;
   --color-primary: #4E9E96;
   --color-secondary: #C9924A;
-  --color-text: #EBE6DC;
-  --color-text-muted: #8A9E98;
-  --color-border: #2D3D3A;
+  --color-text: #ECEBE8;
+  --color-text-muted: #9A9A97;
+  --color-border: #2A2B2E;
   --color-focus: #4E9E96;
   --shadow-border: rgba(235, 230, 220, 0.08) 0px 0px 0px 1px;
   --shadow-elevation: rgba(0, 0, 0, 0.2) 0px 2px 4px;

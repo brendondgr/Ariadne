@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import type { WorkbenchRun } from "@/lib/types";
+import { SHADOW } from "@/lib/ui";
 import { collapse } from "@/lib/motion";
 import { ThreadHeader } from "./ThreadHeader";
 import { UserMessage } from "./UserMessage";
@@ -62,13 +63,21 @@ function TurnBlock({
     >
       <UserMessage text={run.question} />
       {run.reply ? (
-        <>
+        // Reply bubble + (optional) evidence card as ONE continuous container:
+        // the wrapper owns the surface + shadow, the reply is the head section,
+        // and the expanded evidence extends seamlessly beneath it (a hairline
+        // seam, no gap) instead of floating as a separate standalone card.
+        <div
+          className="max-w-[92%] overflow-hidden rounded-[4px_13px_13px_13px] bg-surface"
+          style={{ boxShadow: SHADOW.answerCard }}
+        >
           <ReplyMessage
             run={run}
             live={live}
             hasGroundedCard={grounded}
             cardOpen={cardOpen}
             onToggleCard={() => setCardOpen((v) => !v)}
+            docked
           />
           <AnimatePresence initial={false}>
             {grounded && cardOpen && (
@@ -79,12 +88,13 @@ function TurnBlock({
                 animate="show"
                 exit="hidden"
                 className="overflow-hidden"
+                style={{ boxShadow: SHADOW.insetTop }}
               >
-                <AnswerCard run={run} live={live} />
+                <AnswerCard run={run} live={live} docked />
               </motion.div>
             )}
           </AnimatePresence>
-        </>
+        </div>
       ) : (
         <AnswerCard run={run} live={live} />
       )}

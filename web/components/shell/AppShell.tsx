@@ -41,7 +41,7 @@ export function AppShell({ header, left, center, inspector, inspectorDrawer, hid
           <>
             {/* desktop conversations rail */}
             <aside
-              className="hidden min-h-0 min-w-0 flex-[0_0_212px] flex-col bg-surface md:flex"
+              className="hidden min-h-0 min-w-0 flex-[0_0_236px] flex-col bg-surface md:flex"
               style={{ boxShadow: "rgba(235,230,220,0.14) 1px 0 0 0" }}
             >
               {left}
@@ -53,7 +53,7 @@ export function AppShell({ header, left, center, inspector, inspectorDrawer, hid
                 <>
                   <motion.div
                     key="left-backdrop"
-                    className="fixed inset-0 top-[58px] z-30 bg-[rgba(27,33,34,0.6)] md:hidden"
+                    className="fixed inset-0 top-[58px] z-30 bg-[rgba(14,15,17,0.6)] md:hidden"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}

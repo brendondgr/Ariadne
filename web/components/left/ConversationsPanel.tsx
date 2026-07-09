@@ -1,5 +1,5 @@
 import type { ConversationSummaryDTO } from "@/lib/types";
-import { dateBucket, relativeTimeLabel, type DateBucket } from "@/lib/ui";
+import { dateBucket, type DateBucket } from "@/lib/ui";
 import { PlusIcon } from "@/components/ui/icons";
 import { ConversationItem } from "./ConversationItem";
 
@@ -26,6 +26,8 @@ interface ConversationsPanelProps {
   conversations: ConversationSummaryDTO[];
   activeId: string;
   loading?: boolean;
+  /** Conversation ids with an in-flight background query (render the swirl). */
+  busyIds?: Set<string>;
   onSelect?: (id: string) => void;
   onNew?: () => void;
   onRename?: (id: string, title: string) => void;
@@ -36,6 +38,7 @@ export function ConversationsPanel({
   conversations,
   activeId,
   loading = false,
+  busyIds,
   onSelect,
   onNew,
   onRename,
@@ -44,8 +47,8 @@ export function ConversationsPanel({
   const groups = groupByDate(conversations);
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col px-3.5 pb-4 pt-[18px]">
-      <div className="flex items-center justify-between px-0.5 pb-4">
+    <div className="flex min-h-0 flex-1 flex-col px-2.5 pb-4 pt-4">
+      <div className="flex items-center justify-between px-1 pb-3">
         <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-text-muted">
           Conversations
         </span>
@@ -60,7 +63,7 @@ export function ConversationsPanel({
         </button>
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col gap-px overflow-y-auto pr-0.5">
+      <div className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto pr-0.5">
         {loading && conversations.length === 0 && (
           <p className="px-1 pt-2 font-mono text-[11px] leading-relaxed text-text-dim">
             Loading conversations…
@@ -72,8 +75,8 @@ export function ConversationsPanel({
           </p>
         )}
         {groups.map((group) => (
-          <div key={group.label}>
-            <div className="px-1 pb-2 pt-3 font-mono text-[9.5px] uppercase tracking-[0.1em] text-text-dim">
+          <div key={group.label} className="flex flex-col gap-0.5">
+            <div className="px-1 pb-1 pt-2 font-mono text-[9.5px] uppercase tracking-[0.1em] text-text-dim">
               {group.label}
             </div>
             {group.items.map((convo) => (
@@ -81,9 +84,8 @@ export function ConversationsPanel({
                 key={convo.id}
                 id={convo.id}
                 title={convo.title}
-                timeLabel={relativeTimeLabel(convo.updated_at)}
-                turnCount={convo.turn_count}
                 active={convo.id === activeId}
+                busy={busyIds?.has(convo.id) ?? false}
                 onClick={onSelect ? () => onSelect(convo.id) : undefined}
                 onRename={onRename ? (title) => onRename(convo.id, title) : undefined}
                 onDelete={onDelete ? () => onDelete(convo.id) : undefined}

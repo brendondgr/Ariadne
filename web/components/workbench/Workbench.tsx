@@ -30,6 +30,7 @@ export function Workbench() {
     conversations,
     conversationId,
     conversationsLoading,
+    busyConversationIds,
     newConversation,
     selectConversation,
     renameConversation,
@@ -47,6 +48,7 @@ export function Workbench() {
             conversations={conversations}
             activeId={conversationId}
             loading={conversationsLoading}
+            busyIds={busyConversationIds}
             onSelect={(id) => void selectConversation(id)}
             onNew={() => void newConversation()}
             onRename={(id, title) => void renameConversation(id, title)}

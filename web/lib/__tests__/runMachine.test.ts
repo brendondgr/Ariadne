@@ -4,9 +4,12 @@ import {
   emptyAccumulator,
   evidenceFor,
   runInputsFromAccumulator,
+  upsertRunInto,
 } from "../runMachine";
 import { buildRun } from "../adapt";
-import type { QueryEvent } from "../types";
+import type { QueryEvent, WorkbenchRun } from "../types";
+
+const makeRun = (id: string): WorkbenchRun => buildRun(runInputsFromAccumulator(id, emptyAccumulator("q", "query", "llm")));
 
 describe("applyConversationEvent: quick path", () => {
   it("folds status → context → route → final → conversation → done with no pipeline events", () => {
@@ -205,5 +208,33 @@ describe("applyConversationEvent: graph path", () => {
       data: { resolved_question: "q", rewritten: false },
     });
     expect(contextEffects.statusPatch).toBeUndefined();
+  });
+});
+
+describe("upsertRunInto: per-conversation turn folding (background streams)", () => {
+  it("appends a new turn only to its own conversation's list", () => {
+    const byConv = { "conv-A": [makeRun("a1")], "conv-B": [makeRun("b1")] };
+    const next = upsertRunInto(byConv, "conv-A", makeRun("a2"));
+
+    expect(next["conv-A"].map((r) => r.id)).toEqual(["a1", "a2"]);
+    // The other conversation is untouched — the background stream for A never
+    // disturbs B even though B is the one on screen.
+    expect(next["conv-B"]).toBe(byConv["conv-B"]);
+  });
+
+  it("replaces a turn in place by id (progressive rebuild during streaming)", () => {
+    const first = makeRun("a1");
+    const byConv = { "conv-A": [first] };
+    const updated = makeRun("a1");
+    const next = upsertRunInto(byConv, "conv-A", updated);
+
+    expect(next["conv-A"]).toHaveLength(1);
+    expect(next["conv-A"][0]).toBe(updated);
+  });
+
+  it("creates a conversation entry when folding the first turn into an unseen id", () => {
+    const next = upsertRunInto({}, "conv-new", makeRun("n1"));
+    expect(Object.keys(next)).toEqual(["conv-new"]);
+    expect(next["conv-new"].map((r) => r.id)).toEqual(["n1"]);
   });
 });
