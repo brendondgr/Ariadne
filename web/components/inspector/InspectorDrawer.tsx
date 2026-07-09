@@ -19,7 +19,7 @@ export function InspectorDrawer({ run }: { run: WorkbenchRun }) {
           <>
             <motion.div
               key="backdrop"
-              className="fixed inset-0 top-[58px] z-30 bg-[rgba(27,33,34,0.6)]"
+              className="fixed inset-0 top-[58px] z-30 bg-[rgba(14,15,17,0.6)]"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

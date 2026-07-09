@@ -6,7 +6,7 @@ import type { Accent } from "./types";
  * mockup that are awkward to express as Tailwind utilities.
  */
 
-export const CONSOLE_BG = "#15191a";
+export const CONSOLE_BG = "#101113";
 
 export const SHADOW = {
   border: "rgba(235,230,220,0.08) 0 0 0 1px",
@@ -41,10 +41,10 @@ export const ACCENT: Record<Accent, AccentTokens> = {
     ring: "rgba(201,146,74,0.3)",
   },
   sage: {
-    fg: "#8a9e98",
-    tintBg: "rgba(138,158,152,0.1)",
-    tintBgStrong: "rgba(138,158,152,0.16)",
-    ring: "rgba(138,158,152,0.3)",
+    fg: "#9a9a97",
+    tintBg: "rgba(154,154,151,0.1)",
+    tintBgStrong: "rgba(154,154,151,0.16)",
+    ring: "rgba(154,154,151,0.3)",
   },
 };
 
