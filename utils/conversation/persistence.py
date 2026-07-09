@@ -15,7 +15,7 @@ service, which already serializes the SSE events it stores.
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from typing import Any
 
 from utils.conversation.store import TurnRecord
@@ -125,6 +125,88 @@ def dossiers_from_records(records: list[Any]) -> dict[str, EntityDossier]:
             neighbor_total=total,
         )
     return dossiers
+
+
+def dossier_payload(dossiers: dict[str, EntityDossier]) -> dict[str, dict[str, Any]]:
+    """Serialize dossiers for the assistant turn payload (keyed by entity id)."""
+    return {eid: asdict(d) for eid, d in dossiers.items()}
+
+
+def _dossier_from_payload(data: dict[str, Any]) -> EntityDossier:
+    edges = tuple(
+        DossierEdge(
+            title=str(e.get("title", "")),
+            rel_type=str(e.get("rel_type", "")),
+            direction="in" if e.get("direction") == "in" else "out",
+            node_name=str(e.get("node_name", "")),
+            node_id=str(e.get("node_id", "")),
+        )
+        for e in data.get("edges", []) or []
+    )
+    try:
+        total = int(data.get("neighbor_total", len(edges)))
+    except (TypeError, ValueError):
+        total = len(edges)
+    return EntityDossier(
+        id=str(data.get("id", "")),
+        name=str(data.get("name", "")),
+        description=str(data.get("description", "")),
+        edges=edges,
+        neighbor_total=total,
+    )
+
+
+def dossiers_from_turns(turns: list[TurnRecord]) -> dict[str, EntityDossier]:
+    """Rebuild the per-conversation dossier cache from stored turns (latest wins)."""
+    cache: dict[str, EntityDossier] = {}
+    for turn in turns:
+        if turn.role != "assistant":
+            continue
+        stored = (turn.payload or {}).get("entity_dossiers") or {}
+        for eid, data in stored.items():
+            if isinstance(data, dict):
+                cache[str(eid)] = _dossier_from_payload(data)
+    return cache
+
+
+def _recent_dossier_ids(turns: list[TurnRecord]) -> list[str]:
+    """Entity ids hydrated by the most recent turn that held any (recency anchor)."""
+    for turn in reversed(turns):
+        if turn.role != "assistant":
+            continue
+        stored = (turn.payload or {}).get("entity_dossiers") or {}
+        if stored:
+            return [str(eid) for eid in stored]
+    return []
+
+
+def memory_injection(
+    question: str, turns: list[TurnRecord], *, max_blocks: int = 3
+) -> list[str]:
+    """Assemble the hybrid memory facts for the next turn.
+
+    Returns an always-on index line naming every held entity, plus the full
+    detail block for the entities relevant to *this* turn — those named by id in
+    the question, plus the most-recently hydrated entity (so a pronoun follow-up
+    like "what does it mitigate?" still resolves). Everything else stays handy but
+    unspent, keeping per-turn context lean.
+    """
+    cache = dossiers_from_turns(turns)
+    if not cache:
+        return []
+    facts: list[str] = []
+    index = dossier_index_line(cache)
+    if index:
+        facts.append(index)
+
+    referenced = [eid for eid in entity_ids_in(question) if eid in cache]
+    chosen: list[str] = list(referenced)
+    for eid in _recent_dossier_ids(turns):
+        if eid not in chosen:
+            chosen.append(eid)
+    for eid in chosen[:max_blocks]:
+        facts.append(dossier_detail_block(cache[eid]))
+    return facts
 
 
 def dossier_index_line(dossiers: dict[str, EntityDossier]) -> str:

@@ -19,7 +19,13 @@ from utils.conversation.config import ConversationConfig, conversation_db_path
 from utils.conversation.llm import ConversationLLM
 from utils.conversation.main import iter_conversation
 from utils.conversation.naming import title_for
-from utils.conversation.persistence import facts_from_synthesized, history_from_turns
+from utils.conversation.persistence import (
+    dossier_payload,
+    dossiers_from_records,
+    facts_from_synthesized,
+    history_from_turns,
+    memory_injection,
+)
 from utils.conversation.store import ConversationNotFound, ConversationStore
 from utils.orchestration.main import PipelineRun
 from api.services.query import render_pipeline_event
@@ -135,9 +141,15 @@ def stream_conversation_events(
             return
 
         is_first_turn = convo.turn_count == 0
-        history = history_from_turns(
-            store.list_turns(conversation_id), limit=config.history_turns
-        )
+        turns = store.list_turns(conversation_id)
+        history = history_from_turns(turns, limit=config.history_turns)
+        # Hybrid entity memory: an always-on index of held entities plus the full
+        # dossier for the ones this turn refers to, injected as a synthetic
+        # assistant entry (facts surface via known_facts; empty content is skipped
+        # by render_history_messages) — no LangGraph agent changes required.
+        injected_facts = memory_injection(question, turns)
+        if injected_facts:
+            history = [*history, {"role": "assistant", "content": "", "facts": injected_facts}]
 
         run = PipelineRun(question=question, mode=mode)
         # Accumulators for persistence at the terminal `conversation` event.
@@ -148,6 +160,7 @@ def stream_conversation_events(
             "final_answer": "",
             "validation": None,
             "synthesized": None,
+            "evidence": None,
             "status": "answered",
             "exit_code": 0,
             "events": [],
@@ -163,9 +176,15 @@ def stream_conversation_events(
             run=run,
             **build_kwargs,
         ):
-            # Snapshot the raw synthesis object (for facts) before it is rendered.
+            # Snapshot the raw synthesis object (facts) and federated evidence
+            # (entity dossiers) before they are rendered. Both ride the `answer`
+            # event; the earlier `evidence` event is a fallback source.
             if event == "answer" and isinstance(payload, dict):
                 acc["synthesized"] = payload.get("synthesized")
+                if payload.get("evidence") is not None:
+                    acc["evidence"] = payload.get("evidence")
+            if event == "evidence" and isinstance(payload, dict):
+                acc["evidence"] = payload.get("evidence")
 
             name, data = _present(event, payload, run)
 
@@ -242,6 +261,15 @@ def _persist_turn(
         "exit_code": acc["exit_code"],
         "events": acc["events"],
     }
+    # Cache any single-entity dossiers this turn retrieved, keyed by entity id, so
+    # a later turn can pull one in without re-querying (hybrid on-demand memory).
+    evidence = acc.get("evidence")
+    records: list[Any] = []
+    for result in getattr(evidence, "results", None) or []:
+        records.extend(getattr(result, "records", None) or [])
+    dossiers = dossiers_from_records(records)
+    if dossiers:
+        assistant_payload["entity_dossiers"] = dossier_payload(dossiers)
     store.append_turn(
         conversation_id, "user", question=question, mode=mode, drafter=drafter
     )

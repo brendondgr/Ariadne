@@ -215,6 +215,73 @@ def test_second_turn_keeps_title_and_builds_memory(temp_store):
     assert len(temp_store.list_turns(convo.id)) == 4
 
 
+def _dossier_evidence():
+    """A FederatedEvidence carrying one dossier-shaped M1049 record."""
+    from utils.specialists.contracts import EvidenceRecord, SpecialistResult, SpecialistTask
+
+    rec = EvidenceRecord(
+        primary_id="M1049",
+        id_scheme="attack-id",
+        label="Mitigation",
+        name="Antivirus/Antimalware",
+        properties={"description": "Antivirus solutions use signatures and heuristics.", "neighbor_total": 23},
+        related=[
+            {"id": "T1566", "name": "Phishing", "type": "MITIGATES", "direction": "out"},
+            {"id": "T1204", "name": "User Execution", "type": "MITIGATES", "direction": "out"},
+        ],
+    )
+    task = SpecialistTask(sub_question_id="q1", source="attack", text="details on M1049")
+    result = SpecialistResult(task=task, records=[rec], ok=True)
+    return FederatedEvidence(request="q", results=[result])
+
+
+def _dossier_runner():
+    answer = _verified_answer()
+    evidence = _dossier_evidence()
+
+    def runner(question, *, mode, use_llm, run, forward=None, **kw):
+        if forward is not None:
+            forward("status", {"phase": "querying"})
+            forward("answer", {
+                "plan": None, "evidence": evidence,
+                "status": "answered", "exit_code": 0, "synthesized": answer,
+            })
+        run.answer = answer
+        run.evidence = evidence
+        run.status = "answered"
+        run.exit_code = 0
+        return run
+
+    return runner
+
+
+def test_dossier_persists_keyed_and_injects_on_followup(temp_store):
+    from utils.conversation.persistence import memory_injection
+
+    convo = temp_store.create_conversation("New conversation")
+    # Turn 1: a single-entity dossier turn caches M1049 keyed by id.
+    _collect(
+        convo_service.stream_conversation_events(
+            "Provide more details on M1049.", convo.id, store=temp_store,
+            runner=_dossier_runner(), naming_client=_StubLLM(["M1049"]),
+        )
+    )
+    turns = temp_store.list_turns(convo.id)
+    assistant = [t for t in turns if t.role == "assistant"][0]
+    assert "M1049" in (assistant.payload.get("entity_dossiers") or {})
+    # ...but the adjacency was NOT dumped into the always-on facts.
+    assert not any("adjacent:" in f for f in assistant.payload.get("facts", []))
+
+    # A follow-up naming M1049 injects the index line + its full detail block.
+    injected = memory_injection("what does M1049 mitigate?", turns)
+    assert any(f.startswith("Entities held in memory:") for f in injected)
+    assert any("adjacent:" in f and "* Mitigates (MITIGATES) -> Phishing (T1566)" in f for f in injected)
+
+    # A pronoun follow-up still resolves via the recency anchor (last hydrated entity).
+    injected_pronoun = memory_injection("what does it mitigate?", turns)
+    assert any("* Mitigates (MITIGATES) -> Phishing (T1566)" in f for f in injected_pronoun)
+
+
 def test_conversation_query_endpoint_streams(temp_store, monkeypatch):
     def _fake_stream(question, conversation_id, **kw):
         yield "event: done\ndata: {\"status\": \"answered\"}\n\n"
