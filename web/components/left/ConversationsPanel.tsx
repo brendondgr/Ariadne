@@ -26,6 +26,8 @@ interface ConversationsPanelProps {
   conversations: ConversationSummaryDTO[];
   activeId: string;
   loading?: boolean;
+  /** Conversation ids with an in-flight background query (render the swirl). */
+  busyIds?: Set<string>;
   onSelect?: (id: string) => void;
   onNew?: () => void;
   onRename?: (id: string, title: string) => void;
@@ -36,6 +38,7 @@ export function ConversationsPanel({
   conversations,
   activeId,
   loading = false,
+  busyIds,
   onSelect,
   onNew,
   onRename,
@@ -82,6 +85,7 @@ export function ConversationsPanel({
                 id={convo.id}
                 title={convo.title}
                 active={convo.id === activeId}
+                busy={busyIds?.has(convo.id) ?? false}
                 onClick={onSelect ? () => onSelect(convo.id) : undefined}
                 onRename={onRename ? (title) => onRename(convo.id, title) : undefined}
                 onDelete={onDelete ? () => onDelete(convo.id) : undefined}

@@ -89,9 +89,15 @@ export interface RunMachine {
   /** The selected turn the inspector + header reflect. */
   run: WorkbenchRun;
   activeRunId: string;
-  /** The turn currently streaming (live animation), or null when idle. */
+  /** The turn currently streaming (live animation) in the ACTIVE conversation,
+   *  or null when the active conversation is idle. Background conversations may
+   *  still be streaming — see `busyConversationIds`. */
   streamingRunId: string | null;
-  /** True while a demo replay OR a live query is animating. */
+  /** Every conversation id with an in-flight background query. Drives the
+   *  sidebar "swirl" indicator; a query stays here across chat switches. */
+  busyConversationIds: Set<string>;
+  /** True while a demo replay OR a live query is animating in the ACTIVE
+   *  conversation (a background query in another chat does not make this true). */
   replaying: boolean;
   /** Last stream error, if any. */
   error: string | null;
@@ -384,71 +390,75 @@ export function runInputsFromAccumulator(
   };
 }
 
+/** Upsert a built run into a per-conversation runs map (pure). Inserting or
+ *  replacing a turn for `cid` never touches any OTHER conversation's list — this
+ *  is what lets a background stream keep folding into its own conversation while
+ *  a different one is on screen. */
+export function upsertRunInto(
+  byConversation: Record<string, WorkbenchRun[]>,
+  cid: string,
+  built: WorkbenchRun,
+): Record<string, WorkbenchRun[]> {
+  const list = byConversation[cid] ?? [];
+  const next = list.some((r) => r.id === built.id)
+    ? list.map((r) => (r.id === built.id ? built : r))
+    : [...list, built];
+  return { ...byConversation, [cid]: next };
+}
+
+/** One conversation's in-flight stream. Held in a ref-map keyed by conversation
+ *  id so switching the active chat never cancels or loses another chat's query. */
+interface StreamState {
+  acc: ConversationAccumulator;
+  runId: string;
+  startedAt: number;
+  createdAt: number;
+  abort: AbortController;
+  timers: number[];
+}
+
+/** Stable empty status map so an idle conversation's `liveStatus` keeps a
+ *  constant identity across renders. */
+const EMPTY_STATUS: Record<string, StageStatus> = {};
+
 export function useRunMachine(): RunMachine {
-  // Start on a clean, empty thread — no seeded demo turns. Real turns arrive
-  // via submit(); the empty state is the same one newConversation() produces.
-  const [runs, setRuns] = useState<WorkbenchRun[]>([]);
+  // Per-conversation state. `runsByConversation` is the source of truth for
+  // EVERY conversation's turns (active or streaming in the background); the
+  // active conversation's list is derived below. Keying streams + live status by
+  // conversation id is what lets a query keep running after the analyst switches
+  // chats — nothing is cancelled or replaced on switch.
+  const [runsByConversation, setRunsByConversation] = useState<Record<string, WorkbenchRun[]>>({});
+  const [liveStatusByConversation, setLiveStatusByConversation] = useState<
+    Record<string, Record<string, StageStatus>>
+  >({});
+  const [streamingByConversation, setStreamingByConversation] = useState<Record<string, string>>({});
+  const [busyIds, setBusyIds] = useState<string[]>([]);
   const [activeRunId, setActiveRunId] = useState<string>("");
-  const [streamingRunId, setStreamingRunId] = useState<string | null>(null);
-  const [liveStatus, setLiveStatus] = useState<Record<string, StageStatus>>({});
-  const [replaying, setReplaying] = useState(false);
+  const [demoReplaying, setDemoReplaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const [conversations, setConversations] = useState<ConversationSummaryDTO[]>([]);
   const [conversationId, setConversationId] = useState<string>("");
   const [conversationsLoading, setConversationsLoading] = useState(false);
 
-  const timers = useRef<number[]>([]);
-  const abort = useRef<AbortController | null>(null);
   const seq = useRef(0);
-
-  // The in-flight stream's fold state (the streaming turn).
-  const acc = useRef<ConversationAccumulator>(emptyAccumulator("", "query", "deterministic"));
-  const runId = useRef("");
-  const startedAt = useRef(0);
-  const createdAt = useRef(0);
   const conversationIdRef = useRef("");
+  const demoTimers = useRef<number[]>([]);
+  // Every in-flight stream, keyed by conversation id. Survives chat switches.
+  const streams = useRef<Map<string, StreamState>>(new Map());
 
-  const clearTimers = useCallback(() => {
-    timers.current.forEach((t) => clearTimeout(t));
-    timers.current = [];
-  }, []);
-
-  const pushTimer = useCallback((fn: () => void, at: number) => {
-    timers.current.push(window.setTimeout(fn, at));
-  }, []);
-
-  const mergeStatus = useCallback((patch: Record<string, StageStatus>) => {
-    setLiveStatus((prev) => ({ ...prev, ...patch }));
-  }, []);
-
-  /** Insert or replace a turn in `runs` by id (preserving order). */
-  const upsertRun = useCallback((built: WorkbenchRun) => {
-    setRuns((prev) =>
-      prev.some((r) => r.id === built.id)
-        ? prev.map((r) => (r.id === built.id ? built : r))
-        : [...prev, built],
-    );
-  }, []);
-
-  /** Rebuild the streaming turn from the current accumulator. */
-  const rebuild = useCallback(() => {
-    const inputs = runInputsFromAccumulator(runId.current, acc.current, {
-      elapsedMs: startedAt.current ? Math.round(performance.now() - startedAt.current) : 0,
-      createdAt: createdAt.current,
-    });
-    upsertRun(buildRun(inputs));
-  }, [upsertRun]);
-
-  const cancel = useCallback(() => {
-    clearTimers();
-    abort.current?.abort();
-    abort.current = null;
-    setReplaying(false);
-    setStreamingRunId(null);
-  }, [clearTimers]);
-
-  useEffect(() => cancel, [cancel]);
+  // Tear down every stream on unmount (not on conversation switch).
+  useEffect(
+    () => () => {
+      streams.current.forEach((st) => {
+        st.abort.abort();
+        st.timers.forEach((t) => clearTimeout(t));
+      });
+      streams.current.clear();
+      demoTimers.current.forEach((t) => clearTimeout(t));
+    },
+    [],
+  );
 
   const selectRun = useCallback((id: string) => setActiveRunId(id), []);
 
@@ -489,24 +499,146 @@ export function useRunMachine(): RunMachine {
     setConversationId(id);
   }, []);
 
+  /** Detach + clean up a conversation's stream registry entry (does NOT abort;
+   *  the caller decides whether to abort the underlying request first). */
+  const forgetStream = useCallback((cid: string) => {
+    streams.current.delete(cid);
+    setBusyIds((b) => b.filter((x) => x !== cid));
+    setStreamingByConversation((m) => {
+      if (!(cid in m)) return m;
+      const next = { ...m };
+      delete next[cid];
+      return next;
+    });
+  }, []);
+
+  /** Abort a conversation's in-flight stream (if any) and forget it. */
+  const abortStream = useCallback(
+    (cid: string) => {
+      const st = streams.current.get(cid);
+      if (!st) return;
+      st.abort.abort();
+      st.timers.forEach((t) => clearTimeout(t));
+      forgetStream(cid);
+    },
+    [forgetStream],
+  );
+
+  /** Open a background stream for `cid`. Its events fold into that conversation's
+   *  own runs/liveStatus regardless of which chat is on screen. */
+  const startStream = useCallback(
+    (cid: string, req: QueryRequestBody) => {
+      // One active turn per conversation — supersede any prior in-flight turn.
+      const prev = streams.current.get(cid);
+      if (prev) {
+        prev.abort.abort();
+        prev.timers.forEach((t) => clearTimeout(t));
+      }
+
+      seq.current += 1;
+      const id = `q-${seq.current}`;
+      const st: StreamState = {
+        acc: emptyAccumulator(req.question, req.mode, req.drafter),
+        runId: id,
+        startedAt: performance.now(),
+        createdAt: Date.now(),
+        abort: new AbortController(),
+        timers: [],
+      };
+      streams.current.set(cid, st);
+      setBusyIds((b) => (b.includes(cid) ? b : [...b, cid]));
+      setStreamingByConversation((m) => ({ ...m, [cid]: id }));
+      setLiveStatusByConversation((m) => ({ ...m, [cid]: {} }));
+
+      const rebuild = () => {
+        const inputs = runInputsFromAccumulator(id, st.acc, {
+          elapsedMs: Math.round(performance.now() - st.startedAt),
+          createdAt: st.createdAt,
+        });
+        setRunsByConversation((m) => upsertRunInto(m, cid, buildRun(inputs)));
+      };
+      const mergeStatus = (patch: Record<string, StageStatus>) => {
+        setLiveStatusByConversation((m) => ({ ...m, [cid]: { ...(m[cid] ?? {}), ...patch } }));
+      };
+      const pushTimer = (fn: () => void, at: number) => {
+        st.timers.push(window.setTimeout(fn, at));
+      };
+
+      // Select the new turn if this conversation is the one on screen.
+      if (conversationIdRef.current === cid) setActiveRunId(id);
+      rebuild(); // append the question + an empty in-progress turn immediately
+
+      const runStream = async () => {
+        const body: ConversationQueryBody = {
+          question: req.question,
+          conversation_id: cid,
+          mode: req.mode,
+          drafter: req.drafter,
+        };
+        await streamConversation(
+          body,
+          (event) => {
+            const receivedMs = Math.round(performance.now() - st.startedAt);
+            const effects = applyConversationEvent(st.acc, event, receivedMs);
+            if (effects.statusPatch) mergeStatus(effects.statusPatch);
+            for (const { ms, patch } of effects.delayedPatches ?? []) {
+              pushTimer(() => mergeStatus(patch), ms);
+            }
+            rebuild();
+
+            if (event.type === "error") {
+              setError(event.data.message);
+              rebuild();
+              forgetStream(cid);
+              return;
+            }
+            if (event.type === "conversation") {
+              void refreshConversations();
+            }
+            if (event.type === "done") {
+              void refreshConversations();
+              forgetStream(cid);
+            }
+          },
+          st.abort.signal,
+        );
+      };
+
+      runStream().catch((e: unknown) => {
+        if (st.abort.signal.aborted) return;
+        setError(e instanceof Error ? e.message : String(e));
+        st.acc.status = "partial";
+        rebuild();
+        forgetStream(cid);
+      });
+    },
+    [forgetStream, refreshConversations],
+  );
+
   const newConversation = useCallback(async () => {
-    cancel();
+    // Do NOT cancel other conversations' streams — they keep running in the bg.
     setError(null);
-    setLiveStatus({});
-    setRuns([]);
-    setActiveRunId("");
     const created = await conversationsApi.createConversation();
     setActiveConversation(created.id);
+    setRunsByConversation((m) => (m[created.id] ? m : { ...m, [created.id]: [] }));
+    setActiveRunId("");
     await refreshConversations();
-  }, [cancel, refreshConversations, setActiveConversation]);
+  }, [refreshConversations, setActiveConversation]);
 
   const selectConversation = useCallback(
     async (id: string) => {
-      cancel();
+      // Switching chats never cancels a stream. If the target is streaming in the
+      // background, keep its live in-memory turns (a re-fetch would clobber the
+      // in-flight turn); just bring it on screen and follow its streaming turn.
       setError(null);
-      setLiveStatus({});
+      setActiveConversation(id);
+      const streaming = streams.current.get(id);
+      if (streaming) {
+        setActiveRunId(streaming.runId);
+        return;
+      }
+      // Otherwise rehydrate from the backend (canonical for completed threads).
       const detail = await conversationsApi.getConversation(id);
-      setActiveConversation(detail.id);
       const { buildRunFromStoredTurn } = await import("./rehydrate");
       const rehydrated: WorkbenchRun[] = [];
       const turns = [...detail.turns].sort((a, b) => a.seq - b.seq);
@@ -517,27 +649,37 @@ export function useRunMachine(): RunMachine {
         const assistantTurn = next && next.role === "assistant" ? next : null;
         rehydrated.push(buildRunFromStoredTurn(t, assistantTurn));
       }
-      setRuns(rehydrated);
+      setRunsByConversation((m) => ({ ...m, [id]: rehydrated }));
       setActiveRunId(rehydrated.length ? rehydrated[rehydrated.length - 1].id : "");
     },
-    [cancel, setActiveConversation],
+    [setActiveConversation],
   );
 
   const deleteConversation = useCallback(
     async (id: string) => {
       const wasActive = conversationIdRef.current === id;
+      abortStream(id); // a deleted thread's stream is moot
       await conversationsApi.deleteConversation(id);
+      setRunsByConversation((m) => {
+        if (!(id in m)) return m;
+        const next = { ...m };
+        delete next[id];
+        return next;
+      });
+      setLiveStatusByConversation((m) => {
+        if (!(id in m)) return m;
+        const next = { ...m };
+        delete next[id];
+        return next;
+      });
       if (wasActive) {
-        cancel();
         setError(null);
-        setLiveStatus({});
-        setRuns([]);
-        setActiveRunId("");
         setActiveConversation("");
+        setActiveRunId("");
       }
       await refreshConversations();
     },
-    [cancel, refreshConversations, setActiveConversation],
+    [abortStream, refreshConversations, setActiveConversation],
   );
 
   const renameConversationThread = useCallback(
@@ -548,107 +690,78 @@ export function useRunMachine(): RunMachine {
     [refreshConversations],
   );
 
+  const cancel = useCallback(() => {
+    // Cancel the ACTIVE conversation's stream + any demo replay.
+    demoTimers.current.forEach((t) => clearTimeout(t));
+    demoTimers.current = [];
+    setDemoReplaying(false);
+    abortStream(conversationIdRef.current);
+  }, [abortStream]);
+
+  // -- derived active-conversation view --------------------------------------
+  const runs = useMemo(
+    () => runsByConversation[conversationId] ?? [],
+    [runsByConversation, conversationId],
+  );
+  const liveStatus = liveStatusByConversation[conversationId] ?? EMPTY_STATUS;
+  const streamingRunId = streamingByConversation[conversationId] ?? null;
+  const activeBusy = busyIds.includes(conversationId);
+  const replaying = demoReplaying || activeBusy;
+  const busyConversationIds = useMemo(() => new Set(busyIds), [busyIds]);
+
   // -- offline demo replay (animates the active turn) ------------------------
   const replay = useCallback(() => {
-    cancel();
-    setReplaying(true);
+    const cid = conversationIdRef.current;
+    demoTimers.current.forEach((t) => clearTimeout(t));
+    demoTimers.current = [];
+    abortStream(cid);
+    setDemoReplaying(true);
     setError(null);
-    setLiveStatus({});
-    setStreamingRunId(activeRunId);
+    setLiveStatusByConversation((m) => ({ ...m, [cid]: {} }));
+    setStreamingByConversation((m) => ({ ...m, [cid]: activeRunId }));
     for (const frame of REPLAY_FRAMES) {
-      pushTimer(() => setLiveStatus((prev) => ({ ...prev, ...frame.set })), frame.at);
+      demoTimers.current.push(
+        window.setTimeout(
+          () =>
+            setLiveStatusByConversation((m) => ({ ...m, [cid]: { ...(m[cid] ?? {}), ...frame.set } })),
+          frame.at,
+        ),
+      );
     }
-    pushTimer(() => {
-      setReplaying(false);
-      setStreamingRunId(null);
-    }, LAST_AT + 250);
-  }, [cancel, pushTimer, activeRunId]);
+    demoTimers.current.push(
+      window.setTimeout(() => {
+        setDemoReplaying(false);
+        setStreamingByConversation((m) => {
+          if (!(cid in m)) return m;
+          const next = { ...m };
+          delete next[cid];
+          return next;
+        });
+      }, LAST_AT + 250),
+    );
+  }, [abortStream, activeRunId]);
 
   // -- live query ------------------------------------------------------------
   const submit = useCallback(
     (req: QueryRequestBody) => {
-      cancel();
       setError(null);
-      setReplaying(true);
-      setLiveStatus({});
-
-      seq.current += 1;
-      const id = `q-${seq.current}`;
-      runId.current = id;
-      acc.current = emptyAccumulator(req.question, req.mode, req.drafter);
-      startedAt.current = performance.now();
-      createdAt.current = Date.now();
-      setStreamingRunId(id);
-      setActiveRunId(id);
-      rebuild(); // append the question + an empty in-progress turn immediately
-
-      const finish = () => {
-        pushTimer(() => {
-          setReplaying(false);
-          setStreamingRunId(null);
-        }, 320);
-        abort.current = null;
-      };
-
-      const ac = new AbortController();
-      abort.current = ac;
-
-      const runStream = async () => {
-        // A conversation-query turn needs an active thread; create one lazily
-        // on the first send if none is active yet.
+      const go = async () => {
+        // A conversation-query turn needs an active thread; create one lazily on
+        // the first send if none is active yet.
         let cid = conversationIdRef.current;
+        let createdNew = false;
         if (!cid) {
           const created = await conversationsApi.createConversation();
           cid = created.id;
+          createdNew = true;
           setActiveConversation(cid);
-          await refreshConversations();
         }
-
-        const body: ConversationQueryBody = {
-          question: req.question,
-          conversation_id: cid,
-          mode: req.mode,
-          drafter: req.drafter,
-        };
-
-        await streamConversation(
-          body,
-          (event) => {
-            const receivedMs = Math.round(performance.now() - startedAt.current);
-            const effects = applyConversationEvent(acc.current, event, receivedMs);
-            if (effects.statusPatch) mergeStatus(effects.statusPatch);
-            for (const { ms, patch } of effects.delayedPatches ?? []) {
-              pushTimer(() => mergeStatus(patch), ms);
-            }
-            rebuild();
-
-            if (event.type === "error") {
-              setError(event.data.message);
-              rebuild();
-              finish();
-              return;
-            }
-            if (event.type === "conversation") {
-              void refreshConversations();
-            }
-            if (event.type === "done") {
-              void refreshConversations();
-              finish();
-            }
-          },
-          ac.signal,
-        );
+        startStream(cid, req);
+        if (createdNew) await refreshConversations();
       };
-
-      runStream().catch((e: unknown) => {
-        if (ac.signal.aborted) return;
-        setError(e instanceof Error ? e.message : String(e));
-        acc.current.status = "partial";
-        rebuild();
-        finish();
-      });
+      go().catch((e: unknown) => setError(e instanceof Error ? e.message : String(e)));
     },
-    [cancel, mergeStatus, pushTimer, rebuild, refreshConversations, setActiveConversation],
+    [refreshConversations, setActiveConversation, startStream],
   );
 
   const statusOf = useCallback(
@@ -671,6 +784,7 @@ export function useRunMachine(): RunMachine {
     run,
     activeRunId,
     streamingRunId,
+    busyConversationIds,
     replaying,
     error,
     liveStatus,

@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, type KeyboardEvent } from "react";
-import { PencilIcon, TrashIcon } from "@/components/ui/icons";
+import { PencilIcon, SwirlIcon, TrashIcon } from "@/components/ui/icons";
 
 interface ConversationItemProps {
   id: string;
   title: string;
   active: boolean;
+  /** A query is running in this chat in the background — show the swirl. */
+  busy?: boolean;
   onClick?: () => void;
   onRename?: (title: string) => void;
   onDelete?: () => void;
@@ -20,6 +22,7 @@ export function ConversationItem({
   id,
   title,
   active,
+  busy = false,
   onClick,
   onRename,
   onDelete,
@@ -97,6 +100,12 @@ export function ConversationItem({
           {title}
         </span>
       </button>
+      {busy && (
+        <span className="mt-0.5 shrink-0 text-primary group-hover:hidden" title="Query running">
+          <SwirlIcon size={13} />
+          <span className="sr-only">Query running</span>
+        </span>
+      )}
       <div className="flex shrink-0 items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
         <button
           type="button"

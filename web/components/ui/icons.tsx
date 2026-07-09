@@ -246,6 +246,25 @@ export function LogsIcon({ size = 13, ...props }: IconProps) {
   );
 }
 
+/** Swirl — a spinning arc. Shown on a sidebar chat whose query is still running
+ *  in the background (keeps spinning across chat switches). */
+export function SwirlIcon({ size = 13, className, ...props }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      className={`animate-spin${className ? ` ${className}` : ""}`}
+      aria-hidden
+      {...props}
+    >
+      <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="2" opacity="0.25" />
+      <path d="M12 4a8 8 0 0 1 8 8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 /** Rename — a pencil. Used on the sidebar conversation row's rename action. */
 export function PencilIcon({ size = 12, ...props }: IconProps) {
   return (
