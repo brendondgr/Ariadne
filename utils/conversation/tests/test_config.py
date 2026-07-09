@@ -82,6 +82,27 @@ def test_conversation_base_url_override_beats_synthesis(monkeypatch):
     assert ConversationLLMConfig.from_env().base_url == "http://own:1/v1"
 
 
+def test_max_tokens_inherits_synthesis_budget(monkeypatch):
+    # The answer agent's output budget must honor the synthesis max-tokens knob
+    # when no conversation-specific value is set — otherwise long replies get
+    # chopped at the 1024 default.
+    monkeypatch.delenv("CONVERSATION_LLM_MAX_TOKENS", raising=False)
+    monkeypatch.setenv("SYNTHESIS_LLM_MAX_TOKENS", "24000")
+    assert ConversationLLMConfig.from_env().max_tokens == 24000
+
+
+def test_conversation_max_tokens_override_beats_synthesis(monkeypatch):
+    monkeypatch.setenv("CONVERSATION_LLM_MAX_TOKENS", "2048")
+    monkeypatch.setenv("SYNTHESIS_LLM_MAX_TOKENS", "24000")
+    assert ConversationLLMConfig.from_env().max_tokens == 2048
+
+
+def test_max_tokens_defaults_to_1024_when_nothing_set(monkeypatch):
+    monkeypatch.delenv("CONVERSATION_LLM_MAX_TOKENS", raising=False)
+    monkeypatch.delenv("SYNTHESIS_LLM_MAX_TOKENS", raising=False)
+    assert ConversationLLMConfig.from_env().max_tokens == 1024
+
+
 def test_with_llm_enabled_turns_on_when_drafter_is_llm():
     cfg = ConversationConfig(llm=ConversationLLMConfig(enabled=False))
     assert cfg.with_llm_enabled(True).llm.enabled is True

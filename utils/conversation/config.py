@@ -86,7 +86,16 @@ class ConversationLLMConfig:
                 "CONVERSATION_LLM_TIMEOUT_S",
                 _env_float("SYNTHESIS_LLM_TIMEOUT_S", 30.0),
             ),
-            max_tokens=env_int("CONVERSATION_LLM_MAX_TOKENS", 1024),
+            # Inherit the synthesis output budget (like base_url/model/timeout)
+            # so the answer agent honors the single max-tokens knob the operator
+            # already raised. Without this fallback the visible answer stays
+            # pinned at 1024 no matter what SYNTHESIS_LLM_MAX_TOKENS is set to,
+            # and long replies get chopped mid-sentence. CONVERSATION_LLM_MAX_TOKENS
+            # still overrides when an operator wants a distinct answer budget.
+            max_tokens=env_int(
+                "CONVERSATION_LLM_MAX_TOKENS",
+                env_int("SYNTHESIS_LLM_MAX_TOKENS", 1024),
+            ),
         )
 
 

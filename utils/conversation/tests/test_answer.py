@@ -11,7 +11,7 @@ from utils.conversation.agents.answer import (
     make_answer_node,
 )
 from utils.conversation.config import ConversationConfig, ConversationLLMConfig
-from utils.conversation.llm import LLMUnavailable
+from utils.conversation.llm import CompletionResult, LLMUnavailable
 from utils.specialists.contracts import EvidenceRecord
 from utils.synthesis.contracts import SynthesizedAnswer
 
@@ -46,15 +46,16 @@ def _capec98_evidence():
 
 
 class _StubLLM:
-    def __init__(self, reply="", *, enabled=True, fail=False):
+    def __init__(self, reply="", *, enabled=True, fail=False, finish_reason="stop"):
         self._reply = reply
         self.enabled = enabled
         self._fail = fail
+        self._finish_reason = finish_reason
 
-    def complete(self, messages, **kwargs):
+    def complete_verbose(self, messages, **kwargs):
         if self._fail:
             raise LLMUnavailable("boom")
-        return self._reply
+        return CompletionResult(content=self._reply, finish_reason=self._finish_reason)
 
 
 def _cfg(enabled=True, **over):
@@ -84,6 +85,38 @@ def test_graph_path_llm_failure_falls_back_to_narrative():
     ans = SynthesizedAnswer(request="q", narrative="grounded body")
     state = {"route": "graph", "question": "q", "answer": ans}
     text, composer = compose_answer(state, _cfg(), _StubLLM(fail=True))
+    assert text == "grounded body"
+    assert composer == "deterministic"
+
+
+def test_graph_path_truncated_reply_gets_note_and_tidy():
+    # A length stop returns partial content: the analyst must see an explicit
+    # truncation note, and the dangling "(T1561." id fragment is trimmed off.
+    partial = (
+        "Disk wiping (T1561) interrupts availability by corrupting raw disk data. "
+        "This is generally achieved through two methods: Disk Content Wipe (T1561."
+    )
+    ans = SynthesizedAnswer(request="q", narrative="grounded body")
+    state = {"route": "graph", "question": "tell me about disk wiping", "answer": ans}
+    text, composer = compose_answer(
+        state, _cfg(), _StubLLM(partial, finish_reason="length")
+    )
+    assert composer == "llm"
+    assert "truncated" in text.lower()
+    assert "CONVERSATION_LLM_MAX_TOKENS" in text
+    # The hanging, incomplete "(T1561." parenthetical is stripped.
+    assert "Disk Content Wipe" in text
+    assert "(T1561." not in text
+
+
+def test_graph_path_truncated_empty_falls_back_to_deterministic():
+    # A length stop that yielded no visible content keeps the complete verified
+    # narrative rather than emitting an empty/near-empty truncated reply.
+    ans = SynthesizedAnswer(request="q", narrative="grounded body")
+    state = {"route": "graph", "question": "q", "answer": ans}
+    text, composer = compose_answer(
+        state, _cfg(), _StubLLM("", finish_reason="length")
+    )
     assert text == "grounded body"
     assert composer == "deterministic"
 
@@ -137,15 +170,58 @@ def test_evidence_brief_none_is_empty():
     assert evidence_brief(None) == ""
 
 
+def _many_records_evidence(n):
+    recs = [
+        EvidenceRecord(
+            primary_id=f"T{1000 + i}",
+            id_scheme="attack-id",
+            label="Technique",
+            name=f"Technique {i}",
+            properties={"description": "D" * 500},
+        )
+        for i in range(n)
+    ]
+    return _Evidence([_Result(recs)])
+
+
+def test_evidence_brief_bounded_by_total_size():
+    # A record-heavy turn must not inflate the answer prompt without limit.
+    from utils.conversation.agents.answer import _MAX_BRIEF_CHARS
+
+    brief = evidence_brief(_many_records_evidence(50))
+    assert len(brief) <= _MAX_BRIEF_CHARS + 200  # budget + the omitted marker line
+    assert "omitted here to keep the answer prompt within budget" in brief
+    # The first record is always present.
+    assert "T1000" in brief
+
+
+def test_evidence_brief_small_set_has_no_omitted_marker():
+    brief = evidence_brief(_capec98_evidence())
+    assert "omitted" not in brief
+
+
+def test_evidence_brief_always_includes_first_even_if_oversized():
+    # A single record larger than the whole budget is still surfaced (never empty).
+    big = EvidenceRecord(
+        primary_id="T9999",
+        id_scheme="attack-id",
+        label="Technique",
+        name="Huge",
+        properties={"description": "X" * 5000},
+    )
+    brief = evidence_brief(_Evidence([_Result([big])]))
+    assert "T9999" in brief
+
+
 def test_graph_path_feeds_evidence_details_to_llm():
     seen = {}
 
     class _Capture:
         enabled = True
 
-        def complete(self, messages, **kwargs):
+        def complete_verbose(self, messages, **kwargs):
             seen["content"] = messages[-1]["content"]
-            return "Here's more on phishing."
+            return CompletionResult(content="Here's more on phishing.")
 
     ans = SynthesizedAnswer(request="q", narrative="CAPEC-98 maps to T1566 and T1598.")
     state = {
@@ -167,9 +243,9 @@ def test_graph_path_without_evidence_omits_brief():
     class _Capture:
         enabled = True
 
-        def complete(self, messages, **kwargs):
+        def complete_verbose(self, messages, **kwargs):
             seen["content"] = messages[-1]["content"]
-            return "ok"
+            return CompletionResult(content="ok")
 
     ans = SynthesizedAnswer(request="q", narrative="body")
     compose_answer({"route": "graph", "question": "q", "answer": ans}, _cfg(), _Capture())
