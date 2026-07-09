@@ -7,6 +7,7 @@ from utils.specialists.contracts import SpecialistTask
 from utils.specialists.resolve import (
     extract_attack_ids,
     extract_capec_ids,
+    is_definitional_intent,
     resolve,
 )
 from utils.specialists.tests._fixtures import fixture_card
@@ -124,3 +125,56 @@ def test_resolve_capec_prefers_capec_ids_over_other_shapes() -> None:
     )
     resolved = resolve(task, card)
     assert resolved.seed_ids == ("CAPEC-555",)
+
+
+# -- name-term extraction + definitional intent -----------------------------
+
+
+def test_resolve_extracts_titlecase_name_terms_from_definitional_question() -> None:
+    # The reported failing question: two multi-word mitigation names, no ids.
+    card = fixture_card("attack")
+    task = SpecialistTask(
+        "q-name",
+        "attack",
+        "What exactly is User Training and Software Configuration respectively?",
+        entities=(),
+    )
+    resolved = resolve(task, card)
+    assert resolved.name_terms == ("User Training", "Software Configuration")
+    assert resolved.seed_ids == ()  # a name-only question carries no id anchors
+
+
+def test_resolve_extracts_quoted_name_term() -> None:
+    card = fixture_card("attack")
+    task = SpecialistTask("q-q", "attack", "Describe 'Credential Access' please", entities=())
+    resolved = resolve(task, card)
+    assert resolved.name_terms == ("Credential Access",)
+
+
+def test_resolve_name_terms_single_titlecase_word() -> None:
+    card = fixture_card("capec")
+    task = SpecialistTask("q-p", "capec", "What is Phishing?", entities=())
+    resolved = resolve(task, card)
+    assert resolved.name_terms == ("Phishing",)
+
+
+def test_resolve_name_terms_drop_schema_words_and_ids() -> None:
+    # A lone schema label word ("Mitigation") and an id are never name anchors.
+    card = fixture_card("attack")
+    task = SpecialistTask(
+        "q-s", "attack", "Which Mitigation covers M1017?", entities=("Mitigation",)
+    )
+    resolved = resolve(task, card)
+    assert "Mitigation" not in resolved.name_terms
+    assert all("M1017" not in term for term in resolved.name_terms)
+
+
+def test_is_definitional_intent_recognises_what_is_and_describe() -> None:
+    assert is_definitional_intent("What is User Training?")
+    assert is_definitional_intent("What are the phishing mitigations?")
+    assert is_definitional_intent("what's Data Backup")
+    assert is_definitional_intent("Define Software Configuration")
+    assert is_definitional_intent("Tell me about M1049")  # describe-verb dossier intent
+    # Non-definitional retrieval questions must stay out of the name path.
+    assert not is_definitional_intent("Which mitigations apply to T1047?")
+    assert not is_definitional_intent("How do you detect phishing?")
