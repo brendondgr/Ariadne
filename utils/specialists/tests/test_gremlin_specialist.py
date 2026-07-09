@@ -836,3 +836,67 @@ class TestCapecDossier:
         by_id = {r["id"]: r for r in rec.related}
         assert by_id["CAPEC-89"]["type"] == "CAN_PRECEDE" and by_id["CAPEC-89"]["direction"] == "out"
         assert by_id["CAPEC-163"]["type"] == "CHILD_OF" and by_id["CAPEC-163"]["direction"] == "in"
+
+
+# ---------------------------------------------------------------------------
+# capec_dossier_by_name: seedless definitional name lookup ("What is Phishing?")
+# ---------------------------------------------------------------------------
+
+
+class TestCapecDossierByName:
+    def test_routing_name_dossier_on_definitional_question(self, card, limits):
+        from utils.specialists.resolve import resolve
+
+        task = _make_task(
+            text="What is Phishing?",
+            entities=(),
+            join_key=None,
+            seed_ids=(),
+        )
+        resolved = resolve(task, card)
+        assert resolved.name_terms == ("Phishing",)
+        draft = GremlinQueryBuilder().build(resolved)
+        assert draft.template == "capec_dossier_by_name"
+        # Anchors AttackPattern by case-insensitive name, same dossier projection.
+        assert 'TextP.regex("(?i).*(Phishing).*")' in draft.query
+        assert '.project("node","out","in")' in draft.query
+        assert GremlinValidator().validate(draft, card, limits).ok
+
+    def test_multiword_name_pattern_has_no_groovy_breaking_escape(self, card, limits):
+        # A multi-word name must not embed backslash escapes: re.escape emits
+        # '\ ' for the spaces, which the Gremlin server's Groovy parser rejects.
+        # Non-alphanumerics become '.' wildcards, which still match the separator.
+        from utils.specialists.resolve import resolve
+
+        task = _make_task(text="What is Denial of Service?", entities=(), join_key=None, seed_ids=())
+        draft = GremlinQueryBuilder().build(resolve(task, card))
+        assert "\\" not in draft.query
+        assert "(Denial.of.Service)" in draft.query
+        assert GremlinValidator().validate(draft, card, limits).ok
+
+    def test_name_dossier_row_normalizes_via_shape_dispatch(self, card):
+        """A name-lookup dossier row (no seed) still keys on the node's own id."""
+        from utils.specialists.resolve import resolve
+
+        rows = [
+            {
+                "node": {"id": "capec:attack-pattern:98", "label": "AttackPattern",
+                         "name": "Phishing", "description": "A social engineering technique."},
+                "out": [],
+                "in": [],
+            }
+        ]
+        task = _make_task(text="What is Phishing?", entities=(), join_key=None, seed_ids=())
+        rec = GremlinNormalizer().normalize(rows, resolve(task, card), "FAKE", card)[0]
+        assert rec.primary_id == "CAPEC-98"
+        assert rec.properties["description"] == "A social engineering technique."
+
+    def test_seedless_non_definitional_still_scans(self, card):
+        """A seedless question with no definitional intent keeps the bare scan."""
+        from utils.specialists.resolve import resolve
+
+        task = _make_task(
+            text="List attack patterns", entities=("AttackPattern",), join_key=None, seed_ids=()
+        )
+        draft = GremlinQueryBuilder().build(resolve(task, card))
+        assert draft.template == "capec_scan"

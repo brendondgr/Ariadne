@@ -833,6 +833,88 @@ def test_node_lookup_stays_lean_without_describe_intent(card):
     assert "properties_json" not in draft.query
 
 
+# ---------------------------------------------------------------------------
+# node_dossier_by_name: definitional "what is <name>?" with no id
+# ---------------------------------------------------------------------------
+
+
+def test_routing_node_dossier_by_name_on_definitional_question(card):
+    """A name-only definitional question routes to the name dossier template."""
+    task = SpecialistTask(
+        sub_question_id="q-name-1",
+        source="attack",
+        text="What exactly is User Training and Software Configuration respectively?",
+        entities=(),
+        limits=_LIMITS,
+        seed_ids=(),
+    )
+    resolved = _resolve(task)
+    draft = CypherQueryBuilder().build(resolved)
+    assert draft.template == "node_dossier_by_name"
+    # Same rich dossier row shape as the by-id path, matched by name.
+    assert "properties_json" in draft.query
+    assert "OPTIONAL MATCH (n)-[r]-(m)" in draft.query
+    assert "neighbor_total" in draft.query
+    assert "toLower(n.name) CONTAINS term" in draft.query
+    # The extracted names are the lower-cased query parameters (no ids).
+    assert draft.params["names"] == ["user training", "software configuration"]
+    result = _validate(draft)
+    assert result.ok, result.reasons
+
+
+def test_node_dossier_by_name_validator_round_trip_is_label_scoped(card):
+    """The name query scopes to real card labels and survives the validator."""
+    task = SpecialistTask(
+        sub_question_id="q-name-2",
+        source="attack",
+        text="What is Phishing?",
+        entities=(),
+        limits=_LIMITS,
+        seed_ids=(),
+    )
+    draft = CypherQueryBuilder().build(_resolve(task))
+    assert draft.template == "node_dossier_by_name"
+    # Multi-label OR guard uses only real ATT&CK labels.
+    assert "n:Mitigation" in draft.query and "n:Technique" in draft.query
+    assert _validate(draft).ok
+
+
+def test_definitional_without_name_terms_falls_back_to_label_scan(card):
+    """A definitional question that names no entity does not force a name dossier."""
+    task = SpecialistTask(
+        sub_question_id="q-name-3",
+        source="attack",
+        text="What is the mitigation?",  # only stopwords/schema words → no name terms
+        entities=(),
+        limits=_LIMITS,
+        seed_ids=(),
+    )
+    resolved = _resolve(task)
+    assert resolved.name_terms == ()
+    draft = CypherQueryBuilder().build(resolved)
+    assert draft.template == "label_scan"
+
+
+def test_seeded_definitional_uses_id_path_not_name_path(card):
+    """A definitional question that cites an id keeps the by-id path, never the name dossier.
+
+    "What exactly is M1049?" has a seed, so it takes the id branch (a lean
+    node_lookup, matching the project's deliberate by-id behavior) — the name
+    dossier only rescues the *seedless* case.
+    """
+    task = SpecialistTask(
+        sub_question_id="q-name-4",
+        source="attack",
+        text="What exactly is M1049?",
+        entities=("Mitigation",),
+        limits=_LIMITS,
+        seed_ids=("M1049",),
+    )
+    draft = CypherQueryBuilder().build(_resolve(task))
+    assert draft.template != "node_dossier_by_name"
+    assert draft.template == "node_lookup"
+
+
 def _dossier_task():
     return SpecialistTask(
         sub_question_id="q-dossier-n",

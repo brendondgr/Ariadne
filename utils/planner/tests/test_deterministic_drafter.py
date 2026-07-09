@@ -85,3 +85,38 @@ def test_feedback_recorded_in_assumptions() -> None:
     view = make_live_view()
     plan = drafter.draft(DEMO, CARDS, view, feedback=["sub-question q1: bad limits"])
     assert any("gate feedback" in a for a in plan.assumptions)
+
+
+# -- definitional name-lookup bridge ----------------------------------------
+
+
+def test_definitional_name_question_routes_join_free_name_lookup() -> None:
+    # "Phishing" matches no label token, so the keyword router selects nothing;
+    # the definitional bridge routes a join-free name lookup to each live source.
+    drafter = DeterministicDrafter()
+    view = make_live_view(live=("attack", "capec"))
+    plan = drafter.draft("What is Phishing?", CARDS, view)
+    assert plan.sub_questions  # rescued, not marked unsupported
+    assert not plan.joins
+    for sq in plan.sub_questions:
+        assert sq.join_key is None
+        assert "Phishing" in sq.text  # the name reaches the specialist
+        assert sq.entities  # gate requires a card entity
+    assert evaluate(plan, CARDS, view).ok, evaluate(plan, CARDS, view).reasons
+
+
+def test_definitional_bridge_only_routes_live_sources() -> None:
+    drafter = DeterministicDrafter()
+    view = make_live_view(live=("capec",))  # attack down
+    plan = drafter.draft("What is Phishing?", CARDS, view)
+    assert {sq.source for sq in plan.sub_questions} == {"capec"}
+    assert evaluate(plan, CARDS, view).ok
+
+
+def test_non_definitional_out_of_scope_is_not_bridged() -> None:
+    # The bridge must not fire for a non-definitional out-of-scope request.
+    drafter = DeterministicDrafter()
+    view = make_live_view()
+    plan = drafter.draft("List all Kubernetes pods and their CPU usage.", CARDS, view)
+    assert not plan.sub_questions
+    assert plan.unsupported

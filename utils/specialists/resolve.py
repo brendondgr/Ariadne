@@ -54,6 +54,28 @@ def is_dossier_intent(text: str) -> bool:
     return bool(_DOSSIER_INTENT_RE.search(text or ""))
 
 
+# A bare "what is X" / "what are X" definitional question. Broader than
+# ``_DOSSIER_INTENT_RE`` (which keys on describe verbs like "describe"/"details")
+# so a plain "What exactly is User Training?" also routes to the name dossier
+# path. Kept separate so the existing by-id dossier gating is untouched.
+_WHATIS_INTENT_RE = re.compile(
+    r"\bwhat(?:'s|’s|\s+is|\s+are|\s+exactly\s+is|\s+exactly\s+are)\b|"
+    r"\b(?:definition|meaning)\s+of\b",
+    re.IGNORECASE,
+)
+
+
+def is_definitional_intent(text: str) -> bool:
+    """True when the task reads as 'what is X' or a single-entity deep dive.
+
+    A superset of :func:`is_dossier_intent`: it additionally matches bare
+    ``what is``/``what are`` phrasings, so a name-only definitional question
+    anchors on the name dossier path even without an explicit describe verb.
+    """
+    t = text or ""
+    return is_dossier_intent(t) or bool(_WHATIS_INTENT_RE.search(t))
+
+
 @dataclass(frozen=True)
 class ResolvedTask:
     """A task grounded against a specific source card."""
@@ -73,6 +95,11 @@ class ResolvedTask:
     # ``concepts.py``, never model output) — lets a builder scope a query to a
     # fuzzy concept like "credential theft".
     concept_terms: tuple[str, ...] = ()
+    # Deterministic name anchors for a *named* entity ("User Training") when no
+    # id is present — quoted phrases and Title-Case runs from the task text,
+    # card-filtered so a schema word is never mistaken for an entity name. Lets a
+    # builder emit a name-anchored dossier for a definitional question.
+    name_terms: tuple[str, ...] = ()
 
     @property
     def has_join(self) -> bool:
@@ -122,6 +149,118 @@ def card_stix_types(card: Any) -> dict[str, str]:
         if example:
             out[label] = str(example)
     return out
+
+
+# -- name-term extraction ---------------------------------------------------
+# A named entity ("User Training") carries no id, so the id regexes above find
+# nothing. These helpers deterministically lift name anchors from the task text.
+# Priority: quoted phrases, then Title-Case runs, then filtered single tokens.
+# Card label/relationship words are excluded so a schema mention ("Mitigation")
+# is never read as a name; multi-word runs are kept whole, so "Software
+# Configuration" survives even though "Software" is itself a label word.
+
+_NAME_STOPWORDS = frozenset(
+    """a an and are as at be by for from has have in into is it its of on or that the
+    their to was were which who whom with you your they them then this these those""".split()
+)
+
+_NAME_SCAFFOLD = frozenset(
+    """identify find finds retrieve retrieves relevant associated related detail details
+    describe describes description descriptions overview overviews explain explains
+    definition definitions define defines elaborate elaborates learn dive full record
+    records profile profiles picture exactly respectively provide provides give gives
+    given show shows list lists please deep entity entities node nodes information about
+    tell more what whats which who whom please give""".split()
+)
+
+_QUOTED_NAME_RE = re.compile(r"['\"‘’“”]([^'\"‘’“”]{2,})['\"‘’“”]")
+# A Title-Case run may span a lowercase within-name connector ("Phishing for
+# Information", "Denial of Service") so the whole entity name stays one term.
+# "and"/"or" are deliberately excluded: they separate entities ("User Training
+# and Software Configuration" must split), not join a single name.
+_NAME_CONNECTORS = r"(?:the|of|for|to|in|on|with|a|an|by|from)"
+_TITLECASE_RUN_RE = re.compile(
+    rf"[A-Z][A-Za-z0-9]*(?:\s+(?:{_NAME_CONNECTORS}\s+)?[A-Z][A-Za-z0-9]*)*"
+)
+_ANY_ID_RE = re.compile(
+    r"\b(?:TA|DET|DC|T|M|G|S|C)\d{3,}(?:\.\d+)?\b|\bCAPEC[-\s]?\d+\b|\bCWE[-\s]?\d+\b",
+    re.IGNORECASE,
+)
+
+_MIN_NAME_LEN = 4
+_MAX_NAME_TERMS = 4
+
+
+def _schema_word_set(card: Any) -> set[str]:
+    """Lowercased word tokens of every card label and relationship type."""
+    words: set[str] = set()
+    names = list(getattr(card, "node_labels", ()) or ()) + list(
+        getattr(card, "relationship_types", ()) or ()
+    )
+    for name in names:
+        spaced = re.sub(r"([a-z0-9])([A-Z])", r"\1 \2", str(name)).replace("_", " ")
+        for w in spaced.split():
+            if w:
+                words.add(w.lower())
+    return words
+
+
+def _acceptable_name(candidate: str, schema_words: set[str]) -> bool:
+    """A candidate is a plausible entity name (not scaffolding or a schema word)."""
+    cand = candidate.strip()
+    if not cand or _ANY_ID_RE.search(cand):
+        return False
+    lowers = [w.lower() for w in cand.split()]
+    if not lowers:
+        return False
+    # An all-scaffolding/stopword phrase names nothing.
+    if all(w in _NAME_STOPWORDS or w in _NAME_SCAFFOLD for w in lowers):
+        return False
+    if len(lowers) == 1:
+        w = lowers[0]
+        if len(w) < _MIN_NAME_LEN:
+            return False
+        if w in _NAME_STOPWORDS or w in _NAME_SCAFFOLD or w in schema_words:
+            return False
+    return True
+
+
+def _extract_name_terms(text: str, schema_words: set[str]) -> tuple[str, ...]:
+    """Deterministic name anchors from ``text`` (see module note above)."""
+    if not text:
+        return ()
+    terms: list[str] = []
+    seen: set[str] = set()
+
+    def add(candidate: str) -> None:
+        cand = candidate.strip().strip(".,;:?!()[]{}")
+        low = cand.lower()
+        if not cand or low in seen or not _acceptable_name(cand, schema_words):
+            return
+        seen.add(low)
+        terms.append(cand)
+
+    for m in _QUOTED_NAME_RE.finditer(text):
+        add(m.group(1))
+    if not terms:
+        for m in _TITLECASE_RUN_RE.finditer(text):
+            add(m.group(0))
+    if not terms:
+        for w in re.findall(r"[A-Za-z][A-Za-z0-9]+", text):
+            add(w)
+    return tuple(terms[:_MAX_NAME_TERMS])
+
+
+def definitional_name_terms(text: str) -> tuple[str, ...]:
+    """The entity name(s) a definitional question asks about, for messaging.
+
+    Card-agnostic (no schema filter) so the synthesis layer can name the
+    unresolved entity in an honest abstention without a card in hand. Empty
+    unless the text reads as a definitional ("what is X" / describe) question.
+    """
+    if not is_definitional_intent(text):
+        return ()
+    return _extract_name_terms(text, set())
 
 
 def resolve(task: SpecialistTask, card: Any) -> ResolvedTask:
@@ -178,4 +317,5 @@ def resolve(task: SpecialistTask, card: Any) -> ResolvedTask:
         join_endpoint=join_endpoint,
         stix_types=card_stix_types(card),
         concept_terms=concept_terms(text),
+        name_terms=_extract_name_terms(text, _schema_word_set(card)),
     )

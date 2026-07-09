@@ -13,7 +13,11 @@ import re
 from typing import Any
 
 from utils.graph_loader.stores.gremlin import gremlin_edge_label
-from utils.specialists.resolve import ResolvedTask, is_dossier_intent
+from utils.specialists.resolve import (
+    ResolvedTask,
+    is_definitional_intent,
+    is_dossier_intent,
+)
 from utils.specialists.validation import QueryDraft
 
 # Relationships that fan out from AttackPattern to direct neighbours.
@@ -84,7 +88,8 @@ class GremlinQueryBuilder:
           1. capec_maps_to  — join_key is set (ATT&CK join)
           2. capec_lookup   — seed CAPEC ids present, no neighbour relationship
           3. capec_neighbors — seed ids + neighbour relationship in scope
-          4. capec_scan     — fallback: scan by primary label
+          4. capec_dossier_by_name — seedless definitional name lookup
+          5. capec_scan     — fallback: scan by primary label
         """
         has_seeds = bool(resolved.seed_ids)
         has_join = resolved.has_join or resolved.join_key == "attack-technique-id"
@@ -112,6 +117,11 @@ class GremlinQueryBuilder:
             if is_dossier_intent(resolved.task.text):
                 return self._capec_dossier(resolved)
             return self._capec_lookup(resolved)
+        # Seedless definitional name lookup ("What is Phishing?"): anchor an
+        # AttackPattern dossier on the extracted name terms instead of scanning
+        # every pattern.
+        if resolved.name_terms and is_definitional_intent(resolved.task.text):
+            return self._capec_dossier_by_name(resolved)
         return self._capec_scan(resolved)
 
     # -- templates ----------------------------------------------------------
@@ -157,6 +167,44 @@ class GremlinQueryBuilder:
             template="capec_dossier",
             expected_nonempty=bool(ids),
             meta={"anchor_label": "AttackPattern", "seed_ids": list(resolved.seed_ids)},
+        )
+
+    def _capec_dossier_by_name(self, resolved: ResolvedTask) -> QueryDraft:
+        """Name-anchored CAPEC dossier: the definitional counterpart of ``_capec_dossier``.
+
+        Anchors ``AttackPattern`` by a case-insensitive name match on the
+        extracted name terms (no id needed), reusing the concept-scan's
+        ``TextP.regex`` machinery, and returns the identical
+        ``project("node","out","in")`` shape so the shape-dispatched dossier
+        normalizer surfaces the pattern's description + typed neighbors unchanged.
+        ``expected_nonempty`` is False because a name that matches no pattern is
+        a legitimate miss, handled as an honest abstention downstream.
+        """
+        # Wildcard-sanitize each term (any run of non-alphanumerics -> a single
+        # ``.``) so the embedded regex carries no backslashes or metacharacters:
+        # ``re.escape`` emits ``\ `` for the spaces in a multi-word name, which
+        # the Gremlin server's Groovy parser rejects. ``.`` still matches the
+        # original separator (space, '/', '-'), so "Denial of Service" resolves.
+        patterns = [
+            p for p in (re.sub(r"[^A-Za-z0-9]+", ".", t).strip(".") for t in resolved.name_terms) if p
+        ]
+        pattern = "|".join(patterns)
+        lim = resolved.task.max_rows()
+        query = (
+            'g.V().hasLabel("AttackPattern")'
+            f'.has("name", TextP.regex("(?i).*({pattern}).*"))'
+            '.project("node","out","in")'
+            ".by(elementMap())"
+            '.by(outE().project("rel","other").by(label()).by(inV().elementMap()).fold())'
+            '.by(inE().project("rel","other").by(label()).by(outV().elementMap()).fold())'
+            f".limit({lim})"
+        )
+        return QueryDraft(
+            query=query,
+            params={},
+            template="capec_dossier_by_name",
+            expected_nonempty=False,
+            meta={"anchor_label": "AttackPattern", "name_terms": list(resolved.name_terms)},
         )
 
     def _capec_neighbors(self, resolved: ResolvedTask, rel: str) -> QueryDraft:

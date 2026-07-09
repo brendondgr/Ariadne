@@ -40,13 +40,27 @@ class HybridDrafter:
         try:
             plan = self._primary.draft(request, cards, live_view, feedback)
             self.last_used = type(self._primary).__name__
-            return plan
         except DrafterUnavailable as exc:
             logger.info("LLM drafter unavailable (%s); using deterministic fallback", exc)
             plan = self._fallback.draft(request, cards, live_view, feedback)
             self.last_used = type(self._fallback).__name__
             plan.assumptions.append(f"LLM drafter unavailable ({exc}); used deterministic fallback")
             return plan
+
+        # Primary succeeded but routed nothing (e.g. the LLM marked a
+        # definitional name question unsupported). The deterministic drafter is
+        # the floor: if it can build sub-questions the primary missed, prefer
+        # it. If it also routes nothing, keep the primary plan's reasons.
+        if not plan.sub_questions:
+            floor = self._fallback.draft(request, cards, live_view, feedback)
+            if floor.sub_questions:
+                logger.info("primary drafter routed nothing; using deterministic floor")
+                floor.assumptions.append(
+                    "primary drafter routed nothing; used deterministic floor"
+                )
+                self.last_used = type(self._fallback).__name__
+                return floor
+        return plan
 
 
 def select_drafter(config: PlannerConfig) -> PlanDrafter:

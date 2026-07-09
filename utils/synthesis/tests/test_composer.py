@@ -43,7 +43,10 @@ def test_narrative_assembles_claim_sentences_into_prose():
 
 def test_narrative_is_honest_when_no_evidence():
     answer = _compose(make_evidence([make_result(records=[], summary="", ok=False)]))
-    assert "no evidence" in answer.narrative.lower()
+    # Honest AND actionable: no grounded fact, so it says the sources don't cover
+    # the request and how to disambiguate (name it / give an id).
+    assert "cover this request" in answer.narrative
+    assert "give its id" in answer.narrative
 
 
 def test_missing_summary_gets_generated_text_still_cited():
@@ -142,6 +145,70 @@ def test_unsupported_and_skipped_become_notes():
     assert any("CVE data" in n for n in answer.notes)
     assert any("d3fend" in n for n in answer.notes)
     assert "1 part(s) unsupported" in answer.headline
+
+
+# -- Definitional Name Lookup (5/6): clear, actionable abstention -----------
+
+
+def test_name_lookup_miss_names_the_entity_in_the_abstention():
+    # An empty result from a definitional name lookup names what it searched for.
+    evidence = make_evidence(
+        [make_result(records=[], ok=True, query="MATCH (n) WHERE toLower(n.name) CONTAINS term RETURN n",
+                     text="What is Flibbertigibbet?")],
+        request="What is Flibbertigibbet?",
+    )
+    answer = _compose(evidence)
+    assert answer.claims == []
+    assert len(answer.abstentions) == 1
+    stmt = answer.abstentions[0].statement
+    assert "Flibbertigibbet" in stmt
+    assert "give its" in stmt and "id" in stmt  # tells the analyst how to disambiguate
+
+
+def test_empty_definitional_answer_has_actionable_narrative():
+    evidence = make_evidence(
+        [make_result(records=[], ok=True, query="MATCH (n) WHERE toLower(n.name) CONTAINS term RETURN n",
+                     text="What is Flibbertigibbet?")],
+        request="What is Flibbertigibbet?",
+    )
+    answer = _compose(evidence)
+    assert "Flibbertigibbet" in answer.narrative
+    assert "couldn't find" in answer.narrative.lower()
+
+
+def test_garbled_model_unsupported_reason_is_not_leaked():
+    # The local planner model's free-text reason must never reach the analyst.
+    evidence = make_evidence(
+        [],
+        request="What exactly is User Training and Software Configuration respectively?",
+        unsupported=[{"description": "What", "reason": "The request 'What' is incomplete."}],
+    )
+    answer = _compose(evidence)
+    joined = " ".join(answer.notes) + " " + answer.narrative
+    assert "incomplete" not in joined  # garbled reason is dropped
+    assert "'What'" not in joined
+    # The narrative names the entities the analyst actually asked about.
+    assert "User Training" in answer.narrative and "Software Configuration" in answer.narrative
+
+
+def test_clean_source_down_reason_is_kept_verbatim():
+    # A legitimate source-availability reason is still surfaced as-is.
+    evidence = make_evidence(
+        [],
+        request="Which CVEs affect X?",
+        unsupported=[{"description": "Part needs NVD (nvd).", "reason": "nvd is not live: source down"}],
+    )
+    answer = _compose(evidence)
+    assert any("not live" in n for n in answer.notes)
+
+
+def test_clarification_does_not_override_a_grounded_narrative():
+    evidence = make_evidence(
+        [make_result(records=[make_record("M1017", name="User Training")], summary="User Training matched.")],
+        request="What is User Training?",
+    )
+    answer = _compose(evidence)
+    assert answer.narrative == "User Training matched."
 
 
 def test_draft_is_unverified_and_renders_nothing():

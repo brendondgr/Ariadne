@@ -29,8 +29,15 @@ _REL_TYPE_RE = re.compile(r"\[\s*\w*\s*:\s*([A-Za-z_][A-Za-z0-9_]*)\s*(?:\{[^}]*
 # Matches an existing LIMIT clause and its integer argument
 _LIMIT_RE = re.compile(r"\bLIMIT\s+(\d+)\b", re.IGNORECASE)
 
-# Checks whether query references attack_id (property filter on the id)
-_ATTACK_ID_FILTER_RE = re.compile(r"\battack_id\b", re.IGNORECASE)
+# Checks whether the query *filters* on attack_id (a comparison / IN / string
+# predicate), not merely returns it. A bare "attack_id" grep also fired on a
+# RETURN alias (``n.attack_id AS id``), so a name-scoped query that returns the
+# id was wrongly rejected as an unscoped id filter; keying on the predicate form
+# keeps the STIX-ambiguity guard while letting name lookups return the id.
+_ATTACK_ID_FILTER_RE = re.compile(
+    r"\battack_id\b\s*(?:=|<>|<|>|=~|\bIN\b|\bCONTAINS\b|\bSTARTS\b|\bENDS\b)",
+    re.IGNORECASE,
+)
 
 # Relationship-bracket contents, e.g. the "r:USES*1..3" inside -[r:USES*1..3]->
 _REL_BRACKET_RE = re.compile(r"\[([^\]]*)\]")

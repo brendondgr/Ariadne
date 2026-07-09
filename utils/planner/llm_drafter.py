@@ -45,6 +45,12 @@ than that source's stated bounds.
 - If part of the request needs a DOWN source or data no live source holds, add \
 it to "unsupported" with a reason and set "partial": true. Never fabricate a \
 path to look helpful.
+- A DEFINITIONAL question that names an entity by its human name rather than an \
+id (e.g. "What is Phishing?", "Define User Training") IS answerable: route a \
+sub-question to the live source(s) whose schema could hold that entity, keep the \
+entity name in the sub-question "text", and use the source's most general node \
+label as its "entities". Do NOT mark such a question unsupported merely because \
+the name is not itself a label — the specialist resolves entities by name.
 - Only declare a "join" using a key from DECLARED JOIN KEYS, and only between \
 two live sources that both expose it.
 - State any interpretation you had to choose in "assumptions".
