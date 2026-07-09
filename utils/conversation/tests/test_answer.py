@@ -170,6 +170,49 @@ def test_evidence_brief_none_is_empty():
     assert evidence_brief(None) == ""
 
 
+def _many_records_evidence(n):
+    recs = [
+        EvidenceRecord(
+            primary_id=f"T{1000 + i}",
+            id_scheme="attack-id",
+            label="Technique",
+            name=f"Technique {i}",
+            properties={"description": "D" * 500},
+        )
+        for i in range(n)
+    ]
+    return _Evidence([_Result(recs)])
+
+
+def test_evidence_brief_bounded_by_total_size():
+    # A record-heavy turn must not inflate the answer prompt without limit.
+    from utils.conversation.agents.answer import _MAX_BRIEF_CHARS
+
+    brief = evidence_brief(_many_records_evidence(50))
+    assert len(brief) <= _MAX_BRIEF_CHARS + 200  # budget + the omitted marker line
+    assert "omitted here to keep the answer prompt within budget" in brief
+    # The first record is always present.
+    assert "T1000" in brief
+
+
+def test_evidence_brief_small_set_has_no_omitted_marker():
+    brief = evidence_brief(_capec98_evidence())
+    assert "omitted" not in brief
+
+
+def test_evidence_brief_always_includes_first_even_if_oversized():
+    # A single record larger than the whole budget is still surfaced (never empty).
+    big = EvidenceRecord(
+        primary_id="T9999",
+        id_scheme="attack-id",
+        label="Technique",
+        name="Huge",
+        properties={"description": "X" * 5000},
+    )
+    brief = evidence_brief(_Evidence([_Result([big])]))
+    assert "T9999" in brief
+
+
 def test_graph_path_feeds_evidence_details_to_llm():
     seen = {}
 

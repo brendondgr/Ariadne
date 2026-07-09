@@ -58,6 +58,12 @@ _GRAPH_SYSTEM = (
 # How much of each node description to include, and how many records to brief.
 _MAX_DESC_CHARS = 600
 _MAX_BRIEF_RECORDS = 10
+# Total character budget for the whole evidence brief. Record-heavy turns (a
+# query returning hundreds of nodes) are exactly where the brief would crowd the
+# answer prompt out of the model's context window and force a truncation, so the
+# brief is capped in aggregate — not just per-record — leaving headroom for the
+# completion. At least the first record is always included.
+_MAX_BRIEF_CHARS = 3000
 # Short, human-meaningful attributes worth surfacing alongside a description.
 _BRIEF_ATTRS = (
     "Abstraction",
@@ -129,6 +135,45 @@ def _llm_reply(
     return _mark_truncated(text) if result.truncated else text
 
 
+def _unique_records(evidence: Any):
+    """Yield each retrieved record once (deduped by primary id / name)."""
+    seen: set[str] = set()
+    for result in getattr(evidence, "results", []) or []:
+        for rec in getattr(result, "records", []) or []:
+            key = rec.primary_id or rec.name
+            if key and key not in seen:
+                seen.add(key)
+                yield rec
+
+
+def _record_brief_line(rec: Any) -> str:
+    """One grounded detail line for a record: id/name/label + desc + attrs + links."""
+    props = rec.properties or {}
+    head = f"- {rec.primary_id or rec.name}"
+    if rec.name and rec.name != rec.primary_id:
+        head += f" ({rec.name})"
+    if rec.label:
+        head += f" [{rec.label}]"
+    parts = [head]
+    desc = str(props.get("description", "")).strip()
+    if desc:
+        parts.append(f": {_truncate(desc, _MAX_DESC_CHARS)}")
+    attrs = [f"{k}: {_truncate(props[k], 80)}" for k in _BRIEF_ATTRS if props.get(k)]
+    if attrs:
+        parts.append(f" [{'; '.join(attrs)}]")
+    related = [
+        str(r.get("name") or r.get("id"))
+        for r in (rec.related or [])
+        if r.get("name") or r.get("id")
+    ][:8]
+    if related:
+        parts.append(f" Related: {', '.join(related)}.")
+    join_values = [str(v) for v in (rec.join_values or []) if str(v)][:8]
+    if join_values:
+        parts.append(f" Maps to: {', '.join(join_values)}.")
+    return "".join(parts)
+
+
 def evidence_brief(evidence: Any) -> str:
     """Distil the retrieved records into grounded detail lines for the answer LLM.
 
@@ -136,47 +181,33 @@ def evidence_brief(evidence: Any) -> str:
     few key attributes, and related entries — so a "tell me more" follow-up has
     real, provenance-backed material to draw on. Everything here came from the
     graph; the answer agent is told to use only it.
+
+    Bounded twice: by record count (``_MAX_BRIEF_RECORDS``) and by total size
+    (``_MAX_BRIEF_CHARS``), so a record-heavy turn can't inflate the answer
+    prompt past the model's context window and force a truncation. The first
+    record is always included; if anything is dropped, a trailing marker says so
+    (so the LLM knows to offer the rest as a next step rather than imply it saw
+    everything).
     """
     if evidence is None:
         return ""
     lines: list[str] = []
-    seen: set[str] = set()
-    for result in getattr(evidence, "results", []) or []:
-        for rec in getattr(result, "records", []) or []:
-            key = rec.primary_id or rec.name
-            if not key or key in seen:
-                continue
-            seen.add(key)
-            props = rec.properties or {}
-            head = f"- {rec.primary_id or rec.name}"
-            if rec.name and rec.name != rec.primary_id:
-                head += f" ({rec.name})"
-            if rec.label:
-                head += f" [{rec.label}]"
-            parts = [head]
-            desc = str(props.get("description", "")).strip()
-            if desc:
-                parts.append(f": {_truncate(desc, _MAX_DESC_CHARS)}")
-            attrs = [
-                f"{k}: {_truncate(props[k], 80)}"
-                for k in _BRIEF_ATTRS
-                if props.get(k)
-            ]
-            if attrs:
-                parts.append(f" [{'; '.join(attrs)}]")
-            related = [
-                str(r.get("name") or r.get("id"))
-                for r in (rec.related or [])
-                if r.get("name") or r.get("id")
-            ][:8]
-            if related:
-                parts.append(f" Related: {', '.join(related)}.")
-            join_values = [str(v) for v in (rec.join_values or []) if str(v)][:8]
-            if join_values:
-                parts.append(f" Maps to: {', '.join(join_values)}.")
-            lines.append("".join(parts))
-            if len(lines) >= _MAX_BRIEF_RECORDS:
-                return "\n".join(lines)
+    total = 0
+    omitted = False
+    for rec in _unique_records(evidence):
+        line = _record_brief_line(rec)
+        if lines and (
+            len(lines) >= _MAX_BRIEF_RECORDS or total + len(line) > _MAX_BRIEF_CHARS
+        ):
+            omitted = True
+            break
+        lines.append(line)
+        total += len(line)
+    if omitted:
+        lines.append(
+            "- …(more records retrieved but omitted here to keep the answer "
+            "prompt within budget)"
+        )
     return "\n".join(lines)
 
 
