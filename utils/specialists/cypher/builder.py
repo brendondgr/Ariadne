@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Deterministic Cypher query builder for the MITRE ATT&CK / Neo4j specialist.
 
-Picks one of thirteen intent templates based on the resolved task and always
+Picks one of fifteen intent templates based on the resolved task and always
 produces a query that will pass ``CypherValidator`` by construction — real
 card labels/edges, parameterised values, an explicit LIMIT placeholder.
 """
@@ -11,7 +11,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from ..resolve import ResolvedTask, is_dossier_intent
+from ..resolve import ResolvedTask, is_definitional_intent, is_dossier_intent
 from ..validation import QueryDraft
 
 _TECHNIQUE_RE = re.compile(r"^T\d{4}(?:\.\d{3})?$")
@@ -47,6 +47,21 @@ def _preferred_scan_label(resolved: ResolvedTask) -> str:
 # alongside so a hub node is marked "+N more" rather than silently truncated.
 _DOSSIER_NEIGHBOR_CAP = 25
 
+# Description-bearing ATT&CK labels a name lookup may resolve to. Explicit (not
+# card-derived) so the multi-label OR guard is fixed and validator-safe; every
+# one carries a ``name`` and a description inside ``properties_json``.
+_NAME_DOSSIER_LABELS: tuple[str, ...] = (
+    "Technique",
+    "SubTechnique",
+    "Mitigation",
+    "Tactic",
+    "Group",
+    "Software",
+    "Campaign",
+    "DataComponent",
+    "DetectionStrategy",
+)
+
 # Seed-id prefix → node label, so a dossier anchors on the right label even when
 # the planner did not name the entity type explicitly.
 _ID_PREFIX_LABELS: tuple[tuple[re.Pattern[str], str], ...] = (
@@ -63,7 +78,13 @@ _ID_PREFIX_LABELS: tuple[tuple[re.Pattern[str], str], ...] = (
 
 
 def _wants_dossier(resolved: ResolvedTask) -> bool:
-    """True when a seeded, non-join task reads as a single-entity deep dive."""
+    """True when a seeded, non-join task reads as a single-entity deep dive.
+
+    The by-id path keeps the narrower describe-verb intent (``describe``/
+    ``details``/…): a bare "what is M1049?" deliberately stays a lean
+    ``node_lookup``. The broader definitional intent only anchors the *seedless*
+    name-dossier branch, where there is otherwise nothing to return.
+    """
     if resolved.has_join:
         return False
     return is_dossier_intent(resolved.task.text)
@@ -92,14 +113,15 @@ def _all_subtechnique(ids: tuple[str, ...]) -> bool:
 class CypherQueryBuilder:
     """Drafts a bounded Cypher query from a resolved task.
 
-    The thirteen intent templates — ``technique_detection``,
+    The fifteen intent templates — ``technique_detection``,
     ``technique_mitigations``, ``campaign_attribution``, ``campaign_techniques``,
     ``group_techniques``, ``subtechnique_parent``, ``software_techniques``,
     ``tactic_technique_mitigations``, ``technique_tactics``,
-    ``tactic_techniques``, ``datacomponent_analytics``, ``node_lookup``, and
-    ``label_scan`` — cover the common ATT&CK query patterns.  The builder picks
-    deterministically; ``feedback`` from a failed gate attempt is accepted but
-    the deterministic path should already pass without needing it.
+    ``tactic_techniques``, ``datacomponent_analytics``, ``node_lookup``,
+    ``node_dossier``, ``node_dossier_by_name``, and ``label_scan`` — cover the
+    common ATT&CK query patterns.  The builder picks deterministically;
+    ``feedback`` from a failed gate attempt is accepted but the deterministic
+    path should already pass without needing it.
     """
 
     def build(
@@ -202,7 +224,18 @@ class CypherQueryBuilder:
                 return self._node_dossier(resolved)
             return self._node_lookup(resolved)
 
-        # 6. Fallback: label scan (no seeds)
+        # 6. No seeds. A definitional question that named an entity ("What is
+        #    User Training?") anchors on a name dossier — the same rich node +
+        #    typed 1-hop as the by-id dossier, matched by name — instead of the
+        #    catastrophic bare label scan.
+        if (
+            resolved.name_terms
+            and not resolved.has_join
+            and is_definitional_intent(resolved.task.text)
+        ):
+            return self._node_dossier_by_name(resolved)
+
+        # 7. Fallback: label scan (no seeds)
         return self._label_scan(resolved)
 
     # -- intent builders -------------------------------------------------------
@@ -391,6 +424,43 @@ class CypherQueryBuilder:
             template="node_dossier",
             expected_nonempty=True,
             meta={"label": label, "seed_ids": seed_ids, "neighbor_cap": cap},
+        )
+
+    def _node_dossier_by_name(self, resolved: ResolvedTask) -> QueryDraft:
+        """Name-anchored dossier: the definitional counterpart of ``_node_dossier``.
+
+        For a question that names an entity ("User Training") instead of citing
+        an id, match any description-bearing label whose lower-cased name
+        contains one of the extracted name terms, and return the *same* row
+        shape (id/name/properties_json + capped typed 1-hop + true total) so the
+        dossier normalizer surfaces the description and neighbors with no change.
+        The multi-label ``OR`` guard, parameterised ``$names``, and the injected
+        LIMIT keep it validator-safe; ``expected_nonempty`` is False because a
+        name that matches nothing is a legitimate miss (handled as an honest
+        abstention downstream), not a builder error to retry.
+        """
+        names = [term.lower() for term in resolved.name_terms]
+        label_guard = " OR ".join(f"n:{label}" for label in _NAME_DOSSIER_LABELS)
+        cap = _DOSSIER_NEIGHBOR_CAP
+        query = (
+            f"MATCH (n) WHERE ({label_guard}) "
+            "AND any(term IN $names WHERE toLower(n.name) CONTAINS term) "
+            "OPTIONAL MATCH (n)-[r]-(m) "
+            "WITH n, collect(CASE WHEN m IS NULL THEN NULL ELSE {"
+            "rel: type(r), outgoing: startNode(r) = n, "
+            "id: coalesce(m.attack_id, m.id), name: m.name, label: head(labels(m))"
+            "} END) AS raw "
+            "WITH n, [x IN raw WHERE x IS NOT NULL] AS neighbors "
+            "RETURN n.attack_id AS id, n.name AS name, "
+            "n.properties_json AS properties_json, "
+            f"neighbors[0..{cap}] AS neighbors, size(neighbors) AS neighbor_total"
+        )
+        return QueryDraft(
+            query=query,
+            params={"names": names},
+            template="node_dossier_by_name",
+            expected_nonempty=False,
+            meta={"name_terms": list(resolved.name_terms), "neighbor_cap": cap},
         )
 
     def _technique_detection(
