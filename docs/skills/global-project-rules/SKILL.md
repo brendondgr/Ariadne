@@ -62,6 +62,10 @@ uv run read-skills
 python app.py                 # web workbench: FastAPI api/ + Next.js web/ (--prod for production)
 cd web && npm run dev         # web app alone (expects the API on :16501)
 
+# Golden-eval harness (decoupled run -> judge -> report over the golden set)
+uv run main.py --golden-eval --stage all --set all --llm   # local-AI correctness grade + report
+uv run main.py --golden-eval --stage run --set attack --limit 3   # one stage at a time (artifacts persist)
+
 # Build (required after webfront changes)
 cd web && npm run build
 
