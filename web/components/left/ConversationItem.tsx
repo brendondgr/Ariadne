@@ -77,7 +77,7 @@ export function ConversationItem({
 
   return (
     <div
-      className={`group relative flex w-full min-w-0 items-start gap-1 rounded-[10px] px-2.5 py-[7px] text-left transition-colors ${
+      className={`group relative w-full min-w-0 rounded-[10px] px-2.5 py-[7px] text-left transition-colors ${
         active ? "text-text" : "hover:bg-[rgba(236,235,232,0.04)]"
       }`}
       style={
@@ -90,23 +90,45 @@ export function ConversationItem({
         type="button"
         onClick={onClick}
         aria-current={active ? "page" : undefined}
-        className="min-w-0 flex-1 border-0 bg-transparent p-0 text-left"
+        title={title}
+        className="block w-full min-w-0 border-0 bg-transparent p-0 text-left"
       >
+        {/* One line, expands to fill the row; a long title fades out at the right
+            edge (mask gradient) instead of clipping to an ellipsis. */}
         <span
-          className={`line-clamp-2 text-[12.5px] leading-[1.32] ${
+          className={`block w-full overflow-hidden whitespace-nowrap text-[12.5px] leading-[1.5] ${
             active ? "font-semibold text-text" : "font-medium text-text-soft"
           }`}
+          style={{
+            maskImage: "linear-gradient(to right, #000 80%, transparent)",
+            WebkitMaskImage: "linear-gradient(to right, #000 80%, transparent)",
+          }}
         >
           {title}
         </span>
       </button>
+
       {busy && (
-        <span className="mt-0.5 shrink-0 text-primary group-hover:hidden" title="Query running">
+        <span
+          className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-primary group-hover:hidden"
+          title="Query running"
+        >
           <SwirlIcon size={13} />
           <span className="sr-only">Query running</span>
         </span>
       )}
-      <div className="flex shrink-0 items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
+
+      {/* Rename/delete slide over the faded end of the title on hover — the row
+          reserves no space for them, so titles use the full width. The gradient
+          backing blends the icons onto the row so they read over the text. */}
+      <div
+        className="absolute right-1 top-1/2 flex -translate-y-1/2 items-center gap-0.5 rounded-[7px] py-[3px] pl-6 pr-0.5 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100"
+        style={{
+          background: `linear-gradient(to right, transparent, ${
+            active ? "#1d2625" : "var(--color-surface)"
+          } 46%)`,
+        }}
+      >
         <button
           type="button"
           onClick={startRename}

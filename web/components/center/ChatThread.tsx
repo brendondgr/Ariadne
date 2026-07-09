@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import type { WorkbenchRun } from "@/lib/types";
 import { SHADOW } from "@/lib/ui";
@@ -123,10 +123,20 @@ export function ChatThread({
   streamingRunId,
   onSelectRun,
 }: ChatThreadProps) {
+  // Auto-scroll to the newest turn whenever a query is added (the id of the last
+  // turn changes on submit or on switching threads), so the just-asked question
+  // scrolls into view at the bottom.
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const lastRunId = runs.length ? runs[runs.length - 1].id : null;
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+  }, [lastRunId]);
+
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col">
       <ThreadHeader title={title} run={activeRun} runs={runs} />
-      <div className="flex flex-1 flex-col gap-3 overflow-y-auto px-[14px] pb-2 pt-6">
+      <div ref={scrollRef} className="flex flex-1 flex-col gap-3 overflow-y-auto px-[14px] pb-2 pt-6">
         {runs.length === 0 ? (
           <EmptyThread />
         ) : (
