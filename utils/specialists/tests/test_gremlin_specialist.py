@@ -862,6 +862,18 @@ class TestCapecDossierByName:
         assert '.project("node","out","in")' in draft.query
         assert GremlinValidator().validate(draft, card, limits).ok
 
+    def test_multiword_name_pattern_has_no_groovy_breaking_escape(self, card, limits):
+        # A multi-word name must not embed backslash escapes: re.escape emits
+        # '\ ' for the spaces, which the Gremlin server's Groovy parser rejects.
+        # Non-alphanumerics become '.' wildcards, which still match the separator.
+        from utils.specialists.resolve import resolve
+
+        task = _make_task(text="What is Denial of Service?", entities=(), join_key=None, seed_ids=())
+        draft = GremlinQueryBuilder().build(resolve(task, card))
+        assert "\\" not in draft.query
+        assert "(Denial.of.Service)" in draft.query
+        assert GremlinValidator().validate(draft, card, limits).ok
+
     def test_name_dossier_row_normalizes_via_shape_dispatch(self, card):
         """A name-lookup dossier row (no seed) still keys on the node's own id."""
         from utils.specialists.resolve import resolve

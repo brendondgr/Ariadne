@@ -169,6 +169,19 @@ def test_resolve_name_terms_drop_schema_words_and_ids() -> None:
     assert all("M1017" not in term for term in resolved.name_terms)
 
 
+def test_resolve_name_terms_keep_connectors_but_split_on_and() -> None:
+    # A within-name connector ("for"/"of") keeps a single name whole; "and"
+    # separates two names (so a CONTAINS match stays precise, not spuriously
+    # matching a common word like "Third" left standing alone).
+    card = fixture_card("attack")
+    t1 = SpecialistTask("q-c1", "attack", "What is Phishing for Information?", entities=())
+    assert resolve(t1, card).name_terms == ("Phishing for Information",)
+    t2 = SpecialistTask(
+        "q-c2", "attack", "What is User Training and Software Configuration?", entities=()
+    )
+    assert resolve(t2, card).name_terms == ("User Training", "Software Configuration")
+
+
 def test_is_definitional_intent_recognises_what_is_and_describe() -> None:
     assert is_definitional_intent("What is User Training?")
     assert is_definitional_intent("What are the phishing mitigations?")

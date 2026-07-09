@@ -180,10 +180,15 @@ class GremlinQueryBuilder:
         ``expected_nonempty`` is False because a name that matches no pattern is
         a legitimate miss, handled as an honest abstention downstream.
         """
-        terms = [t for t in resolved.name_terms if t]
-        # Escape regex metacharacters; drop any embedded quote defensively so the
-        # literal cannot break out of the Gremlin string.
-        pattern = "|".join(re.escape(t.replace('"', "")) for t in terms)
+        # Wildcard-sanitize each term (any run of non-alphanumerics -> a single
+        # ``.``) so the embedded regex carries no backslashes or metacharacters:
+        # ``re.escape`` emits ``\ `` for the spaces in a multi-word name, which
+        # the Gremlin server's Groovy parser rejects. ``.`` still matches the
+        # original separator (space, '/', '-'), so "Denial of Service" resolves.
+        patterns = [
+            p for p in (re.sub(r"[^A-Za-z0-9]+", ".", t).strip(".") for t in resolved.name_terms) if p
+        ]
+        pattern = "|".join(patterns)
         lim = resolved.task.max_rows()
         query = (
             'g.V().hasLabel("AttackPattern")'
@@ -199,7 +204,7 @@ class GremlinQueryBuilder:
             params={},
             template="capec_dossier_by_name",
             expected_nonempty=False,
-            meta={"anchor_label": "AttackPattern", "name_terms": list(terms)},
+            meta={"anchor_label": "AttackPattern", "name_terms": list(resolved.name_terms)},
         )
 
     def _capec_neighbors(self, resolved: ResolvedTask, rel: str) -> QueryDraft:

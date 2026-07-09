@@ -174,7 +174,14 @@ _NAME_SCAFFOLD = frozenset(
 )
 
 _QUOTED_NAME_RE = re.compile(r"['\"‘’“”]([^'\"‘’“”]{2,})['\"‘’“”]")
-_TITLECASE_RUN_RE = re.compile(r"[A-Z][A-Za-z0-9]*(?:\s+[A-Z][A-Za-z0-9]*)*")
+# A Title-Case run may span a lowercase within-name connector ("Phishing for
+# Information", "Denial of Service") so the whole entity name stays one term.
+# "and"/"or" are deliberately excluded: they separate entities ("User Training
+# and Software Configuration" must split), not join a single name.
+_NAME_CONNECTORS = r"(?:the|of|for|to|in|on|with|a|an|by|from)"
+_TITLECASE_RUN_RE = re.compile(
+    rf"[A-Z][A-Za-z0-9]*(?:\s+(?:{_NAME_CONNECTORS}\s+)?[A-Z][A-Za-z0-9]*)*"
+)
 _ANY_ID_RE = re.compile(
     r"\b(?:TA|DET|DC|T|M|G|S|C)\d{3,}(?:\.\d+)?\b|\bCAPEC[-\s]?\d+\b|\bCWE[-\s]?\d+\b",
     re.IGNORECASE,
