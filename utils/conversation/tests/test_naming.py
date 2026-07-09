@@ -63,3 +63,10 @@ def test_title_for_strips_and_bounds_model_reply():
     long_reply = "This Is An Excessively Long Generated Title That Runs On Well Past The Limit"
     title = title_for("q", cfg, _StubLLM(long_reply))
     assert len(title) <= 62
+
+
+def test_title_for_clamps_to_five_words():
+    cfg = _cfg(enabled=True)
+    title = title_for("q", cfg, _StubLLM("Phishing Mitigations Across MITRE ATTACK Techniques Detail"))
+    assert title == "Phishing Mitigations Across MITRE ATTACK"
+    assert len(title.split()) == 5
