@@ -771,3 +771,63 @@ def test_nonregression_technique_mitigations_still_routes(card):
     builder = CypherQueryBuilder()
     draft = builder.build(resolved)
     assert draft.template == "technique_mitigations"
+
+
+# ---------------------------------------------------------------------------
+# node_dossier: single-entity "tell me about this" deep dive
+# ---------------------------------------------------------------------------
+
+
+def test_routing_node_dossier_on_describe_intent(card):
+    """A single-seed 'details on M1049' task routes to the dossier template."""
+    task = SpecialistTask(
+        sub_question_id="q-dossier-1",
+        source="attack",
+        text="Provide more details on M1049.",
+        entities=("Mitigation",),
+        limits=_LIMITS,
+        seed_ids=("M1049",),
+    )
+    resolved = _resolve(task)
+    draft = CypherQueryBuilder().build(resolved)
+    assert draft.template == "node_dossier"
+    # It projects the description blob and traverses a 1-hop neighborhood.
+    assert "properties_json" in draft.query
+    assert "OPTIONAL MATCH (n)-[r]-(m)" in draft.query
+    assert "neighbor_total" in draft.query
+    assert "(n:Mitigation)" in draft.query
+    result = _validate(draft)
+    assert result.ok, result.reasons
+
+
+def test_node_dossier_infers_label_from_seed_when_unnamed(card):
+    """With no entity label named, the dossier anchors on the seed-id prefix."""
+    task = SpecialistTask(
+        sub_question_id="q-dossier-2",
+        source="attack",
+        text="Tell me more about M1049",
+        entities=(),
+        limits=_LIMITS,
+        seed_ids=("M1049",),
+    )
+    resolved = _resolve(task)
+    draft = CypherQueryBuilder().build(resolved)
+    assert draft.template == "node_dossier"
+    assert "(n:Mitigation)" in draft.query
+    assert _validate(draft).ok
+
+
+def test_node_lookup_stays_lean_without_describe_intent(card):
+    """A bare id lookup with no 'details/about' intent keeps the node_lookup template."""
+    task = SpecialistTask(
+        sub_question_id="q-dossier-3",
+        source="attack",
+        text="M1049",
+        entities=("Mitigation",),
+        limits=_LIMITS,
+        seed_ids=("M1049",),
+    )
+    resolved = _resolve(task)
+    draft = CypherQueryBuilder().build(resolved)
+    assert draft.template == "node_lookup"
+    assert "properties_json" not in draft.query

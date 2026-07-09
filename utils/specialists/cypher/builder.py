@@ -43,6 +43,54 @@ def _preferred_scan_label(resolved: ResolvedTask) -> str:
     return resolved.primary_label() or "Technique"
 
 
+# A single-entity "tell me about this" question routes to the dossier template
+# (full node + a capped, typed 1-hop neighborhood) instead of the bare id/name
+# node_lookup. Kept deliberately explicit so a generic lookup task never trips it.
+_DOSSIER_INTENT_RE = re.compile(
+    r"\b(?:details?|describe[sd]?|description|information|overview|explain|"
+    r"definition|define|elaborate|tell me (?:more|about)|more (?:on|about|details)|"
+    r"learn more|dive (?:in|deeper)|full (?:record|profile|picture))\b",
+    re.IGNORECASE,
+)
+
+# How many typed neighbors the dossier query returns; the true total is reported
+# alongside so a hub node is marked "+N more" rather than silently truncated.
+_DOSSIER_NEIGHBOR_CAP = 25
+
+# Seed-id prefix → node label, so a dossier anchors on the right label even when
+# the planner did not name the entity type explicitly.
+_ID_PREFIX_LABELS: tuple[tuple[re.Pattern[str], str], ...] = (
+    (_TACTIC_RE, "Tactic"),
+    (_MITIGATION_RE, "Mitigation"),
+    (_SOFTWARE_RE, "Software"),
+    (_DATACOMPONENT_RE, "DataComponent"),
+    (re.compile(r"^DET\d{4}$"), "DetectionStrategy"),
+    (re.compile(r"^G\d{4}$"), "Group"),
+    (re.compile(r"^C\d{4}$"), "Campaign"),
+    (_SUBTECHNIQUE_RE, "SubTechnique"),
+    (_TECHNIQUE_RE, "Technique"),
+)
+
+
+def _wants_dossier(resolved: ResolvedTask) -> bool:
+    """True when a seeded, non-join task reads as a single-entity deep dive."""
+    if resolved.has_join:
+        return False
+    return bool(_DOSSIER_INTENT_RE.search(resolved.task.text or ""))
+
+
+def _dossier_label(resolved: ResolvedTask) -> str:
+    """Anchor label for the dossier: the resolved label, else inferred from the id."""
+    label = resolved.primary_label()
+    if label:
+        return label
+    for aid in resolved.seed_ids:
+        for pattern, inferred in _ID_PREFIX_LABELS:
+            if pattern.match(aid):
+                return inferred
+    return "Technique"
+
+
 def _is_technique_id(aid: str) -> bool:
     return bool(_TECHNIQUE_RE.match(aid))
 
@@ -157,8 +205,11 @@ class CypherQueryBuilder:
         if has_tactic:
             return self._tactic_techniques(resolved)
 
-        # 5. Seed ids present but no compound edge intent → node lookup
+        # 5. Seed ids present but no compound edge intent → node lookup, or a
+        #    dossier (full node + capped typed 1-hop) for a single-entity deep dive.
         if resolved.seed_ids:
+            if _wants_dossier(resolved):
+                return self._node_dossier(resolved)
             return self._node_lookup(resolved)
 
         # 6. Fallback: label scan (no seeds)
@@ -317,6 +368,39 @@ class CypherQueryBuilder:
             params={"ids": seed_ids},
             template="node_lookup",
             meta={"label": label, "seed_ids": seed_ids},
+        )
+
+    def _node_dossier(self, resolved: ResolvedTask) -> QueryDraft:
+        """Full node (incl. properties_json) + a capped, typed 1-hop neighborhood.
+
+        One row per seed entity: its id/name/properties_json (the description
+        lives in the JSON blob), the first ``_DOSSIER_NEIGHBOR_CAP`` typed
+        neighbors, and the true neighbor count so a hub is marked "+N more".
+        The relationship is left untyped so every edge kind is surfaced; the
+        untyped ``-[r]-`` also keeps the query clear of the schema gate's
+        relationship-type check.
+        """
+        label = _dossier_label(resolved)
+        seed_ids = list(resolved.seed_ids)
+        cap = _DOSSIER_NEIGHBOR_CAP
+        query = (
+            f"MATCH (n:{label}) WHERE n.attack_id IN $ids "
+            "OPTIONAL MATCH (n)-[r]-(m) "
+            "WITH n, collect(CASE WHEN m IS NULL THEN NULL ELSE {"
+            "rel: type(r), outgoing: startNode(r) = n, "
+            "id: coalesce(m.attack_id, m.id), name: m.name, label: head(labels(m))"
+            "} END) AS raw "
+            "WITH n, [x IN raw WHERE x IS NOT NULL] AS neighbors "
+            "RETURN n.attack_id AS id, n.name AS name, "
+            "n.properties_json AS properties_json, "
+            f"neighbors[0..{cap}] AS neighbors, size(neighbors) AS neighbor_total"
+        )
+        return QueryDraft(
+            query=query,
+            params={"ids": seed_ids},
+            template="node_dossier",
+            expected_nonempty=True,
+            meta={"label": label, "seed_ids": seed_ids, "neighbor_cap": cap},
         )
 
     def _technique_detection(
