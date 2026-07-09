@@ -244,6 +244,18 @@ def _extract_name_terms(text: str, schema_words: set[str]) -> tuple[str, ...]:
     return tuple(terms[:_MAX_NAME_TERMS])
 
 
+def definitional_name_terms(text: str) -> tuple[str, ...]:
+    """The entity name(s) a definitional question asks about, for messaging.
+
+    Card-agnostic (no schema filter) so the synthesis layer can name the
+    unresolved entity in an honest abstention without a card in hand. Empty
+    unless the text reads as a definitional ("what is X" / describe) question.
+    """
+    if not is_definitional_intent(text):
+        return ()
+    return _extract_name_terms(text, set())
+
+
 def resolve(task: SpecialistTask, card: Any) -> ResolvedTask:
     """Ground ``task`` against ``card`` (the shared resolve-to-schema step).
 

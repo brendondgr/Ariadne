@@ -78,6 +78,29 @@ def test_synthesize_applies_llm_narrative_when_enabled(monkeypatch):
     assert answer.narrative == "A clear natural-language answer."
 
 
+def test_synthesize_skips_llm_narrator_when_no_claims(monkeypatch):
+    # No grounded claim → the LLM narrator must not run (no hallucinating prose
+    # over an empty evidence set); the deterministic clarification is kept.
+    def boom(*a, **k):  # pragma: no cover - must not be called
+        raise AssertionError("narrator must not run when there are no claims")
+
+    monkeypatch.setattr("requests.post", boom)
+    evidence = make_evidence(
+        [make_result(records=[], ok=True,
+                     query="MATCH (n) WHERE toLower(n.name) CONTAINS term RETURN n",
+                     text="What is Flibbertigibbet?")],
+        request="What is Flibbertigibbet?",
+    )
+    answer = synthesize(
+        evidence,
+        SynthesisConfig(llm_enabled=True),
+        composer=DeterministicComposer(SynthesisConfig()),
+    )
+    assert answer.claims == []
+    assert "Flibbertigibbet" in answer.narrative
+    assert "couldn't find" in answer.narrative.lower()
+
+
 def test_synthesize_keeps_deterministic_narrative_when_llm_off(monkeypatch):
     # LLM disabled → narrator never runs → the deterministic narrative stands.
     def boom(*a, **k):  # pragma: no cover - must not be called

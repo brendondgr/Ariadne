@@ -24,9 +24,42 @@ from __future__ import annotations
 
 from utils.specialists.contracts import SpecialistResult
 from utils.specialists.federation import FederatedEvidence
+from utils.specialists.resolve import definitional_name_terms
 
 from .config import SynthesisConfig
 from .contracts import Abstention, Citation, Claim, SynthesizedAnswer
+
+# Example ids offered when asking the analyst to disambiguate by identifier.
+_ID_EXAMPLES = "e.g. T1566, M1017, or CAPEC-98"
+
+# Markers of a clean, source-availability unsupported reason authored by the
+# deterministic drafter (safe to surface verbatim). Anything else is treated as
+# model-authored free text and is NOT echoed (it is often garbled).
+_CLEAN_REASON_MARKERS = ("not live", "no live source", "schema", "down")
+
+
+def _is_name_lookup(query: str) -> bool:
+    """True when ``query`` is one of the name-dossier templates (Cypher/Gremlin).
+
+    Keyed on each template's unique name-match signature so the name-aware
+    abstention/clarification fires only for an actual by-name lookup — never for
+    an ordinary empty result (which keeps its canonical honest-empty wording).
+    """
+    q = query or ""
+    if "toLower(n.name) CONTAINS" in q:  # Cypher _node_dossier_by_name
+        return True
+    if 'has("name", TextP.regex' in q and 'project("node"' in q:  # Gremlin
+        return True
+    return False
+
+
+def _name_lookup_terms(evidence: FederatedEvidence) -> tuple[str, ...]:
+    """Distinct entity names searched by the name-lookup results in ``evidence``."""
+    names: list[str] = []
+    for result in evidence.results:
+        if _is_name_lookup(result.query):
+            names.extend(definitional_name_terms(result.task.text))
+    return tuple(dict.fromkeys(names))
 
 
 def abstention_statement(
@@ -65,17 +98,37 @@ def _dependency_producer(result: SpecialistResult) -> str:
     return ""
 
 
+def _name_miss_statement(source: str, names: tuple[str, ...]) -> str:
+    """A specific, actionable abstention for a name lookup that matched nothing."""
+    quoted = " or ".join(f"'{n}'" for n in names)
+    return (
+        f"No entity named {quoted} was found in the {source} source. Check the "
+        f"name, or give its ATT&CK/CAPEC id ({_ID_EXAMPLES})."
+    )
+
+
 def abstention_for(result: SpecialistResult) -> Abstention:
-    """The enforced abstention for one empty-but-ok specialist result."""
-    return Abstention(
-        sub_question_id=result.task.sub_question_id,
-        source=result.task.source,
-        statement=abstention_statement(
+    """The enforced abstention for one empty-but-ok specialist result.
+
+    When the empty result came from a definitional name lookup, the statement
+    names the entity that could not be found (and how to disambiguate) instead
+    of the generic "no matching records" wording — the analyst asked to define
+    something by name, so the honest empty answer should say what it looked for.
+    """
+    names = definitional_name_terms(result.task.text)
+    if _is_name_lookup(result.query) and names:
+        statement = _name_miss_statement(result.task.source, names)
+    else:
+        statement = abstention_statement(
             result.task.source,
             result.task.text,
             result.query,
             dependency=_dependency_producer(result),
-        ),
+        )
+    return Abstention(
+        sub_question_id=result.task.sub_question_id,
+        source=result.task.source,
+        statement=statement,
         query=result.query,
     )
 
@@ -154,18 +207,23 @@ class DeterministicComposer:
             claims.append(_correlation_claim(value, join_index.get(value, []), cap))
 
         for part in evidence.unsupported:
-            desc = part.get("description", "(unspecified)")
-            reason = part.get("reason", "no reason recorded")
-            notes.append(f"Unsupported by the available sources: {desc} ({reason})")
+            notes.append(_unsupported_note(part, evidence.request))
         for skip in evidence.skipped:
             notes.append(
                 f"Skipped {skip.get('source', '?')}: {skip.get('reason', 'unknown')}"
             )
 
+        # With no grounded fact, the top-line must be an honest, actionable
+        # statement — naming what was searched and how to disambiguate — rather
+        # than a bare "no evidence" line or a leaked model reason.
+        narrative = _narrative(claims, abstentions)
+        if not claims:
+            narrative = _clarification_narrative(evidence, abstentions)
+
         return SynthesizedAnswer(
             request=evidence.request,
             headline=_headline(evidence, claims, abstentions),
-            narrative=_narrative(claims, abstentions),
+            narrative=narrative,
             claims=claims,
             abstentions=abstentions,
             notes=notes,
@@ -183,6 +241,55 @@ def _summarize_ids(ids: list[str], cap: int = 8) -> str:
     listed = ", ".join(shown)
     extra = len(uniq) - len(shown)
     return f"{listed}, and {extra} more" if extra > 0 else listed
+
+
+def _unsupported_note(part: dict[str, str], request: str) -> str:
+    """A note for one planner-unsupported part, sanitized.
+
+    A clean source-availability reason (authored by the deterministic drafter)
+    is surfaced verbatim. A model-authored reason — often garbled, e.g. "the
+    request 'What' is incomplete" — is NOT echoed; instead the note states
+    plainly that no live source matched and asks the analyst to name a specific
+    entity or give an id.
+    """
+    reason = str(part.get("reason", "")).strip()
+    desc = str(part.get("description", "")).strip()
+    if reason and any(m in reason.lower() for m in _CLEAN_REASON_MARKERS):
+        return f"Unsupported by the available sources: {desc or request} ({reason})"
+    return (
+        f"The available graph sources could not be matched to this request: "
+        f"'{request}'. If you meant a specific ATT&CK or CAPEC entity, name it "
+        f"or give its id ({_ID_EXAMPLES})."
+    )
+
+
+def _clarification_narrative(
+    evidence: FederatedEvidence, abstentions: list[Abstention]
+) -> str:
+    """An honest, actionable top-line for an answer with no grounded fact.
+
+    Names the entity the analyst tried to define (when the request was
+    definitional) and how to disambiguate, so an empty result reads as a clear
+    request for specificity rather than a flat "I can't get any information".
+    """
+    # Names actually searched by a name lookup; else the request's own
+    # definitional names (used when the planner routed nothing at all).
+    names = _name_lookup_terms(evidence) or definitional_name_terms(evidence.request)
+    if names:
+        quoted = " or ".join(f"'{n}'" for n in names)
+        return (
+            f"I couldn't find {quoted} in the live ATT&CK/CAPEC graphs. Check the "
+            f"name, or tell me the entity's id ({_ID_EXAMPLES}) and I'll look it up."
+        )
+    if abstentions:
+        return (
+            "The routed sources returned no matching records for this question. "
+            f"If you're after a specific entity, name it or give its id ({_ID_EXAMPLES})."
+        )
+    return (
+        "None of the live graph sources cover this request. If you meant a "
+        f"specific ATT&CK or CAPEC entity, name it or give its id ({_ID_EXAMPLES})."
+    )
 
 
 def _narrative(claims: list[Claim], abstentions: list[Abstention]) -> str:
