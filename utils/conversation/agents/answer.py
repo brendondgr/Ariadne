@@ -83,6 +83,52 @@ def _truncate(text: str, limit: int) -> str:
     return text[:limit].rsplit(" ", 1)[0].rstrip(",.;:") + "…"
 
 
+# Appended to a reply the model cut off at its output limit, so the analyst sees
+# an explicit, expected truncation instead of a sentence that just stops.
+_TRUNCATION_NOTE = (
+    "\n\n_(Response truncated at the model's output limit — increase "
+    "`CONVERSATION_LLM_MAX_TOKENS` or the model's context window, or ask for "
+    "fewer items at a time.)_"
+)
+
+
+def _mark_truncated(text: str) -> str:
+    """Tidy a cut-off reply and append an explicit truncation note.
+
+    Drops a trailing unbalanced ``(…`` — a hanging open paren after the last
+    close paren is a truncated parenthetical/id (e.g. ``"(T1561."``) — then adds
+    the note. Best-effort tidy only: the note is what makes the truncation
+    unambiguous; the verified claim table below remains the trust surface.
+    """
+    text = text.rstrip()
+    open_i, close_i = text.rfind("("), text.rfind(")")
+    if open_i > close_i:
+        text = text[:open_i].rstrip(" ,.;:—-")
+    return text + _TRUNCATION_NOTE
+
+
+def _llm_reply(
+    client: ConversationLLM,
+    messages: list[dict[str, str]],
+    config: ConversationConfig,
+) -> str | None:
+    """The answer LLM's reply (truncation-marked if cut), or ``None`` to fall back.
+
+    Returns ``None`` when the LLM is unavailable or produced no usable content —
+    including a length stop that yielded nothing — so the caller keeps the
+    deterministic answer. A truncated-but-non-empty reply is returned with an
+    explicit note rather than as a bare mid-sentence chop.
+    """
+    try:
+        result = client.complete_verbose(messages, max_tokens=config.llm.max_tokens)
+    except LLMUnavailable:
+        return None
+    text = result.content.strip()
+    if not text:
+        return None
+    return _mark_truncated(text) if result.truncated else text
+
+
 def evidence_brief(evidence: Any) -> str:
     """Distil the retrieved records into grounded detail lines for the answer LLM.
 
@@ -165,10 +211,9 @@ def _compose_quick(question, history, facts, config, client) -> tuple[str, str]:
             + render_history_messages(history, config.history_turns)
             + [{"role": "user", "content": f"{fact_block}\n\nMessage: {question}"}]
         )
-        try:
-            return client.complete(messages, max_tokens=config.llm.max_tokens), "llm"
-        except LLMUnavailable:
-            pass
+        reply = _llm_reply(client, messages, config)
+        if reply is not None:
+            return reply, "llm"
     # Deterministic fallback.
     if facts:
         return "From what we've discussed:\n- " + "\n- ".join(facts), "deterministic"
@@ -202,10 +247,9 @@ def _compose_graph(
             + render_history_messages(history, config.history_turns)
             + [{"role": "user", "content": user_content}]
         )
-        try:
-            return client.complete(messages, max_tokens=config.llm.max_tokens), "llm"
-        except LLMUnavailable:
-            pass
+        reply = _llm_reply(client, messages, config)
+        if reply is not None:
+            return reply, "llm"
     # Deterministic fallback: the verified narrative verbatim.
     return grounded, "deterministic"
 
