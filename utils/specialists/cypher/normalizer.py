@@ -14,6 +14,7 @@ context string embedded in the provenance) drives the grouping logic:
 
 from __future__ import annotations
 
+import json
 import re
 from collections import defaultdict
 from typing import Any
@@ -24,9 +25,44 @@ from ..resolve import ResolvedTask
 
 _TECHNIQUE_ID_RE = re.compile(r"^T\d{4}(?:\.\d{3})?$")
 
+# Short, human-meaningful attributes lifted out of properties_json alongside the
+# description (mirrors the answer agent's _BRIEF_ATTRS so the dossier feeds it).
+_DOSSIER_ATTRS = (
+    "Abstraction",
+    "Status",
+    "tactic",
+    "tactics",
+    "platforms",
+    "x_mitre_platforms",
+    "detection",
+)
+
+# Seed-id prefix → label for the dossier record when the task named no entity.
+_DOSSIER_ID_LABELS: tuple[tuple[re.Pattern[str], str], ...] = (
+    (re.compile(r"^TA\d{4}$"), "Tactic"),
+    (re.compile(r"^M\d{4}$"), "Mitigation"),
+    (re.compile(r"^S\d{4}$"), "Software"),
+    (re.compile(r"^DC\d{4}$"), "DataComponent"),
+    (re.compile(r"^DET\d{4}$"), "DetectionStrategy"),
+    (re.compile(r"^G\d{4}$"), "Group"),
+    (re.compile(r"^C\d{4}$"), "Campaign"),
+    (re.compile(r"^T\d{4}\.\d{3}$"), "SubTechnique"),
+    (re.compile(r"^T\d{4}$"), "Technique"),
+)
+
 
 def _is_technique_id(value: str) -> bool:
     return bool(_TECHNIQUE_ID_RE.match(value or ""))
+
+
+def _label_for(aid: str, resolved: ResolvedTask) -> str:
+    """Resolved primary label, else inferred from the id prefix, else Technique."""
+    if resolved.primary_label():
+        return resolved.primary_label()  # type: ignore[return-value]
+    for pattern, label in _DOSSIER_ID_LABELS:
+        if pattern.match(aid or ""):
+            return label
+    return "Technique"
 
 
 class CypherNormalizer:
@@ -75,6 +111,9 @@ class CypherNormalizer:
         # group_techniques / tactic_techniques / campaign_techniques have technique_id
         if rows and "technique_id" in rows[0]:
             return self._normalize_technique_rows(rows, query, card, id_scheme)
+        # node_dossier — full node (properties_json) + typed 1-hop neighbors
+        if rows and "properties_json" in rows[0]:
+            return self._normalize_dossier(rows, resolved, query, card, id_scheme)
         # node_lookup / label_scan
         return self._normalize_flat(rows, query, card, id_scheme)
 
@@ -457,6 +496,90 @@ class CypherNormalizer:
                 )
             )
         return records
+
+    def _normalize_dossier(
+        self,
+        rows: list[dict[str, Any]],
+        resolved: ResolvedTask,
+        query: str,
+        card: Any,
+        id_scheme: str,
+    ) -> list[EvidenceRecord]:
+        """One rich record per entity: description (from properties_json) + typed 1-hop.
+
+        ``properties`` carries the parsed description and a few key attributes (so
+        the answer agent's ``evidence_brief`` surfaces them), plus the true
+        neighbor count and a truncation flag. ``related`` carries the capped typed
+        neighbors as ``{id, name, type, direction, label}`` — ids/names feed the
+        existing brief, while type/direction feed the compact memory adjacency.
+        """
+        records: list[EvidenceRecord] = []
+        for row in rows:
+            aid = str(row.get("id") or row.get("attack_id") or "")
+            name = str(row.get("name") or "")
+            props = self._parse_properties(row.get("properties_json"))
+
+            properties: dict[str, Any] = {}
+            desc = str(props.get("description", "") or "").strip()
+            if desc:
+                properties["description"] = desc
+            for key in _DOSSIER_ATTRS:
+                value = props.get(key)
+                if value not in (None, "", [], {}):
+                    properties[key] = value
+
+            related: list[dict[str, Any]] = []
+            for nbr in row.get("neighbors") or []:
+                if not isinstance(nbr, dict):
+                    continue
+                nid = str(nbr.get("id") or "").strip()
+                nname = str(nbr.get("name") or "").strip()
+                if not nid and not nname:
+                    continue
+                related.append(
+                    {
+                        "id": nid,
+                        "name": nname,
+                        "type": str(nbr.get("rel") or "").strip(),
+                        "direction": "out" if nbr.get("outgoing") else "in",
+                        "label": str(nbr.get("label") or "").strip(),
+                    }
+                )
+
+            total = row.get("neighbor_total")
+            neighbor_total = int(total) if isinstance(total, (int, float)) else len(related)
+            properties["neighbor_total"] = neighbor_total
+            properties["neighbors_truncated"] = neighbor_total > len(related)
+
+            join_values = (aid,) if _is_technique_id(aid) else ()
+            records.append(
+                emit_record(
+                    card=card,
+                    query=query,
+                    record_id=aid,
+                    primary_id=aid,
+                    id_scheme=id_scheme,
+                    label=_label_for(aid, resolved),
+                    name=name,
+                    properties=properties,
+                    related=related,
+                    join_values=join_values,
+                )
+            )
+        return records
+
+    @staticmethod
+    def _parse_properties(blob: Any) -> dict[str, Any]:
+        """Parse the node's ``properties_json`` string into a dict (empty on failure)."""
+        if isinstance(blob, dict):
+            return blob
+        if not blob:
+            return {}
+        try:
+            parsed = json.loads(blob)
+            return parsed if isinstance(parsed, dict) else {}
+        except (ValueError, TypeError):
+            return {}
 
     def summarize(
         self, records: list[EvidenceRecord], resolved: ResolvedTask

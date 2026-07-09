@@ -831,3 +831,76 @@ def test_node_lookup_stays_lean_without_describe_intent(card):
     draft = CypherQueryBuilder().build(resolved)
     assert draft.template == "node_lookup"
     assert "properties_json" not in draft.query
+
+
+def _dossier_task():
+    return SpecialistTask(
+        sub_question_id="q-dossier-n",
+        source="attack",
+        text="Provide more details on M1049.",
+        entities=("Mitigation",),
+        limits=_LIMITS,
+        seed_ids=("M1049",),
+    )
+
+
+def test_normalizer_dossier_parses_description_and_typed_neighbors(card):
+    """The dossier row's properties_json yields a description; neighbors become typed related."""
+    import json as _json
+
+    rows = [
+        {
+            "id": "M1049",
+            "name": "Antivirus/Antimalware",
+            "properties_json": _json.dumps(
+                {"attack_id": "M1049", "description": "Antivirus solutions use signatures and heuristics."}
+            ),
+            "neighbors": [
+                {"rel": "MITIGATES", "outgoing": True, "id": "T1566", "name": "Phishing", "label": "Technique"},
+                {"rel": "MITIGATES", "outgoing": True, "id": "T1204", "name": "User Execution", "label": "Technique"},
+            ],
+            "neighbor_total": 23,
+        }
+    ]
+    resolved = _resolve(_dossier_task())
+    rec = CypherNormalizer().normalize(rows, resolved, "FAKE", card)[0]
+    assert rec.primary_id == "M1049"
+    assert rec.label == "Mitigation"
+    assert rec.properties["description"].startswith("Antivirus solutions")
+    # True total preserved; capped set marked truncated for the "+N more" tail.
+    assert rec.properties["neighbor_total"] == 23
+    assert rec.properties["neighbors_truncated"] is True
+    nbr = {r["id"]: r for r in rec.related}
+    assert nbr["T1566"]["type"] == "MITIGATES"
+    assert nbr["T1566"]["direction"] == "out"
+    assert nbr["T1566"]["name"] == "Phishing"
+
+
+def test_normalizer_dossier_description_only_node_has_no_neighbors(card):
+    """A node with an empty neighbor list still yields a description record (not dropped)."""
+    import json as _json
+
+    rows = [
+        {
+            "id": "M1049",
+            "name": "Antivirus/Antimalware",
+            "properties_json": _json.dumps({"description": "Detects malware."}),
+            "neighbors": [],
+            "neighbor_total": 0,
+        }
+    ]
+    resolved = _resolve(_dossier_task())
+    records = CypherNormalizer().normalize(rows, resolved, "FAKE", card)
+    assert len(records) == 1
+    assert records[0].properties["description"] == "Detects malware."
+    assert records[0].related == []
+    assert records[0].properties["neighbors_truncated"] is False
+
+
+def test_normalizer_dossier_tolerates_bad_properties_json(card):
+    """A malformed properties_json degrades to no description, not an exception."""
+    rows = [{"id": "M1049", "name": "Antivirus/Antimalware", "properties_json": "{not json", "neighbors": [], "neighbor_total": 0}]
+    resolved = _resolve(_dossier_task())
+    rec = CypherNormalizer().normalize(rows, resolved, "FAKE", card)[0]
+    assert "description" not in rec.properties
+    assert rec.name == "Antivirus/Antimalware"
