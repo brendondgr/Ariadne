@@ -3,7 +3,16 @@
 
 from __future__ import annotations
 
-from utils.conversation.persistence import facts_from_synthesized, history_from_turns
+from types import SimpleNamespace
+
+from utils.conversation.persistence import (
+    dossier_detail_block,
+    dossier_index_line,
+    dossiers_from_records,
+    entity_ids_in,
+    facts_from_synthesized,
+    history_from_turns,
+)
 from utils.conversation.store import TurnRecord
 from utils.synthesis.contracts import (
     Claim,
@@ -81,3 +90,61 @@ def test_history_from_turns_limit_keeps_recent():
     turns = [_turn(i, "user", question=f"q{i}") for i in range(5)]
     history = history_from_turns(turns, limit=2)
     assert [h["content"] for h in history] == ["q3", "q4"]
+
+
+# ---------------------------------------------------------------------------
+# Entity dossier model + formatters
+# ---------------------------------------------------------------------------
+
+
+def _dossier_record(neighbor_total=23, related=None):
+    return SimpleNamespace(
+        primary_id="M1049",
+        name="Antivirus/Antimalware",
+        properties={"description": "Antivirus solutions use signatures and heuristics.", "neighbor_total": neighbor_total},
+        related=related
+        if related is not None
+        else [
+            {"id": "T1566", "name": "Phishing", "type": "MITIGATES", "direction": "out"},
+            {"id": "T1204", "name": "User Execution", "type": "MITIGATES", "direction": "out"},
+        ],
+    )
+
+
+def test_dossiers_from_records_only_uses_dossier_shaped_records():
+    plain = SimpleNamespace(primary_id="T1566", name="Phishing", properties={}, related=[])
+    dossiers = dossiers_from_records([_dossier_record(), plain])
+    assert set(dossiers) == {"M1049"}
+    d = dossiers["M1049"]
+    assert d.name == "Antivirus/Antimalware"
+    assert d.neighbor_total == 23
+    assert d.edges[0].title == "Mitigates"
+    assert d.edges[0].node_id == "T1566"
+
+
+def test_dossier_detail_block_matches_requested_format_with_plus_more():
+    d = dossiers_from_records([_dossier_record(neighbor_total=23)])["M1049"]
+    block = dossier_detail_block(d)
+    assert block.startswith("M1049 (Antivirus/Antimalware): Antivirus solutions")
+    assert "adjacent:" in block
+    assert "* Mitigates (MITIGATES) -> Phishing (T1566)" in block
+    # Only 2 edges present but total is 23 → a "+21 more" tail.
+    assert "* (+21 more)" in block
+
+
+def test_dossier_detail_block_marks_inbound_direction():
+    rec = _dossier_record(neighbor_total=1, related=[{"id": "G0016", "name": "APT29", "type": "USES", "direction": "in"}])
+    block = dossier_detail_block(dossiers_from_records([rec])["M1049"])
+    # Inbound direction is shown by the arrow; the title stays the plain type.
+    assert "* Uses (USES) <- APT29 (G0016)" in block
+
+
+def test_dossier_index_line_lists_held_entities():
+    dossiers = dossiers_from_records([_dossier_record()])
+    assert dossier_index_line(dossiers) == "Entities held in memory: M1049 (Antivirus/Antimalware)."
+    assert dossier_index_line({}) == ""
+
+
+def test_entity_ids_in_detects_mixed_ids():
+    ids = entity_ids_in("compare M1049 with T1566.003 and CAPEC 98")
+    assert {"M1049", "T1566.003", "CAPEC-98"} <= ids
