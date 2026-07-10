@@ -61,9 +61,9 @@ export function Composer() {
   return (
     <div className="flex-[0_0_auto] px-[22px] pb-[18px] pt-3">
       <div
-        // Match the conversation column width (centered ~60% on large screens)
+        // Match the conversation column width (centered ~75% on large screens)
         // so the composer lines up under the messages.
-        className="mx-auto w-full rounded-[13px] bg-surface px-3.5 py-3 lg:w-[60%]"
+        className="mx-auto w-full rounded-[13px] bg-surface px-3.5 py-3 lg:w-[75%]"
         style={{ boxShadow: SHADOW.composer }}
       >
         <textarea

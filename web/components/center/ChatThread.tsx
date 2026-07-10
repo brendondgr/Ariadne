@@ -137,9 +137,9 @@ export function ChatThread({
     <div className="flex min-h-0 min-w-0 flex-1 flex-col">
       <ThreadHeader title={title} run={activeRun} runs={runs} />
       <div ref={scrollRef} className="flex flex-1 flex-col overflow-y-auto px-[14px] pb-2 pt-6">
-        {/* Constrain the conversation to a centered ~60% column on large screens
+        {/* Constrain the conversation to a centered ~75% column on large screens
          *  (full width on small ones) so messages don't span the whole pane. */}
-        <div className="mx-auto flex w-full flex-1 flex-col gap-3 lg:w-[60%]">
+        <div className="mx-auto flex w-full flex-1 flex-col gap-3 lg:w-[75%]">
           {runs.length === 0 ? (
             <EmptyThread />
           ) : (
