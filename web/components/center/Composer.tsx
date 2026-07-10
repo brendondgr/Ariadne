@@ -21,6 +21,22 @@ export function Composer() {
   const [drafter, setDrafter] = useState<Drafter>("llm");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // Grow the textarea with its content, capped at 6 lines — beyond that it
+  // scrolls internally rather than pushing the toolbar down. Runs whenever the
+  // question changes (typing, imperative fill, and clear-on-send all covered).
+  const MAX_LINES = 6;
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    const style = getComputedStyle(el);
+    const lineHeight = parseFloat(style.lineHeight) || 20;
+    const pad = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+    const maxHeight = lineHeight * MAX_LINES + pad;
+    el.style.height = `${Math.min(el.scrollHeight, maxHeight)}px`;
+    el.style.overflowY = el.scrollHeight > maxHeight ? "auto" : "hidden";
+  }, [question]);
+
   // Register the imperative fill handler a clicked reference (elsewhere in the
   // answer) invokes via `setComposerDraft`. It fills and focuses but never
   // auto-sends — the analyst reviews/edits (and can adjust mode/drafter) first.
@@ -74,7 +90,7 @@ export function Composer() {
           onKeyDown={onKeyDown}
           aria-label="Ask an analyst question"
           placeholder="Ask an analyst question about the federated knowledge graph…"
-          className="mb-3 w-full resize-none border-0 bg-transparent px-0.5 pt-0.5 text-sm text-text outline-none placeholder:text-text-faint"
+          className="mb-3 w-full resize-none border-0 bg-transparent px-0.5 pt-0.5 text-sm text-text outline-none focus:outline-none focus-visible:outline-none placeholder:text-text-faint"
         />
         <div className="flex items-center gap-2.5">
           {/* mode toggle */}
