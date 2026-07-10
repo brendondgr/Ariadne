@@ -63,8 +63,11 @@ python app.py                 # web workbench: FastAPI api/ + Next.js web/ (--pr
 cd web && npm run dev         # web app alone (expects the API on :16501)
 
 # Golden-eval harness (decoupled run -> judge -> report over the golden set)
-uv run main.py --golden-eval --stage all --set all --llm   # local-AI correctness grade + report
+uv run main.py --golden-eval --agentic --llm                # THE single command: run every question
+                                                            # through the real LLM agentic pipeline
+                                                            # (16-way concurrent), then LLM-grade each
 uv run main.py --golden-eval --stage run --set attack --limit 3   # one stage at a time (artifacts persist)
+uv run main.py --golden-eval --stage judge --llm --concurrency 16 # re-grade persisted answers only
 
 # Build (required after webfront changes)
 cd web && npm run build

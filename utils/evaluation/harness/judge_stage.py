@@ -38,10 +38,12 @@ class JudgeAgent:
         use_llm: bool = False,
         config: EvalConfig | None = None,
         sample_size: int | None = None,
+        concurrency: int = 1,
     ) -> None:
         self._use_llm = use_llm
         self._config = config or EvalConfig.from_env()
         self._sample_size = sample_size
+        self._concurrency = max(1, concurrency)
 
     @classmethod
     def from_args(cls, args) -> "JudgeAgent":
@@ -53,6 +55,7 @@ class JudgeAgent:
             use_llm=use_llm,
             config=config,
             sample_size=getattr(args, "judge_sample", None),
+            concurrency=getattr(args, "concurrency", 1) or 1,
         )
 
     def run(self, records: list[AnswerRecord]) -> list[CorrectnessVerdict]:
@@ -61,6 +64,7 @@ class JudgeAgent:
             config=self._config,
             use_llm=self._use_llm,
             sample_size=self._sample_size,
+            concurrency=self._concurrency,
         )
 
     def run_files(self, answers_path: str, judgments_path: str) -> int:
@@ -84,6 +88,7 @@ class JudgeAgent:
             f"{'ON' if self._use_llm else 'OFF (deterministic backstop)'}"
             + (
                 f", model={self._config.llm_model} @ {self._config.llm_base_url}"
+                f", concurrency={self._concurrency}"
                 if self._use_llm
                 else ""
             ),
