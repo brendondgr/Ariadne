@@ -45,6 +45,10 @@ export function Composer() {
   const send = () => {
     if (!canSend) return;
     submit({ question: question.trim(), mode, drafter });
+    // Clear the box immediately so the analyst can compose the next question
+    // while this turn streams; refocus keeps the caret ready to type.
+    setQuestion("");
+    textareaRef.current?.focus();
   };
 
   const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -57,7 +61,9 @@ export function Composer() {
   return (
     <div className="flex-[0_0_auto] px-[22px] pb-[18px] pt-3">
       <div
-        className="rounded-[13px] bg-surface px-3.5 py-3"
+        // Match the conversation column width (centered ~60% on large screens)
+        // so the composer lines up under the messages.
+        className="mx-auto w-full rounded-[13px] bg-surface px-3.5 py-3 lg:w-[60%]"
         style={{ boxShadow: SHADOW.composer }}
       >
         <textarea
@@ -66,10 +72,9 @@ export function Composer() {
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           onKeyDown={onKeyDown}
-          disabled={replaying}
           aria-label="Ask an analyst question"
           placeholder="Ask an analyst question about the federated knowledge graph…"
-          className="mb-3 w-full resize-none border-0 bg-transparent px-0.5 pt-0.5 text-sm text-text outline-none placeholder:text-text-faint disabled:opacity-60"
+          className="mb-3 w-full resize-none border-0 bg-transparent px-0.5 pt-0.5 text-sm text-text outline-none placeholder:text-text-faint"
         />
         <div className="flex items-center gap-2.5">
           {/* mode toggle */}
