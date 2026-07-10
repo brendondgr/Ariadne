@@ -136,20 +136,24 @@ export function ChatThread({
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col">
       <ThreadHeader title={title} run={activeRun} runs={runs} />
-      <div ref={scrollRef} className="flex flex-1 flex-col gap-3 overflow-y-auto px-[14px] pb-2 pt-6">
-        {runs.length === 0 ? (
-          <EmptyThread />
-        ) : (
-          runs.map((r) => (
-            <TurnBlock
-              key={r.id}
-              run={r}
-              active={r.id === activeRunId}
-              live={r.id === streamingRunId}
-              onSelect={() => onSelectRun(r.id)}
-            />
-          ))
-        )}
+      <div ref={scrollRef} className="flex flex-1 flex-col overflow-y-auto px-[14px] pb-2 pt-6">
+        {/* Constrain the conversation to a centered ~60% column on large screens
+         *  (full width on small ones) so messages don't span the whole pane. */}
+        <div className="mx-auto flex w-full flex-1 flex-col gap-3 lg:w-[60%]">
+          {runs.length === 0 ? (
+            <EmptyThread />
+          ) : (
+            runs.map((r) => (
+              <TurnBlock
+                key={r.id}
+                run={r}
+                active={r.id === activeRunId}
+                live={r.id === streamingRunId}
+                onSelect={() => onSelectRun(r.id)}
+              />
+            ))
+          )}
+        </div>
       </div>
       <Composer />
     </div>

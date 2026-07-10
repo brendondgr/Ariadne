@@ -54,6 +54,8 @@ export function ThreadHeader({ title, run, runs }: ThreadHeaderProps) {
       className="flex flex-[0_0_auto] items-center gap-2.5 px-[22px] py-[13px]"
       style={{ boxShadow: "rgba(235,230,220,0.08) 0 1px 0 0" }}
     >
+      {/* Align the title strip with the centered ~60% conversation column. */}
+      <div className="mx-auto flex w-full items-center gap-2.5 lg:w-[60%]">
       <span className="truncate text-sm font-semibold">{title}</span>
       <Pill accent="teal" className="shrink-0 px-2 py-0.5 text-[9.5px] tracking-[0.06em]">
         {modeLabel} · {run.drafter}
@@ -104,6 +106,7 @@ export function ThreadHeader({ title, run, runs }: ThreadHeaderProps) {
             </div>
           </>
         )}
+      </div>
       </div>
     </div>
   );
