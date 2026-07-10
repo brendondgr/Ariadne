@@ -7,7 +7,7 @@ import { SHADOW } from "@/lib/ui";
 import { fadeSlideUp } from "@/lib/motion";
 import { Pill } from "@/components/ui/Pill";
 import { ChevronRight } from "@/components/ui/icons";
-import { RefText } from "./RefText";
+import { Markdown } from "./Markdown";
 
 /** Small route indicator: "Answered from memory" (quick path, no graph
  *  extraction ran) vs "Queried the graphs" (the federated pipeline ran). */
@@ -95,9 +95,9 @@ export function ReplyMessage({
         {run.validation && <ValidationIndicator validation={run.validation} />}
       </div>
 
-      <p className="m-0 text-sm leading-[1.62] text-text-soft">
-        <RefText text={reply.text} />
-      </p>
+      <div className="text-sm leading-[1.62] text-text-soft">
+        <Markdown text={reply.text} />
+      </div>
 
       <div
         className="mt-3 flex items-center gap-3.5 pt-3"
