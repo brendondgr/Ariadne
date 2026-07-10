@@ -90,7 +90,7 @@ export function Composer() {
           onKeyDown={onKeyDown}
           aria-label="Ask an analyst question"
           placeholder="Ask an analyst question about the federated knowledge graph…"
-          className="mb-3 w-full resize-none border-0 bg-transparent px-0.5 pt-0.5 text-sm text-text outline-none focus:outline-none focus-visible:outline-none placeholder:text-text-faint"
+          className="composer-input mb-3 w-full resize-none border-0 bg-transparent px-0.5 pt-0.5 text-sm text-text outline-none placeholder:text-text-faint"
         />
         <div className="flex items-center gap-2.5">
           {/* mode toggle */}

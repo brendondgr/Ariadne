@@ -135,6 +135,13 @@ body {
   outline-offset: 2px;
 }
 
+/* The composer textarea opts out of the global focus ring — it is a large,
+   obvious target and the ring reads as visual noise there. Unlayered so it
+   overrides the (also unlayered) :focus-visible rule above. */
+.composer-input:focus-visible {
+  outline: none;
+}
+
 /* Honor reduced-motion globally for the keyframe helpers */
 @media (prefers-reduced-motion: reduce) {
   *,
