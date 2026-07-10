@@ -325,17 +325,41 @@ def judge_answers(
     config: EvalConfig | None = None,
     use_llm: bool = False,
     sample_size: int | None = None,
+    concurrency: int = 1,
 ) -> list[CorrectnessVerdict]:
-    """Grade a batch of answers; only the first ``sample_size`` get the LLM."""
+    """Grade a batch of answers, concurrently when ``concurrency > 1``.
+
+    When ``use_llm`` is set, **every** answer is LLM-graded by default (the
+    harness grades the whole set); pass ``sample_size`` to cap the LLM to the
+    first N and leave the rest to the deterministic backstop. Verdicts are
+    returned in input order regardless of completion order.
+    """
     config = config or EvalConfig.from_env()
     grader = select_grader(config, use_llm=use_llm)
     floor = DeterministicCorrectness()
-    cap = sample_size if sample_size is not None else config.sample_size
+    if not use_llm:
+        cap = 0
+    elif sample_size is None:
+        cap = len(records)  # grade the whole set with the LLM by default
+    else:
+        cap = sample_size
 
-    verdicts: list[CorrectnessVerdict] = []
-    for index, record in enumerate(records):
-        if use_llm and index < cap:
-            verdicts.append(grader.judge(record))
-        else:
-            verdicts.append(floor.judge(record))
-    return verdicts
+    def judge_one(index: int, record: AnswerRecord) -> CorrectnessVerdict:
+        if index < cap:
+            return grader.judge(record)
+        return floor.judge(record)
+
+    workers = max(1, concurrency)
+    if workers == 1 or not use_llm:
+        return [judge_one(i, r) for i, r in enumerate(records)]
+
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+
+    results: list[CorrectnessVerdict | None] = [None] * len(records)
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        futures = {
+            pool.submit(judge_one, i, r): i for i, r in enumerate(records)
+        }
+        for future in as_completed(futures):
+            results[futures[future]] = future.result()
+    return [v for v in results if v is not None]

@@ -135,3 +135,45 @@ def test_judge_answers_deterministic_batch():
     verdicts = judge_answers([_record(), _record()], use_llm=False)
     assert len(verdicts) == 2
     assert all(v.source == "deterministic" for v in verdicts)
+
+
+def test_judge_answers_concurrent_preserves_order(monkeypatch):
+    import utils.evaluation.harness.correctness_judge as cj
+
+    records = [_record(question_id=f"Q-{i:02d}") for i in range(25)]
+
+    # Force the "LLM" grader to a deterministic stub that echoes the id so we can
+    # assert ordering after concurrent completion.
+    class _StubGrader:
+        name = "llm"
+
+        def judge(self, record):
+            from utils.evaluation.harness.contracts import CorrectnessVerdict
+
+            return CorrectnessVerdict(
+                question_id=record.question_id, source="llm", correctness=1.0, label="correct"
+            )
+
+    monkeypatch.setattr(cj, "select_grader", lambda config, use_llm: _StubGrader())
+    verdicts = judge_answers(records, use_llm=True, concurrency=8)
+    assert [v.question_id for v in verdicts] == [r.question_id for r in records]
+    # sample_size default => the whole set is LLM-graded
+    assert all(v.source == "llm" for v in verdicts)
+
+
+def test_judge_answers_sample_cap_limits_llm(monkeypatch):
+    import utils.evaluation.harness.correctness_judge as cj
+
+    class _StubGrader:
+        name = "llm"
+
+        def judge(self, record):
+            from utils.evaluation.harness.contracts import CorrectnessVerdict
+
+            return CorrectnessVerdict(question_id=record.question_id, source="llm")
+
+    monkeypatch.setattr(cj, "select_grader", lambda config, use_llm: _StubGrader())
+    records = [_record(question_id=f"Q-{i}") for i in range(5)]
+    verdicts = judge_answers(records, use_llm=True, sample_size=2, concurrency=4)
+    llm = sum(1 for v in verdicts if v.source == "llm")
+    assert llm == 2  # only the first 2 got the LLM; the rest deterministic

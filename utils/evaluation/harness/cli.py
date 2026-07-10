@@ -59,17 +59,26 @@ def do_run(args, paths: dict[str, str]) -> int:
         limit=args.limit,
         tiers=set(args.tier) if args.tier else None,
     )
+    if args.agentic:
+        mode = "agentic (real LLM pipeline: planner+specialists+synthesis)"
+    elif args.llm_pipeline:
+        mode = "gold path, LLM composer"
+    else:
+        mode = "gold path, deterministic"
     print(
         f"[run] {len(entries)} golden entries — live: "
         f"{'ON' if live else 'OFF (hermetic; nothing scored)'}, "
-        f"pipeline LLM: {'ON' if args.llm_pipeline else 'OFF (deterministic)'}",
+        f"pipeline: {mode}, concurrency={args.concurrency}",
         file=sys.stderr,
     )
     if not live:
         n = write_jsonl(paths["answers"], [])
     else:
         runner = RunnerAgent(
-            use_llm_pipeline=args.llm_pipeline, data_dir=args.data_dir
+            agentic=args.agentic,
+            use_llm_pipeline=args.llm_pipeline,
+            concurrency=args.concurrency,
+            data_dir=args.data_dir,
         )
         records = runner.run(entries)
         n = write_jsonl(paths["answers"], records)
@@ -113,7 +122,16 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--data-dir", default=None)
     parser.add_argument(
+        "--concurrency", type=int, default=16,
+        help="max questions/answers processed in parallel (default 16)",
+    )
+    parser.add_argument(
         "--no-live", action="store_true", help="skip live running (hermetic)"
+    )
+    parser.add_argument(
+        "--agentic", action="store_true",
+        help="run each RAW question through the real LLM agentic pipeline "
+             "(planner+specialists+synthesis via the local LLM), as the workbench does",
     )
     parser.add_argument(
         "--llm", dest="llm", action="store_true",
@@ -121,7 +139,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--llm-pipeline", action="store_true",
-        help="also enable LLM drafting inside the pipeline while running answers",
+        help="gold path only: enable the LLM composer while replaying pre-authored tasks",
     )
     parser.add_argument(
         "--judge-sample", type=int, default=None,

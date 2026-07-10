@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Runner-agent tests (hermetic: drivers monkeypatched, no DB)."""
+"""Runner-agent tests (hermetic: drivers/pipeline monkeypatched, no DB/LLM)."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ from utils.synthesis.contracts import (
 )
 
 
-def _fake_answer() -> SynthesizedAnswer:
+def _fake_answer(narrative="T1047 is mitigated by M1018.") -> SynthesizedAnswer:
     claim = Claim(
         text="T1047 is mitigated by M1018",
         citations=(Citation(source="attack", primary_id="T1047"),),
@@ -26,24 +26,31 @@ def _fake_answer() -> SynthesizedAnswer:
     # answer needs a verification report marking the claim supported.
     return SynthesizedAnswer(
         request="What mitigations for T1047?",
-        narrative="T1047 is mitigated by M1018.",
+        narrative=narrative,
         claims=[claim],
         verification=VerificationReport(verdicts=[ClaimVerdict(verdict="supported")]),
     )
 
 
-def _entry() -> GoldenEntry:
+def _entry(qid="A-MIT-01") -> GoldenEntry:
     return GoldenEntry(
-        question_id="A-MIT-01",
+        question_id=qid,
         set_name="attack",
         tier="easy",
         kind="single",
         source="attack",
         question="What mitigations for T1047?",
-        entry={"id": "A-MIT-01", "task": {"source": "attack"}},
+        entry={"id": qid, "task": {"source": "attack"}},
         gold_expected_ids=frozenset({"M1018", "M1026"}),
         gold_kind="ids",
     )
+
+
+class _StubRouter:
+    cards = {}
+
+    def _specialist_for(self, source):
+        return object()
 
 
 def test_answer_to_record_extracts_produced_ids():
@@ -54,51 +61,80 @@ def test_answer_to_record_extracts_produced_ids():
     assert record.timings["wall_s"] == 0.5
 
 
-def test_runner_drives_single_and_records(monkeypatch, tmp_path):
+def test_gold_runner_drives_single_and_records(monkeypatch):
     from utils.evaluation import score_e2e
 
-    # Fake the whole live layer: build() succeeds with a stub router whose
-    # _specialist_for returns a sentinel, and run_single returns our answer.
-    class _StubRouter:
-        cards = {}
-
-        def _specialist_for(self, source):
-            return object()
-
-    agent = RunnerAgent()
-    agent._routers = {None: _StubRouter()}
-    agent._synth_config = object()
-
+    # Patch the thread-local gold context builder so every worker thread gets a
+    # stub router without touching a database.
+    monkeypatch.setattr(
+        RunnerAgent, "_build_gold_context",
+        lambda self: ({None: _StubRouter()}, object()),
+    )
     monkeypatch.setattr(
         score_e2e, "run_single", lambda entry, spec, cfg: (None, _fake_answer())
     )
 
-    records = agent.run([_entry()])
+    records = RunnerAgent(concurrency=2).run([_entry()])
     assert len(records) == 1
     assert records[0].error is None
     assert records[0].produced_ids == ["T1047", "M1018"]
 
 
-def test_runner_captures_per_entry_failure(monkeypatch):
+def test_gold_runner_captures_per_entry_failure(monkeypatch):
     from utils.evaluation import score_e2e
 
-    class _StubRouter:
-        cards = {}
-
-        def _specialist_for(self, source):
-            return object()
-
-    agent = RunnerAgent()
-    agent._routers = {None: _StubRouter()}
-    agent._synth_config = object()
+    monkeypatch.setattr(
+        RunnerAgent, "_build_gold_context",
+        lambda self: ({None: _StubRouter()}, object()),
+    )
 
     def _boom(*a, **k):
         raise RuntimeError("neo4j down")
 
     monkeypatch.setattr(score_e2e, "run_single", _boom)
-    records = agent.run([_entry()])
+    records = RunnerAgent(concurrency=1).run([_entry()])
     assert records[0].error is not None
     assert "neo4j down" in records[0].error
+
+
+def test_agentic_runner_drives_iter_pipeline(monkeypatch):
+    import utils.orchestration.main as orch
+
+    def _fake_iter(question, **kwargs):
+        yield ("status", {"phase": "planning"})
+        yield ("evidence", {"evidence": object()})
+        yield ("answer", {"synthesized": _fake_answer()})
+
+    monkeypatch.setattr(orch, "iter_pipeline", _fake_iter)
+    records = RunnerAgent(agentic=True, concurrency=4).run([_entry()])
+    assert len(records) == 1
+    assert records[0].error is None
+    assert records[0].produced_ids == ["T1047", "M1018"]
+
+
+def test_agentic_runner_missing_answer_is_error(monkeypatch):
+    import utils.orchestration.main as orch
+
+    def _no_answer(question, **kwargs):
+        yield ("status", {"phase": "planning"})
+
+    monkeypatch.setattr(orch, "iter_pipeline", _no_answer)
+    records = RunnerAgent(agentic=True).run([_entry()])
+    assert records[0].error is not None
+    assert "no synthesized answer" in records[0].error
+
+
+def test_concurrent_run_preserves_golden_order(monkeypatch):
+    import utils.orchestration.main as orch
+
+    def _iter_by_qid(question, **kwargs):
+        # narrative encodes nothing extra; identity check is on question_id order
+        yield ("answer", {"synthesized": _fake_answer()})
+
+    monkeypatch.setattr(orch, "iter_pipeline", _iter_by_qid)
+    entries = [_entry(f"A-{i:02d}") for i in range(20)]
+    records = RunnerAgent(agentic=True, concurrency=8).run(entries)
+    assert [r.question_id for r in records] == [e.question_id for e in entries]
 
 
 def test_run_stage_cli_hermetic_writes_empty(tmp_path):
