@@ -50,6 +50,36 @@ BANK_FILES = {"attack": "attack_questions.json", "capec": "capec_questions.json"
 MAX_PER_TEMPLATE = 3          # cap near-identical cases per builder template
 HOLDOUT_EVERY = 4             # every Nth kept case is frozen into the holdout
 
+# Independent intent ground truth: map each specialist builder-template to the
+# analyst intent its canonical question expresses. Derived from the template
+# taxonomy (NOT the planner's classifier), so scoring the classified intent
+# against it is a real measurement, not a tautology. A template with no entry
+# is left unscored (expected_intent = None) rather than guessed.
+TEMPLATE_INTENT = {
+    # remediation — mitigations / defensive controls
+    "technique_mitigations": "remediation",
+    "tactic_technique_mitigations": "remediation",
+    # lookup — a single entity by id
+    "node_lookup": "lookup",
+    "capec_lookup": "lookup",
+    # enumeration — "which/list/scan X [rel] Y" -> a set
+    "label_scan": "enumeration",
+    "capec_scan": "enumeration",
+    "group_techniques": "enumeration",
+    "tactic_techniques": "enumeration",
+    "campaign_techniques": "enumeration",
+    "software_techniques": "enumeration",
+    "campaign_attribution": "enumeration",
+    "capec_neighbors": "enumeration",
+    "technique_detection": "enumeration",
+    "datacomponent_analytics": "enumeration",
+    # traversal — explicit hierarchy / structure
+    "subtechnique_parent": "traversal",
+    "capec_hierarchy_chain": "traversal",
+    # correlation — cross-source mapping
+    "capec_maps_to": "correlation",
+}
+
 
 def _load_bank(source: str) -> list[dict]:
     data = json.loads((BANKS_DIR / BANK_FILES[source]).read_text(encoding="utf-8"))
@@ -64,6 +94,7 @@ def _candidate(source: str, q: dict) -> ExpectedCase:
         live=["attack", "capec"],
         expected_sources=[source],
         expected_entities={source: list(q["task"]["entities"])},
+        expected_intent=TEMPLATE_INTENT.get(str(q.get("expected_template", ""))),
         origin="generated",
         tier=str(q.get("tier", "")),
     )
@@ -117,6 +148,7 @@ def generate() -> tuple[list[dict], list[dict]]:
                 "expects_join": False,
                 "expects_unsupported": False,
                 "expects_partial": False,
+                "expected_intent": case.expected_intent,
                 "origin": "generated",
                 "tier": case.tier,
                 "split": "dev",

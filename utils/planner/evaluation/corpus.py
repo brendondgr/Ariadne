@@ -40,6 +40,11 @@ class ExpectedCase:
     expects_join: bool = False
     expects_unsupported: bool = False
     expects_partial: bool = False
+    # The intent the planner should classify (planner step one). Independent
+    # ground truth: curated anchors set it by hand; generated cases derive it
+    # from the specialist question's template (never from the classifier itself,
+    # which would make the metric circular). ``None`` means "not scored".
+    expected_intent: str | None = None
     # Optional decomposition gold. When ``None`` the scorer defaults to one
     # sub-question per expected source; set it when a source needs more than one.
     expected_sub_question_count: int | None = None
@@ -64,6 +69,7 @@ class ExpectedCase:
             expects_join=bool(data.get("expects_join", False)),
             expects_unsupported=bool(data.get("expects_unsupported", False)),
             expects_partial=bool(data.get("expects_partial", False)),
+            expected_intent=data.get("expected_intent"),
             expected_sub_question_count=None if raw_count is None else int(raw_count),
             split=str(data.get("split", "dev")),
             origin=str(data.get("origin", "curated")),

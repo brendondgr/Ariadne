@@ -242,6 +242,31 @@ def test_generated_corpus_matches_committed() -> None:
         assert case == committed[name], f"{name} regenerated differently"
 
 
+@requires_data_cards
+def test_intent_is_scored_and_accurate_corpuswide() -> None:
+    # Planner step one is measured: intent accuracy is reported, the classified
+    # intent matches the independent template/curated ground truth on the vast
+    # majority of cases, and every curated anchor that declares an intent is
+    # classified correctly.
+    scores = [s for _c, _p, s in run_corpus(DATA_CARDS)]
+    agg = aggregate(scores)
+    assert agg["intent_scored_cases"] >= 40
+    assert agg["intent_accuracy_rate"] is not None and agg["intent_accuracy_rate"] >= 0.9
+    curated = [s for s in scores if s.origin == "curated" and s.expected_intent]
+    assert curated and all(s.intent_correct for s in curated), [
+        s.to_dict() for s in curated if not s.intent_correct
+    ]
+
+
+def test_intent_accuracy_none_when_no_cases_scored() -> None:
+    # A corpus with no expected_intent reports None, not a divide-by-zero.
+    case = ExpectedCase(name="x", request="q", live=["capec"], expected_sources=["capec"])
+    plan = Plan(request="q")
+    score = score_plan(plan, case, CARDS, make_live_view())
+    assert score.intent_correct  # unscored counts as correct (never drags pass)
+    assert aggregate([score])["intent_accuracy_rate"] is None
+
+
 def test_run_case_returns_plan_and_score() -> None:
     case = load_corpus("dev")[0]
     plan, score = run_case(case, CARDS)

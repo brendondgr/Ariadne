@@ -49,6 +49,13 @@ class CaseScore:
     join_correct: bool
     unsupported_correct: bool
     partial_correct: bool
+    # Intent classification (planner step one). ``expected_intent`` is the
+    # independent ground truth (empty when the case is not intent-scored);
+    # ``actual_intent`` is what the planner classified; ``intent_correct`` is
+    # their match (True when the case is not scored, so it never drags ``passed``).
+    expected_intent: str = ""
+    actual_intent: str = ""
+    intent_correct: bool = True
     # Sub-question-quality decomposition: does the plan break the request into
     # the right number of sub-questions, each routed to the right source, with
     # the cross-source dependency declared when the question is multi-hop?
@@ -91,6 +98,9 @@ class CaseScore:
             "join_correct": self.join_correct,
             "unsupported_correct": self.unsupported_correct,
             "partial_correct": self.partial_correct,
+            "expected_intent": self.expected_intent,
+            "actual_intent": self.actual_intent,
+            "intent_correct": self.intent_correct,
             "sub_question_count": self.sub_question_count,
             "expected_sub_question_count": self.expected_sub_question_count,
             "count_correct": self.count_correct,
@@ -137,6 +147,12 @@ def score_plan(
     unsupported_correct = bool(plan.unsupported) == case.expects_unsupported
     partial_correct = plan.partial == case.expects_partial
 
+    # Intent accuracy (planner step one). Scored only when the case declares an
+    # expected intent; unscored cases count as correct so they never affect pass.
+    expected_intent = case.expected_intent or ""
+    actual_intent = plan.intent.label if plan.intent is not None else ""
+    intent_correct = (actual_intent == expected_intent) if expected_intent else True
+
     # Sub-question-quality decomposition. The expected count defaults to one
     # sub-question per expected source (a single-source question decomposes to
     # one, the federated question to two); a case may override it explicitly.
@@ -169,6 +185,9 @@ def score_plan(
         join_correct=join_correct,
         unsupported_correct=unsupported_correct,
         partial_correct=partial_correct,
+        expected_intent=expected_intent,
+        actual_intent=actual_intent,
+        intent_correct=intent_correct,
         sub_question_count=sub_question_count,
         expected_sub_question_count=expected_count,
         count_correct=count_correct,
@@ -185,6 +204,12 @@ def aggregate(scores: list[CaseScore]) -> dict:
     if not scores:
         return {"cases": 0}
     n = len(scores)
+    intent_scored = [s for s in scores if s.expected_intent]
+    intent_accuracy_rate = (
+        round(sum(1 for s in intent_scored if s.intent_correct) / len(intent_scored), 3)
+        if intent_scored
+        else None
+    )
     return {
         "cases": n,
         "passed": sum(1 for s in scores if s.passed),
@@ -192,6 +217,8 @@ def aggregate(scores: list[CaseScore]) -> dict:
         "mean_source_precision": round(sum(s.source_precision for s in scores) / n, 3),
         "mean_source_recall": round(sum(s.source_recall for s in scores) / n, 3),
         "mean_entity_recall": round(sum(s.entity_recall for s in scores) / n, 3),
+        "intent_scored_cases": len(intent_scored),
+        "intent_accuracy_rate": intent_accuracy_rate,
         "mean_sub_question_quality": round(
             sum(s.sub_question_quality for s in scores) / n, 3
         ),

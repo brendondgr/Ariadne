@@ -52,8 +52,8 @@ class Intent:
         REMEDIATION,
         TRAVERSAL,
         ENUMERATION,
-        DEFINITIONAL,
         LOOKUP,
+        DEFINITIONAL,
         UNSUPPORTED,
     )
 
@@ -131,13 +131,15 @@ _REMEDIATION_RE = re.compile(
     re.IGNORECASE,
 )
 _TRAVERSAL_RE = re.compile(
+    # Explicit structural / hierarchy words only. Membership phrasings
+    # ("belong to tactic", "part of category") read as enumeration ("give me
+    # the set"), so they are deliberately NOT traversal cues.
     r"\b(?:parents?|child(?:ren)?|sub-?techniques?|hierarch\w*|neighbou?rs?|"
-    r"ancestor\w*|descend\w*|chains?|belongs?\s+to|part\s+of|"
-    r"related\s+patterns?)\b",
+    r"ancestor\w*|descend\w*|chains?|related\s+patterns?)\b",
     re.IGNORECASE,
 )
 _ENUMERATION_RE = re.compile(
-    r"\b(?:list|all|every|each|which|enumerate|how\s+many|"
+    r"\b(?:list|all|every|each|which|enumerate|how\s+many|scan|"
     r"show\s+(?:me\s+)?all)\b",
     re.IGNORECASE,
 )
@@ -210,6 +212,15 @@ class DeterministicIntentClassifier:
                 "asks to list / filter a set of entities", cues,
             )
 
+        # A concrete id is a single-entity lookup — checked before the
+        # definitional heuristic so "what is T1021.001?" reads as a by-id lookup,
+        # while a bare "what is Phishing?" (no id) stays definitional-by-name.
+        if ids := _matches(_ID_RE, text):
+            return IntentClassification(
+                Intent.LOOKUP, 0.8,
+                "names a specific entity by id", ids,
+            )
+
         # Definitional reuses the specialists' committed heuristic (imported
         # lazily: specialists.resolve pulls in planner.join_keys at import time).
         from utils.specialists.resolve import is_definitional_intent
@@ -218,12 +229,6 @@ class DeterministicIntentClassifier:
             return IntentClassification(
                 Intent.DEFINITIONAL, 0.85,
                 "names an entity to define/describe rather than an id", ["what is / define"],
-            )
-
-        if ids := _matches(_ID_RE, text):
-            return IntentClassification(
-                Intent.LOOKUP, 0.8,
-                "names a specific entity by id", ids,
             )
 
         # No distinctive cue. If the request shares vocabulary with a live
