@@ -10,7 +10,9 @@ Wires the full analyst-question workflow as one ``StateGraph``:
 and streams the *exact* event vocabulary the CLI/SSE layers have always
 consumed — ``status``, ``probe``, ``plan``, ``skipped``, ``specialist-start``,
 ``specialist``, ``evidence``, ``answer``, ``done`` — through LangGraph's
-custom stream writer. ``iter_pipeline`` (re-exported by
+custom stream writer. The plan node emits two ``status`` phases in order —
+``classifying`` (planner step one) then ``planning`` — and the classified
+intent rides the ``plan`` event as ``plan.intent``. ``iter_pipeline`` (re-exported by
 ``utils.specialists.pipeline``) is the thin adapter draining
 ``graph.stream(stream_mode="custom", subgraphs=True)`` into the same
 ``(event, payload)`` tuples with the same raw-object payloads as before.
@@ -123,6 +125,9 @@ def build_pipeline_graph(
 
     def plan_node(state: PipelineState) -> dict[str, Any]:
         writer = get_stream_writer()
+        # Planner step one is a visible step: classify the analyst intent, then
+        # draft/route. The intent result rides the `plan` event (plan.intent).
+        writer(("status", {"phase": "classifying", "message": "Classifying analyst intent"}))
         writer(("status", {"phase": "planning", "message": "Planning and routing the question"}))
         run = state["run"]
         t0 = time.monotonic()

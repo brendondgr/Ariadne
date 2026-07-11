@@ -70,6 +70,7 @@ def _events(**kwargs):
 QUERY_MODE_GOLDEN = [
     "status",            # probing
     "probe",
+    "status",            # classifying (planner step one)
     "status",            # planning
     "plan",
     "status",            # querying
@@ -103,14 +104,25 @@ def test_query_mode_event_sequence_is_golden():
             assert set(payload) == PAYLOAD_KEYS[event], f"{event} payload keys drifted"
     # status phases in order, with the querying count present.
     statuses = [p for e, p in events if e == "status"]
-    assert [s["phase"] for s in statuses] == ["probing", "planning", "querying", "answering"]
-    assert statuses[2]["count"] == 2
+    assert [s["phase"] for s in statuses] == [
+        "probing", "classifying", "planning", "querying", "answering"]
+    assert statuses[3]["count"] == 2
+
+
+def test_plan_event_carries_classified_intent():
+    # Planner step one is visible on the wire: a `classifying` status phase, and
+    # the classified intent (label + why) rides the `plan` event for the UI.
+    events = _events()
+    phases = [p["phase"] for e, p in events if e == "status"]
+    assert "classifying" in phases
+    plan = dict(events)["plan"]["plan"]
+    assert plan.intent is not None and plan.intent.label == "correlation"
 
 
 def test_plan_mode_event_sequence_is_golden():
     events = _events(mode="plan")
     assert [e for e, _ in events] == [
-        "status", "probe", "status", "plan", "status", "answer", "done"]
+        "status", "probe", "status", "status", "plan", "status", "answer", "done"]
     answer = dict(events)["answer"]
     assert answer["evidence"] is None and answer["synthesized"] is None
     done = dict(events)["done"]
@@ -139,7 +151,7 @@ def test_dependency_skip_still_emits_start_then_result():
 def test_timeout_skips_emit_skipped_events():
     events = _events(timeout_s=-1.0)
     names = [e for e, _ in events]
-    assert names == ["status", "probe", "status", "plan", "status",
+    assert names == ["status", "probe", "status", "status", "plan", "status",
                      "skipped", "skipped", "evidence", "status", "assess", "answer", "done"]
     for _, payload in [ev for ev in events if ev[0] == "skipped"]:
         assert set(payload) == {"sub_question", "source", "reason"}

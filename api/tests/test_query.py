@@ -129,10 +129,11 @@ def test_query_mode_event_order_and_shapes() -> None:
     )
     types = [e for e, _ in events]
 
-    # Ordered sequence the run machine relies on. The iterative-retrieval loop
-    # emits one sufficiency verdict (assess) before the single-pass answer.
+    # Ordered sequence the run machine relies on. The plan node emits two status
+    # phases (classifying, planning); the iterative-retrieval loop emits one
+    # sufficiency verdict (assess) before the single-pass answer.
     assert types == [
-        "status", "probe", "status", "plan", "status",
+        "status", "probe", "status", "status", "plan", "status",
         "specialist-start", "specialist", "specialist-start", "specialist",
         "evidence", "status", "assess", "answer", "done",
     ]
@@ -239,7 +240,7 @@ def test_plan_mode_skips_specialists() -> None:
     agent = _StubAgent({"attack": object(), "capec": object()}, _live_view(), _two_source_plan())
     events = _collect(query_service.stream_query_events("q", mode="plan", agent=agent))
     types = [e for e, _ in events]
-    assert types == ["status", "probe", "status", "plan", "status", "answer", "done"]
+    assert types == ["status", "probe", "status", "status", "plan", "status", "answer", "done"]
     assert "specialist" not in types and "evidence" not in types
     assert "Routed to" in dict(events)["answer"]["headline"]
 
