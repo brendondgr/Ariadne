@@ -30,6 +30,40 @@ import { buildEntityDetails } from "@/lib/synthesisGraph";
 import { SectionTabs, type TabDef } from "./SectionTabs";
 import { RefText } from "./RefText";
 
+/** The latest pipeline phase from the captured status events, or null. */
+function latestPhase(events: WorkbenchRun["events"]): string | null {
+  for (let i = events.length - 1; i >= 0; i--) {
+    if (events[i].type === "status") return (events[i].data as { phase?: string }).phase ?? null;
+  }
+  return null;
+}
+
+/** The "answer is on its way" placeholder shown where the answer will appear
+ *  while synthesis composes it — a pulsing dot + trailing dots. */
+function ComposingLoader() {
+  return (
+    <div className="flex items-center gap-2.5">
+      <motion.span
+        aria-hidden
+        className="h-2 w-2 rounded-full bg-primary"
+        animate={{ opacity: [1, 0.35, 1], scale: [1, 0.8, 1] }}
+        transition={{ duration: 1.1, repeat: Infinity }}
+      />
+      <span className="text-sm text-text-soft">Composing the answer</span>
+      <span aria-hidden className="inline-flex gap-[3px]">
+        {[0, 1, 2].map((i) => (
+          <motion.span
+            key={i}
+            className="inline-block h-[3px] w-[3px] rounded-full bg-primary"
+            animate={{ opacity: [0.25, 1, 0.25] }}
+            transition={{ duration: 1.1, repeat: Infinity, delay: i * 0.18 }}
+          />
+        ))}
+      </span>
+    </div>
+  );
+}
+
 function Paragraph({ paragraph }: { paragraph: AnswerParagraph }) {
   return (
     <p className="m-0 mb-3 last:mb-0">
@@ -226,6 +260,14 @@ export function AnswerCard({
   const cardReplaying = live && replaying;
   const answered = live ? statusOf("answer", "pass") === "pass" : run.status !== "running";
   const working = live && !answered;
+  // The latest pipeline phase (from status events) — drives the reveal: once the
+  // run reaches "answering" (synthesis composing the answer), the pipeline menu
+  // collapses and the answer area takes over with a loader, then the answer.
+  const phaseKey = latestPhase(run.events);
+  const composing = working && phaseKey === "answering";
+  // Collapse the stepper + intent "menu" once the answer is being composed or is
+  // ready, so focus shifts smoothly to the answer.
+  const collapseMenu = live && (composing || answered) && !docked;
   // Real names/descriptions for the network-plot nodes, projected once per turn
   // from the federated evidence the turn already carries. Must run before any
   // conditional return to keep hook order stable.
@@ -332,32 +374,49 @@ export function AnswerCard({
       }
       style={docked ? undefined : { boxShadow: SHADOW.answerCard }}
     >
-      <MiniStepper
-        steps={run.stepper}
-        status={run.status}
-        exitCode={run.exitCode}
-        live={live}
-        phase={currentPhaseMessage(run.events)}
-        createdAt={run.createdAt}
-      />
+      {/* The pipeline "menu": prominent while the graphs are being queried,
+          then collapses smoothly once the answer is being composed. */}
+      <motion.div
+        initial={false}
+        animate={{ height: collapseMenu ? 0 : "auto", opacity: collapseMenu ? 0 : 1 }}
+        transition={{ duration: 0.35, ease: "easeInOut" }}
+        style={{ overflow: "hidden" }}
+      >
+        <MiniStepper
+          steps={run.stepper}
+          status={run.status}
+          exitCode={run.exitCode}
+          live={live}
+          phase={currentPhaseMessage(run.events)}
+          createdAt={run.createdAt}
+        />
 
-      {/* Planner step one, explained: what intent was classified, why, and how
-          it shaped the routing. Appears as soon as the plan arrives. */}
-      <IntentCard plan={run.rawPlan} />
+        {/* Planner step one, explained: what intent was classified, why, and how
+            it shaped the routing. Appears as soon as the plan arrives. */}
+        <IntentCard plan={run.rawPlan} />
+      </motion.div>
 
-      {/* The answer surface: live status while working, else the final answer. */}
+      {/* The answer surface: the pipeline status while querying, a "composing"
+          loader once synthesis starts, then the answer revealed in place. */}
       <div className="px-[18px] pb-4 pt-[18px]">
-        {working ? (
+        {composing ? (
+          <>
+            <div className="mb-[9px] font-mono text-[10px] uppercase tracking-[0.08em] text-text-muted">
+              Final answer
+            </div>
+            <ComposingLoader />
+          </>
+        ) : working ? (
           <LiveAnswerStatus events={run.events} createdAt={run.createdAt} />
         ) : syn ? (
-          <>
+          <motion.div variants={fadeSlideUp} initial={live ? "hidden" : false} animate="show">
             <div className="mb-[9px] font-mono text-[10px] uppercase tracking-[0.08em] text-text-muted">
               Final answer
             </div>
             <p className="m-0 text-sm leading-[1.62] text-text-soft">
               <RefText text={syn.narrative || syn.headline} />
             </p>
-          </>
+          </motion.div>
         ) : (
           <div className="text-sm leading-[1.62] text-text-soft">
             {run.answer.paragraphs.map((p, i) => (
