@@ -250,6 +250,7 @@ export const wmiCapecRun: WorkbenchRun = {
   ],
   stepper: [
     { key: "probe", label: "Probe", status: "pass", target: "stage-probe" },
+    { key: "classify", label: "Intent", status: "pass", target: "stage-draft" },
     { key: "plan", label: "Plan", status: "pass", target: "stage-gate" },
     { key: "specialists", label: "Specialists", status: "pass", target: "lane-neo4j" },
     { key: "evidence", label: "Evidence", status: "pass", target: "lane-gremlin" },

@@ -535,8 +535,12 @@ function buildStepper(
     status === "answered" ? "pass" : status === "partial" ? "partial" : status === "no_sources" ? "fail" : "pending";
   const firstLane = evidence?.results[0] ? `lane-${backendOf(evidence.results[0])}` : "stage-gate";
 
+  // Planner step one is its own visible step: it has run once a plan exists.
+  const classifyStatus: StageStatus = plan ? "pass" : "pending";
+
   return [
     { key: "probe", label: "Probe", status: anyLive ? "pass" : "fail", target: "stage-probe" },
+    { key: "classify", label: "Intent", status: classifyStatus, target: "stage-draft" },
     { key: "plan", label: "Plan", status: planStatus, target: "stage-gate" },
     { key: "specialists", label: "Specialists", status: specStatus, target: firstLane },
     { key: "evidence", label: "Evidence", status: evidenceStatus, target: "stage-emit" },

@@ -46,7 +46,8 @@ export const PLANNER_STAGE_IDS = ["stage-probe", "stage-draft", "stage-gate", "s
 /** Offline demo timeline (also the shape the live stream reproduces). */
 export const REPLAY_FRAMES: RunFrame[] = [
   { at: 0, set: { probe: "running", "stage-probe": "running" } },
-  { at: 450, set: { "stage-probe": "pass", probe: "pass", plan: "running", "stage-draft": "running" } },
+  { at: 350, set: { "stage-probe": "pass", probe: "pass", classify: "running" } },
+  { at: 600, set: { classify: "pass", plan: "running", "stage-draft": "running" } },
   { at: 900, set: { "stage-draft": "pass", "stage-gate": "running" } },
   { at: 1250, set: { "stage-gate": "pass", "stage-emit": "running" } },
   {
@@ -253,6 +254,7 @@ export function applyConversationEvent(
     case "status": {
       const phase = event.data.phase;
       if (phase === "probing") effects.statusPatch = { probe: "running", "stage-probe": "running" };
+      else if (phase === "classifying") effects.statusPatch = { classify: "running" };
       else if (phase === "planning") effects.statusPatch = { plan: "running", "stage-draft": "running" };
       else if (phase === "querying") effects.statusPatch = { specialists: "running" };
       else if (phase === "answering") effects.statusPatch = { answer: "running" };
@@ -268,7 +270,8 @@ export function applyConversationEvent(
       break;
     case "plan":
       acc.plan = event.data.plan;
-      effects.statusPatch = { "stage-draft": "pass", "stage-gate": "running" };
+      // The plan carries the classified intent, so classify is done here.
+      effects.statusPatch = { classify: "pass", "stage-draft": "pass", "stage-gate": "running" };
       effects.delayedPatches = [
         { ms: 140, patch: { "stage-gate": "pass", "stage-emit": "running" } },
         { ms: 280, patch: { "stage-emit": "pass", plan: "pass" } },

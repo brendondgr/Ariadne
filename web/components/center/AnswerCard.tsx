@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/icons";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 import { MiniStepper } from "./MiniStepper";
+import { IntentCard } from "./IntentCard";
 import { LiveTicker } from "./LiveTicker";
 import { LiveAnswerStatus } from "./LiveAnswerStatus";
 import { currentPhaseMessage } from "@/lib/ticker";
@@ -339,6 +340,10 @@ export function AnswerCard({
         phase={currentPhaseMessage(run.events)}
         createdAt={run.createdAt}
       />
+
+      {/* Planner step one, explained: what intent was classified, why, and how
+          it shaped the routing. Appears as soon as the plan arrives. */}
+      <IntentCard plan={run.rawPlan} />
 
       {/* The answer surface: live status while working, else the final answer. */}
       <div className="px-[18px] pb-4 pt-[18px]">

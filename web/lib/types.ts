@@ -50,6 +50,17 @@ export interface PlanTraceIteration {
   unsupported: number;
 }
 
+/** Planner step one: the classified analyst intent, with the evidence for it.
+ *  Optional so plans persisted before intent classification still parse. */
+export interface IntentClassification {
+  label: string;
+  confidence: number;
+  rationale: string;
+  cues: string[];
+  /** "deterministic" | "llm" | "fallback" */
+  source: string;
+}
+
 export interface Plan {
   request: string;
   sub_questions: SubQuestion[];
@@ -59,6 +70,7 @@ export interface Plan {
   rationale: string;
   partial: boolean;
   trace: PlanTraceIteration[];
+  intent?: IntentClassification | null;
 }
 
 /** The six canonical checkpoints of the specialist loop, in order. */

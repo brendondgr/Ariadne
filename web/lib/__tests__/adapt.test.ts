@@ -61,6 +61,7 @@ const PLAN: Plan = {
   trace: [
     { iteration: 1, drafter: "DeterministicDrafter", gate_ok: true, reasons: [], sub_questions: 2, unsupported: 0 },
   ],
+  intent: { label: "correlation", confidence: 0.9, rationale: "cross-source", cues: ["map to"], source: "deterministic" },
 };
 
 /** Reconstruct the server `answer` payload the backend would emit for FED. */
@@ -124,6 +125,13 @@ describe("buildRun adapter", () => {
     ]);
     expect(run.plannerStages.find((s) => s.id === "stage-gate")?.shield).toBe(true);
     expect(run.plannerStages.find((s) => s.id === "stage-probe")?.status).toBe("pass");
+  });
+
+  it("surfaces a Classify step in the stepper and carries the intent on the plan", () => {
+    const classify = run.stepper.find((s) => s.key === "classify");
+    expect(classify).toBeDefined();
+    expect(classify?.status).toBe("pass"); // a plan exists, so classify ran
+    expect(run.rawPlan?.intent?.label).toBe("correlation");
   });
 
   it("builds one lane per source with all six canonical micro-steps and the right accent", () => {

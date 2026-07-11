@@ -247,6 +247,35 @@ describe("applyConversationEvent: graph path", () => {
     });
     expect(contextEffects.statusPatch).toBeUndefined();
   });
+
+  it("surfaces the classify step: classifying status, then the plan carries intent", () => {
+    const acc = emptyAccumulator("q", "query", "deterministic");
+
+    const classifying = applyConversationEvent(acc, {
+      type: "status",
+      data: { phase: "classifying", message: "Classifying analyst intent" },
+    });
+    expect(classifying.statusPatch).toEqual({ classify: "running" });
+
+    const plan = {
+      request: "q",
+      sub_questions: [],
+      joins: [],
+      unsupported: [],
+      assumptions: [],
+      rationale: "intent=correlation",
+      partial: false,
+      trace: [],
+      intent: { label: "correlation", confidence: 0.9, rationale: "cross-source", cues: ["map to"], source: "deterministic" },
+    };
+    const planEffects = applyConversationEvent(acc, {
+      type: "plan",
+      data: { plan, target_sources: ["attack", "capec"] },
+    });
+    // The plan event marks classify done and folds the intent onto the run.
+    expect(planEffects.statusPatch).toMatchObject({ classify: "pass" });
+    expect(acc.plan?.intent?.label).toBe("correlation");
+  });
 });
 
 describe("upsertRunInto: per-conversation turn folding (background streams)", () => {
