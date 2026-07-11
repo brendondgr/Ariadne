@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type {
+  Assessment,
   ConversationalReply,
   ConversationSummaryDTO,
   ExitCode,
@@ -184,6 +185,9 @@ export interface ConversationAccumulator {
   validation: ValidationResult | null;
   conversationId: string | null;
   conversationTitle: string | null;
+  /** Latest iterative-retrieval verdict and how many hops the run took (1 = single pass). */
+  assessment: Assessment | null;
+  hop: number;
 }
 
 /** A fresh accumulator for a new turn. */
@@ -211,6 +215,8 @@ export function emptyAccumulator(
     validation: null,
     conversationId: null,
     conversationTitle: null,
+    assessment: null,
+    hop: 1,
   };
 }
 
@@ -314,6 +320,12 @@ export function applyConversationEvent(
     case "evidence":
       acc.evidence = event.data.evidence;
       effects.statusPatch = { specialists: "pass", evidence: "pass" };
+      break;
+    case "assess":
+      // Iterative-retrieval verdict: record the latest assessment and hop so
+      // the UI can show how many retrieval passes the run took.
+      acc.assessment = event.data.assessment;
+      acc.hop = event.data.hop;
       break;
     case "answer":
       acc.answer = event.data;

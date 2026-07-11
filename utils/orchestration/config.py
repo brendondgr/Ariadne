@@ -21,10 +21,13 @@ DEFAULT_RECURSION_LIMIT = 200
 
 # The iterative retrieval loop is gated behind this hop cap. ``1`` reproduces
 # the historical plan-once-then-execute behavior exactly (a single specialist
-# pass, no re-plan); raise it to enable the assess → re-plan → specialists
+# pass, no re-plan); higher values enable the assess → re-plan → specialists
 # cycle. It is a hard termination guard alongside ``PIPELINE_TIMEOUT_S`` and
-# ``recursion_limit``.
-DEFAULT_MAX_HOPS = 1
+# ``recursion_limit``. Defaulted to 5 after confirming the loop leaves the
+# committed evaluation baselines byte-identical (well-formed federated plans
+# already close their joins in a single pass, so extra hops add no evidence);
+# set ``ORCH_MAX_HOPS=1`` to force the strict single-pass path.
+DEFAULT_MAX_HOPS = 5
 
 # Sufficiency-judge mode for the ``assess`` node. ``deterministic`` uses the
 # join-closure + novelty predicate (keeps the LLM-off build reproducible);

@@ -77,6 +77,7 @@ QUERY_MODE_GOLDEN = [
     "specialist-start", "specialist",   # attack (consumer, seeded)
     "evidence",
     "status",            # answering
+    "assess",            # sufficiency verdict (loop enabled by default; single pass here)
     "answer",
     "done",
 ]
@@ -88,6 +89,7 @@ PAYLOAD_KEYS = {
                          "seed_count", "producer", "skipped"},
     "specialist": {"result", "index", "total"},
     "evidence": {"evidence"},
+    "assess": {"assessment", "hop", "max_hops"},
     "answer": {"plan", "evidence", "synthesized", "status", "exit_code"},
     "done": {"status", "exit_code", "timings"},
 }
@@ -138,7 +140,7 @@ def test_timeout_skips_emit_skipped_events():
     events = _events(timeout_s=-1.0)
     names = [e for e, _ in events]
     assert names == ["status", "probe", "status", "plan", "status",
-                     "skipped", "skipped", "evidence", "status", "answer", "done"]
+                     "skipped", "skipped", "evidence", "status", "assess", "answer", "done"]
     for _, payload in [ev for ev in events if ev[0] == "skipped"]:
         assert set(payload) == {"sub_question", "source", "reason"}
         assert "timeout" in payload["reason"]

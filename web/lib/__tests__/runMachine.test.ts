@@ -191,6 +191,44 @@ describe("applyConversationEvent: graph path", () => {
     expect(run.lanes.map((l) => l.id)).toEqual(["lane-neo4j"]);
   });
 
+  it("folds the iterative-retrieval assess verdict and records the hop", () => {
+    const acc = emptyAccumulator("Which techniques do these CAPEC patterns map to?", "query", "deterministic");
+    expect(acc.hop).toBe(1);
+    expect(acc.assessment).toBeNull();
+
+    applyConversationEvent(acc, {
+      type: "assess",
+      data: {
+        assessment: {
+          sufficient: false,
+          gaps: ["join 'attack-technique-id' across attack, capec has no cross-source match yet"],
+          missing_entities: ["T1574.010"],
+          hop: 1,
+          hop_capped: false,
+          mode: "deterministic",
+          reason: "unresolved join-keys can still be chased into an un-queried source",
+        },
+        hop: 1,
+        max_hops: 5,
+      },
+    });
+    applyConversationEvent(acc, {
+      type: "assess",
+      data: {
+        assessment: {
+          sufficient: true, gaps: [], missing_entities: [], hop: 2,
+          hop_capped: false, mode: "deterministic", reason: "join closure reached; nothing left to chase",
+        },
+        hop: 2,
+        max_hops: 5,
+      },
+    });
+
+    // The latest verdict wins and the run records it took two retrieval hops.
+    expect(acc.hop).toBe(2);
+    expect(acc.assessment?.sufficient).toBe(true);
+  });
+
   it("stamps receivedMs onto every folded event for the Raw JSON / logs tabs", () => {
     const acc = emptyAccumulator("q", "query", "deterministic");
     applyConversationEvent(acc, { type: "status", data: { phase: "probing" } }, 42);

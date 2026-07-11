@@ -20,8 +20,8 @@ def test_defaults(monkeypatch):
     config = OrchestrationConfig.from_env()
     assert config.checkpointer is False
     assert config.recursion_limit == DEFAULT_RECURSION_LIMIT
-    # Loop ships dark: max_hops=1 reproduces the historical single pass.
-    assert config.max_hops == DEFAULT_MAX_HOPS == 1
+    # Loop is enabled by default (5); ORCH_MAX_HOPS=1 forces the single pass.
+    assert config.max_hops == DEFAULT_MAX_HOPS == 5
     assert config.assess_mode == DEFAULT_ASSESS_MODE == "deterministic"
 
 

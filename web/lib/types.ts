@@ -804,8 +804,20 @@ export interface ServerAnswer {
 }
 
 /** The discriminated union of Server-Sent Events `POST /api/query` emits. */
+/** Sufficiency verdict from the iterative-retrieval loop's `assess` node. */
+export interface Assessment {
+  sufficient: boolean;
+  gaps: string[];
+  missing_entities: string[];
+  hop: number;
+  hop_capped: boolean;
+  mode: string;
+  reason: string;
+}
+
 export type QueryEvent =
-  | { type: "status"; data: { phase: string; message?: string; count?: number } }
+  // `hop`/`added` ride on the re-plan status frame the loop emits between hops.
+  | { type: "status"; data: { phase: string; message?: string; count?: number; hop?: number; added?: number } }
   | { type: "probe"; data: { live_sources: ProbeSource[] } }
   | { type: "plan"; data: { plan: Plan; target_sources: string[] } }
   | {
@@ -823,6 +835,7 @@ export type QueryEvent =
   | { type: "specialist"; data: { result: SpecialistResult; index: number; total: number } }
   | { type: "skipped"; data: { sub_question: string; source: string; reason: string } }
   | { type: "evidence"; data: { evidence: FederatedEvidence } }
+  | { type: "assess"; data: { assessment: Assessment; hop: number; max_hops: number } }
   | { type: "answer"; data: ServerAnswer }
   | { type: "done"; data: { status: RunStatus; exit_code: ExitCode; message?: string; timings?: PipelineTimings } }
   | { type: "error"; data: { message: string } }

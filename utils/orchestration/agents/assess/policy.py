@@ -25,10 +25,8 @@ import logging
 from typing import Callable
 
 from utils.orchestration.agents.assess.contracts import Assessment
-from utils.orchestration.agents.assess.frontier import (
-    extract_frontier,
-    update_visited,
-)
+from utils.orchestration.agents.assess.frontier import extract_frontier
+from utils.planner.join_keys import CANONICAL_JOIN_KEYS
 from utils.planner.schema import JoinDeclaration, Plan
 from utils.specialists.federation import FederatedEvidence
 
@@ -50,7 +48,7 @@ def _join_satisfied(evidence: FederatedEvidence, join: JoinDeclaration) -> bool:
     return False
 
 
-def _joins_closed(evidence: FederatedEvidence, plan: Plan) -> list[str]:
+def _open_joins(evidence: FederatedEvidence, plan: Plan) -> list[str]:
     """Return the descriptions of declared joins that have *not* closed."""
     open_joins: list[str] = []
     for join in plan.joins:
@@ -62,6 +60,40 @@ def _joins_closed(evidence: FederatedEvidence, plan: Plan) -> list[str]:
     return open_joins
 
 
+def _chaseable_frontier(
+    evidence: FederatedEvidence, plan: Plan
+) -> set[tuple[str, str]]:
+    """The ``(join_value, source)`` keys a re-plan could still *productively* chase.
+
+    A key is chaseable when a producer source surfaced it, it has not yet
+    resolved across sources, and the consumer side of its declared join has not
+    been queried yet (the first-cut cross-source expansion). This mirrors
+    :meth:`PlanningAgent.replan` exactly, so the loop re-plans **iff** there is
+    real work to do — no wasted cycles, and termination once the chase is dry.
+    """
+    frontier = extract_frontier(evidence.results, plan)
+    if not frontier:
+        return set()
+    queried = set(evidence.by_source().keys())
+    resolved = set(evidence.cross_source_join_values())
+    join_sources = {s for join in plan.joins for s in join.sources}
+
+    chaseable: set[tuple[str, str]] = set()
+    for key in CANONICAL_JOIN_KEYS:
+        producer = next((e for e in key.endpoints if e.via_edge), None)
+        consumer = next((e for e in key.endpoints if e.via_edge is None), None)
+        if producer is None or consumer is None:
+            continue
+        if producer.dataset not in join_sources or consumer.dataset not in join_sources:
+            continue
+        if consumer.dataset in queried:
+            continue  # nothing more to chase cross-source into an already-run source
+        for value, source in frontier:
+            if source == producer.dataset and value not in resolved:
+                chaseable.add((value, source))
+    return chaseable
+
+
 def deterministic_assessment(
     *,
     evidence: FederatedEvidence,
@@ -70,51 +102,42 @@ def deterministic_assessment(
     prior_visited: set[tuple[str, str]],
     hop: int,
 ) -> Assessment:
-    """The reproducible join-closure + novelty verdict (no hop-cap applied)."""
-    results = list(evidence.results)
+    """The reproducible sufficiency verdict (no hop-cap applied).
 
-    # No declared join ⇒ no cross-source expansion is possible; a single pass is
-    # all this plan can do, so it is sufficient by construction. This keeps the
-    # common single-source question a one-shot (no wasted re-plan cycle).
+    Evidence is *sufficient* when there is nothing left to productively chase:
+    no ``_chaseable_frontier``. This subsumes the intent of the join-closure +
+    novelty rule — the loop keeps going exactly while an unresolved join-key can
+    still be carried into a not-yet-queried source, and stops (synthesizing with
+    what it has) the moment the chase is dry, whether the join closed or simply
+    cannot. ``prior_frontier``/``prior_visited`` are accepted for signature
+    stability but the decision reads straight off the accumulated evidence.
+    """
+    # No declared join ⇒ no cross-source expansion is possible; one pass is all
+    # this plan can do, so it is sufficient by construction.
     if not plan.joins:
         return Assessment(
-            sufficient=True,
-            gaps=[],
-            missing_entities=[],
-            hop=hop,
-            hop_capped=False,
-            mode="deterministic",
+            sufficient=True, gaps=[], missing_entities=[], hop=hop,
+            hop_capped=False, mode="deterministic",
             reason="no declared cross-source join; single pass is sufficient",
         )
 
-    new_frontier = extract_frontier(results, plan) - set(prior_frontier)
-    new_visited = update_visited(set(prior_visited), results)
-    novelty_exhausted = not new_frontier and not new_visited
-
-    open_joins = _joins_closed(evidence, plan)
-    join_closure = not open_joins
-
-    # Join values surfaced anywhere but not yet matched across sources are the
-    # concrete seeds a re-plan should chase into the opposite source.
-    full_frontier = extract_frontier(results, plan) | set(prior_frontier)
-    resolved = set(evidence.cross_source_join_values())
-    missing_entities = sorted({v for v, _ in full_frontier} - resolved)
-
-    sufficient = join_closure and novelty_exhausted
+    open_joins = _open_joins(evidence, plan)
+    chaseable = _chaseable_frontier(evidence, plan)
+    sufficient = not chaseable
+    missing_entities = sorted({v for v, _ in chaseable})
 
     gaps = list(open_joins)
-    if new_frontier:
-        keys = ", ".join(sorted(f"{v} ({s})" for v, s in new_frontier))
-        gaps.append(f"unexpanded join-keys discovered this hop: {keys}")
-    elif new_visited and not join_closure:
-        gaps.append("new records surfaced this hop; joins may still close")
+    if chaseable:
+        keys = ", ".join(sorted(f"{v} ({s})" for v, s in chaseable))
+        gaps.append(f"unresolved join-keys still chaseable: {keys}")
 
     if sufficient:
-        reason = "join closure reached and novelty exhausted"
-    elif not join_closure:
-        reason = "declared join(s) not yet resolved across sources"
+        reason = (
+            "join closure reached; nothing left to chase" if not open_joins
+            else "no declared join resolved and nothing left to chase; synthesizing partial"
+        )
     else:
-        reason = "new join-keys surfaced this hop; more to chase"
+        reason = "unresolved join-keys can still be chased into an un-queried source"
 
     return Assessment(
         sufficient=sufficient,

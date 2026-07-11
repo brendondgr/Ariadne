@@ -129,12 +129,16 @@ def test_query_mode_event_order_and_shapes() -> None:
     )
     types = [e for e, _ in events]
 
-    # Ordered sequence the run machine relies on.
+    # Ordered sequence the run machine relies on. The iterative-retrieval loop
+    # emits one sufficiency verdict (assess) before the single-pass answer.
     assert types == [
         "status", "probe", "status", "plan", "status",
         "specialist-start", "specialist", "specialist-start", "specialist",
-        "evidence", "status", "answer", "done",
+        "evidence", "status", "assess", "answer", "done",
     ]
+    assessment = dict(events)["assess"]
+    assert assessment["assessment"]["sufficient"] is True
+    assert assessment["max_hops"] >= 2
 
     starts = [d for e, d in events if e == "specialist-start"]
     assert [s["index"] for s in starts] == [0, 1]

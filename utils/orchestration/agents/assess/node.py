@@ -13,6 +13,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from langgraph.config import get_stream_writer
+
 from utils.orchestration.agents.assess.contracts import Assessment
 from utils.orchestration.agents.assess.frontier import (
     extract_frontier,
@@ -50,6 +52,17 @@ def build_assess_node(
             use_llm=bool(state.get("use_llm")),
             critic=critic,
         )
+
+        # Surface the verdict for inspectability, but only when the loop is
+        # actually enabled — at max_hops=1 the pipeline is single-pass and the
+        # event stream must stay byte-identical to the pre-loop contract.
+        if orch.max_hops > 1:
+            writer = get_stream_writer()
+            writer(("assess", {
+                "assessment": verdict.to_dict(),
+                "hop": hop,
+                "max_hops": orch.max_hops,
+            }))
 
         return {
             "assessment": verdict,

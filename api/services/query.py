@@ -168,6 +168,11 @@ def render_pipeline_event(
             "index": payload["index"],
             "total": payload["total"],
         }
+    if event == "assess":
+        # Sufficiency verdict for the iterative-retrieval loop (already a plain
+        # JSON dict from the assess node). Lets the UI show the hop + whether
+        # another retrieval pass is coming.
+        return "assess", payload
     if event == "evidence":
         return "evidence", {"evidence": payload["evidence"].to_dict()}
     if event == "answer":

@@ -110,9 +110,11 @@ def test_event_order_matches_streaming_contract() -> None:
     assert events[0] == "status" and events[-1] == "done"
     core = [e for e in events if e != "status"]
     assert core[:2] == ["probe", "plan"]
-    assert core[-3:] == ["evidence", "answer", "done"]
+    # The iterative-retrieval loop inserts one sufficiency verdict before the
+    # (single-pass sufficient) answer; ORCH_MAX_HOPS=1 would drop the assess event.
+    assert core[-4:] == ["evidence", "assess", "answer", "done"]
     # Each specialist run is announced the moment it starts, then resolved.
-    middle = core[2:-3]
+    middle = core[2:-4]
     assert middle == ["specialist-start", "specialist"] * (len(middle) // 2)
 
 

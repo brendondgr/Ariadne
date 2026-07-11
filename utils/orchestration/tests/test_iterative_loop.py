@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from utils.orchestration.main import run_pipeline
+from utils.orchestration.main import iter_pipeline, run_pipeline
 from utils.planner.agent import PlanningAgent
 from utils.planner.config import PlannerConfig
 from utils.planner.schema import JoinDeclaration, Limits, Plan, SubQuestion
@@ -126,3 +126,27 @@ def test_replanned_subquestion_is_hop_tagged(monkeypatch):
     run, _ = _run(max_hops=5, monkeypatch=monkeypatch)
     attack_sqs = [sq for sq in run.plan.sub_questions if sq.source == "attack"]
     assert attack_sqs and attack_sqs[0].hop >= 2, "chased sub-question carries its hop tag"
+
+
+def test_loop_streams_assess_and_replan_events(monkeypatch):
+    monkeypatch.setenv("ORCH_MAX_HOPS", "5")
+    specialists = {
+        "capec": FakeSpecialist("capec", (SHARED_KEY,)),
+        "attack": FakeSpecialist("attack", (SHARED_KEY,)),
+    }
+    events = list(iter_pipeline(
+        "Which techniques do these CAPEC patterns map to?",
+        agent=_agent(),
+        specialists=specialists,
+        specialist_config=SpecialistConfig(data_dir=Path("data"), llm_enabled=False),
+        synthesis_config=SynthesisConfig(llm_enabled=False),
+    ))
+    names = [e for e, _ in events]
+    assert "assess" in names, "the loop must surface its sufficiency verdict"
+    assess_payloads = [p for e, p in events if e == "assess"]
+    assert assess_payloads[0]["max_hops"] == 5
+    assert "sufficient" in assess_payloads[0]["assessment"]
+    # The re-plan announces its hop via a status event.
+    replan_status = [p for e, p in events
+                     if e == "status" and p.get("hop") and "Re-planning" in p.get("message", "")]
+    assert replan_status and replan_status[0]["hop"] == 2
