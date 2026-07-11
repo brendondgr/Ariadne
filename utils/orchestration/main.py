@@ -38,12 +38,13 @@ from langgraph.config import get_stream_writer
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 
+from utils.orchestration.agents.assess.node import build_assess_node
 from utils.orchestration.agents.specialists.graph import build_specialists_graph
 from utils.orchestration.config import OrchestrationConfig
 from utils.orchestration.state import PipelineState
 from utils.planner.agent import PlanningAgent
 from utils.planner.config import PlannerConfig
-from utils.planner.schema import Plan
+from utils.planner.schema import Plan, merge_plans
 from utils.specialists.config import SpecialistConfig
 from utils.specialists.federation import (
     FederatedEvidence,
@@ -189,6 +190,49 @@ def build_pipeline_graph(
         return {"answer": answer,
                 "timings": {"synthesis_ms": synthesis_ms, "total_ms": total_ms}}
 
+    orch = orch or OrchestrationConfig.from_env()
+    assess_node = build_assess_node(orch)
+
+    def replan_node(state: PipelineState) -> dict[str, Any]:
+        """Graft the next hop's expansion onto the plan and bump the counter.
+
+        Reads the accumulated frontier/evidence, chases only the un-answered
+        gaps (``PlanningAgent.replan``), and merges the result onto the running
+        plan (``merge_plans`` de-duplicates + hop-tags). The ``cursor`` is left
+        untouched, so when the specialist loop re-enters it runs *only* the
+        newly appended sub-questions.
+        """
+        assessment = state.get("assessment")
+        gaps = list(getattr(assessment, "gaps", []) or [])
+        new_hop = int(state.get("hop") or 1) + 1
+        expansion = agent.replan(
+            state["question"],
+            state["evidence"],
+            set(state.get("frontier") or set()),
+            gaps=gaps,
+        )
+        merged = merge_plans(state["plan"], expansion, hop=new_hop)
+        run = state["run"]
+        run.plan = merged
+        writer = get_stream_writer()
+        added = len(merged.sub_questions) - len(state["plan"].sub_questions)
+        writer(("status", {"phase": "planning",
+                           "message": f"Re-planning (hop {new_hop}): {added} new sub-question(s)",
+                           "hop": new_hop, "added": added}))
+        return {"plan": merged, "hop": new_hop}
+
+    def route_sufficiency(state: PipelineState) -> str:
+        """Synthesize when the evidence is sufficient (or hop-capped); else re-plan."""
+        assessment = state.get("assessment")
+        return "synthesize" if getattr(assessment, "sufficient", True) else "replan"
+
+    def route_after_replan(state: PipelineState) -> str:
+        """Only re-enter the specialists when the re-plan actually added work."""
+        cursor = int(state.get("cursor") or 0)
+        if cursor < len(state["plan"].sub_questions):
+            return "announce_querying"
+        return "synthesize"
+
     def route_cards(state: PipelineState) -> str:
         return "probe" if agent.cards else END
 
@@ -206,6 +250,8 @@ def build_pipeline_graph(
         build_specialists_graph(agent.cards, specialist_config, specialists),
     )
     graph.add_node("bundle", bundle)
+    graph.add_node("assess", assess_node)
+    graph.add_node("replan", replan_node)
     graph.add_node("synthesize", synthesize_node)
 
     graph.add_edge(START, "check_cards")
@@ -218,10 +264,20 @@ def build_pipeline_graph(
     graph.add_edge("plan_only", END)
     graph.add_edge("announce_querying", "specialists")
     graph.add_edge("specialists", "bundle")
-    graph.add_edge("bundle", "synthesize")
+    # The iterative-retrieval cycle: bundle → assess → (synthesize | replan →
+    # specialists). ``max_hops=1`` makes assess force sufficiency on the first
+    # pass, collapsing this back to the historical bundle → synthesize path.
+    graph.add_edge("bundle", "assess")
+    graph.add_conditional_edges(
+        "assess", route_sufficiency,
+        {"synthesize": "synthesize", "replan": "replan"},
+    )
+    graph.add_conditional_edges(
+        "replan", route_after_replan,
+        {"announce_querying": "announce_querying", "synthesize": "synthesize"},
+    )
     graph.add_edge("synthesize", END)
 
-    orch = orch or OrchestrationConfig.from_env()
     if orch.checkpointer:
         from langgraph.checkpoint.memory import InMemorySaver
 
@@ -250,6 +306,12 @@ def iter_pipeline(
     → status(answering) → answer → done. ``specialist-start`` fires the moment
     a specialist is about to run (with its seeding info), so a UI can animate
     "now querying <source>" truthfully.
+
+    With the iterative-retrieval loop enabled (``ORCH_MAX_HOPS`` > 1) each
+    insufficient hop inserts a ``status(planning, hop=N)`` re-plan and repeats
+    the ``status(querying) → specialist* → evidence`` block before the terminal
+    ``answer``/``done``; ``ORCH_MAX_HOPS=1`` (the default) emits the exact
+    single-pass order above.
     Pass ``run`` to have the outcome recorded on a caller-owned ``PipelineRun``.
     """
     run = run if run is not None else PipelineRun(question=question, mode=mode)
@@ -280,6 +342,7 @@ def iter_pipeline(
     init: dict[str, Any] = {
         "question": question, "mode": mode, "use_llm": use_llm,
         "deadline": deadline, "started_at": started_at, "cursor": 0, "run": run,
+        "hop": 1, "frontier": set(), "visited": set(),
     }
     config: dict[str, Any] = {"recursion_limit": orch.recursion_limit}
     if orch.checkpointer:  # one thread per query run
