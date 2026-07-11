@@ -27,12 +27,19 @@ partial (some part unsupported), `2` no source cards built.
 ## Pipeline
 
 ```
-request ─▶ re-probe live sources ─▶ draft plan ─▶ deterministic gate ─┬─ ok ─▶ emit
-                                          ▲                            │
-                                          └──── feedback (≤ N) ◀───────┘ reject
-                                                                       └─ exhausted ─▶ honest partial plan
+request ─▶ classify intent ─▶ re-probe live sources ─▶ draft plan ─▶ deterministic gate ─┬─ ok ─▶ emit
+                                                             ▲                            │
+                                                             └──── feedback (≤ N) ◀───────┘ reject
+                                                                                          └─ exhausted ─▶ honest partial plan
 ```
 
+0. **Intent classification** (`intent.py`, `intent_llm.py`) — planner step one:
+   a closed taxonomy (`correlation`/`remediation`/`traversal`/`enumeration`/
+   `lookup`/`definitional`/`unsupported`) classified deterministically (optional
+   hybrid LLM). The label *biases* the draft — `correlation` pulls in a live join
+   partner, an in-scope id routes a lookup — but the gate stays the authority.
+   It rides the emitted plan as `Plan.intent` and is scored (`intent_accuracy_rate`).
+   See [`intent-classification.md`](intent-classification.md).
 1. **Discovery / liveness** (`discovery.py`) — a per-request **content probe**
    (connect → non-trivial node count → expected labels present), each bounded
    by its own short timeout in a daemon thread, with a short-TTL re-probe cache.
@@ -112,14 +119,20 @@ All via the central `.env` (`utils.config` helpers); real env vars win.
   "assumptions": ["..."],
   "rationale": "...",
   "partial": false,
-  "trace": [{"iteration": 1, "drafter": "...", "gate_ok": true, "reasons": [], "sub_questions": 1, "unsupported": 0}]
+  "trace": [{"iteration": 1, "drafter": "...", "gate_ok": true, "reasons": [], "sub_questions": 1, "unsupported": 0}],
+  "intent": {"label": "correlation", "confidence": 0.9, "rationale": "...", "cues": ["map to"], "source": "deterministic"}
 }
 ```
+
+`intent` is present once the classify node has run (omitted otherwise, so
+pre-intent plan JSON stays byte-identical). See
+[`intent-classification.md`](intent-classification.md).
 
 ## Evaluation
 
 `utils/planner/evaluation/` scores the **plan output** (not the eventual
 answer): source-selection precision/recall, unnecessary source calls,
+**intent accuracy** (classified vs. the template/curated ground truth),
 expected-entity recall, schema adherence (via the gate), and honesty (correct
 `unsupported`/`partial`). The expected-plan corpus
 (`evaluation/expected_plans/*.json`) has `dev` and `holdout` splits and includes
