@@ -11,6 +11,7 @@ decides whether the resulting plan ships.
 from __future__ import annotations
 
 import logging
+from typing import TYPE_CHECKING
 
 from .cards import SourceCardView
 from .config import PlannerConfig
@@ -18,6 +19,9 @@ from .discovery import LiveSourceView
 from .drafter import DeterministicDrafter, PlanDrafter
 from .llm_drafter import DrafterUnavailable, OpenAICompatibleDrafter
 from .schema import Plan
+
+if TYPE_CHECKING:
+    from .intent import IntentClassification
 
 logger = logging.getLogger("ariadne.planner.drafter")
 
@@ -36,13 +40,14 @@ class HybridDrafter:
         cards: dict[str, SourceCardView],
         live_view: LiveSourceView,
         feedback: list[str] | None = None,
+        intent: "IntentClassification | None" = None,
     ) -> Plan:
         try:
-            plan = self._primary.draft(request, cards, live_view, feedback)
+            plan = self._primary.draft(request, cards, live_view, feedback, intent)
             self.last_used = type(self._primary).__name__
         except DrafterUnavailable as exc:
             logger.info("LLM drafter unavailable (%s); using deterministic fallback", exc)
-            plan = self._fallback.draft(request, cards, live_view, feedback)
+            plan = self._fallback.draft(request, cards, live_view, feedback, intent)
             self.last_used = type(self._fallback).__name__
             plan.assumptions.append(f"LLM drafter unavailable ({exc}); used deterministic fallback")
             return plan
@@ -52,7 +57,7 @@ class HybridDrafter:
         # the floor: if it can build sub-questions the primary missed, prefer
         # it. If it also routes nothing, keep the primary plan's reasons.
         if not plan.sub_questions:
-            floor = self._fallback.draft(request, cards, live_view, feedback)
+            floor = self._fallback.draft(request, cards, live_view, feedback, intent)
             if floor.sub_questions:
                 logger.info("primary drafter routed nothing; using deterministic floor")
                 floor.assumptions.append(

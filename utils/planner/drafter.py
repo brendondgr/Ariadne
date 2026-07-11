@@ -27,7 +27,8 @@ from typing import Protocol
 
 from .cards import SourceCardView
 from .discovery import LiveSourceView
-from .join_keys import resolve_join_key
+from .intent import Intent, IntentClassification, mentions_entity_id
+from .join_keys import CANONICAL_JOIN_KEYS, resolve_join_key
 from .schema import (
     JoinDeclaration,
     Limits,
@@ -52,6 +53,7 @@ class PlanDrafter(Protocol):
         cards: dict[str, SourceCardView],
         live_view: LiveSourceView,
         feedback: list[str] | None = None,
+        intent: IntentClassification | None = None,
     ) -> Plan: ...
 
 
@@ -154,11 +156,14 @@ class DeterministicDrafter:
         cards: dict[str, SourceCardView],
         live_view: LiveSourceView,
         feedback: list[str] | None = None,
+        intent: IntentClassification | None = None,
     ) -> Plan:
         request_tokens = _tokens(request)
         plan = Plan(request=request)
         rationale_parts: list[str] = []
         selected_live: list[str] = []
+        if intent is not None:
+            rationale_parts.append(f"intent={intent.label}")
 
         # Score every source. Select only sources with at least one identifier
         # (label/relationship-name) match; a lone gloss match is too weak.
@@ -206,6 +211,49 @@ class DeterministicDrafter:
             selected_live.append(ds)
             rationale_parts.append(f"routed to {ds} for {entities}")
 
+        # Correlation intent: the analyst wants a cross-source answer but keyword
+        # routing selected only one side. Pull in the declared join partner (when
+        # live and card-valid) so the join below can close, instead of shipping a
+        # cross-source question single-sourced. The gate still validates the added
+        # sub-question, so this only ever proposes a partner it could route anyway.
+        if (
+            intent is not None
+            and intent.label == Intent.CORRELATION
+            and len(selected_live) == 1
+        ):
+            selected = selected_live[0]
+            for key in CANONICAL_JOIN_KEYS:
+                if key.endpoint_for(selected) is None:
+                    continue
+                partner_ep = next(e for e in key.endpoints if e.dataset != selected)
+                partner = partner_ep.dataset
+                partner_card = cards.get(partner)
+                if (
+                    partner in selected_live
+                    or not live_view.is_live(partner)
+                    or partner_card is None
+                    or resolve_join_key(cards[selected], partner_card) is None
+                ):
+                    continue
+                entities = [lbl for lbl in partner_ep.labels if partner_card.has_label(lbl)]
+                if not entities:
+                    continue
+                plan.sub_questions.append(
+                    SubQuestion(
+                        id=f"q{len(plan.sub_questions) + 1}",
+                        source=partner,
+                        text=f"In {partner}, identify {', '.join(entities)} relevant to: {request}",
+                        entities=entities,
+                        limits=Limits(**partner_card.limits()),
+                        rationale=f"{partner} pulled in to close the {key.name} join (correlation intent)",
+                    )
+                )
+                selected_live.append(partner)
+                rationale_parts.append(f"correlation intent pulled in {partner} to close {key.name}")
+                plan.assumptions.append(
+                    f"correlation intent: added {partner} to close the {key.name} join"
+                )
+
         # Cross-source join: only on a resolvable canonical key between two live
         # selected sources.
         if len(selected_live) >= 2:
@@ -236,11 +284,26 @@ class DeterministicDrafter:
         # resolve the entity by name (the id-less analogue of a seeded lookup).
         # It fires only on this dead end, so it never changes a plan the keyword
         # router could already build.
-        # Lazy import avoids a package-init import cycle (specialists.resolve
-        # imports planner.join_keys, which pulls in this module at import time).
-        from utils.specialists.resolve import is_definitional_intent
+        # Prefer the classified intent when the planner supplied one, so the
+        # classifier and this path agree; fall back to the specialists' heuristic
+        # when drafting standalone (no intent passed). The rescue fires for a
+        # definitional (by-name) question OR any in-scope intent that names a
+        # concrete entity id (e.g. a traversal "up from CAPEC-16") — routing a
+        # resolve-by-name/id lookup the keyword router missed. An off-domain
+        # request (unsupported, no id) is left honestly unrouted.
+        if intent is not None:
+            should_rescue = intent.label == Intent.DEFINITIONAL or (
+                intent.label != Intent.UNSUPPORTED and mentions_entity_id(request)
+            )
+        else:
+            # Standalone (no intent supplied): the specialists' heuristic. Lazy
+            # import avoids a package-init cycle (specialists.resolve imports
+            # planner.join_keys, which pulls in this module at import time).
+            from utils.specialists.resolve import is_definitional_intent
 
-        if not plan.sub_questions and is_definitional_intent(request):
+            should_rescue = is_definitional_intent(request)
+
+        if not plan.sub_questions and should_rescue:
             for ds in sorted(cards):
                 if not live_view.is_live(ds):
                     continue

@@ -41,7 +41,7 @@ class FixedProbe:
 class CapecOnlyDrafter:
     """Initial plan: only the CAPEC producer, but the join is declared."""
 
-    def draft(self, request, cards, live_view, feedback=None) -> Plan:
+    def draft(self, request, cards, live_view, feedback=None, intent=None) -> Plan:
         return Plan(
             request=request,
             sub_questions=[

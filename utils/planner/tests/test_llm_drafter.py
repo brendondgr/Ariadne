@@ -167,7 +167,7 @@ class UnsupportedOnlyDrafter:
     """Succeeds (no transport error) but routes nothing — mimics the LLM marking
     a definitional question 'incomplete/unsupported'."""
 
-    def draft(self, request, cards, live_view, feedback=None):
+    def draft(self, request, cards, live_view, feedback=None, intent=None):
         from utils.planner.schema import Plan, UnsupportedPart
 
         plan = Plan(request=request)

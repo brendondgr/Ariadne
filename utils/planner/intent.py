@@ -147,8 +147,11 @@ _ID_RE = re.compile(
     re.IGNORECASE,
 )
 #: A CAPEC mention paired with an ATT&CK mention is itself a correlation cue.
+#: The ATT&CK marker is deliberately NOT the bare word "attack" — that appears in
+#: the CAPEC term "attack pattern" and would flag every CAPEC-internal question
+#: as cross-source. Only ATT&CK-specific vocabulary counts.
 _CAPEC_RE = re.compile(r"\bcapec\b", re.IGNORECASE)
-_ATTACK_RE = re.compile(r"\b(?:att&ck|attack|techniques?)\b", re.IGNORECASE)
+_ATTACK_RE = re.compile(r"\batt&ck\b|\btechniques?\b|\btactics?\b", re.IGNORECASE)
 
 _TOKEN_RE = re.compile(r"[a-zA-Z][a-zA-Z0-9]+")
 
@@ -251,3 +254,13 @@ def _matches(pattern: re.Pattern[str], text: str) -> list[str]:
         if phrase and phrase.lower() not in {s.lower() for s in seen}:
             seen.append(phrase)
     return seen
+
+
+def mentions_entity_id(text: str) -> bool:
+    """True when the text names a concrete MITRE entity id (T1555, CAPEC-560, CWE-89).
+
+    Used by the drafter's name/id-lookup rescue: a request that references a
+    specific in-scope entity is routable even when no schema *label* token
+    matched, whereas an off-domain request with no id stays honestly unsupported.
+    """
+    return bool(_ID_RE.search(text or ""))

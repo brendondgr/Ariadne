@@ -46,7 +46,8 @@ def build_nodes(
     def draft(state: PlanningState) -> dict[str, Any]:
         iteration = int(state.get("iteration") or 0) + 1
         plan = drafter.draft(
-            state["request"], cards, state["live_view"], state.get("feedback")
+            state["request"], cards, state["live_view"], state.get("feedback"),
+            state.get("intent"),
         )
         drafter_used = getattr(drafter, "last_used", "") or type(drafter).__name__
         return {"iteration": iteration, "last_plan": plan, "drafter_used": drafter_used}

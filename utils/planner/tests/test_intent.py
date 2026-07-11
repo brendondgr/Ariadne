@@ -68,6 +68,13 @@ def test_definitional_reuses_specialist_heuristic(clf):
     assert clf.classify("What exactly is credential dumping?").label == Intent.DEFINITIONAL
 
 
+def test_capec_attack_pattern_wording_is_not_correlation(clf):
+    # "attack pattern" is CAPEC terminology; a CAPEC-internal question must NOT
+    # be flagged cross-source just because it contains the word "attack".
+    result = clf.classify("Which CWE weaknesses do CAPEC attack patterns exploit?")
+    assert result.label != Intent.CORRELATION
+
+
 def test_fallback_lookup_when_vocabulary_matches(clf):
     card = _card(["Technique", "Mitigation"], ["MITIGATES"])
     result = clf.classify("anything about a technique", {"attack": card})

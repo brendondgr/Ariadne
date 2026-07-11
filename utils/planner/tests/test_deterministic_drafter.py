@@ -4,9 +4,14 @@ from __future__ import annotations
 
 from utils.planner.drafter import DeterministicDrafter
 from utils.planner.gate import evaluate
+from utils.planner.intent import Intent, IntentClassification
 from utils.planner.tests._fixtures import load_fixture_cards, make_live_view
 
 CARDS = load_fixture_cards()
+
+
+def _intent(label: str) -> IntentClassification:
+    return IntentClassification(label, 0.9, "test", [], "deterministic")
 DEMO = (
     "Which CAPEC patterns related to credential theft map to ATT&CK techniques, "
     "and what mitigations appear for those techniques?"
@@ -120,3 +125,49 @@ def test_non_definitional_out_of_scope_is_not_bridged() -> None:
     plan = drafter.draft("List all Kubernetes pods and their CPU usage.", CARDS, view)
     assert not plan.sub_questions
     assert plan.unsupported
+
+
+# -- intent-driven routing (planner step one changes the plan) --------------
+
+
+def test_correlation_intent_pulls_in_join_partner() -> None:
+    drafter = DeterministicDrafter()
+    view = make_live_view()  # both sources live
+    request = "attack patterns and their weaknesses"  # capec-only vocabulary
+
+    # Without a correlation intent, keyword routing selects only capec.
+    base = drafter.draft(request, CARDS, view)
+    assert base.target_sources() == {"capec"}
+    assert not base.joins
+
+    # With a correlation intent, the drafter pulls in the live join partner and
+    # declares the canonical join — and the result is still gate-valid.
+    plan = drafter.draft(request, CARDS, view, intent=_intent(Intent.CORRELATION))
+    assert plan.target_sources() == {"capec", "attack"}
+    assert any(j.key == "attack-technique-id" for j in plan.joins)
+    assert evaluate(plan, CARDS, view).ok, evaluate(plan, CARDS, view).reasons
+    assert "intent=correlation" in plan.rationale
+
+
+def test_correlation_partner_pull_in_respects_liveness() -> None:
+    drafter = DeterministicDrafter()
+    view = make_live_view(live=("capec",))  # attack is DOWN
+    plan = drafter.draft("attack patterns", CARDS, view, intent=_intent(Intent.CORRELATION))
+    # The partner is down, so it is not routed and no join is fabricated.
+    assert plan.target_sources() == {"capec"}
+    assert not plan.joins
+    assert evaluate(plan, CARDS, view).ok
+
+
+def test_definitional_intent_drives_name_lookup() -> None:
+    drafter = DeterministicDrafter()
+    view = make_live_view()
+    request = "Spearphishing"  # a bare name; the heuristic alone would not fire
+
+    base = drafter.draft(request, CARDS, view)  # no intent -> unsupported
+    assert not base.sub_questions
+    assert base.unsupported
+
+    plan = drafter.draft(request, CARDS, view, intent=_intent(Intent.DEFINITIONAL))
+    assert plan.sub_questions  # the classified intent routed a name lookup
+    assert evaluate(plan, CARDS, view).ok

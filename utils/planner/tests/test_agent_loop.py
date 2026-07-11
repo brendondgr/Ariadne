@@ -42,7 +42,7 @@ class ScriptedDrafter:
         self.calls = 0
         self.feedback_log: list[list[str] | None] = []
 
-    def draft(self, request, cards, live_view, feedback=None) -> Plan:
+    def draft(self, request, cards, live_view, feedback=None, intent=None) -> Plan:
         self.feedback_log.append(feedback)
         plan = self._builders[min(self.calls, len(self._builders) - 1)]()
         self.calls += 1

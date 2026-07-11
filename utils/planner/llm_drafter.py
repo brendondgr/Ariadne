@@ -17,12 +17,16 @@ from __future__ import annotations
 
 import json
 import logging
+from typing import TYPE_CHECKING
 
 from .cards import SourceCardView
 from .config import PlannerConfig
 from .discovery import LiveSourceView
 from .join_keys import CANONICAL_JOIN_KEYS
 from .schema import Plan
+
+if TYPE_CHECKING:
+    from .intent import IntentClassification
 
 logger = logging.getLogger("ariadne.planner.llm")
 
@@ -97,6 +101,7 @@ def build_messages(
     cards: dict[str, SourceCardView],
     live_view: LiveSourceView,
     feedback: list[str] | None = None,
+    intent: "IntentClassification | None" = None,
 ) -> list[dict[str, str]]:
     """Build the chat messages for one draft (pure; testable without HTTP)."""
     live_blocks, down_blocks = [], []
@@ -116,9 +121,16 @@ def build_messages(
         "",
         "DECLARED JOIN KEYS:",
         join_lines or "  (none)",
-        "",
-        f"ANALYST REQUEST:\n{request}",
     ]
+    if intent is not None:
+        # A prior classifier already named the intent; give it to the model as a
+        # hint (e.g. a "correlation" intent should declare a cross-source join).
+        context += [
+            "",
+            f"CLASSIFIED INTENT: {intent.label} (confidence {intent.confidence:.2f})"
+            + (f" — cues: {', '.join(intent.cues)}" if intent.cues else ""),
+        ]
+    context += ["", f"ANALYST REQUEST:\n{request}"]
     if feedback:
         context += [
             "",
@@ -208,8 +220,9 @@ class OpenAICompatibleDrafter:
         cards: dict[str, SourceCardView],
         live_view: LiveSourceView,
         feedback: list[str] | None = None,
+        intent: "IntentClassification | None" = None,
     ) -> Plan:
-        messages = build_messages(request, cards, live_view, feedback)
+        messages = build_messages(request, cards, live_view, feedback, intent)
         content = self._post(messages)
         data = extract_json_object(content)
         data["request"] = request
