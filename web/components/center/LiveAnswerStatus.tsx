@@ -7,7 +7,9 @@ import type { StampedQueryEvent } from "@/lib/types";
 /** Pipeline phase → what the analyst-facing status says it's doing, plus a
  *  rough progress fraction so the bar advances through the run. */
 const PHASE: Record<string, { label: string; progress: number }> = {
+  orchestrating: { label: "Resolving the question", progress: 0.08 },
   probing: { label: "Probing the live graphs", progress: 0.15 },
+  classifying: { label: "Classifying analyst intent", progress: 0.25 },
   planning: { label: "Planning the route", progress: 0.35 },
   querying: { label: "Extracting evidence from the graphs", progress: 0.6 },
   answering: { label: "Reasoning over the evidence", progress: 0.85 },

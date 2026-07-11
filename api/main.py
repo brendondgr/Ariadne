@@ -105,7 +105,7 @@ def post_query(request: QueryRequest) -> StreamingResponse:
     return StreamingResponse(
         stream,
         media_type="text/event-stream",
-        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+        headers={"Cache-Control": "no-cache, no-transform", "X-Accel-Buffering": "no"},
     )
 
 
@@ -164,7 +164,7 @@ def post_conversation_query(request: ConversationQueryRequest) -> StreamingRespo
     return StreamingResponse(
         stream,
         media_type="text/event-stream",
-        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+        headers={"Cache-Control": "no-cache, no-transform", "X-Accel-Buffering": "no"},
     )
 
 
@@ -183,7 +183,7 @@ def post_admin(request: AdminActionRequest) -> StreamingResponse:
     return StreamingResponse(
         stream,
         media_type="text/event-stream",
-        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+        headers={"Cache-Control": "no-cache, no-transform", "X-Accel-Buffering": "no"},
     )
 
 
@@ -212,5 +212,5 @@ def post_eval_run(request: EvalRunRequest) -> StreamingResponse:
     return StreamingResponse(
         stream,
         media_type="text/event-stream",
-        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+        headers={"Cache-Control": "no-cache, no-transform", "X-Accel-Buffering": "no"},
     )

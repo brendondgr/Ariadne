@@ -32,13 +32,15 @@ export function describeEvent(event: StampedQueryEvent, index: number): TickerLi
       const label =
         phase === "probing"
           ? "probing graph backends…"
-          : phase === "planning"
-            ? "planning and routing the question…"
-            : phase === "querying"
-              ? `querying ${event.data.count ?? ""} source specialist(s)…`.replace("  ", " ")
-              : phase === "answering"
-                ? "composing and verifying the answer…"
-                : null;
+          : phase === "classifying"
+            ? "classifying analyst intent…"
+            : phase === "planning"
+              ? "planning and routing the question…"
+              : phase === "querying"
+                ? `querying ${event.data.count ?? ""} source specialist(s)…`.replace("  ", " ")
+                : phase === "answering"
+                  ? "composing and verifying the answer…"
+                  : null;
       return label ? { key, time, text: label, accent: "sage" } : null;
     }
     case "probe": {
