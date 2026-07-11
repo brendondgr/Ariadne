@@ -36,6 +36,16 @@ def merge_dicts(left: dict, right: dict) -> dict:
     return {**left, **right}
 
 
+def union_sets(left: set, right: set) -> set:
+    """Reducer: union two sets (idempotent accumulate for frontier/visited).
+
+    Mirrors ``merge_dicts``: the iterative-retrieval loop returns only the
+    delta of newly discovered join-keys/entities per hop, and this folds them
+    into the running set without re-emitting the whole collection.
+    """
+    return set(left) | set(right)
+
+
 class PipelineState(TypedDict, total=False):
     """State for the top-level Q/A super-graph."""
 
@@ -60,6 +70,21 @@ class PipelineState(TypedDict, total=False):
     specialist_timings: Annotated[list[dict[str, Any]], operator.add]
     by_id: Annotated[dict[str, SpecialistResult], merge_dicts]
     cursor: int  # index of the next sub-question in execution order
+
+    # Iterative retrieval loop.
+    #   ``hop`` — current iteration (0 on entry), incremented at each re-plan;
+    #     the ``assess`` node forces sufficiency once it reaches ``max_hops``.
+    #   ``frontier`` — union of ``(join_value, source)`` join-keys surfaced by
+    #     specialists across all hops (the pool the re-planner chases).
+    #   ``visited`` — union of ``(entity_id, source)`` records already
+    #     retrieved, so a re-plan never re-queries a settled node.
+    #   ``assessment`` — the last sufficiency verdict (an
+    #     ``agents.assess.contracts.Assessment``; typed ``Any`` here to keep
+    #     ``state`` free of a dependency on the assess package).
+    hop: int
+    frontier: Annotated[set[tuple[str, str]], union_sets]
+    visited: Annotated[set[tuple[str, str]], union_sets]
+    assessment: Any
 
     # Bundle / synthesis / outcome (overwrite).
     evidence: FederatedEvidence

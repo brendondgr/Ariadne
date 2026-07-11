@@ -7,7 +7,12 @@ reducers must let a loop node return only its per-iteration delta.
 
 from langgraph.graph import END, START, StateGraph
 
-from utils.orchestration.state import PipelineState, PlanningState, merge_dicts
+from utils.orchestration.state import (
+    PipelineState,
+    PlanningState,
+    merge_dicts,
+    union_sets,
+)
 from utils.planner.schema import Plan
 from utils.specialists.contracts import SpecialistResult, SpecialistTask
 
@@ -19,6 +24,39 @@ def _result(sq_id: str) -> SpecialistResult:
 
 def test_merge_dicts_later_keys_win():
     assert merge_dicts({"a": 1, "b": 1}, {"b": 2, "c": 3}) == {"a": 1, "b": 2, "c": 3}
+
+
+def test_union_sets_accumulates_and_dedupes():
+    assert union_sets({("a", "attack")}, {("a", "attack"), ("b", "capec")}) == {
+        ("a", "attack"),
+        ("b", "capec"),
+    }
+    assert union_sets(set(), {("x", "capec")}) == {("x", "capec")}
+
+
+def test_pipeline_state_frontier_visited_union_across_hops():
+    """Two hops each return only their delta of discovered join-keys/entities."""
+
+    def hop1(state: PipelineState) -> dict:
+        return {"hop": 1, "frontier": {("T1047", "attack")},
+                "visited": {("CAPEC-233", "capec")}}
+
+    def hop2(state: PipelineState) -> dict:
+        assert state["hop"] == 1  # overwrite semantics on the counter
+        return {"hop": 2, "frontier": {("T1021", "attack")},
+                "visited": {("T1047", "attack")}}
+
+    g = StateGraph(PipelineState)
+    g.add_node("hop1", hop1)
+    g.add_node("hop2", hop2)
+    g.add_edge(START, "hop1")
+    g.add_edge("hop1", "hop2")
+    g.add_edge("hop2", END)
+    out = g.compile().invoke({"question": "q", "hop": 0})
+
+    assert out["hop"] == 2
+    assert out["frontier"] == {("T1047", "attack"), ("T1021", "attack")}
+    assert out["visited"] == {("CAPEC-233", "capec"), ("T1047", "attack")}
 
 
 def test_pipeline_state_accumulates_specialist_deltas():
