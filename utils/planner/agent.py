@@ -34,7 +34,8 @@ from .degrade import degrade_to_partial
 from .discovery import LiveSourceProbe, LiveSourceView
 from .drafter import PlanDrafter
 from .drafter_factory import select_drafter
-from .intent import DeterministicIntentClassifier, IntentClassifier
+from .intent import IntentClassifier
+from .intent_llm import select_intent_classifier
 from .join_keys import CANONICAL_JOIN_KEYS
 from .schema import JoinDeclaration, Limits, Plan, SubQuestion
 
@@ -60,9 +61,9 @@ class PlanningAgent:
         self._cards = cards if cards is not None else load_source_cards(self._config.data_dir)
         self._drafter = drafter or select_drafter(self._config)
         self._probe = probe or LiveSourceProbe(self._config)
-        # Planner step one. Deterministic default; Phase 3 swaps in the hybrid
-        # LLM classifier via select_intent_classifier(config).
-        self._classifier = classifier or DeterministicIntentClassifier()
+        # Planner step one. Hybrid LLM classifier when PLANNER_INTENT_LLM_ENABLED,
+        # else the deterministic classifier (always the fallback).
+        self._classifier = classifier or select_intent_classifier(self._config)
         self._graph = None  # compiled lazily; collaborators are fixed at init
 
     @property

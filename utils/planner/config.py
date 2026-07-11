@@ -57,6 +57,9 @@ class PlannerConfig:
     # LLM drafter (OpenAI-compatible). Disabled by default; the deterministic
     # drafter is always the fallback.
     llm_enabled: bool = False
+    # LLM intent classifier (same endpoint as the drafter). Disabled by default;
+    # the deterministic classifier is always the fallback.
+    intent_llm_enabled: bool = False
     llm_base_url: str = DEFAULT_LLM_BASE_URL
     llm_model: str = DEFAULT_LLM_MODEL
     llm_timeout_s: float = 30.0
@@ -82,12 +85,11 @@ class PlannerConfig:
             data_dir = env_str("ARIADNE_DATA_DIR", "data")
         # PLANNER_LLM_ENABLED controls whether the LLM drafter is even tried;
         # we treat the common truthy spellings as enabled.
-        llm_enabled = os.environ.get("PLANNER_LLM_ENABLED", "").strip().lower() in {
-            "1",
-            "true",
-            "yes",
-            "on",
-        }
+        _truthy = {"1", "true", "yes", "on"}
+        llm_enabled = os.environ.get("PLANNER_LLM_ENABLED", "").strip().lower() in _truthy
+        intent_llm_enabled = (
+            os.environ.get("PLANNER_INTENT_LLM_ENABLED", "").strip().lower() in _truthy
+        )
         return cls(
             data_dir=Path(data_dir),
             neo4j_uri=env_str("NEO4J_URI", DEFAULT_NEO4J_URI),
@@ -99,6 +101,7 @@ class PlannerConfig:
             min_live_nodes=env_int("PLANNER_MIN_LIVE_NODES", 1),
             max_iterations=env_int("PLANNER_MAX_ITERATIONS", 3),
             llm_enabled=llm_enabled,
+            intent_llm_enabled=intent_llm_enabled,
             llm_base_url=env_str("PLANNER_LLM_BASE_URL", DEFAULT_LLM_BASE_URL),
             llm_model=env_str("PLANNER_LLM_MODEL", DEFAULT_LLM_MODEL),
             llm_timeout_s=_env_float("PLANNER_LLM_TIMEOUT_S", 30.0),
