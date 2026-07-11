@@ -191,3 +191,15 @@ fake connectors + live `@pytest.mark.live`/`integration` tests that skip when th
 stack is unreachable), and the federation router. The live tests exercise real
 records against the running Neo4j/Gremlin stack (e.g. `T1047` → `M1038`, `CAPEC-66`
 → `CWE-89`/`CWE-1286`, `CAPEC-1` → `T1574.010`).
+
+## Multi-hop execution (iterative-retrieval loop)
+
+The specialist subgraph is unchanged by the
+[iterative-retrieval loop](iterative-retrieval-loop.md): when a hop is
+insufficient, the re-plan appends new sub-questions and the loop re-enters the
+same subgraph with `cursor` left where it stopped. Because `execution_order`
+keeps appended sub-questions after the originals, each hop runs **only** the
+newly added sub-questions — seeded from their already-run producers through the
+existing declared-join `harvest_seed_ids` path. No new query surface, no change
+to the honesty guarantees (dependency skips, deadline skips, boundary refusals);
+only the *set* of sub-questions is dynamic.

@@ -135,3 +135,17 @@ uv run python -m pytest utils/planner/tests/
 Covers cards/enrichment/join-keys, content-probe discovery, the plan schema and
 deterministic gate, both drafters (incl. a guarded live LLM test), the bounded
 loop, the evaluation harness, and the CLI.
+
+## Re-plan entry (iterative-retrieval loop)
+
+`PlanningAgent.replan(request, evidence, frontier, gaps)` is the evidence-aware
+path the [iterative-retrieval loop](iterative-retrieval-loop.md) calls between
+hops. It performs deterministic cross-source **join-key chasing**: for each
+declared canonical join, values a producer surfaced but that have not resolved
+are chased into the consumer source (when it is live and not yet queried),
+emitting a seeded consumer sub-question plus its join declaration. The returned
+expansion is grafted onto the running plan by `schema.merge_plans`, which
+de-duplicates candidates on `(source, sorted(entities), normalized_text)` — so
+answered sub-questions are never re-issued — preserves base ids, and tags the
+appended sub-questions with their `hop` (`SubQuestion.hop`, omitted from
+`to_dict` when `0` so single-pass plan JSON stays byte-identical).
