@@ -14,6 +14,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+from .intent import IntentClassification
+
 
 @dataclass(frozen=True)
 class Limits:
@@ -146,6 +148,10 @@ class Plan:
     rationale: str = ""
     partial: bool = False
     trace: list[dict[str, Any]] = field(default_factory=list)
+    # The analyst intent the planner classified for this request (planner step
+    # one). ``None`` until the classify node runs; omitted from ``to_dict`` when
+    # absent so pre-intent plan JSON stays byte-identical to the baselines.
+    intent: IntentClassification | None = None
 
     def target_sources(self) -> set[str]:
         return {sq.source for sq in self.sub_questions}
@@ -154,7 +160,7 @@ class Plan:
         return not self.sub_questions and not self.unsupported
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        out: dict[str, Any] = {
             "request": self.request,
             "sub_questions": [sq.to_dict() for sq in self.sub_questions],
             "joins": [j.to_dict() for j in self.joins],
@@ -164,6 +170,9 @@ class Plan:
             "partial": self.partial,
             "trace": list(self.trace),
         }
+        if self.intent is not None:
+            out["intent"] = self.intent.to_dict()
+        return out
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "Plan":
@@ -176,6 +185,7 @@ class Plan:
             rationale=str(data.get("rationale", "")),
             partial=bool(data.get("partial", False)),
             trace=list(data.get("trace", [])),
+            intent=IntentClassification.from_dict(data.get("intent")),
         )
 
 
@@ -223,6 +233,7 @@ def merge_plans(base: Plan, addition: Plan, *, hop: int) -> Plan:
         rationale=base.rationale,
         partial=base.partial,
         trace=list(base.trace),
+        intent=base.intent,  # the classified intent survives re-plan grafting
     )
 
     seen_sq = {subquestion_key(sq) for sq in merged.sub_questions}

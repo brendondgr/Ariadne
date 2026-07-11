@@ -105,6 +105,10 @@ class PlanningState(TypedDict, total=False):
     drafter_used: str
     gate_ok: bool
     trace: Annotated[list[dict], operator.add]
+    # The classified analyst intent (an IntentClassification), set once by the
+    # classify node and copied onto the final plan by finalize/degrade. Typed
+    # ``Any`` to keep the state envelope free of the intent import.
+    intent: Any
     plan: Plan  # the final (converged or degraded) plan
 
 

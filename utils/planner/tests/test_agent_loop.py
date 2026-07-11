@@ -153,3 +153,29 @@ def test_down_source_request_routes_only_live() -> None:
     assert plan.partial
     assert any("attack" in u.reason for u in plan.unsupported)
     assert evaluate(plan, CARDS, agent.live_sources()).ok
+
+
+# -- intent classification (planner step one) -------------------------------
+
+
+def test_converged_plan_carries_classified_intent() -> None:
+    agent = _agent(DeterministicDrafter())
+    plan = agent.plan(DEMO)  # the flagship cross-source question
+    assert plan.intent is not None
+    assert plan.intent.label == "correlation"
+    assert plan.intent.source == "deterministic"
+    # intent survives serialisation and is present only once set.
+    assert plan.to_dict()["intent"]["label"] == "correlation"
+
+
+def test_degraded_plan_still_reports_intent() -> None:
+    agent = _agent(DeterministicDrafter())
+    plan = agent.plan("List all Kubernetes pods.")  # out of scope -> degrade
+    assert plan.intent is not None  # even a partial/degraded plan names its intent
+
+
+def test_plan_without_intent_serialises_byte_identically() -> None:
+    # A plan whose classify step never ran (intent is None) must omit the key,
+    # so pre-intent baselines stay byte-identical (mirrors SubQuestion.hop).
+    plan = Plan(request="x")
+    assert "intent" not in plan.to_dict()

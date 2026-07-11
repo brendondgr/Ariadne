@@ -18,6 +18,7 @@ from utils.planner.cards import SourceCardView
 from utils.planner.degrade import degrade_to_partial
 from utils.planner.drafter import PlanDrafter
 from utils.planner.gate import evaluate
+from utils.planner.intent import IntentClassifier
 
 logger = logging.getLogger("ariadne.planner.agent")
 
@@ -28,8 +29,19 @@ def build_nodes(
     drafter: PlanDrafter,
     cards: dict[str, SourceCardView],
     max_iterations: int,
+    classifier: IntentClassifier,
 ) -> dict[str, NodeFn]:
     """Return the planner subgraph's node functions, closed over collaborators."""
+
+    def classify(state: PlanningState) -> dict[str, Any]:
+        # Planner step one: name the analyst intent before any drafting. The
+        # label biases the draft; the gate remains the authority on what ships.
+        intent = classifier.classify(state["request"], cards)
+        logger.info(
+            "intent classified: %s (%.2f, %s)",
+            intent.label, intent.confidence, intent.source,
+        )
+        return {"intent": intent}
 
     def draft(state: PlanningState) -> dict[str, Any]:
         iteration = int(state.get("iteration") or 0) + 1
@@ -65,6 +77,7 @@ def build_nodes(
             "plan converged on iteration %d (%s)", state["iteration"], state["drafter_used"]
         )
         plan.trace = list(state["trace"])
+        plan.intent = state.get("intent")  # carry the classified intent onto the plan
         return {"plan": plan}
 
     def degrade(state: PlanningState) -> dict[str, Any]:
@@ -78,6 +91,7 @@ def build_nodes(
             cards=cards,
             max_iterations=max_iterations,
         )
+        plan.intent = state.get("intent")  # even a degraded plan reports its intent
         return {"plan": plan}
 
     def route_after_gate(state: PlanningState) -> str:
@@ -88,6 +102,7 @@ def build_nodes(
         return "degrade"
 
     return {
+        "classify": classify,
         "draft": draft,
         "gate": gate,
         "finalize": finalize,

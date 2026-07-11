@@ -34,6 +34,7 @@ from .degrade import degrade_to_partial
 from .discovery import LiveSourceProbe, LiveSourceView
 from .drafter import PlanDrafter
 from .drafter_factory import select_drafter
+from .intent import DeterministicIntentClassifier, IntentClassifier
 from .join_keys import CANONICAL_JOIN_KEYS
 from .schema import JoinDeclaration, Limits, Plan, SubQuestion
 
@@ -53,11 +54,15 @@ class PlanningAgent:
         cards: dict[str, SourceCardView] | None = None,
         drafter: PlanDrafter | None = None,
         probe: LiveSourceProbe | None = None,
+        classifier: IntentClassifier | None = None,
     ) -> None:
         self._config = config or PlannerConfig.from_env()
         self._cards = cards if cards is not None else load_source_cards(self._config.data_dir)
         self._drafter = drafter or select_drafter(self._config)
         self._probe = probe or LiveSourceProbe(self._config)
+        # Planner step one. Deterministic default; Phase 3 swaps in the hybrid
+        # LLM classifier via select_intent_classifier(config).
+        self._classifier = classifier or DeterministicIntentClassifier()
         self._graph = None  # compiled lazily; collaborators are fixed at init
 
     @property
@@ -76,7 +81,9 @@ class PlanningAgent:
             from utils.orchestration.config import OrchestrationConfig
 
             self._graph = (
-                build_planning_graph(self._drafter, self._cards, self._config.max_iterations),
+                build_planning_graph(
+                    self._drafter, self._cards, self._config.max_iterations, self._classifier
+                ),
                 OrchestrationConfig.from_env(),
             )
         return self._graph
@@ -85,7 +92,9 @@ class PlanningAgent:
         # Re-probe per request (short TTL cache amortises bursts).
         live_view = self._probe.get_live_sources(self._cards)
         if self._config.max_iterations <= 0:  # defensive: no drafts allowed
-            return self._degrade(None, request, live_view, [], [])
+            degraded = self._degrade(None, request, live_view, [], [])
+            degraded.intent = self._classifier.classify(request, self._cards)
+            return degraded
         graph, orch = self._compiled()
         out = graph.invoke(
             {"request": request, "live_view": live_view, "iteration": 0, "feedback": None},

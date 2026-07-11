@@ -15,6 +15,7 @@ from langgraph.graph.state import CompiledStateGraph
 from utils.orchestration.state import PlanningState
 from utils.planner.cards import SourceCardView
 from utils.planner.drafter import PlanDrafter
+from utils.planner.intent import DeterministicIntentClassifier, IntentClassifier
 
 from .nodes import build_nodes
 
@@ -23,17 +24,22 @@ def build_planning_graph(
     drafter: PlanDrafter,
     cards: dict[str, SourceCardView],
     max_iterations: int,
+    classifier: IntentClassifier | None = None,
 ) -> CompiledStateGraph:
-    """Compile the draft → gate → revise/degrade loop for one agent's collaborators."""
-    nodes = build_nodes(drafter, cards, max_iterations)
+    """Compile the classify → draft → gate → revise/degrade loop for one agent."""
+    nodes = build_nodes(
+        drafter, cards, max_iterations, classifier or DeterministicIntentClassifier()
+    )
 
     graph = StateGraph(PlanningState)
+    graph.add_node("classify", nodes["classify"])
     graph.add_node("draft", nodes["draft"])
     graph.add_node("gate", nodes["gate"])
     graph.add_node("finalize", nodes["finalize"])
     graph.add_node("degrade", nodes["degrade"])
 
-    graph.add_edge(START, "draft")
+    graph.add_edge(START, "classify")
+    graph.add_edge("classify", "draft")
     graph.add_edge("draft", "gate")
     graph.add_conditional_edges(
         "gate",
