@@ -26,6 +26,7 @@ contract; the graph owns the control flow.
 from __future__ import annotations
 
 import logging
+from typing import TYPE_CHECKING
 
 from .cards import SourceCardView, load_source_cards
 from .config import PlannerConfig
@@ -33,7 +34,11 @@ from .degrade import degrade_to_partial
 from .discovery import LiveSourceProbe, LiveSourceView
 from .drafter import PlanDrafter
 from .drafter_factory import select_drafter
-from .schema import Plan
+from .join_keys import CANONICAL_JOIN_KEYS
+from .schema import JoinDeclaration, Limits, Plan, SubQuestion
+
+if TYPE_CHECKING:  # federation imports planner.schema; keep the runtime edge lazy
+    from utils.specialists.federation import FederatedEvidence
 
 logger = logging.getLogger("ariadne.planner.agent")
 
@@ -87,6 +92,84 @@ class PlanningAgent:
             config={"recursion_limit": orch.recursion_limit},
         )
         return out["plan"]
+
+    def replan(
+        self,
+        request: str,
+        evidence: "FederatedEvidence",
+        frontier: set[tuple[str, str]],
+        gaps: list[str] | None = None,
+    ) -> Plan:
+        """Draft the *expansion* for the next hop — only genuinely-new work.
+
+        The first-cut expansion is deterministic **join-key chasing** (the
+        strategy the plan commits to): for each declared canonical join, take
+        the values a *producer* source surfaced but that have not yet resolved
+        across sources, and — when the *consumer* source has not been queried
+        yet and is live — emit a consumer sub-question plus the join declaration
+        that seeds it from the producer's harvested join values. Relevance-
+        scored neighbour/relation expansion is the documented follow-on.
+
+        Returns an expansion ``Plan`` (its sub-questions/joins are grafted onto
+        the running plan by :func:`utils.planner.schema.merge_plans`, which
+        de-duplicates and hop-tags). An empty expansion means "nothing new to
+        chase" — the loop then terminates rather than spinning.
+        """
+        gaps = gaps or []
+        live_view = self._probe.get_live_sources(self._cards)
+        queried_sources = set(evidence.by_source().keys())
+        resolved = set(evidence.cross_source_join_values())
+
+        pending_by_source: dict[str, set[str]] = {}
+        for value, source in frontier:
+            if value and value not in resolved:
+                pending_by_source.setdefault(source, set()).add(value)
+
+        expansion = Plan(request=request)
+        for key in CANONICAL_JOIN_KEYS:
+            producer = next((e for e in key.endpoints if e.via_edge), None)
+            consumer = next((e for e in key.endpoints if e.via_edge is None), None)
+            if producer is None or consumer is None:
+                continue
+            if not pending_by_source.get(producer.dataset):
+                continue
+            # First cut chases cross-source into a source not yet queried; a
+            # source already queried would need within-source neighbour
+            # expansion, which is the follow-on.
+            if consumer.dataset in queried_sources:
+                continue
+            card = self._cards.get(consumer.dataset)
+            if card is None or not live_view.is_live(consumer.dataset):
+                continue
+            entities = [lbl for lbl in consumer.labels if card.has_label(lbl)]
+            if not entities:
+                continue
+            gap_note = f" (gaps: {'; '.join(gaps[:2])})" if gaps else ""
+            expansion.sub_questions.append(
+                SubQuestion(
+                    id=f"q{len(expansion.sub_questions) + 1}",
+                    source=consumer.dataset,
+                    text=(
+                        f"In {consumer.dataset}, retrieve {', '.join(entities)} for the "
+                        f"{key.name} join keys discovered so far"
+                    ),
+                    entities=entities,
+                    limits=Limits(**card.limits()),
+                    join_key=key.name,
+                    rationale=(
+                        f"re-plan: chase discovered {key.name} keys into "
+                        f"{consumer.dataset}{gap_note}"
+                    ),
+                )
+            )
+            expansion.joins.append(
+                JoinDeclaration(
+                    key=key.name,
+                    sources=[producer.dataset, consumer.dataset],
+                    on=key.description,
+                )
+            )
+        return expansion
 
     def _degrade(
         self,

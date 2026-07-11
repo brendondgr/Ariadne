@@ -50,7 +50,14 @@ class Limits:
 
 @dataclass(frozen=True)
 class SubQuestion:
-    """One scoped task routed to exactly one live source."""
+    """One scoped task routed to exactly one live source.
+
+    ``hop`` records which iterative-retrieval hop introduced the sub-question:
+    ``0`` for the initial plan, ``1+`` for re-planned expansions. It is a pure
+    tag (execution order derives only from declared joins), and — to keep the
+    single-pass plan JSON byte-identical to the pre-loop baselines — it is
+    omitted from ``to_dict`` when ``0``.
+    """
 
     id: str
     source: str
@@ -59,9 +66,10 @@ class SubQuestion:
     limits: Limits
     join_key: str | None = None
     rationale: str = ""
+    hop: int = 0
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        out: dict[str, Any] = {
             "id": self.id,
             "source": self.source,
             "text": self.text,
@@ -70,6 +78,9 @@ class SubQuestion:
             "join_key": self.join_key,
             "rationale": self.rationale,
         }
+        if self.hop:
+            out["hop"] = self.hop
+        return out
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "SubQuestion":
@@ -81,6 +92,7 @@ class SubQuestion:
             limits=Limits.from_dict(data.get("limits")),
             join_key=data.get("join_key"),
             rationale=str(data.get("rationale", "")),
+            hop=int(data.get("hop", 0) or 0),
         )
 
 
@@ -165,3 +177,95 @@ class Plan:
             partial=bool(data.get("partial", False)),
             trace=list(data.get("trace", [])),
         )
+
+
+# -- re-plan merge / de-duplication -----------------------------------------
+#
+# The iterative-retrieval loop re-plans by drafting an *expansion* and grafting
+# only its genuinely-new sub-questions onto the plan run so far. De-duplication
+# is keyed on the semantic identity of a sub-question — its source, the set of
+# entities it touches, and its normalized text — never its ``id`` (ids are
+# per-plan and re-assigned). This keeps the loop from re-asking an answered
+# sub-question or ever shrinking below what it has already gathered.
+
+
+def _normalize_text(text: str) -> str:
+    """Case-fold and collapse whitespace so trivially-different text matches."""
+    return " ".join(text.lower().split())
+
+
+def subquestion_key(sq: SubQuestion) -> tuple[str, tuple[str, ...], str]:
+    """The dedupe identity of a sub-question: (source, sorted entities, text)."""
+    return (
+        sq.source,
+        tuple(sorted(e.lower() for e in sq.entities)),
+        _normalize_text(sq.text),
+    )
+
+
+def merge_plans(base: Plan, addition: Plan, *, hop: int) -> Plan:
+    """Return ``base`` with ``addition``'s *new* sub-questions/joins appended.
+
+    Base sub-questions keep their ids untouched (the specialist loop's
+    ``by_id`` accumulator and the running ``cursor`` key on them). Each
+    appended sub-question is de-duplicated against everything already in the
+    plan, given a fresh unique id continuing the ``q#`` sequence, and tagged
+    with ``hop``. Joins are unioned by ``(key, frozenset(sources))``. The base
+    ``request``/``unsupported``/``assumptions``/``rationale`` are preserved;
+    ``partial`` stays set if either plan was partial.
+    """
+    merged = Plan(
+        request=base.request,
+        sub_questions=list(base.sub_questions),
+        joins=list(base.joins),
+        unsupported=list(base.unsupported),
+        assumptions=list(base.assumptions),
+        rationale=base.rationale,
+        partial=base.partial,
+        trace=list(base.trace),
+    )
+
+    seen_sq = {subquestion_key(sq) for sq in merged.sub_questions}
+    used_ids = {sq.id for sq in merged.sub_questions}
+    next_n = len(merged.sub_questions)
+
+    def _fresh_id() -> str:
+        nonlocal next_n
+        while True:
+            next_n += 1
+            candidate = f"q{next_n}"
+            if candidate not in used_ids:
+                used_ids.add(candidate)
+                return candidate
+
+    appended = 0
+    for sq in addition.sub_questions:
+        key = subquestion_key(sq)
+        if key in seen_sq:
+            continue
+        seen_sq.add(key)
+        merged.sub_questions.append(
+            SubQuestion(
+                id=_fresh_id(),
+                source=sq.source,
+                text=sq.text,
+                entities=list(sq.entities),
+                limits=sq.limits,
+                join_key=sq.join_key,
+                rationale=sq.rationale,
+                hop=hop,
+            )
+        )
+        appended += 1
+
+    seen_join = {(j.key, frozenset(j.sources)) for j in merged.joins}
+    for join in addition.joins:
+        sig = (join.key, frozenset(join.sources))
+        if sig in seen_join:
+            continue
+        seen_join.add(sig)
+        merged.joins.append(join)
+
+    if appended and addition.partial:
+        merged.partial = True
+    return merged
