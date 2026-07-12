@@ -316,6 +316,53 @@ describe("buildEntityDetails", () => {
     });
   });
 
+  it("registers a record's related entries as name-only fallbacks", () => {
+    const details = buildEntityDetails(
+      fed({
+        results: [
+          resultWith([
+            record({
+              primary_id: "T1047",
+              name: "Windows Management Instrumentation",
+              related: [
+                { id: "M1038", name: "Execution Prevention" },
+                { name: "no id — skipped" },
+              ],
+            }),
+          ]),
+        ],
+      }),
+    );
+    expect(details.get("M1038")).toEqual({
+      name: "Execution Prevention",
+      label: "",
+      properties: {},
+    });
+  });
+
+  it("prefers a full record over another record's related entry for the same id", () => {
+    const details = buildEntityDetails(
+      fed({
+        results: [
+          resultWith([
+            record({
+              primary_id: "T1047",
+              related: [{ id: "M1038", name: "related-name" }],
+            }),
+            record({
+              primary_id: "M1038",
+              name: "record-name",
+              label: "Mitigation",
+              properties: { a: 1 },
+            }),
+          ]),
+        ],
+      }),
+    );
+    expect(details.get("M1038")?.name).toBe("record-name");
+    expect(details.get("M1038")?.properties).toEqual({ a: 1 });
+  });
+
   it("prefers the record over a join-index entry for the same id", () => {
     const entries: JoinIndexEntry[] = [
       { source: "attack", primary_id: "T1047", name: "join-name" },

@@ -358,13 +358,18 @@ the FastAPI service (`api/`), and the wired Next.js workbench (`web/`, with Chat
 / Graphs / **Evaluation** views) are implemented; Gremlin is the primary CAPEC
 runtime backend. The analyst-facing output (Deliverable #4) is delivered: the
 verified claims render in the workbench, plus a per-answer claim table
-(`web/components/center/ClaimTable.tsx`) and a compact CAPEC–ATT&CK–mitigation
+(`web/components/center/ClaimTable.tsx`), a compact CAPEC–ATT&CK–mitigation
 network plot (`web/components/center/AnswerNetworkPlot.tsx`, edges from
-`web/lib/synthesisGraph.ts`, reusing the force-graph renderer). The plot's edges
-are provenance-exact when the synthesis payload carries them
-(`SynthesizedAnswer.edges`, derived and verifier-pruned in
-`utils/synthesis/verifier.py`) and fall back to a labelled "derived" view
-inferred from the join index otherwise.
+`web/lib/synthesisGraph.ts`, reusing the force-graph renderer), and a
+technique×mitigation coverage matrix
+(`web/components/center/AnswerMitigationMatrix.tsx`, grid from
+`web/lib/synthesisMatrix.ts` over the same edge-derivation seam). Both figures'
+edges are provenance-exact when the synthesis payload carries them
+(`SynthesizedAnswer.edges` — `mapsTo` from the cross-source join index and
+`mitigatedBy` from the technique records' `MITIGATES` entries, derived and
+verifier-pruned in `utils/synthesis/verifier.py`) and fall back to a labelled
+"derived" view inferred from the join index + co-citation otherwise.
 
-Remaining roadmap polish: richer figure types (e.g. tactic/mitigation matrices)
-and technique→mitigation edges as provenance-exact rather than inferred.
+Remaining roadmap polish: an ATT&CK-Navigator-style tactic×technique matrix
+(blocked on tactic kill-chain ordering, which the answer path does not project
+today).

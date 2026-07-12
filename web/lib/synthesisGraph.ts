@@ -167,6 +167,24 @@ export function buildEntityDetails(
     }
   }
 
+  // A record's `related` entries (e.g. a technique's MITIGATES mitigations)
+  // are a name-only fallback for ids that never surfaced as their own record —
+  // set-if-absent after the record pass so full records always win.
+  for (const result of federated.results ?? []) {
+    for (const rec of result.records) {
+      for (const rel of rec.related ?? []) {
+        const raw = rel.id ?? rel.entry_id;
+        const id = typeof raw === "string" ? raw : "";
+        if (!id || details.has(id)) continue;
+        details.set(id, {
+          name: typeof rel.name === "string" && rel.name ? rel.name : id,
+          label: "",
+          properties: {},
+        });
+      }
+    }
+  }
+
   return details;
 }
 

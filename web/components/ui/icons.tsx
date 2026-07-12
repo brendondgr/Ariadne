@@ -224,6 +224,16 @@ export function TableIcon({ size = 13, ...props }: IconProps) {
   );
 }
 
+/** Matrix — a coverage grid. */
+export function GridIcon({ size = 13, ...props }: IconProps) {
+  return (
+    <svg {...base({ size, ...props })} aria-hidden>
+      <rect x="3.5" y="4.5" width="17" height="15" rx="1.5" {...S} />
+      <path d="M3.5 9.5h17M3.5 14.5h17M9 4.5v15M15 4.5v15" {...S} />
+    </svg>
+  );
+}
+
 /** Network plot — connected nodes. */
 export function NetworkIcon({ size = 13, ...props }: IconProps) {
   return (

@@ -10,6 +10,7 @@ import {
   CopyIcon,
   EvidenceIcon,
   ExportIcon,
+  GridIcon,
   LinkIcon,
   LogsIcon,
   NetworkIcon,
@@ -27,6 +28,7 @@ import { JoinChip } from "./JoinChip";
 import { ClaimTableBody } from "./ClaimTable";
 import { ConflictPanel, ContestedBadge } from "./ConflictPanel";
 import { NetworkPlotBody, networkPlotMeta } from "./AnswerNetworkPlot";
+import { MitigationMatrixBody, mitigationMatrixMeta } from "./AnswerMitigationMatrix";
 import { buildEntityDetails } from "@/lib/synthesisGraph";
 import { SectionTabs, type TabDef } from "./SectionTabs";
 import { RefText } from "./RefText";
@@ -315,6 +317,7 @@ export function AnswerCard({
   // Tabs appear only as their data becomes available (progressive disclosure).
   const syn = run.answer.synthesis;
   const net = syn ? networkPlotMeta(syn, run.answer.joinPairs) : null;
+  const matrix = syn ? mitigationMatrixMeta(syn, run.answer.joinPairs) : null;
   const tabs: TabDef[] = [];
   if (run.answer.paragraphs.length > 0) {
     tabs.push({
@@ -351,6 +354,21 @@ export function AnswerCard({
       badge: net.nodeCount,
       content: (
         <NetworkPlotBody
+          synthesis={syn}
+          joinPairs={run.answer.joinPairs}
+          entityDetails={entityDetails}
+        />
+      ),
+    });
+  }
+  if (syn && matrix?.renderable) {
+    tabs.push({
+      id: "matrix",
+      label: "Mitigation Matrix",
+      icon: <GridIcon />,
+      badge: matrix.cellCount,
+      content: (
+        <MitigationMatrixBody
           synthesis={syn}
           joinPairs={run.answer.joinPairs}
           entityDetails={entityDetails}

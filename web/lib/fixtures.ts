@@ -61,7 +61,10 @@ const ATTACK_RECORDS: EvidenceRecord[] = [
     label: "Technique",
     name: "Windows Management Instrumentation",
     properties: { tactic: "execution", platform: "Windows" },
-    related: [],
+    related: [
+      { id: "M1038", name: "Execution Prevention" },
+      { id: "M1026", name: "Privileged Account Management" },
+    ],
     join_values: ["T1047"],
     provenance: attackProv("technique--01", NEO4J_QUERY),
   },
@@ -71,7 +74,7 @@ const ATTACK_RECORDS: EvidenceRecord[] = [
     label: "Technique",
     name: "WMI Event Subscription",
     properties: { tactic: "persistence", platform: "Windows" },
-    related: [],
+    related: [{ id: "M1038", name: "Execution Prevention" }],
     join_values: ["T1546.003"],
     provenance: attackProv("technique--02", NEO4J_QUERY),
   },
@@ -496,10 +499,14 @@ export const wmiCapecRun: WorkbenchRun = {
         ok: true,
         conflictCount: 0,
       },
-      // Provenance-exact edges (Option B): the verifier's CAPEC→ATT&CK mappings.
+      // Provenance-exact edges (Option B): the verifier's CAPEC→ATT&CK
+      // mappings plus the technique records' MITIGATES relationships.
       edges: [
         { source: "CAPEC-549", target: "T1047", rel: "mapsTo" },
         { source: "CAPEC-563", target: "T1546.003", rel: "mapsTo" },
+        { source: "T1047", target: "M1038", rel: "mitigatedBy" },
+        { source: "T1047", target: "M1026", rel: "mitigatedBy" },
+        { source: "T1546.003", target: "M1038", rel: "mitigatedBy" },
       ],
     },
     timings: [
