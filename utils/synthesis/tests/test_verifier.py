@@ -202,3 +202,71 @@ def test_deterministic_composer_output_verifies_clean():
     assert answer.verification.repaired_abstentions == 0
     assert len(answer.rendered_claims()) == len(answer.claims) == 3  # 2 facts + 1 corr
     assert len(answer.abstentions) == 1
+
+
+# -- cross-source reconciliation (contested claims) --------------------------
+#
+# A conflict never *cuts* a claim (both records are real) — it flags the
+# supported claim "contested" and rides the report as a Conflict.
+
+
+def _conflicting_name_evidence():
+    """attack names T1055 'Process Injection'; capec's mapping calls it
+    'Thread Hijacking' — a genuine cross-source name disagreement."""
+    attack = make_result(
+        source="attack",
+        sub_question_id="q1",
+        records=[make_record("T1055", name="Process Injection", source="attack")],
+    )
+    capec = make_result(
+        source="capec",
+        sub_question_id="q2",
+        records=[
+            make_record(
+                "CAPEC-242",
+                name="Code Injection",
+                source="capec",
+                label="AttackPattern",
+                join_values=("T1055",),
+                related=[{"id": "T1055", "name": "Thread Hijacking"}],
+            )
+        ],
+    )
+    return make_evidence([attack, capec])
+
+
+def test_contested_claim_stays_supported_and_rendered():
+    claim = Claim(
+        text="T1055 is Process Injection.",
+        citations=(_cite("T1055"),),
+        entity_ids=("T1055",),
+    )
+    answer = verify_answer(_answer([claim]), _conflicting_name_evidence())
+
+    report = answer.verification
+    assert report.conflict_count == 1
+    assert report.conflicts[0].kind == "name"
+    # flagged, not cut: the claim is still supported and still rendered.
+    assert answer.rendered_claims() == [claim]
+    (verdict,) = report.verdicts
+    assert verdict.supported
+    assert verdict.is_contested
+    assert verdict.contested == ("T1055",)
+
+
+def test_conflict_free_answer_has_no_conflicts_and_identical_payload():
+    claim = Claim(
+        text="T1047 is mitigated by M1038.",
+        citations=(_cite(),),
+        entity_ids=("T1047", "M1038"),
+    )
+    answer = verify_answer(_answer([claim]), _evidence_one_technique())
+
+    report = answer.verification
+    assert report.conflict_count == 0
+    assert report.contested_count == 0
+    # omit-when-empty keeps the report payload byte-identical to pre-reconcile.
+    d = report.to_dict()
+    assert "conflicts" not in d
+    assert "conflict_count" not in d
+    assert "contested" not in d["verdicts"][0]

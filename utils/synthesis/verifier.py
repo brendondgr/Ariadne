@@ -32,6 +32,7 @@ hide evidence behind a false "the sources don't establish this".
 from __future__ import annotations
 
 import re
+from dataclasses import replace
 
 from utils.specialists.contracts import EvidenceRecord, SpecialistResult
 from utils.specialists.federation import FederatedEvidence
@@ -47,6 +48,7 @@ from .contracts import (
     VerificationReport,
 )
 from .grounding import id_pool, normalize_id
+from .reconcile import conflicted_values, detect_conflicts
 
 _CAPEC_RE = re.compile(r"^capec-\d+$", re.IGNORECASE)
 _TECHNIQUE_RE = re.compile(r"^t\d{4}(?:\.\d{3})?$", re.IGNORECASE)
@@ -225,6 +227,29 @@ def _synthesis_edges(
     return edges
 
 
+def _claim_ids(claim: Claim) -> set[str]:
+    """Every normalized id a claim asserts or cites — the surface a conflict on
+    a shared join value can contest."""
+    ids = {normalize_id(c.primary_id) for c in claim.citations}
+    ids.update(normalize_id(e) for e in claim.entity_ids)
+    return ids
+
+
+def _mark_contested(
+    verdict: ClaimVerdict, claim: Claim, conflicted: set[str]
+) -> ClaimVerdict:
+    """Flag (never cut) a supported claim that touches a conflicted join value.
+
+    Only supported claims are annotated — a cut claim is already off the trust
+    surface, so contesting it would be noise."""
+    if not verdict.supported or not conflicted:
+        return verdict
+    touched = tuple(sorted(_claim_ids(claim) & conflicted))
+    if not touched:
+        return verdict
+    return replace(verdict, contested=touched)
+
+
 def verify_answer(
     answer: SynthesizedAnswer, evidence: FederatedEvidence
 ) -> SynthesizedAnswer:
@@ -235,11 +260,21 @@ def verify_answer(
     verdicts = [
         _verify_claim(claim, by_source, cross_values) for claim in answer.claims
     ]
+
+    # Consistency axis: reconcile corroborating records against each other, then
+    # flag (never cut) the supported claims that assert a contested id.
+    conflicts = detect_conflicts(evidence)
+    conflicted = conflicted_values(conflicts)
+    verdicts = [
+        _mark_contested(v, claim, conflicted)
+        for v, claim in zip(verdicts, answer.claims)
+    ]
+
     abstentions, repairs = _enforce_abstentions(answer, evidence)
 
     answer.abstentions = abstentions
     answer.verification = VerificationReport(
-        verdicts=verdicts, repaired_abstentions=repairs
+        verdicts=verdicts, repaired_abstentions=repairs, conflicts=conflicts
     )
     answer.edges = _synthesis_edges(
         evidence, _supported_id_pool(answer.claims, verdicts)
