@@ -83,6 +83,9 @@ Two checks are **never cut**: the pre-run gate and the normalize/contract check.
 The Gremlin validator is deliberately the heavier one — property-graph
 traversals have no traversal-time schema enforcement and unbounded traversers
 multiply, so labels, edge direction, and depth are enforced in application logic.
+The full safety model — every enforcement point in execution order, the
+defense-in-depth argument, and the adversarial audit — is in
+[`query-safety.md`](query-safety.md).
 
 ## Evidence schema (the synthesis contract)
 
@@ -118,7 +121,8 @@ summary, the evaluator traces, and (per record) full provenance.
 > `results → FederatedEvidence` (one shared `partial` rule), and
 > `FederatedEvidence → SynthesizedAnswer` (every rendered claim resolves to a retrieved
 > record; empties abstain with query proof). Changes to these shapes require updating the
-> seam tests deliberately.
+> seam tests deliberately. Each seam is documented field-by-field — wire shapes,
+> omit-when-empty rules, consumer guidance — in [`agent-interfaces.md`](agent-interfaces.md).
 
 ## Federation (weaving into the planner)
 

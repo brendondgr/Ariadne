@@ -42,6 +42,11 @@ Agent tool folders (`.cursor/`, `.claude/`, `.agents/`) are **pointers only** �
 | `planner_agent.md` | Planning agent contract: discovery, gate, drafters, plan schema |
 | `specialist_agents.md` | Query specialists: loop, four swap points, validation, evidence schema, federation, `--query` |
 | `iterative-retrieval-loop.md` | The bounded assess → re-plan → specialists cycle: sufficiency policy, hop cap, join-key chasing, config |
+| `source_cards.md` | Source card **format specification**: three-layer lifecycle (build / overlay / enrichment), full field reference, identity block, new-source authoring checklist |
+| `agent-interfaces.md` | The four integration-frozen seams as public contracts: wire shapes, omit-when-empty rules, frozen invariants, change policy |
+| `query-safety.md` | The consolidated query safety model, by enforcement point: plan limits → pre-run gates → execution → evidence contract; never-cut checkpoints, defense in depth, adversarial audit |
+| `migration-guide.md` | Adding a new query-language specialist (openCypher/GQL) — proposal Deliverable #6: four swap points, dependency-ordered walkthrough, validation ladder, honest beyond-the-four audit |
+| `intent-classification.md`, `conflict-detection.md` | Per-capability contracts: planner intent taxonomy; cross-source conflicting-evidence detection |
 | `changelog.jsonl` | One JSON line per significant change |
 | `structure.md` | This file |
 | `skills/` | Canonical agent instructions (global rules, UI, planner, etc.) |
@@ -326,6 +331,10 @@ run dev`; build with `npm run build`, lint with `npm run lint`, and test with
 | CAPEC XML normalization | `utils/kg_builder/preprocess/capec.py`, `utils/kg_builder/discovery/` |
 | Neo4j / Gremlin exporters | `utils/kg_builder/exporters/` |
 | Docker graph DB stack | `utils/infrastructure/docker_manager.py`, `docker/` |
+| Source card format | [`docs/source_cards.md`](source_cards.md) |
+| Agent interface contracts (the four seams) | [`docs/agent-interfaces.md`](agent-interfaces.md), `utils/specialists/tests/test_seams.py` |
+| Query safety model | [`docs/query-safety.md`](query-safety.md) |
+| Add a new query-language specialist | [`docs/migration-guide.md`](migration-guide.md) |
 | UI design rules | `docs/skills/woven-dusk-design/SKILL.md` |
 | Website architecture | `docs/skills/website-architecture/SKILL.md` |
 | Repo layout standards | `docs/skills/repository-structure/SKILL.md` |
@@ -333,8 +342,13 @@ run dev`; build with `npm run build`, lint with `npm run lint`, and test with
 
 ## Not Yet in Repo
 
-Planned per roadmap: the migration guide for a new query language (openCypher /
-GQL) and the pitch/demo materials (Wk 14–16). ATT&CK and CAPEC canonical builds
+Planned per roadmap: the pitch/demo materials (Wk 15–16) and the bug-fix /
+hardening half of Wk 14–15. The Wk 14–15 **technical documentation set is
+delivered**: the source card format specification (`source_cards.md`), the
+agent interface contracts (`agent-interfaces.md`), the query safety model
+(`query-safety.md`), and the openCypher/GQL migration guide
+(`migration-guide.md`, Deliverable #6) — all pinned by the docs-consistency
+suite (`utils/specialists/tests/test_docs_contracts.py`). ATT&CK and CAPEC canonical builds
 and runtime loading (`utils/kg_builder/`, `utils/graph_loader/`), the federated
 planning agent (`utils/planner/`), the Cypher/Gremlin query specialists
 (`utils/specialists/`), the synthesis agent with claim verification and

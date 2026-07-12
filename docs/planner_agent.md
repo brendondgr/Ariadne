@@ -75,6 +75,10 @@ layers it onto the generated cards at load time:
 - **provenance** — `id_property`, `id_scheme`, `source_name`, `dataset_version`.
 - **entity_descriptions** — one-line glosses that improve routing.
 
+The complete card format — every field, the three-layer lifecycle, and the
+new-source authoring checklist — is specified in
+[`source_cards.md`](source_cards.md).
+
 The planner reasons only over the **introspected** structural fields
 (`node_labels`, `relationship_types`, `allowed_edge_patterns`); glosses are
 human context, not routing truth.
