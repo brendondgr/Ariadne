@@ -253,6 +253,13 @@ def test_contested_claim_stays_supported_and_rendered():
     assert verdict.is_contested
     assert verdict.contested == ("T1055",)
 
+    # Seam check: the conflict + contested flag survive serialization — this is
+    # exactly the `answer.synthesis` payload api/services/query.py emits.
+    payload = answer.to_dict()
+    assert payload["verification"]["conflict_count"] == 1
+    assert payload["verification"]["conflicts"][0]["join_value"] == "T1055"
+    assert payload["claims"][0]["verdict"]["contested"] == ["T1055"]
+
 
 def test_conflict_free_answer_has_no_conflicts_and_identical_payload():
     claim = Claim(
