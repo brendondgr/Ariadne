@@ -157,6 +157,8 @@ def _md_overall(o: dict[str, Any]) -> list[str]:
         f"- mean groundedness: {judge['mean_groundedness']}",
         f"- mean evidence sufficiency: {judge['mean_evidence_sufficiency']}",
         f"- mean unsupported-claim rate: {judge['mean_unsupported_claim_rate']} (deterministic)",
+        f"- cross-source conflicts: {judge.get('total_conflicts', 0)} across "
+        f"{judge.get('answers_with_conflicts', 0)} answer(s) (deterministic)",
         "",
     ]
     return lines

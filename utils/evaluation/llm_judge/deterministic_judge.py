@@ -103,5 +103,6 @@ class DeterministicJudge:
             groundedness=_groundedness(answer, evidence),
             evidence_sufficiency=_evidence_sufficiency(answer, evidence),
             unsupported_claim_rate=unsupported_rate,
+            conflict_count=report.conflict_count if report else 0,
             reasons=["deterministic proxy: mechanical checks against evidence"],
         )

@@ -32,6 +32,10 @@ class JudgeVerdict:
     groundedness: float = 0.0
     evidence_sufficiency: float = 0.0
     unsupported_claim_rate: float = 0.0
+    # Cross-source contradictions the verifier's reconciliation pass flagged on
+    # this answer — deterministic, taken straight from the verifier (the LLM
+    # judge never sets it).
+    conflict_count: int = 0
     reasons: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
@@ -42,6 +46,7 @@ class JudgeVerdict:
             "groundedness": round(self.groundedness, 4),
             "evidence_sufficiency": round(self.evidence_sufficiency, 4),
             "unsupported_claim_rate": round(self.unsupported_claim_rate, 4),
+            "conflict_count": self.conflict_count,
             "reasons": list(self.reasons),
         }
 
@@ -75,6 +80,10 @@ class JudgeReport:
             ),
             "mean_unsupported_claim_rate": round(
                 self._mean("unsupported_claim_rate"), 4
+            ),
+            "total_conflicts": sum(v.conflict_count for v in self.verdicts),
+            "answers_with_conflicts": sum(
+                1 for v in self.verdicts if v.conflict_count
             ),
             "verdicts": [v.to_dict() for v in self.verdicts],
         }

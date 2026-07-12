@@ -166,10 +166,13 @@ def _clamp01(value) -> float:
 
 
 def parse_verdict(
-    data: dict, question_id: str, unsupported_claim_rate: float
+    data: dict,
+    question_id: str,
+    unsupported_claim_rate: float,
+    conflict_count: int = 0,
 ) -> JudgeVerdict:
-    """Turn the model's JSON into a ``JudgeVerdict`` (unsupported rate stays
-    deterministic — the LLM never sets it)."""
+    """Turn the model's JSON into a ``JudgeVerdict`` (unsupported rate and
+    conflict count stay deterministic — the LLM never sets them)."""
     reasons = data.get("reasons") or []
     if isinstance(reasons, str):
         reasons = [reasons]
@@ -180,6 +183,7 @@ def parse_verdict(
         groundedness=_clamp01(data.get("groundedness")),
         evidence_sufficiency=_clamp01(data.get("evidence_sufficiency")),
         unsupported_claim_rate=unsupported_claim_rate,
+        conflict_count=conflict_count,
         reasons=[str(r) for r in reasons][:5],
     )
 
@@ -230,10 +234,11 @@ class OpenAICompatibleJudge:
     ) -> JudgeVerdict:
         report = answer.verification
         unsupported_rate = report.unsupported_claim_rate if report else 0.0
+        conflict_count = report.conflict_count if report else 0
         messages = build_messages(answer, evidence)
         content = self._post(messages)
         data = extract_json_object(content)
-        verdict = parse_verdict(data, question_id, unsupported_rate)
+        verdict = parse_verdict(data, question_id, unsupported_rate, conflict_count)
         logger.info(
             "LLM judged %s: faith=%.2f ground=%.2f suff=%.2f",
             question_id,
