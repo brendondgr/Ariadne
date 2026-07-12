@@ -23,7 +23,7 @@ import type {
 /* -------------------------------------------------------------------------- */
 
 function claim(over: Partial<SynthesisView["claims"][number]>): SynthesisView["claims"][number] {
-  return { text: "", kind: "fact", chips: [], entityIds: [], ...over };
+  return { text: "", kind: "fact", chips: [], entityIds: [], contested: [], ...over };
 }
 
 function view(
@@ -32,9 +32,11 @@ function view(
 ): SynthesisView {
   return {
     headline: "",
+    narrative: "",
     claims,
     abstentions: [],
     flagged: [],
+    conflicts: [],
     notes: [],
     composer: "deterministic",
     fallbackReason: null,

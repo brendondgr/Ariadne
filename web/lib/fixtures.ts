@@ -459,6 +459,7 @@ export const wmiCapecRun: WorkbenchRun = {
             { id: "T1047", source: "attack/neo4j", accent: "teal", target: "lane-neo4j" },
           ],
           entityIds: ["T1047"],
+          contested: [],
         },
         {
           text: "Found 2 CAPEC record(s) including CAPEC-549, CAPEC-563.",
@@ -468,6 +469,7 @@ export const wmiCapecRun: WorkbenchRun = {
             { id: "CAPEC-563", source: "capec/gremlin", accent: "amber", target: "lane-gremlin" },
           ],
           entityIds: ["CAPEC-549", "CAPEC-563"],
+          contested: [],
         },
         {
           text: "The identifier T1047 is corroborated across attack and capec (2 record(s) share it).",
@@ -477,10 +479,12 @@ export const wmiCapecRun: WorkbenchRun = {
             { id: "CAPEC-549", source: "capec/gremlin", accent: "amber", target: "lane-gremlin" },
           ],
           entityIds: ["T1047", "CAPEC-549"],
+          contested: [],
         },
       ],
       abstentions: [],
       flagged: [],
+      conflicts: [],
       notes: [],
       composer: "deterministic",
       fallbackReason: null,
@@ -490,6 +494,7 @@ export const wmiCapecRun: WorkbenchRun = {
         unsupportedRate: 0,
         repairedAbstentions: 0,
         ok: true,
+        conflictCount: 0,
       },
       // Provenance-exact edges (Option B): the verifier's CAPEC→ATT&CK mappings.
       edges: [

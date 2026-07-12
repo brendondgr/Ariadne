@@ -333,16 +333,26 @@ class SynthesizedAnswer:
     def to_dict(self) -> dict[str, Any]:
         verdicts = self.verification.verdicts if self.verification else []
         claims = []
+        rendered = []
         for i, claim in enumerate(self.claims):
             entry = claim.to_dict()
-            entry["verdict"] = verdicts[i].to_dict() if i < len(verdicts) else None
+            verdict = verdicts[i] if i < len(verdicts) else None
+            entry["verdict"] = verdict.to_dict() if verdict else None
             claims.append(entry)
+            # Rendered (supported) claims carry the contested flag so the UI can
+            # badge them without cross-referencing the full verdict list. Omitted
+            # when not contested, so a conflict-free payload stays byte-identical.
+            if verdict is not None and verdict.supported:
+                shown = claim.to_dict()
+                if verdict.contested:
+                    shown["contested"] = list(verdict.contested)
+                rendered.append(shown)
         return {
             "request": self.request,
             "headline": self.headline,
             "narrative": self.narrative,
             "claims": claims,
-            "rendered_claims": [c.to_dict() for c in self.rendered_claims()],
+            "rendered_claims": rendered,
             "abstentions": [a.to_dict() for a in self.abstentions],
             "notes": list(self.notes),
             "composer": self.composer,

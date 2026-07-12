@@ -536,14 +536,93 @@ describe("buildSynthesis: the verified answer view", () => {
       unsupportedRate: 0.5,
       repairedAbstentions: 1,
       ok: false,
+      conflictCount: 0,
     });
     expect(view.composer).toBe("llm");
     expect(view.fallbackReason).toContain("unavailable");
   });
 
+  it("has no conflicts and no contested claims on an agreeing payload", () => {
+    const view = buildSynthesis(SYNTHESIS)!;
+    expect(view.conflicts).toEqual([]);
+    expect(view.verification!.conflictCount).toBe(0);
+    expect(view.claims.every((c) => c.contested.length === 0)).toBe(true);
+  });
+
   it("returns null when the payload predates Step 6", () => {
     expect(buildSynthesis(null)).toBeNull();
     expect(buildSynthesis(undefined)).toBeNull();
+  });
+});
+
+describe("buildSynthesis: cross-source conflicts", () => {
+  const CONFLICTING: ServerSynthesis = {
+    request: "What is T1055?",
+    headline: "Verified answer with 1 supported claim.",
+    narrative: "T1055 is Process Injection.",
+    claims: [
+      {
+        text: "T1055 is Process Injection.",
+        citations: [{ source: "attack", primary_id: "T1055", record_id: "attack:T1055" }],
+        entity_ids: ["T1055"],
+        kind: "fact",
+        sub_question_id: "sq-1",
+        verdict: { verdict: "supported", reasons: [], contested: ["T1055"] },
+      },
+    ],
+    rendered_claims: [
+      {
+        text: "T1055 is Process Injection.",
+        citations: [{ source: "attack", primary_id: "T1055", record_id: "attack:T1055" }],
+        entity_ids: ["T1055"],
+        kind: "fact",
+        sub_question_id: "sq-1",
+        contested: ["T1055"],
+      },
+    ],
+    abstentions: [],
+    notes: [],
+    edges: [],
+    composer: "deterministic",
+    fallback_reason: null,
+    verification: {
+      verdicts: [{ verdict: "supported", reasons: [], contested: ["T1055"] }],
+      claim_count: 1,
+      supported_count: 1,
+      unsupported_count: 0,
+      unsupported_claim_rate: 0,
+      repaired_abstentions: 0,
+      ok: true,
+      conflict_count: 1,
+      conflicts: [
+        {
+          join_value: "T1055",
+          kind: "name",
+          sources: ["attack", "capec"],
+          values: { capec: "Thread Hijacking", attack: "Process Injection" },
+          authoritative_source: "attack",
+          detail: "sources disagree on the name of T1055",
+        },
+      ],
+    },
+  };
+
+  it("projects each conflict with per-source values and an authoritative flag", () => {
+    const view = buildSynthesis(CONFLICTING)!;
+    expect(view.conflicts).toHaveLength(1);
+    const c = view.conflicts[0];
+    expect(c.joinValue).toBe("T1055");
+    expect(c.kind).toBe("name");
+    // values sorted by source for stable rendering: attack before capec.
+    expect(c.values.map((v) => v.source)).toEqual(["attack", "capec"]);
+    expect(c.values[0]).toMatchObject({ value: "Process Injection", authoritative: true });
+    expect(c.values[1]).toMatchObject({ value: "Thread Hijacking", authoritative: false });
+    expect(view.verification!.conflictCount).toBe(1);
+  });
+
+  it("marks the affected rendered claim contested", () => {
+    const view = buildSynthesis(CONFLICTING)!;
+    expect(view.claims[0].contested).toEqual(["T1055"]);
   });
 });
 

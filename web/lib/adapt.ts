@@ -346,6 +346,7 @@ export function buildSynthesis(synthesis: ServerSynthesis | null | undefined): S
       };
     }),
     entityIds: [...claim.entity_ids],
+    contested: [...(claim.contested ?? [])],
   }));
 
   const abstentions = synthesis.abstentions.map((a) => ({
@@ -366,12 +367,27 @@ export function buildSynthesis(synthesis: ServerSynthesis | null | undefined): S
   }));
 
   const report = synthesis.verification;
+  const conflicts = (report?.conflicts ?? []).map((c) => ({
+    joinValue: c.join_value,
+    kind: c.kind,
+    detail: c.detail,
+    values: Object.entries(c.values)
+      .map(([source, value]) => ({
+        source,
+        accent: accentForSource(source),
+        value,
+        authoritative: source === c.authoritative_source,
+      }))
+      .sort((a, b) => a.source.localeCompare(b.source)),
+  }));
+
   return {
     headline: synthesis.headline,
     narrative: synthesis.narrative ?? "",
     claims,
     abstentions,
     flagged,
+    conflicts,
     edges,
     notes: synthesis.notes,
     composer: synthesis.composer,
@@ -383,6 +399,7 @@ export function buildSynthesis(synthesis: ServerSynthesis | null | undefined): S
           unsupportedRate: report.unsupported_claim_rate,
           repairedAbstentions: report.repaired_abstentions,
           ok: report.ok,
+          conflictCount: report.conflict_count ?? (report.conflicts?.length ?? 0),
         }
       : null,
   };

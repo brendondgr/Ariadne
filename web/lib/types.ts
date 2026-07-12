@@ -341,6 +341,9 @@ export interface SynthesisClaimView {
    *  Carried through even where the UI doesn't yet display them so the network
    *  plot's edge-derivation has a stable id set to work from. */
   entityIds: string[];
+  /** Conflicted ids this claim touches — non-empty means "sources disagree
+   *  about one of these"; the UI badges the claim contested. */
+  contested: string[];
 }
 
 /** A provenance-exact relationship for the network plot, projected from the
@@ -367,6 +370,15 @@ export interface FlaggedClaimView {
   reasons: string[];
 }
 
+/** One cross-source contradiction, UI-ready. */
+export interface ConflictView {
+  joinValue: string;
+  kind: "name" | "status";
+  /** Per-source asserted values, in a stable order for rendering. */
+  values: { source: string; accent: Accent; value: string; authoritative: boolean }[];
+  detail: string;
+}
+
 /** UI-ready projection of the `answer.synthesis` payload. */
 export interface SynthesisView {
   headline: string;
@@ -375,6 +387,9 @@ export interface SynthesisView {
   claims: SynthesisClaimView[];
   abstentions: SynthesisAbstentionView[];
   flagged: FlaggedClaimView[];
+  /** Cross-source contradictions the reconciler surfaced. Empty when the
+   *  sources agree (or the answer is single-source). */
+  conflicts: ConflictView[];
   notes: string[];
   composer: string;
   fallbackReason: string | null;
@@ -384,6 +399,7 @@ export interface SynthesisView {
     unsupportedRate: number;
     repairedAbstentions: number;
     ok: boolean;
+    conflictCount: number;
   } | null;
   /** Provenance-exact network-plot edges (Option B). Empty on older payloads,
    *  in which case the plot infers edges from the join index + co-citation. */
@@ -748,6 +764,9 @@ export interface SynthesisCitation {
 export interface SynthesisVerdict {
   verdict: "supported" | "unsupported";
   reasons: string[];
+  /** Conflicted join values this (still-supported) claim touches — the
+   *  "flag, don't cut" surface. Omitted when the claim is uncontested. */
+  contested?: string[];
 }
 
 export interface SynthesisClaim {
@@ -758,6 +777,19 @@ export interface SynthesisClaim {
   sub_question_id: string;
   /** Present on `claims` entries (null before verification); absent on `rendered_claims`. */
   verdict?: SynthesisVerdict | null;
+  /** On `rendered_claims` entries: the conflicted ids this supported claim
+   *  touches, so the UI can badge it contested. Omitted when uncontested. */
+  contested?: string[];
+}
+
+/** One cross-source contradiction the reconciler detected (server shape). */
+export interface ServerConflict {
+  join_value: string;
+  kind: "name" | "status";
+  sources: string[];
+  values: Record<string, string>;
+  authoritative_source: string | null;
+  detail: string;
 }
 
 /** An honest "the sources don't establish this". `query` is the executed-query
@@ -778,6 +810,9 @@ export interface SynthesisVerification {
   unsupported_claim_rate: number;
   repaired_abstentions: number;
   ok: boolean;
+  /** Cross-source contradictions. Omitted when there are none. */
+  conflicts?: ServerConflict[];
+  conflict_count?: number;
 }
 
 export interface ServerSynthesisEdge {
