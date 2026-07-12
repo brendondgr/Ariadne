@@ -138,7 +138,7 @@ def _parse_ws_host_port(uri: str) -> tuple[str, int]:
 
 
 def _read_runtime_manifest(config: LoaderConfig, dataset: str, backend: str) -> dict | None:
-    path = config.runtime_dir(dataset, backend) / "load_manifest.json"
+    path = config.runtime_dir(dataset, backend) / "load-manifest.json"
     if not path.exists():
         return None
     with open(path, encoding="utf-8") as f:

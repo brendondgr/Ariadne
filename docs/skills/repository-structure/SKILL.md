@@ -102,7 +102,6 @@ We use `uv` as the primary package manager for all Python projects.
 
 | File / Folder | Purpose |
 | :--- | :--- |
-| `utils/skills/read_yaml.py` | Skill discovery helper |
 | `utils/<domain>/` | Domain-specific Python utilities |
 | `web/` | React/Vite webfront |
 | `docs/skills/` | Canonical agent instructions |

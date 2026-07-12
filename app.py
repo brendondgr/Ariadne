@@ -174,6 +174,14 @@ def run_server(args: argparse.Namespace, checks, *, color: bool) -> int:
             data_versions=data_versions(ROOT),
         ), checks, color=color))
 
+        if args.open:
+            try:
+                import webbrowser
+
+                webbrowser.open(f"http://{shown_host}:{args.port}")
+            except Exception:  # noqa: BLE001 — headless is fine, the URL is on the board
+                pass
+
         # Prove the pipeline before handing the analyst the keys.
         if args.smoke != "off":
             mode = "query" if args.smoke == "full" else "plan"
@@ -233,6 +241,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--verbose", action="store_true",
         help="Show all child output (default shows readiness lines and errors).",
+    )
+    parser.add_argument(
+        "--open", action="store_true",
+        help="Open the workbench in the default browser once both processes are ready.",
     )
     return parser.parse_args(argv)
 

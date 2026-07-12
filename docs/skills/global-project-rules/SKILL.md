@@ -58,7 +58,7 @@ uv run main.py --graph health
 uv run main.py --dataset attack --graph neo4j    # or gremlin | all | verify
 
 # Run
-uv run read-skills
+python3 setup.py              # one-shot setup wizard: env -> .env -> data -> web -> launch
 python app.py                 # web workbench: FastAPI api/ + Next.js web/ (--prod for production)
 cd web && npm run dev         # web app alone (expects the API on :16501)
 

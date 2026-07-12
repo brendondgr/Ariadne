@@ -51,12 +51,30 @@ Full component contracts: [`docs/planner_agent.md`](docs/planner_agent.md), [`do
 
 ## Setup
 
+One command takes a fresh clone to a running workbench:
+
+```bash
+python3 setup.py        # interactive; add --yes for all-defaults, non-interactive
+```
+
+The wizard syncs the Python environment (`uv sync`), writes `.env` (offering
+to customize ports/credentials/LLM endpoints), downloads and loads both
+datasets into the Docker graph stack (the self-healing `--yolo-all` pipeline),
+installs the web dependencies, and launches the workbench at
+`http://localhost:16500` — opening it in your browser. Each step shows what it
+will run, detects work already done (re-running is cheap), and on failure
+offers retry / skip / abort with the fix named. Prerequisites it checks for
+but can't install: [uv](https://docs.astral.sh/uv/), Docker (with Compose v2),
+and Node.js 18.18+.
+
+<details>
+<summary>Manual setup (step by step)</summary>
+
 ```bash
 # Python setup & dataset download
 uv sync
 cp .env.example .env
 uv run main.py --download
-uv run read-skills
 
 # Build canonical graph artifacts (ATT&CK + CAPEC)
 uv run main.py --build all
@@ -80,6 +98,8 @@ Or the whole download → build → docker → load → verify pipeline in one s
 ```bash
 uv run main.py --yolo-all
 ```
+
+</details>
 
 All settings live in a single git-ignored `.env` (`cp .env.example .env` — every value defaults to current behavior). Full CLI reference, output artifact tables, and Docker endpoint details: [`docs/structure.md`](docs/structure.md).
 
