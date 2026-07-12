@@ -6,7 +6,8 @@ import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 const SEGMENTS = [
   { value: "chat", label: "Chat" },
   { value: "graphs", label: "Graphs" },
-  { value: "evaluation", label: "Evaluation" },
+  // Evaluation tab temporarily disabled — re-add to restore.
+  // { value: "evaluation", label: "Evaluation" },
 ] as const;
 
 /** App-wide segmented view toggle: Chat | Graphs | Evaluation.

@@ -28,6 +28,7 @@ def make_record(
     label: str = "Technique",
     join_values: tuple[str, ...] | None = None,
     related: list[dict[str, Any]] | None = None,
+    properties: dict[str, Any] | None = None,
     query: str = "MATCH (t:Technique) RETURN t",
     record_id: str = "",
 ) -> EvidenceRecord:
@@ -36,7 +37,7 @@ def make_record(
         id_scheme="attack-id" if source == "attack" else "capec-id",
         label=label,
         name=name or primary_id,
-        properties={},
+        properties=dict(properties or {}),
         related=list(related or []),
         join_values=join_values if join_values is not None else (primary_id,),
         provenance=Provenance(

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { WorkbenchRun } from "@/lib/types";
 import { Pill } from "@/components/ui/Pill";
 import { buildChatExport, buildFullHistoryExport } from "@/lib/export";
@@ -35,6 +35,11 @@ export function ThreadHeader({ title, run, runs }: ThreadHeaderProps) {
   const modeLabel = run.mode === "query" ? "Full answer" : "Plan only";
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  // Runs aren't identical between the server render and the client's first
+  // paint (they hydrate in from the workbench), so `disabled` can only reflect
+  // the real state after mount — otherwise the attribute mismatches on hydration.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const canExport = runs.length > 0;
 
   const copyExport = async (build: (title: string, runs: WorkbenchRun[]) => string) => {
@@ -64,7 +69,7 @@ export function ThreadHeader({ title, run, runs }: ThreadHeaderProps) {
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
-          disabled={!canExport}
+          disabled={mounted ? !canExport : false}
           title="Copy the conversation as Markdown"
           aria-haspopup="menu"
           aria-expanded={open}

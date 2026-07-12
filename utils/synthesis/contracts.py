@@ -145,18 +145,84 @@ class Abstention:
 
 
 @dataclass(frozen=True)
+class Conflict:
+    """A cross-source contradiction: two sources that both carry a canonical
+    join value yet assert *incompatible* facts about it.
+
+    Unlike a groundedness failure, both underlying records are genuinely
+    retrieved — so a conflict never *cuts* a claim; it flags the affected
+    claims **contested** and surfaces both asserted values with provenance.
+    ``kind`` is one of:
+
+    - ``"name"`` — the sources give a materially different canonical name for
+      the same id (e.g. ATT&CK's technique name vs. the name CAPEC embeds in
+      its mapping).
+    - ``"status"`` — the authoritative source marks the entity
+      deprecated/revoked while another source still maps to it as current
+      (a stale cross-source reference).
+
+    ``values`` maps each involved source to the value it asserts.
+    ``authoritative_source`` names the source that owns the id's scheme
+    (ATT&CK for technique ids, CAPEC for attack-pattern ids), or ``None`` when
+    neither is canonically authoritative — surfaced, never used to silently
+    pick a winner.
+    """
+
+    join_value: str
+    kind: str                                 # "name" | "status"
+    sources: tuple[str, ...] = ()
+    values: dict[str, str] = field(default_factory=dict)
+    authoritative_source: str | None = None
+    detail: str = ""
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "join_value": self.join_value,
+            "kind": self.kind,
+            "sources": list(self.sources),
+            "values": dict(self.values),
+            "authoritative_source": self.authoritative_source,
+            "detail": self.detail,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "Conflict":
+        return cls(
+            join_value=str(data.get("join_value", "")),
+            kind=str(data.get("kind", "") or ""),
+            sources=tuple(str(s) for s in data.get("sources", []) or []),
+            values={str(k): str(v) for k, v in (data.get("values", {}) or {}).items()},
+            authoritative_source=data.get("authoritative_source") or None,
+            detail=str(data.get("detail", "") or ""),
+        )
+
+
+@dataclass(frozen=True)
 class ClaimVerdict:
-    """The verifier's ruling on one claim."""
+    """The verifier's ruling on one claim.
+
+    ``contested`` names the conflicted join values this (still-supported) claim
+    touches — the "flag, don't cut" surface: the claim is real and rendered,
+    but the analyst is told a source disagrees about one of its identifiers.
+    """
 
     verdict: str                              # "supported" | "unsupported"
     reasons: list[str] = field(default_factory=list)
+    contested: tuple[str, ...] = ()
 
     @property
     def supported(self) -> bool:
         return self.verdict == "supported"
 
+    @property
+    def is_contested(self) -> bool:
+        return bool(self.contested)
+
     def to_dict(self) -> dict[str, Any]:
-        return {"verdict": self.verdict, "reasons": list(self.reasons)}
+        out: dict[str, Any] = {"verdict": self.verdict, "reasons": list(self.reasons)}
+        if self.contested:
+            out["contested"] = list(self.contested)
+        return out
 
 
 @dataclass
@@ -167,6 +233,10 @@ class VerificationReport:
     # Abstentions the verifier had to add because the composer omitted them
     # (the deterministic guard the LLM path cannot skip past).
     repaired_abstentions: int = 0
+    # Cross-source contradictions the reconciliation pass detected. Empty on a
+    # single-source or fully-consistent answer (omitted from ``to_dict`` then,
+    # so pre-reconciliation payloads stay byte-identical).
+    conflicts: list["Conflict"] = field(default_factory=list)
 
     @property
     def supported_count(self) -> int:
@@ -181,11 +251,19 @@ class VerificationReport:
         return self.unsupported_count / len(self.verdicts) if self.verdicts else 0.0
 
     @property
+    def conflict_count(self) -> int:
+        return len(self.conflicts)
+
+    @property
+    def contested_count(self) -> int:
+        return sum(1 for v in self.verdicts if v.is_contested)
+
+    @property
     def ok(self) -> bool:
         return self.unsupported_count == 0
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        out: dict[str, Any] = {
             "verdicts": [v.to_dict() for v in self.verdicts],
             "claim_count": len(self.verdicts),
             "supported_count": self.supported_count,
@@ -194,6 +272,10 @@ class VerificationReport:
             "repaired_abstentions": self.repaired_abstentions,
             "ok": self.ok,
         }
+        if self.conflicts:
+            out["conflicts"] = [c.to_dict() for c in self.conflicts]
+            out["conflict_count"] = self.conflict_count
+        return out
 
 
 @dataclass
