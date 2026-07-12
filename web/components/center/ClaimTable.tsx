@@ -2,6 +2,7 @@
 
 import type { SynthesisView } from "@/lib/types";
 import { SHADOW } from "@/lib/ui";
+import { ContestedBadge } from "./ConflictPanel";
 import { ProvenanceChip } from "./ProvenanceChip";
 import { RefText } from "./RefText";
 
@@ -54,6 +55,7 @@ export function ClaimTableBody({ synthesis }: { synthesis: SynthesisView }) {
                 </td>
                 <td className="py-2 pr-3 align-top text-[12.5px] leading-[1.5] text-text-soft">
                   <RefText text={claim.text} />
+                  <ContestedBadge ids={claim.contested} />
                 </td>
                 <td className="py-2 align-top">
                   <span className="flex flex-wrap gap-1">

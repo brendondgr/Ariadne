@@ -114,10 +114,12 @@ export function describeEvent(event: StampedQueryEvent, index: number): TickerLi
     }
     case "answer": {
       const verification = event.data.synthesis?.verification;
+      const conflicts = verification?.conflict_count ?? 0;
       const text = verification
-        ? `answer verified · ${verification.supported_count}/${verification.verdicts.length} claim(s) supported`
+        ? `answer verified · ${verification.supported_count}/${verification.verdicts.length} claim(s) supported` +
+          (conflicts ? ` · reconcile: ${conflicts} source conflict(s)` : "")
         : "answer composed";
-      return { key, time, text, accent: "teal" };
+      return { key, time, text, accent: conflicts ? "amber" : "teal" };
     }
     case "done": {
       const status = event.data.status;

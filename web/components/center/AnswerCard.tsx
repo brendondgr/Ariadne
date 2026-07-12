@@ -25,6 +25,7 @@ import { currentPhaseMessage } from "@/lib/ticker";
 import { ProvenanceChip } from "./ProvenanceChip";
 import { JoinChip } from "./JoinChip";
 import { ClaimTableBody } from "./ClaimTable";
+import { ConflictPanel, ContestedBadge } from "./ConflictPanel";
 import { NetworkPlotBody, networkPlotMeta } from "./AnswerNetworkPlot";
 import { buildEntityDetails } from "@/lib/synthesisGraph";
 import { SectionTabs, type TabDef } from "./SectionTabs";
@@ -87,7 +88,7 @@ function Paragraph({ paragraph }: { paragraph: AnswerParagraph }) {
 function VerificationPill({ synthesis }: { synthesis: SynthesisView }) {
   const v = synthesis.verification;
   if (!v) return null;
-  const clean = v.ok && v.repairedAbstentions === 0;
+  const clean = v.ok && v.repairedAbstentions === 0 && v.conflictCount === 0;
   const tone = clean
     ? { color: "#4E9E96", ring: "rgba(78,158,150,0.5)", bg: "rgba(78,158,150,0.1)" }
     : { color: "#C9924A", ring: "rgba(201,146,74,0.5)", bg: "rgba(201,146,74,0.1)" };
@@ -96,6 +97,7 @@ function VerificationPill({ synthesis }: { synthesis: SynthesisView }) {
     `${Math.round(v.unsupportedRate * 100)}% unsupported`,
   ];
   if (v.repairedAbstentions) parts.push(`${v.repairedAbstentions} abstention repair(s)`);
+  if (v.conflictCount) parts.push(`${v.conflictCount} source conflict(s)`);
   return (
     <span
       className="inline-flex items-center rounded-full px-2 py-px font-mono text-[10.5px]"
@@ -122,7 +124,8 @@ function SynthesisBody({ synthesis }: { synthesis: SynthesisView }) {
           <span className="mr-1.5 font-mono text-[10px] uppercase tracking-[0.06em] text-text-muted">
             {claim.kind === "correlation" ? "corr" : "fact"}
           </span>
-          <RefText text={claim.text} />{" "}
+          <RefText text={claim.text} />
+          <ContestedBadge ids={claim.contested} />{" "}
           {claim.chips.map((chip, j) => (
             <span key={j} className="mr-1">
               <ProvenanceChip refData={chip} />
@@ -130,6 +133,8 @@ function SynthesisBody({ synthesis }: { synthesis: SynthesisView }) {
           ))}
         </p>
       ))}
+
+      <ConflictPanel conflicts={synthesis.conflicts} />
 
       {synthesis.abstentions.map((abst, i) => (
         <div
