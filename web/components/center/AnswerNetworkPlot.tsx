@@ -7,6 +7,7 @@ import type { FGLink, FGNode } from "@/lib/graph";
 import {
   synthesisToGraphPayload,
   isRenderableSubgraph,
+  REL_MITIGATED_BY,
   type EntityDetail,
 } from "@/lib/synthesisGraph";
 import { SHADOW } from "@/lib/ui";
@@ -60,6 +61,7 @@ export function NetworkPlotBody({
 
   const legend = Object.entries(payload.nodes_by_label);
   const abstentions = synthesis.abstentions.length;
+  const hasMitigationEdges = payload.edges.some((e) => e.type === REL_MITIGATED_BY);
 
   const selectedId =
     selected?.kind === "node"
@@ -131,7 +133,8 @@ export function NetworkPlotBody({
       </div>
 
       <p className="m-0 mt-2 font-mono text-[10.5px] leading-[1.5] text-text-muted">
-        Each line links a CAPEC attack pattern to the ATT&CK technique it maps to.
+        Each line links a CAPEC attack pattern to the ATT&CK technique it maps to
+        {hasMitigationEdges ? ", or an ATT&CK technique to a mitigation that addresses it" : ""}.
         {" "}Click any node or line to see its name and details.
         {abstentions > 0 && ` Questions the sources couldn't answer aren't drawn here.`}
       </p>

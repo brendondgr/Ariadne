@@ -52,6 +52,7 @@ from .reconcile import conflicted_values, detect_conflicts
 
 _CAPEC_RE = re.compile(r"^capec-\d+$", re.IGNORECASE)
 _TECHNIQUE_RE = re.compile(r"^t\d{4}(?:\.\d{3})?$", re.IGNORECASE)
+_MITIGATION_RE = re.compile(r"^m\d{4}$", re.IGNORECASE)
 
 
 def _records_by_source(evidence: FederatedEvidence) -> dict[str, list[EvidenceRecord]]:
@@ -227,6 +228,45 @@ def _synthesis_edges(
     return edges
 
 
+def _mitigation_edges(
+    evidence: FederatedEvidence, supported_ids: set[str]
+) -> list[SynthesisEdge]:
+    """Provenance-exact technique→mitigation edges from the records themselves.
+
+    A technique record's ``related`` mitigation entries are the graph's real
+    ``MITIGATES`` relationships, retrieved by the executed query — not a
+    co-citation guess. The pruning rule deliberately differs from the mapsTo
+    both-endpoints rule: the *technique* must survive in a supported claim, but
+    the mitigation id need not — the deterministic composer never asserts M-ids
+    in ``entity_ids``, so requiring both endpoints would starve these edges to
+    zero. The mitigation is grounded by the very record asserting the
+    relationship, the same rule ``grounding.id_pool`` applies to related ids.
+    """
+    edges: list[SynthesisEdge] = []
+    seen: set[tuple[str, str]] = set()
+
+    for result in evidence.results:
+        for record in result.records:
+            technique = record.primary_id
+            nt = normalize_id(technique)
+            if not _TECHNIQUE_RE.match(nt) or nt not in supported_ids:
+                continue
+            for entry in record.related:
+                raw = entry.get("id") or entry.get("entry_id")
+                if not raw:
+                    continue
+                mitigation = str(raw)
+                nm = normalize_id(mitigation)
+                if not _MITIGATION_RE.match(nm) or (nt, nm) in seen:
+                    continue
+                seen.add((nt, nm))
+                edges.append(
+                    SynthesisEdge(source_id=technique, target_id=mitigation, rel="mitigatedBy")
+                )
+
+    return edges
+
+
 def _claim_ids(claim: Claim) -> set[str]:
     """Every normalized id a claim asserts or cites — the surface a conflict on
     a shared join value can contest."""
@@ -276,7 +316,8 @@ def verify_answer(
     answer.verification = VerificationReport(
         verdicts=verdicts, repaired_abstentions=repairs, conflicts=conflicts
     )
-    answer.edges = _synthesis_edges(
-        evidence, _supported_id_pool(answer.claims, verdicts)
+    supported_ids = _supported_id_pool(answer.claims, verdicts)
+    answer.edges = _synthesis_edges(evidence, supported_ids) + _mitigation_edges(
+        evidence, supported_ids
     )
     return answer

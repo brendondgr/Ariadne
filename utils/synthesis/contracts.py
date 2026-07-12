@@ -85,11 +85,13 @@ class Claim:
 class SynthesisEdge:
     """One provenance-exact relationship between two cited entities.
 
-    Derived mechanically from the federation join index during the verification
-    pass and pruned to endpoints that survive in supported claims — so the
-    per-answer network plot draws only topology the verifier stands behind,
-    with no frontend cross-product guessing. ``rel`` names the relationship
-    (``mapsTo`` for CAPEC pattern → ATT&CK technique).
+    Derived mechanically during the verification pass and pruned against the
+    supported claims — so the per-answer network plot draws only topology the
+    verifier stands behind, with no frontend cross-product guessing. ``rel``
+    names the relationship: ``mapsTo`` (CAPEC pattern → ATT&CK technique, from
+    the cross-source join index, both endpoints supported) or ``mitigatedBy``
+    (ATT&CK technique → mitigation, from the technique record's ``related``
+    ``MITIGATES`` entries; the technique endpoint must be supported).
     """
 
     source_id: str       # e.g. "CAPEC-555"

@@ -100,3 +100,117 @@ def test_edge_pruned_when_no_supported_claim_grounds_its_endpoints():
     assert answer.verification is not None
     assert answer.verification.unsupported_count == 1
     assert answer.edges == []
+
+
+# --------------------------------------------------------------------------- #
+# mitigatedBy derivation                                                       #
+# --------------------------------------------------------------------------- #
+
+
+def _mitigation_evidence(related=None):
+    """A technique record carrying its MITIGATES relationships in ``related``."""
+    attack = make_record(
+        "T1021",
+        name="Remote Services",
+        related=related
+        if related is not None
+        else [{"id": "M1032", "name": "Multi-factor Authentication"}],
+    )
+    return make_evidence(
+        [make_result(records=[attack], summary="T1021 found.")]
+    )
+
+
+def test_verified_answer_has_exact_mitigatedby_edge():
+    evidence = _mitigation_evidence()
+    answer = DeterministicComposer().compose(evidence)
+    verify_answer(answer, evidence)
+
+    assert answer.edges == [
+        SynthesisEdge(source_id="T1021", target_id="M1032", rel="mitigatedBy")
+    ]
+
+
+def test_non_mitigation_related_entries_emit_nothing():
+    # Tactic membership, detections, and id-less entries live in ``related``
+    # too — none of them are MITIGATES relationships.
+    evidence = _mitigation_evidence(
+        related=[
+            {"id": "TA0008", "name": "Lateral Movement"},
+            {"id": "DET-1", "name": "Some detection"},
+            {"name": "no id at all"},
+        ]
+    )
+    answer = DeterministicComposer().compose(evidence)
+    verify_answer(answer, evidence)
+    assert answer.edges == []
+
+
+def test_mitigatedby_pruned_when_technique_unsupported():
+    # The technique record exists, but the only claim is fabricated and cut —
+    # the technique endpoint is not in the supported pool, so its mitigation
+    # edge must not appear either.
+    evidence = _mitigation_evidence()
+    fabricated = Claim(
+        text="T9999 is mitigated.",
+        citations=(Citation(source="attack", primary_id="T9999"),),
+        entity_ids=("T9999",),
+        kind="fact",
+    )
+    answer = SynthesizedAnswer(request="q", claims=[fabricated])
+    verify_answer(answer, evidence)
+    assert answer.edges == []
+
+
+def test_mitigatedby_deduped_across_records():
+    # The same T→M pair asserted by two records emits exactly one edge.
+    rec1 = make_record("T1021", related=[{"id": "M1032", "name": "MFA"}])
+    rec2 = make_record(
+        "T1021",
+        related=[{"id": "M1032", "name": "MFA"}, {"id": "M1030", "name": "Network Segmentation"}],
+        record_id="attack:T1021:b",
+    )
+    evidence = make_evidence(
+        [make_result(records=[rec1, rec2], summary="T1021 found.")]
+    )
+    answer = DeterministicComposer().compose(evidence)
+    verify_answer(answer, evidence)
+
+    assert answer.edges == [
+        SynthesisEdge("T1021", "M1032", "mitigatedBy"),
+        SynthesisEdge("T1021", "M1030", "mitigatedBy"),
+    ]
+
+
+def test_edges_order_is_mapsto_then_mitigatedby_and_reverification_is_stable():
+    # Cross-source join AND related mitigations: mapsTo edges precede
+    # mitigatedBy edges, and re-verifying a fresh compose is byte-identical.
+    capec = make_record(
+        "CAPEC-555",
+        name="Remote Services Exploitation",
+        source="capec",
+        backend="gremlin",
+        label="AttackPattern",
+        join_values=("T1021",),
+    )
+    attack = make_record(
+        "T1021",
+        name="Remote Services",
+        join_values=("T1021",),
+        related=[{"id": "M1032", "name": "Multi-factor Authentication"}],
+    )
+    evidence = make_evidence(
+        [
+            make_result(source="capec", sub_question_id="c1", records=[capec], summary="CAPEC-555 maps to T1021."),
+            make_result(source="attack", sub_question_id="a1", records=[attack], summary="T1021 found."),
+        ]
+    )
+
+    one = verify_answer(DeterministicComposer().compose(evidence), evidence)
+    two = verify_answer(DeterministicComposer().compose(evidence), evidence)
+
+    assert one.edges == [
+        SynthesisEdge("CAPEC-555", "T1021", "mapsTo"),
+        SynthesisEdge("T1021", "M1032", "mitigatedBy"),
+    ]
+    assert one.to_dict() == two.to_dict()
