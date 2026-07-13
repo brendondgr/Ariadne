@@ -28,6 +28,7 @@ from .steps import (
     ROOT,
     DataStep,
     EnvStep,
+    InferenceServerStep,
     PrerequisitesStep,
     WebDepsStep,
     WizardStep,
@@ -50,6 +51,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--skip-sync", action="store_true",
                         help="(consumed by stage 1) Skip `uv sync`.")
     parser.add_argument("--skip-env", action="store_true", help="Skip the .env step.")
+    parser.add_argument("--skip-inference", action="store_true",
+                        help="Skip configuring/probing the local inference (LLM) server.")
     parser.add_argument("--skip-data", action="store_true",
                         help="Skip the data pipeline (download/build/docker/load/verify).")
     parser.add_argument("--skip-web", action="store_true", help="Skip `npm install`.")
@@ -144,6 +147,7 @@ def main(argv: list[str] | None = None) -> int:
     steps: list[tuple[WizardStep, bool]] = [
         (PrerequisitesStep(), False),
         (EnvStep(), args.skip_env),
+        (InferenceServerStep(), args.skip_inference),
         (DataStep(), args.skip_data),
         (WebDepsStep(fresh=args.fresh), args.skip_web),
     ]

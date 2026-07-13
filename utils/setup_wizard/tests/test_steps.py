@@ -14,9 +14,14 @@ from utils.setup_wizard import _run_step
 from utils.setup_wizard.steps import (
     DataStep,
     EnvStep,
+    InferenceServerStep,
+    LLM_GROUPS,
     PrerequisitesStep,
     WebDepsStep,
     WizardStep,
+    _list_models,
+    _split_host_port,
+    probe_inference,
     write_port_config,
 )
 from utils.setup_wizard.ui import WizardUI
@@ -182,6 +187,102 @@ def test_web_step_detects_node_modules(tmp_path):
     assert step.detect()[0] is True
 
 
+# ── inference server (probe + step) ──────────────────────────────────────────
+
+
+def test_split_host_port_parses_scheme_and_defaults():
+    assert _split_host_port("http://localhost:9090/v1") == ("localhost", 9090)
+    assert _split_host_port("https://api.example.com/v1") == ("api.example.com", 443)
+    assert _split_host_port("http://box/v1") == ("box", 80)
+
+
+def test_probe_inference_reports_down_when_socket_closed(monkeypatch):
+    monkeypatch.setattr("utils.setup_wizard.steps._tcp_up", lambda *a, **k: False)
+    up, detail = probe_inference("http://localhost:9090/v1")
+    assert up is False
+    assert "no server listening at localhost:9090" in detail
+
+
+def test_probe_inference_lists_models_when_up(monkeypatch):
+    monkeypatch.setattr("utils.setup_wizard.steps._tcp_up", lambda *a, **k: True)
+    monkeypatch.setattr("utils.setup_wizard.steps._list_models",
+                        lambda url: ["skynet", "default-model"])
+    up, detail = probe_inference("http://localhost:9090/v1")
+    assert up is True
+    assert "2 model(s)" in detail and "skynet" in detail
+
+
+def test_probe_inference_up_but_models_unreadable(monkeypatch):
+    monkeypatch.setattr("utils.setup_wizard.steps._tcp_up", lambda *a, **k: True)
+    monkeypatch.setattr("utils.setup_wizard.steps._list_models", lambda url: None)
+    up, detail = probe_inference("http://localhost:9090/v1")
+    assert up is True
+    assert "couldn't read /models" in detail
+
+
+def test_list_models_returns_none_on_unreachable():
+    # Nothing is listening on this port in the test env → URLError → None.
+    assert _list_models("http://localhost:9/v1", timeout=0.2) is None
+
+
+def test_inference_step_detect_off_when_llm_disabled(monkeypatch):
+    monkeypatch.setattr("utils.setup_wizard.steps.env_str",
+                        lambda name, default="": "false" if name == "PLANNER_LLM_ENABLED" else default)
+    assert InferenceServerStep().detect() == (False, "")
+
+
+def test_inference_step_detect_reprobes_when_enabled(monkeypatch):
+    values = {"PLANNER_LLM_ENABLED": "true", "PLANNER_LLM_BASE_URL": "http://localhost:9090/v1"}
+    monkeypatch.setattr("utils.setup_wizard.steps.env_str",
+                        lambda name, default="": values.get(name, default))
+    monkeypatch.setattr("utils.setup_wizard.steps.probe_inference",
+                        lambda url: (True, "localhost:9090 up — 1 model(s): m"))
+    done, detail = InferenceServerStep().detect()
+    assert done is True
+    assert "reachable" in detail and "http://localhost:9090/v1" in detail
+
+
+def test_inference_step_run_disable_keeps_deterministic(tmp_path):
+    step = InferenceServerStep(root=tmp_path)
+    result = step.run(WizardUI(assume_yes=True))  # default follows _enabled() → off
+    assert result.status == "ok"
+    assert "deterministic" in result.detail
+
+
+def test_inference_step_run_enable_writes_all_groups_and_probes(tmp_path, monkeypatch):
+    env = tmp_path / ".env"
+    env.write_text("PLANNER_LLM_ENABLED=false\n")
+    monkeypatch.setattr("utils.setup_wizard.steps.probe_inference",
+                        lambda url: (True, f"{url} up — 1 model(s): m"))
+    step = InferenceServerStep(root=tmp_path)
+    ui = scripted_ui(monkeypatch, ["y", "", ""])  # enable, default base url, default model
+
+    result = step.run(ui)
+
+    assert result.status == "ok"
+    content = env.read_text()
+    for group in LLM_GROUPS:
+        assert f"{group}_LLM_ENABLED=true" in content
+        assert f"{group}_LLM_BASE_URL=" in content
+        assert f"{group}_LLM_MODEL=" in content
+    assert "1 model" in result.detail
+
+
+def test_inference_step_run_enable_offline_is_not_a_failure(tmp_path, monkeypatch):
+    env = tmp_path / ".env"
+    env.write_text("PLANNER_LLM_ENABLED=false\n")
+    monkeypatch.setattr("utils.setup_wizard.steps.probe_inference",
+                        lambda url: (False, "no server listening at localhost:9090"))
+    step = InferenceServerStep(root=tmp_path)
+    ui = scripted_ui(monkeypatch, ["y", "", ""])
+
+    result = step.run(ui)
+
+    assert result.status == "ok"  # graceful degradation, never a hard stop
+    assert "no server listening" in result.detail
+    assert step.required is False
+
+
 # ── orchestration (_run_step) ────────────────────────────────────────────────
 
 
@@ -324,7 +425,8 @@ def test_stage1_sync_failure_stops_under_yes(monkeypatch):
 
 def test_parse_args_flags_round_trip():
     args = wizard.parse_args(
-        ["--yes", "--fresh", "--skip-data", "--no-launch", "--no-browser", "--prod"])
-    assert args.yes and args.fresh and args.skip_data
+        ["--yes", "--fresh", "--skip-inference", "--skip-data",
+         "--no-launch", "--no-browser", "--prod"])
+    assert args.yes and args.fresh and args.skip_data and args.skip_inference
     assert args.no_launch and args.no_browser and args.prod
     assert not args.skip_env and not args.skip_web

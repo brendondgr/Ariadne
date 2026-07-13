@@ -9,9 +9,13 @@ never reimplements.
 
 from __future__ import annotations
 
+import json
 import shutil
 import subprocess
 import time
+import urllib.error
+import urllib.parse
+import urllib.request
 from pathlib import Path
 
 from utils.config import env_str, load_env, set_env_values
@@ -142,7 +146,12 @@ def write_port_config(
 
 
 def customize_env(ui: WizardUI, env_file: Path) -> None:
-    """Interactive .env customization: ports → Neo4j login → LLM endpoints."""
+    """Interactive .env customization: ports → Neo4j login.
+
+    LLM endpoint configuration is intentionally *not* here — it is a dedicated,
+    reachability-verified step (:class:`InferenceServerStep`) so the wizard can
+    probe the endpoint after writing it, not just record a URL blindly.
+    """
     ui.say("Ports (Enter keeps the default):")
     bolt = ui.prompt_text("Neo4j Bolt port", env_str("NEO4J_BOLT_PORT", "5456"))
     http = ui.prompt_text("Neo4j HTTP port", env_str("NEO4J_HTTP_PORT", "5455"))
@@ -155,20 +164,6 @@ def customize_env(ui: WizardUI, env_file: Path) -> None:
 
         # URI was just derived from the chosen port — only prompt user/password.
         create_neo4j_login(uri=f"bolt://localhost:{bolt}", env_file=env_file)
-
-    if ui.confirm("Enable LLM features (needs an OpenAI-compatible endpoint)?",
-                  default=False):
-        base_url = ui.prompt_text(
-            "LLM base URL", env_str("PLANNER_LLM_BASE_URL", "http://localhost:9090/v1"))
-        model = ui.prompt_text(
-            "LLM model name", env_str("PLANNER_LLM_MODEL", "default-model"))
-        updates: dict[str, str] = {}
-        for group in ("PLANNER", "SPECIALIST", "SYNTHESIS", "CONVERSATION", "EVAL"):
-            updates[f"{group}_LLM_ENABLED"] = "true"
-            updates[f"{group}_LLM_BASE_URL"] = base_url
-            updates[f"{group}_LLM_MODEL"] = model
-        set_env_values(updates, env_file=env_file)
-        ui.say("LLM enabled for planner, specialists, synthesis, conversation, and eval.")
 
 
 class EnvStep(WizardStep):
@@ -232,7 +227,139 @@ class EnvStep(WizardStep):
             return r
 
 
-# ── 3. data pipeline (delegated to YoloRunner) ───────────────────────────────
+# ── 3. local inference server (OpenAI-compatible LLM endpoint) ───────────────
+
+#: The five ``*_LLM_*`` config groups that share one inference endpoint.
+LLM_GROUPS = ("PLANNER", "SPECIALIST", "SYNTHESIS", "CONVERSATION", "EVAL")
+
+DEFAULT_LLM_BASE_URL = "http://localhost:9090/v1"
+DEFAULT_LLM_MODEL = "default-model"
+
+
+def _split_host_port(base_url: str) -> tuple[str, int]:
+    """Extract (host, port) from an OpenAI-style base URL, defaulting the port."""
+    parts = urllib.parse.urlsplit(base_url)
+    host = parts.hostname or "localhost"
+    port = parts.port or (443 if parts.scheme == "https" else 80)
+    return host, port
+
+
+def _list_models(base_url: str, *, timeout: float = 3.0) -> list[str] | None:
+    """GET ``<base_url>/models`` and return the model ids, or None on any error.
+
+    Stdlib only (no ``requests``) so the probe never depends on the heavier
+    client. A None result means "answered nothing usable" — the caller reports
+    the server as up-but-unqueried rather than treating it as a hard failure.
+    """
+    url = base_url.rstrip("/") + "/models"
+    try:
+        with urllib.request.urlopen(url, timeout=timeout) as response:  # noqa: S310 — localhost dev endpoint
+            payload = json.loads(response.read().decode("utf-8"))
+    except (urllib.error.URLError, OSError, ValueError, json.JSONDecodeError):
+        return None
+    data = payload.get("data") if isinstance(payload, dict) else None
+    if not isinstance(data, list):
+        return None
+    return [str(m.get("id", "?")) for m in data if isinstance(m, dict)]
+
+
+def probe_inference(base_url: str) -> tuple[bool, str]:
+    """Verify (sync) the local inference endpoint: (reachable?, human detail).
+
+    TCP liveness is the authoritative reachable signal (reusing
+    :func:`utils.yolo._tcp_up`); if the socket is open, the OpenAI ``/models``
+    listing is a best-effort enrichment for the detail string.
+    """
+    host, port = _split_host_port(base_url)
+    if not _tcp_up(host, port):
+        return False, f"no server listening at {host}:{port}"
+    models = _list_models(base_url)
+    if models is None:
+        return True, f"{host}:{port} is up (couldn't read /models)"
+    if not models:
+        return True, f"{host}:{port} is up (no models advertised)"
+    shown = ", ".join(models[:3]) + (" …" if len(models) > 3 else "")
+    return True, f"{host}:{port} up — {len(models)} model(s): {shown}"
+
+
+class InferenceServerStep(WizardStep):
+    """Configure and *sync* (probe) the OpenAI-compatible LLM endpoint.
+
+    Optional by design: the whole pipeline degrades to deterministic drafters
+    when no server is present, so an unconfigured or offline endpoint is a
+    warning with a fix, never a hard stop.
+    """
+
+    key = "inference"
+    title = "Local Inference Server (sync)"
+    required = False
+    remediation = (
+        "Start your OpenAI-compatible server (e.g. at http://localhost:9090/v1), "
+        "or leave LLM features off — the pipeline runs deterministically without one."
+    )
+
+    def __init__(self, root: Path = ROOT) -> None:
+        self.root = root
+        self.env_file = root / ".env"
+
+    def _enabled(self) -> bool:
+        return env_str("PLANNER_LLM_ENABLED", "false").strip().lower() == "true"
+
+    def _base_url(self) -> str:
+        return env_str("PLANNER_LLM_BASE_URL", DEFAULT_LLM_BASE_URL)
+
+    def describe(self) -> str:
+        return ("Configuring and syncing the local inference server "
+                "(OpenAI-compatible LLM endpoint for planner/specialists/synthesis) …")
+
+    def detect(self) -> tuple[bool, str]:
+        """Already configured? Re-probe so the skip line shows live reachability."""
+        if self._enabled():
+            up, detail = probe_inference(self._base_url())
+            state = "reachable" if up else "configured but offline"
+            return True, f"LLM enabled ({self._base_url()}) — {state}: {detail}"
+        return False, ""
+
+    def run(self, ui: WizardUI) -> StepResult:
+        r = StepResult(self.title)
+        try:
+            enable = ui.confirm(
+                "Enable LLM-backed inference (planner, specialists, synthesis, "
+                "conversation, eval)? Needs an OpenAI-compatible server; without one "
+                "the pipeline runs deterministically.",
+                default=self._enabled())
+            if not enable:
+                r.status = "ok"
+                r.detail = "LLM features off — deterministic pipeline"
+                return r
+
+            base_url = ui.prompt_text("Inference base URL", self._base_url())
+            model = ui.prompt_text("Model name",
+                                   env_str("PLANNER_LLM_MODEL", DEFAULT_LLM_MODEL))
+            updates: dict[str, str] = {}
+            for group in LLM_GROUPS:
+                updates[f"{group}_LLM_ENABLED"] = "true"
+                updates[f"{group}_LLM_BASE_URL"] = base_url
+                updates[f"{group}_LLM_MODEL"] = model
+            set_env_values(updates, env_file=self.env_file)
+            ui.say(f"Enabled LLM for {', '.join(g.lower() for g in LLM_GROUPS)}.")
+
+            up, detail = probe_inference(base_url)
+            r.status = "ok"  # never a hard failure — pipeline degrades gracefully
+            if up:
+                r.detail = f"enabled → {detail}"
+            else:
+                r.detail = f"enabled, but {detail}"
+                ui.say(f"⚠ {detail}. Start the server before querying with "
+                       f"--query-llm; the pipeline still runs deterministically meanwhile.")
+            return r
+        except Exception as exc:  # noqa: BLE001 — surfaced through the failure menu
+            r.status = "failed"
+            r.detail = str(exc)
+            return r
+
+
+# ── 4. data pipeline (delegated to YoloRunner) ───────────────────────────────
 
 
 class DataStep(WizardStep):
@@ -295,7 +422,7 @@ class DataStep(WizardStep):
         return r
 
 
-# ── 4. web dependencies ──────────────────────────────────────────────────────
+# ── 5. web dependencies ──────────────────────────────────────────────────────
 
 
 class WebDepsStep(WizardStep):
