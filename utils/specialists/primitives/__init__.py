@@ -20,13 +20,17 @@ from .describe import (
     merge_with_card,
     merge_zero_facets,
 )
+from .expand import ExpandRequest, ExpandResult, paginate
 
 __all__ = [
     "DescribeRequest",
     "DescribeResult",
     "Facet",
+    "ExpandRequest",
+    "ExpandResult",
     "facets_from_count_rows",
     "fold_facets",
     "merge_with_card",
     "merge_zero_facets",
+    "paginate",
 ]

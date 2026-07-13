@@ -12,8 +12,19 @@ import re
 from typing import Any
 
 from ...planner.intent import is_definitional_request
+from ..primitives.expand import ExpandRequest
 from ..resolve import ResolvedTask
 from ..validation import QueryDraft
+
+_SAFE_LABEL_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
+_SAFE_REL_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
+
+
+def _safe_ident(value: str, pattern: re.Pattern[str], kind: str) -> str:
+    """Guard a facet-sourced label/rel before inlining it into a query string."""
+    if not pattern.match(value or ""):
+        raise ValueError(f"unsafe {kind} for expand: {value!r}")
+    return value
 
 _TECHNIQUE_RE = re.compile(r"^T\d{4}(?:\.\d{3})?$")
 _SUBTECHNIQUE_RE = re.compile(r"^T\d{4}\.\d{3}$")
@@ -428,6 +439,35 @@ class CypherQueryBuilder:
             template="describe_by_name",
             expected_nonempty=False,
             meta={"name_terms": list(resolved.name_terms)},
+        )
+
+    def expand(self, request: ExpandRequest) -> QueryDraft:
+        """The ``expand`` compiler: one page of one facet's members, identity-only.
+
+        Server-side sliced (``members[$skip..$end]``) with the true ``total`` from
+        ``size(members)``, so a hub facet returns a bounded page while still
+        reporting how many members exist — the honest truncation signal. The
+        relationship type and both labels come from a facet the model saw, so they
+        are real; they are guarded before inlining as belt-and-suspenders.
+        """
+        anchor = _safe_ident(request.anchor_label, _SAFE_LABEL_RE, "anchor label")
+        rel = _safe_ident(request.rel_type, _SAFE_REL_RE, "relationship type")
+        target = _safe_ident(request.target_label, _SAFE_LABEL_RE, "target label")
+        hop = f"(n)-[:{rel}]->(m:{target})" if request.direction == "out" else f"(n)<-[:{rel}]-(m:{target})"
+        query = (
+            f"MATCH (n:{anchor}) WHERE n.attack_id = $id "
+            f"MATCH {hop} "
+            "WITH m ORDER BY coalesce(m.attack_id, m.id) "
+            "WITH collect({id: coalesce(m.attack_id, m.id), name: m.name, "
+            "label: head(labels(m))}) AS members "
+            "RETURN members[$skip..$end] AS members, size(members) AS total"
+        )
+        return QueryDraft(
+            query=query,
+            params={"id": request.anchor_id, "skip": request.skip(), "end": request.end()},
+            template="expand",
+            expected_nonempty=False,
+            meta=request.to_dict(),
         )
 
     def _technique_detection(

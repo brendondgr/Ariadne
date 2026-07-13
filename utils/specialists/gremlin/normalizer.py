@@ -19,6 +19,7 @@ from utils.graph_loader.stores.gremlin import gremlin_edge_label
 from utils.specialists.contracts import EvidenceRecord
 from utils.specialists.evidence import emit_record
 from utils.specialists.primitives.describe import fold_facets, merge_zero_facets
+from utils.specialists.primitives.expand import ExpandRequest, ExpandResult, paginate
 from utils.specialists.resolve import ResolvedTask
 from utils.specialists.schema.registry import PlausibleFacet
 
@@ -85,6 +86,27 @@ def _safe_str(v: Any) -> str:
     if isinstance(v, list):
         return str(v[0]) if v else ""
     return str(v) if v is not None else ""
+
+
+_CAPEC_AP_FULL_RE = re.compile(r"^capec:attack-pattern:(\d+)$")
+
+
+def _expand_member_id(gremlin_id: str) -> str:
+    """Member identity for expand: convert a *clean* CAPEC/CWE id, else keep raw.
+
+    Unlike ``_primary_id_from_gremlin_id`` (which prefix-matches and so collapses a
+    composite child id like ``capec:attack-pattern:66:mitigation:0`` to its parent
+    ``CAPEC-66``), this fullmatches — so a Mitigation/Consequence/ExecutionStep
+    member keeps its own honest id instead of masquerading as its parent pattern.
+    """
+    gid = gremlin_id or ""
+    m = _CAPEC_AP_FULL_RE.match(gid)
+    if m:
+        return f"CAPEC-{m.group(1)}"
+    m = _CWE_GREMLIN_RE.match(gid)
+    if m:
+        return f"CWE-{m.group(1)}"
+    return gid
 
 
 def _card_plausible_gremlin(card: Any, label: str) -> list[PlausibleFacet]:
@@ -159,6 +181,27 @@ class GremlinNormalizer:
                 f"ATT&CK mappings: {t_part}."
             )
         return f"Found {len(records)} CAPEC record(s): {capec_part}."
+
+    def normalize_expand(
+        self, rows: list[dict[str, Any]], request: ExpandRequest
+    ) -> ExpandResult:
+        """Shape expand member rows (``{id, name, label}`` each) into an ExpandResult.
+
+        The Gremlin ``expand`` query returns every member (CAPEC facets are small),
+        so the true total is the row count and the page slice + truncation flag are
+        computed here. CAPEC vertex ids are normalised back to ``CAPEC-N`` form.
+        """
+        members: list[dict[str, Any]] = []
+        for row in rows:
+            m = _row_as_dict(row)
+            members.append(
+                {
+                    "id": _expand_member_id(_safe_str(m.get("id"))),
+                    "name": _safe_str(m.get("name")),
+                    "label": _safe_str(m.get("label")),
+                }
+            )
+        return paginate(members, request)
 
     # -- per-shape helpers --------------------------------------------------
 

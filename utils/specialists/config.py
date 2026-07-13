@@ -50,6 +50,10 @@ class SpecialistConfig:
     query_timeout_ms: int = 5000
     # Capped redraft loop: how many times a rejected draft may be revised.
     max_retries: int = 2
+    # Page size for the `expand` primitive: how many facet members one page
+    # returns. Larger pages fetch more per call; smaller pages page more often.
+    # Left as a knob pending the product decision on paging policy (plan §2).
+    expand_page_size: int = 50
     # Optional LLM seam (off by default; deterministic building always works).
     llm_enabled: bool = False
     llm_base_url: str = DEFAULT_LLM_BASE_URL
@@ -86,6 +90,7 @@ class SpecialistConfig:
             max_result_rows=env_int("SPECIALIST_MAX_RESULT_ROWS", 1000),
             query_timeout_ms=env_int("SPECIALIST_QUERY_TIMEOUT_MS", 5000),
             max_retries=env_int("SPECIALIST_MAX_RETRIES", 2),
+            expand_page_size=env_int("SPECIALIST_EXPAND_PAGE_SIZE", 50),
             llm_enabled=llm_enabled,
             llm_base_url=env_str("SPECIALIST_LLM_BASE_URL", DEFAULT_LLM_BASE_URL),
             llm_model=env_str("SPECIALIST_LLM_MODEL", DEFAULT_LLM_MODEL),

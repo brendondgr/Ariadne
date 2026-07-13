@@ -14,8 +14,17 @@ from typing import Any
 
 from utils.graph_loader.stores.gremlin import gremlin_edge_label
 from utils.planner.intent import is_definitional_request
+from utils.specialists.primitives.expand import ExpandRequest
 from utils.specialists.resolve import ResolvedTask
 from utils.specialists.validation import QueryDraft
+
+_SAFE_GREMLIN_IDENT = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
+
+
+def _safe_gremlin_ident(value: str, kind: str) -> str:
+    if not _SAFE_GREMLIN_IDENT.match(value or ""):
+        raise ValueError(f"unsafe {kind} for expand: {value!r}")
+    return value
 
 # Relationships that fan out from AttackPattern to direct neighbours.
 # The hierarchy natures (ChildOf, CanPrecede) are declared-direction only:
@@ -121,6 +130,34 @@ class GremlinQueryBuilder:
         return self._capec_scan(resolved)
 
     # -- templates ----------------------------------------------------------
+
+    def expand(self, request: ExpandRequest) -> QueryDraft:
+        """The ``expand`` compiler: the members of one facet, identity-only.
+
+        Returns every member's ``(id, name, label)`` (CAPEC's max degree is 59, so
+        the page is bounded even before slicing); the normalizer paginates and
+        computes the true total + truncation signal. The step/rel/labels come from
+        a facet the model saw, so they are real and pass the direction gate.
+        """
+        anchor = _safe_gremlin_ident(request.anchor_label, "anchor label")
+        rel = _safe_gremlin_ident(request.rel_type, "relationship type")
+        target = _safe_gremlin_ident(request.target_label, "target label")
+        step = "out" if request.direction == "out" else "in"
+        query = (
+            f'g.V().hasLabel("{anchor}").has("id", within(ids))'
+            f'.{step}("{rel}").hasLabel("{target}")'
+            '.project("id","name","label")'
+            '.by(coalesce(values("id"), constant("")))'
+            '.by(coalesce(values("name"), constant("")))'
+            ".by(label())"
+        )
+        return QueryDraft(
+            query=query,
+            params={"ids": [_capec_gremlin_id(request.anchor_id)]},
+            template="expand",
+            expected_nonempty=False,
+            meta=request.to_dict(),
+        )
 
     def _capec_lookup(self, resolved: ResolvedTask) -> QueryDraft:
         ids = [_capec_gremlin_id(s) for s in resolved.seed_ids]

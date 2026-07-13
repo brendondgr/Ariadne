@@ -23,6 +23,7 @@ from ..contracts import EvidenceRecord
 from ..evidence import emit_record
 from ..primitives.describe import facets_from_count_rows as _facets_from_rows
 from ..primitives.describe import merge_with_card as _merge_plausible
+from ..primitives.expand import ExpandRequest, ExpandResult, paginate
 from ..resolve import ResolvedTask
 
 _TECHNIQUE_ID_RE = re.compile(r"^T\d{4}(?:\.\d{3})?$")
@@ -531,6 +532,33 @@ class CypherNormalizer:
                 )
             )
         return records
+
+    def normalize_expand(
+        self, rows: list[dict[str, Any]], request: ExpandRequest
+    ) -> ExpandResult:
+        """Shape the server-sliced expand rows into an ``ExpandResult``.
+
+        The Cypher ``expand`` query returns one row: ``members`` already sliced to
+        the page and ``total`` the true member count, so paging is not re-applied —
+        the truncation flag is computed from the real total.
+        """
+        if not rows:
+            return paginate([], request, total=0, pre_sliced=True)
+        row = rows[0]
+        members: list[dict[str, Any]] = []
+        for m in row.get("members") or []:
+            if not isinstance(m, dict):
+                continue
+            members.append(
+                {
+                    "id": str(m.get("id") or ""),
+                    "name": str(m.get("name") or ""),
+                    "label": str(m.get("label") or ""),
+                }
+            )
+        total = row.get("total")
+        total = int(total) if isinstance(total, (int, float)) else len(members)
+        return paginate(members, request, total=total, pre_sliced=True)
 
     @staticmethod
     def _parse_properties(blob: Any) -> dict[str, Any]:
