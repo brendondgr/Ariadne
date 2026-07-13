@@ -791,7 +791,7 @@ class TestNonRegressionRouting:
 
 
 class TestCapecDossier:
-    def test_routing_capec_dossier_on_describe_intent(self, card, limits):
+    def test_routing_describe_on_describe_intent(self, card, limits):
         from utils.specialists.resolve import resolve
 
         task = _make_task(
@@ -802,18 +802,24 @@ class TestCapecDossier:
         )
         resolved = resolve(task, card)
         draft = GremlinQueryBuilder().build(resolved)
-        assert draft.template == "capec_dossier"
+        assert draft.template == "describe"
         assert draft.params["ids"] == ["capec:attack-pattern:98"]
         assert GremlinValidator().validate(draft, card, limits).ok
 
-    def test_bare_lookup_stays_capec_lookup(self, card):
+    def test_bare_seed_id_also_routes_to_describe(self, card):
+        """A bare id lookup with no 'tell me about' verb still routes to describe.
+
+        describe subsumes the old capec_lookup/capec_dossier split — there is
+        no longer a "lean lookup vs rich dossier" distinction, so a bare id and
+        a describe-verb id both take the same full-record path.
+        """
         from utils.specialists.resolve import resolve
 
         task = _make_task(text="CAPEC-98", entities=("AttackPattern",), join_key=None, seed_ids=("CAPEC-98",))
         draft = GremlinQueryBuilder().build(resolve(task, card))
-        assert draft.template == "capec_lookup"
+        assert draft.template == "describe"
 
-    def test_normalizer_dossier_builds_typed_related_and_description(self, card):
+    def test_normalizer_describe_builds_full_properties_and_facets(self, card):
         from utils.specialists.resolve import resolve
 
         rows = [
@@ -821,21 +827,28 @@ class TestCapecDossier:
                 "node": {"id": "capec:attack-pattern:98", "label": "AttackPattern", "name": "Phishing",
                          "description": "A social engineering technique."},
                 "out": [
-                    {"rel": "CAN_PRECEDE", "other": {"id": "capec:attack-pattern:89", "label": "AttackPattern", "name": "Pharming"}},
+                    {"rel": "CAN_PRECEDE", "label": "AttackPattern"},
                 ],
                 "in": [
-                    {"rel": "CHILD_OF", "other": {"id": "capec:attack-pattern:163", "label": "AttackPattern", "name": "Spear Phishing"}},
+                    {"rel": "CHILD_OF", "label": "AttackPattern"},
                 ],
             }
         ]
         task = _make_task(text="Tell me more about CAPEC-98.", entities=("AttackPattern",), join_key=None, seed_ids=("CAPEC-98",))
         rec = GremlinNormalizer().normalize(rows, resolve(task, card), "FAKE", card)[0]
         assert rec.primary_id == "CAPEC-98"
+        # properties carries the full parsed vertex — no allow-list.
         assert rec.properties["description"] == "A social engineering technique."
-        assert rec.properties["neighbor_total"] == 2
-        by_id = {r["id"]: r for r in rec.related}
-        assert by_id["CAPEC-89"]["type"] == "CAN_PRECEDE" and by_id["CAPEC-89"]["direction"] == "out"
-        assert by_id["CAPEC-163"]["type"] == "CHILD_OF" and by_id["CAPEC-163"]["direction"] == "in"
+        assert "neighbor_total" not in rec.properties
+        # facets carries the folded {rel, direction, label, count} block. The
+        # registry also folds in the plausible-but-unobserved reverse-direction
+        # facets as honest zeros, so key on (rel, direction) to grab the observed ones.
+        by_rel = {(f["rel"], f["direction"]): f for f in rec.facets}
+        assert by_rel[("CAN_PRECEDE", "out")]["label"] == "AttackPattern"
+        assert by_rel[("CAN_PRECEDE", "out")]["count"] == 1
+        assert by_rel[("CHILD_OF", "in")]["count"] == 1
+        # describe returns facet counts, not individual neighbours.
+        assert rec.related == []
 
 
 # ---------------------------------------------------------------------------
@@ -844,7 +857,7 @@ class TestCapecDossier:
 
 
 class TestCapecDossierByName:
-    def test_routing_name_dossier_on_definitional_question(self, card, limits):
+    def test_routing_describe_by_name_on_definitional_question(self, card, limits):
         from utils.specialists.resolve import resolve
 
         task = _make_task(
@@ -856,8 +869,8 @@ class TestCapecDossierByName:
         resolved = resolve(task, card)
         assert resolved.name_terms == ("Phishing",)
         draft = GremlinQueryBuilder().build(resolved)
-        assert draft.template == "capec_dossier_by_name"
-        # Anchors AttackPattern by case-insensitive name, same dossier projection.
+        assert draft.template == "describe_by_name"
+        # Anchors AttackPattern by case-insensitive name, same describe projection.
         assert 'TextP.regex("(?i).*(Phishing).*")' in draft.query
         assert '.project("node","out","in")' in draft.query
         assert GremlinValidator().validate(draft, card, limits).ok

@@ -149,10 +149,11 @@ not both.
 | `id_scheme` | `str` | Yes (no default) | Naming scheme, e.g. `"attack-id"`; always present |
 | `label` | `str` | Yes (no default) | Entity type, e.g. `"Technique"`; always present |
 | `name` | `str` | Yes (no default) | Human-readable name; always present |
-| `properties` | `dict[str, Any]` | No (default `{}`) | Deep-copied on serialize; always present |
-| `related` | `list[dict[str, Any]]` | No (default `[]`) | Lightweight adjacent-record dicts; always present |
+| `properties` | `dict[str, Any]` | No (default `{}`) | Deep-copied on serialize; always present. From `describe` this carries the node's **whole** property set (no allow-list) |
+| `related` | `list[dict[str, Any]]` | No (default `[]`) | Lightweight adjacent-record dicts; always present. Empty on a `describe` record (which carries facet counts, not neighbours) |
 | `join_values` | `tuple[str, ...]` | No (default `()`) | Serialized as a list; always present, may be empty |
 | `provenance` | `Provenance \| None` | No (default `None`) | Nested `to_dict()` or `null`; always present as a key |
+| `facets` | `list[dict[str, Any]]` | No (default `[]`) | The `describe` facet block: adjacent-node counts grouped by relationship/direction/neighbour label, each `{"rel", "direction", "label", "count"}`; empty for template records. Always present as a key |
 
 ### Provenance fields
 

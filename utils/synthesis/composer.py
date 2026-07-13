@@ -22,6 +22,7 @@ Composition rules:
 
 from __future__ import annotations
 
+from utils.planner.intent import is_definitional_request
 from utils.specialists.contracts import SpecialistResult
 from utils.specialists.federation import FederatedEvidence
 from utils.specialists.resolve import definitional_name_terms
@@ -273,8 +274,14 @@ def _clarification_narrative(
     request for specificity rather than a flat "I can't get any information".
     """
     # Names actually searched by a name lookup; else the request's own
-    # definitional names (used when the planner routed nothing at all).
-    names = _name_lookup_terms(evidence) or definitional_name_terms(evidence.request)
+    # definitional names — but only when the request actually reads as
+    # definitional, so a non-definitional dead end ("test question") keeps the
+    # generic honest-empty wording rather than naming incidental words.
+    names = _name_lookup_terms(evidence) or (
+        definitional_name_terms(evidence.request)
+        if is_definitional_request(evidence.request)
+        else ()
+    )
     if names:
         quoted = " or ".join(f"'{n}'" for n in names)
         return (

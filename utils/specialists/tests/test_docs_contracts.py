@@ -101,7 +101,7 @@ def test_interfaces_doc_matches_specialist_wire_shapes() -> None:
     )
     assert set(record.to_dict()) == {
         "primary_id", "id_scheme", "label", "name", "properties", "related",
-        "join_values", "provenance",
+        "join_values", "provenance", "facets",
     }
 
     prov = Provenance("s", "attack", "neo4j", "q", "r", "t")

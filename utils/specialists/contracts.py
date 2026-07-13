@@ -136,6 +136,11 @@ class EvidenceRecord:
     related: list[dict[str, Any]] = field(default_factory=list)
     join_values: tuple[str, ...] = ()
     provenance: Provenance | None = None
+    # The bounded facet block from ``describe``: a count of adjacent nodes grouped
+    # by ``(relationship, direction, neighbour label)``. Each entry is a
+    # ``{"rel", "direction", "label", "count"}`` dict. Empty for template records
+    # and for records that carry individual neighbours in ``related`` instead.
+    facets: list[dict[str, Any]] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -147,6 +152,7 @@ class EvidenceRecord:
             "related": list(self.related),
             "join_values": list(self.join_values),
             "provenance": self.provenance.to_dict() if self.provenance else None,
+            "facets": list(self.facets),
         }
 
 

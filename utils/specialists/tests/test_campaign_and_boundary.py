@@ -62,9 +62,9 @@ def test_campaign_attribution_outranks_group_branch() -> None:
     assert verdict.ok, verdict.reasons
 
 
-def test_campaign_only_lookup_still_routes_to_node_lookup() -> None:
+def test_campaign_only_lookup_still_routes_to_describe() -> None:
     draft, _ = _draft(("Campaign",), "What is campaign C0027 in ATT&CK?")
-    assert draft.template == "node_lookup"
+    assert draft.template == "describe"
 
 
 def test_group_only_still_routes_to_group_techniques() -> None:

@@ -11,7 +11,8 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from ..resolve import ResolvedTask, is_definitional_intent, is_dossier_intent
+from ...planner.intent import is_definitional_request
+from ..resolve import ResolvedTask
 from ..validation import QueryDraft
 
 _TECHNIQUE_RE = re.compile(r"^T\d{4}(?:\.\d{3})?$")
@@ -43,14 +44,10 @@ def _preferred_scan_label(resolved: ResolvedTask) -> str:
     return resolved.primary_label() or "Technique"
 
 
-# How many typed neighbors the dossier query returns; the true total is reported
-# alongside so a hub node is marked "+N more" rather than silently truncated.
-_DOSSIER_NEIGHBOR_CAP = 25
-
 # Description-bearing ATT&CK labels a name lookup may resolve to. Explicit (not
 # card-derived) so the multi-label OR guard is fixed and validator-safe; every
 # one carries a ``name`` and a description inside ``properties_json``.
-_NAME_DOSSIER_LABELS: tuple[str, ...] = (
+_NAME_DESCRIBE_LABELS: tuple[str, ...] = (
     "Technique",
     "SubTechnique",
     "Mitigation",
@@ -77,21 +74,8 @@ _ID_PREFIX_LABELS: tuple[tuple[re.Pattern[str], str], ...] = (
 )
 
 
-def _wants_dossier(resolved: ResolvedTask) -> bool:
-    """True when a seeded, non-join task reads as a single-entity deep dive.
-
-    The by-id path keeps the narrower describe-verb intent (``describe``/
-    ``details``/…): a bare "what is M1049?" deliberately stays a lean
-    ``node_lookup``. The broader definitional intent only anchors the *seedless*
-    name-dossier branch, where there is otherwise nothing to return.
-    """
-    if resolved.has_join:
-        return False
-    return is_dossier_intent(resolved.task.text)
-
-
-def _dossier_label(resolved: ResolvedTask) -> str:
-    """Anchor label for the dossier: the resolved label, else inferred from the id."""
+def _describe_label(resolved: ResolvedTask) -> str:
+    """Anchor label for describe: the resolved label, else inferred from the id."""
     label = resolved.primary_label()
     if label:
         return label
@@ -217,25 +201,26 @@ class CypherQueryBuilder:
         if has_tactic:
             return self._tactic_techniques(resolved)
 
-        # 5. Seed ids present but no compound edge intent → node lookup, or a
-        #    dossier (full node + capped typed 1-hop) for a single-entity deep dive.
+        # 5. Seed ids present but no compound edge intent → describe the anchor:
+        #    every property + a bounded facet block. describe subsumes the old
+        #    node_lookup and node_dossier — it always returns the full record, so
+        #    there is no cheap "lean lookup" path left to protect and no
+        #    describe-verb intent left to gate on.
         if resolved.seed_ids:
-            if _wants_dossier(resolved):
-                return self._node_dossier(resolved)
-            return self._node_lookup(resolved)
+            return self._describe(resolved)
 
-        # 6. No seeds. A definitional question that named an entity ("What is
-        #    User Training?") anchors on a name dossier — the same rich node +
-        #    typed 1-hop as the by-id dossier, matched by name — instead of the
-        #    catastrophic bare label scan.
+        # 6. No seeds but a definitional question that names an entity ("What is
+        #    User Training?") → describe by name. The definitional cue keeps a
+        #    broad enumeration ("scan all techniques") on the label-scan path
+        #    rather than mistaking an incidental capitalized word for an anchor.
         if (
             resolved.name_terms
             and not resolved.has_join
-            and is_definitional_intent(resolved.task.text)
+            and is_definitional_request(resolved.task.text)
         ):
-            return self._node_dossier_by_name(resolved)
+            return self._describe(resolved)
 
-        # 7. Fallback: label scan (no seeds)
+        # 7. Fallback: label scan (no anchor at all).
         return self._label_scan(resolved)
 
     # -- intent builders -------------------------------------------------------
@@ -393,74 +378,56 @@ class CypherQueryBuilder:
             meta={"label": label, "seed_ids": seed_ids},
         )
 
-    def _node_dossier(self, resolved: ResolvedTask) -> QueryDraft:
-        """Full node (incl. properties_json) + a capped, typed 1-hop neighborhood.
+    # The facet-block aggregation shared by both describe shapes: group every
+    # 1-hop edge by (rel type, direction, neighbour label) and count. Server-side
+    # aggregation keeps the payload a fraction of a KB even for an 858-degree hub
+    # — the facet block is a count, never a neighbour list. The untyped ``-[r]-``
+    # surfaces every edge kind and sidesteps the gate's relationship-type check;
+    # a zero-degree node yields an empty block (the CASE filters the null group).
+    _FACET_AGGREGATION = (
+        "OPTIONAL MATCH (n)-[r]-(m) "
+        "WITH n, "
+        "CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, "
+        "CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, "
+        "CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, "
+        "count(m) AS cnt "
+        "WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE "
+        "{rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw "
+        "WITH n, [f IN raw WHERE f IS NOT NULL] AS facets "
+        "RETURN n.attack_id AS id, n.name AS name, "
+        "n.properties_json AS properties_json, facets AS facets"
+    )
 
-        One row per seed entity: its id/name/properties_json (the description
-        lives in the JSON blob), the first ``_DOSSIER_NEIGHBOR_CAP`` typed
-        neighbors, and the true neighbor count so a hub is marked "+N more".
-        The relationship is left untyped so every edge kind is surfaced; the
-        untyped ``-[r]-`` also keeps the query clear of the schema gate's
-        relationship-type check.
+    def _describe(self, resolved: ResolvedTask) -> QueryDraft:
+        """The universal ``describe`` compiler: full node + bounded facet block.
+
+        By id when the task carries seeds, else by name across the
+        description-bearing labels. Returns ``n.properties_json`` (unpacked whole
+        by the normalizer — no allow-list) alongside the aggregated facet block.
+        There is no neighbour cap: the block is a count, so it cannot blow up.
         """
-        label = _dossier_label(resolved)
-        seed_ids = list(resolved.seed_ids)
-        cap = _DOSSIER_NEIGHBOR_CAP
-        query = (
-            f"MATCH (n:{label}) WHERE n.attack_id IN $ids "
-            "OPTIONAL MATCH (n)-[r]-(m) "
-            "WITH n, collect(CASE WHEN m IS NULL THEN NULL ELSE {"
-            "rel: type(r), outgoing: startNode(r) = n, "
-            "id: coalesce(m.attack_id, m.id), name: m.name, label: head(labels(m))"
-            "} END) AS raw "
-            "WITH n, [x IN raw WHERE x IS NOT NULL] AS neighbors "
-            "RETURN n.attack_id AS id, n.name AS name, "
-            "n.properties_json AS properties_json, "
-            f"neighbors[0..{cap}] AS neighbors, size(neighbors) AS neighbor_total"
-        )
-        return QueryDraft(
-            query=query,
-            params={"ids": seed_ids},
-            template="node_dossier",
-            expected_nonempty=True,
-            meta={"label": label, "seed_ids": seed_ids, "neighbor_cap": cap},
-        )
-
-    def _node_dossier_by_name(self, resolved: ResolvedTask) -> QueryDraft:
-        """Name-anchored dossier: the definitional counterpart of ``_node_dossier``.
-
-        For a question that names an entity ("User Training") instead of citing
-        an id, match any description-bearing label whose lower-cased name
-        contains one of the extracted name terms, and return the *same* row
-        shape (id/name/properties_json + capped typed 1-hop + true total) so the
-        dossier normalizer surfaces the description and neighbors with no change.
-        The multi-label ``OR`` guard, parameterised ``$names``, and the injected
-        LIMIT keep it validator-safe; ``expected_nonempty`` is False because a
-        name that matches nothing is a legitimate miss (handled as an honest
-        abstention downstream), not a builder error to retry.
-        """
+        if resolved.seed_ids:
+            label = _describe_label(resolved)
+            match = f"MATCH (n:{label}) WHERE n.attack_id IN $ids "
+            return QueryDraft(
+                query=match + self._FACET_AGGREGATION,
+                params={"ids": list(resolved.seed_ids)},
+                template="describe",
+                expected_nonempty=True,
+                meta={"label": label, "seed_ids": list(resolved.seed_ids)},
+            )
         names = [term.lower() for term in resolved.name_terms]
-        label_guard = " OR ".join(f"n:{label}" for label in _NAME_DOSSIER_LABELS)
-        cap = _DOSSIER_NEIGHBOR_CAP
-        query = (
+        label_guard = " OR ".join(f"n:{label}" for label in _NAME_DESCRIBE_LABELS)
+        match = (
             f"MATCH (n) WHERE ({label_guard}) "
             "AND any(term IN $names WHERE toLower(n.name) CONTAINS term) "
-            "OPTIONAL MATCH (n)-[r]-(m) "
-            "WITH n, collect(CASE WHEN m IS NULL THEN NULL ELSE {"
-            "rel: type(r), outgoing: startNode(r) = n, "
-            "id: coalesce(m.attack_id, m.id), name: m.name, label: head(labels(m))"
-            "} END) AS raw "
-            "WITH n, [x IN raw WHERE x IS NOT NULL] AS neighbors "
-            "RETURN n.attack_id AS id, n.name AS name, "
-            "n.properties_json AS properties_json, "
-            f"neighbors[0..{cap}] AS neighbors, size(neighbors) AS neighbor_total"
         )
         return QueryDraft(
-            query=query,
+            query=match + self._FACET_AGGREGATION,
             params={"names": names},
-            template="node_dossier_by_name",
+            template="describe_by_name",
             expected_nonempty=False,
-            meta={"name_terms": list(resolved.name_terms), "neighbor_cap": cap},
+            meta={"name_terms": list(resolved.name_terms)},
         )
 
     def _technique_detection(

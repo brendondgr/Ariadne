@@ -537,9 +537,9 @@ def test_normalizer_software_techniques(card):
     assert "T1550" in rec.join_values
 
 
-# Non-regression: Software-only entity (node_lookup)
-def test_nonregression_software_only_node_lookup(card):
-    """entities=(Software,) with S0154 seed must still route node_lookup, not software_techniques."""
+# Non-regression: Software-only entity (describe)
+def test_nonregression_software_only_describe(card):
+    """entities=(Software,) with S0154 seed must still route describe, not software_techniques."""
     task = SpecialistTask(
         sub_question_id="q-nr-sw",
         source="attack",
@@ -551,7 +551,7 @@ def test_nonregression_software_only_node_lookup(card):
     resolved = _resolve(task)
     builder = CypherQueryBuilder()
     draft = builder.build(resolved)
-    assert draft.template == "node_lookup"
+    assert draft.template == "describe"
 
 
 # ---------------------------------------------------------------------------
@@ -774,12 +774,13 @@ def test_nonregression_technique_mitigations_still_routes(card):
 
 
 # ---------------------------------------------------------------------------
-# node_dossier: single-entity "tell me about this" deep dive
+# describe: single-entity "tell me about this" deep dive (subsumes the old
+# node_lookup / node_dossier split — describe always returns the full record).
 # ---------------------------------------------------------------------------
 
 
-def test_routing_node_dossier_on_describe_intent(card):
-    """A single-seed 'details on M1049' task routes to the dossier template."""
+def test_routing_describe_on_describe_intent(card):
+    """A single-seed 'details on M1049' task routes to the describe template."""
     task = SpecialistTask(
         sub_question_id="q-dossier-1",
         source="attack",
@@ -790,18 +791,18 @@ def test_routing_node_dossier_on_describe_intent(card):
     )
     resolved = _resolve(task)
     draft = CypherQueryBuilder().build(resolved)
-    assert draft.template == "node_dossier"
-    # It projects the description blob and traverses a 1-hop neighborhood.
+    assert draft.template == "describe"
+    # It projects the full properties blob and the aggregated 1-hop facet block.
     assert "properties_json" in draft.query
     assert "OPTIONAL MATCH (n)-[r]-(m)" in draft.query
-    assert "neighbor_total" in draft.query
+    assert "facets AS facets" in draft.query
     assert "(n:Mitigation)" in draft.query
     result = _validate(draft)
     assert result.ok, result.reasons
 
 
-def test_node_dossier_infers_label_from_seed_when_unnamed(card):
-    """With no entity label named, the dossier anchors on the seed-id prefix."""
+def test_describe_infers_label_from_seed_when_unnamed(card):
+    """With no entity label named, describe anchors on the seed-id prefix."""
     task = SpecialistTask(
         sub_question_id="q-dossier-2",
         source="attack",
@@ -812,13 +813,18 @@ def test_node_dossier_infers_label_from_seed_when_unnamed(card):
     )
     resolved = _resolve(task)
     draft = CypherQueryBuilder().build(resolved)
-    assert draft.template == "node_dossier"
+    assert draft.template == "describe"
     assert "(n:Mitigation)" in draft.query
     assert _validate(draft).ok
 
 
-def test_node_lookup_stays_lean_without_describe_intent(card):
-    """A bare id lookup with no 'details/about' intent keeps the node_lookup template."""
+def test_bare_seed_id_also_routes_to_describe(card):
+    """A bare id lookup with no 'details/about' verb still routes to describe.
+
+    describe subsumes the old node_lookup/node_dossier split: there is no
+    longer a "lean lookup vs rich dossier" distinction, so a bare id and a
+    describe-verb id both take the same full-record path.
+    """
     task = SpecialistTask(
         sub_question_id="q-dossier-3",
         source="attack",
@@ -829,17 +835,17 @@ def test_node_lookup_stays_lean_without_describe_intent(card):
     )
     resolved = _resolve(task)
     draft = CypherQueryBuilder().build(resolved)
-    assert draft.template == "node_lookup"
-    assert "properties_json" not in draft.query
+    assert draft.template == "describe"
+    assert "properties_json" in draft.query
 
 
 # ---------------------------------------------------------------------------
-# node_dossier_by_name: definitional "what is <name>?" with no id
+# describe_by_name: definitional "what is <name>?" with no id
 # ---------------------------------------------------------------------------
 
 
-def test_routing_node_dossier_by_name_on_definitional_question(card):
-    """A name-only definitional question routes to the name dossier template."""
+def test_routing_describe_by_name_on_definitional_question(card):
+    """A name-only definitional question routes to the describe_by_name template."""
     task = SpecialistTask(
         sub_question_id="q-name-1",
         source="attack",
@@ -850,11 +856,11 @@ def test_routing_node_dossier_by_name_on_definitional_question(card):
     )
     resolved = _resolve(task)
     draft = CypherQueryBuilder().build(resolved)
-    assert draft.template == "node_dossier_by_name"
-    # Same rich dossier row shape as the by-id path, matched by name.
+    assert draft.template == "describe_by_name"
+    # Same full-record row shape as the by-id path, matched by name.
     assert "properties_json" in draft.query
     assert "OPTIONAL MATCH (n)-[r]-(m)" in draft.query
-    assert "neighbor_total" in draft.query
+    assert "facets AS facets" in draft.query
     assert "toLower(n.name) CONTAINS term" in draft.query
     # The extracted names are the lower-cased query parameters (no ids).
     assert draft.params["names"] == ["user training", "software configuration"]
@@ -862,7 +868,7 @@ def test_routing_node_dossier_by_name_on_definitional_question(card):
     assert result.ok, result.reasons
 
 
-def test_node_dossier_by_name_validator_round_trip_is_label_scoped(card):
+def test_describe_by_name_validator_round_trip_is_label_scoped(card):
     """The name query scopes to real card labels and survives the validator."""
     task = SpecialistTask(
         sub_question_id="q-name-2",
@@ -873,7 +879,7 @@ def test_node_dossier_by_name_validator_round_trip_is_label_scoped(card):
         seed_ids=(),
     )
     draft = CypherQueryBuilder().build(_resolve(task))
-    assert draft.template == "node_dossier_by_name"
+    assert draft.template == "describe_by_name"
     # Multi-label OR guard uses only real ATT&CK labels.
     assert "n:Mitigation" in draft.query and "n:Technique" in draft.query
     assert _validate(draft).ok
@@ -896,11 +902,10 @@ def test_definitional_without_name_terms_falls_back_to_label_scan(card):
 
 
 def test_seeded_definitional_uses_id_path_not_name_path(card):
-    """A definitional question that cites an id keeps the by-id path, never the name dossier.
+    """A definitional question that cites an id keeps the by-id path, never describe_by_name.
 
-    "What exactly is M1049?" has a seed, so it takes the id branch (a lean
-    node_lookup, matching the project's deliberate by-id behavior) — the name
-    dossier only rescues the *seedless* case.
+    "What exactly is M1049?" has a seed, so it takes the id branch (describe by
+    id) — describe_by_name only rescues the *seedless* case.
     """
     task = SpecialistTask(
         sub_question_id="q-name-4",
@@ -911,11 +916,11 @@ def test_seeded_definitional_uses_id_path_not_name_path(card):
         seed_ids=("M1049",),
     )
     draft = CypherQueryBuilder().build(_resolve(task))
-    assert draft.template != "node_dossier_by_name"
-    assert draft.template == "node_lookup"
+    assert draft.template != "describe_by_name"
+    assert draft.template == "describe"
 
 
-def _dossier_task():
+def _describe_task():
     return SpecialistTask(
         sub_question_id="q-dossier-n",
         source="attack",
@@ -926,8 +931,8 @@ def _dossier_task():
     )
 
 
-def test_normalizer_dossier_parses_description_and_typed_neighbors(card):
-    """The dossier row's properties_json yields a description; neighbors become typed related."""
+def test_normalizer_describe_parses_full_properties_and_facets(card):
+    """The describe row's properties_json yields the full record; edges fold into facet counts."""
     import json as _json
 
     rows = [
@@ -937,29 +942,31 @@ def test_normalizer_dossier_parses_description_and_typed_neighbors(card):
             "properties_json": _json.dumps(
                 {"attack_id": "M1049", "description": "Antivirus solutions use signatures and heuristics."}
             ),
-            "neighbors": [
-                {"rel": "MITIGATES", "outgoing": True, "id": "T1566", "name": "Phishing", "label": "Technique"},
-                {"rel": "MITIGATES", "outgoing": True, "id": "T1204", "name": "User Execution", "label": "Technique"},
+            "facets": [
+                {"rel": "MITIGATES", "outgoing": True, "label": "Technique", "count": 23},
             ],
-            "neighbor_total": 23,
         }
     ]
-    resolved = _resolve(_dossier_task())
+    resolved = _resolve(_describe_task())
     rec = CypherNormalizer().normalize(rows, resolved, "FAKE", card)[0]
     assert rec.primary_id == "M1049"
     assert rec.label == "Mitigation"
+    # properties carries the full parsed blob — no allow-list.
     assert rec.properties["description"].startswith("Antivirus solutions")
-    # True total preserved; capped set marked truncated for the "+N more" tail.
-    assert rec.properties["neighbor_total"] == 23
-    assert rec.properties["neighbors_truncated"] is True
-    nbr = {r["id"]: r for r in rec.related}
-    assert nbr["T1566"]["type"] == "MITIGATES"
-    assert nbr["T1566"]["direction"] == "out"
-    assert nbr["T1566"]["name"] == "Phishing"
+    assert rec.properties["attack_id"] == "M1049"
+    assert "neighbor_total" not in rec.properties
+    # facets carries the folded {rel, direction, label, count} block. The
+    # registry also folds in the plausible-but-unobserved MITIGATES->SubTechnique
+    # facet as an honest zero, so match on (rel, label) to grab the observed one.
+    facet = next(f for f in rec.facets if f["rel"] == "MITIGATES" and f["label"] == "Technique")
+    assert facet["direction"] == "out"
+    assert facet["count"] == 23
+    # describe returns facet counts, not individual neighbours.
+    assert rec.related == []
 
 
-def test_normalizer_dossier_description_only_node_has_no_neighbors(card):
-    """A node with an empty neighbor list still yields a description record (not dropped)."""
+def test_normalizer_describe_description_only_node_has_empty_facets(card):
+    """A node with no observed edges still yields a full record (not dropped)."""
     import json as _json
 
     rows = [
@@ -967,22 +974,23 @@ def test_normalizer_dossier_description_only_node_has_no_neighbors(card):
             "id": "M1049",
             "name": "Antivirus/Antimalware",
             "properties_json": _json.dumps({"description": "Detects malware."}),
-            "neighbors": [],
-            "neighbor_total": 0,
+            "facets": [],
         }
     ]
-    resolved = _resolve(_dossier_task())
+    resolved = _resolve(_describe_task())
     records = CypherNormalizer().normalize(rows, resolved, "FAKE", card)
     assert len(records) == 1
     assert records[0].properties["description"] == "Detects malware."
     assert records[0].related == []
-    assert records[0].properties["neighbors_truncated"] is False
+    # No observed edges still folds in the registry's plausible facets as
+    # honest zeros rather than an empty block.
+    assert all(f["count"] == 0 for f in records[0].facets)
 
 
 def test_normalizer_dossier_tolerates_bad_properties_json(card):
     """A malformed properties_json degrades to no description, not an exception."""
-    rows = [{"id": "M1049", "name": "Antivirus/Antimalware", "properties_json": "{not json", "neighbors": [], "neighbor_total": 0}]
-    resolved = _resolve(_dossier_task())
+    rows = [{"id": "M1049", "name": "Antivirus/Antimalware", "properties_json": "{not json", "facets": []}]
+    resolved = _resolve(_describe_task())
     rec = CypherNormalizer().normalize(rows, resolved, "FAKE", card)[0]
     assert "description" not in rec.properties
     assert rec.name == "Antivirus/Antimalware"

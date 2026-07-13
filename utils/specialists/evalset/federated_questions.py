@@ -259,7 +259,7 @@ def build_federated_questions(gold: dict[str, Any]) -> list[dict[str, Any]]:
                     _sub(
                         "q2", "attack",
                         f"What is ATT&CK technique {tid}?",
-                        (obj["label"],), "node_lookup",
+                        (obj["label"],), "describe",
                     ),
                 ],
                 "assertions": {

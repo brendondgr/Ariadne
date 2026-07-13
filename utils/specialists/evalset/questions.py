@@ -191,7 +191,7 @@ def build_attack_questions(gold: dict[str, Any]) -> list[dict[str, Any]]:
                 "id": f"A-LKP-{i:02d}",
                 "tier": "easy",
                 "question": f"Look up {aid} — what is it called?",
-                "expected_template": "node_lookup",
+                "expected_template": "describe",
                 "task": _task(
                     f"A-LKP-{i:02d}", "attack",
                     f"What is the name of ATT&CK object {aid}?",
@@ -214,7 +214,7 @@ def build_attack_questions(gold: dict[str, Any]) -> list[dict[str, Any]]:
                 "id": f"A-CMP-{i:02d}",
                 "tier": "easy",
                 "question": f"Look up ATT&CK campaign {cid}.",
-                "expected_template": "node_lookup",
+                "expected_template": "describe",
                 "task": _task(
                     f"A-CMP-{i:02d}", "attack",
                     f"What is campaign {cid} in ATT&CK?",
@@ -294,7 +294,7 @@ def build_attack_questions(gold: dict[str, Any]) -> list[dict[str, Any]]:
             "id": "A-NEG-01",
             "tier": "adversarial",
             "question": "Look up nonexistent technique T9999 — must return empty, not invent.",
-            "expected_template": "node_lookup",
+            "expected_template": "describe",
             "task": _task(
                 "A-NEG-01", "attack",
                 "What is the name of ATT&CK technique T9999?",
@@ -507,7 +507,7 @@ def build_attack_questions(gold: dict[str, Any]) -> list[dict[str, Any]]:
                 "id": f"A-EXC-{i:02d}",
                 "tier": "adversarial",
                 "question": f"Look up retired technique {tid} — excluded at load, must be empty.",
-                "expected_template": "node_lookup",
+                "expected_template": "describe",
                 "task": _task(
                     f"A-EXC-{i:02d}", "attack",
                     f"What is ATT&CK technique {tid}?",
@@ -537,6 +537,9 @@ def build_attack_questions(gold: dict[str, Any]) -> list[dict[str, Any]]:
 
 # template -> id surface the answer lives on
 _POOL_BY_TEMPLATE = {
+    # describe subsumes the old by-id lookups; it returns the anchor node itself,
+    # so the EX gold is compared against the record ids (the "node" pool).
+    "describe": "node",
     "node_lookup": "node",
     "capec_lookup": "node",
     "technique_mitigations": "neighbors",
@@ -600,7 +603,7 @@ def _attach_ex_gold(q: dict[str, Any], gold: dict[str, Any]) -> None:
         expected = _top_level(a["campaign_techniques"][seed])
     elif tmpl == "campaign_attribution":
         expected = a["campaign_attribution"][seed]
-    elif tmpl in ("node_lookup", "capec_lookup"):
+    elif tmpl in ("describe", "node_lookup", "capec_lookup"):
         expected = [seed]
     elif tmpl == "capec_maps_to":
         expected = c["attack_mappings"].get(seed, [])
@@ -661,7 +664,7 @@ def build_capec_questions(gold: dict[str, Any]) -> list[dict[str, Any]]:
                 "id": f"C-LKP-{i:02d}",
                 "tier": "easy",
                 "question": f"Look up {cid} ({p['name']}) — abstraction and status.",
-                "expected_template": "capec_lookup",
+                "expected_template": "describe",
                 "task": _task(
                     f"C-LKP-{i:02d}", "capec",
                     f"What is CAPEC pattern {cid}?",
@@ -793,7 +796,7 @@ def build_capec_questions(gold: dict[str, Any]) -> list[dict[str, Any]]:
             "id": "C-NEG-01",
             "tier": "adversarial",
             "question": "Look up nonexistent CAPEC-99999 — must return empty, not invent.",
-            "expected_template": "capec_lookup",
+            "expected_template": "describe",
             "task": _task(
                 "C-NEG-01", "capec",
                 "What is CAPEC pattern CAPEC-99999?",
@@ -811,7 +814,7 @@ def build_capec_questions(gold: dict[str, Any]) -> list[dict[str, Any]]:
             "id": "C-NEG-02",
             "tier": "adversarial",
             "question": "Look up deprecated CAPEC-557 — excluded at load, must return empty.",
-            "expected_template": "capec_lookup",
+            "expected_template": "describe",
             "task": _task(
                 "C-NEG-02", "capec",
                 "What is CAPEC pattern CAPEC-557?",
@@ -965,7 +968,7 @@ def build_capec_questions(gold: dict[str, Any]) -> list[dict[str, Any]]:
                 "id": f"C-DEP-{i:02d}",
                 "tier": "adversarial",
                 "question": f"Look up deprecated {cid} — excluded at load, must return empty.",
-                "expected_template": "capec_lookup",
+                "expected_template": "describe",
                 "task": _task(
                     f"C-DEP-{i:02d}", "capec",
                     f"What is CAPEC pattern {cid}?",

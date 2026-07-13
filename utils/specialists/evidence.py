@@ -55,6 +55,7 @@ def emit_record(
     properties: dict[str, Any] | None = None,
     related: list[dict[str, Any]] | None = None,
     join_values: tuple[str, ...] = (),
+    facets: list[dict[str, Any]] | None = None,
     timestamp: str | None = None,
 ) -> EvidenceRecord:
     """Construct an ``EvidenceRecord`` with provenance attached."""
@@ -66,6 +67,7 @@ def emit_record(
         properties=dict(properties or {}),
         related=list(related or []),
         join_values=tuple(join_values),
+        facets=list(facets or []),
         provenance=make_provenance(
             card=card, query=query, record_id=record_id, timestamp=timestamp
         ),

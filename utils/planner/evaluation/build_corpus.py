@@ -59,9 +59,12 @@ TEMPLATE_INTENT = {
     # remediation — mitigations / defensive controls
     "technique_mitigations": "remediation",
     "tactic_technique_mitigations": "remediation",
-    # lookup — a single entity by id
+    # lookup — a single entity by id (describe subsumes the old by-id lookups)
+    "describe": "lookup",
     "node_lookup": "lookup",
     "capec_lookup": "lookup",
+    # definitional — a single entity resolved by name ("what is X?")
+    "describe_by_name": "definitional",
     # enumeration — "which/list/scan X [rel] Y" -> a set
     "label_scan": "enumeration",
     "capec_scan": "enumeration",

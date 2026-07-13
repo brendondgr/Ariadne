@@ -143,6 +143,26 @@ _ENUMERATION_RE = re.compile(
     r"show\s+(?:me\s+)?all)\b",
     re.IGNORECASE,
 )
+#: A definitional ("what is X" / describe / define) cue with no id — routes a
+#: named-entity question to the by-name describe path. Formerly lived in the
+#: specialists' resolve module as ``is_definitional_intent``; it is a planner
+#: routing concern, so it lives here now that describe made the specialist-side
+#: intent gating obsolete.
+_DEFINITIONAL_RE = re.compile(
+    r"\bwhat(?:'s|’s|\s+is|\s+are|\s+exactly\s+is|\s+exactly\s+are)\b|"
+    r"\b(?:definition|meaning)\s+of\b|"
+    r"\b(?:details?|describe[sd]?|description|information|overview|explain|"
+    r"definition|define|elaborate|tell me (?:more|about)|more (?:on|about|details)|"
+    r"learn more|dive (?:in|deeper)|full (?:record|profile|picture))\b",
+    re.IGNORECASE,
+)
+
+
+def is_definitional_request(text: str) -> bool:
+    """True when the request reads as 'what is X' / describe / define."""
+    return bool(_DEFINITIONAL_RE.search(text or ""))
+
+
 #: MITRE id shapes — an id in the text is a strong single-entity lookup signal.
 _ID_RE = re.compile(
     r"\b(?:T\d{4}(?:\.\d{3})?|TA\d{4}|[MSG]\d{4}|DS\d{4}|CAPEC-\d+|CWE-\d+)\b",
@@ -221,11 +241,10 @@ class DeterministicIntentClassifier:
                 "names a specific entity by id", ids,
             )
 
-        # Definitional reuses the specialists' committed heuristic (imported
-        # lazily: specialists.resolve pulls in planner.join_keys at import time).
-        from utils.specialists.resolve import is_definitional_intent
-
-        if is_definitional_intent(text):
+        # Definitional cue with no id → route the named-entity question to the
+        # by-name describe path (local heuristic; the specialist-side gating is
+        # gone now that describe returns everything for any anchor).
+        if is_definitional_request(text):
             return IntentClassification(
                 Intent.DEFINITIONAL, 0.85,
                 "names an entity to define/describe rather than an id", ["what is / define"],

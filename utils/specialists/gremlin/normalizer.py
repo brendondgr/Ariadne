@@ -15,17 +15,15 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from utils.graph_loader.stores.gremlin import gremlin_edge_label
 from utils.specialists.contracts import EvidenceRecord
 from utils.specialists.evidence import emit_record
+from utils.specialists.primitives.describe import fold_facets, merge_zero_facets
 from utils.specialists.resolve import ResolvedTask
+from utils.specialists.schema.registry import PlausibleFacet
 
 _CAPEC_ID_FROM_STR_RE = re.compile(r"capec:attack-pattern:(\d+)")
 _CWE_GREMLIN_RE = re.compile(r"^cwe:(\d+)$")
-
-# Cap the typed neighbors carried on a dossier record (the true total is kept).
-_DOSSIER_NEIGHBOR_CAP = 25
-# Description + a few human-meaningful attributes lifted onto the dossier record.
-_DOSSIER_ATTRS = ("description", "Abstraction", "Status", "typical_severity", "likelihood_of_attack")
 
 try:
     from gremlin_python.process.traversal import T as GremlinT
@@ -89,6 +87,23 @@ def _safe_str(v: Any) -> str:
     return str(v) if v is not None else ""
 
 
+def _card_plausible_gremlin(card: Any, label: str) -> list[PlausibleFacet]:
+    """Plausible facets for ``label`` with rel types in the loaded gremlin form.
+
+    The registry keeps CAPEC's source vocabulary (``CanFollow``); the loaded graph
+    labels edges SCREAMING_SNAKE (``CAN_FOLLOW``). Converting the plausible facets
+    to the loaded form lets the honest-zero merge dedupe against observed edges.
+    Degrades to no zeros when the registry is unavailable.
+    """
+    try:
+        return [
+            PlausibleFacet(gremlin_edge_label(p.rel_type), p.direction, p.neighbour_label)
+            for p in card.label_facets(label)
+        ]
+    except Exception:  # noqa: BLE001 — a missing registry must never sink a result
+        return []
+
+
 class GremlinNormalizer:
     """Shapes elementMap rows into EvidenceRecord instances (Normalizer protocol)."""
 
@@ -115,7 +130,7 @@ class GremlinNormalizer:
         if "ap" in first and "tax" in first:
             return self._normalize_maps_to(rows, resolved, query, card)
         if "node" in first and "out" in first and "in" in first:
-            return self._normalize_dossier(rows, resolved, query, card)
+            return self._normalize_describe(rows, resolved, query, card)
         if "ap" in first and "nbr" in first:
             return self._normalize_neighbors(rows, resolved, query, card)
         # Single flat rows (capec_lookup, capec_scan).
@@ -178,19 +193,23 @@ class GremlinNormalizer:
             )
         return records
 
-    def _normalize_dossier(
+    def _normalize_describe(
         self,
         rows: list[dict[str, Any]],
         resolved: ResolvedTask,
         query: str,
         card: Any,
     ) -> list[EvidenceRecord]:
-        """capec_dossier rows: {"node":<elementMap>, "out":[...], "in":[...]}.
+        """describe rows: ``{"node":<elementMap>, "out":[{rel,label}], "in":[...]}``.
 
-        One rich record per entity: the description (+ a few attrs) into
-        ``properties`` so evidence_brief surfaces them, and the out/in edges into
-        ``related`` as ``{id, name, type, direction, label}`` — the same shape the
-        Cypher dossier produces, so the memory formatter is backend-agnostic.
+        One record per anchor: **every** vertex property (no allow-list) into
+        ``properties``, and every 1-hop edge folded into a bounded ``facets`` count
+        by ``(rel, direction, neighbour label)``. The registry's plausible facets
+        are folded in as honest zeros — but converted through ``gremlin_edge_label``
+        first, because the loaded graph carries the SCREAMING_SNAKE edge label
+        (``CAN_FOLLOW``) while the canonical registry keeps CAPEC's source
+        vocabulary (``CanFollow``); without the conversion the same facet would
+        appear twice.
         """
         id_scheme: str = card.provenance.get("id_scheme", "capec-id")
         records: list[EvidenceRecord] = []
@@ -200,39 +219,18 @@ class GremlinNormalizer:
             primary_id = _primary_id_from_gremlin_id(gid)
             name = _safe_str(node.get("name", ""))
             label = _get_label(node) or "AttackPattern"
-            node_props = _string_props(node)
+            properties = _string_props(node)
 
-            properties: dict[str, Any] = {}
-            for key in _DOSSIER_ATTRS:
-                value = node_props.get(key)
-                if value not in (None, "", [], {}):
-                    properties[key] = _safe_str(value) if key == "description" else value
-
-            related: list[dict[str, Any]] = []
-            for edge, direction in (
-                (row.get("out") or [], "out"),
-                (row.get("in") or [], "in"),
-            ):
-                for e in edge:
+            edges: list[tuple[str, str, str]] = []
+            for entry, direction in ((row.get("out") or [], "out"), (row.get("in") or [], "in")):
+                for e in entry:
                     e = _row_as_dict(e)
-                    other = _row_as_dict(e.get("other", {}))
-                    node_id = _primary_id_from_gremlin_id(_safe_str(other.get("id", "")))
-                    node_name = _safe_str(other.get("name", ""))
-                    if not node_id and not node_name:
-                        continue
-                    related.append(
-                        {
-                            "id": node_id,
-                            "name": node_name,
-                            "type": _safe_str(e.get("rel", "")),
-                            "direction": direction,
-                            "label": _get_label(other),
-                        }
-                    )
+                    rel = _safe_str(e.get("rel"))
+                    if rel:
+                        edges.append((rel, direction, _safe_str(e.get("label"))))
+            observed = fold_facets(edges)
+            facets = merge_zero_facets(observed, _card_plausible_gremlin(card, label))
 
-            neighbor_total = len(related)
-            properties["neighbor_total"] = neighbor_total
-            properties["neighbors_truncated"] = neighbor_total > _DOSSIER_NEIGHBOR_CAP
             records.append(
                 emit_record(
                     card=card,
@@ -242,8 +240,8 @@ class GremlinNormalizer:
                     id_scheme=id_scheme,
                     label=label,
                     name=name,
-                    properties=properties,
-                    related=related[:_DOSSIER_NEIGHBOR_CAP],
+                    properties=dict(properties),
+                    facets=[f.to_dict() for f in facets],
                 )
             )
         return records

@@ -38,44 +38,6 @@ _TECHNIQUE_RE = re.compile(r"\bT\d{4}(?:\.\d{3})?\b")
 _CAPEC_RE = re.compile(r"\bCAPEC[-\s]?(\d+)\b", re.IGNORECASE)
 _CWE_RE = re.compile(r"\bCWE[-\s]?(\d+)\b", re.IGNORECASE)
 
-# A single-entity "tell me about this" question — routes a seeded, non-join task
-# to the dossier path (full node + capped typed 1-hop) in either builder. Kept
-# explicit so a plain id lookup never trips it. Shared so Cypher and Gremlin agree.
-_DOSSIER_INTENT_RE = re.compile(
-    r"\b(?:details?|describe[sd]?|description|information|overview|explain|"
-    r"definition|define|elaborate|tell me (?:more|about)|more (?:on|about|details)|"
-    r"learn more|dive (?:in|deeper)|full (?:record|profile|picture))\b",
-    re.IGNORECASE,
-)
-
-
-def is_dossier_intent(text: str) -> bool:
-    """True when the task text reads as a single-entity deep dive."""
-    return bool(_DOSSIER_INTENT_RE.search(text or ""))
-
-
-# A bare "what is X" / "what are X" definitional question. Broader than
-# ``_DOSSIER_INTENT_RE`` (which keys on describe verbs like "describe"/"details")
-# so a plain "What exactly is User Training?" also routes to the name dossier
-# path. Kept separate so the existing by-id dossier gating is untouched.
-_WHATIS_INTENT_RE = re.compile(
-    r"\bwhat(?:'s|’s|\s+is|\s+are|\s+exactly\s+is|\s+exactly\s+are)\b|"
-    r"\b(?:definition|meaning)\s+of\b",
-    re.IGNORECASE,
-)
-
-
-def is_definitional_intent(text: str) -> bool:
-    """True when the task reads as 'what is X' or a single-entity deep dive.
-
-    A superset of :func:`is_dossier_intent`: it additionally matches bare
-    ``what is``/``what are`` phrasings, so a name-only definitional question
-    anchors on the name dossier path even without an explicit describe verb.
-    """
-    t = text or ""
-    return is_dossier_intent(t) or bool(_WHATIS_INTENT_RE.search(t))
-
-
 @dataclass(frozen=True)
 class ResolvedTask:
     """A task grounded against a specific source card."""
@@ -252,14 +214,15 @@ def _extract_name_terms(text: str, schema_words: set[str]) -> tuple[str, ...]:
 
 
 def definitional_name_terms(text: str) -> tuple[str, ...]:
-    """The entity name(s) a definitional question asks about, for messaging.
+    """The entity name(s) a question asks about, for messaging.
 
-    Card-agnostic (no schema filter) so the synthesis layer can name the
-    unresolved entity in an honest abstention without a card in hand. Empty
-    unless the text reads as a definitional ("what is X" / describe) question.
+    Card-agnostic (no schema filter) so the synthesis layer can name an
+    unresolved entity in an honest abstention without a card in hand.
+    Unconditional: once ``describe`` returns everything for any anchor, gating
+    name extraction on a "what is X" regex is redundant — the resolver already
+    knows whether a name resolved, so this just lifts the name terms the text
+    carries (empty when the text names no entity).
     """
-    if not is_definitional_intent(text):
-        return ()
     return _extract_name_terms(text, set())
 
 

@@ -21,23 +21,13 @@ from typing import Any
 
 from ..contracts import EvidenceRecord
 from ..evidence import emit_record
+from ..primitives.describe import facets_from_count_rows as _facets_from_rows
+from ..primitives.describe import merge_with_card as _merge_plausible
 from ..resolve import ResolvedTask
 
 _TECHNIQUE_ID_RE = re.compile(r"^T\d{4}(?:\.\d{3})?$")
 
-# Short, human-meaningful attributes lifted out of properties_json alongside the
-# description (mirrors the answer agent's _BRIEF_ATTRS so the dossier feeds it).
-_DOSSIER_ATTRS = (
-    "Abstraction",
-    "Status",
-    "tactic",
-    "tactics",
-    "platforms",
-    "x_mitre_platforms",
-    "detection",
-)
-
-# Seed-id prefix → label for the dossier record when the task named no entity.
+# Seed-id prefix → label for the describe record when the task named no entity.
 _DOSSIER_ID_LABELS: tuple[tuple[re.Pattern[str], str], ...] = (
     (re.compile(r"^TA\d{4}$"), "Tactic"),
     (re.compile(r"^M\d{4}$"), "Mitigation"),
@@ -111,9 +101,9 @@ class CypherNormalizer:
         # group_techniques / tactic_techniques / campaign_techniques have technique_id
         if rows and "technique_id" in rows[0]:
             return self._normalize_technique_rows(rows, query, card, id_scheme)
-        # node_dossier — full node (properties_json) + typed 1-hop neighbors
-        if rows and "properties_json" in rows[0]:
-            return self._normalize_dossier(rows, resolved, query, card, id_scheme)
+        # describe — full node (properties_json) + bounded facet block
+        if rows and "facets" in rows[0]:
+            return self._normalize_describe(rows, resolved, query, card, id_scheme)
         # node_lookup / label_scan
         return self._normalize_flat(rows, query, card, id_scheme)
 
@@ -497,7 +487,7 @@ class CypherNormalizer:
             )
         return records
 
-    def _normalize_dossier(
+    def _normalize_describe(
         self,
         rows: list[dict[str, Any]],
         resolved: ResolvedTask,
@@ -505,51 +495,25 @@ class CypherNormalizer:
         card: Any,
         id_scheme: str,
     ) -> list[EvidenceRecord]:
-        """One rich record per entity: description (from properties_json) + typed 1-hop.
+        """One record per anchor: **every** property + the bounded facet block.
 
-        ``properties`` carries the parsed description and a few key attributes (so
-        the answer agent's ``evidence_brief`` surfaces them), plus the true
-        neighbor count and a truncation flag. ``related`` carries the capped typed
-        neighbors as ``{id, name, type, direction, label}`` — ids/names feed the
-        existing brief, while type/direction feed the compact memory adjacency.
+        ``properties`` carries the whole parsed ``properties_json`` — no allow-list
+        deciding in advance which keys are worth returning (that allow-list was the
+        neighbour cap's twin). ``facets`` carries the count of adjacent nodes
+        grouped by ``(relationship, direction, neighbour label)``, folded with the
+        registry's plausible facets so an unobserved-but-plausible facet appears as
+        an honest ``count: 0`` — letting the model assert "no sub-techniques"
+        rather than merely failing to observe one.
         """
         records: list[EvidenceRecord] = []
         for row in rows:
             aid = str(row.get("id") or row.get("attack_id") or "")
             name = str(row.get("name") or "")
-            props = self._parse_properties(row.get("properties_json"))
+            properties = self._parse_properties(row.get("properties_json"))
+            label = _label_for(aid, resolved)
 
-            properties: dict[str, Any] = {}
-            desc = str(props.get("description", "") or "").strip()
-            if desc:
-                properties["description"] = desc
-            for key in _DOSSIER_ATTRS:
-                value = props.get(key)
-                if value not in (None, "", [], {}):
-                    properties[key] = value
-
-            related: list[dict[str, Any]] = []
-            for nbr in row.get("neighbors") or []:
-                if not isinstance(nbr, dict):
-                    continue
-                nid = str(nbr.get("id") or "").strip()
-                nname = str(nbr.get("name") or "").strip()
-                if not nid and not nname:
-                    continue
-                related.append(
-                    {
-                        "id": nid,
-                        "name": nname,
-                        "type": str(nbr.get("rel") or "").strip(),
-                        "direction": "out" if nbr.get("outgoing") else "in",
-                        "label": str(nbr.get("label") or "").strip(),
-                    }
-                )
-
-            total = row.get("neighbor_total")
-            neighbor_total = int(total) if isinstance(total, (int, float)) else len(related)
-            properties["neighbor_total"] = neighbor_total
-            properties["neighbors_truncated"] = neighbor_total > len(related)
+            observed = _facets_from_rows(row.get("facets"))
+            facets = _merge_plausible(observed, card, label)
 
             join_values = (aid,) if _is_technique_id(aid) else ()
             records.append(
@@ -559,10 +523,10 @@ class CypherNormalizer:
                     record_id=aid,
                     primary_id=aid,
                     id_scheme=id_scheme,
-                    label=_label_for(aid, resolved),
+                    label=label,
                     name=name,
-                    properties=properties,
-                    related=related,
+                    properties=dict(properties),
+                    facets=[f.to_dict() for f in facets],
                     join_values=join_values,
                 )
             )

@@ -296,12 +296,12 @@ class DeterministicDrafter:
                 intent.label != Intent.UNSUPPORTED and mentions_entity_id(request)
             )
         else:
-            # Standalone (no intent supplied): the specialists' heuristic. Lazy
-            # import avoids a package-init cycle (specialists.resolve imports
-            # planner.join_keys, which pulls in this module at import time).
-            from utils.specialists.resolve import is_definitional_intent
+            # Standalone (no intent supplied): the local definitional heuristic.
+            # Lazy import keeps drafter import-light and avoids any planner
+            # submodule import-order surprises.
+            from utils.planner.intent import is_definitional_request
 
-            should_rescue = is_definitional_intent(request)
+            should_rescue = is_definitional_request(request)
 
         if not plan.sub_questions and should_rescue:
             for ds in sorted(cards):

@@ -16,6 +16,7 @@ from utils.planner.intent import (
     DeterministicIntentClassifier,
     Intent,
     IntentClassification,
+    is_definitional_request,
 )
 
 
@@ -109,3 +110,16 @@ def test_classification_round_trips_through_dict():
 def test_from_dict_none_is_none():
     assert IntentClassification.from_dict(None) is None
     assert IntentClassification.from_dict({}) is None
+
+
+def test_is_definitional_request_recognises_what_is_and_describe():
+    # Moved here from the specialists' resolve tests once describe made the
+    # specialist-side intent gating obsolete.
+    assert is_definitional_request("What is User Training?")
+    assert is_definitional_request("What are the phishing mitigations?")
+    assert is_definitional_request("what's Data Backup")
+    assert is_definitional_request("Define Software Configuration")
+    assert is_definitional_request("Tell me about M1049")
+    # Non-definitional retrieval questions must stay out of the name path.
+    assert not is_definitional_request("Which mitigations apply to T1047?")
+    assert not is_definitional_request("How do you detect phishing?")

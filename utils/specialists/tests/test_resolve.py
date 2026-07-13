@@ -7,7 +7,6 @@ from utils.specialists.contracts import SpecialistTask
 from utils.specialists.resolve import (
     extract_attack_ids,
     extract_capec_ids,
-    is_definitional_intent,
     resolve,
 )
 from utils.specialists.tests._fixtures import fixture_card
@@ -182,12 +181,6 @@ def test_resolve_name_terms_keep_connectors_but_split_on_and() -> None:
     assert resolve(t2, card).name_terms == ("User Training", "Software Configuration")
 
 
-def test_is_definitional_intent_recognises_what_is_and_describe() -> None:
-    assert is_definitional_intent("What is User Training?")
-    assert is_definitional_intent("What are the phishing mitigations?")
-    assert is_definitional_intent("what's Data Backup")
-    assert is_definitional_intent("Define Software Configuration")
-    assert is_definitional_intent("Tell me about M1049")  # describe-verb dossier intent
-    # Non-definitional retrieval questions must stay out of the name path.
-    assert not is_definitional_intent("Which mitigations apply to T1047?")
-    assert not is_definitional_intent("How do you detect phishing?")
+# Definitional intent detection moved to the planner (utils.planner.intent.
+# is_definitional_request) once describe made the specialist-side intent gating
+# obsolete; it is covered by utils/planner/tests/test_intent.py.
