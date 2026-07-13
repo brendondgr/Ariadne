@@ -31,6 +31,11 @@ from .build import (
     get_registry,
 )
 from .registry import DatasetSchema, PlausibleFacet, SchemaRegistry
+from .validate import (
+    describe_request_reasons,
+    expand_request_reasons,
+    is_valid_expand,
+)
 
 __all__ = [
     "DatasetSchema",
@@ -39,6 +44,9 @@ __all__ = [
     "build_dataset_schema",
     "build_registry",
     "canonical_dir",
+    "describe_request_reasons",
     "discover_datasets",
+    "expand_request_reasons",
     "get_registry",
+    "is_valid_expand",
 ]
