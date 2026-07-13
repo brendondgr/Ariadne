@@ -21,6 +21,7 @@ import os
 import sys
 from pathlib import Path
 
+from utils.config import env_str
 from utils.launcher.preflight import check_port
 from utils.yolo import StepResult, print_summary_table
 
@@ -105,6 +106,57 @@ def _run_step(step: WizardStep, ui: WizardUI, *, fresh: bool, skip: bool) -> Ste
         return result  # abort — caller stops on failed/needs_input
 
 
+EXAMPLE_QUERY = (
+    "Which CAPEC patterns related to credential theft map to ATT&CK "
+    "techniques, and what mitigations apply?"
+)
+
+
+def print_next_commands(
+    ui: WizardUI,
+    *,
+    llm_enabled: bool,
+    web_port: int = WEB_PORT,
+    api_port: int = API_PORT,
+) -> None:
+    """Print the copy-paste command cheat-sheet the setup finishes on.
+
+    Always shown on a green setup — start the (optional) inference server and
+    the Docker graph stack, then either ask a question straight from the CLI or
+    launch the web workbench. The inference-server and ``--query-llm`` lines are
+    gated on ``llm_enabled`` so the sheet only ever tells the user to start a
+    server they actually configured.
+    """
+    ui.say("")
+    ui.header("Next steps — copy/paste any of these")
+
+    number = 0
+    if llm_enabled:
+        number += 1
+        base_url = env_str("PLANNER_LLM_BASE_URL", "http://localhost:9090/v1")
+        ui.say(f"{number}. Start your local inference server "
+               f"(OpenAI-compatible: vLLM / LM Studio / llama.cpp / Ollama)")
+        ui.say(f"     → it must serve {base_url}")
+        ui.say("")
+
+    number += 1
+    ui.say(f"{number}. Start the graph databases (Docker: Neo4j + Gremlin)")
+    ui.say("     uv run main.py --docker start")
+    ui.say("")
+
+    number += 1
+    ui.say(f"{number}. Ask a federated question straight from the CLI")
+    ui.say(f'     uv run main.py --query "{EXAMPLE_QUERY}"'
+           + (" --query-llm" if llm_enabled else ""))
+    ui.say("")
+
+    number += 1
+    ui.say(f"{number}. Launch the analyst web workbench")
+    ui.say("     uv run app.py")
+    ui.say(f"     → web http://localhost:{web_port}   api http://127.0.0.1:{api_port}")
+    ui.say("")
+
+
 def _launch(args: argparse.Namespace, ui: WizardUI) -> int:
     """Hand off to app.py (its own preflight, status board, and smoke run)."""
     launch_cmd = [sys.executable, str(ROOT / "app.py"), "--skip-install"]
@@ -120,9 +172,7 @@ def _launch(args: argparse.Namespace, ui: WizardUI) -> int:
         return 0
 
     if args.no_launch:
-        ui.say("Setup complete. Launch the workbench with:")
-        ui.say(f"  uv run app.py{' --prod' if args.prod else ''}")
-        ui.say(f"  → web http://localhost:{WEB_PORT}   api http://127.0.0.1:{API_PORT}")
+        ui.say("Setup complete — run any command above when you're ready.")
         return 0
 
     ui.say(f"Launching the workbench — web http://localhost:{WEB_PORT}, "
@@ -172,7 +222,10 @@ def main(argv: list[str] | None = None) -> int:
                "completed steps will offer to skip.")
         return 1
 
+    llm_enabled = env_str("PLANNER_LLM_ENABLED", "false").strip().lower() == "true"
+    print_next_commands(ui, llm_enabled=llm_enabled)
+
     return _launch(args, ui)
 
 
-__all__ = ["main", "parse_args"]
+__all__ = ["main", "parse_args", "print_next_commands"]

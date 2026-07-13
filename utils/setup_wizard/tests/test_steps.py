@@ -423,6 +423,34 @@ def test_stage1_sync_failure_stops_under_yes(monkeypatch):
 # ── wizard argparse ──────────────────────────────────────────────────────────
 
 
+# ── command cheat-sheet (print_next_commands) ────────────────────────────────
+
+
+def test_next_commands_lists_docker_query_and_web(capsys):
+    wizard.print_next_commands(WizardUI(assume_yes=True), llm_enabled=False)
+    out = capsys.readouterr().out
+    assert "uv run main.py --docker start" in out
+    assert "uv run main.py --query" in out
+    assert "uv run app.py" in out
+    assert "http://localhost:16500" in out
+    assert "http://127.0.0.1:16501" in out
+    # No LLM configured → no inference-server line and no --query-llm.
+    assert "inference server" not in out
+    assert "--query-llm" not in out
+
+
+def test_next_commands_includes_inference_when_llm_enabled(capsys, monkeypatch):
+    monkeypatch.setattr(
+        "utils.setup_wizard.env_str",
+        lambda name, default="": "http://localhost:9090/v1"
+        if name == "PLANNER_LLM_BASE_URL" else default)
+    wizard.print_next_commands(WizardUI(assume_yes=True), llm_enabled=True)
+    out = capsys.readouterr().out
+    assert "inference server" in out
+    assert "http://localhost:9090/v1" in out
+    assert "--query-llm" in out
+
+
 def test_parse_args_flags_round_trip():
     args = wizard.parse_args(
         ["--yes", "--fresh", "--skip-inference", "--skip-data",
