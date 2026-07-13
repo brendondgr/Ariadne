@@ -1,8 +1,10 @@
 # Ariadne
 
-Live, read-only federated querying across cybersecurity knowledge graphs that don't share a query language — one agentic layer plans, queries, and synthesizes analyst-facing answers across engines instead of forcing an offline merge into a single graph.
+> **Live, read-only federated querying across cybersecurity knowledge graphs that don't share a query language** — one agentic layer plans, queries, and synthesizes analyst-facing answers across engines instead of forcing an offline merge into a single graph.
 
-Named after Ariadne, who guided Theseus through a maze — this system threads together adversary technique, attack-pattern, and mitigation knowledge graphs to guide analysts through the same kind of labyrinth.
+Cybersecurity teams increasingly rely on knowledge graphs to represent adversary techniques, attack patterns, and mitigations — but those sources live on different engines with different schemas and query languages, so cross-source correlation today usually means manual lookups or an offline ETL into one graph. Most existing federation approaches assume a single engine or require that translation step up front.
+
+Ariadne instead reads schema and metadata from each **live** source and routes queries natively per engine — Cypher against Neo4j, Gremlin against a Neptune-style server — reconciling results by shared identifiers (ATT&CK technique IDs, CAPEC IDs) rather than a shared index. Grounding comes entirely from schema descriptions, source metadata, and executed queries; **no vector index or embedding store** is built from the graph data. Named after Ariadne — who guided Theseus through the labyrinth — it threads adversary-technique, attack-pattern, and mitigation graphs into one provenance-linked answer.
 
 **Funded by:** ReliaQuest Innovation Challenge Fund — Challenge Three: Knowledge Graph Integration (award period June 8 – October 23, 2026)
 
@@ -10,62 +12,47 @@ Named after Ariadne, who guided Theseus through a maze — this system threads t
   <img src="docs/assets/architecture.svg" alt="Ariadne federated agentic query flow: an analyst question is planned, routed to Cypher and Gremlin specialists over Neo4j and Gremlin, then synthesized into a provenance-linked answer" width="100%">
 </p>
 
-## Overview
+## Quick Start
 
-Cybersecurity teams increasingly rely on knowledge graphs to represent adversary techniques, attack patterns, and mitigations, but those sources live on different engines with different schemas and query languages — cross-source correlation today usually means manual lookups or an offline ETL into one graph. Most existing federation approaches assume a single engine or require that translation step up front.
-
-Ariadne instead reads schema and metadata from each live source and routes queries natively per engine — Cypher against Neo4j, Gremlin against a Neptune-style server — reconciling the results by shared identifiers (ATT&CK technique IDs, CAPEC IDs) rather than a shared index. Grounding comes entirely from schema descriptions, source metadata, and executed queries; **no vector index or embedding store** is built from the graph data.
-
-## Architecture
-
-The diagram above shows the runtime flow end to end. Four components, each independently testable:
-
-1. **Data & schema layer** — per-source cards (connection details, schema, provenance fields, safety limits) plus reproducible ATT&CK and CAPEC fixtures, sha256-pinned against the raw source snapshot.
-2. **Federated planning agent** — reads the source cards, classifies analyst intent, and emits a machine-readable plan (target sources, sub-questions, join keys, traversal limits) rather than routing by free-text guess.
-3. **Source-specific query agents** — a Cypher specialist (Neo4j) and a Gremlin specialist (bounded traversals), each validating its own queries, enforcing safety constraints, and returning normalized, evidence-linked summaries.
-4. **Synthesis & reporting agent** — reconciles partial evidence across sources by joining on shared IDs, flags conflicts, and assembles a provenance-linked answer as verified claims-with-citations (every claim checked against the evidence; unsupported claims cut, honest empties become abstentions with the executed query as proof).
-
-**Example flow** — *"Which CAPEC patterns related to credential theft map to ATT&CK techniques, and what mitigations appear for those techniques?"*
-Planner emits a CAPEC sub-task and an ATT&CK sub-task → Gremlin specialist finds CAPEC-560/565 mapping to T1555 → Cypher specialist retrieves T1555's mitigations (M1026, M1027) → synthesis agent joins on the ATT&CK ID and returns a provenance-linked answer.
-
-Full component contracts: [`docs/planner_agent.md`](docs/planner_agent.md), [`docs/specialist_agents.md`](docs/specialist_agents.md).
-
-## Tech Stack
-
-- **Python 3.13**, `uv` for env/dependency management
-- **LangGraph** — the Q/A pipeline runs as a compiled `StateGraph` (`utils/orchestration/`): planner, specialists, and synthesis as subgraphs, streaming the workbench's SSE events; `langgraph dev` opens the visual graph debugger via the root `langgraph.json`. A second graph (`utils/conversation/`) wraps that pipeline as a "Graph Extraction" node behind an orchestration → router → {memory-grounded answer | extraction → validation → answer} flow
-- **Neo4j** (Cypher) + **Gremlin Server**, Neptune-style — two backends with genuinely different query models, not two configs of the same one
-- **FastAPI** — thin API layer wrapping the Python agents for the web workbench
-- **Next.js / React** (`react-force-graph-2d`) — analyst-facing graph explorer UI
-- **Docker Compose** — pinned local Neo4j + Gremlin stack
-
-## Key Features
-
-- **Plan-first routing** — the planning agent emits a structured, machine-checkable plan (not a free-text guess) before any specialist runs a query.
-- **Bounded, validated queries** — each specialist enforces its own safety limits and validates queries before execution; no unbounded traversals reach the live graph.
-- **Reproducible graph artifacts** — a canonical (JSONL + schema + manifest) → export (Neo4j CSV/Cypher, Gremlin JSONL) → runtime layering, sha256-pinned to the raw source, with a fixture-QA harness that reconciles raw == manifest == live before agents ever query it.
-- **Self-healing pipeline runner** (`--yolo-all`) — classifies failures as stale-state (auto-backup + rebuild), transient (retry with backoff), or needs-human (surfaced, not crashed on), instead of failing the whole run on the first error.
-- **Memory-inclusive chat threads** — the workbench is a modern threaded chat: persisted conversations in a date-grouped sidebar (stdlib-SQLite, LLM auto-titled), full cross-turn memory so a follow-up ("tell me more about T1598") resolves from prior turns, and a router that answers from memory when it can or re-queries the graphs when it must — with the grounded, provenance-linked Answer Card kept as the trust surface beneath every reply.
-- **Analyst web workbench** — a Next.js app with three surfaces: a **chat view** that streams the live plan → query → evidence → answer pipeline, an **interactive graph explorer** — switch between the ATT&CK/Neo4j and CAPEC/Gremlin graphs, render every node and edge on canvas, search by node title/description or edge type, filter by node/relationship type, and click any element to inspect its properties — and an **evaluation view** that renders the committed component + end-to-end reports (the four e2e metrics, the LLM-judge panel, per-tier breakdown) and can re-run the end-to-end evaluation live.
-- **A launcher that proves the stack** — `python app.py` preflights everything the pipeline needs (toolchain, ports, source cards, both graph backends, the LLM endpoint, and a compile of the LangGraph super-graph), gates on real readiness probes, prints a status board with per-subsystem verdicts and named remediations, and streams a startup smoke query over the same SSE contract the UI uses (`--smoke full` for a whole federated query, `--no-smoke` to skip, `--verbose` for raw child logs).
-
-## Setup
-
-One command takes a fresh clone to a running workbench:
+One command takes a fresh clone all the way to a running workbench:
 
 ```bash
-python3 setup.py        # interactive; add --yes for all-defaults, non-interactive
+python3 setup.py              # interactive — inspect and confirm each step
+python3 setup.py --yes        # non-interactive, accept every default
+python3 setup.py --no-launch  # set everything up, then just print the commands
 ```
 
-The wizard syncs the Python environment (`uv sync`), writes `.env` (offering
-to customize ports/credentials/LLM endpoints), downloads and loads both
-datasets into the Docker graph stack (the self-healing `--yolo-all` pipeline),
-installs the web dependencies, and launches the workbench at
-`http://localhost:16500` — opening it in your browser. Each step shows what it
-will run, detects work already done (re-running is cheap), and on failure
-offers retry / skip / abort with the fix named. Prerequisites it checks for
-but can't install: [uv](https://docs.astral.sh/uv/), Docker (with Compose v2),
-and Node.js 18.18+.
+The wizard walks five steps, showing what each will run and skipping work already done, so re-running is cheap:
+
+1. **Prerequisites** — checks for `uv`, Node.js, and Docker (CLI + Compose v2 + a running daemon).
+2. **`.env`** — creates it from `.env.example`; optionally customize ports and the Neo4j login.
+3. **Local inference server** — configures the OpenAI-compatible LLM endpoint (optional) and **probes it**, so you know it's reachable before you query.
+4. **Data pipeline** — download MITRE ATT&CK + CAPEC → build canonical graphs → start the Docker stack → load both graphs → verify (the self-healing `--yolo-all` runner).
+5. **Web dependencies** — `npm install` for the Next.js workbench.
+
+It then prints the copy-paste commands below and launches the workbench at `http://localhost:16500`.
+
+### Prerequisites
+
+| Tool | Version | Role |
+|------|---------|------|
+| [uv](https://docs.astral.sh/uv/) | latest | Python env + dependency manager (the wizard offers to install it) |
+| Docker | Engine + Compose v2 | Runs the pinned local Neo4j + Gremlin stack |
+| Node.js | 18.18+ | Builds and serves the analyst web workbench |
+| OpenAI-compatible LLM server | *optional* | e.g. vLLM / LM Studio / llama.cpp / Ollama at `http://localhost:9090/v1`. Without one, the pipeline runs fully deterministically. |
+
+### Everyday commands
+
+The wizard finishes by printing exactly these — copy/paste whichever you need:
+
+| Goal | Command |
+|------|---------|
+| One-shot setup | `python3 setup.py` &nbsp;(`--yes` non-interactive · `--no-launch` set up only) |
+| Start the graph databases (Docker) | `uv run main.py --docker start` |
+| Ask a federated question (CLI) | `uv run main.py --query "…"` &nbsp;(add `--query-llm` to route through the LLM) |
+| Launch the analyst web workbench | `uv run app.py` &nbsp;→ web `:16500`, api `:16501` |
+| Run the whole data pipeline in one shot | `uv run main.py --yolo-all` |
+| Component / end-to-end evaluation | `uv run main.py --component-eval` · `--e2e-eval` |
 
 <details>
 <summary>Manual setup (step by step)</summary>
@@ -102,6 +89,43 @@ uv run main.py --yolo-all
 </details>
 
 All settings live in a single git-ignored `.env` (`cp .env.example .env` — every value defaults to current behavior). Full CLI reference, output artifact tables, and Docker endpoint details: [`docs/structure.md`](docs/structure.md).
+
+## Architecture
+
+The diagram above shows the runtime flow end to end. Four components, each independently testable:
+
+| # | Component | Role |
+|---|-----------|------|
+| 1 | **Data & schema layer** | Per-source cards (connection details, schema, provenance fields, safety limits) plus reproducible ATT&CK and CAPEC fixtures, sha256-pinned against the raw source snapshot. |
+| 2 | **Federated planning agent** | Reads the source cards, classifies analyst intent, and emits a machine-readable plan (target sources, sub-questions, join keys, traversal limits) rather than routing by free-text guess. |
+| 3 | **Source-specific query agents** | A Cypher specialist (Neo4j) and a Gremlin specialist (bounded traversals), each validating its own queries, enforcing safety constraints, and returning normalized, evidence-linked summaries. |
+| 4 | **Synthesis & reporting agent** | Reconciles partial evidence across sources by joining on shared IDs, flags conflicts, and assembles a provenance-linked answer as verified claims-with-citations (every claim checked against the evidence; unsupported claims cut, honest empties become abstentions with the executed query as proof). |
+
+**Example flow** — *"Which CAPEC patterns related to credential theft map to ATT&CK techniques, and what mitigations appear for those techniques?"*
+Planner emits a CAPEC sub-task and an ATT&CK sub-task → Gremlin specialist finds CAPEC-560/565 mapping to T1555 → Cypher specialist retrieves T1555's mitigations (M1026, M1027) → synthesis agent joins on the ATT&CK ID and returns a provenance-linked answer.
+
+Full component contracts: [`docs/planner_agent.md`](docs/planner_agent.md), [`docs/specialist_agents.md`](docs/specialist_agents.md).
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Language / tooling | **Python 3.13**, `uv` for env + dependency management |
+| Agent pipeline | **LangGraph** — the Q/A flow is a compiled `StateGraph` (`utils/orchestration/`): planner, specialists, and synthesis as subgraphs streaming the workbench's SSE events; `langgraph dev` opens the visual debugger via `langgraph.json`. A second graph (`utils/conversation/`) wraps that pipeline behind an orchestration → router → {memory-grounded answer \| extraction → validation → answer} flow. |
+| Graph backends | **Neo4j** (Cypher) + **Gremlin Server** (Neptune-style) — two engines with genuinely different query models, not two configs of one. |
+| API | **FastAPI** — thin layer wrapping the Python agents for the web workbench. |
+| Frontend | **Next.js / React** (`react-force-graph-2d`) — analyst-facing graph explorer UI. |
+| Infrastructure | **Docker Compose** — pinned local Neo4j + Gremlin stack. |
+
+## Key Features
+
+- **Plan-first routing** — the planning agent emits a structured, machine-checkable plan (not a free-text guess) before any specialist runs a query.
+- **Bounded, validated queries** — each specialist enforces its own safety limits and validates queries before execution; no unbounded traversals reach the live graph.
+- **Reproducible graph artifacts** — a canonical (JSONL + schema + manifest) → export (Neo4j CSV/Cypher, Gremlin JSONL) → runtime layering, sha256-pinned to the raw source, with a fixture-QA harness that reconciles raw == manifest == live before agents ever query it.
+- **Self-healing pipeline runner** (`--yolo-all`) — classifies failures as stale-state (auto-backup + rebuild), transient (retry with backoff), or needs-human (surfaced, not crashed on), instead of failing the whole run on the first error.
+- **Memory-inclusive chat threads** — the workbench is a modern threaded chat: persisted conversations in a date-grouped sidebar (stdlib-SQLite, LLM auto-titled), full cross-turn memory so a follow-up ("tell me more about T1598") resolves from prior turns, and a router that answers from memory when it can or re-queries the graphs when it must — with the grounded, provenance-linked Answer Card kept as the trust surface beneath every reply.
+- **Analyst web workbench** — a Next.js app with three surfaces: a **chat view** that streams the live plan → query → evidence → answer pipeline, an **interactive graph explorer** — switch between the ATT&CK/Neo4j and CAPEC/Gremlin graphs, render every node and edge on canvas, search by node title/description or edge type, filter by node/relationship type, and click any element to inspect its properties — and an **evaluation view** that renders the committed component + end-to-end reports (the four e2e metrics, the LLM-judge panel, per-tier breakdown) and can re-run the end-to-end evaluation live.
+- **A launcher that proves the stack** — `python app.py` preflights everything the pipeline needs (toolchain, ports, source cards, both graph backends, the LLM endpoint, and a compile of the LangGraph super-graph), gates on real readiness probes, prints a status board with per-subsystem verdicts and named remediations, and streams a startup smoke query over the same SSE contract the UI uses (`--smoke full` for a whole federated query, `--no-smoke` to skip, `--verbose` for raw child logs).
 
 ## Challenges & Design Decisions
 
