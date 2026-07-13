@@ -62,8 +62,13 @@ _MAX_BRIEF_RECORDS = 10
 # query returning hundreds of nodes) are exactly where the brief would crowd the
 # answer prompt out of the model's context window and force a truncation, so the
 # brief is capped in aggregate — not just per-record — leaving headroom for the
-# completion. At least the first record is always included.
-_MAX_BRIEF_CHARS = 3000
+# completion. At least the first record is always included. Re-tuned up from 3000
+# once describe records began carrying a facet neighbourhood line per record.
+_MAX_BRIEF_CHARS = 4000
+# How many facet rows to summarise in a record's neighbourhood line; a describe
+# node has at most ~13, so this rarely truncates — but when it does the cut is
+# signalled ("+N more") rather than silent.
+_MAX_BRIEF_FACETS = 12
 # Short, human-meaningful attributes worth surfacing alongside a description.
 _BRIEF_ATTRS = (
     "Abstraction",
@@ -168,6 +173,19 @@ def _record_brief_line(rec: Any) -> str:
     ][:8]
     if related:
         parts.append(f" Related: {', '.join(related)}.")
+    # A describe record carries a facet neighbourhood (counts by rel/direction),
+    # not individual neighbours — surface the live (count > 0) facets so a
+    # "tell me more" has the shape of the node's adjacency to draw on.
+    live_facets = [f for f in (getattr(rec, "facets", None) or []) if f.get("count")]
+    if live_facets:
+        summary = "; ".join(
+            f"{f.get('count')} {f.get('rel')}"
+            f"{'→' if f.get('direction') == 'out' else '←'}{f.get('label')}"
+            for f in live_facets[:_MAX_BRIEF_FACETS]
+        )
+        if len(live_facets) > _MAX_BRIEF_FACETS:
+            summary += f"; +{len(live_facets) - _MAX_BRIEF_FACETS} more"
+        parts.append(f" Neighbourhood: {summary}.")
     join_values = [str(v) for v in (rec.join_values or []) if str(v)][:8]
     if join_values:
         parts.append(f" Maps to: {', '.join(join_values)}.")

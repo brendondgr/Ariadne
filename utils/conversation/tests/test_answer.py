@@ -166,6 +166,28 @@ def test_evidence_brief_surfaces_description_and_related():
     assert "Phishing for Information" in brief
 
 
+def test_evidence_brief_surfaces_facet_neighbourhood():
+    # A describe record carries a facet block (counts), not individual neighbours;
+    # the brief must surface the live facets so "tell me more" has adjacency shape.
+    rec = EvidenceRecord(
+        primary_id="T1059",
+        id_scheme="attack-id",
+        label="Technique",
+        name="Command and Scripting Interpreter",
+        properties={"description": "Adversaries may abuse command interpreters."},
+        facets=[
+            {"rel": "HAS_SUBTECHNIQUE", "direction": "out", "label": "SubTechnique", "count": 13},
+            {"rel": "MITIGATES", "direction": "in", "label": "Mitigation", "count": 9},
+            {"rel": "DETECTS", "direction": "in", "label": "DetectionStrategy", "count": 0},
+        ],
+    )
+    brief = evidence_brief(_Evidence([_Result([rec])]))
+    assert "Neighbourhood:" in brief
+    assert "13 HAS_SUBTECHNIQUE→SubTechnique" in brief
+    assert "9 MITIGATES←Mitigation" in brief
+    assert "DETECTS" not in brief  # the count-0 facet is not surfaced in the human brief
+
+
 def test_evidence_brief_none_is_empty():
     assert evidence_brief(None) == ""
 

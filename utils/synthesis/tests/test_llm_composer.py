@@ -19,6 +19,8 @@ from utils.synthesis.factory import HybridComposer, select_composer, synthesize
 from utils.synthesis.llm_composer import (
     ComposerUnavailable,
     OpenAICompatibleComposer,
+    _record_line,
+    build_evidence_context,
     build_messages,
     extract_json_object,
     parse_answer,
@@ -245,3 +247,46 @@ def test_synthesize_deterministic_default_is_verified_clean():
     assert answer.composer == "deterministic"
     assert answer.verification is not None and answer.verification.ok
     assert len(answer.abstentions) == 1
+
+
+# -- carry-through regression guard (Step 5) ---------------------------------
+
+
+def test_evidence_context_carries_description_facets_and_edge_direction():
+    """_record_line used to drop properties and strip edge type/direction, so the
+    composer wrote blind to what a node is and how it connects. Guard against a
+    regression: the context must carry the description, the facet block, and the
+    edge direction/type."""
+    rec = make_record(
+        "T1059",
+        name="Command and Scripting Interpreter",
+        properties={
+            "description": "Adversaries may abuse command and script interpreters.",
+            "x_mitre_platforms": ["Windows", "Linux"],
+        },
+        facets=[
+            {"rel": "HAS_SUBTECHNIQUE", "direction": "out", "label": "SubTechnique", "count": 13},
+            {"rel": "MITIGATES", "direction": "in", "label": "Mitigation", "count": 0},
+        ],
+        related=[
+            {"id": "M1038", "name": "Execution Prevention", "type": "MITIGATES",
+             "direction": "in", "label": "Mitigation"},
+        ],
+    )
+    ctx = build_evidence_context(make_evidence([make_result(records=[rec])]))
+    assert "Adversaries may abuse command and script interpreters" in ctx  # description
+    assert "HAS_SUBTECHNIQUE" in ctx and '"count": 13' in ctx              # facet block
+    assert '"direction": "in"' in ctx                                      # edge direction
+    # the honest zero facet is present so the model can assert absence
+    assert '"count": 0' in ctx
+
+
+def test_record_line_bounds_properties_and_signals_omissions():
+    rec = make_record(
+        "T1",
+        properties={"description": "x" * 1000, "external_references": [{"external_id": "T1"}]},
+    )
+    data = json.loads(_record_line(rec))
+    assert data["properties"]["description"].endswith("…")            # truncated, signalled
+    assert "external_references" not in data["properties"]            # bulky array dropped
+    assert data["properties"]["_omitted_properties"] == ["external_references"]  # but marked

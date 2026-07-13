@@ -73,6 +73,34 @@ sentences; if the evidence does not answer the question, say so plainly>",
 # result are capped so the prompt stays within the model's context window.
 _MAX_RECORDS_PER_RESULT = 50
 _MAX_RELATED_PER_RECORD = 30
+_MAX_FACETS_PER_RECORD = 20
+_MAX_PROP_CHARS = 600
+# Bulky citation arrays carry no evidentiary value for the composer — dropped
+# with an explicit marker rather than silently, so a long value is never mistaken
+# for the whole property set.
+_SKIP_PROPERTIES = frozenset({"external_references"})
+
+
+def _bounded_properties(properties) -> dict:
+    """A prompt-safe view of a record's properties (the description survives whole,
+    long strings are marked-truncated, bulky arrays are dropped with a marker)."""
+    out: dict = {}
+    dropped: list[str] = []
+    for key, value in (properties or {}).items():
+        if key in _SKIP_PROPERTIES:
+            dropped.append(key)
+            continue
+        if isinstance(value, str):
+            out[key] = value[:_MAX_PROP_CHARS] + ("…" if len(value) > _MAX_PROP_CHARS else "")
+        elif isinstance(value, bool) or isinstance(value, (int, float)) or value is None:
+            out[key] = value
+        elif isinstance(value, list):
+            out[key] = [str(v) for v in value[:10]]
+            if len(value) > 10:
+                out[key].append(f"…(+{len(value) - 10} more)")
+    if dropped:
+        out["_omitted_properties"] = sorted(dropped)
+    return out
 
 
 def _record_line(record) -> str:
@@ -81,8 +109,25 @@ def _record_line(record) -> str:
         "label": record.label,
         "name": record.name,
         "join_values": list(record.join_values),
+        # The node's own properties — description and attributes — were dropped
+        # here before, so the composer wrote answers blind to what a node *is*.
+        "properties": _bounded_properties(record.properties),
+        # The bounded facet block: adjacency counts by (rel, direction, neighbour
+        # label), incl. honest zeros, so the composer can assert presence AND
+        # absence ("has no sub-techniques") from the same summary.
+        "facets": [
+            {
+                "rel": f.get("rel"),
+                "direction": f.get("direction"),
+                "neighbour_label": f.get("label"),
+                "count": f.get("count"),
+            }
+            for f in (record.facets or [])[:_MAX_FACETS_PER_RECORD]
+        ],
+        # Related neighbours now keep their edge semantics (type/direction) — the
+        # normalizers computed them and this layer used to strip them out.
         "related": [
-            {k: v for k, v in rel.items() if k in ("id", "entry_id", "name")}
+            {k: v for k, v in rel.items() if k in ("id", "entry_id", "name", "type", "direction", "label")}
             for rel in record.related[:_MAX_RELATED_PER_RECORD]
         ],
     }
