@@ -49,6 +49,31 @@ def node_merge_cypher(node: dict[str, Any]) -> tuple[str, dict[str, Any]]:
     return query, params
 
 
+def unpack_properties(properties_json: Any) -> dict[str, Any]:
+    """JSON-parse a node's flattened ``properties_json`` blob back into a dict.
+
+    The loader flattens the canonical ``properties`` dict into a single
+    ``properties_json`` string on write (see :func:`node_merge_cypher`) so the
+    store stays schema-flexible. The ``describe`` primitive reverses that on
+    read: it returns ``n.properties_json`` from the graph and calls this helper
+    to recover **every** property, so a node's description is reachable without a
+    reload or a promotion to first-class Neo4j properties. Robust to the value
+    already being a dict (a future migration) or missing/malformed (returns an
+    empty dict rather than raising, so one bad node never sinks a whole result).
+    """
+    if properties_json is None:
+        return {}
+    if isinstance(properties_json, dict):
+        return dict(properties_json)
+    if isinstance(properties_json, str):
+        try:
+            parsed = json.loads(properties_json)
+        except (ValueError, TypeError):
+            return {}
+        return parsed if isinstance(parsed, dict) else {}
+    return {}
+
+
 def relationship_merge_cypher(edge: dict[str, Any]) -> tuple[str, dict[str, Any]]:
     """Build a parameterized MERGE statement for one canonical edge."""
     rel_type = _sanitize_rel_type(edge["type"])

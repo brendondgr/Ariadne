@@ -75,6 +75,33 @@ class SourceCardView:
         """A couple of labels the content probe expects to exist when loaded."""
         return sorted(self.node_labels)[:2]
 
+    # -- canonical-derived schema registry (universal extraction) ----------
+
+    def schema_registry(self, data_dir: str | Path | None = None) -> Any:
+        """The process-cached :class:`SchemaRegistry` covering this card's graph.
+
+        Exposed here so the anchor resolver and the registry-backed validators
+        can consult real, canonical-derived structure — plausible facets and
+        observed property keys — through the same view the planner already
+        routes over. Imported lazily to avoid a package-init cycle (the schema
+        package pulls in nothing from the planner).
+        """
+        from utils.specialists.schema import get_registry
+
+        return get_registry(data_dir)
+
+    def label_facets(self, label: str, data_dir: str | Path | None = None) -> Any:
+        """Plausible ``(rel, direction, neighbour label)`` facets for ``label``."""
+        return self.schema_registry(data_dir).label_facets(label, dataset=self.dataset)
+
+    def label_property_keys(
+        self, label: str, data_dir: str | Path | None = None
+    ) -> frozenset[str]:
+        """Observed property keys for ``label`` in this card's dataset."""
+        return self.schema_registry(data_dir).label_properties(
+            label, dataset=self.dataset
+        )
+
     @classmethod
     def from_card_dict(cls, card: dict[str, Any]) -> "SourceCardView":
         enriched = enrich(card)

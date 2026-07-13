@@ -4,10 +4,13 @@ from __future__ import annotations
 
 import pytest
 
+import json
+
 from utils.graph_loader.stores.neo4j import (
     node_merge_cypher,
     parse_constraints_cypher,
     relationship_merge_cypher,
+    unpack_properties,
 )
 
 
@@ -52,3 +55,28 @@ def test_parse_constraints_cypher(tmp_path) -> None:
 def test_unsafe_label_rejected() -> None:
     with pytest.raises(ValueError):
         node_merge_cypher({"id": "1", "label": "Bad-Label", "labels": ["Bad-Label"], "properties": {}})
+
+
+def test_unpack_properties_roundtrips_the_flattened_blob() -> None:
+    props = {
+        "attack_id": "T1055.011",
+        "description": "a long description",
+        "external_references": [{"external_id": "T1055.011"}],
+        "x_mitre_platforms": ["Windows"],
+    }
+    # The store writes properties as a JSON string; describe reads it back whole.
+    _, params = node_merge_cypher(
+        {"id": "n1", "label": "SubTechnique", "labels": ["SubTechnique"], "name": "X", "properties": props}
+    )
+    assert isinstance(params["properties_json"], str)
+    assert unpack_properties(params["properties_json"]) == props
+
+
+def test_unpack_properties_is_robust() -> None:
+    assert unpack_properties(None) == {}
+    assert unpack_properties("") == {}
+    assert unpack_properties("not json") == {}
+    assert unpack_properties("[1, 2, 3]") == {}  # valid JSON, wrong shape
+    # Tolerates an already-parsed dict (a future first-class-properties migration).
+    assert unpack_properties({"a": 1}) == {"a": 1}
+    assert unpack_properties(json.dumps({"k": "v"})) == {"k": "v"}

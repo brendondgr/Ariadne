@@ -1,0 +1,174 @@
+#!/usr/bin/env python3
+"""The registry data model: labels, property keys, and plausible facet triples.
+
+A :class:`DatasetSchema` is the derived structure for one graph (``attack`` or
+``capec``): the property keys observed per label, and the distinct
+``(source_label, rel_type, target_label)`` triples observed across its edges.
+Everything the primitives need is a projection of those two facts. A
+:class:`SchemaRegistry` bundles the per-dataset schemas so a caller that already
+knows its dataset can ask directly, and so a validator can check a structured
+request against real structure.
+
+The types are deliberately backend-agnostic — a ``PlausibleFacet`` is a
+``(relationship, direction, neighbour label)`` regardless of whether the edge is
+walked in Cypher (``-[r]-``) or Gremlin (``bothE()``).
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Iterable
+
+# A facet direction is expressed from the *anchor's* point of view:
+#   "out" — the anchor is the edge source  (anchor)-[r]->(neighbour)
+#   "in"  — the anchor is the edge target  (neighbour)-[r]->(anchor)
+OUT = "out"
+IN = "in"
+_DIRECTIONS = (OUT, IN)
+
+
+@dataclass(frozen=True, order=True)
+class PlausibleFacet:
+    """One ``(relationship, direction, neighbour label)`` a label may exhibit.
+
+    "Plausible" means *some* node of this label has such an edge somewhere in the
+    canonical graph — not that this particular node does. That is exactly what
+    lets a facet block assert an honest zero: the facet is plausible for the
+    label, but its live count on this node is 0.
+    """
+
+    rel_type: str
+    direction: str
+    neighbour_label: str
+
+    def key(self) -> tuple[str, str, str]:
+        return (self.rel_type, self.direction, self.neighbour_label)
+
+
+def _opposite(direction: str) -> str:
+    return IN if direction == OUT else OUT
+
+
+@dataclass(frozen=True)
+class DatasetSchema:
+    """Derived schema for one dataset.
+
+    ``label_property_keys`` maps a label to the union of property keys observed on
+    its nodes. ``triples`` is the set of distinct ``(source_label, rel_type,
+    target_label)`` observed across the dataset's edges — small (tens of entries),
+    because it counts *kinds* of edges, not edges.
+    """
+
+    dataset: str
+    label_property_keys: dict[str, frozenset[str]]
+    triples: frozenset[tuple[str, str, str]]
+
+    # -- labels & properties ------------------------------------------------
+
+    def labels(self) -> frozenset[str]:
+        return frozenset(self.label_property_keys)
+
+    def has_label(self, label: str) -> bool:
+        return label in self.label_property_keys
+
+    def label_properties(self, label: str) -> frozenset[str]:
+        """Property keys observed on nodes of ``label`` (empty for an unknown label)."""
+        return self.label_property_keys.get(label, frozenset())
+
+    # -- facets -------------------------------------------------------------
+
+    def label_facets(self, label: str) -> tuple[PlausibleFacet, ...]:
+        """Every plausible facet for ``label``, both directions, sorted.
+
+        For each triple where ``label`` is the source, an ``out`` facet toward the
+        target label; for each triple where ``label`` is the target, an ``in``
+        facet toward the source label. Deterministically ordered so a facet block
+        is stable across runs.
+        """
+        facets: set[PlausibleFacet] = set()
+        for source, rel, target in self.triples:
+            if source == label:
+                facets.add(PlausibleFacet(rel, OUT, target))
+            if target == label:
+                facets.add(PlausibleFacet(rel, IN, source))
+        return tuple(sorted(facets))
+
+    def facet_exists(
+        self,
+        anchor_label: str,
+        rel_type: str,
+        direction: str,
+        neighbour_label: str | None = None,
+    ) -> bool:
+        """Is ``(anchor_label, rel_type, direction[, neighbour_label])`` real here?
+
+        This is the structural check the registry-backed validators use in place
+        of matching relationship types with a regex over a query string. When
+        ``neighbour_label`` is ``None`` the check is satisfied by any neighbour
+        label — "does the anchor have *any* outbound MITIGATES edge kind?".
+        """
+        if direction not in _DIRECTIONS:
+            return False
+        for source, rel, target in self.triples:
+            if rel != rel_type:
+                continue
+            if direction == OUT and source == anchor_label:
+                if neighbour_label is None or target == neighbour_label:
+                    return True
+            if direction == IN and target == anchor_label:
+                if neighbour_label is None or source == neighbour_label:
+                    return True
+        return False
+
+
+@dataclass(frozen=True)
+class SchemaRegistry:
+    """A read-only bundle of per-dataset schemas."""
+
+    datasets: dict[str, DatasetSchema]
+
+    def dataset(self, name: str) -> DatasetSchema | None:
+        return self.datasets.get(name)
+
+    def dataset_names(self) -> tuple[str, ...]:
+        return tuple(sorted(self.datasets))
+
+    def _select(self, dataset: str | None) -> Iterable[DatasetSchema]:
+        if dataset is not None:
+            schema = self.datasets.get(dataset)
+            return (schema,) if schema is not None else ()
+        return self.datasets.values()
+
+    def has_label(self, label: str, dataset: str | None = None) -> bool:
+        return any(s.has_label(label) for s in self._select(dataset))
+
+    def label_properties(
+        self, label: str, dataset: str | None = None
+    ) -> frozenset[str]:
+        """Union of property keys for ``label`` across the selected dataset(s)."""
+        keys: set[str] = set()
+        for schema in self._select(dataset):
+            keys |= schema.label_properties(label)
+        return frozenset(keys)
+
+    def label_facets(
+        self, label: str, dataset: str | None = None
+    ) -> tuple[PlausibleFacet, ...]:
+        """Plausible facets for ``label`` across the selected dataset(s), sorted."""
+        facets: set[PlausibleFacet] = set()
+        for schema in self._select(dataset):
+            facets.update(schema.label_facets(label))
+        return tuple(sorted(facets))
+
+    def facet_exists(
+        self,
+        anchor_label: str,
+        rel_type: str,
+        direction: str,
+        neighbour_label: str | None = None,
+        dataset: str | None = None,
+    ) -> bool:
+        return any(
+            schema.facet_exists(anchor_label, rel_type, direction, neighbour_label)
+            for schema in self._select(dataset)
+        )
