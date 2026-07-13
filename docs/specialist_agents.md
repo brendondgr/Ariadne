@@ -63,7 +63,7 @@ emitter + contract check, and the validator-base orchestration.
 | **Connector** | read-only Neo4j driver (`cypher/connector.py`) | TinkerPop client (`gremlin/connector.py`) |
 | **Normalizer** | rows → evidence schema (`cypher/normalizer.py`) | traversal results → evidence schema (`gremlin/normalizer.py`) |
 
-> **Resolve-to-schema is shared code, different data** (`resolve.py`): the only
+> **Resolve-to-schema is shared code, different data** (`resolve/`): the only
 > thing that changes is which source card is fed in. **Query construction is
 > different code** — Cypher is declarative pattern-matching; Gremlin is
 > imperative traversal — so the two are separate implementations.

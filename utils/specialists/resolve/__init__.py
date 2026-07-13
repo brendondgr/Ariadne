@@ -17,8 +17,8 @@ from typing import Any
 
 from utils.planner.join_keys import get_join_key
 
-from .concepts import concept_terms
-from .contracts import SpecialistTask
+from ..concepts import concept_terms
+from ..contracts import SpecialistTask
 
 # ATT&CK identifier shapes. Order matters: longer/letter-prefixed forms first so
 # e.g. "TA0006" is read as a Tactic, not a Technique "T0006", and "DET0103" /
