@@ -1,6 +1,7 @@
 """Frontier / visited extraction on a minimal specialist-evidence fixture."""
 
 from utils.orchestration.agents.assess.frontier import (
+    extract_facet_frontier,
     extract_frontier,
     update_visited,
 )
@@ -82,3 +83,39 @@ def test_update_visited_empty_when_nothing_new():
 def test_update_visited_ignores_records_without_primary_id():
     results = [_result("capec", [_record("", ("T1047",))])]
     assert update_visited(set(), results) == set()
+
+
+# -- facet frontier (Step 6: describe/expand wiring) -------------------------
+
+
+def _facet_record(primary_id: str, facets: list[dict]) -> EvidenceRecord:
+    return EvidenceRecord(
+        primary_id=primary_id, id_scheme="attack-id", label="Technique",
+        name=primary_id, facets=facets,
+    )
+
+
+def test_facet_frontier_surfaces_nonzero_facets_as_expand_candidates():
+    rec = _facet_record(
+        "T1059",
+        [
+            {"rel": "HAS_SUBTECHNIQUE", "direction": "out", "label": "SubTechnique", "count": 13},
+            {"rel": "MITIGATES", "direction": "in", "label": "Mitigation", "count": 9},
+        ],
+    )
+    frontier = extract_facet_frontier([_result("attack", [rec])])
+    assert frontier == {
+        ("T1059", "HAS_SUBTECHNIQUE", "out", "SubTechnique", "attack"),
+        ("T1059", "MITIGATES", "in", "Mitigation", "attack"),
+    }
+
+
+def test_zero_count_facet_is_not_a_frontier():
+    # A count-0 facet is an honest absence — there is nothing to expand.
+    rec = _facet_record("T1105", [{"rel": "HAS_SUBTECHNIQUE", "direction": "out",
+                                   "label": "SubTechnique", "count": 0}])
+    assert extract_facet_frontier([_result("attack", [rec])]) == set()
+
+
+def test_facet_frontier_ignores_records_without_facets():
+    assert extract_facet_frontier([_result("attack", [_record("T1047", ("T1047",))])]) == set()

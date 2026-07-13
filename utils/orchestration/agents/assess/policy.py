@@ -25,7 +25,10 @@ import logging
 from typing import Callable
 
 from utils.orchestration.agents.assess.contracts import Assessment
-from utils.orchestration.agents.assess.frontier import extract_frontier
+from utils.orchestration.agents.assess.frontier import (
+    extract_facet_frontier,
+    extract_frontier,
+)
 from utils.planner.join_keys import CANONICAL_JOIN_KEYS
 from utils.planner.schema import JoinDeclaration, Plan
 from utils.specialists.federation import FederatedEvidence
@@ -92,6 +95,24 @@ def _chaseable_frontier(
             if source == producer.dataset and value not in resolved:
                 chaseable.add((value, source))
     return chaseable
+
+
+def expandable_facets(
+    evidence: FederatedEvidence,
+) -> set[tuple[str, str, str, str, str]]:
+    """The unexpanded, non-zero facets a facet-driven re-plan could still chase.
+
+    A ``describe`` result whose facet block shows ``MITIGATES × 6`` names six
+    unfetched members — exactly the frontier the old templates never produced,
+    which is why the retrieval loop was live but inert. This surfaces that pool
+    (an ``expand`` request per entry) for an LLM critic or a future deterministic
+    facet-expansion policy. It is deliberately kept *out* of the reproducible
+    join-closure verdict below: the deterministic loop's termination remains
+    governed solely by cross-source join chasing, so the byte-reproducible
+    LLM-off build is unchanged — a facet frontier informs a smarter re-plan
+    without destabilising the guarantee that the loop terminates.
+    """
+    return extract_facet_frontier(evidence.results)
 
 
 def deterministic_assessment(

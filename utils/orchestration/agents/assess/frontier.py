@@ -61,6 +61,42 @@ def extract_frontier(
     return frontier
 
 
+def extract_facet_frontier(
+    results: Iterable[SpecialistResult],
+) -> set[tuple[str, str, str, str, str]]:
+    """Every unexpanded, non-zero facet as an expand-worthy frontier entry.
+
+    A ``describe`` record carries a bounded facet block — a count of adjacent
+    nodes grouped by ``(relationship, direction, neighbour label)``. A facet with
+    a **non-zero** count is a frontier the loop can chase with ``expand``: it
+    names real, unfetched members. A count-zero facet is an honest absence and is
+    *not* a frontier (there is nothing to expand). Returns
+    ``(anchor_id, rel, direction, neighbour_label, source)`` tuples so a re-plan
+    or an LLM critic can turn any one of them into an :class:`ExpandRequest`
+    without re-reading the graph.
+
+    This is the frontier the templates never produced — the reason the retrieval
+    loop was live but inert. It reads only the normalized ``facets`` the
+    specialists already emit, so it stays backend-agnostic and side-effect-free.
+    """
+    frontier: set[tuple[str, str, str, str, str]] = set()
+    for result in results:
+        source = result.task.source
+        for record in result.records:
+            anchor = record.primary_id
+            if not anchor:
+                continue
+            for facet in record.facets or []:
+                if not facet.get("count"):
+                    continue  # a zero facet is an honest absence, not a frontier
+                rel = str(facet.get("rel") or "")
+                direction = str(facet.get("direction") or "")
+                label = str(facet.get("label") or "")
+                if rel and direction:
+                    frontier.add((anchor, rel, direction, label, source))
+    return frontier
+
+
 def update_visited(
     visited: set[tuple[str, str]], results: Iterable[SpecialistResult]
 ) -> set[tuple[str, str]]:

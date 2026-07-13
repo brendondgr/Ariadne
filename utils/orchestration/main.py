@@ -312,11 +312,12 @@ def iter_pipeline(
     a specialist is about to run (with its seeding info), so a UI can animate
     "now querying <source>" truthfully.
 
-    With the iterative-retrieval loop enabled (``ORCH_MAX_HOPS`` > 1) each
-    insufficient hop inserts a ``status(planning, hop=N)`` re-plan and repeats
-    the ``status(querying) → specialist* → evidence`` block before the terminal
-    ``answer``/``done``; ``ORCH_MAX_HOPS=1`` (the default) emits the exact
-    single-pass order above.
+    With the iterative-retrieval loop enabled (``ORCH_MAX_HOPS`` > 1, and 5 is
+    the default — see ``utils/orchestration/config.py``) each insufficient hop
+    inserts a ``status(planning, hop=N)`` re-plan and repeats the
+    ``status(querying) → specialist* → evidence`` block before the terminal
+    ``answer``/``done``; setting ``ORCH_MAX_HOPS=1`` emits the exact single-pass
+    order above.
     Pass ``run`` to have the outcome recorded on a caller-owned ``PipelineRun``.
     """
     run = run if run is not None else PipelineRun(question=question, mode=mode)
