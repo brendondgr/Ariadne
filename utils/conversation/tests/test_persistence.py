@@ -6,12 +6,14 @@ from __future__ import annotations
 from types import SimpleNamespace
 
 from utils.conversation.persistence import (
+    conversation_anchor,
     dossier_detail_block,
     dossier_index_line,
     dossiers_from_records,
     entity_ids_in,
     facts_from_synthesized,
     history_from_turns,
+    referential_followup,
 )
 from utils.conversation.store import TurnRecord
 from utils.synthesis.contracts import (
@@ -148,3 +150,62 @@ def test_dossier_index_line_lists_held_entities():
 def test_entity_ids_in_detects_mixed_ids():
     ids = entity_ids_in("compare M1049 with T1566.003 and CAPEC 98")
     assert {"M1049", "T1566.003", "CAPEC-98"} <= ids
+
+
+# ---------------------------------------------------------------------------
+# Deterministic conversation anchor
+# ---------------------------------------------------------------------------
+
+
+def _dossier_turn(seq, dossiers):
+    from utils.conversation.persistence import dossier_payload
+
+    return _turn(
+        seq, "assistant", payload={"entity_dossiers": dossier_payload(dossiers)}
+    )
+
+
+def test_conversation_anchor_prefers_most_recent_held_entity():
+    older = dossiers_from_records(
+        [SimpleNamespace(primary_id="T1566", name="Phishing", properties={"neighbor_total": 3}, related=[])]
+    )
+    newer = dossiers_from_records([_dossier_record()])  # M1049 (Antivirus/Antimalware)
+    turns = [
+        _turn(0, "user", question="what is T1566?"),
+        _dossier_turn(1, older),
+        _turn(2, "user", question="what is M1049?"),
+        _dossier_turn(3, newer),
+    ]
+    anchor = conversation_anchor(turns)
+    # Most recently hydrated entity comes first, carrying its held name.
+    assert anchor[0] == ("M1049", "Antivirus/Antimalware")
+    assert ("T1566", "Phishing") in anchor
+
+
+def test_conversation_anchor_text_fallback_when_no_dossier():
+    # No dossier stored, but the answer text printed the entity id.
+    turns = [
+        _turn(0, "user", question="what is creating a rogue CA certificate?"),
+        _turn(1, "assistant", payload={"final_answer": "Creating a Rogue CA Certificate (CAPEC-459) is ..."}),
+    ]
+    anchor = conversation_anchor(turns)
+    assert anchor[0][0] == "CAPEC-459"
+    # No dossier held, so the name is empty (id-only anchor).
+    assert anchor[0][1] == ""
+
+
+def test_conversation_anchor_empty_without_turns():
+    assert conversation_anchor([]) == []
+    assert conversation_anchor([_turn(0, "user", question="hello")]) == []
+
+
+def test_referential_followup_detects_continuations():
+    assert referential_followup("Please explore the execution steps involved.")
+    assert referential_followup("show its mitigations")
+    assert referential_followup("and the weaknesses?")
+    assert referential_followup("tell me more")
+
+
+def test_referential_followup_ignores_standalone_questions():
+    assert not referential_followup("What is Creating a Rogue Certification Authority Certificate?")
+    assert not referential_followup("what is phishing?")

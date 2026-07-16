@@ -180,6 +180,71 @@ def _recent_dossier_ids(turns: list[TurnRecord]) -> list[str]:
     return []
 
 
+# Cues that mark a message as a continuation of the thread rather than a fresh,
+# self-contained question — pronouns/determiners referring back, plus the
+# facet-follow-up verbs a user reaches for ("explore the execution steps",
+# "show its mitigations"). Matched only after the message is found to name no
+# entity of its own, so an over-broad verb here just enables *deterministic*
+# anchoring, never replaces an entity the user actually typed.
+_REFERENTIAL_CUE_RE = re.compile(
+    r"\b("
+    r"it|its|itself|they|them|their|theirs|these|those|that|this|"
+    r"one|ones|another|other|previous|above|former|latter|respective|same|"
+    r"explore|expand|elaborate|detail|describe|show|list|give|provide|tell|"
+    r"walk|break|more"
+    r")\b",
+    re.IGNORECASE,
+)
+# Sentence-initial connectives that only make sense against a prior turn.
+_FOLLOWUP_LEAD_RE = re.compile(r"^\s*(and|also|what about|how about|now|then)\b", re.IGNORECASE)
+
+
+def referential_followup(question: str) -> bool:
+    """True when ``question`` reads as a continuation of the thread.
+
+    A conservative cue detector (pronouns/determiners that point back, the common
+    facet-follow-up verbs, and sentence-initial connectives). It intentionally does
+    *not* try to catch bare interrogatives like "what are the mitigations?" — the
+    price of a missed anchor there is one under-specified query, whereas a false
+    positive would wrongly graft the held entity onto a genuinely new question.
+    """
+    q = question or ""
+    return bool(_REFERENTIAL_CUE_RE.search(q) or _FOLLOWUP_LEAD_RE.search(q))
+
+
+def conversation_anchor(turns: list[TurnRecord]) -> list[tuple[str, str]]:
+    """The entities the thread is currently focused on, most-relevant-first.
+
+    A deterministic (LLM-free) anchor for a follow-up turn: the ids the most
+    recent dossier-holding turn hydrated (the strongest signal), then any entity
+    id printed in recent turn text (newest first) as a fallback when no dossier
+    was stored. Each id is paired with its held name when known (else ``""``).
+    Reuses the same id shapes and dossier cache the memory injection already relies
+    on — see :func:`entity_ids_in` and :func:`dossiers_from_turns`.
+    """
+    cache = dossiers_from_turns(turns)
+    ordered: list[str] = []
+
+    def _add(entity_id: str) -> None:
+        norm = str(entity_id).strip().upper()
+        if norm and norm not in ordered:
+            ordered.append(norm)
+
+    # 1. Entities the most recent turn actually held (recency anchor).
+    for eid in _recent_dossier_ids(turns):
+        _add(eid)
+    # 2. Fallback: entity ids that appear in recent turn text, newest turn first
+    #    (sorted within a turn so the order is deterministic).
+    for turn in reversed(turns):
+        text_parts = [getattr(turn, "question", "") or ""]
+        if turn.role == "assistant":
+            text_parts.append(str((turn.payload or {}).get("final_answer", "") or ""))
+        for eid in sorted(entity_ids_in(" ".join(text_parts))):
+            _add(eid)
+
+    return [(eid, cache[eid].name if eid in cache else "") for eid in ordered]
+
+
 def memory_injection(
     question: str, turns: list[TurnRecord], *, max_blocks: int = 3
 ) -> list[str]:
