@@ -282,6 +282,41 @@ def test_dossier_persists_keyed_and_injects_on_followup(temp_store):
     assert any("* Mitigates (MITIGATES) -> Phishing (T1566)" in f for f in injected_pronoun)
 
 
+def test_entity_free_followup_anchors_to_held_entity(temp_store):
+    """Reproduces the reported bug: an entity-free follow-up must inherit the
+    just-discussed entity even with the reference-resolution LLM OFF (default)."""
+    convo = temp_store.create_conversation("New conversation")
+    # Turn 1: caches the M1049 dossier as the thread's held entity.
+    _collect(
+        convo_service.stream_conversation_events(
+            "Provide more details on M1049.", convo.id, store=temp_store,
+            runner=_dossier_runner(), naming_client=_StubLLM(["M1049"]),
+        )
+    )
+
+    # Turn 2: an entity-free continuation. Capture what extraction is actually asked.
+    sink: dict = {}
+
+    def capturing(question, *, mode, use_llm, run, forward=None, **kw):
+        sink["question"] = question
+        run.answer = _verified_answer()
+        run.evidence = FederatedEvidence(request="q")
+        run.status, run.exit_code = "answered", 0
+        return run
+
+    events = _collect(
+        convo_service.stream_conversation_events(
+            "Please explore the mitigations involved.", convo.id, store=temp_store,
+            runner=capturing, naming_client=_StubLLM(["x"]),
+        )
+    )
+    # The held entity id was folded into the question the planner received...
+    assert "M1049" in sink["question"]
+    # ...and the context event reports the deterministic anchoring.
+    context = dict(events)["context"]
+    assert context["anchored"] is True and context["anchor_id"] == "M1049"
+
+
 def test_conversation_query_endpoint_streams(temp_store, monkeypatch):
     def _fake_stream(question, conversation_id, **kw):
         yield "event: done\ndata: {\"status\": \"answered\"}\n\n"

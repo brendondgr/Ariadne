@@ -20,6 +20,7 @@ from utils.conversation.llm import ConversationLLM
 from utils.conversation.main import iter_conversation
 from utils.conversation.naming import title_for
 from utils.conversation.persistence import (
+    conversation_anchor,
     dossier_payload,
     dossiers_from_records,
     facts_from_synthesized,
@@ -143,6 +144,10 @@ def stream_conversation_events(
         is_first_turn = convo.turn_count == 0
         turns = store.list_turns(conversation_id)
         history = history_from_turns(turns, limit=config.history_turns)
+        # Deterministic (LLM-free) focus entities from the thread so an entity-free
+        # follow-up ("explore the execution steps involved") stays anchored to the
+        # just-discussed entity even when the reference-resolution LLM is down.
+        anchor = conversation_anchor(turns)
         # Hybrid entity memory: an always-on index of held entities plus the full
         # dossier for the ones this turn refers to, injected as a synthetic
         # assistant entry (facts surface via known_facts; empty content is skipped
@@ -170,6 +175,7 @@ def stream_conversation_events(
             question,
             conversation_id=conversation_id,
             history=history,
+            anchor=anchor,
             mode=mode,
             use_llm=use_llm,
             config=config,
