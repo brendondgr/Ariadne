@@ -317,57 +317,94 @@ def test_entity_free_followup_anchors_to_held_entity(temp_store):
     assert context["anchored"] is True and context["anchor_id"] == "M1049"
 
 
-def test_followup_anchors_via_answer_text_when_no_dossier(temp_store):
-    """The transcript's exact shape: turn 1 answers about CAPEC-459 WITHOUT a stored
-    dossier (the id only appears in the prose), yet 'explore the execution steps
-    involved' must still anchor to CAPEC-459 via the text-level fallback."""
-    convo = temp_store.create_conversation("New conversation")
+def _capec459_evidence():
+    """FederatedEvidence carrying one retrieved CAPEC-459 record (no dossier shape)."""
+    from utils.specialists.contracts import EvidenceRecord, SpecialistResult, SpecialistTask
 
-    # Turn 1: plain (non-dossier) evidence; the id lives only in the narrative.
-    def turn1_runner(question, *, mode, use_llm, run, forward=None, **kw):
-        answer = SynthesizedAnswer(
-            request="q",
-            narrative="Creating a Rogue Certification Authority Certificate (CAPEC-459) exploits weak hash collisions.",
-        )
+    rec = EvidenceRecord(
+        primary_id="CAPEC-459", id_scheme="capec-id", label="AttackPattern",
+        name="Creating a Rogue Certification Authority Certificate", properties={},
+    )
+    task = SpecialistTask(sub_question_id="q1", source="capec", text="what is the rogue CA pattern")
+    return FederatedEvidence(request="q", results=[SpecialistResult(task=task, records=[rec], ok=True)])
+
+
+def _evidence_runner(evidence, answer):
+    def runner(question, *, mode, use_llm, run, forward=None, **kw):
         if forward is not None:
             forward("answer", {
-                "plan": None, "evidence": FederatedEvidence(request="q"),
+                "plan": None, "evidence": evidence,
                 "status": "answered", "exit_code": 0, "synthesized": answer,
             })
-        run.answer = answer
-        run.evidence = FederatedEvidence(request="q")
+        run.answer, run.evidence = answer, evidence
         run.status, run.exit_code = "answered", 0
         return run
+    return runner
 
-    _collect(
-        convo_service.stream_conversation_events(
-            "What is Creating a Rogue Certification Authority Certificate?",
-            convo.id, store=temp_store, runner=turn1_runner,
-            naming_client=_StubLLM(["Rogue CA"]),
-        )
-    )
-    # No dossier was cached, only the answer prose.
-    assistant = [t for t in temp_store.list_turns(convo.id) if t.role == "assistant"][0]
-    assert not (assistant.payload.get("entity_dossiers") or {})
 
-    # Turn 2: the exact reported follow-up.
-    sink: dict = {}
-
-    def capturing(question, *, mode, use_llm, run, forward=None, **kw):
+def _capturing_runner(sink):
+    def runner(question, *, mode, use_llm, run, forward=None, **kw):
         sink["question"] = question
         run.answer = _verified_answer()
         run.evidence = FederatedEvidence(request="q")
         run.status, run.exit_code = "answered", 0
         return run
+    return runner
 
+
+def test_followup_anchors_via_retrieved_id_when_no_dossier(temp_store):
+    """The transcript's exact shape: turn 1 RETRIEVES CAPEC-459 (evidence record,
+    no dossier), so 'explore the execution steps involved' anchors to CAPEC-459 via
+    the authoritative retrieved-id source — with the resolution LLM OFF."""
+    convo = temp_store.create_conversation("New conversation")
+    _collect(
+        convo_service.stream_conversation_events(
+            "What is Creating a Rogue Certification Authority Certificate?",
+            convo.id, store=temp_store,
+            runner=_evidence_runner(_capec459_evidence(), SynthesizedAnswer(request="q", narrative="It is CAPEC-459.")),
+            naming_client=_StubLLM(["Rogue CA"]),
+        )
+    )
+    assistant = [t for t in temp_store.list_turns(convo.id) if t.role == "assistant"][0]
+    assert not (assistant.payload.get("entity_dossiers") or {})  # no dossier...
+    assert assistant.payload.get("retrieved_ids") == ["CAPEC-459"]  # ...but a retrieved id
+
+    sink: dict = {}
     events = _collect(
         convo_service.stream_conversation_events(
             "Please explore the execution steps involved.", convo.id,
-            store=temp_store, runner=capturing, naming_client=_StubLLM(["x"]),
+            store=temp_store, runner=_capturing_runner(sink), naming_client=_StubLLM(["x"]),
         )
     )
     assert "CAPEC-459" in sink["question"]
     assert dict(events)["context"]["anchor_id"] == "CAPEC-459"
+
+
+def test_followup_does_not_anchor_when_turn1_retrieved_nothing(temp_store):
+    """Regression guard for the live CAPEC-98 bug: a turn-1 'couldn't find it' answer
+    that PRINTS example ids (T1566, CAPEC-98) must NOT become an anchor, because
+    nothing was actually retrieved."""
+    convo = temp_store.create_conversation("New conversation")
+    miss = SynthesizedAnswer(
+        request="q", narrative="I couldn't find that. Try an id like T1566, M1017, or CAPEC-98.",
+    )
+    _collect(
+        convo_service.stream_conversation_events(
+            "What is Creating a Rogue Certification Authority Certificate?",
+            convo.id, store=temp_store,
+            runner=_evidence_runner(FederatedEvidence(request="q"), miss),
+            naming_client=_StubLLM(["Rogue CA"]),
+        )
+    )
+    sink: dict = {}
+    events = _collect(
+        convo_service.stream_conversation_events(
+            "Please explore the execution steps involved.", convo.id,
+            store=temp_store, runner=_capturing_runner(sink), naming_client=_StubLLM(["x"]),
+        )
+    )
+    assert "CAPEC-98" not in sink["question"] and "T1566" not in sink["question"]
+    assert dict(events)["context"]["anchored"] is False
 
 
 def test_conversation_query_endpoint_streams(temp_store, monkeypatch):

@@ -26,6 +26,7 @@ from utils.conversation.persistence import (
     facts_from_synthesized,
     history_from_turns,
     memory_injection,
+    retrieved_anchor_ids,
 )
 from utils.conversation.store import ConversationNotFound, ConversationStore
 from utils.orchestration.main import PipelineRun
@@ -276,6 +277,11 @@ def _persist_turn(
     dossiers = dossiers_from_records(records)
     if dossiers:
         assistant_payload["entity_dossiers"] = dossier_payload(dossiers)
+    # Record the focused primary ids this turn retrieved (the authoritative anchor
+    # for a later entity-free follow-up); empty for a broad list or a miss.
+    retrieved = retrieved_anchor_ids(evidence)
+    if retrieved:
+        assistant_payload["retrieved_ids"] = retrieved
     store.append_turn(
         conversation_id, "user", question=question, mode=mode, drafter=drafter
     )

@@ -180,6 +180,42 @@ def _recent_dossier_ids(turns: list[TurnRecord]) -> list[str]:
     return []
 
 
+# A turn that retrieved more than this many distinct primary entities is a *list*,
+# not a focused lookup, so it names no single thing to anchor a follow-up on.
+_MAX_ANCHOR_ENTITIES = 4
+
+
+def retrieved_anchor_ids(
+    evidence: Any, *, max_entities: int = _MAX_ANCHOR_ENTITIES
+) -> list[str]:
+    """The primary entity ids a focused retrieval returned (for turn persistence).
+
+    Grounded in what the graph *actually returned* — the authoritative anchor
+    source, unlike scanning answer prose (which cannot tell a real id from an
+    example the model printed in a "couldn't find it" message). Returns ``[]`` for
+    an empty result or a broad list (> ``max_entities`` distinct entities), so only
+    a genuinely entity-focused turn contributes an anchor.
+    """
+    ids: list[str] = []
+    for result in getattr(evidence, "results", None) or []:
+        for rec in getattr(result, "records", None) or []:
+            pid = str(getattr(rec, "primary_id", "") or "").strip().upper()
+            if pid and pid not in ids:
+                ids.append(pid)
+    return ids if 0 < len(ids) <= max_entities else []
+
+
+def _recent_retrieved_ids(turns: list[TurnRecord]) -> list[str]:
+    """Focused retrieved entity ids from the most recent turn that stored any."""
+    for turn in reversed(turns):
+        if turn.role != "assistant":
+            continue
+        stored = (turn.payload or {}).get("retrieved_ids") or []
+        if stored:
+            return [str(eid).strip().upper() for eid in stored if str(eid).strip()]
+    return []
+
+
 # Cues that mark a message as a continuation of the thread rather than a fresh,
 # self-contained question — pronouns/determiners referring back, plus the
 # facet-follow-up verbs a user reaches for ("explore the execution steps",
@@ -215,12 +251,14 @@ def referential_followup(question: str) -> bool:
 def conversation_anchor(turns: list[TurnRecord]) -> list[tuple[str, str]]:
     """The entities the thread is currently focused on, most-relevant-first.
 
-    A deterministic (LLM-free) anchor for a follow-up turn: the ids the most
-    recent dossier-holding turn hydrated (the strongest signal), then any entity
-    id printed in recent turn text (newest first) as a fallback when no dossier
-    was stored. Each id is paired with its held name when known (else ``""``).
-    Reuses the same id shapes and dossier cache the memory injection already relies
-    on — see :func:`entity_ids_in` and :func:`dossiers_from_turns`.
+    A deterministic (LLM-free) anchor for a follow-up turn, drawn only from
+    *authoritative* sources — never assistant answer prose, which cannot be told
+    apart from example ids the model prints in a "couldn't find it" reply. In
+    priority order: the entities the most recent turn hydrated as dossiers, the
+    focused primary ids the most recent turn actually retrieved, then any entity
+    id the *user themselves* typed in a prior question (newest turn first). Each id
+    is paired with its held name when known (else ``""``). See
+    :func:`retrieved_anchor_ids`, :func:`dossiers_from_turns`, :func:`entity_ids_in`.
     """
     cache = dossiers_from_turns(turns)
     ordered: list[str] = []
@@ -230,16 +268,18 @@ def conversation_anchor(turns: list[TurnRecord]) -> list[tuple[str, str]]:
         if norm and norm not in ordered:
             ordered.append(norm)
 
-    # 1. Entities the most recent turn actually held (recency anchor).
+    # 1. Entities the most recent turn actually held (dossier recency anchor).
     for eid in _recent_dossier_ids(turns):
         _add(eid)
-    # 2. Fallback: entity ids that appear in recent turn text, newest turn first
-    #    (sorted within a turn so the order is deterministic).
+    # 2. Focused primary ids the most recent entity-focused turn retrieved.
+    for eid in _recent_retrieved_ids(turns):
+        _add(eid)
+    # 3. Entity ids the user typed in a prior question, newest turn first (sorted
+    #    within a turn for determinism). Only user-authored text — never answers.
     for turn in reversed(turns):
-        text_parts = [getattr(turn, "question", "") or ""]
-        if turn.role == "assistant":
-            text_parts.append(str((turn.payload or {}).get("final_answer", "") or ""))
-        for eid in sorted(entity_ids_in(" ".join(text_parts))):
+        if turn.role != "user":
+            continue
+        for eid in sorted(entity_ids_in(getattr(turn, "question", "") or "")):
             _add(eid)
 
     return [(eid, cache[eid].name if eid in cache else "") for eid in ordered]

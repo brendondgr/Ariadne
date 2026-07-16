@@ -14,6 +14,7 @@ from utils.conversation.persistence import (
     facts_from_synthesized,
     history_from_turns,
     referential_followup,
+    retrieved_anchor_ids,
 )
 from utils.conversation.store import TurnRecord
 from utils.synthesis.contracts import (
@@ -182,21 +183,55 @@ def test_conversation_anchor_prefers_most_recent_held_entity():
     assert ("T1566", "Phishing") in anchor
 
 
-def test_conversation_anchor_text_fallback_when_no_dossier():
-    # No dossier stored, but the answer text printed the entity id.
+def test_conversation_anchor_from_retrieved_ids_when_no_dossier():
+    # No dossier, but the turn recorded the focused primary id it retrieved.
     turns = [
         _turn(0, "user", question="what is creating a rogue CA certificate?"),
-        _turn(1, "assistant", payload={"final_answer": "Creating a Rogue CA Certificate (CAPEC-459) is ..."}),
+        _turn(1, "assistant", payload={"retrieved_ids": ["CAPEC-459"]}),
     ]
     anchor = conversation_anchor(turns)
-    assert anchor[0][0] == "CAPEC-459"
-    # No dossier held, so the name is empty (id-only anchor).
-    assert anchor[0][1] == ""
+    assert anchor[0] == ("CAPEC-459", "")
+
+
+def test_conversation_anchor_from_user_typed_id():
+    # The user named the entity in their question -> a safe, authoritative anchor.
+    turns = [
+        _turn(0, "user", question="What is T1566 (Phishing)?"),
+        _turn(1, "assistant", payload={"final_answer": "T1566 is a phishing technique."}),
+    ]
+    assert conversation_anchor(turns)[0][0] == "T1566"
+
+
+def test_conversation_anchor_ignores_ids_in_answer_prose():
+    # Regression guard: a "couldn't find it" answer that prints EXAMPLE ids must not
+    # become an anchor (this is exactly what wrongly anchored to CAPEC-98 live).
+    turns = [
+        _turn(0, "user", question="what is creating a rogue CA certificate?"),
+        _turn(
+            1,
+            "assistant",
+            payload={"final_answer": "I couldn't find that. Try an id like T1566, M1017, or CAPEC-98."},
+        ),
+    ]
+    assert conversation_anchor(turns) == []
 
 
 def test_conversation_anchor_empty_without_turns():
     assert conversation_anchor([]) == []
     assert conversation_anchor([_turn(0, "user", question="hello")]) == []
+
+
+def test_retrieved_anchor_ids_bounds_focused_vs_list():
+    def _evidence(*ids):
+        records = [SimpleNamespace(primary_id=i) for i in ids]
+        result = SimpleNamespace(records=records)
+        return SimpleNamespace(results=[result])
+
+    # A focused lookup contributes its ids; an empty result contributes nothing.
+    assert retrieved_anchor_ids(_evidence("CAPEC-459")) == ["CAPEC-459"]
+    assert retrieved_anchor_ids(_evidence()) == []
+    # A broad list (> max) names no single thing to anchor on.
+    assert retrieved_anchor_ids(_evidence(*[f"T{1000 + i}" for i in range(9)])) == []
 
 
 def test_referential_followup_detects_continuations():
