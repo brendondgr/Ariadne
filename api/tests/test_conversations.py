@@ -317,6 +317,59 @@ def test_entity_free_followup_anchors_to_held_entity(temp_store):
     assert context["anchored"] is True and context["anchor_id"] == "M1049"
 
 
+def test_followup_anchors_via_answer_text_when_no_dossier(temp_store):
+    """The transcript's exact shape: turn 1 answers about CAPEC-459 WITHOUT a stored
+    dossier (the id only appears in the prose), yet 'explore the execution steps
+    involved' must still anchor to CAPEC-459 via the text-level fallback."""
+    convo = temp_store.create_conversation("New conversation")
+
+    # Turn 1: plain (non-dossier) evidence; the id lives only in the narrative.
+    def turn1_runner(question, *, mode, use_llm, run, forward=None, **kw):
+        answer = SynthesizedAnswer(
+            request="q",
+            narrative="Creating a Rogue Certification Authority Certificate (CAPEC-459) exploits weak hash collisions.",
+        )
+        if forward is not None:
+            forward("answer", {
+                "plan": None, "evidence": FederatedEvidence(request="q"),
+                "status": "answered", "exit_code": 0, "synthesized": answer,
+            })
+        run.answer = answer
+        run.evidence = FederatedEvidence(request="q")
+        run.status, run.exit_code = "answered", 0
+        return run
+
+    _collect(
+        convo_service.stream_conversation_events(
+            "What is Creating a Rogue Certification Authority Certificate?",
+            convo.id, store=temp_store, runner=turn1_runner,
+            naming_client=_StubLLM(["Rogue CA"]),
+        )
+    )
+    # No dossier was cached, only the answer prose.
+    assistant = [t for t in temp_store.list_turns(convo.id) if t.role == "assistant"][0]
+    assert not (assistant.payload.get("entity_dossiers") or {})
+
+    # Turn 2: the exact reported follow-up.
+    sink: dict = {}
+
+    def capturing(question, *, mode, use_llm, run, forward=None, **kw):
+        sink["question"] = question
+        run.answer = _verified_answer()
+        run.evidence = FederatedEvidence(request="q")
+        run.status, run.exit_code = "answered", 0
+        return run
+
+    events = _collect(
+        convo_service.stream_conversation_events(
+            "Please explore the execution steps involved.", convo.id,
+            store=temp_store, runner=capturing, naming_client=_StubLLM(["x"]),
+        )
+    )
+    assert "CAPEC-459" in sink["question"]
+    assert dict(events)["context"]["anchor_id"] == "CAPEC-459"
+
+
 def test_conversation_query_endpoint_streams(temp_store, monkeypatch):
     def _fake_stream(question, conversation_id, **kw):
         yield "event: done\ndata: {\"status\": \"answered\"}\n\n"
