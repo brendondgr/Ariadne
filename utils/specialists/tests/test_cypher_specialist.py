@@ -818,6 +818,28 @@ def test_describe_infers_label_from_seed_when_unnamed(card):
     assert _validate(draft).ok
 
 
+def test_describe_seed_id_label_wins_over_wrong_attached_label(card):
+    """A seed id's shape is authoritative: T1566 describes as Technique even when a
+    wrong entity label (the planner's 'Analytic' probe fallback) was attached.
+
+    Regression for the live bug where 'What is T1566?' compiled to
+    ``MATCH (n:Analytic) WHERE n.attack_id IN ['T1566']`` and returned nothing.
+    """
+    task = SpecialistTask(
+        sub_question_id="q-mislabel",
+        source="attack",
+        text="What is T1566?",
+        entities=("Analytic",),  # wrong label the deterministic planner fell back to
+        limits=_LIMITS,
+        seed_ids=("T1566",),
+    )
+    resolved = _resolve(task)
+    draft = CypherQueryBuilder().build(resolved)
+    assert draft.template == "describe"
+    assert "(n:Technique)" in draft.query and "(n:Analytic)" not in draft.query
+    assert _validate(draft).ok
+
+
 def test_bare_seed_id_also_routes_to_describe(card):
     """A bare id lookup with no 'details/about' verb still routes to describe.
 

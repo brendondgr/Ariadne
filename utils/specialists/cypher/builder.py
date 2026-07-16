@@ -86,15 +86,19 @@ _ID_PREFIX_LABELS: tuple[tuple[re.Pattern[str], str], ...] = (
 
 
 def _describe_label(resolved: ResolvedTask) -> str:
-    """Anchor label for describe: the resolved label, else inferred from the id."""
-    label = resolved.primary_label()
-    if label:
-        return label
+    """Anchor label for describe: the seed id's own shape, else the resolved label.
+
+    A seed id like ``T1566`` *is* a Technique — the identifier shape is
+    authoritative, so it must win over a label the resolver attached from the
+    question text or a planner fallback (which, for a bare "what is <id>?", is the
+    card's first probe label, e.g. ``Analytic``). Only when there is no seed id do
+    we fall back to the text-resolved label, then a Technique default.
+    """
     for aid in resolved.seed_ids:
         for pattern, inferred in _ID_PREFIX_LABELS:
             if pattern.match(aid):
                 return inferred
-    return "Technique"
+    return resolved.primary_label() or "Technique"
 
 
 def _is_technique_id(aid: str) -> bool:
