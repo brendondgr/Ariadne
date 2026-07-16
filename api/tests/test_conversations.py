@@ -34,6 +34,11 @@ client = TestClient(app)
 def temp_store(tmp_path, monkeypatch):
     store = ConversationStore(tmp_path / "threads.sqlite3")
     monkeypatch.setattr(convo_service, "_store", store)
+    # Keep these contract tests hermetic: they inject deterministic runners/stubs
+    # and assert the deterministic path, so the conversation LLM must stay off
+    # regardless of the developer's .env (CONVERSATION_LLM_ENABLED=true there would
+    # otherwise pull every turn onto the live endpoint — slow and non-deterministic).
+    monkeypatch.setenv("CONVERSATION_LLM_ENABLED", "false")
     return store
 
 
