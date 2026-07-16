@@ -463,6 +463,78 @@ def _fake_join_endpoint():
     return _EP()
 
 
+# -- Template: capec_facets (native multi-facet expansion) --------------------
+
+class TestCapecFacets:
+    """A CAPEC anchor's own edges answer the question — no cross-source bridge."""
+
+    def _resolved(self, *, relationships, entities, labels=(), join_key="attack-technique-id"):
+        from utils.specialists.resolve import ResolvedTask
+
+        task = SpecialistTask(
+            sub_question_id="q-facets",
+            source="capec",
+            text="Explain the mitigations and weaknesses of CAPEC-459.",
+            entities=tuple(entities),
+            join_key=join_key,
+            seed_ids=("CAPEC-459",),
+        )
+        return ResolvedTask(
+            task=task, dataset="capec", seed_ids=("CAPEC-459",),
+            relationships=tuple(relationships), labels=tuple(labels),
+            join_key=join_key, join_endpoint=_fake_join_endpoint(),
+        )
+
+    def test_multi_native_facet_beats_spurious_join(self):
+        """Regression: 'mitigations and weaknesses of CAPEC-459' expanded both native
+        edges instead of bridging to ATT&CK (which had no MAPS_TO edge → 0 records)."""
+        resolved = self._resolved(
+            relationships=("EXPLOITS_WEAKNESS", "HAS_MITIGATION"),
+            entities=("EXPLOITS_WEAKNESS", "HAS_MITIGATION", "Mitigation"),
+            labels=("Mitigation",),
+        )
+        draft = GremlinQueryBuilder().build(resolved)
+        assert draft.template == "capec_facets"
+        assert 'out("EXPLOITS_WEAKNESS")' in draft.query
+        assert 'out("HAS_MITIGATION")' in draft.query
+        assert ".union(" in draft.query and "MAPS_TO" not in draft.query
+
+    def test_mapping_intent_still_routes_to_maps_to(self):
+        """A genuine bridge question (names MAPS_TO/TaxonomyEntry) keeps the join."""
+        resolved = self._resolved(
+            relationships=("HAS_MITIGATION", "MAPS_TO"),
+            entities=("AttackPattern", "HAS_MITIGATION", "MAPS_TO", "Mitigation", "TaxonomyEntry"),
+            labels=("AttackPattern", "Mitigation", "TaxonomyEntry"),
+        )
+        draft = GremlinQueryBuilder().build(resolved)
+        assert draft.template == "capec_maps_to"
+
+    def test_label_only_request_maps_to_native_edge(self):
+        """A plan that named only the neighbour label ('Mitigation') still expands
+        the native HAS_MITIGATION edge (single facet -> capec_neighbors)."""
+        resolved = self._resolved(
+            relationships=(), entities=("Mitigation",), labels=("Mitigation",), join_key=None,
+        )
+        draft = GremlinQueryBuilder().build(resolved)
+        assert draft.template == "capec_neighbors"
+        assert 'out("HAS_MITIGATION")' in draft.query
+
+    def test_capec_facets_passes_validator(self, card):
+        resolved = self._resolved(
+            relationships=("EXPLOITS_WEAKNESS", "HAS_MITIGATION"),
+            entities=("EXPLOITS_WEAKNESS", "HAS_MITIGATION", "Mitigation"),
+            labels=("Mitigation",),
+        )
+        draft = GremlinQueryBuilder().build(resolved)
+        validator = GremlinValidator()
+        reasons = (
+            validator.structural_reasons(draft.query)
+            + validator.violates_read_only(draft.query, card)
+            + validator.schema_reasons(draft.query, card)
+        )
+        assert reasons == [], f"validator rejected: {reasons}"
+
+
 # -- Template: capec_hierarchy_chain -----------------------------------------
 
 class TestCapecHierarchyChain:

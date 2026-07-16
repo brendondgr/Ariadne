@@ -72,12 +72,50 @@ def _capec_gremlin_id(capec_id: str) -> str:
     return capec_id
 
 
-def _resolve_neighbor_rel(resolved: ResolvedTask) -> str | None:
-    """Return the first resolved relationship that makes sense for a neighbour query."""
+# Reverse of the AttackPattern-native subset of ``_REL_TARGET_LABEL``: a requested
+# neighbour *label* ("Mitigation") implies the edge that reaches it
+# ("HAS_MITIGATION"), so a plan that named only the label still expands the facet.
+_AP_LABEL_TO_REL: dict[str, str] = {
+    "Weakness": "EXPLOITS_WEAKNESS",
+    "Mitigation": "HAS_MITIGATION",
+    "ExecutionStep": "HAS_EXECUTION_STEP",
+    "Consequence": "HAS_CONSEQUENCE",
+    "Skill": "REQUIRES_SKILL",
+}
+
+
+def _resolve_neighbor_rels(resolved: ResolvedTask) -> list[str]:
+    """Every native AttackPattern facet relationship the task names, in order.
+
+    Reads the resolved relationships *and* any requested neighbour label mapped
+    back to its edge, so "the mitigations and weaknesses of X" expands both
+    HAS_MITIGATION and EXPLOITS_WEAKNESS whether the planner named the edges or
+    the labels. These native facets are the entity's own answer — preferred over a
+    cross-source join the planner may have added spuriously.
+    """
+    rels: list[str] = []
+
+    def _add(rel: str | None) -> None:
+        if rel in _AP_NEIGHBOR_RELS and rel not in rels:
+            rels.append(rel)
+
     for rel in resolved.relationships:
-        if rel in _AP_NEIGHBOR_RELS:
-            return rel
-    return None
+        _add(rel)
+    for name in (*resolved.labels, *resolved.task.entities):
+        _add(_AP_LABEL_TO_REL.get(name))
+    return rels
+
+
+# Names that signal a genuine CAPEC→ATT&CK bridge question ("…and what mitigations
+# exist for the techniques it maps to"), so native-facet expansion must stand down
+# and let ``_capec_maps_to`` handle the cross-source join.
+_MAPPING_INTENT = frozenset({"MAPS_TO", "TaxonomyEntry", "Technique", "SubTechnique"})
+
+
+def _has_mapping_intent(resolved: ResolvedTask) -> bool:
+    """True when the task references the ATT&CK mapping (not just native facets)."""
+    named = {*resolved.relationships, *resolved.labels, *resolved.task.entities}
+    return bool(named & _MAPPING_INTENT)
 
 
 class GremlinQueryBuilder:
@@ -99,7 +137,7 @@ class GremlinQueryBuilder:
         """
         has_seeds = bool(resolved.seed_ids)
         has_join = resolved.has_join or resolved.join_key == "attack-technique-id"
-        neighbor_rel = _resolve_neighbor_rel(resolved)
+        neighbor_rels = _resolve_neighbor_rels(resolved)
 
         # NEW: capec_hierarchy_chain — two or more "ChildOf" in raw entities AND seeds.
         if (
@@ -108,6 +146,21 @@ class GremlinQueryBuilder:
         ):
             return self._capec_hierarchy_chain(resolved)
 
+        # Native facet expansion beats a spuriously-declared join: when the anchor
+        # is a CAPEC pattern and the question is about its OWN edges (mitigations,
+        # weaknesses, execution steps… of X), traverse them directly instead of
+        # bridging to ATT&CK — which for a pattern with no MAPS_TO edge silently
+        # returns nothing. Stands down for a genuine bridge question (one that names
+        # the mapping/techniques), which _capec_maps_to handles, and for CWE- or
+        # ATT&CK-seeded tasks (those anchor elsewhere and route via the join branch).
+        capec_seeds = has_seeds and all(
+            _CAPEC_NUM_RE.fullmatch(s.strip()) for s in resolved.seed_ids
+        )
+        if capec_seeds and neighbor_rels and not _has_mapping_intent(resolved):
+            if len(neighbor_rels) == 1:
+                return self._capec_neighbors(resolved, neighbor_rels[0])
+            return self._capec_facets(resolved, neighbor_rels)
+
         if has_join:
             # Split by seed shape before falling through to existing capec_maps_to.
             if has_seeds and all(_CWE_NUM_RE.match(s) for s in resolved.seed_ids):
@@ -115,8 +168,6 @@ class GremlinQueryBuilder:
             if has_seeds and all(_ATTACK_ENTRY_RE.match(s) for s in resolved.seed_ids):
                 return self._capec_reverse_maps(resolved)
             return self._capec_maps_to(resolved)
-        if has_seeds and neighbor_rel:
-            return self._capec_neighbors(resolved, neighbor_rel)
         if has_seeds:
             # describe the anchor: full vertex + bounded facet block. Subsumes the
             # old lean capec_lookup and the capec_dossier — describe always returns
@@ -256,6 +307,36 @@ class GremlinQueryBuilder:
                 "neighbor_label": target_label or "",
                 "rel": rel,
             },
+        )
+
+    def _capec_facets(self, resolved: ResolvedTask, rels: list[str]) -> QueryDraft:
+        """Expand several of the anchor's native facets in one query (union of edges).
+
+        The intra-source answer to a multi-facet question ("the mitigations *and*
+        weaknesses of X"): a union over each requested native edge yields the
+        ``(anchor, neighbour)`` elementMap pairs the ``capec_neighbors`` normalizer
+        already understands — no cross-source bridge, one round-trip.
+        """
+        ids = [_capec_gremlin_id(s) for s in resolved.seed_ids]
+        lim = resolved.task.max_rows()
+        branches: list[str] = []
+        for rel in rels:
+            edge = gremlin_edge_label(rel)
+            target = _REL_TARGET_LABEL.get(rel, "")
+            branches.append(
+                f'out("{edge}").hasLabel("{target}")' if target else f'out("{edge}")'
+            )
+        query = (
+            'g.V().hasLabel("AttackPattern").has("id", within(ids)).as("ap")'
+            f'.union({", ".join(branches)}).as("nbr")'
+            f'.select("ap","nbr").by(elementMap()).limit({lim})'
+        )
+        return QueryDraft(
+            query=query,
+            params={"ids": ids},
+            template="capec_facets",
+            expected_nonempty=bool(ids),
+            meta={"anchor_label": "AttackPattern", "rels": list(rels)},
         )
 
     def _capec_maps_to(self, resolved: ResolvedTask) -> QueryDraft:
