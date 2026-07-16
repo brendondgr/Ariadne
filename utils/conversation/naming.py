@@ -15,8 +15,9 @@ from utils.conversation.llm import ConversationLLM, LLMUnavailable
 _MAX_TITLE_CHARS = 60
 _MAX_TITLE_WORDS = 5
 
-# Deliberately short/lightweight so the first-turn title completion returns as
-# fast as possible (paired with a small max_tokens in `title_for`).
+# The output is clamped to a few words regardless, so the budget only needs to
+# cover the model's own overhead (a reasoning model spends most of it thinking
+# before emitting the short title) — see the shared config.llm.max_tokens.
 _SYSTEM = (
     "Title this cybersecurity graph query in 2-5 words. "
     "Title Case, no quotes, no punctuation. Reply with ONLY the title."
@@ -61,7 +62,7 @@ def title_for(
         {"role": "user", "content": question},
     ]
     try:
-        raw = client.complete(messages, max_tokens=16, temperature=0.3)
+        raw = client.complete(messages, max_tokens=config.llm.max_tokens, temperature=0.3)
     except LLMUnavailable:
         return deterministic_title(question)
     title = _clamp_words(_clean(raw).strip('"').rstrip(",.;:"))

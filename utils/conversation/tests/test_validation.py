@@ -33,6 +33,28 @@ def _cfg(enabled=True, **over):
     return replace(base, **over)
 
 
+class _BudgetCapturingLLM:
+    """Records the max_tokens each call requested (reply is valid JSON)."""
+
+    def __init__(self):
+        self.enabled = True
+        self.max_tokens_seen: list[int | None] = []
+
+    def complete(self, messages, **kwargs):
+        self.max_tokens_seen.append(kwargs.get("max_tokens"))
+        return '{"sufficient": true, "reason": "ok"}'
+
+
+def test_validation_budget_inherits_config_not_tiny_hardcode():
+    """A reasoning model burns its whole budget thinking before emitting content,
+    so the classification callers must use the operator-sized config.llm.max_tokens
+    (regression: a hard-coded 300 truncated skynet to empty -> 'LLM unavailable')."""
+    stub = _BudgetCapturingLLM()
+    cfg = _cfg(llm=ConversationLLMConfig(enabled=True, max_tokens=2048))
+    evaluate_sufficiency("q", SynthesizedAnswer(request="q", narrative="x"), cfg, stub)
+    assert stub.max_tokens_seen == [2048]
+
+
 def test_llm_off_always_passes():
     verdict, _, missing = evaluate_sufficiency(
         "q", SynthesizedAnswer(request="q"), _cfg(enabled=False), _StubLLM(enabled=False)

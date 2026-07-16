@@ -79,7 +79,7 @@ def classify_route(
     # real cause instead of a blanket "unavailable" so a flaky endpoint is
     # diagnosable. Either way the grounding-safe default is graph extraction.
     try:
-        raw = client.complete(messages, max_tokens=200)
+        raw = client.complete(messages, max_tokens=config.llm.max_tokens)
     except LLMUnavailable as exc:
         return ROUTE_GRAPH, f"router LLM error ({exc}) — defaulting to graph"
 

@@ -72,7 +72,9 @@ def evaluate_sufficiency(
         },
     ]
     try:
-        data = extract_json_object(client.complete(messages, max_tokens=300))
+        data = extract_json_object(
+            client.complete(messages, max_tokens=config.llm.max_tokens)
+        )
     except (LLMUnavailable, ValueError):
         return VERDICT_PASS, "validation LLM unavailable — accepting evidence", []
 

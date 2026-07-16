@@ -52,7 +52,7 @@ def resolve_question(
         + [{"role": "user", "content": question}]
     )
     try:
-        rewritten = client.complete(messages, max_tokens=200).strip()
+        rewritten = client.complete(messages, max_tokens=config.llm.max_tokens).strip()
     except LLMUnavailable:
         return question, False
     if not rewritten:
