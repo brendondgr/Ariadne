@@ -22,6 +22,7 @@ from utils.conversation.agents._common import (
 )
 from utils.conversation.config import ConversationConfig
 from utils.conversation.llm import ConversationLLM, LLMUnavailable
+from utils.conversation.persistence import entity_ids_in, referential_followup
 
 _SYSTEM = (
     "You rewrite the user's latest message into a single standalone question "
@@ -59,6 +60,30 @@ def resolve_question(
     return rewritten, rewritten.strip() != question.strip()
 
 
+def anchor_question(
+    resolved: str,
+    original: str,
+    anchor: list[tuple[str, str]] | None,
+) -> tuple[str, str]:
+    """Deterministically append the thread's focus entity to an entity-free follow-up.
+
+    Returns ``(question, anchor_id)`` — ``anchor_id`` is ``""`` when no anchoring
+    was applied. Gated so it only fires when the resolved question names no entity
+    of its own *and* the original message reads as a continuation *and* an anchor
+    is held. This is the LLM-free safety net for the case that broke conversational
+    memory: the reference-resolution LLM being unavailable (so ``resolved`` is the
+    raw follow-up) still leaves the planner with a concrete entity to route on.
+    """
+    if not anchor or entity_ids_in(resolved) or not referential_followup(original):
+        return resolved, ""
+    anchor_id, name = anchor[0]
+    if not anchor_id:
+        return resolved, ""
+    label = f"{anchor_id} — {name}" if name else anchor_id
+    tail = "." if resolved.strip().endswith((".", "?", "!")) else ""
+    return f"{resolved.rstrip()}{tail} (Regarding {label}.)", anchor_id
+
+
 def make_orchestration_node(
     config: ConversationConfig, client: ConversationLLM | None = None
 ):
@@ -69,14 +94,33 @@ def make_orchestration_node(
         resolved, rewritten = resolve_question(
             question, state.get("history"), config, client
         )
+        # Deterministic fallback anchor: if reference resolution left the question
+        # without a concrete entity (LLM off/unavailable or a rewrite that dropped
+        # it), fold in the thread's held entity so retrieval stays on-topic.
+        resolved, anchor_id = anchor_question(resolved, question, state.get("anchor"))
         emit_event(
             ("status", {"phase": "orchestrating", "message": "Understanding the request"})
         )
-        emit_event(("context", {"resolved_question": resolved, "rewritten": rewritten}))
+        emit_event(
+            (
+                "context",
+                {
+                    "resolved_question": resolved,
+                    "rewritten": rewritten,
+                    "anchored": bool(anchor_id),
+                    "anchor_id": anchor_id,
+                },
+            )
+        )
         return {
             "resolved_question": resolved,
             "trace": [
-                {"node": "orchestration", "rewritten": rewritten, "resolved": resolved}
+                {
+                    "node": "orchestration",
+                    "rewritten": rewritten,
+                    "resolved": resolved,
+                    "anchor_id": anchor_id,
+                }
             ],
         }
 

@@ -27,6 +27,7 @@ def iter_conversation(
     *,
     conversation_id: str,
     history: list[dict[str, Any]] | None = None,
+    anchor: list[tuple[str, str]] | None = None,
     mode: str = "query",
     use_llm: bool = False,
     config: ConversationConfig | None = None,
@@ -48,6 +49,7 @@ def iter_conversation(
     init: dict[str, Any] = {
         "question": question,
         "history": history or [],
+        "anchor": anchor or [],
         "conversation_id": conversation_id,
         "mode": mode,
         "use_llm": use_llm,

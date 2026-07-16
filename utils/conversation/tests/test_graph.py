@@ -175,6 +175,66 @@ def test_retry_cap_forces_pass():
     assert validations[-1]["capped"] is True
 
 
+def _runner_capturing(canned: PipelineRun, sink: dict):
+    """A runner that records the question extraction was actually asked."""
+
+    def runner(question, *, mode, use_llm, run, forward=None, **kw):
+        sink["question"] = question
+        run.answer = canned.answer
+        run.evidence = canned.evidence
+        run.status = canned.status
+        run.exit_code = canned.exit_code
+        return run
+
+    return runner
+
+
+def test_graph_path_anchors_entity_free_followup_with_llm_off():
+    # Reproduces the reported failure condition: the reference-resolution LLM is
+    # OFF (default), so the raw follow-up would otherwise reach the planner. The
+    # deterministic anchor must fold the held entity into the extraction question.
+    canned = PipelineRun(
+        question="q", answer=SynthesizedAnswer(request="q", narrative="b"),
+        evidence=FederatedEvidence(request="q"), status="answered", exit_code=0,
+    )
+    sink: dict = {}
+    events = list(
+        iter_conversation(
+            "Please explore the execution steps involved.",
+            conversation_id="c1",
+            history=[
+                {"role": "user", "content": "What is Creating a Rogue CA Certificate?"},
+                {"role": "assistant", "content": "CAPEC-459 is ..."},
+            ],
+            anchor=[("CAPEC-459", "Creating a Rogue Certification Authority Certificate")],
+            runner=_runner_capturing(canned, sink),
+        )
+    )
+    assert "CAPEC-459" in sink["question"]
+    context = dict(events)["context"]
+    assert context["anchored"] is True
+    assert context["anchor_id"] == "CAPEC-459"
+
+
+def test_graph_path_does_not_anchor_standalone_question():
+    canned = PipelineRun(
+        question="q", answer=SynthesizedAnswer(request="q", narrative="b"),
+        evidence=FederatedEvidence(request="q"), status="answered", exit_code=0,
+    )
+    sink: dict = {}
+    events = list(
+        iter_conversation(
+            "What is phishing?",
+            conversation_id="c1",
+            history=[{"role": "assistant", "content": "CAPEC-459 is ..."}],
+            anchor=[("CAPEC-459", "Creating a Rogue Certification Authority Certificate")],
+            runner=_runner_capturing(canned, sink),
+        )
+    )
+    assert "CAPEC-459" not in sink["question"]
+    assert dict(events)["context"]["anchored"] is False
+
+
 def test_conversation_event_carries_id():
     canned = PipelineRun(
         question="q", answer=SynthesizedAnswer(request="q", narrative="b"),

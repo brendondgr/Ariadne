@@ -32,6 +32,10 @@ class ConversationState(TypedDict, total=False):
     # Prior turns, oldest first: {"role": "user"|"assistant", "content": str,
     # "facts": list[str] (verified facts from an assistant turn, optional)}.
     history: list[dict[str, Any]]
+    # Deterministic focus entities carried from prior turns, most-relevant-first:
+    # (entity_id, name) pairs (name may be ""). Used by orchestration to anchor an
+    # entity-free follow-up without depending on the reference-resolution LLM.
+    anchor: list[tuple[str, str]]
     conversation_id: str
     mode: str  # "query" | "plan"
     use_llm: bool
