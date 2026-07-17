@@ -303,6 +303,17 @@ class QuerySpecialist:
 
                 normalize_started = time.perf_counter()
                 records = self.normalizer.normalize(rows, resolved, result.query, self.card)
+                # Structural invariant: every neighbour a question targets must carry
+                # its description. Some backends stash it in a properties blob the
+                # listing query left unretrieved, so an optional per-backend hook
+                # hydrates it here (one bounded lookup) before contract/synthesis.
+                # A hydration failure must never sink the primary result.
+                enrich = getattr(self.normalizer, "enrich_descriptions", None)
+                if enrich is not None:
+                    try:
+                        records = enrich(records, self.connector)
+                    except Exception:  # noqa: BLE001 - enrichment is best-effort
+                        pass
                 contract = check_contract(records)
                 join_problems = join_integrity_problems(records, resolved)
                 traces.append(

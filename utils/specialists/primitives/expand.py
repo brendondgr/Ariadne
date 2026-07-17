@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""The ``expand`` primitive: the members of one facet, identity-only, paged.
+"""The ``expand`` primitive: the members of one facet with a bounded description, paged.
 
 ``describe`` tells you a Technique has 858 ``USES`` neighbours in a single facet
-row; ``expand`` fetches those members — but **identity only** (id, name, label),
-never their descriptions. That asymmetry is the whole point: a 519-neighbour
-fan-out is ~8 KB of identity, not ~500 KB of full records. If the planner wants a
-neighbour's full record it calls ``describe`` on it — the same primitive
+row; ``expand`` fetches those members — id, name, label, and a **bounded**
+description (truncated per member). The description is what lets a follow-up read a
+member's substance — an unnamed CAPEC mitigation node carries *only* a description
+— without a second hop, while the truncation keeps a 519-neighbour fan-out a page
+of summaries (~KBs), not ~500 KB of full records. If the planner wants a
+neighbour's *full* record it still calls ``describe`` on it — the same primitive
 recursing. Two calls, one concept.
 
 The rule that matters is not *never truncate* — it is **never truncate

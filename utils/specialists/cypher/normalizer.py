@@ -56,12 +56,67 @@ def _label_for(aid: str, resolved: ResolvedTask) -> str:
     return "Technique"
 
 
+# Max chars of a hydrated neighbour description (bounded — a record can carry many).
+_RELATED_DESC_CHARS = 400
+
+
+def _description_from_props(props_json: Any) -> str:
+    """Pull the ``description`` out of an ATT&CK node's ``properties_json`` blob."""
+    if not props_json:
+        return ""
+    try:
+        obj = json.loads(props_json) if isinstance(props_json, str) else props_json
+    except (ValueError, TypeError):
+        return ""
+    if not isinstance(obj, dict):
+        return ""
+    desc = obj.get("description")
+    return str(desc) if desc else ""
+
+
 class CypherNormalizer:
     """Shapes raw Neo4j rows into evidence records.
 
     The normalizer is stateless — all context comes from ``rows``, ``resolved``,
     ``query`` (the executed Cypher string), and ``card``.
     """
+
+    def enrich_descriptions(self, records: list[EvidenceRecord], connector: Any) -> list[EvidenceRecord]:
+        """Backfill each related neighbour's description from its ``properties_json``.
+
+        The compound templates return a neighbour's id + name but leave its
+        description inside the unretrieved ``properties_json`` blob — and a bare
+        id/name can't answer "tell me about it". One bounded lookup hydrates every
+        neighbour the records reference, so a question's substance always reaches
+        synthesis regardless of which listing template ran. Called by the shared
+        specialist loop after ``normalize``; best-effort (never sinks the result).
+        """
+        wanted = sorted({
+            str(rel["id"])
+            for rec in records
+            for rel in (rec.related or [])
+            if rel.get("id") and not rel.get("description")
+        })
+        if not wanted:
+            return records
+        rows = connector.run(
+            "MATCH (m) WHERE coalesce(m.attack_id, m.id) IN $ids "
+            "RETURN coalesce(m.attack_id, m.id) AS id, m.properties_json AS pj",
+            {"ids": wanted},
+            {"max_result_rows": len(wanted)},
+        )
+        by_id: dict[str, str] = {}
+        for row in rows or []:
+            desc = _description_from_props(row.get("pj"))
+            if desc:
+                by_id[str(row.get("id"))] = (
+                    desc[:_RELATED_DESC_CHARS] + ("…" if len(desc) > _RELATED_DESC_CHARS else "")
+                )
+        for rec in records:
+            for rel in (rec.related or []):
+                if not rel.get("description") and str(rel.get("id")) in by_id:
+                    rel["description"] = by_id[str(rel["id"])]
+        return records
 
     def normalize(
         self,
@@ -549,13 +604,19 @@ class CypherNormalizer:
         for m in row.get("members") or []:
             if not isinstance(m, dict):
                 continue
-            members.append(
-                {
-                    "id": str(m.get("id") or ""),
-                    "name": str(m.get("name") or ""),
-                    "label": str(m.get("label") or ""),
-                }
-            )
+            member = {
+                "id": str(m.get("id") or ""),
+                "name": str(m.get("name") or ""),
+                "label": str(m.get("label") or ""),
+            }
+            # The ATT&CK description lives in properties_json; carry a bounded slice
+            # so an expand page reads as summaries, not full records.
+            desc = _description_from_props(m.get("props"))
+            if desc:
+                member["description"] = (
+                    desc[:_RELATED_DESC_CHARS] + ("…" if len(desc) > _RELATED_DESC_CHARS else "")
+                )
+            members.append(member)
         total = row.get("total")
         total = int(total) if isinstance(total, (int, float)) else len(members)
         return paginate(members, request, total=total, pre_sliced=True)

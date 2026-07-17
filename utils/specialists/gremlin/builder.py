@@ -183,12 +183,14 @@ class GremlinQueryBuilder:
     # -- templates ----------------------------------------------------------
 
     def expand(self, request: ExpandRequest) -> QueryDraft:
-        """The ``expand`` compiler: the members of one facet, identity-only.
+        """The ``expand`` compiler: the members of one facet with a bounded description.
 
-        Returns every member's ``(id, name, label)`` (CAPEC's max degree is 59, so
-        the page is bounded even before slicing); the normalizer paginates and
-        computes the true total + truncation signal. The step/rel/labels come from
-        a facet the model saw, so they are real and pass the direction gate.
+        Returns every member's ``(id, name, label, description)`` (CAPEC's max degree
+        is 59, so the page is bounded even before slicing); the normalizer paginates,
+        bounds the description, and computes the true total + truncation signal. The
+        description is what lets a follow-up read a member's substance (an unnamed
+        CAPEC mitigation node carries only a description) without a second hop; it is
+        truncated so a fan-out stays a page of summaries, not full records.
         """
         anchor = _safe_gremlin_ident(request.anchor_label, "anchor label")
         rel = _safe_gremlin_ident(request.rel_type, "relationship type")
@@ -197,10 +199,11 @@ class GremlinQueryBuilder:
         query = (
             f'g.V().hasLabel("{anchor}").has("id", within(ids))'
             f'.{step}("{rel}").hasLabel("{target}")'
-            '.project("id","name","label")'
+            '.project("id","name","label","description")'
             '.by(coalesce(values("id"), constant("")))'
             '.by(coalesce(values("name"), constant("")))'
             ".by(label())"
+            '.by(coalesce(values("description"), constant("")))'
         )
         return QueryDraft(
             query=query,

@@ -88,6 +88,15 @@ def _safe_str(v: Any) -> str:
     return str(v) if v is not None else ""
 
 
+# A bounded expand-member description keeps a large fan-out a page of summaries
+# rather than full records (the primitive's scale guarantee).
+_EXPAND_DESC_CHARS = 400
+
+
+def _bound_expand_desc(desc: str) -> str:
+    return desc[:_EXPAND_DESC_CHARS] + ("…" if len(desc) > _EXPAND_DESC_CHARS else "")
+
+
 _CAPEC_AP_FULL_RE = re.compile(r"^capec:attack-pattern:(\d+)$")
 
 
@@ -194,13 +203,15 @@ class GremlinNormalizer:
         members: list[dict[str, Any]] = []
         for row in rows:
             m = _row_as_dict(row)
-            members.append(
-                {
-                    "id": _expand_member_id(_safe_str(m.get("id"))),
-                    "name": _safe_str(m.get("name")),
-                    "label": _safe_str(m.get("label")),
-                }
-            )
+            member = {
+                "id": _expand_member_id(_safe_str(m.get("id"))),
+                "name": _safe_str(m.get("name")),
+                "label": _safe_str(m.get("label")),
+            }
+            desc = _safe_str(m.get("description"))
+            if desc:
+                member["description"] = _bound_expand_desc(desc)
+            members.append(member)
         return paginate(members, request)
 
     # -- per-shape helpers --------------------------------------------------

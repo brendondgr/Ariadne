@@ -458,13 +458,17 @@ class CypherQueryBuilder:
         rel = _safe_ident(request.rel_type, _SAFE_REL_RE, "relationship type")
         target = _safe_ident(request.target_label, _SAFE_LABEL_RE, "target label")
         hop = f"(n)-[:{rel}]->(m:{target})" if request.direction == "out" else f"(n)<-[:{rel}]-(m:{target})"
+        # Collect node refs, slice to the page, THEN build member maps with the
+        # properties_json — so the description-bearing blob is materialized only for
+        # the bounded page, never the whole fan-out (the primitive's scale guarantee).
         query = (
             f"MATCH (n:{anchor}) WHERE n.attack_id = $id "
             f"MATCH {hop} "
             "WITH m ORDER BY coalesce(m.attack_id, m.id) "
-            "WITH collect({id: coalesce(m.attack_id, m.id), name: m.name, "
-            "label: head(labels(m))}) AS members "
-            "RETURN members[$skip..$end] AS members, size(members) AS total"
+            "WITH collect(m) AS nodes "
+            "WITH nodes[$skip..$end] AS page, size(nodes) AS total "
+            "RETURN [x IN page | {id: coalesce(x.attack_id, x.id), name: x.name, "
+            "label: head(labels(x)), props: x.properties_json}] AS members, total"
         )
         return QueryDraft(
             query=query,

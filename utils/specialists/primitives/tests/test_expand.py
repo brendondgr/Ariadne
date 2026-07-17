@@ -73,8 +73,40 @@ def test_request_skip_end_and_dict() -> None:
 def test_cypher_expand_query_is_typed_and_paged() -> None:
     draft = CypherQueryBuilder().expand(_req(direction="in", rel_type="MITIGATES", target_label="Mitigation"))
     assert "(n)<-[:MITIGATES]-(m:Mitigation)" in draft.query
-    assert "members[$skip..$end]" in draft.query and "size(members) AS total" in draft.query
+    # Slice the node collection, THEN build member maps — so properties_json (the
+    # description blob) is materialized only for the bounded page.
+    assert "nodes[$skip..$end]" in draft.query and "size(nodes) AS total" in draft.query
+    assert "x.properties_json" in draft.query
     assert draft.params["skip"] == 0 and draft.template == "expand"
+
+
+def test_cypher_expand_carries_bounded_description() -> None:
+    import json
+
+    req = _req(page=0, page_size=5)
+    long_desc = "Antivirus solutions " * 60  # > 400 chars
+    row = {"members": [
+        {"id": "M1049", "name": "Antivirus/Antimalware", "label": "Mitigation",
+         "props": json.dumps({"description": long_desc})},
+    ], "total": 1}
+    result = CypherNormalizer().normalize_expand([row], req)
+    desc = result.members[0]["description"]
+    assert desc.startswith("Antivirus solutions") and desc.endswith("…") and len(desc) <= 401
+
+
+def test_gremlin_expand_query_projects_description() -> None:
+    req = ExpandRequest("capec", "CAPEC-459", "AttackPattern", "HAS_MITIGATION", "out", "Mitigation")
+    draft = GremlinQueryBuilder().expand(req)
+    assert '"description"' in draft.query and 'values("description")' in draft.query
+
+
+def test_gremlin_expand_carries_bounded_description() -> None:
+    req = ExpandRequest("capec", "CAPEC-459", "AttackPattern", "HAS_MITIGATION", "out", "Mitigation")
+    rows = [{"id": "capec:attack-pattern:459:mitigation:1", "name": "", "label": "Mitigation",
+             "description": "Use SHA-256 or SHA-512. " * 40}]
+    result = GremlinNormalizer().normalize_expand(rows, req)
+    desc = result.members[0]["description"]
+    assert desc.startswith("Use SHA-256") and desc.endswith("…") and len(desc) <= 401
 
 
 def test_cypher_expand_rejects_an_unsafe_identifier() -> None:
