@@ -281,6 +281,39 @@ def test_evidence_context_carries_description_facets_and_edge_direction():
     assert '"count": 0' in ctx
 
 
+def test_related_neighbour_carries_its_description():
+    """A related neighbour's description is its only content when it has no name
+    (an unnamed CAPEC mitigation node). It was dropped, so the composer reported
+    'no description available' for a mitigation whose text was right there."""
+    rec = make_record(
+        "CAPEC-459",
+        name="Creating a Rogue Certification Authority Certificate",
+        related=[
+            {
+                "id": "capec:attack-pattern:459:mitigation:1",
+                "name": "capec:attack-pattern:459:mitigation:1",
+                "label": "Mitigation",
+                "description": "Certification Authorities need to stop using deprecated "
+                "hashing algorithms; use SHA-256 or SHA-512.",
+            }
+        ],
+    )
+    data = json.loads(_record_line(rec))
+    assert data["related"][0]["description"].startswith("Certification Authorities need to stop")
+    ctx = build_evidence_context(make_evidence([make_result(records=[rec])]))
+    assert "use SHA-256 or SHA-512" in ctx
+
+
+def test_related_neighbour_description_is_bounded():
+    rec = make_record(
+        "CAPEC-1", name="X",
+        related=[{"id": "m1", "name": "m1", "label": "Mitigation", "description": "y" * 1000}],
+    )
+    data = json.loads(_record_line(rec))
+    desc = data["related"][0]["description"]
+    assert desc.endswith("…") and len(desc) <= 401  # bounded, truncation-marked
+
+
 def test_record_line_bounds_properties_and_signals_omissions():
     rec = make_record(
         "T1",

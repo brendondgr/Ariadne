@@ -75,6 +75,27 @@ _MAX_RECORDS_PER_RESULT = 50
 _MAX_RELATED_PER_RECORD = 30
 _MAX_FACETS_PER_RECORD = 20
 _MAX_PROP_CHARS = 600
+# A related neighbour's description is bounded tighter than a primary record's:
+# there can be many neighbours, but a neighbour's description is often its only
+# content (a CAPEC mitigation/consequence node carries no name), so it must survive.
+_MAX_RELATED_DESC_CHARS = 400
+
+
+def _related_entry(rel: dict) -> dict:
+    """Render one related neighbour: its identity + edge semantics AND a bounded
+    description. Dropping the description left the composer unable to describe a
+    neighbour whose text is its only content (e.g. an unnamed CAPEC mitigation)."""
+    out = {
+        k: v
+        for k, v in rel.items()
+        if k in ("id", "entry_id", "name", "type", "direction", "label")
+    }
+    desc = rel.get("description")
+    if isinstance(desc, str) and desc.strip():
+        out["description"] = desc[:_MAX_RELATED_DESC_CHARS] + (
+            "…" if len(desc) > _MAX_RELATED_DESC_CHARS else ""
+        )
+    return out
 # Bulky citation arrays carry no evidentiary value for the composer — dropped
 # with an explicit marker rather than silently, so a long value is never mistaken
 # for the whole property set.
@@ -124,10 +145,10 @@ def _record_line(record) -> str:
             }
             for f in (record.facets or [])[:_MAX_FACETS_PER_RECORD]
         ],
-        # Related neighbours now keep their edge semantics (type/direction) — the
-        # normalizers computed them and this layer used to strip them out.
+        # Related neighbours keep their edge semantics (type/direction) AND a
+        # bounded description — the neighbour's text is often its only content.
         "related": [
-            {k: v for k, v in rel.items() if k in ("id", "entry_id", "name", "type", "direction", "label")}
+            _related_entry(rel)
             for rel in record.related[:_MAX_RELATED_PER_RECORD]
         ],
     }
