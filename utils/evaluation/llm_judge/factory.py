@@ -12,6 +12,7 @@ deterministic proxy so the report always covers the whole batch.
 from __future__ import annotations
 
 import logging
+from concurrent.futures import ThreadPoolExecutor
 from typing import Protocol
 
 from utils.specialists.federation import FederatedEvidence
@@ -88,18 +89,36 @@ def judge_run(
     judge = judge or select_judge(config)
     proxy = DeterministicJudge()
 
-    verdicts: list[JudgeVerdict] = []
-    llm_covered = 0
+    # Only the first ``sample_size`` answers get the (costly) LLM judge when
+    # enabled; the rest fall to the reproducible proxy. The LLM calls are
+    # independent, so they run concurrently while verdicts are placed back by
+    # index — the emitted report is identical to the sequential path.
+    verdicts: list[JudgeVerdict | None] = [None] * len(items)
+    llm_indices: list[int] = []
     for index, (question_id, answer, evidence) in enumerate(items):
-        # Only the first ``sample_size`` answers get the (costly) LLM judge when
-        # enabled; the rest fall to the reproducible proxy.
         if config.llm_enabled and index < config.sample_size:
-            verdict = judge.judge(question_id, answer, evidence)
-            if verdict.source == "llm":
-                llm_covered += 1
+            llm_indices.append(index)
         else:
-            verdict = proxy.judge(question_id, answer, evidence)
-        verdicts.append(verdict)
+            verdicts[index] = proxy.judge(question_id, answer, evidence)
+
+    def _run_llm(index: int) -> JudgeVerdict:
+        question_id, answer, evidence = items[index]
+        return judge.judge(question_id, answer, evidence)
+
+    workers = max(1, min(config.judge_workers, len(llm_indices)))
+    if workers == 1:
+        for index in llm_indices:
+            verdicts[index] = _run_llm(index)
+    else:
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            for index, verdict in zip(
+                llm_indices, pool.map(_run_llm, llm_indices)
+            ):
+                verdicts[index] = verdict
+
+    # Placeholder ``None`` slots are all filled by this point.
+    verdicts = [v for v in verdicts if v is not None]
+    llm_covered = sum(1 for v in verdicts if v.source == "llm")
 
     if llm_covered == 0:
         source = "deterministic"

@@ -45,6 +45,11 @@ class EvalConfig:
     # How many answers the LLM judge scores per run when enabled (the
     # deterministic proxy always covers every answer regardless of this cap).
     sample_size: int = 20
+    # How many LLM judge calls run concurrently. The calls are independent HTTP
+    # posts; the served model batches them, so real speedup is throughput-bound
+    # (typically 3-5x at 8, not 8x). The report stays byte-identical — verdicts
+    # are placed back by index regardless of completion order.
+    judge_workers: int = 8
 
     @classmethod
     def from_env(cls) -> "EvalConfig":
@@ -62,4 +67,5 @@ class EvalConfig:
             llm_timeout_s=_env_float("EVAL_LLM_TIMEOUT_S", 30.0),
             llm_max_tokens=env_int("EVAL_LLM_MAX_TOKENS", 1024),
             sample_size=env_int("EVAL_LLM_SAMPLE_SIZE", 20),
+            judge_workers=env_int("EVAL_LLM_JUDGE_WORKERS", 8),
         )
