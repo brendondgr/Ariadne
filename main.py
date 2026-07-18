@@ -61,6 +61,13 @@ def setup_logging(job_type: str) -> Path:
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.INFO)
 
+    # Quiet noisy third-party loggers. gremlin-python logs "Creating Client" /
+    # "Closing Client" at INFO on every connect/close, and the specialist opens a
+    # fresh client per task (base.py connect/close around each query), so a batch
+    # job like --e2e-eval floods the console with one pair per ~120 entries. Raise
+    # it to WARNING so real failures still surface but the churn does not.
+    logging.getLogger("gremlinpython").setLevel(logging.WARNING)
+
     # Formatter
     formatter = logging.Formatter(
         "[%(asctime)s] [%(levelname)s] [%(name)s] %(message)s",
