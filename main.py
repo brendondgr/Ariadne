@@ -336,6 +336,18 @@ VERSION OVERRIDES (--docker start only)
         help="Run end-to-end evaluation (Wk 12-13) -> docs/evaluation/e2e-evaluation.{md,json}",
     )
     evaluation.add_argument(
+        "--e2e-generate",
+        action="store_true",
+        help="Generate + save e2e answers (parallel, LLM synthesis on) WITHOUT judging "
+             "-> docs/evaluation/answers/; judging is a separate, decoupled step",
+    )
+    evaluation.add_argument(
+        "--e2e-workers",
+        type=int,
+        default=4,
+        help="With --e2e-generate, number of parallel workers (default 4)",
+    )
+    evaluation.add_argument(
         "--judge",
         action="store_true",
         help="With --e2e-eval, enable the opt-in LLM judge (else deterministic proxy)",
@@ -389,6 +401,8 @@ VERSION OVERRIDES (--docker start only)
         job_type = "component-eval"
     elif args.e2e_eval:
         job_type = "e2e-eval"
+    elif args.e2e_generate:
+        job_type = "e2e-generate"
     elif args.golden_eval is not None:
         job_type = "golden-eval"
     else:
@@ -500,6 +514,10 @@ VERSION OVERRIDES (--docker start only)
             if args.judge:
                 e2e_args.append("--judge")
             run_e2e_eval(e2e_args)
+            logger.info("Job completed successfully.")
+        elif args.e2e_generate:
+            from utils.evaluation.generate_e2e import generate_answers
+            generate_answers(workers=args.e2e_workers)
             logger.info("Job completed successfully.")
         elif args.golden_eval is not None:
             from utils.evaluation.harness.cli import main as run_golden_eval
