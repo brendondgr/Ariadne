@@ -277,6 +277,7 @@ class OpenAICompatibleComposer:
             "messages": messages,
             "temperature": 0,
             "max_tokens": self._config.llm_max_tokens,
+            "thinking_token_budget": self._config.thinking_budget(),
         }
         try:
             resp = requests.post(

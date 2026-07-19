@@ -60,6 +60,7 @@ def compose_narrative(evidence: FederatedEvidence, config: SynthesisConfig) -> s
         "messages": build_narrator_messages(evidence),
         "temperature": 0,
         "max_tokens": config.llm_max_tokens,
+        "thinking_token_budget": config.thinking_budget(),
     }
     try:
         resp = requests.post(endpoint, json=payload, timeout=config.llm_timeout_s)

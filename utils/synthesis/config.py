@@ -40,9 +40,19 @@ class SynthesisConfig:
     llm_model: str = DEFAULT_LLM_MODEL
     llm_timeout_s: float = 30.0
     llm_max_tokens: int = 8192
+    # Cap on the reasoning model's *thinking* tokens (server-side
+    # ``thinking_token_budget``). skynet is a reasoning model: uncapped, it can
+    # spend the whole ``llm_max_tokens`` budget thinking and return empty content
+    # (the "raise max_tokens?" fallback). Capping thinking reserves the rest for
+    # the actual answer. 0 means "derive as half of llm_max_tokens".
+    llm_thinking_budget: int = 0
     # How many record citations a single claim may carry (mirrors the API's
     # inline-citation cap so answers stay readable).
     max_citations: int = 8
+
+    def thinking_budget(self) -> int:
+        """The reasoning-token cap to send, deriving half of max_tokens if unset."""
+        return self.llm_thinking_budget or (self.llm_max_tokens // 2)
 
     @classmethod
     def from_env(cls) -> "SynthesisConfig":
@@ -59,5 +69,6 @@ class SynthesisConfig:
             llm_model=env_str("SYNTHESIS_LLM_MODEL", DEFAULT_LLM_MODEL),
             llm_timeout_s=_env_float("SYNTHESIS_LLM_TIMEOUT_S", 30.0),
             llm_max_tokens=env_int("SYNTHESIS_LLM_MAX_TOKENS", 4096),
+            llm_thinking_budget=env_int("SYNTHESIS_LLM_THINKING_BUDGET", 0),
             max_citations=env_int("SYNTHESIS_MAX_CITATIONS", 8),
         )
