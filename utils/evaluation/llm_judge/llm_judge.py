@@ -32,10 +32,11 @@ class JudgeUnavailable(Exception):
 
 _SYSTEM_PROMPT = """\
 You are an evaluation judge for a federated graph-database question-answering \
-system. You are given an analyst QUESTION, the ANSWER the system produced as \
-verified claims (each already cites evidence records), any ABSTENTIONS, and the \
-EVIDENCE RECORDS that were actually retrieved. Rate the answer on three \
-dimensions, each a number from 0.0 to 1.0:
+system. You are given an analyst QUESTION, the prose ANSWER shown to the analyst, \
+the verified CLAIMS backing it (each already cites evidence records), any \
+ABSTENTIONS, and the EVIDENCE RECORDS that were actually retrieved. Judge the \
+prose ANSWER (the claims and evidence are the ground truth it must stay faithful \
+to). Rate it on three dimensions, each a number from 0.0 to 1.0:
 
 - faithfulness: does every statement follow from the evidence, with nothing \
 invented or overstated?
@@ -108,7 +109,10 @@ def build_messages(
     context = [
         f"QUESTION:\n{answer.request}",
         "",
-        "ANSWER CLAIMS:",
+        "ANSWER (prose shown to the analyst):",
+        answer.narrative.strip() or "  (none)",
+        "",
+        "ANSWER CLAIMS (verified, with citations):",
         "\n".join(claim_lines) if claim_lines else "  (none)",
         "",
         "ABSTENTIONS:",

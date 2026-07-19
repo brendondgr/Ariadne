@@ -456,7 +456,16 @@ def score_e2e(
     from utils.synthesis.config import SynthesisConfig
 
     config = SpecialistConfig.from_env()
-    synth_config = SynthesisConfig()  # deterministic composer; verifier always on
+    # When the LLM judge is on we are grading the *full pipeline's* answer, so
+    # synthesis must run the configured LLM narrator (the prose the analyst
+    # actually sees). Without the judge, stay deterministic so the four E2E
+    # metrics and the report remain byte-reproducible. Claims are composed
+    # deterministically either way, so the deterministic metrics are unaffected;
+    # only the narrative — which only the LLM judge reads — changes.
+    if judge_config is not None and judge_config.llm_enabled:
+        synth_config = SynthesisConfig.from_env()
+    else:
+        synth_config = SynthesisConfig()  # deterministic composer; verifier always on
     # One router per degradation mode, mirroring the federated golden fixture:
     # partial-degradation entries must run with the failed source absent, or
     # both sides answer and a correlation the scenario forbids would appear.
