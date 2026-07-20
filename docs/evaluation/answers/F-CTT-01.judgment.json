@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The gold requires CAPEC-98 to map to T1566 and T1598 (must_correlate, capec.must_include_related), and requires those techniques to be tied to tactics TA0001 (Initial Access) and TA0043 (Reconnaissance) respectively (attack.must_include_related). The narrative states exactly this: \"The techniques mapped from CAPEC-98 are T1566 and T1598. T1566 belongs to the Initial Access (TA0001) tactic, while T1598 belongs to the Reconnaissance (TA0043) tactic.\" This is directly grounded in logic_flow.results: the capec query record for CAPEC-98 has join_values [T1566, T1598], and the attack query record for T1566 has related=[{id: TA0001, name: Initial Access}] while T1598 has related=[{id: TA0043, name: Reconnaissance}] — an exact, non-swapped match. All 5 gold-required identifiers (CAPEC-98, T1566, T1598, TA0001, TA0043) are surfaced, both must_correlate ids (T1566, T1598) are stated, and the deterministic_scores in the artifact independently confirm correlation f1=1.0 and mapping_recall=1.0. No claim in the narrative goes beyond the retrieved records (no invented tactic names, no wrong pairing), so there is no hallucination."
+}

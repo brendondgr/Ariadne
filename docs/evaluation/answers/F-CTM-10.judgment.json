@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-10",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 8,
+  "gold_present": 8,
+  "hallucinations": [],
+  "rationale": "The narrative correctly states CAPEC-652 (Use of Known Kerberos Credentials) maps to T1558 (Steal or Forge Kerberos Tickets), matching evidence.results[0].records[0] (join_values: [\"T1558\"], related name \"Steal or Forge Kerberos Tickets\") and satisfying gold's must_correlate=[\"T1558\"] and capec.must_include_related=[\"T1558\"]. It then lists all six required mitigations from gold's attack.must_include_related — M1041, M1015, M1047, M1026, M1027, M1043 — with names matching evidence.results[1].records[0].related exactly (Encrypt Sensitive Information, Active Directory Configuration, Audit, Privileged Account Management, Password Policies, Credential Access Protection). No mitigations are missing and none are invented; the evidence record set contains exactly 6 related mitigations and all 6 are surfaced. Every identifier and name in the narrative traces directly to logic_flow.results records, so faithfulness and groundedness are full. Completeness is 8/8 required ids (CAPEC-652, T1558, M1015, M1026, M1027, M1041, M1043, M1047). No hallucinations detected."
+}

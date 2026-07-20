@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-04",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 14,
+  "gold_present": 14,
+  "hallucinations": [],
+  "rationale": "The narrative names all 5 gold must_correlate/must_include techniques (T1039, T1552.001, T1552.003, T1552.004, T1552.006) as CAPEC-639's ATT&CK mappings, matching the capec record's join_values/related list exactly (logic_flow.results[0].records[0]). For mitigations it enumerates, per technique, exactly the (mitigation_id, name) pairs present in the attack query's records: T1552.001 -> M1047, M1022, M1027, M1017; T1552.003 -> M1028; T1552.004 -> M1041, M1047, M1022, M1027; T1552.006 -> M1051, M1015, M1047; T1039 -> none (empty related list in evidence, correctly stated as 'no listed mitigations'). This covers all 8 gold must_include_related mitigation ids (M1015, M1017, M1022, M1027, M1028, M1041, M1047, M1051) with zero omissions or additions, and correctly reports the T1039 abstention-like gap rather than inventing a mitigation. Deterministic_scores corroborate: correlation f1=1.0, mapping_recall 5/5, fully_provenanced=true. No unsupported claims, technique/mitigation names all match evidence verbatim (e.g. 'Bash History' technique labeled with correct M1028 mitigation, not confused with another sub-technique). This is a complete, fully grounded, hallucination-free answer."
+}

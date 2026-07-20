@@ -1,0 +1,12 @@
+{
+  "case_id": "C-LKP-02",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 0.9,
+  "groundedness": 0.9,
+  "completeness": 1,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires: id CAPEC-116, name \"Excavation\", Abstraction \"Meta\", Status \"Stable\" (4 facts). The narrative states all four correctly and verbatim: \"CAPEC pattern Excavation (CAPEC-116)... abstraction level of Meta and a status of Stable,\" plus a description that matches the retrieved record's description field exactly (\"adversary actively probes the target... solicit information... malicious purposes\"). min/max_records=1 is satisfied (exactly 1 record returned and cited). Caveat on groundedness/faithfulness: the \"records\" array in the evidence block only exposes primary_id/name/label/description/join_values/related — it does not itemize Abstraction or Status as discrete fields, so those two property values are not directly visible in the trimmed evidence JSON shown here. However, the executed Gremlin query uses `.by(elementMap())` on the node projection, which by construction pulls all vertex properties (including Abstraction/Status) from the graph, and the same pattern (correct Abstraction/Status values with no visible property field in \"records\") is 100% consistent across all 5 sibling C-LKP-0x artifacts checked (01/03/04/05), each matching its own gold exactly — indicating this is a systemic evidence-serialization trim in the harness's JSON output rather than a per-case fabrication. No claim in the narrative is unsupported by the description text or contradicted by gold. No extraneous or invented entities, dates, or relationships are introduced. Verdict: CORRECT, with faithfulness/groundedness marked slightly below 1.0 only because the property values aren't independently re-verifiable from the trimmed \"records\" list alone."
+}

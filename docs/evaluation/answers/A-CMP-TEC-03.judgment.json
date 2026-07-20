@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-TEC-03",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The retrieved record set (evidence.results[0].records) is exactly the 13-technique gold pool ex_gold.expected: T1005, T1016, T1020, T1033, T1041, T1047, T1057, T1082, T1105, T1119, T1140, T1203, T1221 — no fewer, no extras. The narrative names all 13 techniques with correct IDs and correct technique names matched verbatim against the record \"name\" fields (e.g. T1105=\"Ingress Tool Transfer\", T1221=\"Template Injection\", T1033=\"System Owner/User Discovery\"), satisfying min_records:5 and all five must_include_ids (T1005, T1016, T1020, T1033, T1041) present by name and ID. No fabricated technique, name, or ID appears anywhere in the narrative — every claim traces directly to a returned record from the single Campaign-USES->Technique query (logic_flow.results[0].query), so faithfulness and groundedness are both full marks. One minor structural note (not a factual error): the claims[] array only carries citations for 8 of the 13 techniques (T1105, T1221, T1203, T1041, T1057, T1020, T1016, T1140), omitting explicit citation objects for T1005, T1082, T1119, T1033, T1047 even though the narrative text does state them — this weakens per-claim provenance granularity but does not affect the correctness or faithfulness of the narrative itself, which is complete and accurate."
+}

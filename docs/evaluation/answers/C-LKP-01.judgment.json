@@ -1,0 +1,15 @@
+{
+  "case_id": "C-LKP-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.9,
+  "faithfulness": 0.25,
+  "groundedness": 0.2,
+  "completeness": 1,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [
+    "\"an abstraction level of Standard\" — the Gremlin record for CAPEC-555 in logic_flow.results[0].records[0] contains only primary_id, name, label, description, join_values, and related; there is no Abstraction/Status property field anywhere in the retrieved evidence, so this value is not traceable to what was retrieved.",
+    "\"a status of Stable\" — same issue: no Status field appears in the record, and the single backing claim (\"Found 1 CAPEC record(s): CAPEC-555.\") only cites the id count, not this attribute value."
+  ],
+  "rationale": "The narrative correctly names CAPEC-555 as \\\"Remote Services with Stolen Credentials\\\" (matches gold expect_names) and states Abstraction=Standard / Status=Stable, which happens to match gold's expect_properties exactly — so on content alone it fully answers the question (gold_present=3/3: id, Abstraction, Status). However, the question specifically asks for abstraction and status, and the ONLY retrieved evidence in this artifact (logic_flow.results[0].records[0]) has no properties/attribute fields at all — just primary_id, name, label, description, join_values, related — and the sole supporting claim only asserts a record-count fact (\"Found 1 CAPEC record(s): CAPEC-555\"), not the two attribute values. This is precisely the ungrounded-attribute pattern the grading spec calls out (\"an abstraction/status/name/date not present in evidence\"): the two facts central to the question are asserted with no citation or evidence trail in this artifact, even though they are factually correct against gold. The same pattern recurs identically in the sibling case C-LKP-02 (CAPEC-116, Abstraction=Meta/Status=Stable), suggesting a systemic gap between the deterministic composer's narrative and its cited/retrieved evidence rather than a one-off error. Because correctness-vs-gold is high but faithfulness/groundedness are seriously compromised for the exact facts the question targets, this is graded PARTIAL rather than CORRECT."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-CSQ-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.35,
+  "faithfulness": 1,
+  "groundedness": 0.9,
+  "completeness": 0,
+  "gold_expected": 4,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold (must_include_ids=[CAPEC-66], must_include_related=[capec:attack-pattern:66:consequence:1..4]) requires the answer to surface CAPEC-66 and each of the four consequence identifiers. The narrative correctly names CAPEC-66 (\"SQL Injection\") and correctly reports the count of four associated consequences, which is grounded in the retrieved query (row_count=4, related array of length 4 in evidence). However it never surfaces consequence:1, consequence:2, consequence:3, or consequence:4 by id anywhere in the narrative or the claims list (the single claim only carries entity_ids=[CAPEC-66]) — so 0 of the 4 required must_include_related ids are present, giving completeness 0.0. No hallucination occurred: the evidence's 'related' Consequence nodes carry only a synthetic id-as-name placeholder (name field literally equals the id string, e.g. \"capec:attack-pattern:66:consequence:1\") with no real descriptive text, so the narrative's claim that \"specific names or descriptions ... are not provided in the available evidence\" is factually accurate rather than fabricated. This matches the known deterministic-composer limitation noted in project memory (summarize() emits an id-line only, not an enumeration of related-neighbour ids). Because the answer is truthful and directionally correct but omits every gold-required identifier, this is PARTIAL rather than CORRECT or INCORRECT: it answers \"how many\" but not \"which,\" and a stricter behavior would have at minimum listed the four consequence ids even without descriptive text."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-EXE-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 0.85,
+  "completeness": 1,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-66 (SQL Injection) plus its four execution steps (capec:attack-pattern:66:step:1..4). The narrative paraphrases all four steps in the correct order and with content that maps directly onto the evidence: \"surveying the application's functionality\" = step:1 (\"[Survey application] ... inventory of the functionality exposed\"); \"determines which user-controllable inputs are susceptible to injection by testing special SQL characters\" = step:2 (\"Determine the user-controllable input susceptible to injection... attempt to inject characters that have special meaning in SQL\"); \"experimenting with the vulnerabilities to hypothesize the underlying query and iteratively adding logic to extract or modify information\" = step:3 (\"hypothesize what the underlying query looks like. Iteratively try to add logic ... extract information ... or modify or delete information\"); \"exploits the vulnerability by crafting and executing the refined SQL query to reveal, modify, or delete database data\" = step:4 (\"craft and execute the underlying SQL query ... reveal, modify, and/or delete database data\"). No invented facts — every clause traces to the corresponding ExecutionStep description in logic_flow.results[0].records[0].related. The only weakness is provenance mechanics: the structured \"claims\" array cites only CAPEC-66 (primary_id) and never lists the four capec:attack-pattern:66:step:N ids as explicit entity_ids/citations, so an automated id-matcher over claims alone would show 0/4 step coverage even though the prose itself fully and correctly surfaces all four steps in order. That gap costs groundedness but not correctness/faithfulness/completeness of the actual answer delivered to the analyst."
+}

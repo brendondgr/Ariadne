@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-05",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires the two correlated techniques (T1574.006, T1574.007 — must_correlate/must_include_related for both capec and attack) and their two tactics (TA0002 Execution, TA0005 Stealth). The narrative states exactly this: \"T1574.006 and T1574.007 are associated with the Stealth (TA0005) and Execution (TA0002) tactics\" — all 4 required ids present, matching the attack-source record set (row_count 4 → 2 techniques x 2 tactics each, record_count 2, capped at gold's max_records:2 for attack). The narrative also names T1562.003 as a third CAPEC-13 mapping, but this is fully grounded — the capec record's join_values/related list explicitly includes capec:taxonomy:ATTACK:1562.003 — and the answer correctly abstains on its tactics (\"the evidence does not provide the tactics for T1562.003\"), matching that the attack-source query normalized to only 2 records (T1562.003 never resolved to a Tactic-linked node in evidence). No invented facts: tactic names/ids, technique names, and the CAPEC-13 mapping list are all lifted verbatim from logic_flow.results records. Deterministic scores in the artifact (correlation f1=1.0, mapping_recall=1.0, citation_provenance_rate=1.0) corroborate this. Verdict: CORRECT with no hallucinations."
+}

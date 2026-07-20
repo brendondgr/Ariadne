@@ -1,0 +1,12 @@
+{
+  "case_id": "C-HIE-03",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to surface CAPEC-555 (must_include_ids) and its ChildOf parent CAPEC-560 (must_include_related). The narrative states \"CAPEC-555 ... is a child of CAPEC-560\" and correctly names both: CAPEC-555 as \"Remote Services with Stolen Credentials\" (matches record name exactly) and CAPEC-560 as \"Use of Known Domain Credentials\" (matches the related-neighbour name in the evidence record's \"related\" array exactly). The single retrieved record's out(CHILD_OF) edge in the traversal directly supports this parent relationship, so the claim is fully grounded in the evidence (no invented names, ids, or facts). Both gold-required ids (CAPEC-555, CAPEC-560) are present, satisfying completeness fully."
+}

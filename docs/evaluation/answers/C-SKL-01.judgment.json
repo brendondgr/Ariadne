@@ -1,0 +1,12 @@
+{
+  "case_id": "C-SKL-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to surface CAPEC-163 (must_include_ids) and the single skill neighbour capec:attack-pattern:163:skill:1 (must_include_related). The narrative names \"CAPEC-163 (Spear Phishing)\" explicitly, satisfying the id requirement, and then paraphrases the skill neighbour's description verbatim in substance: evidence record capec:attack-pattern:163:skill:1 reads \"specific knowledge of the victims being targeted, such as which bank is being used by the victims, or websites they commonly log into (Google, Facebook, etc)\"; the narrative says \"specific knowledge of the targeted victims, such as which banks they use or which websites they commonly log into, including sites like Google or Facebook\" — a faithful paraphrase with no added or altered facts (no invented bank names, dates, or abstraction/status values). One minor structural note: the claims array only cites CAPEC-163 as primary_id and does not attach a separate citation to the skill entity id itself, so provenance for that specific neighbour is implicit in the prose rather than in the structured claim — but this is a formatting nuance, not a factual gap, since the content of that exact neighbour is present and correctly attributed. min_records 1 is met (1 CAPEC record with 1 skill neighbour returned and used). No fabricated or unsupported claims found."
+}

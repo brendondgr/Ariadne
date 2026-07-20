@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-03",
+  "verdict": "CORRECT",
+  "correctness": 0.9,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires: CAPEC-555 present (min_records 1), must_include_related T1021/T1114.002/T1133, no cross-source correlation (must_correlate=[]/expect_no_correlation=true), and the ATT&CK/mitigation side to degrade to an honest skip rather than fabricate. The narrative states \"CAPEC-555 is identified as Remote Services with Stolen Credentials. It maps to the ATT&CK identifiers T1021, T1114.002, and T1133\" — the name matches the CAPEC record exactly and all three required T-numbers are surfaced (4/4 gold ids present). No cross-source correlation is claimed, satisfying expect_no_correlation. The attack side is not fabricated: notes explicitly record \"Skipped attack: no specialist available for source 'attack'\" and logic_flow.partial_mode is \"attack_down,\" matching gold's attack.expect_skipped=true — deterministic_scores confirm fully_provenanced=true and abstention_proof_ok=true. Every identifier in the narrative (CAPEC-555, T1021, T1114.002, T1133) traces directly to the single retrieved record's join_values/related entries, so faithfulness and groundedness are perfect with zero hallucinations. The only minor ding: the narrative text itself never explicitly tells the analyst that mitigations were unavailable/skipped (that fact lives only in the notes field, not the prose), so a reader of just the narrative wouldn't know why mitigation info is absent — a small completeness/communication gap versus the fully self-contained answer the adversarial scenario implies, hence 0.9 rather than 1.0 on correctness."
+}

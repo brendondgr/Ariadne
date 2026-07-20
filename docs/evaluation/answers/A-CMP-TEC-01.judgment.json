@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-TEC-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 0.9,
+  "completeness": 1,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires (must_include_ids) T1046, T1047, T1090, T1102, T1105; the narrative names all five with correct technique names (Network Service Discovery, Windows Management Instrumentation, Proxy, Web Service, Ingress Tool Transfer). It also surfaces the remaining five ids from the ex_gold \"neighbors\" expected set (T1133, T1190, T1530, T1572, T1621), so the answer matches the full 10-id expected set exactly with no extras and no omissions. Every id/name pair in the narrative is a verbatim match to a record returned by the executed Cypher (logic_flow.results[0].records), so there is no fabrication. One minor structural defect: the single \"claims\" object only lists citations for 8 of the 10 technique ids (T1133 and T1047 appear in the narrative and in the underlying records but have no corresponding citation entry in claims[0].citations/entity_ids), which slightly undercuts formal groundedness/provenance even though the deterministic_scores block reports citation_provenance_rate 1.0 against only those 8 — a metadata gap, not a narrative hallucination. Overall this is a fully correct, well-grounded answer that exceeds the minimum gold requirement."
+}

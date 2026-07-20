@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is an adversarial negative case where gold explicitly requires an honest empty: must_correlate=[], expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true. The evidence confirms this exactly — the capec q1 query for CAPEC-116→ATT&CK MAPS_TO ran cleanly (gate/execute/assess/normalize traces all ok:true) and returned row_count:0, and q2 (ATT&CK mitigations) was correctly skipped via the dependency trace because q1 produced no join values (\"producer q1: it returned no join values\"). The narrative states \"The routed sources returned no matching records for this question\" and abstentions cite both the clean-empty capec query and the correctly-skipped attack sub-question, with no fabricated technique IDs, mitigation IDs, or correlations. The one generic phrase suggesting example ids (\"T1566, M1017, or CAPEC-98\") is boilerplate guidance, not an assertion about CAPEC-116, so it introduces no hallucination. Since gold requires zero entities to be surfaced (gold_expected=0) and the answer surfaces zero fabricated entities (gold_present=0), completeness is trivially satisfied. deterministic_scores.correlation already confirms negative:true, exact:true, precision/recall/f1=1.0, corroborating this is a correct honest-abstention response."
+}

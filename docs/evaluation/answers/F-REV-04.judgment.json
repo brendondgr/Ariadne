@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-04",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-555 (must_include_ids), T1021 as the correlated/must_include_related identifier, and the ATT&CK record T1021 named \"Remote Services\" (expect_names). The narrative states all three: \"CAPEC pattern Remote Services with Stolen Credentials (CAPEC-555) maps to ... T1021\", and \"T1021, titled Remote Services, involves adversaries using valid accounts to log into services that accept remote connections, such as telnet, SSH, and VNC, to perform actions as the logged-on user.\" This description is a faithful paraphrase of the retrieved T1021 record's description field (\"Adversaries may use [Valid Accounts] to log into a service that accepts remote connections, such as telnet, SSH, and VNC. The adversary may then perform actions as the logged-on user.\") — no invented facts. The evidence contains exactly one CAPEC record (CAPEC-555) mapping to T1021, so the answer is not omitting any additional required CAPEC patterns per gold's must_include_ids (only CAPEC-555 is required, min_records 1). Cross-source correlation on T1021 is correctly stated in the claims and narrative. No abstraction-level, status, or date claims are fabricated. This matches the deterministic_scores in the artifact itself (mapping_recall 1.0, correlation f1 1.0, fully_provenanced true), which the independent read of the evidence confirms rather than merely trusting."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.55,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 0.2,
+  "gold_expected": 5,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Retrieval was fully correct: the 34 records in logic_flow.results[0] exactly match the gold's ex_gold \"neighbors\" expected set (34/34 T-numbers, verified by direct set comparison). Every factual statement in the narrative is grounded — the technique count (34), and the five named examples (T1529 System Shutdown/Reboot, T1189 Drive-by Compromise, T1041 Exfiltration Over C2 Channel, T1082 System Information Discovery, T1485 Data Destruction) all correctly match id-to-name pairs present in the evidence, so faithfulness and groundedness are both clean (no invented ids, names, or counts). However, the gold's authoritative must_include_ids assertion requires the answer to surface T1005, T1008, T1010, T1012, and T1016 specifically. The narrative names none of these five; only T1008 appears anywhere in the answer object, and only indirectly, buried in the claim's entity_ids/citations list rather than named in prose (the claim text itself just says 'T1529, T1124, T1680 and more'). T1005, T1010, T1012, and T1016 are present in the underlying evidence records but never surfaced to the analyst in either narrative or claim text. Since the composer picked its five illustrative examples essentially at random from the 34 retrieved techniques and happened to miss 4 of the 5 gold-required ones, gold_present = 1/5 (0.2 completeness). The answer is not wrong or fabricated (hence not INCORRECT) but is materially incomplete against the specific gold requirement, so it lands as PARTIAL rather than CORRECT."
+}

@@ -1,0 +1,324 @@
+{
+  "id": "A-TAC-01",
+  "kind": "attack",
+  "tier": "medium",
+  "category": "A-TAC",
+  "question": "Which techniques belong to tactic TA0001 (Initial Access)?",
+  "gold": {
+    "assertions": {
+      "min_records": 5,
+      "must_include_ids": [
+        "T1078",
+        "T1091",
+        "T1133",
+        "T1189",
+        "T1190"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "T1078",
+        "T1091",
+        "T1133",
+        "T1189",
+        "T1190",
+        "T1195",
+        "T1199",
+        "T1200",
+        "T1566",
+        "T1659",
+        "T1669"
+      ],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 11 record(s) from 1 source(s).",
+    "narrative": "The techniques under tactic TA0001 (Initial Access) include Wi-Fi Networks (T1669), Drive-by Compromise (T1189), Hardware Additions (T1200), Valid Accounts (T1078), Phishing (T1566), Trusted Relationship (T1199), Content Injection (T1659), Exploit Public-Facing Application (T1190), Supply Chain Compromise (T1195), Replication Through Removable Media (T1091), and External Remote Services (T1133).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 11 ATT&CK record(s) including T1669, T1189, T1200 and more.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1669",
+          "T1189",
+          "T1200",
+          "T1078",
+          "T1566",
+          "T1199",
+          "T1659",
+          "T1190"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1669"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1189"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1200"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1078"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1566"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1199"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1659"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1190"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-TAC-01",
+      "source": "attack",
+      "text": "List the techniques under tactic TA0001.",
+      "entities": [
+        "Tactic",
+        "Technique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 300,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "TA0001"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "A-TAC-01",
+        "sub_question": "List the techniques under tactic TA0001.",
+        "query": "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique) WHERE ta.attack_id IN $ids RETURN ta.attack_id AS tactic_id, ta.name AS tactic_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 300",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 11 ATT&CK record(s) including T1669, T1189, T1200 and more.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Tactic",
+                "Technique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "TA0001"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "tactic_techniques",
+              "query": "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique) WHERE ta.attack_id IN $ids RETURN ta.attack_id AS tactic_id, ta.name AS tactic_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 300",
+              "injected": [
+                "LIMIT 300 appended (none present)"
+              ],
+              "timing_ms": 0.077
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 11,
+              "timing_ms": 27.5
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 11,
+              "timing_ms": 0.009
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 11,
+              "timing_ms": 0.119
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1669",
+            "name": "Wi-Fi Networks",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1669"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1189",
+            "name": "Drive-by Compromise",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1189"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1200",
+            "name": "Hardware Additions",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1200"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1078",
+            "name": "Valid Accounts",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1078"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1566",
+            "name": "Phishing",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1566"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1199",
+            "name": "Trusted Relationship",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1199"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1659",
+            "name": "Content Injection",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1659"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1190",
+            "name": "Exploit Public-Facing Application",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1190"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1195",
+            "name": "Supply Chain Compromise",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1195"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1091",
+            "name": "Replication Through Removable Media",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1091"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1133",
+            "name": "External Remote Services",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1133"
+            ],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "provenance": {
+      "citations": 8,
+      "compliant": 8,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  }
+}

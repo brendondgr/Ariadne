@@ -1,0 +1,12 @@
+{
+  "case_id": "C-EXE-02",
+  "verdict": "CORRECT",
+  "correctness": 0.95,
+  "faithfulness": 1,
+  "groundedness": 0.85,
+  "completeness": 1,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires the four execution-step entities capec:attack-pattern:98:step:1..4 for CAPEC-98 (Phishing) to be surfaced. The narrative walks through all four steps in the correct order and each sentence maps precisely onto the retrieved step descriptions: step:1 (\"optional step ... obtains a domain name and certificate to spoof a legitimate site\" matches \"[Obtain domain name and certificate to spoof legitimate site]... optional step\"), step:2 (\"creates a duplicate website\" matches \"[Explore legitimate website and create duplicate]\"), step:3 (\"sends an email to convince the victim to click a link and enter sensitive information\" matches \"[Convince user to enter sensitive information on attacker's site.]\"), and step:4 (\"leverages the captured credentials or information to log into the legitimate site\" matches \"[Use stolen credentials to log into legitimate site]\"). No detail is invented — every claim traces directly to the evidence step descriptions in logic_flow.results[0].records[0].related, so faithfulness is essentially perfect. The one weakness is provenance mechanics rather than content: the structured \"claims\" array only cites CAPEC-98 itself (entity_ids: [\"CAPEC-98\"]) and never formally cites the four capec:attack-pattern:98:step:N ids, so groundedness is docked slightly for the gap between what the prose says and what the citation record actually references, even though the narrative text is clearly and correctly derived from those four step records. Given full, accurate, correctly-ordered coverage of all four gold-required steps with zero hallucination, this is CORRECT with only a minor citation-completeness ding."
+}

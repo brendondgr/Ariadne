@@ -1,0 +1,12 @@
+{
+  "case_id": "A-AST-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires expect_boundary: true — the question asks what \"Asset\" entities T1047 targets, but Asset is an ICS/CPS concept not modeled by the attack (ATT&CK) source, so the correct behavior is an honest refusal rather than fabricating a target list. The pipeline's logic_flow shows the boundary check correctly firing (\"entities not in card: ['Asset']\", \"entities not modeled by the attack source: Asset\"), no query was executed, and zero records were retrieved. The narrative faithfully reflects this: \"The routed sources returned no matching records for this question,\" paired with an abstention explaining the attack source doesn't model Asset entities and offering to help if the analyst names a concrete ATT&CK/CAPEC id instead. It does not invent any asset names, techniques, or relationships — every claim traces directly to the boundary trace in logic_flow. deterministic_scores confirm abstention_proof_ok=true and fully_provenanced=true, corroborating the abstention was legitimate rather than a lazy/incorrect refusal. This is exactly the desired adversarial-boundary behavior with no hallucinated content, so it is fully correct and complete against the single required assertion."
+}

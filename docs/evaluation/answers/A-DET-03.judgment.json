@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-03",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 0.95,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 7,
+  "gold_present": 7,
+  "hallucinations": [],
+  "rationale": "Gold requires the seed T1566 plus all 7 related ids (DET0070, AN0188–AN0193) to be surfaced. The narrative names every single one of them explicitly, and every claim traces to the single retrieved record's `related` list (evidence for T1566, matched via technique_detection query returning DET0070→HAS_ANALYTIC→6 analytics). Per-analytic content checks out against evidence: AN0191 correctly described as Office-macro/document phishing spawning processes (matches evidence verbatim in substance); AN0192/AN0193 correctly grouped as IdP/SaaS phishing with login-flow, MFA-bypass, and token-misuse detection (matches AN0192 and AN0193 evidence closely). The one soft spot is the grouping of AN0188/AN0189/AN0190 under a single generalized clause (\"correlate email metadata and file creation with subsequent process execution or outbound network connections\") — AN0190's evidence is actually macOS-specific (Mail app/UnifiedLogs, Safari/Preview launching files) rather than generic \"email metadata,\" so the summary slightly over-generalizes that one analytic, though it invents no new fact and stays within the disjunctive (\"... or ...\") wording. No fabricated abstraction levels, statuses, names, or ids; DET0070 is described minimally, matching its sparse evidence (\"Detection Strategy for Phishing across platforms\"). Claims/citations correctly cite T1566/attack source with no false abstentions. This is a complete, well-grounded answer with only a minor stylistic over-generalization, not a factual hallucination — CORRECT."
+}

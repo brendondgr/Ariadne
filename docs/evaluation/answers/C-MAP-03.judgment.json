@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-03",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-564 to surface (must_include_ids) and the four ATT&CK technique joins T1037, T1543.001, T1543.004, T1547 (must_include_related / must_correlate). The narrative states exactly these four: \"T1037 (Boot or Logon Initialization Scripts), T1543.001 (Create or Modify System Process: Launch Agent), T1543.004 (Create or Modify System Process: Launch Daemon), and T1547 (Boot or Logon Autostart Execution)\" — all IDs and names match the retrieved evidence's related[] entries verbatim (e.g. entry_id 1037 name \"Boot or Logon Initialization Scripts\", entry_id 1543.001 name \"Create or Modify System Process: Launch Agent\", etc.), and CAPEC-564's name \"Run Software at Logon\" also matches the record. No extra or fabricated techniques, no unsupported attribute claims. All 4/4 gold-required related ids present with correctly matched names, single citation to CAPEC-564 backs the claim, and the join_values in the record exactly equal ex_gold.expected. This is a clean, fully grounded, complete answer with no hallucinations."
+}

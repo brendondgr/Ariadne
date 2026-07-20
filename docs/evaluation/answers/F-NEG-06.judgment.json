@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-06",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative case where gold requires expect_no_correlation=true, capec.expect_empty=true, and attack.expect_dependency_skip=true — the correct answer is an honest empty, not a fabricated ATT&CK/mitigation correlation for CAPEC-18. The evidence confirms the CAPEC query (capec_maps_to template, seed CAPEC-18) executed cleanly and returned row_count 0, and q2 (ATT&CK mitigations) was correctly skipped because it depends on q1's join values, which were empty — exactly matching the gold's expect_dependency_skip assertion. The narrative states plainly that 'the routed sources returned no matching records for this question' and offers no fabricated technique IDs, mitigation IDs, or correlations. Claims array is empty (nothing asserted that could be unsupported) and both abstentions are accurately grounded in the executed/skipped queries and traces (capec: query ran, 0 rows; attack: skipped due to q1 dependency). No hallucinated T-numbers, M-numbers, or any invented mapping appear anywhere in the narrative or claims. deterministic_scores also confirm exact negative match (precision/recall/f1 = 1.0, n_expected=0, n_got=0) and full provenance/abstention-proof compliance, corroborating the manual read. This is a textbook correct negative-case response with zero hallucination."
+}

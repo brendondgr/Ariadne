@@ -1,0 +1,491 @@
+{
+  "id": "A-SW-03",
+  "kind": "attack",
+  "tier": "medium",
+  "category": "A-SW",
+  "question": "Which techniques does software S0266 (TrickBot) use?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "S0266"
+      ],
+      "must_include_related": [
+        "T1005",
+        "T1007",
+        "T1008",
+        "T1016",
+        "T1018",
+        "T1021.005",
+        "T1027",
+        "T1027.002",
+        "T1027.013",
+        "T1033",
+        "T1036",
+        "T1041",
+        "T1053.005",
+        "T1055",
+        "T1055.012",
+        "T1056.004",
+        "T1057",
+        "T1059.001",
+        "T1059.003",
+        "T1069",
+        "T1071.001",
+        "T1082",
+        "T1083",
+        "T1087.001",
+        "T1087.003",
+        "T1090.002",
+        "T1105",
+        "T1106",
+        "T1110.004",
+        "T1112",
+        "T1132.001",
+        "T1135",
+        "T1140",
+        "T1185",
+        "T1204.002",
+        "T1210",
+        "T1219",
+        "T1482",
+        "T1495",
+        "T1497.003",
+        "T1542.003",
+        "T1543.003",
+        "T1547.001",
+        "T1552.001",
+        "T1552.002",
+        "T1553.002",
+        "T1555.003",
+        "T1555.005",
+        "T1559.001",
+        "T1564.003",
+        "T1566.001",
+        "T1566.002",
+        "T1571",
+        "T1573.001",
+        "T1685"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "T1005",
+        "T1007",
+        "T1008",
+        "T1016",
+        "T1018",
+        "T1021.005",
+        "T1027",
+        "T1027.002",
+        "T1027.013",
+        "T1033",
+        "T1036",
+        "T1041",
+        "T1053.005",
+        "T1055",
+        "T1055.012",
+        "T1056.004",
+        "T1057",
+        "T1059.001",
+        "T1059.003",
+        "T1069",
+        "T1071.001",
+        "T1082",
+        "T1083",
+        "T1087.001",
+        "T1087.003",
+        "T1090.002",
+        "T1105",
+        "T1106",
+        "T1110.004",
+        "T1112",
+        "T1132.001",
+        "T1135",
+        "T1140",
+        "T1185",
+        "T1204.002",
+        "T1210",
+        "T1219",
+        "T1482",
+        "T1495",
+        "T1497.003",
+        "T1542.003",
+        "T1543.003",
+        "T1547.001",
+        "T1552.001",
+        "T1552.002",
+        "T1553.002",
+        "T1555.003",
+        "T1555.005",
+        "T1559.001",
+        "T1564.003",
+        "T1566.001",
+        "T1566.002",
+        "T1571",
+        "T1573.001",
+        "T1685"
+      ],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "TrickBot (S0266) utilizes many MITRE ATT&CK techniques, including Software Packing (T1027.002), Firmware Corruption (T1495), Credential API Hooking (T1056.004), and discovery methods such as System Owner/User Discovery (T1033) and Local Account discovery (T1087.001). It also employs execution and persistence methods like Spearphishing Link (T1566.002), Spearphishing Attachment (T1566.001), and Windows Service (T1543.003), as well as obfuscation techniques like Standard Encoding (T1132.001) and Symmetric Cryptography (T1573.001).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 55 item(s) related to S0266 (e.g. T1027.002, T1495, T1056.004) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "S0266"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "S0266"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-SW-03",
+      "source": "attack",
+      "text": "Which ATT&CK techniques does software S0266 use?",
+      "entities": [
+        "Software",
+        "Technique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 300,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "S0266"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "A-SW-03",
+        "sub_question": "Which ATT&CK techniques does software S0266 use?",
+        "query": "MATCH (s:Software)-[:USES]->(t) WHERE (t:Technique OR t:SubTechnique) AND s.attack_id IN $ids RETURN s.attack_id AS software_id, s.name AS software_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 300",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 55 item(s) related to S0266 (e.g. T1027.002, T1495, T1056.004) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Software",
+                "Technique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "S0266"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "software_techniques",
+              "query": "MATCH (s:Software)-[:USES]->(t) WHERE (t:Technique OR t:SubTechnique) AND s.attack_id IN $ids RETURN s.attack_id AS software_id, s.name AS software_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 300",
+              "injected": [
+                "LIMIT 300 appended (none present)"
+              ],
+              "timing_ms": 0.12
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 55,
+              "timing_ms": 5.7
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 55,
+              "timing_ms": 0.011
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 3.809
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "S0266",
+            "name": "TrickBot",
+            "label": "Software",
+            "description": "",
+            "join_values": [
+              "T1027.002",
+              "T1495",
+              "T1056.004",
+              "T1008",
+              "T1105",
+              "T1018",
+              "T1071.001",
+              "T1053.005",
+              "T1021.005",
+              "T1033",
+              "T1132.001",
+              "T1027.013",
+              "T1069",
+              "T1542.003",
+              "T1204.002",
+              "T1573.001",
+              "T1087.001",
+              "T1543.003",
+              "T1566.002",
+              "T1566.001",
+              "T1559.001",
+              "T1555.005",
+              "T1007",
+              "T1553.002",
+              "T1552.002",
+              "T1135",
+              "T1082",
+              "T1106",
+              "T1005",
+              "T1140",
+              "T1219",
+              "T1036",
+              "T1055",
+              "T1087.003",
+              "T1497.003",
+              "T1185",
+              "T1112",
+              "T1555.003",
+              "T1090.002",
+              "T1016",
+              "T1482",
+              "T1083",
+              "T1552.001",
+              "T1057",
+              "T1041",
+              "T1059.001",
+              "T1210",
+              "T1547.001",
+              "T1571",
+              "T1055.012",
+              "T1110.004",
+              "T1027",
+              "T1685",
+              "T1564.003",
+              "T1059.003"
+            ],
+            "related": [
+              {
+                "id": "T1027.002",
+                "name": "Software Packing",
+                "description": "Adversaries may perform software packing or virtual machine software protection to conceal their code. Software packing is a method of compressing or encrypting an executable. Packing an executable changes the file signature in an attempt to avoid signature-based detection. Most decompression techniques decompress the executable code in memory. Virtual machine software protection translates an exe…"
+              },
+              {
+                "id": "T1495",
+                "name": "Firmware Corruption",
+                "description": "Adversaries may overwrite or corrupt the flash memory contents of system BIOS or other firmware in devices attached to a system in order to render them inoperable or unable to boot, thus denying the availability to use the devices and/or the system.(Citation: Symantec Chernobyl W95.CIH) Firmware is software that is loaded and executed from non-volatile memory on hardware devices in order to initia…"
+              },
+              {
+                "id": "T1056.004",
+                "name": "Credential API Hooking",
+                "description": "Adversaries may hook into Windows application programming interface (API) functions and Linux system functions to collect user credentials. Malicious hooking mechanisms may capture API or function calls that include parameters that reveal user authentication credentials.(Citation: Microsoft TrojanSpy:Win32/Ursnif.gen!I Sept 2017) Unlike [Keylogging](https://attack.mitre.org/techniques/T1056/001), …"
+              },
+              {
+                "id": "T1008",
+                "name": "Fallback Channels",
+                "description": "Adversaries may use fallback or alternate communication channels if the primary channel is compromised or inaccessible in order to maintain reliable command and control and to avoid data transfer thresholds."
+              },
+              {
+                "id": "T1105",
+                "name": "Ingress Tool Transfer",
+                "description": "Adversaries may transfer tools or other files from an external system into a compromised environment. Tools or files may be copied from an external adversary-controlled system to the victim network through the command and control channel or through alternate protocols such as [ftp](https://attack.mitre.org/software/S0095). Once present, adversaries may also transfer/spread tools between victim dev…"
+              },
+              {
+                "id": "T1018",
+                "name": "Remote System Discovery",
+                "description": "Adversaries may attempt to get a listing of other systems by IP address, hostname, or other logical identifier on a network that may be used for Lateral Movement from the current system. Functionality could exist within remote access tools to enable this, but utilities available on the operating system could also be used such as  [Ping](https://attack.mitre.org/software/S0097), <code>net view</cod…"
+              },
+              {
+                "id": "T1071.001",
+                "name": "Web Protocols",
+                "description": "Adversaries may communicate using application layer protocols associated with web traffic to avoid detection/network filtering by blending in with existing traffic. Commands to the remote system, and often the results of those commands, will be embedded within the protocol traffic between the client and server. \n\nProtocols such as HTTP/S(Citation: CrowdStrike Putter Panda) and WebSocket(Citation: …"
+              },
+              {
+                "id": "T1053.005",
+                "name": "Scheduled Task",
+                "description": "Adversaries may abuse the Windows Task Scheduler to perform task scheduling for initial or recurring execution of malicious code. There are multiple ways to access the Task Scheduler in Windows. The [schtasks](https://attack.mitre.org/software/S0111) utility can be run directly on the command line, or the Task Scheduler can be opened through the GUI within the Administrator Tools section of the Co…"
+              },
+              {
+                "id": "T1021.005",
+                "name": "VNC",
+                "description": "Adversaries may use [Valid Accounts](https://attack.mitre.org/techniques/T1078) to remotely control machines using Virtual Network Computing (VNC).  VNC is a platform-independent desktop sharing system that uses the RFB (“remote framebuffer”) protocol to enable users to remotely control another computer’s display by relaying the screen, mouse, and keyboard inputs over the network.(Citation: The Re…"
+              },
+              {
+                "id": "T1033",
+                "name": "System Owner/User Discovery",
+                "description": "Adversaries may attempt to identify the primary user, currently logged in user, set of users that commonly uses a system, or whether a user is actively using the system. They may do this, for example, by retrieving account usernames or by using [OS Credential Dumping](https://attack.mitre.org/techniques/T1003). The information may be collected in a number of different ways using other Discovery te…"
+              },
+              {
+                "id": "T1132.001",
+                "name": "Standard Encoding",
+                "description": "Adversaries may encode data with a standard data encoding system to make the content of command and control traffic more difficult to detect. Command and control (C2) information can be encoded using a standard data encoding system that adheres to existing protocol specifications. Common data encoding schemes include ASCII, Unicode, hexadecimal, Base64, and MIME.(Citation: Wikipedia Binary-to-text…"
+              },
+              {
+                "id": "T1027.013",
+                "name": "Encrypted/Encoded File",
+                "description": "Adversaries may encrypt or encode files to obfuscate strings, bytes, and other specific patterns to impede detection. Encrypting and/or encoding file content aims to conceal malicious artifacts within a file used in an intrusion. Many other techniques, such as [Software Packing](https://attack.mitre.org/techniques/T1027/002), [Steganography](https://attack.mitre.org/techniques/T1027/003), and [Emb…"
+              },
+              {
+                "id": "T1069",
+                "name": "Permission Groups Discovery",
+                "description": "Adversaries may attempt to discover group and permission settings. This information can help adversaries determine which user accounts and groups are available, the membership of users in particular groups, and which users and groups have elevated permissions.\n\nAdversaries may attempt to discover group permission settings in many different ways. This data may provide the adversary with information…"
+              },
+              {
+                "id": "T1542.003",
+                "name": "Bootkit",
+                "description": "Adversaries may use bootkits to persist on systems. A bootkit is a malware variant that modifies the boot sectors of a hard drive, allowing malicious code to execute before a computer's operating system has loaded. Bootkits reside at a layer below the operating system and may make it difficult to perform full remediation unless an organization suspects one was used and can act accordingly.\n\nIn BIO…"
+              },
+              {
+                "id": "T1204.002",
+                "name": "Malicious File",
+                "description": "An adversary may rely upon a user opening a malicious file in order to gain execution. Users may be subjected to social engineering to get them to open a file that will lead to code execution. This user action will typically be observed as follow-on behavior from [Spearphishing Attachment](https://attack.mitre.org/techniques/T1566/001). Adversaries may use several types of files that require a use…"
+              },
+              {
+                "id": "T1573.001",
+                "name": "Symmetric Cryptography",
+                "description": "Adversaries may employ a known symmetric encryption algorithm to conceal command and control traffic rather than relying on any inherent protections provided by a communication protocol. Symmetric encryption algorithms use the same key for plaintext encryption and ciphertext decryption. Common symmetric encryption algorithms include AES, DES, 3DES, Blowfish, and RC4."
+              },
+              {
+                "id": "T1087.001",
+                "name": "Local Account",
+                "description": "Adversaries may attempt to get a listing of local system accounts. This information can help adversaries determine which local accounts exist on a system to aid in follow-on behavior.\n\nCommands such as <code>net user</code> and <code>net localgroup</code> of the [Net](https://attack.mitre.org/software/S0039) utility and <code>id</code> and <code>groups</code> on macOS and Linux can list local user…"
+              },
+              {
+                "id": "T1543.003",
+                "name": "Windows Service",
+                "description": "Adversaries may create or modify Windows services to repeatedly execute malicious payloads as part of persistence. When Windows boots up, it starts programs or applications called services that perform background system functions.(Citation: TechNet Services) Windows service configuration information, including the file path to the service's executable or recovery programs/commands, is stored in th…"
+              },
+              {
+                "id": "T1566.002",
+                "name": "Spearphishing Link",
+                "description": "Adversaries may send spearphishing emails with a malicious link in an attempt to gain access to victim systems. Spearphishing with a link is a specific variant of spearphishing. It is different from other forms of spearphishing in that it employs the use of links to download malware contained in email, instead of attaching malicious files to the email itself, to avoid defenses that may inspect ema…"
+              },
+              {
+                "id": "T1566.001",
+                "name": "Spearphishing Attachment",
+                "description": "Adversaries may send spearphishing emails with a malicious attachment in an attempt to gain access to victim systems. Spearphishing attachment is a specific variant of spearphishing. Spearphishing attachment is different from other forms of spearphishing in that it employs the use of malware attached to an email. All forms of spearphishing are electronically delivered social engineering targeted a…"
+              },
+              {
+                "id": "T1559.001",
+                "name": "Component Object Model",
+                "description": "Adversaries may use the Windows Component Object Model (COM) for local code execution. COM is an inter-process communication (IPC) component of the native Windows application programming interface (API) that enables interaction between software objects, or executable code that implements one or more interfaces.(Citation: Fireeye Hunting COM June 2019) Through COM, a client object can call methods …"
+              },
+              {
+                "id": "T1555.005",
+                "name": "Password Managers",
+                "description": "Adversaries may acquire user credentials from third-party password managers.(Citation: ise Password Manager February 2019) Password managers are applications designed to store user credentials, normally in an encrypted database. Credentials are typically accessible after a user provides a master password that unlocks the database. After the database is unlocked, these credentials may be copied to …"
+              },
+              {
+                "id": "T1007",
+                "name": "System Service Discovery",
+                "description": "Adversaries may try to gather information about registered local system services. Adversaries may obtain information about services using tools as well as OS utility commands such as <code>sc query</code>, <code>tasklist /svc</code>, <code>systemctl --type=service</code>, and <code>net start</code>. Adversaries may also gather information about schedule tasks via commands such as `schtasks` on Win…"
+              },
+              {
+                "id": "T1553.002",
+                "name": "Code Signing",
+                "description": "Adversaries may create, acquire, or steal code signing materials to sign their malware or tools. Code signing provides a level of authenticity on a binary from the developer and a guarantee that the binary has not been tampered with. (Citation: Wikipedia Code Signing) The certificates used during an operation may be created, acquired, or stolen by the adversary. (Citation: Securelist Digital Certi…"
+              },
+              {
+                "id": "T1552.002",
+                "name": "Credentials in Registry",
+                "description": "Adversaries may search the Registry on compromised systems for insecurely stored credentials. The Windows Registry stores configuration information that can be used by the system or other programs. Adversaries may query the Registry looking for credentials and passwords that have been stored for use by other programs or services. Sometimes these credentials are used for automatic logons.\n\nExample …"
+              },
+              {
+                "id": "T1135",
+                "name": "Network Share Discovery",
+                "description": "Adversaries may look for folders and drives shared on remote systems as a means of identifying sources of information to gather as a precursor for Collection and to identify potential systems of interest for Lateral Movement. Networks often contain shared network drives and folders that enable users to access file directories on various systems across a network. \n\nFile sharing over a Windows netwo…"
+              },
+              {
+                "id": "T1082",
+                "name": "System Information Discovery",
+                "description": "An adversary may attempt to get detailed information about the operating system and hardware, including version, patches, hotfixes, service packs, and architecture. Adversaries may use this information to shape follow-on behaviors, including whether or not the adversary fully infects the target and/or attempts specific actions. This behavior is distinct from [Local Storage Discovery](https://attac…"
+              },
+              {
+                "id": "T1106",
+                "name": "Native API",
+                "description": "Adversaries may interact with the native OS application programming interface (API) to execute behaviors. Native APIs provide a controlled means of calling low-level OS services within the kernel, such as those involving hardware/devices, memory, and processes.(Citation: NT API Windows)(Citation: Linux Kernel API) These native APIs are leveraged by the OS during system boot (when other system comp…"
+              },
+              {
+                "id": "T1005",
+                "name": "Data from Local System",
+                "description": "Adversaries may search local system sources, such as file systems, configuration files, local databases, virtual machine files, or process memory, to find files of interest and sensitive data prior to Exfiltration.\n\nAdversaries may do this using a [Command and Scripting Interpreter](https://attack.mitre.org/techniques/T1059), such as [cmd](https://attack.mitre.org/software/S0106) as well as a [Net…"
+              },
+              {
+                "id": "T1140",
+                "name": "Deobfuscate/Decode Files or Information",
+                "description": "Adversaries may use [Obfuscated Files or Information](https://attack.mitre.org/techniques/T1027) to hide artifacts of an intrusion from analysis. They may require separate mechanisms to decode or deobfuscate that information depending on how they intend to use it. Methods for doing that include built-in functionality of malware or by using utilities present on the system.\n\nOne such example is the …"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "provenance": {
+      "citations": 1,
+      "compliant": 1,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  }
+}

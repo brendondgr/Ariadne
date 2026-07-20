@@ -1,0 +1,23 @@
+{
+  "case_id": "A-SCN-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.85,
+  "faithfulness": 0.8,
+  "groundedness": 0.8,
+  "completeness": 1,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [
+    "MEDUSA (S1220) — named in narrative but absent from logic_flow.results[0].records and from claims/citations; no supporting evidence in the artifact.",
+    "VersaMem (S1154) — same: not present in evidence records or claims.",
+    "Power Loader (S0177) — same: not present in evidence records or claims.",
+    "TDTESS (S0164) — same: not present in evidence records or claims.",
+    "Chinoxy (S1041) — same: not present in evidence records or claims.",
+    "SharpStage (S0546) — same: not present in evidence records or claims.",
+    "PAKLOG (S1233) — same: not present in evidence records or claims.",
+    "COATHANGER (S1105) — same: not present in evidence records or claims.",
+    "Sardonic (S1085) — same: not present in evidence records or claims.",
+    "Smoke Loader (S0226) — same: not present in evidence records or claims."
+  ],
+  "rationale": "Gold assertions for A-SCN-01 are purely quantitative: min_records=250, max_records=300, no must_include_ids. The execute trace confirms row_count=300 (right at the max bound, within range), so the core \"bounded scan\" requirement is satisfied — completeness is full (1/1) on the only gold criterion present. However, the narrative names 50 software entries; only the first 40 (HDoor S0061 through RobbinHood S0400) correspond to entries actually present in logic_flow.results[0].records or in the claims/citations array. The remaining 10 (listed above, e.g. MEDUSA S1220, Smoke Loader S0226) appear nowhere in the provided evidence, records, claims, or citations — per the grading rule that evidence is the only permissible ground truth, these are ungrounded even though they are plausible members of the full 300-row result set that this trimmed artifact doesn't retain. This is a minor-unsupported-detail case (not a wholesale fabrication of the scan result), so verdict is PARTIAL rather than INCORRECT; faithfulness/groundedness are docked (0.8) for the 10 unverifiable identifiers while correctness stays high (0.85) since the headline quantitative gold check passes and provenance for the cited/claimed subset (8/8 citations, 100% citation_provenance_rate per deterministic_scores) is solid."
+}

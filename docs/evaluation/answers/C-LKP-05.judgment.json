@@ -1,0 +1,15 @@
+{
+  "case_id": "C-LKP-05",
+  "verdict": "PARTIAL",
+  "correctness": 0.9,
+  "faithfulness": 0.55,
+  "groundedness": 0.55,
+  "completeness": 1,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [
+    "Narrative states Abstraction: \"Detailed\" for CAPEC-70, but the single evidence record in logic_flow.results[0].records[0] only carries the keys primary_id, name, label, description, join_values, related — there is no Abstraction field anywhere in the shown evidence to ground this value.",
+    "Narrative states Status: \"Draft\" for CAPEC-70, but again the evidence record shown has no Status field; the claims list ('Found 1 CAPEC record(s): CAPEC-70.') also never surfaces Status or Abstraction, and no citation ties these two specific values back to retrieved data."
+  ],
+  "rationale": "The narrative's content is a verbatim match to gold: it names CAPEC-70 as \"Try Common or Default Usernames and Passwords\" (matches expect_names) and states Abstraction=Detailed, Status=Draft (matches expect_properties exactly), and min/max_records=1 is satisfied by the single record returned. On pure correctness-vs-gold, this is essentially perfect (correctness 0.9). However, the artifact's own evidence — the only ground truth this grading task allows the answer to draw on — does not expose Abstraction or Status anywhere: the record in logic_flow.results[0].records[0] has only primary_id/name/label/description/join_values/related, and the single claim in answer.claims only cites \"Found 1 CAPEC record(s): CAPEC-70\" with no property-level citation for Abstraction or Status. The Gremlin query does use elementMap() so the backend presumably fetched these properties, but the normalized records blob provided as evidence strips them out, so the two specific attribute values in the narrative are not traceable/groundable from what's shown, even though they happen to equal the gold values exactly. Per the strict \"don't trust the earlier self-judgment\" instruction, this is flagged as an unverifiable (not necessarily false, but ungrounded-in-evidence) pair of property claims, which caps faithfulness/groundedness at ~0.55 despite full topical completeness (gold_expected=4: id, name, Abstraction, Status; gold_present=4, all stated) and pulls the verdict down from CORRECT to PARTIAL."
+}

@@ -1,0 +1,651 @@
+{
+  "id": "F-FAN-03",
+  "kind": "federated",
+  "tier": "hard",
+  "category": "F-FAN",
+  "question": "Which ATT&CK techniques do CAPEC-37, CAPEC-639 map to (they overlap), and what mitigations apply to the deduplicated union?",
+  "gold": {
+    "assertions": {
+      "must_correlate": [
+        "T1005",
+        "T1039",
+        "T1552.001",
+        "T1552.003",
+        "T1552.004",
+        "T1552.006"
+      ],
+      "capec": {
+        "min_records": 2,
+        "must_include_ids": [
+          "CAPEC-37",
+          "CAPEC-639"
+        ],
+        "must_include_related": [
+          "T1005",
+          "T1039",
+          "T1552.001",
+          "T1552.003",
+          "T1552.004",
+          "T1552.006"
+        ]
+      },
+      "attack": {
+        "min_records": 6,
+        "max_records": 6,
+        "must_include_ids": [
+          "T1005",
+          "T1039",
+          "T1552.001",
+          "T1552.003",
+          "T1552.004",
+          "T1552.006"
+        ],
+        "must_include_related": [
+          "M1015",
+          "M1017",
+          "M1022",
+          "M1027",
+          "M1028",
+          "M1041",
+          "M1047",
+          "M1051",
+          "M1057"
+        ]
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 2
+  },
+  "answer": {
+    "headline": "Gathered 8 record(s) from 2 source(s); 6 cross-source correlation(s) on shared identifiers.",
+    "narrative": "CAPEC-639 maps to ATT&CK techniques T1552.001, T1552.003, T1552.004, T1552.006, and T1039, while CAPEC-37 maps to T1005 and T1552.004. The deduplicated union of these techniques is T1552.001, T1552.003, T1552.004, T1552.006, T1039, and T1005. The mitigations for this union are M1057, M1041, M1047, M1022, M1027, M1028, M1017, M1051, and M1015.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 2 CAPEC record(s) for CAPEC-37, CAPEC-639; ATT&CK mappings: T1005, T1039, T1552.001, T1552.003, T1552.004.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-639",
+          "CAPEC-37"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-639"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-37"
+          }
+        ]
+      },
+      {
+        "text": "Found 6 ATT&CK record(s) including T1005, T1552.004, T1552.003 and more.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1005",
+          "T1552.004",
+          "T1552.003",
+          "T1552.001",
+          "T1552.006",
+          "T1039"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1005"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1552.004"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1552.003"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1552.001"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1552.006"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1039"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1005 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1005"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-37"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1005"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1039 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1039"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-639"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1039"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1552.001 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1552.001"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-639"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1552.001"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1552.003 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1552.003"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-639"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1552.003"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1552.004 is corroborated across attack and capec (3 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1552.004"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-639"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-37"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1552.004"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1552.006 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1552.006"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-639"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1552.006"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which ATT&CK techniques do CAPEC-37, CAPEC-639 map to?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What mitigations does ATT&CK list for those mapped techniques?",
+        "seed_from": "q1"
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Which ATT&CK techniques do CAPEC-37, CAPEC-639 map to?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(300)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 2 CAPEC record(s) for CAPEC-37, CAPEC-639; ATT&CK mappings: T1005, T1039, T1552.001, T1552.003, T1552.004.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CAPEC-37",
+                "CAPEC-639"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_maps_to",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(300)",
+              "injected": [],
+              "timing_ms": 0.103
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 7,
+              "timing_ms": 7.3
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 7,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 2,
+              "timing_ms": 0.098
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-639",
+            "name": "Probe System Files",
+            "label": "AttackPattern",
+            "description": "An adversary obtains unauthorized information due to improperly protected files. If an application stores sensitive information in a file that is not protected by proper access control, then an adversary can access the file and search for sensitive information.",
+            "join_values": [
+              "T1552.001",
+              "T1552.003",
+              "T1552.004",
+              "T1552.006",
+              "T1039"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1552.001",
+                "entry_id": "1552.001",
+                "name": "Unsecured Credentials:Credentials in files",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1552.003",
+                "entry_id": "1552.003",
+                "name": "Unsecured Credentials: Bash History",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1552.004",
+                "entry_id": "1552.004",
+                "name": "Unsecured Credentials: Private Keys",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1552.006",
+                "entry_id": "1552.006",
+                "name": "Unsecured Credentials: Group Policy Preferences",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1039",
+                "entry_id": "1039",
+                "name": "Data from Network Shared Drive",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-37",
+            "name": "Retrieve Embedded Sensitive Data",
+            "label": "AttackPattern",
+            "description": "An attacker examines a target system to find sensitive data that has been embedded within it. This information can reveal confidential contents, such as account numbers or individual keys/credentials that can be used as an intermediate step in a larger attack.",
+            "join_values": [
+              "T1005",
+              "T1552.004"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1005",
+                "entry_id": "1005",
+                "name": "Data from Local System",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1552.004",
+                "entry_id": "1552.004",
+                "name": "Unsecured Credentials: Private Keys",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "What mitigations does ATT&CK list for those mapped techniques?",
+        "query": "MATCH (t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 300",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 6 ATT&CK record(s) including T1005, T1552.004, T1552.003 and more.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "Mitigation"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1005",
+                "T1039",
+                "T1552.001",
+                "T1552.003",
+                "T1552.004",
+                "T1552.006"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "technique_mitigations",
+              "query": "MATCH (t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 300",
+              "injected": [
+                "LIMIT 300 appended (none present)"
+              ],
+              "timing_ms": 0.1
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 14,
+              "timing_ms": 6.1
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 14,
+              "timing_ms": 0.005
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 6,
+              "timing_ms": 2.232
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1005",
+            "name": "Data from Local System",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1005"
+            ],
+            "related": [
+              {
+                "id": "M1057",
+                "name": "Data Loss Prevention",
+                "description": "Data Loss Prevention (DLP) involves implementing strategies and technologies to identify, categorize, monitor, and control the movement of sensitive data within an organization. This includes protecting data formats indicative of Personally Identifiable Information (PII), intellectual property, or financial data from unauthorized access, transmission, or exfiltration. DLP solutions integrate with …"
+              }
+            ]
+          },
+          {
+            "primary_id": "T1552.004",
+            "name": "Private Keys",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1552.004"
+            ],
+            "related": [
+              {
+                "id": "M1041",
+                "name": "Encrypt Sensitive Information",
+                "description": "Protect sensitive information at rest, in transit, and during processing by using strong encryption algorithms. Encryption ensures the confidentiality and integrity of data, preventing unauthorized access or tampering. This mitigation can be implemented through the following measures:\n\nEncrypt Data at Rest:\n\n- Use Case: Use full-disk encryption or file-level encryption to secure sensitive data sto…"
+              },
+              {
+                "id": "M1047",
+                "name": "Audit",
+                "description": "Auditing is the process of recording activity and systematically reviewing and analyzing the activity and system configurations. The primary purpose of auditing is to detect anomalies and identify potential threats or weaknesses in the environment. Proper auditing configurations can also help to meet compliance requirements. The process of auditing encompasses regular analysis of user behaviors an…"
+              },
+              {
+                "id": "M1022",
+                "name": "Restrict File and Directory Permissions",
+                "description": "Restricting file and directory permissions involves setting access controls at the file system level to limit which users, groups, or processes can read, write, or execute files. By configuring permissions appropriately, organizations can reduce the attack surface for adversaries seeking to access sensitive data, plant malicious code, or tamper with system files.\n\nEnforce Least Privilege Permissio…"
+              },
+              {
+                "id": "M1027",
+                "name": "Password Policies",
+                "description": "Set and enforce secure password policies for accounts to reduce the likelihood of unauthorized access. Strong password policies include enforcing password complexity, requiring regular password changes, and preventing password reuse. This mitigation can be implemented through the following measures:\n\nWindows Systems:\n\n- Use Group Policy Management Console (GPMC) to configure:\n    - Minimum passwor…"
+              }
+            ]
+          },
+          {
+            "primary_id": "T1552.003",
+            "name": "Shell History",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1552.003"
+            ],
+            "related": [
+              {
+                "id": "M1028",
+                "name": "Operating System Configuration",
+                "description": "Operating System Configuration involves adjusting system settings and hardening the default configurations of an operating system (OS) to mitigate adversary exploitation and prevent abuse of system functionality. Proper OS configurations address security vulnerabilities, limit attack surfaces, and ensure robust defense against a wide range of techniques. This mitigation can be implemented through …"
+              }
+            ]
+          },
+          {
+            "primary_id": "T1552.001",
+            "name": "Credentials In Files",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1552.001"
+            ],
+            "related": [
+              {
+                "id": "M1047",
+                "name": "Audit",
+                "description": "Auditing is the process of recording activity and systematically reviewing and analyzing the activity and system configurations. The primary purpose of auditing is to detect anomalies and identify potential threats or weaknesses in the environment. Proper auditing configurations can also help to meet compliance requirements. The process of auditing encompasses regular analysis of user behaviors an…"
+              },
+              {
+                "id": "M1022",
+                "name": "Restrict File and Directory Permissions",
+                "description": "Restricting file and directory permissions involves setting access controls at the file system level to limit which users, groups, or processes can read, write, or execute files. By configuring permissions appropriately, organizations can reduce the attack surface for adversaries seeking to access sensitive data, plant malicious code, or tamper with system files.\n\nEnforce Least Privilege Permissio…"
+              },
+              {
+                "id": "M1027",
+                "name": "Password Policies",
+                "description": "Set and enforce secure password policies for accounts to reduce the likelihood of unauthorized access. Strong password policies include enforcing password complexity, requiring regular password changes, and preventing password reuse. This mitigation can be implemented through the following measures:\n\nWindows Systems:\n\n- Use Group Policy Management Console (GPMC) to configure:\n    - Minimum passwor…"
+              },
+              {
+                "id": "M1017",
+                "name": "User Training",
+                "description": "User Training involves educating employees and contractors on recognizing, reporting, and preventing cyber threats that rely on human interaction, such as phishing, social engineering, and other manipulative techniques. Comprehensive training programs create a human firewall by empowering users to be an active component of the organization's cybersecurity defenses. This mitigation can be implement…"
+              }
+            ]
+          },
+          {
+            "primary_id": "T1552.006",
+            "name": "Group Policy Preferences",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1552.006"
+            ],
+            "related": [
+              {
+                "id": "M1051",
+                "name": "Update Software",
+                "description": "Software updates ensure systems are protected against known vulnerabilities by applying patches and upgrades provided by vendors. Regular updates reduce the attack surface and prevent adversaries from exploiting known security gaps. This includes patching operating systems, applications, drivers, and firmware. This mitigation can be implemented through the following measures:\n\nRegular Operating Sy…"
+              },
+              {
+                "id": "M1015",
+                "name": "Active Directory Configuration",
+                "description": "Implement robust Active Directory (AD) configurations using group policies to secure user accounts, control access, and minimize the attack surface. AD configurations enable centralized control over account settings, logon policies, and permissions, reducing the risk of unauthorized access and lateral movement within the network. This mitigation can be implemented through the following measures:\n\n…"
+              },
+              {
+                "id": "M1047",
+                "name": "Audit",
+                "description": "Auditing is the process of recording activity and systematically reviewing and analyzing the activity and system configurations. The primary purpose of auditing is to detect anomalies and identify potential threats or weaknesses in the environment. Proper auditing configurations can also help to meet compliance requirements. The process of auditing encompasses regular analysis of user behaviors an…"
+              }
+            ]
+          },
+          {
+            "primary_id": "T1039",
+            "name": "Data from Network Shared Drive",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1039"
+            ],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 6,
+      "n_got": 6
+    },
+    "mapping_recall": {
+      "gold": 6,
+      "found": 6,
+      "recall": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 21,
+      "compliant": 21,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  }
+}

@@ -1,0 +1,205 @@
+{
+  "id": "A-MIT-03",
+  "kind": "attack",
+  "tier": "easy",
+  "category": "A-MIT",
+  "question": "What mitigations does ATT&CK list for T1110 (Brute Force)?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "T1110"
+      ],
+      "must_include_related": [
+        "M1018",
+        "M1027",
+        "M1032",
+        "M1036"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "M1018",
+        "M1027",
+        "M1032",
+        "M1036"
+      ],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "MITRE ATT&CK lists several mitigations for the Brute Force technique (T1110), including Account Use Policies (M1036), Multi-factor Authentication (M1032), User Account Management (M1018), and Password Policies (M1027).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 4 item(s) related to T1110 (e.g. M1036, M1032, M1018) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1110"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1110"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-MIT-03",
+      "source": "attack",
+      "text": "What mitigations does ATT&CK list for technique T1110?",
+      "entities": [
+        "Technique",
+        "Mitigation"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 300,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "T1110"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "A-MIT-03",
+        "sub_question": "What mitigations does ATT&CK list for technique T1110?",
+        "query": "MATCH (t:Technique) WHERE t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 300",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 4 item(s) related to T1110 (e.g. M1036, M1032, M1018) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "Mitigation"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1110"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "technique_mitigations",
+              "query": "MATCH (t:Technique) WHERE t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 300",
+              "injected": [
+                "LIMIT 300 appended (none present)"
+              ],
+              "timing_ms": 0.124
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 4,
+              "timing_ms": 5.7
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 4,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 1.486
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1110",
+            "name": "Brute Force",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1110"
+            ],
+            "related": [
+              {
+                "id": "M1036",
+                "name": "Account Use Policies",
+                "description": "Account Use Policies help mitigate unauthorized access by configuring and enforcing rules that govern how and when accounts can be used. These policies include enforcing account lockout mechanisms, restricting login times, and setting inactivity timeouts. Proper configuration of these policies reduces the risk of brute-force attacks, credential theft, and unauthorized access by limiting the opport…"
+              },
+              {
+                "id": "M1032",
+                "name": "Multi-factor Authentication",
+                "description": "Multi-Factor Authentication (MFA) enhances security by requiring users to provide at least two forms of verification to prove their identity before granting access. These factors typically include:\n\n- *Something you know*: Passwords, PINs.\n- *Something you have*: Physical tokens, smartphone authenticator apps.\n- *Something you are*: Biometric data such as fingerprints, facial recognition, or retin…"
+              },
+              {
+                "id": "M1018",
+                "name": "User Account Management",
+                "description": "User Account Management involves implementing and enforcing policies for the lifecycle of user accounts, including creation, modification, and deactivation. Proper account management reduces the attack surface by limiting unauthorized access, managing account privileges, and ensuring accounts are used according to organizational policies. This mitigation can be implemented through the following me…"
+              },
+              {
+                "id": "M1027",
+                "name": "Password Policies",
+                "description": "Set and enforce secure password policies for accounts to reduce the likelihood of unauthorized access. Strong password policies include enforcing password complexity, requiring regular password changes, and preventing password reuse. This mitigation can be implemented through the following measures:\n\nWindows Systems:\n\n- Use Group Policy Management Console (GPMC) to configure:\n    - Minimum passwor…"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "provenance": {
+      "citations": 1,
+      "compliant": 1,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DCA-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 9,
+  "gold_present": 9,
+  "hallucinations": [],
+  "rationale": "Gold requires DC0084 plus all 9 related analytics: AN0316, AN0405, AN0444, AN0671, AN0675, AN0770, AN1000, AN1144, AN1444. The narrative names DC0084 correctly as \"Active Directory Credential Request\" (matches the retrieved record's name field) and lists all nine analytic ids (AN0405, AN1144, AN0671, AN1444, AN0675, AN0316, AN1000, AN0444, AN0770) — an exact match to the gold set and to the query's `related` array, with the correct count of 9. The characterization \"forged Kerberos tickets, NTLM authentication anomalies, and unauthorized Active Directory replication or registration\" is directly grounded in the retrieved analytic descriptions (AN0405/AN0675 forged Kerberos tickets, AN1144 NTLM anomalies, AN0770 rogue DC registration/replication abuse) — no invented facts. The single logged claim only cites DC0084 as provenance and gives 3 examples rather than itemized citations for all 9 analytic ids, which is a minor provenance-granularity gap, but every stated fact is traceable to the logic_flow evidence with no fabrication or omission."
+}

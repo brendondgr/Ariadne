@@ -1,0 +1,12 @@
+{
+  "case_id": "C-CSQ-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.35,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 0.05,
+  "gold_expected": 3,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires the narrative to surface the three consequence entity ids (capec:attack-pattern:98:consequence:1/2/3). The retrieved record (logic_flow.results[0].records[0]) does contain exactly these three related Consequence nodes, but their only 'name' field is the placeholder string equal to the id itself (no real descriptive text exists in the evidence). The narrative correctly identifies CAPEC-98 as Phishing, correctly gives its description verbatim from evidence, and honestly states that \"three related consequences\" exist but their names/descriptions are not available — this is faithful and grounded (no invented consequence content, no fabricated names). However, it never states the actual required identifiers (consequence:1, consequence:2, consequence:3), so the must_include_related assertion is not satisfied: gold_present = 0 of 3. The claims array also only records the top-level CAPEC-98 fact, with no per-consequence claim or citation. This is not a hallucination case (faithfulness/groundedness both 1.0), but it is materially incomplete against the gold assertions, so it lands as PARTIAL rather than CORRECT — a fully correct answer should at minimum enumerate the three consequence identifiers even though richer descriptive detail is unavailable in the evidence."
+}

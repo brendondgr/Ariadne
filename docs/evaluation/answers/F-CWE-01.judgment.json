@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.7,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 0.67,
+  "gold_expected": 60,
+  "gold_present": 40,
+  "hallucinations": [],
+  "rationale": "CAPEC and ATT&CK coverage is complete and fully grounded: all 10 required CAPEC-474/509/551/555/560/561/600/644/645/652 are named with names matching the evidence records exactly, all 12 required must_correlate T-numbers (T1021, T1021.002, T1078, T1110.004, T1114.002, T1133, T1543, T1550.002, T1550.003, T1552.004, T1558, T1558.003) are stated in the narrative and each has a dedicated \"corroborated across attack and capec\" claim, matching deterministic_scores.correlation (precision/recall/f1 = 1.0) and mapping_recall (12/12). CWE-522 linkage is stated. No fabricated names, ids, or facts were found — every entity and description in the narrative traces to logic_flow.results records, so faithfulness and groundedness are both 1.0. The gap is the mitigations sub-question: gold's attack.must_include_related lists 25 distinct mitigation ids (M1013…M1060, verified as the exact union of mitigations attached to the 12 technique records in evidence), but the narrative names only 5 (M1027, M1026, M1018, M1032, M1015), omitting 20 grounded mitigations that are present in the retrieved evidence (e.g. M1041 Encrypt Sensitive Information, M1043 Credential Access Protection, M1035 Limit Access to Resource Over Network, M1030 Network Segmentation, M1060 Out-of-Band Communications Channel, M1045 Code Signing, etc.) — the deterministic composer truncates to a short \"include\" list rather than enumerating the full mitigation set the question asked for (\"what mitigations apply?\"). This is a completeness shortfall, not a hallucination, and is consistent with the known deterministic-composer summarization ceiling. Aggregate entity coverage: 12/12 correlation ids, 10/10 CAPEC ids, 1/1 CWE-522, 12/12 ATT&CK technique ids, but only 5/25 mitigation ids (40/60 overall), which caps this at PARTIAL rather than CORRECT."
+}

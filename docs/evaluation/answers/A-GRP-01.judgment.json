@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires min_records=5 and must_include_ids [T1005, T1037, T1047, T1068, T1078]. The retrieved evidence (logic_flow.results[0].records) contains exactly 17 Technique records from the `MATCH (g:Group)-[:USES]->(t:Technique)` query on G0016, and the narrative explicitly names and IDs all 17 of them, including all 5 required must_include_ids (T1005 \"Data from Local System\", T1037 \"Boot or Logon Initialization Scripts\", T1047 \"Windows Management Instrumentation\", T1068 \"Exploitation for Privilege Escalation\", T1078 \"Valid Accounts\"). Cross-checking the broader ex_gold.expected list (17 T-numbers, scheme=attack, pool=neighbors) shows a perfect match — every one of the 17 expected technique IDs (T1005, T1037, T1047, T1068, T1078, T1105, T1133, T1190, T1199, T1203, T1528, T1568, T1573, T1621, T1649, T1651, T1665) appears in both the evidence records and the narrative text, with no extras and no omissions. Every technique-ID/name pair stated in the narrative matches the corresponding evidence record's name field verbatim (e.g. T1665→\"Hide Infrastructure\", T1651→\"Cloud Administration Command\"), so there is no fabrication. Note the \"claims\" array only cites 8 of the 17 entity_ids as provenance, which slightly understates the citation/claims-level provenance versus the narrative's full 17-item enumeration, but this does not affect the correctness of the prose answer itself, which is complete and fully grounded."
+}

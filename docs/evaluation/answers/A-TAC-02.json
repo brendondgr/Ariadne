@@ -1,0 +1,390 @@
+{
+  "id": "A-TAC-02",
+  "kind": "attack",
+  "tier": "medium",
+  "category": "A-TAC",
+  "question": "Which techniques belong to tactic TA0006 (Credential Access)?",
+  "gold": {
+    "assertions": {
+      "min_records": 5,
+      "must_include_ids": [
+        "T1003",
+        "T1040",
+        "T1056",
+        "T1110",
+        "T1111"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "T1003",
+        "T1040",
+        "T1056",
+        "T1110",
+        "T1111",
+        "T1187",
+        "T1212",
+        "T1528",
+        "T1539",
+        "T1552",
+        "T1555",
+        "T1556",
+        "T1557",
+        "T1558",
+        "T1606",
+        "T1621",
+        "T1649"
+      ],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 17 record(s) from 1 source(s).",
+    "narrative": "The techniques under tactic TA0006 (Credential Access) are Input Capture (T1056), Modify Authentication Process (T1556), Multi-Factor Authentication Interception (T1111), Adversary-in-the-Middle (T1557), OS Credential Dumping (T1003), Steal Web Session Cookie (T1539), Network Sniffing (T1040), Steal or Forge Kerberos Tickets (T1558), Credentials from Password Stores (T1555), Unsecured Credentials (T1552), Steal or Forge Authentication Certificates (T1649), Steal Application Access Token (T1528), Forge Web Credentials (T1606), Multi-Factor Authentication Request Generation (T1621), Exploitation for Credential Access (T1212), Brute Force (T1110), and Forced Authentication (T1187).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 17 ATT&CK record(s) including T1056, T1556, T1111 and more.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1056",
+          "T1556",
+          "T1111",
+          "T1557",
+          "T1003",
+          "T1539",
+          "T1040",
+          "T1558"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1056"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1556"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1111"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1557"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1003"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1539"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1040"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1558"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-TAC-02",
+      "source": "attack",
+      "text": "List the techniques under tactic TA0006.",
+      "entities": [
+        "Tactic",
+        "Technique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 300,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "TA0006"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "A-TAC-02",
+        "sub_question": "List the techniques under tactic TA0006.",
+        "query": "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique) WHERE ta.attack_id IN $ids RETURN ta.attack_id AS tactic_id, ta.name AS tactic_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 300",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 17 ATT&CK record(s) including T1056, T1556, T1111 and more.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Tactic",
+                "Technique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "TA0006"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "tactic_techniques",
+              "query": "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique) WHERE ta.attack_id IN $ids RETURN ta.attack_id AS tactic_id, ta.name AS tactic_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 300",
+              "injected": [
+                "LIMIT 300 appended (none present)"
+              ],
+              "timing_ms": 0.083
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 17,
+              "timing_ms": 5.0
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 17,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 17,
+              "timing_ms": 0.109
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1056",
+            "name": "Input Capture",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1056"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1556",
+            "name": "Modify Authentication Process",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1556"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1111",
+            "name": "Multi-Factor Authentication Interception",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1111"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1557",
+            "name": "Adversary-in-the-Middle",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1557"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1003",
+            "name": "OS Credential Dumping",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1003"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1539",
+            "name": "Steal Web Session Cookie",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1539"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1040",
+            "name": "Network Sniffing",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1040"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1558",
+            "name": "Steal or Forge Kerberos Tickets",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1558"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1555",
+            "name": "Credentials from Password Stores",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1555"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1552",
+            "name": "Unsecured Credentials",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1552"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1649",
+            "name": "Steal or Forge Authentication Certificates",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1649"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1528",
+            "name": "Steal Application Access Token",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1528"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1606",
+            "name": "Forge Web Credentials",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1606"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1621",
+            "name": "Multi-Factor Authentication Request Generation",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1621"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1212",
+            "name": "Exploitation for Credential Access",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1212"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1110",
+            "name": "Brute Force",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1110"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1187",
+            "name": "Forced Authentication",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1187"
+            ],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "provenance": {
+      "citations": 8,
+      "compliant": 8,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  }
+}

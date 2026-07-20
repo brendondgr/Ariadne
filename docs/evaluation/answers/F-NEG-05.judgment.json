@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-05",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a NEG (negative) adversarial case where gold asserts must_correlate=[], expect_no_correlation=true, capec.expect_empty=true, and attack.expect_dependency_skip=true — i.e. the correct behavior is an honest empty result, not a fabricated CAPEC-16→ATT&CK mapping. The pipeline's capec query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within([\"CAPEC-16\"]))...out(\"MAPS_TO\")...) executed cleanly per the traces (execute step: row_count=0, ok=true) and legitimately returned zero rows, matching capec.expect_empty. Because q1 produced no seed identifiers, the attack sub-question (q2, mitigations) was correctly skipped via the dependency step (\"producer q1: it returned no join values\"), matching attack.expect_dependency_skip. The narrative states plainly that no matching records were returned and invites the analyst to supply a specific id, with zero claims and two abstentions that accurately describe what happened (clean empty query for capec; dependency skip for attack) — no invented technique, mitigation, or correlation appears anywhere. deterministic_scores.correlation confirms negative=true, exact=true, precision/recall/f1=1.0, n_expected=0, n_got=0, and abstention_proof_ok=true. Since gold requires zero entities to be surfaced (must_correlate=[]), gold_expected=0 and gold_present=0, satisfying completeness vacuously. No hallucinations found; this is a textbook correct negative-case abstention."
+}

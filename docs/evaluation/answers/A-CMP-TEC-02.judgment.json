@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-TEC-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.5,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 0.4,
+  "gold_expected": 5,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold's authoritative must_include_ids for this question are {T1005, T1018, T1047, T1057, T1069}. The retrieved evidence (logic_flow.results[0].records) correctly contains all five, plus 19 more techniques (24 total, satisfying min_records=5). However the narrative — the answer under test — only states 2 of the 5 required ids: T1018 (Remote System Discovery) and T1047 (Windows Management Instrumentation). It never names T1005 (Data from Local System), T1057 (Process Discovery), or T1069 (Permission Groups Discovery), nor do they appear in the supporting claim's entity_ids list ([T1680, T1686, T1665, T1105, T1018, T1213, T1047, T1133]). So while retrieval was complete and correct, the deterministic composer's narrative surfaced only a subset (11 of 24 techniques overall) and happened to drop 3 of the 5 gold-mandated ids. Every technique the narrative does name (T1680, T1665, T1105, T1018, T1047, T1539, T1190, T1087, T1482, T1213, T1078) is verifiably grounded in the evidence records with matching names — no invented facts, so faithfulness and groundedness are high. The overall count (24 techniques) is also correctly stated. This is a completeness failure on required entities rather than a correctness/fabrication failure, so verdict is PARTIAL, not INCORRECT."
+}

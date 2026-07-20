@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-02",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires the CAPEC side to surface CAPEC-98 with related T1566 (must_include_ids/must_include_related), while the attack side must honestly refuse (expect_boundary: true) since ATT&CK does not model \"Asset.\" The narrative states \"CAPEC-98 (Phishing) maps to the ATT&CK technique T1566,\" directly satisfying both must_include_ids and must_include_related, and matches the retrieved CAPEC record (name \"Phishing,\" join_values [\"T1566\"], related TaxonomyEntry \"1566\"). For the attack/asset half it states \"The provided evidence does not contain information regarding the specific assets targeted by T1566\" — a correct, non-fabricating refusal consistent with the logic_flow's boundary trace (\"entities not modeled by the attack source: Asset\") and expect_no_correlation/expect_boundary assertions; no CAPEC-98/T1566 correlation or fabricated asset data was invented. Every fact traces cleanly to the single CAPEC record in evidence, and the single claim/citation (CAPEC-98) plus the attack abstention are both properly grounded, matching deterministic_scores (abstention_proof_ok: true, fully_provenanced: true, correlation exact/negative: true). No hallucinations found; both gold-required elements (CAPEC-98 id, T1566 relation) are surfaced."
+}

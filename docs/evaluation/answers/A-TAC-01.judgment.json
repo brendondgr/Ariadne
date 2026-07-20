@@ -1,0 +1,12 @@
+{
+  "case_id": "A-TAC-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 11,
+  "gold_present": 11,
+  "hallucinations": [],
+  "rationale": "The gold ex_gold expected pool for TA0001 is the 11 techniques {T1078, T1091, T1133, T1189, T1190, T1195, T1199, T1200, T1566, T1659, T1669}, a superset of the 5 must_include_ids. The single Cypher query (MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique) WHERE ta.attack_id IN ['TA0001']) returned exactly these 11 records, and the narrative names all 11 with names that match the evidence records verbatim (e.g., T1669='Wi-Fi Networks', T1190='Exploit Public-Facing Application', T1091='Replication Through Removable Media'). No technique is missing and no fabricated technique or name is introduced. The only minor blemish is that the supporting 'claims' array cites only 8 of the 11 ids (omitting T1195, T1091, T1133 from the citation list) even though the narrative text itself states all 11 — this is a provenance-completeness nit on the claims object, not a correctness or faithfulness defect in the narrative under test, so it does not lower the score."
+}

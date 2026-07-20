@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires the three CAPEC ids (CAPEC-57, CAPEC-65, CAPEC-158) mapped to T1040, the correlation on T1040, and the correct technique name \"Network Sniffing\" for T1040. The narrative states \"The CAPEC patterns mapping to ATT&CK technique T1040 are CAPEC-57, CAPEC-158, and CAPEC-65\" — all three gold-required CAPEC ids present, matching the retrieved records (evidence rows CAPEC-57, CAPEC-158, CAPEC-65 each carry related TaxonomyEntry entry_id \"1040\"/\"Network Sniffing\", satisfying must_correlate and must_include_related). It then correctly names T1040 as \"Network Sniffing\" (matches expect_names exactly) and paraphrases its description faithfully: \"a technique where adversaries use a network interface to passively monitor or capture information sent over wired or wireless connections, which may include authentication material\" tracks closely to the evidence text \"Network sniffing refers to using the network interface on a system to monitor or capture information sent over a wired or wireless connection... including authentication material passed over the network.\" No fabricated ids, names, or properties are introduced; every claim traces directly to the capec/attack records in logic_flow.results. All 4 required entities (3 CAPEC ids + T1040) are surfaced with correct correlation and correct expected name, so this is a full, faithful, complete answer."
+}

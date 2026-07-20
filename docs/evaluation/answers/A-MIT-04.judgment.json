@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MIT-04",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "Gold requires T1566 plus all six mitigations M1017, M1021, M1031, M1047, M1049, M1054 (ex_gold pool=neighbors). The narrative explicitly names and correctly IDs all six: Audit (M1047), Software Configuration (M1054), Antivirus/Antimalware (M1049), User Training (M1017), Restrict Web-Based Content (M1021), Network Intrusion Prevention (M1031) — every id/name pair matches the retrieved 'related' records in logic_flow.results[0].records[0].related exactly, with no extras and no invented mitigations. T1566 is correctly named as Phishing per the retrieved technique record. The single fact claim (\"Found 6 item(s) related to T1566 (e.g. M1047, M1054, M1049)\") is grounded in the execute/normalize trace (row_count 6) and cited to attack/T1566. This is a positive case (min_records:1) and data was correctly surfaced rather than abstained. No unsupported dates, statuses, or abstraction levels were asserted beyond what evidence provides, so faithfulness and groundedness are full. Completeness is 6/6."
+}

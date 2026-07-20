@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MC-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.65,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 0.83,
+  "gold_expected": 11,
+  "gold_present": 10,
+  "hallucinations": [],
+  "rationale": "Gold requires all 9 technique ids (T1047, T1059, T1106, T1127, T1129, T1204, T1574, T1609, T1674) under TA0002 mitigated by M1038, plus the two related context ids TA0002 and M1038. The retrieval itself is correct and complete: the Cypher query returned exactly 9 rows matching the gold set 1:1 (row_count=9, record_count=9), and every record's name (e.g. T1127 \"Trusted Developer Utilities Proxy Execution\", T1047 \"Windows Management Instrumentation\", T1059 \"Command and Scripting Interpreter\") matches evidence exactly, so there is zero hallucination and full groundedness for everything actually stated. However, the narrative only explicitly names 3 of the 9 required technique ids (T1127, T1047, T1059) as \"examples,\" and the supporting claims/citations list only 8 of the 9 ids (T1127, T1047, T1129, T1106, T1674, T1059, T1609, T1204) — T1574 (Hijack Execution Flow), which is present in the retrieved records, is dropped entirely from both the claim's entity_ids and its citations. The narrative correctly states the count \"9 techniques\" and both required context entities (TA0002, M1038) are named with correct titles, satisfying must_include_related. But since this is an enumeration-style question (tier: hard) and one of the nine required must_include_ids (T1574) is never surfaced anywhere in the answer despite being retrieved, this is an incomplete answer rather than a fully correct one — a fabrication-free but under-enumerated PARTIAL. gold_present=10/11 counts the 8 technique ids actually surfaced plus TA0002 and M1038; T1574 is the sole gap."
+}

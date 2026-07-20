@@ -1,0 +1,12 @@
+{
+  "case_id": "C-ABS-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.15,
+  "faithfulness": 0.85,
+  "groundedness": 0.9,
+  "completeness": 0.5,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "The question asks for CAPEC-16's standard ancestor and its meta ancestor. The executed query (logic_flow.results[0].query) is exactly a two-hop CHILD_OF traversal — ap→parent→grandparent — matching the gold hierarchy walk, and the single returned record's \"related\" list contains CAPEC-49 then CAPEC-112, i.e. the required ids in the gold order (must_include_related: CAPEC-49, CAPEC-112; ex_gold expected [CAPEC-112, CAPEC-49] as the standard/meta pair). The narrative does name both ids verbatim (\"CAPEC-49 and CAPEC-112 are listed as related\"), so both required identifiers are surfaced literally (gold_present=2/2) and nothing is fabricated (no invented abstraction level, name, or id — faithfulness is not violated). However, the narrative explicitly refuses to answer the actual question: it states the parent/meta identifiers \"are not included in the record\" and that CAPEC-49/CAPEC-112's \"specific hierarchical relationship... is not defined,\" when the query itself was structured precisely to distinguish parent (standard, CAPEC-49) from grandparent (meta, CAPEC-112). This is a self-imposed non-answer on a case that is not a negative/abstention case (min_records=1, must_include_ids present, records were in fact returned) — the correct behavior per the rubric is to state the ancestors, not decline. Because the headline correctness criterion is whether the question is actually answered, and it is not (the pipeline had the two required entity ids in hand but failed to assert which is the standard ancestor and which is the meta ancestor), this is scored INCORRECT despite the ids being mentioned in passing. This matches a known deterministic-composer ceiling noted in project history (summarize()-only composition on structured/attribute-style questions) rather than a retrieval failure — the underlying CAPEC hierarchy record was correctly fetched, but the narrator did not correlate it into an actual answer."
+}

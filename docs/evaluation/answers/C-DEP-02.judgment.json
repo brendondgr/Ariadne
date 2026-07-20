@@ -1,0 +1,12 @@
+{
+  "case_id": "C-DEP-02",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative case: gold asserts expect_empty=true with an empty expected list for CAPEC-106 (deprecated, excluded at load), so the correct behavior is abstention with zero fabricated records. The executed Gremlin query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within([\"CAPEC-106\"]))...) ran cleanly with row_count 0 at every trace step (execute, assess, normalize), confirming the source genuinely holds nothing for this id rather than the pipeline failing silently. The narrative states \"The routed sources returned no matching records for this question\" and offers no fabricated facts about CAPEC-106 (no invented name, abstraction level, or relationships) — it matches the abstention statement and the empty records array exactly. claims=[] and abstentions=[1] correctly reflect the empty result set. No gold entities were required to be surfaced (must_include lists absent, expected=[]), and none were incorrectly surfaced, so completeness is fully satisfied by the correct absence of content. No hallucinations found."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-03",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative-case federated question (CAPEC-3 → ATT&CK mapping) where gold asserts must_correlate=[], expect_no_correlation=true, capec.expect_empty=true, and attack.expect_dependency_skip=true. The answer's q1 (capec) trace shows the exact MAPS_TO gremlin query executed cleanly against seed CAPEC-3 with row_count=0 (traces.execute/assess/normalize all confirm 0 rows) — matching capec.expect_empty. q2 (attack) shows a dependency-skip trace (\"producer q1: it returned no join values\", query=\"\") — exactly matching attack.expect_dependency_skip. The narrative honestly states \"The routed sources returned no matching records for this question\" and offers to help if the analyst names a specific entity, with no fabricated technique IDs, mitigation IDs, or correlation claims anywhere in narrative/claims/abstentions. claims=[] as required for a true negative. No statement in the narrative or abstentions is unsupported by the evidence — both abstention statements paraphrase their own trace data accurately (capec: \"query ran cleanly and returned no matching records\"; attack: \"sub-question it depends on (q1) produced no seed identifiers\"). Since gold requires zero entities to be surfaced (gold_expected=0) and the answer surfaces zero (gold_present=0) while correctly avoiding any fabricated correlation, this is a clean CORRECT with no hallucinations."
+}

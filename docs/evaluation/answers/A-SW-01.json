@@ -1,0 +1,312 @@
+{
+  "id": "A-SW-01",
+  "kind": "attack",
+  "tier": "medium",
+  "category": "A-SW",
+  "question": "Which techniques does software S0002 (Mimikatz) use?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "S0002"
+      ],
+      "must_include_related": [
+        "T1003.001",
+        "T1003.002",
+        "T1003.004",
+        "T1003.006",
+        "T1098",
+        "T1134.005",
+        "T1207",
+        "T1547.005",
+        "T1550.002",
+        "T1550.003",
+        "T1552.004",
+        "T1555",
+        "T1555.003",
+        "T1555.004",
+        "T1558.001",
+        "T1558.002",
+        "T1649"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "T1003.001",
+        "T1003.002",
+        "T1003.004",
+        "T1003.006",
+        "T1098",
+        "T1134.005",
+        "T1207",
+        "T1547.005",
+        "T1550.002",
+        "T1550.003",
+        "T1552.004",
+        "T1555",
+        "T1555.003",
+        "T1555.004",
+        "T1558.001",
+        "T1558.002",
+        "T1649"
+      ],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "Software S0002 (Mimikatz) uses 17 ATT&CK techniques, including Security Account Manager (T1003.002), DCSync (T1003.006), Pass the Hash (T1550.002), and Golden Ticket (T1558.001). These techniques involve various methods for credential theft, authentication manipulation, and lateral movement.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 17 item(s) related to S0002 (e.g. T1003.002, T1003.006, T1550.002) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "S0002"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "S0002"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-SW-01",
+      "source": "attack",
+      "text": "Which ATT&CK techniques does software S0002 use?",
+      "entities": [
+        "Software",
+        "Technique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 300,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "S0002"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "A-SW-01",
+        "sub_question": "Which ATT&CK techniques does software S0002 use?",
+        "query": "MATCH (s:Software)-[:USES]->(t) WHERE (t:Technique OR t:SubTechnique) AND s.attack_id IN $ids RETURN s.attack_id AS software_id, s.name AS software_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 300",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 17 item(s) related to S0002 (e.g. T1003.002, T1003.006, T1550.002) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Software",
+                "Technique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "S0002"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "software_techniques",
+              "query": "MATCH (s:Software)-[:USES]->(t) WHERE (t:Technique OR t:SubTechnique) AND s.attack_id IN $ids RETURN s.attack_id AS software_id, s.name AS software_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 300",
+              "injected": [
+                "LIMIT 300 appended (none present)"
+              ],
+              "timing_ms": 0.087
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 17,
+              "timing_ms": 36.1
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 17,
+              "timing_ms": 0.008
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 3.094
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "S0002",
+            "name": "Mimikatz",
+            "label": "Software",
+            "description": "",
+            "join_values": [
+              "T1003.002",
+              "T1003.006",
+              "T1550.002",
+              "T1555.004",
+              "T1558.002",
+              "T1134.005",
+              "T1098",
+              "T1649",
+              "T1550.003",
+              "T1558.001",
+              "T1003.001",
+              "T1552.004",
+              "T1555.003",
+              "T1207",
+              "T1547.005",
+              "T1555",
+              "T1003.004"
+            ],
+            "related": [
+              {
+                "id": "T1003.002",
+                "name": "Security Account Manager",
+                "description": "Adversaries may attempt to extract credential material from the Security Account Manager (SAM) database either through in-memory techniques or through the Windows Registry where the SAM database is stored. The SAM is a database file that contains local accounts for the host, typically those found with the <code>net user</code> command. Enumerating the SAM database requires SYSTEM level access.\n\nA …"
+              },
+              {
+                "id": "T1003.006",
+                "name": "DCSync",
+                "description": "Adversaries may attempt to access credentials and other sensitive information by abusing a Windows Domain Controller's application programming interface (API)(Citation: Microsoft DRSR Dec 2017) (Citation: Microsoft GetNCCChanges) (Citation: Samba DRSUAPI) (Citation: Wine API samlib.dll) to simulate the replication process from a remote domain controller using a technique called DCSync.\n\nMembers of…"
+              },
+              {
+                "id": "T1550.002",
+                "name": "Pass the Hash",
+                "description": "Adversaries may “pass the hash” using stolen password hashes to move laterally within an environment, bypassing normal system access controls. Pass the hash (PtH) is a method of authenticating as a user without having access to the user's cleartext password. This method bypasses standard authentication steps that require a cleartext password, moving directly into the portion of the authentication …"
+              },
+              {
+                "id": "T1555.004",
+                "name": "Windows Credential Manager",
+                "description": "Adversaries may acquire credentials from the Windows Credential Manager. The Credential Manager stores credentials for signing into websites, applications, and/or devices that request authentication through NTLM or Kerberos in Credential Lockers (previously known as Windows Vaults).(Citation: Microsoft Credential Manager store)(Citation: Microsoft Credential Locker)\n\nThe Windows Credential Manager…"
+              },
+              {
+                "id": "T1558.002",
+                "name": "Silver Ticket",
+                "description": "Adversaries who have the password hash of a target service account (e.g. SharePoint, MSSQL) may forge Kerberos ticket granting service (TGS) tickets, also known as silver tickets. Kerberos TGS tickets are also known as service tickets.(Citation: ADSecurity Silver Tickets)\n\nSilver tickets are more limited in scope in than golden tickets in that they only enable adversaries to access a particular re…"
+              },
+              {
+                "id": "T1134.005",
+                "name": "SID-History Injection",
+                "description": "Adversaries may use SID-History Injection to escalate privileges and bypass access controls. The Windows security identifier (SID) is a unique value that identifies a user or group account. SIDs are used by Windows security in both security descriptors and access tokens. (Citation: Microsoft SID) An account can hold additional SIDs in the SID-History Active Directory attribute (Citation: Microsoft…"
+              },
+              {
+                "id": "T1098",
+                "name": "Account Manipulation",
+                "description": "Adversaries may manipulate accounts to maintain and/or elevate access to victim systems. Account manipulation may consist of any action that preserves or modifies adversary access to a compromised account, such as modifying credentials or permission groups.(Citation: FireEye SMOKEDHAM June 2021) These actions could also include account activity designed to subvert security policies, such as perfor…"
+              },
+              {
+                "id": "T1649",
+                "name": "Steal or Forge Authentication Certificates",
+                "description": "Adversaries may steal or forge certificates used for authentication to access remote systems or resources. Digital certificates are often used to sign and encrypt messages and/or files. Certificates are also used as authentication material. For example, Entra ID device certificates and Active Directory Certificate Services (AD CS) certificates bind to an identity and can be used as credentials for…"
+              },
+              {
+                "id": "T1550.003",
+                "name": "Pass the Ticket",
+                "description": "Adversaries may “pass the ticket” using stolen Kerberos tickets to move laterally within an environment, bypassing normal system access controls. Pass the ticket (PtT) is a method of authenticating to a system using Kerberos tickets without having access to an account's password. Kerberos authentication can be used as the first step to lateral movement to a remote system.\n\nWhen preforming PtT, val…"
+              },
+              {
+                "id": "T1558.001",
+                "name": "Golden Ticket",
+                "description": "Adversaries who have the KRBTGT account password hash may forge Kerberos ticket-granting tickets (TGT), also known as a golden ticket.(Citation: AdSecurity Kerberos GT Aug 2015) Golden tickets enable adversaries to generate authentication material for any account in Active Directory.(Citation: CERT-EU Golden Ticket Protection) \n\nUsing a golden ticket, adversaries are then able to request ticket gr…"
+              },
+              {
+                "id": "T1003.001",
+                "name": "LSASS Memory",
+                "description": "Adversaries may attempt to access credential material stored in the process memory of the Local Security Authority Subsystem Service (LSASS). After a user logs on, the system generates and stores a variety of credential materials in LSASS process memory. These credential materials can be harvested by an administrative user or SYSTEM and used to conduct [Lateral Movement](https://attack.mitre.org/t…"
+              },
+              {
+                "id": "T1552.004",
+                "name": "Private Keys",
+                "description": "Adversaries may search for private key certificate files on compromised systems for insecurely stored credentials. Private cryptographic keys and certificates are used for authentication, encryption/decryption, and digital signatures.(Citation: Wikipedia Public Key Crypto) Common key and certificate file extensions include: .key, .pgp, .gpg, .ppk., .p12, .pem, .pfx, .cer, .p7b, .asc. \n\nAdversaries…"
+              },
+              {
+                "id": "T1555.003",
+                "name": "Credentials from Web Browsers",
+                "description": "Adversaries may acquire credentials from web browsers by reading files specific to the target browser.(Citation: Talos Olympic Destroyer 2018) Web browsers commonly save credentials such as website usernames and passwords so that they do not need to be entered manually in the future. Web browsers typically store the credentials in an encrypted format within a credential store; however, methods exi…"
+              },
+              {
+                "id": "T1207",
+                "name": "Rogue Domain Controller",
+                "description": "Adversaries may register a rogue Domain Controller to enable manipulation of Active Directory data. DCShadow may be used to create a rogue Domain Controller (DC). DCShadow is a method of manipulating Active Directory (AD) data, including objects and schemas, by registering (or reusing an inactive registration) and simulating the behavior of a DC. (Citation: DCShadow Blog) Once registered, a rogue …"
+              },
+              {
+                "id": "T1547.005",
+                "name": "Security Support Provider",
+                "description": "Adversaries may abuse security support providers (SSPs) to execute DLLs when the system boots. Windows SSP DLLs are loaded into the Local Security Authority (LSA) process at system start. Once loaded into the LSA, SSP DLLs have access to encrypted and plaintext passwords that are stored in Windows, such as any logged-on user's Domain password or smart card PINs.\n\nThe SSP configuration is stored in…"
+              },
+              {
+                "id": "T1555",
+                "name": "Credentials from Password Stores",
+                "description": "Adversaries may search for common password storage locations to obtain user credentials.(Citation: F-Secure The Dukes) Passwords are stored in several places on a system, depending on the operating system or application holding the credentials. There are also specific applications and services that store passwords to make them easier for users to manage and maintain, such as password managers and …"
+              },
+              {
+                "id": "T1003.004",
+                "name": "LSA Secrets",
+                "description": "Adversaries with SYSTEM access to a host may attempt to access Local Security Authority (LSA) secrets, which can contain a variety of different credential materials, such as credentials for service accounts.(Citation: Passcape LSA Secrets)(Citation: Microsoft AD Admin Tier Model)(Citation: Tilbury Windows Credentials) LSA secrets are stored in the registry at <code>HKEY_LOCAL_MACHINE\\SECURITY\\Poli…"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "provenance": {
+      "citations": 1,
+      "compliant": 1,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  }
+}

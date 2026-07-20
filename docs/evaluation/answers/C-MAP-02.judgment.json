@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-02",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-98] and must_include_related=[T1566, T1598] (also the join pool expects exactly T1566, T1598). The retrieved record shows CAPEC-98 (name \"Phishing\") with related TaxonomyEntry nodes for ATT&CK 1566 (\"Phishing\") and 1598 (\"Phishing for Information\"), and join_values=[T1566, T1598]. The narrative states: \"CAPEC-98, named Phishing, maps to the ATT&CK techniques T1566 and T1598.\" This surfaces both required T-numbers, correctly names CAPEC-98 as \"Phishing\" (matches evidence), and adds no unsupported claims — it does not fabricate technique names, descriptions, or extra mappings beyond what's in the record. Both gold ids present (2/2). No hallucinations found."
+}

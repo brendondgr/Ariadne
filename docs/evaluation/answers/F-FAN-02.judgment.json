@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-02",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 13,
+  "gold_present": 13,
+  "hallucinations": [],
+  "rationale": "Every claim in the narrative is directly traceable to the retrieved records. CAPEC-13's mapping (T1574.006, T1574.007, T1562.003) and CAPEC-640's mapping (T1505.005, T1574.006, T1574.013, T1620) exactly match the join_values/related arrays in the q1 evidence, and T1574.006 correctly appears only once (proper de-duplication of the overlap the question flags). The six mitigations cited — M1047 Audit, M1022 Restrict File and Directory Permissions, M1038 Execution Prevention, M1024 Restrict Registry Permissions, M1028 Operating System Configuration, M1040 Behavior Prevention on Endpoint — all appear with matching names/ids in the q2 ATT&CK evidence (T1574.007→M1047/M1022/M1038, T1505.005→M1047/M1024, T1574.006→M1038/M1028, T1574.013→M1040), and no mitigation is invented (T1620 correctly gets none claimed, matching its empty 'related' list). Against gold: all 5 must_correlate/must_include_related T-numbers (T1505.005, T1574.006, T1574.007, T1574.013, T1620) are surfaced, both must_include_ids CAPEC-13/CAPEC-640 are named, and all 6 must_include_related mitigations (M1022, M1024, M1028, M1038, M1040, M1047) are present — 13/13 gold-required entities covered. deterministic_scores confirm this independently (correlation f1=1.0, mapping_recall=1.0, provenance/inspectability=1.0). Only a very minor stylistic gap: the answer never explicitly states \"T1574.006 is the overlapping technique,\" leaving the overlap implicit rather than called out, but this doesn't affect factual correctness or completeness against the gold assertions. No hallucinations found."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-LKP-02",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires exactly one record, id M1038, name \"Execution Prevention\" (assertions.must_include_ids=[\"M1038\"], expect_names.M1038=\"Execution Prevention\"). The narrative states \"The MITRE ATT&CK mitigation M1038 is named Execution Prevention,\" matching the gold name exactly, and the retrieved record (logic_flow.results[0].records[0]) confirms primary_id=M1038, name=\"Execution Prevention\", label=Mitigation. The added description clause (\"designed to prevent the execution of unauthorized or malicious code on systems by implementing mechanisms such as application control and script blocking\") is a faithful paraphrase of the record's description field (\"Prevent the execution of unauthorized or malicious code on systems by implementing application control, script blocking...\"), so no invented content. The single claim cites source=attack, primary_id=M1038, matching the record, giving full provenance (citation_provenance_rate=1.0, fully_provenanced=true per deterministic_scores). Record count (1) matches min_records=1/max_records=1. All gold-required entities (just M1038) are surfaced with the correct name, so completeness is 1/1. No hallucinations found."
+}

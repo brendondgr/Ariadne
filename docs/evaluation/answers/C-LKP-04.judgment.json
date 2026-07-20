@@ -1,0 +1,15 @@
+{
+  "case_id": "C-LKP-04",
+  "verdict": "PARTIAL",
+  "correctness": 1,
+  "faithfulness": 0.6,
+  "groundedness": 0.6,
+  "completeness": 1,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [
+    "\"Abstraction: Detailed\" for CAPEC-163 — the retrieved record in logic_flow.results[0].records[0] carries only primary_id/name/label/description/join_values/related; no Abstraction (or any properties) field is present anywhere in the shown evidence, so this value cannot be verified from the artifact even though it matches gold.",
+    "\"Status: Draft\" for CAPEC-163 — same issue: no Status field appears in the retrieved record shown; the value is asserted with no traceable evidentiary basis in this artifact."
+  ],
+  "rationale": "Content is fully correct and complete against gold: CAPEC-163 is correctly named \"Spear Phishing\" (matches expect_names) and both expect_properties values (Abstraction: Detailed, Status: Draft) are stated verbatim-correct. The single required id (must_include_ids: CAPEC-163) is surfaced and cited. However, faithfulness/groundedness are penalized because the persisted evidence record does not contain an Abstraction or Status field at all (only primary_id, name, label, description, join_values, related) — I traced this to utils/evaluation/generate_e2e.py's `_record_dict` (lines 54-80), which intentionally discards the EvidenceRecord.properties dict except for pulling out `description`, so no property value is ever visible in this artifact for any attribute-lookup case. The composer's Gremlin query (`elementMap()`) would have retrieved these properties upstream of the trimmed judging view, making outright fabrication unlikely, but per this artifact's evidence alone the two core facts the question asks for (abstraction and status) are ungrounded/unverifiable. Verdict is PARTIAL rather than CORRECT because the claims — while true — fail the strict evidence-traceability bar central to this grading pass, and INCORRECT is unwarranted since the content itself is accurate and complete."
+}

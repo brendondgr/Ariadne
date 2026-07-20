@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 13,
+  "gold_present": 13,
+  "hallucinations": [],
+  "rationale": "Gold requires (a) the 3 CAPEC seeds be named, (b) the deduplicated union of 5 ATT&CK techniques (T1027.006, T1027.009, T1546.004, T1546.016, T1564.009) as must_correlate, and (c) the deduplicated union of 5 mitigations (M1013, M1022, M1040, M1048, M1049). The narrative states all three CAPEC ids, lists all five techniques exactly matching the gold must_correlate set (deterministic_scores.correlation shows exact=true, precision/recall/f1=1.0), and lists all five mitigations exactly matching gold attack.must_include_related, with correct names paired to correct M-numbers (M1049 Antivirus/Antimalware, M1040 Behavior Prevention on Endpoint, M1013 Application Developer Guidance, M1022 Restrict File and Directory Permissions, M1048 Application Isolation and Sandboxing) — each traceable to the evidence.records[*].related entries for T1027.009, T1564.009, T1546.004, and T1027.006 respectively (T1546.016 correctly contributes no mitigation, since its related array is empty in evidence). No technique, CAPEC id, or mitigation name/id in the narrative is absent from or inconsistent with the retrieved evidence — zero fabrication. The only minor omission is that the narrative doesn't spell out which specific CAPEC pairs share which technique (the \"they overlap\" framing), but that detail isn't a gold assertion and is implicitly covered by the claims' correlation entries. deterministic_scores confirm full compliance (mapping_recall=1.0, citation_provenance_rate=1.0, inspectability=1.0), corroborating an independent CORRECT verdict."
+}

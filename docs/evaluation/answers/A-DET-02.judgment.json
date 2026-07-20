@@ -1,0 +1,14 @@
+{
+  "case_id": "A-DET-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.9,
+  "faithfulness": 0.75,
+  "groundedness": 0.95,
+  "completeness": 1,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [
+    "Narrative claims all five analytics (AN1275–AN1279) \"monitor for high volumes of failed authentication attempts followed by a successful login\" — but AN1278's evidence description is only \"Multiple failed authentications in unified logs (e.g., loginwindow or sshd)\", with no mention of a subsequent successful login. Attributing a 'followed by successful login' pattern to AN1278 is an overgeneralization not supported by its specific evidence record."
+  ],
+  "rationale": "The narrative correctly names the detection strategy DET0463 (Brute Force Authentication Failures with Multi-Platform Log Correlation) and all five required analytics AN1275–AN1279, satisfying every must_include_related id in gold (6/6, matching ex_gold's expected neighbor set exactly). All IDs and the DET0463 name are directly traceable to the single retrieved Technique record's `related` list, so groundedness is high. However, the narrative collapses the five distinct analytic behaviors into one blanket description (\"high volumes of failed authentication attempts followed by a successful login from suspicious users, hosts, IPs, or SaaS applications\") that fits AN1275, AN1276, and AN1279 well but overstates AN1278 (which per evidence is just \"multiple failed authentications in unified logs,\" with no successful-login component) and loosely fits AN1277 (password spraying/brute force across a user pool, not framed around a successful follow-on login). This is a minor but real faithfulness gap — a generalized claim not fully backed by each cited record — keeping the verdict at PARTIAL rather than CORRECT despite full entity coverage."
+}

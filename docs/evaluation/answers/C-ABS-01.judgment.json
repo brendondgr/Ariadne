@@ -1,0 +1,14 @@
+{
+  "case_id": "C-ABS-01",
+  "verdict": "INCORRECT",
+  "correctness": 0,
+  "faithfulness": 0.15,
+  "groundedness": 0.3,
+  "completeness": 0,
+  "gold_expected": 2,
+  "gold_present": 0,
+  "hallucinations": [
+    "\"The provided evidence does not contain the identifiers for the standard or meta ancestors of CAPEC-7\" — this is false. The single retrieved record (logic_flow.results[0].records[0], primary_id CAPEC-7) has a `related` field explicitly listing {\"id\":\"CAPEC-66\"} and {\"id\":\"CAPEC-248\"}. The executed query (g.V()...out(\"CHILD_OF\")...as(\"parent\")...out(\"CHILD_OF\")...as(\"grandparent\")) was a two-hop CHILD_OF chain from CAPEC-7, and the normalized related list is exactly that chain (CAPEC-66 as the standard parent, CAPEC-248 as the meta grandparent) — matching gold's must_include_related exactly. The answer had the identifiers in hand and asserted the opposite of the evidence."
+  ],
+  "rationale": "Gold requires must_include_ids=[CAPEC-7] (present, satisfied) and must_include_related=[CAPEC-66, CAPEC-248] (the standard and meta ancestors reached by walking two CHILD_OF hops from CAPEC-7). The evidence record for CAPEC-7 carries related=[{\"id\":\"CAPEC-66\"},{\"id\":\"CAPEC-248\"}], produced by the exact two-hop hierarchy-chain query the task specifies, so both required ancestor ids were retrieved and available. The narrative nonetheless states the evidence \"does not contain the identifiers for the standard or meta ancestors of CAPEC-7,\" which directly contradicts the evidence attached to the same answer object. This is not merely incomplete — it is an affirmatively false claim about what the evidence contains, so it fails the question outright (0/2 gold entities surfaced) and is a hallucinated-absence statement, not just missing detail. Verdict INCORRECT; correctness 0.0, faithfulness low (the CAPEC-7 identity/description used is accurate, but the pivotal claim about evidence content is fabricated), groundedness partial (CAPEC-7 itself is grounded, the ancestor claim is not), completeness 0/2."
+}

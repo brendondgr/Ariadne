@@ -1,0 +1,14 @@
+{
+  "case_id": "A-CMP-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.6,
+  "faithfulness": 0.55,
+  "groundedness": 0.6,
+  "completeness": 1,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [
+    "\"The campaign is associated with 13 techniques and 14 sub-techniques.\" — no such counts appear anywhere in the evidence. The retrieved record's `related` array is empty ([]), and no facet/technique data was surfaced in logic_flow.results[0].records[0]. This is a fabricated statistic with zero grounding in the artifact's evidence."
+  ],
+  "rationale": "The core answer is correct and complete against gold: it identifies C0001 as \"Frankenstein\" (matching gold's must_include_ids=[C0001] and expect_names={C0001: Frankenstein}), and the descriptive prose (highly-targeted campaign, moderately sophisticated/highly resourceful unidentified actors, early 2019, reliance on Empire S0363, name origin from piecing together open-source tools) is a faithful paraphrase of the single retrieved record's description field, so gold_present=1/1. However, the final sentence — \"The campaign is associated with 13 techniques and 14 sub-techniques.\" — is not supported by any evidence in the artifact: the record's `related` field is an empty list and no technique/sub-technique counts appear in logic_flow, evidence, or claims. This is an outright fabrication tacked onto an otherwise sound answer, which is more than a trivial slip since it presents a specific, checkable quantitative claim with no backing. That drags faithfulness/groundedness down while correctness/completeness on the core ask remain high, landing this at PARTIAL rather than CORRECT (not hallucination-free) or INCORRECT (the primary question is still answered accurately)."
+}

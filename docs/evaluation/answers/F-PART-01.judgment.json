@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-01",
+  "verdict": "CORRECT",
+  "correctness": 0.95,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires the CAPEC side to surface CAPEC-555 mapped to T1021 (must_include_ids/must_include_related) and the ATT&CK side to hit an honest schema boundary on \"assets\" (expect_boundary=true, expect_no_correlation=true since must_correlate=[]). The narrative states \"CAPEC-555, titled Remote Services with Stolen Credentials, maps to ATT&CK technique T1021\" — both id and name are verbatim from evidence.records[0] (primary_id CAPEC-555, name \"Remote Services with Stolen Credentials\", join_values [\"T1021\"]), so the CAPEC side is fully satisfied (gold_present 2/2: CAPEC-555 + T1021). The q2 trace shows the attack source correctly hit a schema boundary (resolve: \"entities not in card: ['Asset']\"; boundary step: \"entities not modeled by the attack source: Asset\"), and the answer abstains rather than fabricating asset data, matching expect_boundary=true and expect_no_correlation=true (no T-number correlation is asserted, consistent with must_correlate=[]). No invented facts, no stray abstraction/status/date claims — every stated identifier traces to evidence. Minor softness: the narrative frames the abstention as \"the provided evidence does not contain information regarding...assets\" rather than explicitly naming it a schema/entity-modeling boundary (ATT&CK doesn't model Asset), which is a slightly weaker articulation than the underlying trace reasons, but it doesn't misstate anything or claim false certainty, so this only shaves a touch off correctness rather than affecting faithfulness/completeness. Deterministic scorer agrees (correlation exact=true, precision/recall/f1=1.0, abstention_proof_ok=true, fully_provenanced=true)."
+}

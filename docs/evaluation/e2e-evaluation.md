@@ -36,12 +36,13 @@ The assembled pipeline (probe → plan → specialists → synthesis) scored aga
 
 ## LLM Evaluator (judge)
 
-Source: **mixed** (10 LLM verdicts — NON-reproducible)
+Source: **llm** (120 LLM verdicts — NON-reproducible)
 
-- mean faithfulness: 1.0
-- mean groundedness: 1.0
-- mean evidence sufficiency: 0.97
+- mean faithfulness: 0.9733
+- mean groundedness: 0.9342
+- mean evidence sufficiency: 0.95
 - mean unsupported-claim rate: 0.0 (deterministic)
+- cross-source conflicts: 0 across 0 answer(s) (deterministic)
 
 ## By tier
 
@@ -54,4 +55,4 @@ Source: **mixed** (10 LLM verdicts — NON-reproducible)
 
 ## What this diagnoses
 
-- LLM judge contributed 10 verdict(s) (source=mixed); those qualitative scores are NON-reproducible — the deterministic proxy covers the rest.
+- LLM judge contributed 120 verdict(s) (source=llm); those qualitative scores are NON-reproducible — the deterministic proxy covers the rest.

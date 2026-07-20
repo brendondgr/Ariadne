@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold (ex_gold: pool=\"join\", scheme=\"capec\", expected=[], assertions.expect_empty=true) requires the answer to correctly report zero ATT&CK mappings for CAPEC-116. The executed Gremlin query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within([\"CAPEC-116\"])).out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\")...) ran cleanly (ok: true, no errors) and returned row_count: 0 with zero records, confirming CAPEC-116 genuinely has no ATT&CK mappings in the graph. The narrative correctly states \"The routed sources returned no matching records for this question\" and abstains rather than fabricating any T-number mappings; claims list is empty and the single abstention entry is honest and traceable to the actual query/result. No entities, techniques, or CWE/mitigation ids are invented. This is a textbook correct negative-case response with full provenance (abstention_proof_ok: true, fully_provenanced: true in deterministic_scores)."
+}

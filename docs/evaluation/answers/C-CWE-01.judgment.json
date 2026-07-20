@@ -1,0 +1,12 @@
+{
+  "case_id": "C-CWE-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 7,
+  "gold_present": 7,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-555 plus all 7 related CWEs (CWE-262, 263, 294, 308, 309, 521, 522). The narrative states \"CAPEC-555 (Remote Services with Stolen Credentials) exploits seven CWE weaknesses, including CWE-262, CWE-263, CWE-294, CWE-308, CWE-309, CWE-521, and CWE-522\" — this matches the retrieved record's \"related\" list exactly (7/7 CWE ids present, in the same order, correct count stated as \"seven\"). The AttackPattern name \"Remote Services with Stolen Credentials\" also matches the evidence record's name field verbatim. No CWE id, count, or name appears in the narrative that isn't directly present in logic_flow.results[0].records[0] (id CAPEC-555, name, related[*]). The \"claims\" array is thin (only cites the CAPEC record found, not each CWE individually), but the narrative text itself is fully traceable to the evidence records, so groundedness and faithfulness are not compromised. No fabricated abstraction levels, statuses, or extra CWEs were introduced."
+}

@@ -1,0 +1,505 @@
+{
+  "id": "A-SCN-01",
+  "kind": "attack",
+  "tier": "easy",
+  "category": "A-SCN",
+  "question": "List ATT&CK software entries (bounded scan).",
+  "gold": {
+    "assertions": {
+      "min_records": 250,
+      "max_records": 300
+    }
+  },
+  "answer": {
+    "headline": "Gathered 300 record(s) from 1 source(s).",
+    "narrative": "The ATT&CK software entries identified in the scan include HDoor (S0061), TrickBot (S0266), cd00r (S1204), PowerDuke (S0139), EKANS (S0605), BLINDINGCAN (S0520), Ninja (S1100), Pikabot (S1145), Wiarp (S0206), RCSession (S0662), Spark (S0543), QuietSieve (S0686), SynAck (S0242), Bumblebee (S1039), BRICKSTORM (S9015), MURKYTOP (S0233), AcidRain (S1125), GRIFFON (S0417), Exaramel for Windows (S0343), Amadey (S1025), JumbledPath (S1206), RDFSNIFFER (S0416), NICECURL (S1192), Proxysvc (S0238), Orz (S0229), Torisma (S0678), NOKKI (S0353), yty (S0248), Backdoor.Oldrea (S0093), DOGCALL (S0213), Stuxnet (S0603), IronWind (S9029), Downdelph (S0134), RotaJakiro (S1078), AvosLocker (S1053), SEASHARPEE (S0185), Get2 (S0460), POWRUNER (S0184), KOPILUWAK (S1075), RobbinHood (S0400), MEDUSA (S1220), VersaMem (S1154), Power Loader (S0177), TDTESS (S0164), Chinoxy (S1041), SharpStage (S0546), PAKLOG (S1233), COATHANGER (S1105), Sardonic (S1085), and Smoke Loader (S0226). The scan identified a total of 300 software entries.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 300 ATT&CK record(s) including S0061, S0266, S1204 and more.",
+        "kind": "fact",
+        "entity_ids": [
+          "S0061",
+          "S0266",
+          "S1204",
+          "S0139",
+          "S0605",
+          "S0520",
+          "S1100",
+          "S1145"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "S0061"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0266"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S1204"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0139"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0605"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S0520"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S1100"
+          },
+          {
+            "source": "attack",
+            "primary_id": "S1145"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-SCN-01",
+      "source": "attack",
+      "text": "List software tracked in ATT&CK.",
+      "entities": [
+        "Software"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 300,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "A-SCN-01",
+        "sub_question": "List software tracked in ATT&CK.",
+        "query": "MATCH (n:Software) RETURN n.attack_id AS id, n.name AS name LIMIT 300",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 300 ATT&CK record(s) including S0061, S0266, S1204 and more.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Software"
+              ],
+              "relationships": [],
+              "seed_ids": [],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "label_scan",
+              "query": "MATCH (n:Software) RETURN n.attack_id AS id, n.name AS name LIMIT 300",
+              "injected": [
+                "LIMIT 300 appended (none present)"
+              ],
+              "timing_ms": 0.071
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 300,
+              "timing_ms": 18.9
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 300,
+              "timing_ms": 0.013
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 300,
+              "timing_ms": 1.9
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "S0061",
+            "name": "HDoor",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0266",
+            "name": "TrickBot",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S1204",
+            "name": "cd00r",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0139",
+            "name": "PowerDuke",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0605",
+            "name": "EKANS",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0520",
+            "name": "BLINDINGCAN",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S1100",
+            "name": "Ninja",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S1145",
+            "name": "Pikabot",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0206",
+            "name": "Wiarp",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0662",
+            "name": "RCSession",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0543",
+            "name": "Spark",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0686",
+            "name": "QuietSieve",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0242",
+            "name": "SynAck",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S1039",
+            "name": "Bumblebee",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S9015",
+            "name": "BRICKSTORM",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0233",
+            "name": "MURKYTOP",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S1125",
+            "name": "AcidRain",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0417",
+            "name": "GRIFFON",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0343",
+            "name": "Exaramel for Windows",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S1025",
+            "name": "Amadey",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S1206",
+            "name": "JumbledPath",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0416",
+            "name": "RDFSNIFFER",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S1192",
+            "name": "NICECURL",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0238",
+            "name": "Proxysvc",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0229",
+            "name": "Orz",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0678",
+            "name": "Torisma",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0353",
+            "name": "NOKKI",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0248",
+            "name": "yty",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0093",
+            "name": "Backdoor.Oldrea",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0213",
+            "name": "DOGCALL",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0603",
+            "name": "Stuxnet",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S9029",
+            "name": "IronWind",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0134",
+            "name": "Downdelph",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S1078",
+            "name": "RotaJakiro",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S1053",
+            "name": "AvosLocker",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0185",
+            "name": "SEASHARPEE",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0460",
+            "name": "Get2",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0184",
+            "name": "POWRUNER",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S1075",
+            "name": "KOPILUWAK",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "S0400",
+            "name": "RobbinHood",
+            "label": "Technique",
+            "description": "",
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "provenance": {
+      "citations": 8,
+      "compliant": 8,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  }
+}

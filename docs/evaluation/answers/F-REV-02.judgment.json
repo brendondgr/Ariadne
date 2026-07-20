@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-02",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires: CAPEC-98 (must_include_ids/capec), T1566 as the correlated/must_include ATT&CK id with expected name \"Phishing\" (must_correlate, attack.must_include_ids, expect_names). The narrative states \"The CAPEC pattern CAPEC-98 maps to the MITRE ATT&CK technique T1566. T1566, known as Phishing, is an electronically delivered social engineering technique where adversaries send messages, such as emails containing malicious attachments or links, to gain access to victim systems.\" Both required identifiers (CAPEC-98, T1566) are surfaced, the correlation itself is stated explicitly, and the technique name \"Phishing\" matches expect_names exactly. The descriptive claim is a faithful paraphrase of the retrieved Technique record's description (\"All forms of phishing are electronically delivered social engineering... Adversaries may send phishing messages to gain access to victim systems... emails containing malicious attachments or links...\" — logic_flow.results[1].records[0].description), with no invented facts. The claims/citations correctly cite capec:CAPEC-98 and attack:T1566 for each factual statement, and the correlation claim cites both sources for the shared identifier T1566, matching deterministic_scores (correlation f1=1.0, mapping_recall=1.0, citation_provenance_rate=1.0). Only one CAPEC record exists in evidence (min_records=1 satisfied) and only one ATT&CK record (max_records=1 satisfied), so the singular \"CAPEC-98\" answer to a plural-phrased question is complete given the data. No hallucinations found."
+}

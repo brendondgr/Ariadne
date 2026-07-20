@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SW-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.55,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 0.24,
+  "gold_expected": 17,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Retrieval is perfect: the single record's join_values / related list contains exactly the 17 gold technique ids (T1003.001, .002, .004, .006, T1098, T1134.005, T1207, T1547.005, T1550.002, T1550.003, T1552.004, T1555, T1555.003, T1555.004, T1558.001, T1558.002, T1649) with correct names/descriptions, so the underlying evidence fully satisfies must_include_related. However, the narrative under test only explicitly names 4 of the 17 required ids — T1003.002 (Security Account Manager), T1003.006 (DCSync), T1550.002 (Pass the Hash), T1558.001 (Golden Ticket) — via an \"including ...\" sample; the claims field lists an overlapping subset of only 3. The other 13 gold-required techniques (T1003.001, T1003.004, T1098, T1134.005, T1207, T1547.005, T1550.003, T1552.004, T1555, T1555.003, T1555.004, T1558.002, T1649) are never surfaced by name or id anywhere in the answer text, only implied by the bare count \"17 ATT&CK techniques.\" Everything the narrative does state is accurate and traceable to the evidence (correct ids paired with correct technique names, and a reasonable thematic gloss — \"credential theft, authentication manipulation, and lateral movement\" — consistent with the retrieved technique descriptions), so there is no fabrication and faithfulness/groundedness are full marks. But because the question asks \"which techniques\" (an enumeration question) and the gold expects all 17 surfaced, reporting only 4 of 17 by name is a materially incomplete answer to what was asked, matching this project's known deterministic-composer ceiling (id-line/sample summarization rather than full enumeration) noted for compound listing questions. Net: correct as far as it goes, well short of complete — PARTIAL."
+}

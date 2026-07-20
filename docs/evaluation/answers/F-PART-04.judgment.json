@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-04",
+  "verdict": "PARTIAL",
+  "correctness": 0.8,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 0.6,
+  "gold_expected": 2,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "This is a negative/adversarial case: gold requires must_correlate=[] (expect_no_correlation), plus two specific behavioral facts to be surfaced — capec.expect_skipped (CAPEC-555 producer never ran because the source is down) and attack.expect_dependency_skip (the seeded ATT&CK mitigations query must degrade to a dependency abstention rather than falling back to a broad unseeded query). The pipeline's actual behavior is correct: logic_flow shows only one result (q2, source=attack), records=[], with trace reason \"producer q1: it was not run\" — no broad/unseeded ATT&CK query was ever executed, and no fabricated correlation or CAPEC/ATT&CK ids appear anywhere, satisfying must_correlate=[] exactly (deterministic_scores.correlation shows negative=true, exact match, f1=1.0). The abstentions array explicitly and correctly states the dependency-skip reason for attack (\"the sub-question it depends on (q1) produced no seed identifiers, so no query was executed for...\"), which faithfully covers the attack.expect_dependency_skip requirement. However, the capec.expect_skipped fact (CAPEC source down / no specialist available) is only recorded in the internal \"notes\" field (\"Skipped capec: no specialist available for source 'capec'\") — it is not surfaced in the narrative or in the claims/abstentions that are meant to support the analyst-facing text. The narrative itself is a generic template (\"no matching records... name a specific entity\") that never explains the CAPEC outage or the dependency-chain cause at all, and its suggestion to \"name it or give its id\" is mildly misleading since the real blocker is a source outage, not query under-specification. No hallucinated facts, ids, or correlations are present, so faithfulness/groundedness are high, but of the two gold-required behavioral facts only one (attack dependency skip) is actually conveyed through the narrative/abstentions the analyst sees, so completeness is capped at roughly half."
+}

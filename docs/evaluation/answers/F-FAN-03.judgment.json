@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-03",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 15,
+  "gold_present": 15,
+  "hallucinations": [],
+  "rationale": "Narrative correctly attributes CAPEC-639 -> {T1552.001, T1552.003, T1552.004, T1552.006, T1039} and CAPEC-37 -> {T1005, T1552.004}, matching the retrieved join_values exactly in logic_flow.results[0].records. The stated deduplicated union {T1005, T1039, T1552.001, T1552.003, T1552.004, T1552.006} is exactly the gold must_correlate set (6/6), and deterministic_scores.correlation confirms exact/f1=1.0. The stated mitigation union {M1057, M1041, M1047, M1022, M1027, M1028, M1017, M1051, M1015} is exactly gold attack.must_include_related (9/9: M1015, M1017, M1022, M1027, M1028, M1041, M1047, M1051, M1057) — derivable by unioning the 'related' mitigation lists across all 6 technique records in logic_flow.results[1] (T1005->M1057; T1552.004->M1041/M1047/M1022/M1027; T1552.003->M1028; T1552.001->M1047/M1022/M1027/M1017; T1552.006->M1051/M1015/M1047; T1039->none). No fabricated identifiers, names, or mitigations were found — every technique and mitigation id in the narrative is traceable to a specific evidence record. This is a fully grounded, complete, hallucination-free answer."
+}

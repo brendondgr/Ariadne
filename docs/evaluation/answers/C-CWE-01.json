@@ -1,0 +1,225 @@
+{
+  "id": "C-CWE-01",
+  "kind": "capec",
+  "tier": "medium",
+  "category": "C-CWE",
+  "question": "Which CWE weaknesses does CAPEC-555 exploit?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "CAPEC-555"
+      ],
+      "must_include_related": [
+        "CWE-262",
+        "CWE-263",
+        "CWE-294",
+        "CWE-308",
+        "CWE-309",
+        "CWE-521",
+        "CWE-522"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "CWE-262",
+        "CWE-263",
+        "CWE-294",
+        "CWE-308",
+        "CWE-309",
+        "CWE-521",
+        "CWE-522"
+      ],
+      "scheme": "capec"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "CAPEC-555 (Remote Services with Stolen Credentials) exploits seven CWE weaknesses, including CWE-262, CWE-263, CWE-294, CWE-308, CWE-309, CWE-521, and CWE-522.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-555.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-555"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-555"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "C-CWE-01",
+      "source": "capec",
+      "text": "Which weaknesses does CAPEC-555 exploit?",
+      "entities": [
+        "AttackPattern",
+        "EXPLOITS_WEAKNESS",
+        "Weakness"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 300,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-555"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "C-CWE-01",
+        "sub_question": "Which weaknesses does CAPEC-555 exploit?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"EXPLOITS_WEAKNESS\").hasLabel(\"Weakness\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(300)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-555.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "Weakness"
+              ],
+              "relationships": [
+                "EXPLOITS_WEAKNESS"
+              ],
+              "seed_ids": [
+                "CAPEC-555"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_neighbors",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"EXPLOITS_WEAKNESS\").hasLabel(\"Weakness\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(300)",
+              "injected": [],
+              "timing_ms": 0.09
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 7,
+              "timing_ms": 13.2
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 7,
+              "timing_ms": 0.01
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.121
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-555",
+            "name": "Remote Services with Stolen Credentials",
+            "label": "AttackPattern",
+            "description": "This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
+            "join_values": [],
+            "related": [
+              {
+                "id": "cwe:262",
+                "name": "CWE-262",
+                "label": "Weakness"
+              },
+              {
+                "id": "cwe:263",
+                "name": "CWE-263",
+                "label": "Weakness"
+              },
+              {
+                "id": "cwe:294",
+                "name": "CWE-294",
+                "label": "Weakness"
+              },
+              {
+                "id": "cwe:308",
+                "name": "CWE-308",
+                "label": "Weakness"
+              },
+              {
+                "id": "cwe:309",
+                "name": "CWE-309",
+                "label": "Weakness"
+              },
+              {
+                "id": "cwe:521",
+                "name": "CWE-521",
+                "label": "Weakness"
+              },
+              {
+                "id": "cwe:522",
+                "name": "CWE-522",
+                "label": "Weakness"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "provenance": {
+      "citations": 1,
+      "compliant": 1,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  }
+}

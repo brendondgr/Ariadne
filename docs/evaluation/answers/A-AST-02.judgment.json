@@ -1,0 +1,12 @@
+{
+  "case_id": "A-AST-02",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_boundary: true — the question asks what \"assets\" T1490 targets, but Asset is an ICS-ATT&CK concept not modeled by the attack source/card used here (Technique only). The correct behavior is honest refusal rather than inventing an asset list. The narrative does exactly that: \"The routed sources returned no matching records for this question,\" and offers to help if the analyst names a specific entity/id. The logic_flow traces substantiate this precisely — the \"resolve\" step flags \"entities not in card: ['Asset']\" and the \"boundary\" step records \"entities not modeled by the attack source: Asset\" with unknown_entities=[\"Asset\"], so the abstention is fully grounded in the actual schema-resolution trace, not a generic refusal. claims=[] and no entity ids, techniques, or properties are asserted anywhere in the narrative, so there is zero fabrication risk — faithfulness and groundedness are both maximal. There are no must_include_ids/must_correlate/expect_properties in this gold (only expect_boundary), so completeness is trivially satisfied (gold_expected=0, gold_present=0, boundary condition met). No hallucinations found."
+}

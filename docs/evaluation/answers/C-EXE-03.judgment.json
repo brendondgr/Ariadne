@@ -1,0 +1,12 @@
+{
+  "case_id": "C-EXE-03",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 0.95,
+  "completeness": 1,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "The gold requires the answer to surface all 6 execution-step entities (capec:attack-pattern:163:step:1..6) retrieved via HAS_EXECUTION_STEP for CAPEC-163. The narrative walks through all six in the correct order and with content that maps cleanly onto each evidence record: step 1 (\"obtaining contextual information about the target\" = step:1's \"obtain useful contextual detailed information\"), steps 2-4 correctly bundled as \"optional\" (matching their [Optional: ...] descriptions) covering domain/certificate spoofing (step:2), duplicate website creation (step:3), and custom user-specific variants (step:4), and the conclusion covering step:5 (sending a message to get the victim to enter credentials on the fraudulent site) and step:6 (using stolen credentials to log into the legitimate site). No fact in the narrative is unsupported by the retrieved ExecutionStep descriptions in logic_flow.results[0].records[0].related — no dates, abstraction levels, or names are invented. The only weakness is structural rather than factual: the \"claims\" array only cites the parent CAPEC-163 record and never emits per-step citations for the six ExecutionStep ids, so formal provenance for the six required entities rests on prose paraphrase rather than explicit id-level citations (hence groundedness slightly below 1.0 rather than a full 1.0). Content-wise, however, all 6 gold-required steps are accurately and completely represented, so correctness and completeness are full."
+}

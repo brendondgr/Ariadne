@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative-case federated question (must_correlate=[], expect_no_correlation=true) where the gold-correct behavior is an honest empty abstention. The q1 CAPEC query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within([\"CAPEC-66\"]))...out(\"MAPS_TO\")...) executed cleanly and returned 0 rows, correctly satisfying capec.expect_empty. The dependent q2 (ATT&CK mitigations) was correctly skipped rather than fabricated, since q1 produced no seed identifiers to join on — satisfying attack.expect_dependency_skip exactly as gold requires. The narrative states plainly that no records were returned and invites the analyst to supply a specific entity/id, with zero claims and two properly-labeled abstentions citing the actual executed (or skipped) queries. Nothing is fabricated: no invented technique IDs, no invented mitigation IDs, no false correlation asserted. deterministic_scores confirm this alignment (correlation.negative=true, exact=true, precision/recall/f1=1.0, abstention_proof_ok=true, fully_provenanced=true). Since gold requires zero correlated ids and the answer surfaces zero (with none fabricated), completeness is 1.0. This is a clean, correct abstention on an adversarial negative case."
+}

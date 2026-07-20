@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-06",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The narrative states CAPEC-37 (Retrieve Embedded Sensitive Data) maps to T1005 and T1552.004, matching evidence q1 (CAPEC AttackPattern record with related TaxonomyEntry join_values T1005/T1552.004). It then correctly assigns T1005 to Collection (TA0009) and T1552.004 to Credential Access (TA0006), matching q2's ATT&CK records exactly (T1005 -> related TA0009 \"Collection\"; T1552.004 -> related TA0006 \"Credential Access\"). All gold-required ids (must_include_ids CAPEC-37; must_include_related T1005, T1552.004; attack must_include_related TA0006, TA0009) and both must_correlate join ids (T1005, T1552.004) are surfaced, matching the 2/2 attack min/max_records and 1 capec record constraints. No fact in the narrative is unsupported by evidence — every technique-to-tactic pairing and CAPEC mapping is verbatim from the retrieved 'related' fields. The deterministic_scores in the artifact (correlation f1=1.0, mapping_recall=1.0, provenance fully_provenanced=true) corroborate this independently. No hallucinations found."
+}

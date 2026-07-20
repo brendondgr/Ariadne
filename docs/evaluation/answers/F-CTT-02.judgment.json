@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-02",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "The narrative states exactly the two-hop chain the gold requires: CAPEC-49 (Password Brute Forcing) maps to T1110.001, satisfying gold.assertions.capec.must_include_ids=[\"CAPEC-49\"] and must_include_related=[\"T1110.001\"], directly grounded in the q1 record (CAPEC-49's related TaxonomyEntry \"Brute Force:Password Guessing\" / entry_id 1110.001). It then states T1110.001 belongs to tactic Credential Access (TA0006), satisfying gold.assertions.attack.must_include_ids=[\"T1110.001\"] and must_include_related=[\"TA0006\"], grounded in the q2 record (Technique T1110.001 -> Tactic TA0006 \"Credential Access\"). The must_correlate id T1110.001 is explicitly named and matches the correlation claim in the answer's claims list. No unsupported names, dates, or properties are introduced (tactic name and technique name both match evidence verbatim), and record counts match gold's min/max_records=1 for both sources. Deterministic scoring in the artifact (correlation f1=1.0, mapping_recall=1.0, provenance fully_provenanced) corroborates this independent read. Nothing is missing or fabricated, so the answer is fully correct."
+}

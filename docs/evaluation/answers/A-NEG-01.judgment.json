@@ -1,0 +1,12 @@
+{
+  "case_id": "A-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold (assertions.expect_empty=true, ex_gold.expected=[]) requires the system to abstain for nonexistent technique T9999 rather than invent a record. The executed Cypher (MATCH (n:Technique) WHERE n.attack_id IN $ids ...) ran cleanly against seed_ids=[\"T9999\"] and returned row_count=0 at every trace step (execute, assess, normalize), confirmed by logic_flow.results[0].records=[] and summary \"No records found in ATT&CK for this query.\" The narrative states exactly this — \"The routed sources returned no matching records for this question\" — and offers to accept a different id, without asserting any name, property, or relationship for T9999. claims=[] and the single abstention cites the actual query and a true statement (\"ran cleanly and returned no matching records\"), so it is fully grounded in the evidence. No fabricated technique name, abstraction level, or property appears anywhere. Since gold requires zero entities to be surfaced and the answer surfaces zero, completeness is 1.0. This is a clean, correct negative-case abstention with no hallucinations."
+}

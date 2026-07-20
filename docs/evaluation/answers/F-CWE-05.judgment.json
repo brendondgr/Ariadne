@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-05",
+  "verdict": "PARTIAL",
+  "correctness": 0.4,
+  "faithfulness": 0.95,
+  "groundedness": 1,
+  "completeness": 0.3,
+  "gold_expected": 33,
+  "gold_present": 10,
+  "hallucinations": [],
+  "rationale": "Every fact stated in the narrative is correct and traceable to the retrieved records (faithfulness/groundedness are high, no fabrication): CAPEC-565 \"Password Spraying\" and CAPEC-509 \"Kerberoasting\" both link to CWE-521 per the q1 records; T1110.003 \"Password Spraying\", T1078.001 \"Default Accounts\", T1110 \"Brute Force\" are correctly named techniques (from CAPEC join_values and q2 records); M1032 \"Multi-factor Authentication\", M1027 \"Password Policies\", M1036 \"Account Use Policies\", M1026 \"Privileged Account Management\" are all genuine mitigations attached to the mapped techniques in the evidence. However, this is a \"hard\"-tier federated question explicitly asking which CAPEC patterns, which ATT&CK techniques, and what mitigations apply — implying a full enumeration — and the narrative uses \"such as\"/\"including\" to surface only a small sample: 2 of 8 required CAPEC ids (missing CAPEC-49, CAPEC-55, CAPEC-70, CAPEC-112, CAPEC-555, CAPEC-561), 3 of 10 required T-numbers (missing T1021, T1021.002, T1110.001, T1110.002, T1114.002, T1133, T1558.003 — so most of the gold must_correlate list is never named in prose, even though the deterministic-score block shows the underlying pipeline achieved perfect 1.0 recall/precision on correlation), and 4 of 14 required mitigations (missing M1018, M1021, M1030, M1035, M1037, M1041, M1042, M1047, M1051, M1060). The underlying claims/evidence do carry the full correlation set (all 10 T-numbers appear individually in correlation claims) but the mitigations never appear in any claim at all — they are pulled straight from logic_flow.results without citation, and the narrative surfaces only 4 of the 14 gold-required mitigation ids. Net: correct as far as it goes, well-grounded, no hallucination, but badly incomplete against the gold's comprehensive-enumeration requirement, consistent with the known deterministic-composer summarization ceiling."
+}

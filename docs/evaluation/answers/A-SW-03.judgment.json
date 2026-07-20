@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SW-03",
+  "verdict": "PARTIAL",
+  "correctness": 0.4,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 0.18,
+  "gold_expected": 55,
+  "gold_present": 10,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to surface all 55 technique IDs used by S0266/TrickBot (T1005, T1007, T1008, ... T1685). The narrative correctly names S0266/TrickBot and explicitly enumerates 10 of the 55 required IDs (T1027.002 Software Packing, T1495 Firmware Corruption, T1056.004 Credential API Hooking, T1033 System Owner/User Discovery, T1087.001 Local Account, T1566.002 Spearphishing Link, T1566.001 Spearphishing Attachment, T1543.003 Windows Service, T1132.001 Standard Encoding, T1573.001 Symmetric Cryptography) — every one of these is verified against the evidence's 'related' descriptions with matching names, so there is zero fabrication (faithfulness/groundedness both 1.0). The supporting claim also correctly states the aggregate count 'Found 55 item(s)', matching gold's full set size, but the narrative itself only lists 10/55 (~18%) of the required technique IDs and never surfaces the other 45 (e.g. T1552.001, T1552.002, T1555.003, T1555.005, T1090.002, T1685, T1497.003, T1053.005, T1021.005, T1140, T1210, T1219, T1082, T1083, T1057, T1041, T1105, T1106, T1112, T1135, T1185, T1204.002, T1482, T1547.001, T1559.001, T1564.003, T1071.001, T1069, T1016, T1018, T1007, T1005, T1027, T1027.013, T1036, T1055, T1055.012, T1059.001, T1059.003, T1087.003, T1110.004, T1553.002, T1571). Since the question asks 'which techniques does S0266 use' expecting the full ATT&CK technique set per gold, this is a materially incomplete but wholly accurate partial answer — no invented technique names, abstraction levels, or IDs were found."
+}

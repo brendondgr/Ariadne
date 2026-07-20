@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative test: gold.assertions.expect_empty = true and gold.ex_gold.expected = [] for the nonexistent campaign C9999. The executed query (MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN ['C9999'] ...) correctly ran against the seed id and the execute/assess/normalize traces show row_count = 0 with no error and no partial flag. The narrative correctly reports \"The routed sources returned no matching records for this question\" and offers a constructive nudge to supply a valid entity/id instead of inventing a fabricated campaign, technique names, or IDs. The abstention statement in answer.abstentions matches the actual sub-question and is grounded in the empty result set — no unsupported claims, no invented T-numbers or campaign names appear anywhere in the narrative or claims list (claims is empty, as expected for a true negative). Since gold requires zero entities to be surfaced, completeness is vacuously 1.0 (gold_expected=0, gold_present=0). This is exactly the correct behavior for a NEG-tier adversarial case: abstain cleanly rather than fabricate."
+}

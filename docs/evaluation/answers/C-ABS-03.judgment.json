@@ -1,0 +1,12 @@
+{
+  "case_id": "C-ABS-03",
+  "verdict": "PARTIAL",
+  "correctness": 0.35,
+  "faithfulness": 0.95,
+  "groundedness": 1,
+  "completeness": 0.85,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "The narrative correctly names both gold-required related ids (CAPEC-77, CAPEC-22, per must_include_related) and correctly identifies the seed CAPEC-13 with its real name and description — nothing in it is fabricated, so faithfulness/groundedness are high. However, the question explicitly asks to \"walk the abstraction hierarchy up\" and name the standard vs. meta ancestor, and the narrative explicitly declines to do this (\"does not specify their relationship to CAPEC-13\"), which is the core analytical ask. Inspecting the raw evidence: the Gremlin query in logic_flow (`.out(\"CHILD_OF\")...as(\"parent\")....out(\"CHILD_OF\")...as(\"grandparent\")`) DID retrieve CAPEC-13's parent and grandparent as distinct, ordered roles, and the executed trace shows a successful 1-row hit — but the record-normalization step collapsed both into a single unordered \"related\": [{\"id\":\"CAPEC-77\"},{\"id\":\"CAPEC-22\"}] list, discarding the parent/grandparent role labels before the composer ever saw them. Given only that flattened record, the narrator's claim that the relationship isn't specified is technically accurate to what it was shown (this is a known retrieval/normalization ceiling per the \"Universal node extraction\" note, not a narrator hallucination). Net effect: the answer surfaces the right two entities (gold_present=2/2) but fails to complete the actual task of labeling CAPEC-77 as the standard ancestor and CAPEC-22 as the meta ancestor, so correctness on the headline ask is low despite no invented facts — PARTIAL rather than INCORRECT because it is honest about the gap rather than fabricating a hierarchy, and rather than CORRECT because the central question goes unanswered."
+}

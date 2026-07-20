@@ -1,0 +1,12 @@
+{
+  "case_id": "A-TAC-03",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 18,
+  "gold_present": 18,
+  "hallucinations": [],
+  "rationale": "The narrative names all 18 techniques returned by the Cypher query (row_count=18), and the set of 18 IDs it states (T1112, T1207, T1222, T1484, T1553, T1556, T1578, T1599, T1600, T1601, T1647, T1666, T1685, T1686, T1687, T1688, T1689, T1690) is an exact match to gold's ex_gold expected pool of 18 T-numbers — no omissions, no extras. All five gold must_include_ids (T1112, T1207, T1222, T1484, T1553) are explicitly named with correct technique names (e.g. T1112 = \"Modify Registry\", T1484 = \"Domain or Tenant Policy Modification\", T1553 = \"Subvert Trust Controls\"), matching the record names verbatim. Every technique name/ID pair in the narrative is directly traceable to a record in logic_flow.results[0].records with identical name and primary_id — no invented names, abstraction levels, or properties. The claims block only cites 8 of the 18 (used as representative citation support), but the narrative text itself — the object under test — fully enumerates all 18, so completeness against the gold pool is 18/18. No hallucinations found."
+}

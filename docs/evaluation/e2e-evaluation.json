@@ -60,23 +60,26 @@
         "mean_abstention_proofs": 1.0
       },
       "llm_judge": {
-        "source": "mixed",
-        "llm_covered": 10,
+        "source": "llm",
+        "llm_covered": 120,
         "answers_scored": 120,
-        "mean_faithfulness": 1.0,
-        "mean_groundedness": 1.0,
-        "mean_evidence_sufficiency": 0.97,
+        "mean_faithfulness": 0.9733,
+        "mean_groundedness": 0.9342,
+        "mean_evidence_sufficiency": 0.95,
         "mean_unsupported_claim_rate": 0.0,
+        "total_conflicts": 0,
+        "answers_with_conflicts": 0,
         "verdicts": [
           {
             "question_id": "F-CTM-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies all ATT&CK techniques mapped to CAPEC-150 from the evidence and lists the corresponding mitigations found in the records. All identifiers are correctly grounded."
             ]
           },
           {
@@ -84,10 +87,11 @@
             "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
-            "evidence_sufficiency": 0.4,
+            "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "The answer correctly identifies the ATT&CK techniques mapped to CAPEC-555, but it completely ignores the second part of the question regarding the mitigations, despite the evidence records providing them."
+              "The answer accurately maps CAPEC-555 to the correct ATT&CK techniques and lists all corresponding mitigations provided in the evidence records without any errors or inventions."
             ]
           },
           {
@@ -95,10 +99,11 @@
             "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
-            "evidence_sufficiency": 0.4,
+            "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "The answer correctly identifies the ATT&CK techniques mapped to CAPEC-593, but it completely fails to address the second part of the question regarding the mitigations for those techniques, despite the evidence records providing that information."
+              "The answer accurately maps CAPEC-593 to the correct ATT&CK techniques and lists all corresponding mitigations provided in the evidence records without any errors or inventions."
             ]
           },
           {
@@ -106,21 +111,23 @@
             "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
-            "evidence_sufficiency": 0.5,
+            "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "The answer correctly identifies the ATT&CK techniques mapped to CAPEC-639, but it completely ignores the second part of the question regarding mitigations, despite the evidence records (q2) containing the relevant mitigation IDs for those techniques."
+              "The answer accurately maps CAPEC-639 to the correct ATT&CK techniques and lists all corresponding mitigations provided in the evidence. It also correctly notes that T1039 has no mitigations."
             ]
           },
           {
             "question_id": "F-CTM-05",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately maps CAPEC-21 to the correct ATT&CK techniques and lists all corresponding mitigations provided in the evidence records without any invention or omission."
             ]
           },
           {
@@ -128,54 +135,64 @@
             "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
-            "evidence_sufficiency": 0.5,
+            "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "The answer correctly identifies the ATT&CK techniques mapped to CAPEC-665, but it completely fails to address the second part of the question regarding the mitigations associated with those techniques, despite the evidence records containing that information."
+              "The answer accurately maps the CAPEC to the ATT&CK techniques and correctly lists the mitigations for each, including a concise summary for the T1556 mitigations which were provided in the evidence."
             ]
           },
           {
             "question_id": "F-CTM-07",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects the mapping between CAPEC-600 and T1110.004 and correctly lists all the mitigations provided in the evidence records (M1036, M1032, M1018, M1027).",
+              "Every identifier used is directly traceable to the provided evidence records.",
+              "The answer fully utilizes the retrieved evidence to address both parts of the question."
             ]
           },
           {
             "question_id": "F-CTM-08",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects the mapping and mitigations found in the evidence records.",
+              "All claims are directly supported by the provided evidence."
             ]
           },
           {
             "question_id": "F-CTM-09",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects the mapping between CAPEC-645 and T1550.003 and correctly lists all mitigations provided in the evidence records.",
+              "All identifiers (CAPEC-645, T1550.003, M1015, M1026, M1018, M1027) are correctly grounded in the provided evidence.",
+              "The answer fully addresses both parts of the user question using the available evidence."
             ]
           },
           {
             "question_id": "F-CTM-10",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects the mapping between CAPEC-652 and T1558 and correctly lists all mitigations provided in the evidence for that technique."
             ]
           },
           {
@@ -183,54 +200,59 @@
             "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
-            "evidence_sufficiency": 0.3,
+            "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "The answer identifies the ATT&CK techniques (T1566, T1598) mapped from CAPEC-98, but it fails to answer the core question regarding the 'tactics' (TA0001 Initial Access and TA0043 Reconnaissance), despite this information being explicitly available in the evidence records."
+              "The answer accurately maps the CAPEC ID to the specific ATT&CK techniques and then correctly identifies the tactics associated with those techniques based on the provided evidence records. All information is present in the evidence."
             ]
           },
           {
             "question_id": "F-CTT-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately maps CAPEC-49 to T1110.001 and correctly identifies the tactic TA0006 based on the provided evidence records."
             ]
           },
           {
             "question_id": "F-CTT-03",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects the relationships found in the evidence: CAPEC-565 maps to T1110.003, and T1110.003 is associated with the tactic TA0006 (Credential Access)."
             ]
           },
           {
             "question_id": "F-CTT-04",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects the information provided in the evidence and claims. All identifiers (CAPEC-633, T1134, TA0005, TA0004) are correctly mapped and cited."
             ]
           },
           {
             "question_id": "F-CTT-05",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies the techniques mapped to CAPEC-13, correctly identifies the tactics for T1574.006 and T1574.007 based on the evidence, and correctly notes that the tactic for T1562.003 is not provided in the evidence."
             ]
           },
           {
@@ -238,10 +260,11 @@
             "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
-            "evidence_sufficiency": 0.3,
+            "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "The answer identifies the ATT&CK techniques mapped from CAPEC-37, but it fails to provide the actual ATT&CK tactics (Collection and Credential Access) explicitly mentioned in the evidence records for those techniques."
+              "The answer accurately maps the CAPEC ID to the ATT&CK techniques and correctly identifies their respective tactics using the provided evidence."
             ]
           },
           {
@@ -251,8 +274,9 @@
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "The answer accurately identifies the three CAPEC patterns mapping to T1040 and correctly identifies the name of the technique using the provided evidence."
+              "The answer accurately maps the CAPEC patterns to the ATT&CK technique as specified in the evidence. It also provides a correct definition for the technique requested in the question, which is consistent with the entity name provided in the evidence."
             ]
           },
           {
@@ -262,8 +286,9 @@
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "The answer accurately identifies the mapping from CAPEC-98 to T1566 and correctly identifies T1566 as Phishing based on the provided evidence records."
+              "The answer correctly identifies the mapping between CAPEC-98 and T1566 as stated in the evidence. While the detailed description of the technique is not explicitly written in the provided evidence records, it is a faithful and accurate elaboration of the name 'Phishing' provided in the records, and it directly answers the user's question."
             ]
           },
           {
@@ -273,8 +298,9 @@
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "The answer accurately identifies the mapping from CAPEC-49 to T1110.001 and correctly names the technique based on the provided evidence."
+              "The answer correctly identifies the mapping between CAPEC-49 and T1110.001 as stated in the evidence. It also correctly identifies the name of the technique. The descriptive sentence explaining the technique is a faithful elaboration of the name 'Password Guessing' and does not contradict the provided evidence."
             ]
           },
           {
@@ -284,1108 +310,1251 @@
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "The answer accurately identifies the mapping from CAPEC-555 to T1021 and correctly identifies the name of technique T1021 based on the provided evidence."
+              "The answer correctly identifies the mapping between CAPEC-555 and T1021 as stated in the evidence. The description of T1021 is an accurate expansion of its name provided in the evidence and correctly answers the user's question."
             ]
           },
           {
             "question_id": "F-REV-05",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately identifies the mapping between CAPEC-555 and T1133 as stated in the evidence. It also correctly identifies the name of the technique and provides a descriptive explanation that is consistent with the name provided in the evidence records."
             ]
           },
           {
             "question_id": "F-REV-06",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately identifies the mapping between CAPEC-555 and T1114.002 as stated in the evidence. It also provides a descriptive explanation of the technique which, while not explicitly detailed in the evidence records, is a faithful and accurate representation of the technique name provided."
             ]
           },
           {
             "question_id": "F-CWE-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer is highly accurate and faithful to the provided evidence. It correctly lists all 10 CAPEC patterns, their corresponding ATT&CK techniques, and the applicable mitigations found in the evidence records. Every identifier (CAPEC, ATT&CK, and Mitigation) is correctly mapped and traceable."
             ]
           },
           {
             "question_id": "F-CWE-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer is fully faithful to the evidence, correctly mapping CAPEC patterns to ATT&CK techniques and identifying all relevant mitigations provided in the evidence. All identifiers and names are correctly transcribed."
             ]
           },
           {
             "question_id": "F-CWE-03",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies all CAPEC patterns, ATT&CK techniques, and mitigations mentioned in the evidence for CWE-294.",
+              "All identifiers are accurately mapped and grounded in the provided records.",
+              "The answer is comprehensive and directly addresses all parts of the question."
             ]
           },
           {
             "question_id": "F-CWE-04",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately identifies the CAPEC patterns (CAPEC-560, CAPEC-55, CAPEC-509) that map to the specified ATT&CK techniques (T1078, T1110.002, T1558.003) and correctly lists the mitigations associated with those techniques in the evidence records.",
+              "All identifiers and mitigation codes are correctly grounded in the provided evidence."
             ]
           },
           {
             "question_id": "F-CWE-05",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately lists all CAPEC patterns, their corresponding ATT&CK techniques, and the relevant mitigations as provided in the evidence records. All identifiers and mappings are correctly grounded."
             ]
           },
           {
             "question_id": "F-NEG-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies that no matching records were found, which is consistent with the empty evidence records and the specific instruction to avoid fabricated correlations. It provides a helpful way for the user to refine the query."
             ]
           },
           {
             "question_id": "F-NEG-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly reports that no records were found, which is consistent with the empty evidence records and the provided abstentions explaining why no data was retrieved."
             ]
           },
           {
             "question_id": "F-NEG-03",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly states that no records were found, which is consistent with the empty evidence records and the provided abstentions. It avoids hallucination by being honest about the lack of data."
             ]
           },
           {
             "question_id": "F-NEG-04",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly states that no records were found, which is consistent with the empty evidence records and the provided abstentions. It avoids hallucinating any mappings when none were present in the data."
             ]
           },
           {
             "question_id": "F-NEG-05",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly reports that no matching records were found, which is consistent with the empty evidence and the provided abstentions. It avoids hallucination by stating no results were returned."
             ]
           },
           {
             "question_id": "F-NEG-06",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies that no records were found, matching the empty evidence and abstentions provided."
             ]
           },
           {
             "question_id": "F-PART-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies the CAPEC pattern mapping to T1021 based on the evidence and honestly states that the asset information is missing, which aligns with the provided abstention."
             ]
           },
           {
             "question_id": "F-PART-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately identifies the CAPEC pattern mapping to T1566 based on the provided evidence and correctly notes the absence of asset information in the retrieved records, matching the abstention logic."
             ]
           },
           {
             "question_id": "F-PART-03",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects the information provided in the evidence record, including the name and the specific ATT&CK technique mappings. All facts are directly traceable to the cited evidence."
             ]
           },
           {
             "question_id": "F-PART-04",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly reports that no matching records were found, which is consistent with the empty evidence records provided. The abstention provides the logical reasoning for why the query could not be fulfilled, making the response appropriate for the lack of data."
             ]
           },
           {
             "question_id": "F-FAN-01",
-            "source": "deterministic",
-            "faithfulness": 1.0,
-            "groundedness": 1.0,
+            "source": "llm",
+            "faithfulness": 0.9,
+            "groundedness": 0.9,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer contains a minor typo in one of the technique IDs (T1546.009 instead of T1564.009), but otherwise correctly identifies all techniques and their corresponding mitigations from the evidence."
             ]
           },
           {
             "question_id": "F-FAN-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies the union of ATT&CK techniques mapped to by both CAPEC records and correctly calculates the union of mitigations for those techniques. All identifiers and facts are fully supported by the provided evidence records."
             ]
           },
           {
             "question_id": "F-FAN-03",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies the ATT&CK techniques for both CAPEC IDs, calculates the deduplicated union correctly, and lists all applicable mitigations found in the evidence."
             ]
           },
           {
             "question_id": "A-MIT-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately lists all four mitigations provided in the evidence record for T1047.",
+              "All IDs and names are directly traceable to the evidence record.",
+              "The answer is complete based on the retrieved evidence."
             ]
           },
           {
             "question_id": "A-MIT-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately lists all 8 mitigations provided in the evidence record for the specific technique T1021.001, matching both the IDs and names perfectly."
             ]
           },
           {
             "question_id": "A-MIT-03",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies all four mitigations (M1036, M1032, M1018, M1027) listed in the evidence record for T1110.",
+              "Every fact in the answer is directly traceable to the provided evidence record.",
+              "The evidence provided was sufficient to answer the question completely and accurately."
             ]
           },
           {
             "question_id": "A-MIT-04",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately lists all mitigations provided in the evidence record for the specified technique and maps them correctly to their IDs without any invention."
             ]
           },
           {
             "question_id": "A-MIT-05",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately lists all 9 mitigations provided in the evidence record for T1003, matching names and IDs perfectly."
             ]
           },
           {
             "question_id": "A-MIT-06",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects the information provided in the evidence record, correctly identifying the two mitigations associated with T1055.",
+              "All facts in the answer are directly traceable to the provided evidence record.",
+              "The evidence provided was sufficient to answer the question completely and accurately."
             ]
           },
           {
             "question_id": "A-MIT-07",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly lists all 8 mitigations provided in the evidence record for T1078 without any hallucinations.",
+              "Every item in the answer is directly traceable to the IDs and names in the evidence record.",
+              "The answer is comprehensive as it includes all mitigations found in the retrieved evidence."
             ]
           },
           {
             "question_id": "A-MIT-08",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately lists all four mitigations provided in the evidence record for T1490.",
+              "All information is directly traceable to the evidence record A-MIT-08.",
+              "The answer is complete and uses all relevant information from the retrieved record."
             ]
           },
           {
             "question_id": "A-GRP-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately lists all 17 techniques provided in the evidence records.",
+              "Every technique name and ID is correctly mapped to the evidence.",
+              "The answer is comprehensive and does not include any information not present in the evidence."
             ]
           },
           {
             "question_id": "A-GRP-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects the count of 34 techniques found in the evidence and correctly identifies the specific techniques mentioned. The summary of the types of activities (discovery, execution, exfiltration) is also consistent with the names of the techniques provided in the evidence records."
             ]
           },
           {
             "question_id": "A-GRP-03",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately summarizes the number of techniques found in the evidence and lists several specific techniques correctly by name and ID. It follows the instruction to summarize rather than list all 37 techniques, and it adheres to the 'no markdown' constraint perfectly."
             ]
           },
           {
             "question_id": "A-GRP-04",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer is fully faithful to the evidence, correctly listing all 13 techniques provided in the evidence records without any hallucinations."
             ]
           },
           {
             "question_id": "A-TAC-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately lists all techniques provided in the evidence records and maps them correctly to their IDs, fully answering the question without overstating or omitting information."
             ]
           },
           {
             "question_id": "A-TAC-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies and lists all 17 techniques provided in the evidence records, matching both the names and the IDs perfectly.",
+              "Every fact in the answer is traceable to the provided evidence records.",
+              "The evidence provided was sufficient to fully answer the question."
             ]
           },
           {
             "question_id": "A-TAC-03",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately summarizes the list of techniques provided in the evidence records, correctly identifying the count (18) and providing specific examples and a summary of the actions described in the technique names without inventing any information."
             ]
           },
           {
             "question_id": "A-LKP-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects the information provided in the evidence record and directly answers the question."
             ]
           },
           {
             "question_id": "A-LKP-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies the name of the mitigation from the evidence. The additional descriptive text is accurate and provides helpful context, even though it wasn't explicitly in the provided evidence record."
             ]
           },
           {
             "question_id": "A-LKP-03",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies the name of the technique from the evidence record. While the prose answer includes a descriptive sentence about phishing that is not explicitly written in the provided evidence record, it is factually accurate and does not contradict the evidence, making it a high-quality response."
             ]
           },
           {
             "question_id": "A-LKP-04",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
-            "groundedness": 1.0,
+            "groundedness": 0.5,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer provides a detailed description of Cobalt Strike that is not present in the provided evidence or claims, making it ungrounded relative to the provided context, even though it is factually accurate and answers the question perfectly."
             ]
           },
           {
             "question_id": "A-CMP-01",
-            "source": "deterministic",
-            "faithfulness": 1.0,
-            "groundedness": 1.0,
-            "evidence_sufficiency": 1.0,
+            "source": "llm",
+            "faithfulness": 0.5,
+            "groundedness": 0.2,
+            "evidence_sufficiency": 0.5,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer contains significant details (group name, dates, tactics, and technique counts) that are not present in the provided evidence or claims.",
+              "Most of the information in the answer is not traceable to the cited record.",
+              "The retrieved evidence is insufficient to support the level of detail in the answer."
             ]
           },
           {
             "question_id": "A-CMP-02",
-            "source": "deterministic",
-            "faithfulness": 1.0,
-            "groundedness": 1.0,
-            "evidence_sufficiency": 1.0,
+            "source": "llm",
+            "faithfulness": 0.7,
+            "groundedness": 0.5,
+            "evidence_sufficiency": 0.5,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer provides extensive details (year, sophistication, software, technique counts) that are not present in the provided evidence records.",
+              "The answer is not fully grounded as most of the prose cannot be traced back to the specific evidence record provided, indicating an over-reliance on external knowledge or an overstatement of the retrieved data."
             ]
           },
           {
             "question_id": "A-CMP-TEC-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately lists all 10 techniques provided in the evidence record, matching the names and IDs perfectly.",
+              "Every identifier and fact in the answer is traceable to the provided evidence record.",
+              "The evidence was sufficient to answer the question completely."
             ]
           },
           {
             "question_id": "A-CMP-TEC-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects the number of techniques found in the claim and correctly lists the specific techniques provided in the evidence records. The categorization of techniques is also consistent with their names."
             ]
           },
           {
             "question_id": "A-CMP-TEC-03",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly lists all 13 techniques provided in the evidence records, matching both the names and the MITRE ATT&CK IDs perfectly.",
+              "Every fact in the answer is traceable to the provided evidence records.",
+              "The answer is comprehensive and uses all relevant information from the retrieved evidence to answer the question."
             ]
           },
           {
             "question_id": "A-CMP-ATT-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer directly and accurately reflects the relationship provided in the evidence record (C0027 is related to G1015/Scattered Spider).",
+              "Every part of the answer is traceable to the provided evidence record.",
+              "The evidence provided was sufficient to answer the question completely."
             ]
           },
           {
             "question_id": "A-CMP-ATT-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
-            "groundedness": 1.0,
+            "groundedness": 0.5,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The first sentence is fully supported by the evidence record, but the second sentence provides additional context about the group's affiliation (GRU military unit 74455) that is not present in the provided evidence or claims."
             ]
           },
           {
             "question_id": "A-SCN-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer provides a comprehensive list of the software entries found in the provided evidence, correctly mapping each name to its corresponding ID. It uses appropriate phrasing ('include...') to account for the fact that the scan results were truncated in the provided evidence records."
             ]
           },
           {
             "question_id": "A-NEG-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies that no records exist for the nonexistent ID provided, adhering to the instruction not to invent information. It handles the empty result set appropriately."
             ]
           },
           {
             "question_id": "A-NEG-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly reports that no records were found for the non-existent entity and provides helpful guidance for the user."
             ]
           },
           {
             "question_id": "A-CMP-NEG-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies that no records were found for the nonexistent entity, matching the empty evidence set and the abstention note."
             ]
           },
           {
             "question_id": "A-AST-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly reports that no matching records were found, which is consistent with the empty evidence records and the provided abstention explaining why no query was executed."
             ]
           },
           {
             "question_id": "A-AST-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer is a truthful fallback message indicating no information was found, which is appropriate given the empty evidence records and the explicit instruction to refuse honestly if no data exists."
             ]
           },
           {
             "question_id": "A-DET-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
-            "groundedness": 1.0,
+            "groundedness": 0.5,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer is faithful and answers the question completely, but the groundedness is lower because the specific detection logic for AN1031 is not contained in the provided evidence records."
             ]
           },
           {
             "question_id": "A-DET-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies the detection strategy (DET0463) and the specific analytics (AN1275, AN1276, AN1277, AN1278, AN1279) associated with T1110 as provided in the evidence. The descriptive text regarding the detection logic is a faithful and accurate interpretation of the detection strategy's name."
             ]
           },
           {
             "question_id": "A-DET-03",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
-            "groundedness": 1.0,
-            "evidence_sufficiency": 1.0,
+            "groundedness": 0.5,
+            "evidence_sufficiency": 0.5,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer provides specific functional descriptions for the analytics (e.g., what AN0188, AN0191, etc., do), but these details are not contained in the provided evidence records or claims. While the IDs are correctly associated with T1566, the specific logic of the analytics is not grounded in the provided evidence, and the evidence is insufficient to support the level of detail in the answer."
             ]
           },
           {
             "question_id": "A-SW-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer is perfectly faithful to the evidence, correctly identifying all 17 techniques listed in the evidence record and accurately categorizing them. The count of 17 techniques matches the evidence record exactly."
             ]
           },
           {
             "question_id": "A-SW-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "All techniques mentioned in the answer are present in the evidence record and correctly mapped to their names.",
+              "The answer is a faithful representation of the provided evidence, grouping techniques logically and using the evidence to support the claim of a large number of techniques.",
+              "The answer provides a representative list of techniques found in the evidence without being exhaustive, which is appropriate for the question."
             ]
           },
           {
             "question_id": "A-SW-03",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately lists the techniques associated with S0266 as provided in the evidence record.",
+              "All identifiers and names are correctly grounded in the evidence.",
+              "The answer provides a comprehensive response based on the available data without overclaiming."
             ]
           },
           {
             "question_id": "A-SUB-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly and completely lists all sub-techniques provided in the evidence record for T1021 without any hallucinations."
             ]
           },
           {
             "question_id": "A-SUB-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately identifies the relationship between the sub-technique and parent technique based on the provided evidence record."
             ]
           },
           {
             "question_id": "A-MC-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately lists the seven techniques identified in the evidence records that are related to both tactic TA0006 and mitigation M1027, correctly interpreting the relationship provided in the evidence."
             ]
           },
           {
             "question_id": "A-MC-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies all 9 techniques (T1127, T1047, T1129, T1106, T1674, T1059, T1609, T1204, and T1574) associated with M1038 in tactic TA0002 as provided in the evidence records.",
+              "Every ID in the answer is grounded in the evidence.",
+              "The answer is complete and directly addresses the user's question."
             ]
           },
           {
             "question_id": "A-MC-03",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies all techniques (T1557, T1003, T1040, T1558, T1552, T1649) that the evidence shows are part of tactic TA0006 and are mitigated by M1041. Every claim is fully supported by the provided evidence records."
             ]
           },
           {
             "question_id": "A-DCA-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies the analytics associated with DC0084 as listed in the evidence. The component name is also correctly extracted from the evidence. The additional context about Kerberos threats is consistent with the component name and does not contradict the evidence."
             ]
           },
           {
             "question_id": "A-EXC-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects that no records were found, which is consistent with the empty evidence records provided. It handles the lack of information gracefully by suggesting how the user might improve the query."
             ]
           },
           {
             "question_id": "A-EXC-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects that no records were found, which is consistent with the empty evidence records provided. It handles the lack of information gracefully by suggesting how the user might improve the query."
             ]
           },
           {
             "question_id": "C-LKP-01",
-            "source": "deterministic",
-            "faithfulness": 1.0,
-            "groundedness": 1.0,
-            "evidence_sufficiency": 1.0,
+            "source": "llm",
+            "faithfulness": 0.5,
+            "groundedness": 0.5,
+            "evidence_sufficiency": 0.5,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer provides specific details (status, abstraction level, and a description of the pattern) that are not present in the provided evidence or claims, making it ungrounded and potentially overstating information not contained in the retrieved records. While the answer is likely factually correct, it is not fully traceable to the provided evidence."
             ]
           },
           {
             "question_id": "C-LKP-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
-            "groundedness": 1.0,
-            "evidence_sufficiency": 1.0,
+            "groundedness": 0.5,
+            "evidence_sufficiency": 0.5,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer provides the status, abstraction level, and description requested by the user, but these specific details are not present in the provided evidence records or claims, leading to low groundedness. While the answer is factually correct, it over-claims relative to the provided evidence."
             ]
           },
           {
             "question_id": "C-LKP-03",
-            "source": "deterministic",
-            "faithfulness": 1.0,
-            "groundedness": 1.0,
-            "evidence_sufficiency": 1.0,
+            "source": "llm",
+            "faithfulness": 0.5,
+            "groundedness": 0.5,
+            "evidence_sufficiency": 0.5,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer includes information (abstraction level, status, and description) that is not present in the provided evidence or claims.",
+              "The specific details provided in the answer cannot be traced back to the evidence record.",
+              "The retrieved evidence was insufficient to answer the question, as it lacked the necessary fields for abstraction and status."
             ]
           },
           {
             "question_id": "C-LKP-04",
-            "source": "deterministic",
-            "faithfulness": 1.0,
-            "groundedness": 1.0,
-            "evidence_sufficiency": 1.0,
+            "source": "llm",
+            "faithfulness": 0.7,
+            "groundedness": 0.5,
+            "evidence_sufficiency": 0.5,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer includes specific details ('Detailed' abstraction level and 'Draft' status) that are not present in the provided evidence records, making them ungrounded. While the name 'Spear Phishing' is grounded, the evidence was insufficient to answer the full question, and the answer appears to have used external knowledge to fill the gaps."
             ]
           },
           {
             "question_id": "C-LKP-05",
-            "source": "deterministic",
-            "faithfulness": 1.0,
-            "groundedness": 1.0,
-            "evidence_sufficiency": 1.0,
+            "source": "llm",
+            "faithfulness": 0.5,
+            "groundedness": 0.5,
+            "evidence_sufficiency": 0.5,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer provides the status and abstraction level, but these details are not present in the provided evidence or claims, making the answer ungrounded and the evidence insufficient."
             ]
           },
           {
             "question_id": "C-CWE-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately lists the CWEs associated with CAPEC-555 as found in the evidence record."
             ]
           },
           {
             "question_id": "C-CWE-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects the information provided in the evidence record regarding CAPEC-98 and its association with CWE-451."
             ]
           },
           {
             "question_id": "C-CWE-03",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects the information provided in the evidence record, correctly identifying CAPEC-66 as SQL Injection and linking it to the specific CWEs mentioned.",
+              "Every part of the answer is traceable to the provided evidence record.",
+              "The evidence provided was sufficient to answer the question completely."
             ]
           },
           {
             "question_id": "C-HIE-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies the relationship between CAPEC-98 and CAPEC-151 based on the provided evidence record, which shows the 'related' field linking the two. All names and IDs match the evidence."
             ]
           },
           {
             "question_id": "C-HIE-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies the relationship between CAPEC-564 and CAPEC-542 based on the provided evidence record, which shows the relationship in the 'related' field. All names and IDs are accurately extracted from the evidence."
             ]
           },
           {
             "question_id": "C-HIE-03",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies the relationship and names from the provided evidence record, accurately interpreting the 'related' field as the parent-child relationship requested."
             ]
           },
           {
             "question_id": "C-PRE-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately extracts all the related patterns listed in the evidence record for CAPEC-98 and maps them correctly to their names and IDs. It interprets the 'related' field in the evidence as 'associated with', which is a faithful representation of the data provided."
             ]
           },
           {
             "question_id": "C-PRE-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects the relationship described in the evidence record without overstating the directionality of the relationship (using 'related to' instead of 'precedes' to remain safe). It also correctly notes that no other patterns were found."
             ]
           },
           {
             "question_id": "C-MAP-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects the information in the evidence record, including the name and the specific ATT&CK mappings, without any hallucinations."
             ]
           },
           {
             "question_id": "C-MAP-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects the information provided in the evidence record, correctly identifying the CAPEC ID and its associated ATT&CK techniques without any invention or overstatement."
             ]
           },
           {
             "question_id": "C-MAP-03",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer is completely faithful to the evidence provided, correctly identifying the CAPEC ID and all associated ATT&CK techniques and their names. Every fact is traceable to the evidence record."
             ]
           },
           {
             "question_id": "C-MAP-04",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects the information provided in the evidence record, including the CAPEC name and the specific ATT&CK technique ID and name. All facts are traceable to the single provided evidence record."
             ]
           },
           {
             "question_id": "C-MAP-NEG-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly reports that no matching records were found, which is consistent with the empty evidence and the abstention note explaining that the source does not establish the mapping."
             ]
           },
           {
             "question_id": "C-NEG-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies that no records were found for the nonexistent ID, adhering to the instruction not to invent information. It provides helpful context for future queries without overclaiming."
             ]
           },
           {
             "question_id": "C-NEG-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly reports that no records were found for the specific ID provided, which is consistent with the empty evidence records and the user's own context that the ID is deprecated/excluded."
             ]
           },
           {
             "question_id": "C-SCN-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer is perfectly faithful to the evidence, correctly identifying the CAPEC patterns and their IDs as provided in the evidence records. It is fully grounded and uses the retrieved evidence to provide a comprehensive response to the scan request."
             ]
           },
           {
             "question_id": "C-EXE-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
-            "groundedness": 1.0,
-            "evidence_sufficiency": 1.0,
+            "groundedness": 0.5,
+            "evidence_sufficiency": 0.5,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer provides a detailed description of the execution steps, but the provided evidence and claims only identify the existence of the CAPEC record and the step IDs (Step 1, Step 2, etc.) without providing the actual text or content of those steps. Therefore, the answer is not fully grounded in the provided evidence."
             ]
           },
           {
             "question_id": "C-EXE-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
-            "groundedness": 1.0,
-            "evidence_sufficiency": 1.0,
+            "groundedness": 0.5,
+            "evidence_sufficiency": 0.5,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer is factually accurate regarding CAPEC-98, but the provided evidence records are insufficient. The evidence only contains the metadata (the existence of steps 1-4) but lacks the actual descriptive text for those steps. Consequently, while the answer is faithful to the real-world facts, it is not fully grounded in the specific evidence provided, as the details of the phishing process are not explicitly stated in the retrieved records."
             ]
           },
           {
             "question_id": "C-EXE-03",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
-            "groundedness": 1.0,
-            "evidence_sufficiency": 1.0,
+            "groundedness": 0.5,
+            "evidence_sufficiency": 0.5,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer provides a detailed narrative of the execution steps for CAPEC-163, but the provided evidence and claims only identify the existence of the record and its steps (as 'Step 1', 'Step 2', etc.) without providing the actual text or descriptions of those steps. Therefore, the answer is not fully grounded in the provided evidence, and the evidence is insufficient to support the answer's level of detail."
             ]
           },
           {
             "question_id": "C-CSQ-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects the evidence provided. The evidence record shows four related consequence IDs, but no names or descriptions for them, which the answer correctly identifies. It does not hallucinate details that aren't there."
             ]
           },
           {
             "question_id": "C-CSQ-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately identifies the entity and correctly observes that while the evidence record contains three consequence IDs, the actual names or descriptions for those consequences are not present in the retrieved data. It uses the name 'Phishing' from the evidence to provide context."
             ]
           },
           {
             "question_id": "C-SKL-01",
-            "source": "deterministic",
-            "faithfulness": 1.0,
-            "groundedness": 1.0,
-            "evidence_sufficiency": 1.0,
+            "source": "llm",
+            "faithfulness": 0.5,
+            "groundedness": 0.5,
+            "evidence_sufficiency": 0.5,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer provides specific details about the required skills (e.g., knowledge of banks and websites) that are not present in the retrieved evidence or the verified claims. While the name 'Spear Phishing' is grounded in the evidence, the descriptive part of the answer is an over-claim relative to the provided context."
             ]
           },
           {
             "question_id": "C-ABS-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects the limitations of the provided evidence. It correctly identifies that while CAPEC-7 is found, the relationship to CAPEC-66 and CAPEC-248 does not specify hierarchy, making it impossible to determine ancestors from the given data."
             ]
           },
           {
             "question_id": "C-ABS-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects the limitations of the provided evidence, noting that the ancestor IDs are not explicitly identified in the record.",
+              "It is faithful to the fact that the 'related' field in the evidence does not specify the nature of the relationship (parent vs child).",
+              "The answer is a correct and honest response to insufficient evidence for the specific question asked."
             ]
           },
           {
             "question_id": "C-ABS-03",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies that the provided evidence is insufficient to determine the hierarchical ancestors of CAPEC-13, noting only the related IDs present in the record without assuming their relationship."
             ]
           },
           {
             "question_id": "C-CWE2-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately extracts the name and the list of CWEs from the provided evidence record.",
+              "Every claim in the answer is directly supported by the evidence record.",
+              "The answer is complete and concise based on the available data."
             ]
           },
           {
             "question_id": "C-CWE2-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly identifies the CWE weaknesses associated with CAPEC-640 as provided in the evidence record.",
+              "All information in the answer is directly traceable to the retrieved evidence.",
+              "The evidence provided was sufficient to answer the question completely."
             ]
           },
           {
             "question_id": "C-DEP-01",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer accurately reflects that no records were found for the specific ID requested, which is consistent with the empty evidence records and the provided abstention note."
             ]
           },
           {
             "question_id": "C-DEP-02",
-            "source": "deterministic",
+            "source": "llm",
             "faithfulness": 1.0,
             "groundedness": 1.0,
             "evidence_sufficiency": 1.0,
             "unsupported_claim_rate": 0.0,
+            "conflict_count": 0,
             "reasons": [
-              "deterministic proxy: mechanical checks against evidence"
+              "The answer correctly reports that no records were found, which is consistent with the empty evidence records and the provided abstention note explaining that the query returned no results for the specific ID."
             ]
           }
         ]
@@ -1447,6 +1616,8 @@
           "mean_groundedness": 0.0,
           "mean_evidence_sufficiency": 0.0,
           "mean_unsupported_claim_rate": 0.0,
+          "total_conflicts": 0,
+          "answers_with_conflicts": 0,
           "verdicts": []
         }
       },
@@ -1505,6 +1676,8 @@
           "mean_groundedness": 0.0,
           "mean_evidence_sufficiency": 0.0,
           "mean_unsupported_claim_rate": 0.0,
+          "total_conflicts": 0,
+          "answers_with_conflicts": 0,
           "verdicts": []
         }
       },
@@ -1563,6 +1736,8 @@
           "mean_groundedness": 0.0,
           "mean_evidence_sufficiency": 0.0,
           "mean_unsupported_claim_rate": 0.0,
+          "total_conflicts": 0,
+          "answers_with_conflicts": 0,
           "verdicts": []
         }
       },
@@ -1621,6 +1796,8 @@
           "mean_groundedness": 0.0,
           "mean_evidence_sufficiency": 0.0,
           "mean_unsupported_claim_rate": 0.0,
+          "total_conflicts": 0,
+          "answers_with_conflicts": 0,
           "verdicts": []
         }
       }
@@ -4619,6 +4796,6 @@
     ]
   },
   "diagnosis": [
-    "LLM judge contributed 10 verdict(s) (source=mixed); those qualitative scores are NON-reproducible \u2014 the deterministic proxy covers the rest."
+    "LLM judge contributed 120 verdict(s) (source=llm); those qualitative scores are NON-reproducible \u2014 the deterministic proxy covers the rest."
   ]
 }

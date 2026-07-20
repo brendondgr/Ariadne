@@ -1,0 +1,12 @@
+{
+  "case_id": "C-SCN-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires a bounded CAPEC scan returning between 250 and 300 records (min_records=250, max_records=300); the executed query \"g.V().hasLabel(\\\"AttackPattern\\\").elementMap().limit(300)\" returned row_count=300, which satisfies the bound at its ceiling. The narrative and claim both state \"Found 300 CAPEC record(s)\", matching the trace's execute/assess/normalize steps (all report 300). Every CAPEC id named in the narrative (CAPEC-1, CAPEC-10, CAPEC-100, CAPEC-85, CAPEC-86, CAPEC-101, CAPEC-460, CAPEC-102, CAPEC-88, CAPEC-473, CAPEC-93) is verifiably present in the returned records list with matching names, so there is no fabrication. Since this is an unconstrained bounded-scan question with no must_include_ids/related, must_correlate, or expect_properties in the gold, the sole gold requirement (record count within [250,300]) was fully and correctly satisfied, so completeness is full and the verdict is CORRECT."
+}

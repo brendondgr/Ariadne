@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-04",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative/adversarial case: gold asserts must_correlate=[], expect_no_correlation=true, capec.expect_empty=true, and attack.expect_dependency_skip=true. The evidence shows the CAPEC query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within([\"CAPEC-7\"]))...out(\"MAPS_TO\")...) executed cleanly and returned row_count=0, and the ATT&CK sub-question (q2, seeded from q1) was correctly skipped with reason \"producer q1: it returned no join values\" rather than being run against an empty seed set or fabricated. The narrative honestly reports \"No records were returned by the routed specialists\" and offers to help if the analyst names a specific entity — it does not invent any T-number, technique name, or mitigation ID, matching the deterministic_scores block (correlation.negative=true, exact=true, precision/recall/f1=1.0, abstention_proof_ok=true). No claims were fabricated in the \"claims\" array (empty), and both abstentions correctly cite their source queries/dependency reasoning. Since gold requires zero correlated entities and zero mapped techniques/mitigations to be surfaced, gold_expected=0 and gold_present=0 (vacuously complete — nothing fabricated, nothing missing). This is a clean, fully correct abstention with no hallucinations."
+}

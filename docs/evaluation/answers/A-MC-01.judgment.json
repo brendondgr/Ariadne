@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MC-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 9,
+  "gold_present": 9,
+  "hallucinations": [],
+  "rationale": "Gold requires all 7 technique ids (T1003, T1110, T1187, T1552, T1555, T1556, T1558) mitigated by M1027 under tactic TA0006, plus must_include_related TA0006 and M1027. The narrative states \"M1027 mitigates seven techniques within the TA0006 tactic... T1556, T1003, T1558, T1555, T1552, T1110, and T1187\" — all 7 gold technique ids are present, and both required related entities (TA0006, M1027) are explicitly named by id. Every record in logic_flow.results[0].records independently confirms each technique's related list contains both TA0006 (Credential Access) and M1027 (Password Policies), so the join is exactly as retrieved — no invented technique, tactic, or mitigation. Row count (7) matches min/max_records=7 exactly. The narrative adds no unsupported attribute claims (no fabricated names/dates/abstraction levels), so nothing to penalize on faithfulness. This is a full, precise, and fully grounded answer."
+}

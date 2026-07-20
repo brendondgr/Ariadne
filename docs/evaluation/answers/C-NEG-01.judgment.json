@@ -1,0 +1,12 @@
+{
+  "case_id": "C-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires expect_empty=true / expected=[] for CAPEC-99999 (a nonexistent id). The executed Gremlin query (logic_flow.results[0]) ran cleanly with row_count=0 and the assess trace explicitly logged empty_with_seeds=[\"CAPEC-99999\"], confirming a genuine not-found rather than a query error. The answer's narrative correctly abstains (\"returned no matching records for this question\"), claims is empty, and the single abstention entry accurately cites the query and CAPEC source. No CAPEC-99999 attributes, relationships, or names were invented. The parenthetical example ids (T1566, M1017, CAPEC-98) are generic usage hints, not assertions about the queried entity, so they do not count as hallucination. This is a textbook correct negative-case abstention."
+}

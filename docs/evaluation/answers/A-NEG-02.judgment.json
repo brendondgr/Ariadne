@@ -1,0 +1,12 @@
+{
+  "case_id": "A-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative/adversarial case: gold asserts expect_empty=true with an empty expected pool (ex_gold.expected=[]), because group id G9999 does not exist in the ATT&CK graph. The executed query (MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN ['G9999'] ...) ran cleanly and returned row_count=0 per the logic_flow trace (execute/assess/normalize steps all show 0 records), so the correct behavior is abstention rather than fabricating any technique list. The narrative states exactly that: \"The routed sources returned no matching records for this question,\" and offers to accept a valid id — it does not invent any technique, mitigation, or group name. The single abstention entry cites the actual executed query and correctly reports it returned no matching records, which is fully traceable to the logic_flow evidence. No entities were required by gold (gold_expected=0) and none were fabricated (gold_present=0), so completeness is satisfied trivially. There are no hallucinated claims — the answer contains zero claims, only a truthful abstention. This matches the required negative-case behavior precisely."
+}

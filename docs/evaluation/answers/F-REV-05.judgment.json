@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-05",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "The narrative correctly states CAPEC-555 (\"Remote Services with Stolen Credentials\") maps to ATT&CK T1133, satisfying gold's capec.must_include_ids=[CAPEC-555] and capec.must_include_related=[T1133], matching evidence record capec/CAPEC-555 (name and related TaxonomyEntry entry_id \"1133\" -> \"External Remote Services\"). It also names T1133 as \"External Remote Services\" verbatim, satisfying attack.expect_names={T1133: \"External Remote Services\"} and attack.must_include_ids=[T1133], matching the attack/T1133 evidence record exactly. The description paraphrase (\"adversaries leverage external-facing remote services such as VPNs or Citrix to initially access or persist within a network\") is a faithful, non-fabricating compression of the retrieved Technique description (\"Adversaries may leverage external-facing remote services to initially access and/or persist within a network. Remote services such as VPNs, Citrix...\"). The cross-source correlation on T1133 (gold must_correlate=[T1133]) is explicitly stated via the correlation claim and reflected in deterministic_scores.correlation (exact=true, f1=1.0). No unsupported facts (no dates, no invented status/abstraction values, no extra techniques) appear anywhere in the narrative or claims. All three gold-required facts (CAPEC-555 presence, T1133 name, T1133 correlation) are surfaced."
+}

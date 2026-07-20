@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires T1047 plus must_include_related DET0364 and AN1031. The narrative names both: \"the Behavioral Detection Strategy for WMI Execution Abuse on Windows (DET0364)\" — an exact match to the retrieved record's related.name for DET0364 — and \"Analytic 1031 (AN1031) detects adversarial abuse of WMI to execute local or remote commands via WMIC, PowerShell, or COM API by monitoring a multi-event chain of process creation, command execution, and corresponding network connections,\" which is a faithful paraphrase of the evidence record's AN1031 description (\"Detects adversarial abuse of WMI to execute local or remote commands via WMIC, PowerShell, or COM API through a multi-event chain: process creation, command execution, and corresponding network connection if remote.\"). Every identifier and claim traces directly to the single retrieved logic_flow record (T1047 -> DET0364, AN1031); no dates, statuses, or abstraction levels were invented, and nothing in the narrative lacks evidentiary backing. Both gold-required related entities are surfaced, satisfying min_records=1 and must_include_related in full."
+}

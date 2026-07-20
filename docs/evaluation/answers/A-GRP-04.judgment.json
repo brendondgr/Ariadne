@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-04",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 13,
+  "gold_present": 13,
+  "hallucinations": [],
+  "rationale": "Gold assertions.must_include_ids requires T1005, T1020, T1027, T1039, T1046 (all present in the narrative), and the extended gold.ex_gold neighbor pool of 13 techniques (T1005, T1020, T1027, T1039, T1046, T1080, T1082, T1083, T1102, T1119, T1199, T1202, T1537) is also fully surfaced — the narrative lists all 13 by both ATT&CK ID and correct name, matching the 13 records returned in logic_flow.results[0].records exactly (e.g. T1046 Network Service Discovery, T1537 Transfer Data to Cloud Account, T1080 Taint Shared Content, etc.). Every name/ID pairing in the narrative is traceable verbatim to the retrieved Neo4j records from the group_techniques query (MATCH (g:Group)-[:USES]->(t:Technique)...), so there is no fabricated detail. The claims[] block only cites 8 of the 13 techniques (missing explicit citation entries for T1005, T1202, T1082, T1119, T1080), a minor provenance-structuring gap since deterministic_scores.provenance reports 8/8 compliant citations, but this does not affect the correctness or groundedness of the narrative itself since those facts are still directly grounded in the evidence records. No hallucinations found; row_count matches the min_records:5 threshold well beyond minimum."
+}

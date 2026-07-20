@@ -1,0 +1,230 @@
+{
+  "id": "C-EXE-03",
+  "kind": "capec",
+  "tier": "medium",
+  "category": "C-EXE",
+  "question": "What are the execution steps of CAPEC-163?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "CAPEC-163"
+      ],
+      "must_include_related": [
+        "capec:attack-pattern:163:step:1",
+        "capec:attack-pattern:163:step:2",
+        "capec:attack-pattern:163:step:3",
+        "capec:attack-pattern:163:step:4",
+        "capec:attack-pattern:163:step:5",
+        "capec:attack-pattern:163:step:6"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "capec:attack-pattern:163:step:1",
+        "capec:attack-pattern:163:step:2",
+        "capec:attack-pattern:163:step:3",
+        "capec:attack-pattern:163:step:4",
+        "capec:attack-pattern:163:step:5",
+        "capec:attack-pattern:163:step:6"
+      ],
+      "scheme": "capec"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "The execution steps for CAPEC-163 (Spear Phishing) begin with the adversary obtaining contextual information about the target. This is followed by optional steps to obtain a domain and certificate for spoofing, creating a duplicate website, and building custom website variants with specific user information. The process concludes with the adversary sending a message to convince the user to enter sensitive information on the fraudulent site and then using those stolen credentials to log into legitimate sites.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-163.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-163"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-163"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "C-EXE-03",
+      "source": "capec",
+      "text": "What are the execution steps of CAPEC-163?",
+      "entities": [
+        "AttackPattern",
+        "HAS_EXECUTION_STEP",
+        "ExecutionStep"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 300,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-163"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "C-EXE-03",
+        "sub_question": "What are the execution steps of CAPEC-163?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"HAS_EXECUTION_STEP\").hasLabel(\"ExecutionStep\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(300)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-163.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "ExecutionStep"
+              ],
+              "relationships": [
+                "HAS_EXECUTION_STEP"
+              ],
+              "seed_ids": [
+                "CAPEC-163"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_neighbors",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"HAS_EXECUTION_STEP\").hasLabel(\"ExecutionStep\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(300)",
+              "injected": [],
+              "timing_ms": 0.088
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 6,
+              "timing_ms": 6.9
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 6,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.073
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-163",
+            "name": "Spear Phishing",
+            "label": "AttackPattern",
+            "description": "An adversary targets a specific user or group with a Phishing (CAPEC-98) attack tailored to a category of users in order to have maximum relevance and deceptive capability. Spear Phishing is an enhanced version of the Phishing attack targeted to a specific user or group. The quality of the targeted email is usually enhanced by appearing to come from a known or trusted entity. If the email account of some trusted entity has been compromised the message may be digitally signed. The message will contain information specific to the targeted users that will enhance the probability that they will fo… (+294 chars)",
+            "join_values": [],
+            "related": [
+              {
+                "id": "capec:attack-pattern:163:step:1",
+                "name": "Step 1",
+                "label": "ExecutionStep",
+                "step": "1",
+                "description": "[Obtain useful contextual detailed information about the targeted user or organization] An adversary collects useful contextual detailed information about the targeted user or organization in order to craft a more deceptive and enticing message to lure the target into responding."
+              },
+              {
+                "id": "capec:attack-pattern:163:step:2",
+                "name": "Step 2",
+                "label": "ExecutionStep",
+                "step": "2",
+                "description": "[Optional: Obtain domain name and certificate to spoof legitimate site] This optional step can be used to help the adversary impersonate the legitimate site more convincingly. The adversary can use homograph attacks to convince users that they are using the legitimate website. Note that this step is not required for phishing attacks, and many phishing attacks simply supply URLs containing an IP address and no SSL certificate."
+              },
+              {
+                "id": "capec:attack-pattern:163:step:3",
+                "name": "Step 3",
+                "label": "ExecutionStep",
+                "step": "3",
+                "description": "[Optional: Explore legitimate website and create duplicate] An adversary creates a website (optionally at a URL that looks similar to the original URL) that closely resembles the website that they are trying to impersonate. That website will typically have a login form for the victim to put in their authentication credentials. There can be different variations on a theme here."
+              },
+              {
+                "id": "capec:attack-pattern:163:step:4",
+                "name": "Step 4",
+                "label": "ExecutionStep",
+                "step": "4",
+                "description": "[Optional: Build variants of the website with very specific user information e.g., living area, etc.] Once the adversary has their website which duplicates a legitimate website, they need to build very custom user related information in it. For example, they could create multiple variants of the website which would target different living area users by providing information such as local news, local weather, etc. so that the user believes this is a new feature from the website."
+              },
+              {
+                "id": "capec:attack-pattern:163:step:5",
+                "name": "Step 5",
+                "label": "ExecutionStep",
+                "step": "5",
+                "description": "[Convince user to enter sensitive information on adversary's site.] An adversary sends a message (typically an e-mail) to the victim that has some sort of a call to action to get the user to click on the link included in the e-mail (which takes the victim to adversary's website) and log in. The key is to get the victim to believe that the message is coming from a legitimate entity trusted by the victim or with which the victim or does business and that the website pointed to by the URL in the e-mail is the legitimate website. A call to action will usually need to sound legitimate and urgent en… (+36 chars)"
+              },
+              {
+                "id": "capec:attack-pattern:163:step:6",
+                "name": "Step 6",
+                "label": "ExecutionStep",
+                "step": "6",
+                "description": "[Use stolen credentials to log into legitimate site] Once the adversary captures some sensitive information through phishing (login credentials, credit card information, etc.) the adversary can leverage this information. For instance, the adversary can use the victim's login credentials to log into their bank account and transfer money to an account of their choice."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "provenance": {
+      "citations": 1,
+      "compliant": 1,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  }
+}

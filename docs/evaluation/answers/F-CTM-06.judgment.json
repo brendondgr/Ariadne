@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-06",
+  "verdict": "PARTIAL",
+  "correctness": 0.6,
+  "faithfulness": 0.95,
+  "groundedness": 1,
+  "completeness": 0.44,
+  "gold_expected": 16,
+  "gold_present": 7,
+  "hallucinations": [],
+  "rationale": "The technique-mapping half of the question is fully correct: the narrative names all three required correlated techniques (T1211, T1542.002, T1556) with correct names, matching gold's must_correlate/capec.must_include_related exactly and the deterministic scorer's mapping_recall=1.0. The mitigations half, however, is materially under-reported against gold's attack.must_include_related list of 13 mitigation ids (M1018, M1019, M1022, M1024, M1025, M1026, M1027, M1028, M1032, M1047, M1048, M1050, M1051), even though all 13 are present in the retrieved evidence (logic_flow.results[1].records). The narrative explicitly names only 4: M1051 (Update Software, for T1542.002 and T1211), M1050 (Exploit Protection, for T1211), M1047 (Audit, for T1556), and M1032 (Multi-factor Authentication, for T1556). It omits M1048 (Application Isolation and Sandboxing) and M1019 (Threat Intelligence Program) for T1211 entirely — not even a generic mention — and folds the remaining 7 T1556 mitigations (M1018, M1022, M1024, M1025, M1026, M1027, M1028) into a vague, non-enumerating phrase \"various account and permission management controls,\" which does not surface their specific ids/names. No invented facts were found — every id/name/mitigation pairing stated is directly traceable to the retrieved records (groundedness 1.0), so faithfulness is high, but the answer only surfaces roughly 4 of 13 required mitigations plus the 3 required techniques (7/16 gold-required entities), making it incomplete rather than fully correct."
+}

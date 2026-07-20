@@ -1,0 +1,12 @@
+{
+  "case_id": "A-TAC-02",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 0.95,
+  "completeness": 1,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The narrative lists all 17 techniques returned by the Cypher query (MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique)), each with correct ATT&CK ID and name verified against the \"records\" array: T1056 Input Capture, T1556 Modify Authentication Process, T1111 Multi-Factor Authentication Interception, T1557 Adversary-in-the-Middle, T1003 OS Credential Dumping, T1539 Steal Web Session Cookie, T1040 Network Sniffing, T1558 Steal or Forge Kerberos Tickets, T1555 Credentials from Password Stores, T1552 Unsecured Credentials, T1649 Steal or Forge Authentication Certificates, T1528 Steal Application Access Token, T1606 Forge Web Credentials, T1621 MFA Request Generation, T1212 Exploitation for Credential Access, T1110 Brute Force, T1187 Forced Authentication. All 5 required must_include_ids (T1003, T1040, T1056, T1110, T1111) are present, and the answer's 17-item set is an exact match (same membership, order differs) to gold's ex_gold.expected pool of 17 neighbor techniques — no omissions, no extras, no invented names/IDs. One minor structural note (not a factual defect): the \"claims\" block only carries citations for 8 of the 17 techniques mentioned in the prose (T1056, T1556, T1111, T1557, T1003, T1539, T1040, T1558), so the remaining 9 (T1555, T1552, T1649, T1528, T1606, T1621, T1212, T1110, T1187) lack explicit per-entity citation objects even though they are fully backed by the \"records\" evidence array — this is why groundedness is marked slightly below 1.0 rather than a true hallucination. No fabricated facts were found."
+}

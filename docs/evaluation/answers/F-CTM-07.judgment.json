@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-07",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The narrative states CAPEC-600 maps to T1110.004, satisfying gold's must_correlate [\"T1110.004\"] and capec.must_include_related [\"T1110.004\"] — matches the evidence record's join_values/related TaxonomyEntry (capec:taxonomy:ATTACK:1110.004, \"Brute Force:Credential Stuffing\"). It then lists all four required mitigations from attack.must_include_related exactly as named in the evidence's related array for T1110.004: M1036 \"Account Use Policies\", M1032 \"Multi-factor Authentication\", M1018 \"User Account Management\", M1027 \"Password Policies\" — no names, IDs, or extra attributes were invented beyond what the retrieved records contain. The cross-source correlation on T1110.004 is also correctly reflected (matches deterministic_scores.correlation exact=true, precision/recall/f1=1.0). All 5 required distinct identifiers (T1110.004, M1018, M1027, M1032, M1036) are surfaced, so completeness is full and there is nothing left to abstain on (gold is not a negative case). No fabricated facts found."
+}

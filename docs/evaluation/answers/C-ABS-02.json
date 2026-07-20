@@ -1,0 +1,185 @@
+{
+  "id": "C-ABS-02",
+  "kind": "capec",
+  "tier": "hard",
+  "category": "C-ABS",
+  "question": "Walk the abstraction hierarchy up from CAPEC-16: what are its standard and meta ancestors?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "CAPEC-16"
+      ],
+      "must_include_related": [
+        "CAPEC-49",
+        "CAPEC-112"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "CAPEC-112",
+        "CAPEC-49"
+      ],
+      "scheme": "capec"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "The provided evidence does not explicitly identify the standard or meta ancestors for CAPEC-16 (Dictionary-based Password Attack). While the description notes that CAPEC-16 is a specific instance of a password brute forcing attack pattern, the identifiers for the parent or meta patterns are not included in the record. Additionally, although CAPEC-49 and CAPEC-112 are listed as related, their specific hierarchical relationship to CAPEC-16 is not defined.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-16.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-16"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-16"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "C-ABS-02",
+      "source": "capec",
+      "text": "Which standard pattern is CAPEC-16 a child of, and which meta pattern does that standard pattern belong to?",
+      "entities": [
+        "AttackPattern",
+        "ChildOf",
+        "ChildOf"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 300,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-16"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "C-ABS-02",
+        "sub_question": "Which standard pattern is CAPEC-16 a child of, and which meta pattern does that standard pattern belong to?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"CHILD_OF\").hasLabel(\"AttackPattern\").as(\"parent\").out(\"CHILD_OF\").hasLabel(\"AttackPattern\").as(\"grandparent\").select(\"ap\",\"parent\",\"grandparent\").by(elementMap()).limit(300)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-16.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern"
+              ],
+              "relationships": [
+                "ChildOf"
+              ],
+              "seed_ids": [
+                "CAPEC-16"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_hierarchy_chain",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"CHILD_OF\").hasLabel(\"AttackPattern\").as(\"parent\").out(\"CHILD_OF\").hasLabel(\"AttackPattern\").as(\"grandparent\").select(\"ap\",\"parent\",\"grandparent\").by(elementMap()).limit(300)",
+              "injected": [],
+              "timing_ms": 0.085
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 7.2
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.062
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-16",
+            "name": "Dictionary-based Password Attack",
+            "label": "AttackPattern",
+            "description": "An attacker tries each of the words in a dictionary as passwords to gain access to the system via some user's account. If the password chosen by the user was a word within the dictionary, this attack will be successful (in the absence of other mitigations). This is a specific instance of the password brute forcing attack pattern. Dictionary Attacks differ from similar attacks such as Password Spraying (CAPEC-565) and Credential Stuffing (CAPEC-600), since they leverage unknown username/password combinations and don't care about inducing account lockouts.",
+            "join_values": [],
+            "related": [
+              {
+                "id": "CAPEC-49"
+              },
+              {
+                "id": "CAPEC-112"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "provenance": {
+      "citations": 1,
+      "compliant": 1,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-PRE-01",
+  "verdict": "CORRECT",
+  "correctness": 0.9,
+  "faithfulness": 0.95,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "The narrative names all six gold-required related patterns with correct IDs and names, matching evidence.records[0].related exactly: CAPEC-631 SoundSquatting, CAPEC-632 Homograph Attack via Homoglyphs, CAPEC-89 Pharming, CAPEC-543 Counterfeit Websites, CAPEC-611 BitSquatting, CAPEC-630 TypoSquatting — a 6/6 match against must_include_related. CAPEC-98 (Phishing) itself is correctly identified. No fabricated names, descriptions, or IDs; every entity traces directly to the retrieved record and its 'related' array (which was populated via the CAN_PRECEDE edge per the executed Gremlin query). The one imprecision: the narrative says CAPEC-98 \"is related to\" these six patterns rather than explicitly stating it \"can precede\" them, which slightly understates the directional CAN_PRECEDE semantics the question asked about — a wording gap, not a hallucination, since the underlying edge and entities are correct. The single formal claim in answer.claims only cites CAPEC-98 (not the six related IDs individually), so claim-level provenance is thinner than the narrative text, but the narrative content itself is fully grounded in the evidence record. No negative-case concerns apply (this is a positive, non-NEG case with min_records=1, satisfied)."
+}

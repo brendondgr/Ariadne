@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-03",
+  "verdict": "PARTIAL",
+  "correctness": 0.5,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 0,
+  "gold_expected": 5,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Retrieval is excellent: the query MATCH (g:Group)-[:USES]->(t:Technique) returned all 37 rows, and the record set exactly matches the gold ex_gold pool of 37 technique ids, including all five required must_include_ids (T1003 OS Credential Dumping, T1005 Data from Local System, T1014 Rootkit, T1025 Data from Removable Media, T1030 Data Transfer Size Limits) — well above the min_records:5 floor. However, the narrative and its supporting claim only surface 8 sampled techniques (T1211, T1669, T1105, T1221, T1498, T1189, T1213/claims-only, T1598, T1068) for readability, and by chance none of the five gold-required ids appear anywhere in the prose or in claims[0].entity_ids. An analyst reading only the delivered narrative would not learn that G0007 uses OS Credential Dumping, Data from Local System, Rootkit, Data from Removable Media, or Data Transfer Size Limits, even though that data was retrieved. Every technique the narrative does name (T1211, T1669, T1105, T1221, T1498, T1189, T1598, T1068) is correctly named and grounded against the records, so there is no fabrication and the reported total (37) is accurate — hence faithfulness and groundedness are perfect. But because zero of the five gold must_include_ids are stated in the answer surface (gold_present=0/5), completeness is 0 and correctness is docked to reflect the incomplete surfacing of the specific gold-required entities, a known deterministic-composer sampling limitation rather than a retrieval failure."
+}

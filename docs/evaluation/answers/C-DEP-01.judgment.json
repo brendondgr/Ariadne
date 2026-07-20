@@ -1,0 +1,12 @@
+{
+  "case_id": "C-DEP-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative test case: gold asserts expect_empty=true (CAPEC-91 is deprecated/excluded at load, ex_gold.expected=[] for the capec node pool). The executed Gremlin query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within([\"CAPEC-91\"]))...) legitimately returned row_count=0 per the \"execute\" and \"assess\" trace steps, confirming no CAPEC-91 node exists in the graph. The answer correctly abstains: narrative states \"The routed sources returned no matching records for this question\" and offers to help if the user names a different entity/id — it does not fabricate any CAPEC-91 data (no title, abstraction level, status, or relationships invented). claims=[] matches records=[]; the single abstention entry is fully traceable to the actual executed query and its empty result. Since the gold requires zero entities to be surfaced, gold_expected=0 and gold_present=0, satisfying completeness trivially. No hallucinations found."
+}

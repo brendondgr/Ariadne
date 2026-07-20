@@ -1,0 +1,12 @@
+{
+  "case_id": "C-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold (ex_gold) expects an empty result set for CAPEC-557 (excluded at load, expect_empty=true, expected=[]). The logic_flow shows the query correctly executed against AttackPattern nodes with seed_ids=[\"CAPEC-557\"], row_count=0 at both execute and assess steps, and 0 records returned — confirming the pattern genuinely is not in the graph. The answer's narrative correctly abstains: \"The routed sources returned no matching records for this question,\" backed by a matching abstention entry citing the exact executed Gremlin query and a clean, non-error run. No entity data, abstraction level, status, or any other property was fabricated — the answer states nothing beyond the absence of a match, and even offers a helpful format hint (T1566, M1017, CAPEC-98) without implying CAPEC-557 exists. Every claim is directly grounded in the trace's row_count=0 and error=null. Since gold requires zero entities to be surfaced, completeness is trivially satisfied (0/0). This is a textbook correct negative-case abstention with no hallucination."
+}

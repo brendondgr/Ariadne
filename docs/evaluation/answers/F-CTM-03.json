@@ -1,0 +1,489 @@
+{
+  "id": "F-CTM-03",
+  "kind": "federated",
+  "tier": "hard",
+  "category": "F-CTM",
+  "question": "Which ATT&CK techniques does CAPEC-593 (Session Hijacking) map to, and what mitigations apply to those techniques?",
+  "gold": {
+    "assertions": {
+      "must_correlate": [
+        "T1185",
+        "T1550.001",
+        "T1563"
+      ],
+      "capec": {
+        "min_records": 1,
+        "must_include_ids": [
+          "CAPEC-593"
+        ],
+        "must_include_related": [
+          "T1185",
+          "T1550.001",
+          "T1563"
+        ]
+      },
+      "attack": {
+        "min_records": 3,
+        "max_records": 3,
+        "must_include_ids": [
+          "T1185",
+          "T1550.001",
+          "T1563"
+        ],
+        "must_include_related": [
+          "M1013",
+          "M1017",
+          "M1018",
+          "M1021",
+          "M1026",
+          "M1027",
+          "M1030",
+          "M1036",
+          "M1041",
+          "M1042",
+          "M1047"
+        ]
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 2
+  },
+  "answer": {
+    "headline": "Gathered 4 record(s) from 2 source(s); 3 cross-source correlation(s) on shared identifiers.",
+    "narrative": "CAPEC-593 (Session Hijacking) maps to ATT&CK techniques T1185 (Browser Session Hijacking), T1550.001 (Application Access Token), and T1563 (Remote Service Session Hijacking). Mitigations for T1185 include User Account Management (M1018) and User Training (M1017). T1563 is mitigated by Disable or Remove Feature or Program (M1042), Privileged Account Management (M1026), User Account Management (M1018), Password Policies (M1027), and Network Segmentation (M1030). T1550.001 is mitigated by Encrypt Sensitive Information (M1041), Account Use Policies (M1036), Audit (M1047), Application Developer Guidance (M1013), and Restrict Web-Based Content (M1021).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s) for CAPEC-593; ATT&CK mappings: T1185, T1550.001, T1563.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-593"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-593"
+          }
+        ]
+      },
+      {
+        "text": "Found 3 ATT&CK record(s) including T1185, T1563, T1550.001.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1185",
+          "T1563",
+          "T1550.001"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1185"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1563"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1550.001"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1185 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1185"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-593"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1185"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1550.001 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1550.001"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-593"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1550.001"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1563 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1563"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-593"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1563"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which ATT&CK techniques does CAPEC-593 map to?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What mitigations does ATT&CK list for those mapped techniques?",
+        "seed_from": "q1"
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Which ATT&CK techniques does CAPEC-593 map to?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(300)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s) for CAPEC-593; ATT&CK mappings: T1185, T1550.001, T1563.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CAPEC-593"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_maps_to",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(300)",
+              "injected": [],
+              "timing_ms": 0.098
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 3,
+              "timing_ms": 11.8
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 3,
+              "timing_ms": 0.009
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.078
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-593",
+            "name": "Session Hijacking",
+            "label": "AttackPattern",
+            "description": "This type of attack involves an adversary that exploits weaknesses in an application's use of sessions in performing authentication. The adversary is able to steal or manipulate an active session and use it to gain unathorized access to the application.",
+            "join_values": [
+              "T1185",
+              "T1550.001",
+              "T1563"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1185",
+                "entry_id": "1185",
+                "name": "Browser Session Hijacking",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1550.001",
+                "entry_id": "1550.001",
+                "name": "Use Alternate Authentication Material:Application Access Token",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1563",
+                "entry_id": "1563",
+                "name": "Remote Service Session Hijacking",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "What mitigations does ATT&CK list for those mapped techniques?",
+        "query": "MATCH (t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 300",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 3 ATT&CK record(s) including T1185, T1563, T1550.001.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "Mitigation"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1185",
+                "T1550.001",
+                "T1563"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "technique_mitigations",
+              "query": "MATCH (t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 300",
+              "injected": [
+                "LIMIT 300 appended (none present)"
+              ],
+              "timing_ms": 0.382
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 12,
+              "timing_ms": 11.4
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 12,
+              "timing_ms": 0.003
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 3,
+              "timing_ms": 3.328
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1185",
+            "name": "Browser Session Hijacking",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1185"
+            ],
+            "related": [
+              {
+                "id": "M1018",
+                "name": "User Account Management",
+                "description": "User Account Management involves implementing and enforcing policies for the lifecycle of user accounts, including creation, modification, and deactivation. Proper account management reduces the attack surface by limiting unauthorized access, managing account privileges, and ensuring accounts are used according to organizational policies. This mitigation can be implemented through the following me…"
+              },
+              {
+                "id": "M1017",
+                "name": "User Training",
+                "description": "User Training involves educating employees and contractors on recognizing, reporting, and preventing cyber threats that rely on human interaction, such as phishing, social engineering, and other manipulative techniques. Comprehensive training programs create a human firewall by empowering users to be an active component of the organization's cybersecurity defenses. This mitigation can be implement…"
+              }
+            ]
+          },
+          {
+            "primary_id": "T1563",
+            "name": "Remote Service Session Hijacking",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1563"
+            ],
+            "related": [
+              {
+                "id": "M1042",
+                "name": "Disable or Remove Feature or Program",
+                "description": "Disable or remove unnecessary and potentially vulnerable software, features, or services to reduce the attack surface and prevent abuse by adversaries. This involves identifying software or features that are no longer needed or that could be exploited and ensuring they are either removed or properly disabled. This mitigation can be implemented through the following measures: \n\nRemove Legacy Softwa…"
+              },
+              {
+                "id": "M1026",
+                "name": "Privileged Account Management",
+                "description": "Privileged Account Management focuses on implementing policies, controls, and tools to securely manage privileged accounts (e.g., SYSTEM, root, or administrative accounts). This includes restricting access, limiting the scope of permissions, monitoring privileged account usage, and ensuring accountability through logging and auditing.This mitigation can be implemented through the following measure…"
+              },
+              {
+                "id": "M1018",
+                "name": "User Account Management",
+                "description": "User Account Management involves implementing and enforcing policies for the lifecycle of user accounts, including creation, modification, and deactivation. Proper account management reduces the attack surface by limiting unauthorized access, managing account privileges, and ensuring accounts are used according to organizational policies. This mitigation can be implemented through the following me…"
+              },
+              {
+                "id": "M1027",
+                "name": "Password Policies",
+                "description": "Set and enforce secure password policies for accounts to reduce the likelihood of unauthorized access. Strong password policies include enforcing password complexity, requiring regular password changes, and preventing password reuse. This mitigation can be implemented through the following measures:\n\nWindows Systems:\n\n- Use Group Policy Management Console (GPMC) to configure:\n    - Minimum passwor…"
+              },
+              {
+                "id": "M1030",
+                "name": "Network Segmentation",
+                "description": "Network segmentation involves dividing a network into smaller, isolated segments to control and limit the flow of traffic between devices, systems, and applications. By segmenting networks, organizations can reduce the attack surface, restrict lateral movement by adversaries, and protect critical assets from compromise.\n\nEffective network segmentation leverages a combination of physical boundaries…"
+              }
+            ]
+          },
+          {
+            "primary_id": "T1550.001",
+            "name": "Application Access Token",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1550.001"
+            ],
+            "related": [
+              {
+                "id": "M1041",
+                "name": "Encrypt Sensitive Information",
+                "description": "Protect sensitive information at rest, in transit, and during processing by using strong encryption algorithms. Encryption ensures the confidentiality and integrity of data, preventing unauthorized access or tampering. This mitigation can be implemented through the following measures:\n\nEncrypt Data at Rest:\n\n- Use Case: Use full-disk encryption or file-level encryption to secure sensitive data sto…"
+              },
+              {
+                "id": "M1036",
+                "name": "Account Use Policies",
+                "description": "Account Use Policies help mitigate unauthorized access by configuring and enforcing rules that govern how and when accounts can be used. These policies include enforcing account lockout mechanisms, restricting login times, and setting inactivity timeouts. Proper configuration of these policies reduces the risk of brute-force attacks, credential theft, and unauthorized access by limiting the opport…"
+              },
+              {
+                "id": "M1047",
+                "name": "Audit",
+                "description": "Auditing is the process of recording activity and systematically reviewing and analyzing the activity and system configurations. The primary purpose of auditing is to detect anomalies and identify potential threats or weaknesses in the environment. Proper auditing configurations can also help to meet compliance requirements. The process of auditing encompasses regular analysis of user behaviors an…"
+              },
+              {
+                "id": "M1013",
+                "name": "Application Developer Guidance",
+                "description": "Application Developer Guidance focuses on providing developers with the knowledge, tools, and best practices needed to write secure code, reduce vulnerabilities, and implement secure design principles. By integrating security throughout the software development lifecycle (SDLC), this mitigation aims to prevent the introduction of exploitable weaknesses in applications, systems, and APIs. This miti…"
+              },
+              {
+                "id": "M1021",
+                "name": "Restrict Web-Based Content",
+                "description": "Restricting web-based content involves enforcing policies and technologies that limit access to potentially malicious websites, unsafe downloads, and unauthorized browser behaviors. This can include URL filtering, download restrictions, script blocking, and extension control to protect against exploitation, phishing, and malware delivery. This mitigation can be implemented through the following me…"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 3,
+      "n_got": 3
+    },
+    "mapping_recall": {
+      "gold": 3,
+      "found": 3,
+      "recall": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 10,
+      "compliant": 10,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  }
+}

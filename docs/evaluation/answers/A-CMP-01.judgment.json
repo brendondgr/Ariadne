@@ -1,0 +1,14 @@
+{
+  "case_id": "A-CMP-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.75,
+  "faithfulness": 0.5,
+  "groundedness": 0.6,
+  "completeness": 1,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [
+    "\"The campaign is associated with one software, 18 subtechniques, and 10 techniques.\" — these specific counts appear nowhere in the retrieved evidence. The record's `description` field (the only textual evidence returned) contains no such figures, and the `related` array in the single returned record is empty ([]). The Cypher query did collect relationship-count `facets`, but no facets/related data was surfaced in the record shown to the narrator, so these three numbers are unsupported/fabricated relative to the evidence in this artifact."
+  ],
+  "rationale": "The narrative correctly identifies campaign C0027, satisfying gold's must_include_ids=[C0027] and expect_names={C0027: C0027} (gold_expected=1, gold_present=1; min/max_records=1 matched with exactly 1 record). The descriptive sentences (financially-motivated, linked to Scattered Spider/G1015, telecom/BPO targeting, June–December 2022, social engineering/SIM swapping/mobile carrier access) are all directly paraphrased from the evidence's `description` field at logic_flow.results[0].records[0].description and are well-grounded. However, the closing sentence claiming the campaign \"is associated with one software, 18 subtechniques, and 10 techniques\" is not traceable to any evidence in the artifact — the returned record's `related` field is an empty array and no facet/relationship-count data is present anywhere in the JSON, so these precise figures are fabricated relative to the retrieved evidence. Because the core identification is correct and fully grounded but the answer tacks on unverifiable quantitative claims, this is PARTIAL rather than CORRECT (hallucination present) or INCORRECT (the central question is still correctly answered)."
+}

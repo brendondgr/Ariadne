@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.6,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 0.58,
+  "gold_expected": 36,
+  "gold_present": 21,
+  "hallucinations": [],
+  "rationale": "The narrative correctly and completely names all 7 gold CAPEC patterns (CAPEC-57, 94, 114, 115, 593, 633, 650), correctly ties them to CWE-287, and correctly lists all 8 gold ATT&CK techniques (T1040, T1134, T1185, T1505.003, T1548, T1550.001, T1557, T1563) matching must_correlate exactly (deterministic_scores confirm correlation f1=1.0, mapping_recall=1.0). However the question has a third explicit component - \"what mitigations apply?\" - and here the answer is badly incomplete: it names only 5 mitigations (M1018, M1026, M1041, M1042, M1030) out of the 20 required by gold.attack.must_include_related (missing M1013, M1017, M1021, M1022, M1027, M1028, M1031, M1032, M1035, M1036, M1037, M1038, M1047, M1051, M1052 - 15 of 20, i.e. 75% of the mitigation set is dropped from the narrative). Notably the evidence (logic_flow q2 records) actually contains all 20 gold mitigations distributed across the 8 technique records' \"related\" lists, so the pipeline retrieved the data but the deterministic composer only surfaced a truncated sample in prose - this is a synthesis/summarization gap, not a retrieval gap. Every mitigation, CAPEC, and technique the narrative does state is directly traceable to the evidence records (no invented names, ids, or CWE associations), so faithfulness and groundedness are clean (no hallucinations). Because one of three explicitly-asked-for facets (mitigations) is only ~25% surfaced while the other two facets are fully correct, this is PARTIAL rather than CORRECT."
+}

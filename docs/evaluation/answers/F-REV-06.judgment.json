@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-06",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Narrative states all gold-required facts: CAPEC-555 named \"Remote Services with Stolen Credentials\" (matches evidence record name exactly, gold must_include_ids capec), that it maps to T1114.002 (gold must_correlate and must_include_related, backed by the join_values/related TaxonomyEntry entry_id 1114.002 in the capec record), and gives the ATT&CK technique name \"Remote Email Collection\" (matches gold expect_names.T1114.002 exactly and the attack record's name field). The description sentence (\"targeting Exchange servers, Office 365, or Google Workspace to collect sensitive information by leveraging user credentials or access tokens\") is a faithful paraphrase of the T1114.002 record's description field, not an invented fact. The correlation claim (\"corroborated across attack and capec\") is grounded in the shared join_values T1114.002 across both records. No fabricated identifiers, names, dates, or properties were found; no abstentions were needed since this is not a negative case and both source queries returned exactly the expected single record each (matching attack.min/max_records=1 and capec.min_records=1). This matches the pipeline's own deterministic_scores (recall 1.0, mapping_recall 1.0, provenance 1.0), and independent review confirms those scores are warranted."
+}

@@ -1,0 +1,587 @@
+{
+  "id": "F-FAN-02",
+  "kind": "federated",
+  "tier": "hard",
+  "category": "F-FAN",
+  "question": "Which ATT&CK techniques do CAPEC-13, CAPEC-640 map to (they overlap), and what mitigations apply to the deduplicated union?",
+  "gold": {
+    "assertions": {
+      "must_correlate": [
+        "T1505.005",
+        "T1574.006",
+        "T1574.007",
+        "T1574.013",
+        "T1620"
+      ],
+      "capec": {
+        "min_records": 2,
+        "must_include_ids": [
+          "CAPEC-13",
+          "CAPEC-640"
+        ],
+        "must_include_related": [
+          "T1505.005",
+          "T1574.006",
+          "T1574.007",
+          "T1574.013",
+          "T1620"
+        ]
+      },
+      "attack": {
+        "min_records": 5,
+        "max_records": 5,
+        "must_include_ids": [
+          "T1505.005",
+          "T1574.006",
+          "T1574.007",
+          "T1574.013",
+          "T1620"
+        ],
+        "must_include_related": [
+          "M1022",
+          "M1024",
+          "M1028",
+          "M1038",
+          "M1040",
+          "M1047"
+        ]
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 2
+  },
+  "answer": {
+    "headline": "Gathered 7 record(s) from 2 source(s); 5 cross-source correlation(s) on shared identifiers.",
+    "narrative": "CAPEC-13 maps to T1574.006, T1574.007, and T1562.003, while CAPEC-640 maps to T1505.005, T1574.006, T1574.013, and T1620. The mitigations for the deduplicated union of these techniques include Audit (M1047), Restrict File and Directory Permissions (M1022), Execution Prevention (M1038), Restrict Registry Permissions (M1024), Operating System Configuration (M1028), and Behavior Prevention on Endpoint (M1040).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 2 CAPEC record(s) for CAPEC-13, CAPEC-640; ATT&CK mappings: T1505.005, T1562.003, T1574.006, T1574.007, T1574.013.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-13",
+          "CAPEC-640"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-640"
+          }
+        ]
+      },
+      {
+        "text": "Found 5 ATT&CK record(s) including T1574.007, T1505.005, T1620 and more.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1574.007",
+          "T1505.005",
+          "T1620",
+          "T1574.006",
+          "T1574.013"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1574.007"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1505.005"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1620"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1574.006"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1574.013"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1505.005 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1505.005"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-640"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1505.005"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1574.006 is corroborated across attack and capec (3 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1574.006"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-640"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1574.006"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1574.007 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1574.007"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1574.007"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1574.013 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1574.013"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-640"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1574.013"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1620 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1620"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-640"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1620"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which ATT&CK techniques do CAPEC-13, CAPEC-640 map to?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What mitigations does ATT&CK list for those mapped techniques?",
+        "seed_from": "q1"
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Which ATT&CK techniques do CAPEC-13, CAPEC-640 map to?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(300)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 2 CAPEC record(s) for CAPEC-13, CAPEC-640; ATT&CK mappings: T1505.005, T1562.003, T1574.006, T1574.007, T1574.013.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CAPEC-13",
+                "CAPEC-640"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_maps_to",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(300)",
+              "injected": [],
+              "timing_ms": 0.108
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 7,
+              "timing_ms": 7.0
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 7,
+              "timing_ms": 0.008
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 2,
+              "timing_ms": 0.093
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-13",
+            "name": "Subverting Environment Variable Values",
+            "label": "AttackPattern",
+            "description": "The adversary directly or indirectly modifies environment variables used by or controlling the target software. The adversary's goal is to cause the target software to deviate from its expected operation in a manner that benefits the adversary.",
+            "join_values": [
+              "T1574.006",
+              "T1574.007",
+              "T1562.003"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1574.006",
+                "entry_id": "1574.006",
+                "name": "Hijack Execution Flow:Dynamic Linker Hijacking",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1574.007",
+                "entry_id": "1574.007",
+                "name": "Hijack Execution Flow:Path Interception by PATH Environment Variable",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1562.003",
+                "entry_id": "1562.003",
+                "name": "Impair Defenses:Impair Command History Logging",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-640",
+            "name": "Inclusion of Code in Existing Process",
+            "label": "AttackPattern",
+            "description": "The adversary takes advantage of a bug in an application failing to verify the integrity of the running process to execute arbitrary code in the address space of a separate live process. The adversary could use running code in the context of another process to try to access process's memory, system/network resources, etc. The goal of this attack is to evade detection defenses and escalate privileges by masking the malicious code under an existing legitimate process. Examples of approaches include but not limited to: dynamic-link library (DLL) injection, portable executable injection, thread ex… (+108 chars)",
+            "join_values": [
+              "T1505.005",
+              "T1574.006",
+              "T1574.013",
+              "T1620"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1505.005",
+                "entry_id": "1505.005",
+                "name": "Server Software Component: Terminal Services DLL",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1574.006",
+                "entry_id": "1574.006",
+                "name": "Hijack Execution Flow:Dynamic Linker Hijacking",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1574.013",
+                "entry_id": "1574.013",
+                "name": "Hijack Execution Flow: KernelCallbackTable",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1620",
+                "entry_id": "1620",
+                "name": "Reflective Code Loading",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "What mitigations does ATT&CK list for those mapped techniques?",
+        "query": "MATCH (t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 300",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 5 ATT&CK record(s) including T1574.007, T1505.005, T1620 and more.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "Mitigation"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1505.005",
+                "T1562.003",
+                "T1574.006",
+                "T1574.007",
+                "T1574.013",
+                "T1620"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "technique_mitigations",
+              "query": "MATCH (t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 300",
+              "injected": [
+                "LIMIT 300 appended (none present)"
+              ],
+              "timing_ms": 0.104
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 9,
+              "timing_ms": 6.2
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 9,
+              "timing_ms": 0.009
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 5,
+              "timing_ms": 2.025
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1574.007",
+            "name": "Path Interception by PATH Environment Variable",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1574.007"
+            ],
+            "related": [
+              {
+                "id": "M1047",
+                "name": "Audit",
+                "description": "Auditing is the process of recording activity and systematically reviewing and analyzing the activity and system configurations. The primary purpose of auditing is to detect anomalies and identify potential threats or weaknesses in the environment. Proper auditing configurations can also help to meet compliance requirements. The process of auditing encompasses regular analysis of user behaviors an…"
+              },
+              {
+                "id": "M1022",
+                "name": "Restrict File and Directory Permissions",
+                "description": "Restricting file and directory permissions involves setting access controls at the file system level to limit which users, groups, or processes can read, write, or execute files. By configuring permissions appropriately, organizations can reduce the attack surface for adversaries seeking to access sensitive data, plant malicious code, or tamper with system files.\n\nEnforce Least Privilege Permissio…"
+              },
+              {
+                "id": "M1038",
+                "name": "Execution Prevention",
+                "description": "Prevent the execution of unauthorized or malicious code on systems by implementing application control, script blocking, and other execution prevention mechanisms. This ensures that only trusted and authorized code is executed, reducing the risk of malware and unauthorized actions. This mitigation can be implemented through the following measures:\n\nApplication Control:\n\n- Use Case: Use tools like …"
+              }
+            ]
+          },
+          {
+            "primary_id": "T1505.005",
+            "name": "Terminal Services DLL",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1505.005"
+            ],
+            "related": [
+              {
+                "id": "M1047",
+                "name": "Audit",
+                "description": "Auditing is the process of recording activity and systematically reviewing and analyzing the activity and system configurations. The primary purpose of auditing is to detect anomalies and identify potential threats or weaknesses in the environment. Proper auditing configurations can also help to meet compliance requirements. The process of auditing encompasses regular analysis of user behaviors an…"
+              },
+              {
+                "id": "M1024",
+                "name": "Restrict Registry Permissions",
+                "description": "Restricting registry permissions involves configuring access control settings for sensitive registry keys and hives to ensure that only authorized users or processes can make modifications. By limiting access, organizations can prevent unauthorized changes that adversaries might use for persistence, privilege escalation, or defense evasion. This mitigation can be implemented through the following …"
+              }
+            ]
+          },
+          {
+            "primary_id": "T1620",
+            "name": "Reflective Code Loading",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1620"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1574.006",
+            "name": "Dynamic Linker Hijacking",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1574.006"
+            ],
+            "related": [
+              {
+                "id": "M1038",
+                "name": "Execution Prevention",
+                "description": "Prevent the execution of unauthorized or malicious code on systems by implementing application control, script blocking, and other execution prevention mechanisms. This ensures that only trusted and authorized code is executed, reducing the risk of malware and unauthorized actions. This mitigation can be implemented through the following measures:\n\nApplication Control:\n\n- Use Case: Use tools like …"
+              },
+              {
+                "id": "M1028",
+                "name": "Operating System Configuration",
+                "description": "Operating System Configuration involves adjusting system settings and hardening the default configurations of an operating system (OS) to mitigate adversary exploitation and prevent abuse of system functionality. Proper OS configurations address security vulnerabilities, limit attack surfaces, and ensure robust defense against a wide range of techniques. This mitigation can be implemented through …"
+              }
+            ]
+          },
+          {
+            "primary_id": "T1574.013",
+            "name": "KernelCallbackTable",
+            "label": "Technique",
+            "description": "",
+            "join_values": [
+              "T1574.013"
+            ],
+            "related": [
+              {
+                "id": "M1040",
+                "name": "Behavior Prevention on Endpoint",
+                "description": "Behavior Prevention on Endpoint refers to the use of technologies and strategies to detect and block potentially malicious activities by analyzing the behavior of processes, files, API calls, and other endpoint events. Rather than relying solely on known signatures, this approach leverages heuristics, machine learning, and real-time monitoring to identify anomalous patterns indicative of an attack…"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 5,
+      "n_got": 5
+    },
+    "mapping_recall": {
+      "gold": 5,
+      "found": 5,
+      "recall": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 18,
+      "compliant": 18,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "case_id": "F-CTM-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.55,
+  "faithfulness": 0.9,
+  "groundedness": 0.9,
+  "completeness": 0.46,
+  "gold_expected": 26,
+  "gold_present": 12,
+  "hallucinations": [
+    "Narrative frames M1047 (Audit) and M1018 (User Account Management) as mitigations for 'repository-based techniques' — but per the evidence records, M1047 and M1018 come from T1213 (Data from Information Repositories, repository-based) AND T1530 (Data from Cloud Storage, not repository-based), so the 'repository-based' label is a loose over-generalization rather than a strictly grounded categorization (not a fabricated technique-mitigation link, just an imprecise grouping)."
+  ],
+  "rationale": "The technique-mapping half of the question is fully correct: the narrative names all 6 gold techniques (T1003, T1119, T1213, T1530, T1555, T1602), matching must_correlate, capec.must_include_related, and attack.must_include_ids exactly, and every technique-CAPEC correlation is backed by a dedicated correlation claim — consistent with the pipeline's own correlation (precision/recall 1.0) and mapping_recall (6/6) scores. However, the mitigations half — which the question explicitly asks for — is badly under-reported. Gold's attack.must_include_related lists 20 mitigation ids (M1015, M1017, M1018, M1022, M1025–M1032, M1037, M1040, M1041, M1043, M1047, M1051, M1054, M1060), all present in the retrieved evidence (e.g. T1003's related list alone has 9 mitigations: M1041, M1015, M1026, M1040, M1027, M1025, M1043, M1028, M1017). The narrative names only 6 of these 20 by id (M1041, M1027, M1026, M1047, M1054, M1018), leaving 14 gold-required mitigations (M1015, M1017, M1022, M1025, M1028, M1029, M1030, M1031, M1032, M1037, M1040, M1043, M1051, M1060) entirely unmentioned despite being directly present in the retrieved records the answer had access to. Everything the narrative does state is faithfully grounded in the evidence (each named mitigation-technique pairing checks out against the records), so there is no fabrication, only omission and one loose categorization (Audit/User Account Management framed as 'repository-based' when one of their two source techniques, T1530, is cloud-storage rather than repository-based). Notably the pipeline's own deterministic_scores block (correlation, mapping_recall, provenance, inspectability — all 1.0) never actually scores mitigation coverage, which explains why the self-judged run looked flawless despite missing 70% of the required mitigation ids. Net: correct and complete on techniques/correlation, but materially incomplete on mitigations — PARTIAL, not CORRECT."
+}

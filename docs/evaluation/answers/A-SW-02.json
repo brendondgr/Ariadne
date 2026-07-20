@@ -1,0 +1,545 @@
+{
+  "id": "A-SW-02",
+  "kind": "attack",
+  "tier": "medium",
+  "category": "A-SW",
+  "question": "Which techniques does software S0154 (Cobalt Strike) use?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "S0154"
+      ],
+      "must_include_related": [
+        "T1001.003",
+        "T1003.001",
+        "T1003.002",
+        "T1005",
+        "T1007",
+        "T1012",
+        "T1016",
+        "T1018",
+        "T1021.001",
+        "T1021.002",
+        "T1021.003",
+        "T1021.004",
+        "T1021.006",
+        "T1027",
+        "T1027.005",
+        "T1029",
+        "T1030",
+        "T1046",
+        "T1047",
+        "T1049",
+        "T1055",
+        "T1055.001",
+        "T1055.012",
+        "T1056.001",
+        "T1057",
+        "T1059.001",
+        "T1059.003",
+        "T1059.005",
+        "T1059.006",
+        "T1059.007",
+        "T1068",
+        "T1069.001",
+        "T1069.002",
+        "T1070.006",
+        "T1071.001",
+        "T1071.002",
+        "T1071.004",
+        "T1078.002",
+        "T1078.003",
+        "T1083",
+        "T1087.002",
+        "T1090.001",
+        "T1090.004",
+        "T1095",
+        "T1105",
+        "T1106",
+        "T1112",
+        "T1113",
+        "T1132.001",
+        "T1134.001",
+        "T1134.003",
+        "T1134.004",
+        "T1135",
+        "T1137.001",
+        "T1140",
+        "T1185",
+        "T1197",
+        "T1203",
+        "T1218.011",
+        "T1497.002",
+        "T1518",
+        "T1543.003",
+        "T1548.002",
+        "T1548.003",
+        "T1550.002",
+        "T1553.002",
+        "T1564.010",
+        "T1569.002",
+        "T1572",
+        "T1573.001",
+        "T1573.002",
+        "T1620",
+        "T1685"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "T1001.003",
+        "T1003.001",
+        "T1003.002",
+        "T1005",
+        "T1007",
+        "T1012",
+        "T1016",
+        "T1018",
+        "T1021.001",
+        "T1021.002",
+        "T1021.003",
+        "T1021.004",
+        "T1021.006",
+        "T1027",
+        "T1027.005",
+        "T1029",
+        "T1030",
+        "T1046",
+        "T1047",
+        "T1049",
+        "T1055",
+        "T1055.001",
+        "T1055.012",
+        "T1056.001",
+        "T1057",
+        "T1059.001",
+        "T1059.003",
+        "T1059.005",
+        "T1059.006",
+        "T1059.007",
+        "T1068",
+        "T1069.001",
+        "T1069.002",
+        "T1070.006",
+        "T1071.001",
+        "T1071.002",
+        "T1071.004",
+        "T1078.002",
+        "T1078.003",
+        "T1083",
+        "T1087.002",
+        "T1090.001",
+        "T1090.004",
+        "T1095",
+        "T1105",
+        "T1106",
+        "T1112",
+        "T1113",
+        "T1132.001",
+        "T1134.001",
+        "T1134.003",
+        "T1134.004",
+        "T1135",
+        "T1137.001",
+        "T1140",
+        "T1185",
+        "T1197",
+        "T1203",
+        "T1218.011",
+        "T1497.002",
+        "T1518",
+        "T1543.003",
+        "T1548.002",
+        "T1548.003",
+        "T1550.002",
+        "T1553.002",
+        "T1564.010",
+        "T1569.002",
+        "T1572",
+        "T1573.001",
+        "T1573.002",
+        "T1620",
+        "T1685"
+      ],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "Cobalt Strike (S0154) utilizes numerous MITRE ATT&CK techniques, including SSH (T1021.004), Process Argument Spoofing (T1564.010), Local Accounts (T1078.003), Internal Proxy (T1090.001), and DLL Injection (T1055.001). Its capabilities also encompass techniques like Service Execution (T1569.002), RDP (T1021.001), Ingress Tool Transfer (T1105), Pass the Hash (T1550.002), and various discovery methods such as Software Discovery (T1518) and Remote System Discovery (T1018). Additionally, the software can use command-line tools like Windows Command Shell (T1059.003) and Python (T1059.006), as well as exploitation and obfuscation methods like Exploitation for Privilege Escalation (T1068) and Obfuscated Files or Information (T1027).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 73 item(s) related to S0154 (e.g. T1021.004, T1564.010, T1078.003) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "S0154"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "S0154"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-SW-02",
+      "source": "attack",
+      "text": "Which ATT&CK techniques does software S0154 use?",
+      "entities": [
+        "Software",
+        "Technique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 300,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "S0154"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "A-SW-02",
+        "sub_question": "Which ATT&CK techniques does software S0154 use?",
+        "query": "MATCH (s:Software)-[:USES]->(t) WHERE (t:Technique OR t:SubTechnique) AND s.attack_id IN $ids RETURN s.attack_id AS software_id, s.name AS software_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 300",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 73 item(s) related to S0154 (e.g. T1021.004, T1564.010, T1078.003) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Software",
+                "Technique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "S0154"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "software_techniques",
+              "query": "MATCH (s:Software)-[:USES]->(t) WHERE (t:Technique OR t:SubTechnique) AND s.attack_id IN $ids RETURN s.attack_id AS software_id, s.name AS software_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 300",
+              "injected": [
+                "LIMIT 300 appended (none present)"
+              ],
+              "timing_ms": 0.085
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 73,
+              "timing_ms": 6.2
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 73,
+              "timing_ms": 0.009
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 4.209
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "S0154",
+            "name": "Cobalt Strike",
+            "label": "Software",
+            "description": "",
+            "join_values": [
+              "T1021.004",
+              "T1564.010",
+              "T1078.003",
+              "T1090.001",
+              "T1055.001",
+              "T1569.002",
+              "T1021.001",
+              "T1105",
+              "T1550.002",
+              "T1518",
+              "T1046",
+              "T1018",
+              "T1059.005",
+              "T1071.001",
+              "T1059.003",
+              "T1059.006",
+              "T1090.004",
+              "T1197",
+              "T1078.002",
+              "T1030",
+              "T1012",
+              "T1001.003",
+              "T1095",
+              "T1573.002",
+              "T1203",
+              "T1685",
+              "T1027",
+              "T1068",
+              "T1055.012",
+              "T1027.005",
+              "T1069.001",
+              "T1071.002",
+              "T1059.001",
+              "T1134.004",
+              "T1497.002",
+              "T1057",
+              "T1134.003",
+              "T1134.001",
+              "T1049",
+              "T1083",
+              "T1137.001",
+              "T1016",
+              "T1021.003",
+              "T1003.001",
+              "T1021.006",
+              "T1112",
+              "T1185",
+              "T1572",
+              "T1021.002",
+              "T1029",
+              "T1620",
+              "T1070.006",
+              "T1055",
+              "T1140",
+              "T1005",
+              "T1106",
+              "T1135",
+              "T1553.002",
+              "T1007",
+              "T1047",
+              "T1113",
+              "T1218.011",
+              "T1132.001",
+              "T1056.001",
+              "T1059.007",
+              "T1548.002",
+              "T1548.003",
+              "T1003.002",
+              "T1071.004",
+              "T1087.002",
+              "T1573.001",
+              "T1543.003",
+              "T1069.002"
+            ],
+            "related": [
+              {
+                "id": "T1021.004",
+                "name": "SSH",
+                "description": "Adversaries may use [Valid Accounts](https://attack.mitre.org/techniques/T1078) to log into remote machines using Secure Shell (SSH). The adversary may then perform actions as the logged-on user.\n\nSSH is a protocol that allows authorized users to open remote shells on other computers. Many Linux and macOS versions come with SSH installed by default, although typically disabled until the user enabl…"
+              },
+              {
+                "id": "T1564.010",
+                "name": "Process Argument Spoofing",
+                "description": "Adversaries may attempt to hide process command-line arguments by overwriting process memory. Process command-line arguments are stored in the process environment block (PEB), a data structure used by Windows to store various information about/used by a process. The PEB includes the process command-line arguments that are referenced when executing the process. When a process is created, defensive …"
+              },
+              {
+                "id": "T1078.003",
+                "name": "Local Accounts",
+                "description": "Adversaries may obtain and abuse credentials of a local account as a means of gaining Initial Access, Persistence, Privilege Escalation, or Defense Evasion. Local accounts are those configured by an organization for use by users, remote support, services, or for administration on a single system or service.\n\nLocal Accounts may also be abused to elevate privileges and harvest credentials through [O…"
+              },
+              {
+                "id": "T1090.001",
+                "name": "Internal Proxy",
+                "description": "Adversaries may use an internal proxy to direct command and control traffic between two or more systems in a compromised environment. Many tools exist that enable traffic redirection through proxies or port redirection, including [HTRAN](https://attack.mitre.org/software/S0040), ZXProxy, and ZXPortMap. (Citation: Trend Micro APT Attack Tools) Adversaries use internal proxies to manage command and …"
+              },
+              {
+                "id": "T1055.001",
+                "name": "Dynamic-link Library Injection",
+                "description": "Adversaries may inject dynamic-link libraries (DLLs) into processes in order to evade process-based defenses as well as possibly elevate privileges. DLL injection is a method of executing arbitrary code in the address space of a separate live process.  \n\nDLL injection is commonly performed by writing the path to a DLL in the virtual address space of the target process before loading the DLL by inv…"
+              },
+              {
+                "id": "T1569.002",
+                "name": "Service Execution",
+                "description": "Adversaries may abuse the Windows service control manager to execute malicious commands or payloads. The Windows service control manager (<code>services.exe</code>) is an interface to manage and manipulate services.(Citation: Microsoft Service Control Manager) The service control manager is accessible to users via GUI components as well as system utilities such as <code>sc.exe</code> and [Net](htt…"
+              },
+              {
+                "id": "T1021.001",
+                "name": "Remote Desktop Protocol",
+                "description": "Adversaries may use [Valid Accounts](https://attack.mitre.org/techniques/T1078) to log into a computer using the Remote Desktop Protocol (RDP). The adversary may then perform actions as the logged-on user.\n\nRemote desktop is a common feature in operating systems. It allows a user to log into an interactive session with a system desktop graphical user interface on a remote system. Microsoft refers …"
+              },
+              {
+                "id": "T1105",
+                "name": "Ingress Tool Transfer",
+                "description": "Adversaries may transfer tools or other files from an external system into a compromised environment. Tools or files may be copied from an external adversary-controlled system to the victim network through the command and control channel or through alternate protocols such as [ftp](https://attack.mitre.org/software/S0095). Once present, adversaries may also transfer/spread tools between victim dev…"
+              },
+              {
+                "id": "T1550.002",
+                "name": "Pass the Hash",
+                "description": "Adversaries may “pass the hash” using stolen password hashes to move laterally within an environment, bypassing normal system access controls. Pass the hash (PtH) is a method of authenticating as a user without having access to the user's cleartext password. This method bypasses standard authentication steps that require a cleartext password, moving directly into the portion of the authentication …"
+              },
+              {
+                "id": "T1518",
+                "name": "Software Discovery",
+                "description": "Adversaries may attempt to get a listing of software and software versions that are installed on a system or in a cloud environment. Adversaries may use the information from [Software Discovery](https://attack.mitre.org/techniques/T1518) during automated discovery to shape follow-on behaviors, including whether or not the adversary fully infects the target and/or attempts specific actions.\n\nSuch s…"
+              },
+              {
+                "id": "T1046",
+                "name": "Network Service Discovery",
+                "description": "Adversaries may attempt to get a listing of services running on remote hosts and local network infrastructure devices, including those that may be vulnerable to remote software exploitation. Common methods to acquire this information include port, vulnerability, and/or wordlist scans using tools that are brought onto a system.(Citation: CISA AR21-126A FIVEHANDS May 2021)   \n\nWithin cloud environme…"
+              },
+              {
+                "id": "T1018",
+                "name": "Remote System Discovery",
+                "description": "Adversaries may attempt to get a listing of other systems by IP address, hostname, or other logical identifier on a network that may be used for Lateral Movement from the current system. Functionality could exist within remote access tools to enable this, but utilities available on the operating system could also be used such as  [Ping](https://attack.mitre.org/software/S0097), <code>net view</cod…"
+              },
+              {
+                "id": "T1059.005",
+                "name": "Visual Basic",
+                "description": "Adversaries may abuse Visual Basic (VB) for execution. VB is a programming language created by Microsoft with interoperability with many Windows technologies such as [Component Object Model](https://attack.mitre.org/techniques/T1559/001) and the [Native API](https://attack.mitre.org/techniques/T1106) through the Windows API. Although tagged as legacy with no planned future evolutions, VB is integr…"
+              },
+              {
+                "id": "T1071.001",
+                "name": "Web Protocols",
+                "description": "Adversaries may communicate using application layer protocols associated with web traffic to avoid detection/network filtering by blending in with existing traffic. Commands to the remote system, and often the results of those commands, will be embedded within the protocol traffic between the client and server. \n\nProtocols such as HTTP/S(Citation: CrowdStrike Putter Panda) and WebSocket(Citation: …"
+              },
+              {
+                "id": "T1059.003",
+                "name": "Windows Command Shell",
+                "description": "Adversaries may abuse the Windows command shell for execution. The Windows command shell ([cmd](https://attack.mitre.org/software/S0106)) is the primary command prompt on Windows systems. The Windows command prompt can be used to control almost any aspect of a system, with various permission levels required for different subsets of commands. The command prompt can be invoked remotely via [Remote S…"
+              },
+              {
+                "id": "T1059.006",
+                "name": "Python",
+                "description": "Adversaries may abuse Python commands and scripts for execution. Python is a very popular scripting/programming language, with capabilities to perform many functions. Python can be executed interactively from the command-line (via the <code>python.exe</code> interpreter) or via scripts (.py) that can be written and distributed to different systems. Python code can also be compiled into binary exec…"
+              },
+              {
+                "id": "T1090.004",
+                "name": "Domain Fronting",
+                "description": "Adversaries may take advantage of routing schemes in Content Delivery Networks (CDNs) and other services which host multiple domains to obfuscate the intended destination of HTTPS traffic or traffic tunneled through HTTPS. (Citation: Fifield Blocking Resistent Communication through domain fronting 2015) Domain fronting involves using different domain names in the SNI field of the TLS header and th…"
+              },
+              {
+                "id": "T1197",
+                "name": "BITS Jobs",
+                "description": "Adversaries may abuse BITS jobs to persistently execute code and perform various background tasks. Windows Background Intelligent Transfer Service (BITS) is a low-bandwidth, asynchronous file transfer mechanism exposed through [Component Object Model](https://attack.mitre.org/techniques/T1559/001) (COM).(Citation: Microsoft COM)(Citation: Microsoft BITS) BITS is commonly used by updaters, messenge…"
+              },
+              {
+                "id": "T1078.002",
+                "name": "Domain Accounts",
+                "description": "Adversaries may obtain and abuse credentials of a domain account as a means of gaining Initial Access, Persistence, Privilege Escalation, or Defense Evasion.(Citation: TechNet Credential Theft) Domain accounts are those managed by Active Directory Domain Services where access and permissions are configured across systems and services that are part of that domain. Domain accounts can cover users, a…"
+              },
+              {
+                "id": "T1030",
+                "name": "Data Transfer Size Limits",
+                "description": "An adversary may exfiltrate data in fixed size chunks instead of whole files or limit packet sizes below certain thresholds. This approach may be used to avoid triggering network data transfer threshold alerts."
+              },
+              {
+                "id": "T1012",
+                "name": "Query Registry",
+                "description": "Adversaries may interact with the Windows Registry to gather information about the system, configuration, and installed software.\n\nThe Registry contains a significant amount of information about the operating system, configuration, software, and security.(Citation: Wikipedia Windows Registry) Information can easily be queried using the [Reg](https://attack.mitre.org/software/S0075) utility, though…"
+              },
+              {
+                "id": "T1001.003",
+                "name": "Protocol or Service Impersonation",
+                "description": "Adversaries may impersonate legitimate protocols or web service traffic to disguise command and control activity and thwart analysis efforts. By impersonating legitimate protocols or web services, adversaries can make their command and control traffic blend in with legitimate network traffic.  \n\nAdversaries may impersonate a fake SSL/TLS handshake to make it look like subsequent traffic is SSL/TLS…"
+              },
+              {
+                "id": "T1095",
+                "name": "Non-Application Layer Protocol",
+                "description": "Adversaries may use an OSI non-application layer protocol for communication between host and C2 server or among infected hosts within a network. The list of possible protocols is extensive.(Citation: Wikipedia OSI) Specific examples include use of network layer protocols, such as the Internet Control Message Protocol (ICMP), transport layer protocols, such as the User Datagram Protocol (UDP), sess…"
+              },
+              {
+                "id": "T1573.002",
+                "name": "Asymmetric Cryptography",
+                "description": "Adversaries may employ a known asymmetric encryption algorithm to conceal command and control traffic rather than relying on any inherent protections provided by a communication protocol. Asymmetric cryptography, also known as public key cryptography, uses a keypair per party: one public that can be freely distributed, and one private. Due to how the keys are generated, the sender encrypts data wi…"
+              },
+              {
+                "id": "T1203",
+                "name": "Exploitation for Client Execution",
+                "description": "Adversaries may exploit software vulnerabilities in client applications to execute code. Vulnerabilities can exist in software due to unsecure coding practices that can lead to unanticipated behavior. Adversaries can take advantage of certain vulnerabilities through targeted exploitation for the purpose of arbitrary code execution. Oftentimes the most valuable exploits to an offensive toolkit are …"
+              },
+              {
+                "id": "T1685",
+                "name": "Disable or Modify Tools",
+                "description": "Adversaries may disable, degrade, or tamper with security tools or applications (e.g., endpoint detection and response (EDR) tools, intrusion detection systems (IDS), antivirus, logging agents, sensors, etc.) to impair or reduce visibility of defensive capabilities. This may include stopping specific services, killing processes, modifying or deleting tool configuration files and Registry keys, or …"
+              },
+              {
+                "id": "T1027",
+                "name": "Obfuscated Files or Information",
+                "description": "Adversaries may attempt to make an executable or file difficult to discover or analyze by encrypting, encoding, or otherwise obfuscating its contents on the system or in transit. This is common behavior that can be used across different platforms and the network to evade defenses. \n\nPayloads may be compressed, archived, or encrypted in order to avoid detection. These payloads may be used during In…"
+              },
+              {
+                "id": "T1068",
+                "name": "Exploitation for Privilege Escalation",
+                "description": "Adversaries may exploit software vulnerabilities in an attempt to elevate privileges. Exploitation of a software vulnerability occurs when an adversary takes advantage of a programming error in a program, service, or within the operating system software or kernel itself to execute adversary-controlled code. Security constructs such as permission levels will often hinder access to information and u…"
+              },
+              {
+                "id": "T1055.012",
+                "name": "Process Hollowing",
+                "description": "Adversaries may inject malicious code into suspended and hollowed processes in order to evade process-based defenses. Process hollowing is a method of executing arbitrary code in the address space of a separate live process.  \n\nProcess hollowing is commonly performed by creating a process in a suspended state then unmapping/hollowing its memory, which can then be replaced with malicious code. A vi…"
+              },
+              {
+                "id": "T1027.005",
+                "name": "Indicator Removal from Tools",
+                "description": "Adversaries may remove indicators from tools if they believe their malicious tool was detected, quarantined, or otherwise curtailed. They can modify the tool by removing the indicator and using the updated version that is no longer detected by the target's defensive systems or subsequent targets that may use similar systems.\n\nA good example of this is when malware is detected with a file signature…"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "provenance": {
+      "citations": 1,
+      "compliant": 1,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  }
+}

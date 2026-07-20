@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-08",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "The gold requires six unique identifiers to be surfaced: CAPEC-644 (capec.must_include_ids), T1550.002 (must_correlate / capec.must_include_related / attack.must_include_ids), and the four mitigations M1018, M1026, M1051, M1052 (attack.must_include_related). The narrative states CAPEC-644 (Use of Captured Hashes (Pass The Hash)) maps to T1550.002 (Pass the Hash), and lists all four mitigations by both name and ID: Update Software (M1051), Privileged Account Management (M1026), User Account Management (M1018), User Account Control (M1052) — 6/6 present. Every name and ID matches the evidence records exactly (capec record CAPEC-644 -> related TaxonomyEntry 1550.002; attack record T1550.002 -> related mitigations M1051/M1026/M1018/M1052 with matching names). The correlation on T1550.002 across capec and attack is correctly implied. No fabricated facts, dates, or extraneous claims were found; the deterministic_scores in the artifact (mapping_recall=1.0, correlation f1=1.0, citation_provenance_rate=1.0) corroborate full grounding."
+}

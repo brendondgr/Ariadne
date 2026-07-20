@@ -1,0 +1,12 @@
+{
+  "case_id": "A-EXC-02",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative/adversarial case: gold asserts expect_empty=true with expected=[] (T1004 was excluded at load, so no node should exist). The executed Cypher query (MATCH (n:Technique) WHERE n.attack_id IN $ids ...) ran cleanly against seed T1004 and returned row_count: 0 at both execute and normalize steps (logic_flow.results[0].traces). The composer correctly abstained rather than fabricating a technique description: narrative states \"The routed sources returned no matching records for this question,\" and the single abstention entry accurately reflects the empty query outcome with no invented id, name, abstraction level, or property. No claims array entries exist, so there is nothing ungrounded to flag. Since the gold requires zero entities to be surfaced and the answer surfaces zero while correctly signaling the absence (rather than silently failing or asserting T1004 exists), this fully satisfies the negative-case bar for correctness, faithfulness, and completeness."
+}

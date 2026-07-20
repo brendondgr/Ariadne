@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-ATT-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[C0027] and must_include_related=[G1015]. The narrative states \"The ATT&CK campaign C0027 is attributed to the group Scattered Spider (G1015),\" which surfaces both the queried campaign id and the required related group id, plus the correct group name (\"Scattered Spider\"), verbatim-matching the retrieved record's related.name in logic_flow.results[0].records[0].related[0] (id: G1015, name: Scattered Spider). This is the single record returned by the campaign_attribution Cypher template (MATCH (c:Campaign)-[:ATTRIBUTED_TO]->(g:Group)), so the answer is fully grounded in the executed query result with no fabricated attributes (no invented dates, abstraction levels, or extra groups). Nothing in the gold assertions is missing."
+}

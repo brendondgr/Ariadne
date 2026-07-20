@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-09",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "The gold requires: CAPEC-645, the correlated T1550.003, and mitigations M1015, M1018, M1026, M1027 (attack.must_include_related). The narrative states \"CAPEC-645 (Use of Captured Tickets (Pass The Ticket)) maps to... T1550.003 (Pass the Ticket)\" and lists all four mitigations by both ID and name (M1015 Active Directory Configuration, M1026 Privileged Account Management, M1018 User Account Management, M1027 Password Policies) — matching the retrieved evidence records verbatim (names and IDs in logic_flow.results[1].records[0].related). The must_correlate T1550.003 is explicitly named as the shared identifier in the claims/correlation, and deterministic_scores confirm exact correlation (precision/recall/f1 = 1.0) and mapping_recall = 1.0. Every stated fact (CAPEC name, technique name, all four mitigation names) is directly grounded in the evidence with no invented details, dates, or extraneous properties. All 6 required entities (CAPEC-645, T1550.003, M1015, M1018, M1026, M1027) are surfaced, so completeness is full."
+}

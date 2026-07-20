@@ -1,0 +1,503 @@
+{
+  "id": "C-SCN-01",
+  "kind": "capec",
+  "tier": "easy",
+  "category": "C-SCN",
+  "question": "Scan CAPEC attack patterns (bounded).",
+  "gold": {
+    "assertions": {
+      "min_records": 250,
+      "max_records": 300
+    }
+  },
+  "answer": {
+    "headline": "Gathered 300 record(s) from 1 source(s).",
+    "narrative": "The scan identified several CAPEC attack patterns, including Accessing Functionality Not Properly Constrained by ACLs (CAPEC-1), Buffer Overflow via Environment Variables (CAPEC-10), Overflow Buffers (CAPEC-100), AJAX Footprinting (CAPEC-85), and XSS Through HTTP Headers (CAPEC-86). Other patterns retrieved include Server Side Include (SSI) Injection (CAPEC-101), HTTP Parameter Pollution (CAPEC-460), Session Sidejacking (CAPEC-102), and OS Command Injection (CAPEC-88). The results also contain various signature spoofing and injection-related patterns such as Signature Spoof (CAPEC-473) and Log Injection-Tampering-Forging (CAPEC-93).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 300 CAPEC record(s): CAPEC-1, CAPEC-10, CAPEC-100, CAPEC-101, CAPEC-102 … (+295 more).",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-1",
+          "CAPEC-10",
+          "CAPEC-100",
+          "CAPEC-85",
+          "CAPEC-86",
+          "CAPEC-101",
+          "CAPEC-46",
+          "CAPEC-460"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-1"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-10"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-100"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-85"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-86"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-101"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-46"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-460"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "C-SCN-01",
+      "source": "capec",
+      "text": "List CAPEC attack patterns.",
+      "entities": [
+        "AttackPattern"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 300,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "C-SCN-01",
+        "sub_question": "List CAPEC attack patterns.",
+        "query": "g.V().hasLabel(\"AttackPattern\").elementMap().limit(300)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 300 CAPEC record(s): CAPEC-1, CAPEC-10, CAPEC-100, CAPEC-101, CAPEC-102 … (+295 more).",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern"
+              ],
+              "relationships": [],
+              "seed_ids": [],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_scan",
+              "query": "g.V().hasLabel(\"AttackPattern\").elementMap().limit(300)",
+              "injected": [],
+              "timing_ms": 0.06
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 300,
+              "timing_ms": 12.2
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 300,
+              "timing_ms": 0.009
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 300,
+              "timing_ms": 1.349
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-1",
+            "name": "Accessing Functionality Not Properly Constrained by ACLs",
+            "label": "AttackPattern",
+            "description": "In applications, particularly web applications, access to functionality is mitigated by an authorization framework. This framework maps Access Control Lists (ACLs) to elements of the application's functionality; particularly URL's for web apps. In the case that the administrator failed to specify an ACL for a particular element, an attacker may be able to access it with impunity. An attacker with the ability to access functionality not properly constrained by ACLs can obtain sensitive information and possibly compromise the entire application. Such an attacker can access resources that must be… (+169 chars)",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-10",
+            "name": "Buffer Overflow via Environment Variables",
+            "label": "AttackPattern",
+            "description": "This attack pattern involves causing a buffer overflow through manipulation of environment variables. Once the adversary finds that they can modify an environment variable, they may try to overflow associated buffers. This attack leverages implicit trust often placed in environment variables.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-100",
+            "name": "Overflow Buffers",
+            "label": "AttackPattern",
+            "description": "Buffer Overflow attacks target improper or missing bounds checking on buffer operations, typically triggered by input injected by an adversary. As a consequence, an adversary is able to write past the boundaries of allocated buffer regions in memory, causing a program crash or potentially redirection of execution as per the adversaries' choice.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-85",
+            "name": "AJAX Footprinting",
+            "label": "AttackPattern",
+            "description": "This attack utilizes the frequent client-server roundtrips in Ajax conversation to scan a system. While Ajax does not open up new vulnerabilities per se, it does optimize them from an attacker point of view. A common first step for an attacker is to footprint the target environment to understand what attacks will work. Since footprinting relies on enumeration, the conversational pattern of rapid, multiple requests and responses that are typical in Ajax applications enable an attacker to look for many vulnerabilities, well-known ports, network locations and so on. The knowledge gained through A… (+69 chars)",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-86",
+            "name": "XSS Through HTTP Headers",
+            "label": "AttackPattern",
+            "description": "An adversary exploits web applications that generate web content, such as links in a HTML page, based on unvalidated or improperly validated data submitted by other actors. XSS in HTTP Headers attacks target the HTTP headers which are hidden from most users and may not be validated by web applications.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-101",
+            "name": "Server Side Include (SSI) Injection",
+            "label": "AttackPattern",
+            "description": "An attacker can use Server Side Include (SSI) Injection to send code to a web application that then gets executed by the web server. Doing so enables the attacker to achieve similar results to Cross Site Scripting, viz., arbitrary code execution and information disclosure, albeit on a more limited scale, since the SSI directives are nowhere near as powerful as a full-fledged scripting language. Nonetheless, the attacker can conveniently gain access to sensitive files, such as password files, and execute shell commands.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-46",
+            "name": "Overflow Variables and Tags",
+            "label": "AttackPattern",
+            "description": "This type of attack leverages the use of tags or variables from a formatted configuration data to cause buffer overflow. The adversary crafts a malicious HTML page or configuration file that includes oversized strings, thus causing an overflow.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-460",
+            "name": "HTTP Parameter Pollution (HPP)",
+            "label": "AttackPattern",
+            "description": "An adversary adds duplicate HTTP GET/POST parameters by injecting query string delimiters. Via HPP it may be possible to override existing hardcoded HTTP parameters, modify the application behaviors, access and, potentially exploit, uncontrollable variables, and bypass input validation checkpoints and WAF rules.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-102",
+            "name": "Session Sidejacking",
+            "label": "AttackPattern",
+            "description": "Session sidejacking takes advantage of an unencrypted communication channel between a victim and target system. The attacker sniffs traffic on a network looking for session tokens in unencrypted traffic. Once a session token is captured, the attacker performs malicious actions by using the stolen token with the targeted application to impersonate the victim. This attack is a specific method of session hijacking, which is exploiting a valid session token to gain unauthorized access to a target system or information. Other methods to perform a session hijacking are session fixation, cross-site s… (+82 chars)",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-87",
+            "name": "Forceful Browsing",
+            "label": "AttackPattern",
+            "description": "An attacker employs forceful browsing (direct URL entry) to access portions of a website that are otherwise unreachable. Usually, a front controller or similar design pattern is employed to protect access to portions of a web application. Forceful browsing enables an attacker to access information, perform privileged operations and otherwise reach sections of the web application that have been improperly protected.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-461",
+            "name": "Web Services API Signature Forgery Leveraging Hash Function Extension Weakness",
+            "label": "AttackPattern",
+            "description": "An adversary utilizes a hash function extension/padding weakness, to modify the parameters passed to the web service requesting authentication by generating their own call in order to generate a legitimate signature hash (as described in the notes), without knowledge of the secret token sometimes provided by the web service.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-462",
+            "name": "Cross-Domain Search Timing",
+            "label": "AttackPattern",
+            "description": "An attacker initiates cross domain HTTP / GET requests and times the server responses. The timing of these responses may leak important information on what is happening on the server. Browser's same origin policy prevents the attacker from directly reading the server responses (in the absence of any other weaknesses), but does not prevent the attacker from timing the responses to requests that the attacker issued cross domain.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-88",
+            "name": "OS Command Injection",
+            "label": "AttackPattern",
+            "description": "In this type of an attack, an adversary injects operating system commands into existing application functions. An application that uses untrusted input to build command strings is vulnerable. An adversary can leverage OS command injection in an application to elevate privileges, execute arbitrary commands and compromise the underlying operating system.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-103",
+            "name": "Clickjacking",
+            "label": "AttackPattern",
+            "description": "An adversary tricks a victim into unknowingly initiating some action in one system while interacting with the UI from a seemingly completely different, usually an adversary controlled or intended, system.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-463",
+            "name": "Padding Oracle Crypto Attack",
+            "label": "AttackPattern",
+            "description": "An adversary is able to efficiently decrypt data without knowing the decryption key if a target system leaks data on whether or not a padding error happened while decrypting the ciphertext. A target system that leaks this type of information becomes the padding oracle and an adversary is able to make use of that oracle to efficiently decrypt data without knowing the decryption key by issuing on average 128*b calls to the padding oracle (where b is the number of bytes in the ciphertext block). In addition to performing decryption, an adversary is also able to produce valid ciphertexts (i.e., pe… (+86 chars)",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-464",
+            "name": "Evercookie",
+            "label": "AttackPattern",
+            "description": "An attacker creates a very persistent cookie that stays present even after the user thinks it has been removed. The cookie is stored on the victim's machine in over ten places. When the victim clears the cookie cache via traditional means inside the browser, that operation removes the cookie from certain places but not others. The malicious code then replicates the cookie from all of the places where it was not deleted to all of the possible storage locations once again. So the victim again has the cookie in all of the original storage locations. In other words, failure to delete the cookie in… (+221 chars)",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-104",
+            "name": "Cross Zone Scripting",
+            "label": "AttackPattern",
+            "description": "An attacker is able to cause a victim to load content into their web-browser that bypasses security zone controls and gain access to increased privileges to execute scripting code or other web objects such as unsigned ActiveX controls or applets. This is a privilege elevation attack targeted at zone-based web-browser security.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-89",
+            "name": "Pharming",
+            "label": "AttackPattern",
+            "description": "A pharming attack occurs when the victim is fooled into entering sensitive data into supposedly trusted locations, such as an online bank site or a trading platform. An attacker can impersonate these supposedly trusted sites and have the victim be directed to their site rather than the originally intended one. Pharming does not require script injection or clicking on malicious links for the attack to succeed.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-465",
+            "name": "Transparent Proxy Abuse",
+            "label": "AttackPattern",
+            "description": "A transparent proxy serves as an intermediate between the client and the internet at large. It intercepts all requests originating from the client and forwards them to the correct location. The proxy also intercepts all responses to the client and forwards these to the client. All of this is done in a manner transparent to the client.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-466",
+            "name": "Leveraging Active Adversary in the Middle Attacks to Bypass Same Origin Policy",
+            "label": "AttackPattern",
+            "description": "An attacker leverages an adversary in the middle attack (CAPEC-94) in order to bypass the same origin policy protection in the victim's browser. This active adversary in the middle attack could be launched, for instance, when the victim is connected to a public WIFI hot spot. An attacker is able to intercept requests and responses between the victim's browser and some non-sensitive website that does not use TLS.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-467",
+            "name": "Cross Site Identification",
+            "label": "AttackPattern",
+            "description": "An attacker harvests identifying information about a victim via an active session that the victim's browser has with a social networking site. A victim may have the social networking site open in one tab or perhaps is simply using the \"remember me\" feature to keep their session with the social networking site active. An attacker induces a payload to execute in the victim's browser that transparently to the victim initiates a request to the social networking site (e.g., via available social network site APIs) to retrieve identifying information about a victim. While some of this information may… (+142 chars)",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-105",
+            "name": "HTTP Request Splitting",
+            "label": "AttackPattern",
+            "description": "An adversary abuses the flexibility and discrepancies in the parsing and interpretation of HTTP Request messages by different intermediary HTTP agents (e.g., load balancer, reverse proxy, web caching proxies, application firewalls, etc.) to split a single HTTP request into multiple unauthorized and malicious HTTP requests to a back-end HTTP agent (e.g., web server). See CanPrecede relationships for possible consequences.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-468",
+            "name": "Generic Cross-Browser Cross-Domain Theft",
+            "label": "AttackPattern",
+            "description": "An attacker makes use of Cascading Style Sheets (CSS) injection to steal data cross domain from the victim's browser. The attack works by abusing the standards relating to loading of CSS: 1. Send cookies on any load of CSS (including cross-domain) 2. When parsing returned CSS ignore all data that does not make sense before a valid CSS descriptor is found by the CSS parser.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-469",
+            "name": "HTTP DoS",
+            "label": "AttackPattern",
+            "description": "An attacker performs flooding at the HTTP level to bring down only a particular web application rather than anything listening on a TCP/IP connection. This denial of service attack requires substantially fewer packets to be sent which makes DoS harder to detect. This is an equivalent of SYN flood in HTTP. The idea is to keep the HTTP session alive indefinitely and then repeat that hundreds of times. This attack targets resource depletion weaknesses in web server software. The web server will wait to attacker's responses on the initiated HTTP sessions while the connection threads are being exha… (+6 chars)",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-9",
+            "name": "Buffer Overflow in Local Command-Line Utilities",
+            "label": "AttackPattern",
+            "description": "This attack targets command-line utilities available in a number of shells. An adversary can leverage a vulnerability found in a command-line utility to escalate privilege to root.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-90",
+            "name": "Reflection Attack in Authentication Protocol",
+            "label": "AttackPattern",
+            "description": "An adversary can abuse an authentication protocol susceptible to reflection attack in order to defeat it. Doing so allows the adversary illegitimate access to the target system, without possessing the requisite credentials. Reflection attacks are of great concern to authentication protocols that rely on a challenge-handshake or similar mechanism. An adversary can impersonate a legitimate user and can gain illegitimate access to the system by successfully mounting a reflection attack during authentication.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-107",
+            "name": "Cross Site Tracing",
+            "label": "AttackPattern",
+            "description": "Cross Site Tracing (XST) enables an adversary to steal the victim's session cookie and possibly other authentication credentials transmitted in the header of the HTTP request when the victim's browser communicates to a destination system's web server.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-47",
+            "name": "Buffer Overflow via Parameter Expansion",
+            "label": "AttackPattern",
+            "description": "In this attack, the target software is given input that the adversary knows will be modified and expanded in size during processing. This attack relies on the target software failing to anticipate that the expanded data may exceed some internal limit, thereby creating a buffer overflow.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-470",
+            "name": "Expanding Control over the Operating System from the Database",
+            "label": "AttackPattern",
+            "description": "An attacker is able to leverage access gained to the database to read / write data to the file system, compromise the operating system, create a tunnel for accessing the host machine, and use this access to potentially attack other machines on the same network as the database machine. Traditionally SQL injections attacks are viewed as a way to gain unauthorized read access to the data stored in the database, modify the data in the database, delete the data, etc. However, almost every data base management system (DBMS) system includes facilities that if compromised allow an attacker complete ac… (+349 chars)",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-92",
+            "name": "Forced Integer Overflow",
+            "label": "AttackPattern",
+            "description": "This attack forces an integer variable to go out of range. The integer variable is often used as an offset such as size of memory allocation or similarly. The attacker would typically control the value of such variable and try to get it out of range. For instance the integer in question is incremented past the maximum possible value, it may wrap to become a very small, or negative number, therefore providing a very incorrect value which can lead to unexpected behavior. At worst the attacker can execute arbitrary code.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-108",
+            "name": "Command Line Execution through SQL Injection",
+            "label": "AttackPattern",
+            "description": "An attacker uses standard SQL injection methods to inject data into the command line for execution. This could be done directly through misuse of directives such as MSSQL_xp_cmdshell or indirectly through injection of data into the database that would be interpreted as shell commands. Sometime later, an unscrupulous backend application (or could be part of the functionality of the same application) fetches the injected data stored in the database and uses this data as command line arguments without performing proper validation. The malicious data escapes that data plane by spawning new command… (+29 chars)",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-471",
+            "name": "Search Order Hijacking",
+            "label": "AttackPattern",
+            "description": "An adversary exploits a weakness in an application's specification of external libraries to exploit the functionality of the loader where the process loading the library searches first in the same directory in which the process binary resides and then in other directories. Exploitation of this preferential search order can allow an attacker to make the loading process load the adversary's rogue library rather than the legitimate library. This attack can be leveraged with many different libraries and with many different loading processes. No forensic trails are left in the system's registry or … (+54 chars)",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-93",
+            "name": "Log Injection-Tampering-Forging",
+            "label": "AttackPattern",
+            "description": "This attack targets the log files of the target host. The attacker injects, manipulates or forges malicious log entries in the log file, allowing them to mislead a log audit, cover traces of attack, or perform other malicious actions. The target host is not properly controlling log access. As a result tainted data is resulting in the log files leading to a failure in accountability, non-repudiation and incident forensics capability.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-109",
+            "name": "Object Relational Mapping Injection",
+            "label": "AttackPattern",
+            "description": "An attacker leverages a weakness present in the database access layer code generated with an Object Relational Mapping (ORM) tool or a weakness in the way that a developer used a persistence framework to inject their own SQL commands to be executed against the underlying database. The attack here is similar to plain SQL injection, except that the application does not use JDBC to directly talk to the database, but instead it uses a data access layer generated by an ORM tool or framework (e.g. Hibernate). While most of the time code generated by an ORM tool contains safe access methods that are … (+208 chars)",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-472",
+            "name": "Browser Fingerprinting",
+            "label": "AttackPattern",
+            "description": "An attacker carefully crafts small snippets of Java Script to efficiently detect the type of browser the potential victim is using. Many web-based attacks need prior knowledge of the web browser including the version of browser to ensure successful exploitation of a vulnerability. Having this knowledge allows an attacker to target the victim with attacks that specifically exploit known or zero day weaknesses in the type and version of the browser used by the victim. Automating this process via Java Script as a part of the same delivery system used to exploit the browser is considered more effi… (+190 chars)",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-473",
+            "name": "Signature Spoof",
+            "label": "AttackPattern",
+            "description": "An attacker generates a message or datablock that causes the recipient to believe that the message or datablock was generated and cryptographically signed by an authoritative or reputable source, misleading a victim or victim operating system into performing malicious actions.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-474",
+            "name": "Signature Spoofing by Key Theft",
+            "label": "AttackPattern",
+            "description": "An attacker obtains an authoritative or reputable signer's private signature key by theft and then uses this key to forge signatures from the original signer to mislead a victim into performing actions that benefit the attacker.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-94",
+            "name": "Adversary in the Middle (AiTM)",
+            "label": "AttackPattern",
+            "description": "An adversary targets the communication between two components (typically client and server), in order to alter or obtain data from transactions. A general approach entails the adversary placing themself within the communication channel between the two components.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-475",
+            "name": "Signature Spoofing by Improper Validation",
+            "label": "AttackPattern",
+            "description": "An adversary exploits a cryptographic weakness in the signature verification algorithm implementation to generate a valid signature without knowing the key.",
+            "join_values": [],
+            "related": []
+          },
+          {
+            "primary_id": "CAPEC-476",
+            "name": "Signature Spoofing by Misrepresentation",
+            "label": "AttackPattern",
+            "description": "An attacker exploits a weakness in the parsing or display code of the recipient software to generate a data blob containing a supposedly valid signature, but the signer's identity is falsely represented, which can lead to the attacker manipulating the recipient software or its victim user to perform compromising actions.",
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "provenance": {
+      "citations": 8,
+      "compliant": 8,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  }
+}

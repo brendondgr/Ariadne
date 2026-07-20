@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-05",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 12,
+  "gold_present": 12,
+  "hallucinations": [],
+  "rationale": "The narrative correctly states CAPEC-21 (Exploitation of Trusted Identifiers) maps to all three gold-required ATT&CK techniques (T1134, T1528, T1539), satisfying must_correlate and the capec/attack must_include_ids assertions. For mitigations, it reports exactly the set found in the evidence records per technique: T1539 → M1051, M1047, M1054, M1032, M1017, M1021 (matches the q2 record for T1539 verbatim); T1528 → M1047, M1018, M1017, M1021 (matches q2 record for T1528 verbatim); T1134 → M1026, M1018 (matches q2 record for T1134 verbatim). Together these cover all 8 gold-required mitigation ids (M1017, M1018, M1021, M1026, M1032, M1047, M1051, M1054) with no omissions and no additions. Technique names (Access Token Manipulation, Steal Application Access Token, Steal Web Session Cookie) and the CAPEC name are quoted correctly from the retrieved records. No claim in the narrative lacks a grounding record — every technique-mitigation pairing traces directly to the \"related\" arrays in the q2 attack results, and the correlation claims are backed by the deterministic_scores block (precision/recall/f1 all 1.0, mapping_recall 1.0, provenance 1.0). No hallucinated abstraction levels, statuses, or extraneous mitigations were introduced."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-02",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 14,
+  "gold_present": 14,
+  "hallucinations": [],
+  "rationale": "The narrative correctly states CAPEC-555 maps to all three gold-required techniques (T1021, T1114.002, T1133), matching the capec.must_include_related and must_correlate assertions exactly (evidence record CAPEC-555.join_values = [T1021, T1114.002, T1133]). It then lists mitigations per technique that exactly match the retrieved evidence: T1133 -> M1035, M1021, M1030, M1032, M1042 (5/5, matches evidence.related list exactly); T1021 -> M1042, M1047, M1032, M1018, M1027, M1035 (6/6, exact match); T1114.002 -> M1041, M1032, M1060 (3/3, exact match). The union of mitigations named (M1018, M1021, M1027, M1030, M1032, M1035, M1041, M1042, M1047, M1060) is exactly the 10-item attack.must_include_related set from gold, with no additions or omissions. No mitigation IDs, technique names, or CAPEC details appear that are absent from the evidence records - every fact traces directly to the logic_flow records for CAPEC-555, T1133, T1021, and T1114.002. The self-reported deterministic_scores (correlation f1=1.0, mapping_recall=1.0, provenance=1.0) corroborate this independent check. No hallucinations detected."
+}

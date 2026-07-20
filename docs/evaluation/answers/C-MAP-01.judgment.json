@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-555 (must_include_ids) plus all three ATT&CK mappings T1021, T1114.002, T1133 (must_include_related and ex_gold.expected join set). The narrative states \"CAPEC-555, which is named Remote Services with Stolen Credentials, maps to the ATT&CK techniques T1021, T1114.002, and T1133\" — all three gold-required technique ids are surfaced (3/3), matching the record's join_values exactly. The CAPEC name used (\"Remote Services with Stolen Credentials\") matches the retrieved record's \"name\" field verbatim, so it is grounded, not invented. The claim and citation both reference CAPEC-555 correctly, and the single retrieved record (row_count 3 mapping edges, normalized to 1 CAPEC record) fully supports every stated fact — no property, date, or relationship is asserted beyond what evidence.records[0] contains. No abstention was warranted since min_records=1 was met. This is a full, correct, fully-grounded answer with zero hallucinations."
+}

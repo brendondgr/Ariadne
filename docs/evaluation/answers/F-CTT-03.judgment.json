@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-03",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to surface the CAPEC-565→ATT&CK correlation id T1110.003 and the tactic TA0006 (Credential Access). The narrative states exactly this: \"The technique mapped from CAPEC-565 is T1110.003 (Password Spraying). This technique belongs to the Credential Access (TA0006) tactic.\" Both required identifiers (T1110.003, TA0006) are present and match the retrieved evidence verbatim: the capec query record shows CAPEC-565 with join_values [\"T1110.003\"] and a related TaxonomyEntry \"Brute Force:Password Spraying\" (entry_id 1110.003), and the attack query record shows T1110.003 related to TA0006 \"Credential Access\" with the correct description. No unsupported names, dates, or extra facts are introduced. The correlation claim in the answer's claims list is also correctly grounded across both sources. This is a full, precise, evidence-backed answer to the question with no hallucinations."
+}

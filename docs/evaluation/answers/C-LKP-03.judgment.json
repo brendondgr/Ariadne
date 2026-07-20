@@ -1,0 +1,15 @@
+{
+  "case_id": "C-LKP-03",
+  "verdict": "PARTIAL",
+  "correctness": 0.6,
+  "faithfulness": 0.3,
+  "groundedness": 0.3,
+  "completeness": 1,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [
+    "\"abstraction level of Standard\" — the retrieved CAPEC-98 record in logic_flow.results[0].records[0] contains only {primary_id, name, label, description, join_values, related}; there is no Abstraction field anywhere in the evidence, despite the Gremlin query using elementMap() which would normally surface all vertex properties. The value happens to match gold's expect_properties.CAPEC-98.Abstraction=\"Standard\" but is not traceable to the shown evidence.",
+    "\"status of Draft\" — same issue: no Status field appears in the retrieved record evidence. The narrative asserts it as fact and it matches gold's expect_properties.CAPEC-98.Status=\"Draft\" exactly, but nothing in the records/traces substantiates it."
+  ],
+  "rationale": "The narrative correctly surfaces the required id (CAPEC-98), name (Phishing), and description text, all of which are directly traceable to logic_flow.results[0].records[0] — that part is faithful and grounded. However, the two facts the question actually asks for — abstraction and status — are stated as \"Standard\" and \"Draft\" respectively (exactly matching gold.assertions.expect_properties), yet neither field appears anywhere in the single retrieved record or its traces; the record object only carries primary_id/name/label/description/join_values/related, and the answer.claims list only cites \"Found 1 CAPEC record(s): CAPEC-98\" with no claim/citation covering Abstraction or Status. Per the grading brief's own example of an invented fact (\"an abstraction/status... not present in evidence\"), this is precisely that failure mode: the two headline facts of a question literally titled \"abstraction and status\" are unsupported by the provided evidence trail, even though they coincidentally match the expected gold values. Completeness is nominally full (all 4 gold-required facts — id, name, Abstraction, Status — are textually present in the narrative), but faithfulness/groundedness are marked down sharply because the load-bearing content of the answer cannot be traced to the retrieved record, undermining confidence that the pipeline is actually reading these properties versus guessing/leaking them from elsewhere."
+}

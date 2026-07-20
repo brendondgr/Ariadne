@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MIT-05",
+  "verdict": "PARTIAL",
+  "correctness": 0.5,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 0.44,
+  "gold_expected": 9,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires all 9 T1003 mitigation ids to be surfaced: M1015, M1017, M1025, M1026, M1027, M1028, M1040, M1041, M1043 — and all 9 are indeed present in the retrieved `related` records (evidence is complete/grounded). However the narrative under test only explicitly names 3: \"Encrypt Sensitive Information (M1041), Active Directory Configuration (M1015), and Credential Access Protection (M1043)\" (plus stating the correct total count \"nine\"), and the supporting claim adds one more distinct example, M1026 (\"e.g. M1041, M1015, M1026\"). Union of narrative+claims = {M1041, M1015, M1043, M1026}, 4 of 9 required ids — the remaining 5 (M1017, M1025, M1027, M1028, M1040) are never surfaced to the analyst despite being in evidence. Every name/id pairing that IS stated is correct and traceable to the record's `related` array (e.g. M1041 → \"Encrypt Sensitive Information\", M1015 → \"Active Directory Configuration\", M1043 → \"Credential Access Protection\" all match verbatim), so there is no fabrication — faithfulness and groundedness are full. But per the completeness criterion (fraction of gold-required related entities actually surfaced), this is well short of exhaustive, so correctness is capped as PARTIAL rather than CORRECT: the answer is accurate as far as it goes but does not \"list\" the mitigations the question asked for, only a non-exhaustive \"including\" sample of 3-4 out of 9. This matches the known deterministic-composer limitation (summarize() emits only an id-line/sample, not the full related list) rather than a retrieval failure — the underlying evidence has 100% coverage, but the narrative/claims layer that reaches the analyst does not."
+}

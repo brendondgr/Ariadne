@@ -1,0 +1,12 @@
+{
+  "case_id": "C-HIE-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-98] and must_include_related=[CAPEC-151]. The narrative \"CAPEC-98 (Phishing) is a child of Identity Spoofing (CAPEC-151)\" surfaces both ids correctly. This is fully grounded in the single retrieved record: primary_id CAPEC-98 (name \"Phishing\") with related neighbor capec:attack-pattern:151, name \"Identity Spoofing\", reached via the CHILD_OF edge in the executed Gremlin query. The ChildOf relationship direction (out(\"CHILD_OF\") from CAPEC-98 to CAPEC-151) matches the answer's claim that CAPEC-151 is the parent. No names, ids, or relationship facts are invented — both the name \"Phishing\" for CAPEC-98 and \"Identity Spoofing\" for CAPEC-151 come directly from the evidence records. No hallucinations found."
+}
