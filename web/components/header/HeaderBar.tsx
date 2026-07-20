@@ -1,7 +1,7 @@
 "use client";
 
 import type { LiveSource } from "@/lib/types";
-import { GearIcon, ThreadGlyph } from "@/components/ui/icons";
+import { GearIcon } from "@/components/ui/icons";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
 import { InfraStatusBar } from "./InfraStatusBar";
 import { RunPipelineButton } from "./RunPipelineButton";
@@ -25,7 +25,15 @@ export function HeaderBar({ liveSources }: HeaderBarProps) {
       <MobileMenuButton />
 
       <div className="flex items-center gap-[11px]">
-        <ThreadGlyph />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/ariadne-logo.svg"
+          alt="Ariadne"
+          width={30}
+          height={26}
+          className="h-[26px] w-auto select-none"
+          draggable={false}
+        />
         <span className="text-lg font-semibold tracking-[-0.5px]">Ariadne</span>
       </div>
 

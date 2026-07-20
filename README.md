@@ -1,6 +1,23 @@
-# Ariadne
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="images/logos/Ariadne_WhiteText.svg">
+    <source media="(prefers-color-scheme: light)" srcset="images/logos/Ariadne_BlackText.svg">
+    <img alt="Ariadne — Federated Knowledge for Cybersecurity" src="images/logos/Ariadne_WhiteText.svg" width="320">
+  </picture>
+</p>
 
-> **Live, read-only federated querying across cybersecurity knowledge graphs that don't share a query language** — one agentic layer plans, queries, and synthesizes analyst-facing answers across engines instead of forcing an offline merge into a single graph.
+<p align="center">
+  <strong>Live, read-only federated querying across cybersecurity knowledge graphs that don't share a query language</strong><br>
+  one agentic layer plans, queries, and synthesizes analyst-facing answers across engines
+  instead of forcing an offline merge into a single graph.
+</p>
+
+<p align="center">
+  <img alt="Python 3.13" src="https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white">
+  <img alt="LangGraph" src="https://img.shields.io/badge/LangGraph-orchestration-1C3C3C">
+  <img alt="Neo4j + Gremlin" src="https://img.shields.io/badge/graphs-Neo4j%20%2B%20Gremlin-21868C">
+  <img alt="Next.js" src="https://img.shields.io/badge/UI-Next.js-000000?logo=nextdotjs&logoColor=white">
+</p>
 
 Cybersecurity teams increasingly rely on knowledge graphs to represent adversary techniques, attack patterns, and mitigations — but those sources live on different engines with different schemas and query languages, so cross-source correlation today usually means manual lookups or an offline ETL into one graph. Most existing federation approaches assume a single engine or require that translation step up front.
 
