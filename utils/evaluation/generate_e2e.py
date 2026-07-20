@@ -38,9 +38,17 @@ from utils.specialists.federation import FederatedEvidence
 from utils.synthesis.contracts import SynthesizedAnswer
 
 MANIFEST_NAME = "manifest.json"
-_MAX_RECORDS_PER_RESULT = 40
+# Kept in step with the narrator's own evidence bounds (utils/synthesis/
+# llm_composer.py): a judge that sees *less* than the narrator saw will flag
+# faithful, grounded claims as hallucinations. The record cap matches the
+# narrator's 50 so every record the answer could have drawn on is visible.
+_MAX_RECORDS_PER_RESULT = 50
 _MAX_RELATED_PER_RECORD = 30
+_MAX_FACETS_PER_RECORD = 20
 _MAX_DESC_CHARS = 600
+# Bulky citation arrays carry no evidentiary value for a judge and drown the
+# real properties — dropped with an explicit marker rather than silently.
+_SKIP_PROPERTIES = frozenset({"external_references"})
 
 
 # -- serialization ----------------------------------------------------------
@@ -51,22 +59,54 @@ def _bound(text: Any, cap: int = _MAX_DESC_CHARS) -> str:
     return s if len(s) <= cap else s[:cap] + f"… (+{len(s) - cap} chars)"
 
 
+def _bounded_properties(properties: Any) -> dict[str, Any]:
+    """A judge-safe view of a record's own properties (Abstraction, Status, …).
+
+    Mirrors ``llm_composer._bounded_properties`` so the judge sees exactly the
+    attribute set the narrator did: the description survives whole (bounded),
+    long strings are marked-truncated, bulky arrays are trimmed, and known-noise
+    keys are dropped with a marker. Dropping every property but ``description``
+    is what previously made faithful reads of Abstraction/Status look invented.
+    """
+    out: dict[str, Any] = {}
+    dropped: list[str] = []
+    for key, value in (properties or {}).items() if isinstance(properties, dict) else []:
+        if key in _SKIP_PROPERTIES:
+            dropped.append(key)
+            continue
+        if isinstance(value, str):
+            out[key] = _bound(value)
+        elif isinstance(value, bool) or isinstance(value, (int, float)) or value is None:
+            out[key] = value
+        elif isinstance(value, list):
+            out[key] = [str(v) for v in value[:10]]
+            if len(value) > 10:
+                out[key].append(f"…(+{len(value) - 10} more)")
+    if dropped:
+        out["_omitted_properties"] = sorted(dropped)
+    return out
+
+
 def _record_dict(r: EvidenceRecord) -> dict[str, Any]:
     """A judging-oriented view of one record: identity + its neighbours' text.
 
-    Crucially keeps each related neighbour's *description* — the actual step /
-    mitigation / consequence prose — which is the substance an attribute
-    question is really asking for.
+    Keeps each related neighbour's *description* — the actual step / mitigation /
+    consequence prose — plus the record's own bounded ``properties`` (so an
+    attribute question's answer is checkable) and the ``facets`` adjacency counts
+    (so a "how many sub-techniques" claim is grounded). These last two were
+    dropped before, which under-served the judge, not the pipeline.
     """
-    desc = ""
-    if isinstance(r.properties, dict):
-        desc = _bound(r.properties.get("description", ""))
+    props = _bounded_properties(r.properties)
     related = []
     for rel in r.related[:_MAX_RELATED_PER_RECORD]:
         if not isinstance(rel, dict):
             related.append({"value": _bound(rel, 200)})
             continue
-        entry = {k: rel.get(k) for k in ("id", "entry_id", "name", "label", "step") if k in rel}
+        entry = {
+            k: rel.get(k)
+            for k in ("id", "entry_id", "name", "label", "step", "role", "type", "direction")
+            if k in rel
+        }
         if rel.get("description"):
             entry["description"] = _bound(rel["description"])
         related.append(entry)
@@ -74,7 +114,17 @@ def _record_dict(r: EvidenceRecord) -> dict[str, Any]:
         "primary_id": r.primary_id,
         "name": r.name,
         "label": r.label,
-        "description": desc,
+        "description": props.get("description", ""),
+        "properties": props,
+        "facets": [
+            {
+                "rel": f.get("rel"),
+                "direction": f.get("direction"),
+                "neighbour_label": f.get("label"),
+                "count": f.get("count"),
+            }
+            for f in (r.facets or [])[:_MAX_FACETS_PER_RECORD]
+        ],
         "join_values": list(r.join_values),
         "related": related,
     }
