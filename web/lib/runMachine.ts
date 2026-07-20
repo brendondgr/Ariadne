@@ -620,6 +620,11 @@ export function useRunMachine(): RunMachine {
       };
 
       runStream().catch((e: unknown) => {
+        // A user cancel / chat delete aborts st.abort — swallow those. Anything
+        // else is a real failure: a network drop, a backend exception, or an
+        // `SseStallError` from the inactivity watchdog (which deliberately does
+        // NOT abort the signal, so a silent hang surfaces here as a visible
+        // error instead of an endless "Composing the answer" spinner).
         if (st.abort.signal.aborted) return;
         setError(e instanceof Error ? e.message : String(e));
         st.acc.status = "partial";

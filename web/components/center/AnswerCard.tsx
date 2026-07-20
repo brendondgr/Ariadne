@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
 import type { AnswerParagraph, SynthesisView, WorkbenchRun } from "@/lib/types";
 import { SHADOW, formatSeconds } from "@/lib/ui";
@@ -18,6 +18,7 @@ import {
   VerifiedIcon,
 } from "@/components/ui/icons";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
+import { SSE_SLOW_MS } from "@/lib/streamConfig";
 import { MiniStepper } from "./MiniStepper";
 import { IntentCard } from "./IntentCard";
 import { LiveTicker } from "./LiveTicker";
@@ -42,17 +43,35 @@ function latestPhase(events: WorkbenchRun["events"]): string | null {
 }
 
 /** The "answer is on its way" placeholder shown where the answer will appear
- *  while synthesis composes it — a pulsing dot + trailing dots. */
+ *  while synthesis composes it — a pulsing dot + trailing dots. Synthesis runs
+ *  silently (no stream events until the answer lands), so the loader ticks its
+ *  own elapsed time and, past {@link SSE_SLOW_MS}, escalates to a "taking
+ *  longer than usual" note. The stream's inactivity watchdog (see
+ *  `lib/api.ts`) is the hard backstop that turns a true hang into an error. */
 function ComposingLoader() {
+  const [mountedAt] = useState(() => Date.now());
+  const [now, setNow] = useState(mountedAt);
+  useEffect(() => {
+    const t = window.setInterval(() => setNow(Date.now()), 250);
+    return () => window.clearInterval(t);
+  }, []);
+  const elapsedMs = Math.max(0, now - mountedAt);
+  const slow = elapsedMs >= SSE_SLOW_MS;
   return (
     <div className="flex items-center gap-2.5">
       <motion.span
         aria-hidden
-        className="h-2 w-2 rounded-full bg-primary"
+        className={`h-2 w-2 rounded-full ${slow ? "" : "bg-primary"}`}
+        style={slow ? { backgroundColor: "#C9924A" } : undefined}
         animate={{ opacity: [1, 0.35, 1], scale: [1, 0.8, 1] }}
         transition={{ duration: 1.1, repeat: Infinity }}
       />
-      <span className="text-sm text-text-soft">Composing the answer</span>
+      <span className="text-sm text-text-soft">
+        {slow ? "Still composing — this is taking longer than usual" : "Composing the answer"}
+      </span>
+      <span className="font-mono text-[11px] text-text-muted" style={slow ? { color: "#C9924A" } : undefined}>
+        {(elapsedMs / 1000).toFixed(1)}s
+      </span>
       <span aria-hidden className="inline-flex gap-[3px]">
         {[0, 1, 2].map((i) => (
           <motion.span

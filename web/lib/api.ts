@@ -18,8 +18,27 @@ import type {
   GraphPayload,
   QueryEvent,
 } from "./types";
+import { SSE_STALL_MS } from "./streamConfig";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "";
+
+/**
+ * Thrown when an SSE stream goes silent past the inactivity budget — no bytes
+ * for `idleMs` with no terminal event. Distinct type so the run machine can
+ * tell a genuine stall apart from a network failure or a user-initiated abort.
+ */
+export class SseStallError extends Error {
+  readonly idleMs: number;
+  constructor(idleMs: number) {
+    super(
+      `The response stalled — no update from the server for ${Math.round(
+        idleMs / 1000,
+      )}s. The query may still be running on the server, or a step may be stuck. Try again.`,
+    );
+    this.name = "SseStallError";
+    this.idleMs = idleMs;
+  }
+}
 
 function url(path: string): string {
   return `${API_BASE}${path}`;
@@ -80,12 +99,21 @@ export function parseSseFrame(frame: string): { type: string; data: unknown } | 
   }
 }
 
-/** POST `body` to `path` and invoke `onFrame` for each parsed SSE frame. */
+/**
+ * POST `body` to `path` and invoke `onFrame` for each parsed SSE frame.
+ *
+ * Guards against a silently stalled stream: each `reader.read()` races an
+ * inactivity timer (reset on every chunk). If no bytes arrive within
+ * `stallMs`, the reader is cancelled and an {@link SseStallError} is thrown,
+ * so a hung backend surfaces as a real error instead of an endless spinner.
+ * Pass `stallMs <= 0` to disable the watchdog.
+ */
 async function postSseStream(
   path: string,
   body: unknown,
   onFrame: (frame: { type: string; data: unknown }) => void,
   signal?: AbortSignal,
+  stallMs: number = SSE_STALL_MS,
 ): Promise<void> {
   const res = await fetch(url(path), {
     method: "POST",
@@ -104,7 +132,7 @@ async function postSseStream(
 
   try {
     for (;;) {
-      const { value, done } = await reader.read();
+      const { value, done } = await readWithStall(reader, stallMs);
       if (done) break;
       buffer += decoder.decode(value, { stream: true });
       // SSE frames are delimited by a blank line.
@@ -118,9 +146,36 @@ async function postSseStream(
     }
     const tail = parseSseFrame(buffer);
     if (tail) onFrame(tail);
+  } catch (err) {
+    // Cancel so the fetch body / socket is released; the pending read settles.
+    await reader.cancel(err).catch(() => {});
+    throw err;
   } finally {
-    reader.releaseLock();
+    // `cancel()` (above, or on normal completion) releases the lock; guard the
+    // no-error path where the reader is still locked.
+    try {
+      reader.releaseLock();
+    } catch {
+      // already released by cancel()
+    }
   }
+}
+
+/**
+ * Await the next chunk, but reject with {@link SseStallError} if it doesn't
+ * arrive within `stallMs`. `stallMs <= 0` disables the timeout.
+ */
+function readWithStall(
+  reader: ReadableStreamDefaultReader<Uint8Array>,
+  stallMs: number,
+): Promise<ReadableStreamReadResult<Uint8Array>> {
+  const read = reader.read();
+  if (stallMs <= 0) return read;
+  let timer: ReturnType<typeof setTimeout>;
+  const stall = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new SseStallError(stallMs)), stallMs);
+  });
+  return Promise.race([read, stall]).finally(() => clearTimeout(timer));
 }
 
 /**
