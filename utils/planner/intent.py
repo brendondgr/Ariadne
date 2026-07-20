@@ -163,6 +163,37 @@ def is_definitional_request(text: str) -> bool:
     return bool(_DEFINITIONAL_RE.search(text or ""))
 
 
+#: A request that asks for *the set* of related entities (which/list/all …, or a
+#: "what <plural relationship-noun>" phrasing like "what consequences/mitigations
+#: does X have"). The plural-noun arm catches enumerative questions the bare
+#: keyword arm misses ("What consequences does CAPEC-66 have?"). Used by the
+#: composer to decide when an answer must ENUMERATE a record's related set rather
+#: than name a representative sample.
+_ENUMERATIVE_REQUEST_RE = re.compile(
+    r"\b(?:which|list|enumerate|every|each|how\s+many|show\s+(?:me\s+)?all|"
+    r"all\s+(?:of\s+)?(?:the|its|their))\b|"
+    # Relationship-set nouns only — NOT entity-type words (capec/cwe/software/
+    # group), which appear as bare ids in the text ("what … CAPEC-555 …") and
+    # would false-match a definitional lookup. The "which" arm above still covers
+    # "which groups/software use X".
+    r"\bwhat\s+(?:\w+\s+){0,6}?(?:techniques?|sub-?techniques?|tactics?|"
+    r"mitigations?|consequences?|patterns?|steps?|prerequisites?|skills?|"
+    r"weaknesses?|mappings?|children|parents?|ancestors?|descendants?|"
+    r"examples?|indicators?|detections?|components?|assets?)\b",
+    re.IGNORECASE,
+)
+
+
+def is_enumerative_request(text: str) -> bool:
+    """True when the request asks for the full set of a relationship, not a sample.
+
+    Drives the composer's structured-enumeration claim: on "which techniques /
+    what mitigations / what consequences" the gold expects every related id, so
+    the answer must list them all rather than a representative few.
+    """
+    return bool(_ENUMERATIVE_REQUEST_RE.search(text or ""))
+
+
 #: MITRE id shapes — an id in the text is a strong single-entity lookup signal.
 _ID_RE = re.compile(
     r"\b(?:T\d{4}(?:\.\d{3})?|TA\d{4}|[MSG]\d{4}|DS\d{4}|CAPEC-\d+|CWE-\d+)\b",

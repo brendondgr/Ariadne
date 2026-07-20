@@ -5,12 +5,146 @@ from __future__ import annotations
 
 from utils.synthesis.composer import DeterministicComposer, abstention_statement
 from utils.synthesis.config import SynthesisConfig
+from utils.synthesis.verifier import verify_answer
 
 from ._fixtures import make_evidence, make_record, make_result
 
 
 def _compose(evidence, **config_kwargs):
     return DeterministicComposer(SynthesisConfig(**config_kwargs)).compose(evidence)
+
+
+# -- structured enumeration (the under-enumeration fix) ----------------------
+
+
+def _enum_claims(answer):
+    return [c for c in answer.claims if c.kind == "enumeration"]
+
+
+def test_enumerative_question_emits_full_enumeration_claim():
+    """'which techniques' → one claim naming EVERY related id, cited to the anchor."""
+    ids = [f"T{1000 + i}" for i in range(20)]
+    anchor = make_record(
+        "S0266",
+        name="TrickBot",
+        label="Software",
+        related=[{"id": t, "name": f"tech {t}", "label": "Technique"} for t in ids],
+    )
+    evidence = make_evidence(
+        [make_result(text="Which techniques does software S0266 (TrickBot) use?",
+                     records=[anchor], summary="TrickBot uses many techniques.")]
+    )
+    answer = _compose(evidence)
+    enum = _enum_claims(answer)
+    assert len(enum) == 1
+    # every related id is surfaced (not just a sample)
+    assert set(enum[0].entity_ids) == set(ids)
+    assert enum[0].citations[0].primary_id == "S0266"
+    # and it verifies as supported (grounded by the anchor's id pool)
+    verified = verify_answer(_compose(evidence), evidence)
+    assert all(v.supported for v in verified.verification.verdicts)
+
+
+def test_non_enumerative_small_related_set_gets_no_enumeration_claim():
+    """An abstraction lookup (2 ancestors, not enumerative) stays a plain fact."""
+    anchor = make_record(
+        "CAPEC-555", source="capec", label="AttackPattern",
+        related=[{"id": "CAPEC-560", "role": "parent"}, {"id": "CAPEC-1", "role": "grandparent"}],
+    )
+    evidence = make_evidence(
+        [make_result(source="capec", text="What abstraction level is CAPEC-555?",
+                     records=[anchor], summary="One pattern.")]
+    )
+    assert _enum_claims(_compose(evidence)) == []
+
+
+def test_large_related_set_enumerates_even_without_enumerative_phrasing():
+    """Safety net: a related set larger than the citation cap is always listed."""
+    ids = [f"T{2000 + i}" for i in range(12)]  # > default cap of 8
+    anchor = make_record(
+        "T1003", related=[{"id": t, "label": "Technique"} for t in ids],
+    )
+    evidence = make_evidence(
+        [make_result(text="tell me about T1003", records=[anchor], summary="A technique.")]
+    )
+    enum = _enum_claims(_compose(evidence))
+    assert len(enum) == 1
+    assert set(enum[0].entity_ids) == set(ids)
+
+
+def test_enumeration_preserves_non_mitre_related_ids_verbatim():
+    """CAPEC consequence child ids are not MITRE-shaped — they must survive whole."""
+    cons = [f"capec:attack-pattern:66:consequence:{i}" for i in range(1, 5)]
+    anchor = make_record(
+        "CAPEC-66", source="capec", label="AttackPattern",
+        related=[{"id": c, "label": "Consequence"} for c in cons],
+    )
+    evidence = make_evidence(
+        [make_result(source="capec", text="What consequences does CAPEC-66 have?",
+                     records=[anchor], summary="Four consequences.")]
+    )
+    enum = _enum_claims(_compose(evidence))
+    assert len(enum) == 1
+    assert set(enum[0].entity_ids) == set(cons)
+
+
+def test_many_primary_records_are_enumerated_by_primary_id():
+    """Shape B: a group's 12 technique records (each its own record, no related)
+    — the fact claim samples 8, the enumeration claim lists all 12."""
+    ids = [f"T{3000 + i}" for i in range(12)]  # > default cap of 8
+    records = [make_record(t, join_values=(t,)) for t in ids]
+    evidence = make_evidence(
+        [make_result(text="Which techniques does group G0007 use?", records=records,
+                     summary="Found 12 techniques.")]
+    )
+    answer = _compose(evidence)
+    enum = _enum_claims(answer)
+    assert len(enum) == 1
+    assert set(enum[0].entity_ids) == set(ids)
+    verified = verify_answer(_compose(evidence), evidence)
+    assert all(v.supported for v in verified.verification.verdicts)
+
+
+def test_few_primary_records_need_no_enumeration_claim():
+    """At or below the citation cap the fact claim already surfaces every id."""
+    records = [make_record(f"T10{i}", join_values=(f"T10{i}",)) for i in range(3)]
+    evidence = make_evidence([make_result(text="Which techniques?", records=records)])
+    assert _enum_claims(_compose(evidence)) == []
+
+
+def test_hierarchy_enumeration_labels_standard_vs_meta_roles():
+    """C-ABS: the ancestors carry roles, so the claim says which is standard/meta
+    and names both ids — not the old 'evidence does not contain them'."""
+    anchor = make_record(
+        "CAPEC-7", name="Blind SQL Injection", source="capec", label="AttackPattern",
+        related=[
+            {"id": "CAPEC-66", "role": "standard", "name": "SQL Injection"},
+            {"id": "CAPEC-248", "role": "meta", "name": "Command Injection"},
+        ],
+    )
+    evidence = make_evidence(
+        [make_result(source="capec",
+                     text="Walk the abstraction hierarchy up from CAPEC-7: what are its standard and meta ancestors?",
+                     records=[anchor], summary="Two ancestors.")]
+    )
+    enum = _enum_claims(_compose(evidence))
+    assert len(enum) == 1
+    assert set(enum[0].entity_ids) == {"CAPEC-66", "CAPEC-248"}
+    # roles are annotated in the prose
+    assert "CAPEC-66 (standard)" in enum[0].text
+    assert "CAPEC-248 (meta)" in enum[0].text
+
+
+def test_enumeration_claim_text_names_the_ids():
+    """The full list rides the claim text too, so a reader sees it, not just a count."""
+    ids = ["M1041", "M1015", "M1043"]
+    anchor = make_record("T1003", related=[{"id": m, "label": "Mitigation"} for m in ids])
+    evidence = make_evidence(
+        [make_result(text="What mitigations does ATT&CK list for T1003?", records=[anchor])]
+    )
+    enum = _enum_claims(_compose(evidence))[0]
+    for m in ids:
+        assert m in enum.text
 
 
 def test_result_with_records_becomes_cited_fact_claim():

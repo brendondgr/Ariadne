@@ -27,6 +27,7 @@ answers for faithfulness/groundedness/evidence-sufficiency.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -121,6 +122,66 @@ def score_mapping_recall(
         "found": len(found),
         "recall": len(found) / len(gold),
         "missing": sorted(gold - pool),
+    }
+
+
+# MITRE id shapes an answer can name — used to credit ids the narrative prose
+# surfaces even when they are not carried on a claim's structured entity_ids.
+_ANSWER_ID_RE = re.compile(
+    r"\b(?:T\d{4}(?:\.\d{3})?|TA\d{4}|[MSG]\d{4}|DS\d{4}|CAPEC-\d+|CWE-\d+)\b",
+    re.IGNORECASE,
+)
+
+# Gold assertion keys whose ids the *answer* is expected to enumerate (as opposed
+# to ``must_correlate``, the cross-source join scored by ``mapping_recall``).
+_COVERAGE_ASSERTION_KEYS = ("must_include_ids", "must_include_related")
+
+
+def _surfaced_ids(answer: SynthesizedAnswer) -> set[str]:
+    """Every id the analyst actually sees in the answer.
+
+    Retrieval recall (``mapping_recall``) measures ids in the *pool*; this
+    measures ids the answer *states* — the gap under-enumeration opens. Draws
+    from the rendered (verified-supported) claims' ``entity_ids`` and citations,
+    plus any id the narrative prose names, so both the structured enumeration
+    claim and the LLM narrator's prose count.
+    """
+    rendered = answer.rendered_claims() if answer.verification is not None else answer.claims
+    ids: set[str] = set()
+    for claim in rendered:
+        for eid in claim.entity_ids:
+            ids.add(normalize_id(eid))
+        for cit in claim.citations:
+            if cit.primary_id:
+                ids.add(normalize_id(cit.primary_id))
+    for match in _ANSWER_ID_RE.findall(answer.narrative or ""):
+        ids.add(normalize_id(match))
+    return ids
+
+
+def score_answer_coverage(
+    entry: dict, answer: SynthesizedAnswer
+) -> dict[str, Any] | None:
+    """Fraction of the gold ids the answer is required to enumerate that it names.
+
+    Returns ``None`` for entries with no enumerable gold (negatives, boundary,
+    property-only). This is the deterministic yardstick for under-enumeration:
+    the pipeline can retrieve every id (``mapping_recall`` ≈ 1.0) yet surface
+    only a sample in the answer, which no other deterministic metric catches.
+    """
+    asserts = entry.get("assertions", {}) or {}
+    gold: set[str] = set()
+    for key in _COVERAGE_ASSERTION_KEYS:
+        gold |= {normalize_id(v) for v in asserts.get(key, []) or []}
+    if not gold:
+        return None
+    surfaced = _surfaced_ids(answer)
+    found = gold & surfaced
+    return {
+        "gold": len(gold),
+        "found": len(found),
+        "coverage": len(found) / len(gold),
+        "missing": sorted(gold - surfaced),
     }
 
 
@@ -243,6 +304,7 @@ class E2ECase:
     category: str = ""
     correlation: dict[str, Any] | None = None
     mapping_recall: dict[str, Any] | None = None
+    coverage: dict[str, Any] | None = None
     provenance: dict[str, Any] = field(default_factory=dict)
     inspectability: dict[str, Any] = field(default_factory=dict)
 
@@ -254,6 +316,7 @@ class E2ECase:
             "category": self.category,
             "correlation": self.correlation,
             "mapping_recall": self.mapping_recall,
+            "coverage": self.coverage,
             "provenance": self.provenance,
             "inspectability": self.inspectability,
         }
@@ -274,6 +337,7 @@ def evaluate_case(
         category=entry.get("category", "") or _category_of(entry.get("id", "")),
         provenance=score_provenance(answer, evidence),
         inspectability=score_inspectability(answer, evidence),
+        coverage=score_answer_coverage(entry, answer),
     )
     if kind == "federated":
         case.correlation = score_correlation(entry, evidence)
@@ -318,6 +382,10 @@ def aggregate(cases: list[E2ECase], judge: JudgeReport) -> dict[str, Any]:
 
     inspect = [c.inspectability["inspectability"] for c in cases]
 
+    covered = [c.coverage for c in cases if c.coverage is not None]
+    cov_gold = sum(m["gold"] for m in covered)
+    cov_found = sum(m["found"] for m in covered)
+
     return {
         "cross_source_accuracy": {
             "positives": len(positives),
@@ -349,6 +417,13 @@ def aggregate(cases: list[E2ECase], judge: JudgeReport) -> dict[str, Any]:
             "mean_citation_coverage": round(_mean([c.inspectability["citation_coverage"] for c in cases]), 4),
             "mean_traceability": round(_mean([c.inspectability["traceability"] for c in cases]), 4),
             "mean_abstention_proofs": round(_mean([c.inspectability["abstention_proofs"] for c in cases]), 4),
+        },
+        "answer_completeness": {
+            "entries": len(covered),
+            "gold_ids": cov_gold,
+            "found_ids": cov_found,
+            "micro_coverage": round(cov_found / cov_gold, 4) if cov_gold else 1.0,
+            "mean_coverage": round(_mean([m["coverage"] for m in covered]), 4),
         },
         "llm_judge": judge.to_dict(),
     }

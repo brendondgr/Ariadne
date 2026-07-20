@@ -537,12 +537,28 @@ class GremlinNormalizer:
                     "_related_ids_seen": set(),
                 }
 
-            for ancestor_m in (parent_m, gp_m):
+            # Parent is the standard ancestor, grandparent the meta ancestor.
+            # Carry the role (and the ancestor's own Abstraction/name) so the
+            # composer can label which is which — flattening these to bare ids
+            # left the narrator unable to distinguish them and, worse, claiming
+            # the ancestors were absent when they were right here in ``related``.
+            for position, ancestor_m in (("standard", parent_m), ("meta", gp_m)):
                 anc_gid = _safe_str(ancestor_m.get("id", ""))
                 anc_primary = _primary_id_from_gremlin_id(anc_gid)
                 if anc_primary and anc_primary not in groups[primary_id]["_related_ids_seen"]:
                     groups[primary_id]["_related_ids_seen"].add(anc_primary)
-                    groups[primary_id]["related"].append({"id": anc_primary})
+                    abstraction = _safe_str(ancestor_m.get("Abstraction", ""))
+                    entry: dict[str, Any] = {
+                        "id": anc_primary,
+                        "role": abstraction.lower() if abstraction else position,
+                        "label": _get_label(ancestor_m) or "AttackPattern",
+                    }
+                    anc_name = _safe_str(ancestor_m.get("name", ""))
+                    if anc_name:
+                        entry["name"] = anc_name
+                    if abstraction:
+                        entry["abstraction"] = abstraction
+                    groups[primary_id]["related"].append(entry)
 
         records: list[EvidenceRecord] = []
         for grp in groups.values():
