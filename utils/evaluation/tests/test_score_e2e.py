@@ -18,6 +18,7 @@ from utils.evaluation.score_e2e import (
     aggregate,
     build_e2e,
     evaluate_case,
+    score_answer_coverage,
     score_correlation,
     score_e2e,
     score_inspectability,
@@ -194,6 +195,74 @@ def test_inspectability_abstention_proof():
     # The verifier repairs an abstention carrying the executed query as proof.
     assert result["abstention_proofs"] == 1.0
     assert result["inspectability"] == 1.0
+
+
+# -- answer coverage (under-enumeration yardstick) --------------------------
+
+
+def _coverage_entry(**asserts):
+    return {"id": "A-MIT-05", "tier": "hard", "assertions": asserts}
+
+
+def test_answer_coverage_full():
+    """All gold ids surfaced (here via the narrative prose) → coverage 1.0."""
+    entry = _coverage_entry(must_include_related=["M1041", "M1015", "M1043", "M1028"])
+    answer = SynthesizedAnswer(
+        request="q", narrative="Mitigations: M1041, M1015, M1043, M1028."
+    )
+    result = score_answer_coverage(entry, answer)
+    assert result["gold"] == 4
+    assert result["found"] == 4
+    assert result["coverage"] == 1.0
+    assert result["missing"] == []
+
+
+def test_answer_coverage_partial_under_enumeration():
+    """The exact defect: retrieval fine, answer names only a sample of the gold."""
+    entry = _coverage_entry(must_include_related=["M1041", "M1015", "M1043", "M1028"])
+    # answer states only two of the four required mitigations (structured claim)
+    answer = SynthesizedAnswer(
+        request="q",
+        claims=[Claim(text="Mitigations include M1041, M1015.", entity_ids=("M1041", "M1015"))],
+    )
+    result = score_answer_coverage(entry, answer)
+    assert result["gold"] == 4
+    assert result["found"] == 2
+    assert result["coverage"] == 0.5
+    assert result["missing"] == ["M1028", "M1043"]
+
+
+def test_answer_coverage_union_of_ids_and_related():
+    """Gold pools must_include_ids and must_include_related together."""
+    entry = _coverage_entry(must_include_ids=["T1003"], must_include_related=["M1041"])
+    answer = SynthesizedAnswer(request="q", narrative="T1003 is mitigated by M1041.")
+    result = score_answer_coverage(entry, answer)
+    assert result["gold"] == 2
+    assert result["coverage"] == 1.0
+
+
+def test_answer_coverage_none_when_no_enumerable_gold():
+    """Negatives / property-only entries have nothing to enumerate → None."""
+    entry = _coverage_entry(expect_no_correlation=True, must_correlate=[])
+    answer = SynthesizedAnswer(request="q", narrative="No correlation found.")
+    assert score_answer_coverage(entry, answer) is None
+
+
+def test_aggregate_reports_answer_completeness():
+    """The roll-up surfaces micro/mean coverage so under-enumeration is visible."""
+    entry = _coverage_entry(must_include_related=["M1041", "M1015", "M1043", "M1028"])
+    evidence = make_evidence([make_result(records=[make_record("T1003")])])
+    answer = verify_answer(
+        SynthesizedAnswer(
+            request="q", narrative="Mitigations include M1041 and M1015 only."
+        ),
+        evidence,
+    )
+    case = evaluate_case(entry, evidence, answer, kind="single")
+    assert case.coverage["coverage"] == 0.5
+    overall = aggregate([case], JudgeReport())
+    assert overall["answer_completeness"]["entries"] == 1
+    assert overall["answer_completeness"]["micro_coverage"] == 0.5
 
 
 # -- evaluate_case + aggregate ----------------------------------------------
