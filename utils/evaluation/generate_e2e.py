@@ -107,7 +107,7 @@ def _record_dict(r: EvidenceRecord) -> dict[str, Any]:
             continue
         entry = {
             k: rel.get(k)
-            for k in ("id", "entry_id", "name", "label", "step", "role", "type", "direction")
+            for k in ("id", "entry_id", "name", "label", "step", "role", "abstraction", "type", "direction")
             if k in rel
         }
         if rel.get("description"):

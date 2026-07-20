@@ -227,6 +227,37 @@ class TestNormalizerNeighbors:
         assert check_contract(records) == []
 
 
+class TestNormalizerHierarchy:
+    def test_ancestors_carry_role_name_and_abstraction(self, card):
+        """Walk-up rows must keep parent=standard / grandparent=meta roles, not
+        flatten both to bare ids (the C-ABS defect)."""
+        gp = _ap_row(248, "Command Injection")
+        gp["Abstraction"] = "Meta"
+        rows = [{
+            "ap": _ap_row(7, "Blind SQL Injection"),
+            "parent": _ap_row(66, "SQL Injection"),   # Abstraction=Standard
+            "grandparent": gp,                          # Abstraction=Meta
+        }]
+        normalizer = GremlinNormalizer()
+        records = normalizer.normalize(rows, resolved=None, query="q", card=card)  # type: ignore[arg-type]
+        assert len(records) == 1
+        rel = {r["id"]: r for r in records[0].related}
+        assert rel["CAPEC-66"]["role"] == "standard"
+        assert rel["CAPEC-66"]["name"] == "SQL Injection"
+        assert rel["CAPEC-66"]["abstraction"] == "Standard"
+        assert rel["CAPEC-248"]["role"] == "meta"
+        assert rel["CAPEC-248"]["abstraction"] == "Meta"
+
+    def test_contract_passes_on_hierarchy(self, card):
+        rows = [{
+            "ap": _ap_row(7, "Blind SQL Injection"),
+            "parent": _ap_row(66, "SQL Injection"),
+            "grandparent": _ap_row(248, "Command Injection"),
+        }]
+        records = GremlinNormalizer().normalize(rows, resolved=None, query="q", card=card)  # type: ignore[arg-type]
+        assert check_contract(records) == []
+
+
 class TestNormalizerMapsTo:
     def test_t_prefixed_join_values(self, card):
         """ATTACK taxonomy entry_id '1574.010' becomes 'T1574.010' in join_values."""

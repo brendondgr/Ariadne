@@ -40,6 +40,11 @@ representative few (e.g. "TrickBot uses 55 techniques, including T1055, T1027, \
 …"); the complete list is carried in the structured claims, so you need not \
 list every id in the prose. Never say a set is empty or that only "a few" exist \
 when the evidence lists more — report the true count.
+- A related entity may carry a role (e.g. an abstraction ancestor tagged \
+"standard" or "meta"). When it does, state which id plays which role — do not \
+merely say both exist. NEVER claim the evidence "does not contain" or "does not \
+name" identifiers that are present in a record's related set: if they are \
+listed, name them.
 - If the evidence does not answer part of the request, say so plainly.
 Output only the answer prose.
 """

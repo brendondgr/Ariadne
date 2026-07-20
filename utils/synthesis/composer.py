@@ -226,11 +226,30 @@ def _enumeration_claim(result: SpecialistResult, record: EvidenceRecord) -> Clai
     can audit it. Cited to the anchor record, whose ``id_pool`` grounds every
     listed id (``grounding.id_pool`` includes related ids).
     """
-    ids = _related_ids(record)[:_MAX_ENUMERATION_IDS]
+    ids: list[str] = []
+    parts: list[str] = []
+    seen: set[str] = set()
+    for rel in record.related:
+        if not isinstance(rel, dict):
+            continue
+        rid = rel.get("id") or rel.get("entry_id")
+        if not rid:
+            continue
+        rid = str(rid)
+        if rid in seen:
+            continue
+        seen.add(rid)
+        ids.append(rid)
+        # A role (e.g. an abstraction ancestor's "standard"/"meta") is annotated
+        # in the prose so the answer says *which* is which, not just that both
+        # exist — the distinction the hierarchy questions demand.
+        role = rel.get("role")
+        parts.append(f"{rid} ({role})" if role else rid)
+        if len(ids) >= _MAX_ENUMERATION_IDS:
+            break
     noun = _related_noun(record)
     anchor = record.name and f"{record.primary_id} ({record.name})" or record.primary_id
-    listed = _summarize_ids(ids, cap=len(ids))  # full list — this is the point
-    text = f"{anchor} has {len(ids)} {noun}: {listed}."
+    text = f"{anchor} has {len(ids)} {noun}: {', '.join(parts)}."
     return Claim(
         text=text,
         citations=(

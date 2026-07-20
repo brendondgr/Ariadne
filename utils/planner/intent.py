@@ -176,10 +176,10 @@ _ENUMERATIVE_REQUEST_RE = re.compile(
     # group), which appear as bare ids in the text ("what … CAPEC-555 …") and
     # would false-match a definitional lookup. The "which" arm above still covers
     # "which groups/software use X".
-    r"\bwhat\s+(?:\w+\s+){0,3}?(?:techniques?|sub-?techniques?|tactics?|"
+    r"\bwhat\s+(?:\w+\s+){0,6}?(?:techniques?|sub-?techniques?|tactics?|"
     r"mitigations?|consequences?|patterns?|steps?|prerequisites?|skills?|"
-    r"weaknesses?|mappings?|children|parents?|examples?|indicators?|"
-    r"detections?|components?|assets?)\b",
+    r"weaknesses?|mappings?|children|parents?|ancestors?|descendants?|"
+    r"examples?|indicators?|detections?|components?|assets?)\b",
     re.IGNORECASE,
 )
 

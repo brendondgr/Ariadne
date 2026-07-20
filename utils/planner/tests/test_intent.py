@@ -133,6 +133,9 @@ def test_is_enumerative_request_recognises_which_and_what_plural():
     assert is_enumerative_request("What consequences does CAPEC-66 have?")
     assert is_enumerative_request("What are the execution steps of CAPEC-66?")
     assert is_enumerative_request("list all sub-techniques of T1055")
+    assert is_enumerative_request(
+        "Walk the abstraction hierarchy up from CAPEC-7: what are its standard and meta ancestors?"
+    )
     # A bare-id definitional lookup must NOT read as enumerative — the entity
     # type word (capec/cwe) in the id is deliberately not a relationship noun.
     assert not is_enumerative_request("What abstraction level is CAPEC-555?")

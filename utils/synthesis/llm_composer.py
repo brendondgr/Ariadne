@@ -88,7 +88,7 @@ def _related_entry(rel: dict) -> dict:
     out = {
         k: v
         for k, v in rel.items()
-        if k in ("id", "entry_id", "name", "type", "direction", "label")
+        if k in ("id", "entry_id", "name", "type", "direction", "label", "role", "abstraction")
     }
     desc = rel.get("description")
     if isinstance(desc, str) and desc.strip():

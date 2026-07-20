@@ -112,6 +112,29 @@ def test_few_primary_records_need_no_enumeration_claim():
     assert _enum_claims(_compose(evidence)) == []
 
 
+def test_hierarchy_enumeration_labels_standard_vs_meta_roles():
+    """C-ABS: the ancestors carry roles, so the claim says which is standard/meta
+    and names both ids — not the old 'evidence does not contain them'."""
+    anchor = make_record(
+        "CAPEC-7", name="Blind SQL Injection", source="capec", label="AttackPattern",
+        related=[
+            {"id": "CAPEC-66", "role": "standard", "name": "SQL Injection"},
+            {"id": "CAPEC-248", "role": "meta", "name": "Command Injection"},
+        ],
+    )
+    evidence = make_evidence(
+        [make_result(source="capec",
+                     text="Walk the abstraction hierarchy up from CAPEC-7: what are its standard and meta ancestors?",
+                     records=[anchor], summary="Two ancestors.")]
+    )
+    enum = _enum_claims(_compose(evidence))
+    assert len(enum) == 1
+    assert set(enum[0].entity_ids) == {"CAPEC-66", "CAPEC-248"}
+    # roles are annotated in the prose
+    assert "CAPEC-66 (standard)" in enum[0].text
+    assert "CAPEC-248 (meta)" in enum[0].text
+
+
 def test_enumeration_claim_text_names_the_ids():
     """The full list rides the claim text too, so a reader sees it, not just a count."""
     ids = ["M1041", "M1015", "M1043"]
