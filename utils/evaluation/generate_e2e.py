@@ -43,7 +43,10 @@ MANIFEST_NAME = "manifest.json"
 # faithful, grounded claims as hallucinations. The record cap matches the
 # narrator's 50 so every record the answer could have drawn on is visible.
 _MAX_RECORDS_PER_RESULT = 50
-_MAX_RELATED_PER_RECORD = 30
+# Higher than the narrator's prose bound (30): the judge must see the *whole*
+# related set that backs a structured enumeration claim (e.g. TrickBot's 55
+# techniques), or it flags the enumerated ids beyond the cap as ungrounded.
+_MAX_RELATED_PER_RECORD = 100
 _MAX_FACETS_PER_RECORD = 20
 _MAX_DESC_CHARS = 600
 # Bulky citation arrays carry no evidentiary value for a judge and drown the

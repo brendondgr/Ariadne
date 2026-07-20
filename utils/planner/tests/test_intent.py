@@ -17,6 +17,7 @@ from utils.planner.intent import (
     Intent,
     IntentClassification,
     is_definitional_request,
+    is_enumerative_request,
 )
 
 
@@ -123,3 +124,18 @@ def test_is_definitional_request_recognises_what_is_and_describe():
     # Non-definitional retrieval questions must stay out of the name path.
     assert not is_definitional_request("Which mitigations apply to T1047?")
     assert not is_definitional_request("How do you detect phishing?")
+
+
+def test_is_enumerative_request_recognises_which_and_what_plural():
+    # "which/list" keyword arm and the "what <plural relationship-noun>" arm.
+    assert is_enumerative_request("Which techniques does software S0266 use?")
+    assert is_enumerative_request("What mitigations does ATT&CK list for T1003?")
+    assert is_enumerative_request("What consequences does CAPEC-66 have?")
+    assert is_enumerative_request("What are the execution steps of CAPEC-66?")
+    assert is_enumerative_request("list all sub-techniques of T1055")
+    # A bare-id definitional lookup must NOT read as enumerative — the entity
+    # type word (capec/cwe) in the id is deliberately not a relationship noun.
+    assert not is_enumerative_request("What abstraction level is CAPEC-555?")
+    assert not is_enumerative_request("What is the status of CAPEC-98?")
+    assert not is_enumerative_request("What is T1003?")
+    assert not is_enumerative_request("Describe CAPEC-98.")

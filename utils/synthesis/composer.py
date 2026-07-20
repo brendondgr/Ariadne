@@ -22,13 +22,20 @@ Composition rules:
 
 from __future__ import annotations
 
-from utils.planner.intent import is_definitional_request
-from utils.specialists.contracts import SpecialistResult
+from utils.planner.intent import is_definitional_request, is_enumerative_request
+from utils.specialists.contracts import EvidenceRecord, SpecialistResult
 from utils.specialists.federation import FederatedEvidence
 from utils.specialists.resolve import definitional_name_terms
 
 from .config import SynthesisConfig
 from .contracts import Abstention, Citation, Claim, SynthesizedAnswer
+
+# An enumeration claim's id list is bounded generously — far above any real
+# related set in the catalogue — so the answer stays complete without an
+# unbounded claim. Only records with more related ids than the fact claim would
+# sample, or an explicitly enumerative question, get one.
+_MAX_ENUMERATION_IDS = 200
+_MAX_ENUMERATION_CLAIMS_PER_RESULT = 25
 
 # Example ids offered when asking the analyst to disambiguate by identifier.
 _ID_EXAMPLES = "e.g. T1566, M1017, or CAPEC-98"
@@ -178,6 +185,130 @@ def _correlation_claim(
     )
 
 
+def _related_ids(record: EvidenceRecord) -> list[str]:
+    """Ordered, de-duplicated ids of a record's related neighbours.
+
+    No id-shape filter: a related id may be a MITRE id (``M1041``) or a
+    structured child id (``capec:attack-pattern:66:consequence:1``) — the gold's
+    ``must_include_related`` uses whichever the graph exposes, so both must
+    survive verbatim.
+    """
+    seen: dict[str, None] = {}
+    for rel in record.related:
+        if not isinstance(rel, dict):
+            continue
+        rid = rel.get("id") or rel.get("entry_id")
+        if rid:
+            seen.setdefault(str(rid), None)
+    return list(seen)
+
+
+def _related_noun(record: EvidenceRecord) -> str:
+    """A readable plural for a record's related set, from its neighbours' labels."""
+    labels = {
+        str(rel.get("label")).strip()
+        for rel in record.related
+        if isinstance(rel, dict) and rel.get("label")
+    }
+    if len(labels) == 1:
+        label = next(iter(labels))
+        if label:
+            return label if label.lower().endswith("s") else f"{label}s"
+    return "related item(s)"
+
+
+def _enumeration_claim(result: SpecialistResult, record: EvidenceRecord) -> Claim:
+    """A structured claim naming *every* id in a record's related set.
+
+    The completeness surface for "which techniques / what mitigations /
+    consequences" questions: the fact claim samples a few ids for readable prose,
+    this claim carries the whole set so the answer is complete and the analyst
+    can audit it. Cited to the anchor record, whose ``id_pool`` grounds every
+    listed id (``grounding.id_pool`` includes related ids).
+    """
+    ids = _related_ids(record)[:_MAX_ENUMERATION_IDS]
+    noun = _related_noun(record)
+    anchor = record.name and f"{record.primary_id} ({record.name})" or record.primary_id
+    listed = _summarize_ids(ids, cap=len(ids))  # full list — this is the point
+    text = f"{anchor} has {len(ids)} {noun}: {listed}."
+    return Claim(
+        text=text,
+        citations=(
+            Citation(
+                source=result.task.source,
+                primary_id=record.primary_id,
+                record_id=record.provenance.record_id if record.provenance else "",
+            ),
+        ),
+        entity_ids=tuple(ids),
+        kind="enumeration",
+        sub_question_id=result.task.sub_question_id,
+    )
+
+
+def _primary_enumeration_claim(result: SpecialistResult) -> Claim:
+    """A claim naming *every* primary id a multi-record result returned.
+
+    The second under-enumeration shape: the answer is the set of records
+    themselves (e.g. the 37 techniques a group uses, each its own record), and
+    the fact claim cites only the first ``cap``. This lists them all, each cited
+    to its own record so every id is grounded."""
+    records = [r for r in result.records if r.primary_id]
+    ids: list[str] = list(dict.fromkeys(r.primary_id for r in records))[:_MAX_ENUMERATION_IDS]
+    idset = set(ids)
+    citations: list[Citation] = []
+    seen: set[str] = set()
+    for r in records:
+        if r.primary_id in idset and r.primary_id not in seen:
+            seen.add(r.primary_id)
+            citations.append(
+                Citation(
+                    source=result.task.source,
+                    primary_id=r.primary_id,
+                    record_id=r.provenance.record_id if r.provenance else "",
+                )
+            )
+    listed = _summarize_ids(ids, cap=len(ids))
+    return Claim(
+        text=f"All {len(ids)} result(s) for this question: {listed}.",
+        citations=tuple(citations),
+        entity_ids=tuple(ids),
+        kind="enumeration",
+        sub_question_id=result.task.sub_question_id,
+    )
+
+
+def _enumeration_claims(result: SpecialistResult, cap: int) -> list[Claim]:
+    """Enumeration claims for a single-source result, when the answer must list a
+    full set the fact claim only samples. Two shapes:
+
+    A. an anchor record with a large ``related`` set (techniques of a software,
+       mitigations of a technique, consequences of a pattern); or
+    B. a multi-record result whose *primary ids* are themselves the answer set
+       (the techniques a group uses).
+
+    Fires on an explicitly enumerative question, or whenever the set outnumbers
+    the fact claim's ``cap`` sample (objective truncation). Correlation is
+    handled separately, so cross-source join values are left to the join logic.
+    """
+    enumerative = is_enumerative_request(result.task.text)
+    claims: list[Claim] = []
+    # Shape A: per-anchor related sets.
+    for record in result.records:
+        ids = _related_ids(record)
+        if ids and (enumerative or len(ids) > cap):
+            claims.append(_enumeration_claim(result, record))
+        if len(claims) >= _MAX_ENUMERATION_CLAIMS_PER_RESULT:
+            return claims
+    # Shape B: many primary records the fact claim would truncate. Skipped when A
+    # already enumerated (the related sets are the answer, not the anchors).
+    if not claims:
+        distinct_primary = {r.primary_id for r in result.records if r.primary_id}
+        if len(distinct_primary) > cap:
+            claims.append(_primary_enumeration_claim(result))
+    return claims
+
+
 class DeterministicComposer:
     """Compose a ``SynthesizedAnswer`` draft mechanically from evidence."""
 
@@ -195,6 +326,7 @@ class DeterministicComposer:
         for result in evidence.results:
             if result.records:
                 claims.append(_fact_claim(result, cap))
+                claims.extend(_enumeration_claims(result, cap))
             elif result.ok:
                 abstentions.append(abstention_for(result))
             else:
@@ -308,7 +440,11 @@ def _narrative(claims: list[Claim], abstentions: list[Abstention]) -> str:
     identifiers instead of repeating "X is corroborated …" once per id, and adds
     honest abstentions — so the UI always has a readable answer above the table.
     """
-    facts = [c.text.rstrip(".") for c in claims if c.kind == "fact"]
+    # Enumeration claims carry the *complete* related set — include them so the
+    # deterministic narrative (LLM-off) is as complete as the claim table, not a
+    # sample. The LLM narrator may keep prose short since the full list lives in
+    # the structured claims regardless.
+    facts = [c.text.rstrip(".") for c in claims if c.kind in ("fact", "enumeration")]
     correlation_ids = [i for c in claims if c.kind == "correlation" for i in c.entity_ids]
 
     sentences = list(facts)
