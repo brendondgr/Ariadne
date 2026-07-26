@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MIT-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids T1055 and must_include_related M1026, M1040. The narrative names all three and correctly attributes M1040 (Behavior Prevention on Endpoint) and M1026 (Privileged Account Management) as the two mitigations retrieved by the query 'MATCH (t:Technique)<-[:MITIGATES]-(m:Mitigation)' for T1055 (Process Injection), matching the single record in logic_flow.results[0].records[0] with related=[M1040, M1026]. The narrative's paraphrase of M1040 (EDR tools, heuristics, runtime analysis to detect anomalous process behavior/API calls) and M1026 (access controls, credential security, MFA, privileged access management) are faithful summaries of the full mitigation descriptions present in the evidence, with no invented tools, counts, or entities beyond what is in the 'related' evidence. Claims list also correctly enumerates both ids. No hallucinations found; all identifiers and facts trace directly to the retrieved record."
+}

@@ -11,7 +11,7 @@ phases (out of scope here) can consume it.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Any
 
 from .intent import IntentClassification
@@ -155,6 +155,32 @@ class Plan:
 
     def target_sources(self) -> set[str]:
         return {sq.source for sq in self.sub_questions}
+
+    def reconcile_join_keys(self) -> "Plan":
+        """Push each declared join's key onto the sub-questions that participate.
+
+        A plan can declare ``joins: [{key: attack-technique-id, sources: [capec,
+        attack]}]`` and still leave the participating sub-questions' own
+        ``join_key`` null — the LLM drafter does this inconsistently, because the
+        join is a plan-level concept in the prompt while ``join_key`` is a
+        per-sub-question field. The specialist's template router keys on the
+        *sub-question's* ``join_key``, so a null there silently downgrades a
+        bridge question to ``describe``: the first hop returns facet counts
+        instead of the mapped ids, the producer surfaces no join values, and the
+        dependent hop then runs unseeded and answers a broader question than the
+        analyst asked. Reconciling the two representations makes routing depend on
+        what the plan *declared* rather than on which field the model happened to
+        fill in. An explicit ``join_key`` is never overwritten.
+        """
+        for join in self.joins:
+            if not join.key:
+                continue
+            participants = set(join.sources)
+            for index, sq in enumerate(self.sub_questions):
+                if sq.join_key or sq.source not in participants:
+                    continue
+                self.sub_questions[index] = replace(sq, join_key=join.key)
+        return self
 
     def is_empty(self) -> bool:
         return not self.sub_questions and not self.unsupported

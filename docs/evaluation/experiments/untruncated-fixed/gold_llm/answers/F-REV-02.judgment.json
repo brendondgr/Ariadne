@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "The narrative correctly identifies CAPEC-98 (Phishing, Status=Draft, Abstraction=Standard) as the sole CAPEC pattern mapping to ATT&CK T1566, matching the evidence record's properties exactly (properties.Status='Draft', properties.Abstraction='Standard'). It states the cross-source correlation on T1566 (attack + capec), satisfying gold's must_correlate=['T1566']. It correctly names T1566 as 'Phishing' and gives a description ('electronically delivered social engineering... spearphishing... mass campaigns... malicious attachments, links, third-party services, email spoofing, thread hijacking... execute malicious code or install remote management tools') that paraphrases the retrieved Technique.description almost verbatim with no added or altered facts. All gold assertions are satisfied: capec.must_include_ids=[CAPEC-98] present, capec.must_include_related=[T1566] present (via the TaxonomyEntry capec:taxonomy:ATTACK:1566), attack.must_include_ids=[T1566] present, attack.expect_names={T1566:Phishing} present. No counts, aliases, or entities beyond the two retrieved records (CAPEC-98, T1566) are asserted, so nothing is unsupported by logic_flow.records."
+}

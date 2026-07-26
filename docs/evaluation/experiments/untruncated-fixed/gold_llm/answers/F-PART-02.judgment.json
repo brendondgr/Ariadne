@@ -1,0 +1,14 @@
+{
+  "case_id": "F-PART-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.85,
+  "faithfulness": 0.75,
+  "groundedness": 0.9,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [
+    "Narrative says the ATT&CK asset sub-question 'ran cleanly but returned zero records,' but the trace shows no query was ever executed (query: '') — the attack source hit a schema 'boundary' step because 'Asset' is not a modeled entity. Describing a schema-boundary refusal as a clean run with zero results misrepresents the mechanism, which matters directly for this adversarial case's requirement (expect_boundary) that the refusal be reported honestly."
+  ],
+  "rationale": "Gold requires CAPEC-98 to be surfaced with its T1566 mapping (must_include_ids=[CAPEC-98], must_include_related=[T1566]) and requires the ATT&CK side to honestly boundary-refuse on assets (expect_boundary=true) with no fabricated correlation (expect_no_correlation=true). The answer correctly names CAPEC-98 (Phishing, Status: Draft, Abstraction: Standard) and its mapping to T1566, matching logic_flow.records[0] exactly, and correctly abstains from stating any asset targets, satisfying must_correlate=[] (deterministic_scores.correlation.exact=true, negative=true). Both gold-required ids are present (gold_present=2/2). However, the narrative's own phrasing for the abstention ('the corresponding sub-question ran cleanly but returned zero records') contradicts the actual trace, which shows a 'boundary' step ('entities not modeled by the attack source: Asset') and an empty query string — i.e., no query was run at all, versus a query that executed and returned nothing. The claims/abstentions block states this correctly ('no query was executed'), so the underlying pipeline behaved honestly, but the narrative shown to the analyst mischaracterizes why the ATT&CK side is silent, which is precisely the honesty property this adversarial case is testing. This is a minor but relevant faithfulness gap, not a fabricated entity, so it lands as PARTIAL rather than INCORRECT."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-DEP-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_empty=true for this adversarial deprecated-node case (CAPEC-106 excluded at load, ex_gold.expected=[]). The executed Gremlin query against AttackPattern with seed CAPEC-106 returned row_count 0 (logic_flow.results[0].records=[]), and the pipeline correctly abstained: claims=[], abstentions=[{source:capec, statement: 'doesn't establish this ... returned no matching records'}], narrative states 'no matching records for this question' and invites the analyst to supply a different id/name. No entity, property, or count is fabricated - the answer surfaces nothing beyond the true empty result, which is exactly what the gold requires. No must_include ids apply (gold_expected=0), so completeness is trivially satisfied."
+}

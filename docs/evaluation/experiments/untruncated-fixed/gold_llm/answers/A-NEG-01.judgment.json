@@ -1,0 +1,12 @@
+{
+  "case_id": "A-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_empty: true for nonexistent technique T9999, with ex_gold.expected=[] on the attack scheme. The executed Cypher query (MATCH (n:Technique) WHERE n.attack_id IN $ids ...) ran cleanly against seed_ids=['T9999'] and returned row_count=0 (see logic_flow.results[0].summary: 'No records found in ATT&CK for this query.', records=[]). The answer's claims array is empty (no fabricated technique data), and the narrative correctly states 'The routed sources returned no matching records for this question' and invites the analyst to supply a valid id (e.g. T1566, M1017, CAPEC-98 — these are used only as illustrative examples of valid id formats, not asserted as facts about T9999, so they are not hallucinations). The single abstention entry accurately describes the query and its clean empty result. deterministic_scores confirm abstention_proof_ok=true and fully_provenanced=true. This is exactly the correct behavior for a negative/adversarial probe: no invented technique name, status, or properties were introduced."
+}

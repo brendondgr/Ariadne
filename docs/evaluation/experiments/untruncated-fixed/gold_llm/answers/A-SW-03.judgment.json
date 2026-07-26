@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SW-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 56,
+  "gold_present": 56,
+  "hallucinations": [],
+  "rationale": "Gold requires S0266 plus all 55 techniques listed in must_include_related. The evidence record (logic_flow.results[0].records[0]) returns exactly these 55 technique ids in join_values/related, with name TrickBot for S0266. The answer's narrative states 'software S0266 (TrickBot) uses a total of 55 ATT&CK techniques' and claim[1] (kind=enumeration) lists entity_ids for all 55 technique ids verbatim (T1005, T1007, ..., T1685), a 1:1 set match against gold's must_include_related with no additions or omissions verified by cross-checking each of the 55 gold ids against the answer's entity_ids list. Claim[0] cites S0266 satisfying must_include_ids. No technique id, name, or count in the answer is absent from or contradicts the retrieved evidence, so there is no fabrication; every stated fact traces directly to the single retrieved record's related/join_values fields."
+}

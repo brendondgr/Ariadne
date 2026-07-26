@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DCA-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 10,
+  "gold_present": 10,
+  "hallucinations": [],
+  "rationale": "Gold requires DC0084 plus all 9 related analytics (AN0316, AN0405, AN0444, AN0671, AN0675, AN0770, AN1000, AN1144, AN1444). The single retrieved record for DC0084 ('Active Directory Credential Request') lists exactly these 9 related analytics in 'related', and the enumeration claim in the answer names all 9 explicitly, matching the record's related list one-for-one. The narrative additionally names AN0405, AN1144, AN0671 and paraphrases their descriptions accurately (AN0405: forged Kerberos Golden Tickets; AN1144: anomalous NTLM LogonType 3 authentications; AN0671: abnormal AD CS certificate enrollment), all directly traceable to the evidence text. Its closing generalization ('credential theft and replication abuse patterns') is consistent with the remaining analytics' descriptions (AN0770 = rogue DC/replication abuse; AN0316/AN0444/AN1000/AN1444/AN0675 = various credential-theft techniques) without asserting specific false facts. The pipeline's own deterministic coverage metric (10/10, coverage=1.0) corroborates full gold coverage. No ids, names, counts, or properties in the answer are absent from or contradicted by the retrieved evidence."
+}

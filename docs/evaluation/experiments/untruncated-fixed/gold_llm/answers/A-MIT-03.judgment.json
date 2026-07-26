@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MIT-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids [T1110] and must_include_related [M1018, M1027, M1032, M1036]. The narrative states T1110 (Brute Force) is associated with exactly these four mitigations, correctly named per the evidence: M1036 Account Use Policies, M1032 Multi-factor Authentication, M1018 User Account Management, M1027 Password Policies. All four related IDs and names are verified against the 'related' array in logic_flow.results[0].records[0], which lists exactly these four mitigations with matching names/descriptions and no others (row_count 4). The narrative's brief glosses (account lockout thresholds for M1036, MFA for M1032, account lifecycle management for M1018, password complexity rules for M1027) all trace directly to phrases in the corresponding mitigation descriptions in the evidence, with no invented facts, counts, or aliases. Coverage is 5/5 gold entities (T1110 + 4 mitigations), matching the deterministic_scores.coverage of 1.0."
+}

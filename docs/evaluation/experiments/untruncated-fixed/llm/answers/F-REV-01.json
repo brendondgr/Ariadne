@@ -1,0 +1,495 @@
+{
+  "id": "F-REV-01",
+  "kind": "federated",
+  "tier": "medium",
+  "category": "F-REV",
+  "question": "Which CAPEC patterns map to ATT&CK technique T1040 (Network Sniffing), and what is that technique?",
+  "gold": {
+    "assertions": {
+      "must_correlate": [
+        "T1040"
+      ],
+      "capec": {
+        "min_records": 3,
+        "must_include_ids": [
+          "CAPEC-57",
+          "CAPEC-65",
+          "CAPEC-158"
+        ],
+        "must_include_related": [
+          "T1040"
+        ]
+      },
+      "attack": {
+        "min_records": 1,
+        "max_records": 1,
+        "must_include_ids": [
+          "T1040"
+        ],
+        "expect_names": {
+          "T1040": "Network Sniffing"
+        }
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 1
+  },
+  "answer": {
+    "headline": "Gathered 4 record(s) from 2 source(s); 1 cross-source correlation(s) on shared identifiers.",
+    "narrative": "Three CAPEC attack patterns map to ATT&CK technique T1040: CAPEC-57 (Utilizing REST's Trust in the System Resource to Obtain Sensitive Data), CAPEC-158 (Sniffing Network Traffic), and CAPEC-65 (Sniff Application Code). ATT&CK technique T1040 is named Network Sniffing and is associated with the Discovery tactic (TA0007). All three CAPEC patterns carry a Draft status and a Detailed abstraction level.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 3 CAPEC record(s) for CAPEC-158, CAPEC-57, CAPEC-65; ATT&CK mappings: T1040.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-57",
+          "CAPEC-158",
+          "CAPEC-65"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-57"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-158"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-65"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-57 (Utilizing REST's Trust in the System Resource to Obtain Sensitive Data) has Abstraction: Detailed; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-57"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-57"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-158 (Sniffing Network Traffic) has Abstraction: Detailed; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-158"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-158"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-65 (Sniff Application Code) has Abstraction: Detailed; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-65"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-65"
+          }
+        ]
+      },
+      {
+        "text": "Found 1 item(s) related to T1040 (e.g. TA0007) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1040"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1040"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1040 is corroborated across attack and capec (4 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1040"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-57"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-158"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-65"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1040"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which CAPEC patterns map to ATT&CK technique T1040?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What is ATT&CK technique T1040?",
+        "seed_from": null
+      }
+    ],
+    "sequenced": false,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q2",
+        "sub_question": "Retrieve all CAPEC AttackPattern nodes that map to ATT&CK technique 'T1040' via TaxonomyEntry, including their names and descriptions.",
+        "query": "g.V().hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").has(\"entry_id\", within(entryIds)).as(\"tax\").in(\"MAPS_TO\").hasLabel(\"AttackPattern\").as(\"ap\").select(\"ap\",\"tax\").by(elementMap()).limit(100)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 3 CAPEC record(s) for CAPEC-158, CAPEC-57, CAPEC-65; ATT&CK mappings: T1040.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1040"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_reverse_maps",
+              "query": "g.V().hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").has(\"entry_id\", within(entryIds)).as(\"tax\").in(\"MAPS_TO\").hasLabel(\"AttackPattern\").as(\"ap\").select(\"ap\",\"tax\").by(elementMap()).limit(100)",
+              "injected": [],
+              "timing_ms": 0.101
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 3,
+              "timing_ms": 5.8
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 3,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 3,
+              "timing_ms": 0.062
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-57",
+            "name": "Utilizing REST's Trust in the System Resource to Obtain Sensitive Data",
+            "label": "AttackPattern",
+            "description": "This attack utilizes a REST(REpresentational State Transfer)-style applications' trust in the system resources and environment to obtain sensitive data once SSL is terminated.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Utilizing REST's Trust in the System Resource to Obtain Sensitive Data",
+              "description": "This attack utilizes a REST(REpresentational State Transfer)-style applications' trust in the system resources and environment to obtain sensitive data once SSL is terminated.",
+              "id": "capec:attack-pattern:57",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1040"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1040",
+                "entry_id": "1040",
+                "name": "Network Sniffing",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-158",
+            "name": "Sniffing Network Traffic",
+            "label": "AttackPattern",
+            "description": "In this attack pattern, the adversary monitors network traffic between nodes of a public or multicast network in an attempt to capture sensitive information at the protocol level. Network sniffing applications can reveal TCP/IP, DNS, Ethernet, and other low-level network communication information. The adversary takes a passive role in this attack pattern and simply observes and analyzes the traffic. The adversary may precipitate or indirectly influence the content of the observed transaction, but is never the intended recipient of the target information.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Sniffing Network Traffic",
+              "description": "In this attack pattern, the adversary monitors network traffic between nodes of a public or multicast network in an attempt to capture sensitive information at the protocol level. Network sniffing applications can reveal TCP/IP, DNS, Ethernet, and other low-level network communication information. The adversary takes a passive role in this attack pattern and simply observes and analyzes the traffic. The adversary may precipitate or indirectly influence the content of the observed transaction, but is never the intended recipient of the target information.",
+              "id": "capec:attack-pattern:158",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1040"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1040",
+                "entry_id": "1040",
+                "name": "Network Sniffing",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-65",
+            "name": "Sniff Application Code",
+            "label": "AttackPattern",
+            "description": "An adversary passively sniffs network communications and captures application code bound for an authorized client. Once obtained, they can use it as-is, or through reverse-engineering glean sensitive information or exploit the trust relationship between the client and server. Such code may belong to a dynamic update to the client, a patch being applied to a client component or any such interaction where the client is authorized to communicate with the server.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Sniff Application Code",
+              "description": "An adversary passively sniffs network communications and captures application code bound for an authorized client. Once obtained, they can use it as-is, or through reverse-engineering glean sensitive information or exploit the trust relationship between the client and server. Such code may belong to a dynamic update to the client, a patch being applied to a client component or any such interaction where the client is authorized to communicate with the server.",
+              "id": "capec:attack-pattern:65",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1040"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1040",
+                "entry_id": "1040",
+                "name": "Network Sniffing",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "Retrieve the ATT&CK Technique node with id 'T1040' (Network Sniffing), including its name, description, and associated Tactic.",
+        "query": "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids RETURN t.attack_id AS technique_id, t.name AS technique_name, ta.attack_id AS in_tactic_id, ta.name AS in_tactic_name LIMIT 1",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 item(s) related to T1040 (e.g. TA0007) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "Tactic"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1040"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "technique_tactics",
+              "query": "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids RETURN t.attack_id AS technique_id, t.name AS technique_name, ta.attack_id AS in_tactic_id, ta.name AS in_tactic_name LIMIT 1",
+              "injected": [
+                "LIMIT 1 appended (none present)"
+              ],
+              "timing_ms": 0.064
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 31.0
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 1.675
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1040",
+            "name": "Network Sniffing",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1040"
+            ],
+            "related": [
+              {
+                "id": "TA0007",
+                "name": "Discovery",
+                "description": "The adversary is trying to figure out your environment.\n\nDiscovery consists of techniques an adversary may use to gain knowledge about the system and internal network. These techniques help adversaries observe the environment and orient themselves before deciding how to act. They also allow adversaries to explore what they can control and what’s around their entry point in order to discover how it could benefit their current objective. Native operating system tools are often used toward this post-compromise information-gathering objective. "
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 1,
+      "n_got": 1
+    },
+    "mapping_recall": {
+      "gold": 1,
+      "found": 1,
+      "recall": 1.0,
+      "missing": []
+    },
+    "coverage": null,
+    "provenance": {
+      "citations": 11,
+      "compliant": 11,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "Retrieve the ATT&CK Technique node with id 'T1040' (Network Sniffing), including its name, description, and associated Tactic.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 1,
+          "max_result_rows": 1,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "capec",
+        "text": "Retrieve all CAPEC AttackPattern nodes that map to ATT&CK technique 'T1040' via TaxonomyEntry, including their names and descriptions.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 2,
+          "max_result_rows": 100,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 68.527
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 4,
+    "related": 4
+  }
+}

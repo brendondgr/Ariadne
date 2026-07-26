@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-06",
+  "verdict": "PARTIAL",
+  "correctness": 0.9,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.9,
+  "gold_expected": 17,
+  "gold_present": 17,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-665 to map to T1211, T1542.002, T1556 (must_correlate/capec.must_include_related/attack.must_include_ids), and the union of mitigations for those three techniques to include all 13 of M1018, M1019, M1022, M1024, M1025, M1026, M1027, M1028, M1032, M1047, M1048, M1050, M1051 (attack.must_include_related). The evidence in logic_flow confirms exactly this: T1542.002->M1051 (1), T1556->M1047,M1032,M1024,M1026,M1022,M1018,M1027,M1025,M1028 (9), T1211->M1051,M1050,M1048,M1019 (4), whose union is precisely the 13 required mitigations, and all 3 correlation claims (T1211, T1542.002, T1556 corroborated across capec/attack) match the deterministic_scores (correlation f1=1.0, mapping_recall=1.0). Every id named in the narrative and claims (CAPEC-665, T1211, T1542.002, T1556, and all named M-ids) is directly traceable to the retrieved records/related lists, so there is no fabrication, wrong count, or invented alias -- faithfulness and groundedness are both clean. The structured 'claims' (which are shown to the analyst alongside the narrative) enumerate the full mitigation set for every technique, including all 9 for T1556, so the gold-required entity set is fully present somewhere in the answer object (gold_present=17/17). However, the prose narrative itself is incomplete: for T1556 it states 'linked to nine mitigations, including M1047, M1032, and M1024' -- correctly citing the count but only naming 3 of the 9 (M1026, M1022, M1018, M1027, M1025, M1028 are omitted from the prose, only recoverable from the claims list). Since the question explicitly asks 'what mitigations apply,' a fully complete narrative answer would enumerate all of them rather than truncate with 'including'; this partial enumeration in the analyst-facing prose (even though the claims backfill it) is the reason for PARTIAL rather than CORRECT, with modest deductions to correctness/completeness rather than faithfulness/groundedness."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MIT-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The gold requires the seed technique T1047 plus all four mitigations M1018, M1026, M1038, M1040 (assertions.must_include_ids/must_include_related). The evidence (logic_flow.results[0].records[0]) returns T1047 (Windows Management Instrumentation) with exactly these four related Mitigation nodes and matching names: M1038 'Execution Prevention', M1040 'Behavior Prevention on Endpoint', M1018 'User Account Management', M1026 'Privileged Account Management'. The narrative names T1047 and all four mitigation ids alongside their correct evidence names, and the underlying claims (fact + enumeration) cite the same four ids against source T1047/attack. No counts, names, or aliases in the narrative deviate from the evidence: it correctly states 'four associated mitigations' matching the record_count of 4 related items. All 5 gold-required ids (1 seed + 4 mitigations) are surfaced, so coverage is 5/5, matching deterministic_scores.coverage (5/5, 1.0). No fabricated facts found."
+}

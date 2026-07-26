@@ -1,0 +1,12 @@
+{
+  "case_id": "A-EXC-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative test case: T1004 was excluded at load time and gold expects an empty result (assertions.expect_empty=true, ex_gold.expected=[]). The executed Cypher (MATCH (n:Technique) WHERE n.attack_id IN ['T1004'] ...) ran cleanly and returned row_count=0, confirming T1004 truly is absent from the graph. The answer correctly abstains: claims=[] (no fabricated technique data), and the abstention statement explicitly says 'the executed query ran cleanly and returned no matching records for: What is ATT&CK technique T1004?'. The narrative also correctly reflects this ('The routed sources returned no matching records for this question') and even suggests alternative valid ids (T1566, M1017, CAPEC-98) rather than fabricating anything about T1004. No entity, count, alias, or property was invented. This is the ideal outcome for a NEG-style exclusion case."
+}

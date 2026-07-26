@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an honest empty: expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true, must_correlate=[]. The evidence (logic_flow) confirms the capec query for CAPEC-18 -> MAPS_TO -> ATTACK TaxonomyEntry executed cleanly with row_count 0 (no MAPS_TO edges from CAPEC-18 to any ATT&CK technique), and q2 (ATT&CK mitigations) was correctly skipped because its dependency q1 produced no join values (trace step 'dependency', reason 'producer q1: it returned no join values'). The answer's narrative/claims (deterministic composer, claims=[]) state plainly that no matching records were returned and invite the analyst to specify a concrete id, with no technique ids, mitigation ids, or correlation fabricated anywhere. Both abstentions cite the exact executed (or skipped) query, matching the evidence 1:1. This is exactly the honest-empty behavior the negative case demands, with zero hallucinated entities."
+}

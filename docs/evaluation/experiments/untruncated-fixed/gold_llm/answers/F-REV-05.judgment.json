@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-555 (must_include_ids), the CAPEC-555->T1133 mapping (must_include_related/must_correlate), and the ATT&CK record T1133 named 'External Remote Services' (must_include_ids/expect_names). The narrative states all three: 'CAPEC-555, titled \"Remote Services with Stolen Credentials,\" which carries a Stable status and a Standard abstraction' (matches evidence properties exactly: Status=Stable, Abstraction=Standard, name matches), correctly identifies the mapping to T1133, and states 'ATT&CK technique T1133 is named \"External Remote Services\"' with a description ('adversaries leverage external-facing remote services like VPNs and Citrix to initially access or persist within a network') that closely paraphrases the retrieved Technique description. The claims list mirrors this with citations to CAPEC-555 and T1133, plus an explicit correlation claim on the shared identifier T1133 across capec and attack sources (consistent with deterministic_scores.correlation exact=true, f1=1.0). No invented names, counts, or properties were found beyond what is in logic_flow.results; the single CAPEC record and single ATT&CK record fully satisfy gold's min_records/max_records=1 constraints."
+}

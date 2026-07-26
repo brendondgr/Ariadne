@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires must_correlate T1114.002, capec.must_include_ids=CAPEC-555 with must_include_related T1114.002, and attack.must_include_ids=T1114.002 with expect_names T1114.002='Remote Email Collection'. The narrative and claims state all of these: CAPEC-555 (Remote Services with Stolen Credentials) maps to T1114.002 via the TaxonomyEntry capec:taxonomy:ATTACK:1114.002 present in evidence records[0].related; T1114.002 is named 'Remote Email Collection' exactly matching evidence records[1].name/properties.name; the cross-source correlation on T1114.002 is explicitly reported (claims[5], deterministic_scores.correlation exact=true, recall=1.0). Ancillary details (Abstraction: Standard, Status: Stable, x_mitre_is_subtechnique: True, platforms Office Suite/Windows, MailSniper mention) all trace directly to the retrieved records' properties/description fields with no invented facts; the only minor omission is dropping 'telnet' from the RDP/SSH/VNC list in the CAPEC description paraphrase, which is a trivial abridgement, not a fabrication."
+}

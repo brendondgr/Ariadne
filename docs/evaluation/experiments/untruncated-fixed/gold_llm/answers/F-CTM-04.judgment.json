@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 14,
+  "gold_present": 14,
+  "hallucinations": [],
+  "rationale": "The answer correctly identifies all 5 CAPEC-639 -> ATT&CK mappings (T1039, T1552.001, T1552.003, T1552.004, T1552.006), matching gold's must_correlate and must_include_related exactly, and every mapping is cross-source corroborated as required. CAPEC-639 properties (Abstraction: Detailed, Status: Stable) match the evidence record exactly. All 8 gold-required mitigations (M1015, M1017, M1022, M1027, M1028, M1041, M1047, M1051) are surfaced via the per-technique enumeration claims, and the per-technique mitigation counts stated in the narrative (T1552.004: 4, T1552.001: 4, T1552.006: 3, T1552.003: 1, T1039: 0) exactly match the related[] arrays in logic_flow for each ATT&CK record. The attack.min_records=5/max_records=5 constraint is satisfied (5 technique records returned, none extra). No invented facts, aliases, or counts were found; the technique name 'Shell History' for T1552.003 comes directly from the ATT&CK evidence record itself, not a fabricated alias. Self-reported deterministic_scores (correlation f1=1.0, mapping_recall=1.0, fully_provenanced=true) corroborate this independent check."
+}

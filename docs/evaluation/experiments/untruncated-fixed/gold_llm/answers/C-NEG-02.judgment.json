@@ -1,0 +1,12 @@
+{
+  "case_id": "C-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_empty: true for deprecated CAPEC-557 (excluded at load); ex_gold expects an empty node pool. The retrieval query (g.V().hasLabel('AttackPattern').has('id', within(['CAPEC-557']))...) executed cleanly with row_count 0 and 0 records, matching the expectation that CAPEC-557 is absent from the loaded graph. The answer makes zero claims, has zero abstention-unsupported statements, and the abstention statement correctly reports 'the executed query ran cleanly and returned no matching records for: What is CAPEC pattern CAPEC-557?' with no fabricated entity, name, alias, count, or property invented anywhere in narrative or claims. No must_include_ids were required (gold_expected=0), so completeness is trivially satisfied. This is a clean, fully correct negative-case abstention."
+}

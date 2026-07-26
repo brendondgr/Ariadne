@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The narrative correctly states CAPEC-13 maps to three ATT&CK techniques (T1574.006, T1574.007, T1562.003), matching the capec record's related TaxonomyEntry list exactly (evidence: capec:taxonomy:ATTACK:1574.006/.007/1562.003). It then states both T1574.006 (Dynamic Linker Hijacking) and T1574.007 (Path Interception by PATH Environment Variable) belong to TA0005 (Stealth) and TA0002 (Execution), which is exactly what the second-hop attack query returned (both records list related TA0005 and TA0002, matching gold's must_include_related and the max_records:2 constraint). All five gold-required entities (CAPEC-13, T1574.006, T1574.007, TA0002, TA0005) are surfaced, satisfying must_correlate, capec.must_include_ids/related, and attack.must_include_ids/related. Notably, the answer correctly abstains from inventing tactic data for the third technique T1562.003 since the attack-hop query (seeded with all three ids) only returned 2 rows/records -- this abstention is itself evidence-faithful rather than a gap, and matches gold's expectation of exactly 2 attack records. No fabricated names, counts, or aliases were found; all identifiers and tactic names trace directly to logic_flow records."
+}

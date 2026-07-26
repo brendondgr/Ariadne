@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MC-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 9,
+  "gold_present": 9,
+  "hallucinations": [],
+  "rationale": "The gold requires all 7 techniques (T1003, T1110, T1187, T1552, T1555, T1556, T1558) plus the two related anchor ids (TA0006, M1027). The narrative names exactly these 7 technique ids and states each is linked to both TA0006 and M1027; the claims array (deterministic composer) enumerates the same 7 techniques with per-technique enumeration claims each citing TA0006 and M1027. Cross-checking against logic_flow.results[0].records: all 7 records are present with primary_id matching the gold set exactly, min_records=7/max_records=7 satisfied (no extra or missing techniques), and each record's related array contains exactly TA0006 (name 'Credential Access') and M1027 (name 'Password Policies'), matching what the answer states. No invented names, counts, or aliases: '2 related item(s)' matches the 2 related entries per record, and the technique names used (e.g. 'Modify Authentication Process', 'OS Credential Dumping') match record.name exactly. deterministic_scores.coverage confirms gold=9, found=9, coverage=1.0, and provenance/inspectability are all 1.0. This is a fully correct, fully grounded, complete answer with no hallucinations."
+}

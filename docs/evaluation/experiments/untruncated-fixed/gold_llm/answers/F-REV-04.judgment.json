@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "The narrative states CAPEC-555 (\"Remote Services with Stolen Credentials\", Status: Stable, Abstraction: Standard) maps to ATT&CK T1021, and correctly names T1021 as \"Remote Services\" with a faithful paraphrase of its description (valid accounts, telnet/SSH/VNC, acting as logged-on user). Every one of these facts is directly traceable to the logic_flow records: the capec result record for CAPEC-555 has properties Status=Stable, Abstraction=Standard, name='Remote Services with Stolen Credentials', related=[{id: capec:taxonomy:ATTACK:1021, entry_id:1021, name:'Remote Services'}], and the attack result record for T1021 has name='Remote Services' with a matching description. This satisfies all gold assertions: must_correlate T1021 (stated and reflected in the correlation claim/deterministic_scores.correlation with precision/recall/f1=1.0), capec.must_include_ids CAPEC-555 (named), capec.must_include_related T1021 (mapping stated), attack.must_include_ids T1021 with expect_names 'Remote Services' (both stated). No invented properties, aliases, or counts were found; deterministic_scores.mapping_recall (1.0) and correlation.exact=true corroborate full, correct coverage. No hallucinations detected."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-TAC-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids T1003, T1040, T1056, T1110, T1111 (min_records 5); the answer's narrative and claims list all 17 records returned by the Cypher query MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique), which include all 5 required ids plus the remaining 12 (T1187, T1212, T1528, T1539, T1552, T1555, T1556, T1557, T1558, T1606, T1621, T1649). This set exactly matches the full ex_gold expected list of 17 techniques (pool: neighbors), so coverage is complete, not just the minimum. Every technique name cited (e.g. T1056 'Input Capture', T1003 'OS Credential Dumping', T1110 'Brute Force') matches the evidence record names verbatim with no invented names, counts, or aliases. The deterministic_scores block independently confirms coverage=1.0 and citation_provenance_rate=1.0, corroborating a fully grounded, complete answer."
+}

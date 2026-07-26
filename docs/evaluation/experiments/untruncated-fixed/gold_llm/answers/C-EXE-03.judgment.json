@@ -1,0 +1,12 @@
+{
+  "case_id": "C-EXE-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 7,
+  "gold_present": 7,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-163 plus all 6 execution steps (capec:attack-pattern:163:step:1..6). The narrative names CAPEC-163 (Spear Phishing) and all six step ids in order, and its paraphrase of each step matches the evidence description verbatim in substance: step 1 'obtaining useful contextual information ... deceptive message' (evidence: 'collects useful contextual detailed information ... more deceptive and enticing message'); steps 2-4 correctly flagged as optional (evidence brackets them '[Optional: ...]') covering domain/certificate spoofing, website duplication, and user-tailored variants respectively; step 5 convincing the victim to enter sensitive info on the fake site; step 6 using stolen credentials to log into the legitimate site. The supporting claims also state Abstraction: Detailed and Status: Draft, both matching the record's properties exactly. No entity, count, alias, or property in the narrative/claims is absent from the logic_flow evidence, and all 7 gold-required ids (CAPEC-163 + 6 steps) are surfaced, matching the pipeline's own coverage=1.0/found=7 metric."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires the CAPEC side to surface CAPEC-555 mapped to T1021 (must_include_ids: CAPEC-555, must_include_related: T1021) while the ATT&CK asset sub-question must be honestly refused (expect_boundary: true, expect_no_correlation: true). The answer's narrative states 'CAPEC-555, titled Remote Services with Stolen Credentials, maps to ATT&CK technique T1021' with 'Stable status and a Standard Abstraction' -- both properties (Status: Stable, Abstraction: Standard) are verbatim in logic_flow.results[0].records[0].properties, and the T1021 mapping is verbatim in related[0] (capec:taxonomy:ATTACK:1021, entry_id 1021, name 'Remote Services'). For the ATT&CK side, the answer correctly abstains: 'The evidence does not identify the assets targeted by T1021... ran cleanly and returned zero records,' matching the trace's boundary reason 'entities not modeled by the attack source: Asset' -- it refuses honestly rather than fabricating asset data, exactly as the adversarial gold requires. No invented facts, names, counts, or aliases were found; both required entities (CAPEC-555, T1021) are present and the boundary refusal is correct, so this is a fully correct, fully faithful, fully grounded answer."
+}

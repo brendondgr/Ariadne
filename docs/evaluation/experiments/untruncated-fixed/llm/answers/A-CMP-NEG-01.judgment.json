@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty: true) for nonexistent campaign C9999. The executed query 'MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN $ids ...' correctly seeded on C9999, ran cleanly, and returned 0 rows (traces show execute/assess/normalize all row_count 0). The pipeline correctly abstained: narrative states 'The routed sources returned no matching records for this question' and offers example valid ids (T1566, M1017, CAPEC-98) which are generic ATT&CK/CAPEC examples, not fabricated claims about C9999 itself, and claims list is empty. No entities, counts, or facts were invented. This is exactly the correct behavior for a negative/adversarial case."
+}

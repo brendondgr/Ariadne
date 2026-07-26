@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires T1047 plus related DET0364 and AN1031 (must_include_ids=[T1047], must_include_related=[DET0364, AN1031]). The narrative names all three explicitly: T1047 is detected via detection strategy DET0364 ('Behavioral Detection Strategy for WMI Execution Abuse on Windows', matching the evidence record's related-entity name verbatim) and analytic AN1031, whose description in the narrative ('identifies adversarial abuse of WMI to execute local or remote commands through WMIC, PowerShell, or COM API' and the multi-event chain of process creation, command execution, and corresponding network connection if remote) matches the evidence record's AN1031 description almost word-for-word. No names, counts, or facts appear that are absent from the single retrieved record in logic_flow.results[0].records[0]. The internal deterministic_scores.coverage field (0.33, listing AN1031/DET0364 as 'missing') is a scoring-script artifact that only checks claims[].entity_ids rather than narrative content -- it does not reflect an actual gap, since the analyst-facing narrative fully surfaces both required related ids. Treating the narrative as the answer under test (per grading instructions), this is a fully correct, faithful, and complete answer with 3/3 gold-required ids surfaced."
+}

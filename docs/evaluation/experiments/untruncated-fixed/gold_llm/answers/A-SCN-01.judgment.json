@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SCN-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.2,
+  "faithfulness": 0.95,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 1,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires a BOUNDED scan: task.limits.max_result_rows=300 and assertions.min_records/max_records = 250-300. The executed Cypher (logic_flow.results[0].query) was 'MATCH (n:Software) RETURN n.attack_id AS id, n.name AS name LIMIT 20000' -- i.e. the 300-row task limit was not applied -- and it returned all 821 Software nodes in the graph (len(records)=821, matching the claim's entity_ids count exactly). The answer (deterministic composer; fallback_reason shows the LLM narrator timed out, so claims ARE the analyst-facing answer) reports 'Found 821 ATT&CK record(s)' and enumerates all 821 ids (S0061, S0266, S1204, ... S0162 etc.), which is 2.7x over the gold max of 300 and well outside the [250,300] window. Every id in the claims is traceable to the retrieved records (groundedness 1.0) and no fact is fabricated (faithfulness high), but the case is specifically testing whether the bounded-scan limit is respected, and it is not -- this is a genuine pipeline defect (ignored max_result_rows), not a labeling nuance. Since the sole gold assertion (record count in [250,300]) is violated, gold_present=0/1 and the verdict is INCORRECT despite the data itself being accurate."
+}

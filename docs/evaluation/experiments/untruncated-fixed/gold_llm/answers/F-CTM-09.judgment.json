@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-09",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-645 -> T1550.003 mapping (must_correlate: T1550.003; capec.must_include_ids: CAPEC-645; capec.must_include_related: T1550.003) and the four ATT&CK mitigations for T1550.003 (attack.must_include_related: M1015, M1018, M1026, M1027). The narrative states 'CAPEC-645 ... maps to the ATT&CK technique T1550.003 (Pass the Ticket)' and enumerates 'M1015 (Active Directory Configuration), M1026 (Privileged Account Management), M1018 (User Account Management), and M1027 (Password Policies)', matching all names verbatim from logic_flow.results[1].records[0].related. The cross-source correlation on T1550.003 is also explicit in claims. All names/ids trace directly to the evidence records (CAPEC AttackPattern properties, TaxonomyEntry capec:taxonomy:ATTACK:1550.003, and the four Mitigation nodes returned by the technique_mitigations query) with no invented facts, counts, or aliases. All 6 gold-required ids (CAPEC-645, T1550.003, M1015, M1018, M1026, M1027) are surfaced."
+}

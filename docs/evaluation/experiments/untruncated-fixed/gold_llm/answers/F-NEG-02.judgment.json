@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_no_correlation=true, capec.expect_empty=true, and attack.expect_dependency_skip=true, with must_correlate=[]. The evidence confirms q1's capec query (g.V().hasLabel('AttackPattern').has('id', within(['CAPEC-66']))...out('MAPS_TO')...) executed cleanly with row_count 0 (no MAPS_TO edge from CAPEC-66 to any ATT&CK TaxonomyEntry), and q2 (ATT&CK mitigations) was correctly skipped because it depends on q1's seed identifiers which were empty (traces: 'producer q1: it returned no join values'). The answer's narrative and claims (claims=[]) honestly report zero matching records and invite the analyst to supply a specific id, with no fabricated technique IDs, mitigation IDs, or correlation claims anywhere in the narrative or abstentions. This is exactly the honest-empty behavior the negative case requires — no hallucinations, full alignment with gold, and the deterministic_scores block (correlation.exact=true, precision/recall/f1=1.0, abstention_proof_ok=true) independently corroborates the correct abstention."
+}

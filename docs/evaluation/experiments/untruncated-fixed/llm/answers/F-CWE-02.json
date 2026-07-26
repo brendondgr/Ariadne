@@ -1,0 +1,1391 @@
+{
+  "id": "F-CWE-02",
+  "kind": "federated",
+  "tier": "hard",
+  "category": "F-CWE",
+  "question": "Which CAPEC patterns exploit weakness CWE-287, which ATT&CK techniques do they map to, and what mitigations apply?",
+  "gold": {
+    "assertions": {
+      "must_correlate": [
+        "T1040",
+        "T1134",
+        "T1185",
+        "T1505.003",
+        "T1548",
+        "T1550.001",
+        "T1557",
+        "T1563"
+      ],
+      "capec": {
+        "min_records": 1,
+        "must_include_ids": [
+          "CAPEC-57",
+          "CAPEC-94",
+          "CAPEC-114",
+          "CAPEC-115",
+          "CAPEC-593",
+          "CAPEC-633",
+          "CAPEC-650"
+        ],
+        "must_include_related": [
+          "CWE-287"
+        ]
+      },
+      "attack": {
+        "min_records": 8,
+        "max_records": 8,
+        "must_include_ids": [
+          "T1040",
+          "T1134",
+          "T1185",
+          "T1505.003",
+          "T1548",
+          "T1550.001",
+          "T1557",
+          "T1563"
+        ],
+        "must_include_related": [
+          "M1013",
+          "M1017",
+          "M1018",
+          "M1021",
+          "M1022",
+          "M1026",
+          "M1027",
+          "M1028",
+          "M1030",
+          "M1031",
+          "M1032",
+          "M1035",
+          "M1036",
+          "M1037",
+          "M1038",
+          "M1041",
+          "M1042",
+          "M1047",
+          "M1051",
+          "M1052"
+        ]
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 3
+  },
+  "answer": {
+    "headline": "Gathered 13 record(s) from 2 source(s); 6 cross-source correlation(s) on shared identifiers.",
+    "narrative": "Seven CAPEC patterns exploit weakness CWE-287, including Token Impersonation (CAPEC-633), Adversary in the Middle (AiTM) (CAPEC-94), Upload a Web Shell to a Web Server (CAPEC-650), Utilizing REST's Trust in the System Resource to Obtain Sensitive Data (CAPEC-57), Session Hijacking (CAPEC-593), Authentication Abuse (CAPEC-114), and Authentication Bypass (CAPEC-115). These patterns map to six ATT&CK techniques corroborated across sources: T1134 (Access Token Manipulation), T1557 (Adversary-in-the-Middle), T1040 (Network Sniffing), T1185 (Browser Session Hijacking), T1563 (Remote Service Session Hijacking), and T1548 (Abuse Elevation Control Mechanism). While the evidence records the quantity of mitigations associated with each technique in their facets, it does not provide the specific mitigation identifiers or names.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 7 CAPEC record(s) for CAPEC-114, CAPEC-115, CAPEC-57, CAPEC-593, CAPEC-633 … (+2 more); ATT&CK mappings: T1040, T1134, T1185, T1505.003, T1548.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-633",
+          "CAPEC-94",
+          "CAPEC-650",
+          "CAPEC-57",
+          "CAPEC-593",
+          "CAPEC-114",
+          "CAPEC-115"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-633"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-94"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-650"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-57"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-593"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-114"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-115"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-633 (Token Impersonation) has Abstraction: Detailed; Status: Stable.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-633"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-633"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-94 (Adversary in the Middle (AiTM)) has Abstraction: Meta; Status: Stable.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-94"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-94"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-650 (Upload a Web Shell to a Web Server) has Abstraction: Detailed; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-650"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-650"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-57 (Utilizing REST's Trust in the System Resource to Obtain Sensitive Data) has Abstraction: Detailed; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-57"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-57"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-593 (Session Hijacking) has Abstraction: Standard; Status: Stable.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-593"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-593"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-114 (Authentication Abuse) has Abstraction: Meta; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-114"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-114"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-115 (Authentication Bypass) has Abstraction: Meta; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-115"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-115"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-633 (Token Impersonation) has 1 related item(s): CWE-287.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CWE-287"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-633"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-94 (Adversary in the Middle (AiTM)) has 1 related item(s): CWE-287.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CWE-287"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-94"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-650 (Upload a Web Shell to a Web Server) has 1 related item(s): CWE-287.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CWE-287"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-650"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-57 (Utilizing REST's Trust in the System Resource to Obtain Sensitive Data) has 1 related item(s): CWE-287.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CWE-287"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-57"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-593 (Session Hijacking) has 1 related item(s): CWE-287.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CWE-287"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-593"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-114 (Authentication Abuse) has 1 related item(s): CWE-287.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CWE-287"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-114"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-115 (Authentication Bypass) has 1 related item(s): CWE-287.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CWE-287"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-115"
+          }
+        ]
+      },
+      {
+        "text": "Found 6 ATT&CK record(s) including T1557, T1040, T1185 and more.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1557",
+          "T1040",
+          "T1185",
+          "T1563",
+          "T1548",
+          "T1134"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1557"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1040"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1185"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1563"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1548"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1134"
+          }
+        ]
+      },
+      {
+        "text": "T1557 (Adversary-in-the-Middle) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.5.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1557"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1557"
+          }
+        ]
+      },
+      {
+        "text": "T1040 (Network Sniffing) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.7.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1040"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1040"
+          }
+        ]
+      },
+      {
+        "text": "T1185 (Browser Session Hijacking) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.1.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1185"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1185"
+          }
+        ]
+      },
+      {
+        "text": "T1563 (Remote Service Session Hijacking) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.1.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1563"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1563"
+          }
+        ]
+      },
+      {
+        "text": "T1548 (Abuse Elevation Control Mechanism) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.0.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1548"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1548"
+          }
+        ]
+      },
+      {
+        "text": "T1134 (Access Token Manipulation) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 3.0.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1134"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1134"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1040 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1040"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-57"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1040"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1134 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1134"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-633"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1134"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1185 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1185"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-593"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1185"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1548 is corroborated across attack and capec (3 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1548"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-114"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-115"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1548"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1557 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1557"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-94"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1557"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1563 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1563"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-593"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1563"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which attack patterns exploit CWE-287 and which ATT&CK techniques do they map to?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What mitigations does ATT&CK list for those mapped techniques?",
+        "seed_from": "q1"
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Find all AttackPattern nodes that EXPLOITS_WEAKNESS a Weakness node with id 'CWE-287'. For each AttackPattern, retrieve its id, name, associated Mitigation nodes (id, name), and the TaxonomyEntry nodes it MAPS_TO (specifically the entry_id).",
+        "query": "g.V().hasLabel(\"Weakness\").has(\"id\", within(cweIds)).as(\"w\").in(\"EXPLOITS_WEAKNESS\").hasLabel(\"AttackPattern\").as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"w\",\"ap\",\"tax\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 7 CAPEC record(s) for CAPEC-114, CAPEC-115, CAPEC-57, CAPEC-593, CAPEC-633 … (+2 more); ATT&CK mappings: T1040, T1134, T1185, T1505.003, T1548.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "Weakness",
+                "Mitigation",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CWE-287"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "cwe_chain",
+              "query": "g.V().hasLabel(\"Weakness\").has(\"id\", within(cweIds)).as(\"w\").in(\"EXPLOITS_WEAKNESS\").hasLabel(\"AttackPattern\").as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"w\",\"ap\",\"tax\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.116
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 9,
+              "timing_ms": 5.7
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 9,
+              "timing_ms": 0.008
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 7,
+              "timing_ms": 0.111
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-633",
+            "name": "Token Impersonation",
+            "label": "AttackPattern",
+            "description": "An adversary exploits a weakness in authentication to create an access token (or equivalent) that impersonates a different entity, and then associates a process/thread to that that impersonated token. This action causes a downstream user to make a decision or take action that is based on the assumed identity, and not the response that blocks the adversary.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Token Impersonation",
+              "description": "An adversary exploits a weakness in authentication to create an access token (or equivalent) that impersonates a different entity, and then associates a process/thread to that that impersonated token. This action causes a downstream user to make a decision or take action that is based on the assumed identity, and not the response that blocks the adversary.",
+              "id": "capec:attack-pattern:633",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1134"
+            ],
+            "related": [
+              {
+                "id": "CWE-287"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-94",
+            "name": "Adversary in the Middle (AiTM)",
+            "label": "AttackPattern",
+            "description": "An adversary targets the communication between two components (typically client and server), in order to alter or obtain data from transactions. A general approach entails the adversary placing themself within the communication channel between the two components.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Adversary in the Middle (AiTM)",
+              "description": "An adversary targets the communication between two components (typically client and server), in order to alter or obtain data from transactions. A general approach entails the adversary placing themself within the communication channel between the two components.",
+              "id": "capec:attack-pattern:94",
+              "Abstraction": "Meta"
+            },
+            "facets": [],
+            "join_values": [
+              "T1557"
+            ],
+            "related": [
+              {
+                "id": "CWE-287"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-650",
+            "name": "Upload a Web Shell to a Web Server",
+            "label": "AttackPattern",
+            "description": "By exploiting insufficient permissions, it is possible to upload a web shell to a web server in such a way that it can be executed remotely. This shell can have various capabilities, thereby acting as a \"gateway\" to the underlying web server. The shell might execute at the higher permission level of the web server, providing the ability the execute malicious code at elevated levels.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Upload a Web Shell to a Web Server",
+              "description": "By exploiting insufficient permissions, it is possible to upload a web shell to a web server in such a way that it can be executed remotely. This shell can have various capabilities, thereby acting as a \"gateway\" to the underlying web server. The shell might execute at the higher permission level of the web server, providing the ability the execute malicious code at elevated levels.",
+              "id": "capec:attack-pattern:650",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1505.003"
+            ],
+            "related": [
+              {
+                "id": "CWE-287"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-57",
+            "name": "Utilizing REST's Trust in the System Resource to Obtain Sensitive Data",
+            "label": "AttackPattern",
+            "description": "This attack utilizes a REST(REpresentational State Transfer)-style applications' trust in the system resources and environment to obtain sensitive data once SSL is terminated.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Utilizing REST's Trust in the System Resource to Obtain Sensitive Data",
+              "description": "This attack utilizes a REST(REpresentational State Transfer)-style applications' trust in the system resources and environment to obtain sensitive data once SSL is terminated.",
+              "id": "capec:attack-pattern:57",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1040"
+            ],
+            "related": [
+              {
+                "id": "CWE-287"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-593",
+            "name": "Session Hijacking",
+            "label": "AttackPattern",
+            "description": "This type of attack involves an adversary that exploits weaknesses in an application's use of sessions in performing authentication. The adversary is able to steal or manipulate an active session and use it to gain unathorized access to the application.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Session Hijacking",
+              "description": "This type of attack involves an adversary that exploits weaknesses in an application's use of sessions in performing authentication. The adversary is able to steal or manipulate an active session and use it to gain unathorized access to the application.",
+              "id": "capec:attack-pattern:593",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [
+              "T1185",
+              "T1550.001",
+              "T1563"
+            ],
+            "related": [
+              {
+                "id": "CWE-287"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-114",
+            "name": "Authentication Abuse",
+            "label": "AttackPattern",
+            "description": "An attacker obtains unauthorized access to an application, service or device either through knowledge of the inherent weaknesses of an authentication mechanism, or by exploiting a flaw in the authentication scheme's implementation. In such an attack an authentication mechanism is functioning but a carefully controlled sequence of events causes the mechanism to grant access to the attacker.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Authentication Abuse",
+              "description": "An attacker obtains unauthorized access to an application, service or device either through knowledge of the inherent weaknesses of an authentication mechanism, or by exploiting a flaw in the authentication scheme's implementation. In such an attack an authentication mechanism is functioning but a carefully controlled sequence of events causes the mechanism to grant access to the attacker.",
+              "id": "capec:attack-pattern:114",
+              "Abstraction": "Meta"
+            },
+            "facets": [],
+            "join_values": [
+              "T1548"
+            ],
+            "related": [
+              {
+                "id": "CWE-287"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-115",
+            "name": "Authentication Bypass",
+            "label": "AttackPattern",
+            "description": "An attacker gains access to application, service, or device with the privileges of an authorized or privileged user by evading or circumventing an authentication mechanism. The attacker is therefore able to access protected data without authentication ever having taken place.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Authentication Bypass",
+              "description": "An attacker gains access to application, service, or device with the privileges of an authorized or privileged user by evading or circumventing an authentication mechanism. The attacker is therefore able to access protected data without authentication ever having taken place.",
+              "id": "capec:attack-pattern:115",
+              "Abstraction": "Meta"
+            },
+            "facets": [],
+            "join_values": [
+              "T1548"
+            ],
+            "related": [
+              {
+                "id": "CWE-287"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "Find all Technique and SubTechnique nodes where the attack_id matches the entry_id values retrieved from the CAPEC TaxonomyEntry nodes.",
+        "query": "MATCH (n:Technique) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 6 ATT&CK record(s) including T1557, T1040, T1185 and more.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "SubTechnique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1040",
+                "T1134",
+                "T1185",
+                "T1505.003",
+                "T1548",
+                "T1550.001",
+                "T1557",
+                "T1563"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "MATCH (n:Technique) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.115
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 6,
+              "timing_ms": 4.1
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 6,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 6,
+              "timing_ms": 1.106
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1557",
+            "name": "Adversary-in-the-Middle",
+            "label": "Technique",
+            "description": "Adversaries may attempt to position themselves between two or more networked devices using an adversary-in-the-middle (AiTM) technique to support follow-on behaviors such as [Network Sniffing](https://attack.mitre.org/techniques/T1040), [Transmitted Data Manipulation](https://attack.mitre.org/techniques/T1565/002), or replay attacks ([Exploitation for Credential Access](https://attack.mitre.org/techniques/T1212)). By abusing features of common networking protocols that can determine the flow of network traffic (e.g. ARP, DNS, LLMNR, etc.), adversaries may force a device to communicate through an adversary controlled system so they can collect information or perform additional actions.(Citation: Rapid7 MiTM Basics)\n\nFor example, adversaries may manipulate victim DNS settings to enable other malicious activities such as preventing/redirecting users from accessing legitimate sites and/or pushing additional malware.(Citation: ttint_rat)(Citation: dns_changer_trojans)(Citation: ad_blocker_with_miner) Adversaries may also manipulate DNS and leverage their position in order to intercept user credentials, including access tokens ([Steal Application Access Token](https://attack.mitre.org/techniques/T1528)) and session cookies ([Steal Web Session Cookie](https://attack.mitre.org/techniques/T1539)).(Citation: volexity_0day_sophos_FW)(Citation: Token tactics) [Downgrade Attack](https://attack.mitre.org/techniques/T1689)s can also be used to establish an AiTM position, such as by negotiating a less secure, deprecated, or weaker version of communication protocol (SSL/TLS) or encryption algorithm.(Citation: mitm_tls_downgrade_att)(Citation: taxonomy_downgrade_att_tls)(Citation: tlseminar_downgrade_att)\n\nAdversaries may also leverage the AiTM position to attempt to monitor and/or modify traffic, such as in [Transmitted Data Manipulation](https://attack.mitre.org/techniques/T1565/002). Adversaries can setup a position similar to AiTM to prevent traffic from flowing to the appropriate destination, potentially to impair defenses and/or in support of a [Network Denial of Service](https://attack.mitre.org/techniques/T1498).",
+            "properties": {
+              "attack_id": "T1557",
+              "description": "Adversaries may attempt to position themselves between two or more networked devices using an adversary-in-the-middle (AiTM) technique to support follow-on behaviors such as [Network Sniffing](https://attack.mitre.org/techniques/T1040), [Transmitted Data Manipulation](https://attack.mitre.org/techniques/T1565/002), or replay attacks ([Exploitation for Credential Access](https://attack.mitre.org/techniques/T1212)). By abusing features of common networking protocols that can determine the flow of network traffic (e.g. ARP, DNS, LLMNR, etc.), adversaries may force a device to communicate through an adversary controlled system so they can collect information or perform additional actions.(Citation: Rapid7 MiTM Basics)\n\nFor example, adversaries may manipulate victim DNS settings to enable other malicious activities such as preventing/redirecting users from accessing legitimate sites and/or pushing additional malware.(Citation: ttint_rat)(Citation: dns_changer_trojans)(Citation: ad_blocker_with_miner) Adversaries may also manipulate DNS and leverage their position in order to intercept user credentials, including access tokens ([Steal Application Access Token](https://attack.mitre.org/techniques/T1528)) and session cookies ([Steal Web Session Cookie](https://attack.mitre.org/techniques/T1539)).(Citation: volexity_0day_sophos_FW)(Citation: Token tactics) [Downgrade Attack](https://attack.mitre.org/techniques/T1689)s can also be used to establish an AiTM position, such as by negotiating a less secure, deprecated, or weaker version of communication protocol (SSL/TLS) or encryption algorithm.(Citation: mitm_tls_downgrade_att)(Citation: taxonomy_downgrade_att_tls)(Citation: tlseminar_downgrade_att)\n\nAdversaries may also leverage the AiTM position to attempt to monitor and/or modify traffic, such as in [Transmitted Data Manipulation](https://attack.mitre.org/techniques/T1565/002). Adversaries can setup a position similar to AiTM to prevent traffic from flowing to the appropriate destination, potentially to impair defenses and/or in support of a [Network Denial of Service](https://attack.mitre.org/techniques/T1498).",
+              "id": "attack-pattern--035bb001-ab69-4a0b-9f6c-2de8b09e1b9d",
+              "name": "Adversary-in-the-Middle",
+              "revoked": false,
+              "stix_type": "attack-pattern",
+              "x_mitre_deprecated": false,
+              "x_mitre_is_subtechnique": false,
+              "x_mitre_platforms": [
+                "Linux",
+                "macOS",
+                "Network Devices",
+                "Windows"
+              ],
+              "x_mitre_version": "2.5",
+              "_omitted_properties": [
+                "external_references"
+              ]
+            },
+            "facets": [
+              {
+                "rel": "DETECTS",
+                "direction": "in",
+                "neighbour_label": "DetectionStrategy",
+                "count": 1
+              },
+              {
+                "rel": "HAS_SUBTECHNIQUE",
+                "direction": "out",
+                "neighbour_label": "SubTechnique",
+                "count": 4
+              },
+              {
+                "rel": "HAS_TECHNIQUE",
+                "direction": "in",
+                "neighbour_label": "Tactic",
+                "count": 2
+              },
+              {
+                "rel": "MITIGATES",
+                "direction": "in",
+                "neighbour_label": "Mitigation",
+                "count": 7
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Campaign",
+                "count": 1
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Group",
+                "count": 3
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Software",
+                "count": 4
+              }
+            ],
+            "join_values": [
+              "T1557"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1040",
+            "name": "Network Sniffing",
+            "label": "Technique",
+            "description": "Adversaries may passively sniff network traffic to capture information about an environment, including authentication material passed over the network. Network sniffing refers to using the network interface on a system to monitor or capture information sent over a wired or wireless connection. An adversary may place a network interface into promiscuous mode to passively access data in transit over the network, or use span ports to capture a larger amount of data.\n\nData captured via this technique may include user credentials, especially those sent over an insecure, unencrypted protocol. Techniques for name service resolution poisoning, such as [Name Resolution Poisoning and SMB Relay](https://attack.mitre.org/techniques/T1557/001), can also be used to capture credentials to websites, proxies, and internal systems by redirecting traffic to an adversary.\n\nNetwork sniffing may reveal configuration details, such as running services, version numbers, and other network characteristics (e.g. IP addresses, hostnames, VLAN IDs) necessary for subsequent [Lateral Movement](https://attack.mitre.org/tactics/TA0008) and/or [Stealth](https://attack.mitre.org/tactics/TA0005) activities. Adversaries may likely also utilize network sniffing during [Adversary-in-the-Middle](https://attack.mitre.org/techniques/T1557) (AiTM) to passively gain additional knowledge about the environment.\n\nIn cloud-based environments, adversaries may still be able to use traffic mirroring services to sniff network traffic from virtual machines. For example, AWS Traffic Mirroring, GCP Packet Mirroring, and Azure vTap allow users to define specified instances to collect traffic from and specified targets to send collected traffic to.(Citation: AWS Traffic Mirroring)(Citation: GCP Packet Mirroring)(Citation: Azure Virtual Network TAP) Often, much of this traffic will be in cleartext due to the use of TLS termination at the load balancer level to reduce the strain of encrypting and decrypting traffic.(Citation: Rhino Security Labs AWS VPC Traffic Mirroring)(Citation: SpecterOps AWS Traffic Mirroring) The adversary can then use exfiltration techniques such as Transfer Data to Cloud Account in order to access the sniffed traffic.(Citation: Rhino Security Labs AWS VPC Traffic Mirroring)\n\nOn network devices, adversaries may perform network captures using [Network Device CLI](https://attack.mitre.org/techniques/T1059/008) commands such as `monitor capture`.(Citation: US-CERT-TA18-106A)(Citation: capture_embedded_packet_on_software)",
+            "properties": {
+              "attack_id": "T1040",
+              "description": "Adversaries may passively sniff network traffic to capture information about an environment, including authentication material passed over the network. Network sniffing refers to using the network interface on a system to monitor or capture information sent over a wired or wireless connection. An adversary may place a network interface into promiscuous mode to passively access data in transit over the network, or use span ports to capture a larger amount of data.\n\nData captured via this technique may include user credentials, especially those sent over an insecure, unencrypted protocol. Techniques for name service resolution poisoning, such as [Name Resolution Poisoning and SMB Relay](https://attack.mitre.org/techniques/T1557/001), can also be used to capture credentials to websites, proxies, and internal systems by redirecting traffic to an adversary.\n\nNetwork sniffing may reveal configuration details, such as running services, version numbers, and other network characteristics (e.g. IP addresses, hostnames, VLAN IDs) necessary for subsequent [Lateral Movement](https://attack.mitre.org/tactics/TA0008) and/or [Stealth](https://attack.mitre.org/tactics/TA0005) activities. Adversaries may likely also utilize network sniffing during [Adversary-in-the-Middle](https://attack.mitre.org/techniques/T1557) (AiTM) to passively gain additional knowledge about the environment.\n\nIn cloud-based environments, adversaries may still be able to use traffic mirroring services to sniff network traffic from virtual machines. For example, AWS Traffic Mirroring, GCP Packet Mirroring, and Azure vTap allow users to define specified instances to collect traffic from and specified targets to send collected traffic to.(Citation: AWS Traffic Mirroring)(Citation: GCP Packet Mirroring)(Citation: Azure Virtual Network TAP) Often, much of this traffic will be in cleartext due to the use of TLS termination at the load balancer level to reduce the strain of encrypting and decrypting traffic.(Citation: Rhino Security Labs AWS VPC Traffic Mirroring)(Citation: SpecterOps AWS Traffic Mirroring) The adversary can then use exfiltration techniques such as Transfer Data to Cloud Account in order to access the sniffed traffic.(Citation: Rhino Security Labs AWS VPC Traffic Mirroring)\n\nOn network devices, adversaries may perform network captures using [Network Device CLI](https://attack.mitre.org/techniques/T1059/008) commands such as `monitor capture`.(Citation: US-CERT-TA18-106A)(Citation: capture_embedded_packet_on_software)",
+              "id": "attack-pattern--3257eb21-f9a7-4430-8de1-d8b6e288f529",
+              "name": "Network Sniffing",
+              "revoked": false,
+              "stix_type": "attack-pattern",
+              "x_mitre_deprecated": false,
+              "x_mitre_is_subtechnique": false,
+              "x_mitre_platforms": [
+                "IaaS",
+                "Linux",
+                "macOS",
+                "Network Devices",
+                "Windows"
+              ],
+              "x_mitre_version": "1.7",
+              "_omitted_properties": [
+                "external_references"
+              ]
+            },
+            "facets": [
+              {
+                "rel": "DETECTS",
+                "direction": "in",
+                "neighbour_label": "DetectionStrategy",
+                "count": 1
+              },
+              {
+                "rel": "HAS_SUBTECHNIQUE",
+                "direction": "out",
+                "neighbour_label": "SubTechnique",
+                "count": 0
+              },
+              {
+                "rel": "HAS_TECHNIQUE",
+                "direction": "in",
+                "neighbour_label": "Tactic",
+                "count": 2
+              },
+              {
+                "rel": "MITIGATES",
+                "direction": "in",
+                "neighbour_label": "Mitigation",
+                "count": 4
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Campaign",
+                "count": 3
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Group",
+                "count": 8
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Software",
+                "count": 17
+              }
+            ],
+            "join_values": [
+              "T1040"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1185",
+            "name": "Browser Session Hijacking",
+            "label": "Technique",
+            "description": "Adversaries may take advantage of security vulnerabilities and inherent functionality in browser software to change content, modify user-behaviors, and intercept information as part of various browser session hijacking techniques.(Citation: Wikipedia Man in the Browser)\n\nA specific example is when an adversary injects software into a browser that allows them to inherit cookies, HTTP sessions, and SSL client certificates of a user then use the browser as a way to pivot into an authenticated intranet.(Citation: Cobalt Strike Browser Pivot)(Citation: ICEBRG Chrome Extensions) Executing browser-based behaviors such as pivoting may require specific process permissions, such as <code>SeDebugPrivilege</code> and/or high-integrity/administrator rights.\n\nAnother example involves pivoting browser traffic from the adversary's browser through the user's browser by setting up a proxy which will redirect web traffic. This does not alter the user's traffic in any way, and the proxy connection can be severed as soon as the browser is closed. The adversary assumes the security context of whichever browser process the proxy is injected into. Browsers typically create a new process for each tab that is opened and permissions and certificates are separated accordingly. With these permissions, an adversary could potentially browse to any resource on an intranet, such as [Sharepoint](https://attack.mitre.org/techniques/T1213/002) or webmail, that is accessible through the browser and which the browser has sufficient permissions. Browser pivoting may also bypass security provided by 2-factor authentication.(Citation: cobaltstrike manual)",
+            "properties": {
+              "attack_id": "T1185",
+              "description": "Adversaries may take advantage of security vulnerabilities and inherent functionality in browser software to change content, modify user-behaviors, and intercept information as part of various browser session hijacking techniques.(Citation: Wikipedia Man in the Browser)\n\nA specific example is when an adversary injects software into a browser that allows them to inherit cookies, HTTP sessions, and SSL client certificates of a user then use the browser as a way to pivot into an authenticated intranet.(Citation: Cobalt Strike Browser Pivot)(Citation: ICEBRG Chrome Extensions) Executing browser-based behaviors such as pivoting may require specific process permissions, such as <code>SeDebugPrivilege</code> and/or high-integrity/administrator rights.\n\nAnother example involves pivoting browser traffic from the adversary's browser through the user's browser by setting up a proxy which will redirect web traffic. This does not alter the user's traffic in any way, and the proxy connection can be severed as soon as the browser is closed. The adversary assumes the security context of whichever browser process the proxy is injected into. Browsers typically create a new process for each tab that is opened and permissions and certificates are separated accordingly. With these permissions, an adversary could potentially browse to any resource on an intranet, such as [Sharepoint](https://attack.mitre.org/techniques/T1213/002) or webmail, that is accessible through the browser and which the browser has sufficient permissions. Browser pivoting may also bypass security provided by 2-factor authentication.(Citation: cobaltstrike manual)",
+              "id": "attack-pattern--544b0346-29ad-41e1-a808-501bb4193f47",
+              "name": "Browser Session Hijacking",
+              "revoked": false,
+              "stix_type": "attack-pattern",
+              "x_mitre_deprecated": false,
+              "x_mitre_is_subtechnique": false,
+              "x_mitre_platforms": [
+                "Windows"
+              ],
+              "x_mitre_version": "2.1",
+              "_omitted_properties": [
+                "external_references"
+              ]
+            },
+            "facets": [
+              {
+                "rel": "DETECTS",
+                "direction": "in",
+                "neighbour_label": "DetectionStrategy",
+                "count": 1
+              },
+              {
+                "rel": "HAS_SUBTECHNIQUE",
+                "direction": "out",
+                "neighbour_label": "SubTechnique",
+                "count": 0
+              },
+              {
+                "rel": "HAS_TECHNIQUE",
+                "direction": "in",
+                "neighbour_label": "Tactic",
+                "count": 1
+              },
+              {
+                "rel": "MITIGATES",
+                "direction": "in",
+                "neighbour_label": "Mitigation",
+                "count": 2
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Campaign",
+                "count": 0
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Group",
+                "count": 1
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Software",
+                "count": 14
+              }
+            ],
+            "join_values": [
+              "T1185"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1563",
+            "name": "Remote Service Session Hijacking",
+            "label": "Technique",
+            "description": "Adversaries may take control of preexisting sessions with remote services to move laterally in an environment. Users may use valid credentials to log into a service specifically designed to accept remote connections, such as telnet, SSH, and RDP. When a user logs into a service, a session will be established that will allow them to maintain a continuous interaction with that service.\n\nAdversaries may commandeer these sessions to carry out actions on remote systems. [Remote Service Session Hijacking](https://attack.mitre.org/techniques/T1563) differs from use of [Remote Services](https://attack.mitre.org/techniques/T1021) because it hijacks an existing session rather than creating a new session using [Valid Accounts](https://attack.mitre.org/techniques/T1078).(Citation: RDP Hijacking Medium)(Citation: Breach Post-mortem SSH Hijack)",
+            "properties": {
+              "attack_id": "T1563",
+              "description": "Adversaries may take control of preexisting sessions with remote services to move laterally in an environment. Users may use valid credentials to log into a service specifically designed to accept remote connections, such as telnet, SSH, and RDP. When a user logs into a service, a session will be established that will allow them to maintain a continuous interaction with that service.\n\nAdversaries may commandeer these sessions to carry out actions on remote systems. [Remote Service Session Hijacking](https://attack.mitre.org/techniques/T1563) differs from use of [Remote Services](https://attack.mitre.org/techniques/T1021) because it hijacks an existing session rather than creating a new session using [Valid Accounts](https://attack.mitre.org/techniques/T1078).(Citation: RDP Hijacking Medium)(Citation: Breach Post-mortem SSH Hijack)",
+              "id": "attack-pattern--5b0ad6f8-6a16-4966-a4ef-d09ea6e2a9f5",
+              "name": "Remote Service Session Hijacking",
+              "revoked": false,
+              "stix_type": "attack-pattern",
+              "x_mitre_deprecated": false,
+              "x_mitre_is_subtechnique": false,
+              "x_mitre_platforms": [
+                "Linux",
+                "macOS",
+                "Windows"
+              ],
+              "x_mitre_version": "1.1",
+              "_omitted_properties": [
+                "external_references"
+              ]
+            },
+            "facets": [
+              {
+                "rel": "DETECTS",
+                "direction": "in",
+                "neighbour_label": "DetectionStrategy",
+                "count": 1
+              },
+              {
+                "rel": "HAS_SUBTECHNIQUE",
+                "direction": "out",
+                "neighbour_label": "SubTechnique",
+                "count": 2
+              },
+              {
+                "rel": "HAS_TECHNIQUE",
+                "direction": "in",
+                "neighbour_label": "Tactic",
+                "count": 1
+              },
+              {
+                "rel": "MITIGATES",
+                "direction": "in",
+                "neighbour_label": "Mitigation",
+                "count": 5
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Campaign",
+                "count": 0
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Group",
+                "count": 0
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Software",
+                "count": 0
+              }
+            ],
+            "join_values": [
+              "T1563"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1548",
+            "name": "Abuse Elevation Control Mechanism",
+            "label": "Technique",
+            "description": "Adversaries may circumvent mechanisms designed to control privilege elevation to gain higher-level permissions. Most modern systems contain native elevation control mechanisms that are intended to limit privileges that a user can perform on a machine. Authorization has to be granted to specific users in order to perform tasks that can be considered of higher risk.(Citation: TechNet How UAC Works)(Citation: sudo man page 2018) An adversary can perform several methods to take advantage of built-in control mechanisms in order to escalate privileges on a system.(Citation: OSX Keydnap malware)(Citation: Fortinet Fareit)",
+            "properties": {
+              "attack_id": "T1548",
+              "description": "Adversaries may circumvent mechanisms designed to control privilege elevation to gain higher-level permissions. Most modern systems contain native elevation control mechanisms that are intended to limit privileges that a user can perform on a machine. Authorization has to be granted to specific users in order to perform tasks that can be considered of higher risk.(Citation: TechNet How UAC Works)(Citation: sudo man page 2018) An adversary can perform several methods to take advantage of built-in control mechanisms in order to escalate privileges on a system.(Citation: OSX Keydnap malware)(Citation: Fortinet Fareit)",
+              "id": "attack-pattern--67720091-eee3-4d2d-ae16-8264567f6f5b",
+              "name": "Abuse Elevation Control Mechanism",
+              "revoked": false,
+              "stix_type": "attack-pattern",
+              "x_mitre_deprecated": false,
+              "x_mitre_is_subtechnique": false,
+              "x_mitre_platforms": [
+                "Linux",
+                "macOS",
+                "Windows",
+                "IaaS",
+                "Office Suite",
+                "Identity Provider"
+              ],
+              "x_mitre_version": "2.0",
+              "_omitted_properties": [
+                "external_references"
+              ]
+            },
+            "facets": [
+              {
+                "rel": "DETECTS",
+                "direction": "in",
+                "neighbour_label": "DetectionStrategy",
+                "count": 1
+              },
+              {
+                "rel": "HAS_SUBTECHNIQUE",
+                "direction": "out",
+                "neighbour_label": "SubTechnique",
+                "count": 6
+              },
+              {
+                "rel": "HAS_TECHNIQUE",
+                "direction": "in",
+                "neighbour_label": "Tactic",
+                "count": 1
+              },
+              {
+                "rel": "MITIGATES",
+                "direction": "in",
+                "neighbour_label": "Mitigation",
+                "count": 8
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Campaign",
+                "count": 0
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Group",
+                "count": 1
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Software",
+                "count": 1
+              }
+            ],
+            "join_values": [
+              "T1548"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1134",
+            "name": "Access Token Manipulation",
+            "label": "Technique",
+            "description": "Adversaries may modify access tokens to operate under a different user or system security context to perform actions and bypass access controls. Windows uses access tokens to determine the ownership of a running process. A user can manipulate access tokens to make a running process appear as though it is the child of a different process or belongs to someone other than the user that started the process. When this occurs, the process also takes on the security context associated with the new token.\n\nAn adversary can use built-in Windows API functions to copy access tokens from existing processes; this is known as token stealing. These token can then be applied to an existing process (i.e. [Token Impersonation/Theft](https://attack.mitre.org/techniques/T1134/001)) or used to spawn a new process (i.e. [Create Process with Token](https://attack.mitre.org/techniques/T1134/002)). An adversary must already be in a privileged user context (i.e. administrator) to steal a token. However, adversaries commonly use token stealing to elevate their security context from the administrator level to the SYSTEM level. An adversary can then use a token to authenticate to a remote system as the account for that token if the account has appropriate permissions on the remote system.(Citation: Pentestlab Token Manipulation)\n\nAny standard user can use the <code>runas</code> command, and the Windows API functions, to create impersonation tokens; it does not require access to an administrator account. There are also other mechanisms, such as Active Directory fields, that can be used to modify access tokens.",
+            "properties": {
+              "attack_id": "T1134",
+              "description": "Adversaries may modify access tokens to operate under a different user or system security context to perform actions and bypass access controls. Windows uses access tokens to determine the ownership of a running process. A user can manipulate access tokens to make a running process appear as though it is the child of a different process or belongs to someone other than the user that started the process. When this occurs, the process also takes on the security context associated with the new token.\n\nAn adversary can use built-in Windows API functions to copy access tokens from existing processes; this is known as token stealing. These token can then be applied to an existing process (i.e. [Token Impersonation/Theft](https://attack.mitre.org/techniques/T1134/001)) or used to spawn a new process (i.e. [Create Process with Token](https://attack.mitre.org/techniques/T1134/002)). An adversary must already be in a privileged user context (i.e. administrator) to steal a token. However, adversaries commonly use token stealing to elevate their security context from the administrator level to the SYSTEM level. An adversary can then use a token to authenticate to a remote system as the account for that token if the account has appropriate permissions on the remote system.(Citation: Pentestlab Token Manipulation)\n\nAny standard user can use the <code>runas</code> command, and the Windows API functions, to create impersonation tokens; it does not require access to an administrator account. There are also other mechanisms, such as Active Directory fields, that can be used to modify access tokens.",
+              "id": "attack-pattern--dcaa092b-7de9-4a21-977f-7fcb77e89c48",
+              "name": "Access Token Manipulation",
+              "revoked": false,
+              "stix_type": "attack-pattern",
+              "x_mitre_deprecated": false,
+              "x_mitre_is_subtechnique": false,
+              "x_mitre_platforms": [
+                "Windows"
+              ],
+              "x_mitre_version": "3.0",
+              "_omitted_properties": [
+                "external_references"
+              ]
+            },
+            "facets": [
+              {
+                "rel": "DETECTS",
+                "direction": "in",
+                "neighbour_label": "DetectionStrategy",
+                "count": 1
+              },
+              {
+                "rel": "HAS_SUBTECHNIQUE",
+                "direction": "out",
+                "neighbour_label": "SubTechnique",
+                "count": 5
+              },
+              {
+                "rel": "HAS_TECHNIQUE",
+                "direction": "in",
+                "neighbour_label": "Tactic",
+                "count": 2
+              },
+              {
+                "rel": "MITIGATES",
+                "direction": "in",
+                "neighbour_label": "Mitigation",
+                "count": 2
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Campaign",
+                "count": 1
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Group",
+                "count": 3
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Software",
+                "count": 19
+              }
+            ],
+            "join_values": [
+              "T1134"
+            ],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": false,
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "n_expected": 8,
+      "n_got": 6
+    },
+    "mapping_recall": {
+      "gold": 8,
+      "found": 8,
+      "recall": 1.0,
+      "missing": []
+    },
+    "coverage": null,
+    "provenance": {
+      "citations": 46,
+      "compliant": 46,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "Find all AttackPattern nodes that EXPLOITS_WEAKNESS a Weakness node with id 'CWE-287'. For each AttackPattern, retrieve its id, name, associated Mitigation nodes (id, name), and the TaxonomyEntry nodes it MAPS_TO (specifically the entry_id).",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "Find all Technique and SubTechnique nodes where the attack_id matches the entry_id values retrieved from the CAPEC TaxonomyEntry nodes.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 134.025
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 13,
+    "related": 7
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative/adversarial dependency-abstention case: CAPEC-555's producer (q1) is downed, so ATT&CK q2 (mitigations for CAPEC-555's mapped techniques) must skip rather than run an unseeded broad query. The answer's notes correctly state capec was skipped ('no specialist available for source capec'), matching gold capec.expect_skipped=true. The abstentions entry correctly states q2 depends on q1 for seed identifiers and q1 'was not run', matching gold attack.expect_dependency_skip=true. logic_flow.results[0] confirms query='' and records=[] with trace reason 'producer q1: it was not run' -- no broad unseeded ATT&CK query was executed. claims=[] with must_correlate=[] and expect_no_correlation=true are satisfied (no fabricated techniques/mitigations named). The pipeline's own deterministic_scores.correlation (negative=true, exact=true, f1=1.0) corroborate this. No hallucinated ids, names, counts, or aliases appear anywhere in the narrative, claims, or abstentions."
+}

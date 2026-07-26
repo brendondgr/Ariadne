@@ -1,0 +1,12 @@
+{
+  "case_id": "C-DEP-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative test case: CAPEC-91 is deprecated/excluded at load, and gold asserts expect_empty=true with an empty expected id list. The executed Gremlin query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...) ran cleanly with row_count 0 at every trace step (resolve/gate/execute/assess/normalize), and the pipeline correctly abstained rather than fabricating a record. The narrative explicitly states 'The routed sources returned no matching records for this question' and invites the analyst to supply a different id, with zero claims and one properly-sourced abstention citing the query. No entity, alias, status, or count was invented. This exactly matches the gold requirement of returning empty for a deprecated/excluded CAPEC id."
+}

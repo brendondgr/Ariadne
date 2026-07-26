@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-05",
+  "verdict": "PARTIAL",
+  "correctness": 0.85,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.75,
+  "gold_expected": 12,
+  "gold_present": 9,
+  "hallucinations": [],
+  "rationale": "The narrative correctly identifies all three gold-required ATT&CK mappings for CAPEC-21 (T1134, T1528, T1539), matching must_correlate and the capec/attack must_include_ids/must_include_related assertions exactly, and gives the correct per-technique mitigation counts (T1539=6, T1528=4, T1134=2) that match the evidence's 'related' arrays exactly. However, gold also requires 8 specific mitigation ids (M1017, M1018, M1021, M1026, M1032, M1047, M1051, M1054) to be surfaced; the narrative only names 5 of them (M1051, M1032, M1018, M1021, M1026) using 'including'/'such as' framing that explicitly signals a partial, non-exhaustive list, omitting M1047, M1054, and M1017 from the prose (though the supporting structured claims do enumerate all 8). Every id, name, and count actually stated in the narrative (CAPEC-21 Abstraction/Status not mentioned in narrative but correct in claims; technique names; mitigation names M1051 Update Software, M1032 Multi-factor Authentication, M1018 User Account Management, M1021 Restrict Web-Based Content, M1026 Privileged Account Management) is verified verbatim against logic_flow evidence, so there are no fabrications and groundedness is perfect. Net: correct and well-grounded but incomplete relative to the gold's full must_include_related mitigation list, so PARTIAL rather than CORRECT."
+}

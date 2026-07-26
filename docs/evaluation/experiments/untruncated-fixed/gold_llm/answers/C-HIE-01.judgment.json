@@ -1,0 +1,12 @@
+{
+  "case_id": "C-HIE-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "The query g.V().hasLabel('AttackPattern').has('id', within(['CAPEC-98'])).out('CHILD_OF') returned exactly one record: CAPEC-98 (Phishing) related to CAPEC-151 (Identity Spoofing) via CHILD_OF. Gold requires must_include_ids=[CAPEC-98] and must_include_related=[CAPEC-151], both of which the narrative and claims surface explicitly ('CAPEC-98 is linked to CAPEC-151, which serves as its parent entity'). The narrative's descriptive details (Phishing as social-engineering/credential theft, Identity Spoofing as assuming another identity) and the claim's Abstraction=Standard/Status=Draft properties all match the evidence record verbatim with no invented facts, counts, or aliases. Answer fully and correctly resolves the ChildOf parent relationship with complete grounding."
+}

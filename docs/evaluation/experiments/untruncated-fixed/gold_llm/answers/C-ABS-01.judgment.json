@@ -1,0 +1,12 @@
+{
+  "case_id": "C-ABS-01",
+  "verdict": "CORRECT",
+  "correctness": 0.95,
+  "faithfulness": 0.95,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-7 (must_include_ids) plus CAPEC-66 and CAPEC-248 (must_include_related), all three of which appear in both the narrative and claims. The single retrieved record for CAPEC-7 (name 'Blind SQL Injection', Abstraction: Detailed, Status: Draft) lists related CAPEC-66 (name 'SQL Injection', role 'standard', abstraction 'Standard') and CAPEC-248 (name 'Command Injection', role 'meta', abstraction 'Meta') exactly as stated in the narrative and the enumeration claim -- every id, name, and role is traceable to logic_flow.results[0].records[0]. deterministic_scores.coverage confirms 3/3 gold ids found. Minor stylistic caveat only: the narrative calls CAPEC-66 and CAPEC-248 'two direct abstraction ancestors' of CAPEC-7, whereas the executed query template (capec_hierarchy_chain: ap->CHILD_OF->parent->CHILD_OF->grandparent) indicates CAPEC-248 is technically the grandparent (the meta pattern the standard parent CAPEC-66 belongs to) rather than a direct parent of CAPEC-7 itself; this is an interpretive framing already baked into how the record's 'related' array is presented (both listed as immediate related entities with role labels), not a fabricated fact, so it is not counted as a hallucination but keeps correctness/faithfulness just short of 1.0."
+}

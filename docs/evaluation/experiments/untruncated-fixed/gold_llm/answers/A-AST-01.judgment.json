@@ -1,0 +1,12 @@
+{
+  "case_id": "A-AST-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "This is a boundary/negative case (gold.assertions.expect_boundary=true): the question asks what 'Assets' T1047 targets, but Asset is an ICS-only concept not modeled by the ATT&CK Enterprise source schema used here. The logic_flow trace explicitly shows the resolve/boundary steps flagging 'entities not in card: [Asset]' and 'entities not modeled by the attack source: Asset', with zero records and an empty query. The answer correctly abstains: narrative states 'The routed sources returned no matching records for this question' and the single abstention entry accurately explains the attack source doesn't model the entities the question asks about, matching the trace's own reasoning verbatim. No assets, counts, or entity names are fabricated; the suggested example ids (T1566, M1017, CAPEC-98) are generic hint examples, not claims about T1047. All deterministic_scores (abstention_proof_ok=true, fully_provenanced=true) corroborate a clean, correctly-grounded refusal."
+}
