@@ -1,0 +1,12 @@
+{
+  "case_id": "A-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_empty=true for nonexistent group G9999 (ex_gold.expected=[]). The executed query (MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN $ids ...) returned row_count=0, confirmed by logic_flow.results[0].records=[] and evidence_volume.records=0. The deterministic composer correctly abstained: headline states 'No records were returned', narrative states 'The routed sources returned no matching records for this question', and the abstentions array records a clean zero-result query for G9999 with no fabricated technique or group data. The narrative's suggested example ids (T1566, M1017, CAPEC-98) are generic prompts to help the user refine their query, not asserted facts about G9999, so they are not hallucinations. This is a fully correct negative-case abstention with no invented entities."
+}

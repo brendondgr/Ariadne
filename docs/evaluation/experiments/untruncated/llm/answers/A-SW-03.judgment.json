@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SW-03",
+  "verdict": "PARTIAL",
+  "correctness": 0.45,
+  "faithfulness": 1.0,
+  "groundedness": 0.9,
+  "completeness": 0.11,
+  "gold_expected": 56,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "The evidence (logic_flow query 'software_techniques') returns exactly 55 USES rows for S0266/TrickBot, and the evidence's related/join_values ids are an exact match to the gold's 55-item must_include_related set (T1005...T1685) with no missing or extra ids. The answer's aggregate count (55) is correct and matches gold exactly, and the software id S0266/TrickBot is correctly named. However, the gold requires the answer to surface each of these 55 technique ids (must_include_related), and neither the narrative nor the structured claims do this: the narrative names only 5 of the 55 (T1027.002, T1495, T1056.004, T1008, T1105) and then simply asserts 'the evidence explicitly lists all 55 identifiers' without listing them; the single structured claim's entity_ids field contains only ['S0266'], carrying none of the 55 technique ids as first-class entities. All 5 named techniques and the count of 55 are fully grounded in the retrieved evidence (no fabricated names, aliases, or counts), so faithfulness is high, but completeness against the gold's per-id enumeration requirement is low (only S0266 + 5/55 techniques are explicitly stated, 6 of 56 required ids). This is the known deterministic-composer enumeration ceiling (answer states the right count but not the full list), making it correct-but-incomplete rather than fully correct."
+}

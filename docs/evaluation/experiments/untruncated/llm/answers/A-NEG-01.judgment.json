@@ -1,0 +1,12 @@
+{
+  "case_id": "A-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty=true) for the fabricated technique id T9999. The retrieved evidence in logic_flow confirms the Neo4j query for Technique with attack_id T9999 executed cleanly and returned row_count 0 / records []. The answer (deterministic composer, no LLM narrative fabrication) correctly reports 'No records were returned by the routed specialists' and abstains explicitly ('the attack source doesn't establish this ... returned no matching records for: Find Technique with id T9999'), inviting the user to supply a real id (examples T1566, M1017, CAPEC-98 are given only as generic format examples, not asserted facts about T9999, and are not presented as retrieved data). No entity, name, or property for T9999 is invented anywhere in claims or narrative. This is a fully correct, fully grounded abstention on a negative-control case."
+}

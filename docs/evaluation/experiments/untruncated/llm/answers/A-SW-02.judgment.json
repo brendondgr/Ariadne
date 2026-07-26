@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SW-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.45,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.14,
+  "gold_expected": 73,
+  "gold_present": 10,
+  "hallucinations": [],
+  "rationale": "The retrieved evidence (logic_flow, source=attack) contains exactly the 73 technique ids listed in gold.assertions.must_include_related (join_values and related arrays match the gold set with zero missing/extra), so retrieval was perfect. However the answer under test (no LLM narrative synthesis beyond the deterministic template; narrative and the single claim are near-identical) only names 10 of the 73 required T-numbers as illustrative examples (T1021.004, T1564.010, T1078.003, T1090.001, T1055.001, T1569.002, T1021.001, T1105, T1550.002, T1518), all of which are genuinely present in the evidence -- so there is no fabrication and the stated total ('a total of 73 ATT&CK techniques') correctly matches the evidence count. But the question 'Which techniques does software S0154 use' calls for the full enumeration, and the single claim's entity_ids/citations only reference S0154 itself, not the 73 technique ids, so an analyst reading the answer is not shown 63 of the 73 required techniques. This is a correct-but-incomplete answer: correct entity (S0154), correct count, fully grounded sample, but far short of the completeness the gold requires."
+}

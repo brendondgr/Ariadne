@@ -1,0 +1,12 @@
+{
+  "case_id": "C-ABS-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.15,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.33,
+  "gold_expected": 3,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The gold requires surfacing CAPEC-16 plus its standard ancestor CAPEC-49 and meta ancestor CAPEC-112 (must_include_ids + must_include_related, 3 entities total per deterministic_scores.coverage.gold=3). The retrieved record for CAPEC-16 shows a CHILD_OF facet with direction=out, count=1 (i.e., one parent edge exists) but the 'related' array is empty, so the actual parent node (CAPEC-49) and its own parent (CAPEC-112) were never surfaced in evidence. The narrative and claims correctly and honestly report only CAPEC-16 and state that zero ancestors are provided by the data returned -- this is faithful (no fabricated names/ids) and fully grounded in the facets shown. However, the question specifically asks to walk up the hierarchy and name the standard and meta ancestors, and the answer supplies neither CAPEC-49 nor CAPEC-112 (coverage 1/3 = 0.33, matching the pipeline's own deterministic_scores). Because the central informational ask goes entirely unanswered (an upstream retrieval gap: the CHILD_OF edge was counted in facets but not expanded into 'related'), this is a failed answer to the question, not merely a stylistic shortfall -- graded INCORRECT despite the absence of hallucination."
+}

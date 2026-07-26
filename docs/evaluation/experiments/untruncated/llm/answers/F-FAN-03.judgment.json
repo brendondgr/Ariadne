@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-03",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 17,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is not a negative test case (gold expects min_records 2 for capec and exactly 6 for attack, plus 9 required mitigations M1015/M1017/M1022/M1027/M1028/M1041/M1047/M1051/M1057), so a correct answer must surface the CAPEC-37/CAPEC-639 -> T1005/T1039/T1552.001/T1552.003/T1552.004/T1552.006 mapping and its mitigation union. Instead run_meta shows the pipeline hit its total timeout (notes: 'Skipped capec: total pipeline timeout exceeded before this sub-question ran', 'Skipped attack: ...'), logic_flow.results is empty, evidence_volume is all zeros, and deterministic_scores confirm n_got=0/mapping recall 0.0 against n_expected=6. The narrative correctly reports that no data was retrieved rather than fabricating any technique, CAPEC, or mitigation id, so there is no faithfulness/groundedness violation, but it surfaces none of the 17 gold-required identifiers (6 T-numbers + CAPEC-37/CAPEC-639 + 9 mitigations), making the answer a total retrieval/pipeline failure rather than a valid abstention, hence INCORRECT on the headline correctness/completeness dimensions."
+}

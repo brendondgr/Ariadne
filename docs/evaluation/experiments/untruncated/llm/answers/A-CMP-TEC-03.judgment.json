@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-TEC-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The evidence (logic_flow.results[0].records) contains exactly 13 Technique records returned by the single Cypher query MATCH (c:Campaign)-[:USES]->(t:Technique) for C0001: T1105, T1221, T1203, T1041, T1057, T1020, T1016, T1140, T1005, T1082, T1119, T1033, T1047. The gold must_include_ids (T1005, T1016, T1020, T1033, T1041) are all 5/5 present and named in the narrative, and the ex_gold expected pool of 13 technique ids is matched exactly by the 13 ids the answer surfaces, with names (e.g. T1105 'Ingress Tool Transfer', T1041 'Exfiltration Over C2 Channel', T1047 'Windows Management Instrumentation') matching the evidence's name fields verbatim. No id, name, count, or alias in the narrative is absent from or inconsistent with the retrieved records, so there is no fabrication. min_records (5) and the row count (13) are both satisfied/consistent."
+}

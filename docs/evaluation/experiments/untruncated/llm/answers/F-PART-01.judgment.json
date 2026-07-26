@@ -1,0 +1,14 @@
+{
+  "case_id": "F-PART-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.7,
+  "faithfulness": 0.75,
+  "groundedness": 0.9,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [
+    "Claims a 'cross-source correlation' ('The identifier T1021 is corroborated across attack and capec (2 record(s) share it)') for a case where gold sets expect_no_correlation=true and must_correlate=[]; this is merely the mechanical join key used to run the federated query, not a substantive finding, and the pipeline's own deterministic_scores.correlation block confirms the mismatch (n_expected=0, n_got=1, precision=0.0, f1=0.0)."
+  ],
+  "rationale": "The CAPEC side is fully correct and grounded: the answer surfaces CAPEC-555 'Remote Services with Stolen Credentials' (Status Stable, Abstraction Standard) mapped to T1021, matching gold's capec.must_include_ids=[CAPEC-555] and must_include_related=[T1021], and the description/abstraction text matches logic_flow.results[0].records[0].properties exactly. The ATT&CK/ICS side correctly satisfies attack.expect_boundary=true: the narrative and notes explicitly state the evidence lacks any ICS-domain Asset node or targeting relationship in the attack schema and honestly abstains from answering the ICS-asset question, rather than fabricating ICS assets - this is the desired adversarial behavior. However, the gold also sets expect_no_correlation=true / must_correlate=[] for this case (a negative correlation test), and the answer nonetheless emits a 'correlation' claim asserting T1021 is 'corroborated across attack and capec', which is exactly the false-positive behavior the negative test is designed to catch - confirmed by the artifact's own deterministic_scores.correlation (negative=true, precision=0.0, recall=1.0, f1=0.0, n_expected=0, n_got=1). This is not a fabricated entity/id (both records genuinely reference T1021 as the join key), so groundedness stays high, but it oversteps the expected 'no correlation' boundary, so correctness and faithfulness are docked accordingly. Net: correct CAPEC mapping, correct ICS-asset refusal, but an unwarranted correlation assertion the gold specifically flags as wrong -> PARTIAL rather than CORRECT."
+}

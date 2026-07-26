@@ -1,0 +1,12 @@
+{
+  "case_id": "A-TAC-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The gold must_include_ids (T1112, T1207, T1222, T1484, T1553) are all present in the narrative and claims, and all 18 techniques listed (T1556, T1686, T1687, T1666, T1578, T1600, T1689, T1207, T1112, T1222, T1647, T1601, T1599, T1690, T1553, T1685, T1688, T1484) exactly match the ex_gold expected pool of 18 T-numbers (T1112, T1207, T1222, T1484, T1553, T1556, T1578, T1599, T1600, T1601, T1647, T1666, T1685, T1686, T1687, T1688, T1689, T1690) with no set difference in either direction — zero missing, zero extras. Every technique name quoted in the narrative (e.g. T1556 'Modify Authentication Process', T1686 'Disable or Modify System Firewall', T1687 'Exploitation for Defense Impairment') matches the corresponding record's name field verbatim in logic_flow.results[0].records. The retrieval query (MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique) WHERE ta.attack_id IN $ids ...) correctly targets seed TA0112 and returned exactly 18 rows, matching the answer's stated count. No fabricated names, counts, or aliases found."
+}

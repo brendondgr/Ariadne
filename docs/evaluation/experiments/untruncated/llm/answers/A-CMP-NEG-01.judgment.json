@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result for nonexistent campaign C9999 (assertions.expect_empty=true, ex_gold.expected=[]). logic_flow.results is [] and evidence_volume shows 0 results/records/related, so there is no evidence of any technique tied to C9999. The answer's narrative correctly states 'No records were returned by the routed specialists' and abstains rather than naming any technique, campaign, or CWE, and claims/abstentions arrays are empty. No fabricated ids, names, or counts appear anywhere in the narrative. Note the sub-question was actually skipped due to a pipeline timeout (run_meta.exit_code=1, status='partial', notes: 'Skipped attack: total pipeline timeout exceeded before this sub-question ran') rather than a genuine empty query result, but the surfaced answer to the analyst is still the correct one for this negative case: it neither hallucinates data for C9999 nor asserts a false positive match."
+}

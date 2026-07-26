@@ -1,0 +1,211 @@
+{
+  "id": "F-CWE-01",
+  "kind": "federated",
+  "tier": "hard",
+  "category": "F-CWE",
+  "question": "Which CAPEC patterns exploit weakness CWE-522, which ATT&CK techniques do they map to, and what mitigations apply?",
+  "gold": {
+    "assertions": {
+      "must_correlate": [
+        "T1021",
+        "T1021.002",
+        "T1078",
+        "T1110.004",
+        "T1114.002",
+        "T1133",
+        "T1543",
+        "T1550.002",
+        "T1550.003",
+        "T1552.004",
+        "T1558",
+        "T1558.003"
+      ],
+      "capec": {
+        "min_records": 1,
+        "must_include_ids": [
+          "CAPEC-474",
+          "CAPEC-509",
+          "CAPEC-551",
+          "CAPEC-555",
+          "CAPEC-560",
+          "CAPEC-561",
+          "CAPEC-600",
+          "CAPEC-644",
+          "CAPEC-645",
+          "CAPEC-652"
+        ],
+        "must_include_related": [
+          "CWE-522"
+        ]
+      },
+      "attack": {
+        "min_records": 12,
+        "max_records": 12,
+        "must_include_ids": [
+          "T1021",
+          "T1021.002",
+          "T1078",
+          "T1110.004",
+          "T1114.002",
+          "T1133",
+          "T1543",
+          "T1550.002",
+          "T1550.003",
+          "T1552.004",
+          "T1558",
+          "T1558.003"
+        ],
+        "must_include_related": [
+          "M1013",
+          "M1015",
+          "M1017",
+          "M1018",
+          "M1021",
+          "M1022",
+          "M1026",
+          "M1027",
+          "M1028",
+          "M1030",
+          "M1032",
+          "M1033",
+          "M1035",
+          "M1036",
+          "M1037",
+          "M1040",
+          "M1041",
+          "M1042",
+          "M1043",
+          "M1045",
+          "M1047",
+          "M1051",
+          "M1052",
+          "M1054",
+          "M1060"
+        ]
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 3
+  },
+  "answer": {
+    "headline": "No records were returned by the routed specialists.",
+    "narrative": "None of the live graph sources cover this request. If you meant a specific ATT&CK or CAPEC entity, name it or give its id (e.g. T1566, M1017, or CAPEC-98).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [],
+    "abstentions": [],
+    "notes": [
+      "Skipped capec: total pipeline timeout exceeded before this sub-question ran",
+      "Skipped attack: total pipeline timeout exceeded before this sub-question ran"
+    ]
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which attack patterns exploit CWE-522 and which ATT&CK techniques do they map to?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What mitigations does ATT&CK list for those mapped techniques?",
+        "seed_from": "q1"
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": null,
+    "results": []
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "n_expected": 12,
+      "n_got": 0
+    },
+    "mapping_recall": {
+      "gold": 12,
+      "found": 0,
+      "recall": 0.0,
+      "missing": [
+        "T1021",
+        "T1021.002",
+        "T1078",
+        "T1110.004",
+        "T1114.002",
+        "T1133",
+        "T1543",
+        "T1550.002",
+        "T1550.003",
+        "T1552.004",
+        "T1558",
+        "T1558.003"
+      ]
+    },
+    "coverage": null,
+    "provenance": {
+      "citations": 0,
+      "compliant": 0,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "In capec, identify AttackPattern, Category, EXPLOITS_WEAKNESS, HAS_MITIGATION, MAPS_TO, Mitigation, TaxonomyEntry, Weakness relevant to: Which CAPEC patterns exploit weakness CWE-522, which ATT&CK techniques do they map to, and what mitigations apply?",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "In attack, identify HAS_TECHNIQUE, Matrix, Mitigation, SubTechnique, Technique relevant to: Which CAPEC patterns exploit weakness CWE-522, which ATT&CK techniques do they map to, and what mitigations apply?",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 1,
+    "status": "partial",
+    "wall_s": 120.147
+  },
+  "evidence_volume": {
+    "results": 0,
+    "records": 0,
+    "related": 0
+  }
+}

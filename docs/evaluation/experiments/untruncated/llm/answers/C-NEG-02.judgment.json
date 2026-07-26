@@ -1,0 +1,12 @@
+{
+  "case_id": "C-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold for this negative case asserts expect_empty=true with an empty expected-id list (ex_gold.expected=[]) for deprecated CAPEC-557. logic_flow.results is empty (0 results, 0 records, 0 related — evidence_volume confirms results:0/records:0/related:0), so no evidence of CAPEC-557 or any other entity was retrieved at all. The answer correctly abstains: narrative states 'No records were returned by the routed specialists' and offers only generic, non-factual guidance ('name it or give its id, e.g. T1566, M1017, or CAPEC-98') without asserting anything false about CAPEC-557 itself; claims and abstentions arrays are both empty, matching the deterministic composer path. No id, name, alias, count, or property is fabricated anywhere in the narrative, so there is no hallucination and the answer is fully grounded in the (empty) evidence. Note for context, not a scoring penalty: run_meta.observed_plan/notes show the attack and capec sub-questions were actually skipped due to 'total pipeline timeout exceeded' rather than a deliberate deprecated-entity exclusion filter, so the correct empty output appears to be incidental to the timeout rather than an explicit CAPEC-557-is-deprecated check — worth flagging operationally, but it does not change that the surfaced answer matches gold's expect_empty requirement with zero fabrication."
+}

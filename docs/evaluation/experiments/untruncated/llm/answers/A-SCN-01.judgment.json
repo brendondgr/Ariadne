@@ -1,0 +1,14 @@
+{
+  "case_id": "A-SCN-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.2,
+  "faithfulness": 0.3,
+  "groundedness": 0.4,
+  "completeness": 0.0,
+  "gold_expected": 1,
+  "gold_present": 0,
+  "hallucinations": [
+    "Narrative states 'The evidence lists 300 software entries', but the retrieved evidence (logic_flow.results[0].records, and the answer's own 'claims' array) contains 821 records/entity_ids, not 300 -- the narrative's headline count is fabricated and contradicts both the raw evidence and the pipeline's own structured claims (which correctly say 'Found 821 ATT&CK record(s)' and enumerate all 821 ids)."
+  ],
+  "rationale": "Gold (A-SCN-01) asserts a bounded scan of Software nodes should yield between 250 and 300 records (min_records=250, max_records=300). The actual retrieval (query 'MATCH (n:Software) RETURN n.attack_id AS id, n.name AS name LIMIT 1000', execute/normalize traces both report row_count/record_count=821) returned 821 records -- almost 3x the gold's max bound, so the underlying evidence itself fails the bounded-scan assertion regardless of narrative wording. On top of that, the narrative under test ('The evidence lists 300 software entries...') states a specific count of 300 that matches neither the true evidence (821) nor the pipeline's own 'claims' array, which correctly reports 'Found 821 ATT&CK record(s)' and includes a complete enumeration claim listing all 821 S-numbers (verified: the 5 representative ids the narrative names -- S0061 HDoor, S0266, S1204, S0139, S0605 -- are all real entries at the head of that list, so those specific ids are grounded, but the aggregate count is not). Because the analyst-facing narrative is the answer under test here (it is substantive, not thin) and it misstates the scope of the result set by more than 2.7x while the true record set also blows through the gold's upper bound, this fails both the correctness (bounded-scan requirement) and faithfulness (invented aggregate count) checks. gold_expected/gold_present are scored 1/0 against the single count-bound assertion since no per-id must_include list exists for this case."
+}

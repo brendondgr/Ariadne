@@ -1,0 +1,12 @@
+{
+  "case_id": "C-CSQ-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-66] and must_include_related=[capec:attack-pattern:66:consequence:1..4]. The narrative explicitly names CAPEC-66 (SQL Injection) and all four consequence identifiers (consequence:1, :2, :3, :4), matching the retrieved evidence exactly (row_count=4, related list contains exactly those four Consequence nodes). It also correctly notes the evidence provides no further descriptive detail for the consequence nodes (the 'related' entries only carry id/name/label, name==id, no description property), which is an accurate, non-fabricated statement rather than a hallucination. Note the pipeline's own deterministic_scores.coverage=0.2 reflects that the 'claims' array only lists the CAPEC-66 fact claim, but per grading instructions the narrative (which is substantive, not thin) is the answer under test here and it fully satisfies all 5 gold-required entities, so the answer is fully correct despite the internal claims-based score being misleadingly low."
+}

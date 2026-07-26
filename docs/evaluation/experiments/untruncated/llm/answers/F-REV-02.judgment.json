@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires the cross-source join T1566 (must_correlate), CAPEC-98 with related T1566 (capec.must_include_ids/must_include_related), and T1566 with name 'Phishing' (attack.must_include_ids/expect_names) -- all four are explicitly stated in the narrative: 'CAPEC-98, which carries a Standard abstraction role', 'ATT&CK technique T1566, also named Phishing', and 'The cross-source join confirms the direct mapping between CAPEC-98 and T1566.' Every stated fact is traceable to the retrieved records: CAPEC-98's Abstraction=Standard and description match logic_flow.results[0].records[0].properties; the related TaxonomyEntry capec:taxonomy:ATTACK:1566 grounds the CAPEC-98->T1566 mapping; T1566's description and x_mitre_platforms (Windows, Linux, macOS, plus others) match logic_flow.results[1].records[0]. No counts, aliases, or entities are asserted beyond what evidence supports (min_records=1/max_records=1 for attack is respected, exactly 1 CAPEC record found matches CAPEC's min_records=1). No hallucinations found."
+}

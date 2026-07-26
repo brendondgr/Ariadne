@@ -1,0 +1,14 @@
+{
+  "case_id": "A-SW-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 18,
+  "gold_present": 18,
+  "hallucinations": [
+    "Narrative groups techniques into tactic categories (e.g. calls T1550.002/T1098/T1207 'lateral movement and account manipulation techniques') that are not present anywhere in the retrieved evidence -- record properties are empty ({}) and no tactic/category field is returned, so these tactic labels are the model's own domain knowledge layered on top of the graph result rather than something grounded in the evidence; T1207 (Rogue Domain Controller) in particular is conventionally a Defense Evasion technique, not lateral movement, making the added categorization both ungrounded and arguably imprecise."
+  ],
+  "rationale": "The single retrieved record (S0002/Mimikatz, source=attack) lists exactly the 17 related technique ids required by gold's must_include_related (T1003.001/.002/.004/.006, T1098, T1134.005, T1207, T1547.005, T1550.002/.003, T1552.004, T1555, T1555.003/.004, T1558.001/.002, T1649) plus must_include_ids S0002 itself -- an exact 17/17 + 1/1 match, matching the pipeline's own coverage=1.0 (gold=18, found=18). Both the enumeration claim and the narrative name all 17 technique ids correctly with correct technique names spot-checked against the evidence (e.g. T1003.001=LSASS Memory, T1558.001=Golden Ticket, T1555=Credentials from Password Stores, T1207=Rogue Domain Controller all match the related[] descriptions). The only weakness is that the narrative's tactic-style groupings ('credential access and persistence', 'lateral movement and account manipulation') are not sourced from any evidence field (properties on the record are empty) and represent added, ungrounded categorization -- a minor faithfulness ding, not a completeness or correctness problem. No fabricated ids, counts, or aliases were found; join_values, related[], and both claims are internally consistent with the query's 17-row result."
+}

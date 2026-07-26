@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-565 to map to T1110.003 (capec.must_include_ids/must_include_related), that T1110.003 must correlate cross-source (must_correlate), and T1110.003 must map to tactic TA0006 (attack.must_include_related), with exactly 1 attack record (max_records 1). The evidence in logic_flow shows exactly this chain: CAPEC-565 -> TaxonomyEntry entry_id 1110.003 (join_values T1110.003), then ATT&CK Technique T1110.003 -> Tactic TA0006 'Credential Access' as the sole related tactic. The narrative states all three ids (CAPEC-565, T1110.003, TA0006), correctly names the tactic 'Credential Access' (verbatim from the related record's name field), and correctly asserts it is the only tactic ('exactly one ATT&CK tactic'), which matches the single-row attack query result and gold's max_records:1. The claims list also explicitly states the cross-source correlation on T1110.003. No invented facts, aliases, counts, or properties -- every stated detail (names, ids, exclusivity) traces directly to the retrieved records."
+}

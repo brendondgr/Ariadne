@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty for this adversarial negative case: expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true, must_correlate=[]. The evidence confirms the capec query for CAPEC-7's MAPS_TO edges to ATT&CK TaxonomyEntry nodes executed cleanly and returned row_count=0 (logic_flow.results[0]), and the downstream attack sub-question (q2) was correctly skipped via the dependency trace because q1 produced no join values (logic_flow.results[1].traces[0]). The answer's narrative and abstentions truthfully report no matching records and no fabricated technique/mitigation ids -- the example ids given (T1566, M1017, CAPEC-98) are explicitly framed as illustrative format hints for the analyst to name a different entity, not asserted as CAPEC-7's actual mappings, so this is not a hallucination. deterministic_scores.correlation confirms negative=true, exact=true, n_expected=0, n_got=0 matching the gold exactly. No entities were required to be surfaced (must_include lists absent/empty) and none were fabricated, so completeness is full."
+}

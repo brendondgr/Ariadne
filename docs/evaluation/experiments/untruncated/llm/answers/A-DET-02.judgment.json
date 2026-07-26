@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.15,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 0.14,
+  "gold_expected": 7,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to name DetectionStrategy DET0463 and Analytics AN1275-AN1279 as the entities that detect T1110 (must_include_related, 6 ids) plus surface T1110 itself (must_include_ids, 1 id) = 7 required ids total. The retrieval query only fetched the Technique node's own properties and adjacency facet counts (facets show 'DETECTS' in-edge count=1 from a DetectionStrategy) but never traversed to actually retrieve that DetectionStrategy or its Analytic nodes -- the 'related' array is empty. As a result the narrative can only say 'exactly one DetectionStrategy... detects T1110' and explicitly states it cannot name the analytic or detection strategy identifier. This is faithful to the (incomplete) evidence retrieved -- it does not fabricate DET0463 or any AN12xx id, so there are no hallucinations and groundedness for what is stated is high. However, correctness is very low: the actual question ('via which analytics?') goes fully unanswered, and only 1 of the 7 gold-required ids (T1110) is surfaced; none of DET0463, AN1275, AN1276, AN1277, AN1278, AN1279 appear anywhere in the answer or even in the retrieved evidence's related/records beyond a bare facet count. This is a retrieval-depth failure (the plan used a 'describe' template that returns facet counts but not related-node details) causing the answer to substantially fail the analyst's question despite honest abstention on the unretrieved specifics."
+}

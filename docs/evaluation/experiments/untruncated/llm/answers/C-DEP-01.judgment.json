@@ -1,0 +1,12 @@
+{
+  "case_id": "C-DEP-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative test case: CAPEC-91 is deprecated/excluded at load and gold asserts expect_empty=true with an empty expected-id set (scheme capec, pool node). The logic_flow shows the capec query 'g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...' for seed_ids=[\"CAPEC-91\"] executed cleanly (ok=true, no error) and returned row_count=0 at both the execute and assess trace steps, with records=[]. The answer (deterministic composer, no LLM narrative fabrication) correctly reports zero claims and a single well-formed abstention citing the exact executed query and stating no matching records were found for CAPEC-91, and its headline/narrative similarly report no records with no invented entity names, counts, or properties. No ids or facts appear in the answer that aren't in the evidence, and no gold-required ids were omitted since none are required. This matches the gold expectation exactly, so the answer is fully correct, faithful, grounded, and complete for a negative case."
+}

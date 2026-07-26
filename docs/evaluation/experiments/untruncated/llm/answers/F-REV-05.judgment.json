@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "The narrative correctly identifies the single cross-source correlation on T1133 (gold must_correlate), names CAPEC-555 'Remote Services with Stolen Credentials' as the one mapping CAPEC pattern (gold capec.must_include_ids/must_include_related), and correctly names T1133 as 'External Remote Services' (gold attack.expect_names). Every stated fact traces to logic_flow.results: CAPEC-555's description ('stolen credentials ... RDP, telnet, SSH, and VNC'), its Abstraction='Standard' property, T1133's description (VPNs/Citrix/exposed APIs/valid accounts), and its x_mitre_platforms=['Containers','Linux','macOS','Windows']. No invented ids, aliases, counts, or properties were found. Gold requires exactly one CAPEC (max_records not set but min_records=1) and exactly one ATT&CK record (max_records=1), matching the retrieved evidence (1 CAPEC + 1 Technique). All three required elements (T1133 correlation, CAPEC-555 id/mapping, T1133 name) are fully surfaced."
+}

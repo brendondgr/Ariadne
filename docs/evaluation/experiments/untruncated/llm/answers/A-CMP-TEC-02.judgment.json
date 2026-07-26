@@ -1,0 +1,14 @@
+{
+  "case_id": "A-CMP-TEC-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [
+    "Narrative closing sentence claims the technique set 'spans reconnaissance, credential access, lateral movement, and defense evasion activities' — no tactic/category field is present anywhere in the retrieved evidence (all Technique records have empty properties/facets), so this tactic categorization is an unsupported inductive add-on rather than a grounded citation, though it is broadly consistent with the named techniques."
+  ],
+  "rationale": "The single query (q1) returned all 24 Techniques USES-linked to Campaign C0024 in the graph, and the answer's narrative plus claims/citations enumerate exactly those 24 T-IDs with correct names (e.g. T1680=Local Storage Discovery, T1686=Disable or Modify System Firewall, T1018=Remote System Discovery) matching the logic_flow records verbatim. All 5 gold must_include_ids (T1005, T1018, T1047, T1057, T1069) are explicitly named in both narrative and claims.entity_ids, satisfying min_records=5 and full coverage (deterministic_scores.coverage=1.0). The full 24-item set also matches the gold's ex_gold.expected neighbor pool exactly (same 24 T-numbers), so nothing is missing and nothing extraneous/fabricated was added at the identifier level. The only soft issue is the narrative's closing tactic-category sentence, which is not backed by any tactic/property field in the evidence (all properties are empty {}) — a minor unsupported embellishment rather than a factual error, so it costs a small faithfulness deduction but does not change the verdict."
+}

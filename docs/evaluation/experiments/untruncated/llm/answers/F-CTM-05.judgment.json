@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-05",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 11,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to surface three ATT&CK techniques (T1134, T1528, T1539) and eight mitigations (M1017, M1018, M1021, M1026, M1032, M1047, M1051, M1054) mapped from CAPEC-21. The retrieved evidence only contains the CAPEC-21 AttackPattern record itself, whose facets show a MAPS_TO edge to 3 TaxonomyEntry nodes (count=3) but the 'related' array for that record is empty -- the query (a 'describe' template returning only elementMap + edge labels/counts) never expanded those TaxonomyEntry nodes to read their entry_id property, so no T-numbers were ever retrieved. The dependent q2 sub-question (attack source) then had no seed ids and was skipped entirely, per the trace 'producer q1: it returned no join values'. The narrative and claims accurately describe this retrieval gap ('MAPS_TO relationship pointing to three TaxonomyEntry nodes, but the specific ATT&CK technique identifiers ... are not listed') without inventing any technique id, mitigation id, or property not present in the evidence -- so there is no hallucination and the one CAPEC-21 fact stated (Status=Stable, Abstraction=Meta not even asserted, just id/name) is fully grounded. However, none of the 3 required techniques or 8 required mitigations are surfaced (gold_present=0/11), so per the grading rubric this is a correctness failure: the pipeline abstained on the entire substantive question rather than answering it, even though the evidence graph shows the 3 MAPS_TO neighbours exist and could in principle have been expanded."
+}

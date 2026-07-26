@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The gold requires min_records=5 and must_include_ids T1005, T1020, T1027, T1039, T1046. The retrieved evidence (logic_flow q1: MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN ['G1039']) returned exactly 13 Technique records, and the narrative/claims name all 13, including all 5 required ids with correct technique names matching the evidence (e.g. T1046=Network Service Discovery, T1005=Data from Local System, T1027=Obfuscated Files or Information, T1039=Data from Network Shared Drive, T1020=Automated Exfiltration). Notably the 13 returned ids also exactly match the full extended gold pool (ex_gold.expected: T1005, T1020, T1027, T1039, T1046, T1080, T1082, T1083, T1102, T1119, T1199, T1202, T1537) with no extra or missing ids, and deterministic_scores.coverage confirms 5/5 gold=found. Every id/name pair in the narrative traces to a record in logic_flow.results[0].records with matching name field, so there is no fabricated name, count, or alias. This is the deterministic composer arm (composer='deterministic') and the claims/narrative fully and accurately answer the question with no hallucinations."
+}

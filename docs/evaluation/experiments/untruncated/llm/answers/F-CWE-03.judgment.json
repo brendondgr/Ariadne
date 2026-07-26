@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-03",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 0.85,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 39,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "The gold requires 8 CAPEC patterns (CAPEC-60/94/509/555/561/644/645/652) exploiting CWE-294, 11 mapped ATT&CK techniques (T1021, T1021.002, T1114.002, T1133, T1134.001, T1550.002/.003/.004, T1557, T1558, T1558.003), and 19 mitigations (M1015 etc.). The pipeline's own logic_flow shows the q1 CAPEC query executed with row_count 0 (traces: execute -> row_count 0, assess -> empty_with_seeds [CWE-294]) even though the graph plainly contains these CAPEC->CWE-294 and CAPEC->ATT&CK mappings per gold -- this is a genuine retrieval failure (the Gremlin query filters AttackPattern.id within(ids) but the resolved seed_ids is just ['CWE-294'], i.e. the traversal from Weakness to AttackPattern via EXPLOITS_WEAKNESS never ran), so q2 (mitigations) was skipped as a dependent with no seeds. The answer's narrative/abstentions honestly state that no records were returned and correctly avoid inventing any CAPEC id, ATT&CK id, or mitigation id (faithfulness/groundedness of what little is claimed is fine, hence not zero), but zero of the 8 CAPEC ids, zero of the 11 ATT&CK ids/correlations, and zero of the 19 mitigations required by gold are surfaced. deterministic_scores in the artifact itself confirms recall=0.0/f1=0.0/n_got=0 for the correlation and mapping_recall checks. Per the grading rubric this is a case where the pipeline fails to answer a question the gold says the sources DO establish (min_records 1 and 11), so despite the abstention being non-hallucinatory, the answer is INCORRECT for completeness/correctness."
+}

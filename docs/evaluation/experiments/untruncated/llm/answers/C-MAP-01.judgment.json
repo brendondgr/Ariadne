@@ -1,0 +1,14 @@
+{
+  "case_id": "C-MAP-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [
+    "Narrative editorializes that 'T1021 and T1133 directly correspond to the remote access protocols leveraged in the attack pattern, while T1114.002 aligns with the credential harvesting phase' -- this phase/role framing is an interpretive gloss not stated anywhere in the retrieved evidence (the CAPEC description and technique descriptions do not describe a two-phase 'remote access then credential harvesting' structure)."
+  ],
+  "rationale": "Gold requires CAPEC-555 plus ATT&CK techniques T1021, T1114.002, T1133 (must_include_ids/must_include_related). The narrative names CAPEC-555 and all three technique IDs with correct names (Remote Services, Email Collection: Remote Email Collection, External Remote Services), matching logic_flow records exactly (q1 join_values = [T1021, T1114.002, T1133]; q2 resolved T1021 and T1133 as full Technique records). The 'Standard abstraction' claim is grounded in properties.Abstraction='Standard'. The correlation claims (T1021, T1133 corroborated across capec and attack sources) match the two correlation claim objects and the fact that only T1021/T1133 (not T1114.002) were resolved as separate ATT&CK-source records in q2 -- narrative correctly limits 'further corroborated' to those two. deterministic_scores.coverage confirms 4/4 gold ids found. The only weakness is a speculative interpretive sentence assigning 'phases' (remote-access vs credential-harvesting) to the techniques, which is not supported by the evidence text, so faithfulness is docked slightly; correctness/completeness/groundedness remain full since all required identifiers are surfaced accurately."
+}

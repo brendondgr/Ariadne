@@ -1,0 +1,12 @@
+{
+  "case_id": "A-TAC-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The retrieved evidence (logic_flow.results[0].records) contains exactly 11 Technique nodes linked to TA0001 via the Cypher query MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique). The narrative and claims list all 11: T1669, T1189, T1200, T1078, T1566, T1199, T1659, T1190, T1195, T1091, T1133. All five gold must_include_ids (T1078, T1091, T1133, T1189, T1190) are present, giving coverage 5/5. The extended ex_gold pool (T1195, T1199, T1200, T1566, T1659, T1669, plus the required five = 11 ids) is also fully matched one-to-one with the evidence, with no extras and no omissions. Every name the narrative attaches to an id (e.g. T1669='Wi-Fi Networks', T1566='Phishing', T1190='Exploit Public-Facing Application') matches the corresponding record's 'name' field exactly, so there is no invented alias, count, or property. Each claim carries a correct citation (source='attack', primary_id matching the evidence). No hallucinations found; this is a complete, faithful, fully grounded answer."
+}

@@ -1,0 +1,14 @@
+{
+  "case_id": "F-CTM-08",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 0.6,
+  "groundedness": 0.3,
+  "completeness": 0.0,
+  "gold_expected": 6,
+  "gold_present": 0,
+  "hallucinations": [
+    "Narrative claims 'None of the live graph sources cover this request' — this misrepresents the actual cause (run_meta/notes show both the capec and attack sub-questions were skipped due to total pipeline timeout being exceeded, not because the sources lack coverage of CAPEC-644 or T1550.002)."
+  ],
+  "rationale": "This is a positive case requiring the answer to state that CAPEC-644 maps to ATT&CK technique T1550.002 (must_correlate) and that T1550.002's mitigations include M1018, M1026, M1051, M1052. The pipeline retrieved zero records (logic_flow.results is empty, evidence_volume.records=0) because both sub-questions were skipped for exceeding the total pipeline timeout (run_meta.exit_code=1, status='partial', wall_s=120.733; notes confirm 'Skipped capec: total pipeline timeout exceeded' and 'Skipped attack: total pipeline timeout exceeded'). The deterministic_scores block self-reports mapping_recall.recall=0.0 with missing=['T1550.002'] and correlation.recall=0.0, confirming the pipeline's own scoring agrees no gold entity was surfaced. None of CAPEC-644, T1550.002, M1018, M1026, M1051, or M1052 appear anywhere in the answer. The narrative does not fabricate any graph facts (it correctly reports zero coverage), so it avoids inventing entity data, but its phrasing ('None of the live graph sources cover this request') is misleading — it implies an absence of data in the knowledge graph rather than the true cause, an internal timeout failure, which is itself a form of unsupported/incorrect characterization. Since this is not a negative test case (gold expects exactly 1 ATT&CK record and at least 1 CAPEC record with a defined mapping), a total abstention with 0/6 required entities surfaced is a clear pipeline failure, not a correct or acceptable answer."
+}

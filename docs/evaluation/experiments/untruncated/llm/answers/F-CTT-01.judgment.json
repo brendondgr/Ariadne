@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.2,
+  "gold_expected": 5,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to name the two mapped ATT&CK techniques (T1566, T1598) and the two tactics they belong to (TA0001 Initial Access, TA0043 Reconnaissance), plus surface CAPEC-98 itself (5 required entities total). The answer surfaces only CAPEC-98 (gold_present=1) and states no techniques, no tactics, and no correlation — exactly matching the pipeline's own deterministic_scores (mapping_recall.recall=0.0, correlation.f1=0.0, missing=[T1566, T1598]). The retrieved evidence for q1 shows a MAPS_TO facet with count=2 to TaxonomyEntry, confirming the two techniques exist in the graph, but the record's 'related' array is empty ([]) and join_values is empty, so the actual technique IDs were never surfaced by the query/template used (a facet-count-only 'describe' query, not an expand of the MAPS_TO neighbours). Because q1 produced no seed IDs, q2 (attack tactics) was correctly skipped per the trace ('producer q1: it returned no join values'), and no query was even executed for tactics. The narrative and claims are faithful and well-grounded to this (admittedly incomplete) evidence — it correctly refuses to fabricate technique IDs, tactic IDs, or a correlation, and accurately describes the empty state — so there is no hallucination. However, the question specifically asks which ATT&CK tactics the mapped techniques belong to, and the answer establishes zero of the required facts (no T1566/T1598, no TA0001/TA0043, no must_correlate values), so it fails the question outright despite being an honest abstention rather than a fabrication."
+}

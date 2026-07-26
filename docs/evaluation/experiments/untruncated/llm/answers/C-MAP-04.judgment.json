@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-70] and must_include_related=[T1078.001] (join scheme capec, expected T1078.001). The narrative and claims state CAPEC-70 maps to exactly one ATT&CK technique, T1078.001 named 'Default Accounts', via a TaxonomyEntry 'Valid Accounts:Default Accounts' bridging the two sources. This is fully grounded in logic_flow: q1 returns CAPEC-70 (Try Common or Default Usernames and Passwords) with related TaxonomyEntry capec:taxonomy:ATTACK:1078.001 entry_id 1078.001 name 'Valid Accounts:Default Accounts', and join_values=[T1078.001]; q2 returns the ATT&CK Technique/SubTechnique T1078.001 named 'Default Accounts'. Both gold-required ids (CAPEC-70 and T1078.001) are surfaced, the technique name matches evidence exactly, and no additional/fabricated techniques, aliases, or counts are asserted. The correlation claim (2 records share T1078.001) also matches the evidence structure. No hallucinations found."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty: true) for the nonexistent CAPEC-99999. The executed Gremlin query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...) returned row_count: 0 and records: []. The pipeline correctly abstained: narrative states 'The routed sources returned no matching records for this question' and offers guidance to supply a valid id, with zero claims and one properly-sourced abstention citing the actual executed query. No entity, count, or property was fabricated; the abstention proof is grounded directly in the empty logic_flow.results. This matches the gold exactly with no hallucination."
+}

@@ -1,0 +1,14 @@
+{
+  "case_id": "A-GRP-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 0.95,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [
+    "Narrative claim 'The evidence does not link any CAPEC attack patterns to this group' goes beyond the executed query (which only matched Group-USES->Technique and never queried for CAPEC nodes); it is an inference from empty 'related' fields rather than a directly retrieved fact, though not a fabricated ID."
+  ],
+  "rationale": "The single retrieval query (g:Group)-[:USES]->(t:Technique) for G0032 returned exactly 34 Technique records, and the claims list cites all 34 of them by primary_id. All 5 gold must_include_ids (T1005, T1008, T1010, T1012, T1016) are present in both the narrative examples and the full claims/citations list, satisfying min_records=5 and the coverage=1.0 reported in deterministic_scores. Cross-checking against gold.ex_gold.expected (the 34-item neighbor pool) shows the retrieved 34 technique IDs are an exact set match to the expected pool -- full completeness beyond just the required 5. Every technique id/name pair in the narrative (T1529 System Shutdown/Reboot, T1124 System Time Discovery, T1680 Local Storage Discovery, T1008 Fallback Channels, T1105 Ingress Tool Transfer, T1046 Network Service Discovery, T1189 Drive-by Compromise, T1485 Data Destruction, T1012 Query Registry, T1203 Exploitation for Client Execution) is directly traceable to a record in logic_flow.results[0].records. The one soft overreach is the CAPEC-absence claim, which is not directly queried but is consistent with every record's empty 'related' array, so it is a minor, defensible inference rather than a hallucinated entity."
+}

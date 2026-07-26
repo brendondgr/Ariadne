@@ -1,0 +1,12 @@
+{
+  "case_id": "C-ABS-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.3,
+  "faithfulness": 0.85,
+  "groundedness": 0.9,
+  "completeness": 0.55,
+  "gold_expected": 3,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to surface CAPEC-7 (seed), and its ancestors CAPEC-66 (standard pattern) and CAPEC-248 (meta pattern). The single retrieved record shows CAPEC-7 CHILD_OF CAPEC-66 (evidence: records[0].related[0].id='capec:attack-pattern:66', name='SQL Injection') but the executed Gremlin query only traversed one CHILD_OF hop (out('CHILD_OF') with no repeat/depth), so CAPEC-248 never appears anywhere in the evidence -- it is a genuine retrieval gap, not a narrative fabrication. The narrative correctly states CAPEC-7 is 'directly linked to CAPEC-66' (grounded, no hallucination), but then asserts 'the records do not identify any standard or meta ancestors for CAPEC-7 in the abstraction hierarchy' -- this is self-contradictory and misleading: it just named the very ancestor (CAPEC-66) the question asked for, without labeling it as the standard-pattern ancestor, and gives the analyst the false impression that zero hierarchy could be traced. The formal claims[] list is even thinner, only asserting 'Found 1 CAPEC record(s): CAPEC-7' with no entity_id for CAPEC-66 at all. Net: CAPEC-7 and CAPEC-66 are surfaced (gold_present=2/3), CAPEC-248 is entirely missing, and the one ancestor that was found is explicitly downplayed as not being a hierarchy result, so the answer fails the core 'walk the hierarchy up' ask despite having no invented facts."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DCA-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 10,
+  "gold_present": 10,
+  "hallucinations": [],
+  "rationale": "Gold requires DC0084 plus 9 related analytics (AN0316, AN0405, AN0444, AN0671, AN0675, AN0770, AN1000, AN1144, AN1444). The single retrieved record's `related` list contains exactly these 9 ids, and the narrative names all 9 verbatim plus correctly restates DC0084's name ('Active Directory Credential Request') from the evidence. The narrative's characterizations (forged Kerberos tickets -> AN0405, anomalous NTLM -> AN1144, certificate enrollment anomalies -> AN0671, rogue domain controller registration -> AN0770) are all directly grounded in the corresponding related[].description fields. No fabricated names, counts, or aliases. The artifact's own deterministic_scores.coverage (found=1/10) is a metric artifact that only inspected claims[].entity_ids rather than the narrative text, and does not reflect what the analyst-facing narrative actually states."
+}

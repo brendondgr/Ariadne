@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-04",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 46,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is not a negative case (gold requires 12 CAPEC ids - CAPEC-49/55/70/509/555/560/561/565/600/644/645/652 -, CWE-308, all 14 T-numbers in must_correlate, and 19 ATT&CK mitigations M1013 etc.), but the pipeline surfaced zero entities. The narrative states 'The routed sources returned no matching records for this question' and claims is an empty list. logic_flow shows the q1 CAPEC query executed cleanly (ok:true, row_count:0) but was malformed: it ran g.V().hasLabel('AttackPattern').has('id', within(ids)) with seed_ids resolved to ['CWE-308'] - i.e. it searched for AttackPattern nodes whose own id equals 'CWE-308' rather than traversing EXPLOITS_WEAKNESS edges from the Weakness node, guaranteeing zero hits. q2 (ATT&CK mitigations) was then skipped entirely because it depends on q1's join values. deterministic_scores confirms this internally: mapping_recall.recall=0.0 with all 14 T-numbers listed as missing, and correlation.recall=0.0/n_got=0. The answer contains no fabricated facts (faithfulness/groundedness are high because it truthfully reports the empty result and cites the real query/trace), but it fails the actual question completely: none of the 12 required CAPEC ids, the CWE-308 link, the 14 required ATT&CK techniques, or any of the 19 required mitigations are surfaced. gold_present=0 of gold_expected=46 (union of must_include_ids/must_include_related/must_correlate across capec+attack assertions)."
+}

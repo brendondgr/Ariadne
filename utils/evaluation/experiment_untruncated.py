@@ -377,7 +377,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--limit", type=int, default=None, help="first N questions (smoke)")
     parser.add_argument("--only", default=None, help="comma-separated case ids")
-    parser.add_argument("--llm-model", default="local", help="model id for ARM B")
+    parser.add_argument(
+        "--llm-model",
+        default="skynet",
+        help="model id for ARM B (the .env default; the relay also exposes 'local')",
+    )
     parser.add_argument("--llm-max-tokens", type=int, default=16384)
     args = parser.parse_args(argv)
 

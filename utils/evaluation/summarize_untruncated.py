@@ -107,7 +107,7 @@ def _sign(x: float, places: int = 4) -> str:
 
 
 def render(root: Path, arms: dict[str, dict[str, Any]], rows: dict[str, list[dict]],
-           notes: list[str]) -> str:
+           notes: list[str], verdict: str = "") -> str:
     det, llm = arms.get("deterministic", {}), arms.get("llm", {})
     out: list[str] = []
     a = out.append
@@ -194,6 +194,21 @@ def render(root: Path, arms: dict[str, dict[str, Any]], rows: dict[str, list[dic
         a("<sub>*Categories absent from the baseline's weakest table scored 1.00 there.</sub>")
         a("")
 
+    a("## Where the two arms disagree")
+    a("")
+    det_by = {r["id"]: r for r in rows.get("deterministic", [])}
+    llm_by = {r["id"]: r for r in rows.get("llm", [])}
+    shared = sorted(set(det_by) & set(llm_by))
+    fixed = [c for c in shared
+             if det_by[c]["verdict"] != "CORRECT" and llm_by[c]["verdict"] == "CORRECT"]
+    broke = [c for c in shared
+             if det_by[c]["verdict"] == "CORRECT" and llm_by[c]["verdict"] != "CORRECT"]
+    a(f"- **CORRECT only in Arm B** (the LLM path fixes it) — {len(fixed)}: "
+      + (", ".join(f"`{c}`" for c in fixed) or "none"))
+    a(f"- **CORRECT only in Arm A** (the LLM path breaks it) — {len(broke)}: "
+      + (", ".join(f"`{c}`" for c in broke) or "none"))
+    a("")
+
     a("## Every non-CORRECT case")
     a("")
     for label, key in (("Arm A — deterministic", "deterministic"), ("Arm B — LLM-planned", "llm")):
@@ -226,6 +241,10 @@ def render(root: Path, arms: dict[str, dict[str, Any]], rows: dict[str, list[dic
             a(f"- **{cid}**: {h}")
         a("")
 
+    if verdict:
+        a(verdict.rstrip())
+        a("")
+
     if notes:
         a("## Notes and caveats")
         a("")
@@ -243,6 +262,11 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", default="docs/evaluation/experiments/untruncated")
     parser.add_argument("--note", action="append", default=[])
+    parser.add_argument(
+        "--verdict",
+        default=None,
+        help="markdown fragment file inserted before the notes (the plain-English read)",
+    )
     args = parser.parse_args(argv)
 
     root = Path(args.root)
@@ -251,7 +275,10 @@ def main(argv: list[str] | None = None) -> int:
     (root / "summary.json").write_text(
         json.dumps({"arms": arms, "baseline": BASELINE}, indent=2), encoding="utf-8"
     )
-    (root / "summary.md").write_text(render(root, arms, rows, args.note), encoding="utf-8")
+    verdict = Path(args.verdict).read_text(encoding="utf-8") if args.verdict else ""
+    (root / "summary.md").write_text(
+        render(root, arms, rows, args.note, verdict), encoding="utf-8"
+    )
     for arm, s in arms.items():
         print(f"{arm}: n={s['n']} " + " ".join(f"{m}={s[m]:.4f}" for m in METRICS))
     print(f"wrote {root/'summary.md'}")

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-EXE-03",
+  "verdict": "INCORRECT",
+  "correctness": 0.15,
+  "faithfulness": 0.95,
+  "groundedness": 0.9,
+  "completeness": 0.14,
+  "gold_expected": 7,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question asks for the six execution steps of CAPEC-163 (gold must_include_related requires capec:attack-pattern:163:step:1 through :6, plus must_include_ids CAPEC-163). The retrieval query only requested elementMap()+edge-labels (a 'describe' template), so the ExecutionStep nodes themselves were never fetched: 'related' is empty and the executed query never traverses into HAS_EXECUTION_STEP target properties. The facets block does correctly show 'HAS_EXECUTION_STEP' out-count=6, which the narrative accurately cites ('six associated execution steps'). The narrative is honest about the gap ('does not list the specific identifiers or descriptions... related entities array is empty') rather than fabricating step text, so there is no hallucination and the claim that is made (CAPEC-163 exists, Spear Phishing, 6 steps) is fully grounded in the evidence. However, none of the 6 required step ids (capec:attack-pattern:163:step:1..6) are surfaced, so of the 7 gold-required entities only 1 (CAPEC-163 itself) is present -> coverage 1/7, matching the artifact's own deterministic_scores.coverage=0.143. Since the analyst's actual question (what the steps ARE) goes completely unanswered, this is a failure to answer despite being faithful, hence INCORRECT rather than PARTIAL."
+}

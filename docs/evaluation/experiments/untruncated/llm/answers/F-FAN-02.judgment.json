@@ -1,0 +1,16 @@
+{
+  "case_id": "F-FAN-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.05,
+  "faithfulness": 0.1,
+  "groundedness": 0.15,
+  "completeness": 0.09,
+  "gold_expected": 11,
+  "gold_present": 1,
+  "hallucinations": [
+    "Narrative claims 'CAPEC-13 and CAPEC-640 map to a total of 100 ATT&CK techniques' but the evidence never establishes this join: q1's Gremlin query returned CAPEC-13/CAPEC-640 elementMaps with empty 'related' arrays and no TaxonomyEntry/entry_id values (trace: seed_ids: [], join_key: null), so q2's query 'MATCH (n:Technique) RETURN n.attack_id AS id, n.name AS name LIMIT 100' is an unfiltered, unjoined scan of the first 100 Technique nodes in the ATT&CK graph -- not a CAPEC-derived set.",
+    "Names T1055 (Process Injection), T1047 (Windows Management Instrumentation), T1036 (Masquerading), and T1543 (Create or Modify System Process) as techniques CAPEC-13/CAPEC-640 'map to' -- none of these four appear in gold's must_correlate/must_include_ids set (T1505.005, T1574.006, T1574.007, T1574.013, T1620), and no relationship evidence in logic_flow ties them to CAPEC-13 or CAPEC-640.",
+    "Asserts a union size of 100 techniques when gold specifies the correct deduplicated union is exactly 5 techniques (min_records=5, max_records=5) -- an order-of-magnitude overclaim caused by the broken join being silently treated as if it were the answer."
+  ],
+  "rationale": "The pipeline's join between CAPEC and ATT&CK completely failed: q1 (CAPEC MAPS_TO lookup) returned zero join values, so q2 fell back to an arbitrary LIMIT-100 scan of unrelated Technique nodes, and q3 (mitigations) was skipped entirely as a dependency failure. deterministic_scores confirms this objectively: mapping_recall.recall=0.0 with all 5 required correlate ids (T1505.005, T1574.006, T1574.007, T1574.013, T1620) listed as 'missing', and correlation.f1=0.0. Despite this, the narrative asserts CAPEC-13/640 'map to a total of 100 ATT&CK techniques' and names four techniques (T1055, T1047, T1036, T1543) that are not in gold's correlate set and are not evidenced as CAPEC-linked at all -- the query that produced them had no WHERE/join clause connecting them to CAPEC. Only T1620 (one of gold's 5 required ids) happens to appear in the narrative's example list, purely because it fell within the arbitrary first-100 sample, not because the pipeline proved the CAPEC link. None of the required mitigations (M1022, M1024, M1028, M1038, M1040, M1047) are surfaced -- the answer states none apply, which is true only by accident of the broken join, not because the correct technique set's mitigations were queried and found absent. This is a foundational retrieval/correlation failure compounded by an ungrounded, overclaiming narrative, so it is graded INCORRECT."
+}

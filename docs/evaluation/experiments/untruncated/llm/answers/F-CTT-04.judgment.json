@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-04",
+  "verdict": "INCORRECT",
+  "correctness": 0.05,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 3,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to state that CAPEC-633 maps to T1134 (Access Token Manipulation) and that T1134 belongs to tactics TA0004 (Privilege Escalation) and TA0005 (Defense Evasion). The pipeline's q1 Gremlin query fetched CAPEC-633's elementMap and its outgoing/incoming edge labels, but never projected the target node's properties, so even though the facets show a MAPS_TO edge with count=1 (i.e. the T1134 link exists in the graph), no join_values or related entries were populated. q2 was then skipped entirely because it depends on q1's join output. The narrative and single claim ('Found 1 CAPEC record(s): CAPEC-633') are both fully grounded in what was retrieved (no invented facts, so faithfulness/groundedness are high), but the answer surfaces zero of the three required gold entities (T1134, TA0004, TA0005) and incorrectly concludes 'the provided data does not contain any information linking CAPEC-633 to specific ATT&CK tactics' when the underlying graph edge (MAPS_TO, count=1) was right there in the same record's facets and simply wasn't traversed. This is not a negative/abstention-appropriate case per gold (min_records=1 expected on both capec and attack sides), so the abstention is a genuine failure to answer rather than a correct 'no match' response."
+}

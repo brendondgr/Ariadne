@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 0.0,
+  "completeness": 0.0,
+  "gold_expected": 48,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is not a negative case (gold requires min_records 1 for capec and exactly 12 attack records, plus 10 CAPEC ids, 12 ATT&CK technique ids matching must_correlate, and 25 mitigation ids). The pipeline retrieved zero records for either sub-question ('Skipped capec: total pipeline timeout exceeded before this sub-question ran', 'Skipped attack: total pipeline timeout exceeded before this sub-question ran'; run_meta.status='partial', exit_code=1, wall_s=120.147) and logic_flow.results is empty (evidence_volume: results=0, records=0, related=0). The narrative is a generic capability-mismatch abstention ('None of the live graph sources cover this request... name it or give its id, e.g. T1566, M1017, or CAPEC-98') that does not even acknowledge CWE-522 was the actual subject, let alone surface any of the required CAPEC-474/509/551/555/560/561/600/644/645/652 patterns, the 12 must_correlate T-numbers (T1021, T1021.002, T1078, T1110.004, T1114.002, T1133, T1543, T1550.002, T1550.003, T1552.004, T1558, T1558.003), or the 25 required mitigations (M1013...M1060). deterministic_scores confirms this independently (correlation recall=0.0, mapping_recall=0/12, n_got=0). Faithfulness is scored 1.0 because the abstention makes no false claims and invents nothing, but correctness/groundedness/completeness are all 0 since the question goes entirely unanswered due to a pipeline timeout, not a genuine absence of data in the graph."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The retrieval returned exactly the 17 techniques listed in gold's ex_gold.expected pool (T1005, T1037, T1047, T1068, T1078, T1105, T1133, T1190, T1199, T1203, T1528, T1568, T1573, T1621, T1649, T1651, T1665), matching the evidence records one-to-one with correct technique names (e.g. T1068='Exploitation for Privilege Escalation', T1078='Valid Accounts', T1047='Windows Management Instrumentation', T1005='Data from Local System' all verified against logic_flow.results[0].records). All 5 must_include_ids (T1005, T1037, T1047, T1068, T1078) are surfaced in the structured claims/citations, and 4 of the 5 (all but T1037) are also named explicitly in the narrative prose, which is framed as illustrative ('including...', 'such as...', 'additional methods include...') rather than an exhaustive list, alongside the correct total count of 17. No technique id, name, or count in the narrative or claims is absent from or inconsistent with the retrieved evidence, and no fabricated group name/alias was introduced (the 'APT29' label was already given in the question). deterministic_scores.coverage confirms 5/5 gold ids found. This is a clean, fully grounded answer."
+}
