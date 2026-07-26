@@ -57,7 +57,20 @@ def _label_for(aid: str, resolved: ResolvedTask) -> str:
 
 
 # Max chars of a hydrated neighbour description (bounded — a record can carry many).
+# Read through the env at call time so an un-truncated retrieval profile can lift
+# it (``SPECIALIST_RELATED_DESC_CHARS``) without touching the default behaviour.
 _RELATED_DESC_CHARS = 400
+
+
+def _related_desc_chars() -> int:
+    from utils.config import env_int
+
+    return env_int("SPECIALIST_RELATED_DESC_CHARS", _RELATED_DESC_CHARS)
+
+
+def _bound_related_desc(desc: str) -> str:
+    cap = _related_desc_chars()
+    return desc[:cap] + ("…" if len(desc) > cap else "")
 
 
 def _description_from_props(props_json: Any) -> str:
@@ -109,9 +122,7 @@ class CypherNormalizer:
         for row in rows or []:
             desc = _description_from_props(row.get("pj"))
             if desc:
-                by_id[str(row.get("id"))] = (
-                    desc[:_RELATED_DESC_CHARS] + ("…" if len(desc) > _RELATED_DESC_CHARS else "")
-                )
+                by_id[str(row.get("id"))] = _bound_related_desc(desc)
         for rec in records:
             for rel in (rec.related or []):
                 if not rel.get("description") and str(rel.get("id")) in by_id:
@@ -613,9 +624,7 @@ class CypherNormalizer:
             # so an expand page reads as summaries, not full records.
             desc = _description_from_props(m.get("props"))
             if desc:
-                member["description"] = (
-                    desc[:_RELATED_DESC_CHARS] + ("…" if len(desc) > _RELATED_DESC_CHARS else "")
-                )
+                member["description"] = _bound_related_desc(desc)
             members.append(member)
         total = row.get("total")
         total = int(total) if isinstance(total, (int, float)) else len(members)

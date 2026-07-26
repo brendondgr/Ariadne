@@ -57,7 +57,20 @@ _SKIP_PROPERTIES = frozenset({"external_references"})
 # -- serialization ----------------------------------------------------------
 
 
-def _bound(text: Any, cap: int = _MAX_DESC_CHARS) -> str:
+def _cap(name: str, default: int) -> int:
+    """This artifact bound's live value: ``EVAL_ARTIFACT_<NAME>`` else the default.
+
+    Read at call time so an un-truncated run can persist the *whole* retrieved
+    neighbourhood for the judge — a judge that sees less than the pipeline saw
+    flags faithful claims as hallucinations.
+    """
+    from utils.config import env_int
+
+    return env_int(f"EVAL_ARTIFACT_{name}", default)
+
+
+def _bound(text: Any, cap: int | None = None) -> str:
+    cap = _cap("MAX_DESC_CHARS", _MAX_DESC_CHARS) if cap is None else cap
     s = "" if text is None else str(text)
     return s if len(s) <= cap else s[:cap] + f"… (+{len(s) - cap} chars)"
 
@@ -82,9 +95,10 @@ def _bounded_properties(properties: Any) -> dict[str, Any]:
         elif isinstance(value, bool) or isinstance(value, (int, float)) or value is None:
             out[key] = value
         elif isinstance(value, list):
-            out[key] = [str(v) for v in value[:10]]
-            if len(value) > 10:
-                out[key].append(f"…(+{len(value) - 10} more)")
+            items = _cap("MAX_PROP_LIST_ITEMS", 10)
+            out[key] = [str(v) for v in value[:items]]
+            if len(value) > items:
+                out[key].append(f"…(+{len(value) - items} more)")
     if dropped:
         out["_omitted_properties"] = sorted(dropped)
     return out
@@ -101,7 +115,7 @@ def _record_dict(r: EvidenceRecord) -> dict[str, Any]:
     """
     props = _bounded_properties(r.properties)
     related = []
-    for rel in r.related[:_MAX_RELATED_PER_RECORD]:
+    for rel in r.related[:_cap("MAX_RELATED", _MAX_RELATED_PER_RECORD)]:
         if not isinstance(rel, dict):
             related.append({"value": _bound(rel, 200)})
             continue
@@ -126,7 +140,7 @@ def _record_dict(r: EvidenceRecord) -> dict[str, Any]:
                 "neighbour_label": f.get("label"),
                 "count": f.get("count"),
             }
-            for f in (r.facets or [])[:_MAX_FACETS_PER_RECORD]
+            for f in (r.facets or [])[:_cap("MAX_FACETS", _MAX_FACETS_PER_RECORD)]
         ],
         "join_values": list(r.join_values),
         "related": related,
@@ -147,7 +161,10 @@ def _result_dict(res: SpecialistResult) -> dict[str, Any]:
             {"step": t.step, "ok": t.ok, "reasons": list(t.reasons), "detail": t.detail}
             for t in res.traces
         ],
-        "records": [_record_dict(r) for r in res.records[:_MAX_RECORDS_PER_RESULT]],
+        "records": [
+            _record_dict(r)
+            for r in res.records[:_cap("MAX_RECORDS", _MAX_RECORDS_PER_RESULT)]
+        ],
     }
 
 

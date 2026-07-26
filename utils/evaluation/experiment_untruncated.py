@@ -1,0 +1,396 @@
+#!/usr/bin/env python3
+"""Controlled two-arm experiment: what does *un-truncated* retrieval buy us?
+
+Both arms run the **same 120 golden questions, in the same order, against the
+same two graphs**. The only differences are the two independent variables:
+
+* **ARM A — deterministic** (``--arm deterministic``): the reproducible path.
+  Each entry's pre-authored ``task`` / ``sub_questions`` are replayed through
+  ``score_e2e.run_single`` / ``run_federated`` with the specialist LLM drafter
+  **off** and a bare ``SynthesisConfig()`` — deterministic drafters, deterministic
+  composer, no narrator. No LLM anywhere in the loop.
+* **ARM B — llm** (``--arm llm``): the agentic path. Each *raw question* is driven
+  through ``iter_pipeline(question, use_llm=True)``, so the LLM plans and routes
+  it, drafts the queries, and writes the narrative. Both LLM planning and LLM
+  synthesis are on.
+
+The **common** change to both arms is the un-truncation profile
+(:func:`untruncated_env`): every retrieval, synthesis-evidence and artifact bound
+is lifted so ``describe``/``expand`` return full neighbourhoods and the synthesis
+stage receives the whole evidence set rather than a sampled id line. The bounds
+are env-driven with the committed defaults intact, so a normal run is unaffected.
+
+Artifacts are the *same shape* the independent-eval panel already grades
+(``generate_e2e._artifact``), so the existing 120-agent Sonnet judge harness runs
+over either arm unchanged.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import sys
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
+from typing import Any
+
+DEFAULT_ROOT = "docs/evaluation/experiments/untruncated"
+ARMS = ("deterministic", "llm")
+
+# -- the un-truncation profile ----------------------------------------------
+# Every one of these keys is read *at call time* by the bound it names, with the
+# committed default preserved when the key is absent. Setting them all is what
+# "lift the caps" means operationally; the numbers are deliberately far above any
+# real fan-out in the catalogue (the largest is TrickBot's 55 techniques, the
+# widest scan ~300 rows) rather than infinite, so a runaway query still stops.
+UNTRUNCATED_ENV: dict[str, str] = {
+    # -- retrieval: how much the graphs are allowed to return -----------------
+    "SPECIALIST_MAX_RESULT_ROWS": "20000",      # hard ceiling (was 1000)
+    "SPECIALIST_EXPAND_PAGE_SIZE": "20000",     # expand paging cap (was 50)
+    "SPECIALIST_RELATED_DESC_CHARS": "20000",   # neighbour description (was 400)
+    "SPECIALIST_EXPAND_DESC_CHARS": "20000",    # expand-member description (was 400)
+    # -- synthesis: how much evidence the composer/narrator actually sees ------
+    "SYNTHESIS_MAX_RECORDS_PER_RESULT": "2000",   # was 50
+    "SYNTHESIS_MAX_RELATED_PER_RECORD": "2000",   # was 30
+    "SYNTHESIS_MAX_FACETS_PER_RECORD": "200",     # was 20
+    "SYNTHESIS_MAX_PROP_CHARS": "20000",          # was 600
+    "SYNTHESIS_MAX_RELATED_DESC_CHARS": "20000",  # was 400
+    "SYNTHESIS_MAX_PROP_LIST_ITEMS": "500",       # was 10
+    "SYNTHESIS_MAX_ENUMERATION_IDS": "2000",      # was 200
+    "SYNTHESIS_MAX_ENUMERATION_CLAIMS": "500",    # was 25
+    "SYNTHESIS_MAX_CITATIONS": "200",             # fact-claim id sample (was 8)
+    # -- the judge's artifact: it must see everything the pipeline saw ---------
+    "EVAL_ARTIFACT_MAX_RECORDS": "2000",        # was 50
+    "EVAL_ARTIFACT_MAX_RELATED": "2000",        # was 100
+    "EVAL_ARTIFACT_MAX_FACETS": "200",          # was 20
+    "EVAL_ARTIFACT_MAX_DESC_CHARS": "20000",    # was 600
+    "EVAL_ARTIFACT_MAX_PROP_LIST_ITEMS": "500",  # was 10
+}
+
+# The per-task row cap authored into every bank entry (``questions.py``
+# ATTACK_LIMITS / CAPEC_LIMITS). Overridden in memory so the committed banks —
+# and therefore the gold set and question order — stay byte-identical.
+TASK_MAX_RESULT_ROWS = 20000
+TASK_MAX_TRAVERSAL_DEPTH = 3  # unchanged: depth is the question's shape, not a cap
+
+
+def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[str, str]:
+    """The full env overlay for one arm (bounds + that arm's LLM posture)."""
+    env = dict(UNTRUNCATED_ENV)
+    if arm == "deterministic":
+        # Reproducible mode: no LLM in planning, drafting, or synthesis.
+        env.update({
+            "PLANNER_LLM_ENABLED": "false",
+            "SPECIALIST_LLM_ENABLED": "false",
+            "SYNTHESIS_LLM_ENABLED": "false",
+            "CONVERSATION_LLM_ENABLED": "false",
+        })
+    else:
+        # LLM planning + LLM synthesis. Every caller gets a generous budget: the
+        # local model is a reasoning model and truncates to empty on a small one.
+        env.update({
+            "PLANNER_LLM_ENABLED": "true",
+            "SPECIALIST_LLM_ENABLED": "true",
+            "SYNTHESIS_LLM_ENABLED": "true",
+            "PLANNER_LLM_MODEL": llm_model,
+            "SPECIALIST_LLM_MODEL": llm_model,
+            "SYNTHESIS_LLM_MODEL": llm_model,
+            "PLANNER_LLM_MAX_TOKENS": str(llm_max_tokens),
+            "SPECIALIST_LLM_MAX_TOKENS": str(llm_max_tokens),
+            "SYNTHESIS_LLM_MAX_TOKENS": str(llm_max_tokens),
+            # Cap *reasoning* to half the budget so visible output always has room.
+            "SYNTHESIS_LLM_THINKING_BUDGET": str(llm_max_tokens // 2),
+            # The iterative-retrieval loop is part of an honest LLM-planned arm
+            # (the repo default); the user's .env pins it to 1.
+            "ORCH_MAX_HOPS": "5",
+        })
+    return env
+
+
+def apply_env(overlay: dict[str, str]) -> None:
+    os.environ.update(overlay)
+
+
+def lift_task_limits(entry: dict) -> dict:
+    """Return ``entry`` with every authored row cap lifted (in memory only)."""
+    def _lift(limits: dict | None) -> dict:
+        out = dict(limits or {})
+        out["max_result_rows"] = TASK_MAX_RESULT_ROWS
+        out.setdefault("max_traversal_depth", TASK_MAX_TRAVERSAL_DEPTH)
+        return out
+
+    patched = dict(entry)
+    if isinstance(patched.get("task"), dict):
+        task = dict(patched["task"])
+        task["limits"] = _lift(task.get("limits"))
+        patched["task"] = task
+    if isinstance(patched.get("sub_questions"), list):
+        patched["sub_questions"] = [
+            {**sub, "limits": _lift(sub.get("limits"))} if isinstance(sub, dict) else sub
+            for sub in patched["sub_questions"]
+        ]
+    return patched
+
+
+# -- the work list (identical for both arms) --------------------------------
+
+
+def load_work() -> list[tuple[dict, str]]:
+    """The 120 catalogue entries in a fixed order: federated, then attack, capec."""
+    from utils.evaluation.score_e2e import _load_banks
+
+    federated, attack_q, capec_q = _load_banks()
+    work: list[tuple[dict, str]] = [(e, "federated") for e in federated]
+    work += [(e, "attack") for e in attack_q]
+    work += [(e, "capec") for e in capec_q]
+    return [(lift_task_limits(e), kind) for e, kind in work]
+
+
+# -- ARM A: deterministic ---------------------------------------------------
+
+
+class _RouterPool:
+    """Thread-local router sets — the Gremlin client is not shareable."""
+
+    def __init__(self, llm_enabled: bool) -> None:
+        self._local = threading.local()
+        self._llm = llm_enabled
+
+    def _build(self) -> dict[str, Any]:
+        import dataclasses
+
+        from utils.specialists.config import SpecialistConfig
+        from utils.specialists.federation import SpecialistRouter
+
+        config = dataclasses.replace(
+            SpecialistConfig.from_env(), llm_enabled=self._llm
+        )
+        full = SpecialistRouter(config)
+        return {
+            "full": full,
+            "routers": {
+                None: full,
+                "boundary": full,
+                "attack_down": SpecialistRouter(
+                    config, cards=full.cards, specialists={"attack": None}
+                ),
+                "capec_down": SpecialistRouter(
+                    config, cards=full.cards, specialists={"capec": None}
+                ),
+            },
+        }
+
+    def get(self) -> dict[str, Any]:
+        state = getattr(self._local, "state", None)
+        if state is None:
+            state = self._build()
+            self._local.state = state
+        return state
+
+
+def run_deterministic(entry: dict, kind: str, pool: _RouterPool) -> tuple[Any, Any, dict]:
+    """Replay the authored task/plan with no LLM anywhere. Returns (evidence, answer, extra)."""
+    from utils.evaluation.score_e2e import run_federated, run_single
+    from utils.synthesis.config import SynthesisConfig
+
+    synth = SynthesisConfig()  # deterministic composer; verifier always on
+    state = pool.get()
+    if kind == "federated":
+        router = state["routers"][entry.get("partial_mode")]
+        evidence, answer = run_federated(entry, router, synth)
+    else:
+        specialist = state["full"]._specialist_for(kind)
+        if specialist is None:
+            raise RuntimeError(f"no specialist for source {kind!r}")
+        evidence, answer = run_single(entry, specialist, synth)
+    return evidence, answer, {"planner": "gold-replay", "synthesis": "deterministic"}
+
+
+# -- ARM B: LLM-planned + LLM synthesis -------------------------------------
+
+
+def _plan_dict(plan: Any) -> list[dict[str, Any]]:
+    subs = getattr(plan, "sub_questions", None) or []
+    out = []
+    for sub in subs:
+        out.append({
+            "sub_question_id": getattr(sub, "id", None),
+            "source": getattr(sub, "source", None),
+            "text": getattr(sub, "text", None),
+            "seed_ids": list(getattr(sub, "seed_ids", ()) or ()),
+            "depends_on": getattr(sub, "depends_on", None),
+            "limits": (
+                sub.limits.to_dict()
+                if hasattr(getattr(sub, "limits", None), "to_dict") else None
+            ),
+        })
+    return out
+
+
+def run_llm(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
+    """Drive the raw question through the real LLM pipeline (plan + synthesis)."""
+    from utils.orchestration.main import PipelineRun, iter_pipeline
+
+    # A partial-degradation scenario must still run with its source absent, or the
+    # question the entry poses (what happens when CAPEC is down?) is not the one asked.
+    injected: dict[str, Any] | None = None
+    mode = entry.get("partial_mode")
+    if mode == "attack_down":
+        injected = {"attack": None}
+    elif mode == "capec_down":
+        injected = {"capec": None}
+
+    run = PipelineRun(question=entry["question"], mode="query")
+    plan = evidence = answer = None
+    for event, payload in iter_pipeline(
+        entry["question"], mode="query", use_llm=True, specialists=injected, run=run
+    ):
+        if event == "plan":
+            plan = payload.get("plan")
+        elif event == "evidence":
+            evidence = payload.get("evidence")
+        elif event == "answer":
+            plan = payload.get("plan") or plan
+            evidence = payload.get("evidence") or evidence
+            answer = payload.get("synthesized")
+    if answer is None or evidence is None:
+        raise RuntimeError(f"pipeline produced no answer (status={run.status!r})")
+    return evidence, answer, {
+        "planner": "llm",
+        "synthesis": "llm",
+        "observed_plan": _plan_dict(plan),
+        "exit_code": run.exit_code,
+        "status": run.status,
+    }
+
+
+# -- driver -----------------------------------------------------------------
+
+
+RUNNERS = {"deterministic": run_deterministic, "llm": run_llm}
+
+
+def _one(entry: dict, kind: str, arm: str, pool: Any) -> dict[str, Any]:
+    from utils.evaluation.generate_e2e import _artifact
+
+    started = time.time()
+    evidence, answer, extra = RUNNERS[arm](entry, kind, pool)
+    artifact = _artifact(entry, kind, evidence, answer)
+    artifact["arm"] = arm
+    artifact["run_meta"] = {**extra, "wall_s": round(time.time() - started, 3)}
+    # The evidence volume this arm actually pulled — the experiment's headline
+    # retrieval statistic, and the thing the caps used to bound.
+    artifact["evidence_volume"] = {
+        "results": len(evidence.results),
+        "records": sum(len(r.records) for r in evidence.results),
+        "related": sum(len(rec.related) for r in evidence.results for rec in r.records),
+    }
+    return artifact
+
+
+def run_arm(
+    arm: str,
+    *,
+    root: str = DEFAULT_ROOT,
+    workers: int = 4,
+    limit: int | None = None,
+    only: set[str] | None = None,
+) -> dict[str, Any]:
+    """Run all 120 questions for one arm and persist every answer + its evidence."""
+    from utils.evaluation.score_e2e import _category_of
+
+    work = load_work()
+    if only:
+        work = [(e, k) for e, k in work if e["id"] in only]
+    if limit is not None:
+        work = work[:limit]
+
+    out = Path(root) / arm / "answers"
+    out.mkdir(parents=True, exist_ok=True)
+    pool = _RouterPool(llm_enabled=False) if arm == "deterministic" else None
+
+    manifest: list[dict[str, Any]] = []
+    total = len(work)
+    started = time.time()
+    print(f"[{arm}] running {total} questions with {workers} workers…", file=sys.stderr)
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        futures = {ex.submit(_one, e, k, arm, pool): e["id"] for e, k in work}
+        done = 0
+        for fut in as_completed(futures):
+            cid = futures[fut]
+            done += 1
+            try:
+                artifact = fut.result()
+            except Exception as exc:  # noqa: BLE001 — one bad case must not sink the arm
+                print(f"  ! {cid}: {type(exc).__name__}: {exc}", file=sys.stderr)
+                manifest.append({"id": cid, "ok": False, "error": f"{type(exc).__name__}: {exc}"})
+                continue
+            (out / f"{cid}.json").write_text(
+                json.dumps(artifact, indent=2, ensure_ascii=False), encoding="utf-8"
+            )
+            manifest.append({
+                "id": cid, "ok": True, "kind": artifact["kind"],
+                "tier": artifact["tier"], "category": artifact["category"],
+                "records": artifact["evidence_volume"]["records"],
+                "related": artifact["evidence_volume"]["related"],
+                "wall_s": artifact["run_meta"]["wall_s"],
+            })
+            if done % 10 == 0 or done == total:
+                print(f"  [{arm}] … {done}/{total}", file=sys.stderr)
+
+    manifest.sort(key=lambda m: m["id"])
+    doc = {
+        "arm": arm,
+        "count": len(manifest),
+        "ok": sum(1 for m in manifest if m.get("ok")),
+        "workers": workers,
+        "wall_s": round(time.time() - started, 1),
+        "profile": {k: os.environ.get(k) for k in sorted(UNTRUNCATED_ENV)},
+        "task_max_result_rows": TASK_MAX_RESULT_ROWS,
+        "llm": {
+            "planner": os.environ.get("PLANNER_LLM_ENABLED"),
+            "specialist": os.environ.get("SPECIALIST_LLM_ENABLED"),
+            "synthesis": os.environ.get("SYNTHESIS_LLM_ENABLED"),
+            "model": os.environ.get("SYNTHESIS_LLM_MODEL"),
+            "max_hops": os.environ.get("ORCH_MAX_HOPS"),
+        },
+        "categories": sorted({_category_of(m["id"]) for m in manifest}),
+        "cases": manifest,
+    }
+    (Path(root) / arm / "manifest.json").write_text(
+        json.dumps(doc, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
+    print(
+        f"[{arm}] wrote {doc['ok']}/{doc['count']} artifacts to {out}/ in {doc['wall_s']}s",
+        file=sys.stderr,
+    )
+    return doc
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--arm", choices=ARMS, required=True)
+    parser.add_argument("--root", default=DEFAULT_ROOT)
+    parser.add_argument("--workers", type=int, default=4)
+    parser.add_argument("--limit", type=int, default=None, help="first N questions (smoke)")
+    parser.add_argument("--only", default=None, help="comma-separated case ids")
+    parser.add_argument("--llm-model", default="local", help="model id for ARM B")
+    parser.add_argument("--llm-max-tokens", type=int, default=16384)
+    args = parser.parse_args(argv)
+
+    from utils.config import load_env
+
+    load_env()
+    apply_env(untruncated_env(
+        arm=args.arm, llm_model=args.llm_model, llm_max_tokens=args.llm_max_tokens
+    ))
+    only = {s.strip() for s in args.only.split(",")} if args.only else None
+    run_arm(args.arm, root=args.root, workers=args.workers, limit=args.limit, only=only)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

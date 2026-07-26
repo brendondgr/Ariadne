@@ -71,6 +71,8 @@ sentences; if the evidence does not answer the question, say so plainly>",
 
 # Bound the evidence context: per-record related entries and total records per
 # result are capped so the prompt stays within the model's context window.
+# Each bound is read through the env at call time, so an un-truncated profile can
+# hand the composer the *whole* neighbourhood (the caps below stay the default).
 _MAX_RECORDS_PER_RESULT = 50
 _MAX_RELATED_PER_RECORD = 30
 _MAX_FACETS_PER_RECORD = 20
@@ -79,6 +81,13 @@ _MAX_PROP_CHARS = 600
 # there can be many neighbours, but a neighbour's description is often its only
 # content (a CAPEC mitigation/consequence node carries no name), so it must survive.
 _MAX_RELATED_DESC_CHARS = 400
+
+
+def _bound(name: str, default: int) -> int:
+    """This bound's live value: ``SYNTHESIS_<NAME>`` when set, else the default."""
+    from utils.config import env_int
+
+    return env_int(f"SYNTHESIS_{name}", default)
 
 
 def _related_entry(rel: dict) -> dict:
@@ -92,9 +101,8 @@ def _related_entry(rel: dict) -> dict:
     }
     desc = rel.get("description")
     if isinstance(desc, str) and desc.strip():
-        out["description"] = desc[:_MAX_RELATED_DESC_CHARS] + (
-            "…" if len(desc) > _MAX_RELATED_DESC_CHARS else ""
-        )
+        cap = _bound("MAX_RELATED_DESC_CHARS", _MAX_RELATED_DESC_CHARS)
+        out["description"] = desc[:cap] + ("…" if len(desc) > cap else "")
     return out
 # Bulky citation arrays carry no evidentiary value for the composer — dropped
 # with an explicit marker rather than silently, so a long value is never mistaken
@@ -107,18 +115,20 @@ def _bounded_properties(properties) -> dict:
     long strings are marked-truncated, bulky arrays are dropped with a marker)."""
     out: dict = {}
     dropped: list[str] = []
+    prop_chars = _bound("MAX_PROP_CHARS", _MAX_PROP_CHARS)
+    list_items = _bound("MAX_PROP_LIST_ITEMS", 10)
     for key, value in (properties or {}).items():
         if key in _SKIP_PROPERTIES:
             dropped.append(key)
             continue
         if isinstance(value, str):
-            out[key] = value[:_MAX_PROP_CHARS] + ("…" if len(value) > _MAX_PROP_CHARS else "")
+            out[key] = value[:prop_chars] + ("…" if len(value) > prop_chars else "")
         elif isinstance(value, bool) or isinstance(value, (int, float)) or value is None:
             out[key] = value
         elif isinstance(value, list):
-            out[key] = [str(v) for v in value[:10]]
-            if len(value) > 10:
-                out[key].append(f"…(+{len(value) - 10} more)")
+            out[key] = [str(v) for v in value[:list_items]]
+            if len(value) > list_items:
+                out[key].append(f"…(+{len(value) - list_items} more)")
     if dropped:
         out["_omitted_properties"] = sorted(dropped)
     return out
@@ -143,13 +153,13 @@ def _record_line(record) -> str:
                 "neighbour_label": f.get("label"),
                 "count": f.get("count"),
             }
-            for f in (record.facets or [])[:_MAX_FACETS_PER_RECORD]
+            for f in (record.facets or [])[:_bound("MAX_FACETS_PER_RECORD", _MAX_FACETS_PER_RECORD)]
         ],
         # Related neighbours keep their edge semantics (type/direction) AND a
         # bounded description — the neighbour's text is often its only content.
         "related": [
             _related_entry(rel)
-            for rel in record.related[:_MAX_RELATED_PER_RECORD]
+            for rel in record.related[:_bound("MAX_RELATED_PER_RECORD", _MAX_RELATED_PER_RECORD)]
         ],
     }
     return json.dumps(entry, ensure_ascii=False)
@@ -166,7 +176,7 @@ def build_evidence_context(evidence: FederatedEvidence) -> str:
     for result in evidence.results:
         task = result.task
         if result.records:
-            shown = result.records[:_MAX_RECORDS_PER_RESULT]
+            shown = result.records[:_bound("MAX_RECORDS_PER_RESULT", _MAX_RECORDS_PER_RESULT)]
             lines = "\n".join(f"    {_record_line(r)}" for r in shown)
             more = (
                 f"\n    ... {len(result.records) - len(shown)} more record(s) omitted"

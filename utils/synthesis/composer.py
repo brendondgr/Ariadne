@@ -37,6 +37,17 @@ from .contracts import Abstention, Citation, Claim, SynthesizedAnswer
 _MAX_ENUMERATION_IDS = 200
 _MAX_ENUMERATION_CLAIMS_PER_RESULT = 25
 
+
+def _enum_bound(name: str, default: int) -> int:
+    """This bound's live value: ``SYNTHESIS_<NAME>`` when set, else the default.
+
+    Read at call time so an un-truncated profile can enumerate a whole related
+    set without the module's committed defaults changing.
+    """
+    from utils.config import env_int
+
+    return env_int(f"SYNTHESIS_{name}", default)
+
 # Example ids offered when asking the analyst to disambiguate by identifier.
 _ID_EXAMPLES = "e.g. T1566, M1017, or CAPEC-98"
 
@@ -245,7 +256,7 @@ def _enumeration_claim(result: SpecialistResult, record: EvidenceRecord) -> Clai
         # exist — the distinction the hierarchy questions demand.
         role = rel.get("role")
         parts.append(f"{rid} ({role})" if role else rid)
-        if len(ids) >= _MAX_ENUMERATION_IDS:
+        if len(ids) >= _enum_bound("MAX_ENUMERATION_IDS", _MAX_ENUMERATION_IDS):
             break
     noun = _related_noun(record)
     anchor = record.name and f"{record.primary_id} ({record.name})" or record.primary_id
@@ -273,7 +284,9 @@ def _primary_enumeration_claim(result: SpecialistResult) -> Claim:
     the fact claim cites only the first ``cap``. This lists them all, each cited
     to its own record so every id is grounded."""
     records = [r for r in result.records if r.primary_id]
-    ids: list[str] = list(dict.fromkeys(r.primary_id for r in records))[:_MAX_ENUMERATION_IDS]
+    ids: list[str] = list(dict.fromkeys(r.primary_id for r in records))[
+        : _enum_bound("MAX_ENUMERATION_IDS", _MAX_ENUMERATION_IDS)
+    ]
     idset = set(ids)
     citations: list[Citation] = []
     seen: set[str] = set()
@@ -317,7 +330,9 @@ def _enumeration_claims(result: SpecialistResult, cap: int) -> list[Claim]:
         ids = _related_ids(record)
         if ids and (enumerative or len(ids) > cap):
             claims.append(_enumeration_claim(result, record))
-        if len(claims) >= _MAX_ENUMERATION_CLAIMS_PER_RESULT:
+        if len(claims) >= _enum_bound(
+            "MAX_ENUMERATION_CLAIMS", _MAX_ENUMERATION_CLAIMS_PER_RESULT
+        ):
             return claims
     # Shape B: many primary records the fact claim would truncate. Skipped when A
     # already enumerated (the related sets are the answer, not the anchors).

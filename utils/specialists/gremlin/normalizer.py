@@ -89,12 +89,17 @@ def _safe_str(v: Any) -> str:
 
 
 # A bounded expand-member description keeps a large fan-out a page of summaries
-# rather than full records (the primitive's scale guarantee).
+# rather than full records (the primitive's scale guarantee). Read through the
+# env at call time so an un-truncated retrieval profile can lift it
+# (``SPECIALIST_EXPAND_DESC_CHARS``) without touching the default behaviour.
 _EXPAND_DESC_CHARS = 400
 
 
 def _bound_expand_desc(desc: str) -> str:
-    return desc[:_EXPAND_DESC_CHARS] + ("…" if len(desc) > _EXPAND_DESC_CHARS else "")
+    from utils.config import env_int
+
+    cap = env_int("SPECIALIST_EXPAND_DESC_CHARS", _EXPAND_DESC_CHARS)
+    return desc[:cap] + ("…" if len(desc) > cap else "")
 
 
 _CAPEC_AP_FULL_RE = re.compile(r"^capec:attack-pattern:(\d+)$")
