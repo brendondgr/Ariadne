@@ -1,0 +1,12 @@
+{
+  "case_id": "A-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty: true, ex_gold.expected: []) for the nonexistent group G9999. The logic_flow shows the correct query executed with seed_ids=['G9999'] against (g:Group)-[:USES]->(t:Technique), returning row_count 0 with no errors (a clean miss, not a query failure). The answer emits zero claims and an explicit abstention stating the attack source query 'ran cleanly and returned no matching records', matching the actual trace. The narrative correctly reports no results and invites the analyst to supply a valid id, without fabricating any group, technique, or count. No entities were invented and nothing in gold was omitted since gold requires nothing to be surfaced."
+}

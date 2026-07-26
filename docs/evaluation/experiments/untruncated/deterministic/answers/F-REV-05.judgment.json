@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires: CAPEC-555 (must_include_ids, capec), T1133 as the correlated/related id in both capec and attack results, and T1133's name 'External Remote Services' (expect_names). The answer's claims surface CAPEC-555 ('Remote Services with Stolen Credentials') with its ATT&CK mapping T1133, the ATT&CK record T1133 named exactly 'External Remote Services' (matches expect_names verbatim), and an explicit correlation claim stating T1133 is corroborated across both capec and attack sources (matches must_correlate=[T1133]). Every fact traces directly to logic_flow evidence: CAPEC-555 record's related field lists capec:taxonomy:ATTACK:1133 -> 'External Remote Services', and the attack record for T1133 has name 'External Remote Services' with attack_id T1133. No invented names, counts, or aliases; the '2 record(s) share it' correlation count matches the two source records present. deterministic_scores confirm exact correlation (f1=1.0) and mapping_recall=1.0, consistent with independent verification."
+}

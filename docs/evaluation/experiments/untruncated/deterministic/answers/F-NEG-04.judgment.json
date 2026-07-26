@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an honest empty: expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true, must_correlate=[]. Evidence confirms the capec_maps_to Gremlin query for CAPEC-7 -> MAPS_TO -> TaxonomyEntry(ATTACK) returned row_count 0 (logic_flow.results[0], traces.execute/assess), and the dependent attack sub-question q2 was correctly skipped because q1 produced no join values (traces.dependency, reasons: 'producer q1: it returned no join values'). The answer's claims list is empty and both abstentions state exactly this (capec query ran cleanly with no matches; attack query skipped due to q1 producing no seeds), with the actual executed Gremlin query text included as provenance. No technique, mitigation, or CWE id is fabricated anywhere in the narrative or claims. deterministic_scores.correlation shows negative=true, exact=true, precision/recall/f1=1.0, matching the gold requirement of zero correlations. This is exactly the desired behavior for an adversarial negative case."
+}

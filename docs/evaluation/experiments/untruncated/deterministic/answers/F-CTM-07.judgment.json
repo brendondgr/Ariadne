@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-07",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-600 mapping to T1110.004 (must_correlate + capec.must_include_related), and ATT&CK technique T1110.004 with mitigations M1018, M1027, M1032, M1036 (attack.must_include_related). The answer's claims surface all six required identifiers: CAPEC-600 -> T1110.004 (capec:taxonomy:ATTACK:1110.004, name 'Brute Force:Credential Stuffing', matching the evidence record's related TaxonomyEntry exactly), and T1110.004's 4 mitigations M1036 (Account Use Policies), M1032 (Multi-factor Authentication), M1018 (User Account Management), M1027 (Password Policies), all with names matching logic_flow.results[1].records[0].related verbatim. The cross-source correlation claim (T1110.004 corroborated across capec and attack) matches gold's must_correlate list exactly, with the deterministic_scores block confirming exact correlation (precision/recall/f1 = 1.0) and mapping_recall 1.0 with no missing ids. Record counts cited (1 CAPEC record, 1 TaxonomyEntry, 4 related mitigations) match the evidence row counts precisely. No invented names, aliases, counts, or ids were found; every claim traces directly to logic_flow records/related arrays."
+}

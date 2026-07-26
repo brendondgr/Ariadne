@@ -1,0 +1,12 @@
+{
+  "case_id": "C-LKP-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.2,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.33,
+  "gold_expected": 3,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question explicitly asks to look up CAPEC-116's abstraction and status. The evidence (logic_flow.results[0].records[0].properties) correctly contains Abstraction='Meta' and Status='Stable', so the retrieval itself succeeded and coverage.coverage=1.0 for the id. However, the answer under test (narrative='Found 1 CAPEC record(s): CAPEC-116.', identical to the single claim text) never states either property value -- it only confirms the id was found. Per gold.assertions, must_include_ids=[CAPEC-116] is satisfied (id named), but expect_properties.CAPEC-116={Abstraction: Meta, Status: Stable} are both absent from the visible narrative/claims text (gold_expected=3: id + 2 properties, gold_present=1: id only). Since the deterministic composer produces only a generic 'found N records' sentence with no property synthesis, an analyst reading this answer learns nothing about abstraction or status -- the actual substance of the question -- despite the correct data being present in the retrieved evidence. Nothing stated is false (faithfulness/groundedness are clean, no hallucinations), but the answer fails to answer the question asked, so it is graded INCORRECT rather than merely PARTIAL."
+}

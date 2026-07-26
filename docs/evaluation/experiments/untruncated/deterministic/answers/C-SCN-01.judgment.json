@@ -1,0 +1,12 @@
+{
+ "case_id": "C-SCN-01",
+ "verdict": "INCORRECT",
+ "correctness": 0.15,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "hallucinations": [],
+ "rationale": "Gold's sole assertion for this bounded-scan question is a record-count window of 250-300. The pipeline's query (g.V().hasLabel(\"AttackPattern\").elementMap().limit(20000)) applied no meaningful bound and returned all 558 AttackPattern nodes present in the graph -- roughly 1.9x the permitted maximum of 300. All 558 CAPEC ids in the narrative/claims (e.g. CAPEC-1, CAPEC-10, CAPEC-100 ...) are unique and verified present in logic_flow.results[0].records, so there is no fabrication (faithfulness/groundedness are clean), but the answer fails the question's core requirement to be 'bounded': it neither respects the 250-300 window nor applies any filter (checked Abstraction and Status distributions -- Detailed=316/Standard=181/Meta=61, Draft=402/Stable=154/Usable=2 -- none of which naturally yields 250-300 either) that would explain the discrepancy. Since the single gold assertion (record-count bound) is violated, gold_expected=1/gold_present=0 and the verdict is INCORRECT."
+}

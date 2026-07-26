@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-TEC-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The retrieval query (MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN ['C0024']) returned all 24 records, and the answer's enumeration claim lists all 24 technique ids (T1680, T1686, T1665, T1105, T1018, T1213, T1047, T1133, T1539, T1069, T1005, T1140, T1190, T1555, T1550, T1087, T1482, T1070, T1083, T1568, T1057, T1199, T1078, T1685) with exact one-to-one correspondence to gold's ex_gold.expected pool of 24 ids -- no additions, no omissions. All 5 must_include_ids (T1005, T1018, T1047, T1057, T1069) are present. Every id cited in the answer's claims traces to a record in logic_flow.results[0].records with matching primary_id and name (e.g. T1680='Local Storage Discovery', T1078='Valid Accounts'), so no fabricated names, counts, or aliases exist. The narrative itself is terse (only names 3 examples plus 'and more') but the structured enumeration claim -- which is what the analyst is shown per deterministic-arm grading rules -- fully surfaces the complete, correctly-grounded set."
+}

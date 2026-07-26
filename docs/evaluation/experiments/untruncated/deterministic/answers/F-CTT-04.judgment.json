@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-633 to map to T1134 (must_correlate/must_include_related), and T1134 to belong to tactics TA0004 and TA0005 (must_include_related), with the cross-source join on T1134 (must_correlate). The claims state CAPEC-633 (Token Impersonation) maps to T1134, that T1134 (Access Token Manipulation) has related tactics TA0005 and TA0004, and that T1134 is corroborated across both capec and attack sources -- covering all four required ids (CAPEC-633, T1134, TA0004, TA0005). Every name and id used (Token Impersonation, Access Token Manipulation, Stealth for TA0005, Privilege Escalation for TA0004) is taken verbatim from the logic_flow records/related fields, so nothing is fabricated. deterministic_scores in the artifact independently confirm exact correlation (precision/recall/f1 = 1.0) and full mapping_recall (1/1). No hallucinations found; answer fully and correctly satisfies the gold assertions."
+}

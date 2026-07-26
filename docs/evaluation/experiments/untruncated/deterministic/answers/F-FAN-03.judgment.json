@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 17,
+  "gold_present": 17,
+  "hallucinations": [],
+  "rationale": "The answer surfaces both required CAPEC ids (CAPEC-37, CAPEC-639) with their correct names ('Retrieve Embedded Sensitive Data', 'Probe System Files') exactly as in evidence, and enumerates all 6 must_correlate ATT&CK ids (T1005, T1039, T1552.001, T1552.003, T1552.004, T1552.006) as the overlap/union via the TaxonomyEntry enumeration claims and the correlation claims (correctly noting T1552.004 is shared by both CAPEC-37 and CAPEC-639, i.e. the overlap). All 6 ATT&CK technique records are reported (attack.min/max_records=6 satisfied) and every one of the 9 required mitigations (M1015, M1017, M1022, M1027, M1028, M1041, M1047, M1051, M1057) is named against the correct owning technique, matching the 'related' lists in logic_flow verbatim (e.g. T1552.004->M1041/M1047/M1022/M1027, T1552.001->M1047/M1022/M1027/M1017, T1552.006->M1051/M1015/M1047, T1005->M1057, T1552.003->M1028), with T1039 correctly showing no mitigations since its evidence 'related' array is empty. Every id, name, and count cited (TaxonomyEntry counts of 5 and 2, mitigation counts of 1/4/1/4/3) is traceable to logic_flow records with no invented facts. The only minor stylistic gap is that mitigations are listed per-technique rather than as one pre-deduplicated combined list (e.g. M1047 appears three times in prose), but since deterministic_scores already confirm correlation f1=1.0, mapping_recall=1.0 and full provenance, this is a presentation nuance rather than a completeness or faithfulness defect."
+}

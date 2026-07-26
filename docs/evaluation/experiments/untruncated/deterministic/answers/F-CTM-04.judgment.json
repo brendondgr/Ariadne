@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 14,
+  "gold_present": 14,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-639 plus all 5 mapped T-ids (T1039, T1552.001, T1552.003, T1552.004, T1552.006) as must_correlate/must_include_related, and 8 distinct mitigations (M1015, M1017, M1022, M1027, M1028, M1041, M1047, M1051) as attack.must_include_related. The claims/narrative name CAPEC-639 (Probe System Files) and all 5 T-ids in the first claim and TaxonomyEntry enumeration, matching logic_flow record CAPEC-639's join_values exactly. The attack q2 records return exactly 5 technique rows (matching min=5/max=5), and the answer's per-technique mitigation enumerations exactly reproduce the evidence: T1552.004->M1041,M1047,M1022,M1027; T1552.003->M1028; T1552.001->M1047,M1022,M1027,M1017; T1552.006->M1051,M1015,M1047; T1039->none (its related list is empty in evidence, so omitting it is correct, not an omission). Union of stated mitigations covers all 8 required M-ids. The 5 correlation claims correctly identify T1039/T1552.001/.003/.004/.006 as shared across capec and attack, matching deterministic_scores.correlation (precision/recall/f1=1.0) already computed on this artifact. No technique/mitigation name, count, or id in the answer is absent from logic_flow.results records/related; every entity_id and name traces directly to the retrieved records. No fabricated aliases, counts, or properties were found."
+}

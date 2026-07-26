@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-555 (must_include_ids), its mapping to T1021 (must_include_related), and the ATT&CK record T1021 named 'Remote Services' (expect_names), plus the cross-source correlation on T1021 (must_correlate). The claims/narrative state all three: 'Found 1 CAPEC record(s) for CAPEC-555; ATT&CK mappings: T1021', the TaxonomyEntry capec:taxonomy:ATTACK:1021 linking to T1021, 'Found ATT&CK record T1021: Remote Services' (exact name match to evidence record.name='Remote Services'), and 'T1021 is corroborated across attack and capec'. Every named id (CAPEC-555, T1021, capec:taxonomy:ATTACK:1021) and name ('Remote Services with Stolen Credentials', 'Remote Services') is present verbatim in logic_flow.results records/related. deterministic_scores confirm correlation f1=1.0 and mapping_recall=1.0. No fabricated properties, counts, or aliases detected."
+}

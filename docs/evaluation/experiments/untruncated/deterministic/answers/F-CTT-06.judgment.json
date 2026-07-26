@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The claims correctly identify CAPEC-37 (Retrieve Embedded Sensitive Data), its ATT&CK mappings T1005 and T1552.004 (both required by gold's must_correlate and capec.must_include_related), and correctly state T1005 (Data from Local System) belongs to tactic TA0009 (Collection) and T1552.004 (Private Keys) belongs to TA0006 (Credential Access) - exactly matching gold's attack.must_include_related [TA0006, TA0009]. The cross-source correlation claims correctly note both T1005 and T1552.004 are corroborated across capec and attack, matching gold's must_correlate list exactly. Every fact traces directly to logic_flow evidence: CAPEC-37's related array lists taxonomy entries for 1005 and 1552.004; the attack query results show T1005->TA0009/Collection and T1552.004->TA0006/Credential Access verbatim. Record counts (1 CAPEC record, 2 ATT&CK records) match gold's min/max_records bounds. No invented names, aliases, counts, or ids were found - all 5 required gold ids (CAPEC-37, T1005, T1552.004, TA0006, TA0009) are surfaced accurately."
+}

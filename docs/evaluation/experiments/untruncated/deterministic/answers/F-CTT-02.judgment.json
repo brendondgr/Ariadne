@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-49 to be surfaced with its mapped technique T1110.001 (capec.must_include_ids/must_include_related), and T1110.001 to be surfaced with tactic TA0006 (attack.must_include_ids/must_include_related), plus the cross-source correlation on T1110.001 (must_correlate). The deterministic claims state exactly this: 'Found 1 CAPEC record(s) for CAPEC-49; ATT&CK mappings: T1110.001', 'CAPEC-49 (Password Brute Forcing) has 1 TaxonomyEntrys: capec:taxonomy:ATTACK:1110.001', 'T1110.001 (Password Guessing) has 1 related item(s): TA0006', and 'The identifier T1110.001 is corroborated across attack and capec'. All four gold-required ids/joins (CAPEC-49, T1110.001 as CAPEC-side mapping, T1110.001 as ATT&CK record, TA0006 tactic) are present and match the logic_flow evidence verbatim (record CAPEC-49 -> related capec:taxonomy:ATTACK:1110.001; record T1110.001 -> related TA0006/Credential Access). No names, counts, or ids in the claims are absent from or contradicted by the evidence, and no fabricated aliases appear. The deterministic_scores block (correlation f1=1.0, mapping_recall=1.0, provenance fully_provenanced=true) corroborates the same finding independently."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-ABS-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-7 as the seed and CAPEC-66/CAPEC-248 as must_include_related (a 2-hop CHILD_OF chain: CAPEC-7 -> CAPEC-66 (parent) -> CAPEC-248 (grandparent)). The single retrieved record's 'related' array shows exactly CAPEC-66 with role='standard'/abstraction='Standard' and CAPEC-248 with role='meta'/abstraction='Meta', matching the Gremlin query's ap->parent->grandparent traversal. The claims/narrative state 'CAPEC-7 (Blind SQL Injection) has 2 AttackPatterns: CAPEC-66 (standard), CAPEC-248 (meta)' -- names, ids, and role labels all match the evidence verbatim, no invented facts, counts, or aliases. All 3 gold ids (CAPEC-7, CAPEC-66, CAPEC-248) are surfaced. Minor stylistic note: phrasing 'has 2 AttackPatterns' doesn't spell out that CAPEC-248 is the grandparent (via CAPEC-66) rather than a direct child of CAPEC-7, but the correct standard/meta role labels (matching the recently-fixed C-ABS hierarchy role labeling) make the abstraction-level answer accurate and complete."
+}

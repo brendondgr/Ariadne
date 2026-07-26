@@ -1,0 +1,12 @@
+{
+  "case_id": "C-LKP-05",
+  "verdict": "INCORRECT",
+  "correctness": 0.3,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.33,
+  "gold_expected": 3,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question explicitly asks for CAPEC-70's abstraction and status. The retrieved evidence (logic_flow.results[0].records[0].properties) correctly contains Abstraction: 'Detailed' and Status: 'Draft', matching gold's expect_properties exactly, and the correct entity CAPEC-70 / 'Try Common or Default Usernames and Passwords' was retrieved (satisfying must_include_ids and expect_names). However, the answer under test — narrative is thin/absent so per instructions the 'claims' are graded — reads only 'Found 1 CAPEC record(s): CAPEC-70.' It never states the Abstraction or Status values anywhere in the narrative or claims text, so the analyst-facing answer does not actually answer what was asked despite the underlying retrieval being correct and fully grounded. No fabricated facts are present (faithfulness/groundedness are clean), but completeness against the gold assertions is low: of the 3 required facts (CAPEC-70 id, Abstraction=Detailed, Status=Draft) only the id is surfaced (1/3). Because the specific properties requested by the question are entirely omitted from the analyst-visible output, this is graded INCORRECT rather than merely PARTIAL — the pipeline's own deterministic_scores.coverage=1.0 self-assessment is misleading since it only checks id-level coverage, not whether the requested attributes were actually conveyed."
+}

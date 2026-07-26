@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SW-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 17,
+  "gold_present": 17,
+  "hallucinations": [],
+  "rationale": "Gold must_include_ids=[S0002] and must_include_related is the exact 17-element set {T1003.001, T1003.002, T1003.004, T1003.006, T1098, T1134.005, T1207, T1547.005, T1550.002, T1550.003, T1552.004, T1555, T1555.003, T1555.004, T1558.001, T1558.002, T1649}. The deterministic-arm answer's enumeration claim lists exactly these 17 technique ids (verified as an exact set match, no additions or omissions) and correctly names the software as S0002 (Mimikatz). Every listed id is backed by a corresponding entry in logic_flow.results[0].records[0].related, each with a name and description sourced from the retrieved Neo4j record, so groundedness is complete. No invented names, counts, or aliases were found; the answer correctly reports 17 related items matching the query's row_count of 17. Coverage per deterministic_scores also confirms 18/18 (17 techniques + S0002 seed)."
+}

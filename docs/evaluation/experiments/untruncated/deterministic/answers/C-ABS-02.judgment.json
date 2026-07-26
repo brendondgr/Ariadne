@@ -1,0 +1,12 @@
+{
+  "case_id": "C-ABS-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-16] and must_include_related=[CAPEC-49, CAPEC-112]. The answer's claims state 'Found 1 CAPEC record(s): CAPEC-16' and 'CAPEC-16 (Dictionary-based Password Attack) has 2 AttackPatterns: CAPEC-49 (standard), CAPEC-112 (meta).' The single retrieved record (logic_flow.results[0].records[0]) confirms CAPEC-16 has related entries CAPEC-49 with role='standard'/abstraction='Standard' and CAPEC-112 with role='meta'/abstraction='Meta', exactly matching the query's two-hop CHILD_OF chain (ap -> parent -> grandparent). All three required ids are surfaced with correctly labeled roles, no counts, names, or abstraction levels are invented, and every fact traces directly to the evidence record. No hallucinations found."
+}

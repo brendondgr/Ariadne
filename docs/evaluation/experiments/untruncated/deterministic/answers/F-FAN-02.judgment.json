@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-02",
+  "verdict": "CORRECT",
+  "correctness": 0.95,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 13,
+  "gold_present": 13,
+  "hallucinations": [],
+  "rationale": "All gold assertions are satisfied and grounded in the evidence. CAPEC ids CAPEC-13 and CAPEC-640 are both surfaced with correct names/descriptions. must_correlate (T1505.005, T1574.006, T1574.007, T1574.013, T1620) is stated verbatim in the closing correlation sentence, matching the 5 correlation claims which each cite the correct CAPEC+ATT&CK record pairs (e.g. T1574.006 correctly noted as shared by 3 records: CAPEC-13, CAPEC-640, and the ATT&CK technique, correctly capturing the 'overlap' the question asks about). capec.must_include_related (5 ids) all appear across the two per-CAPEC enumeration claims, which also correctly include the extra evidence-grounded T1562.003 (CAPEC-13's third taxonomy entry) without misrepresenting it as correlated -- it is correctly omitted from the correlation/attack record set since the ATT&CK query returned 0 rows for it (row_count 9 vs record_count 5, confirmed against the traces). attack.must_include_ids (5, exactly matching min/max_records=5) are all named. attack.must_include_related mitigations (M1022, M1024, M1028, M1038, M1040, M1047) are all present, each correctly attributed per technique against the 'related' arrays in logic_flow (T1574.007->M1047/M1022/M1038, T1505.005->M1047/M1024, T1574.006->M1038/M1028, T1574.013->M1040, T1620->none). No invented names, ids, counts, or aliases were found; every technique/mitigation name matches the evidence exactly. Only flaw: the very first narrative sentence lists 'ATT&CK mappings: T1505.005, T1562.003, T1574.006, T1574.007, T1574.013' and omits T1620 from that initial 5-item list (T1620 only appears in the later CAPEC-640 enumeration and the closing correlation sentence), a minor internal inconsistency rather than a fabrication, so correctness is docked slightly while faithfulness/groundedness/completeness remain full."
+}

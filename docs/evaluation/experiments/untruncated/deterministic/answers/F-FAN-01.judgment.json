@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 13,
+  "gold_present": 13,
+  "hallucinations": [],
+  "rationale": "The claims (deterministic arm, no narrative-LLM synthesis needed beyond the templated narrative) surface all 3 required CAPEC ids (CAPEC-19, CAPEC-35, CAPEC-448) with their correct names/abstraction (Standard/Detailed) matching logic_flow.results[0].records, and all 5 must_correlate/must_include_related ATT&CK techniques (T1027.006, T1027.009, T1546.004, T1546.016, T1564.009) via the CAPEC->TaxonomyEntry MAPS_TO edges, exactly matching each record's 'related' array (e.g. CAPEC-19 -> 1027.009/1546.004/1546.016, CAPEC-35 -> 1027.006/1027.009/1564.009, CAPEC-448 -> 1027.009). It then reports exactly 5 ATT&CK technique records (matching attack.min/max_records=5) and enumerates the deduplicated mitigation union: M1049+M1040 for T1027.009, M1013 for T1564.009, M1022 for T1546.004, M1048 for T1027.006 -- covering all 5 required mitigation ids (M1013, M1022, M1040, M1048, M1049) with correct names (Antivirus/Antimalware, Behavior Prevention on Endpoint, Application Developer Guidance, Restrict File and Directory Permissions, Application Isolation and Sandboxing), all traceable to the attack query's 'related' arrays. T1546.016 correctly shows no mitigation (empty related[] in evidence, and the answer makes no claim for it). The 5 correlation claims correctly restate the deduplicated cross-source union (T1027.006, T1027.009, T1546.004, T1546.016, T1564.009) with accurate per-id share counts (e.g. T1027.009 shared by 4 records: CAPEC-19/35/448 + attack; T1027.006 shared by 2: CAPEC-35 + attack), all verifiable by counting occurrences in the two result sets. No invented ids, names, counts, or aliases were found anywhere in the claims -- every entity_id and count is directly traceable to logic_flow records/related arrays. This matches the deterministic_scores self-report (correlation f1=1.0, mapping_recall=1.0, fully_provenanced=true)."
+}

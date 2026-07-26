@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-01",
+  "verdict": "CORRECT",
+  "correctness": 0.95,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 27,
+  "gold_present": 27,
+  "hallucinations": [],
+  "rationale": "All gold-required entities are present and traceable to evidence: CAPEC-150 record is returned with its 6 TaxonomyEntry mappings (capec:taxonomy:ATTACK:1530/1555/1602/1003/1119/1213), correctly corresponding to the 6 required T-numbers (T1003, T1119, T1213, T1530, T1555, T1602 -- gold must_correlate and capec.must_include_related). Exactly 6 ATT&CK Technique records are returned (matching gold attack.min/max_records=6) and all 6 required technique ids are named. For each technique the enumeration claims reproduce the evidence's related-mitigation lists verbatim and in the same order (T1003: 9 items incl. M1015/M1017/M1025/M1026/M1027/M1028/M1040/M1041/M1043; T1602: 6 items; T1119: 2 items; T1530: 6 items; T1555: 3 items; T1213: 7 items); the union of these is exactly the 20 mitigation ids required by gold.attack.must_include_related (M1015...M1060), no more, no fewer. All 6 correlation claims (T1003, T1119, T1213, T1530, T1555, T1602 corroborated across capec/attack) match gold's must_correlate list exactly. No fabricated ids, names, counts, or properties were found anywhere in the narrative or claims -- every id and count checked against logic_flow.results[0].records[0] (CAPEC-150 + related TaxonomyEntrys) and logic_flow.results[1].records (6 Technique records with their related Mitigations) matches exactly. One minor internal inconsistency dings faithfulness: the very first narrative sentence/claim ('ATT&CK mappings: T1003, T1119, T1213, T1530, T1555') omits T1602, understating the mapping as 5 techniques even though the very next sentence correctly lists all 6 taxonomy entries including 1602, and the headline/summary elsewhere correctly says 6. This is an omission/inconsistency in one summary clause, not a fabrication, and does not cost any required entity since T1602 is fully surfaced (and correlated) later in the same narrative -- hence verdict remains CORRECT with a small faithfulness deduction rather than PARTIAL."
+}

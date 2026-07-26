@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 36,
+  "gold_present": 36,
+  "hallucinations": [],
+  "rationale": "All 7 gold CAPEC ids (CAPEC-57, 94, 114, 115, 593, 633, 650) are surfaced, each correctly enumerated as related to CWE-287 matching the evidence's related=[{id:CWE-287}] on every record. The 7 correlation claims map each CAPEC to its actual ATT&CK technique per the record's join_values field (verified directly: CAPEC-633->T1134, CAPEC-94->T1557, CAPEC-650->T1505.003, CAPEC-57->T1040, CAPEC-593->T1185/T1550.001/T1563, CAPEC-114/115->T1548), covering all 8 must_correlate T-numbers exactly. All 8 gold ATT&CK ids are present (min=max=8 satisfied). The union of mitigations enumerated across the 8 technique claims (M1013,17,18,21,22,26,27,28,30,31,32,35,36,37,38,41,42,47,51,52) exactly equals the 20 required must_include_related mitigations with no gaps. Names quoted (e.g. Token Impersonation, Adversary in the Middle (AiTM), User Account Management, Network Segmentation) all match the retrieved record/related names verbatim -- no fabricated aliases, counts, or ids found. Row-count arithmetic (15 = 7+8 records, 8 correlations) matches the underlying trace row_counts."
+}

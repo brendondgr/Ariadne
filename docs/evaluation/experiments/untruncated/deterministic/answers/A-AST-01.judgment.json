@@ -1,0 +1,12 @@
+{
+  "case_id": "A-AST-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_boundary:true — this is a negative/ICS-only case where the correct behavior is an honest refusal rather than inventing asset targets for T1047. The pipeline's logic_flow trace shows the boundary step correctly firing with reason 'entities not modeled by the attack source: Asset', and the answer (claims=[], since narrative is present but thin/deterministic) abstains with the statement 'The attack source doesn't establish this — it doesn't model the entities this question asks about, so no query was executed for: What assets does technique T1047 target?'. This is fully grounded in the resolve/boundary trace (entities not in card: ['Asset']) and makes no fabricated claims about assets, techniques, or counts. No must_include ids are required by gold, so completeness is trivially satisfied by the correct abstention. This matches the expected honest-refusal behavior exactly."
+}

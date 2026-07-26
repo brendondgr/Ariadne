@@ -1,0 +1,12 @@
+{
+  "case_id": "C-HIE-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "The question asks for the ChildOf parent of CAPEC-564. The retrieval query explicitly traverses the CHILD_OF edge from CAPEC-564 and returns exactly one neighbour, capec:attack-pattern:542 (name 'Targeted Malware'), matching the gold's must_include_related=['CAPEC-542'] and must_include_ids=['CAPEC-564'] exactly (evidence_volume: 1 record, 1 related). The answer's claims/narrative state 'CAPEC-564 (Run Software at Logon) has 1 AttackPatterns: capec:attack-pattern:542', correctly naming both the seed CAPEC-564 and the parent CAPEC-542, both cited to the capec source. Both gold-required ids are surfaced (gold_present=2/2), all facts (name 'Run Software at Logon', target id 542) are directly traceable to the logic_flow record and its related entry, and no invented names, counts, or aliases appear. The only minor blemish is generic phrasing ('AttackPatterns' rather than explicitly saying 'ChildOf'/'parent'), but since the underlying query is CHILD_OF-specific and the correct id/name pair is stated, this is not a substantive faithfulness or correctness defect."
+}

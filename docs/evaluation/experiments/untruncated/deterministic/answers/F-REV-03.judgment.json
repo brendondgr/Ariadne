@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-49 (must_include_ids), the correlation/mapping to T1110.001 (must_correlate + must_include_related), and the ATT&CK technique name 'Password Guessing' for T1110.001 (expect_names). The claims/narrative state exactly this: 'Found 1 CAPEC record(s) for CAPEC-49; ATT&CK mappings: T1110.001', 'CAPEC-49 (Password Brute Forcing) has 1 TaxonomyEntrys: capec:taxonomy:ATTACK:1110.001', 'Found ATT&CK record T1110.001: Password Guessing', and 'T1110.001 is corroborated across attack and capec'. Every fact (CAPEC-49 name, Abstraction/Status not asserted beyond what's needed, taxonomy entry id, T1110.001 name 'Password Guessing') is directly present in the logic_flow records with matching ids and names, and the single-record cap (attack max_records:1) is respected. No invented ids, names, counts, or aliases -- 'Password Brute Forcing' and 'Password Guessing' match the evidence exactly. All 3 gold-required elements (CAPEC-49, T1110.001 correlation, T1110.001 name) are surfaced."
+}

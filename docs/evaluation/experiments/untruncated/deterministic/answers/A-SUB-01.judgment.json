@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SUB-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 9,
+  "gold_present": 9,
+  "hallucinations": [],
+  "rationale": "Gold requires T1021 plus its 8 sub-techniques (T1021.001-.008). The answer's claims (narrative is empty in this deterministic arm, so claims are the graded artifact) name T1021 as the parent (claim 1) and enumerate all 8 sub-technique ids in claim 2: T1021.001, T1021.007, T1021.003, T1021.006, T1021.002, T1021.008, T1021.004, T1021.005 - matching the gold set exactly (order differs, set identical). Cross-checked against logic_flow.results[0].records[0].related: all 8 ids and their names (Remote Desktop Protocol, Cloud Services, Distributed Component Object Model, Windows Remote Management, SMB/Windows Admin Shares, Direct Cloud VM Connections, SSH, VNC) are present in the retrieved evidence with matching ids and no extras. No invented ids, names, or counts were found. Coverage is 9/9 (1.0), independently verified by manual set comparison against the evidence, not just trusting the pipeline's self-reported deterministic_scores.coverage."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-CSQ-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-98] and must_include_related=[capec:attack-pattern:98:consequence:1,2,3] (4 required ids total). The answer's narrative/claims state 'Found 1 CAPEC record(s): CAPEC-98' and 'CAPEC-98 (Phishing) has 3 Consequences: capec:attack-pattern:98:consequence:1, capec:attack-pattern:98:consequence:2, capec:attack-pattern:98:consequence:3' -- all 4 required ids are surfaced verbatim. Cross-checking logic_flow.results[0].records[0]: primary_id=CAPEC-98, name=Phishing, and related contains exactly the same three consequence ids with label Consequence -- every stated id and the 'Phishing' name is directly traceable to the retrieved evidence, with no extra facts (no abstraction level, status, or consequence content invented beyond the plain ids). Citations correctly point to source capec / primary_id CAPEC-98. No hallucinations found; this is a full, faithful, grounded match to gold."
+}

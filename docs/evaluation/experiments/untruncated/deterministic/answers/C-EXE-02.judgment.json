@@ -1,0 +1,12 @@
+{
+  "case_id": "C-EXE-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-98 plus its 4 execution steps (capec:attack-pattern:98:step:1..4). The claims/narrative state 'Found 1 CAPEC record(s): CAPEC-98' and 'CAPEC-98 (Phishing) has 4 ExecutionSteps: step:1, step:2, step:3, step:4' — all 5 required ids are surfaced verbatim. Every fact is traceable to logic_flow.results[0].records[0]: the name 'Phishing' matches record.name/properties.name, and all four related ExecutionStep ids/order match the 'related' array exactly (steps 1-4, no extra or missing steps). No counts, names, or ids appear that are absent from the evidence. deterministic_scores.coverage confirms 5/5 gold found. No hallucinations detected."
+}

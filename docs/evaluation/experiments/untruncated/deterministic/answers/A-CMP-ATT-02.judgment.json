@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-ATT-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[C0028] and must_include_related=[G0034], i.e. the answer must surface campaign C0028 and its attributed group G0034. The single retrieved record (query: MATCH (c:Campaign)-[:ATTRIBUTED_TO]->(g:Group) ... WHERE c.attack_id='C0028') returns exactly one related entity, G0034 ('Sandworm Team'), matching the evidence's related[] list verbatim. The answer's claims/narrative state 'C0028 (2015 Ukraine Electric Power Attack) has 1 related item(s): G0034', correctly naming both the campaign id and the attributed group id with no additional or missing entities, no invented counts, names, or properties beyond what is present in logic_flow.records[0]. Both gold-required ids (C0028, G0034) are present, giving full coverage (1.0) with zero hallucinations."
+}

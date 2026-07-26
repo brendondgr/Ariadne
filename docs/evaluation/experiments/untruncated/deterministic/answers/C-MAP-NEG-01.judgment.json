@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_empty=true / expected=[] for CAPEC-116's ATT&CK mappings (ex_gold.scheme='capec', pool='join'). The logic_flow shows the correct Gremlin traversal executed (AttackPattern CAPEC-116 -> out('MAPS_TO') -> TaxonomyEntry taxonomy_name='ATTACK'), with row_count=0 at both execute and assess steps, and the assess trace explicitly records empty_with_seeds=['CAPEC-116'] confirming the seed resolved but had no MAPS_TO edges. The answer's claims array is empty and it abstains with a statement naming the exact source query and confirming it 'ran cleanly and returned no matching records.' No technique id, count, or name is fabricated anywhere in the narrative or claims. This is exactly the correct behavior for a negative test case."
+}

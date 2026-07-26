@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The question asks which techniques G0007 (APT28) uses. The deterministic answer's enumeration claim lists exactly 37 T-numbers (T1211, T1669, T1105, ... T1083), which is an exact set match against the retrieved evidence's 37 Technique records (verified: every primary_id/name pair in logic_flow.results[0].records appears verbatim in the claim's entity_ids, no additions or omissions). All 5 required must_include_ids (T1003, T1005, T1014, T1025, T1030) are present. The answer's 37-id set also matches the gold ex_gold.expected neighbor pool exactly (set equality confirmed programmatically: 0 missing, 0 extra). No names, counts, or ids in the answer are unsupported by the evidence -- every citation traces to a record actually returned by the group_techniques query. This is a full, faithful, fully grounded answer."
+}
