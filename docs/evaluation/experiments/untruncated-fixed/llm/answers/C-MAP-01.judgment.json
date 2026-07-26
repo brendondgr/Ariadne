@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-555 (must_include_ids) plus the three correlated ATT&CK techniques T1021, T1114.002, T1133 (must_include_related). The narrative states all four explicitly: 'CAPEC-555 maps to three ATT&CK techniques, including T1021, T1114.002, and T1133' with correct taxonomy names (Remote Services, Email Collection: Remote Email Collection, External Remote Services) matching the q1 record's related[] entries verbatim. It then correctly and carefully notes that only T1021 and T1133 were corroborated as matching Technique nodes in the ATT&CK graph query (q2 returned exactly 2 records, T1133 and T1021, both with revoked:false, stix_type:attack-pattern, x_mitre_version 2.5/1.6 matching evidence properties exactly) -- it does not falsely claim T1114.002 was found as a Technique node, which is accurate since the q2 Cypher only matched :Technique label and T1114.002 (a subtechnique) never appeared in that result set despite being requested. CAPEC-555's Abstraction (Standard) and Status (Stable) claims match the record properties exactly. No invented facts, names, counts, or ids -- every stated identifier and property traces directly to the retrieved records. deterministic_scores.coverage independently confirms gold=4, found=4, coverage=1.0. This is a fully correct, complete, and faithful answer."
+}

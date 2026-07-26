@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SUB-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.15,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.11,
+  "gold_expected": 9,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question asks for the sub-techniques of T1021, and gold requires must_include_ids=[T1021] plus must_include_related=[T1021.001..T1021.008] (9 required entities total). The retrieved evidence record for T1021 shows a HAS_SUBTECHNIQUE facet count of 8 but its 'related' array is empty -- the actual sub-technique nodes (T1021.001-.008) were never fetched by the query, so their ids are genuinely absent from the evidence, even under this experiment's uncapped retrieval. The answer correctly and honestly states this: it reports the technique (T1021: Remote Services), correctly cites the facet count of 8, and explicitly says the specific sub-technique identifiers are not available in the retrieved data rather than fabricating any. Every stated fact (name, revoked/stix_type/deprecated/version properties, the count of 8) is traceable to the record's properties and facets, so faithfulness and groundedness are both 1.0 -- no hallucinations. However, as an answer to 'what are the sub-techniques of T1021', it surfaces 0 of the 8 required sub-technique ids (T1021.001-T1021.008), only the parent T1021 itself (1/9 gold-required ids present, matching the pipeline's own deterministic coverage score of 0.111). Because the core ask (enumerate the sub-techniques) is left completely unanswered, this is graded INCORRECT despite the answer's honesty and internal consistency -- the retrieval query's failure to expand HAS_SUBTECHNIQUE neighbours is a retrieval defect, but the resulting answer still fails the analyst's actual question."
+}

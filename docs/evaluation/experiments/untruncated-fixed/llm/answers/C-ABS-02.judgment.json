@@ -1,0 +1,12 @@
+{
+  "case_id": "C-ABS-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.15,
+  "faithfulness": 0.85,
+  "groundedness": 0.9,
+  "completeness": 0.33,
+  "gold_expected": 3,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to surface CAPEC-16 (found) plus both ancestors CAPEC-49 and CAPEC-112. The retrieval query only traversed one CHILD_OF hop from CAPEC-16, returning CAPEC-49 as a related record but never executing a second hop to reach CAPEC-112 (the meta ancestor); deterministic_scores.coverage confirms this (found 2/3, missing CAPEC-112). Given that partial evidence, the narrative still fails the question: rather than stating 'CAPEC-16 is a child of the standard pattern CAPEC-49' (which is exactly what the retrieved CHILD_OF edge to CAPEC-49 encodes, and matches the sub-question text 'Which standard pattern is CAPEC-16 a child of'), it explicitly denies that CAPEC-49 is tagged as an ancestor at all ('the evidence does not explicitly tag CAPEC-49 ... as a standard or meta ancestor'). It never mentions CAPEC-112 in any form. No fabricated facts are present (Abstraction=Detailed and Status=Draft are both correctly grounded in the CAPEC-16 record), so faithfulness/groundedness stay high, but correctness and completeness are poor: only CAPEC-16 itself is meaningfully surfaced (gold_present=1 of 3), and the one ancestor that was actually retrievable (CAPEC-49) is explicitly mischaracterized as not being an ancestor. This is a genuine answer failure, not merely an incomplete one, so verdict is INCORRECT."
+}

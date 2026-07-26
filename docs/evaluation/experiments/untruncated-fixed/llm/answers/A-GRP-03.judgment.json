@@ -1,0 +1,14 @@
+{
+  "case_id": "A-GRP-03",
+  "verdict": "PARTIAL",
+  "correctness": 0.9,
+  "faithfulness": 0.85,
+  "groundedness": 0.95,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [
+    "Narrative states 'Group G0007 (APT28) uses 38 techniques' but the retrieved evidence (logic_flow.results[0].records) contains only 37 distinct Technique records, and the claim's entity_ids/citations list exactly 37 technique ids (matching the retrieval summary 'Found 37 ATT&CK record(s)'). The '38' figure is unsupported by evidence."
+  ],
+  "rationale": "All 5 gold must_include_ids (T1003, T1005, T1014, T1025, T1030) are present in the answer's claim entity_ids/citations, and in fact the full 37-item ex_gold expected pool (T1003...T1669) is surfaced exactly, one-to-one, against the 37 retrieved Technique records from the group_techniques query on G0007 -- so completeness and groundedness are excellent (every cited id traces directly to a retrieved record with matching name, e.g. T1211='Exploitation for Stealth', T1669='Wi-Fi Networks', T1078='Valid Accounts'). However, the narrative's headline claim of '38 techniques' is a factual error: the evidence and the claim's own citation list total 37, not 38, making this an invented count not grounded in the retrieved data. Because the entity-level content is fully correct and complete but the summary statistic is fabricated, this is a minor unsupported detail rather than a substantive failure, warranting PARTIAL rather than INCORRECT."
+}

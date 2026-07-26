@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-10",
+  "verdict": "PARTIAL",
+  "correctness": 0.7,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.63,
+  "gold_expected": 8,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The evidence (q1: CAPEC-652 MAPS_TO T1558; q2: T1558 MITIGATES-by M1041, M1015, M1047, M1026, M1027, M1043) exactly matches gold's requirement: CAPEC-652 -> T1558 correlation and T1558's six mitigations {M1015, M1026, M1027, M1041, M1043, M1047}. The narrative correctly names CAPEC-652, its mapping to T1558 (Steal or Forge Kerberos Tickets), and correctly states there are six mitigations, but only names three of them explicitly (M1041, M1015, M1043) rather than enumerating all six required by gold's must_include_related. M1026 (Privileged Account Management), M1027 (Password Policies), and M1047 (Audit) are never named in the narrative (the supporting claims mention a different partial subset: M1041, M1015, M1047, still omitting M1026/M1027). Every fact stated (names, IDs, count of 6, abstraction/status of CAPEC-652) is grounded in the retrieved records with no invented data, so faithfulness and groundedness are full marks, but the answer is materially incomplete on the gold-required mitigation list for a 'what mitigations apply' question, warranting PARTIAL. gold_expected=8 distinct required ids (T1558, CAPEC-652, M1015, M1026, M1027, M1041, M1043, M1047); gold_present=5 (T1558, CAPEC-652, M1041, M1015, M1043)."
+}

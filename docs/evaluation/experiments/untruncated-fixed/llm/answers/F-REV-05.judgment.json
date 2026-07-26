@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "The narrative states CAPEC-555 (Remote Services with Stolen Credentials) maps to ATT&CK T1133, and correctly names T1133 as 'External Remote Services', matching gold's expect_names exactly. This satisfies all gold assertions: must_correlate T1133 is explicitly stated as the shared join value; capec.must_include_ids CAPEC-555 is present and its must_include_related T1133 is present (evidence record CAPEC-555 has related TaxonomyEntry entry_id '1133' / name 'External Remote Services', and join_values [\"T1133\"]); attack.must_include_ids T1133 is present with the exact expected name. Every fact traces directly to the retrieved records: CAPEC-555's name, Abstraction=Standard, Status=Stable, and description all appear verbatim in logic_flow.results[0].records[0]; T1133's name, description, revoked/stix_type/deprecated/subtechnique/version properties all appear verbatim in logic_flow.results[1].records[0]. The correlation claim (2 records sharing T1133 across capec and attack) matches deterministic_scores.correlation (exact=true, precision=recall=f1=1.0). No invented names, counts, aliases, or ids were found; the answer neither overstates nor omits anything relative to the single required mapping."
+}

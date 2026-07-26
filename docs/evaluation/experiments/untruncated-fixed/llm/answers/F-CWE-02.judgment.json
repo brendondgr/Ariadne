@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.4,
+  "faithfulness": 0.95,
+  "groundedness": 0.95,
+  "completeness": 0.39,
+  "gold_expected": 36,
+  "gold_present": 14,
+  "hallucinations": [],
+  "rationale": "The CAPEC leg is fully correct: all 7 required patterns (CAPEC-57, CAPEC-94, CAPEC-114, CAPEC-115, CAPEC-593, CAPEC-633, CAPEC-650) are named with names, Abstraction and Status values that match the evidence exactly, and the CWE-287 relation is stated. The ATT&CK leg is incomplete: the gold's must_correlate/must_include_ids require 8 technique ids (T1040, T1134, T1185, T1505.003, T1548, T1550.001, T1557, T1563), but the answer's narrative and claims only name 6 (T1134, T1557, T1040, T1185, T1563, T1548) with names/versions matching evidence exactly; T1550.001 is never mentioned anywhere and T1505.003 only surfaces buried in one truncated claim string ('ATT&CK mappings: T1040, T1134, T1185, T1505.003, T1548'), never explained as a mapped technique. This gap traces to the underlying q2 Cypher query, which matched only :Technique nodes and silently dropped the two sub-technique ids (T1505.003, T1550.001) that were present in q1's join_values -- the answer faithfully reports what q2 retrieved but does not surface the sub-techniques it should have caught from q1's own evidence. The mitigations leg (gold requires 20 ids: M1013, M1017, M1018, M1021, M1022, M1026, M1027, M1028, M1030, M1031, M1032, M1035, M1036, M1037, M1038, M1041, M1042, M1047, M1051, M1052) is entirely unanswered: the ATT&CK records' 'related' arrays are empty (only facet counts like 'MITIGATES count: 7' are present), and the answer correctly and honestly states it cannot name specific mitigation ids/names rather than fabricating any -- a faithful abstention, but zero gold mitigation ids are surfaced. No fabricated facts were found: all names, Abstraction/Status values, ATT&CK versions, and correlation counts (e.g. T1548 'corroborated ... 3 record(s)' matching CAPEC-114+CAPEC-115+T1548) check out exactly against logic_flow evidence. Net: correct and complete on CAPEC (7/7 + CWE-287), 6/8 on ATT&CK techniques, 0/20 on mitigations -> PARTIAL, not INCORRECT, because what is stated is accurate and appropriately hedged, but the question's third and largest sub-part (mitigations) goes fully unanswered and two required technique ids are silently dropped."
+}

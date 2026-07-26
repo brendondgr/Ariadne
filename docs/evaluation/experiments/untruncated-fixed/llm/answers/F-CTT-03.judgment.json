@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "The narrative states CAPEC-565 (Password Spraying) maps to ATT&CK technique T1110.003, and that T1110.003 belongs to the Credential Access tactic (TA0006) — this exactly matches the two-hop evidence: the capec record's related TaxonomyEntry (capec:taxonomy:ATTACK:1110.003, entry_id 1110.003) and the attack record's related Tactic (TA0006, name Credential Access). All three gold-required ids (CAPEC-565, T1110.003, TA0006) are surfaced, satisfying must_include_ids/must_include_related for both the capec and attack assertions and the must_correlate T1110.003 join. No invented facts: the Abstraction/Status claim in the answer's claims list (Detailed/Draft) matches the CAPEC record's properties exactly. deterministic_scores independently confirm correlation f1=1.0 and mapping_recall=1.0, corroborating the manual check."
+}

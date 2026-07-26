@@ -1,0 +1,12 @@
+{
+  "case_id": "C-EXE-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-66 (SQL Injection) plus all four execution steps (capec:attack-pattern:66:step:1..4). The narrative names CAPEC-66 as SQL Injection and accurately paraphrases all four steps in order, matching the retrieved evidence verbatim in substance: Step 1 'survey application/inventory exposed functionality', Step 2 'determine user-controllable input susceptible to injection ... inject special SQL characters ... invalid syntax', Step 3 'hypothesize underlying query, iteratively add logic to extract/modify/delete data', Step 4 'craft and execute the query to reveal/modify/delete data, possibly multiple queries for a denial of service'. Every detail traces directly to the single retrieved record's related ExecutionStep nodes in logic_flow.results[0].records[0].related; no invented facts, aliases, counts, or properties. The only minor caveat is that the narrative describes the four steps by content rather than restating their raw graph ids, but this is the expected/appropriate form for a narrative answer and each step is unambiguously covered. Note the pipeline's own deterministic_scores.coverage (0.2, 'missing' all 4 steps) is a self-scoring artifact of the claims list (which only emits 2 generic claims and omits per-step citations) and does not reflect the narrative actually shown to the analyst, which is complete and faithful."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-EXE-03",
+  "verdict": "PARTIAL",
+  "correctness": 0.6,
+  "faithfulness": 0.95,
+  "groundedness": 0.75,
+  "completeness": 0.43,
+  "gold_expected": 7,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "The evidence (logic_flow.results[0].records[0].related) contains all 6 required ExecutionStep nodes (capec:attack-pattern:163:step:1..6) with full descriptions, and CAPEC-163 properties (Abstraction: Detailed, Status: Draft, name: Spear Phishing) which the narrative correctly reproduces with no fabricated facts. However the narrative only explicitly names 2 of the 6 required step ids ('capec:attack-pattern:163:step:1 and capec:attack-pattern:163:step:5'); the other four steps (step:2 domain/cert spoofing, step:3 duplicate site, step:4 user-specific variants, step:6 use of stolen credentials) are only paraphrased into a compressed prose summary ('optionally involves spoofing... and customizing it with user-specific details... concludes by tricking the victim... adversary then uses to access the legitimate system') without their explicit ids ever being stated. The structured claims array is even thinner: only 2 claims exist (record found, abstraction/status), neither citing any ExecutionStep node — so none of the 6 required step ids are captured with a citation at all, matching the pipeline's own deterministic_scores.coverage of 0.14 (1/7). Counting literal id mentions across the full narrative, only CAPEC-163, step:1 and step:5 are surfaced (gold_present=3 of gold_expected=7). Content is faithful and correctly ordered/paraphrased (groundedness credited for the paraphrase quality), but completeness is materially short of the gold's requirement to surface all 6 execution-step ids, so this is PARTIAL rather than CORRECT."
+}

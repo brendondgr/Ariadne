@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty join (must_correlate: [], expect_no_correlation: true, capec.expect_empty: true, attack.expect_dependency_skip: true). The evidence shows the capec query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...out(\"MAPS_TO\")... has(\"taxonomy_name\",\"ATTACK\")) executed cleanly against seed CAPEC-116 and returned row_count 0 (logic_flow.results[0]), and the attack sub-question q2 was correctly skipped because its dependency q1 produced no join values (logic_flow.results[1], trace step 'dependency'). The answer's narrative and abstentions accurately report both: capec 'ran cleanly and returned no matching records', attack 'sub-question it depends on (q1) produced no seed identifiers, so no query was executed'. No technique IDs, mitigation IDs, or any correlation were fabricated; claims list is empty as required for a negative case. deterministic_scores.correlation shows exact negative match (precision/recall/f1 = 1.0, n_expected=0, n_got=0), consistent with independent verification. Nothing to add or omit — full match to gold."
+}

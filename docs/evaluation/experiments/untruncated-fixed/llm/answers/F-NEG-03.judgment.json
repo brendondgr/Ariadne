@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative federated case (CAPEC-3 has no ATT&CK mapping in the KG); gold requires must_correlate=[] with expect_no_correlation=true, expect_empty for capec, and expect_dependency_skip for attack. The evidence confirms: q1's capec_maps_to query executed cleanly against seed CAPEC-3 and returned row_count 0 (no MAPS_TO edge to a TaxonomyEntry with taxonomy_name='ATTACK'), and q2 (attack) was correctly skipped via the dependency gate because q1 produced no join values, rather than being run with a fabricated seed. The answer's narrative and abstentions honestly report 'no matching records' / 'depends on q1... returned no join values' and name zero ATT&CK technique IDs, zero mitigations, and zero correlations -- no invented T-numbers, M-numbers, or CAPEC data appear anywhere in claims or narrative. deterministic_scores.correlation also shows negative=true, exact=true with n_expected=0/n_got=0, matching the honest-empty requirement. No hallucinations found; this is a textbook correct negative/abstention response."
+}

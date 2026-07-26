@@ -1,0 +1,14 @@
+{
+  "case_id": "A-SCN-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 0.2,
+  "groundedness": 0.3,
+  "completeness": 0.0,
+  "gold_expected": 1,
+  "gold_present": 0,
+  "hallucinations": [
+    "Narrative claims '1,400 software entries' but the retrieved evidence (logic_flow) contains only 821 Software records (query 'MATCH (n:Software) RETURN n.attack_id AS id, n.name AS name LIMIT 1000' returned 821 rows) -- the pipeline's own headline/claims correctly say 821, so the narrative figure of 1,400 is unsupported by any evidence and even contradicts the answer's own claims block."
+  ],
+  "rationale": "Gold for this bounded-scan case asserts min_records=250 and max_records=300, i.e. the retrieval/answer should surface roughly 250-300 ATT&CK software entries. The actual evidence returned 821 records (MATCH (n:Software) with LIMIT 1000, 821 rows returned), already ~2.7x over the gold's max_records=300 bound -- the scan was not bounded as required, so the core assertion fails regardless of what the narrative says. On top of that, the LLM-authored narrative (the answer under test, arm='llm', synthesis='llm') states 'The evidence lists 1,400 software entries', a number that matches neither the gold range (250-300) nor even the pipeline's own retrieved/claimed count of 821 (headline: 'Gathered 821 record(s)'; claims: 'Found 821 ATT&CK record(s)') -- a clear fabricated figure with no basis in the evidence. The five example entries the narrative cites (S0061/HDoor, S0266/TrickBot, S1204/cd00r, S0139/PowerDuke, S0605/EKANS) are individually grounded and accurately named against the evidence records, and the claim that all records carry label 'Technique' matches the evidence's (oddly mislabeled) records. But because the single quantitative assertion gold cares about (record count in [250,300]) is violated by both the retrieval (821) and further misstated by the narrative (1,400), the answer fails the question as posed and introduces a hallucinated headline number, warranting an INCORRECT verdict."
+}

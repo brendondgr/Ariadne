@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-TEC-02",
+  "verdict": "CORRECT",
+  "correctness": 0.92,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Evidence (logic_flow q1) returns exactly 24 Technique nodes linked to Campaign C0024 via USES, matching the answer's headline 'Gathered 24 record(s)'. All 5 must_include_ids (T1005, T1018, T1047, T1057, T1069) are present among the 24 retrieved records and are all listed with correct provenance in answer.claims[0].entity_ids/citations (source=attack, matching primary_ids). The narrative prose explicitly names 10 of the 24 techniques (T1680, T1686, T1665, T1105, T1018, T1047, T1078, T1005, T1555, T1070) with names that match the evidence verbatim (e.g. T1680='Local Storage Discovery', T1047='Windows Management Instrumentation', T1078='Valid Accounts') and correctly states the total count of 24 and uses 'include'/'such as' language rather than claiming exhaustiveness, so it is not misleading about completeness. Two of the five gold must_include ids (T1057 'Process Discovery', T1069 'Permission Groups Discovery') are not individually named in the narrative sentence but are fully surfaced and cited in the structured claim backing that same narrative, so the answer as delivered (narrative + supporting citations) surfaces all 5 gold-required techniques with correct names and no invented attributes, counts, or aliases. No entity, count, or property in the narrative/claims is absent from or inconsistent with the retrieved evidence. Deducted a small amount from correctness only because the free-text narrative itself is a representative sample rather than a literal enumeration of all 24 (including the 2 gold ids named above), which a stricter reading of 'the narrative is the answer under test' could ding, though the full grounded technique list is available via the claim's citations."
+}

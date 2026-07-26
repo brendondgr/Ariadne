@@ -161,35 +161,61 @@ applied at the end of `PlanningAgent.plan`. Routing now depends on what the plan
 | Run | Plan | Synthesis | corr | compl | faith | ground | C/P/I | halluc |
 |---|---|---|---|---|---|---|---|---|
 | Baseline (truncated) | gold | LLM | 0.8946 | 0.8952 | 0.9558 | 0.9575 | 91/27/2 | 11 |
-| Arm A | gold | determ. | 0.9500 | 0.9534 | 0.9979 | 0.9992 | 112/1/7 | 0 |
-| Arm C | gold | LLM | 0.9620 | 0.9618 | 0.9779 | 0.9896 | 109/9/2 | 12 |
-| Arm B | LLM | LLM | 0.7660 | 0.7770 | 0.9479 | 0.9517 | 84/11/25 | 18 |
-| **A + fixes** | gold | determ. | **0.9972** | **1.0000** | **0.9993** | **1.0000** | **120/0/0** | **0** |
-| C + fixes | gold | LLM | 0.9690 | 0.9672 | 0.9921 | 0.9983 | 110/8/2 | 3 |
+| A — before fixes | gold | determ. | 0.9500 | 0.9534 | 0.9979 | 0.9992 | 112/1/7 | 0 |
+| C — before fixes | gold | LLM | 0.9620 | 0.9618 | 0.9779 | 0.9896 | 109/9/2 | 12 |
+| B — before fixes | LLM | LLM | 0.7660 | 0.7770 | 0.9479 | 0.9517 | 84/11/25 | 18 |
+| **A2 — all fixes** | gold | determ. | **0.9972** | **1.0000** | **0.9993** | **1.0000** | **120/0/0** | **0** |
+| C2 — all fixes | gold | LLM | 0.9690 | 0.9672 | 0.9921 | 0.9983 | 110/8/2 | 3 |
+| B2 — all fixes | LLM | LLM | 0.8505 | 0.8692 | 0.9683 | 0.9750 | 92/14/14 | 12 |
 
 Against the committed baseline the fixed deterministic path is **+0.103 correctness,
 +0.105 completeness, +0.044 faithfulness, +0.043 groundedness**, with hallucinations
 11 → 0 and every PARTIAL eliminated.
 
+**Every fix moved the class it targeted, and only that class:**
+
+| Fix | Target | Before → after |
+|---|---|---|
+| Execution record + prompt rules | narrator invention | hallucinations (LLM synth) 12 → 3 |
+| Property projection | `property_gap` | 5 → 0 |
+| Neighbour id normalisation | C-HIE-03 | PARTIAL → CORRECT |
+| Bounded-scan carve-out | `gold_cap_collision` | 2 → 0 (deterministic arm) |
+| `reconcile_join_keys` | `seed_lost` | **8 → 0**; `retrieval_empty` 2 → 0 |
+
+The planner fix took Arm B from 0.7660 → 0.8505 correctness (+0.085), 0.7770 → 0.8692
+completeness (+0.092), and 25 → 14 INCORRECT. Evidence volume *fell* (3,401 → 2,814
+records) while federated cases carrying join values *rose* (21/36 → 29/37): the bridge hop
+now runs the targeted traversal instead of an unseeded broad query. Less evidence, better
+answers — the opposite of the "more retrieval is better" intuition the experiment started
+from.
+
 **Deterministic synthesis is now strictly better than LLM synthesis on every metric.**
 Before the property-projection fix the narrator was the only thing that could answer an
-attribute question; now it is not, and it costs 3 hallucinations and 8 PARTIALs
-(federated cases where the prose names a few mitigations instead of enumerating them —
-`projection_gap`, the same fault the structured enumeration claim already solves).
+attribute question; now it is not, and it costs 3 hallucinations and 8 PARTIALs.
 
 ## 5. What is still open
 
-1. **Narrator absence-attribution, residual.** `F-PART-02` still reports a *boundary*
-   sub-question as "ran cleanly but returned zero records". Boundary cases need routing to
-   the NOT SUPPORTED block rather than EMPTY.
-2. **LLM-prose under-enumeration.** The narrator prompt explicitly licenses naming "a
-   representative few". That is the right trade only because the structured claims carry
-   the full set — but it caps the LLM arm's completeness. Either drop the licence for
-   enumerative intents or accept deterministic composition.
-3. **Pipeline timeouts.** 9 of 120 in Arm B finished `partial` on the deadline. LLM
-   planning + drafting + synthesis per question is simply slow; the deadline needs raising
-   or the stages need to run concurrently.
-4. **Scan-shaped caps.** Handled for the experiment (purely quantitative golds keep their
+1. **The router still downgrades single-source questions to `describe`** — 11 of Arm B2's
+   28 remaining failures (A-SUB, C-ABS, C-HIE, C-MAP, F-CWE). This is §3.4's root cause in
+   a second guise: `reconcile_join_keys` repairs *cross-source* routing because a join
+   declaration exists to reconcile against, but a single-source question ("which
+   sub-techniques does T1021 have?", "what are CAPEC-7's ancestors?") has no join, so the
+   router falls through to `describe` and returns facet counts. The gold plan's phrasing
+   happens to hit the neighbour templates; the LLM's phrasing does not. **The fix is the
+   same in spirit: route on the sub-question's declared `entities` (which name the
+   relationship — e.g. `ChildOf`) rather than on surface phrasing.** This is the single
+   highest-value remaining change for the LLM-planned path.
+2. **LLM-prose under-enumeration** (`projection_gap`, 7 cases). The narrator prompt
+   explicitly licenses naming "a representative few". That is only defensible because the
+   structured claims carry the full set, and it caps the LLM arm's completeness. Drop the
+   licence for enumerative intents, or accept deterministic composition.
+3. **Narrator absence-attribution, residual** (2 cases). `F-PART-02` still reports a
+   *boundary* sub-question as "ran cleanly but returned zero records". Boundary cases need
+   routing to the NOT SUPPORTED block rather than EMPTY.
+4. **Pipeline timeouts** (4 cases, down from 5). LLM planning + drafting + synthesis per
+   question is slow enough that the deadline bites; raise it or run the stages
+   concurrently.
+5. **Scan-shaped caps.** Handled for the experiment (purely quantitative golds keep their
    row cap) but the underlying question — should a label scan be bounded by policy or by
    the question? — is a product decision, not an eval one.
 

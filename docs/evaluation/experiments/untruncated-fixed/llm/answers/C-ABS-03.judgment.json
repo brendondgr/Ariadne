@@ -1,0 +1,12 @@
+{
+  "case_id": "C-ABS-03",
+  "verdict": "INCORRECT",
+  "correctness": 0.2,
+  "faithfulness": 0.9,
+  "groundedness": 0.9,
+  "completeness": 0.33,
+  "gold_expected": 3,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question asks to walk the abstraction hierarchy up from CAPEC-13, and gold requires the answer to surface the standard-pattern ancestor CAPEC-77 and the meta-pattern ancestor CAPEC-22 (must_include_related). The retrieved evidence (logic_flow.results[0].records[0]) contains only the CAPEC-13 node itself, with properties Abstraction=Detailed and Status=Stable, and an empty 'related' array -- even though the node's own facets list a CHILD_OF/out relationship with count=1, indicating a parent exists but its identity was never materialized into the evidence. Neither CAPEC-77 nor CAPEC-22 appear anywhere in the evidence file. The narrative and claims correctly state CAPEC-13's own properties and honestly report that no related ancestors are present in the provided data, rather than fabricating CAPEC-77/CAPEC-22 -- so there is no hallucination and the statements are grounded and faithful to what was retrieved. However, since the entire point of the question is the upward walk, and the answer surfaces zero of the two required ancestor ids (gold_present=1, only CAPEC-13 itself, out of gold_expected=3 ids total), it fails to answer the question that was asked. This is a retrieval-coverage failure (the single-hop query never expanded ChildOf up two levels) rather than a synthesis fabrication, but per the correctness-is-headline rubric this counts as INCORRECT, not merely PARTIAL, because none of the substantive ask (the two ancestors) is delivered."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold (assertions.expect_empty=true, ex_gold.expected=[]) requires the pipeline to abstain rather than invent a technique for nonexistent id T9999. The executed Cypher (MATCH (n:Technique) WHERE n.attack_id IN $ids ...) ran cleanly against seed_ids=['T9999'] and returned row_count 0 (logic_flow.results[0].records=[], traces execute/assess/normalize all show record_count 0). The answer's narrative correctly reports 'The routed sources returned no matching records for this question' and offers to accept a valid id instead (e.g. T1566, M1017, CAPEC-98) without asserting any of those exist or relate to T9999 -- these are just example-format hints, not fabricated facts about T9999. claims=[] and abstentions=[{source:attack, statement: ...ran cleanly and returned no matching records...}] are fully consistent with the empty evidence; deterministic_scores.provenance.abstention_proof_ok=true corroborates this. No entity, count, alias, or property is invented anywhere in the narrative or claims, so there is nothing ungrounded. Since gold requires zero entities to be surfaced and the answer surfaces zero while correctly abstaining, completeness and correctness are both full marks."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires the cross-source correlation on T1134 (must_correlate), CAPEC-633 mapping to T1134 (capec assertions), and T1134 belonging to tactics TA0004 and TA0005 (attack assertions, min/max_records=1 so exactly one technique record expected). The narrative states all four required identifiers correctly: 'CAPEC-633 attack pattern known as Token Impersonation maps to the ATT&CK technique T1134, Access Token Manipulation' and 'associated with two ATT&CK tactics: TA0005, Stealth, and TA0004, Privilege Escalation.' Every fact traces directly to logic_flow evidence: the capec record's related TaxonomyEntry (capec:taxonomy:ATTACK:1134 -> Access Token Manipulation), and the attack record's related Tactic nodes (TA0005/Stealth, TA0004/Privilege Escalation) with matching descriptive text used verbatim from evidence descriptions. No invented names, counts, or ids -- the 'two tactics' count matches the 2 related entries in evidence. This is the deterministic-composer narrative (composer: 'deterministic') built directly from the claims, all of which are citation-backed. Deterministic_scores in the artifact (recall 1.0, precision 1.0, f1 1.0) corroborate the same read."
+}

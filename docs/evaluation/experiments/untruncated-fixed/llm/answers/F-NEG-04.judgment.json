@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires expect_no_correlation=true / capec.expect_empty=true / attack.expect_dependency_skip=true for CAPEC-7 -> ATT&CK mapping. The evidence shows the capec query (g.V().hasLabel('AttackPattern').has('id', within(['CAPEC-7'])).out('MAPS_TO').hasLabel('TaxonomyEntry').has('taxonomy_name','ATTACK')...) executed cleanly and returned row_count=0, and the dependent attack sub-question (q2) was correctly skipped because q1 produced no join values ('producer q1: it returned no join values'). The answer's narrative and abstentions honestly report zero matching records and explicitly offer to look up a named entity instead of fabricating any T-number, mitigation, or correlation. claims=[] and records=[] in the evidence confirm no invented content. deterministic_scores.correlation shows negative=true, exact=true, precision/recall/f1=1.0, matching the expected honest-empty outcome exactly."
+}

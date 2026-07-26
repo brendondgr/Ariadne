@@ -1,0 +1,12 @@
+{
+  "case_id": "C-HIE-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.2,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.5,
+  "gold_expected": 2,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question asks for the parent (ChildOf) of CAPEC-98; gold requires the answer to surface CAPEC-98 itself and its parent CAPEC-151 (must_include_related). The single retrieved record confirms CAPEC-98 exists and its facets show exactly one outgoing CHILD_OF edge (count=1), but the record's 'related' array is empty -- the retrieval query only projected inV().label() rather than the neighbour's id, so the actual parent identifier (CAPEC-151) was never fetched into evidence. The narrative and claims are fully faithful and grounded to what was retrieved (they correctly state a CHILD_OF relationship exists but that the specific parent id is not present in evidence, matching properties Abstraction=Standard/Status=Draft exactly), so there are no hallucinations. However, the answer never names CAPEC-151, which is the entire point of the question, so it fails the headline task despite being honest about the gap. gold_present=1/2 (CAPEC-98 surfaced, CAPEC-151 not), yielding coverage 0.5 as also reflected in the artifact's own deterministic_scores.coverage. Because the core ask (identify the parent) goes unanswered, this is graded INCORRECT rather than PARTIAL, notwithstanding the answer's honesty in not fabricating an id."
+}

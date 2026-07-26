@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-555 (capec.must_include_ids) mapped to T1114.002 (capec.must_include_related and must_correlate), and the ATT&CK record T1114.002 named 'Remote Email Collection' (attack.must_include_ids/expect_names). The narrative and claims state exactly this: CAPEC-555 'Remote Services with Stolen Credentials' maps to T1114.002, and T1114.002 is identified as 'Remote Email Collection', matching evidence record names verbatim. The cross-source correlation on T1114.002 is explicitly stated as a claim and matches deterministic_scores.correlation (exact=true, f1=1.0). CAPEC-555's Status 'Stable' and Abstraction 'Standard' are taken directly from record.properties. The narrative's description paraphrase ('target Exchange, Office 365, or Google Workspace... leveraging stolen credentials or access tokens') and CAPEC-555's summary (RDP, SSH, VNC via stolen credentials) both track the evidence description text closely, with only telnet omitted from the CAPEC-555 protocol list (a minor omission, not a fabrication). No identifiers, counts, names, or properties appear that are absent from the two retrieved records. All gold assertions are satisfied with no hallucinated content."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.15,
+  "faithfulness": 0.8,
+  "groundedness": 0.9,
+  "completeness": 0.0,
+  "gold_expected": 2,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires the capec side to surface at least one record (min_records:1) including CAPEC-98 with must_include_related T1566, while the attack side must honestly refuse the ICS-asset request (expect_boundary:true, expect_no_correlation:true). The answer got the attack-side boundary right: notes correctly state the 'attack' schema has no Asset/System node label and explicitly refuse ICS asset targeting, matching expect_boundary. However, on the required capec side the answer surfaces zero records and claims 'the executed query ran cleanly and returned no matching records', so CAPEC-98 is never surfaced -- a direct miss of must_include_ids=[CAPEC-98] and must_include_related=[T1566]. Inspecting logic_flow shows this is a retrieval bug, not an absence of data: the planned sub-question was 'Find AttackPattern nodes that MAPS_TO a TaxonomyEntry node where taxonomy=ATTACK and entry_id=T1566', but the executed Gremlin (g.V().hasLabel('AttackPattern').has('id', within(ids))... with seed_ids=['T1566']) instead filters CAPEC AttackPattern nodes by id=='T1566' directly, which can never match since CAPEC pattern ids are of the form 'CAPEC-98', not ATT&CK technique ids -- it never actually traverses the MAPS_TO/TaxonomyEntry join described. That guarantees 0 rows regardless of whether CAPEC-98 truly maps to T1566, so the narrative's abstention, while internally consistent with the (broken) query's output, is a false negative against gold. Faithfulness/groundedness score fairly high because the narrative does not fabricate anything -- it accurately reports the pipeline's own (flawed) empty result -- but correctness and completeness are low because the case's primary required entity, CAPEC-98, is completely absent from the answer. Net verdict: INCORRECT, since the answer fails to satisfy the gold's core capec assertion despite correctly handling the ICS-asset refusal half of the question."
+}

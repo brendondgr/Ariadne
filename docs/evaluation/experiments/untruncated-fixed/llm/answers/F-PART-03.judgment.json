@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires the CAPEC side to surface CAPEC-555 with ATT&CK mappings T1021, T1114.002, T1133 and the ATT&CK/mitigation side to degrade to an honest skip with no cross-source correlation claimed. The narrative states 'CAPEC-555, titled Remote Services with Stolen Credentials, is a Stable Standard abstraction that maps to three ATT&CK techniques: T1021, T1114.002, and T1133' — all of which matches logic_flow.results[0].records[0] exactly (properties.Abstraction=Standard, properties.Status=Stable, join_values=[T1021, T1114.002, T1133], name matches). It also explicitly states 'no specialist was available for source attack, the cross-source joins and mitigation mappings could not be executed... degrades to an honest skip', which matches gold.attack.expect_skipped=true and gold.expect_no_correlation=true (deterministic_scores.correlation.negative/exact both true confirm no fabricated correlation). No entity, count, alias, or property is stated beyond what is present in the retrieved record; the 'three CAPEC taxonomy entries, specifically 1021, 1114.002, and 1133' line is a redundant restatement of the same related TaxonomyEntry entry_ids (1021, 1114.002, 1133), not a new/invented fact. The only oddity is duplicated claims/notes entries (the same fact stated twice, and the skip note repeated three times) — cosmetic redundancy from the deterministic composer, not a correctness or faithfulness defect. All gold-required ids (CAPEC-555, T1021, T1114.002, T1133) and the expected skip behavior are surfaced, so completeness is full."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-03",
+  "verdict": "PARTIAL",
+  "correctness": 0.85,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.8,
+  "gold_expected": 15,
+  "gold_present": 12,
+  "hallucinations": [],
+  "rationale": "The narrative correctly maps CAPEC-593 to all three required techniques (T1185, T1550.001, T1563), matching gold's must_correlate and both must_include_related lists, and correctly states the mitigation counts per technique (T1185: 2, T1563: 5, T1550.001: 5) which exactly match the evidence records (T1185 -> M1018, M1017; T1563 -> M1042, M1026, M1018, M1027, M1030; T1550.001 -> M1041, M1036, M1047, M1013, M1021). Every named id/name pair (CAPEC-593, T1185, T1550.001, T1563, M1018, M1017, M1042, M1026, M1030, M1041, M1036, M1021) is verifiably present in logic_flow.results with matching names, so faithfulness and groundedness are perfect - no fabricated facts, counts, or names. However, the narrative uses hedged 'including' phrasing and only names 8 of the 11 gold-required mitigations (M1013, M1027, M1047 - Application Developer Guidance, Password Policies, and Audit - are never named for T1550.001/T1563 despite being in evidence and in gold's attack.must_include_related). Of 15 unique gold-required ids (CAPEC-593, 3 techniques, 11 mitigations), 12 are explicitly surfaced by name in the narrative, giving completeness 0.8. Correctness is scored 0.85: the answer is accurate and appropriately hedges non-exhaustive lists, but a fully complete answer per the gold assertions would enumerate all 11 mitigations rather than 3 examples per technique."
+}

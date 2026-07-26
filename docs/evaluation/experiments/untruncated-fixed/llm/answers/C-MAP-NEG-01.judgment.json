@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty ATT&CK-mapping result for CAPEC-116 (expect_empty: true, ex_gold.expected: []). The single retrieved record's facets show MAPS_TO (out, -> TaxonomyEntry) count: 0, and related: [] is empty, so there is genuinely no ATT&CK mapping to surface. The narrative correctly reports 'a count of zero for MAPS_TO relationships directed toward TaxonomyEntry nodes' and concludes 'the mapping set for CAPEC-116 is indeed empty' -- it abstains from fabricating any T-number, matching the negative-case requirement. Both claims are grounded: 'Found 1 CAPEC record(s): CAPEC-116' matches the query summary, and 'CAPEC-116 (Excavation) has Abstraction: Meta; Status: Stable' matches properties.Abstraction='Meta' and properties.Status='Stable' verbatim in the evidence. No invented facts, counts, or aliases were found."
+}

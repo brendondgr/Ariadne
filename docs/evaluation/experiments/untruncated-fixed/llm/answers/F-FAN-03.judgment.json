@@ -1,0 +1,16 @@
+{
+  "case_id": "F-FAN-03",
+  "verdict": "PARTIAL",
+  "correctness": 0.85,
+  "faithfulness": 0.8,
+  "groundedness": 0.9,
+  "completeness": 0.85,
+  "gold_expected": 17,
+  "gold_present": 15,
+  "hallucinations": [
+    "Narrative calls M1041 'encryption' instead of its actual evidence name 'Encrypt Sensitive Information' (informal alias)",
+    "Narrative calls M1051 'software updates' instead of its actual evidence name 'Update Software' (informal alias)",
+    "Narrative calls M1022 'file permission restrictions' instead of its actual evidence name 'Restrict File and Directory Permissions' (paraphrase, not verbatim)"
+  ],
+  "rationale": "The answer correctly identifies the full technique union (T1005, T1039, T1552.001, T1552.003, T1552.004, T1552.006 - all 6 required by gold must_correlate/capec.must_include_related/attack.must_include_ids), correctly names both CAPEC seeds with accurate Abstraction/Status properties, and correctly identifies T1552.004 as the sole overlapping technique between CAPEC-37 (join_values T1005, T1552.004) and CAPEC-639 (join_values T1552.001/.003/.004/.006, T1039), which matches the evidence. The claims/correlation entries also cover all 6 technique correlations with correct record counts. The mitigation count of 'nine deduplicated mitigations' is correct and matches gold attack.must_include_related exactly (M1015, M1017, M1022, M1027, M1028, M1041, M1047, M1051, M1057 all present in the retrieved related-mitigation lists). However, only 5 of the 9 mitigation IDs are explicitly named (M1057, M1047, M1022, M1027, M1017); the remaining 4 are referenced only by category description, and 3 of those descriptions ('encryption', 'software updates', 'file permission restrictions') are informal paraphrases rather than the evidence's actual mitigation names ('Encrypt Sensitive Information', 'Update Software', 'Restrict File and Directory Permissions'), which per grading rubric counts as a faithfulness penalty even though the underlying facts are correct. This reduces completeness/precision on the attack.must_include_related assertion without constituting outright fabrication - no invented ids, counts, or entities were found; T1039 correctly shows zero mitigations (empty related list in evidence) and is not overstated. Overall the answer is substantively correct but loses points for imprecise mitigation naming."
+}

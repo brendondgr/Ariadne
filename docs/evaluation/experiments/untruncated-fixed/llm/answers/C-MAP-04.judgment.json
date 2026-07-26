@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-70 (must_include_ids) and T1078.001 (must_include_related, and the sole ex_gold join expectation). The narrative and claims correctly state CAPEC-70 ('Try Common or Default Usernames and Passwords') maps to exactly one ATT&CK technique, T1078.001 ('Default Accounts'), matching the q1 record's join_values=['T1078.001'] and related TaxonomyEntry 'capec:taxonomy:ATTACK:1078.001'. All attribute claims are grounded in evidence: CAPEC-70 Abstraction='Detailed' and Status='Draft' match properties exactly; T1078.001's revoked=false, stix_type='attack-pattern', x_mitre_deprecated=false, x_mitre_is_subtechnique=true, x_mitre_version='2.0' all match the q2 record's properties verbatim. The cross-source correlation claim ('corroborated across attack and capec, 2 records share it') is consistent with the two retrieval results (capec q1, attack q2) both keyed on T1078.001. No technique other than T1078.001 appears anywhere in the two-record evidence set, so the narrative's 'exactly one... no other ATT&CK techniques' claim is fully supported, not an overreach. No invented facts, names, counts, or aliases were found."
+}

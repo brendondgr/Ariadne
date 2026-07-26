@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "The narrative correctly traces CAPEC-49 (Password Brute Forcing) -> ATT&CK sub-technique T1110.001 (Password Guessing) -> tactic TA0006 (Credential Access), matching the gold assertions exactly: must_correlate T1110.001 is stated as the cross-source join, capec.must_include_ids CAPEC-49 and must_include_related T1110.001 are both surfaced via the q1 record (CAPEC-49 -> capec:taxonomy:ATTACK:1110.001 'Brute Force:Password Guessing'), and attack.must_include_ids T1110.001 with must_include_related TA0006 are surfaced via the q2 record (T1110.001 -> related TA0006 'Credential Access'). Every fact in the narrative and claims (CAPEC-49 name/Abstraction=Standard/Status=Draft, T1110.001 name Password Guessing, TA0006 name Credential Access) is directly traceable to the logic_flow records with no invented properties, aliases, or counts. min_records/max_records constraints (attack: min 1, max 1) are also satisfied by the single returned record. No hallucinations found."
+}

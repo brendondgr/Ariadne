@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an honest empty join (expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true). The evidence confirms q1 (capec_maps_to query on CAPEC-18 -> TaxonomyEntry ATTACK) executed cleanly with row_count 0, and q2 (attack) was correctly skipped via the dependency step because q1 produced no join values ('producer q1: it returned no join values'). The answer's narrative and abstentions state exactly this: no matching records for CAPEC-18's ATT&CK mapping, and the attack sub-question was skipped for lack of seed identifiers from q1. No techniques, mitigations, or T-numbers are fabricated; claims list is empty; deterministic_scores.correlation shows negative=true, exact=true, precision/recall/f1=1.0, n_expected=0, n_got=0, matching the gold exactly. This is a fully faithful, fully grounded honest abstention with no hallucinated correlation."
+}

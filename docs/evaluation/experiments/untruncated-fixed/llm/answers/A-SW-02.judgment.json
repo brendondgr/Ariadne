@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SW-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.55,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.22,
+  "gold_expected": 74,
+  "gold_present": 16,
+  "hallucinations": [],
+  "rationale": "Gold requires S0154 plus 73 USES-related technique ids (must_include_ids + must_include_related). The evidence record for S0154 lists exactly 73 related techniques and all 73 gold ids are present in that neighbourhood, so the pipeline's retrieval was complete. The narrative correctly states 'Cobalt Strike (S0154) utilizes 73 distinct ATT&CK techniques' (exact match to gold count) and names 15 example ids (T1021.004, T1055.001, T1059.001, T1071.001, T1090.001, T1105, T1550.002, T1027, T1046, T1003.001, T1564.010, T1078.003, T1569.002, T1021.001, T1518), every one of which is verified in both the gold must_include_related list and the retrieved evidence -- zero fabricated ids, no invented counts or aliases. However, the answer does not enumerate the remaining 58 of the 73 gold-required technique ids; it only gestures at them ('the remaining identifiers ... are also directly linked ... documented in the structured claims'), and the single delivered claim object's entity_ids field cites only S0154, not the individual techniques. Since the question asks 'which techniques does S0154 use', a fully correct answer should surface all (or substantially more of) the 73 required ids rather than a 15-id sample, even though the sample and count are perfectly faithful. This is a completeness gap, not a fabrication, so verdict is PARTIAL: correct and fully grounded as far as it goes, but incomplete relative to the gold requirement."
+}

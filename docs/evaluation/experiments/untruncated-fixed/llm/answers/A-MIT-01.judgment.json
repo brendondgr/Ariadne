@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MIT-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires the seed T1047 plus all four mitigation ids M1018, M1026, M1038, M1040 (must_include_ids + must_include_related). The evidence (logic_flow.results[0].records[0].related) contains exactly these four mitigations with matching names: M1038 'Execution Prevention', M1040 'Behavior Prevention on Endpoint', M1018 'User Account Management', M1026 'Privileged Account Management'. The narrative names all four ids with their correct canonical names and summarizes each mitigation's implementation measures (application control/script blocking for M1038, behavioral/exploit prevention for M1040, least privilege/account lifecycle for M1018, credential security/JIT access for M1026) all of which are directly traceable to the corresponding record descriptions in the evidence. No counts, aliases, dates, or facts appear that are absent from the retrieved records. Coverage is 5/5 gold entities (T1047 + 4 mitigations), fully grounded, no hallucinations found."
+}

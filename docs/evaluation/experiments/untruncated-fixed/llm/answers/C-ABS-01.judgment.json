@@ -1,0 +1,12 @@
+{
+  "case_id": "C-ABS-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.15,
+  "faithfulness": 0.9,
+  "groundedness": 0.9,
+  "completeness": 0.33,
+  "gold_expected": 3,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-7] and must_include_related=[CAPEC-66, CAPEC-248] (the standard and meta ancestors of CAPEC-7 via ParentOf/ChildOf). The retrieved record only surfaces CAPEC-7 itself (name 'Blind SQL Injection', Abstraction=Detailed, Status=Draft, description) with an empty 'related' list, so CAPEC-66 and CAPEC-248 are entirely absent from the evidence -- gold_present=1/3. The record's own facets show CHILD_OF direction=out count=1, i.e. CAPEC-7 does have exactly one parent edge in the graph, but the query (elementMap-based project with outE/inE label projections, not id resolution) never resolved that edge's target identity into 'related', so the retrieval pipeline failed to walk the hierarchy despite evidence that an ancestor exists. The narrative and claims are faithful to what was retrieved -- they state only CAPEC-7's own properties and correctly note the related list is empty, with no fabricated ancestor names, aliases, or counts -- so faithfulness/groundedness score high. But the answer fails the actual question asked ('what are its standard and meta ancestors?'): it reports none found rather than CAPEC-66 and CAPEC-248, so correctness is very low. This is a retrieval-depth gap (query stopped at 1 hop / didn't resolve edge targets) that the answer did not compensate for or flag as a limitation beyond the bare empty-list observation."
+}

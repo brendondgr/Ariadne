@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-06",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 2,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is not a negative/abstention case: gold requires the pipeline to correlate CAPEC-37 to ATT&CK techniques T1005 and T1552.004 and their tactics TA0006/TA0009 (min_records: 2 for attack, 1 for capec). The run's own notes show both routed sub-questions (capec, attack) were skipped because the total pipeline timeout was exceeded before they ran (run_meta.status='partial', exit_code=1, wall_s=120.141), so logic_flow.results is empty and evidence_volume.records=0. The answer correctly reports it has no data ('No records were returned by the routed specialists') rather than fabricating anything, so faithfulness and groundedness are high (the abstention is truthful relative to the empty evidence). But correctness/completeness are 0: none of the gold-required ids (T1005, T1552.004, TA0006, TA0009, CAPEC-37 mapping) are surfaced -- deterministic_scores confirms mapping_recall.recall=0.0 with both T1005 and T1552.004 listed as missing, and correlation.recall=0.0. This is a genuine pipeline failure (timeout) masquerading as a clean abstention, not a correct answer."
+}

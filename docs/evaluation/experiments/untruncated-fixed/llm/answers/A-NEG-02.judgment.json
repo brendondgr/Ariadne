@@ -1,0 +1,12 @@
+{
+  "case_id": "A-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (assertions.expect_empty=true, ex_gold.expected=[]) for nonexistent group G9999. logic_flow.results is empty (evidence_volume: 0 results/0 records/0 related), confirming no data was retrieved. The narrative correctly reports 'No records were returned' / 'None of the live graph sources cover this request' and asks the analyst to supply a valid ATT&CK/CAPEC id, without fabricating any technique, mitigation, or property for G9999. The example ids mentioned (T1566, M1017, CAPEC-98) are offered only as illustrative format hints for a follow-up, not asserted facts about G9999, so they are not hallucinations. One caveat: run_meta.notes indicates the sub-question was actually skipped due to a pipeline timeout rather than a query that positively confirmed G9999 does not exist, so the correct abstention is somewhat incidental to process rather than a verified negative lookup; however the observable answer still matches the gold requirement exactly with zero fabricated content, so it is graded CORRECT."
+}

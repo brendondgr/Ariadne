@@ -1,0 +1,12 @@
+{
+  "case_id": "C-SKL-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-163] and must_include_related=[capec:attack-pattern:163:skill:1]; the narrative and claims surface both. The narrative states CAPEC-163 is 'Spear Phishing' and requires exactly one skill, capec:attack-pattern:163:skill:1, described as requiring 'specific knowledge of the victims being targeted, such as which bank is being used by the victims, or websites they commonly log into' — this text is a verbatim match to the related-skill description in logic_flow.results[0].records[0].related[0].description. The claims block additionally cites Abstraction: Detailed and Status: Draft, both exactly matching the record's properties (Abstraction: 'Detailed', Status: 'Draft'). No counts, aliases, or entities appear that are absent from the retrieved evidence (1 record, 1 related skill, matching evidence_volume). Deterministic coverage score in the artifact itself also reports 2/2 gold ids found. Fully grounded, complete, no fabrication."
+}

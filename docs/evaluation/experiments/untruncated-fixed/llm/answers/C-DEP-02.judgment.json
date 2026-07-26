@@ -1,0 +1,12 @@
+{
+  "case_id": "C-DEP-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty: true) because CAPEC-106 is deprecated/excluded at load time. The executed Gremlin query 'g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...' for seed_ids=[\"CAPEC-106\"] returned row_count 0, and logic_flow.results[0].records is empty, confirming CAPEC-106 is genuinely absent from the loaded graph. The answer's narrative and sole abstention correctly report no matching records and invite the analyst to supply a different id, with no fabricated CAPEC-106 properties, aliases, or relationships. This is exactly the abstain-on-negative behavior the gold requires, with zero hallucinations and full provenance (abstention_proof_ok: true, fully_provenanced: true)."
+}

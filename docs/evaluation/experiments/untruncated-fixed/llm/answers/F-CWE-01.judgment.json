@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.45,
+  "faithfulness": 0.95,
+  "groundedness": 0.9,
+  "completeness": 0.4,
+  "gold_expected": 48,
+  "gold_present": 19,
+  "hallucinations": [],
+  "rationale": "CAPEC coverage is complete and correct: all 10 gold CAPEC ids (CAPEC-474, 509, 551, 555, 560, 561, 600, 644, 645, 652) are named individually with correct Abstraction/Status values matching the evidence records, and CWE-522 is stated as the shared weakness. The narrative correctly states the aggregate figure of 'twelve ATT&CK techniques' (matches gold's 12 must_correlate/must_include_ids, verifiable by union of join_values in the q1 CAPEC records), but only 8 of the 12 technique ids are ever explicitly named across the narrative/claims/entity_ids (T1021, T1021.002, T1078, T1110.004, T1114.002, T1133, T1543, T1558) -- T1550.002, T1550.003, T1552.004 and T1558.003 are never surfaced by name, only folded into an unnamed '+5 more' truncation. This is a retrieval artifact: the q2 Cypher only matched label 'Technique', so the 7 sub-techniques among the 12 (e.g. T1021.002, T1558.003) never got a full record/facet fetch, leaving only 5 of 12 techniques with mitigation-count data. Most importantly, the question explicitly asks 'what mitigations apply' and the answer never names a single one of the 25 gold mitigation ids (M1013...M1060, must_include_related under attack) -- it only reports MITIGATES facet counts per technique (verified faithful: T1543=9, T1078=8, T1558=6, T1021=6, T1133=5 all match the evidence facets exactly) and explicitly states 'specific mitigation identifiers are not provided in the retrieved data,' which is true of the evidence but means a full third of the question goes unanswered. No fabricated facts, aliases, counts or ids were found -- every stated number and name traces to logic_flow records/facets, so faithfulness/groundedness are high, but completeness is low (10/10 CAPEC + 1/1 CWE + 8/12 techniques + 0/25 mitigations = 19/48)."
+}

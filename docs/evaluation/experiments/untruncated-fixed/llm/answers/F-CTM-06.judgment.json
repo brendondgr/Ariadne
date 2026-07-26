@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-06",
+  "verdict": "PARTIAL",
+  "correctness": 0.7,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.65,
+  "gold_expected": 17,
+  "gold_present": 11,
+  "hallucinations": [],
+  "rationale": "The narrative correctly identifies all 3 gold-required ATT&CK techniques (T1211, T1542.002, T1556) mapped from CAPEC-665, matching must_correlate and both must_include_ids fields exactly (deterministic_scores confirms mapping_recall=1.0, correlation f1=1.0). For mitigations it reports numerically accurate counts per technique (T1211: 4, T1542.002: 1, T1556: 9), all verified against the evidence's 'related' lists and summing to the full 13 gold mitigations (M1018, M1019, M1022, M1024, M1025, M1026, M1027, M1028, M1032, M1047, M1048, M1050, M1051). However, the question explicitly asks 'what mitigations apply to those techniques,' and the narrative only names 7 of the 13 required mitigation ids by example ('including...') -- M1051, M1050, M1048, M1019, M1047, M1032, M1024 -- omitting M1018, M1022, M1025, M1026, M1027, M1028 entirely from the visible text. Every fact stated (CAPEC-665 Abstraction=Detailed/Status=Stable, technique names, mitigation names/ids, and counts) is fully grounded in logic_flow evidence with no invented identifiers, names, or counts, so faithfulness and groundedness are perfect. Because a material fraction of the gold-required entity set (6/17 overall, all mitigations) is never surfaced to the analyst despite being retrieved, this is a completeness shortfall rather than a fabrication, warranting PARTIAL rather than CORRECT or INCORRECT."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-05",
+  "verdict": "PARTIAL",
+  "correctness": 0.45,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.48,
+  "gold_expected": 33,
+  "gold_present": 16,
+  "hallucinations": [],
+  "rationale": "CAPEC coverage is complete and accurate: all 8 required CAPEC ids (CAPEC-49/55/70/112/509/555/561/565) are surfaced with correct Abstraction/Status properties matching logic_flow, and each is correctly linked to CWE-521 (the sole must_include_related). The narrative correctly states the CAPEC set maps to 'a total of ten ATT&CK techniques and subtechniques' (verified: the 10 distinct join_values across the 8 CAPEC records exactly equal gold's must_correlate/attack.must_include_ids list), but only names 7 of the 10 explicitly in prose/claims (T1021, T1021.002, T1078.001, T1110, T1110.001, T1133, T1558.003), omitting T1110.002, T1110.003, T1114.002. Worse, the attack sub-query (q2) itself only retrieved 3 Technique records (T1021, T1110, T1133) because it matched only label :Technique and missed :SubTechnique nodes, so only 3 of the 10 required T-numbers achieve genuine cross-source correlation (matches deterministic_scores.correlation.recall=0.3). For mitigations, the answer surfaces zero of the 14 required mitigation ids (M1018, M1021, M1026, M1027, M1030, M1032, M1035, M1036, M1037, M1041, M1042, M1047, M1051, M1060) -- it honestly reports only facet counts (T1021:6, T1110:4, T1133:5, all verified correct against logic_flow facets) and explicitly states 'the specific mitigation identifiers are not provided in the retrieved records', which is true given the evidence never returned actual Mitigation nodes. No fabricated facts were found -- every abstraction/status/version/count/correlation claim checked against logic_flow matches exactly -- so faithfulness and groundedness are high, but the answer is materially incomplete on two of the three sub-questions (technique enumeration and, especially, mitigations), warranting PARTIAL rather than CORRECT."
+}
