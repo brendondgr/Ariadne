@@ -1,0 +1,14 @@
+{
+  "case_id": "A-CMP-TEC-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.75,
+  "faithfulness": 0.85,
+  "groundedness": 0.9,
+  "completeness": 0.6,
+  "gold_expected": 5,
+  "gold_present": 3,
+  "hallucinations": [
+    "Narrative groups techniques into tactic-style categories ('reconnaissance methods', 'execution and persistence techniques', 'data access and collection techniques', 'initial access and credential theft methods') that are not present anywhere in the retrieved evidence -- every technique record has properties: {} and facets: [] (no tactic/category field), so these categorizations are inferred domain knowledge, not grounded in the logic_flow evidence."
+  ],
+  "rationale": "The retrieval correctly returned all 24 C0024 USES-Technique edges (query 'MATCH (c:Campaign)-[:USES]->(t:Technique)...'), exactly matching the ex_gold expected pool of 24 IDs, and the narrative correctly reports the total count (24) with no incorrect IDs or names -- every technique name it cites (T1680 Local Storage Discovery, T1018 Remote System Discovery, T1087 Account Discovery, T1047 WMI, T1078 Valid Accounts, T1005 Data from Local System, T1213 Data from Information Repositories, T1190 Exploit Public-Facing Application, T1555 Credentials from Password Stores, T1105 Ingress Tool Transfer, T1539 Steal Web Session Cookie, T1070 Indicator Removal) matches the evidence record names exactly. However, of the gold's 5 must_include_ids (T1005, T1018, T1047, T1057, T1069), the narrative prose only explicitly names 3 (T1005, T1018, T1047); T1057 (Process Discovery) and T1069 (Permission Groups Discovery) are never mentioned by ID or name in the narrative, even though the closing line 'completing the full set of 24 techniques' implies they are folded into the unnamed remainder. The underlying claims/citations object does list all 24 IDs (including T1057 and T1069) as citations, so an analyst who follows the citation links would find them, but the prose answer itself -- the artifact under test -- fails to surface 2 of the 5 gold-required techniques by name. Combined with the invented (evidence-unsupported) tactic-category framing, this is a partial rather than fully correct or fully faithful answer."
+}

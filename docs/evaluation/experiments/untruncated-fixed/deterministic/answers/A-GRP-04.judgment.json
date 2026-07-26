@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The gold requires must_include_ids T1005, T1020, T1027, T1039, T1046; all five appear verbatim in both the enumeration claim and the 13-record evidence set returned by the Cypher query MATCH (g:Group)-[:USES]->(t:Technique). The full evidence set of 13 technique ids (T1046, T1537, T1027, T1039, T1199, T1102, T1083, T1020, T1005, T1202, T1082, T1119, T1080) is an exact match, set-for-set, with the gold's ex_gold expected pool of 13 techniques -- no missing ids, no extras. Every id cited in the claims traces directly to a record in logic_flow.results[0].records with matching primary_id and name (e.g. T1046='Network Service Discovery', T1005='Data from Local System'), and the deterministic_scores block independently confirms coverage=1.0 and citation_provenance_rate=1.0. No fabricated ids, names, counts, or aliases were found; the narrative's stated count of 13 matches row_count=13 from the execute trace."
+}

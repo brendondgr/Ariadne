@@ -1,0 +1,12 @@
+{
+  "case_id": "C-ABS-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "The question asks to walk the abstraction hierarchy up from CAPEC-16, naming its standard and meta ancestors. The gold requires must_include_ids=[CAPEC-16] and must_include_related=[CAPEC-49, CAPEC-112]. The evidence (logic_flow.results[0].records[0]) shows CAPEC-16 (Dictionary-based Password Attack, Abstraction: Detailed, Status: Draft) related to CAPEC-49 (role: standard, abstraction: Standard) and CAPEC-112 (role: meta, abstraction: Meta) via CHILD_OF traversal. The claims/narrative state exactly this: 'CAPEC-16 ... has 2 AttackPatterns: CAPEC-49 (standard), CAPEC-112 (meta)', plus the correct Abstraction/Status properties for CAPEC-16 itself. All three gold ids are surfaced with correctly-labeled roles matching the evidence's related[].role field verbatim, and no name, count, or property appears that isn't in the retrieved record. This matches the deterministic_scores.coverage (3/3, 1.0) already computed in the artifact."
+}

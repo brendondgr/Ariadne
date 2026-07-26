@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 13,
+  "gold_present": 13,
+  "hallucinations": [],
+  "rationale": "The answer (narrative + claims) names all 5 gold-required correlate/CAPEC-mapped techniques (T1039, T1552.001, T1552.003, T1552.004, T1552.006), matching CAPEC-639's evidence record's join_values exactly. It also surfaces all 8 gold-required mitigations (M1015, M1017, M1022, M1027, M1028, M1041, M1047, M1051). Per-technique mitigation assignments are verified against the attack-source evidence: T1552.004 -> M1041, M1047, M1022, M1027 (matches record); T1552.003 -> M1028 (matches); T1552.001 -> M1047, M1022, M1027, M1017 (matches); T1552.006 -> M1051, M1015, M1047 (matches); T1039 -> none, and the answer correctly states 'no mitigations for T1039', matching the empty related[] for that record. The narrative's shared-mitigation observation (T1552.004 and T1552.001 share M1047, M1022, M1027) is also accurate. No invented ids, names, or counts were found; all 5 correlation claims (T1039, T1552.001/.003/.004/.006 corroborated across capec and attack) match gold's must_correlate list exactly (5/5, matching deterministic_scores.correlation exact=true, f1=1.0). No abstentions were needed since this is not a negative case (min_records>=1, techniques do exist)."
+}

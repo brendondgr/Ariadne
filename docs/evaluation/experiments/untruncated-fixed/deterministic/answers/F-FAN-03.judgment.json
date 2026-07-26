@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-03",
+  "verdict": "CORRECT",
+  "correctness": 0.95,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 17,
+  "gold_present": 17,
+  "hallucinations": [],
+  "rationale": "All gold assertions are satisfied by the evidence and stated in the answer: both CAPEC-37 and CAPEC-639 are surfaced with correct Abstraction/Status (CAPEC-639: Detailed/Stable; CAPEC-37: Detailed/Draft, matching logic_flow properties). The deduplicated ATT&CK union (T1005, T1039, T1552.001, T1552.003, T1552.004, T1552.006) is fully covered: CAPEC-639's 5 taxonomy entries (1552.001/.003/.004/.006, 1039) plus CAPEC-37's 2 (1005, 1552.004) union to exactly the 6 required T-numbers, and the claims list gives each one explicitly. All 6 correlation claims match gold's must_correlate list exactly (T1005, T1039, T1552.001, T1552.003, T1552.004, T1552.006), consistent with the pipeline's own deterministic_scores.correlation (f1=1.0). Mitigation coverage per technique matches logic_flow related[] exactly: T1005->M1057; T1552.004->M1041,M1047,M1022,M1027; T1552.003->M1028; T1552.001->M1047,M1022,M1027,M1017; T1552.006->M1051,M1015,M1047; T1039 correctly has no mitigation claimed (evidence shows related:[] for T1039). The union of stated mitigations is exactly gold's must_include_related set {M1015,M1017,M1022,M1027,M1028,M1041,M1047,M1051,M1057} -- all 9 present, none invented. No fabricated names, counts, or aliases were found; every stated count of related items matches the length of the corresponding related array in logic_flow. Minor deduction: the narrative's first summary sentence ('ATT&CK mappings: T1005, T1039, T1552.001, T1552.003, T1552.004.') omits T1552.006, though it is correctly enumerated twice later in the same narrative (CAPEC-639's taxonomy list and the T1552.006 mitigation claim), so no information is actually missing from the full answer, only a stylistic inconsistency in the lead sentence."
+}

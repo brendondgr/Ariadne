@@ -1,0 +1,12 @@
+{
+  "case_id": "A-EXC-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative/adversarial case: T1002 is a retired technique excluded at load, and gold asserts expect_empty=true with expected=[] for the node pool. The executed Cypher (MATCH (n:Technique) WHERE n.attack_id IN ['T1002'] ...) ran cleanly (ok=true, partial=false, error=null) and returned row_count=0, records=[]. The answer's narrative correctly states 'The routed sources returned no matching records for this question' and offers to help if the analyst names a different id, with a matching abstention record citing the exact query and the fact it 'ran cleanly and returned no matching records for: What is ATT&CK technique T1002?'. Claims list is empty (no fabricated entities), matching the empty gold expectation. No ids, names, or properties are invented anywhere in the narrative or claims. This is a textbook correct abstention on an excluded/retired technique."
+}

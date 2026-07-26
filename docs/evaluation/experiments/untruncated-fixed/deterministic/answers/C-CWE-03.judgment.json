@@ -1,0 +1,12 @@
+{
+  "case_id": "C-CWE-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-66] and must_include_related=[CWE-1286, CWE-89]. The claims (used as the answer since narrative equals claims text in this deterministic arm) state exactly these: 'Found 1 CAPEC record(s): CAPEC-66' and 'CAPEC-66 (SQL Injection) has 2 Weakness: CWE-1286, CWE-89.' All three required ids are surfaced. The evidence (logic_flow.results[0].records[0]) confirms CAPEC-66 has related=[CWE-1286, CWE-89] with label Weakness, and properties Abstraction=Standard, Status=Draft, name=SQL Injection -- all matching what the answer states verbatim, including the Abstraction/Status detail which is correctly grounded (not required by gold but not fabricated either). No invented facts, aliases, or counts; the count '2 Weakness' matches len(related)=2. Fully grounded and complete."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 45,
+  "gold_present": 45,
+  "hallucinations": [],
+  "rationale": "All 12 gold CAPEC ids (CAPEC-49, CAPEC-55, CAPEC-70, CAPEC-509, CAPEC-555, CAPEC-560, CAPEC-561, CAPEC-565, CAPEC-600, CAPEC-644, CAPEC-645, CAPEC-652) are surfaced in the claims, each with its exact name and an explicit CWE-308 relation confirmed against logic_flow['results'] capec records (every record's related list is literally ['CWE-308']). All 14 must_correlate ATT&CK T-numbers (T1021, T1021.002, T1078, T1078.001, T1110.001-004, T1114.002, T1133, T1550.002/.003, T1558, T1558.003) are present as ATT&CK records and each is explicitly stated as 'corroborated across attack and capec' -- matching the join_values field on the CAPEC evidence records (e.g. CAPEC-560.join_values=['T1078']), so the cross-source correlation requirement is fully met. All 19 gold mitigation ids (M1013,M1015,M1017,M1018,M1021,M1026,M1027,M1030,M1032,M1035,M1036,M1037,M1041,M1042,M1043,M1047,M1051,M1052,M1060) appear across the per-technique enumeration claims, and cross-checking each technique's claimed mitigation set against logic_flow's 'related' arrays for that ATT&CK record shows an exact match with no additions or omissions (e.g. T1078 claimed M1013/M1015/M1017/M1018/M1026/M1027/M1032/M1036 = evidence exactly; T1558.003 claimed M1026/M1027/M1041 = evidence exactly). The narrative correctly summarizes counts (twelve CAPEC, fourteen ATT&CK techniques, nineteen mitigations) and names representative examples from each category without inventing any id, alias, count, or property not present in the retrieved evidence. No fabricated facts found; this is a fully grounded, complete answer to the federated CWE-308 -> CAPEC -> ATT&CK -> mitigation question."
+}

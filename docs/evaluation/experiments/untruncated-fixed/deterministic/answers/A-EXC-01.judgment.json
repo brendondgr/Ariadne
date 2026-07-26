@@ -1,0 +1,12 @@
+{
+  "case_id": "A-EXC-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative case: gold expects an empty result (expect_empty: true, ex_gold.expected: []) for retired technique T1002, which was excluded at load. The retrieval query executed cleanly against the attack source (MATCH n:Technique WHERE n.attack_id IN ['T1002'] ...) and returned row_count 0 / records: []. The pipeline correctly abstained: claims is empty, and the abstention explicitly states 'the executed query ran cleanly and returned no matching records for: What is ATT&CK technique T1002?'. The narrative correctly reports no matching records and does not fabricate any technique data, aliases, tactics, or CWE/CAPEC links for T1002. No entities were required by gold (gold_expected=0) and none were fabricated (gold_present=0, matching). This is exactly the correct behavior for a NEG-style exclusion test."
+}

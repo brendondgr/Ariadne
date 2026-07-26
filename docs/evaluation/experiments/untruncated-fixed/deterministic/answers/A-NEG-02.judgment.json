@@ -1,0 +1,12 @@
+{
+  "case_id": "A-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result for nonexistent group G9999 (assertions.expect_empty=true, ex_gold.expected=[]). The executed query 'MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN $ids ...' with seed_ids=['G9999'] returned row_count 0 (logic_flow.results[0].records=[], evidence_volume.records=0). The answer's claims array is empty and it abstains: 'The attack source doesn't establish this — the executed query ran cleanly and returned no matching records for: Which techniques does group G9999 use?' The narrative correctly reports no matching records and invites the analyst to supply a valid id, without fabricating any group, technique, or count. No entity ids, names, or properties are asserted beyond the example ids offered as generic guidance (T1566, M1017, CAPEC-98), which are not presented as findings about G9999 and thus are not hallucinations. This is a fully correct, faithful, grounded abstention matching the negative gold expectation."
+}

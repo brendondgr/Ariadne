@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires: must_correlate T1110.003; capec assertion CAPEC-565 -> related T1110.003; attack assertion T1110.003 -> related TA0006 (exactly 1 record). The narrative states CAPEC-565 maps to T1110.003 (Brute Force:Password Spraying) and that T1110.003 belongs to tactic TA0006 (Credential Access), concluding the techniques belong exclusively to Credential Access. All three gold-required ids (T1110.003 correlation, CAPEC-565->T1110.003 mapping, T1110.003->TA0006 tactic) are surfaced and match the logic_flow records exactly: q1 record CAPEC-565 has related capec:taxonomy:ATTACK:1110.003 (Brute Force:Password Spraying), and q2 record T1110.003 has related TA0006 (Credential Access) with exactly 1 row, satisfying max_records:1. No names, counts, or ids in the narrative are absent from the evidence; the deterministic_scores block independently confirms exact correlation (f1=1.0) and mapping_recall=1.0. No fabricated content."
+}

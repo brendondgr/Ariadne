@@ -1,0 +1,12 @@
+{
+  "case_id": "A-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty: true) for nonexistent group G9999. The logic_flow shows the query 'MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN $ids ...' with seed_ids ['G9999'] executed cleanly (ok: true) and returned row_count 0, records []. The answer's narrative correctly states 'The routed sources returned no matching records for this question' and offers to accept a valid id (T1566, M1017, CAPEC-98 as examples, not asserted as facts). The abstention entry accurately mirrors the executed query and reports zero matching records rather than fabricating any technique or group data. No entities, counts, or names were invented; claims list is empty as appropriate for a true-negative case."
+}

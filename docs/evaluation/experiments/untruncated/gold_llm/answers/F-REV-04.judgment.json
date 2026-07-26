@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-555 (must_include_ids), the T1021 cross-source correlation (must_correlate/must_include_related), and the ATT&CK technique T1021 named 'Remote Services' (must_include_ids/expect_names). The narrative states all three: 'exactly one CAPEC pattern maps to ATT&CK technique T1021, which is CAPEC-555, titled Remote Services with Stolen Credentials' and 'ATT&CK technique T1021, named Remote Services, covers the use of valid accounts to log into services that accept remote connections... Linux, macOS, Windows, IaaS, and ESXi.' Both descriptions match the retrieved records verbatim (CAPEC-555 properties: Status Stable, Abstraction Standard, description re RDP/telnet/SSH/VNC stolen credentials; T1021 record: name 'Remote Services', x_mitre_platforms Linux/macOS/Windows/IaaS/ESXi, description re Valid Accounts/telnet/SSH/VNC). No count, alias, or property appears that is absent from logic_flow.results. The claims list independently corroborates the same facts with correct citations to CAPEC-555 and T1021. deterministic_scores confirm exact correlation (precision/recall/f1 = 1.0) and full mapping_recall (1/1). No hallucinations found; this is a fully grounded, complete, correct answer."
+}

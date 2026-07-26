@@ -1,0 +1,12 @@
+{
+  "case_id": "A-TAC-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The query MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique) returned exactly 18 records, which is an exact match to the gold's ex_gold expected pool of 18 technique ids (T1112, T1207, T1222, T1484, T1553, T1556, T1578, T1599, T1600, T1601, T1647, T1666, T1685, T1686, T1687, T1688, T1689, T1690). All 5 must_include_ids (T1112, T1207, T1222, T1484, T1553) are present in both the retrieved records and the answer's enumeration claim, satisfying min_records:5. The deterministic answer's enumeration claim lists all 18 technique ids verbatim and each is cited with a matching primary_id in the evidence records, so every id is grounded. No extra or fabricated technique ids, names, counts, or properties appear beyond what logic_flow.results[0].records contains -- names in the claim text are not asserted (only ids are listed), so there is no invented attribute value either. This is a clean, fully correct and fully faithful answer."
+}

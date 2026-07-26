@@ -1,0 +1,12 @@
+{
+ "case_id": "F-CWE-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 47,
+ "gold_present": 47,
+ "hallucinations": [],
+ "rationale": "The deterministic claims fully answer the question. All 10 gold CAPEC ids (CAPEC-474, 509, 551, 555, 560, 561, 600, 644, 645, 652) are surfaced with correct Abstraction/Status values and the CWE-522 relation, verified byte-for-byte against logic_flow.results[0].records properties (e.g. CAPEC-474 Abstraction=Detailed/Status=Draft, CAPEC-560 Abstraction=Meta/Status=Stable). All 12 gold ATT&CK ids (T1021, T1021.002, T1078, T1110.004, T1114.002, T1133, T1543, T1550.002, T1550.003, T1552.004, T1558, T1558.003) appear as enumeration claims with the exact mitigation sets from logic_flow.results[1].records related lists, and their union equals exactly the 25 gold mitigations (M1013-M1060 list) with none missing or extra. All 12 required must_correlate T-numbers are stated as correlation claims, matching the CAPEC records' join_values (e.g. CAPEC-555 joins T1021/T1114.002/T1133, CAPEC-474 joins T1552.004) with no cross-source mismatch. No claim references an id, count, name, abstraction/status value, or mitigation absent from the retrieved evidence."
+}

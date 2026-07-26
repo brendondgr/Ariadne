@@ -38,7 +38,11 @@ from pathlib import Path
 from typing import Any
 
 DEFAULT_ROOT = "docs/evaluation/experiments/untruncated"
-ARMS = ("deterministic", "llm")
+# ARM C ("gold_llm") is the control that makes the other two readable: it is the
+# committed baseline's exact configuration (gold-replay plan + LLM drafter + LLM
+# synthesis) with ONLY the un-truncation profile added, so C − baseline isolates
+# un-truncation, A − C isolates the composer, and B − C isolates LLM planning.
+ARMS = ("deterministic", "llm", "gold_llm")
 
 # -- the un-truncation profile ----------------------------------------------
 # Every one of these keys is read *at call time* by the bound it names, with the
@@ -80,7 +84,20 @@ TASK_MAX_TRAVERSAL_DEPTH = 3  # unchanged: depth is the question's shape, not a 
 def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[str, str]:
     """The full env overlay for one arm (bounds + that arm's LLM posture)."""
     env = dict(UNTRUNCATED_ENV)
-    if arm == "deterministic":
+    if arm == "gold_llm":
+        # Match the committed baseline byte-for-byte except the bounds: the .env
+        # LLM seams stay exactly as generate_e2e.py reads them.
+        env.update({
+            "PLANNER_LLM_ENABLED": "false",   # gold plan is replayed; planner never runs
+            "SPECIALIST_LLM_ENABLED": "true",
+            "SYNTHESIS_LLM_ENABLED": "true",
+            "SPECIALIST_LLM_MODEL": llm_model,
+            "SYNTHESIS_LLM_MODEL": llm_model,
+            "SPECIALIST_LLM_MAX_TOKENS": str(llm_max_tokens),
+            "SYNTHESIS_LLM_MAX_TOKENS": str(llm_max_tokens),
+            "SYNTHESIS_LLM_THINKING_BUDGET": str(llm_max_tokens // 2),
+        })
+    elif arm == "deterministic":
         # Reproducible mode: no LLM in planning, drafting, or synthesis.
         env.update({
             "PLANNER_LLM_ENABLED": "false",
@@ -114,8 +131,44 @@ def apply_env(overlay: dict[str, str]) -> None:
     os.environ.update(overlay)
 
 
+#: Assertions that make a question about *which entities*, not *how many*.
+_CONTENT_ASSERTIONS = (
+    "must_include_ids", "must_include_related", "must_correlate",
+    "expect_names", "expect_properties",
+)
+
+
+def is_bounded_scan(entry: dict) -> bool:
+    """True when the entry's gold is *purely quantitative* — a record-count window.
+
+    Nearly every entry carries ``max_records`` (a lookup asserts 1), so the cap
+    alone means nothing. A **scan** is the case where the count IS the whole
+    requirement: ``{"min_records": 250, "max_records": 300}`` with no id, name or
+    property assertion. There the row limit is the answer's specification ("a
+    label scan must come back bounded"), not an incidental sampling cap, so
+    lifting it would violate the contract the question exists to test. Every other
+    question keeps the full un-truncation.
+    """
+    def _scan_like(asserts: Any) -> bool:
+        if not isinstance(asserts, dict):
+            return False
+        if asserts.get("max_records") is None:
+            return False
+        if any(asserts.get(k) for k in _CONTENT_ASSERTIONS):
+            return False
+        return True
+
+    asserts = entry.get("assertions") or {}
+    if _scan_like(asserts):
+        return True
+    return any(_scan_like(v) for v in asserts.values())
+
+
 def lift_task_limits(entry: dict) -> dict:
-    """Return ``entry`` with every authored row cap lifted (in memory only)."""
+    """Return ``entry`` with every *sampling* row cap lifted (in memory only)."""
+    if is_bounded_scan(entry):
+        return entry
+
     def _lift(limits: dict | None) -> dict:
         out = dict(limits or {})
         out["max_result_rows"] = TASK_MAX_RESULT_ROWS
@@ -191,12 +244,15 @@ class _RouterPool:
         return state
 
 
-def run_deterministic(entry: dict, kind: str, pool: _RouterPool) -> tuple[Any, Any, dict]:
-    """Replay the authored task/plan with no LLM anywhere. Returns (evidence, answer, extra)."""
+def _run_gold_replay(entry: dict, kind: str, pool: _RouterPool, *, llm_synthesis: bool
+                     ) -> tuple[Any, Any, dict]:
+    """Replay the authored task/plan; synthesis is deterministic or the LLM narrator."""
     from utils.evaluation.score_e2e import run_federated, run_single
     from utils.synthesis.config import SynthesisConfig
 
-    synth = SynthesisConfig()  # deterministic composer; verifier always on
+    # from_env() turns the narrator on (ARM C, the baseline's config); the bare
+    # constructor is deterministic-composer-only (ARM A).
+    synth = SynthesisConfig.from_env() if llm_synthesis else SynthesisConfig()
     state = pool.get()
     if kind == "federated":
         router = state["routers"][entry.get("partial_mode")]
@@ -206,7 +262,20 @@ def run_deterministic(entry: dict, kind: str, pool: _RouterPool) -> tuple[Any, A
         if specialist is None:
             raise RuntimeError(f"no specialist for source {kind!r}")
         evidence, answer = run_single(entry, specialist, synth)
-    return evidence, answer, {"planner": "gold-replay", "synthesis": "deterministic"}
+    return evidence, answer, {
+        "planner": "gold-replay",
+        "synthesis": "llm" if llm_synthesis else "deterministic",
+    }
+
+
+def run_deterministic(entry: dict, kind: str, pool: _RouterPool) -> tuple[Any, Any, dict]:
+    """ARM A — gold-replay plan, no LLM anywhere."""
+    return _run_gold_replay(entry, kind, pool, llm_synthesis=False)
+
+
+def run_gold_llm(entry: dict, kind: str, pool: _RouterPool) -> tuple[Any, Any, dict]:
+    """ARM C — the baseline's configuration, un-truncated: gold plan + LLM synthesis."""
+    return _run_gold_replay(entry, kind, pool, llm_synthesis=True)
 
 
 # -- ARM B: LLM-planned + LLM synthesis -------------------------------------
@@ -270,7 +339,11 @@ def run_llm(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
 # -- driver -----------------------------------------------------------------
 
 
-RUNNERS = {"deterministic": run_deterministic, "llm": run_llm}
+RUNNERS = {
+    "deterministic": run_deterministic,
+    "llm": run_llm,
+    "gold_llm": run_gold_llm,
+}
 
 
 def _one(entry: dict, kind: str, arm: str, pool: Any) -> dict[str, Any]:
@@ -310,7 +383,10 @@ def run_arm(
 
     out = Path(root) / arm / "answers"
     out.mkdir(parents=True, exist_ok=True)
-    pool = _RouterPool(llm_enabled=False) if arm == "deterministic" else None
+    # ARM B builds its own specialists inside iter_pipeline; the gold-replay arms
+    # share a thread-local router set (ARM C keeps the .env LLM drafter, as the
+    # baseline did; ARM A forces it off).
+    pool = None if arm == "llm" else _RouterPool(llm_enabled=(arm == "gold_llm"))
 
     manifest: list[dict[str, Any]] = []
     total = len(work)

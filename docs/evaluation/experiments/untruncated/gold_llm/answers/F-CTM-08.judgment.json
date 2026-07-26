@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-08",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "Gold requires the CAPEC->ATT&CK correlation on T1550.002, and the four ATT&CK mitigations M1018, M1026, M1051, M1052 for that technique. The narrative states 'CAPEC-644 maps directly to the ATT&CK technique T1550.002 (Use Alternate Authentication Material:Pass The Hash)' which matches the evidence record's related TaxonomyEntry name exactly (capec:taxonomy:ATTACK:1550.002, name 'Use Alternate Authentication Material:Pass The Hash'). It then names all four mitigations verbatim by id (M1051, M1026, M1018, M1052), matching the attack-source record's related list exactly (no missing, no extras, no invented mitigation ids or names). The must_correlate id T1550.002 is surfaced and the correlation claim in the answer's claims list explicitly states it is corroborated across capec and attack. deterministic_scores confirms exact correlation (f1 1.0) and mapping_recall 1.0. No counts, names, or ids in the narrative or claims are absent from logic_flow.records/related; every stated fact traces directly to the two retrieved records. This is a complete, fully grounded answer with no hallucinations."
+}

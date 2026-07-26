@@ -1,0 +1,12 @@
+{
+  "case_id": "C-DEP-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty=true, ex_gold.expected=[]) since CAPEC-91 is deprecated/excluded at load. The Gremlin query executed cleanly (row_count 0, 0 records) and the deterministic composer correctly abstained: narrative states 'The routed sources returned no matching records for this question' with no fabricated entity, and the abstentions array records the executed query and honest 'doesn't establish this' statement for CAPEC-91. No ids, names, or properties were invented. This exactly matches the negative-case expectation with full provenance (citation_provenance_rate 1.0, abstention_proof_ok true)."
+}

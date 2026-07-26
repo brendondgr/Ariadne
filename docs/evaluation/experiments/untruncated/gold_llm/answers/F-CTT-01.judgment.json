@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The narrative states CAPEC-98 (Phishing) maps to T1566 and T1598 (matching gold capec.must_include_ids=CAPEC-98 and must_include_related=[T1566,T1598], and the logic_flow q1 record showing join_values [T1566, T1598] with related TaxonomyEntry names 'Phishing' and 'Phishing for Information'). It then correctly states T1566 belongs to Initial Access (TA0001) and T1598 belongs to Reconnaissance (TA0043), exactly matching the q2 attack records (T1566 -> related TA0001 'Initial Access'; T1598 -> related TA0043 'Reconnaissance') and gold's attack.must_include_related=[TA0001,TA0043]. Both required T-numbers (must_correlate T1566, T1598) are stated and correctly correlated per deterministic_scores.correlation (precision/recall/f1 = 1.0). All five gold-required identifiers (CAPEC-98, T1566, T1598, TA0001, TA0043) are surfaced, and every name/id used (Phishing, Phishing for Information, Initial Access, Reconnaissance) is verbatim from the retrieved evidence with no invented facts, counts, or aliases. This is a fully grounded, complete, correct answer."
+}

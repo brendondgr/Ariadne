@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty correlation (must_correlate: [], expect_no_correlation: true, capec.expect_empty: true, attack.expect_dependency_skip: true). The evidence confirms the capec query 'g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...out(\"MAPS_TO\")...taxonomy_name=ATTACK' executed cleanly against seed CAPEC-116 and returned row_count 0 (logic_flow.results[0]), and the attack sub-question (q2) was correctly skipped because q1 produced no join values (logic_flow.results[1], trace step 'dependency'). The narrative/claims (no LLM narrative content beyond the deterministic composer's abstention text) correctly states 'The routed sources returned no matching records for this question' and both abstentions accurately describe the empty capec result and the dependency skip, with no fabricated technique IDs, mitigation IDs, or names introduced. deterministic_scores.correlation shows negative=true, exact=true, precision/recall/f1=1.0, matching the gold's negative-case expectation. No hallucinations found; answer fully matches gold."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MIT-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids T1047 and must_include_related M1018, M1026, M1038, M1040. The evidence record for T1047 (Windows Management Instrumentation) lists exactly these 4 related mitigations via MITIGATES edges, and the answer's claims enumerate T1047 plus all four: M1038, M1040, M1018, M1026 (claim text lists 'M1038, M1040, M1018, M1026'). No additional or fabricated mitigation ids/names/properties appear beyond what the single retrieved record and its 4 related nodes contain, so every stated fact is directly traceable to logic_flow.results[0].records[0]. deterministic_scores.coverage also confirms 5/5 gold found. This is a full, faithful, grounded answer with no missing entities and no invented details."
+}

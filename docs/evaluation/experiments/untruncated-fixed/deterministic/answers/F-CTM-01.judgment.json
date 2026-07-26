@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-01",
+  "verdict": "CORRECT",
+  "correctness": 0.97,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 27,
+  "gold_present": 27,
+  "hallucinations": [],
+  "rationale": "CAPEC-150's 6 ATT&CK mappings (T1003, T1119, T1213, T1530, T1555, T1602) are all surfaced, matching gold capec.must_include_related and must_correlate exactly; all 6 required ATT&CK technique records (attack.min/max_records=6) are retrieved and named. The union of per-technique mitigations stated across the answer's enumeration claims (T1003: 9, T1602: 6, T1119: 2, T1530: 6, T1555: 3, T1213: 7) equals exactly the 20 mitigation ids in gold's attack.must_include_related (M1015-M1060 set), with every count matching the evidence's related-array length precisely. CAPEC-150 properties (Abstraction: Standard, Status: Draft) are quoted verbatim from the record. Cross-source correlation on all 6 T-numbers is explicitly stated. The only flaw is the opening summary sentence naming only 5 of 6 mapped techniques (omitting T1602), but T1602 is correctly included in every subsequent sentence/claim (taxonomy enumeration, ATT&CK record list, its own mitigation enumeration, and the correlation claim), so no information is actually missing from the full answer -- a minor phrasing slip, not a hallucination or omission."
+}

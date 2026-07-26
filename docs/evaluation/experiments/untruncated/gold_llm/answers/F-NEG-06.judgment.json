@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an honest empty correlation for CAPEC-18 -> ATT&CK (expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true, must_correlate=[]). The evidence shows q1's capec_maps_to query correctly resolved seed CAPEC-18 and executed the AttackPattern-MAPS_TO->TaxonomyEntry(ATTACK) traversal, returning row_count=0 (traces: resolve.seed_ids=['CAPEC-18'], execute.row_count=0, assess.empty_with_seeds=['CAPEC-18']). q2 (ATT&CK mitigations) correctly skipped via dependency trace 'producer q1: it returned no join values', matching expect_dependency_skip. The narrative/abstentions state no matching records were found for both sources and invite the analyst to supply a specific id, without naming any technique, mitigation, or T-number. deterministic_scores.correlation shows negative=true, exact=true, precision/recall/f1=1.0, n_expected=0, n_got=0, and abstention_proof_ok=true, confirming a fabrication-free abstain. No entity, alias, count, or correlation is invented anywhere in the answer."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-CWE-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-66] and must_include_related=[CWE-1286, CWE-89]. The single retrieved record (logic_flow.results[0].records[0]) is CAPEC-66 (name 'SQL Injection', Status Draft, Abstraction Standard) with related=[cwe:1286/CWE-1286, cwe:89/CWE-89] -- exactly matching the gold's expected neighbor set (ex_gold.expected). The narrative states CAPEC-66 is SQL Injection and 'exploits exactly two CWE weaknesses ... CWE-1286 and CWE-89', which is fully supported by and complete against the evidence; the claims array independently corroborates the same two CWE ids via enumeration. No name, count, status, or id in the narrative is unsupported by the evidence -- 'exactly two' matches the row_count of 2 in the execute trace. All 3 gold entities (CAPEC-66, CWE-1286, CWE-89) are surfaced."
+}

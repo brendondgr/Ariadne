@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires T1047, DET0364, and AN1031 (must_include_ids + must_include_related). The evidence (logic_flow.results[0].records[0]) contains exactly one Technique record (T1047, 'Windows Management Instrumentation') with two related items: DET0364 ('Behavioral Detection Strategy for WMI Execution Abuse on Windows') and AN1031 ('Analytic 1031', described as detecting WMI abuse for local/remote command execution via a multi-event chain of process creation, command execution, and network connection). The narrative names all three ids and accurately paraphrases AN1031's description almost verbatim from the evidence ('multi-event chain that includes process creation, command execution, and any corresponding network connections'), and correctly labels DET0364 as the behavioral detection strategy. No counts, names, or properties are invented beyond the evidence; the deterministic_scores.coverage (3/3=1.0) and provenance (2/2 citations compliant) corroborate full grounding. This is a clean, fully correct, fully faithful answer with no hallucinations."
+}

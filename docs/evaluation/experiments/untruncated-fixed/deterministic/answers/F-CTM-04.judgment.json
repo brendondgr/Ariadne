@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 14,
+  "gold_present": 14,
+  "hallucinations": [],
+  "rationale": "The answer (deterministic claims, since narrative is thin/mechanical) correctly surfaces CAPEC-639 (Probe System Files, Abstraction: Detailed, Status: Stable) and all 5 required ATT&CK mappings (T1039, T1552.001, T1552.003, T1552.004, T1552.006), matching gold.capec.must_include_related and gold.must_correlate exactly (deterministic_scores confirm correlation precision/recall/f1=1.0, exact=true). For mitigations, the answer enumerates T1552.004->{M1041,M1047,M1022,M1027}, T1552.003->{M1028}, T1552.001->{M1047,M1022,M1027,M1017}, T1552.006->{M1051,M1015,M1047}, and correctly reports no mitigations for T1039 (evidence shows related:[] for T1039). The union of surfaced mitigation ids is exactly {M1015,M1017,M1022,M1027,M1028,M1041,M1047,M1051}, matching gold.attack.must_include_related's 8 required ids with zero extras or omissions. Every name, id, and property (Abstraction/Status, technique names, mitigation names) traces directly to the logic_flow records/related entries with no invented facts, aliases, or counts. gold_expected=14 (CAPEC-639 + 5 techniques + 8 mitigations, deduplicated across assertion categories), gold_present=14."
+}

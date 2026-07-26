@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 27,
+  "gold_present": 27,
+  "hallucinations": [],
+  "rationale": "The answer (deterministic claims, since narrative is the same fallback text) correctly surfaces CAPEC-150 and all 6 required ATT&CK mappings (T1003, T1119, T1213, T1530, T1555, T1602), matching gold's must_correlate and capec.must_include_related exactly. It also states all 6 attack.must_include_ids records (attack min/max_records=6, matched by evidence row count of 6 normalized records). For mitigations, cross-checking the evidence's 'related' lists per technique (T1003: 9 mitigations M1041/M1015/M1026/M1040/M1027/M1025/M1043/M1028/M1017; T1602: 6 M1041/M1051/M1054/M1030/M1037/M1031; T1119: 2 M1029/M1041; T1530: 6 M1041/M1047/M1032/M1022/M1018/M1037; T1555: 3 M1051/M1026/M1027; T1213: 7 M1041/M1047/M1054/M1032/M1018/M1060/M1017) yields exactly the union of 20 unique mitigation ids that matches gold's attack.must_include_related list verbatim (verified programmatically: missing=set(), extra=set()). Every claim's entity_ids and enumeration counts match the corresponding evidence record's related list exactly (e.g. 'T1003 ... has 9 related item(s)' matches the 9-item related array). The 6 correlation claims for T1003/T1119/T1213/T1530/T1555/T1602 match gold's must_correlate list precisely. No fabricated names, counts, or ids were found; the CAPEC taxonomy-entry name variant 'Data from Cloud Storage Object' vs. the technique record's 'Data from Cloud Storage' is present verbatim in the evidence itself (not invented) and the answer never conflates the two names in a single statement. This is a full, faithful, well-grounded answer to a hard federated (CAPEC->ATT&CK->Mitigations) 2-hop question."
+}

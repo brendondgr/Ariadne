@@ -1,0 +1,14 @@
+{
+  "case_id": "F-FAN-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.85,
+  "faithfulness": 0.85,
+  "groundedness": 0.9,
+  "completeness": 1.0,
+  "gold_expected": 13,
+  "gold_present": 13,
+  "hallucinations": [
+    "Narrative states 'the evidence provides mitigations for five of them' (five of the six deduplicated techniques), but the evidence shows mitigations for only four: T1574.007 (M1047, M1022, M1038), T1505.005 (M1047, M1024), T1574.006 (M1038, M1028), T1574.013 (M1040). Both T1620 (empty related[]) and T1562.003 (no ATT&CK record returned at all) lack any listed mitigations, so 6-2=4 have mitigations, not 5."
+  ],
+  "rationale": "The answer correctly identifies CAPEC-13's mapped techniques (T1574.006, T1574.007, T1562.003) and CAPEC-640's (T1505.005, T1574.006, T1574.013, T1620), correctly names T1574.006 as the sole overlap, and correctly enumerates the deduplicated 6-technique union. All 5 gold must_correlate ids (T1505.005, T1574.006, T1574.007, T1574.013, T1620) are stated as correlations, matching gold's attack.must_include_ids exactly (5 ATT&CK records, none spuriously added). All 6 gold-required mitigations (M1022, M1024, M1028, M1038, M1040, M1047) are correctly enumerated and grounded in the T1574.007/T1505.005/T1574.006/T1574.013 records. However, the narrative contains an internal arithmetic error: it claims mitigations exist for 'five of' the six union techniques, when the evidence (logic_flow q2 records) shows only four techniques (T1574.007, T1505.005, T1574.006, T1574.013) have any MITIGATES-linked mitigation; T1620's related[] is empty and T1562.003 has no ATT&CK record at all, so only 4, not 5, have mitigations. This is a real unsupported/incorrect count, not merely a rounding quirk, so it costs faithfulness/groundedness/correctness points despite otherwise full completeness against the gold assertions (all 13 required ids: CAPEC-13, CAPEC-640, 5 T-numbers, 6 mitigations, all surfaced)."
+}

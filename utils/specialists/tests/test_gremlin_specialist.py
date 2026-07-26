@@ -214,9 +214,11 @@ class TestNormalizerNeighbors:
         assert len(records) == 1
         assert records[0].primary_id == "CAPEC-66"
         assert len(records[0].related) == 2
+        # Neighbour ids are canonicalised like the anchor's — a raw ``cwe:89``
+        # matches no gold assertion and reads as a different entity downstream.
         related_ids = {r.get("id") for r in records[0].related}
-        assert "cwe:89" in related_ids
-        assert "cwe:1286" in related_ids
+        assert "CWE-89" in related_ids
+        assert "CWE-1286" in related_ids
 
     def test_contract_passes_on_neighbors(self, card):
         rows = [
@@ -429,8 +431,8 @@ class TestLiveGremlin:
         all_related_ids = {
             rel.get("id") for rec in result.records for rel in rec.related
         }
-        assert "cwe:89" in all_related_ids, f"expected CWE-89, got {all_related_ids}"
-        assert "cwe:1286" in all_related_ids, f"expected CWE-1286, got {all_related_ids}"
+        assert "CWE-89" in all_related_ids, f"expected CWE-89, got {all_related_ids}"
+        assert "CWE-1286" in all_related_ids, f"expected CWE-1286, got {all_related_ids}"
 
         # Contract must pass.
         assert check_contract(result.records) == []

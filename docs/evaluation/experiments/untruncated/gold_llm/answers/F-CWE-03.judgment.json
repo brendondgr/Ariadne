@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 39,
+  "gold_present": 39,
+  "hallucinations": [],
+  "rationale": "The narrative/claims surface all 8 required CAPEC ids (CAPEC-60, 94, 509, 555, 561, 644, 645, 652), each explicitly linked to CWE-294 via enumeration claims, matching capec.must_include_related exactly. It correctly states the abstraction breakdown from logic_flow evidence: CAPEC-94 is Meta, CAPEC-555 and CAPEC-652 are Standard, and the remaining five (644, 561, 60, 509, 645) are Detailed - verified against the retrieved record properties. All 11 required ATT&CK technique ids (T1021, T1021.002, T1114.002, T1133, T1134.001, T1550.002, T1550.003, T1550.004, T1557, T1558, T1558.003) are present, matching attack.min/max_records=11 exactly, and all 11 are also stated in dedicated correlation claims, satisfying must_correlate in full. Computing the union of mitigations across the 11 technique->mitigation adjacency lists in logic_flow yields exactly the 19 M-ids required by attack.must_include_related, and the answer's claim of 'nineteen distinct controls' with representative examples (M1041, M1035, M1026, M1027) is verified correct against the evidence. No invented ids, aliases, counts, or properties were found; every stated fact traces to a specific record in logic_flow.results."
+}

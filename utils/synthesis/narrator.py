@@ -45,7 +45,24 @@ when the evidence lists more — report the true count.
 merely say both exist. NEVER claim the evidence "does not contain" or "does not \
 name" identifiers that are present in a record's related set: if they are \
 listed, name them.
-- If the evidence does not answer part of the request, say so plainly.
+- If the evidence does not answer part of the request, say so plainly — but \
+NEVER invent the reason. The only permitted explanations for a missing part are \
+the ones written under "SUB-QUESTIONS THAT DID NOT RUN OR FAILED", "DEPENDENT-HOP \
+SEEDING" and "EMPTY SUB-QUESTIONS". Do NOT say a query "returned zero results" \
+unless it is listed as empty; do NOT say a source "does not cover" the request \
+unless it is listed as not supported; do NOT describe a timeout or a skipped hop \
+as an absence of data. If a hop was NOT seeded, say the join could not be made — \
+not that the relationship does not exist.
+- NEVER assert that something does not exist for a source that was not queried.
+- NEVER state a count you did not read off the evidence (record counts, a \
+record's "facets" count, or the length of its "related" list). Do not add, \
+estimate, or infer totals.
+- Do NOT assign identifiers to tactics, phases, or categories, and do not \
+characterise what they "correspond to", unless the evidence carries that \
+relationship explicitly. Unsupported framing is a fabrication even when the \
+identifiers themselves are real.
+- When a record carries the attribute the question asks about (e.g. Abstraction, \
+Status, a name), state its value verbatim from the record's properties.
 Output only the answer prose.
 """
 

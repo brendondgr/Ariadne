@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_empty: true with expected: [] for a nonexistent campaign C9999. The executed query (MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN ['C9999'] ...) returned row_count 0 per the execute/assess/normalize traces, and records is []. The answer correctly abstains: claims is empty, narrative states 'The routed sources returned no matching records for this question' and invites the analyst to supply a specific id, matching the abstention statement's explicit confirmation that the query ran cleanly and found nothing for C9999. No technique ids, names, or counts are fabricated anywhere in the narrative or claims, so there is nothing ungrounded. This is exactly the correct behavior for a NEG case."
+}

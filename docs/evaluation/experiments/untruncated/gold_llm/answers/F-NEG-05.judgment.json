@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty correlation (expect_empty: true for CAPEC, expect_dependency_skip: true for ATT&CK, must_correlate: []). The evidence confirms the capec_maps_to query executed cleanly against seed CAPEC-16 with row_count 0 (logic_flow.results[0]), and q2 (ATT&CK mitigations) was correctly skipped as a dependency failure because q1 produced no join values (logic_flow.results[1], trace step 'dependency'). The narrative accurately reports 'no matching records for this question' with no fabricated technique IDs, mitigation IDs, or CAPEC-ATT&CK correlation invented. No claims list, no hallucinated entities. This is a textbook correct abstention matching the deterministic_scores.correlation block (negative: true, exact: true, precision/recall/f1 all 1.0)."
+}

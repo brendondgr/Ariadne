@@ -338,7 +338,13 @@ class GremlinNormalizer:
 
             # Build a lightweight neighbour summary.
             nbr_props = _string_props(nbr_m)
-            nbr_id = _safe_str(nbr_m.get("id", ""))
+            # The anchor's id is canonicalised above, but the neighbour's was left
+            # raw — so a CHILD_OF parent surfaced as "capec:attack-pattern:560"
+            # instead of "CAPEC-560" and no gold assertion could match it.
+            # ``_expand_member_id`` fullmatches, so a clean AttackPattern/CWE id is
+            # canonicalised while a composite child (mitigation/step/consequence)
+            # keeps its own identity rather than collapsing to its parent.
+            nbr_id = _expand_member_id(_safe_str(nbr_m.get("id", "")))
             nbr_name = _safe_str(nbr_m.get("name", "")) or nbr_id
             nbr_label = _get_label(nbr_m)
             related_entry: dict[str, Any] = {

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-AST-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_boundary: true — the question asks what assets T1047 targets, but 'Asset' is an ICS-only ATT&CK concept not modeled by this (Enterprise) attack source, so the correct behavior is an honest refusal rather than invented data. The logic_flow trace confirms this: the 'resolve' and 'boundary' steps explicitly report entities not in card: ['Asset'] / entities not modeled by the attack source: Asset, and records is empty (0 records, 0 related). The answer's narrative and its single abstention correctly state the attack source doesn't model Asset and that no query was executed, then offers to help if the analyst names a specific entity/id instead. No records or facts are claimed, so there is no fabrication, no invented abstraction level/status/name/count, and every statement traces directly to the boundary trace in logic_flow. deterministic_scores also reflect this (abstention_proof_ok: true, fully_provenanced: true). This fully satisfies the single required assertion (honest boundary refusal) with zero hallucinations."
+}

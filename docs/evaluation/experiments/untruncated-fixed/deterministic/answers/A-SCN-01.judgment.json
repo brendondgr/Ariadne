@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SCN-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold assertion for this bounded-scan case is a record-count range (min_records 250, max_records 300), not a specific id set. The executed query 'MATCH (n:Software) RETURN n.attack_id AS id, n.name AS name LIMIT 300' returned exactly 300 records (logic_flow.results[0].records has 300 entries with 300 unique primary_ids), satisfying the gold range at its upper bound, consistent with the question's own framing of 'bounded scan'. The deterministic claims (the answer under test, since narrative is thin/templated) enumerate exactly 300 entity_ids in the 'enumeration' claim, and this set is identical (both subset and superset) to the 300 primary_ids present in the retrieved evidence -- no id is invented and none is dropped. The headline 'Gathered 300 record(s) from 1 source(s)' and the fact claim listing S0061, S0266, S1204 as exemplars are both grounded in the evidence's first three records. No counts, names, aliases, or properties beyond the raw id list are asserted, so there is nothing ungrounded to penalize. Verdict CORRECT with full completeness against the count-based gold assertion."
+}

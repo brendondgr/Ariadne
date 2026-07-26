@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The must_include_ids (T1003, T1005, T1014, T1025, T1030) are all present in the answer's enumeration claim, each backed by a citation matching a record in logic_flow.results[0].records with the same primary_id and name (e.g. T1003='OS Credential Dumping', T1030='Data Transfer Size Limits'). Beyond the minimum, the answer's full 37-technique enumeration is an exact set match (37/37) against gold.ex_gold.expected (the full ATT&CK neighbor pool for G0007), with no extras and no omissions -- every id in both lists (T1036, T1039, ..., T1669) appears in the other. No fabricated names, counts, or ids: the query executed (MATCH (g:Group)-[:USES]->(t:Technique) ...) returned exactly 37 rows, and the deterministic composer's narrative/claims only restate primary_ids drawn 1:1 from those rows. deterministic_scores.coverage confirms 5/5 gold ids found with coverage 1.0 and provenance/citation_provenance_rate 1.0. This is a fully grounded, complete, non-hallucinated answer."
+}

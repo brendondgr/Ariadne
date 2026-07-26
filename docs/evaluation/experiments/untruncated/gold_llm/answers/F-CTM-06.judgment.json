@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-06",
+  "verdict": "PARTIAL",
+  "correctness": 0.8,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.53,
+  "gold_expected": 17,
+  "gold_present": 9,
+  "hallucinations": [],
+  "rationale": "The narrative correctly identifies all 3 required techniques (T1211, T1542.002, T1556) mapped from CAPEC-665, matching gold must_correlate and the capec.must_include_related assertion exactly (3 of 3 records, exactly matching min/max_records=3). It also states the correct per-technique mitigation counts (4 for T1211, 1 for T1542.002, 9 for T1556), all verified against logic_flow evidence (T1211 related: M1051, M1050, M1048, M1019; T1542.002 related: M1051; T1556 related: M1047, M1032, M1024, M1026, M1022, M1018, M1027, M1025, M1028). Every mitigation ID and name the narrative cites (M1051 Update Software, M1050 Exploit Protection, M1047 Audit, M1032 Multi-factor Authentication, M1028 Operating System Configuration) is verbatim-correct against the evidence, so faithfulness and groundedness are both high with zero fabricated facts, counts, or aliases. However, the gold's attack.must_include_related requires all 13 mitigation IDs (M1018, M1019, M1022, M1024, M1025, M1026, M1027, M1028, M1032, M1047, M1048, M1050, M1051) to be surfaced, and the narrative only names 5 of them explicitly (M1051, M1050, M1047, M1032, M1028), using 'including'/'such as' sampling language for the rest instead of full enumeration. The underlying structured claims (enumeration-kind) do list every mitigation exhaustively and correctly, but per the grading rule the narrative -- which is substantive, not thin -- is the primary answer under test, and it under-surfaces 8 of the 13 required mitigation IDs (M1018, M1019, M1022, M1024, M1025, M1026, M1027, M1048 missing). Combined with the 4 always-present entities (CAPEC-665, T1211, T1542.002, T1556), the narrative surfaces 9 of 17 gold-required identifiers. This is a correct but incompletely-enumerated answer, not a hallucinated one, warranting a PARTIAL verdict."
+}

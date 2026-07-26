@@ -1,0 +1,534 @@
+{
+  "id": "A-GRP-01",
+  "kind": "attack",
+  "tier": "medium",
+  "category": "A-GRP",
+  "question": "Which techniques does group G0016 (APT29) use?",
+  "gold": {
+    "assertions": {
+      "min_records": 5,
+      "must_include_ids": [
+        "T1005",
+        "T1037",
+        "T1047",
+        "T1068",
+        "T1078"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "T1005",
+        "T1037",
+        "T1047",
+        "T1068",
+        "T1078",
+        "T1105",
+        "T1133",
+        "T1190",
+        "T1199",
+        "T1203",
+        "T1528",
+        "T1568",
+        "T1573",
+        "T1621",
+        "T1649",
+        "T1651",
+        "T1665"
+      ],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 17 record(s) from 1 source(s).",
+    "narrative": "Found 17 ATT&CK record(s) including T1068, T1665, T1105 and more. All 17 result(s) for this question: T1068, T1665, T1105, T1651, T1203, T1573, T1047, T1037, T1133, T1005, T1190, T1568, T1649, T1528, T1621, T1199, T1078.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 17 ATT&CK record(s) including T1068, T1665, T1105 and more.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1068",
+          "T1665",
+          "T1105",
+          "T1651",
+          "T1203",
+          "T1573",
+          "T1047",
+          "T1037"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1068"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1665"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1105"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1651"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1203"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1573"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1047"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1037"
+          }
+        ]
+      },
+      {
+        "text": "All 17 result(s) for this question: T1068, T1665, T1105, T1651, T1203, T1573, T1047, T1037, T1133, T1005, T1190, T1568, T1649, T1528, T1621, T1199, T1078.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "T1068",
+          "T1665",
+          "T1105",
+          "T1651",
+          "T1203",
+          "T1573",
+          "T1047",
+          "T1037",
+          "T1133",
+          "T1005",
+          "T1190",
+          "T1568",
+          "T1649",
+          "T1528",
+          "T1621",
+          "T1199",
+          "T1078"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1068"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1665"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1105"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1651"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1203"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1573"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1047"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1037"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1133"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1005"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1190"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1568"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1649"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1528"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1621"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1199"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1078"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-GRP-01",
+      "source": "attack",
+      "text": "Which techniques does group G0016 use according to ATT&CK?",
+      "entities": [
+        "Group",
+        "Technique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "G0016"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "A-GRP-01",
+        "sub_question": "Which techniques does group G0016 use according to ATT&CK?",
+        "query": "MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN $ids RETURN g.attack_id AS group_id, g.name AS group_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 20000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 17 ATT&CK record(s) including T1068, T1665, T1105 and more.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Group",
+                "Technique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "G0016"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "group_techniques",
+              "query": "MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN $ids RETURN g.attack_id AS group_id, g.name AS group_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 20000",
+              "injected": [
+                "LIMIT 20000 appended (none present)"
+              ],
+              "timing_ms": 0.062
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 17,
+              "timing_ms": 12.4
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 17,
+              "timing_ms": 0.005
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 17,
+              "timing_ms": 0.091
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1068",
+            "name": "Exploitation for Privilege Escalation",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1068"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1665",
+            "name": "Hide Infrastructure",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1665"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1105",
+            "name": "Ingress Tool Transfer",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1105"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1651",
+            "name": "Cloud Administration Command",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1651"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1203",
+            "name": "Exploitation for Client Execution",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1203"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1573",
+            "name": "Encrypted Channel",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1573"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1047",
+            "name": "Windows Management Instrumentation",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1047"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1037",
+            "name": "Boot or Logon Initialization Scripts",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1037"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1133",
+            "name": "External Remote Services",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1133"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1005",
+            "name": "Data from Local System",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1005"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1190",
+            "name": "Exploit Public-Facing Application",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1190"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1568",
+            "name": "Dynamic Resolution",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1568"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1649",
+            "name": "Steal or Forge Authentication Certificates",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1649"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1528",
+            "name": "Steal Application Access Token",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1528"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1621",
+            "name": "Multi-Factor Authentication Request Generation",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1621"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1199",
+            "name": "Trusted Relationship",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1199"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1078",
+            "name": "Valid Accounts",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1078"
+            ],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 5,
+      "found": 5,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 25,
+      "compliant": 25,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "deterministic",
+  "run_meta": {
+    "planner": "gold-replay",
+    "synthesis": "deterministic",
+    "wall_s": 0.015
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 17,
+    "related": 0
+  }
+}

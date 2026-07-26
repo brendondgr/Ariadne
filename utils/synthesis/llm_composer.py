@@ -48,6 +48,21 @@ VALUES; use kind "fact" otherwise.
 plainly states the sources don't establish it. Do NOT write claims about \
 those sub-questions and do NOT guess.
 - Never state more than the records show. If the evidence is thin, say less.
+- NEVER explain why something is missing except by quoting the reason given \
+under "SUB-QUESTIONS THAT DID NOT RUN OR FAILED" or "DEPENDENT-HOP SEEDING". \
+You do not know why a query returned nothing unless it is stated there. In \
+particular: do NOT say a query "returned zero results" unless it appears under \
+EMPTY SUB-QUESTIONS, do NOT say a source is "not covered"/"does not cover this \
+request" unless it appears under NOT SUPPORTED, and do NOT describe a timeout \
+or a skipped hop as an absence of data.
+- NEVER assert that a relationship does not exist for a source that was not \
+queried. Absence of a sub-question is not evidence of absence.
+- NEVER state a count you did not read off the evidence. Counts must come from \
+the number of records, a record's "facets" count, or the length of its \
+"related" list — never from an estimate or a sum you assume.
+- Do NOT group, categorise, or interpret identifiers (e.g. assigning techniques \
+to tactics or "phases") unless the evidence carries that relationship \
+explicitly. Descriptive framing that the records do not support is a fabrication.
 
 Output ONLY a single JSON object (no prose, no markdown fences) with this shape:
 {
@@ -173,6 +188,8 @@ def build_evidence_context(evidence: FederatedEvidence) -> str:
     """
     blocks: list[str] = []
     empties: list[str] = []
+    failures: list[str] = []
+    sequencing: list[str] = []
     for result in evidence.results:
         task = result.task
         if result.records:
@@ -192,6 +209,39 @@ def build_evidence_context(evidence: FederatedEvidence) -> str:
                 f"- sub_question {task.sub_question_id} (source={task.source}): "
                 f"{task.text}"
             )
+        else:
+            # Previously dropped on the floor. A sub-question that errored or was
+            # dependency-skipped vanished from the narrator's view entirely, so the
+            # model saw an unanswered part of the request with no reason attached
+            # and invented one ("a follow-up query returned zero results").
+            failures.append(
+                f"- sub_question {task.sub_question_id} (source={task.source}): "
+                f"{task.text}\n  OUTCOME: did not produce evidence — "
+                f"{result.error or 'no valid evidence'}"
+            )
+
+    # The federation records why a hop was skipped, unsupported, or unseeded; none
+    # of it reached the prompt before, which is where absence-explaining prose came
+    # from. Attribution must come from here, never from the model's guess.
+    for skip in evidence.skipped or []:
+        failures.append(
+            f"- sub_question {skip.get('sub_question')} (source={skip.get('source')}): "
+            f"NEVER RAN — {skip.get('reason') or 'no reason recorded'}"
+        )
+    for unsupported in evidence.unsupported or []:
+        failures.append(
+            f"- {unsupported.get('capability') or unsupported.get('source') or 'request part'}: "
+            f"NOT SUPPORTED by the available sources — "
+            f"{unsupported.get('reason') or 'no reason recorded'}"
+        )
+    for seq in evidence.sequencing or []:
+        seeded = seq.get("seed_ids") or []
+        detail = (
+            f"seeded with {len(seeded)} id(s) from {seq.get('producer')}"
+            if seeded else
+            f"NOT seeded — {seq.get('reason') or 'the producer returned no join values'}"
+        )
+        sequencing.append(f"- sub_question {seq.get('sub_question')}: {detail}")
 
     context = [
         f"ANALYST REQUEST:\n{evidence.request}",
@@ -204,6 +254,17 @@ def build_evidence_context(evidence: FederatedEvidence) -> str:
         "",
         "EMPTY SUB-QUESTIONS (ran cleanly, zero records — MUST abstain):",
         "\n".join(empties) if empties else "  (none)",
+        "",
+        "SUB-QUESTIONS THAT DID NOT RUN OR FAILED (this is the ONLY permitted "
+        "explanation for a missing part of the answer — quote the stated reason, "
+        "never invent one, and never call this 'not covered by the sources'):",
+        "\n".join(failures) if failures else "  (none)",
+        "",
+        "DEPENDENT-HOP SEEDING (an unseeded hop asked a broader question than the "
+        "analyst did — its emptiness does NOT mean the relationship is absent):",
+        "\n".join(sequencing) if sequencing else "  (none)",
+        "",
+        f"RUN STATUS: {'PARTIAL — some of the request was not answered' if evidence.partial else 'complete'}",
     ]
     return "\n".join(context)
 

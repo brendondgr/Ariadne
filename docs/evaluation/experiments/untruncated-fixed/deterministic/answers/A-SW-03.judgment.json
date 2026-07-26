@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SW-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 55,
+  "gold_present": 55,
+  "hallucinations": [],
+  "rationale": "Gold requires S0266 plus 55 must_include_related technique ids. The retrieved evidence (logic_flow.results[0].records[0].related) contains exactly these 55 T-ids (Software Packing T1027.002, Firmware Corruption T1495, Credential API Hooking T1056.004, etc.) with no extras and no omissions versus gold['assertions']['must_include_related']. The deterministic answer's claims (narrative is present here, unlike some other cases in this arm) enumerate all 55 ids verbatim and cite S0266, matching the evidence set exactly (verified programmatically: gold - evidence = {}, evidence - gold = {}, gold - answer_entity_ids = {}, answer_entity_ids - gold = {}). No invented names, counts, or aliases were introduced beyond what the evidence records state."
+}

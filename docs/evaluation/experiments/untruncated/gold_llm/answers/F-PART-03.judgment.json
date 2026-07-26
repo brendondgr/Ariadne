@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-555 (present) with must_include_related T1021, T1114.002, T1133 (all three present in narrative and claims, matching the evidence's join_values and related TaxonomyEntry ids capec:taxonomy:ATTACK:1021/1114.002/1133 exactly), plus an honest skip on the attack/mitigation side (gold.assertions.attack.expect_skipped=true). The narrative explicitly states 'the evidence provides no mitigation data, the mitigation side is correctly skipped as requested,' matching the logic_flow note 'Skipped attack: no specialist available for source attack' and partial_mode='attack_down'. expect_no_correlation=true is satisfied (deterministic_scores.correlation.negative=true, precision/recall/f1=1.0, n_expected=0/n_got=0) and no correlation is fabricated. Every fact in the narrative and claims traces directly to the single CAPEC-555 record and its 3 related TaxonomyEntry nodes in logic_flow.results[0].records[0] — no invented names, counts, or aliases (e.g. 'Remote Services with Stolen Credentials', 'Email Collection:Remote Email Collection', 'External Remote Services' all match verbatim). No hallucinations found."
+}

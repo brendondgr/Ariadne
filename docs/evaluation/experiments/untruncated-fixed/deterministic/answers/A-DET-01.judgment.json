@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires T1047 plus related ids DET0364 and AN1031 (must_include_ids/must_include_related). The deterministic claims (used as the answer since narrative is thin/templated) state 'Found 2 item(s) related to T1047 (e.g. DET0364, AN1031)' and enumerate 'T1047 (Windows Management Instrumentation) has 2 related item(s): DET0364, AN1031.' Both required related ids are named, and T1047's own name matches the evidence record (primary_id T1047, name 'Windows Management Instrumentation'). The single evidence record's related list contains exactly DET0364 ('Behavioral Detection Strategy for WMI Execution Abuse on Windows') and AN1031 ('Analytic 1031', with its detection-chain description) - both ids and names are directly traceable to logic_flow.results[0].records[0].related, with no invented names, counts, or extra entities. All 3/3 gold ids surfaced, no fabricated facts."
+}

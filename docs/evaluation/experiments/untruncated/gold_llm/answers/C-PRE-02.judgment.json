@@ -1,0 +1,14 @@
+{
+  "case_id": "C-PRE-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.5,
+  "faithfulness": 0.55,
+  "groundedness": 0.85,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [
+    "Narrative states 'the provided record does not explicitly define a directional precedence relationship, so the evidence does not confirm which specific patterns CAPEC-555 precedes' — this is false: the executed Gremlin query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).out(\"CAN_PRECEDE\")...) explicitly traverses the directional CAN_PRECEDE edge from CAPEC-555 to CAPEC-151, so the evidence DOES confirm CAPEC-555 precedes CAPEC-151. The narrative misrepresents its own retrieved evidence by denying a directional relationship that the query itself was built to surface."
+  ],
+  "rationale": "Gold requires must_include_ids=[CAPEC-555] and must_include_related=[CAPEC-151]; both ids are correctly surfaced in the record (primary_id CAPEC-555, related capec:attack-pattern:151 = CAPEC-151), so completeness is 2/2. However, the narrative under test explicitly hedges and denies that the evidence confirms a precedence relationship, even though the sole retrieved record was produced by an out('CAN_PRECEDE') traversal from CAPEC-555 -- i.e. the record itself IS the directional 'precedes' edge the question asks about. The deterministic claims array states the fact more plainly ('has 1 AttackPatterns: capec:attack-pattern:151') but the composed narrative (the answer under test per instructions) actively contradicts the correct interpretation of its own citation, so it fails to affirmatively answer 'which patterns can CAPEC-555 precede' despite having the answer in hand. This is a correctness/faithfulness defect (misreading directionality of evidence) rather than a fabrication of new ids, so it is graded PARTIAL, not INCORRECT."
+}

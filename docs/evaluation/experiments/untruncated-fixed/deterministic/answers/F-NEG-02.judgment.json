@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty correlation (must_correlate: [], expect_no_correlation: true, capec.expect_empty: true, attack.expect_dependency_skip: true). The evidence shows q1 (capec MAPS_TO query for CAPEC-66 -> ATT&CK TaxonomyEntry) executed cleanly with row_count 0, and q2 (ATT&CK mitigations for those mapped techniques) was correctly skipped with an explicit dependency trace citing 'producer q1: it returned no join values' rather than being fabricated. The answer's narrative/abstentions state plainly that no matching records were returned and that the attack sub-question was skipped because q1 produced no seed identifiers -- no ATT&CK technique ID, mitigation ID, or correlation is invented anywhere in claims or narrative. This exactly matches the gold's expected honest-empty behavior with zero fabricated content."
+}

@@ -1,0 +1,463 @@
+{
+  "id": "F-CTT-01",
+  "kind": "federated",
+  "tier": "medium",
+  "category": "F-CTT",
+  "question": "Which ATT&CK tactics do the techniques mapped from CAPEC-98 (Phishing) belong to?",
+  "gold": {
+    "assertions": {
+      "must_correlate": [
+        "T1566",
+        "T1598"
+      ],
+      "capec": {
+        "min_records": 1,
+        "must_include_ids": [
+          "CAPEC-98"
+        ],
+        "must_include_related": [
+          "T1566",
+          "T1598"
+        ]
+      },
+      "attack": {
+        "min_records": 2,
+        "max_records": 2,
+        "must_include_ids": [
+          "T1566",
+          "T1598"
+        ],
+        "must_include_related": [
+          "TA0001",
+          "TA0043"
+        ]
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 2
+  },
+  "answer": {
+    "headline": "Gathered 3 record(s) from 2 source(s); 2 cross-source correlation(s) on shared identifiers.",
+    "narrative": "CAPEC-98 maps to a total of two ATT&CK techniques, T1566 and T1598. T1566 belongs to the Initial Access tactic (TA0001), and T1598 belongs to the Reconnaissance tactic (TA0043). Consequently, the techniques derived from CAPEC-98 are associated with two distinct ATT&CK tactics.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s) for CAPEC-98; ATT&CK mappings: T1566, T1598.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-98"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-98"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-98 (Phishing) has Abstraction: Standard; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-98"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-98"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-98 (Phishing) has 2 TaxonomyEntrys: capec:taxonomy:ATTACK:1566, capec:taxonomy:ATTACK:1598.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "capec:taxonomy:ATTACK:1566",
+          "capec:taxonomy:ATTACK:1598"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-98"
+          }
+        ]
+      },
+      {
+        "text": "Found 2 ATT&CK record(s) including T1566, T1598.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1566",
+          "T1598"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1566"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1598"
+          }
+        ]
+      },
+      {
+        "text": "T1566 (Phishing) has 1 related item(s): TA0001.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "TA0001"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1566"
+          }
+        ]
+      },
+      {
+        "text": "T1598 (Phishing for Information) has 1 related item(s): TA0043.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "TA0043"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1598"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1566 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1566"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-98"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1566"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1598 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1598"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-98"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1598"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which ATT&CK techniques does CAPEC-98 map to?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "Which tactics do those techniques belong to?",
+        "seed_from": "q1"
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Which ATT&CK techniques does CAPEC-98 map to?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s) for CAPEC-98; ATT&CK mappings: T1566, T1598.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CAPEC-98"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_maps_to",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
+              "injected": [],
+              "timing_ms": 0.098
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2,
+              "timing_ms": 6.7
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2,
+              "timing_ms": 0.008
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.066
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-98",
+            "name": "Phishing",
+            "label": "AttackPattern",
+            "description": "Phishing is a social engineering technique where an attacker masquerades as a legitimate entity with which the victim might do business in order to prompt the user to reveal some confidential information (very frequently authentication credentials) that can later be used by an attacker. Phishing is essentially a form of information gathering or \"fishing\" for information.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Phishing",
+              "description": "Phishing is a social engineering technique where an attacker masquerades as a legitimate entity with which the victim might do business in order to prompt the user to reveal some confidential information (very frequently authentication credentials) that can later be used by an attacker. Phishing is essentially a form of information gathering or \"fishing\" for information.",
+              "id": "capec:attack-pattern:98",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [
+              "T1566",
+              "T1598"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1566",
+                "entry_id": "1566",
+                "name": "Phishing",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1598",
+                "entry_id": "1598",
+                "name": "Phishing for Information",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "Which tactics do those techniques belong to?",
+        "query": "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids RETURN t.attack_id AS technique_id, t.name AS technique_name, ta.attack_id AS in_tactic_id, ta.name AS in_tactic_name LIMIT 20000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 2 ATT&CK record(s) including T1566, T1598.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Tactic",
+                "Technique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1566",
+                "T1598"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "technique_tactics",
+              "query": "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids RETURN t.attack_id AS technique_id, t.name AS technique_name, ta.attack_id AS in_tactic_id, ta.name AS in_tactic_name LIMIT 20000",
+              "injected": [
+                "LIMIT 20000 appended (none present)"
+              ],
+              "timing_ms": 0.106
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2,
+              "timing_ms": 3.8
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2,
+              "timing_ms": 0.005
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 2,
+              "timing_ms": 1.85
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1566",
+            "name": "Phishing",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1566"
+            ],
+            "related": [
+              {
+                "id": "TA0001",
+                "name": "Initial Access",
+                "description": "The adversary is trying to get into your network.\n\nInitial Access consists of techniques that use various entry vectors to gain their initial foothold within a network. Techniques used to gain a foothold include targeted spearphishing and exploiting weaknesses on public-facing web servers. Footholds gained through initial access may allow for continued access, like valid accounts and use of external remote services, or may be limited-use due to changing passwords."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1598",
+            "name": "Phishing for Information",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1598"
+            ],
+            "related": [
+              {
+                "id": "TA0043",
+                "name": "Reconnaissance",
+                "description": "The adversary is trying to gather information they can use to plan future operations.\n\nReconnaissance consists of techniques that involve adversaries actively or passively gathering information that can be used to support targeting. Such information may include details of the victim organization, infrastructure, or staff/personnel. This information can be leveraged by the adversary to aid in other phases of the adversary lifecycle, such as using gathered information to plan and execute Initial Access, to scope and prioritize post-compromise objectives, or to drive and lead further Reconnaissance efforts."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 2,
+      "n_got": 2
+    },
+    "mapping_recall": {
+      "gold": 2,
+      "found": 2,
+      "recall": 1.0,
+      "missing": []
+    },
+    "coverage": null,
+    "provenance": {
+      "citations": 11,
+      "compliant": 11,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "gold_llm",
+  "run_meta": {
+    "planner": "gold-replay",
+    "synthesis": "llm",
+    "wall_s": 30.785
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 3,
+    "related": 4
+  }
+}

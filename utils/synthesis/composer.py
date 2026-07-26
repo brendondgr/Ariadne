@@ -174,6 +174,80 @@ def _fact_claim(result: SpecialistResult, cap: int) -> Claim:
     )
 
 
+# A record's own scalar attributes ARE the answer to a lookup question ("what is
+# CAPEC-555's abstraction and status?"), but the fact claim's text is the
+# normalizer's id-line summary, which never reads them. Identity/prose keys are
+# excluded: they are either already in the claim or are not attribute answers.
+_NON_ATTRIBUTE_PROPERTIES = frozenset({
+    "description", "name", "id", "attack_id", "properties_json",
+    "external_references", "created", "modified",
+})
+_MAX_ATTRIBUTE_RECORDS = 10
+_MAX_ATTRIBUTES_PER_RECORD = 12
+_MAX_ATTRIBUTE_VALUE_CHARS = 120
+
+
+def _attribute_pairs(record: EvidenceRecord) -> list[tuple[str, str]]:
+    """The record's own short scalar attributes, in a stable order."""
+    pairs: list[tuple[str, str]] = []
+    for key, value in sorted((record.properties or {}).items()):
+        if key in _NON_ATTRIBUTE_PROPERTIES or key.startswith("_"):
+            continue
+        if value is None or isinstance(value, (list, dict, tuple)):
+            continue
+        text = str(value).strip()
+        if not text or len(text) > _MAX_ATTRIBUTE_VALUE_CHARS:
+            continue
+        pairs.append((key, text))
+        if len(pairs) >= _MAX_ATTRIBUTES_PER_RECORD:
+            break
+    return pairs
+
+
+def _attribute_claim(result: SpecialistResult, record: EvidenceRecord) -> Claim | None:
+    """One citation-backed claim stating a record's own attribute values.
+
+    Closes the projection gap the independent panel found: the evidence carried
+    ``Abstraction``/``Status`` and the answer said only "Found 1 CAPEC record(s)",
+    because ``summarize()`` templates ids and never reads a record's properties.
+    """
+    pairs = _attribute_pairs(record)
+    if not pairs:
+        return None
+    anchor = f"{record.primary_id} ({record.name})" if record.name else record.primary_id
+    body = "; ".join(f"{key}: {value}" for key, value in pairs)
+    return Claim(
+        text=f"{anchor} has {body}.",
+        citations=(
+            Citation(
+                source=result.task.source,
+                primary_id=record.primary_id,
+                record_id=record.provenance.record_id if record.provenance else "",
+            ),
+        ),
+        entity_ids=(record.primary_id,),
+        kind="fact",
+        sub_question_id=result.task.sub_question_id,
+    )
+
+
+def _attribute_claims(result: SpecialistResult) -> list[Claim]:
+    """Attribute claims for the records of a lookup-shaped result.
+
+    Bounded to the first few records: on a 300-row scan the per-record attributes
+    are noise, but on the 1-3 records a lookup returns they are the answer.
+    """
+    records = [r for r in result.records if r.primary_id][:_MAX_ATTRIBUTE_RECORDS]
+    if len(result.records) > _MAX_ATTRIBUTE_RECORDS:
+        return []
+    claims = []
+    for record in records:
+        claim = _attribute_claim(result, record)
+        if claim is not None:
+            claims.append(claim)
+    return claims
+
+
 def _correlation_claim(
     value: str, entries: list[dict[str, str]], cap: int
 ) -> Claim:
@@ -360,6 +434,7 @@ class DeterministicComposer:
         for result in evidence.results:
             if result.records:
                 claims.append(_fact_claim(result, cap))
+                claims.extend(_attribute_claims(result))
                 claims.extend(_enumeration_claims(result, cap))
             elif result.ok:
                 abstentions.append(abstention_for(result))

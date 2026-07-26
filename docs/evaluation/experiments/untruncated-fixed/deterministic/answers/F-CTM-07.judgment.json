@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-07",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-600 and its mapped technique T1110.004 (capec assertions), the technique T1110.004 with its cross-source correlation (must_correlate), and its four mitigations M1018/M1027/M1032/M1036 (attack.must_include_related). The claims surface all six: CAPEC-600 record with Abstraction=Standard/Status=Stable (matches evidence properties exactly), the taxonomy mapping to capec:taxonomy:ATTACK:1110.004 (entry_id 1110.004, name 'Brute Force:Credential Stuffing' in evidence), the T1110.004 technique record, all four mitigations by id and name matching the 'related' array of the attack record verbatim, and an explicit correlation claim stating T1110.004 is corroborated across capec and attack. No values (names, abstraction, status, mitigation ids/names) appear that are absent from logic_flow.results records/related; every cited primary_id and entity_id traces directly to the retrieved records. deterministic_scores confirms correlation f1=1.0, mapping_recall=1.0, citation_provenance_rate=1.0. This is the deterministic arm (no LLM narrative beyond templated claim text), and the claims fully and faithfully answer the question with no gaps or fabrications."
+}

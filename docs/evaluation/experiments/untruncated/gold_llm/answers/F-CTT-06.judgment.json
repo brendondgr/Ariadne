@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The narrative states CAPEC-37 (Retrieve Embedded Sensitive Data) maps to T1005 and T1552.004, and that T1005 belongs to TA0009 (Collection) while T1552.004 belongs to TA0006 (Credential Access). This matches the gold assertions exactly: must_correlate=[T1005,T1552.004] both stated; capec.must_include_ids=[CAPEC-37] and must_include_related=[T1005,T1552.004] both present in the q1 record (CAPEC-37 related TaxonomyEntry ids 1005 and 1552.004); attack.must_include_ids=[T1005,T1552.004] and must_include_related=[TA0006,TA0009] both present in the q2 records, which show T1005 -> related TA0009 'Collection' and T1552.004 -> related TA0006 'Credential Access'. The attack result set has exactly 2 records matching min_records=2/max_records=2. All facts (technique names, tactic names/ids, the CAPEC-to-technique mapping) are directly traceable to logic_flow records with no invented names, counts, or aliases. No hallucinations found."
+}

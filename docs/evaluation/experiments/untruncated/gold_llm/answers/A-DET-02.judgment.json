@@ -1,0 +1,16 @@
+{
+  "case_id": "A-DET-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.7,
+  "faithfulness": 0.55,
+  "groundedness": 0.75,
+  "completeness": 1.0,
+  "gold_expected": 7,
+  "gold_present": 7,
+  "hallucinations": [
+    "Narrative attributes AN1276 to 'multiple authentication failures in unified system logs' -- that description belongs to AN1278 ('Multiple failed authentications in unified logs (e.g., loginwindow or sshd)'), not AN1276 (whose actual description is about failures for valid/invalid users from the same IP/user).",
+    "Narrative attributes AN1278 to 'excessive login attempts in SaaS environments' -- that description belongs to AN1279 ('Excessive login attempts followed by success from SaaS apps like O365, Dropbox, etc.'), not AN1278 (whose actual description concerns unified system logs like loginwindow/sshd).",
+    "Narrative attributes AN1279 to 'repeated failures for valid or invalid users from the same source' -- that description is closest to AN1276's actual text ('Multiple authentication failures for valid or invalid users followed by success from same IP/user'), not AN1279 (which is about SaaS apps)."
+  ],
+  "rationale": "All 7 gold-required ids (T1110, DET0463, AN1275-AN1279) are correctly surfaced -- coverage matches deterministic_scores (gold=7, found=7, coverage=1.0) -- and the DET0463 name is quoted verbatim from evidence, so entity-level completeness is full. However, when the narrative goes beyond the ids to describe what each analytic detects, it rotates the descriptions among AN1276, AN1278, and AN1279: AN1278's 'unified logs' behavior is pinned to AN1276, AN1279's 'SaaS' behavior is pinned to AN1278, and AN1276's 'valid/invalid user' behavior is pinned to AN1279. Only AN1275 and AN1277 are described correctly. This is a real faithfulness defect -- every phrase is drawn from the evidence, but three of the five id-to-description pairings are factually wrong, which would mislead an analyst about which analytic actually implements which detection logic. Verdict is PARTIAL: entity coverage is complete and grounded, but the answer misstates how three of the six required related items work."
+}

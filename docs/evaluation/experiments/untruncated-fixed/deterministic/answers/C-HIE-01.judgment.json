@@ -1,0 +1,12 @@
+{
+  "case_id": "C-HIE-01",
+  "verdict": "CORRECT",
+  "correctness": 0.9,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-98] and must_include_related=[CAPEC-151] (the ChildOf parent). The claims/narrative surface both: 'Found 1 CAPEC record(s): CAPEC-98' and 'CAPEC-98 (Phishing) has 1 AttackPatterns: CAPEC-151.' The retrieval query traversed out('CHILD_OF') from CAPEC-98 and returned exactly CAPEC-151 (Identity Spoofing) as the only related record, matching the gold's expected neighbor exactly (coverage 2/2 per deterministic_scores). Abstraction (Standard) and Status (Draft) values quoted in the narrative are present verbatim in the record's properties, so no fabricated attributes. The one weakness is phrasing: the answer labels the relationship generically as 'AttackPatterns' rather than explicitly naming it 'ChildOf' or 'parent', so a reader must infer the relation type from context rather than being told directly; this is a minor clarity/completeness-of-labeling issue, not a factual error, since the underlying data and traversal are correct and the correct id is surfaced. No invented facts, counts, or aliases were found anywhere in the narrative or claims."
+}

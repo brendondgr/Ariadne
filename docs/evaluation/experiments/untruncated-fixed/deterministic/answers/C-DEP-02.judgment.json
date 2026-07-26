@@ -1,0 +1,12 @@
+{
+  "case_id": "C-DEP-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold (expect_empty=true, ex_gold.expected=[]) requires the answer to abstain because CAPEC-106 is deprecated/excluded at load. The executed Gremlin query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within([\"CAPEC-106\"]))...) returned row_count 0, records=[], and the pipeline correctly produced zero claims and an explicit abstention statement ('the capec source doesn't establish this ... returned no matching records for: What is CAPEC pattern CAPEC-106?') rather than fabricating a node. No ids, names, or properties were invented. This exactly matches the negative-case requirement."
+}

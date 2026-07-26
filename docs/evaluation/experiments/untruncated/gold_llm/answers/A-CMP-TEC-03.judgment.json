@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-TEC-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The evidence (logic_flow.results[0].records, 13 rows from the single MATCH (c:Campaign)-[:USES]->(t:Technique) query for C0001) contains exactly the 13 technique ids T1105, T1221, T1203, T1041, T1057, T1020, T1016, T1140, T1005, T1082, T1119, T1033, T1047, which is precisely the ex_gold expected 13-item set for the 'neighbors' pool. All 5 must_include_ids (T1005, T1016, T1020, T1033, T1041) are present in both the claims.entity_ids and the narrative. The narrative's stated technique names (e.g. T1105='Ingress Tool Transfer', T1221='Template Injection', T1203='Exploitation for Client Execution') match the record.name fields verbatim in the evidence -- no invented names, counts, or aliases. The narrative correctly states 13 techniques and correctly notes no cross-source corroboration or additional related entities (records show related: [] for every row, consistent with evidence_volume.related=0). min_records (5) and coverage (5/5, per deterministic_scores.coverage) are satisfied. No fabricated or ungrounded claims found."
+}

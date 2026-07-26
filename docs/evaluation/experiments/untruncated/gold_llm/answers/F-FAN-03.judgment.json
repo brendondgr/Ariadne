@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-03",
+  "verdict": "CORRECT",
+  "correctness": 0.97,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 17,
+  "gold_present": 17,
+  "hallucinations": [],
+  "rationale": "Evidence confirms CAPEC-639 (related list) maps to T1552.001, T1552.003, T1552.004, T1552.006, T1039 and CAPEC-37 maps to T1005, T1552.004 exactly as the narrative states, with T1552.004 correctly identified as the sole overlap. The deduplicated union of six techniques (T1005, T1039, T1552.001, T1552.003, T1552.004, T1552.006) exactly matches gold's must_correlate/must_include_ids/must_include_related lists, and all six appear in the narrative and claims. Cross-checking the six ATT&CK records' related mitigations (T1005->M1057; T1552.004->M1041,M1047,M1022,M1027; T1552.003->M1028; T1552.001->M1047,M1022,M1027,M1017; T1552.006->M1051,M1015,M1047; T1039->none) yields exactly the 9 distinct mitigations gold requires (M1015, M1017, M1022, M1027, M1028, M1041, M1047, M1051, M1057); the narrative states 'nine distinct mitigations' (correct count) and names 7 of them, while the claims list enumerates all 9 by technique, so the full answer (narrative+claims, per grading instructions since claims are shown to the analyst) surfaces every required entity. T1039 having no mitigations is correctly noted and matches the empty 'related' array in evidence. No invented ids, names, counts, or properties were found anywhere in the narrative or claims; every stated fact traces to a specific record or related-item in logic_flow. Minor deduction on correctness only because the prose narrative alone (excluding claims) doesn't spell out M1051 and M1015 by name despite the correct aggregate count."
+}

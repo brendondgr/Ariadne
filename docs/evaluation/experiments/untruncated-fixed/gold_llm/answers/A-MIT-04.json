@@ -1,0 +1,256 @@
+{
+  "id": "A-MIT-04",
+  "kind": "attack",
+  "tier": "easy",
+  "category": "A-MIT",
+  "question": "What mitigations does ATT&CK list for T1566 (Phishing)?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "T1566"
+      ],
+      "must_include_related": [
+        "M1017",
+        "M1021",
+        "M1031",
+        "M1047",
+        "M1049",
+        "M1054"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "M1017",
+        "M1021",
+        "M1031",
+        "M1047",
+        "M1049",
+        "M1054"
+      ],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "ATT&CK lists six mitigations for technique T1566 (Phishing), including M1047 (Audit), M1054 (Software Configuration), M1049 (Antivirus/Antimalware), M1017 (User Training), M1021 (Restrict Web-Based Content), and M1031 (Network Intrusion Prevention). These controls address the threat through measures such as user education, endpoint protection, network monitoring, and system configuration adjustments. The evidence confirms that these six identifiers are directly associated with T1566 in the ATT&CK graph.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 6 item(s) related to T1566 (e.g. M1047, M1054, M1049) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1566"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1566"
+          }
+        ]
+      },
+      {
+        "text": "T1566 (Phishing) has 6 related item(s): M1047, M1054, M1049, M1017, M1021, M1031.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1047",
+          "M1054",
+          "M1049",
+          "M1017",
+          "M1021",
+          "M1031"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1566"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-MIT-04",
+      "source": "attack",
+      "text": "What mitigations does ATT&CK list for technique T1566?",
+      "entities": [
+        "Technique",
+        "Mitigation"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "T1566"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "A-MIT-04",
+        "sub_question": "What mitigations does ATT&CK list for technique T1566?",
+        "query": "MATCH (t:Technique) WHERE t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 20000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 6 item(s) related to T1566 (e.g. M1047, M1054, M1049) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "Mitigation"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1566"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "technique_mitigations",
+              "query": "MATCH (t:Technique) WHERE t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 20000",
+              "injected": [
+                "LIMIT 20000 appended (none present)"
+              ],
+              "timing_ms": 0.104
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 6,
+              "timing_ms": 3.7
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 6,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 2.103
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1566",
+            "name": "Phishing",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1566"
+            ],
+            "related": [
+              {
+                "id": "M1047",
+                "name": "Audit",
+                "description": "Auditing is the process of recording activity and systematically reviewing and analyzing the activity and system configurations. The primary purpose of auditing is to detect anomalies and identify potential threats or weaknesses in the environment. Proper auditing configurations can also help to meet compliance requirements. The process of auditing encompasses regular analysis of user behaviors and system logs in support of proactive security measures.\n\nAuditing is applicable to all systems used within an organization, from the front door of a building to accessing a file on a fileserver. It is considered more critical for regulated industries such as, healthcare, finance and government where compliance requirements demand stringent tracking of user and system activates.This mitigation can be implemented through the following measures: \n\nSystem Audit:\n\n- Use Case: Regularly assess system configurations to ensure compliance with organizational security policies.\n- Implementation: Use tools to scan for deviations from established benchmarks.\n\nPermission Audits:\n\n- Use Case: Review file and folder permissions to minimize the risk of unauthorized access or privilege escalation.\n- Implementation: Run access reviews to identify users or groups with excessive permissions.\n\nSoftware Audits:\n\n- Use Case: Identify outdated, unsupported, or insecure software that could serve as an attack vector.\n- Implementation: Use inventory and vulnerability scanning tools to detect outdated versions and recommend secure alternatives.\n\nConfiguration Audits:\n\n- Use Case: Evaluate system and network configurations to ensure secure settings (e.g., disabled SMBv1, enabled MFA).\n- Implementation: Implement automated configuration scanning tools like SCAP (Security Content Automation Protocol) to identify non-compliant systems.\n\nNetwork Audits:\n\n- Use Case: Examine network traffic, firewall rules, and endpoint communications to identify unauthorized or insecure connections.\n- Implementation: Utilize tools such as Wireshark, or Zeek to monitor and log suspicious network behavior."
+              },
+              {
+                "id": "M1054",
+                "name": "Software Configuration",
+                "description": "Software configuration refers to making security-focused adjustments to the settings of applications, middleware, databases, or other software to mitigate potential threats. These changes help reduce the attack surface, enforce best practices, and protect sensitive data. This mitigation can be implemented through the following measures:\n\nConduct a Security Review of Application Settings:\n\n- Review the software documentation to identify recommended security configurations.\n- Compare default settings against organizational policies and compliance requirements.\n\nImplement Access Controls and Permissions:\n\n- Restrict access to sensitive features or data within the software.\n- Enforce least privilege principles for all roles and accounts interacting with the software.\n\nEnable Logging and Monitoring:\n\n- Configure detailed logging for key application events such as authentication failures, configuration changes, or unusual activity.\n- Integrate logs with a centralized monitoring solution, such as a SIEM.\n\nUpdate and Patch Software Regularly:\n\n- Ensure the software is kept up-to-date with the latest security patches to address known vulnerabilities.\n- Use automated patch management tools to streamline the update process.\n\nDisable Unnecessary Features or Services:\n\n- Turn off unused functionality or components that could introduce vulnerabilities, such as debugging interfaces or deprecated APIs.\n\nTest Configuration Changes:\n\n- Perform configuration changes in a staging environment before applying them in production.\n- Conduct regular audits to ensure that settings remain aligned with security policies.\n\n*Tools for Implementation*\n\nConfiguration Management Tools:\n\n- Ansible: Automates configuration changes across multiple applications and environments.\n- Chef: Ensures consistent application settings through code-based configuration management.\n- Puppet: Automates software configurations and audits changes for compliance.\n\nSecurity Benchmarking Tools:\n\n- CIS-CAT: Provides benchmarks and audits for secure software configurations.\n- Aqua Security Trivy: Scans containerized applications for configuration issues.\n\nVulnerability Management Solutions:\n\n- Nessus: Identifies misconfigurations and suggests corrective actions.\n\nLogging and Monitoring Tools:\n\n- Splunk: Aggregates and analyzes application logs to detect suspicious activity."
+              },
+              {
+                "id": "M1049",
+                "name": "Antivirus/Antimalware",
+                "description": "Antivirus/Antimalware solutions utilize signatures, heuristics, and behavioral analysis to detect, block, and remediate malicious software, including viruses, trojans, ransomware, and spyware. These solutions continuously monitor endpoints and systems for known malicious patterns and suspicious behaviors that indicate compromise. Antivirus/Antimalware software should be deployed across all devices, with automated updates to ensure protection against the latest threats. This mitigation can be implemented through the following measures:\n\nSignature-Based Detection:\n\n- Implementation: Use predefined signatures to identify known malware based on unique patterns such as file hashes, byte sequences, or command-line arguments. This method is effective against known threats.\n- Use Case: When malware like \"Emotet\" is detected, its signature (such as a specific file hash) matches a known database of malicious software, triggering an alert and allowing immediate quarantine of the infected file.\n\nHeuristic-Based Detection:\n\n- Implementation: Deploy heuristic algorithms that analyze behavior and characteristics of files and processes to identify potential malware, even if it doesn’t match a known signature.\n- Use Case: If a program attempts to modify multiple critical system files or initiate suspicious network communications, heuristic analysis may flag it as potentially malicious, even if no specific malware signature is available.\n\nBehavioral Detection (Behavior Prevention):\n\n- Implementation: Use behavioral analysis to detect patterns of abnormal activities, such as unusual system calls, unauthorized file encryption, or attempts to escalate privileges.\n- Use Case: Behavioral analysis can detect ransomware attacks early by identifying behavior like mass file encryption, even before a specific ransomware signature has been identified.\n\nReal-Time Scanning:\n\n- Implementation: Enable real-time scanning to automatically inspect files and network traffic for signs of malware as they are accessed, downloaded, or executed.\n- Use Case: When a user downloads an email attachment, the antivirus solution scans the file in real-time, checking it against both signatures and heuristics to detect any malicious content before it can be opened.\n\nCloud-Assisted Threat Intelligence:\n\n- Implementation: Use cloud-based threat intelligence to ensure the antivirus solution can access the latest malware definitions and real-time threat feeds from a global database of emerging threats.\n- Use Case: Cloud-assisted antivirus solutions quickly identify newly discovered malware by cross-referencing against global threat databases, providing real-time protection against zero-day attacks.\n\n**Tools for Implementation**:\n\n- Endpoint Security Platforms: Use solutions such as EDR for comprehensive antivirus/antimalware protection across all systems.\n- Centralized Management: Implement centralized antivirus management consoles that provide visibility into threat activity, enable policy enforcement, and automate updates.\n- Behavioral Analysis Tools: Leverage solutions with advanced behavioral analysis capabilities to detect malicious activity patterns that don’t rely on known signatures."
+              },
+              {
+                "id": "M1017",
+                "name": "User Training",
+                "description": "User Training involves educating employees and contractors on recognizing, reporting, and preventing cyber threats that rely on human interaction, such as phishing, social engineering, and other manipulative techniques. Comprehensive training programs create a human firewall by empowering users to be an active component of the organization's cybersecurity defenses. This mitigation can be implemented through the following measures:\n\nCreate Comprehensive Training Programs:\n\n- Design training modules tailored to the organization's risk profile, covering topics such as phishing, password management, and incident reporting.\n- Provide role-specific training for high-risk employees, such as helpdesk staff or executives.\n\nUse Simulated Exercises:\n\n- Conduct phishing simulations to measure user susceptibility and provide targeted follow-up training.\n- Run social engineering drills to evaluate employee responses and reinforce protocols.\n\nLeverage Gamification and Engagement:\n\n- Introduce interactive learning methods such as quizzes, gamified challenges, and rewards for successful detection and reporting of threats.\n\nIncorporate Security Policies into Onboarding:\n\n- Include cybersecurity training as part of the onboarding process for new employees.\n- Provide easy-to-understand materials outlining acceptable use policies and reporting procedures.\n\nRegular Refresher Courses:\n\n- Update training materials to include emerging threats and techniques used by adversaries.\n- Ensure all employees complete periodic refresher courses to stay informed.\n\nEmphasize Real-World Scenarios:\n\n- Use case studies of recent attacks to demonstrate the consequences of successful phishing or social engineering.\n- Discuss how specific employee actions can prevent or mitigate such attacks."
+              },
+              {
+                "id": "M1021",
+                "name": "Restrict Web-Based Content",
+                "description": "Restricting web-based content involves enforcing policies and technologies that limit access to potentially malicious websites, unsafe downloads, and unauthorized browser behaviors. This can include URL filtering, download restrictions, script blocking, and extension control to protect against exploitation, phishing, and malware delivery. This mitigation can be implemented through the following measures:\n\nDeploy Web Proxy Filtering:\n\n- Use solutions to filter web traffic based on categories, reputation, and content types.\n- Enforce policies that block unsafe websites or file types at the gateway level.\n\nEnable DNS-Based Filtering:\n\n- Implement tools to restrict access to domains associated with malware or phishing campaigns.\n- Use public DNS filtering services to enhance protection.\n\nEnforce Content Security Policies (CSP):\n\n- Configure CSP headers on internal and external web applications to restrict script execution, iframe embedding, and cross-origin requests.\n\nControl Browser Features:\n\n- Disable unapproved browser features like automatic downloads, developer tools, or unsafe scripting.\n- Enforce policies through tools like Group Policy Management to control browser settings.\n\nMonitor and Alert on Web-Based Threats:\n\n- Use SIEM tools to collect and analyze web proxy logs for signs of anomalous or malicious activity.\n- Configure alerts for access attempts to blocked domains or repeated file download failures."
+              },
+              {
+                "id": "M1031",
+                "name": "Network Intrusion Prevention",
+                "description": "Use intrusion detection signatures to block traffic at network boundaries."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 7,
+      "found": 7,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 2,
+      "compliant": 2,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "gold_llm",
+  "run_meta": {
+    "planner": "gold-replay",
+    "synthesis": "llm",
+    "wall_s": 51.659
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 6
+  }
+}

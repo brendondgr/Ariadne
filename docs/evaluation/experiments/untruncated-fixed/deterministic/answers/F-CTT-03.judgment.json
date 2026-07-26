@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-565 to be present and mapped to T1110.003 (must_correlate/must_include_related), and T1110.003 to be mapped to tactic TA0006 (must_include_related). The claims state exactly this: 'CAPEC-565 (Password Spraying) has 1 TaxonomyEntrys: capec:taxonomy:ATTACK:1110.003' and 'T1110.003 (Password Spraying) has 1 related item(s): TA0006', with the correlation claim explicitly stating T1110.003 is corroborated across capec and attack. All of these are directly traceable to logic_flow records: the q1 capec record for CAPEC-565 has related entry T1110.003, and the q2 attack record for T1110.003 has related tactic TA0006 (Credential Access), matching the answer verbatim. Abstraction 'Detailed' and Status 'Draft' cited for CAPEC-565 also match the record properties exactly. No invented ids, names, or counts were found (TA0006 name 'Credential Access' from evidence is not even asserted in the narrative beyond the id, which is conservative and correct). All gold assertions (capec.min_records=1, capec.must_include_ids=[CAPEC-565], capec.must_include_related=[T1110.003], attack.must_include_ids=[T1110.003], attack.must_include_related=[TA0006], must_correlate=[T1110.003]) are satisfied by the claims."
+}

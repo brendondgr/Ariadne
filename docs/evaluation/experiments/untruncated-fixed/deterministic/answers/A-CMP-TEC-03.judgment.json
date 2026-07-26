@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-TEC-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The deterministic answer's enumeration claim lists all 13 technique ids (T1105, T1221, T1203, T1041, T1057, T1020, T1016, T1140, T1005, T1082, T1119, T1033, T1047), which exactly matches the 13 records returned by the Cypher query 'MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN [C0001] ...' in logic_flow.results[0].records. All 5 must_include_ids from gold (T1005, T1016, T1020, T1033, T1041) are present in the claim's entity_ids and citations. The full set also matches the gold's ex_gold.expected list of 13 technique ids exactly (same 13 T-numbers, no more, no less), so coverage against the broader neighbor pool is also complete. Every id cited traces directly to a record in the evidence with matching primary_id and name (e.g. T1105='Ingress Tool Transfer', T1041='Exfiltration Over C2 Channel'), and no id, name, count, or property appears in the narrative/claims that is absent from the retrieved records. No fabricated aliases, counts, or attributes were introduced."
+}

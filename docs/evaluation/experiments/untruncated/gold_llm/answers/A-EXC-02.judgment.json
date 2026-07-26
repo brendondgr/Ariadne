@@ -1,0 +1,12 @@
+{
+  "case_id": "A-EXC-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative/adversarial case: T1004 was excluded at load, and gold asserts expect_empty=true with an empty expected pool. The executed Cypher (MATCH (n:Technique) WHERE n.attack_id IN ['T1004'] ...) returned row_count=0 (see logic_flow.results[0].records=[] and traces execute/assess steps), confirming the technique is genuinely absent from the graph. The pipeline correctly abstained: narrative states 'The routed sources returned no matching records for this question' and offers to accept a different id, with zero claims and a single properly-sourced abstention citing the exact query and sub-question. No records, ids, names, or counts were fabricated. Since gold requires zero entities to be surfaced, gold_expected=0 and gold_present=0, satisfying completeness trivially. This is the correct behavior for a NEG-style case (surfacing fabricated data would have been the incorrect outcome)."
+}

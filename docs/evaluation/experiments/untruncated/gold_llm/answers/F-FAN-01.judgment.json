@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 13,
+  "gold_present": 13,
+  "hallucinations": [],
+  "rationale": "The narrative states all 3 required CAPEC ids (CAPEC-19, CAPEC-35, CAPEC-448), all 5 required ATT&CK technique ids (T1027.006, T1027.009, T1546.004, T1546.016, T1564.009 -- matching gold's must_correlate and both must_include_related buckets), and all 5 required mitigations (M1049, M1040, M1013, M1022, M1048 -- matching attack.must_include_related). It correctly identifies T1027.009 as the overlap technique shared across all three CAPEC patterns (verified: CAPEC-19, CAPEC-35, and CAPEC-448 join_values each include T1027.009), correctly attributes mitigations per-technique against the evidence (T1027.009->M1049/M1040, T1564.009->M1013, T1546.004->M1022, T1027.006->M1048), and correctly notes T1546.016 has no mitigations, which matches the evidence (T1546.016 record has an empty 'related' array). Deterministic scoring in the artifact independently confirms exact correlation (precision/recall/f1=1.0), full mapping recall (5/5), and full citation provenance (27/27 compliant, fully_provenanced=true). No invented names, counts, aliases, or techniques/mitigations were found outside the retrieved evidence -- every id in the narrative traces to a record or related-neighbour entry in logic_flow. This is a fully correct, complete, and faithfully grounded answer to a hard federated (CAPEC-to-ATT&CK-to-mitigation) correlation question."
+}

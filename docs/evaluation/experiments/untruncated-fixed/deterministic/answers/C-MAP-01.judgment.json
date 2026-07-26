@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-555] and must_include_related=[T1021, T1114.002, T1133]; the answer's narrative and claims state all four: 'Found 1 CAPEC record(s) for CAPEC-555; ATT&CK mappings: T1021, T1114.002, T1133', plus an enumeration claim citing capec:taxonomy:ATTACK:1021/1114.002/1133. Every fact traces to the single retrieved AttackPattern record: name 'Remote Services with Stolen Credentials', properties Abstraction=Standard and Status=Stable (both present in record.properties), and join_values [T1021, T1114.002, T1133] matching the three related TaxonomyEntry nodes (1021='Remote Services', 1114.002='Email Collection:Remote Email Collection', 1133='External Remote Services'). No invented names, counts, or ids -- the 'has 3 TaxonomyEntrys' count matches len(related)=3 exactly. Deterministic arm's own coverage score (4/4=1.0) and citation_provenance_rate (1.0) corroborate this independent read."
+}

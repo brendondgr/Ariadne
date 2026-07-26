@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 15,
+  "gold_present": 15,
+  "hallucinations": [],
+  "rationale": "The answer surfaces every gold-required entity: CAPEC-593 (Session Hijacking, Abstraction=Standard, Status=Stable, matching evidence properties exactly), all 3 must_correlate/must_include_related ATT&CK techniques (T1185, T1550.001, T1563) via the TaxonomyEntry mappings, and all 11 required mitigations from attack.must_include_related (M1013, M1017, M1018, M1021, M1026, M1027, M1030, M1036, M1041, M1042, M1047) distributed correctly across the three techniques (T1185->M1018,M1017; T1563->M1042,M1026,M1018,M1027,M1030; T1550.001->M1041,M1036,M1047,M1013,M1021 - union is exactly the 11 required ids, no extras, no omissions). The 3-way cross-source correlation claims (T1185, T1550.001, T1563 corroborated across capec and attack) match deterministic_scores.correlation (exact=true, precision=1.0, recall=1.0, n_expected=3, n_got=3). Every name, id, and property cited (e.g. 'Browser Session Hijacking', 'Remote Service Session Hijacking', 'Application Access Token', mitigation names) is directly traceable to the logic_flow records/related arrays -- no invented facts, aliases, or counts found."
+}

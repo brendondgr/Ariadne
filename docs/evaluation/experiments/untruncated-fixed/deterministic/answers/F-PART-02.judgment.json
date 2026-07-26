@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires the CAPEC side to surface CAPEC-98 mapped to T1566 (must_include_ids=['CAPEC-98'], must_include_related=['T1566']) while the attack (asset) side must honestly refuse since ATT&CK does not model an 'Asset' entity (expect_no_correlation=true, expect_boundary=true). The answer's claims state 'Found 1 CAPEC record(s) for CAPEC-98; ATT&CK mappings: T1566' plus 'CAPEC-98 (Phishing) has 1 TaxonomyEntrys: capec:taxonomy:ATTACK:1566', both directly grounded in the sole retrieved record (logic_flow.results[0].records[0]: primary_id CAPEC-98, name Phishing, Abstraction Standard, Status Draft, related TaxonomyEntry entry_id 1566). The Abstraction/Status values quoted match the record's properties exactly, no invented facts. For the attack sub-question, the pipeline correctly abstained ('The attack source doesn't establish this... entities not modeled by the attack source: Asset') rather than fabricating asset data, matching the negative/boundary expectation and deterministic_scores.correlation (negative=true, exact=true, f1=1.0). No CAPEC ids or T-numbers are surfaced beyond what evidence supports, and no fabricated ICS asset claim is made. Both gold-required surfaces (CAPEC-98 and T1566 correlation) are present and the boundary is honored, so completeness is full."
+}

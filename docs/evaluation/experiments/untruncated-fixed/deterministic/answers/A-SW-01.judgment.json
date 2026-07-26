@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SW-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 18,
+  "gold_present": 18,
+  "hallucinations": [],
+  "rationale": "Gold requires the seed S0002 (Mimikatz) plus all 17 related technique ids (T1003.001, T1003.002, T1003.004, T1003.006, T1098, T1134.005, T1207, T1547.005, T1550.002, T1550.003, T1552.004, T1555, T1555.003, T1555.004, T1558.001, T1558.002, T1649). The answer's claims surface S0002 in claim 1 and all 17 technique ids verbatim in claim 2's enumeration (same set, different order) - a 1:1 match with logic_flow.results[0].records[0].related, which lists exactly these 17 ids with matching names (e.g., T1003.006='DCSync', T1558.001='Golden Ticket', T1555.004='Windows Credential Manager'). No id, name, count, or attribute appears in the answer that is absent from the retrieved evidence, and the pipeline's own deterministic_scores.coverage (gold=18, found=18, coverage=1.0) corroborates this. This is a non-negative case with min_records=1, satisfied by the single returned record. No fabricated facts, aliases, or counts were found."
+}

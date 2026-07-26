@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "This is an adversarial dependency-degradation case with must_correlate=[] and expect_no_correlation=true. Gold requires: (1) capec.expect_skipped -- satisfied, notes state 'Skipped capec: no specialist available for source capec'; (2) attack.expect_dependency_skip -- satisfied, abstentions[0] and logic_flow.results[0].traces correctly report q2 (ATT&CK mitigations sub-question) was skipped because its seed producer q1 (CAPEC-555 mapping) never ran; (3) expect_no_correlation/expect_partial -- satisfied, zero records, zero claims, no correlation asserted, and deterministic_scores.correlation shows negative:true, exact:true, f1:1.0. The narrative correctly reports no matching records rather than fabricating any T-numbers, mitigations, or CAPEC ids. All provenance/inspectability scores are 1.0 with abstention_proof_ok true, consistent with a fully grounded abstention."
+}

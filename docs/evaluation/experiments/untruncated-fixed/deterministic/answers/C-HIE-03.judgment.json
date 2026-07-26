@@ -1,0 +1,12 @@
+{
+  "case_id": "C-HIE-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-555] and must_include_related=[CAPEC-560]. The evidence (logic_flow.results[0].records[0]) shows CAPEC-555 (Remote Services with Stolen Credentials, Abstraction: Standard, Status: Stable) with a CHILD_OF edge to CAPEC-560 (Use of Known Domain Credentials), matching the query 'g.V()...out(\"CHILD_OF\")...'. The answer's claims/narrative state exactly this: CAPEC-555's abstraction (Standard) and status (Stable) match the record properties verbatim, and it correctly names CAPEC-560 as the single ChildOf parent/related AttackPattern. Both gold ids are surfaced (2/2). No fabricated names, counts, or properties were found; the '1 AttackPatterns: CAPEC-560' enumeration matches the single related record in evidence."
+}

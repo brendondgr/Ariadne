@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result for ATT&CK mappings of CAPEC-116 (expect_empty: true, ex_gold.expected: []). The logic_flow shows the gremlin query 'g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\")...' executed cleanly (ok: true, row_count: 0, no errors) against seed CAPEC-116 and returned zero records. The answer (deterministic composer, no narrative claims) correctly abstains: claims=[], and the single abstention statement explicitly says the capec source returned no matching records for the CAPEC-116 to ATT&CK mapping question, naming the executed query for provenance. No technique ids, names, or counts are fabricated. This is exactly the required negative-case behavior: verified absence stated plainly, nothing invented."
+}

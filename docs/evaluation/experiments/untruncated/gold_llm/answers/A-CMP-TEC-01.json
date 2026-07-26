@@ -1,0 +1,360 @@
+{
+  "id": "A-CMP-TEC-01",
+  "kind": "attack",
+  "tier": "medium",
+  "category": "A-CMP",
+  "question": "Which techniques did campaign C0027 (C0027) use?",
+  "gold": {
+    "assertions": {
+      "min_records": 5,
+      "must_include_ids": [
+        "T1046",
+        "T1047",
+        "T1090",
+        "T1102",
+        "T1105"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "T1046",
+        "T1047",
+        "T1090",
+        "T1102",
+        "T1105",
+        "T1133",
+        "T1190",
+        "T1530",
+        "T1572",
+        "T1621"
+      ],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 10 record(s) from 1 source(s).",
+    "narrative": "Campaign C0027 utilized a total of ten ATT&CK techniques, including T1105 (Ingress Tool Transfer), T1046 (Network Service Discovery), and T1621 (Multi-Factor Authentication Request Generation). The campaign also leveraged T1102 (Web Service), T1090 (Proxy), T1572 (Protocol Tunneling), T1190 (Exploit Public-Facing Application), T1530 (Data from Cloud Storage), T1133 (External Remote Services), and T1047 (Windows Management Instrumentation). These techniques collectively support the campaign's operational requirements across network reconnaissance, tool deployment, and data access.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 10 ATT&CK record(s) including T1105, T1046, T1621 and more.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1105",
+          "T1046",
+          "T1621",
+          "T1102",
+          "T1090",
+          "T1572",
+          "T1190",
+          "T1530",
+          "T1133",
+          "T1047"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1105"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1046"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1621"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1102"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1090"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1572"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1190"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1530"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1133"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1047"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-CMP-TEC-01",
+      "source": "attack",
+      "text": "Which techniques did ATT&CK campaign C0027 use?",
+      "entities": [
+        "Campaign",
+        "Technique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "C0027"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "A-CMP-TEC-01",
+        "sub_question": "Which techniques did ATT&CK campaign C0027 use?",
+        "query": "MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN $ids RETURN c.attack_id AS campaign_id, c.name AS campaign_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 20000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 10 ATT&CK record(s) including T1105, T1046, T1621 and more.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Campaign",
+                "Technique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "C0027"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "campaign_techniques",
+              "query": "MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN $ids RETURN c.attack_id AS campaign_id, c.name AS campaign_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 20000",
+              "injected": [
+                "LIMIT 20000 appended (none present)"
+              ],
+              "timing_ms": 0.071
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 10,
+              "timing_ms": 9.2
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 10,
+              "timing_ms": 0.002
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 10,
+              "timing_ms": 0.053
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1105",
+            "name": "Ingress Tool Transfer",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1105"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1046",
+            "name": "Network Service Discovery",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1046"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1621",
+            "name": "Multi-Factor Authentication Request Generation",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1621"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1102",
+            "name": "Web Service",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1102"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1090",
+            "name": "Proxy",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1090"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1572",
+            "name": "Protocol Tunneling",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1572"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1190",
+            "name": "Exploit Public-Facing Application",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1190"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1530",
+            "name": "Data from Cloud Storage",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1530"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1133",
+            "name": "External Remote Services",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1133"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1047",
+            "name": "Windows Management Instrumentation",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1047"
+            ],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 5,
+      "found": 5,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 10,
+      "compliant": 10,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "gold_llm",
+  "run_meta": {
+    "planner": "gold-replay",
+    "synthesis": "llm",
+    "wall_s": 61.382
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 10,
+    "related": 0
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MIT-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 10,
+  "gold_present": 10,
+  "hallucinations": [],
+  "rationale": "Gold requires T1003 plus all 9 mitigations M1015, M1017, M1025, M1026, M1027, M1028, M1040, M1041, M1043 (must_include_ids + must_include_related). The retrieved evidence (logic_flow.results[0].records[0].related) contains exactly these 9 mitigation ids with matching names (e.g. M1041=Encrypt Sensitive Information, M1015=Active Directory Configuration, M1026=Privileged Account Management, M1040=Behavior Prevention on Endpoint, M1027=Password Policies, M1025=Privileged Process Integrity, M1043=Credential Access Protection, M1028=Operating System Configuration, M1017=User Training). The narrative explicitly names all 9 ids and correctly pairs the three it elaborates on (M1041, M1015, M1026) with their evidence names, then lists the remaining six ids (M1040, M1027, M1025, M1043, M1028, M1017) without fabricating extra names. The supporting claims (fact + enumeration) also enumerate exactly the same 9 ids tied to T1003. No id, name, or count in the narrative is absent from or contradicts the evidence, matching the artifact's own deterministic_scores.coverage of 10/10."
+}

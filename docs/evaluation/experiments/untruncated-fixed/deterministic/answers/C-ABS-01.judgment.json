@@ -1,0 +1,12 @@
+{
+  "case_id": "C-ABS-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-7] and must_include_related=[CAPEC-66, CAPEC-248]. The evidence (logic_flow.results[0].records[0]) shows CAPEC-7 (Blind SQL Injection, Abstraction=Detailed, Status=Draft) with related=[{id:CAPEC-66,name:'SQL Injection',role:'standard',abstraction:'Standard'},{id:CAPEC-248,name:'Command Injection',role:'meta',abstraction:'Meta'}]. The answer's claims/narrative state exactly this: CAPEC-7 found, its Abstraction/Status properties, and '2 AttackPatterns: CAPEC-66 (standard), CAPEC-248 (meta)' -- directly answering 'what are its standard and meta ancestors' for the abstraction-hierarchy walk. All three gold ids are surfaced (3/3), every name/property/role in the claims traces verbatim to the retrieved record and its related array, and no invented facts, counts, or aliases are present. deterministic_scores.coverage (3/3=1.0) and provenance (3/3 citations, fully_provenanced=true) corroborate this. Minor stylistic note: the narrative phrases both as flat 'AttackPatterns' of CAPEC-7 rather than explicitly narrating a two-hop parent-then-grandparent chain, but the role labels (standard/meta) correctly convey the hierarchy levels requested, so this is not a substantive gap."
+}

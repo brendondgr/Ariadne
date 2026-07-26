@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_correlate T1566/T1598; capec assertions require CAPEC-98 with related T1566/T1598; attack assertions require exactly T1566/T1598 with related tactics TA0001/TA0043. The answer's narrative and claims state all of these: CAPEC-98 (Phishing, Abstraction: Standard, Status: Draft) maps to taxonomy entries T1566 and T1598 (matching logic_flow record properties exactly); the ATT&CK query returns exactly 2 records (T1566, T1598, matching min/max_records=2); T1566 is linked to TA0001 (Initial Access) and T1598 to TA0043 (Reconnaissance), matching the 'related' fields in logic_flow verbatim; both T1566 and T1598 are correctly flagged as cross-source correlated identifiers. Every stated name, id, property value (Abstraction/Status), and related tactic name/id traces directly to the retrieved records with no invented facts. deterministic_scores confirm exact correlation (f1=1.0) and mapping_recall=1.0."
+}

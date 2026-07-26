@@ -1,0 +1,15 @@
+{
+  "case_id": "A-SCN-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.15,
+  "faithfulness": 0.4,
+  "groundedness": 0.6,
+  "completeness": 0.0,
+  "gold_expected": 1,
+  "gold_present": 0,
+  "hallucinations": [
+    "Narrative states 'The evidence lists 300 ATT&CK software entries' but the evidence (logic_flow.results[0].records) and the pipeline's own second claim both contain 821 distinct S-prefixed records, not 300 -- the narrative's headline count is unsupported by its own supporting evidence/claims.",
+    "The answer (via headline '821 record(s)' and claim 2 listing all 821 entity_ids) reports a result set of 821, which falls outside the gold's required bounded-scan window of min_records=250 / max_records=300 -- the scan was not bounded as the question required."
+  ],
+  "rationale": "Gold's only assertion for this bounded-scan question is a record-count window: min_records=250, max_records=300. The retrieved evidence contains 821 distinct ATT&CK Software records (all labeled 'Technique' in the KG, but with valid S-prefixed software ids), and the pipeline's own claim #2 enumerates all 821 of them (entity_ids set exactly equals the evidence id set, so that claim is internally grounded to evidence). However, this is 2.7x over the gold's max_records=300, so the answer fails the one criterion the gold defines -- it did not bound the scan as required. Compounding this, the narrative (the text shown to the analyst) asserts a different, smaller figure ('300 ATT&CK software entries') that matches neither the true evidence count (821) nor is it itself enumerated/verified anywhere in the artifact, making it an unsupported/fabricated summary number inconsistent with the pipeline's own claims. The narrative's secondary observation that all records are labeled 'Technique' despite S-prefixed ids is accurate to evidence. Net: the entity ids named (S0061, S0266, S1204, S0139, S0605, etc.) are all real and traceable to evidence (good groundedness for the raw ids), but the answer fails the core gold requirement (bounded count in [250,300]) and contains an internally-inconsistent, unsupported count in its narrative, so this is graded INCORRECT."
+}

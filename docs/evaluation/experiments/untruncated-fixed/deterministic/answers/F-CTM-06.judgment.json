@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 17,
+  "gold_present": 17,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-665 (1 id), the 3 must_correlate/must_include technique ids T1211/T1542.002/T1556, and the 13 must_include_related mitigations (M1018,M1019,M1022,M1024,M1025,M1026,M1027,M1028,M1032,M1047,M1048,M1050,M1051) for exactly 3 attack records. The claims (there is no narrative-vs-claims gap here; narrative and claims agree) surface CAPEC-665 with correct Abstraction=Detailed/Status=Stable (matches logic_flow record properties), the 3 TaxonomyEntry mappings capec:taxonomy:ATTACK:{1211,1542.002,1556} (matches record.related), and per-technique mitigation enumerations: T1542.002->{M1051} (1, matches related list), T1556->{M1047,M1032,M1024,M1026,M1022,M1018,M1027,M1025,M1028} (9, matches related list), T1211->{M1051,M1050,M1048,M1019} (4, matches related list). Union of surfaced mitigations = exactly the 13 gold-required ids, no more no less. The 3 correlation claims for T1211/T1542.002/T1556 match must_correlate exactly and align with deterministic_scores.correlation (precision/recall/f1 = 1.0) and mapping_recall (3/3). Every entity_id in every claim traces to a citation backed by a logic_flow record or its related list -- no invented names, counts, or aliases found (e.g. T1211 is correctly labeled 'Exploitation for Stealth' per the ATT&CK record, even though CAPEC's own taxonomy entry name differs ('Exploitation for Defensive Evasion'), and the answer never conflates the two). All gold-required ids (1 CAPEC + 3 techniques + 13 mitigations = 17) are present, yielding full completeness with zero fabrication."
+}

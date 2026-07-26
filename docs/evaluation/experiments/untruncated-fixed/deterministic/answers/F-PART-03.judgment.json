@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires the CAPEC side to surface CAPEC-555 with related ATT&CK techniques T1021, T1114.002, T1133 (min_records=1), and requires the ATT&CK side to be an honest skip (expect_skipped=true) since the ATT&CK source is down, with expect_no_correlation=true / expect_partial=true. The answer's claims surface CAPEC-555 (Remote Services with Stolen Credentials, Abstraction: Standard, Status: Stable) and all three required T-numbers (T1021, T1114.002, T1133), matching the record's properties and 'related' TaxonomyEntry list in logic_flow exactly (capec:taxonomy:ATTACK:1021/1114.002/1133). The notes field explicitly states 'Skipped attack: no specialist available for source \"attack\"', matching partial_mode 'attack_down' and gold's attack.expect_skipped=true, and no mitigation data was fabricated. deterministic_scores.correlation shows negative=true/exact=true consistent with expect_no_correlation. Every stated fact (abstraction, status, technique IDs, technique names implied) is traceable to the single CAPEC-555 record in logic_flow.results[0]; no invented counts, names, or IDs were found."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-TAC-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The query retrieved exactly 17 Technique records under Tactic TA0006 via MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique), and the deterministic claims enumerate all 17 technique ids verbatim: T1056, T1556, T1111, T1557, T1003, T1539, T1040, T1558, T1555, T1552, T1649, T1528, T1606, T1621, T1212, T1110, T1187. This set is an exact match (order aside) to gold's ex_gold.expected list of 17 ids, and it contains all 5 must_include_ids (T1003, T1040, T1056, T1110, T1111). Every id cited traces directly to a record in logic_flow.results[0].records with matching primary_id and name (e.g. T1003='OS Credential Dumping', T1110='Brute Force', T1111='Multi-Factor Authentication Interception'), so there is no fabricated id, name, or count. No extra/unsupported techniques were claimed and no gold-required id is missing."
+}

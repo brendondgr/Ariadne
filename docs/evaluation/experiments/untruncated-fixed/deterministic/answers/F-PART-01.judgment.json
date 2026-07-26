@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires (1) CAPEC-555 surfaced, (2) CAPEC-555 correlated to T1021 via must_include_related, and (3) the ATT&CK-asset half honestly abstain (expect_boundary=true) with expect_no_correlation=true. The answer states 'Found 1 CAPEC record(s) for CAPEC-555; ATT&CK mappings: T1021' and 'has 1 TaxonomyEntrys: capec:taxonomy:ATTACK:1021', both directly matching the sole retrieved record (primary_id CAPEC-555, related entry capec:taxonomy:ATTACK:1021, entry_id 1021). Abstraction: Standard and Status: Stable are verbatim from record.properties. For the ATT&CK side, the trace shows a boundary refusal ('entities not modeled by the attack source: Asset') and the answer surfaces this as an explicit abstention rather than fabricating asset data, satisfying expect_boundary and expect_no_correlation (no must_correlate values were invented). No unsupported facts, counts, or aliases appear anywhere in the narrative or claims; every entity_id and citation traces to logic_flow.results[0].records[0]. All three gold-required elements (CAPEC-555 id, T1021 correlation, honest ATT&CK boundary) are present."
+}

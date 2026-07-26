@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result for nonexistent campaign C9999 (expect_empty: true, ex_gold.expected: []). The executed query 'MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN $ids ...' with seed_ids=['C9999'] returned row_count 0 and records: []. The pipeline correctly abstained: narrative states 'The routed sources returned no matching records for this question' and offers to help if the analyst names a different entity (e.g. T1566, M1017, CAPEC-98) — these are generic examples, not claims about C9999, and are not presented as retrieved facts. No technique ids, names, or counts were fabricated; claims list is empty and the single abstention accurately describes the query and its empty outcome. This fully matches the negative-case requirement of abstaining rather than inventing data."
+}

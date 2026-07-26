@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an honest empty correlation for CAPEC-3 -> ATT&CK (expect_no_correlation: true, capec.expect_empty: true, attack.expect_dependency_skip: true). The logic_flow shows the capec query executed cleanly with seed_ids=[CAPEC-3] and returned row_count 0 (no MAPS_TO edges to a TaxonomyEntry with taxonomy_name ATTACK), and q2 (ATT&CK mitigations) was correctly skipped because its dependency q1 produced no join values -- exactly matching expect_dependency_skip. The answer's claims/abstentions array (used as the answer since narrative is a thin deterministic fallback) correctly states both: capec 'ran cleanly and returned no matching records' and attack 'produced no seed identifiers, so no query was executed'. No technique, mitigation, or correlation id is fabricated; the narrative's example ids (T1566, M1017, CAPEC-98) are explicitly generic usage-hint examples, not claims about CAPEC-3, so they are not hallucinations. deterministic_scores.correlation shows negative=true, exact match, precision/recall/f1=1.0, n_expected=0, n_got=0, consistent with a fully correct negative case."
+}

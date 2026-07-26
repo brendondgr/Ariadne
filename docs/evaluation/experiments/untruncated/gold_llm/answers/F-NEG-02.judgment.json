@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty: expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true. The evidence confirms the CAPEC query executed cleanly (g.V().hasLabel(\"AttackPattern\").has(\"id\",within([\"CAPEC-66\"]))...out(\"MAPS_TO\")...) and returned row_count=0 (gate/execute/assess traces all ok, empty_with_seeds=[\"CAPEC-66\"]), i.e. CAPEC-66 has no MAPS_TO edge to any ATT&CK TaxonomyEntry in this graph. The dependent q2 (ATT&CK mitigations) was correctly skipped because q1 produced no join values (dependency trace: 'producer q1: it returned no join values'), matching expect_dependency_skip. The answer's narrative/abstentions state exactly this: no matching records, no query executed for q2, and it invites the analyst to supply a specific id instead of fabricating a correlation. No technique, mitigation, or CWE ids are invented anywhere in narrative or claims (claims=[]). deterministic_scores.correlation shows negative=true, exact=true, precision/recall/f1=1.0 confirming the harness itself scored this as a correct negative. This is a fully faithful, fully grounded, complete abstention with no hallucinations."
+}

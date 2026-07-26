@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-10",
+  "verdict": "PARTIAL",
+  "correctness": 0.8,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.65,
+  "gold_expected": 8,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The narrative correctly states CAPEC-652 maps to the single ATT&CK technique T1558 (matching gold's attack.max_records:1 and must_correlate T1558), and correctly states T1558 has six mitigations, matching evidence exactly (M1041, M1015, M1047, M1026, M1027, M1043 all present in logic_flow.results[1].records[0].related). However, of the 6 required mitigation ids (attack.must_include_related), the narrative explicitly names only 3 by id: M1041 (Encrypt Sensitive Information), M1015 (Active Directory Configuration), M1043 (Credential Access Protection). The remaining three (M1026 Privileged Account Management, M1027 Password Policies, M1047 Audit) are only alluded to via generic paraphrase ('restricting ... password configurations', 'auditing system activity', 'managing privileged accounts') without their identifiers, so an analyst cannot reliably map the prose back to specific mitigation ids for half the required set. No fabricated facts, counts, or aliases were found -- every named entity (CAPEC-652, T1558, M1041, M1015, M1043) and the '6 mitigations' count are grounded in the retrieved records, and the separate 'claims' array does enumerate all 6 mitigation ids explicitly, but per the grading instructions the narrative (which is substantial, not thin) is the artifact under test. Gold_expected=8 (CAPEC-652, T1558, M1015, M1026, M1027, M1041, M1043, M1047); gold_present=5 (CAPEC-652, T1558, M1041, M1015, M1043) counted by explicit id in the narrative."
+}
