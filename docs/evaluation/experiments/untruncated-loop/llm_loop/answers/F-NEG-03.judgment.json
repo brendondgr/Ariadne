@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty join: must_correlate=[], expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true. The evidence confirms CAPEC-3's MAPS_TO query executed cleanly (row_count 0, seed_ids=['CAPEC-3'], template capec_maps_to) and returned zero TaxonomyEntry/ATT&CK records, and q2 (mitigations) was correctly skipped via the dependency step because q1 produced no join values -- exactly matching expect_dependency_skip. The narrative and claims list are empty (no fabricated technique IDs or mitigation names), and the two abstentions accurately describe (a) a clean query with no matches and (b) a genuine dependency-skip rather than an error. deterministic_scores.correlation shows negative=true, exact match, precision/recall/f1=1.0, confirming the pipeline's own scoring agrees. Nothing gold-required was owed to the analyst beyond this honest abstention, so completeness is 1.0 with gold_expected=0/gold_present=0. No invented facts anywhere in the answer."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MC-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 9,
+  "gold_present": 9,
+  "hallucinations": [],
+  "rationale": "Gold requires 7 techniques (T1003, T1110, T1187, T1552, T1555, T1556, T1558) plus the two anchor entities TA0006 and M1027. The narrative names all seven technique IDs verbatim ('T1556, T1003, T1558, T1555, T1552, T1110, and T1187'), correctly states they belong to tactic TA0006 (Credential Access) and are mitigated by M1027 (Password Policies) -- both names are exactly as given in the evidence's 'related' entries for every record. The evidence in logic_flow.results[0].records contains exactly these 7 technique records, each with related=[TA0006, M1027], matching min_records=7/max_records=7 from gold with no extras and no omissions. No counts, aliases, dates, or properties were invented; every id and name in the narrative traces directly to the retrieved records. deterministic_scores.coverage also confirms 9/9 gold entities found with coverage 1.0."
+}

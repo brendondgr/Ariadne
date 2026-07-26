@@ -1,0 +1,12 @@
+{
+  "case_id": "A-AST-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires expect_boundary=true: T1490 (Inhibit System Recovery) is an Enterprise ATT&CK technique, and 'targeted assets' is an ICS-ATT&CK-only relationship, so the only correct response is an honest refusal rather than invented asset names. logic_flow.results is empty (evidence_volume: 0 results/0 records/0 related) and run_meta.notes confirm both the 'attack' and 'capec' sub-questions were skipped because the total pipeline timeout (120.155s, exit_code 1, status partial) was exceeded before they ran. The answer's claims array is empty and the narrative states 'None of the live graph sources cover this request,' asking the analyst to supply a specific ATT&CK/CAPEC id instead of fabricating any asset. No entity id, name, count, or property appears in the answer that isn't grounded (trivially, since nothing is claimed), so there is no hallucination and the boundary is honored. One caveat noted but not penalized: the abstention resulted from a pipeline timeout rather than explicit reasoning that assets are an ICS-only concept for T1490, but the grading criterion (expect_boundary) only concerns output behavior, which is correct."
+}

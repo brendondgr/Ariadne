@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MC-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 9,
+  "gold_present": 9,
+  "hallucinations": [],
+  "rationale": "The gold requires 7 technique ids (T1003, T1110, T1187, T1552, T1555, T1556, T1558) plus the two related join anchors TA0006 and M1027 (9 required entities total). The narrative names all 7 techniques with names matching the evidence exactly (e.g. T1556 'Modify Authentication Process', T1187 'Forced Authentication'), and states each is mitigated by M1027 under tactic TA0006, verified against logic_flow.records where every one of the 7 records' `related` array contains exactly TA0006 (Credential Access) and M1027 (Password Policies) with matching names. Record count is exactly 7, matching min_records=7/max_records=7. The claims array independently corroborates each technique-to-TA0006/M1027 linkage with per-record citations. No technique, name, count, or relationship in the narrative is unsupported by the retrieved evidence; the statement that each technique 'has exactly 2 related items' is directly confirmed by the record data. This is a full, exact, well-grounded answer."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty=true; deprecated CAPEC-557 excluded at load, ex_gold.expected=[]). The executed Gremlin query against AttackPattern with seed CAPEC-557 returned row_count=0 (logic_flow.results[0].records=[]), and the pipeline correctly abstained: claims=[] and the single abstention statement accurately reports 'the executed query ran cleanly and returned no matching records for: What is CAPEC pattern CAPEC-557?', which is grounded in the traces (execute step row_count=0, assess step empty_with_seeds=[CAPEC-557]). No entity, count, or attribute was fabricated; the answer surfaces zero of the zero required gold ids, satisfying completeness fully."
+}

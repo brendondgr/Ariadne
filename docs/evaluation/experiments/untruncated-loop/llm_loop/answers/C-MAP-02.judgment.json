@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-98] and must_include_related/must_correlate=[T1566, T1598]; all three are present in the narrative and claims, with T1566 named 'Phishing' and T1598 named 'Phishing for Information' matching q2 record names exactly, and both explicitly stated as the ATT&CK mapping of CAPEC-98 (per q1's join_values [T1566, T1598] and related TaxonomyEntry ids capec:taxonomy:ATTACK:1566/1598). Every attribute cited checks out against logic_flow: CAPEC-98 Abstraction=Standard/Status=Draft (q1 properties); T1566 revoked=false, stix_type=attack-pattern, x_mitre_deprecated=false, x_mitre_is_subtechnique=false, x_mitre_version=2.7 (q2 properties, exact match); T1598 same fields with x_mitre_version=1.4 (exact match). The 'related item' counts are grounded: q3 lists exactly 4 subtechniques for T1566 (T1566.003/.004/.001/.002, narrative cites first three as examples), q4 lists exactly 4 for T1598, q5 lists exactly 1 tactic (TA0001) for T1566. The correlation counts ('5 records share T1566', '4 records share T1598') tie out to literal occurrence counts of each id across the six results blocks (T1566 appears in q1,q2,q3,q5,q6 = 5; T1598 appears in q1,q2,q4,q6 = 4). deterministic_scores.coverage confirms gold=3/found=3/coverage=1.0. No invented names, counts, or ids were found in either the narrative or the claims list."
+}

@@ -1,0 +1,204 @@
+{
+  "id": "F-PART-01",
+  "kind": "federated",
+  "tier": "adversarial",
+  "category": "F-PART",
+  "question": "Which CAPEC patterns map to T1021, and what assets does it target? (Assets are ICS-only: the attack side must refuse honestly while the CAPEC side stays intact)",
+  "gold": {
+    "assertions": {
+      "must_correlate": [],
+      "expect_no_correlation": true,
+      "capec": {
+        "min_records": 1,
+        "must_include_ids": [
+          "CAPEC-555"
+        ],
+        "must_include_related": [
+          "T1021"
+        ]
+      },
+      "attack": {
+        "expect_boundary": true
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 2
+  },
+  "answer": {
+    "headline": "No records were returned by the routed specialists; 1 question(s) the sources don't establish; 1 part(s) unsupported.",
+    "narrative": "The routed sources returned no matching records for this question. If you're after a specific entity, name it or give its id (e.g. T1566, M1017, or CAPEC-98).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [],
+    "abstentions": [
+      {
+        "source": "capec",
+        "statement": "The capec source doesn't establish this — the executed query ran cleanly and returned no matching records for: Retrieve AttackPattern nodes that MAPS_TO TaxonomyEntry nodes where taxonomy='ATTACK' and entry_id='T1021'.",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
+      }
+    ],
+    "notes": [
+      "Unsupported by the available sources: Assets targeted by T1021 (ICS-only) (The 'attack' source schema does not expose ICS-specific asset nodes or relationships for technique targeting.)"
+    ]
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which CAPEC patterns map to ATT&CK technique T1021?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What assets does technique T1021 target?",
+        "seed_from": null
+      }
+    ],
+    "sequenced": false,
+    "partial_mode": "boundary",
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Retrieve AttackPattern nodes that MAPS_TO TaxonomyEntry nodes where taxonomy='ATTACK' and entry_id='T1021'.",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "No CAPEC records found.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1021"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.102
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0,
+              "timing_ms": 9.8
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0,
+              "empty_with_seeds": [
+                "T1021"
+              ],
+              "timing_ms": 0.012
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 0,
+              "timing_ms": 0.007
+            }
+          }
+        ],
+        "records": []
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": true,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 0,
+      "n_got": 0
+    },
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 0,
+      "compliant": 0,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm_loop",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "Retrieve AttackPattern nodes that MAPS_TO TaxonomyEntry nodes where taxonomy='ATTACK' and entry_id='T1021'.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 1,
+    "status": "partial",
+    "wall_s": 50.708
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 0,
+    "related": 0
+  }
+}

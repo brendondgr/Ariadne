@@ -1,0 +1,12 @@
+{
+  "case_id": "C-SCN-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 300,
+  "gold_present": 300,
+  "hallucinations": [],
+  "rationale": "Gold requires a bounded CAPEC scan with min_records=250, max_records=300. The logic_flow evidence contains exactly 300 CAPEC records with 300 unique primary_ids. The answer's narrative enumerates all 300 unique CAPEC ids (305 occurrences due to the opening preview repeating the first 5 before the full 'All 300 result(s)' listing), and every id in the narrative is present in the evidence with no extras and no omissions (symmetric difference is empty). Note the structured claims[0].entity_ids field is truncated to 200 ids (a claim-serialization cap), but since the analyst-facing narrative (the actual answer under test per the grading instructions) is complete and fully grounded, this does not reduce the score. No abstentions were emitted, which is correct since this is a positive bounded-scan case, not a NEG case. Record count (300) sits at the top of the gold's [250,300] range, satisfying min_records/max_records. No fabricated CAPEC ids, counts, or properties were found."
+}

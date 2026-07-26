@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty join (must_correlate: [], expect_no_correlation: true, capec.expect_empty: true, attack.expect_dependency_skip: true). The evidence confirms the q1 CAPEC query (capec_maps_to template) actually executed against seed CAPEC-66 and returned row_count 0, and q2 (ATT&CK mitigations) was correctly skipped via the 'dependency' trace step because q1 produced no join values -- exactly the expect_dependency_skip behavior gold demands. The narrative and claims report zero records and two abstentions with accurate, verifiable statements matching the traces; no technique IDs, mitigation IDs, or correlations are fabricated. deterministic_scores.correlation confirms negative/exact with precision=recall=f1=1.0. No unsupported facts found."
+}

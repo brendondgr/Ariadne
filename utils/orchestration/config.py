@@ -57,6 +57,17 @@ class OrchestrationConfig:
     max_hops: int = DEFAULT_MAX_HOPS
     # Sufficiency-judge mode: "deterministic" (default) or "llm".
     assess_mode: str = DEFAULT_ASSESS_MODE
+    # Chase the *facet* frontier, not only cross-source join keys. A ``describe``
+    # result whose facet block reads ``MITIGATES × 6`` names six members it did
+    # not fetch; with this on, the loop treats a question-relevant facet like that
+    # as an unmet gap and re-plans an expansion hop for it. Off by default: the
+    # verdict is what makes the LLM-off build byte-reproducible, and adding a new
+    # source of "insufficient" would change every committed single-pass baseline.
+    chase_facets: bool = False
+    # How many facet expansions one re-plan hop may add (relevance-ranked). A
+    # describe on a hub node exposes many facets; fetching them all would trade
+    # the old silent truncation for an explosion.
+    max_facet_expansions: int = 4
 
     @classmethod
     def from_env(cls) -> "OrchestrationConfig":
@@ -65,6 +76,8 @@ class OrchestrationConfig:
             recursion_limit=env_int("ORCH_RECURSION_LIMIT", DEFAULT_RECURSION_LIMIT),
             max_hops=_resolve_max_hops(env_int("ORCH_MAX_HOPS", DEFAULT_MAX_HOPS)),
             assess_mode=_resolve_assess_mode(env_str("ORCH_ASSESS_MODE", DEFAULT_ASSESS_MODE)),
+            chase_facets=_env_flag("ORCH_CHASE_FACETS"),
+            max_facet_expansions=env_int("ORCH_MAX_FACET_EXPANSIONS", 4),
         )
 
 

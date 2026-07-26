@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "The answer correctly names CAPEC-98 (Phishing) as the sole CAPEC pattern mapping to ATT&CK T1566, and correctly identifies T1566 as 'Phishing', satisfying gold's must_correlate=[T1566], capec.must_include_ids=[CAPEC-98], capec.must_include_related=[T1566], attack.must_include_ids=[T1566], and expect_names T1566='Phishing'. Every detail in the narrative/claims traces directly to logic_flow.results: CAPEC-98's Abstraction=Standard and Status=Draft match the capec record's properties exactly; the TaxonomyEntry capec:taxonomy:ATTACK:1566 matches the related entry; the ATT&CK record's stix_type=attack-pattern, x_mitre_version=2.7, revoked=false, x_mitre_deprecated=false, x_mitre_is_subtechnique=false all match record properties verbatim. The cross-source correlation claim ('T1566 corroborated across attack and capec, 2 records share it') matches deterministic_scores.correlation (exact=true, precision/recall/f1=1.0, n_expected=1, n_got=1) and evidence_volume (2 records, 1 related). No invented facts, aliases, counts, or ids found anywhere in the answer."
+}

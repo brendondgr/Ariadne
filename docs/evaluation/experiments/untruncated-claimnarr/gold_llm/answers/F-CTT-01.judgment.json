@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The narrative states CAPEC-98 (Phishing, Draft Standard) maps to T1566 and T1598, matching properties.Status='Draft' and properties.Abstraction='Standard' in the capec record (lines 274,278). It states T1566 (Phishing) has related TA0001 and T1598 (Phishing for Information) has related TA0043, exactly matching the attack-source records' related arrays (TA0001/Initial Access at line 393-394, TA0043/Reconnaissance at line 411-412), satisfying gold.assertions.attack.must_include_related. Both T1566 and T1598 are named as ATT&CK mappings and as correlated identifiers across capec and attack sources, satisfying gold.assertions.must_correlate (T1566, T1598) and gold.assertions.capec.must_include_related. The narrative also correctly reports the two TaxonomyEntry ids (capec:taxonomy:ATTACK:1566, capec:taxonomy:ATTACK:1598) which trace to the related array of the CAPEC-98 record (lines 287-297). All 5 gold-required entities (CAPEC-98, T1566, T1598, TA0001, TA0043) are surfaced. deterministic_scores confirm correlation f1=1.0 and mapping_recall=1.0, consistent with my independent check. No invented facts, counts, or aliases were found; every number (2 ATT&CK records, 2 TaxonomyEntrys, 1 related item each) matches logic_flow exactly."
+}

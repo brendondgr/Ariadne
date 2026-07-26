@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MC-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 9,
+  "gold_present": 9,
+  "hallucinations": [],
+  "rationale": "The gold requires 7 technique ids (T1003, T1110, T1187, T1552, T1555, T1556, T1558) plus the two relational anchors TA0006 and M1027 (9 total). The narrative names all 7 techniques verbatim and states 'Each record confirms the relationship between the respective technique, the Credential Access tactic, and the Password Policies mitigation' -- both TA0006 (Credential Access) and M1027 (Password Policies) are explicitly surfaced. Cross-checking against logic_flow.results[0].records: all 7 records carry primary_id matching the gold set, and every record's related array contains {id: TA0006, name: Credential Access} and {id: M1027, name: Password Policies}, confirming the query's MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique)<-[:MITIGATES]-(m:Mitigation) join is faithfully reflected. Row count (7) exactly matches gold min/max_records=7. No technique, name, alias, or count in the narrative/claims is absent from or contradicts the evidence -- no hallucinations found."
+}

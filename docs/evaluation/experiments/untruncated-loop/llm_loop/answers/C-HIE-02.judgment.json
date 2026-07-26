@@ -1,0 +1,12 @@
+{
+  "case_id": "C-HIE-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.05,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 0.5,
+  "gold_expected": 2,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question asks for the parent (ChildOf) of CAPEC-564. Gold requires must_include_ids=[CAPEC-564] and must_include_related=[CAPEC-542]. The evidence (logic_flow q2, related array) DID retrieve the correct parent: CAPEC-542 'Targeted Malware' via a CHILD_OF edge. However, the answer under test (narrative and claims, composer=deterministic) never states this relationship at all -- the narrative only reports CAPEC-564's name, Abstraction (Detailed), and Status (Draft), and the four claims repeat only 'Found 1 CAPEC record(s): CAPEC-564' and the same Abstraction/Status fact twice. Neither CAPEC-542 nor the word ChildOf/parent appears anywhere in the answer, so the actual question posed by the analyst is never answered despite the retrieval succeeding. This is confirmed by the artifact's own deterministic_scores.coverage: gold=2, found=1, coverage=0.5, missing=['CAPEC-542']. Nothing stated is fabricated (Abstraction/Status values match the record's properties, so faithfulness and groundedness for what IS said are high), but correctness must be scored near zero because the answer fails to surface the one relationship the question asked about, and completeness is 1/2 (CAPEC-564 present, CAPEC-542 absent)."
+}

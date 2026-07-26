@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-555 (must_include_ids) and the three ATT&CK mappings T1021, T1114.002, T1133 (must_include_related). The narrative's opening sentence states all four explicitly: 'One CAPEC record was found for CAPEC-555 (Remote Services with Stolen Credentials)... maps to ATT&CK techniques T1021, T1114.002, and T1133,' matching the q1 record (properties Abstraction: Standard, Status: Stable, join_values [T1021, T1114.002, T1133]) exactly. All subsequent detail claims check out against logic_flow evidence: T1133 and T1021 property values (revoked False, stix_type attack-pattern, x_mitre_deprecated False, x_mitre_is_subtechnique False, x_mitre_version 2.5/1.6) match q2 records verbatim; 'T1021 has 8 related items (e.g., T1021.001, T1021.007, T1021.003)' matches q3's 8-item related list in the same order; 'and 1 related item (e.g., TA0008)' matches q4's Tactic result. The record counts for q2 (2 records: T1133, T1021) and q5 (3 records: T1133, T1021, T1114.002) are stated correctly and match the query summaries. The correlation counts (T1021: 5, T1114.002: 2, T1133: 3) were independently recomputed by counting how many records across all 5 query results carry each id in primary_id or join_values -- CAPEC-555's join_values contributes 1 to each, and the attack-side records contribute the rest (T1021 appears as primary_id in q2, q3, q4, q5 = 4 + 1 = 5; T1114.002 appears once in q5 = 1 + 1 = 2; T1133 appears in q2 and q5 = 2 + 1 = 3) -- all three figures are exactly grounded, not fabricated. No invented names, aliases, counts, or ids were found anywhere in the narrative or claims list."
+}

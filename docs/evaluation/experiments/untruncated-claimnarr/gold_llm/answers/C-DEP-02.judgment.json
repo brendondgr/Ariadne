@@ -1,0 +1,12 @@
+{
+  "case_id": "C-DEP-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_empty=true for CAPEC-106 (deprecated, excluded at load; ex_gold.expected=[]). The executed Gremlin query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...) against seed_ids=[\"CAPEC-106\"] returned row_count=0 records, and the pipeline correctly abstained rather than fabricating a pattern. The narrative/answer states 'The routed sources returned no matching records for this question' and invites the analyst to supply a different id, with zero claims and one honest abstention citing the exact query run. No entity, name, or property is invented anywhere in narrative or claims. This is the textbook correct behavior for a negative deprecated-CAPEC case."
+}

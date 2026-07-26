@@ -1,0 +1,12 @@
+{
+  "case_id": "A-EXC-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative case (gold.assertions.expect_empty=true, ex_gold.expected=[]) for a technique T1002 that was excluded at load time. The retrieval query executed cleanly against ATT&CK with seed_ids=[T1002] and returned row_count=0 (logic_flow.results[0].records=[], summary='No records found in ATT&CK for this query'). The answer correctly abstains: claims=[] (no fabricated entities), abstentions=[{source: attack, statement: 'The attack source doesn't establish this...'}], and the narrative states 'The routed sources returned no matching records for this question' and invites the analyst to name a specific entity, offering examples (T1566, M1017, CAPEC-98) that are generic prompts, not claims about T1002 itself, so they are not hallucinations. No ids, properties, or facts are asserted beyond the absence of a match, matching the gold requirement of an empty result exactly."
+}

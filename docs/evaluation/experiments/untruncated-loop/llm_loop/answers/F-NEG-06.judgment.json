@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty join (expect_no_correlation: true, capec.expect_empty: true, attack.expect_dependency_skip: true). The evidence confirms the capec query for CAPEC-18's MAPS_TO relationships to TaxonomyEntry(ATTACK) nodes executed cleanly and returned 0 rows (traces show resolve found seed_ids=['CAPEC-18'] but execute/assess/normalize all report row_count 0), and the attack sub-question (q2) was correctly skipped because it depends on q1's join values which never materialized (dependency trace: 'producer q1: it returned no join values'). The answer's narrative and abstentions state exactly this: no matching records for CAPEC-18, and the attack query was skipped due to the dependency failure, with claims=[] (no fabricated technique/mitigation ids). No T-numbers, mitigation ids, or correlations are invented anywhere in the narrative or claims. This is a textbook correct honest-abstention on a negative federated case."
+}

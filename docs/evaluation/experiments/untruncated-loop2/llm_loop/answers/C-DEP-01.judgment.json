@@ -1,0 +1,12 @@
+{
+  "case_id": "C-DEP-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result for deprecated CAPEC-91 (expect_empty: true, ex_gold.expected: []). The executed Gremlin query against the capec source (g.V().hasLabel('AttackPattern').has('id', within(['CAPEC-91']))...) returned row_count 0 and 0 records, confirming CAPEC-91 is genuinely absent/excluded. The answer has no narrative claims and no claims list; it correctly abstains, stating 'The routed sources returned no matching records for this question' and inviting the analyst to supply a different id. No fabricated entities, ids, names, or properties appear anywhere in the narrative or abstentions. This exactly matches the required negative-case behavior."
+}

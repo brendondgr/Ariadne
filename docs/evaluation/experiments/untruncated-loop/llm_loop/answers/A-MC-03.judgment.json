@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MC-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 8,
+  "gold_present": 8,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids T1003, T1040, T1552, T1557, T1558, T1649 plus must_include_related TA0006 and M1041 (8 gold ids total). The narrative names all six techniques (T1557, T1003, T1040, T1558, T1552, T1649) and explicitly states they are 'mitigated by M1041 within tactic TA0006', and the claims block cites all six with correct attack-source primary_ids. Cross-checking against logic_flow.results[0].records confirms each of the 6 records is a Technique with related entries for TA0006 (Credential Access) and M1041 (Encrypt Sensitive Information) with names matching exactly what the query returned via the tactic_technique_mitigations template (row_count 6, matching gold min/max_records of 6). No names, counts, or properties are invented; the technique names in the narrative (e.g. 'Adversary-in-the-Middle', 'OS Credential Dumping', 'Network Sniffing', 'Steal or Forge Kerberos Tickets', 'Unsecured Credentials', 'Steal or Forge Authentication Certificates') match the evidence records exactly. Fully grounded, complete, no hallucinations."
+}

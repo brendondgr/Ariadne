@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 13,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "The pipeline never executed either planned sub-question: run_meta shows exit_code 1, status 'partial', wall_s 120.139, and the answer notes explicitly state both the capec and attack sub-questions were 'Skipped ... total pipeline timeout exceeded before this sub-question ran'. logic_flow.results is empty (evidence_volume records=0, related=0), so there is zero evidence to draw on. The answer correctly abstains rather than fabricating anything ('No records were returned by the routed specialists'), so there are no hallucinations and nothing ungrounded is asserted (faithfulness/groundedness both 1.0). However this is not a negative/no-match gold case: gold requires must_correlate T1505.005, T1574.006, T1574.007, T1574.013, T1620 (5 techniques), capec.must_include_ids CAPEC-13/CAPEC-640 with must_include_related the same 5 techniques, and attack.must_include_ids the same 5 techniques plus must_include_related mitigations M1022, M1024, M1028, M1038, M1040, M1047 (6 mitigations) — 13 unique required ids in total, none of which are surfaced. The abstention is truthful but represents a total pipeline failure (timeout) rather than a correct 'no data exists' negative, so correctness and completeness are both 0."
+}

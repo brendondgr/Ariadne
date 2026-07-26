@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 7,
+  "gold_present": 7,
+  "hallucinations": [],
+  "rationale": "Gold requires T1110 plus all 6 related entities (DET0463, AN1275, AN1276, AN1277, AN1278, AN1279); the single retrieved record's 'related' list contains exactly these 6 ids, and the narrative names and correctly paraphrases every one of them: DET0463 as the detection strategy that 'correlates authentication failures across multiple platforms' (matches evidence description 'Brute Force Authentication Failures with Multi-Platform Log Correlation'), and AN1275-AN1279 each described in terms that closely track their evidence descriptions (failed-logon volume + success, multi-user/IP failure-then-success, password spraying across a user pool, unified-log failures e.g. loginwindow/sshd, and SaaS excessive-login e.g. O365/Dropbox). No invented ids, counts, names, or properties were found; the 'six items' / 'five analytics' counts match the evidence exactly. Note: the artifact's own deterministic_scores.coverage field reports 0.143 with all 6 related ids listed as 'missing' -- this is a pipeline self-scoring bug that evidently only inspects the structured 'claims' entity_ids (which list only T1110) rather than the narrative actually shown to the analyst; per grading instructions the narrative is the answer under test here since it is not thin, and it is fully correct and complete."
+}

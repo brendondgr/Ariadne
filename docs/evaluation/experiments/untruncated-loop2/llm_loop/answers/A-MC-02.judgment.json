@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MC-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 11,
+  "gold_present": 11,
+  "hallucinations": [],
+  "rationale": "The gold requires the 9 techniques T1047, T1059, T1106, T1127, T1129, T1204, T1574, T1609, T1674 plus the two related anchors TA0002 and M1038. The single retrieved record set (logic_flow.results[0].records, 9 rows) shows exactly these 9 technique ids, each related to TA0002 ('Execution' tactic) and M1038 ('Execution Prevention' mitigation), matching min_records=9/max_records=9 and deterministic_scores.coverage (gold=11, found=11, coverage=1.0). The narrative explicitly states 'Mitigation M1038, known as Execution Prevention, mitigates 9 ATT&CK techniques within the Execution tactic TA0002' and lists all 9 technique ids (T1127, T1047, T1129, T1106, T1674, T1059, T1609, T1204, T1574), correctly naming both M1038's proper name and TA0002's tactic association per the evidence. No technique, alias, count, or property is asserted beyond what appears in the evidence records; no fabricated names, dates, or extra techniques. This is a full, faithful, fully grounded answer."
+}

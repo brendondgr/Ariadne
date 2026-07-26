@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-05",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 5,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "The LLM-planned pipeline timed out before either sub-question executed ('Skipped capec: total pipeline timeout exceeded before this sub-question ran'; 'Skipped attack: ...'), so logic_flow.results is empty (evidence_volume: 0 records) and no CAPEC-13 -> ATT&CK mapping or tactic lookup was ever performed. The answer is a generic abstention that does not even mention CAPEC-13, T1574.006, T1574.007, TA0002, or TA0005 -- it surfaces none of the gold-required entities (gold requires CAPEC-13, T1574.006, T1574.007, TA0002, TA0005 = 5 items; 0 present). This is not a legitimate negative case (gold asserts min_records 2 for attack and 1 for capec, with concrete must_correlate ids T1574.006/T1574.007), so abstention is the wrong behavior -- it is a retrieval/orchestration failure (run_meta.status='partial', exit_code=1, wall_s=120.141) rather than correctly identifying an empty result. Faithfulness/groundedness score high only because the answer fabricates nothing -- it simply fails to answer the question at all, which drives correctness and completeness to 0."
+}

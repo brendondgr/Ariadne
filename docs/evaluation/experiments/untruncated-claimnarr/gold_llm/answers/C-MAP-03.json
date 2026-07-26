@@ -1,0 +1,264 @@
+{
+  "id": "C-MAP-03",
+  "kind": "capec",
+  "tier": "medium",
+  "category": "C-MAP",
+  "question": "Which ATT&CK techniques does CAPEC-564 map to?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "CAPEC-564"
+      ],
+      "must_include_related": [
+        "T1037",
+        "T1543.001",
+        "T1543.004",
+        "T1547"
+      ]
+    },
+    "ex_gold": {
+      "pool": "join",
+      "expected": [
+        "T1037",
+        "T1543.001",
+        "T1543.004",
+        "T1547"
+      ],
+      "scheme": "capec"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "CAPEC-564, titled Run Software at Logon, maps to four ATT&CK techniques: T1037, T1543.001, T1543.004, and T1547. The record for this attack pattern carries an Abstraction value of Detailed and a Status of Draft. It is also linked to four TaxonomyEntrys, specifically capec:taxonomy:ATTACK:1037, capec:taxonomy:ATTACK:1543.001, capec:taxonomy:ATTACK:1543.004, and capec:taxonomy:ATTACK:1547.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s) for CAPEC-564; ATT&CK mappings: T1037, T1543.001, T1543.004, T1547.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-564"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-564"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-564 (Run Software at Logon) has Abstraction: Detailed; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-564"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-564"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-564 (Run Software at Logon) has 4 TaxonomyEntrys: capec:taxonomy:ATTACK:1037, capec:taxonomy:ATTACK:1543.001, capec:taxonomy:ATTACK:1543.004, capec:taxonomy:ATTACK:1547.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "capec:taxonomy:ATTACK:1037",
+          "capec:taxonomy:ATTACK:1543.001",
+          "capec:taxonomy:ATTACK:1543.004",
+          "capec:taxonomy:ATTACK:1547"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-564"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "C-MAP-03",
+      "source": "capec",
+      "text": "Which ATT&CK techniques does CAPEC-564 map to?",
+      "entities": [
+        "AttackPattern",
+        "TaxonomyEntry"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": "attack-technique-id",
+      "seed_ids": [
+        "CAPEC-564"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "C-MAP-03",
+        "sub_question": "Which ATT&CK techniques does CAPEC-564 map to?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s) for CAPEC-564; ATT&CK mappings: T1037, T1543.001, T1543.004, T1547.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CAPEC-564"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_maps_to",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
+              "injected": [],
+              "timing_ms": 0.088
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 4,
+              "timing_ms": 5.4
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 4,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.071
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-564",
+            "name": "Run Software at Logon",
+            "label": "AttackPattern",
+            "description": "Operating system allows logon scripts to be run whenever a specific user or users logon to a system. If adversaries can access these scripts, they may insert additional code into the logon script. This code can allow them to maintain persistence or move laterally within an enclave because it is executed every time the affected user or users logon to a computer. Modifying logon scripts can effectively bypass workstation and enclave firewalls. Depending on the access configuration of the logon scripts, either local credentials or a remote administrative account may be necessary.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Run Software at Logon",
+              "description": "Operating system allows logon scripts to be run whenever a specific user or users logon to a system. If adversaries can access these scripts, they may insert additional code into the logon script. This code can allow them to maintain persistence or move laterally within an enclave because it is executed every time the affected user or users logon to a computer. Modifying logon scripts can effectively bypass workstation and enclave firewalls. Depending on the access configuration of the logon scripts, either local credentials or a remote administrative account may be necessary.",
+              "id": "capec:attack-pattern:564",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1037",
+              "T1543.001",
+              "T1543.004",
+              "T1547"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1037",
+                "entry_id": "1037",
+                "name": "Boot or Logon Initialization Scripts",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1543.001",
+                "entry_id": "1543.001",
+                "name": "Create or Modify System Process: Launch Agent",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1543.004",
+                "entry_id": "1543.004",
+                "name": "Create or Modify System Process: Launch Daemon",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1547",
+                "entry_id": "1547",
+                "name": "Boot or Logon Autostart Execution",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 5,
+      "found": 5,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 3,
+      "compliant": 3,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "gold_llm",
+  "run_meta": {
+    "planner": "gold-replay",
+    "synthesis": "llm",
+    "wall_s": 30.535
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 4
+  }
+}

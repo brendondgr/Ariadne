@@ -1,0 +1,12 @@
+{
+  "case_id": "A-AST-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_boundary: true — T1490 (Inhibit System Recovery) targeting 'Asset' is an ICS-only concept the attack source does not model, so the correct behavior is an honest refusal, not fabricated data. The answer's narrative explicitly states 'The routed sources returned no matching records for this question' and offers to help if given a specific entity/id, with zero claims and one explicit abstention citing 'The attack source doesn't establish this — it doesn't model the entities this question asks about.' The logic_flow trace confirms the boundary check fired correctly: resolve step flagged \"entities not in card: ['Asset']\" and the boundary step recorded \"entities not modeled by the attack source: Asset\", with 0 records returned. No asset names, counts, or relationships were invented. This is a fully faithful, fully grounded, complete boundary refusal matching the gold requirement exactly."
+}

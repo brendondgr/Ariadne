@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 8,
+  "gold_present": 8,
+  "hallucinations": [],
+  "rationale": "Gold requires T1566 plus all 7 related items (DET0070, AN0188-AN0193). The narrative names T1566 (Phishing) and explicitly lists all 7 related ids (DET0070, AN0189, AN0188, AN0193, AN0191, AN0190, AN0192), matching the sole evidence record's 'related' array exactly (7 items, no more no less). The narrative's descriptive phrases for each analytic (malicious payload delivery -> AN0189, unusual inbound email activity -> AN0188, SaaS-based phishing -> AN0193, macro-laden Office documents -> AN0191, anomalous Mail app behavior -> AN0190, targeted identity provider login attempts -> AN0192) are faithful paraphrases of each analytic's 'description' field in logic_flow, with no invented facts, counts, or aliases. The claims array independently corroborates the same 7 ids with correct citations to source=attack, primary_id=T1566. deterministic_scores.coverage confirms gold=8/found=8. No hallucinations found."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-555 mapping to T1133 (must_include_ids/must_include_related) and the ATT&CK record T1133 named 'External Remote Services' (must_include_ids/expect_names), plus the cross-source correlation on T1133 (must_correlate). The narrative states all of this: 'CAPEC-555 (Remote Services with Stolen Credentials) maps to ATT&CK technique T1133' and 'The ATT&CK record T1133 is named External Remote Services' and explicitly notes the T1133 correlation across attack and capec. Every stated fact traces to logic_flow evidence: CAPEC-555 properties (Abstraction: Standard, Status: Stable) match record q1; T1133 properties (revoked: False, stix_type: attack-pattern, x_mitre_deprecated: False, x_mitre_is_subtechnique: False, x_mitre_version: 2.5) match record q2; the related tactics TA0003 (Persistence) and TA0001 (Initial Access) match record q3. No fabricated ids, aliases, or counts were found; the 'e.g. TA0003, TA0001' and 'record count' phrasing accurately reflects the evidence. deterministic_scores also confirm exact correlation (precision/recall/f1=1.0) and mapping_recall=1.0. Fully correct, fully grounded, no hallucinations."
+}

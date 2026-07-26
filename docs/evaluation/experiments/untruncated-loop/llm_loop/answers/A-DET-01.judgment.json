@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[T1047] and must_include_related=[DET0364, AN1031]. The narrative (the answer under test, since it is substantive, not thin) explicitly names all three: 'MITRE ATT&CK found 2 items related to T1047 (Windows Management Instrumentation), specifically DET0364 and AN1031.' It then describes DET0364 as 'the Behavioral Detection Strategy for WMI Execution Abuse on Windows,' which matches the evidence record's related[0].name verbatim, and describes AN1031's detection logic ('multi-event chain that tracks process creation, command execution, and any corresponding network connection if the activity is remote'), which is a faithful paraphrase of the evidence's related[1].description ('through a multi-event chain: process creation, command execution, and corresponding network connection if remote'). No counts, names, or facts appear that are absent from logic_flow.results[0].records[0]. Note the artifact's own deterministic_scores.coverage reports found=1/gold=3 (an internal scorer limitation that only counts primary record ids, not related-node ids) but this is the pipeline's self-report, not the actual narrative content, which independently surfaces all three required ids with accurate supporting detail."
+}

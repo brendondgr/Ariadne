@@ -1,0 +1,12 @@
+{
+  "case_id": "C-CSQ-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.25,
+  "gold_expected": 4,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question asks what consequences CAPEC-98 has. The retrieval query correctly returned the three required Consequence neighbours (capec:attack-pattern:98:consequence:1/2/3) in logic_flow.results[0].records[0].related, and the pipeline's own deterministic_scores.coverage confirms this (found=1/4, missing exactly those three ids). But the claims/narrative shown to the analyst never surface them: the narrative explicitly states 'The established claims do not enumerate the specific consequences associated with this attack pattern,' and the only claims are the record identification and its Abstraction/Status properties. Gold requires must_include_ids=[CAPEC-98] (present) plus must_include_related the 3 consequence ids (all absent from the answer) -> gold_present=1 of 4. Nothing stated is fabricated (Abstraction: Standard, Status: Draft, name Phishing all match the evidence record properties exactly), so faithfulness and groundedness are high, but the answer fails to answer the actual question despite the data being retrieved -- a synthesis/composer gap, not a retrieval gap. Verdict is INCORRECT because the core ask (the consequences) goes entirely unanswered."
+}

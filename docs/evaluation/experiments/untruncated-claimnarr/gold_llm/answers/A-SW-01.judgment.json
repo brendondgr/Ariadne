@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SW-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 18,
+  "gold_present": 18,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[S0002] plus 17 must_include_related technique ids (T1003.001/.002/.004/.006, T1098, T1134.005, T1207, T1547.005, T1550.002/.003, T1552.004, T1555, T1555.003/.004, T1558.001/.002, T1649). The narrative states 'software S0002 (Mimikatz) has 17 related items' and lists all 17 T-numbers verbatim; the claims array (fact + enumeration) also names S0002 and enumerates the identical 17-id set. Cross-checking against logic_flow.results[0].records[0].related, every one of the 17 ids and their names (e.g. T1003.001 'LSASS Memory', T1558.001 'Golden Ticket', T1555 'Credentials from Password Stores') is present verbatim in the retrieved evidence with no extras and no omissions -- the answer's id set is an exact match to both the gold list and the evidence's join_values/related array. No name, count, alias, or property in the answer is unsupported by the evidence (the narrative sticks to raw T-numbers rather than asserting technique names, so there is no risk of a mismatched-name hallucination). This is the deterministic-arm claims output (no LLM narrative embellishment), fully grounded and complete."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty: true) for deprecated/excluded CAPEC-557. The executed query 'g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...' against seed_ids=['CAPEC-557'] returned row_count 0 and records: [] (logic_flow.results[0]). The answer correctly abstains: narrative states 'The routed sources returned no matching records for this question' and offers to accept a different id; the abstention entry cites the exact query and confirms it ran cleanly with zero matches. No claims were fabricated (claims: [] ), no ids, names, or properties are invented anywhere in the narrative or abstention text. This matches the negative-case requirement exactly."
+}

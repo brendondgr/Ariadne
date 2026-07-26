@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 7,
+  "gold_present": 7,
+  "hallucinations": [],
+  "rationale": "Gold requires T1110 plus six related ids (DET0463, AN1275-AN1279). The narrative explicitly names all seven: 'technique T1110 (Brute Force)... specifically DET0463, AN1275, AN1276, AN1277, AN1278, and AN1279', correctly labeling DET0463 as the detection strategy and AN1275-AN1279 as the associated analytics, which matches the evidence's related-node labels exactly (DetectionStrategy vs Analytic per the Cypher query). Every id and role assignment is directly traceable to the single retrieved record's 'related' list in logic_flow -- no name, count, or id in the narrative is absent from or contradicts the evidence. The question ('how is T1110 detected, and via which analytics?') is answered at the level the evidence supports: which detection strategy and which analytics apply. Note the deterministic_scores.coverage block in the artifact shows found=1/missing=6, but that appears to score only the 'claims' entity_ids/citations (which list just T1110) rather than the narrative text; per grading instructions the narrative is the answer under test here since it is substantive (not thin), and it fully and faithfully surfaces every gold-required id."
+}

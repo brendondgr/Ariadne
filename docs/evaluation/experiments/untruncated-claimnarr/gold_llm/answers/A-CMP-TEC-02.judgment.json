@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-TEC-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids T1005, T1018, T1047, T1057, T1069 (min_records 5); the answer's narrative and claims list all five explicitly. Beyond the minimum, the answer enumerates all 24 technique IDs returned by the campaign_techniques query in logic_flow.results (T1680, T1686, T1665, T1105, T1018, T1213, T1047, T1133, T1539, T1069, T1005, T1140, T1190, T1555, T1550, T1087, T1482, T1070, T1083, T1568, T1057, T1199, T1078, T1685), and this set is exactly equal (set comparison confirmed) to gold's ex_gold.expected 24-item ATT&CK-scheme list -- no missing, no extras. Every cited primary_id is present in the retrieved records with matching names, so the claim is fully grounded and provenanced (deterministic_scores.coverage=1.0, provenance.citation_provenance_rate=1.0). No fabricated names, counts, or aliases were found."
+}

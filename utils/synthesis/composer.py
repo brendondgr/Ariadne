@@ -288,8 +288,62 @@ def _related_ids(record: EvidenceRecord) -> list[str]:
     return list(seen)
 
 
-def _related_noun(record: EvidenceRecord) -> str:
-    """A readable plural for a record's related set, from its neighbours' labels."""
+#: Edge types whose plain-English name is the answer to the question that asked
+#: for them. "CAPEC-98 has 1 AttackPatterns: CAPEC-151" is true but useless — it
+#: never says CAPEC-151 is the *parent*, so an answer bound to this claim cannot
+#: name the relationship and will honestly report it cannot confirm one.
+_REL_NOUNS = {
+    "CHILD_OF": "ChildOf parent",
+    "PARENT_OF": "ParentOf child",
+    "CAN_FOLLOW": "CanFollow successor",
+    "CAN_PRECEDE": "CanPrecede predecessor",
+    "PEER_OF": "PeerOf peer",
+    "HAS_MITIGATION": "mitigation",
+    "HAS_CONSEQUENCE": "consequence",
+    "HAS_EXECUTION_STEP": "execution step",
+    "HAS_PREREQUISITE": "prerequisite",
+    "HAS_SKILL": "required skill",
+    "EXPLOITS_WEAKNESS": "exploited weakness",
+    "MAPS_TO": "ATT&CK mapping",
+    "SUBTECHNIQUE_OF": "parent technique",
+    "USES": "used technique",
+    "MITIGATES": "mitigated technique",
+}
+
+
+def _plural(noun: str, count: int) -> str:
+    """Pluralise the head word, respecting the sibilant and -y endings."""
+    if count == 1:
+        return noun
+    head, sep, tail = noun.rpartition(" ")
+    word = tail or noun
+    if word.endswith(("s", "x", "z", "ch", "sh")):
+        plural = f"{word}es"
+    elif word.endswith("y") and not word.endswith(("ay", "ey", "iy", "oy", "uy")):
+        plural = f"{word[:-1]}ies"
+    else:
+        plural = f"{word}s"
+    return f"{head}{sep}{plural}" if tail else plural
+
+
+def _related_noun(record: EvidenceRecord, count: int = 0) -> str:
+    """A readable plural for a record's related set.
+
+    Prefers the *relationship* over the neighbour's label: the edge is what the
+    question asked about, and a label-only noun ("AttackPatterns") silently drops
+    the semantics a hierarchy or mitigation question turns on.
+    """
+    rel_types = {
+        str(rel.get("type")).strip().upper()
+        for rel in record.related
+        if isinstance(rel, dict) and rel.get("type")
+    }
+    if len(rel_types) == 1:
+        noun = _REL_NOUNS.get(next(iter(rel_types)))
+        if noun:
+            return _plural(noun, count)
+    # A per-neighbour role (an abstraction ancestor's "standard"/"meta") is
+    # annotated on each id already; fall back to the neighbour label.
     labels = {
         str(rel.get("label")).strip()
         for rel in record.related
@@ -332,7 +386,7 @@ def _enumeration_claim(result: SpecialistResult, record: EvidenceRecord) -> Clai
         parts.append(f"{rid} ({role})" if role else rid)
         if len(ids) >= _enum_bound("MAX_ENUMERATION_IDS", _MAX_ENUMERATION_IDS):
             break
-    noun = _related_noun(record)
+    noun = _related_noun(record, len(ids))
     anchor = record.name and f"{record.primary_id} ({record.name})" or record.primary_id
     text = f"{anchor} has {len(ids)} {noun}: {', '.join(parts)}."
     return Claim(
@@ -447,6 +501,21 @@ class DeterministicComposer:
         join_index = evidence.join_index()
         for value in evidence.cross_source_join_values():
             claims.append(_correlation_claim(value, join_index.get(value, []), cap))
+
+        # An iterative run re-describes the same anchor on every hop, so the
+        # identical fact/attribute claim is composed once per hop — C-HIE-01 came
+        # back with four copies of "Found 1 CAPEC record(s): CAPEC-98". The text
+        # is the claim's identity for a reader, so collapse exact repeats while
+        # keeping the first occurrence's citations and order.
+        deduped: list[Claim] = []
+        seen_text: set[str] = set()
+        for claim in claims:
+            key = (claim.text or "").strip()
+            if key and key in seen_text:
+                continue
+            seen_text.add(key)
+            deduped.append(claim)
+        claims = deduped
 
         for part in evidence.unsupported:
             notes.append(_unsupported_note(part, evidence.request))

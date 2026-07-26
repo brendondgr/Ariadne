@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-05",
+  "verdict": "PARTIAL",
+  "correctness": 0.55,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.7,
+  "gold_expected": 43,
+  "gold_present": 30,
+  "hallucinations": [],
+  "rationale": "All 8 gold CAPEC ids (CAPEC-49/55/70/112/509/555/561/565) are named in the narrative with Abstraction/Status values that match logic_flow.results[0] records exactly, and the CWE-521 link is stated (satisfies capec.must_include_related). However, of the 10 required ATT&CK ids in gold.assertions.attack.must_include_ids/must_correlate, the narrative only explicitly names 6 (T1021, T1021.002, T1078.001, T1110, T1110.001, T1133) — T1110.002, T1110.003, T1114.002 and T1558.003 are never mentioned anywhere in the narrative, even though the underlying evidence (logic_flow.results[9], q10) confirms all 10 as valid ATT&CK matches. Worse, the query plan (q3-q5) only ever fetched MITIGATES edges for T1021, T1110 and T1133 — the other 7 techniques' mitigations were never retrieved by the plan at all — so only 9 of the 14 gold mitigation ids (missing M1026, M1037, M1041, M1051, M1060) appear anywhere in evidence or answer. Every fact the narrative does state (CAPEC abstraction/status, technique STIX properties revoked/stix_type/x_mitre_version, and the mitigation lists for T1021/T1110/T1133) is verified verbatim against logic_flow records with zero fabrication, so faithfulness/groundedness are perfect. The defect is retrieval/planning incompleteness (this is the LLM-planned arm, which per prior findings under-covers required joins vs. the deterministic arm), not hallucination, yielding gold_present=30/43 (8/8 capec ids, 1/1 capec-related CWE-521, 6/10 attack ids, 9/14 attack mitigations, 6/10 must_correlate)."
+}

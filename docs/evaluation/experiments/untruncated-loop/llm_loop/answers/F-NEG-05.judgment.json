@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty join (must_correlate: [], expect_no_correlation: true, capec.expect_empty: true, attack.expect_dependency_skip: true) for CAPEC-16 -> ATT&CK. The evidence shows q1's capec_maps_to query against seed CAPEC-16 executed cleanly with row_count 0 (no MAPS_TO edge to a TaxonomyEntry with taxonomy_name ATTACK), and q2 (the mitigation lookup) was correctly skipped via the dependency trace 'producer q1: it returned no join values' rather than being run against a fabricated seed. The answer has zero claims and two abstentions that accurately restate these facts, and the narrative tells the analyst no matching records were returned and invites a specific id instead of inventing a T-number or mitigation. No technique id, mitigation id, or correlation is fabricated anywhere in claims or narrative, matching the deterministic_scores block (correlation exact/negative true, precision/recall/f1 1.0, abstention_proof_ok true). This is exactly the required behavior for an F-NEG case."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-07",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "Gold requires: must_correlate T1110.004; capec.must_include_ids CAPEC-600; capec.must_include_related T1110.004; attack.must_include_ids T1110.004; attack.must_include_related M1018, M1027, M1032, M1036 (counted as one composite entity set alongside the T1110.004 id/correlation requirements per assertion group, totaling 6 distinct required identifiers: T1110.004, CAPEC-600, M1018, M1027, M1032, M1036). The narrative states CAPEC-600 (Credential Stuffing) maps to exactly T1110.004, notes Abstraction: Standard and Status: Stable (both match evidence properties exactly), states the cross-source correlation on T1110.004, and lists all four mitigations M1036, M1032, M1018, M1027 by ID. Cross-checked against logic_flow.results: q1 record CAPEC-600 has properties Abstraction=Standard, Status=Stable, and related TaxonomyEntry entry_id 1110.004 (T1110.004) -- matches. q2 record T1110.004 has related mitigations M1036 (Account Use Policies), M1032 (Multi-factor Authentication), M1018 (User Account Management), M1027 (Password Policies) -- all four present, matching gold's must_include_related list exactly with no extras and no omissions. No invented names, counts, or aliases; every stated fact traces directly to the retrieved records. deterministic_scores confirms correlation f1=1.0 and mapping_recall=1.0 independently. This is a fully correct, fully grounded answer."
+}

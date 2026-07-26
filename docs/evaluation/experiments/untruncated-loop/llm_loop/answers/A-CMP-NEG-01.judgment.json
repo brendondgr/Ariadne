@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty: true) for nonexistent campaign C9999. The executed query (MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN $ids ...) correctly used seed_ids=['C9999'], ran cleanly, and returned row_count=0 (logic_flow.results[0].records=[]). The answer has no narrative claims and zero 'claims' entries — it correctly abstains rather than fabricating any technique/mitigation/CWE data. The single abstention statement accurately reflects the evidence ('the executed query ran cleanly and returned no matching records for: ... Campaign C9999'), and the narrative correctly tells the analyst no matching records were found and invites a valid id instead. No entity ids, names, or counts are invented anywhere in the answer. This fully satisfies the negative-case requirement with no hallucinations."
+}

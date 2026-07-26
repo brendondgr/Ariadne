@@ -1,0 +1,14 @@
+{
+  "case_id": "F-PART-03",
+  "verdict": "INCORRECT",
+  "correctness": 0.25,
+  "faithfulness": 0.5,
+  "groundedness": 0.55,
+  "completeness": 0.25,
+  "gold_expected": 4,
+  "gold_present": 1,
+  "hallucinations": [
+    "The narrative/notes attribute the missing CAPEC-555 -> ATT&CK technique mapping (T1021, T1114.002, T1133) to 'the ATT&CK source is down', but sub_question q2 ('list all TaxonomyEntry reached from CAPEC-555 via MAPS_TO') is a capec-source query (source: 'capec') that executed successfully (ok:true, partial:false, error:null) -- there is no trace evidence that ATT&CK downtime caused this omission. This is a fabricated causal explanation not supported by the logic_flow."
+  ],
+  "rationale": "Gold requires the CAPEC-555 record (satisfied: name, Abstraction=Standard, Status=Stable, mitigation id, CanPrecede/ChildOf all correctly reported and grounded in the evidence) plus the three ATT&CK techniques CAPEC-555 maps to via MAPS_TO -- T1021, T1114.002, T1133 -- which the question explicitly says 'must still answer' despite the ATT&CK source being down, since that mapping is stored capec-side (MAPS_TO -> TaxonomyEntry, facet count=3) and does not require querying the live ATT&CK source. Grepping the full evidence file shows T1021/T1114.002/T1133 appear nowhere outside the gold block itself: sub_question q2 was supposed to traverse MAPS_TO but instead reused the same 'describe' template as q1 and returned an empty related[] for CAPEC-555, so the technique ids were never retrieved from the graph at all -- an upstream retrieval defect. The answer compounds this by mischaracterizing the omission as an ATT&CK-source-down casualty in its notes/narrative ('Unsupported by the available sources: ATT&CK mappings for CAPEC-555 ... ATT&CK source is down'), when the failing sub-question's own source field is 'capec', not 'attack', and its trace shows a clean success (ok:true) with zero related rows returned -- nothing in the trace ties the gap to ATT&CK availability. So the answer gets the correlation assertion right (expect_no_correlation, none claimed), gets the ATT&CK-mitigation-side skip right (attack.expect_skipped=true, narrative explicitly abstains), and correctly reports CAPEC-555's own attributes/mitigation/lineage -- but it completely fails the case's central adversarial premise, that the CAPEC->ATT&CK technique mapping must still be answerable when only the ATT&CK source is down. 1 of 4 required ids (CAPEC-555 only) is surfaced; T1021, T1114.002, T1133 are absent, and the stated reason for their absence is unsupported by the retrieval trace."
+}

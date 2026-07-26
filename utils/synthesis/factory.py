@@ -118,7 +118,11 @@ def apply_llm_narrative(
     if answer.composer == "llm" and answer.narrative.strip():
         return  # the claims composer already produced a fluent LLM answer
     try:
-        answer.narrative = compose_narrative(evidence, config)
+        # Hand the narrator the verified claims, not just the evidence. Without
+        # them it re-derives the answer in parallel with the deterministic
+        # composer — which is how prose came to enumerate less than the claims
+        # already had, and to assert what no claim supported.
+        answer.narrative = compose_narrative(evidence, config, answer)
     except ComposerUnavailable as exc:
         logger.info("LLM narrator unavailable (%s); keeping deterministic answer", exc)
         answer.fallback_reason = answer.fallback_reason or f"LLM narrator unavailable ({exc})"

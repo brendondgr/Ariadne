@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 17,
+  "gold_present": 17,
+  "hallucinations": [],
+  "rationale": "The narrative correctly names all three must_correlate techniques (T1211, T1542.002, T1556) mapped from CAPEC-665, matching the single CAPEC record's join_values and 'related' TaxonomyEntry list in logic_flow (capec:taxonomy:ATTACK:1211/1542.002/1556). For each technique it enumerates the exact mitigation set found in the attack sub-question's records: T1542.002 -> M1051; T1556 -> M1047, M1032, M1024, M1026, M1022, M1018, M1027, M1025, M1028; T1211 -> M1051, M1050, M1048, M1019. The union of these 13 mitigation ids exactly matches gold's attack.must_include_related list (M1018, M1019, M1022, M1024, M1025, M1026, M1027, M1028, M1032, M1047, M1048, M1050, M1051) with none missing and none extra. Technique names (Component Firmware, Modify Authentication Process, Exploitation for Stealth) and CAPEC-665's name match the evidence records verbatim. All 17 gold-required distinct ids (CAPEC-665, 3 techniques, 13 mitigations) are surfaced. No invented facts, counts, or aliases were found; every id/name traces directly to logic_flow.results records."
+}

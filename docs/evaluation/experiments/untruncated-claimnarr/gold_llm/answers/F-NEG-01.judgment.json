@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty join: must_correlate is empty, expect_no_correlation and capec.expect_empty are true, and attack.expect_dependency_skip is true. The evidence confirms this: the capec query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within([\"CAPEC-116\"]))...out(\"MAPS_TO\")...) executed cleanly with row_count 0, and q2 (ATT&CK mitigations) was correctly skipped because its seed producer q1 returned no join values (dependency trace: 'producer q1: it returned no join values'). The answer's narrative and abstentions state exactly this: no matching records, and the attack sub-question was skipped because q1 produced no seed identifiers. No technique ids, mitigation ids, or correlations are fabricated; claims list is empty as required. deterministic_scores.correlation confirms negative=true, exact=true, precision/recall/f1=1.0. This is a textbook correct abstention with zero hallucinated content."
+}

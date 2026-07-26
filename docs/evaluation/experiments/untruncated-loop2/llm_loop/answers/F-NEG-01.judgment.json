@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty join: must_correlate=[], expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true. The evidence confirms the capec query for CAPEC-116 -> MAPS_TO -> TaxonomyEntry(ATTACK) executed cleanly with row_count 0 (traces: execute/assess both show row_count 0), and the attack sub-question (q2) was correctly skipped because its dependency q1 produced no seed identifiers (trace step 'dependency', reason 'producer q1: it returned no join values'). The narrative and claims list are empty/abstaining ('The routed sources returned no matching records for this question'), and both abstentions accurately describe what happened per source (capec: query ran cleanly, no matches; attack: skipped due to unresolved dependency on q1). No technique, mitigation, or correlation id is fabricated. deterministic_scores.correlation confirms negative=true, exact=true, precision/recall/f1=1.0. This is a fully correct, fully grounded abstention with zero hallucinations."
+}

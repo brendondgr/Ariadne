@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-06",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 2,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is not a negative/abstention case: gold requires min_records>=1 from both capec and attack sources, with must_include_ids CAPEC-555 (related to T1114.002) and T1114.002 named 'Remote Email Collection'. The pipeline's own run_meta shows both sub-questions (q1 capec, q2 attack) were skipped entirely because 'total pipeline timeout exceeded before this sub-question ran' (wall_s=120.055, exit_code=1, status='partial'), leaving logic_flow.results empty and evidence_volume all zeros. The narrative/claims therefore surface zero of the two required gold ids (CAPEC-555, T1114.002) and never state the technique's name. deterministic_scores confirm this independently: mapping_recall.recall=0.0 (missing T1114.002), correlation.recall=0.0/f1=0.0. Faithfulness is scored high (0.9, not 1.0) only because the answer invents no entity facts -- it correctly reports finding nothing -- but the narrative's framing ('I couldn't find ... in the live ATT&CK/CAPEC graphs') implies a search occurred and came up empty, when in fact both sub-questions never executed at all (a process misrepresentation, not a factual hallucination about CAPEC/ATT&CK data). Groundedness is 1.0 since the empty-result claim matches the empty evidence exactly. Overall this is an infrastructure/timeout failure that yields a completely unanswered, gold-failing response, hence INCORRECT."
+}

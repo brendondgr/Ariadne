@@ -1,0 +1,12 @@
+{
+  "case_id": "C-ABS-03",
+  "verdict": "INCORRECT",
+  "correctness": 0.3,
+  "faithfulness": 0.55,
+  "groundedness": 0.75,
+  "completeness": 0.5,
+  "gold_expected": 3,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-13 (present), plus must_include_related CAPEC-77 and CAPEC-22 (the standard and meta ancestors respectively). The retrieved evidence only ran a single CHILD_OF hop (g.V()...out(\"CHILD_OF\") once), so CAPEC-22 never appears anywhere in logic_flow.results[0].records[0].related — only CAPEC-77 is retrieved. Nothing in the answer is fabricated (every stated fact traces to the evidence), but the narrative's concluding sentence is self-contradictory and wrong: it states 'CAPEC-13 ... has exactly one ChildOf parent in the hierarchy, which is CAPEC-77' and then immediately says 'The evidence does not identify any standard or meta ancestors for this attack pattern' — directly negating the ancestor (CAPEC-77) it just named. An analyst reading the conclusion would incorrectly believe zero ancestors were found. Combined with the complete absence of CAPEC-22 (the meta ancestor) from both evidence and answer, the pipeline fails to actually answer the question asked ('what are its standard and meta ancestors'), despite the deterministic composer surfacing CAPEC-77 in a raw claim. deterministic_scores.coverage confirms this internally: gold=3, found=2, coverage=0.667, missing=['CAPEC-22']. Because the answer's own headline conclusion denies the one correct ancestor it retrieved and is entirely missing the second required ancestor, this is graded INCORRECT rather than merely PARTIAL."
+}

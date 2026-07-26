@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-10",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 8,
+  "gold_present": 8,
+  "hallucinations": [],
+  "rationale": "The narrative correctly states CAPEC-652 (Use of Known Kerberos Credentials) maps to exactly T1558, matching gold must_correlate=[T1558] and capec.must_include_related=[T1558]; the evidence record shows CAPEC-652 -> TaxonomyEntry T1558 'Steal or Forge Kerberos Tickets', confirming the join. It also correctly states CAPEC-652's Abstraction=Standard and Status=Draft, both present verbatim in the record's properties. For T1558's mitigations it lists all six: M1041, M1015, M1047, M1026, M1027, M1043, exactly matching gold attack.must_include_related and the 6 related Mitigation nodes returned in the q2 evidence (row_count=6, 6 related entries). The cross-source correlation claim ('corroborated across both CAPEC and ATT&CK, two records sharing the identifier') is supported by deterministic_scores.correlation (exact=true, precision/recall/f1=1.0). No invented aliases, counts, or entities were found; every id and property named traces directly to logic_flow.results records. All 8 unique gold-required identifiers (T1558, CAPEC-652, M1015, M1026, M1027, M1041, M1043, M1047) are surfaced."
+}

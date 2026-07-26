@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty: must_correlate=[], expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true. The evidence confirms the capec query for CAPEC-16's MAPS_TO -> ATTACK TaxonomyEntry executed cleanly (execute/assess traces show row_count 0), and the attack sub-question q2 was correctly skipped per the dependency trace ('producer q1: it returned no join values'), matching the gold's expected dependency-skip behavior exactly. The answer's claims array is empty (no fabricated technique or mitigation ids), and both abstentions plainly state the capec query returned no matches and the attack query was skipped due to q1 producing no seeds -- this is a fully grounded, non-fabricated negative response. deterministic_scores confirm correlation.negative=true, exact=true, precision/recall/f1=1.0, n_expected=0, n_got=0, abstention_proof_ok=true. No entity, count, alias, or correlation was invented anywhere in the narrative or claims."
+}

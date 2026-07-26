@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-555] and must_include_related=[T1021, T1114.002, T1133]; the narrative states 'CAPEC-555 (Remote Services with Stolen Credentials) ... maps to ATT&CK techniques T1021, T1114.002, and T1133', surfacing all 4 required ids. Every stated fact is traceable to logic_flow.results: CAPEC-555's Abstraction=Standard/Status=Stable match the q1 record properties; T1133's revoked=False/stix_type=attack-pattern/x_mitre_deprecated=False/x_mitre_is_subtechnique=False/x_mitre_version=2.5 and T1021's x_mitre_version=1.6 match the q2 record properties exactly; T1021's 8 subtechniques (T1021.001/.007/.003/.006/.002/.008/.004/.005) match q3's related list; T1021's tactic TA0008 matches q4; T1133's tactics TA0003/TA0001 and T1114.002's tactic TA0009 match q5. The cross-source corroboration counts (T1021=5, T1114.002=2, T1133=3) are consistent with counting how many of the 8 retrieved records carry each id in join_values (q1,q2,q3,q4,q5 for T1021; q1,q5 for T1114.002; q1,q2,q5 for T1133). deterministic_scores.coverage confirms gold=4/found=4. No invented names, counts, or aliases were found."
+}

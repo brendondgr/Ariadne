@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SW-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.35,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.05,
+  "gold_expected": 74,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires S0154 (must_include_ids) plus all 73 technique/sub-technique ids in must_include_related (T1001.003 ... T1685). The single retrieved record's related list in logic_flow contains exactly these 73 ids (verified by set comparison: zero missing, zero extra), so the underlying retrieval is complete and correct. However, the answer under test (narrative and its single claim) only names S0154/Cobalt Strike and three example techniques -- T1021.004, T1564.010, T1078.003 -- all three of which are correctly grounded in the evidence, then says 'alongside numerous other methods' rather than enumerating the remaining 70 ids. The stated count of 73 is exactly right and matches the evidence, so nothing is fabricated (faithfulness/groundedness 1.0), but the analyst is not shown which techniques S0154 actually uses beyond three samples. This is a real shortfall versus the pipeline's own capability: the sibling case A-SW-01 (S0002/Mimikatz, 17 techniques) produced a narrative that enumerated all 17 ids by name and was graded CORRECT 1.0, whereas here the larger set (73 ids) is only summarized with count + 3 examples instead of fully enumerated. gold_present = 4 (S0154 + T1021.004 + T1564.010 + T1078.003) out of gold_expected = 74, so completeness is very low even though correctness of what IS stated is perfect."
+}

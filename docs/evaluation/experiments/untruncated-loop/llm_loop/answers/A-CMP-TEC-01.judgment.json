@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-TEC-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids T1046, T1047, T1090, T1102, T1105 (min_records 5); the answer's narrative and claims list all 10 retrieved technique ids (T1105, T1046, T1621, T1102, T1090, T1572, T1190, T1530, T1133, T1047), which is a superset covering all 5 required ids. The extended ex_gold pool (10 expected ids: T1046, T1047, T1090, T1102, T1105, T1133, T1190, T1530, T1572, T1621) is also matched exactly and completely by the 10 retrieved/cited ids. Every id in the narrative and claims traces directly to a record in logic_flow.results[0].records (10 records, each with matching primary_id and name, e.g. T1105/'Ingress Tool Transfer', T1046/'Network Service Discovery', etc.) from the single executed query 'MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN $ids RETURN ...' which returned exactly these 10 rows for C0027. No id, name, count, or fact in the narrative is absent from or inconsistent with the evidence; the count (10) matches evidence_volume.records=10 and deterministic_scores.coverage shows 5/5 gold ids found. No fabrication detected."
+}

@@ -1,0 +1,1186 @@
+{
+  "id": "F-PART-03",
+  "kind": "federated",
+  "tier": "adversarial",
+  "category": "F-PART",
+  "question": "With the ATT&CK source down: CAPEC-555 mappings must still answer; the mitigation side degrades to an honest skip.",
+  "gold": {
+    "assertions": {
+      "must_correlate": [],
+      "expect_no_correlation": true,
+      "expect_partial": true,
+      "capec": {
+        "min_records": 1,
+        "must_include_ids": [
+          "CAPEC-555"
+        ],
+        "must_include_related": [
+          "T1021",
+          "T1114.002",
+          "T1133"
+        ]
+      },
+      "attack": {
+        "expect_skipped": true
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 2
+  },
+  "answer": {
+    "headline": "Gathered 6 record(s) from 1 source(s); 2 part(s) unsupported.",
+    "narrative": "The query returned one CAPEC record, CAPEC-555, which carries a Standard abstraction and a Stable status. This attack pattern, Remote Services with Stolen Credentials, links to one mitigation, capec:attack-pattern:555:mitigation:1. It also has one CanPrecede predecessor, CAPEC-151, and one ChildOf parent, CAPEC-560. As the ATT&CK source is down, the mitigation side degrades to an honest skip per the analyst request.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-555.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-555"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-555"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-555 (Remote Services with Stolen Credentials) has Abstraction: Standard; Status: Stable.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-555"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-555"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-555 (Remote Services with Stolen Credentials) has 1 mitigation: capec:attack-pattern:555:mitigation:1.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "capec:attack-pattern:555:mitigation:1"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-555"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-555 (Remote Services with Stolen Credentials) has 1 CanPrecede predecessor: CAPEC-151.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CAPEC-151"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-555"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-555 (Remote Services with Stolen Credentials) has 1 ChildOf parent: CAPEC-560.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CAPEC-560"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-555"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": [
+      "Unsupported by the available sources: ATT&CK mappings for CAPEC-555 (ATT&CK source is down per analyst request.)",
+      "The available graph sources could not be matched to this request: 'With the ATT&CK source down: CAPEC-555 mappings must still answer; the mitigation side degrades to an honest skip.'. If you meant a specific ATT&CK or CAPEC entity, name it or give its id (e.g. T1566, M1017, or CAPEC-98)."
+    ]
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which ATT&CK techniques does CAPEC-555 map to?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What mitigations does ATT&CK list for those mapped techniques?",
+        "seed_from": "q1"
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": "attack_down",
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Retrieve TaxonomyEntry mappings for AttackPattern CAPEC-555.",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-555.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CAPEC-555"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.131
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 6.4
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.01
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.401
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-555",
+            "name": "Remote Services with Stolen Credentials",
+            "label": "AttackPattern",
+            "description": "This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Remote Services with Stolen Credentials",
+              "description": "This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
+              "id": "capec:attack-pattern:555",
+              "Abstraction": "Standard"
+            },
+            "facets": [
+              {
+                "rel": "CAN_ALSO_BE",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_ALSO_BE",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_FOLLOW",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 1
+              },
+              {
+                "rel": "CAN_FOLLOW",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_PRECEDE",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_PRECEDE",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 1
+              },
+              {
+                "rel": "CHILD_OF",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CHILD_OF",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 1
+              },
+              {
+                "rel": "EXPLOITS_WEAKNESS",
+                "direction": "out",
+                "neighbour_label": "Weakness",
+                "count": 7
+              },
+              {
+                "rel": "HAS_CONSEQUENCE",
+                "direction": "out",
+                "neighbour_label": "Consequence",
+                "count": 0
+              },
+              {
+                "rel": "HAS_EXECUTION_STEP",
+                "direction": "out",
+                "neighbour_label": "ExecutionStep",
+                "count": 0
+              },
+              {
+                "rel": "HAS_MITIGATION",
+                "direction": "out",
+                "neighbour_label": "Mitigation",
+                "count": 1
+              },
+              {
+                "rel": "HAS_REFERENCE",
+                "direction": "out",
+                "neighbour_label": "ExternalReference",
+                "count": 0
+              },
+              {
+                "rel": "IN_VIEW",
+                "direction": "out",
+                "neighbour_label": "View",
+                "count": 1
+              },
+              {
+                "rel": "MAPS_TO",
+                "direction": "out",
+                "neighbour_label": "TaxonomyEntry",
+                "count": 3
+              },
+              {
+                "rel": "MEMBER_OF",
+                "direction": "out",
+                "neighbour_label": "Category",
+                "count": 0
+              },
+              {
+                "rel": "PEER_OF",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "PEER_OF",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "REQUIRES_SKILL",
+                "direction": "out",
+                "neighbour_label": "Skill",
+                "count": 0
+              }
+            ],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q2",
+        "sub_question": "In capec, list all TaxonomyEntry reached from CAPEC-555 via MAPS_TO",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-555.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "TaxonomyEntry"
+              ],
+              "relationships": [
+                "MAPS_TO"
+              ],
+              "seed_ids": [
+                "CAPEC-555"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.092
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 3.0
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.004
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.196
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-555",
+            "name": "Remote Services with Stolen Credentials",
+            "label": "AttackPattern",
+            "description": "This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Remote Services with Stolen Credentials",
+              "description": "This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
+              "id": "capec:attack-pattern:555",
+              "Abstraction": "Standard"
+            },
+            "facets": [
+              {
+                "rel": "CAN_ALSO_BE",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_ALSO_BE",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_FOLLOW",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 1
+              },
+              {
+                "rel": "CAN_FOLLOW",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_PRECEDE",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_PRECEDE",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 1
+              },
+              {
+                "rel": "CHILD_OF",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CHILD_OF",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 1
+              },
+              {
+                "rel": "EXPLOITS_WEAKNESS",
+                "direction": "out",
+                "neighbour_label": "Weakness",
+                "count": 7
+              },
+              {
+                "rel": "HAS_CONSEQUENCE",
+                "direction": "out",
+                "neighbour_label": "Consequence",
+                "count": 0
+              },
+              {
+                "rel": "HAS_EXECUTION_STEP",
+                "direction": "out",
+                "neighbour_label": "ExecutionStep",
+                "count": 0
+              },
+              {
+                "rel": "HAS_MITIGATION",
+                "direction": "out",
+                "neighbour_label": "Mitigation",
+                "count": 1
+              },
+              {
+                "rel": "HAS_REFERENCE",
+                "direction": "out",
+                "neighbour_label": "ExternalReference",
+                "count": 0
+              },
+              {
+                "rel": "IN_VIEW",
+                "direction": "out",
+                "neighbour_label": "View",
+                "count": 1
+              },
+              {
+                "rel": "MAPS_TO",
+                "direction": "out",
+                "neighbour_label": "TaxonomyEntry",
+                "count": 3
+              },
+              {
+                "rel": "MEMBER_OF",
+                "direction": "out",
+                "neighbour_label": "Category",
+                "count": 0
+              },
+              {
+                "rel": "PEER_OF",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "PEER_OF",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "REQUIRES_SKILL",
+                "direction": "out",
+                "neighbour_label": "Skill",
+                "count": 0
+              }
+            ],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q3",
+        "sub_question": "In capec, list all Mitigation reached from CAPEC-555 via HAS_MITIGATION",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"HAS_MITIGATION\").hasLabel(\"Mitigation\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-555.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Mitigation"
+              ],
+              "relationships": [
+                "HAS_MITIGATION"
+              ],
+              "seed_ids": [
+                "CAPEC-555"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_neighbors",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"HAS_MITIGATION\").hasLabel(\"Mitigation\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.076
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 2.4
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.002
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.034
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-555",
+            "name": "Remote Services with Stolen Credentials",
+            "label": "AttackPattern",
+            "description": "This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Remote Services with Stolen Credentials",
+              "description": "This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
+              "id": "capec:attack-pattern:555",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "capec:attack-pattern:555:mitigation:1",
+                "name": "capec:attack-pattern:555:mitigation:1",
+                "label": "Mitigation",
+                "type": "HAS_MITIGATION",
+                "description": "Disable RDP, telnet, SSH and enable firewall rules to block such traffic. Limit users and accounts that have remote interactive login access. Remove the Local Administrators group from the list of groups allowed to login through RDP. Limit remote user permissions. Use remote desktop gateways and multifactor authentication for remote logins."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q4",
+        "sub_question": "In capec, list all AttackPattern reached from CAPEC-555 via CanFollow",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-555.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern"
+              ],
+              "relationships": [
+                "CanFollow"
+              ],
+              "seed_ids": [
+                "CAPEC-555"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.047
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 2.6
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.002
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.124
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-555",
+            "name": "Remote Services with Stolen Credentials",
+            "label": "AttackPattern",
+            "description": "This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Remote Services with Stolen Credentials",
+              "description": "This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
+              "id": "capec:attack-pattern:555",
+              "Abstraction": "Standard"
+            },
+            "facets": [
+              {
+                "rel": "CAN_ALSO_BE",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_ALSO_BE",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_FOLLOW",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 1
+              },
+              {
+                "rel": "CAN_FOLLOW",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_PRECEDE",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_PRECEDE",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 1
+              },
+              {
+                "rel": "CHILD_OF",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CHILD_OF",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 1
+              },
+              {
+                "rel": "EXPLOITS_WEAKNESS",
+                "direction": "out",
+                "neighbour_label": "Weakness",
+                "count": 7
+              },
+              {
+                "rel": "HAS_CONSEQUENCE",
+                "direction": "out",
+                "neighbour_label": "Consequence",
+                "count": 0
+              },
+              {
+                "rel": "HAS_EXECUTION_STEP",
+                "direction": "out",
+                "neighbour_label": "ExecutionStep",
+                "count": 0
+              },
+              {
+                "rel": "HAS_MITIGATION",
+                "direction": "out",
+                "neighbour_label": "Mitigation",
+                "count": 1
+              },
+              {
+                "rel": "HAS_REFERENCE",
+                "direction": "out",
+                "neighbour_label": "ExternalReference",
+                "count": 0
+              },
+              {
+                "rel": "IN_VIEW",
+                "direction": "out",
+                "neighbour_label": "View",
+                "count": 1
+              },
+              {
+                "rel": "MAPS_TO",
+                "direction": "out",
+                "neighbour_label": "TaxonomyEntry",
+                "count": 3
+              },
+              {
+                "rel": "MEMBER_OF",
+                "direction": "out",
+                "neighbour_label": "Category",
+                "count": 0
+              },
+              {
+                "rel": "PEER_OF",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "PEER_OF",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "REQUIRES_SKILL",
+                "direction": "out",
+                "neighbour_label": "Skill",
+                "count": 0
+              }
+            ],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q5",
+        "sub_question": "In capec, list all AttackPattern reached from CAPEC-555 via CanPrecede",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"CAN_PRECEDE\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-555.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern"
+              ],
+              "relationships": [
+                "CanPrecede"
+              ],
+              "seed_ids": [
+                "CAPEC-555"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_neighbors",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"CAN_PRECEDE\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.052
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 2.6
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.003
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.036
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-555",
+            "name": "Remote Services with Stolen Credentials",
+            "label": "AttackPattern",
+            "description": "This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Remote Services with Stolen Credentials",
+              "description": "This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
+              "id": "capec:attack-pattern:555",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "CAPEC-151",
+                "name": "Identity Spoofing",
+                "label": "AttackPattern",
+                "type": "CAN_PRECEDE",
+                "description": "Identity Spoofing refers to the action of assuming (i.e., taking on) the identity of some other entity (human or non-human) and then using that identity to accomplish a goal. An adversary may craft messages that appear to come from a different principle or use stolen / spoofed authentication credentials."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q6",
+        "sub_question": "In capec, list all AttackPattern reached from CAPEC-555 via ChildOf",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"CHILD_OF\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-555.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern"
+              ],
+              "relationships": [
+                "ChildOf"
+              ],
+              "seed_ids": [
+                "CAPEC-555"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_neighbors",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"CHILD_OF\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.054
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 2.3
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.002
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.029
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-555",
+            "name": "Remote Services with Stolen Credentials",
+            "label": "AttackPattern",
+            "description": "This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Remote Services with Stolen Credentials",
+              "description": "This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
+              "id": "capec:attack-pattern:555",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "CAPEC-560",
+                "name": "Use of Known Domain Credentials",
+                "label": "AttackPattern",
+                "type": "CHILD_OF",
+                "description": "An adversary guesses or obtains (i.e. steals or purchases) legitimate credentials (e.g. userID/password) to achieve authentication and to perform authorized actions under the guise of an authenticated user or service."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": true,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 0,
+      "n_got": 0
+    },
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 5,
+      "compliant": 5,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm_loop",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "Retrieve TaxonomyEntry mappings for AttackPattern CAPEC-555.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "capec",
+        "text": "In capec, list all TaxonomyEntry reached from CAPEC-555 via MAPS_TO",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q3",
+        "source": "capec",
+        "text": "In capec, list all Mitigation reached from CAPEC-555 via HAS_MITIGATION",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q4",
+        "source": "capec",
+        "text": "In capec, list all AttackPattern reached from CAPEC-555 via CanFollow",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q5",
+        "source": "capec",
+        "text": "In capec, list all AttackPattern reached from CAPEC-555 via CanPrecede",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q6",
+        "source": "capec",
+        "text": "In capec, list all AttackPattern reached from CAPEC-555 via ChildOf",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 1,
+    "status": "partial",
+    "wall_s": 77.34
+  },
+  "evidence_volume": {
+    "results": 6,
+    "records": 6,
+    "related": 3
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-EXE-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.2,
+  "gold_expected": 5,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question explicitly asks 'What are the execution steps of CAPEC-98?' and gold requires all four ExecutionStep ids (capec:attack-pattern:98:step:1..4) plus CAPEC-98 itself. The retrieval in logic_flow.results[0].records[0].related fully returned all four steps with names ('Step 1'..'Step 4') and descriptions (spoof domain/certificate; duplicate legitimate site; phish e-mail with call to action; use stolen credentials). However the answer's narrative and claims never mention any execution step at all -- the narrative only states CAPEC-98's Abstraction (Standard), Status (Draft), and the generic Phishing description, and the two claims cover only 'Found 1 CAPEC record' and the Abstraction/Status fact. Zero of the four required step ids are surfaced, so despite the evidence containing everything needed, the answer fails to address the actual question asked. This matches the artifact's own deterministic_scores.coverage (gold=5, found=1, coverage=0.2, missing all 4 steps). What is stated (Standard/Draft/Phishing description) is accurate and traceable to the CAPEC-98 node properties, so there is no fabrication -- faithfulness and groundedness are high -- but correctness is very low because the core deliverable (the execution steps) is entirely absent, making this a substantive answer failure, not just an incompleteness."
+}

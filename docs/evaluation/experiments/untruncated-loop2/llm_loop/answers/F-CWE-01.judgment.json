@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-01",
+  "verdict": "CORRECT",
+  "correctness": 0.97,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.98,
+  "gold_expected": 48,
+  "gold_present": 47,
+  "hallucinations": [],
+  "rationale": "The deterministic narrative (no LLM prose; graded as the claims-derived answer) surfaces all 10 gold CAPEC ids (CAPEC-474, 509, 551, 555, 560, 561, 600, 644, 645, 652) with Abstraction/Status values that match logic_flow['results'][0] exactly record-for-record (e.g. CAPEC-474 Detailed/Draft, CAPEC-560 Meta/Stable, CAPEC-509 Detailed/Stable). All 12 must_correlate/attack.must_include_ids T-numbers are named (T1021, T1021.002, T1078, T1110.004, T1114.002, T1133, T1543, T1550.002, T1550.003, T1552.004, T1558, T1558.003), matching gold's exact min=max=12 record count in results[5]. All 25 required mitigation ids (M1013...M1060) are present and each technique-to-mitigation grouping was spot-checked against results[5] and matches exactly, e.g. 'T1078 has 8 related item(s): M1013, M1017, M1027, M1018, M1026, M1032, M1015, M1036' reproduces the evidence's related list verbatim, as do T1021 (6 items), T1543 (9 items), T1558 (6 items), T1114.002 (3 items), and all others. Subtechnique names (T1021.002=SMB/Windows Admin Shares, T1552.004=Private Keys, T1558.003=Kerberoasting, etc.), STIX properties (revoked/stix_type/x_mitre_deprecated/x_mitre_version) for the 5 base techniques, and tactic mappings (TA0003/TA0004/TA0006/TA0008/TA0009) were all cross-checked against logic_flow results[1], [9], and [13] and match exactly with zero discrepancies -- no invented ids, counts, names, or properties were found. The only gap against the gold assertions is that CWE-522 itself (capec.must_include_related) is never named explicitly in the answer text, even though every retrieved CAPEC record's 'related' field ties back to CWE-522 in the evidence -- a minor completeness omission (47/48 required identifiers surfaced) rather than a correctness or faithfulness defect, since the whole query was scoped to CWE-522 and the answer correctly enumerates every downstream CAPEC/ATT&CK/mitigation entity gold requires."
+}

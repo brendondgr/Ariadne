@@ -1,0 +1,12 @@
+{
+  "case_id": "C-CWE-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 7,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "The question asks which CWE weaknesses CAPEC-555 exploits. The retrieval (logic_flow.results[0].records[0].related) correctly found all 7 gold-required CWEs (CWE-262, CWE-263, CWE-294, CWE-308, CWE-309, CWE-521, CWE-522) via the EXPLOITS_WEAKNESS relationship, and the pipeline's own deterministic_scores.coverage confirms this (found=1 out of gold=8, i.e. 0 of the 7 CWE ids surfaced). However, neither the narrative nor the two claims mention any CWE id at all -- the narrative only states CAPEC-555's title, Abstraction (Standard), and Status (Stable), and the claims repeat the same record-count and property facts. Not a single must_include_related CWE id is surfaced anywhere in the answer despite being present and fully retrieved in the evidence. This is a complete failure to answer the actual question asked, even though what little it does say is accurate and grounded (no fabricated facts, hence faithfulness/groundedness stay high). Because the answer fails the core ask entirely, correctness and completeness are both 0."
+}

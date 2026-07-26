@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The query 'MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN $ids' returned exactly 37 techniques for G0007, and this set is bit-for-bit identical to gold.ex_gold.expected (37 T-numbers, verified programmatically: expected == records, zero diff either direction). All 5 must_include_ids (T1003, T1005, T1014, T1025, T1030) are present in the answer's claim entity_ids and citations. The narrative is thin (deterministic composer) but per grading instructions the claims are the answer under test: claim entity_ids and citation primary_ids both exactly equal the 37 retrieved record ids, with no id appearing in the answer that isn't in the evidence and no evidence id omitted. deterministic_scores.coverage confirms gold=5/found=5=1.0 and provenance/citation rate = 1.0. No fabricated names, counts, or aliases were found - technique names in the answer's supporting evidence (e.g. T1003 'OS Credential Dumping', T1030 'Data Transfer Size Limits') match evidence records verbatim."
+}

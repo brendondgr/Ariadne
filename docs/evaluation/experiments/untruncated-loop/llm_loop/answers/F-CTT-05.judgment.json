@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-05",
+  "verdict": "INCORRECT",
+  "correctness": 0.05,
+  "faithfulness": 0.7,
+  "groundedness": 0.85,
+  "completeness": 0.2,
+  "gold_expected": 5,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "The question asks which ATT&CK tactics the techniques mapped from CAPEC-13 belong to (gold: T1574.006 and T1574.007, both under TA0002 Execution and TA0005 Stealth). The retrieved evidence actually contains the correct answer: logic_flow.results[1].records for T1574.006 and T1574.007 both list related TA0002 (Execution) and TA0005 (Stealth). However, the pipeline's CAPEC query (g.V().hasLabel('AttackPattern').out('MAPS_TO')...) has no name/id filter for CAPEC-13, so it retrieved all 177 CAPEC AttackPattern nodes instead of just CAPEC-13, feeding all their mapped T-ids into the ATT&CK step and pulling 179 Technique records instead of the gold-mandated max_records=2. The narrative/claims (composer='deterministic', no LLM narrator due to a context-length fallback) are a generic dump: 'Found 177 CAPEC record(s)...' and 179 anonymous 'correlation' claims (one per shared T-id), none of which single out CAPEC-13 or ever mention a Tactic (TA0002/TA0005 occur zero times in the answer text, though they are present 13/43 times in the underlying evidence). CAPEC-13, T1574.006 and T1574.007 do appear as bare identifiers buried among ~350 unrelated ids, but nothing in the answer connects them to each other or to the requested tactics, so an analyst reading it cannot extract the answer at all. This is a retrieval-scoping defect (missing filter on the AttackPattern hop), not an invented-fact hallucination -- every individual claim is arithmetically consistent with the (over-broad) evidence -- but the answer fundamentally fails to address the question, so it is graded INCORRECT."
+}

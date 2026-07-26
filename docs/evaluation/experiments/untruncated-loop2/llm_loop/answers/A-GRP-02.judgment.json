@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The query MATCH (g:Group)-[:USES]->(t:Technique) for G0032 returned 34 Technique records; the retrieved primary_id set is byte-for-byte identical to the gold's full ex_gold.expected list of 34 T-numbers (verified programmatically), and all 5 required must_include_ids (T1005, T1008, T1010, T1012, T1016) are present. The claims array (used as the answer since the narrative is thin/deterministic) lists exactly these 34 entity_ids with citations, and the narrative correctly states '34 ATT&CK techniques' naming T1529, T1124, T1680 as examples, all of which are genuine records (System Shutdown/Reboot, System Time Discovery, Local Storage Discovery respectively per the evidence). No id or name in the answer is absent from logic_flow.results, so there is no fabrication; every claim traces directly to a retrieved record."
+}

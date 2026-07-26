@@ -1,0 +1,628 @@
+{
+  "id": "A-CMP-TEC-02",
+  "kind": "attack",
+  "tier": "medium",
+  "category": "A-CMP",
+  "question": "Which techniques did campaign C0024 (SolarWinds Compromise) use?",
+  "gold": {
+    "assertions": {
+      "min_records": 5,
+      "must_include_ids": [
+        "T1005",
+        "T1018",
+        "T1047",
+        "T1057",
+        "T1069"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "T1005",
+        "T1018",
+        "T1047",
+        "T1057",
+        "T1069",
+        "T1070",
+        "T1078",
+        "T1083",
+        "T1087",
+        "T1105",
+        "T1133",
+        "T1140",
+        "T1190",
+        "T1199",
+        "T1213",
+        "T1482",
+        "T1539",
+        "T1550",
+        "T1555",
+        "T1568",
+        "T1665",
+        "T1680",
+        "T1685",
+        "T1686"
+      ],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 24 record(s) from 1 source(s).",
+    "narrative": "Based on the retrieved records, campaign C0024 (SolarWinds Compromise) utilized 24 ATT&CK techniques. These include T1680, T1686, T1665, T1105, T1018, T1213, T1047, T1133, T1539, T1069, T1005, T1140, T1190, T1555, T1550, T1087, T1482, T1070, T1083, T1568, T1057, T1199, T1078, and T1685. The analysis confirms a total of 24 associated ATT&CK records for this campaign.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 24 ATT&CK record(s) including T1680, T1686, T1665 and more.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1680",
+          "T1686",
+          "T1665",
+          "T1105",
+          "T1018",
+          "T1213",
+          "T1047",
+          "T1133",
+          "T1539",
+          "T1069",
+          "T1005",
+          "T1140",
+          "T1190",
+          "T1555",
+          "T1550",
+          "T1087",
+          "T1482",
+          "T1070",
+          "T1083",
+          "T1568",
+          "T1057",
+          "T1199",
+          "T1078",
+          "T1685"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1680"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1686"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1665"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1105"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1018"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1213"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1047"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1133"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1539"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1069"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1005"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1140"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1190"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1555"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1550"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1087"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1482"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1070"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1083"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1568"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1057"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1199"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1078"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1685"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-CMP-TEC-02",
+      "source": "attack",
+      "text": "Which techniques did ATT&CK campaign C0024 use?",
+      "entities": [
+        "Campaign",
+        "Technique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "C0024"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "Retrieve the Technique nodes associated with the Campaign node identified by ID 'C0024' or name 'SolarWinds Compromise'.",
+        "query": "MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN $ids RETURN c.attack_id AS campaign_id, c.name AS campaign_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 24 ATT&CK record(s) including T1680, T1686, T1665 and more.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Campaign",
+                "Technique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "C0024"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "campaign_techniques",
+              "query": "MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN $ids RETURN c.attack_id AS campaign_id, c.name AS campaign_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.07
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 24,
+              "timing_ms": 2.6
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 24,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 24,
+              "timing_ms": 0.115
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1680",
+            "name": "Local Storage Discovery",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1680"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1686",
+            "name": "Disable or Modify System Firewall",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1686"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1665",
+            "name": "Hide Infrastructure",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1665"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1105",
+            "name": "Ingress Tool Transfer",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1105"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1018",
+            "name": "Remote System Discovery",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1018"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1213",
+            "name": "Data from Information Repositories",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1213"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1047",
+            "name": "Windows Management Instrumentation",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1047"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1133",
+            "name": "External Remote Services",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1133"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1539",
+            "name": "Steal Web Session Cookie",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1539"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1069",
+            "name": "Permission Groups Discovery",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1069"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1005",
+            "name": "Data from Local System",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1005"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1140",
+            "name": "Deobfuscate/Decode Files or Information",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1140"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1190",
+            "name": "Exploit Public-Facing Application",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1190"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1555",
+            "name": "Credentials from Password Stores",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1555"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1550",
+            "name": "Use Alternate Authentication Material",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1550"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1087",
+            "name": "Account Discovery",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1087"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1482",
+            "name": "Domain Trust Discovery",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1482"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1070",
+            "name": "Indicator Removal",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1070"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1083",
+            "name": "File and Directory Discovery",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1083"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1568",
+            "name": "Dynamic Resolution",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1568"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1057",
+            "name": "Process Discovery",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1057"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1199",
+            "name": "Trusted Relationship",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1199"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1078",
+            "name": "Valid Accounts",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1078"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1685",
+            "name": "Disable or Modify Tools",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1685"
+            ],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 5,
+      "found": 5,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 24,
+      "compliant": 24,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm_loop",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "Retrieve the Technique nodes associated with the Campaign node identified by ID 'C0024' or name 'SolarWinds Compromise'.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 75.229
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 24,
+    "related": 0
+  }
+}

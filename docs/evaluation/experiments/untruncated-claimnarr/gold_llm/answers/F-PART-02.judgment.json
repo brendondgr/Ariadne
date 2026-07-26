@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires the CAPEC side to surface CAPEC-98 mapped to T1566 (must_include_ids: CAPEC-98, must_include_related: T1566, min_records 1) while the ATT&CK side must refuse honestly (expect_boundary: true) with no cross-source correlation asserted (expect_no_correlation: true). The answer's narrative/claims state 'CAPEC-98 (Phishing) maps to ATT&CK technique T1566' with Abstraction: Standard and Status: Draft, and cites the taxonomy entry capec:taxonomy:ATTACK:1566 -- all of which match the sole retrieved CAPEC record verbatim (properties: Status=Draft, Abstraction=Standard, name=Phishing; related: capec:taxonomy:ATTACK:1566). This satisfies both must_include_ids and must_include_related. For the attack side, the answer explicitly abstains: 'The attack source doesn't establish this -- it doesn't model the entities this question asks about, so no query was executed for: What assets does technique T1566 target?' This matches the logic_flow boundary trace ('entities not modeled by the attack source: Asset') and correctly avoids fabricating any asset data, satisfying expect_boundary and expect_no_correlation (no correlation claim is made at all -- deterministic_scores.correlation shows negative:true, exact:true). Every stated fact (CAPEC-98, Phishing, Standard, Draft, T1566 mapping) is directly traceable to the single evidence record; no invented names, counts, or aliases were found. This is a fully correct, faithful, and complete answer to an adversarial partial-federation case."
+}

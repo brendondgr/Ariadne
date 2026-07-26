@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SW-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 73,
+  "gold_present": 73,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=['S0154'] plus 73 must_include_related ATT&CK technique IDs. The evidence (logic_flow.results[0].records[0]) is a single S0154 record named 'Cobalt Strike' with a 'related' array of exactly 73 technique entries whose ids are precisely the 73-id gold set (verified by set equality, no missing/extra). The answer's second claim (kind=enumeration) lists entity_ids that are exactly this same 73-id set, and the narrative enumerates all 73 T-numbers by name (e.g. T1021.004, T1564.010, T1078.003, ..., T1069.002) plus correctly names the software as 'Cobalt Strike'. No id in the answer is absent from the evidence and no gold id is missing from the answer, so completeness=1.0, faithfulness=1.0 (no invented techniques, names, or counts), groundedness=1.0 (every id traces to the single retrieved record's related list)."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MIT-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 9,
+  "gold_present": 9,
+  "hallucinations": [],
+  "rationale": "Gold requires the seed T1021.001 plus all 8 mitigations M1018, M1026, M1028, M1030, M1032, M1035, M1042, M1047 to be surfaced. The retrieved evidence (logic_flow.results[0].records[0].related) contains exactly these 8 mitigation ids with matching names, and the narrative names all 8 with correct ids and correct names (e.g. M1035 = 'Limit Access to Resource Over Network', M1028 = 'Operating System Configuration', M1047 = 'Audit', etc.), each verified against the evidence text verbatim. The narrative also correctly identifies T1021.001 as 'Remote Desktop Protocol' and states the correct count (8). No id, name, or count in the narrative is absent from or inconsistent with the retrieved evidence, and no fabricated entities were introduced. This matches the pipeline's own deterministic_scores.coverage (gold=9, found=9, coverage=1.0)."
+}

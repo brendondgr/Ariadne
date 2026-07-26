@@ -1,0 +1,12 @@
+{
+  "case_id": "A-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold (assertions.expect_empty=true, ex_gold.expected=[]) requires the pipeline to abstain rather than fabricate a result for nonexistent technique T9999. The executed Cypher query (MATCH (n:Technique) WHERE n.attack_id IN $ids ...) ran cleanly against seed_ids=[\"T9999\"] and returned row_count=0 (logic_flow.results[0].records=[], traces show execute/assess/normalize all confirming 0 rows). The answer correctly reflects this: claims=[] (nothing fabricated), and the sole abstention states \"the attack source doesn't establish this \u2014 the executed query ran cleanly and returned no matching records for: Retrieve Technique or SubTechnique node with ID 'T9999'\". The narrative shown to the analyst says \"The routed sources returned no matching records for this question\" and offers example valid ids (T1566, M1017, CAPEC-98) purely as illustrative format hints, not as claims about T9999 \u2014 these are not asserted as facts about the query result, so this is not a hallucination. No technique name, property, or relationship was invented anywhere in claims or narrative. This is a textbook correct negative/abstention case with full provenance (abstention_proof_ok=true, fully_provenanced=true)."
+}

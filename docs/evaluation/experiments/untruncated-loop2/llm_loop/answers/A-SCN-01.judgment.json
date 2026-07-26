@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SCN-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.15,
+  "faithfulness": 0.85,
+  "groundedness": 1.0,
+  "completeness": 0.3,
+  "gold_expected": 300,
+  "gold_present": 821,
+  "hallucinations": [],
+  "rationale": "Gold asserts the bounded scan must return between min_records=250 and max_records=300 ATT&CK Software entries. The pipeline's own observed_plan set limits.max_result_rows=1000 (not the intended ~250-300 cap), and the query returned 821 unique Software ids (verified: len(records)==821==len(set(primary_id))), which the narrative and all 821 'fact' claims faithfully report (headline: 'Gathered 821 record(s)...'). Every S-number cited (S0061, S0266, S1204, ... through the full list) is directly traceable to logic_flow.results[0].records, so there is no fabricated entity -- groundedness and faithfulness of the individual ids are high. However the answer fails the actual test of this scenario: 'bounded scan' means the retrieval/plan must respect the 250-300 record ceiling, and 821 is ~2.7x over the max_records=300 bound, meaning the planner (arm=llm_loop, planner=llm) did not apply the intended bound at all. Because the gold's sole assertion here is the record-count window and that window is blown past by a wide margin, correctness is very low despite the data being internally faithful. gold_present=821 vs the gold_expected ceiling of 300 illustrates the overshoot directly."
+}

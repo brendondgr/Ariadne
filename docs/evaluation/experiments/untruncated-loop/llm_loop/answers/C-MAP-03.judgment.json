@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-564 (must_include_ids) plus all four ATT&CK techniques T1037, T1543.001, T1543.004, T1547 (must_include_related). The narrative states CAPEC-564 (Run Software at Logon, Abstraction: Detailed, Status: Draft) maps to exactly these four techniques, matching q1's records/join_values and related TaxonomyEntry names verbatim. All supporting detail is traceable to logic_flow: T1037's revoked/stix_type/x_mitre_deprecated/x_mitre_is_subtechnique/x_mitre_version=2.4 and T1547's version=1.3 match the q2 properties exactly; T1037's 5 sub-techniques (T1037.001, T1037.004, T1037.003 as first examples) match q3's 5-row result; T1547's 14 sub-techniques (T1547.008, T1547.007, T1547.013 first) match q4's 14-row result; T1037's 2 tactics (TA0004, TA0003) match q5; the correlation record counts (T1037 shared by 5 records, T1547 by 4, T1543.001 and T1543.004 by 2 each) are consistent with counting each id's occurrences across the capec seed record and the attack q2/q3/q4/q5/q6 records. The headline '10 records from 2 sources' matches evidence_volume (records:10, results:6->2 sources). No invented names, counts, or ids were found; every stated fact is grounded in the retrieved evidence."
+}

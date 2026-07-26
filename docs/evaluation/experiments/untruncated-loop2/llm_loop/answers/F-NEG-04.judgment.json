@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an honest empty (expect_no_correlation: true, capec.expect_empty: true, attack.expect_dependency_skip: true) because CAPEC-7 has no ATT&CK mapping. The evidence confirms this: the capec query (g.V().hasLabel('AttackPattern').has('id', within(['CAPEC-7']))...out('MAPS_TO')...) executed cleanly with row_count 0, and q2 (attack) was correctly skipped per the dependency trace 'producer q1: it returned no join values'. The deterministic answer (narrative + claims=[]) reports exactly this: 'The routed sources returned no matching records for this question,' with two abstentions citing the specific queries/reasons for capec (empty result) and attack (dependency skip on q1). No technique IDs, mitigation IDs, or correlations are fabricated; nothing is asserted beyond what the evidence shows. deterministic_scores.correlation confirms negative/exact match (precision 1.0, recall 1.0, n_expected 0, n_got 0). This fully satisfies the F-NEG gold requirement of an honest empty rather than a fabricated join."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 13,
+  "gold_present": 13,
+  "hallucinations": [],
+  "rationale": "The answer names all 3 required CAPEC ids (CAPEC-19, CAPEC-35, CAPEC-448) with their correct Abstraction/Status properties matching the evidence records exactly (CAPEC-19: Standard/Stable; CAPEC-35: Detailed/Draft; CAPEC-448: Detailed/Stable). It correctly enumerates the deduplicated union of all 5 required ATT&CK techniques (T1027.006, T1027.009, T1546.004, T1546.016, T1564.009) and correctly attributes each CAPEC's individual mapped subset (CAPEC-19 -> 1027.009/1546.004/1546.016; CAPEC-35 -> 1027.006/1027.009/1564.009; CAPEC-448 -> 1027.009), matching the 'related' TaxonomyEntry lists verbatim in logic_flow. All 5 required mitigations (M1013, M1022, M1040, M1048, M1049) are surfaced and correctly mapped to their techniques (T1027.009->M1049,M1040; T1564.009->M1013; T1546.004->M1022; T1027.006->M1048), matching the 'related' Mitigation lists in the attack sub-question results. T1546.016 has an empty related/mitigation list in evidence and the answer correctly omits a mitigation for it rather than fabricating one. The cross-source corroboration counts in the narrative (T1027.009 shared across 4 records: CAPEC-19, CAPEC-35, CAPEC-448, attack:T1027.009; the other four techniques each shared across 2 records) are independently verifiable against logic_flow and are exact. deterministic_scores confirms correlation f1=1.0 (5/5 exact), mapping_recall 1.0 (5/5), and full citation provenance (30/30 compliant). No claim, count, or identifier in the narrative/claims is absent from the retrieved evidence; no hallucinations found."
+}

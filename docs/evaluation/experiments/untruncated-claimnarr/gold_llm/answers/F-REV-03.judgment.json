@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-49 to be surfaced as the CAPEC pattern mapping to T1110.001 (must_include_ids/must_include_related), T1110.001 to be surfaced as an ATT&CK record with name 'Password Guessing' (must_include_ids/expect_names), and the cross-source correlation on T1110.001 (must_correlate) to be stated. The narrative/claims state all three: 'CAPEC-49 (Password Brute Forcing), maps to ATT&CK technique T1110.001' with the taxonomy entry capec:taxonomy:ATTACK:1110.001 (matches record CAPEC-49's related entry exactly, entry_id '1110.001', name 'Brute Force:Password Guessing'); 'T1110.001 ... named Password Guessing' with properties revoked=False, stix_type=attack-pattern, x_mitre_deprecated=False, x_mitre_is_subtechnique=True, x_mitre_version=1.7 (all verbatim from the attack record's properties block); and the correlation sentence 'identifier T1110.001 is corroborated across the attack and capec sources, with 2 records sharing it', matching deterministic_scores.correlation (exact=true, precision=recall=f1=1.0, n_expected=1, n_got=1). Every CAPEC-49 property (Abstraction: Standard, Status: Draft) and every ATT&CK property cited traces directly to logic_flow records; no invented aliases, counts, or dates were found. This is a positive (non-NEG) case and the answer fully and correctly answers the question with complete grounding."
+}

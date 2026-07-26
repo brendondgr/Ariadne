@@ -1,0 +1,12 @@
+{
+  "case_id": "A-AST-01",
+  "verdict": "CORRECT",
+  "correctness": 0.9,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.85,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires expect_boundary: true — the question asks about 'assets' targeted by T1047, an Enterprise ATT&CK (Windows) technique, when 'Asset' as an entity type is an ICS-only concept, so the correct behavior is to refuse/abstain rather than invent asset relationships. The answer never fabricates any asset: it reports only the T1047 technique record's real properties (revoked=false, stix_type=attack-pattern, x_mitre_deprecated=false, x_mitre_is_subtechnique=false, x_mitre_version=1.6 — all verified verbatim against logic_flow.results[0].records[0].properties) and none of the technique's facets (DETECTS, HAS_TECHNIQUE, MITIGATES, MONITORS, USES) is an asset-targeting relation, so no asset claim is smuggled in. It explicitly abstains on the CAPEC leg ('does not establish any targeted assets ... ICS-only concept'), matching the empty CAPEC query result (row_count 0). This satisfies the boundary requirement without hallucination. Minor deduction on completeness/correctness because the narrative never explicitly states that the ATT&CK/Enterprise side also fails to establish asset-targeting (it just lists technique metadata and lets the reader infer no assets were found), which is a slightly less direct refusal than an ideal answer would give, but it is not incorrect and invents nothing."
+}

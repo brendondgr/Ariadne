@@ -1,0 +1,12 @@
+{
+  "case_id": "A-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects expect_empty: true for nonexistent technique T9999 (ex_gold.expected is []). The executed query 'MATCH (n:Technique) WHERE n.attack_id IN $ids ...' with seed_ids [\"T9999\"] ran cleanly and returned row_count 0 (execute/assess/normalize traces all confirm 0 records). The answer has no narrative claims and zero 'claims' entries; instead it correctly abstains via an 'abstentions' entry stating the attack source returned no matching records for T9999, and the headline/narrative say the same. No entity, name, or property for T9999 is invented anywhere in the narrative or claims. The example ids offered in the narrative (T1566, M1017, CAPEC-98) are explicitly framed as suggestions for what the analyst could ask about next, not assertions about T9999, so they are not hallucinations. This fully satisfies the negative-case requirement to abstain rather than fabricate."
+}

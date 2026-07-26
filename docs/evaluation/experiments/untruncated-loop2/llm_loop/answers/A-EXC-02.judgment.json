@@ -1,0 +1,12 @@
+{
+  "case_id": "A-EXC-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_empty=true with an empty expected list (attack-scheme node pool) for retired technique T1004, which was excluded at load — the correct answer is to abstain with no fabricated data. The retrieval query 'MATCH (n:Technique) WHERE n.attack_id IN $ids ...' executed cleanly (execute step row_count=0, no errors, ok=true) and returned zero records, zero related neighbours (evidence_volume.records=0, related=0). The pipeline's claims list is empty and it emits exactly one abstention stating the attack source query ran cleanly and returned no matching records for T1004, then invites the analyst to supply a different id. No entity, count, alias, or property is asserted anywhere in the narrative/claims, so there is nothing ungrounded. This exactly matches the negative-case gold requirement."
+}

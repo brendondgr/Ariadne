@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 37,
+  "gold_present": 37,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids T1003, T1005, T1014, T1025, T1030 (all 5 present) and, per ex_gold's 'neighbors' pool, the full 37-technique set for G0007. The answer's narrative and claims enumerate exactly 37 technique ids that match the gold expected set 1:1 (no missing, no extras, verified by set comparison). Every id and its name (e.g. T1003 'OS Credential Dumping', T1030 'Data Transfer Size Limits') is traceable to the 37 records returned by the single Cypher query in logic_flow.results[0], which used an unbounded LIMIT 1000 over a 3-hop traversal from seed G0007 - i.e. the full neighborhood with no truncation. No fabricated names, counts, aliases, or ids were found; the stated count of 37 matches both the record count and the gold pool size exactly."
+}

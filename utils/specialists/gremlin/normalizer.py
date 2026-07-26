@@ -102,6 +102,19 @@ def _bound_expand_desc(desc: str) -> str:
     return desc[:cap] + ("…" if len(desc) > cap else "")
 
 
+#: The single edge a neighbours query traverses, e.g. ``.out("CHILD_OF")``. The
+#: builder emits exactly one such step for the neighbours template, so reading it
+#: back is deterministic — and the rows themselves never carry the edge.
+_TRAVERSAL_EDGE_RE = re.compile(r'\.(?:out|in|both)\(\s*"([A-Z_]+)"\s*\)')
+
+
+def _traversal_edge(query: str) -> str:
+    """The relationship a neighbours query walked, or '' when it is ambiguous."""
+    found = _TRAVERSAL_EDGE_RE.findall(query or "")
+    unique = list(dict.fromkeys(found))
+    return unique[0] if len(unique) == 1 else ""
+
+
 _CAPEC_AP_FULL_RE = re.compile(r"^capec:attack-pattern:(\d+)$")
 
 
@@ -314,6 +327,10 @@ class GremlinNormalizer:
     ) -> list[EvidenceRecord]:
         """Group neighbours under their anchor AttackPattern."""
         id_scheme: str = card.provenance.get("id_scheme", "capec-id")
+        # The traversal edge, recovered from the query the builder emitted. The
+        # rows carry the neighbour vertices but not the edge that reached them,
+        # and the relationship IS the answer for a hierarchy question.
+        edge_type = _traversal_edge(query)
         # Group by anchor CAPEC id.
         groups: dict[str, dict[str, Any]] = {}  # primary_id -> record_dict
         for row in rows:
@@ -353,6 +370,13 @@ class GremlinNormalizer:
                 "label": nbr_label,
                 **{k: v for k, v in nbr_props.items() if k not in ("id", "name")},
             }
+            # Carry the edge type. Without it the record says only *that* CAPEC-98
+            # has a related AttackPattern, not that CAPEC-151 is its CHILD_OF
+            # parent — so an answer bound to the claims cannot name the
+            # relationship the question asked about, and honestly reports that it
+            # cannot confirm one.
+            if edge_type:
+                related_entry["type"] = edge_type
             groups[primary_id]["related"].append(related_entry)
 
         records: list[EvidenceRecord] = []

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SCN-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 300,
+  "gold_present": 300,
+  "hallucinations": [],
+  "rationale": "Gold requires a bounded scan of 250-300 ATT&CK software records (min_records=250, max_records=300). This is the deterministic arm (composer='deterministic', narrative is thin auto-text), so the claims list is the answer under test. Claim[1] ('All 300 result(s) for this question: ...') enumerates exactly 300 entity_ids, all matching the ATT&CK software id pattern S####. Cross-checked against logic_flow.results: exactly 300 records were retrieved (task.limits.max_result_rows=300), and the set of ids in claim[1] is an exact set match against the retrieved record ids (0 missing, 0 extra). 300 falls within the gold's [250,300] window, satisfying the bounded-scan requirement at its upper bound. No fabricated ids, counts, or properties were found."
+}

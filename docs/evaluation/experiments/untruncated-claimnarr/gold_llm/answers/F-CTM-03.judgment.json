@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 15,
+  "gold_present": 15,
+  "hallucinations": [],
+  "rationale": "The narrative states all three required cross-source correlation ids (T1185, T1550.001, T1563), matching gold must_correlate exactly, and confirms each is corroborated across the capec and attack sources per the correlation claims. It surfaces CAPEC-593 (Session Hijacking, Abstraction: Standard, Status: Stable, matching the evidence record properties exactly) and its 3 TaxonomyEntry mappings, satisfying gold.capec.must_include_ids/must_include_related. For gold.attack (min_records=3, max_records=3, all satisfied exactly by the 3 technique records returned), it lists the full mitigation set per technique: T1185 -> M1018, M1017 (2, matches evidence's 2 related items exactly); T1563 -> M1042, M1026, M1018, M1027, M1030 (5, matches evidence exactly); T1550.001 -> M1041, M1036, M1047, M1013, M1021 (5, matches evidence exactly). The union of stated mitigations is {M1013, M1017, M1018, M1021, M1026, M1027, M1030, M1036, M1041, M1042, M1047} -- all 11 ids required by gold.attack.must_include_related are present, with no extras or omissions. Every name, count, and property cited (technique names, mitigation names, abstraction/status values, record/related counts) traces directly to the logic_flow records and related arrays; no invented facts, aliases, or counts were found. All 15 unique gold-required identifiers (CAPEC-593, 3 techniques, 11 mitigations) are surfaced."
+}

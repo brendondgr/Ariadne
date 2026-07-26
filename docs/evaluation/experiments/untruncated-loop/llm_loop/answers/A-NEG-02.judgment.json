@@ -1,0 +1,12 @@
+{
+  "case_id": "A-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty: true, ex_gold.expected: []) for nonexistent group G9999. The executed Cypher query MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN $ids correctly ran with seed_ids=['G9999'] and returned row_count 0 / records []. The answer has claims: [] and abstentions with an accurate statement that the attack source found no matching records for 'Find all Techniques used by Group G9999', citing the actual executed query. The narrative correctly reports no matching records and invites the analyst to supply a valid id, without fabricating any group name, technique, or count. No entity or fact in the answer is unsupported by the evidence -- there simply is no evidence, and the answer accurately reflects that."
+}

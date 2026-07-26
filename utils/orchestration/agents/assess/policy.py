@@ -115,6 +115,45 @@ def expandable_facets(
     return extract_facet_frontier(evidence.results)
 
 
+def _unfetched_facet_gaps(
+    evidence: FederatedEvidence, plan: Plan, limit: int
+) -> list[str]:
+    """Question-relevant facets whose members were counted but never fetched."""
+    from utils.orchestration.agents.assess.facets import relevant_facets
+
+    entries = relevant_facets(
+        extract_facet_frontier(evidence.results),
+        request=plan.request,
+        plan=plan,
+        already_expanded=_expanded_neighbourhoods(evidence),
+        limit=limit,
+    )
+    return [
+        f"{anchor} has un-fetched {rel} members (facet counted, never expanded)"
+        for anchor, rel, _direction, _label, _source in entries
+    ]
+
+
+def _expanded_neighbourhoods(evidence: FederatedEvidence) -> set[tuple[str, str, str]]:
+    """``(anchor, rel, direction)`` triples an earlier hop already expanded.
+
+    A record that came back carrying ``related`` entries of a given edge type has
+    had that facet fetched; without this the loop would re-request the same
+    neighbourhood every hop and never converge.
+    """
+    done: set[tuple[str, str, str]] = set()
+    for result in evidence.results:
+        for record in result.records:
+            for rel_entry in record.related or []:
+                if not isinstance(rel_entry, dict):
+                    continue
+                rel = str(rel_entry.get("type") or "").strip()
+                if rel and record.primary_id:
+                    done.add((record.primary_id, rel, "out"))
+                    done.add((record.primary_id, rel, "in"))
+    return done
+
+
 def deterministic_assessment(
     *,
     evidence: FederatedEvidence,
@@ -122,6 +161,8 @@ def deterministic_assessment(
     prior_frontier: set[tuple[str, str]],
     prior_visited: set[tuple[str, str]],
     hop: int,
+    chase_facets: bool = False,
+    max_facet_expansions: int = 4,
 ) -> Assessment:
     """The reproducible sufficiency verdict (no hop-cap applied).
 
@@ -133,21 +174,33 @@ def deterministic_assessment(
     cannot. ``prior_frontier``/``prior_visited`` are accepted for signature
     stability but the decision reads straight off the accumulated evidence.
     """
-    # No declared join ⇒ no cross-source expansion is possible; one pass is all
-    # this plan can do, so it is sufficient by construction.
+    # Facet gaps are chaseable whether or not a cross-source join exists — that is
+    # the whole point: a single-source question has no join, so without this it is
+    # "sufficient by construction" after one pass no matter what it left unfetched.
+    facet_gaps = (
+        _unfetched_facet_gaps(evidence, plan, max_facet_expansions)
+        if chase_facets else []
+    )
+
+    # No declared join ⇒ no cross-source expansion is possible. One pass is all
+    # this plan can do *unless* a relevant facet is still unfetched.
     if not plan.joins:
         return Assessment(
-            sufficient=True, gaps=[], missing_entities=[], hop=hop,
+            sufficient=not facet_gaps, gaps=facet_gaps, missing_entities=[], hop=hop,
             hop_capped=False, mode="deterministic",
-            reason="no declared cross-source join; single pass is sufficient",
+            reason=(
+                "no declared cross-source join; single pass is sufficient"
+                if not facet_gaps else
+                "no cross-source join, but relevant facets remain unfetched"
+            ),
         )
 
     open_joins = _open_joins(evidence, plan)
     chaseable = _chaseable_frontier(evidence, plan)
-    sufficient = not chaseable
+    sufficient = not chaseable and not facet_gaps
     missing_entities = sorted({v for v, _ in chaseable})
 
-    gaps = list(open_joins)
+    gaps = list(open_joins) + facet_gaps
     if chaseable:
         keys = ", ".join(sorted(f"{v} ({s})" for v, s in chaseable))
         gaps.append(f"unresolved join-keys still chaseable: {keys}")
@@ -157,8 +210,10 @@ def deterministic_assessment(
             "join closure reached; nothing left to chase" if not open_joins
             else "no declared join resolved and nothing left to chase; synthesizing partial"
         )
-    else:
+    elif chaseable:
         reason = "unresolved join-keys can still be chased into an un-queried source"
+    else:
+        reason = "relevant facets were counted but their members were never fetched"
 
     return Assessment(
         sufficient=sufficient,
@@ -182,6 +237,8 @@ def assess(
     assess_mode: str = "deterministic",
     use_llm: bool = False,
     critic: LLMCritic | None = None,
+    chase_facets: bool = False,
+    max_facet_expansions: int = 4,
 ) -> Assessment:
     """Judge sufficiency, applying the hop-cap short-circuit last.
 
@@ -195,6 +252,8 @@ def assess(
         prior_frontier=prior_frontier,
         prior_visited=prior_visited,
         hop=hop,
+        chase_facets=chase_facets,
+        max_facet_expansions=max_facet_expansions,
     )
 
     if assess_mode == "llm":

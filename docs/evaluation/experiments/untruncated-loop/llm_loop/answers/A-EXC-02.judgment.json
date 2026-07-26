@@ -1,0 +1,12 @@
+{
+  "case_id": "A-EXC-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative test case (retired technique T1004, excluded at load; gold expects an empty result via expect_empty=true, ex_gold.expected=[]). The evidence in logic_flow shows the query 'MATCH (n:Technique) WHERE n.attack_id IN $ids ...' for seed_ids ['T1004'] executed cleanly (ok=true, no error) and returned row_count=0 / records=[]. The deterministic answer (composer='deterministic', claims=[]) correctly abstains: the narrative states 'The routed sources returned no matching records for this question' and the abstention entry explicitly notes the attack source query ran cleanly with no matches for T1004. No entity, count, name, or property was fabricated -- the answer surfaces nothing, matching the gold's expectation of nothing. This is exactly the correct behavior for a NEG-style exclusion case."
+}

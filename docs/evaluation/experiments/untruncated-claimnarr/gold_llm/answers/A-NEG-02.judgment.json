@@ -1,0 +1,12 @@
+{
+  "case_id": "A-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_empty=true for a nonexistent group G9999 (pool 'neighbors', expected: []). The executed query (MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN ['G9999'] ...) ran cleanly and returned row_count 0, records: []. The answer has no narrative-fabricated content and zero claims; its abstentions array correctly states the attack source doesn't establish any techniques for group G9999, citing the exact query executed. No entity, technique, or count is invented -- the narrative even offers example valid ids (T1566, M1017, CAPEC-98) as generic guidance rather than asserting anything about G9999. This is the textbook correct behavior for a negative/nonexistent-entity probe."
+}

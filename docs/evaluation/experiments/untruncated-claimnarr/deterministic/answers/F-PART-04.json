@@ -1,0 +1,126 @@
+{
+  "id": "F-PART-04",
+  "kind": "federated",
+  "tier": "adversarial",
+  "category": "F-PART",
+  "question": "With the CAPEC source down: the CAPEC-555 producer never runs, so the seeded ATT&CK side must degrade to a dependency abstention — no broad unseeded query.",
+  "gold": {
+    "assertions": {
+      "must_correlate": [],
+      "expect_no_correlation": true,
+      "expect_partial": true,
+      "capec": {
+        "expect_skipped": true
+      },
+      "attack": {
+        "expect_dependency_skip": true
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 2
+  },
+  "answer": {
+    "headline": "No records were returned by the routed specialists; 1 question(s) the sources don't establish.",
+    "narrative": "The routed sources returned no matching records for this question. If you're after a specific entity, name it or give its id (e.g. T1566, M1017, or CAPEC-98).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [],
+    "abstentions": [
+      {
+        "source": "attack",
+        "statement": "The attack source doesn't establish this — the sub-question it depends on (q1) produced no seed identifiers, so no query was executed for: What mitigations does ATT&CK list for those mapped techniques?",
+        "query": ""
+      }
+    ],
+    "notes": [
+      "Skipped capec: no specialist available for source 'capec'"
+    ]
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which ATT&CK techniques does CAPEC-555 map to?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What mitigations does ATT&CK list for those mapped techniques?",
+        "seed_from": "q1"
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": "capec_down",
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "What mitigations does ATT&CK list for those mapped techniques?",
+        "query": "",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Skipped: this sub-question depends on q1 for its seed identifiers, but it was not run.",
+        "traces": [
+          {
+            "step": "dependency",
+            "ok": true,
+            "reasons": [
+              "producer q1: it was not run"
+            ],
+            "detail": {
+              "producer": "q1"
+            }
+          }
+        ],
+        "records": []
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": true,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 0,
+      "n_got": 0
+    },
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 0,
+      "compliant": 0,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "deterministic",
+  "run_meta": {
+    "planner": "gold-replay",
+    "synthesis": "deterministic",
+    "wall_s": 0.001
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 0,
+    "related": 0
+  }
+}

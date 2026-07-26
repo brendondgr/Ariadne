@@ -1,0 +1,14 @@
+{
+  "case_id": "C-ABS-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.05,
+  "faithfulness": 0.2,
+  "groundedness": 0.3,
+  "completeness": 0.33,
+  "gold_expected": 3,
+  "gold_present": 1,
+  "hallucinations": [
+    "Narrative states 'The analysis did not locate any standard or meta ancestors for this identifier within the retrieved graph data' — this is false and contradicts the retrieved evidence itself: sub-question q3's own records show CAPEC-16 --CHILD_OF--> CAPEC-49 (Password Brute Forcing), the standard-pattern ancestor. The answer had the fact in hand and asserted the opposite."
+  ],
+  "rationale": "Gold requires surfacing CAPEC-16 plus its standard ancestor CAPEC-49 and meta ancestor CAPEC-112 (must_include_related). The retrieval itself only found the first hop: q3's records (logic_flow.results[2].records[0].related) explicitly list CAPEC-16 CHILD_OF CAPEC-49 'Password Brute Forcing' — so CAPEC-49 IS present in evidence. CAPEC-112 is never retrieved at all (the plan never issued a second ChildOf hop from CAPEC-49, so it is a genuine retrieval gap, not a synthesis omission). Despite CAPEC-49 being sitting in the evidence, neither the narrative nor any of the 6 claims mention it; the claims are just three duplicated pairs of 'Found 1 CAPEC record(s): CAPEC-16' and its Abstraction/Status. Worse, the narrative actively asserts 'did not locate any standard or meta ancestors,' which is a false statement contradicted by the pipeline's own retrieved data — this is not merely incomplete, it is wrong. Completeness: gold_expected=3 (CAPEC-16, CAPEC-49, CAPEC-112), gold_present=1 (only CAPEC-16, via the Abstraction/Status claim); CAPEC-49 is retrieved but not surfaced, CAPEC-112 is neither retrieved nor surfaced. Correctness and faithfulness are scored low because the answer's central claim (no ancestors exist) is disproved by its own evidence."
+}

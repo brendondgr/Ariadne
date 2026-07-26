@@ -1,0 +1,14 @@
+{
+  "case_id": "C-HIE-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.15,
+  "faithfulness": 0.35,
+  "groundedness": 0.7,
+  "completeness": 0.5,
+  "gold_expected": 2,
+  "gold_present": 1,
+  "hallucinations": [
+    "Narrative states 'The evidence does not identify a parent (ChildOf) for CAPEC-98,' which is false: the retrieval query itself (g.V()...out(\"CHILD_OF\")...) traverses CAPEC-98's CHILD_OF edge to CAPEC-151, meaning CAPEC-151 IS the parent per both the query semantics and gold (must_include_related: CAPEC-151, ex_gold.expected: CAPEC-151). This is an invented negative conclusion contradicting the evidence actually retrieved."
+  ],
+  "rationale": "The question asks for the parent (ChildOf) of CAPEC-98; gold requires the answer to surface CAPEC-151 as that parent (must_include_ids: CAPEC-98, must_include_related: CAPEC-151, ex_gold expected: [CAPEC-151]). The single retrieved record's 'related' entry is CAPEC-151 (Identity Spoofing), reached via the executed Gremlin query 'out(\"CHILD_OF\")' from CAPEC-98 -- i.e. the evidence directly establishes CAPEC-98 CHILD_OF CAPEC-151. The narrative correctly surfaces CAPEC-98's Abstraction (Standard) and Status (Draft), both grounded in the record's properties, and it does mention CAPEC-151's id and name. However, it mislabels the relationship as a generic 'AttackPattern' association (mirroring claim 3's vague 'has 1 AttackPatterns: CAPEC-151') rather than identifying it as the ChildOf/parent relationship, and then explicitly asserts 'The evidence does not identify a parent (ChildOf) for CAPEC-98' -- directly contradicting the query that produced this very record. This is not merely incomplete; it is an affirmatively wrong answer to the question asked, so gold_present is credited only for CAPEC-98 (1 of 2 gold ids), since CAPEC-151 is present as a bare id but not correctly identified as the parent the question sought. Deterministic self-scoring in the artifact (coverage 1.0, provenance 1.0) reflects only citation/id presence, not semantic correctness, and should not be trusted here -- this is exactly the kind of self-judgment failure this independent pass is meant to catch."
+}

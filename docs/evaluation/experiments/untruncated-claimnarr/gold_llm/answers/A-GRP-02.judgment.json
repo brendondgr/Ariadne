@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The answer's 34 cited technique IDs (T1529, T1124, T1680, T1008, T1105, T1046, T1189, T1485, T1012, T1203, T1685, T1571, T1078, T1098, T1591, T1041, T1057, T1104, T1049, T1047, T1033, T1489, T1082, T1106, T1202, T1005, T1140, T1218, T1620, T1010, T1560, T1016, T1070, T1083) exactly match the set of 34 records returned by the logic_flow query 'MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN $ids ...'. All 5 required must_include_ids (T1005, T1008, T1010, T1012, T1016) are present, and the full ex_gold.expected pool of 34 technique IDs is matched 1:1 with the answer's set (no extras, no omissions). Each cited ID traces to a record in the evidence with a correct ATT&CK technique name (e.g. T1078 = Valid Accounts, T1529 = System Shutdown/Reboot), so faithfulness and groundedness are both full. The 'Lazarus Group' name used in the narrative is taken directly from the question text ('group G0032 (Lazarus Group)'), not fabricated by the pipeline. No hallucinated IDs, counts, or aliases were found."
+}

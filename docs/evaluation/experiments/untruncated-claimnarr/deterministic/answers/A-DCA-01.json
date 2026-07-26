@@ -1,0 +1,279 @@
+{
+  "id": "A-DCA-01",
+  "kind": "attack",
+  "tier": "easy",
+  "category": "A-DCA",
+  "question": "Which analytics monitor data component DC0084?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "max_records": 1,
+      "must_include_ids": [
+        "DC0084"
+      ],
+      "must_include_related": [
+        "AN0316",
+        "AN0405",
+        "AN0444",
+        "AN0671",
+        "AN0675",
+        "AN0770",
+        "AN1000",
+        "AN1144",
+        "AN1444"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "AN0316",
+        "AN0405",
+        "AN0444",
+        "AN0671",
+        "AN0675",
+        "AN0770",
+        "AN1000",
+        "AN1144",
+        "AN1444"
+      ],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "Found 9 item(s) related to DC0084 (e.g. AN0405, AN1144, AN0671) in MITRE ATT&CK. DC0084 (Active Directory Credential Request) has 9 related item(s): AN0405, AN1144, AN0671, AN1444, AN0675, AN0316, AN1000, AN0444, AN0770.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 9 item(s) related to DC0084 (e.g. AN0405, AN1144, AN0671) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "DC0084"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "DC0084"
+          }
+        ]
+      },
+      {
+        "text": "DC0084 (Active Directory Credential Request) has 9 related item(s): AN0405, AN1144, AN0671, AN1444, AN0675, AN0316, AN1000, AN0444, AN0770.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "AN0405",
+          "AN1144",
+          "AN0671",
+          "AN1444",
+          "AN0675",
+          "AN0316",
+          "AN1000",
+          "AN0444",
+          "AN0770"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "DC0084"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-DCA-01",
+      "source": "attack",
+      "text": "Which analytics monitor data component DC0084?",
+      "entities": [
+        "DataComponent",
+        "Analytic"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "DC0084"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "A-DCA-01",
+        "sub_question": "Which analytics monitor data component DC0084?",
+        "query": "MATCH (a:Analytic)-[:MONITORS]->(dc:DataComponent) WHERE dc.attack_id IN $ids RETURN dc.attack_id AS datacomponent_id, dc.name AS datacomponent_name, a.attack_id AS analytic_id, a.name AS analytic_name LIMIT 20000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 9 item(s) related to DC0084 (e.g. AN0405, AN1144, AN0671) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "DataComponent",
+                "Analytic"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "DC0084"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "datacomponent_analytics",
+              "query": "MATCH (a:Analytic)-[:MONITORS]->(dc:DataComponent) WHERE dc.attack_id IN $ids RETURN dc.attack_id AS datacomponent_id, dc.name AS datacomponent_name, a.attack_id AS analytic_id, a.name AS analytic_name LIMIT 20000",
+              "injected": [
+                "LIMIT 20000 appended (none present)"
+              ],
+              "timing_ms": 0.056
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 9,
+              "timing_ms": 13.6
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 9,
+              "timing_ms": 0.004
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 5.912
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "DC0084",
+            "name": "Active Directory Credential Request",
+            "label": "DataComponent",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "AN0405",
+                "name": "Analytic 0405",
+                "description": "Detects forged Kerberos Golden Tickets by correlating anomalous Kerberos ticket lifetimes, unexpected encryption types (e.g., RC4 in modern domains), malformed fields in logon/logoff events, and TGS requests without preceding TGT requests. Also monitors for abnormal patterns of access associated with elevated privileges across multiple systems."
+              },
+              {
+                "id": "AN1144",
+                "name": "Analytic 1144",
+                "description": "Detects anomalous NTLM LogonType 3 authentications that occur without accompanying domain logon events, especially from lateral systems or involving built-in administrative tools. Monitors for mismatches between source user context and system being accessed. Correlates LogonSession creation, NTLM authentications, and process/service initiation to identify suspicious use of stolen password hashes for remote access or service logon without password entry. Detects overpass-the-hash by combining Kerberos ticket issuance with NTLM-based lateral movement."
+              },
+              {
+                "id": "AN0671",
+                "name": "Analytic 0671",
+                "description": "Monitor for abnormal certificate enrollment and usage activity in Active Directory Certificate Services (AD CS), registry access to certificate storage locations, and unusual process executions that attempt to export or access private keys."
+              },
+              {
+                "id": "AN1444",
+                "name": "Analytic 1444",
+                "description": "Detects suspicious access to SSSD secrets database and Kerberos key material indicating ticket theft or replay attempts. Correlates anomalous file access with unusual Kerberos service ticket requests."
+              },
+              {
+                "id": "AN0675",
+                "name": "Analytic 0675",
+                "description": "Detects forged Kerberos Silver Tickets by identifying anomalous Kerberos service ticket activity such as malformed fields in logon events, TGS requests without interaction with the KDC, and access attempts using service accounts outside expected hosts/resources. Also monitors suspicious processes accessing LSASS memory for credential dumping."
+              },
+              {
+                "id": "AN0316",
+                "name": "Analytic 0316",
+                "description": "Detects AS-REP roasting attempts by monitoring for Kerberos AS-REQ/AS-REP authentication patterns where preauthentication is disabled (Event ID 4768 with Pre-Auth Type 0). Correlates these requests with subsequent service ticket activity (Event ID 4769) and anomalies such as requests using weak RC4 encryption (etype 0x17). Excessive enumeration of accounts with 'Do not require Kerberos preauthentication' set in Active Directory is another key detection point."
+              },
+              {
+                "id": "AN1000",
+                "name": "Analytic 1000",
+                "description": "Detects unauthorized Kerberos ticket injection by correlating service ticket (TGS - 4769) requests with absent corresponding account logons (4624) and prior Ticket Granting Ticket (TGT - 4768) activity. Highlights anomalous service ticket generation chains involving unexpected users, hosts, or times, and suspicious injection of tickets via mimikatz-like tooling into LSASS memory. Behavior also includes network lateral movement using Kerberos authentication absent expected interactive logon patterns."
+              },
+              {
+                "id": "AN0444",
+                "name": "Analytic 0444",
+                "description": "Detects Kerberoasting attempts by monitoring for anomalous Kerberos TGS requests (Event ID 4769) with RC4 encryption (etype 0x17), accounts requesting an unusual number of service tickets in a short period, or service accounts targeted outside normal usage baselines. Also correlates suspicious process activity (e.g., Mimikatz invoking LSASS access) with Kerberos ticket anomalies."
+              },
+              {
+                "id": "AN0770",
+                "name": "Analytic 0770",
+                "description": "Detection of rogue Domain Controller registration and Active Directory replication abuse by correlating: (1) creation/modification of nTDSDSA and server objects in the Configuration partition, (2) unexpected usage of Directory Replication Service SPNs (GC/ or E3514235-4B06-11D1-AB04-00C04FC2DCD2), (3) replication RPC calls (DrsAddEntry, DrsReplicaAdd, GetNCChanges) originating from non-DC hosts, and (4) Kerberos authentication by non-DC machines using DRS-related SPNs. These events in combination, especially from hosts outside the Domain Controllers OU, may indicate DCShadow or rogue DC activity."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 10,
+      "found": 10,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 2,
+      "compliant": 2,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "deterministic",
+  "run_meta": {
+    "planner": "gold-replay",
+    "synthesis": "deterministic",
+    "wall_s": 0.022
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 9
+  }
+}

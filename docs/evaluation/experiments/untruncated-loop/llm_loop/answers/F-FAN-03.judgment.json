@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-03",
+  "verdict": "PARTIAL",
+  "correctness": 0.45,
+  "faithfulness": 0.95,
+  "groundedness": 1.0,
+  "completeness": 0.47,
+  "gold_expected": 17,
+  "gold_present": 8,
+  "hallucinations": [],
+  "rationale": "The CAPEC-mapping half of the question is fully and correctly answered: both CAPEC-37 (Draft) and CAPEC-639 (Stable), both Detailed abstraction, are surfaced, and all 6 gold must_correlate/must_include_related T-numbers (T1005, T1039, T1552.001, T1552.003, T1552.004, T1552.006) are named with correct correlation counts (T1552.004 shared by 3 records, matching the evidence where both CAPEC-37 and CAPEC-639 map to it plus the ATT&CK record; the other five shared by 2, matching one CAPEC record + one ATT&CK record each) -- all consistent with logic_flow q1 records. However, the question explicitly asks 'what mitigations apply to the deduplicated union', and the gold attack.must_include_related requires all 9 mitigations (M1015, M1017, M1022, M1027, M1028, M1041, M1047, M1051, M1057). The q2 retrieval in logic_flow actually contains every one of these 9 mitigations attached to the 6 techniques (e.g. T1005->M1057, T1552.004->M1041/M1047/M1022/M1027, T1552.003->M1028, T1552.001->M1047/M1022/M1027/M1017, T1552.006->M1051/M1015/M1047), yet zero claims reference any mitigation, and the narrative flatly states 'The verified claims do not enumerate mitigations for this deduplicated union, so that portion of the request cannot be answered from the established answer' -- an incorrect claim of unavailability given the mitigation data was retrieved and present in evidence. No fabricated facts are present (faithfulness/groundedness both high, since the answer never invents an unsupported entity), but completeness is materially damaged: of the 17 unique gold-required entities (2 CAPEC ids + 6 T-numbers + 9 mitigations), only 8 (the 2 CAPEC ids + 6 T-numbers) are surfaced, none of the mitigations. This is a synthesis/completeness failure on a required part of the question, not a hallucination, so verdict is PARTIAL rather than INCORRECT."
+}

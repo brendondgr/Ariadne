@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.8,
+  "faithfulness": 0.9,
+  "groundedness": 0.95,
+  "completeness": 1.0,
+  "gold_expected": 13,
+  "gold_present": 13,
+  "hallucinations": [],
+  "rationale": "All gold-required identifiers ultimately surface somewhere in the answer: both CAPEC ids (CAPEC-13, CAPEC-640), all 5 must_correlate T-ids (T1505.005, T1574.006, T1574.007, T1574.013, T1620 -- each has its own correlation claim with matching, evidence-correct share-counts), and all 6 must_include_related mitigations (M1022, M1024, M1028, M1038, M1040, M1047), so completeness is 13/13. All correlation counts (T1574.006 shared by 3, others by 2) and mitigation-to-technique attributions are exactly traceable to logic_flow records (q1 CAPEC-13/CAPEC-640 related[] and q2 Technique->Mitigation related[]), and the CAPEC Abstraction/Status properties (Detailed/Stable) are verbatim from evidence -- nothing invented. However, the narrative's opening sentence, which directly answers 'which ATT&CK techniques do CAPEC-13, CAPEC-640 map to,' states an incomplete and slightly wrong list: 'T1505.005, T1562.003, T1574.006, T1574.007, and T1574.013' -- this drops T1620 (a genuine CAPEC-640 mapping required by gold, only surfaced two sentences later as a 'corroborated' id rather than as part of the maps-to set) and includes T1562.003, a taxonomy entry that IS present in CAPEC-13's evidence (capec:taxonomy:ATTACK:1562.003) but is not in gold's must_correlate/must_include_related set and has no corresponding ATT&CK Technique record in q2's 5-record result (so it never correlates or gets mitigations). This is grounded evidence, not a fabrication, but it is an inaccurate/inconsistent direct answer to the first clause of the question, so correctness is docked to 0.8 and faithfulness to 0.9 for the mildly misleading framing rather than a hard hallucination."
+}

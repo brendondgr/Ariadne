@@ -1,0 +1,12 @@
+{
+  "case_id": "C-EXE-03",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.14,
+  "gold_expected": 7,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question asks for the execution steps of CAPEC-163. The retrieval (logic_flow.results[0].records[0].related) actually returned all 6 required ExecutionStep records (capec:attack-pattern:163:step:1 through :6, matching gold's must_include_related exactly), so the evidence needed to answer was present. However, the narrative explicitly refuses to provide them: 'The verified claims do not enumerate the execution steps for this pattern, so those details are not provided in the established answer.' The claims list only contains the CAPEC-163 record and its Abstraction/Status properties (matching deterministic_scores.coverage: gold=7, found=1, coverage=0.14, missing all 6 step ids) -- the composer never converted the retrieved 'related' ExecutionStep records into claims/narrative text, so the analyst is told the opposite of what the system actually knows. What IS stated (CAPEC-163 = Spear Phishing, Abstraction: Detailed, Status: Draft) is accurate and grounded in the record's properties, so there is no fabrication (faithfulness/groundedness are clean), but the answer fails the actual question -- it surfaces 1 of 7 gold-required ids (just CAPEC-163 itself) and 0 of the 6 required execution steps, and falsely asserts the steps aren't available when they are in the evidence. This is a synthesis/composer bug (retrieval succeeded, presentation dropped the payload), not a retrieval gap."
+}

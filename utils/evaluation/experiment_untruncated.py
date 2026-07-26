@@ -42,7 +42,7 @@ DEFAULT_ROOT = "docs/evaluation/experiments/untruncated"
 # committed baseline's exact configuration (gold-replay plan + LLM drafter + LLM
 # synthesis) with ONLY the un-truncation profile added, so C − baseline isolates
 # un-truncation, A − C isolates the composer, and B − C isolates LLM planning.
-ARMS = ("deterministic", "llm", "gold_llm")
+ARMS = ("deterministic", "llm", "gold_llm", "llm_loop")
 
 # -- the un-truncation profile ----------------------------------------------
 # Every one of these keys is read *at call time* by the bound it names, with the
@@ -84,7 +84,31 @@ TASK_MAX_TRAVERSAL_DEPTH = 3  # unchanged: depth is the question's shape, not a 
 def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[str, str]:
     """The full env overlay for one arm (bounds + that arm's LLM posture)."""
     env = dict(UNTRUNCATED_ENV)
-    if arm == "gold_llm":
+    if arm == "llm_loop":
+        # ARM E — the workbench flow as designed: LLM planning + LLM synthesis
+        # **with the iterative retrieval loop actually chasing something**. Arm B
+        # ran at ORCH_MAX_HOPS=5 but still executed a single pass, because
+        # sufficiency was decided purely by cross-source join closure — a
+        # single-source question had no join and was "sufficient by construction"
+        # after one hop, and a describe that returned only facet COUNTS looked
+        # complete. ORCH_CHASE_FACETS makes an un-fetched, question-relevant facet
+        # a real gap, so the loop re-plans an expansion hop for it.
+        env.update({
+            "PLANNER_LLM_ENABLED": "true",
+            "SPECIALIST_LLM_ENABLED": "true",
+            "SYNTHESIS_LLM_ENABLED": "true",
+            "PLANNER_LLM_MODEL": llm_model,
+            "SPECIALIST_LLM_MODEL": llm_model,
+            "SYNTHESIS_LLM_MODEL": llm_model,
+            "PLANNER_LLM_MAX_TOKENS": str(llm_max_tokens),
+            "SPECIALIST_LLM_MAX_TOKENS": str(llm_max_tokens),
+            "SYNTHESIS_LLM_MAX_TOKENS": str(llm_max_tokens),
+            "SYNTHESIS_LLM_THINKING_BUDGET": str(llm_max_tokens // 2),
+            "ORCH_MAX_HOPS": "5",
+            "ORCH_CHASE_FACETS": "true",
+            "ORCH_MAX_FACET_EXPANSIONS": "4",
+        })
+    elif arm == "gold_llm":
         # Match the committed baseline byte-for-byte except the bounds: the .env
         # LLM seams stay exactly as generate_e2e.py reads them.
         env.update({
@@ -343,6 +367,7 @@ RUNNERS = {
     "deterministic": run_deterministic,
     "llm": run_llm,
     "gold_llm": run_gold_llm,
+    "llm_loop": run_llm,   # same driver; the arm differs only in its env
 }
 
 
@@ -386,7 +411,7 @@ def run_arm(
     # ARM B builds its own specialists inside iter_pipeline; the gold-replay arms
     # share a thread-local router set (ARM C keeps the .env LLM drafter, as the
     # baseline did; ARM A forces it off).
-    pool = None if arm == "llm" else _RouterPool(llm_enabled=(arm == "gold_llm"))
+    pool = None if arm in ("llm", "llm_loop") else _RouterPool(llm_enabled=(arm == "gold_llm"))
 
     manifest: list[dict[str, Any]] = []
     total = len(work)
@@ -432,6 +457,7 @@ def run_arm(
             "synthesis": os.environ.get("SYNTHESIS_LLM_ENABLED"),
             "model": os.environ.get("SYNTHESIS_LLM_MODEL"),
             "max_hops": os.environ.get("ORCH_MAX_HOPS"),
+            "chase_facets": os.environ.get("ORCH_CHASE_FACETS"),
         },
         "categories": sorted({_category_of(m["id"]) for m in manifest}),
         "cases": manifest,

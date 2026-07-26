@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 47,
+  "gold_present": 47,
+  "hallucinations": [],
+  "rationale": "The answer (graded from claims, since narrative is the deterministic claim-concatenation) surfaces all 10 required CAPEC ids (CAPEC-474, 509, 551, 555, 560, 561, 600, 644, 645, 652), each correctly linked to CWE-522 via the 'related' enumeration claims. All 12 must_correlate ATT&CK T-numbers (T1021, T1021.002, T1078, T1110.004, T1114.002, T1133, T1543, T1550.002, T1550.003, T1552.004, T1558, T1558.003) are present as both technique-fact claims and explicit correlation claims, and every correlation claim's CAPEC/technique pairing matches the evidence's join_values exactly (e.g. CAPEC-555 -> T1021/T1114.002/T1133; CAPEC-474 -> T1552.004). All 25 required mitigation ids (M1013...M1060) are present, and each technique's mitigation list and count exactly matches the retrieved 'related' array (e.g. T1543: 9 items M1047/M1054/M1026/M1022/M1018/M1040/M1045/M1028/M1033; T1078: 8 items including M1013/M1017/M1036). CAPEC Abstraction/Status values (e.g. CAPEC-474 Detailed/Draft, CAPEC-560 Meta/Stable, CAPEC-509 Detailed/Stable) and all CAPEC/technique names checked byte-for-byte against logic_flow properties/name fields with no discrepancies. No entity id, count, name, or property in the claims is absent from or contradicts the evidence -- zero hallucinations found. gold_expected = 10 CAPEC ids + 12 ATT&CK ids + 25 mitigation ids = 47; all 47 are surfaced."
+}

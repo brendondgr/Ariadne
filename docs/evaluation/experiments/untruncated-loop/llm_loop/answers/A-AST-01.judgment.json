@@ -1,0 +1,14 @@
+{
+  "case_id": "A-AST-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.75,
+  "faithfulness": 0.65,
+  "groundedness": 0.7,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [
+    "Narrative states 'None of the live graph sources cover this request,' asserting a coverage gap as fact, but run_meta.observed_plan/notes show the attack and capec sub-questions were never executed ('Skipped attack: total pipeline timeout exceeded before this sub-question ran', 'Skipped capec: ... timeout exceeded') — the system never actually checked whether the sources cover T1047-asset relationships, so the 'no coverage' framing is an unverified/invented explanation rather than the true cause (a pipeline timeout)."
+  ],
+  "rationale": "This is a negative/boundary case: T1047 (Windows Management Instrumentation) is an Enterprise ATT&CK technique, and 'Asset' targeting is an ICS-only concept, so the gold-correct behavior (assertions.expect_boundary=true) is to abstain rather than invent a list of targeted assets. The answer does abstain — headline 'No records were returned by the routed specialists,' claims=[], abstentions=[] — and it never fabricates any asset, technique, or relationship, which is the primary requirement. There are no must_include_ids/must_correlate in gold (gold_expected=0), so completeness is trivially satisfied (gold_present=0). However, the answer is not fully honest about *why* it is abstaining: it tells the analyst 'None of the live graph sources cover this request,' implying a genuine domain/coverage mismatch was checked and found absent, when in fact logic_flow.results is empty and run_meta.notes explicitly show both the attack and capec sub-questions were skipped due to 'total pipeline timeout exceeded' before they ran (exit_code 1, status 'partial', wall_s 120.15). The question itself flags this as an ICS-only-concept boundary case requiring an honest refusal, and the answer's stated reason (source non-coverage) is not what actually happened (a timeout preempted the query) — so while the outcome (no fabrication) is correct, the stated justification is itself an unsupported claim not traceable to the evidence, which is a faithfulness/groundedness defect. This keeps the case out of a clean CORRECT and lands it as PARTIAL."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires capec.must_include_ids=[CAPEC-555] and must_include_related=[T1021], plus expect_no_correlation=true and attack.expect_boundary=true. The narrative states CAPEC-555 ('Remote Services with Stolen Credentials') maps to T1021, with Abstraction=Standard and Status=Stable, matching the CAPEC-555 record's properties exactly (Abstraction: Standard, Status: Stable) and its related TaxonomyEntry capec:taxonomy:ATTACK:1021 (entry_id 1021) verbatim from logic_flow. For the attack side, the answer correctly refuses: 'the attack source doesn't establish this — it doesn't model the entities this question asks about' — this matches the boundary trace reason 'entities not modeled by the attack source: Asset' exactly, satisfying expect_boundary. No cross-source correlation is claimed anywhere, satisfying expect_no_correlation (deterministic_scores.correlation.negative=true/exact=true confirms). Every fact in the narrative and claims traces directly to the single CAPEC-555 record and its one related TaxonomyEntry; no invented names, counts, or properties. Both gold-required ids (CAPEC-555, T1021) are surfaced."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-SKL-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-163] and must_include_related=[capec:attack-pattern:163:skill:1]. The narrative (the prose shown to the analyst) states both: it names CAPEC-163 (Spear Phishing, Abstraction: Detailed, Status: Draft) and explicitly cites the required skill id capec:attack-pattern:163:skill:1, paraphrasing its description as 'possessing targeted knowledge about the victims, such as their preferred banks or frequently visited websites' -- this matches the retrieved related-record description verbatim in substance ('specific knowledge of the victims being targeted, such as which bank is being used by the victims, or websites they commonly log into'). All facts (name, abstraction, status, skill id, skill description) are directly traceable to the single retrieved AttackPattern record and its one REQUIRES_SKILL neighbor in logic_flow.results[0].records[0]; nothing is invented. Note: the underlying 'claims' array only formally cites CAPEC-163 (missing a discrete claim/citation for the skill entity), which is why deterministic_scores.coverage reports 0.5/found=1 -- but per grading instructions the narrative is the answer under test here (it is present and substantive, not thin), and the narrative itself fully and correctly surfaces both gold-required ids with no hallucination."
+}

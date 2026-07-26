@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 27,
+  "gold_present": 27,
+  "hallucinations": [],
+  "rationale": "The narrative and claims correctly enumerate all 6 must_correlate techniques (T1003, T1119, T1213, T1530, T1555, T1602) and their corroboration across capec/attack, matching evidence records exactly (7 records: CAPEC-150 + 6 Technique nodes). CAPEC-150's 6 TaxonomyEntry related nodes (capec:taxonomy:ATTACK:1530/1555/1602/1003/1119/1213) satisfy capec.must_include_related in full. Per-technique mitigation lists in the narrative match the retrieved 'related' arrays verbatim: T1003->9 (M1041,M1015,M1026,M1040,M1027,M1025,M1043,M1028,M1017), T1602->6 (M1041,M1051,M1054,M1030,M1037,M1031), T1119->2 (M1029,M1041), T1530->6 (M1041,M1047,M1032,M1022,M1018,M1037), T1555->3 (M1051,M1026,M1027), T1213->7 (M1041,M1047,M1054,M1032,M1018,M1060,M1017). Union of these = all 20 mitigations required by attack.must_include_related (M1015,M1017,M1018,M1022,M1025,M1026,M1027,M1028,M1029,M1030,M1031,M1032,M1037,M1040,M1041,M1043,M1047,M1051,M1054,M1060), with none fabricated. CAPEC-150 properties (Abstraction: Standard, Status: Draft) are stated accurately. The only minor oddity is that the deterministic query-summary sentence ('ATT&CK mappings: T1003, T1119, T1213, T1530, T1555') omits T1602 from that one clause, but the narrative fully recovers and correctly states T1602 in the very next sentence (taxonomy entries) and in the mitigations breakdown and the '6 techniques corroborated' closing statement, so no gold entity is actually missing from the answer as a whole and no fact is invented."
+}

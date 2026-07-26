@@ -1,0 +1,12 @@
+{
+  "case_id": "C-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (CAPEC-557 is deprecated/excluded at load, expect_empty=true, ex_gold.expected=[]). The executed query 'g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...' for seed CAPEC-557 returned row_count 0 and records=[] (logic_flow.results[0]), matching the deprecated-node expectation exactly. The answer (deterministic arm, no LLM narrative of substance beyond a templated abstention) correctly reports 'No records were returned' and lists a single properly-grounded abstention citing the exact query and seed id, with claims=[] (no fabricated entities). The example ids offered in the narrative (T1566, M1017, CAPEC-98) are generic usage hints, not asserted facts about CAPEC-557, so they are not hallucinations. All deterministic_scores confirm full provenance (citation_provenance_rate 1.0, abstention_proof_ok true). No gold entities were required to be surfaced (gold_expected=0), and none were fabricated (gold_present=0), so completeness is 1.0."
+}

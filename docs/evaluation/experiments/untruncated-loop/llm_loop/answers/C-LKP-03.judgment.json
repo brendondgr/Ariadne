@@ -1,0 +1,12 @@
+{
+  "case_id": "C-LKP-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to surface CAPEC-98 (name 'Phishing') with Abstraction='Standard' and Status='Draft'. The narrative states exactly this: 'one CAPEC record for CAPEC-98 (Phishing) ... Abstraction is Standard and its Status is Draft.' The q1 record in logic_flow confirms properties {Status: Draft, Abstraction: Standard, name: Phishing, id: capec:attack-pattern:98} for primary_id CAPEC-98, so every stated fact is directly grounded in retrieved evidence. The claims list (used as backing detail since this is the deterministic composer path) repeats the same two facts ('Found 1 CAPEC record(s): CAPEC-98.' and 'CAPEC-98 (Phishing) has Abstraction: Standard; Status: Draft.') across the 4 sub-question results (q1-q4, one of which retrieves via CanPrecede/ChildOf but reports the same seed node properties) — this is redundant but not incorrect, as no duplicate or extra entity is fabricated. No invented names, counts, aliases, or properties were found; the CAN_PRECEDE/CHILD_OF related neighbours (CAPEC-631, CAPEC-632, CAPEC-89, CAPEC-543, CAPEC-611, CAPEC-630, CAPEC-151) are not claimed by the answer and were not required by gold, so their omission is not a completeness issue. gold_expected=1 (CAPEC-98 per must_include_ids), gold_present=1."
+}

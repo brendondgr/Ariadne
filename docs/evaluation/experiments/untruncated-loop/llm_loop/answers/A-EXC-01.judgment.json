@@ -1,0 +1,12 @@
+{
+  "case_id": "A-EXC-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative case: gold.assertions.expect_empty=true and ex_gold.expected=[] because T1002 is retired/excluded at load. The executed query (logic_flow.results[0]) ran cleanly against Technique nodes filtered on attack_id T1002 and returned row_count=0, record_count=0 (see traces: execute/assess/normalize steps). The answer has zero claims and a single abstention stating 'the executed query ran cleanly and returned no matching records for: Retrieve the Technique node with id T1002', which accurately reflects the evidence. The narrative correctly reports no matching records and invites the analyst to supply a different id, without inventing any technique name, status, or properties. No entity was fabricated, so faithfulness and groundedness are both 1.0. Since gold requires zero entities to be surfaced (gold_expected=0) and the answer surfaces zero (gold_present=0), completeness is 1.0. This matches the correct behavior for an excluded/negative case."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires: (1) cross-source correlation on T1114.002 stated, (2) CAPEC-555 surfaced as the mapping CAPEC pattern, (3) T1114.002 correctly named 'Remote Email Collection'. The narrative states all three explicitly: 'The only CAPEC pattern mapping to ATT&CK technique T1114.002 is CAPEC-555 ... T1114.002 is the Remote Email Collection technique ... corroborated across the attack and capec sources, with three records sharing it.' Every factual detail traces directly to logic_flow evidence: CAPEC-555's Abstraction=Standard/Status=Stable match record properties exactly (q1); T1114.002's revoked/stix_type/x_mitre_deprecated/x_mitre_is_subtechnique/x_mitre_version=1.3 match record properties exactly (q2); the single related item TA0009 under T1114.002 matches q3's related array; T1114 (Email Collection) having exactly one related item T1114.002 matches q4's related array. The '3 records share T1114.002' claim is verifiable by counting join_values across the capec (1) and attack (2: q2, q3) result records = 3, consistent with deterministic_scores.correlation (n_expected=1, n_got=1, f1=1.0) and mapping_recall (recall=1.0). No invented facts, aliases, counts, or entities were found outside the retrieved evidence."
+}

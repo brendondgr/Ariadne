@@ -1,0 +1,566 @@
+{
+  "id": "A-SUB-02",
+  "kind": "attack",
+  "tier": "medium",
+  "category": "A-SUB",
+  "question": "Which technique is T1055.012 a sub-technique of?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "T1055"
+      ],
+      "must_include_related": [
+        "T1055.012"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "T1055"
+      ],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 3 record(s) from 1 source(s).",
+    "narrative": "Based on the retrieved MITRE ATT&CK records, T1055.012 (Process Hollowing) is a sub-technique of T1055 (Process Injection). The evidence confirms that T1055.012 is marked as a sub-technique with version 2.0, is not deprecated or revoked, and carries the stix_type attack-pattern. T1055 lists exactly one related item, which is T1055.012. Furthermore, T1055.012 is associated with two related tactics, TA0005 and TA0004.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found ATT&CK record T1055.012: Process Hollowing.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1055.012"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1055.012"
+          }
+        ]
+      },
+      {
+        "text": "T1055.012 (Process Hollowing) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 2.0.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1055.012"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1055.012"
+          }
+        ]
+      },
+      {
+        "text": "Found 1 item(s) related to T1055 (e.g. T1055.012) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1055"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1055"
+          }
+        ]
+      },
+      {
+        "text": "T1055 (Process Injection) has 1 related item(s): T1055.012.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "T1055.012"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1055"
+          }
+        ]
+      },
+      {
+        "text": "Found 2 item(s) related to T1055.012 (e.g. TA0005, TA0004) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1055.012"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1055.012"
+          }
+        ]
+      },
+      {
+        "text": "T1055.012 (Process Hollowing) has 2 related item(s): TA0005, TA0004.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "TA0005",
+          "TA0004"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1055.012"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-SUB-02",
+      "source": "attack",
+      "text": "Which parent technique does sub-technique T1055.012 belong to?",
+      "entities": [
+        "Technique",
+        "SubTechnique",
+        "HAS_SUBTECHNIQUE"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "T1055.012"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "Retrieve the parent Technique node for the SubTechnique with ID 'T1055.012'.",
+        "query": "MATCH (n:SubTechnique) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found ATT&CK record T1055.012: Process Hollowing.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "SubTechnique",
+                "Technique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1055.012"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "MATCH (n:SubTechnique) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1",
+              "injected": [
+                "LIMIT 1 appended (none present)"
+              ],
+              "timing_ms": 0.112
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 3.2
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.151
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1055.012",
+            "name": "Process Hollowing",
+            "label": "SubTechnique",
+            "description": "Adversaries may inject malicious code into suspended and hollowed processes in order to evade process-based defenses. Process hollowing is a method of executing arbitrary code in the address space of a separate live process.  \n\nProcess hollowing is commonly performed by creating a process in a suspended state then unmapping/hollowing its memory, which can then be replaced with malicious code. A victim process can be created with native Windows API calls such as <code>CreateProcess</code>, which includes a flag to suspend the processes primary thread. At this point the process can be unmapped using APIs calls such as <code>ZwUnmapViewOfSection</code> or <code>NtUnmapViewOfSection</code>  before being written to, realigned to the injected code, and resumed via <code>VirtualAllocEx</code>, <code>WriteProcessMemory</code>, <code>SetThreadContext</code>, then <code>ResumeThread</code> respectively.(Citation: Leitch Hollowing)(Citation: Elastic Process Injection July 2017)\n\nThis is very similar to [Thread Local Storage](https://attack.mitre.org/techniques/T1055/005) but creates a new process rather than targeting an existing process. This behavior will likely not result in elevated privileges since the injected process was spawned from (and thus inherits the security context) of the injecting process. However, execution via process hollowing may also evade detection from security products since the execution is masked under a legitimate process. ",
+            "properties": {
+              "attack_id": "T1055.012",
+              "description": "Adversaries may inject malicious code into suspended and hollowed processes in order to evade process-based defenses. Process hollowing is a method of executing arbitrary code in the address space of a separate live process.  \n\nProcess hollowing is commonly performed by creating a process in a suspended state then unmapping/hollowing its memory, which can then be replaced with malicious code. A victim process can be created with native Windows API calls such as <code>CreateProcess</code>, which includes a flag to suspend the processes primary thread. At this point the process can be unmapped using APIs calls such as <code>ZwUnmapViewOfSection</code> or <code>NtUnmapViewOfSection</code>  before being written to, realigned to the injected code, and resumed via <code>VirtualAllocEx</code>, <code>WriteProcessMemory</code>, <code>SetThreadContext</code>, then <code>ResumeThread</code> respectively.(Citation: Leitch Hollowing)(Citation: Elastic Process Injection July 2017)\n\nThis is very similar to [Thread Local Storage](https://attack.mitre.org/techniques/T1055/005) but creates a new process rather than targeting an existing process. This behavior will likely not result in elevated privileges since the injected process was spawned from (and thus inherits the security context) of the injecting process. However, execution via process hollowing may also evade detection from security products since the execution is masked under a legitimate process. ",
+              "id": "attack-pattern--b200542e-e877-4395-875b-cf1a44537ca4",
+              "name": "Process Hollowing",
+              "revoked": false,
+              "stix_type": "attack-pattern",
+              "x_mitre_deprecated": false,
+              "x_mitre_is_subtechnique": true,
+              "x_mitre_platforms": [
+                "Windows"
+              ],
+              "x_mitre_version": "2.0",
+              "_omitted_properties": [
+                "external_references"
+              ]
+            },
+            "facets": [
+              {
+                "rel": "DETECTS",
+                "direction": "in",
+                "neighbour_label": "DetectionStrategy",
+                "count": 1
+              },
+              {
+                "rel": "HAS_SUBTECHNIQUE",
+                "direction": "in",
+                "neighbour_label": "Technique",
+                "count": 1
+              },
+              {
+                "rel": "HAS_TECHNIQUE",
+                "direction": "in",
+                "neighbour_label": "Tactic",
+                "count": 2
+              },
+              {
+                "rel": "MITIGATES",
+                "direction": "in",
+                "neighbour_label": "Mitigation",
+                "count": 1
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Campaign",
+                "count": 0
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Group",
+                "count": 8
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Software",
+                "count": 35
+              }
+            ],
+            "join_values": [
+              "T1055.012"
+            ],
+            "related": []
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "In attack, list all Technique reached from T1055.012 via HAS_SUBTECHNIQUE",
+        "query": "MATCH (t:Technique)-[:HAS_SUBTECHNIQUE]->(st:SubTechnique) WHERE t.attack_id IN $ids OR st.attack_id IN $ids RETURN t.attack_id AS parent_id, t.name AS parent_name, st.attack_id AS subtechnique_id, st.name AS subtechnique_name LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 item(s) related to T1055 (e.g. T1055.012) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique"
+              ],
+              "relationships": [
+                "HAS_SUBTECHNIQUE"
+              ],
+              "seed_ids": [
+                "T1055.012"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "subtechnique_parent",
+              "query": "MATCH (t:Technique)-[:HAS_SUBTECHNIQUE]->(st:SubTechnique) WHERE t.attack_id IN $ids OR st.attack_id IN $ids RETURN t.attack_id AS parent_id, t.name AS parent_name, st.attack_id AS subtechnique_id, st.name AS subtechnique_name LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.099
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 3.5
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.005
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 1.698
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1055",
+            "name": "Process Injection",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1055"
+            ],
+            "related": [
+              {
+                "id": "T1055.012",
+                "name": "Process Hollowing",
+                "description": "Adversaries may inject malicious code into suspended and hollowed processes in order to evade process-based defenses. Process hollowing is a method of executing arbitrary code in the address space of a separate live process.  \n\nProcess hollowing is commonly performed by creating a process in a suspended state then unmapping/hollowing its memory, which can then be replaced with malicious code. A victim process can be created with native Windows API calls such as <code>CreateProcess</code>, which includes a flag to suspend the processes primary thread. At this point the process can be unmapped using APIs calls such as <code>ZwUnmapViewOfSection</code> or <code>NtUnmapViewOfSection</code>  before being written to, realigned to the injected code, and resumed via <code>VirtualAllocEx</code>, <code>WriteProcessMemory</code>, <code>SetThreadContext</code>, then <code>ResumeThread</code> respectively.(Citation: Leitch Hollowing)(Citation: Elastic Process Injection July 2017)\n\nThis is very similar to [Thread Local Storage](https://attack.mitre.org/techniques/T1055/005) but creates a new process rather than targeting an existing process. This behavior will likely not result in elevated privileges since the injected process was spawned from (and thus inherits the security context) of the injecting process. However, execution via process hollowing may also evade detection from security products since the execution is masked under a legitimate process. "
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q3",
+        "sub_question": "In attack, list all Tactic reached from T1055.012 via HAS_TECHNIQUE",
+        "query": "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids RETURN t.attack_id AS technique_id, t.name AS technique_name, ta.attack_id AS in_tactic_id, ta.name AS in_tactic_name LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 2 item(s) related to T1055.012 (e.g. TA0005, TA0004) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Tactic"
+              ],
+              "relationships": [
+                "HAS_TECHNIQUE"
+              ],
+              "seed_ids": [
+                "T1055.012"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "technique_tactics",
+              "query": "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids RETURN t.attack_id AS technique_id, t.name AS technique_name, ta.attack_id AS in_tactic_id, ta.name AS in_tactic_name LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.071
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2,
+              "timing_ms": 1.7
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2,
+              "timing_ms": 0.005
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 1.535
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1055.012",
+            "name": "Process Hollowing",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1055.012"
+            ],
+            "related": [
+              {
+                "id": "TA0005",
+                "name": "Stealth",
+                "description": "The adversary is trying to hide and conceal their actions, appearing as normal behavior.\n\nStealth consists of techniques that reduce the likelihood of detection by blending in with legitimate activity or minimizing observable signals. These techniques are characterized by concealment behaviors, such as avoiding, obfuscating, or mimicking normal operations, without modifying security controls or compromising collection and monitoring feeds. The goal is to remain indistinguishable from benign activity while leaving defensive systems intact."
+              },
+              {
+                "id": "TA0004",
+                "name": "Privilege Escalation",
+                "description": "The adversary is trying to gain higher-level permissions.\n\nPrivilege Escalation consists of techniques that adversaries use to gain higher-level permissions on a system or network. Adversaries can often enter and explore a network with unprivileged access but require elevated permissions to follow through on their objectives. Common approaches are to take advantage of system weaknesses, misconfigurations, and vulnerabilities. Examples of elevated access include: \n\n* SYSTEM/root level\n* local administrator\n* user account with admin-like access \n* user accounts with access to specific system or perform specific function\n\nThese techniques often overlap with Persistence techniques, as OS features that let an adversary persist can execute in an elevated context.  "
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 2,
+      "found": 2,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 6,
+      "compliant": 6,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm_loop",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "Retrieve the parent Technique node for the SubTechnique with ID 'T1055.012'.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 1,
+          "max_result_rows": 1,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "In attack, list all Technique reached from T1055.012 via HAS_SUBTECHNIQUE",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q3",
+        "source": "attack",
+        "text": "In attack, list all Tactic reached from T1055.012 via HAS_TECHNIQUE",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 67.595
+  },
+  "evidence_volume": {
+    "results": 3,
+    "records": 3,
+    "related": 3
+  }
+}

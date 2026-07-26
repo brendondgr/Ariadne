@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SUB-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[T1055] and must_include_related=[T1055.012]. The evidence record shows primary_id T1055, name 'Process Injection', related item id T1055.012 name 'Process Hollowing', matching a single row from the query MATCH (t:Technique)-[:HAS_SUBTECHNIQUE]->(st:SubTechnique) WHERE ... st.attack_id = T1055.012. The narrative states 'T1055.012 (Process Hollowing) is a sub-technique of T1055 (Process Injection)' and both claims correctly cite T1055 with entity_ids covering T1055 and T1055.012. Both gold-required ids are surfaced with correct names, directly traceable to the sole retrieved record. No invented names, counts, or aliases; the 'exactly one item' / 'has 1 related item' phrasing matches the actual row_count of 1."
+}

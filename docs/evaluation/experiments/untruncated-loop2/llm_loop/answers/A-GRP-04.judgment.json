@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids T1005, T1020, T1027, T1039, T1046 with min_records 5; the answer's narrative and single claim list all 13 retrieved technique ids (T1046, T1537, T1027, T1039, T1199, T1102, T1083, T1020, T1005, T1202, T1082, T1119, T1080), which includes all 5 required ids. This also matches the full extended ex_gold pool of 13 T-numbers exactly (T1005, T1020, T1027, T1039, T1046, T1080, T1082, T1083, T1102, T1119, T1199, T1202, T1537), so completeness is 13/13 against the broader signal too. Every technique id and name in the narrative/claim traces directly to a record in logic_flow.results[0].records (13 records, one query, all label=Technique with matching primary_id and name) - no invented names, counts, or extra entities. The headline '13 record(s) from 1 source(s)' and claim 'Found 13 ATT&CK record(s)' match execute/normalize trace row_count=13. No hallucinations found."
+}

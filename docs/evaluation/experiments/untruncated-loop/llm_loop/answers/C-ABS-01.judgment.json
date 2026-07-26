@@ -1,0 +1,15 @@
+{
+  "case_id": "C-ABS-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.15,
+  "faithfulness": 0.6,
+  "groundedness": 0.85,
+  "completeness": 0.33,
+  "gold_expected": 3,
+  "gold_present": 1,
+
+  "hallucinations": [
+    "Narrative states 'the evidence does not identify any standard or meta ancestors in the abstraction hierarchy for this pattern' in the same breath as citing the CHILD_OF link from CAPEC-7 to CAPEC-66 -- a self-contradictory conclusion unsupported by its own preceding sentence; CAPEC-66 is exactly the standard ancestor the question asks for and is present in the q2 record's 'related' field, but the narrative refuses to name it as an ancestor."
+  ],
+  "rationale": "Gold requires must_include_ids=[CAPEC-7] (satisfied: q1/q2 both return the CAPEC-7 record with correct Abstraction=Detailed, Status=Draft) and must_include_related=[CAPEC-66, CAPEC-248], i.e. the answer must name CAPEC-66 as the standard ancestor and CAPEC-248 as the meta ancestor. The evidence for q2 (records[1].related) explicitly contains CAPEC-66 'SQL Injection' reached via CHILD_OF from CAPEC-7 -- this is the standard-level ancestor the question is asking for, and it is right there in the retrieved data. The narrative mentions the CHILD_OF link to CAPEC-66 but then explicitly denies that any standard or meta ancestor was identified, which directly contradicts the evidence it just cited and means the analyst is told the walk failed when the first hop actually succeeded. None of the four 'claims' in answer.claims mention CAPEC-66 at all (they only repeat 'Found 1 CAPEC record(s): CAPEC-7' and the Abstraction/Status properties, duplicated). CAPEC-248 (meta ancestor) is genuinely absent from all retrieved evidence -- the LLM-generated plan (run_meta.observed_plan) only issued two sub-questions probing CAPEC-7 directly and its immediate CHILD_OF neighbor, and never issued a follow-up hop from CAPEC-66 to find its own CHILD_OF parent, so the deterministic_scores.coverage block correctly flags CAPEC-248 as 'missing'. That omission is a legitimate retrieval-depth gap, not a fabrication. But the failure to state CAPEC-66 as the standard ancestor despite it being directly in evidence is a genuine correctness defect: the pipeline had the answer to half the question and actively told the analyst it did not. Net: gold_present=1 (only CAPEC-7 is affirmatively surfaced as an answered fact; CAPEC-66 is named but explicitly disclaimed rather than asserted as the ancestor, and CAPEC-248 never appears), gold_expected=3, giving completeness=0.33. No properties were fabricated (faithfulness penalized only for the unsupported self-contradictory conclusion, not invented facts), and every id/fact stated is traceable to the retrieved records (groundedness high). Correctness is low because the answer, taken as a whole, fails to answer the question it was asked despite possessing the necessary first-hop data."
+}

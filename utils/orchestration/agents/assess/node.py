@@ -51,6 +51,8 @@ def build_assess_node(
             assess_mode=orch.assess_mode,
             use_llm=bool(state.get("use_llm")),
             critic=critic,
+            chase_facets=orch.chase_facets,
+            max_facet_expansions=orch.max_facet_expansions,
         )
 
         # Surface the verdict for inspectability, but only when the loop is

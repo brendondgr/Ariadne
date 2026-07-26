@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires T1047 plus related DET0364 and AN1031 (must_include_ids/must_include_related). The evidence record for T1047 lists exactly these two related items: DET0364 ('Behavioral Detection Strategy for WMI Execution Abuse on Windows') and AN1031 ('Analytic 1031', described as detecting adversarial WMI abuse via WMIC/PowerShell/COM API through a process-creation, command-execution, network-connection chain). The narrative names both ids explicitly, correctly labels DET0364 as the overarching Behavioral Detection Strategy and AN1031 as the Analytic, and its description of AN1031's detection logic is a faithful paraphrase of the evidence text (WMIC, PowerShell, COM API, multi-event chain of process creation / command execution / network connection). No invented facts, counts, aliases, or ids appear. The pipeline's own deterministic_scores.coverage (0.33) undercounts because it only checks the 'claims' entity_ids field (which lists only T1047), but the actual analyst-facing narrative — which this experiment specifies as the answer under test when present and non-thin — surfaces all 3 gold-required ids, so independent grading yields full completeness and correctness."
+}

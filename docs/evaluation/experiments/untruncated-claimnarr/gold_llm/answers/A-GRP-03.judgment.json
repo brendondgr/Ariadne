@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "All 5 must_include_ids (T1003 OS Credential Dumping, T1005 Data from Local System, T1014 Rootkit, T1025 Data from Removable Media, T1030 Data Transfer Size Limits) appear in answer.claims[0].entity_ids and citations. Beyond the minimum, the answer's full 37-id claim set is an exact match, element-for-element, to the gold.ex_gold.expected list of 37 T-numbers (verified by sorting both sets), so the extended neighbors pool is also 100% covered. Every id the answer names is traceable to logic_flow.results[0].records (37 records, matching group_techniques query MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN ['G0007']), with no ids, names, or counts absent from evidence. The narrative's stated counts (37 techniques, 37 records) match answer.headline, deterministic_scores.provenance.citations=37, and evidence_volume.records=37. No fabricated facts, aliases, or unsupported properties were found."
+}

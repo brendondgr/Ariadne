@@ -1,0 +1,12 @@
+{
+  "case_id": "A-AST-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires expect_boundary=true: T1490 is ICS-flavored terminology but the retrieved attack-source schema has no 'targets' relationship or 'assets' label to answer the asset question, so the correct behavior is an honest refusal rather than invented asset data. The answer does exactly this: it correctly reports the one grounded fact from evidence (T1490 'Inhibit System Recovery' sits under Tactic TA0040 'Impact', matching logic_flow.results[0].records[0] and related[0]), then explicitly abstains on the asset question with a schema-based rationale ('attack source schema does not define a targets relationship or assets node label... Enterprise-focused... ICS-specific assets are not available') instead of fabricating any asset names or ICS-specific claims. No invented facts, counts, aliases, or IDs appear beyond what evidence supports; the abstention itself is proof of correct boundary behavior per deterministic_scores.provenance.abstention_proof_ok=true."
+}

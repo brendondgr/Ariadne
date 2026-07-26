@@ -1,0 +1,12 @@
+{
+  "case_id": "C-CSQ-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.05,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.25,
+  "gold_expected": 4,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question asks 'What consequences does CAPEC-98 have?' and gold requires must_include_ids=[CAPEC-98] plus must_include_related=[capec:attack-pattern:98:consequence:1,2,3]. The retrieval (logic_flow.results[0].records[0].related) actually returned all 3 consequence nodes via HAS_CONSEQUENCE, so the evidence needed to answer the question was present. However, both the narrative and the claims completely ignore the consequences: the narrative only states 'CAPEC-98, which is named Phishing... Abstraction value of Standard and a Status of Draft' -- it never mentions a single consequence, despite that being the entire subject of the question. The claims list is identical: claim 1 just reports the record count, claim 2 reports Abstraction/Status, neither cites or names any of the 3 consequence ids. The pipeline's own deterministic_scores.coverage confirms this failure (found=1/gold=4, coverage=0.25, missing all three consequence ids). Everything stated (Phishing name, Standard abstraction, Draft status) is faithfully grounded in the evidence properties block, so there is no fabrication -- but the answer is non-responsive to the actual question, which is a correctness failure, not merely an incompleteness one. gold_present=1 (only CAPEC-98 itself is surfaced); gold_present excludes all 3 required consequence ids."
+}

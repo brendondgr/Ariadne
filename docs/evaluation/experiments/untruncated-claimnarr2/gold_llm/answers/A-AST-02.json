@@ -1,0 +1,130 @@
+{
+  "id": "A-AST-02",
+  "kind": "attack",
+  "tier": "adversarial",
+  "category": "A-AST",
+  "question": "What assets does T1490 (Inhibit System Recovery) target? (ICS-only concept — must refuse honestly, not invent)",
+  "gold": {
+    "assertions": {
+      "expect_boundary": true
+    }
+  },
+  "answer": {
+    "headline": "No records were returned by the routed specialists; 1 question(s) the sources don't establish.",
+    "narrative": "The routed sources returned no matching records for this question. If you're after a specific entity, name it or give its id (e.g. T1566, M1017, or CAPEC-98).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [],
+    "abstentions": [
+      {
+        "source": "attack",
+        "statement": "The attack source doesn't establish this — it doesn't model the entities this question asks about, so no query was executed for: What assets does technique T1490 target?",
+        "query": ""
+      }
+    ],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-AST-02",
+      "source": "attack",
+      "text": "What assets does technique T1490 target?",
+      "entities": [
+        "Technique",
+        "Asset"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "T1490"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "A-AST-02",
+        "sub_question": "What assets does technique T1490 target?",
+        "query": "",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "The attack source doesn't model Asset — no query can express this question against its schema.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [
+              "entities not in card: ['Asset']"
+            ],
+            "detail": {
+              "labels": [
+                "Technique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1490"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "boundary",
+            "ok": true,
+            "reasons": [
+              "entities not modeled by the attack source: Asset"
+            ],
+            "detail": {
+              "unknown_entities": [
+                "Asset"
+              ]
+            }
+          }
+        ],
+        "records": []
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 0,
+      "compliant": 0,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "gold_llm",
+  "run_meta": {
+    "planner": "gold-replay",
+    "synthesis": "llm",
+    "wall_s": 0.003
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 0,
+    "related": 0
+  }
+}

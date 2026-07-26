@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-02",
+  "verdict": "CORRECT",
+  "correctness": 0.9,
+  "faithfulness": 0.88,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 13,
+  "gold_present": 13,
+  "hallucinations": [],
+  "rationale": "All 13 gold-required entities are surfaced somewhere in the narrative: CAPEC-13, CAPEC-640 (named and described correctly, both Detailed/Stable, matching evidence properties); the 5 correlated techniques T1505.005, T1574.006, T1574.007, T1574.013, T1620 (all explicitly listed in the 'five ATT&CK techniques are corroborated' sentence, matching gold must_correlate exactly and deterministic_scores correlation f1=1.0); and all 6 required mitigations M1047, M1022, M1038, M1024, M1028, M1040, each correctly attributed per-technique against the evidence (T1574.007->M1047/M1022/M1038, T1505.005->M1047/M1024, T1574.006->M1038/M1028, T1574.013->M1040, T1620->none, matching the logic_flow q2 'related' arrays exactly). Groundedness is perfect: every id/name/property cited traces directly to the retrieved records (Abstraction=Detailed, Status=Stable, taxonomy entry ids, mitigation names all verified against logic_flow). Deduction: the narrative's opening sentence ('mapping to the ATT&CK techniques T1505.005, T1562.003, T1574.006, T1574.007, and T1574.013') is an internally inconsistent framing inherited from the q1 sub-question summary field -- it drops T1620 (a genuine CAPEC-640 mapping, confirmed later in the same sentence's own follow-up and in the correlation section) while including T1562.003, a real CAPEC-13 taxonomy mapping that never correlates to an ATT&CK record in this dataset (absent from the 5-record q2 result) and is excluded from gold's must_correlate/must_include_related. T1562.003 is not a fabrication (it exists in evidence as a CAPEC-13 related TaxonomyEntry), but presenting a 5-item list as 'the' mapping set while silently swapping T1620 for T1562.003 is a faithfulness/precision defect in that one sentence, fully corrected by the subsequent two sentences which state the correct 5-technique correlated set and all mitigations. Because the complete and accurate information is present and no invented facts appear anywhere (all names, counts, and ids check out against logic_flow), this is CORRECT with a modest deduction rather than PARTIAL/INCORRECT."
+}

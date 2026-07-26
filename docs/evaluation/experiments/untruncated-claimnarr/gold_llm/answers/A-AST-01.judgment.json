@@ -1,0 +1,12 @@
+{
+  "case_id": "A-AST-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_boundary: true — this is an ICS-only concept (Asset targeting) that the ATT&CK source cannot answer, so the correct behavior is an honest refusal, not invention. The logic_flow confirms the resolve/boundary traces correctly detected 'entities not modeled by the attack source: Asset' and executed no query (query: \"\", records: []). The answer's narrative and single abstention statement ('The attack source doesn't establish this — it doesn't model the entities this question asks about, so no query was executed for: What assets does technique T1047 target?') accurately reflect this boundary condition and fabricate nothing — no asset names, counts, or relationships are invented. The example ids offered to the analyst (T1566, M1017, CAPEC-98) are generic prompts for alternative lookups, not claims about T1047, so they are not hallucinations. This matches the gold requirement exactly."
+}

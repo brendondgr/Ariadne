@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-564 plus its four ATT&CK mappings T1037, T1543.001, T1543.004, T1547 (assertions.must_include_ids + must_include_related); the narrative states all five explicitly and correctly (\"CAPEC-564 (Run Software at Logon) maps to four ATT&CK techniques: T1037, T1543.001, T1543.004, and T1547\"), matching the q1 record's join_values/related list verbatim. Every supporting detail is traceable to logic_flow: T1037's 5 sub-techniques (T1037.001/.004/.003/.005/.002, from q3) and T1547's 14 sub-techniques (T1547.008/.007/.013/.002/.006/.001/.015/.004/.003/.005/.009/.010/.012/.014, from q4) are quoted exactly and correctly counted; TA0003 (Persistence) and TA0004 (Privilege Escalation) tactic membership for all four techniques is confirmed by q5/q6 records; the CAPEC-564 properties (Abstraction: Detailed, Status: Draft) match q1's properties block; T1037/T1547 attributes (revoked False, not deprecated, not a subtechnique, versions 2.4 and 1.3) match q2's properties exactly; the cross-source corroboration claim for all four T-numbers is backed by the answer.claims correlation entries. No invented ids, counts, names, or properties were found."
+}

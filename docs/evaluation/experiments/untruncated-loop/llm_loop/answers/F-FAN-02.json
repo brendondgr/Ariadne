@@ -1,0 +1,681 @@
+{
+  "id": "F-FAN-02",
+  "kind": "federated",
+  "tier": "hard",
+  "category": "F-FAN",
+  "question": "Which ATT&CK techniques do CAPEC-13, CAPEC-640 map to (they overlap), and what mitigations apply to the deduplicated union?",
+  "gold": {
+    "assertions": {
+      "must_correlate": [
+        "T1505.005",
+        "T1574.006",
+        "T1574.007",
+        "T1574.013",
+        "T1620"
+      ],
+      "capec": {
+        "min_records": 2,
+        "must_include_ids": [
+          "CAPEC-13",
+          "CAPEC-640"
+        ],
+        "must_include_related": [
+          "T1505.005",
+          "T1574.006",
+          "T1574.007",
+          "T1574.013",
+          "T1620"
+        ]
+      },
+      "attack": {
+        "min_records": 5,
+        "max_records": 5,
+        "must_include_ids": [
+          "T1505.005",
+          "T1574.006",
+          "T1574.007",
+          "T1574.013",
+          "T1620"
+        ],
+        "must_include_related": [
+          "M1022",
+          "M1024",
+          "M1028",
+          "M1038",
+          "M1040",
+          "M1047"
+        ]
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 2
+  },
+  "answer": {
+    "headline": "Gathered 7 record(s) from 2 source(s); 5 cross-source correlation(s) on shared identifiers.",
+    "narrative": "CAPEC-13 (Subverting Environment Variable Values) and CAPEC-640 (Inclusion of Code in Existing Process) are both Detailed, Stable attack patterns that map to the ATT&CK techniques T1505.005, T1562.003, T1574.006, T1574.007, and T1574.013. These five ATT&CK records are corroborated across the attack and capec sources, with T1574.006 shared by three records and T1505.005, T1574.007, T1574.013, and T1620 each shared by two records. The deduplicated union of these techniques is addressed by mitigations including Audit (M1047), Restrict File and Directory Permissions (M1022), Execution Prevention (M1038), Restrict Registry Permissions (M1024), Operating System Configuration (M1028), and Behavior Prevention on Endpoint (M1040).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 2 CAPEC record(s) for CAPEC-13, CAPEC-640; ATT&CK mappings: T1505.005, T1562.003, T1574.006, T1574.007, T1574.013.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-13",
+          "CAPEC-640"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-640"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-13 (Subverting Environment Variable Values) has Abstraction: Detailed; Status: Stable.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-13"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-640 (Inclusion of Code in Existing Process) has Abstraction: Detailed; Status: Stable.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-640"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-640"
+          }
+        ]
+      },
+      {
+        "text": "Found 5 ATT&CK record(s) including T1574.007, T1505.005, T1620 and more.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1574.007",
+          "T1505.005",
+          "T1620",
+          "T1574.006",
+          "T1574.013"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1574.007"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1505.005"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1620"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1574.006"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1574.013"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1505.005 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1505.005"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-640"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1505.005"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1574.006 is corroborated across attack and capec (3 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1574.006"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-640"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1574.006"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1574.007 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1574.007"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1574.007"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1574.013 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1574.013"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-640"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1574.013"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1620 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1620"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-640"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1620"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which ATT&CK techniques do CAPEC-13, CAPEC-640 map to?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What mitigations does ATT&CK list for those mapped techniques?",
+        "seed_from": "q1"
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Find AttackPattern nodes with names 'CAPEC-13' and 'CAPEC-640', and retrieve their mapped TaxonomyEntry IDs via MAPS_TO relationships.",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 2 CAPEC record(s) for CAPEC-13, CAPEC-640; ATT&CK mappings: T1505.005, T1562.003, T1574.006, T1574.007, T1574.013.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [
+                "MAPS_TO"
+              ],
+              "seed_ids": [
+                "CAPEC-13",
+                "CAPEC-640"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_maps_to",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.089
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 7,
+              "timing_ms": 7.0
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 7,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 2,
+              "timing_ms": 0.092
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-13",
+            "name": "Subverting Environment Variable Values",
+            "label": "AttackPattern",
+            "description": "The adversary directly or indirectly modifies environment variables used by or controlling the target software. The adversary's goal is to cause the target software to deviate from its expected operation in a manner that benefits the adversary.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Subverting Environment Variable Values",
+              "description": "The adversary directly or indirectly modifies environment variables used by or controlling the target software. The adversary's goal is to cause the target software to deviate from its expected operation in a manner that benefits the adversary.",
+              "id": "capec:attack-pattern:13",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1574.006",
+              "T1574.007",
+              "T1562.003"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1574.006",
+                "entry_id": "1574.006",
+                "name": "Hijack Execution Flow:Dynamic Linker Hijacking",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1574.007",
+                "entry_id": "1574.007",
+                "name": "Hijack Execution Flow:Path Interception by PATH Environment Variable",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1562.003",
+                "entry_id": "1562.003",
+                "name": "Impair Defenses:Impair Command History Logging",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-640",
+            "name": "Inclusion of Code in Existing Process",
+            "label": "AttackPattern",
+            "description": "The adversary takes advantage of a bug in an application failing to verify the integrity of the running process to execute arbitrary code in the address space of a separate live process. The adversary could use running code in the context of another process to try to access process's memory, system/network resources, etc. The goal of this attack is to evade detection defenses and escalate privileges by masking the malicious code under an existing legitimate process. Examples of approaches include but not limited to: dynamic-link library (DLL) injection, portable executable injection, thread execution hijacking, ptrace system calls, VDSO hijacking, function hooking, reflective code loading, and more.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Inclusion of Code in Existing Process",
+              "description": "The adversary takes advantage of a bug in an application failing to verify the integrity of the running process to execute arbitrary code in the address space of a separate live process. The adversary could use running code in the context of another process to try to access process's memory, system/network resources, etc. The goal of this attack is to evade detection defenses and escalate privileges by masking the malicious code under an existing legitimate process. Examples of approaches include but not limited to: dynamic-link library (DLL) injection, portable executable injection, thread execution hijacking, ptrace system calls, VDSO hijacking, function hooking, reflective code loading, and more.",
+              "id": "capec:attack-pattern:640",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1505.005",
+              "T1574.006",
+              "T1574.013",
+              "T1620"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1505.005",
+                "entry_id": "1505.005",
+                "name": "Server Software Component: Terminal Services DLL",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1574.006",
+                "entry_id": "1574.006",
+                "name": "Hijack Execution Flow:Dynamic Linker Hijacking",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1574.013",
+                "entry_id": "1574.013",
+                "name": "Hijack Execution Flow: KernelCallbackTable",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1620",
+                "entry_id": "1620",
+                "name": "Reflective Code Loading",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "Find Technique nodes with IDs matching the mapped taxonomy entries from q1, and retrieve their associated Mitigation nodes.",
+        "query": "MATCH (t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 5 ATT&CK record(s) including T1574.007, T1505.005, T1620 and more.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "Mitigation"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1505.005",
+                "T1562.003",
+                "T1574.006",
+                "T1574.007",
+                "T1574.013",
+                "T1620"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "technique_mitigations",
+              "query": "MATCH (t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.082
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 9,
+              "timing_ms": 3.0
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 9,
+              "timing_ms": 0.004
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 5,
+              "timing_ms": 1.484
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1574.007",
+            "name": "Path Interception by PATH Environment Variable",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1574.007"
+            ],
+            "related": [
+              {
+                "id": "M1047",
+                "name": "Audit",
+                "description": "Auditing is the process of recording activity and systematically reviewing and analyzing the activity and system configurations. The primary purpose of auditing is to detect anomalies and identify potential threats or weaknesses in the environment. Proper auditing configurations can also help to meet compliance requirements. The process of auditing encompasses regular analysis of user behaviors and system logs in support of proactive security measures.\n\nAuditing is applicable to all systems used within an organization, from the front door of a building to accessing a file on a fileserver. It is considered more critical for regulated industries such as, healthcare, finance and government where compliance requirements demand stringent tracking of user and system activates.This mitigation can be implemented through the following measures: \n\nSystem Audit:\n\n- Use Case: Regularly assess system configurations to ensure compliance with organizational security policies.\n- Implementation: Use tools to scan for deviations from established benchmarks.\n\nPermission Audits:\n\n- Use Case: Review file and folder permissions to minimize the risk of unauthorized access or privilege escalation.\n- Implementation: Run access reviews to identify users or groups with excessive permissions.\n\nSoftware Audits:\n\n- Use Case: Identify outdated, unsupported, or insecure software that could serve as an attack vector.\n- Implementation: Use inventory and vulnerability scanning tools to detect outdated versions and recommend secure alternatives.\n\nConfiguration Audits:\n\n- Use Case: Evaluate system and network configurations to ensure secure settings (e.g., disabled SMBv1, enabled MFA).\n- Implementation: Implement automated configuration scanning tools like SCAP (Security Content Automation Protocol) to identify non-compliant systems.\n\nNetwork Audits:\n\n- Use Case: Examine network traffic, firewall rules, and endpoint communications to identify unauthorized or insecure connections.\n- Implementation: Utilize tools such as Wireshark, or Zeek to monitor and log suspicious network behavior."
+              },
+              {
+                "id": "M1022",
+                "name": "Restrict File and Directory Permissions",
+                "description": "Restricting file and directory permissions involves setting access controls at the file system level to limit which users, groups, or processes can read, write, or execute files. By configuring permissions appropriately, organizations can reduce the attack surface for adversaries seeking to access sensitive data, plant malicious code, or tamper with system files.\n\nEnforce Least Privilege Permissions:\n\n- Remove unnecessary write permissions on sensitive files and directories.\n- Use file ownership and groups to control access for specific roles.\n\nExample (Windows): Right-click the shared folder → Properties → Security tab → Adjust permissions for NTFS ACLs.\n\nHarden File Shares:\n\n- Disable anonymous access to shared folders.\n- Enforce NTFS permissions for shared folders on Windows.\n\nExample: Set permissions to restrict write access to critical files, such as system executables (e.g., `/bin` or `/sbin` on Linux). Use tools like `chown` and `chmod` to assign file ownership and limit access.\n\nOn Linux, apply:\n`chmod 750 /etc/sensitive.conf`\n`chown root:admin /etc/sensitive.conf`\n\nFile Integrity Monitoring (FIM):\n\n- Use tools like Tripwire, Wazuh, or OSSEC to monitor changes to critical file permissions.\n\nAudit File System Access:\n\n- Enable auditing to track permission changes or unauthorized access attempts.\n- Use auditd (Linux) or Event Viewer (Windows) to log activities.\n\nRestrict Startup Directories:\n\n- Configure permissions to prevent unauthorized writes to directories like `C:\\ProgramData\\Microsoft\\Windows\\Start Menu`.\n\nExample: Restrict write access to critical directories like `/etc/`, `/usr/local/`, and Windows directories such as `C:\\Windows\\System32`.\n\n- On Windows, use icacls to modify permissions: `icacls \"C:\\Windows\\System32\" /inheritance:r /grant:r SYSTEM:(OI)(CI)F`\n- On Linux, monitor permissions using tools like `lsattr` or `auditd`."
+              },
+              {
+                "id": "M1038",
+                "name": "Execution Prevention",
+                "description": "Prevent the execution of unauthorized or malicious code on systems by implementing application control, script blocking, and other execution prevention mechanisms. This ensures that only trusted and authorized code is executed, reducing the risk of malware and unauthorized actions. This mitigation can be implemented through the following measures:\n\nApplication Control:\n\n- Use Case: Use tools like AppLocker or Windows Defender Application Control (WDAC) to create whitelists of authorized applications and block unauthorized ones. On Linux, use tools like SELinux or AppArmor to define mandatory access control policies for application execution.\n- Implementation: Allow only digitally signed or pre-approved applications to execute on servers and endpoints. (e.g., `New-AppLockerPolicy -PolicyType Enforced -FilePath \"C:\\Policies\\AppLocker.xml\"`) \n\n\nScript Blocking:\n\n- Use Case: Use script control mechanisms to block unauthorized execution of scripts, such as PowerShell or JavaScript. Web Browsers: Use browser extensions or settings to block JavaScript execution from untrusted sources.\n- Implementation: Configure PowerShell to enforce Constrained Language Mode for non-administrator users. (e.g., `Set-ExecutionPolicy AllSigned`) \n\nExecutable Blocking:\n\n- Use Case: Prevent execution of binaries from suspicious locations, such as `%TEMP%` or `%APPDATA%` directories.\n- Implementation: Block execution of `.exe`, `.bat`, or `.ps1` files from user-writable directories.\n\nDynamic Analysis Prevention:\n- Use Case: Use behavior-based execution prevention tools to identify and block malicious activity in real time.\n- Implemenation: Employ EDR solutions that analyze runtime behavior and block suspicious code execution."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1505.005",
+            "name": "Terminal Services DLL",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1505.005"
+            ],
+            "related": [
+              {
+                "id": "M1047",
+                "name": "Audit",
+                "description": "Auditing is the process of recording activity and systematically reviewing and analyzing the activity and system configurations. The primary purpose of auditing is to detect anomalies and identify potential threats or weaknesses in the environment. Proper auditing configurations can also help to meet compliance requirements. The process of auditing encompasses regular analysis of user behaviors and system logs in support of proactive security measures.\n\nAuditing is applicable to all systems used within an organization, from the front door of a building to accessing a file on a fileserver. It is considered more critical for regulated industries such as, healthcare, finance and government where compliance requirements demand stringent tracking of user and system activates.This mitigation can be implemented through the following measures: \n\nSystem Audit:\n\n- Use Case: Regularly assess system configurations to ensure compliance with organizational security policies.\n- Implementation: Use tools to scan for deviations from established benchmarks.\n\nPermission Audits:\n\n- Use Case: Review file and folder permissions to minimize the risk of unauthorized access or privilege escalation.\n- Implementation: Run access reviews to identify users or groups with excessive permissions.\n\nSoftware Audits:\n\n- Use Case: Identify outdated, unsupported, or insecure software that could serve as an attack vector.\n- Implementation: Use inventory and vulnerability scanning tools to detect outdated versions and recommend secure alternatives.\n\nConfiguration Audits:\n\n- Use Case: Evaluate system and network configurations to ensure secure settings (e.g., disabled SMBv1, enabled MFA).\n- Implementation: Implement automated configuration scanning tools like SCAP (Security Content Automation Protocol) to identify non-compliant systems.\n\nNetwork Audits:\n\n- Use Case: Examine network traffic, firewall rules, and endpoint communications to identify unauthorized or insecure connections.\n- Implementation: Utilize tools such as Wireshark, or Zeek to monitor and log suspicious network behavior."
+              },
+              {
+                "id": "M1024",
+                "name": "Restrict Registry Permissions",
+                "description": "Restricting registry permissions involves configuring access control settings for sensitive registry keys and hives to ensure that only authorized users or processes can make modifications. By limiting access, organizations can prevent unauthorized changes that adversaries might use for persistence, privilege escalation, or defense evasion. This mitigation can be implemented through the following measures:\n\nReview and Adjust Permissions on Critical Keys\n\n- Regularly review permissions on keys such as `Run`, `RunOnce`, and `Services` to ensure only authorized users have write access.\n- Use tools like `icacls` or `PowerShell` to automate permission adjustments.\n\nEnable Registry Auditing\n\n- Enable auditing on sensitive keys to log access attempts.\n- Use Event Viewer or SIEM solutions to analyze logs and detect suspicious activity.\n- Example Audit Policy: `auditpol /set /subcategory:\"Registry\" /success:enable /failure:enable`\n\nProtect Credential-Related Hives\n\n- Limit access to hives like `SAM`,`SECURITY`, and `SYSTEM` to prevent credential dumping or other unauthorized access.\n- Use LSA Protection to add an additional security layer for credential storage.\n\nRestrict Registry Editor Usage\n\n- Use Group Policy to restrict access to regedit.exe for non-administrative users.\n- Block execution of registry editing tools on endpoints where they are unnecessary.\n\nDeploy Baseline Configuration Tools\n\n- Use tools like Microsoft Security Compliance Toolkit or CIS Benchmarks to apply and maintain secure registry configurations.\n\n*Tools for Implementation* \n\nRegistry Permission Tools:\n\n- Registry Editor (regedit): Built-in tool to manage registry permissions.\n- PowerShell: Automate permissions and manage keys. `Set-ItemProperty -Path \"HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\" -Name \"KeyName\" -Value \"Value\"`\n- icacls: Command-line tool to modify ACLs.\n\nMonitoring Tools:\n\n- Sysmon: Monitor and log registry events.\n- Event Viewer: View registry access logs.\n\nPolicy Management Tools:\n\n- Group Policy Management Console (GPMC): Enforce registry permissions via GPOs.\n- Microsoft Endpoint Manager: Deploy configuration baselines for registry permissions."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1620",
+            "name": "Reflective Code Loading",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1620"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1574.006",
+            "name": "Dynamic Linker Hijacking",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1574.006"
+            ],
+            "related": [
+              {
+                "id": "M1038",
+                "name": "Execution Prevention",
+                "description": "Prevent the execution of unauthorized or malicious code on systems by implementing application control, script blocking, and other execution prevention mechanisms. This ensures that only trusted and authorized code is executed, reducing the risk of malware and unauthorized actions. This mitigation can be implemented through the following measures:\n\nApplication Control:\n\n- Use Case: Use tools like AppLocker or Windows Defender Application Control (WDAC) to create whitelists of authorized applications and block unauthorized ones. On Linux, use tools like SELinux or AppArmor to define mandatory access control policies for application execution.\n- Implementation: Allow only digitally signed or pre-approved applications to execute on servers and endpoints. (e.g., `New-AppLockerPolicy -PolicyType Enforced -FilePath \"C:\\Policies\\AppLocker.xml\"`) \n\n\nScript Blocking:\n\n- Use Case: Use script control mechanisms to block unauthorized execution of scripts, such as PowerShell or JavaScript. Web Browsers: Use browser extensions or settings to block JavaScript execution from untrusted sources.\n- Implementation: Configure PowerShell to enforce Constrained Language Mode for non-administrator users. (e.g., `Set-ExecutionPolicy AllSigned`) \n\nExecutable Blocking:\n\n- Use Case: Prevent execution of binaries from suspicious locations, such as `%TEMP%` or `%APPDATA%` directories.\n- Implementation: Block execution of `.exe`, `.bat`, or `.ps1` files from user-writable directories.\n\nDynamic Analysis Prevention:\n- Use Case: Use behavior-based execution prevention tools to identify and block malicious activity in real time.\n- Implemenation: Employ EDR solutions that analyze runtime behavior and block suspicious code execution."
+              },
+              {
+                "id": "M1028",
+                "name": "Operating System Configuration",
+                "description": "Operating System Configuration involves adjusting system settings and hardening the default configurations of an operating system (OS) to mitigate adversary exploitation and prevent abuse of system functionality. Proper OS configurations address security vulnerabilities, limit attack surfaces, and ensure robust defense against a wide range of techniques. This mitigation can be implemented through the following measures: \n\nDisable Unused Features:\n\n- Turn off SMBv1, LLMNR, and NetBIOS where not needed.\n- Disable remote registry and unnecessary services.\n\nEnforce OS-level Protections:\n\n- Enable Data Execution Prevention (DEP), Address Space Layout Randomization (ASLR), and Control Flow Guard (CFG) on Windows.\n- Use AppArmor or SELinux on Linux for mandatory access controls.\n\nSecure Access Settings:\n\n- Enable User Account Control (UAC) for Windows.\n- Restrict root/sudo access on Linux/macOS and enforce strong permissions using sudoers files.\n\nFile System Hardening:\n\n- Implement least-privilege access for critical files and system directories.\n- Audit permissions regularly using tools like icacls (Windows) or getfacl/chmod (Linux/macOS).\n\nSecure Remote Access:\n\n- Restrict RDP, SSH, and VNC to authorized IPs using firewall rules.\n- Enable NLA for RDP and enforce strong password/lockout policies.\n\nHarden Boot Configurations:\n\n- Enable Secure Boot and enforce UEFI/BIOS password protection.\n- Use BitLocker or LUKS to encrypt boot drives.\n\nRegular Audits:\n\n- Periodically audit OS configurations using tools like CIS Benchmarks or SCAP tools.\n\n*Tools for Implementation*\n\nWindows:\n\n- Microsoft Group Policy Objects (GPO): Centrally enforce OS security settings.\n- Windows Defender Exploit Guard: Built-in OS protection against exploits.\n- CIS-CAT Pro: Audit Windows security configurations based on CIS Benchmarks.\n\nLinux/macOS:\n\n- AppArmor/SELinux: Enforce mandatory access controls.\n- Lynis: Perform comprehensive security audits.\n- SCAP Security Guide: Automate configuration hardening using Security Content Automation Protocol.\n\nCross-Platform:\n\n- Ansible or Chef/Puppet: Automate configuration hardening at scale.\n- OpenSCAP: Perform compliance and configuration checks."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1574.013",
+            "name": "KernelCallbackTable",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1574.013"
+            ],
+            "related": [
+              {
+                "id": "M1040",
+                "name": "Behavior Prevention on Endpoint",
+                "description": "Behavior Prevention on Endpoint refers to the use of technologies and strategies to detect and block potentially malicious activities by analyzing the behavior of processes, files, API calls, and other endpoint events. Rather than relying solely on known signatures, this approach leverages heuristics, machine learning, and real-time monitoring to identify anomalous patterns indicative of an attack. This mitigation can be implemented through the following measures:\n\nSuspicious Process Behavior:\n\n- Implementation: Use Endpoint Detection and Response (EDR) tools to monitor and block processes exhibiting unusual behavior, such as privilege escalation attempts.\n- Use Case: An attacker uses a known vulnerability to spawn a privileged process from a user-level application. The endpoint tool detects the abnormal parent-child process relationship and blocks the action.\n\nUnauthorized File Access:\n\n- Implementation: Leverage Data Loss Prevention (DLP) or endpoint tools to block processes attempting to access sensitive files without proper authorization.\n- Use Case: A process tries to read or modify a sensitive file located in a restricted directory, such as /etc/shadow on Linux or the SAM registry hive on Windows. The endpoint tool identifies this anomalous behavior and prevents it.\n\nAbnormal API Calls:\n\n- Implementation: Implement runtime analysis tools to monitor API calls and block those associated with malicious activities.\n- Use Case: A process dynamically injects itself into another process to hijack its execution. The endpoint detects the abnormal use of APIs like `OpenProcess` and `WriteProcessMemory` and terminates the offending process.\n\nExploit Prevention:\n\n- Implementation: Use behavioral exploit prevention tools to detect and block exploits attempting to gain unauthorized access.\n- Use Case: A buffer overflow exploit is launched against a vulnerable application. The endpoint detects the anomalous memory write operation and halts the process."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 5,
+      "n_got": 5
+    },
+    "mapping_recall": {
+      "gold": 5,
+      "found": 5,
+      "recall": 1.0,
+      "missing": []
+    },
+    "coverage": null,
+    "provenance": {
+      "citations": 20,
+      "compliant": 20,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm_loop",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "Find AttackPattern nodes with names 'CAPEC-13' and 'CAPEC-640', and retrieve their mapped TaxonomyEntry IDs via MAPS_TO relationships.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "Find Technique nodes with IDs matching the mapped taxonomy entries from q1, and retrieve their associated Mitigation nodes.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 136.542
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 7,
+    "related": 15
+  }
+}

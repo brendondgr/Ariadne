@@ -1,0 +1,914 @@
+{
+  "id": "F-CTM-01",
+  "kind": "federated",
+  "tier": "hard",
+  "category": "F-CTM",
+  "question": "Which ATT&CK techniques does CAPEC-150 (Collect Data from Common Resource Locations) map to, and what mitigations apply to those techniques?",
+  "gold": {
+    "assertions": {
+      "must_correlate": [
+        "T1003",
+        "T1119",
+        "T1213",
+        "T1530",
+        "T1555",
+        "T1602"
+      ],
+      "capec": {
+        "min_records": 1,
+        "must_include_ids": [
+          "CAPEC-150"
+        ],
+        "must_include_related": [
+          "T1003",
+          "T1119",
+          "T1213",
+          "T1530",
+          "T1555",
+          "T1602"
+        ]
+      },
+      "attack": {
+        "min_records": 6,
+        "max_records": 6,
+        "must_include_ids": [
+          "T1003",
+          "T1119",
+          "T1213",
+          "T1530",
+          "T1555",
+          "T1602"
+        ],
+        "must_include_related": [
+          "M1015",
+          "M1017",
+          "M1018",
+          "M1022",
+          "M1025",
+          "M1026",
+          "M1027",
+          "M1028",
+          "M1029",
+          "M1030",
+          "M1031",
+          "M1032",
+          "M1037",
+          "M1040",
+          "M1041",
+          "M1043",
+          "M1047",
+          "M1051",
+          "M1054",
+          "M1060"
+        ]
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 2
+  },
+  "answer": {
+    "headline": "Gathered 7 record(s) from 2 source(s); 6 cross-source correlation(s) on shared identifiers.",
+    "narrative": "CAPEC-150 (Collect Data from Common Resource Locations), a Standard abstraction in Draft status, maps to six ATT&CK techniques: T1003, T1119, T1213, T1530, T1555, and T1602, all of which are corroborated across the attack and capec sources. T1003 (OS Credential Dumping) has nine mitigations (M1041, M1015, M1026, M1040, M1027, M1025, M1043, M1028, M1017), while T1602 (Data from Configuration Repository) has six (M1041, M1051, M1054, M1030, M1037, M1031). T1119 (Automated Collection) links to two mitigations (M1029, M1041), T1530 (Data from Cloud Storage) connects to six (M1041, M1047, M1032, M1022, M1018, M1037), T1555 (Credentials from Password Stores) has three (M1051, M1026, M1027), and T1213 (Data from Information Repositories) is paired with seven (M1041, M1047, M1054, M1032, M1018, M1060, M1017).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s) for CAPEC-150; ATT&CK mappings: T1003, T1119, T1213, T1530, T1555.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-150"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-150"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-150 (Collect Data from Common Resource Locations) has Abstraction: Standard; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-150"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-150"
+          }
+        ]
+      },
+      {
+        "text": "Found 6 ATT&CK record(s) including T1003, T1602, T1119 and more.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1003",
+          "T1602",
+          "T1119",
+          "T1530",
+          "T1555",
+          "T1213"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1003"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1602"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1119"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1530"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1555"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1213"
+          }
+        ]
+      },
+      {
+        "text": "T1003 (OS Credential Dumping) has 9 related item(s): M1041, M1015, M1026, M1040, M1027, M1025, M1043, M1028, M1017.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1041",
+          "M1015",
+          "M1026",
+          "M1040",
+          "M1027",
+          "M1025",
+          "M1043",
+          "M1028",
+          "M1017"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1003"
+          }
+        ]
+      },
+      {
+        "text": "T1602 (Data from Configuration Repository) has 6 related item(s): M1041, M1051, M1054, M1030, M1037, M1031.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1041",
+          "M1051",
+          "M1054",
+          "M1030",
+          "M1037",
+          "M1031"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1602"
+          }
+        ]
+      },
+      {
+        "text": "T1119 (Automated Collection) has 2 related item(s): M1029, M1041.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1029",
+          "M1041"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1119"
+          }
+        ]
+      },
+      {
+        "text": "T1530 (Data from Cloud Storage) has 6 related item(s): M1041, M1047, M1032, M1022, M1018, M1037.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1041",
+          "M1047",
+          "M1032",
+          "M1022",
+          "M1018",
+          "M1037"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1530"
+          }
+        ]
+      },
+      {
+        "text": "T1555 (Credentials from Password Stores) has 3 related item(s): M1051, M1026, M1027.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1051",
+          "M1026",
+          "M1027"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1555"
+          }
+        ]
+      },
+      {
+        "text": "T1213 (Data from Information Repositories) has 7 related item(s): M1041, M1047, M1054, M1032, M1018, M1060, M1017.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1041",
+          "M1047",
+          "M1054",
+          "M1032",
+          "M1018",
+          "M1060",
+          "M1017"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1213"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1003 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1003"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-150"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1003"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1119 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1119"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-150"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1119"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1213 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1213"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-150"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1213"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1530 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1530"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-150"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1530"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1555 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1555"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-150"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1555"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1602 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1602"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-150"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1602"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which ATT&CK techniques does CAPEC-150 map to?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What mitigations does ATT&CK list for those mapped techniques?",
+        "seed_from": "q1"
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Find the AttackPattern with name 'Collect Data from Common Resource Locations' (CAPEC-150), and retrieve the entry_id from its TaxonomyEntry nodes where taxonomy='ATTACK'.",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s) for CAPEC-150; ATT&CK mappings: T1003, T1119, T1213, T1530, T1555.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CAPEC-150"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_maps_to",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.091
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 6,
+              "timing_ms": 5.1
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 6,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.066
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-150",
+            "name": "Collect Data from Common Resource Locations",
+            "label": "AttackPattern",
+            "description": "An adversary exploits well-known locations for resources for the purposes of undermining the security of the target. In many, if not most systems, files and resources are organized in a default tree structure. This can be useful for adversaries because they often know where to look for resources or files that are necessary for attacks. Even when the precise location of a targeted resource may not be known, naming conventions may indicate a small area of the target machine's file tree where the resources are typically located. For example, configuration files are normally stored in the /etc director on Unix systems. Adversaries can take advantage of this to commit other types of attacks.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Collect Data from Common Resource Locations",
+              "description": "An adversary exploits well-known locations for resources for the purposes of undermining the security of the target. In many, if not most systems, files and resources are organized in a default tree structure. This can be useful for adversaries because they often know where to look for resources or files that are necessary for attacks. Even when the precise location of a targeted resource may not be known, naming conventions may indicate a small area of the target machine's file tree where the resources are typically located. For example, configuration files are normally stored in the /etc director on Unix systems. Adversaries can take advantage of this to commit other types of attacks.",
+              "id": "capec:attack-pattern:150",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [
+              "T1530",
+              "T1555",
+              "T1602",
+              "T1003",
+              "T1119",
+              "T1213"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1530",
+                "entry_id": "1530",
+                "name": "Data from Cloud Storage Object",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1555",
+                "entry_id": "1555",
+                "name": "Credentials from Password Stores",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1602",
+                "entry_id": "1602",
+                "name": "Data from Configuration Repository",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1003",
+                "entry_id": "1003",
+                "name": "OS Credential Dumping",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1119",
+                "entry_id": "1119",
+                "name": "Automated Collection",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1213",
+                "entry_id": "1213",
+                "name": "Data from Information Repositories",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "For each Technique/SubTechnique with attack_id matching the entry_ids from the previous step, retrieve the Technique/SubTechnique name and any Mitigation nodes connected via MITIGATES relationship.",
+        "query": "MATCH (t:Technique) WHERE t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 6 ATT&CK record(s) including T1003, T1602, T1119 and more.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "SubTechnique",
+                "Mitigation"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1003",
+                "T1119",
+                "T1213",
+                "T1530",
+                "T1555",
+                "T1602"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "technique_mitigations",
+              "query": "MATCH (t:Technique) WHERE t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.119
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 33,
+              "timing_ms": 2.9
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 33,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 6,
+              "timing_ms": 1.769
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1003",
+            "name": "OS Credential Dumping",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1003"
+            ],
+            "related": [
+              {
+                "id": "M1041",
+                "name": "Encrypt Sensitive Information",
+                "description": "Protect sensitive information at rest, in transit, and during processing by using strong encryption algorithms. Encryption ensures the confidentiality and integrity of data, preventing unauthorized access or tampering. This mitigation can be implemented through the following measures:\n\nEncrypt Data at Rest:\n\n- Use Case: Use full-disk encryption or file-level encryption to secure sensitive data stored on devices.\n- Implementation: Implement BitLocker for Windows systems or FileVault for macOS devices to encrypt hard drives.\n\nEncrypt Data in Transit:\n\n- Use Case: Use secure communication protocols (e.g., TLS, HTTPS) to encrypt sensitive data as it travels over networks.\n- Implementation: Enable HTTPS for all web applications and configure mail servers to enforce STARTTLS for email encryption.\n\nEncrypt Backups:\n\n- Use Case: Ensure that backup data is encrypted both during storage and transfer to prevent unauthorized access.\n- Implementation: Encrypt cloud backups using AES-256 before uploading them to Amazon S3 or Google Cloud.\n\nEncrypt Application Secrets:\n\n- Use Case: Store sensitive credentials, API keys, and configuration files in encrypted vaults.\n- Implementation: Use HashiCorp Vault or AWS Secrets Manager to manage and encrypt secrets.\n\nDatabase Encryption:\n\n- Use Case: Enable Transparent Data Encryption (TDE) or column-level encryption in database management systems.\n- Implementation: Use MySQL’s built-in encryption features to encrypt sensitive database fields such as social security numbers."
+              },
+              {
+                "id": "M1015",
+                "name": "Active Directory Configuration",
+                "description": "Implement robust Active Directory (AD) configurations using group policies to secure user accounts, control access, and minimize the attack surface. AD configurations enable centralized control over account settings, logon policies, and permissions, reducing the risk of unauthorized access and lateral movement within the network. This mitigation can be implemented through the following measures:\n\nAccount Configuration:\n\n- Implementation: Use domain accounts instead of local accounts to leverage AD’s centralized management, including group policies, auditing, and access control.\n- Use Case: For IT staff managing shared resources, provision domain accounts that allow IT teams to log in centrally, reducing the risk of unmanaged, rogue local accounts on individual machines.\n\nInteractive Logon Restrictions:\n\n- Implementation: Configure group policies to restrict interactive logons (e.g., direct physical or RDP logons) for service accounts or privileged accounts that do not require such access.\n- Use Case: Prevent service accounts, such as SQL Server accounts, from having interactive logon privileges. This reduces the risk of these accounts being leveraged for lateral movement if compromised.\n\nRemote Desktop Settings:\n\n- Implementation: Limit Remote Desktop Protocol (RDP) access to specific, authorized accounts. Use group policies to enforce this, allowing only necessary users to establish RDP sessions.\n- Use Case: On sensitive servers (e.g., domain controllers or financial databases), restrict RDP access to administrative accounts only, while all other users are denied access.\n\nDedicated Administrative Accounts:\n\n- Implementation: Create domain-wide administrative accounts that are restricted from interactive logons, designed solely for high-level tasks (e.g., software installation, patching).\n- Use Case: Create separate administrative accounts for different purposes, such as one set of accounts for installations and another for managing repository access. This limits exposure and helps reduce attack vectors.\n\nAuthentication Silos:\n\n- Implementation: Configure Authentication Silos in AD, using group policies to create access zones with restrictions based on membership, such as the Protected Users security group. This restricts access to critical accounts and minimizes exposure to potential threats.\n- Use Case: Place high-risk or high-value accounts, such as executive or administrative accounts, in an Authentication Silo with extra controls, limiting their exposure to only necessary systems. This reduces the risk of credential misuse or abuse if these accounts are compromised.\n\n**Tools for Implementation**:\n\n- Active Directory Group Policies: Use Group Policy Management Console (GPMC) to configure, deploy, and enforce policies across AD environments.\n- PowerShell: Automate account configuration, logon restrictions, and policy application using PowerShell scripts.\n- AD Administrative Center: Manage Authentication Silos and configure high-level policies for critical user groups within AD."
+              },
+              {
+                "id": "M1026",
+                "name": "Privileged Account Management",
+                "description": "Privileged Account Management focuses on implementing policies, controls, and tools to securely manage privileged accounts (e.g., SYSTEM, root, or administrative accounts). This includes restricting access, limiting the scope of permissions, monitoring privileged account usage, and ensuring accountability through logging and auditing.This mitigation can be implemented through the following measures:\n\nAccount Permissions and Roles:\n\n- Implement RBAC and least privilege principles to allocate permissions securely.\n- Use tools like Active Directory Group Policies to enforce access restrictions.\n\nCredential Security:\n\n- Deploy password vaulting tools like CyberArk, HashiCorp Vault, or KeePass for secure storage and rotation of credentials.\n- Enforce password policies for complexity, uniqueness, and expiration using tools like Microsoft Group Policy Objects (GPO).\n\nMulti-Factor Authentication (MFA):\n\n- Enforce MFA for all privileged accounts using Duo Security, Okta, or Microsoft Azure AD MFA.\n\nPrivileged Access Management (PAM):\n\n- Use PAM solutions like CyberArk, BeyondTrust, or Thycotic to manage, monitor, and audit privileged access.\n\nAuditing and Monitoring:\n\n- Integrate activity monitoring into your SIEM (e.g., Splunk or QRadar) to detect and alert on anomalous privileged account usage.\n\nJust-In-Time Access:\n\n- Deploy JIT solutions like Azure Privileged Identity Management (PIM) or configure ephemeral roles in AWS and GCP to grant time-limited elevated permissions.\n\n*Tools for Implementation*\n\nPrivileged Access Management (PAM):\n\n- CyberArk, BeyondTrust, Thycotic, HashiCorp Vault.\n\nCredential Management:\n\n- Microsoft LAPS (Local Admin Password Solution), Password Safe, HashiCorp Vault, KeePass.\n\nMulti-Factor Authentication:\n\n- Duo Security, Okta, Microsoft Azure MFA, Google Authenticator.\n\nLinux Privilege Management:\n\n- sudo configuration, SELinux, AppArmor.\n\nJust-In-Time Access:\n\n- Azure Privileged Identity Management (PIM), AWS IAM Roles with session constraints, GCP Identity-Aware Proxy."
+              },
+              {
+                "id": "M1040",
+                "name": "Behavior Prevention on Endpoint",
+                "description": "Behavior Prevention on Endpoint refers to the use of technologies and strategies to detect and block potentially malicious activities by analyzing the behavior of processes, files, API calls, and other endpoint events. Rather than relying solely on known signatures, this approach leverages heuristics, machine learning, and real-time monitoring to identify anomalous patterns indicative of an attack. This mitigation can be implemented through the following measures:\n\nSuspicious Process Behavior:\n\n- Implementation: Use Endpoint Detection and Response (EDR) tools to monitor and block processes exhibiting unusual behavior, such as privilege escalation attempts.\n- Use Case: An attacker uses a known vulnerability to spawn a privileged process from a user-level application. The endpoint tool detects the abnormal parent-child process relationship and blocks the action.\n\nUnauthorized File Access:\n\n- Implementation: Leverage Data Loss Prevention (DLP) or endpoint tools to block processes attempting to access sensitive files without proper authorization.\n- Use Case: A process tries to read or modify a sensitive file located in a restricted directory, such as /etc/shadow on Linux or the SAM registry hive on Windows. The endpoint tool identifies this anomalous behavior and prevents it.\n\nAbnormal API Calls:\n\n- Implementation: Implement runtime analysis tools to monitor API calls and block those associated with malicious activities.\n- Use Case: A process dynamically injects itself into another process to hijack its execution. The endpoint detects the abnormal use of APIs like `OpenProcess` and `WriteProcessMemory` and terminates the offending process.\n\nExploit Prevention:\n\n- Implementation: Use behavioral exploit prevention tools to detect and block exploits attempting to gain unauthorized access.\n- Use Case: A buffer overflow exploit is launched against a vulnerable application. The endpoint detects the anomalous memory write operation and halts the process."
+              },
+              {
+                "id": "M1027",
+                "name": "Password Policies",
+                "description": "Set and enforce secure password policies for accounts to reduce the likelihood of unauthorized access. Strong password policies include enforcing password complexity, requiring regular password changes, and preventing password reuse. This mitigation can be implemented through the following measures:\n\nWindows Systems:\n\n- Use Group Policy Management Console (GPMC) to configure:\n    - Minimum password length (e.g., 12+ characters).\n    - Password complexity requirements.\n    - Password history (e.g., disallow last 24 passwords).\n    - Account lockout duration and thresholds.\n\nLinux Systems:\n\n- Configure Pluggable Authentication Modules (PAM):\n- Use `pam_pwquality` to enforce complexity and length requirements.\n- Implement `pam_tally2` or `pam_faillock` for account lockouts.\n- Use `pwunconv` to disable password reuse.\n\nPassword Managers:\n\n- Enforce usage of enterprise password managers (e.g., Bitwarden, 1Password, LastPass) to generate and store strong passwords.\n\nPassword Blacklisting:\n\n- Use tools like Have I Been Pwned password checks or NIST-based blacklist solutions to prevent users from setting compromised passwords.\n\nRegular Auditing:\n\n- Periodically audit password policies and account configurations to ensure compliance using tools like LAPS (Local Admin Password Solution) and vulnerability scanners.\n\n*Tools for Implementation*\n\nWindows:\n\n- Group Policy Management Console (GPMC): Enforce password policies.\n- Microsoft Local Administrator Password Solution (LAPS): Enforce random, unique admin passwords.\n\nLinux/macOS:\n\n- PAM Modules (pam_pwquality, pam_tally2, pam_faillock): Enforce password rules.\n- Lynis: Audit password policies and system configurations.\n\nCross-Platform:\n\n- Password Managers (Bitwarden, 1Password, KeePass): Manage and enforce strong passwords.\n- Have I Been Pwned API: Prevent the use of breached passwords.\n- NIST SP 800-63B compliant tools: Enforce password guidelines and blacklisting."
+              },
+              {
+                "id": "M1025",
+                "name": "Privileged Process Integrity",
+                "description": "Privileged Process Integrity focuses on defending highly privileged processes (e.g., system services, antivirus, or authentication processes) from tampering, injection, or compromise by adversaries. These processes often interact with critical components, making them prime targets for techniques like code injection, privilege escalation, and process manipulation. This mitigation can be implemented through the following measures:\n\nProtected Process Mechanisms:\n\n- Enable RunAsPPL on Windows systems to protect LSASS and other critical processes.\n- Use registry modifications to enforce protected process settings: `HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\RunAsPPL`\n\nAnti-Injection and Memory Protection:\n\n- Enable Control Flow Guard (CFG), DEP, and ASLR to protect against process memory tampering.\n- Deploy endpoint protection tools that actively block process injection attempts.\n\nCode Signing Validation:\n\n- Implement policies for Windows Defender Application Control (WDAC) or AppLocker to enforce execution of signed binaries.\n- Ensure critical processes are signed with valid certificates.\n\nAccess Controls:\n\n- Use DACLs and MIC to limit which users and processes can interact with privileged processes.\n- Disable unnecessary debugging capabilities for high-privileged processes.\n\nKernel-Level Protections:\n\n- Ensure Kernel Patch Protection (PatchGuard) is enabled on Windows systems.\n- Leverage SELinux or AppArmor on Linux to enforce kernel-level security policies.\n\n*Tools for Implementation*\n\nProtected Process Light (PPL):\n\n- RunAsPPL (Windows)\n- Windows Defender Credential Guard\n\nCode Integrity and Signing:\n\n- Windows Defender Application Control (WDAC)\n- AppLocker\n- SELinux/AppArmor (Linux)\n\nMemory Protection:\n\n- Control Flow Guard (CFG), Data Execution Prevention (DEP), ASLR\n\nProcess Isolation/Sandboxing:\n\n- Firejail (Linux Sandbox)\n- Windows Sandbox\n- QEMU/KVM-based isolation\n\nKernel Protection:\n\n- PatchGuard (Windows Kernel Patch Protection)\n- SELinux (Mandatory Access Control for Linux)\n- AppArmor"
+              },
+              {
+                "id": "M1043",
+                "name": "Credential Access Protection",
+                "description": "Credential Access Protection focuses on implementing measures to prevent adversaries from obtaining credentials, such as passwords, hashes, tokens, or keys, that could be used for unauthorized access. This involves restricting access to credential storage mechanisms, hardening configurations to block credential dumping methods, and using monitoring tools to detect suspicious credential-related activity. This mitigation can be implemented through the following measures:\n\nRestrict Access to Credential Storage:\n\n- Use Case: Prevent adversaries from accessing the SAM (Security Account Manager) database on Windows systems.\n- Implementation: Enforce least privilege principles and restrict administrative access to credential stores such as `C:\\Windows\\System32\\config\\SAM`.\n\nUse Credential Guard:\n\n- Use Case: Isolate LSASS (Local Security Authority Subsystem Service) memory to prevent credential dumping.\n- Implementation: Enable Windows Defender Credential Guard on enterprise endpoints to isolate secrets and protect them from unauthorized access.\n\nMonitor for Credential Dumping Tools:\n\n- Use Case: Detect and block known tools like Mimikatz or Windows Credential Editor.\n- Implementation: Flag suspicious process behavior related to credential dumping.\n\nDisable Cached Credentials:\n\n- Use Case: Prevent adversaries from exploiting cached credentials on endpoints.\n- Implementation: Configure group policy to reduce or eliminate the use of cached credentials (e.g., set Interactive logon: Number of previous logons to cache to 0).\n\nEnable Secure Boot and Memory Protections:\n\n- Use Case: Prevent memory-based attacks used to extract credentials.\n- Implementation: Configure Secure Boot and enforce hardware-based security features like DEP (Data Execution Prevention) and ASLR (Address Space Layout Randomization)."
+              },
+              {
+                "id": "M1028",
+                "name": "Operating System Configuration",
+                "description": "Operating System Configuration involves adjusting system settings and hardening the default configurations of an operating system (OS) to mitigate adversary exploitation and prevent abuse of system functionality. Proper OS configurations address security vulnerabilities, limit attack surfaces, and ensure robust defense against a wide range of techniques. This mitigation can be implemented through the following measures: \n\nDisable Unused Features:\n\n- Turn off SMBv1, LLMNR, and NetBIOS where not needed.\n- Disable remote registry and unnecessary services.\n\nEnforce OS-level Protections:\n\n- Enable Data Execution Prevention (DEP), Address Space Layout Randomization (ASLR), and Control Flow Guard (CFG) on Windows.\n- Use AppArmor or SELinux on Linux for mandatory access controls.\n\nSecure Access Settings:\n\n- Enable User Account Control (UAC) for Windows.\n- Restrict root/sudo access on Linux/macOS and enforce strong permissions using sudoers files.\n\nFile System Hardening:\n\n- Implement least-privilege access for critical files and system directories.\n- Audit permissions regularly using tools like icacls (Windows) or getfacl/chmod (Linux/macOS).\n\nSecure Remote Access:\n\n- Restrict RDP, SSH, and VNC to authorized IPs using firewall rules.\n- Enable NLA for RDP and enforce strong password/lockout policies.\n\nHarden Boot Configurations:\n\n- Enable Secure Boot and enforce UEFI/BIOS password protection.\n- Use BitLocker or LUKS to encrypt boot drives.\n\nRegular Audits:\n\n- Periodically audit OS configurations using tools like CIS Benchmarks or SCAP tools.\n\n*Tools for Implementation*\n\nWindows:\n\n- Microsoft Group Policy Objects (GPO): Centrally enforce OS security settings.\n- Windows Defender Exploit Guard: Built-in OS protection against exploits.\n- CIS-CAT Pro: Audit Windows security configurations based on CIS Benchmarks.\n\nLinux/macOS:\n\n- AppArmor/SELinux: Enforce mandatory access controls.\n- Lynis: Perform comprehensive security audits.\n- SCAP Security Guide: Automate configuration hardening using Security Content Automation Protocol.\n\nCross-Platform:\n\n- Ansible or Chef/Puppet: Automate configuration hardening at scale.\n- OpenSCAP: Perform compliance and configuration checks."
+              },
+              {
+                "id": "M1017",
+                "name": "User Training",
+                "description": "User Training involves educating employees and contractors on recognizing, reporting, and preventing cyber threats that rely on human interaction, such as phishing, social engineering, and other manipulative techniques. Comprehensive training programs create a human firewall by empowering users to be an active component of the organization's cybersecurity defenses. This mitigation can be implemented through the following measures:\n\nCreate Comprehensive Training Programs:\n\n- Design training modules tailored to the organization's risk profile, covering topics such as phishing, password management, and incident reporting.\n- Provide role-specific training for high-risk employees, such as helpdesk staff or executives.\n\nUse Simulated Exercises:\n\n- Conduct phishing simulations to measure user susceptibility and provide targeted follow-up training.\n- Run social engineering drills to evaluate employee responses and reinforce protocols.\n\nLeverage Gamification and Engagement:\n\n- Introduce interactive learning methods such as quizzes, gamified challenges, and rewards for successful detection and reporting of threats.\n\nIncorporate Security Policies into Onboarding:\n\n- Include cybersecurity training as part of the onboarding process for new employees.\n- Provide easy-to-understand materials outlining acceptable use policies and reporting procedures.\n\nRegular Refresher Courses:\n\n- Update training materials to include emerging threats and techniques used by adversaries.\n- Ensure all employees complete periodic refresher courses to stay informed.\n\nEmphasize Real-World Scenarios:\n\n- Use case studies of recent attacks to demonstrate the consequences of successful phishing or social engineering.\n- Discuss how specific employee actions can prevent or mitigate such attacks."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1602",
+            "name": "Data from Configuration Repository",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1602"
+            ],
+            "related": [
+              {
+                "id": "M1041",
+                "name": "Encrypt Sensitive Information",
+                "description": "Protect sensitive information at rest, in transit, and during processing by using strong encryption algorithms. Encryption ensures the confidentiality and integrity of data, preventing unauthorized access or tampering. This mitigation can be implemented through the following measures:\n\nEncrypt Data at Rest:\n\n- Use Case: Use full-disk encryption or file-level encryption to secure sensitive data stored on devices.\n- Implementation: Implement BitLocker for Windows systems or FileVault for macOS devices to encrypt hard drives.\n\nEncrypt Data in Transit:\n\n- Use Case: Use secure communication protocols (e.g., TLS, HTTPS) to encrypt sensitive data as it travels over networks.\n- Implementation: Enable HTTPS for all web applications and configure mail servers to enforce STARTTLS for email encryption.\n\nEncrypt Backups:\n\n- Use Case: Ensure that backup data is encrypted both during storage and transfer to prevent unauthorized access.\n- Implementation: Encrypt cloud backups using AES-256 before uploading them to Amazon S3 or Google Cloud.\n\nEncrypt Application Secrets:\n\n- Use Case: Store sensitive credentials, API keys, and configuration files in encrypted vaults.\n- Implementation: Use HashiCorp Vault or AWS Secrets Manager to manage and encrypt secrets.\n\nDatabase Encryption:\n\n- Use Case: Enable Transparent Data Encryption (TDE) or column-level encryption in database management systems.\n- Implementation: Use MySQL’s built-in encryption features to encrypt sensitive database fields such as social security numbers."
+              },
+              {
+                "id": "M1051",
+                "name": "Update Software",
+                "description": "Software updates ensure systems are protected against known vulnerabilities by applying patches and upgrades provided by vendors. Regular updates reduce the attack surface and prevent adversaries from exploiting known security gaps. This includes patching operating systems, applications, drivers, and firmware. This mitigation can be implemented through the following measures:\n\nRegular Operating System Updates\n\n- Implementation: Apply the latest Windows security updates monthly using WSUS (Windows Server Update Services) or a similar patch management solution. Configure systems to check for updates automatically and schedule reboots during maintenance windows.\n- Use Case: Prevents exploitation of OS vulnerabilities such as privilege escalation or remote code execution.\n\nApplication Patching\n\n- Implementation: Monitor Apache's update release notes for security patches addressing vulnerabilities. Schedule updates for off-peak hours to avoid downtime while maintaining security compliance.\n- Use Case: Prevents exploitation of web application vulnerabilities, such as those leading to unauthorized access or data breaches.\n\nFirmware Updates\n\n- Implementation: Regularly check the vendor’s website for firmware updates addressing vulnerabilities. Plan for update deployment during scheduled maintenance to minimize business disruption.\n- Use Case: Protects against vulnerabilities that adversaries could exploit to gain access to network devices or inject malicious traffic.\n\nEmergency Patch Deployment\n\n- Implementation: Use the emergency patch deployment feature of the organization's patch management tool to apply updates to all affected Exchange servers within 24 hours.\n- Use Case: Reduces the risk of exploitation by rapidly addressing critical vulnerabilities.\n\nCentralized Patch Management\n\n- Implementation: Implement a centralized patch management system, such as SCCM or ManageEngine, to automate and track patch deployment across all environments. Generate regular compliance reports to ensure all systems are updated.\n- Use Case: Streamlines patching processes and ensures no critical systems are missed.\n\n*Tools for Implementation*\n\nPatch Management Tools:\n\n- WSUS: Manage and deploy Microsoft updates across the organization.\n- ManageEngine Patch Manager Plus: Automate patch deployment for OS and third-party apps.\n- Ansible: Automate updates across multiple platforms, including Linux and Windows.\n\nVulnerability Scanning Tools:\n\n- OpenVAS: Open-source vulnerability scanning to identify missing patches."
+              },
+              {
+                "id": "M1054",
+                "name": "Software Configuration",
+                "description": "Software configuration refers to making security-focused adjustments to the settings of applications, middleware, databases, or other software to mitigate potential threats. These changes help reduce the attack surface, enforce best practices, and protect sensitive data. This mitigation can be implemented through the following measures:\n\nConduct a Security Review of Application Settings:\n\n- Review the software documentation to identify recommended security configurations.\n- Compare default settings against organizational policies and compliance requirements.\n\nImplement Access Controls and Permissions:\n\n- Restrict access to sensitive features or data within the software.\n- Enforce least privilege principles for all roles and accounts interacting with the software.\n\nEnable Logging and Monitoring:\n\n- Configure detailed logging for key application events such as authentication failures, configuration changes, or unusual activity.\n- Integrate logs with a centralized monitoring solution, such as a SIEM.\n\nUpdate and Patch Software Regularly:\n\n- Ensure the software is kept up-to-date with the latest security patches to address known vulnerabilities.\n- Use automated patch management tools to streamline the update process.\n\nDisable Unnecessary Features or Services:\n\n- Turn off unused functionality or components that could introduce vulnerabilities, such as debugging interfaces or deprecated APIs.\n\nTest Configuration Changes:\n\n- Perform configuration changes in a staging environment before applying them in production.\n- Conduct regular audits to ensure that settings remain aligned with security policies.\n\n*Tools for Implementation*\n\nConfiguration Management Tools:\n\n- Ansible: Automates configuration changes across multiple applications and environments.\n- Chef: Ensures consistent application settings through code-based configuration management.\n- Puppet: Automates software configurations and audits changes for compliance.\n\nSecurity Benchmarking Tools:\n\n- CIS-CAT: Provides benchmarks and audits for secure software configurations.\n- Aqua Security Trivy: Scans containerized applications for configuration issues.\n\nVulnerability Management Solutions:\n\n- Nessus: Identifies misconfigurations and suggests corrective actions.\n\nLogging and Monitoring Tools:\n\n- Splunk: Aggregates and analyzes application logs to detect suspicious activity."
+              },
+              {
+                "id": "M1030",
+                "name": "Network Segmentation",
+                "description": "Network segmentation involves dividing a network into smaller, isolated segments to control and limit the flow of traffic between devices, systems, and applications. By segmenting networks, organizations can reduce the attack surface, restrict lateral movement by adversaries, and protect critical assets from compromise.\n\nEffective network segmentation leverages a combination of physical boundaries, logical separation through VLANs, and access control policies enforced by network appliances like firewalls, routers, and cloud-based configurations. This mitigation can be implemented through the following measures:\n\nSegment Critical Systems:\n\n- Identify and group systems based on their function, sensitivity, and risk. Examples include payment systems, HR databases, production systems, and internet-facing servers.\n- Use VLANs, firewalls, or routers to enforce logical separation.\n\nImplement DMZ for Public-Facing Services:\n\n- Host web servers, DNS servers, and email servers in a DMZ to limit their access to internal systems.\n- Apply strict firewall rules to filter traffic between the DMZ and internal networks.\n\nUse Cloud-Based Segmentation:\n\n- In cloud environments, use VPCs, subnets, and security groups to isolate applications and enforce traffic rules.\n- Apply AWS Transit Gateway or Azure VNet peering for controlled connectivity between cloud segments.\n\nApply Microsegmentation for Workloads:\n\n- Use software-defined networking (SDN) tools to implement workload-level segmentation and prevent lateral movement.\n\nRestrict Traffic with ACLs and Firewalls:\n\n- Apply Access Control Lists (ACLs) to network devices to enforce \"deny by default\" policies.\n- Use firewalls to restrict both north-south (external-internal) and east-west (internal-internal) traffic.\n\nMonitor and Audit Segmented Networks:\n\n- Regularly review firewall rules, ACLs, and segmentation policies.\n- Monitor network flows for anomalies to ensure segmentation is effective.\n\nTest Segmentation Effectiveness:\n\n- Perform periodic penetration tests to verify that unauthorized access is blocked between network segments."
+              },
+              {
+                "id": "M1037",
+                "name": "Filter Network Traffic",
+                "description": "Employ network appliances and endpoint software to filter ingress, egress, and lateral network traffic. This includes protocol-based filtering, enforcing firewall rules, and blocking or restricting traffic based on predefined conditions to limit adversary movement and data exfiltration. This mitigation can be implemented through the following measures:\n\nIngress Traffic Filtering:\n\n- Use Case: Configure network firewalls to allow traffic only from authorized IP addresses to public-facing servers.\n- Implementation: Limit SSH (port 22) and RDP (port 3389) traffic to specific IP ranges.\n\nEgress Traffic Filtering:\n\n- Use Case: Use firewalls or endpoint security software to block unauthorized outbound traffic to prevent data exfiltration and command-and-control (C2) communications.\n- Implementation: Block outbound traffic to known malicious IPs or regions where communication is unexpected.\n\nProtocol-Based Filtering:\n\n- Use Case: Restrict the use of specific protocols that are commonly abused by adversaries, such as SMB, RPC, or Telnet, based on business needs.\n- Implementation: Disable SMBv1 on endpoints to prevent exploits like EternalBlue.\n\nNetwork Segmentation:\n\n- Use Case: Create network segments for critical systems and restrict communication between segments unless explicitly authorized.\n- Implementation: Implement VLANs to isolate IoT devices or guest networks from core business systems.\n\nApplication Layer Filtering:\n\n- Use Case: Use proxy servers or Web Application Firewalls (WAFs) to inspect and block malicious HTTP/S traffic.\n- Implementation: Configure a WAF to block SQL injection attempts or other web application exploitation techniques."
+              },
+              {
+                "id": "M1031",
+                "name": "Network Intrusion Prevention",
+                "description": "Use intrusion detection signatures to block traffic at network boundaries."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1119",
+            "name": "Automated Collection",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1119"
+            ],
+            "related": [
+              {
+                "id": "M1029",
+                "name": "Remote Data Storage",
+                "description": "Remote Data Storage focuses on moving critical data, such as security logs and sensitive files, to secure, off-host locations to minimize unauthorized access, tampering, or destruction by adversaries. By leveraging remote storage solutions, organizations enhance the protection of forensic evidence, sensitive information, and monitoring data. This mitigation can be implemented through the following measures:\n\nCentralized Log Management:\n\n- Configure endpoints to forward security logs to a centralized log collector or SIEM.\n- Use tools like Splunk Graylog, or Security Onion to aggregate and store logs.\n- Example command (Linux): `sudo auditd | tee /var/log/audit/audit.log | nc <remote-log-server> 514`\n\nRemote File Storage Solutions:\n\n- Utilize cloud storage solutions like AWS S3, Google Cloud Storage, or Azure Blob Storage for sensitive data.\n- Ensure proper encryption at rest and access control policies (IAM roles, ACLs).\n\nIntrusion Detection Log Forwarding:\n\n- Forward logs from IDS/IPS systems (e.g., Zeek/Suricata) to a remote security information system.\n- Example for Suricata log forwarding:\n`outputs:\n  - type: syslog\n    protocol: tls\n    address: <remote-syslog-server>`\n\nImmutable Backup Configurations:\n\n- Enable immutable storage settings for backups to prevent adversaries from modifying or deleting data.\n- Example: AWS S3 Object Lock.\n\nData Encryption:\n\n- Ensure encryption for sensitive data using AES-256 at rest and TLS 1.2+ for data in transit.\nTools: OpenSSL, BitLocker, LUKS for Linux."
+              },
+              {
+                "id": "M1041",
+                "name": "Encrypt Sensitive Information",
+                "description": "Protect sensitive information at rest, in transit, and during processing by using strong encryption algorithms. Encryption ensures the confidentiality and integrity of data, preventing unauthorized access or tampering. This mitigation can be implemented through the following measures:\n\nEncrypt Data at Rest:\n\n- Use Case: Use full-disk encryption or file-level encryption to secure sensitive data stored on devices.\n- Implementation: Implement BitLocker for Windows systems or FileVault for macOS devices to encrypt hard drives.\n\nEncrypt Data in Transit:\n\n- Use Case: Use secure communication protocols (e.g., TLS, HTTPS) to encrypt sensitive data as it travels over networks.\n- Implementation: Enable HTTPS for all web applications and configure mail servers to enforce STARTTLS for email encryption.\n\nEncrypt Backups:\n\n- Use Case: Ensure that backup data is encrypted both during storage and transfer to prevent unauthorized access.\n- Implementation: Encrypt cloud backups using AES-256 before uploading them to Amazon S3 or Google Cloud.\n\nEncrypt Application Secrets:\n\n- Use Case: Store sensitive credentials, API keys, and configuration files in encrypted vaults.\n- Implementation: Use HashiCorp Vault or AWS Secrets Manager to manage and encrypt secrets.\n\nDatabase Encryption:\n\n- Use Case: Enable Transparent Data Encryption (TDE) or column-level encryption in database management systems.\n- Implementation: Use MySQL’s built-in encryption features to encrypt sensitive database fields such as social security numbers."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1530",
+            "name": "Data from Cloud Storage",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1530"
+            ],
+            "related": [
+              {
+                "id": "M1041",
+                "name": "Encrypt Sensitive Information",
+                "description": "Protect sensitive information at rest, in transit, and during processing by using strong encryption algorithms. Encryption ensures the confidentiality and integrity of data, preventing unauthorized access or tampering. This mitigation can be implemented through the following measures:\n\nEncrypt Data at Rest:\n\n- Use Case: Use full-disk encryption or file-level encryption to secure sensitive data stored on devices.\n- Implementation: Implement BitLocker for Windows systems or FileVault for macOS devices to encrypt hard drives.\n\nEncrypt Data in Transit:\n\n- Use Case: Use secure communication protocols (e.g., TLS, HTTPS) to encrypt sensitive data as it travels over networks.\n- Implementation: Enable HTTPS for all web applications and configure mail servers to enforce STARTTLS for email encryption.\n\nEncrypt Backups:\n\n- Use Case: Ensure that backup data is encrypted both during storage and transfer to prevent unauthorized access.\n- Implementation: Encrypt cloud backups using AES-256 before uploading them to Amazon S3 or Google Cloud.\n\nEncrypt Application Secrets:\n\n- Use Case: Store sensitive credentials, API keys, and configuration files in encrypted vaults.\n- Implementation: Use HashiCorp Vault or AWS Secrets Manager to manage and encrypt secrets.\n\nDatabase Encryption:\n\n- Use Case: Enable Transparent Data Encryption (TDE) or column-level encryption in database management systems.\n- Implementation: Use MySQL’s built-in encryption features to encrypt sensitive database fields such as social security numbers."
+              },
+              {
+                "id": "M1047",
+                "name": "Audit",
+                "description": "Auditing is the process of recording activity and systematically reviewing and analyzing the activity and system configurations. The primary purpose of auditing is to detect anomalies and identify potential threats or weaknesses in the environment. Proper auditing configurations can also help to meet compliance requirements. The process of auditing encompasses regular analysis of user behaviors and system logs in support of proactive security measures.\n\nAuditing is applicable to all systems used within an organization, from the front door of a building to accessing a file on a fileserver. It is considered more critical for regulated industries such as, healthcare, finance and government where compliance requirements demand stringent tracking of user and system activates.This mitigation can be implemented through the following measures: \n\nSystem Audit:\n\n- Use Case: Regularly assess system configurations to ensure compliance with organizational security policies.\n- Implementation: Use tools to scan for deviations from established benchmarks.\n\nPermission Audits:\n\n- Use Case: Review file and folder permissions to minimize the risk of unauthorized access or privilege escalation.\n- Implementation: Run access reviews to identify users or groups with excessive permissions.\n\nSoftware Audits:\n\n- Use Case: Identify outdated, unsupported, or insecure software that could serve as an attack vector.\n- Implementation: Use inventory and vulnerability scanning tools to detect outdated versions and recommend secure alternatives.\n\nConfiguration Audits:\n\n- Use Case: Evaluate system and network configurations to ensure secure settings (e.g., disabled SMBv1, enabled MFA).\n- Implementation: Implement automated configuration scanning tools like SCAP (Security Content Automation Protocol) to identify non-compliant systems.\n\nNetwork Audits:\n\n- Use Case: Examine network traffic, firewall rules, and endpoint communications to identify unauthorized or insecure connections.\n- Implementation: Utilize tools such as Wireshark, or Zeek to monitor and log suspicious network behavior."
+              },
+              {
+                "id": "M1032",
+                "name": "Multi-factor Authentication",
+                "description": "Multi-Factor Authentication (MFA) enhances security by requiring users to provide at least two forms of verification to prove their identity before granting access. These factors typically include:\n\n- *Something you know*: Passwords, PINs.\n- *Something you have*: Physical tokens, smartphone authenticator apps.\n- *Something you are*: Biometric data such as fingerprints, facial recognition, or retinal scans.\n\nImplementing MFA across all critical systems and services ensures robust protection against account takeover and unauthorized access. This mitigation can be implemented through the following measures:\n\nIdentity and Access Management (IAM):\n\n- Use IAM solutions like Azure Active Directory, Okta, or AWS IAM to enforce MFA policies for all user logins, especially for privileged roles.\n- Enable conditional access policies to enforce MFA for risky sign-ins (e.g., unfamiliar devices, geolocations).\n- Enable Conditional Access policies to only allow logins from trusted devices, such as those enrolled in Intune or joined via Hybrid/Entra.\n\nAuthentication Tools and Methods:\n\n- Use authenticator applications such as Google Authenticator, Microsoft Authenticator, or Authy for time-based one-time passwords (TOTP).\n- Deploy hardware-based tokens like YubiKey, RSA SecurID, or smart cards for additional security.\n- Enforce biometric authentication for compatible devices and applications.\n\nSecure Legacy Systems:\n\n- Integrate MFA solutions with older systems using third-party tools like Duo Security or Thales SafeNet.\n- Enable RADIUS/NPS servers to facilitate MFA for VPNs, RDP, and other network logins.\n\nMonitoring and Alerting:\n\n- Use SIEM tools to monitor failed MFA attempts, login anomalies, or brute-force attempts against MFA systems.\n- Implement alerts for suspicious MFA activities, such as repeated failed codes or new device registrations.\n\nTraining and Policy Enforcement:\n\n- Educate employees on the importance of MFA and secure authenticator usage.\n- Enforce policies that require MFA on all critical systems, especially for remote access, privileged accounts, and cloud applications."
+              },
+              {
+                "id": "M1022",
+                "name": "Restrict File and Directory Permissions",
+                "description": "Restricting file and directory permissions involves setting access controls at the file system level to limit which users, groups, or processes can read, write, or execute files. By configuring permissions appropriately, organizations can reduce the attack surface for adversaries seeking to access sensitive data, plant malicious code, or tamper with system files.\n\nEnforce Least Privilege Permissions:\n\n- Remove unnecessary write permissions on sensitive files and directories.\n- Use file ownership and groups to control access for specific roles.\n\nExample (Windows): Right-click the shared folder → Properties → Security tab → Adjust permissions for NTFS ACLs.\n\nHarden File Shares:\n\n- Disable anonymous access to shared folders.\n- Enforce NTFS permissions for shared folders on Windows.\n\nExample: Set permissions to restrict write access to critical files, such as system executables (e.g., `/bin` or `/sbin` on Linux). Use tools like `chown` and `chmod` to assign file ownership and limit access.\n\nOn Linux, apply:\n`chmod 750 /etc/sensitive.conf`\n`chown root:admin /etc/sensitive.conf`\n\nFile Integrity Monitoring (FIM):\n\n- Use tools like Tripwire, Wazuh, or OSSEC to monitor changes to critical file permissions.\n\nAudit File System Access:\n\n- Enable auditing to track permission changes or unauthorized access attempts.\n- Use auditd (Linux) or Event Viewer (Windows) to log activities.\n\nRestrict Startup Directories:\n\n- Configure permissions to prevent unauthorized writes to directories like `C:\\ProgramData\\Microsoft\\Windows\\Start Menu`.\n\nExample: Restrict write access to critical directories like `/etc/`, `/usr/local/`, and Windows directories such as `C:\\Windows\\System32`.\n\n- On Windows, use icacls to modify permissions: `icacls \"C:\\Windows\\System32\" /inheritance:r /grant:r SYSTEM:(OI)(CI)F`\n- On Linux, monitor permissions using tools like `lsattr` or `auditd`."
+              },
+              {
+                "id": "M1018",
+                "name": "User Account Management",
+                "description": "User Account Management involves implementing and enforcing policies for the lifecycle of user accounts, including creation, modification, and deactivation. Proper account management reduces the attack surface by limiting unauthorized access, managing account privileges, and ensuring accounts are used according to organizational policies. This mitigation can be implemented through the following measures:\n\nEnforcing the Principle of Least Privilege\n\n- Implementation: Assign users only the minimum permissions required to perform their job functions. Regularly audit accounts to ensure no excess permissions are granted.\n- Use Case: Reduces the risk of privilege escalation by ensuring accounts cannot perform unauthorized actions.\n\nImplementing Strong Password Policies\n\n- Implementation: Enforce password complexity requirements (e.g., length, character types). Require password expiration every 90 days and disallow password reuse.\n- Use Case: Prevents adversaries from gaining unauthorized access through password guessing or brute force attacks.\n\nManaging Dormant and Orphaned Accounts\n\n- Implementation: Implement automated workflows to disable accounts after a set period of inactivity (e.g., 30 days). Remove orphaned accounts (e.g., accounts without an assigned owner) during regular account audits.\n- Use Case: Eliminates dormant accounts that could be exploited by attackers.\n\nAccount Lockout Policies\n\n- Implementation: Configure account lockout thresholds (e.g., lock accounts after five failed login attempts). Set lockout durations to a minimum of 15 minutes.\n- Use Case: Mitigates automated attack techniques that rely on repeated login attempts.\n\nMulti-Factor Authentication (MFA) for High-Risk Accounts\n\n- Implementation: Require MFA for all administrative accounts and high-risk users. Use MFA mechanisms like hardware tokens, authenticator apps, or biometrics.\n- Use Case: Prevents unauthorized access, even if credentials are stolen.\n\nRestricting Interactive Logins\n\n- Implementation: Restrict interactive logins for privileged accounts to specific secure systems or management consoles. Use group policies to enforce logon restrictions.\n- Use Case: Protects sensitive accounts from misuse or exploitation.\n\n*Tools for Implementation*\n\nBuilt-in Tools:\n\n- Microsoft Active Directory (AD): Centralized account management and RBAC enforcement.\n- Group Policy Object (GPO): Enforce password policies, logon restrictions, and account lockout policies.\n\nIdentity and Access Management (IAM) Tools:\n\n- Okta: Centralized user provisioning, MFA, and SSO integration.\n- Microsoft Azure Active Directory: Provides advanced account lifecycle management, role-based access, and conditional access policies.\n\nPrivileged Account Management (PAM):\n- CyberArk, BeyondTrust, Thycotic: Manage and monitor privileged account usage, enforce session recording, and JIT access."
+              },
+              {
+                "id": "M1037",
+                "name": "Filter Network Traffic",
+                "description": "Employ network appliances and endpoint software to filter ingress, egress, and lateral network traffic. This includes protocol-based filtering, enforcing firewall rules, and blocking or restricting traffic based on predefined conditions to limit adversary movement and data exfiltration. This mitigation can be implemented through the following measures:\n\nIngress Traffic Filtering:\n\n- Use Case: Configure network firewalls to allow traffic only from authorized IP addresses to public-facing servers.\n- Implementation: Limit SSH (port 22) and RDP (port 3389) traffic to specific IP ranges.\n\nEgress Traffic Filtering:\n\n- Use Case: Use firewalls or endpoint security software to block unauthorized outbound traffic to prevent data exfiltration and command-and-control (C2) communications.\n- Implementation: Block outbound traffic to known malicious IPs or regions where communication is unexpected.\n\nProtocol-Based Filtering:\n\n- Use Case: Restrict the use of specific protocols that are commonly abused by adversaries, such as SMB, RPC, or Telnet, based on business needs.\n- Implementation: Disable SMBv1 on endpoints to prevent exploits like EternalBlue.\n\nNetwork Segmentation:\n\n- Use Case: Create network segments for critical systems and restrict communication between segments unless explicitly authorized.\n- Implementation: Implement VLANs to isolate IoT devices or guest networks from core business systems.\n\nApplication Layer Filtering:\n\n- Use Case: Use proxy servers or Web Application Firewalls (WAFs) to inspect and block malicious HTTP/S traffic.\n- Implementation: Configure a WAF to block SQL injection attempts or other web application exploitation techniques."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1555",
+            "name": "Credentials from Password Stores",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1555"
+            ],
+            "related": [
+              {
+                "id": "M1051",
+                "name": "Update Software",
+                "description": "Software updates ensure systems are protected against known vulnerabilities by applying patches and upgrades provided by vendors. Regular updates reduce the attack surface and prevent adversaries from exploiting known security gaps. This includes patching operating systems, applications, drivers, and firmware. This mitigation can be implemented through the following measures:\n\nRegular Operating System Updates\n\n- Implementation: Apply the latest Windows security updates monthly using WSUS (Windows Server Update Services) or a similar patch management solution. Configure systems to check for updates automatically and schedule reboots during maintenance windows.\n- Use Case: Prevents exploitation of OS vulnerabilities such as privilege escalation or remote code execution.\n\nApplication Patching\n\n- Implementation: Monitor Apache's update release notes for security patches addressing vulnerabilities. Schedule updates for off-peak hours to avoid downtime while maintaining security compliance.\n- Use Case: Prevents exploitation of web application vulnerabilities, such as those leading to unauthorized access or data breaches.\n\nFirmware Updates\n\n- Implementation: Regularly check the vendor’s website for firmware updates addressing vulnerabilities. Plan for update deployment during scheduled maintenance to minimize business disruption.\n- Use Case: Protects against vulnerabilities that adversaries could exploit to gain access to network devices or inject malicious traffic.\n\nEmergency Patch Deployment\n\n- Implementation: Use the emergency patch deployment feature of the organization's patch management tool to apply updates to all affected Exchange servers within 24 hours.\n- Use Case: Reduces the risk of exploitation by rapidly addressing critical vulnerabilities.\n\nCentralized Patch Management\n\n- Implementation: Implement a centralized patch management system, such as SCCM or ManageEngine, to automate and track patch deployment across all environments. Generate regular compliance reports to ensure all systems are updated.\n- Use Case: Streamlines patching processes and ensures no critical systems are missed.\n\n*Tools for Implementation*\n\nPatch Management Tools:\n\n- WSUS: Manage and deploy Microsoft updates across the organization.\n- ManageEngine Patch Manager Plus: Automate patch deployment for OS and third-party apps.\n- Ansible: Automate updates across multiple platforms, including Linux and Windows.\n\nVulnerability Scanning Tools:\n\n- OpenVAS: Open-source vulnerability scanning to identify missing patches."
+              },
+              {
+                "id": "M1026",
+                "name": "Privileged Account Management",
+                "description": "Privileged Account Management focuses on implementing policies, controls, and tools to securely manage privileged accounts (e.g., SYSTEM, root, or administrative accounts). This includes restricting access, limiting the scope of permissions, monitoring privileged account usage, and ensuring accountability through logging and auditing.This mitigation can be implemented through the following measures:\n\nAccount Permissions and Roles:\n\n- Implement RBAC and least privilege principles to allocate permissions securely.\n- Use tools like Active Directory Group Policies to enforce access restrictions.\n\nCredential Security:\n\n- Deploy password vaulting tools like CyberArk, HashiCorp Vault, or KeePass for secure storage and rotation of credentials.\n- Enforce password policies for complexity, uniqueness, and expiration using tools like Microsoft Group Policy Objects (GPO).\n\nMulti-Factor Authentication (MFA):\n\n- Enforce MFA for all privileged accounts using Duo Security, Okta, or Microsoft Azure AD MFA.\n\nPrivileged Access Management (PAM):\n\n- Use PAM solutions like CyberArk, BeyondTrust, or Thycotic to manage, monitor, and audit privileged access.\n\nAuditing and Monitoring:\n\n- Integrate activity monitoring into your SIEM (e.g., Splunk or QRadar) to detect and alert on anomalous privileged account usage.\n\nJust-In-Time Access:\n\n- Deploy JIT solutions like Azure Privileged Identity Management (PIM) or configure ephemeral roles in AWS and GCP to grant time-limited elevated permissions.\n\n*Tools for Implementation*\n\nPrivileged Access Management (PAM):\n\n- CyberArk, BeyondTrust, Thycotic, HashiCorp Vault.\n\nCredential Management:\n\n- Microsoft LAPS (Local Admin Password Solution), Password Safe, HashiCorp Vault, KeePass.\n\nMulti-Factor Authentication:\n\n- Duo Security, Okta, Microsoft Azure MFA, Google Authenticator.\n\nLinux Privilege Management:\n\n- sudo configuration, SELinux, AppArmor.\n\nJust-In-Time Access:\n\n- Azure Privileged Identity Management (PIM), AWS IAM Roles with session constraints, GCP Identity-Aware Proxy."
+              },
+              {
+                "id": "M1027",
+                "name": "Password Policies",
+                "description": "Set and enforce secure password policies for accounts to reduce the likelihood of unauthorized access. Strong password policies include enforcing password complexity, requiring regular password changes, and preventing password reuse. This mitigation can be implemented through the following measures:\n\nWindows Systems:\n\n- Use Group Policy Management Console (GPMC) to configure:\n    - Minimum password length (e.g., 12+ characters).\n    - Password complexity requirements.\n    - Password history (e.g., disallow last 24 passwords).\n    - Account lockout duration and thresholds.\n\nLinux Systems:\n\n- Configure Pluggable Authentication Modules (PAM):\n- Use `pam_pwquality` to enforce complexity and length requirements.\n- Implement `pam_tally2` or `pam_faillock` for account lockouts.\n- Use `pwunconv` to disable password reuse.\n\nPassword Managers:\n\n- Enforce usage of enterprise password managers (e.g., Bitwarden, 1Password, LastPass) to generate and store strong passwords.\n\nPassword Blacklisting:\n\n- Use tools like Have I Been Pwned password checks or NIST-based blacklist solutions to prevent users from setting compromised passwords.\n\nRegular Auditing:\n\n- Periodically audit password policies and account configurations to ensure compliance using tools like LAPS (Local Admin Password Solution) and vulnerability scanners.\n\n*Tools for Implementation*\n\nWindows:\n\n- Group Policy Management Console (GPMC): Enforce password policies.\n- Microsoft Local Administrator Password Solution (LAPS): Enforce random, unique admin passwords.\n\nLinux/macOS:\n\n- PAM Modules (pam_pwquality, pam_tally2, pam_faillock): Enforce password rules.\n- Lynis: Audit password policies and system configurations.\n\nCross-Platform:\n\n- Password Managers (Bitwarden, 1Password, KeePass): Manage and enforce strong passwords.\n- Have I Been Pwned API: Prevent the use of breached passwords.\n- NIST SP 800-63B compliant tools: Enforce password guidelines and blacklisting."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1213",
+            "name": "Data from Information Repositories",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1213"
+            ],
+            "related": [
+              {
+                "id": "M1041",
+                "name": "Encrypt Sensitive Information",
+                "description": "Protect sensitive information at rest, in transit, and during processing by using strong encryption algorithms. Encryption ensures the confidentiality and integrity of data, preventing unauthorized access or tampering. This mitigation can be implemented through the following measures:\n\nEncrypt Data at Rest:\n\n- Use Case: Use full-disk encryption or file-level encryption to secure sensitive data stored on devices.\n- Implementation: Implement BitLocker for Windows systems or FileVault for macOS devices to encrypt hard drives.\n\nEncrypt Data in Transit:\n\n- Use Case: Use secure communication protocols (e.g., TLS, HTTPS) to encrypt sensitive data as it travels over networks.\n- Implementation: Enable HTTPS for all web applications and configure mail servers to enforce STARTTLS for email encryption.\n\nEncrypt Backups:\n\n- Use Case: Ensure that backup data is encrypted both during storage and transfer to prevent unauthorized access.\n- Implementation: Encrypt cloud backups using AES-256 before uploading them to Amazon S3 or Google Cloud.\n\nEncrypt Application Secrets:\n\n- Use Case: Store sensitive credentials, API keys, and configuration files in encrypted vaults.\n- Implementation: Use HashiCorp Vault or AWS Secrets Manager to manage and encrypt secrets.\n\nDatabase Encryption:\n\n- Use Case: Enable Transparent Data Encryption (TDE) or column-level encryption in database management systems.\n- Implementation: Use MySQL’s built-in encryption features to encrypt sensitive database fields such as social security numbers."
+              },
+              {
+                "id": "M1047",
+                "name": "Audit",
+                "description": "Auditing is the process of recording activity and systematically reviewing and analyzing the activity and system configurations. The primary purpose of auditing is to detect anomalies and identify potential threats or weaknesses in the environment. Proper auditing configurations can also help to meet compliance requirements. The process of auditing encompasses regular analysis of user behaviors and system logs in support of proactive security measures.\n\nAuditing is applicable to all systems used within an organization, from the front door of a building to accessing a file on a fileserver. It is considered more critical for regulated industries such as, healthcare, finance and government where compliance requirements demand stringent tracking of user and system activates.This mitigation can be implemented through the following measures: \n\nSystem Audit:\n\n- Use Case: Regularly assess system configurations to ensure compliance with organizational security policies.\n- Implementation: Use tools to scan for deviations from established benchmarks.\n\nPermission Audits:\n\n- Use Case: Review file and folder permissions to minimize the risk of unauthorized access or privilege escalation.\n- Implementation: Run access reviews to identify users or groups with excessive permissions.\n\nSoftware Audits:\n\n- Use Case: Identify outdated, unsupported, or insecure software that could serve as an attack vector.\n- Implementation: Use inventory and vulnerability scanning tools to detect outdated versions and recommend secure alternatives.\n\nConfiguration Audits:\n\n- Use Case: Evaluate system and network configurations to ensure secure settings (e.g., disabled SMBv1, enabled MFA).\n- Implementation: Implement automated configuration scanning tools like SCAP (Security Content Automation Protocol) to identify non-compliant systems.\n\nNetwork Audits:\n\n- Use Case: Examine network traffic, firewall rules, and endpoint communications to identify unauthorized or insecure connections.\n- Implementation: Utilize tools such as Wireshark, or Zeek to monitor and log suspicious network behavior."
+              },
+              {
+                "id": "M1054",
+                "name": "Software Configuration",
+                "description": "Software configuration refers to making security-focused adjustments to the settings of applications, middleware, databases, or other software to mitigate potential threats. These changes help reduce the attack surface, enforce best practices, and protect sensitive data. This mitigation can be implemented through the following measures:\n\nConduct a Security Review of Application Settings:\n\n- Review the software documentation to identify recommended security configurations.\n- Compare default settings against organizational policies and compliance requirements.\n\nImplement Access Controls and Permissions:\n\n- Restrict access to sensitive features or data within the software.\n- Enforce least privilege principles for all roles and accounts interacting with the software.\n\nEnable Logging and Monitoring:\n\n- Configure detailed logging for key application events such as authentication failures, configuration changes, or unusual activity.\n- Integrate logs with a centralized monitoring solution, such as a SIEM.\n\nUpdate and Patch Software Regularly:\n\n- Ensure the software is kept up-to-date with the latest security patches to address known vulnerabilities.\n- Use automated patch management tools to streamline the update process.\n\nDisable Unnecessary Features or Services:\n\n- Turn off unused functionality or components that could introduce vulnerabilities, such as debugging interfaces or deprecated APIs.\n\nTest Configuration Changes:\n\n- Perform configuration changes in a staging environment before applying them in production.\n- Conduct regular audits to ensure that settings remain aligned with security policies.\n\n*Tools for Implementation*\n\nConfiguration Management Tools:\n\n- Ansible: Automates configuration changes across multiple applications and environments.\n- Chef: Ensures consistent application settings through code-based configuration management.\n- Puppet: Automates software configurations and audits changes for compliance.\n\nSecurity Benchmarking Tools:\n\n- CIS-CAT: Provides benchmarks and audits for secure software configurations.\n- Aqua Security Trivy: Scans containerized applications for configuration issues.\n\nVulnerability Management Solutions:\n\n- Nessus: Identifies misconfigurations and suggests corrective actions.\n\nLogging and Monitoring Tools:\n\n- Splunk: Aggregates and analyzes application logs to detect suspicious activity."
+              },
+              {
+                "id": "M1032",
+                "name": "Multi-factor Authentication",
+                "description": "Multi-Factor Authentication (MFA) enhances security by requiring users to provide at least two forms of verification to prove their identity before granting access. These factors typically include:\n\n- *Something you know*: Passwords, PINs.\n- *Something you have*: Physical tokens, smartphone authenticator apps.\n- *Something you are*: Biometric data such as fingerprints, facial recognition, or retinal scans.\n\nImplementing MFA across all critical systems and services ensures robust protection against account takeover and unauthorized access. This mitigation can be implemented through the following measures:\n\nIdentity and Access Management (IAM):\n\n- Use IAM solutions like Azure Active Directory, Okta, or AWS IAM to enforce MFA policies for all user logins, especially for privileged roles.\n- Enable conditional access policies to enforce MFA for risky sign-ins (e.g., unfamiliar devices, geolocations).\n- Enable Conditional Access policies to only allow logins from trusted devices, such as those enrolled in Intune or joined via Hybrid/Entra.\n\nAuthentication Tools and Methods:\n\n- Use authenticator applications such as Google Authenticator, Microsoft Authenticator, or Authy for time-based one-time passwords (TOTP).\n- Deploy hardware-based tokens like YubiKey, RSA SecurID, or smart cards for additional security.\n- Enforce biometric authentication for compatible devices and applications.\n\nSecure Legacy Systems:\n\n- Integrate MFA solutions with older systems using third-party tools like Duo Security or Thales SafeNet.\n- Enable RADIUS/NPS servers to facilitate MFA for VPNs, RDP, and other network logins.\n\nMonitoring and Alerting:\n\n- Use SIEM tools to monitor failed MFA attempts, login anomalies, or brute-force attempts against MFA systems.\n- Implement alerts for suspicious MFA activities, such as repeated failed codes or new device registrations.\n\nTraining and Policy Enforcement:\n\n- Educate employees on the importance of MFA and secure authenticator usage.\n- Enforce policies that require MFA on all critical systems, especially for remote access, privileged accounts, and cloud applications."
+              },
+              {
+                "id": "M1018",
+                "name": "User Account Management",
+                "description": "User Account Management involves implementing and enforcing policies for the lifecycle of user accounts, including creation, modification, and deactivation. Proper account management reduces the attack surface by limiting unauthorized access, managing account privileges, and ensuring accounts are used according to organizational policies. This mitigation can be implemented through the following measures:\n\nEnforcing the Principle of Least Privilege\n\n- Implementation: Assign users only the minimum permissions required to perform their job functions. Regularly audit accounts to ensure no excess permissions are granted.\n- Use Case: Reduces the risk of privilege escalation by ensuring accounts cannot perform unauthorized actions.\n\nImplementing Strong Password Policies\n\n- Implementation: Enforce password complexity requirements (e.g., length, character types). Require password expiration every 90 days and disallow password reuse.\n- Use Case: Prevents adversaries from gaining unauthorized access through password guessing or brute force attacks.\n\nManaging Dormant and Orphaned Accounts\n\n- Implementation: Implement automated workflows to disable accounts after a set period of inactivity (e.g., 30 days). Remove orphaned accounts (e.g., accounts without an assigned owner) during regular account audits.\n- Use Case: Eliminates dormant accounts that could be exploited by attackers.\n\nAccount Lockout Policies\n\n- Implementation: Configure account lockout thresholds (e.g., lock accounts after five failed login attempts). Set lockout durations to a minimum of 15 minutes.\n- Use Case: Mitigates automated attack techniques that rely on repeated login attempts.\n\nMulti-Factor Authentication (MFA) for High-Risk Accounts\n\n- Implementation: Require MFA for all administrative accounts and high-risk users. Use MFA mechanisms like hardware tokens, authenticator apps, or biometrics.\n- Use Case: Prevents unauthorized access, even if credentials are stolen.\n\nRestricting Interactive Logins\n\n- Implementation: Restrict interactive logins for privileged accounts to specific secure systems or management consoles. Use group policies to enforce logon restrictions.\n- Use Case: Protects sensitive accounts from misuse or exploitation.\n\n*Tools for Implementation*\n\nBuilt-in Tools:\n\n- Microsoft Active Directory (AD): Centralized account management and RBAC enforcement.\n- Group Policy Object (GPO): Enforce password policies, logon restrictions, and account lockout policies.\n\nIdentity and Access Management (IAM) Tools:\n\n- Okta: Centralized user provisioning, MFA, and SSO integration.\n- Microsoft Azure Active Directory: Provides advanced account lifecycle management, role-based access, and conditional access policies.\n\nPrivileged Account Management (PAM):\n- CyberArk, BeyondTrust, Thycotic: Manage and monitor privileged account usage, enforce session recording, and JIT access."
+              },
+              {
+                "id": "M1060",
+                "name": "Out-of-Band Communications Channel",
+                "description": "Establish secure out-of-band communication channels to ensure the continuity of critical communications during security incidents, data integrity attacks, or in-network communication failures. Out-of-band communication refers to using an alternative, separate communication path that is not dependent on the potentially compromised primary network infrastructure. This method can include secure messaging apps, encrypted phone lines, satellite communications, or dedicated emergency communication systems. Leveraging these alternative channels reduces the risk of adversaries intercepting, disrupting, or tampering with sensitive communications and helps coordinate an effective incident response.(Citation: TrustedSec OOB Communications)(Citation: NIST Special Publication 800-53 Revision 5)"
+              },
+              {
+                "id": "M1017",
+                "name": "User Training",
+                "description": "User Training involves educating employees and contractors on recognizing, reporting, and preventing cyber threats that rely on human interaction, such as phishing, social engineering, and other manipulative techniques. Comprehensive training programs create a human firewall by empowering users to be an active component of the organization's cybersecurity defenses. This mitigation can be implemented through the following measures:\n\nCreate Comprehensive Training Programs:\n\n- Design training modules tailored to the organization's risk profile, covering topics such as phishing, password management, and incident reporting.\n- Provide role-specific training for high-risk employees, such as helpdesk staff or executives.\n\nUse Simulated Exercises:\n\n- Conduct phishing simulations to measure user susceptibility and provide targeted follow-up training.\n- Run social engineering drills to evaluate employee responses and reinforce protocols.\n\nLeverage Gamification and Engagement:\n\n- Introduce interactive learning methods such as quizzes, gamified challenges, and rewards for successful detection and reporting of threats.\n\nIncorporate Security Policies into Onboarding:\n\n- Include cybersecurity training as part of the onboarding process for new employees.\n- Provide easy-to-understand materials outlining acceptable use policies and reporting procedures.\n\nRegular Refresher Courses:\n\n- Update training materials to include emerging threats and techniques used by adversaries.\n- Ensure all employees complete periodic refresher courses to stay informed.\n\nEmphasize Real-World Scenarios:\n\n- Use case studies of recent attacks to demonstrate the consequences of successful phishing or social engineering.\n- Discuss how specific employee actions can prevent or mitigate such attacks."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 6,
+      "n_got": 6
+    },
+    "mapping_recall": {
+      "gold": 6,
+      "found": 6,
+      "recall": 1.0,
+      "missing": []
+    },
+    "coverage": null,
+    "provenance": {
+      "citations": 26,
+      "compliant": 26,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm_loop",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "Find the AttackPattern with name 'Collect Data from Common Resource Locations' (CAPEC-150), and retrieve the entry_id from its TaxonomyEntry nodes where taxonomy='ATTACK'.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "For each Technique/SubTechnique with attack_id matching the entry_ids from the previous step, retrieve the Technique/SubTechnique name and any Mitigation nodes connected via MITIGATES relationship.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 116.066
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 7,
+    "related": 39
+  }
+}

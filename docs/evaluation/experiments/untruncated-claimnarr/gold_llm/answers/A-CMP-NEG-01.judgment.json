@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty: true) for nonexistent campaign C9999. The executed query (MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN $ids ...) ran cleanly with seed_ids=['C9999'] and returned row_count 0, confirmed by logic_flow.results[0].records being an empty list and evidence_volume.records=0. The answer has zero claims and a correctly-worded abstention stating the attack source found no matching records for the campaign-techniques question, and the narrative mirrors this ('no matching records for this question'), inviting the analyst to supply a valid id instead of fabricating any campaign, technique, or id. No entity, count, or name is invented anywhere in the narrative or claims. This is exactly the correct behavior for a NEG case."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The narrative correctly identifies CAPEC-13 (Subverting Environment Variable Values, Abstraction: Detailed, Status: Stable) as mapping to T1574.006 and T1574.007 (plus T1562.003, which is truthfully reported from the capec record's join_values/TaxonomyEntrys but correctly NOT assigned any tactic since the attack-side query returned only 2 technique records for T1574.006/T1574.007). Both required techniques (must_correlate/must_include_ids: T1574.006, T1574.007) are stated, and both required tactics (must_include_related: TA0002 Execution, TA0005 Stealth) are correctly attributed to each technique, matching the 'related' arrays in the attack records exactly. The cross-source correlation claim ('corroborated across attack and capec... two records each') matches deterministic_scores.correlation (n_got=2, precision/recall/f1=1.0, exact=true). All properties (Abstraction, Status), names, and TaxonomyEntry ids cited are verbatim from the retrieved CAPEC-13 record and the two ATT&CK Technique records. No fabricated names, counts, or aliases were found; every entity id in the narrative/claims traces back to logic_flow.results records or related arrays."
+}

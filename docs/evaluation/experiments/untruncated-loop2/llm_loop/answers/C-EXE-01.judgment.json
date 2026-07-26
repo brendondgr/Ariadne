@@ -1,0 +1,12 @@
+{
+  "case_id": "C-EXE-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-66 (must_include_ids) plus its four execution steps capec:attack-pattern:66:step:1..4 (must_include_related). The narrative names CAPEC-66 (SQL Injection, Standard abstraction, Draft status — both properties match the evidence record exactly) and then describes all four execution steps in order, each paraphrase matching the retrieved ExecutionStep 'description' text closely: Step 1 'surveying the application to inventory its exposed functionality' matches the evidence's '[Survey application] ... takes an inventory of the functionality exposed'; Step 2 on determining user-controllable input and injecting special SQL characters to produce invalid syntax matches the step:2 description; Step 3 on hypothesizing the underlying query and iteratively adding logic to extract/modify/delete data matches step:3; Step 4 on crafting/executing the refined SQL query, including the multiple-queries-for-DoS detail, matches step:4 verbatim in substance. No invented facts, aliases, counts, or properties were found — every claim traces to the single AttackPattern record and its four related ExecutionStep neighbours in logic_flow.results[0].records[0]. The formal 'claims' array only lists two facts (record found; abstraction/status) and does not carry explicit entity_ids for the four step ids, but per grading instructions the narrative is the answer under test here since it is substantive (not thin), and it fully and accurately surfaces all four required steps and the CAPEC-66 properties, so completeness and correctness are full."
+}

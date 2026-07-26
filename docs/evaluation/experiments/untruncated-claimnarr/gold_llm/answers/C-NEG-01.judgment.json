@@ -1,0 +1,12 @@
+{
+  "case_id": "C-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold (ex_gold.expected=[], assertions.expect_empty=true) requires the pipeline to abstain rather than invent a CAPEC-99999 record. The logic_flow shows the executed Gremlin query ('g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...') ran cleanly (execute step ok=true, row_count=0) and returned zero records, matching the abstain trace's 'empty_with_seeds: [CAPEC-99999]'. The answer has no narrative claims (claims=[]) and its single abstention correctly states the capec source returned no matching records for CAPEC-99999, with the narrative offering the analyst example valid ids (T1566, M1017, CAPEC-98) rather than fabricating anything about CAPEC-99999 itself. No entity, count, or property is asserted that isn't grounded in the empty evidence, so there are no hallucinations and the negative-case requirement is fully satisfied."
+}

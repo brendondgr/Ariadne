@@ -1,0 +1,12 @@
+{
+  "case_id": "C-HIE-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.5,
+  "gold_expected": 2,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question asks for the parent (ChildOf) of CAPEC-98, and gold requires must_include_ids=[CAPEC-98] plus must_include_related=[CAPEC-151]. The retrieval (sub_question q2 in logic_flow.results) correctly queried CAPEC-98 --CHILD_OF--> and found the answer: CAPEC-151 ('Identity Spoofing'), present in the record's related[] list. However, neither the narrative nor any of the 8 claims ever mentions CAPEC-151 or the ChildOf relationship at all -- the narrative only restates CAPEC-98's own name, Abstraction (Standard), and Status (Draft), which are true but non-responsive to the question asked. The pipeline's own deterministic_scores confirm this: coverage.found=1, coverage.missing=['CAPEC-151'], coverage=0.5. Everything stated is faithful/grounded (no fabrication), but the answer completely fails to surface the one fact the question demands despite it being sitting in the retrieved evidence -- this is a synthesis/composer failure to use q2's results, not a retrieval failure. Because the headline question is unanswered, verdict is INCORRECT."
+}
