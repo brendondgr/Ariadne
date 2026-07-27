@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-555 with related T1021, T1114.002, T1133 surfaced from the capec side (min_records 1), and an honest skip on the attack side (expect_skipped true, expect_no_correlation true, must_correlate empty). The answer's narrative and claims state CAPEC-555 (Remote Services with Stolen Credentials), Abstraction Standard, Status Stable -- all matching logic_flow.results[0].records[0].properties exactly -- and enumerates all three TaxonomyEntry ids (capec:taxonomy:ATTACK:1021/1114.002/1133) with correct names, matching the 'related' array verbatim. It correctly states no correlation/mitigation mapping was attempted, explaining the attack sub-question was skipped because no specialist was available for source 'attack', which matches run_meta.notes and satisfies expect_skipped/expect_no_correlation. No claim (abstraction, status, technique ids, taxonomy names) falls outside the retrieved evidence; nothing is fabricated. All 4 gold-required ids/relations (CAPEC-555, T1021, T1114.002, T1133) are surfaced, and the required abstention behavior is honored."
+}

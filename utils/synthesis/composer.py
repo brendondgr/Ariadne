@@ -295,8 +295,14 @@ def _related_ids(record: EvidenceRecord) -> list[str]:
 _REL_NOUNS = {
     "CHILD_OF": "ChildOf parent",
     "PARENT_OF": "ParentOf child",
-    "CAN_FOLLOW": "CanFollow successor",
-    "CAN_PRECEDE": "CanPrecede predecessor",
+    # Direction matters and these were inverted. The neighbours template walks
+    # OUT from the anchor, so `A -CAN_PRECEDE-> B` means A precedes B: B is the
+    # **successor**. Likewise `A -CAN_FOLLOW-> B` means A follows B, so B is the
+    # **predecessor**. Naming them the other way round states the relationship
+    # backwards — a grounded id with an ungrounded claim about it, which the
+    # independent judge correctly flagged as a hallucination on C-LKP-02/05.
+    "CAN_FOLLOW": "CanFollow predecessor",
+    "CAN_PRECEDE": "CanPrecede successor",
     "PEER_OF": "PeerOf peer",
     "HAS_MITIGATION": "mitigation",
     "HAS_CONSEQUENCE": "consequence",

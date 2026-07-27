@@ -1,0 +1,12 @@
+{
+  "case_id": "A-AST-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires expect_boundary=true: T1490 (Inhibit System Recovery) targeting 'assets' is an ICS-only framing, and the ATT&CK Enterprise source in this KG does not model an 'Asset' entity, so the correct behavior is an honest refusal rather than invented content. The pipeline's boundary trace explicitly records 'entities not modeled by the attack source: Asset' and 'entities not in card: [\"Asset\"]', producing zero records and zero claims. The narrative/answer states plainly that no matching records were returned and offers to help if the analyst names a specific entity/id instead of fabricating an asset list, which is exactly the required abstention. No claims, ids, counts, or names are asserted anywhere in the answer, so there is nothing ungrounded or unsupported by the evidence -- faithfulness and groundedness are perfect by construction. Completeness is satisfied because the single gold requirement (a genuine boundary/refusal) is fully met (gold_expected=1, gold_present=1). No hallucinations found."
+}

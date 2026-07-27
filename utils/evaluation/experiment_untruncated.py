@@ -42,7 +42,7 @@ DEFAULT_ROOT = "docs/evaluation/experiments/untruncated"
 # committed baseline's exact configuration (gold-replay plan + LLM drafter + LLM
 # synthesis) with ONLY the un-truncation profile added, so C − baseline isolates
 # un-truncation, A − C isolates the composer, and B − C isolates LLM planning.
-ARMS = ("deterministic", "llm", "gold_llm", "llm_loop")
+ARMS = ("deterministic", "llm", "gold_llm", "llm_loop", "gold_loop_llm")
 
 # -- the un-truncation profile ----------------------------------------------
 # Every one of these keys is read *at call time* by the bound it names, with the
@@ -84,7 +84,7 @@ TASK_MAX_TRAVERSAL_DEPTH = 3  # unchanged: depth is the question's shape, not a 
 def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[str, str]:
     """The full env overlay for one arm (bounds + that arm's LLM posture)."""
     env = dict(UNTRUNCATED_ENV)
-    if arm == "llm_loop":
+    if arm in ("llm_loop", "gold_loop_llm"):
         # ARM E — the workbench flow as designed: LLM planning + LLM synthesis
         # **with the iterative retrieval loop actually chasing something**. Arm B
         # ran at ORCH_MAX_HOPS=5 but still executed a single pass, because
@@ -323,6 +323,108 @@ def _plan_dict(plan: Any) -> list[dict[str, Any]]:
     return out
 
 
+def _gold_plan(entry: dict, kind: str):
+    """The catalogue's authored plan as a real :class:`Plan`.
+
+    Federated entries carry ``sub_questions`` + a declared join; single-source
+    entries carry one ``task``. Both become the same shape so the orchestration
+    graph can run them, which is what lets the retrieval loop operate on top of
+    an *accurate* plan instead of a model-drafted one.
+    """
+    from utils.evaluation.score_e2e import _build_plan
+    from utils.planner.schema import Limits, Plan, SubQuestion
+
+    if kind == "federated":
+        return _build_plan(entry)
+    task = entry["task"]
+    return Plan(
+        request=entry["question"],
+        sub_questions=[
+            SubQuestion(
+                id=task.get("sub_question_id") or "q1",
+                source=task["source"],
+                text=task["text"],
+                entities=list(task.get("entities") or []),
+                limits=Limits(**(task.get("limits") or {})),
+                join_key=task.get("join_key"),
+                rationale="golden evalset",
+            )
+        ],
+    )
+
+
+class _GoldPlanAgent:
+    """A ``PlanningAgent`` whose first plan is the authored one.
+
+    Everything else — cards, the liveness probe, and crucially ``replan`` — is the
+    real agent, so the iterative loop behaves exactly as it does in the app. This
+    isolates the synthesizer: retrieval starts from a plan that is known-correct,
+    so any remaining gap is the loop's or the writer's, not the planner's.
+    """
+
+    def __init__(self, inner, plan):
+        self._inner = inner
+        self._plan = plan
+
+    def plan(self, request: str):
+        return self._plan
+
+    def replan(self, *args, **kwargs):
+        return self._inner.replan(*args, **kwargs)
+
+    def __getattr__(self, name):  # cards, _cards, _probe, …
+        return getattr(self._inner, name)
+
+
+def run_gold_loop_llm(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
+    """ARM F — accurate deterministic extraction + the loop + LLM synthesis.
+
+    The authored plan supplies correct seeding (no planner variance), the
+    deterministic templates do the extraction, the facet loop chases anything a
+    first hop only counted, and the claim-grounded narrator writes the answer.
+    """
+    import dataclasses
+
+    from utils.orchestration.main import PipelineRun, iter_pipeline
+    from utils.planner.agent import PlanningAgent
+    from utils.planner.config import PlannerConfig
+
+    inner = PlanningAgent(dataclasses.replace(PlannerConfig.from_env(), llm_enabled=False))
+    agent = _GoldPlanAgent(inner, _gold_plan(entry, kind))
+
+    injected: dict[str, Any] | None = None
+    mode = entry.get("partial_mode")
+    if mode == "attack_down":
+        injected = {"attack": None}
+    elif mode == "capec_down":
+        injected = {"capec": None}
+
+    run = PipelineRun(question=entry["question"], mode="query")
+    plan = evidence = answer = None
+    for event, payload in iter_pipeline(
+        entry["question"], mode="query", use_llm=True,
+        agent=agent, specialists=injected, run=run,
+    ):
+        if event == "plan":
+            plan = payload.get("plan")
+        elif event == "evidence":
+            evidence = payload.get("evidence")
+        elif event == "answer":
+            plan = payload.get("plan") or plan
+            evidence = payload.get("evidence") or evidence
+            answer = payload.get("synthesized")
+    if answer is None or evidence is None:
+        raise RuntimeError(f"pipeline produced no answer (status={run.status!r})")
+    return evidence, answer, {
+        "planner": "gold-plan (injected)",
+        "synthesis": "llm (claim-grounded)",
+        "loop": "facet-chasing",
+        "observed_plan": _plan_dict(plan),
+        "exit_code": run.exit_code,
+        "status": run.status,
+    }
+
+
 def run_llm(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
     """Drive the raw question through the real LLM pipeline (plan + synthesis)."""
     from utils.orchestration.main import PipelineRun, iter_pipeline
@@ -368,6 +470,7 @@ RUNNERS = {
     "llm": run_llm,
     "gold_llm": run_gold_llm,
     "llm_loop": run_llm,   # same driver; the arm differs only in its env
+    "gold_loop_llm": run_gold_loop_llm,
 }
 
 
@@ -411,7 +514,8 @@ def run_arm(
     # ARM B builds its own specialists inside iter_pipeline; the gold-replay arms
     # share a thread-local router set (ARM C keeps the .env LLM drafter, as the
     # baseline did; ARM A forces it off).
-    pool = None if arm in ("llm", "llm_loop") else _RouterPool(llm_enabled=(arm == "gold_llm"))
+    pool = (None if arm in ("llm", "llm_loop", "gold_loop_llm")
+            else _RouterPool(llm_enabled=(arm == "gold_llm")))
 
     manifest: list[dict[str, Any]] = []
     total = len(work)

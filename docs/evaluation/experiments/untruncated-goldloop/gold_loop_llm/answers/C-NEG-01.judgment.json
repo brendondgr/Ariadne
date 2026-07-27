@@ -1,0 +1,12 @@
+{
+  "case_id": "C-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty: true, ex_gold.expected: [] for CAPEC-99999, a nonexistent id). The executed Gremlin query against AttackPattern with id within [\"CAPEC-99999\"] correctly returned row_count 0 (logic_flow.results[0].records is empty, summary: 'No CAPEC records found.'). The answer has no narrative claims (claims: []) and instead abstains, stating 'The routed sources returned no matching records for this question' and offering to accept a real id like CAPEC-98. No entity, count, or property was fabricated. This is exactly the correct behavior for a negative/adversarial lookup case: abstain rather than invent."
+}

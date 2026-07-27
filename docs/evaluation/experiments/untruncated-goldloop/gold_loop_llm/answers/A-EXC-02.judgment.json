@@ -1,0 +1,12 @@
+{
+  "case_id": "A-EXC-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_empty: true for retired technique T1004 (excluded at load), with ex_gold.expected = []. The retrieval executed the describe query against ATT&CK for seed T1004, ran cleanly, and returned row_count 0 (logic_flow.results[0].records = [], traces show execute/assess/normalize all confirming 0 rows). The deterministic answer correctly abstains: claims = [], abstentions cites the attack source with the exact executed query and states no matching records were found, and the narrative reports no records were returned and asks the analyst to name a specific entity if intended. No id, name, or property is fabricated — the T1566/M1017/CAPEC-98 examples in the narrative are explicitly framed as illustrative example-id formats, not assertions about T1004, so they are not hallucinations. This matches the negative-case requirement exactly: correct abstention, zero fabricated data, fully grounded in the executed query's empty result."
+}

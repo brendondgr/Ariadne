@@ -1,0 +1,14 @@
+{
+  "case_id": "F-CTM-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.65,
+  "faithfulness": 0.8,
+  "groundedness": 0.9,
+  "completeness": 0.88,
+  "gold_expected": 26,
+  "gold_present": 23,
+  "hallucinations": [
+    "Narrative states CAPEC-150 'maps to five ATT&CK techniques' and lists only T1003, T1119, T1213, T1530, T1555 — but the retrieved evidence (record CAPEC-150 join_values / related TaxonomyEntrys) shows six mappings, including T1602 (Data from Configuration Repository), which the narrative omits entirely and miscounts."
+  ],
+  "rationale": "Gold requires all 6 must_correlate/must_include techniques (T1003, T1119, T1213, T1530, T1555, T1602) and their union of 20 mitigations. The evidence (logic_flow q1 record CAPEC-150.related and q2 attack records) confirms all 6 techniques and their mitigations were actually retrieved and are correct in the structured 'claims' (e.g. the T1602 enumeration claim lists M1041, M1051, M1054, M1030, M1037, M1031 correctly). However the narrative — the prose the analyst reads, graded per instructions since it is present and substantive — explicitly asserts CAPEC-150 maps to 'five' ATT&CK techniques and never mentions T1602, so it also omits T1602's two unique mitigations M1030 and M1031. For the 5 techniques it does cover, every mitigation list matches the evidence exactly (T1003: 9 mitigations correct, T1119: 2 correct, T1530: 6 correct, T1555: 3 correct, T1213: 7 correct), so nothing is fabricated. Coverage: 5/6 techniques and 18/20 mitigations surfaced in the narrative = 23/26 gold-required entities. This is a real correctness defect (a wrong explicit count contradicting the evidence, plus a full missing technique) but not a fabrication of new facts, so PARTIAL rather than INCORRECT."
+}

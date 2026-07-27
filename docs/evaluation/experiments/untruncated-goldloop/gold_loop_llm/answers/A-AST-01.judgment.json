@@ -1,0 +1,12 @@
+{
+  "case_id": "A-AST-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires expect_boundary=true: T1047 (Windows Management Instrumentation) targeting 'assets' is an ICS-only concept the ATT&CK enterprise source cannot model, so the correct behavior is an honest refusal rather than invented data. The evidence's boundary trace confirms this precisely: resolve/boundary steps report \"entities not in card: ['Asset']\" and \"entities not modeled by the attack source: Asset\", with zero records returned and query left empty. The answer (narrative + single abstention, since claims=[] in this deterministic-arm case) correctly states the attack source doesn't establish this because it doesn't model Asset entities, and invites the analyst to supply a concrete id instead. No technique, mitigation, or asset facts were fabricated -- claims list is empty and the abstention statement matches the logged boundary reason verbatim in substance. This is a clean, fully grounded refusal matching the single required gold behavior (the abstention itself), so gold_expected=1, gold_present=1."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an honest empty join (must_correlate: [], expect_no_correlation: true, capec.expect_empty: true, attack.expect_dependency_skip: true). The q1 CAPEC MAPS_TO query (g.V().hasLabel('AttackPattern').has('id', within(['CAPEC-16']))...out('MAPS_TO')...TaxonomyEntry taxonomy_name ATTACK) executed cleanly and returned row_count 0, and the answer correctly abstains: 'The capec source doesn't establish this ... returned no matching records'. The q2 ATT&CK mitigation lookup was correctly skipped as a dependency failure since q1 produced no seed identifiers ('the sub-question it depends on (q1) produced no seed identifiers, so no query was executed'), matching expect_dependency_skip. No technique IDs, mitigation IDs, or correlations were fabricated; narrative and claims list are empty of any invented entities. deterministic_scores.correlation shows negative:true, exact:true, precision/recall/f1 all 1.0, n_expected=0, n_got=0, consistent with independent verification against the evidence (records: [] in both results)."
+}

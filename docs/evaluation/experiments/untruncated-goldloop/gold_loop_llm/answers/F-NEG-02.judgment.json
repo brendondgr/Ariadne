@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty: expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true, must_correlate=[]. The answer's narrative states 'The routed sources returned no matching records for this question' and abstentions confirm q1 (capec MAPS_TO query for CAPEC-66) executed cleanly with 0 rows, and q2 (attack mitigations) was correctly skipped because it depends on q1's join values which were empty. logic_flow confirms row_count=0 for q1 and a dependency-skip trace for q2, with zero fabricated technique IDs, mitigations, or correlations anywhere in claims or narrative. This exactly matches the gold's required behavior for an adversarial negative case with no invented data."
+}

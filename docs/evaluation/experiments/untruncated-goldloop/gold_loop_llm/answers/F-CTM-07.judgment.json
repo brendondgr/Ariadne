@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-07",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "The answer surfaces every gold-required entity: CAPEC-600 correctly named 'Credential Stuffing' with Abstraction=Standard and Status=Stable (matches record properties.Status/Abstraction exactly); it maps to T1110.004 via the TaxonomyEntry capec:taxonomy:ATTACK:1110.004 (matches related[0].id in the q1 record), satisfying must_correlate and capec.must_include_related. The q2 ATT&CK record for T1110.004 lists exactly the 4 gold-required mitigations M1018, M1027, M1032, M1036 (attack.must_include_related), all present verbatim in both the narrative and the enumeration claim, matching record.related ids exactly. The correlation claim ('T1110.004 corroborated across attack and capec, 2 records share it') matches deterministic_scores.correlation (exact=true, precision/recall/f1=1.0). No count, name, alias, or id in the narrative/claims falls outside the retrieved evidence (record properties and related lists were checked field-by-field). All 7 citations trace to the two logic_flow records. This is a fully correct, fully grounded, complete answer with zero hallucinations."
+}

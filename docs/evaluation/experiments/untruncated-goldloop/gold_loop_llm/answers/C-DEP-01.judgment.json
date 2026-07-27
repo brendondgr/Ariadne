@@ -1,0 +1,12 @@
+{
+  "case_id": "C-DEP-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_empty:true for deprecated/excluded CAPEC-91 (ex_gold.expected=[]). The evidence confirms the query executed cleanly (g.V().hasLabel(\"AttackPattern\").has(\"id\", within([\"CAPEC-91\"]))...) and returned row_count 0 at every trace step (resolve, gate, execute, assess, normalize), with records:[] and claims:[]. The answer's narrative/abstention correctly states \"no matching records for CAPEC pattern CAPEC-91\" and offers no fabricated node, no invented properties, aliases, or status values. This is exactly the correct behavior for a negative case: abstain rather than fabricate. No hallucinations found; nothing to surface since gold requires zero entities."
+}

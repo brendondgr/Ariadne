@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-TEC-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The gold requires min 5 records and must_include_ids T1005, T1018, T1047, T1057, T1069; the answer's narrative and single 'fact' claim enumerate all 24 techniques returned by the campaign_techniques query (MATCH (c:Campaign)-[:USES]->(t:Technique)), and all 5 required ids appear verbatim in that list (5/5). Beyond the strict assertions, the answer's 24-technique set is an exact match, element-for-element, with both the retrieved evidence records (24 records in logic_flow.results[0].records) and the broader ex_gold.expected neighbor pool (also 24 T-numbers: T1005-T1686), so nothing is missing and nothing is invented. Every technique id and name cited (e.g. T1680 'Local Storage Discovery', T1686 'Disable or Modify System Firewall') is directly traceable to the evidence records, and deterministic_scores confirms coverage=1.0 and citation_provenance_rate=1.0. No hallucinated ids, names, counts, or aliases were found."
+}

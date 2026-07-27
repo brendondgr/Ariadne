@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-98 (must_include_ids) and T1566, T1598 (must_include_related / ex_gold join). The narrative states 'CAPEC-98 (Phishing) maps to two ATT&CK techniques: T1566 and T1598' plus Abstraction: Standard and Status: Draft, and names the two TaxonomyEntry nodes capec:taxonomy:ATTACK:1566 and capec:taxonomy:ATTACK:1598. Every one of these facts is directly present in the single retrieved record: properties {Status: Draft, Abstraction: Standard}, join_values [T1566, T1598], and related entries with matching ids/names 'Phishing' and 'Phishing for Information'. No count, name, or property is invented; the record set is the full neighborhood (limit 20000, row_count 2 matches). All 3 gold-required ids (CAPEC-98, T1566, T1598) are surfaced."
+}

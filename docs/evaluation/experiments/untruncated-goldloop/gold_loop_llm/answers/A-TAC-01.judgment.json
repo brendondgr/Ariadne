@@ -1,0 +1,12 @@
+{
+  "case_id": "A-TAC-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The question asks which techniques belong to tactic TA0001 (Initial Access). The retrieved evidence (logic_flow.results[0].records) contains exactly 11 Technique records returned by the query MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique) WHERE ta.attack_id='TA0001', with ids T1669, T1189, T1200, T1078, T1566, T1199, T1659, T1190, T1195, T1091, T1133. The answer's narrative and single claim name all 11 of these ids verbatim, matching the evidence exactly with no additions or omissions. All 5 gold must_include_ids (T1078, T1091, T1133, T1189, T1190) are present in the answer (gold_present=5/5, matching deterministic_scores.coverage which independently reports coverage=1.0, missing=[]). The extended ex_gold pool (T1195, T1199, T1200, T1566, T1659, T1669) is also fully surfaced. Every cited id traces directly to a returned record (citation_provenance_rate=1.0), and no name, count, or entity in the narrative/claims is absent from the evidence -- no hallucinations found."
+}

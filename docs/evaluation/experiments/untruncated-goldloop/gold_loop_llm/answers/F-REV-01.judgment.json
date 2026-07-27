@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "The narrative names all three gold-required CAPEC patterns (CAPEC-57, CAPEC-65, CAPEC-158) with correct names ('Utilizing REST's Trust...', 'Sniff Application Code', 'Sniffing Network Traffic'), each verified against logic_flow q1 records with Abstraction: Detailed / Status: Draft matching properties exactly, and each citing the required TaxonomyEntry capec:taxonomy:ATTACK:1040 (satisfying must_include_related T1040). It states the must_correlate join id T1040 and correctly names the ATT&CK technique 'Network Sniffing' (matching gold expect_names), with properties (revoked False, stix_type attack-pattern, x_mitre_deprecated False, x_mitre_is_subtechnique False, x_mitre_version 1.7) all verified verbatim against the q2 record's properties block. The two related tactics TA0007 and TA0006 are verified against the q3 record's related list (Discovery, Credential Access). The '5 records sharing it' correlation figure matches evidence_volume.records=5 and deterministic_scores.correlation (precision/recall/f1=1.0, n_expected=1, n_got=1) -- it is a literal record count (3 capec + 2 attack sub-question records for T1040) rather than a fabricated number, so it is traceable though it double-counts the T1040 attack record across two sub-questions. No invented ids, names, or properties found; every entity_id in claims resolves to a record or related-neighbour actually present in logic_flow. All gold-required identifiers (T1040, CAPEC-57, CAPEC-65, CAPEC-158) are surfaced with correct attributes."
+}

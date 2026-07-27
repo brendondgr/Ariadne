@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_empty: true for nonexistent campaign C9999 (pool: neighbors, expected: []). The executed query MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN $ids ran cleanly against seed_ids [\"C9999\"] and returned row_count 0 (logic_flow.results[0].records is empty, evidence_volume.records=0). The answer correctly abstains: claims=[], narrative states 'The routed sources returned no matching records for this question,' and the abstention entry explicitly cites the query and confirms it 'ran cleanly and returned no matching records.' No entity, technique, count, or campaign name is fabricated anywhere in the narrative or claims. This is precisely the required negative-case behavior."
+}

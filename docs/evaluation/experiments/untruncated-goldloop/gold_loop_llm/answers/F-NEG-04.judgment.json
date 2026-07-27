@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty: capec.expect_empty=true, attack.expect_dependency_skip=true, must_correlate=[] with expect_no_correlation=true. The evidence confirms this is genuinely negative: the capec MAPS_TO query for CAPEC-7 executed cleanly (gate/execute/assess traces all ok) and returned row_count 0, and the attack sub-question (q2) was correctly skipped because its dependency q1 produced no join values. The answer's narrative and abstentions state exactly this: 'no matching records' for capec, and for attack that q1 'produced no seed identifiers, so no query was executed' — no fabricated technique IDs, mitigations, or correlations are asserted anywhere in claims (empty) or narrative. deterministic_scores.correlation shows negative=true, exact=true, precision/recall/f1=1.0, matching the gold's zero-correlation expectation. No hallucinations found."
+}

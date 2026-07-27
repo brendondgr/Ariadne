@@ -1,0 +1,12 @@
+{
+  "case_id": "C-DEP-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative case: CAPEC-106 is deprecated/excluded at load, and gold expects an empty result (ex_gold.expected = [], assertions.expect_empty = true). The capec query executed cleanly against seed_ids=[CAPEC-106] and returned row_count 0 (logic_flow.results[0].records = [], traces show execute/assess/normalize all confirming 0 rows). The pipeline correctly abstained rather than fabricating a record: claims = [], and the abstention statement accurately describes the executed query and the fact that no matching records were found. The narrative correctly tells the analyst no records were returned and does not invent any CAPEC-106 properties, name, or relationships. No entities were required by gold (gold_expected = 0) and none were fabricated (gold_present = 0), so completeness is full. No hallucinations found."
+}

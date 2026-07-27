@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty=true; ex_gold.expected=[]) for CAPEC-116 -> ATT&CK mappings. The evidence shows the capec_maps_to query executed cleanly (gate/execute/assess/normalize traces all ok) against seed CAPEC-116 and returned row_count=0, records=[]. The answer correctly abstains: claims=[] and an explicit abstention statement 'the executed query ran cleanly and returned no matching records for: Which ATT&CK techniques does CAPEC-116 map to?'. The narrative similarly states no matching records were returned and does not fabricate any technique ids, names, or counts. No entities were required by gold (must_include_ids/must_correlate absent), so completeness is trivially 1.0. No hallucinations found."
+}

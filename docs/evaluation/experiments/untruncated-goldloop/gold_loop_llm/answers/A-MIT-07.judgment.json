@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MIT-07",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 9,
+  "gold_present": 9,
+  "hallucinations": [],
+  "rationale": "Gold requires T1078 plus 8 mitigation ids (M1013, M1015, M1017, M1018, M1026, M1027, M1032, M1036). The narrative states 'ATT&CK lists a total of 8 mitigations for technique T1078 (Valid Accounts)' and enumerates all 8: M1013, M1017, M1027, M1018, M1026, M1032, M1015, M1036 - matching the gold set exactly (same 8 ids, order differs but content identical). The claims array corroborates with an explicit enumeration claim citing T1078. Every mitigation id and name (Application Developer Guidance, User Training, Password Policies, User Account Management, Privileged Account Management, Multi-factor Authentication, Active Directory Configuration, Account Use Policies) is directly traceable to the 'related' array in the single retrieved record for T1078 in logic_flow.results[0].records[0]. No count, alias, or fact is invented; the record count of 8 matches row_count in the execute trace. No abstention issue since this is a positive case with min_records 1 satisfied."
+}

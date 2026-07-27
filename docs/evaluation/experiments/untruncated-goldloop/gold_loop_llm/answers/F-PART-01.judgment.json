@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-555 (min_records 1, must_include_ids), a stated mapping to T1021 (must_include_related), and expect_boundary=true on the attack side (with expect_no_correlation=true, must_correlate empty). The narrative/claims state CAPEC-555 'Remote Services with Stolen Credentials' maps to T1021 exactly as in the sole capec record (properties Abstraction: Standard, Status: Stable, related TaxonomyEntry capec:taxonomy:ATTACK:1021, entry_id 1021 name 'Remote Services' — all verbatim from logic_flow.results[0].records[0]). For the attack/asset sub-question the pipeline correctly abstains: the trace shows a boundary step with reasons 'entities not modeled by the attack source: Asset' and zero records, and the answer states 'the attack source does not model the entities this question asks about, so no query was executed' — matching gold's expect_boundary. No cross-source correlation is asserted anywhere, matching expect_no_correlation=true. Every number, name, and id in the answer traces directly to the evidence; nothing is invented."
+}

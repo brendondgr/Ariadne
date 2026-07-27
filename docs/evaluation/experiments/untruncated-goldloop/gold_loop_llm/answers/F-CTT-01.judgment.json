@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires must_correlate [T1566, T1598], capec.must_include_related [T1566, T1598], and attack.must_include_related [TA0001, TA0043] (4 distinct gold-required ids: T1566, T1598, TA0001, TA0043). The narrative states CAPEC-98 maps to T1566 and T1598, that both are corroborated across capec and attack sources (matching the must_correlate assertion), and that T1566 relates to TA0001 (Initial Access) while T1598 relates to TA0043 (Reconnaissance) -- exactly matching logic_flow q2 records where T1566's related entry is TA0001 and T1598's is TA0043. CAPEC-98's Abstraction (Standard) and Status (Draft) are verbatim from the evidence properties. The TaxonomyEntry ids (capec:taxonomy:ATTACK:1566/1598) and their names (Phishing / Phishing for Information) also match the q1 record's related array exactly. No invented facts, counts, or aliases were found; all 3 records (1 capec + 2 attack) and all 4 related items are surfaced. This matches gold's min/max_records (attack min=2,max=2) and the deterministic_scores block (correlation f1=1.0, mapping_recall=1.0) already computed by the harness."
+}

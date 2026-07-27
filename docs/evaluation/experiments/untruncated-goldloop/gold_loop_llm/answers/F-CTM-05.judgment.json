@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 12,
+  "gold_present": 12,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-21 to map to exactly T1134, T1528, T1539 (min=max=3 attack records) with those three ids cross-source correlated, and requires the union of mitigations M1017, M1018, M1021, M1026, M1032, M1047, M1051, M1054 to appear across the three techniques. The narrative states all three technique ids, correctly names them (Access Token Manipulation/T1134, Steal Application Access Token/T1528, Steal Web Session Cookie/T1539), states CAPEC-21's Abstraction=Meta and Status=Stable (matches evidence properties exactly), lists the 3 TaxonomyEntry ids, and lists mitigations per technique matching the evidence records verbatim: T1539->M1051,M1047,M1054,M1032,M1017,M1021; T1528->M1047,M1018,M1017,M1021; T1134->M1026,M1018. The union of these covers all 8 required mitigation ids. All three T-ids are explicitly stated as corroborated across capec and attack sources, satisfying must_correlate. No id, name, count, or property in the narrative/claims is absent from the retrieved evidence (logic_flow records/related), and no fabricated aliases or extra entities were introduced. deterministic_scores confirm exact correlation (precision/recall/f1=1.0) and mapping_recall=1.0 independently. This is a fully correct, complete, and faithful answer."
+}

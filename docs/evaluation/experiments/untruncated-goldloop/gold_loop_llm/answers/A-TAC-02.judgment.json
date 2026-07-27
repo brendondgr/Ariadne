@@ -1,0 +1,12 @@
+{
+  "case_id": "A-TAC-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The question asks which techniques belong to tactic TA0006 (Credential Access). The evidence (logic_flow.results[0].records) contains exactly 17 Technique records returned by the Neo4j query, and the narrative/claims list all 17 primary_ids verbatim (T1056, T1556, T1111, T1557, T1003, T1539, T1040, T1558, T1555, T1552, T1649, T1528, T1606, T1621, T1212, T1110, T1187). This set is an exact match to gold.ex_gold.expected (17 T-numbers) and covers all 5 required must_include_ids (T1003, T1040, T1056, T1110, T1111). Names cited in the narrative (Input Capture, Modify Authentication Process, OS Credential Dumping, Brute Force) match the evidence's name field for the corresponding ids exactly. The stated count 'exactly 17 ATT&CK records' matches row_count=17 in the execute trace. No id, name, or count in the answer is unsupported by the evidence; deterministic_scores confirms coverage=1.0 and citation_provenance_rate=1.0."
+}

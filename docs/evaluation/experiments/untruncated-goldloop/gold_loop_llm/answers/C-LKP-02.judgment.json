@@ -1,0 +1,14 @@
+{
+  "case_id": "C-LKP-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [
+    "Narrative/claim describes CAPEC-163 as a 'CanPrecede predecessor' of CAPEC-116, but the executed query (q2) traversed CAPEC-116 --out(CAN_PRECEDE)--> CAPEC-163, i.e. CAPEC-116 precedes CAPEC-163, making CAPEC-163 a successor, not a predecessor. The evidence records only the edge label/direction, not a 'predecessor' characterization, so this directional label is backwards and unsupported by the evidence as stated."
+  ],
+  "rationale": "Gold requires CAPEC-116 to be surfaced with name 'Excavation', Abstraction 'Meta', and Status 'Stable' (must_include_ids=[CAPEC-116], expect_names, expect_properties). The answer's claims/narrative state exactly these values, matching the retrieved record's properties field (Status: Stable, Abstraction: Meta, name: Excavation, id: capec:attack-pattern:116) verbatim -- fully grounded and complete (gold_present=1/1). The pipeline correctly abstained on the ChildOf sub-question (q3) since that query legitimately returned 0 rows, and this abstention is properly cited with the query text, matching the executed trace. The only issue is an extra, non-gold-required claim that mislabels CAPEC-163 (reached via outbound CAN_PRECEDE) as a 'predecessor' when the traversal direction implies it is actually a successor of CAPEC-116; this is a minor faithfulness slip on supplementary information, not on any gold-required fact, so it does not change the verdict but caps faithfulness below 1.0."
+}

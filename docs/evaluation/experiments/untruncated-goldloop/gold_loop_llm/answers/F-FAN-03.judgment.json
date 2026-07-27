@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-03",
+  "verdict": "CORRECT",
+  "correctness": 0.93,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 17,
+  "gold_present": 17,
+  "hallucinations": [],
+  "rationale": "Evidence (q1, capec) shows CAPEC-639 maps to T1552.001, T1552.003, T1552.004, T1552.006, T1039 and CAPEC-37 maps to T1005, T1552.004; the union is exactly the 6 required must_correlate ids (T1005, T1039, T1552.001, T1552.003, T1552.004, T1552.006), matching gold's capec assertion. The q2 attack results give per-technique mitigations that exactly match the answer's enumeration: T1005->M1057, T1552.004->M1041/M1047/M1022/M1027, T1552.003->M1028, T1552.001->M1047/M1022/M1027/M1017, T1552.006->M1051/M1015/M1047, T1039->none (evidence shows T1039's related list is empty, correctly omitted). The union of all stated mitigations is exactly the 9 gold-required ids (M1015, M1017, M1022, M1027, M1028, M1041, M1047, M1051, M1057), and CAPEC-37/CAPEC-639's Abstraction/Status properties (Detailed/Draft and Detailed/Stable, with 2 and 5 taxonomy entries respectively) match the record properties verbatim. Correlation counts (T1552.004 shared by 3 records, others by 2) are also correct per the evidence. All 17 gold-required entities (2 CAPEC ids, 6 T-numbers, 9 mitigations) are surfaced across the narrative and supporting claims, and every claim traces to a record or related-item in logic_flow with no invented names, counts, or ids. The only flaw is a narrative wording issue: the opening sentence lists only 5 of the 6 mapped techniques (omitting T1552.006 from that specific clause), though T1552.006 is correctly attributed as a mapped technique later in the same narrative (via its mitigations) and fully enumerated in claim #4's taxonomy-entry list for CAPEC-639 -- a minor completeness/clarity issue in phrasing rather than a substantive gap or fabrication, so it does not lower faithfulness/groundedness and only slightly tempers the correctness headline score."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-02",
+  "verdict": "CORRECT",
+  "correctness": 0.95,
+  "faithfulness": 0.92,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 13,
+  "gold_present": 13,
+  "hallucinations": [],
+  "rationale": "All gold assertions are satisfied and grounded in logic_flow evidence. must_correlate (T1505.005, T1574.006, T1574.007, T1574.013, T1620) are all stated as cross-source corroborated in the correlation claims, matching deterministic_scores.correlation (5/5, exact). capec.must_include_ids (CAPEC-13, CAPEC-640) and capec.must_include_related (all 5 technique ids) are correctly surfaced via the two enumeration claims, which exactly reproduce CAPEC-13's join_values (T1574.006, T1574.007, T1562.003) and CAPEC-640's join_values (T1505.005, T1574.006, T1574.013, T1620) from the q1 records. attack.must_include_ids (5 technique ids, min/max_records=5) match exactly the 5 records returned by q2. attack.must_include_related mitigation union (M1022, M1024, M1028, M1038, M1040, M1047) is fully and correctly attributed per-technique in the narrative and enumeration claims (T1574.007: M1047/M1022/M1038; T1505.005: M1047/M1024; T1574.006: M1038/M1028; T1574.013: M1040; T1620: none, correctly omitted since its related[] is empty) -- every id/description traces to the q2 evidence records. One faithfulness blemish: the narrative's clause 'the complete set of mappings being T1505.005, T1562.003, T1574.006, T1574.007, and T1574.013' omits T1620 even though T1620 is correctly listed earlier in the same sentence and in the CAPEC-640 enumeration claim -- an internally inconsistent 'complete set' statement rather than a fabricated entity (no invented id, count, or name appears anywhere else). Because every gold-required identifier is nonetheless surfaced elsewhere in the answer with correct grounding, this is scored as a minor faithfulness deduction rather than a completeness failure or hallucination."
+}

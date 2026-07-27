@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-98 as the must_include_ids entry and T1566 as the must_include_related mapping; the answer states both explicitly ('CAPEC-98 (Phishing) maps to ATT&CK technique T1566'), matching the single retrieved record's primary_id=CAPEC-98 and related TaxonomyEntry capec:taxonomy:ATTACK:1566 (entry_id 1566). The Abstraction (Standard) and Status (Draft) properties cited in the narrative and claims match the record's properties exactly, and the TaxonomyEntry id is quoted verbatim. Gold sets expect_no_correlation=true (no must_correlate ids) and expect_boundary=true for the attack side; the answer correctly abstains on the attack/asset sub-question with the reason 'the attack source doesn't establish this — it doesn't model the entities this question asks about', which matches the logic_flow trace showing a boundary step with unknown_entities=['Asset'] and zero records/no query executed. No fabricated names, counts, or aliases were found; all cited facts trace directly to the single capec record and its one related node. This is a clean, fully grounded CORRECT case."
+}

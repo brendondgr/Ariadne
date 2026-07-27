@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative/adversarial case where the gold expects an honest empty join: capec.expect_empty=true, attack.expect_dependency_skip=true, expect_no_correlation=true, must_correlate=[]. The evidence confirms the CAPEC query executed cleanly against seed CAPEC-18 (g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).out(\"MAPS_TO\")...) and returned row_count 0, and the ATT&CK sub-question (q2) was correctly skipped as a dependency failure because q1 produced no join values. The deterministic composer's narrative/claims (no LLM narrative present, so claims/abstentions are the answer under test) correctly state that no matching records were found and that q2 was skipped because its dependency (q1) returned no join values -- it does not fabricate any technique, mitigation, or T-number correlation. deterministic_scores.correlation confirms negative=true, exact=true, precision/recall/f1=1.0. No hallucinated ids, names, or counts appear anywhere in claims/abstentions. This matches the gold's required behavior exactly."
+}

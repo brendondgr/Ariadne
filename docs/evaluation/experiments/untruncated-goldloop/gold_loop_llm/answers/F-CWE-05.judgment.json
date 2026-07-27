@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 33,
+  "gold_present": 33,
+  "hallucinations": [],
+  "rationale": "The narrative surfaces all 8 gold CAPEC ids (CAPEC-49, CAPEC-55, CAPEC-70, CAPEC-112, CAPEC-509, CAPEC-555, CAPEC-561, CAPEC-565) each correctly linked to exactly one related item, CWE-521, matching the capec.must_include_related assertion. Every reported abstraction/status pair matches the evidence properties exactly (e.g. CAPEC-112 Meta/Draft, CAPEC-509 Detailed/Stable, CAPEC-555 Standard/Stable, others Detailed/Draft). All 10 gold ATT&CK ids (T1021, T1021.002, T1078.001, T1110, T1110.001, T1110.002, T1110.003, T1114.002, T1133, T1558.003) are present and match must_correlate exactly, corroborated via the capec records' join_values field which maps to the identical 10-technique set. Every per-technique mitigation list in the narrative (e.g. T1110.001: M1036/M1051/M1032/M1027; T1021: M1042/M1047/M1032/M1018/M1027/M1035; T1114.002: M1041/M1032/M1060) matches the 'related' field of the corresponding ATT&CK record verbatim, and the union covers all 14 gold mitigation ids (M1018, M1021, M1026, M1027, M1030, M1032, M1035, M1036, M1037, M1041, M1042, M1047, M1051, M1060) with no extras or omissions. No unsupported facts, counts, or aliases were found; the deterministic claims (which the narrative closely mirrors) trace 1:1 to the logic_flow evidence."
+}

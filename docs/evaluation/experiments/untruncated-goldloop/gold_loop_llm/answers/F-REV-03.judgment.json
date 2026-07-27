@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-49 mapping to T1110.001 (capec.must_include_ids/must_include_related), T1110.001 present in attack results with expect_names 'Password Guessing', and the cross-source correlation on T1110.001 (must_correlate). The narrative states all four: 'One CAPEC record exists for CAPEC-49, which maps to ATT&CK technique T1110.001' (matches capec record: primary_id CAPEC-49, name 'Password Brute Forcing', Abstraction Standard, Status Draft, related taxonomy entry capec:taxonomy:ATTACK:1110.001 exactly as in evidence); 'The ATT&CK record T1110.001 is named Password Guessing' (matches attack q2 record primary_id T1110.001, name 'Password Guessing', properties revoked False / stix_type attack-pattern / x_mitre_deprecated False / x_mitre_is_subtechnique True / x_mitre_version 1.7, all verbatim from evidence properties); and 'The identifier T1110.001 is corroborated across attack and capec, with 3 records sharing it' (accurate: CAPEC-49, and the two attack records for T1110.001 in q2 and q3 each carry join_values ['T1110.001'] = 3 records; q4's T1110 record has join_value 'T1110' and correctly excluded). The additional facet claims (TA0006 tactic via HAS_TECHNIQUE, T1110 parent via HAS_SUBTECHNIQUE) are also verbatim from records q3 and q4. Every number, name, and id in the narrative and claims traces directly to logic_flow.results records with no invented facts. All gold assertions (must_correlate T1110.001, capec CAPEC-49 id + T1110.001 related, attack T1110.001 id + name 'Password Guessing') are fully surfaced."
+}

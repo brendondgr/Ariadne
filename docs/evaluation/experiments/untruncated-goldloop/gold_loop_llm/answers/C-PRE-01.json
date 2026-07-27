@@ -1,0 +1,301 @@
+{
+  "id": "C-PRE-01",
+  "kind": "capec",
+  "tier": "medium",
+  "category": "C-PRE",
+  "question": "Which patterns can CAPEC-98 precede?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "CAPEC-98"
+      ],
+      "must_include_related": [
+        "CAPEC-543",
+        "CAPEC-611",
+        "CAPEC-630",
+        "CAPEC-631",
+        "CAPEC-632",
+        "CAPEC-89"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "CAPEC-543",
+        "CAPEC-611",
+        "CAPEC-630",
+        "CAPEC-631",
+        "CAPEC-632",
+        "CAPEC-89"
+      ],
+      "scheme": "capec"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "CAPEC-98 (Phishing) can precede six attack patterns: CAPEC-631, CAPEC-632, CAPEC-89, CAPEC-543, CAPEC-611, and CAPEC-630. The record for CAPEC-98 indicates it has a Standard abstraction and a Draft status.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-98.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-98"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-98"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-98 (Phishing) has Abstraction: Standard; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-98"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-98"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-98 (Phishing) has 6 CanPrecede predecessors: CAPEC-631, CAPEC-632, CAPEC-89, CAPEC-543, CAPEC-611, CAPEC-630.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CAPEC-631",
+          "CAPEC-632",
+          "CAPEC-89",
+          "CAPEC-543",
+          "CAPEC-611",
+          "CAPEC-630"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-98"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "C-PRE-01",
+      "source": "capec",
+      "text": "Which attack patterns can CAPEC-98 precede?",
+      "entities": [
+        "AttackPattern",
+        "CanPrecede"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-98"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "C-PRE-01",
+        "sub_question": "Which attack patterns can CAPEC-98 precede?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"CAN_PRECEDE\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-98.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern"
+              ],
+              "relationships": [
+                "CanPrecede"
+              ],
+              "seed_ids": [
+                "CAPEC-98"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_neighbors",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"CAN_PRECEDE\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+              "injected": [],
+              "timing_ms": 0.175
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 6,
+              "timing_ms": 15.0
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 6,
+              "timing_ms": 0.01
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.144
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-98",
+            "name": "Phishing",
+            "label": "AttackPattern",
+            "description": "Phishing is a social engineering technique where an attacker masquerades as a legitimate entity with which the victim might do business in order to prompt the user to reveal some confidential information (very frequently authentication credentials) that can later be used by an attacker. Phishing is essentially a form of information gathering or \"fishing\" for information.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Phishing",
+              "description": "Phishing is a social engineering technique where an attacker masquerades as a legitimate entity with which the victim might do business in order to prompt the user to reveal some confidential information (very frequently authentication credentials) that can later be used by an attacker. Phishing is essentially a form of information gathering or \"fishing\" for information.",
+              "id": "capec:attack-pattern:98",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "CAPEC-631",
+                "name": "SoundSquatting",
+                "label": "AttackPattern",
+                "type": "CAN_PRECEDE",
+                "description": "An adversary registers a domain name that sounds the same as a trusted domain, but has a different spelling. A SoundSquatting attack takes advantage of a user's confusion of the two words to direct Internet traffic to adversary-controlled destinations. SoundSquatting does not require an attack against the trusted domain or complicated reverse engineering."
+              },
+              {
+                "id": "CAPEC-632",
+                "name": "Homograph Attack via Homoglyphs",
+                "label": "AttackPattern",
+                "type": "CAN_PRECEDE",
+                "description": "An adversary registers a domain name containing a homoglyph, leading the registered domain to appear the same as a trusted domain. A homograph attack leverages the fact that different characters among various character sets look the same to the user. Homograph attacks must generally be combined with other attacks, such as phishing attacks, in order to direct Internet traffic to the adversary-controlled destinations."
+              },
+              {
+                "id": "CAPEC-89",
+                "name": "Pharming",
+                "label": "AttackPattern",
+                "type": "CAN_PRECEDE",
+                "description": "A pharming attack occurs when the victim is fooled into entering sensitive data into supposedly trusted locations, such as an online bank site or a trading platform. An attacker can impersonate these supposedly trusted sites and have the victim be directed to their site rather than the originally intended one. Pharming does not require script injection or clicking on malicious links for the attack to succeed."
+              },
+              {
+                "id": "CAPEC-543",
+                "name": "Counterfeit Websites",
+                "label": "AttackPattern",
+                "type": "CAN_PRECEDE",
+                "description": "Adversary creates duplicates of legitimate websites. When users visit a counterfeit site, the site can gather information or upload malware."
+              },
+              {
+                "id": "CAPEC-611",
+                "name": "BitSquatting",
+                "label": "AttackPattern",
+                "type": "CAN_PRECEDE",
+                "description": "An adversary registers a domain name one bit different than a trusted domain. A BitSquatting attack leverages random errors in memory to direct Internet traffic to adversary-controlled destinations. BitSquatting requires no exploitation or complicated reverse engineering, and is operating system and architecture agnostic. Experimental observations show that BitSquatting popular websites could redirect non-trivial amounts of Internet traffic to a malicious entity."
+              },
+              {
+                "id": "CAPEC-630",
+                "name": "TypoSquatting",
+                "label": "AttackPattern",
+                "type": "CAN_PRECEDE",
+                "description": "An adversary registers a domain name with at least one character different than a trusted domain. A TypoSquatting attack takes advantage of instances where a user mistypes a URL (e.g. www.goggle.com) or not does visually verify a URL before clicking on it (e.g. phishing attack). As a result, the user is directed to an adversary-controlled destination. TypoSquatting does not require an attack against the trusted domain or complicated reverse engineering."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 7,
+      "found": 7,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 3,
+      "compliant": 3,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "gold_loop_llm",
+  "run_meta": {
+    "planner": "gold-plan (injected)",
+    "synthesis": "llm (claim-grounded)",
+    "loop": "facet-chasing",
+    "observed_plan": [
+      {
+        "sub_question_id": "C-PRE-01",
+        "source": "capec",
+        "text": "Which attack patterns can CAPEC-98 precede?",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 20000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 28.721
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 6
+  }
+}
