@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty: must_correlate=[], expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true. The evidence confirms this: q1 (capec) executed the CAPEC-66 MAPS_TO TaxonomyEntry(ATTACK) query and returned row_count=0 with seed CAPEC-66 correctly resolved (traces show 'empty_with_seeds': ['CAPEC-66']), and q2 (attack) was correctly skipped via dependency-gate because q1 produced no join values ('producer q1: it returned no join values'), exactly matching expect_dependency_skip. The answer's claims/abstentions list two abstentions stating exactly this (capec query ran cleanly and found nothing; attack sub-question skipped for lack of seeds from q1), and the narrative states no matching records were found without inventing any T-number, mitigation, or correlation. deterministic_scores.correlation confirms negative=true, exact=true, precision/recall/f1=1.0. No entity, id, or count appears anywhere in the answer that isn't directly traceable to the trace/query evidence, so there is no fabrication."
+}

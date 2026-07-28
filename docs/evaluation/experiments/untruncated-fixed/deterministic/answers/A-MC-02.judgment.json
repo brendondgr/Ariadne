@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MC-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 11,
+  "gold_present": 11,
+  "hallucinations": [],
+  "rationale": "Gold requires exactly the 9 techniques T1047, T1059, T1106, T1127, T1129, T1204, T1574, T1609, T1674 plus the correlating entities TA0002 and M1038. The retrieved evidence (logic_flow.results[0].records) contains exactly these 9 Technique records, each with 'related' listing TA0002 (Execution) and M1038 (Execution Prevention). The answer's claims enumerate all 9 technique ids (first claim's entity_ids plus per-technique enumeration claims covering T1574 as the 9th) and every enumeration claim correctly states 'has 2 related item(s): TA0002, M1038', matching the evidence's related array verbatim (both id and name). No counts, aliases, or entities are invented; all names (e.g. 'Trusted Developer Utilities Proxy Execution', 'Execution', 'Execution Prevention') match the evidence exactly. Row count of 9 matches min_records=max_records=9. All 11 gold-required ids (9 techniques + TA0002 + M1038) are surfaced across the claims."
+}

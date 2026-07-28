@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-08",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "Gold requires the cross-source join T1550.002 (must_correlate), CAPEC-644 mapping to T1550.002 (capec assertions), and T1550.002 mapping to mitigations M1018, M1026, M1051, M1052 (attack assertions, max_records 1). The narrative states all of this: CAPEC-644 maps to T1550.002, corroborated across attack/capec sources, and lists all four mitigations M1051, M1026, M1018, M1052 by ID. The CAPEC-644 attribute claims (Abstraction: Detailed, Status: Stable) exactly match the retrieved record properties in logic_flow.results[0].records[0]. The four mitigation names (Update Software, Privileged Account Management, User Account Management, User Account Control) exactly match the related[] entries under the T1550.002 record in logic_flow.results[1].records[0], with no extra or invented mitigations, names, or counts. The single q2 record for T1550.002 respects the attack max_records:1 constraint. All 6 unique gold-required identifiers (T1550.002, CAPEC-644, M1018, M1026, M1051, M1052) are surfaced with no fabricated identifiers, aliases, or counts found anywhere in the narrative or claims."
+}

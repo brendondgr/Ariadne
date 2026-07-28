@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MIT-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires T1110 plus all four mitigations M1018, M1027, M1032, M1036. The claims (narrative is thin/deterministic so claims are the graded answer) state 'T1110 (Brute Force) has 4 related item(s): M1036, M1032, M1018, M1027' with entity_ids listing exactly those four IDs, matching must_include_ids=[T1110] and must_include_related=[M1018,M1027,M1032,M1036] with none missing and none extra. Cross-checking the evidence in logic_flow.results[0].records[0].related confirms all four mitigation IDs and names (M1036 Account Use Policies, M1032 Multi-factor Authentication, M1018 User Account Management, M1027 Password Policies) are present verbatim in the retrieved record, so every stated ID and name is grounded with no fabricated names, counts, or aliases. The deterministic_scores block independently reports coverage 5/5=1.0 and full provenance, corroborating the manual check."
+}

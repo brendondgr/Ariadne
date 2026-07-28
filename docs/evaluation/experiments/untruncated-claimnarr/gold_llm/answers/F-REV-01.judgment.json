@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "The narrative names all three gold-required CAPEC ids (CAPEC-57, CAPEC-65, CAPEC-158), correctly attributes their titles ('Utilizing REST's Trust in the System Resource to Obtain Sensitive Data', 'Sniff Application Code', 'Sniffing Network Traffic'), correctly states Abstraction: Detailed and Status: Draft for each (matches properties in the evidence records), and correctly reports that each references the single TaxonomyEntry capec:taxonomy:ATTACK:1040 (matches the 'related' array of each of the three capec records). It correctly identifies the ATT&CK technique T1040 as 'Network Sniffing' (matches gold expect_names), and correctly reports its properties (stix_type attack-pattern, x_mitre_version 1.7, revoked/x_mitre_deprecated/x_mitre_is_subtechnique all False) verbatim from the attack record's properties block. The must_correlate requirement (T1040) is satisfied and the stated correlation count ('four records sharing it') matches the evidence_volume.records=4 and deterministic_scores.correlation (precision/recall/f1 all 1.0). No claim in the narrative or claims list falls outside the retrieved evidence; every id, name, and property cited traces directly to logic_flow.results records. All 4 gold-required entities (CAPEC-57, CAPEC-65, CAPEC-158, T1040) are surfaced with correct attributes, so this is a fully correct, fully faithful, fully grounded, and complete answer."
+}

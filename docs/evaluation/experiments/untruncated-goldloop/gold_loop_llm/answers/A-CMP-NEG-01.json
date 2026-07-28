@@ -1,0 +1,183 @@
+{
+  "id": "A-CMP-NEG-01",
+  "kind": "attack",
+  "tier": "adversarial",
+  "category": "A-CMP",
+  "question": "Techniques for nonexistent campaign C9999 — must return empty.",
+  "gold": {
+    "assertions": {
+      "expect_empty": true
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "No records were returned by the routed specialists; 1 question(s) the sources don't establish.",
+    "narrative": "The routed sources returned no matching records for this question. If you're after a specific entity, name it or give its id (e.g. T1566, M1017, or CAPEC-98).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [],
+    "abstentions": [
+      {
+        "source": "attack",
+        "statement": "The attack source doesn't establish this — the executed query ran cleanly and returned no matching records for: Which techniques did ATT&CK campaign C9999 use?",
+        "query": "MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN $ids RETURN c.attack_id AS campaign_id, c.name AS campaign_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 20000"
+      }
+    ],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-CMP-NEG-01",
+      "source": "attack",
+      "text": "Which techniques did ATT&CK campaign C9999 use?",
+      "entities": [
+        "Campaign",
+        "Technique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "C9999"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "A-CMP-NEG-01",
+        "sub_question": "Which techniques did ATT&CK campaign C9999 use?",
+        "query": "MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN $ids RETURN c.attack_id AS campaign_id, c.name AS campaign_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 20000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "No records found in ATT&CK for this query.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Campaign",
+                "Technique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "C9999"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "campaign_techniques",
+              "query": "MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN $ids RETURN c.attack_id AS campaign_id, c.name AS campaign_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 20000",
+              "injected": [
+                "LIMIT 20000 appended (none present)"
+              ],
+              "timing_ms": 0.118
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0,
+              "timing_ms": 2.5
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0,
+              "empty_with_seeds": [
+                "C9999"
+              ],
+              "timing_ms": 0.009
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 0,
+              "timing_ms": 0.009
+            }
+          }
+        ],
+        "records": []
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 0,
+      "compliant": 0,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "gold_loop_llm",
+  "run_meta": {
+    "planner": "gold-plan (injected)",
+    "synthesis": "llm (claim-grounded)",
+    "loop": "facet-chasing",
+    "observed_plan": [
+      {
+        "sub_question_id": "A-CMP-NEG-01",
+        "source": "attack",
+        "text": "Which techniques did ATT&CK campaign C9999 use?",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 20000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 0.058
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 0,
+    "related": 0
+  }
+}

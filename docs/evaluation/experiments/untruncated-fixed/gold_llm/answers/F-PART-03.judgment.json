@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires the CAPEC side to surface CAPEC-555 with related techniques T1021, T1114.002, T1133 (all present in logic_flow.results[0].records[0]: primary_id CAPEC-555, join_values [T1021, T1114.002, T1133], related taxonomy entries 1021/1114.002/1133), and requires the ATT&CK/mitigation side to be an honest skip (gold.assertions.attack.expect_skipped=true). The narrative states all three technique IDs, correctly reports Status=Stable and Abstraction=Standard (matching record.properties exactly), correctly names the three taxonomy entries (Remote Services, Email Collection:Remote Email Collection, External Remote Services verbatim from evidence), and explicitly states the mitigation sub-question was skipped because no specialist was available for source 'attack' (matching run notes and plan.results only containing q1/capec, with q2/attack absent). No correlation is claimed (expect_no_correlation=true, satisfied since only capec ids are surfaced) and no invented facts, aliases, counts, or extra techniques appear beyond the evidence. All 5 gold-required elements (CAPEC-555 id, 3 related technique ids, and the attack-skip) are present and correctly grounded."
+}

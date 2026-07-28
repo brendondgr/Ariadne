@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty join (must_correlate: [], expect_no_correlation: true, capec.expect_empty: true, attack.expect_dependency_skip: true) for CAPEC-116 -> ATT&CK mapping. The evidence confirms the capec_maps_to Gremlin query executed cleanly against seed CAPEC-116 and returned row_count 0 (logic_flow.results[0], traces: execute/assess both show row_count 0, empty_with_seeds: ['CAPEC-116']). The dependent q2 (ATT&CK mitigations) correctly short-circuited via a 'dependency' trace step citing 'producer q1: it returned no join values', rather than fabricating a query or result. The answer's narrative/abstentions state exactly this: no matching records, and q2 skipped because q1 produced no seed identifiers. No technique IDs, mitigation IDs, or counts were invented anywhere in narrative, claims, or abstentions. This is a textbook correct negative response with full faithfulness and groundedness; deterministic_scores also self-report exact negative correlation match (precision/recall/f1 = 1.0), consistent with independent verification."
+}

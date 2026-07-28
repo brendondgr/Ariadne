@@ -1,0 +1,387 @@
+{
+  "id": "F-CTT-02",
+  "kind": "federated",
+  "tier": "medium",
+  "category": "F-CTT",
+  "question": "Which ATT&CK tactics do the techniques mapped from CAPEC-49 (Password Brute Forcing) belong to?",
+  "gold": {
+    "assertions": {
+      "must_correlate": [
+        "T1110.001"
+      ],
+      "capec": {
+        "min_records": 1,
+        "must_include_ids": [
+          "CAPEC-49"
+        ],
+        "must_include_related": [
+          "T1110.001"
+        ]
+      },
+      "attack": {
+        "min_records": 1,
+        "max_records": 1,
+        "must_include_ids": [
+          "T1110.001"
+        ],
+        "must_include_related": [
+          "TA0006"
+        ]
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 2
+  },
+  "answer": {
+    "headline": "Gathered 2 record(s) from 2 source(s); 1 cross-source correlation(s) on shared identifiers.",
+    "narrative": "The CAPEC-49 attack pattern for Password Brute Forcing maps to the single ATT&CK technique T1110.001, Password Guessing. This technique is classified under the ATT&CK tactic TA0006, Credential Access. Consequently, the techniques derived from CAPEC-49 belong exclusively to the Credential Access tactic.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s) for CAPEC-49; ATT&CK mappings: T1110.001.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-49"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-49"
+          }
+        ]
+      },
+      {
+        "text": "Found 1 item(s) related to T1110.001 (e.g. TA0006) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1110.001"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1110.001"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1110.001 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1110.001"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-49"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1110.001"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which ATT&CK techniques does CAPEC-49 map to?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "Which tactics do those techniques belong to?",
+        "seed_from": "q1"
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Retrieve the entry_id values from TaxonomyEntry nodes that are mapped from the AttackPattern named 'Password Brute Forcing' (CAPEC-49) for the ATT&CK taxonomy.",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s) for CAPEC-49; ATT&CK mappings: T1110.001.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CAPEC-49"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_maps_to",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.082
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 6.5
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.005
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.047
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-49",
+            "name": "Password Brute Forcing",
+            "label": "AttackPattern",
+            "description": "An adversary tries every possible value for a password until they succeed. A brute force attack, if feasible computationally, will always be successful because it will essentially go through all possible passwords given the alphabet used (lower case letters, upper case letters, numbers, symbols, etc.) and the maximum length of the password.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Password Brute Forcing",
+              "description": "An adversary tries every possible value for a password until they succeed. A brute force attack, if feasible computationally, will always be successful because it will essentially go through all possible passwords given the alphabet used (lower case letters, upper case letters, numbers, symbols, etc.) and the maximum length of the password.",
+              "id": "capec:attack-pattern:49",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [
+              "T1110.001"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1110.001",
+                "entry_id": "1110.001",
+                "name": "Brute Force:Password Guessing",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "Retrieve the Tactic names for Techniques and SubTechniques whose attack_id matches the entry_id values retrieved in q1.",
+        "query": "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids RETURN t.attack_id AS technique_id, t.name AS technique_name, ta.attack_id AS in_tactic_id, ta.name AS in_tactic_name LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 item(s) related to T1110.001 (e.g. TA0006) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "SubTechnique",
+                "Tactic"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1110.001"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "technique_tactics",
+              "query": "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids RETURN t.attack_id AS technique_id, t.name AS technique_name, ta.attack_id AS in_tactic_id, ta.name AS in_tactic_name LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.082
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 24.4
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 2.104
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1110.001",
+            "name": "Password Guessing",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1110.001"
+            ],
+            "related": [
+              {
+                "id": "TA0006",
+                "name": "Credential Access",
+                "description": "The adversary is trying to steal account names and passwords.\n\nCredential Access consists of techniques for stealing credentials like account names and passwords. Techniques used to get credentials include keylogging or credential dumping. Using legitimate credentials can give adversaries access to systems, make them harder to detect, and provide the opportunity to create more accounts to help achieve their goals."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 1,
+      "n_got": 1
+    },
+    "mapping_recall": {
+      "gold": 1,
+      "found": 1,
+      "recall": 1.0,
+      "missing": []
+    },
+    "coverage": null,
+    "provenance": {
+      "citations": 4,
+      "compliant": 4,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "Retrieve the entry_id values from TaxonomyEntry nodes that are mapped from the AttackPattern named 'Password Brute Forcing' (CAPEC-49) for the ATT&CK taxonomy.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "Retrieve the Tactic names for Techniques and SubTechniques whose attack_id matches the entry_id values retrieved in q1.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 71.683
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 2,
+    "related": 2
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-EXC-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative/adversarial case: T1002 is a retired ATT&CK technique excluded at load, and gold asserts expect_empty=true with an empty expected id pool. The executed Cypher (MATCH (n:Technique) WHERE n.attack_id IN ['T1002'] ...) ran cleanly and returned row_count 0 / records: [] (logic_flow.results[0]), confirming no Technique node with attack_id T1002 exists in the loaded graph. The pipeline correctly abstained: claims is empty, abstentions[0] states the attack source query returned no matching records for T1002, and the narrative reports 'The routed sources returned no matching records for this question' and invites the analyst to supply a different id, without fabricating any technique name, status, or property. No entities were required to be surfaced (gold_expected=0) and none were fabricated (gold_present=0, matching). This is exactly the correct behavior for a NEG-style excluded-entity probe."
+}

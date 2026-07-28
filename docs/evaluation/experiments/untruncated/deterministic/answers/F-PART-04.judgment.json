@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is an adversarial negative case simulating the CAPEC source being down. Gold requires: capec.expect_skipped=true, attack.expect_dependency_skip=true, expect_no_correlation=true, expect_partial=true, and an empty must_correlate list. The answer's notes state 'Skipped capec: no specialist available for source capec', matching capec.expect_skipped. The abstentions array records that the attack sub-question (q2) depends on q1 for seed identifiers and q1 was never run, matching attack.expect_dependency_skip exactly (mirrored in logic_flow.results[0].summary and traces[0].reasons: 'producer q1: it was not run'). claims=[] and no T-numbers/CAPEC ids are asserted, satisfying expect_no_correlation with must_correlate=[]. The narrative correctly abstains ('The routed sources returned no matching records...') rather than fabricating a broad unseeded ATT&CK query, satisfying expect_partial/partial_mode=capec_down. deterministic_scores confirm this (correlation.negative=true, exact=true, f1=1.0, abstention_proof_ok=true, fully_provenanced=true). No entity ids were required by gold (must_include_ids/must_include_related empty) and none were fabricated, so faithfulness and groundedness are clean."
+}

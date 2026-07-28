@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SW-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 56,
+  "gold_present": 56,
+  "hallucinations": [],
+  "rationale": "The retrieval query 'MATCH (s:Software)-[:USES]->(t) WHERE (t:Technique OR t:SubTechnique) AND s.attack_id IN $ids' returned exactly the 55 technique/sub-technique records that back the gold's must_include_related list. Comparing sets programmatically: gold has 55 required T-ids, the answer's enumeration claim has exactly the same 55 (zero missing, zero extra), and the answer correctly identifies S0266 as TrickBot in the first claim (matching must_include_ids). Every technique id/name pair in the answer traces directly to the 'related' array in logic_flow (e.g. T1027.002 Software Packing, T1495 Firmware Corruption, T1056.004 Credential API Hooking), which contain genuine MITRE ATT&CK descriptions consistent with each id. The narrative is deterministic (LLM narrator fell back due to a request timeout, per fallback_reason) but is a faithful, complete restatement of the evidence: no invented ids, names, counts, or aliases. Row count (55) matches both evidence execute-step row_count and the answer's stated count."
+}

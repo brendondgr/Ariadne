@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-555 mapping to T1114.002 (capec.must_include_ids/must_include_related) and the ATT&CK record T1114.002 named 'Remote Email Collection' (attack.must_include_ids/expect_names), plus the must_correlate join on T1114.002. The narrative states CAPEC-555 (Remote Services with Stolen Credentials) maps to T1114.002 via its TaxonomyEntry capec:taxonomy:ATTACK:1114.002 (matches record q1: primary_id CAPEC-555, related entry_id 1114.002), gives its Abstraction=Standard/Status=Stable (matches properties), and names T1114.002 as 'Remote Email Collection' with stix_type attack-pattern, x_mitre_is_subtechnique=True, version 1.3, revoked=False, x_mitre_deprecated=False (all match the q2 record's properties exactly). It also correctly reports the facet-chased relations from q3 (TA0009/Collection tactic) and q4 (parent T1114 Email Collection), and states the cross-source correlation on T1114.002 across capec and attack, consistent with deterministic_scores.correlation (exact=true, recall=1.0) and evidence_volume (records=4, related=3). Every stated fact traces directly to the logic_flow records/properties/related fields with no invented values, aliases, or counts. No negative-case concerns apply. Both required gold ids (CAPEC-555, T1114.002) are surfaced with correct names/properties, so the answer is fully correct, faithful, grounded, and complete."
+}

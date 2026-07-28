@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 37,
+  "gold_present": 37,
+  "hallucinations": [],
+  "rationale": "The answer's claim entity_ids (37 technique ids) match the gold ex_gold expected pool of 37 technique ids exactly (set difference in both directions is empty), and all 5 must_include_ids (T1003, T1005, T1014, T1025, T1030) are present. Every cited id (e.g. T1211, T1669, T1105 named explicitly in the narrative) is grounded in the logic_flow records returned by the query `MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN $ids`, which returned exactly 37 rows -- matching the narrative's stated count of 37 with no fabricated techniques, names, or counts. The 'APT28' alias in the narrative simply echoes the question's own framing rather than asserting an unverified fact from evidence."
+}

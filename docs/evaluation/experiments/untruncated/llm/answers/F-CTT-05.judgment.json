@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The narrative correctly identifies that CAPEC-13 maps to three ATT&CK sub-techniques (T1574.006, T1574.007, T1562.003), matching the capec record's join_values exactly. It then correctly states that both required correlation ids T1574.006 and T1574.007 (gold.must_correlate) belong to tactics TA0005 and TA0002, which the attack-source records literally name 'Stealth' and 'Execution' respectively in their 'related' arrays -- matching gold.attack.must_include_related (TA0002, TA0005) exactly. All 5 unique gold-required ids (CAPEC-13, T1574.006, T1574.007, TA0002, TA0005) are surfaced. The narrative also correctly and honestly notes that T1562.003's tactic associations are absent from the evidence (the attack query's records array only contains T1574.006 and T1574.007, row_count 4 -> 2 normalized records) rather than fabricating a tactic for it -- this is a faithful abstention, not a gap. No invented facts, counts, or aliases; deterministic_scores confirm correlation f1=1.0, mapping_recall=1.0, citation_provenance_rate=1.0."
+}

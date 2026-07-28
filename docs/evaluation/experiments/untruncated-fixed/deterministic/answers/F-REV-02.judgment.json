@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires the CAPEC pattern CAPEC-98 mapping to T1566, the ATT&CK id T1566 with name 'Phishing', and the cross-source correlation on T1566. The answer's claims state all of these: 'Found 1 CAPEC record(s) for CAPEC-98; ATT&CK mappings: T1566', 'CAPEC-98 (Phishing) has Abstraction: Standard; Status: Draft' (matches record properties Abstraction=Standard, Status=Draft), 'CAPEC-98 ... has 1 TaxonomyEntrys: capec:taxonomy:ATTACK:1566' (matches related TaxonomyEntry entry_id 1566), 'Found ATT&CK record T1566: Phishing' (matches expect_names T1566->Phishing), and the correlation claim 'T1566 is corroborated across attack and capec' (matches must_correlate T1566). All property values (Abstraction, Status, revoked, stix_type, x_mitre_deprecated, x_mitre_is_subtechnique, x_mitre_version=2.7) are verified present in the logic_flow record properties for CAPEC-98 and T1566 respectively -- no invented facts, aliases, or counts. deterministic_scores confirm mapping_recall=1.0 and correlation f1=1.0. This is a full, grounded, correct answer."
+}

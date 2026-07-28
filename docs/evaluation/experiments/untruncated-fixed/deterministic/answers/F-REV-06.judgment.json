@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-555 (capec.must_include_ids) mapped to T1114.002 (capec.must_include_related and must_correlate), and the ATT&CK record T1114.002 named 'Remote Email Collection' (attack.must_include_ids/expect_names). The claims surface all three: 'Found 1 CAPEC record(s) for CAPEC-555; ATT&CK mappings: T1114.002', the TaxonomyEntry claim citing capec:taxonomy:ATTACK:1114.002 (entry_id 1114.002, related to CAPEC-555's record), 'Found ATT&CK record T1114.002: Remote Email Collection', and an explicit correlation claim stating T1114.002 is corroborated across capec and attack. Every stated fact is traceable to logic_flow evidence: CAPEC-555 name/Abstraction=Standard/Status=Stable match the record properties exactly; T1114.002 name, revoked=False, stix_type=attack-pattern, x_mitre_deprecated=False, x_mitre_is_subtechnique=True, x_mitre_version=1.3 all match the ATT&CK record's properties verbatim. No invented facts, aliases, or counts were found. This is the deterministic arm (no narrative synthesis LLM); the claims list is the analyst-facing answer and it fully and accurately answers the question."
+}

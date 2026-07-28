@@ -1,0 +1,12 @@
+{
+  "case_id": "C-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty: true) for deprecated/excluded CAPEC-557. The logic_flow shows the executed Gremlin query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...) ran cleanly and returned row_count: 0, records: [], with an explicit assess trace noting empty_with_seeds: [\"CAPEC-557\"]. The answer's claims array is empty and the narrative correctly states 'The routed sources returned no matching records for this question' with an abstention citing the exact executed query and seed id, rather than fabricating a CAPEC-557 description. No entities, ids, or properties were invented. This is a fully correct abstention matching the negative-case gold exactly."
+}

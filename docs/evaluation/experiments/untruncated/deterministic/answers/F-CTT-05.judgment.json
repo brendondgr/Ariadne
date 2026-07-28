@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-13 (present, correctly named 'Subverting Environment Variable Values'), the two correlated technique ids T1574.006 and T1574.007 (both present, correctly named 'Dynamic Linker Hijacking' and 'Path Interception by PATH Environment Variable' matching the evidence's TaxonomyEntry related-names), and tactic ids TA0002/TA0005 for each technique (both present for both techniques, exactly matching the attack sub-query's related arrays). The claims correctly note CAPEC-13 maps to three ATT&CK identifiers (T1562.003, T1574.006, T1574.007) but that only 2 full ATT&CK Technique records were retrieved (T1574.007, T1574.006) -- this matches the gold's attack.max_records=2 constraint and the evidence's record_count=2, so the system correctly did not fabricate a tactic assignment for T1562.003, which the executed Cypher query legitimately did not resolve into a Technique/SubTechnique+Tactic pair. The correlation claim (2 identifiers corroborated: T1574.006, T1574.007) exactly matches gold's must_correlate. Every stated id, name, and count (3 TaxonomyEntrys, 2 related items per technique, TA0005/TA0002) is directly traceable to the logic_flow records/related arrays -- no invented names, aliases, or counts were found."
+}

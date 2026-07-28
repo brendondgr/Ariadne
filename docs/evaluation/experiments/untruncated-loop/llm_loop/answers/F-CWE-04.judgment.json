@@ -1,0 +1,13 @@
+{
+ "case_id": "F-CWE-04",
+ "verdict": "PARTIAL",
+ "correctness": 0.55,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.59,
+ "gold_expected": 46,
+ "gold_present": 27,
+ "hallucinations": [],
+ "rationale": "The answer (deterministic composer, no LLM narrative beyond templated text) is fully correct and faithful on two of the three sub-questions: it names all 12 required CAPEC ids (CAPEC-49, CAPEC-509, CAPEC-55, CAPEC-555, CAPEC-560, CAPEC-561, CAPEC-565, CAPEC-600, CAPEC-644, CAPEC-645, CAPEC-652, CAPEC-70), confirms the CWE-308 link (verified in logic_flow.results[0].records[*].related, every CAPEC record carries a related CWE-308 edge), lists all 14 required ATT&CK ids exactly matching gold's min/max=14 (T1021, T1021.002, T1078, T1078.001, T1110.001-004, T1114.002, T1133, T1550.002, T1550.003, T1558, T1558.003), and emits a correlation claim for each of the 14 must_correlate T-numbers with correct '2 records share it' counts (verified: each T-number appears once as a capec-side TaxonomyEntry/join_value and once as the attack-side primary record). No fabricated ids, names, counts, or aliases were found. However the question explicitly asks 'what mitigations apply?' and the answer never names a single mitigation. logic_flow.results[1].records[*].related shows all 19 gold-required Mitigation ids (M1013, M1015, M1017, M1018, M1021, M1026, M1027, M1030, M1032, M1035, M1036, M1037, M1041, M1042, M1043, M1047, M1051, M1052, M1060) were actually retrieved and attached per-technique, but neither the narrative nor any claim surfaces a single M-id -- the narrative only offers the generic, unattributed sentence 'Mitigations apply to these mapped ATT&CK techniques to counter the associated credential access and lateral movement behaviors.' This is a real completeness/correctness failure on a third of the question despite the supporting evidence being fully present in logic_flow, not a retrieval gap. gold_expected=46 (12 CAPEC ids + 1 CWE-308 relation + 14 ATT&CK ids [also serving as the 14 must_correlate ids, counted once] + 19 mitigation ids); gold_present=27 (12+1+14+0).",
+ "notes": "For the parent grading harness, if it separately double-counts must_include_ids and must_correlate as distinct gold slots (14+14=28 rather than 14), the same underlying facts yield gold_expected=60, gold_present=41 -- the completeness ratio is materially unchanged (~0.59-0.68 depending on convention); the finding that stands regardless of convention is 0/19 mitigation ids surfaced."
+}

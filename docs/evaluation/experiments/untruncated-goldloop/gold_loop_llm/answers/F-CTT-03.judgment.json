@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-565 -> T1110.003 (capec.must_include_ids/must_include_related), the cross-source correlation on T1110.003 (must_correlate), and T1110.003 -> TA0006 (attack.must_include_ids/must_include_related). The narrative states all of this exactly: 'CAPEC-565 (Password Spraying)... maps to the ATT&CK technique T1110.003. This identifier is corroborated across the attack and capec sources... The technique T1110.003 has exactly 1 related item, which is TA0006.' Every fact traces to the evidence: CAPEC-565 properties (Abstraction: Detailed, Status: Draft) match logic_flow.results[0].records[0].properties exactly; the TaxonomyEntry id capec:taxonomy:ATTACK:1110.003 matches related[0].id verbatim; TA0006 matches logic_flow.results[1].records[0].related[0].id verbatim. deterministic_scores confirm exact correlation (precision/recall/f1 = 1.0) and full mapping_recall (1/1). No invented facts, aliases, counts, or entities beyond what the two retrieval steps returned."
+}

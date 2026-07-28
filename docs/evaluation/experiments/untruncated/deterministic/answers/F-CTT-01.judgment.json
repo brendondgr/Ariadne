@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The answer (deterministic claims/narrative, no LLM narrative beyond the templated one) surfaces every gold-required entity: CAPEC-98 (Phishing) is stated to map to T1566 and T1598 via 2 TaxonomyEntrys, matching the capec.records[0].related list exactly (capec:taxonomy:ATTACK:1566 -> Phishing, capec:taxonomy:ATTACK:1598 -> Phishing for Information). The attack sub-question result confirms T1566 (Phishing) belongs to TA0001 (Initial Access) and T1598 (Phishing for Information) belongs to TA0043 (Reconnaissance), which exactly matches the gold must_include_related [TA0001, TA0043] and the must_correlate [T1566, T1598]. Both cross-source correlation claims (T1566 and T1598 corroborated across capec and attack) are grounded in the evidence's join_values/primary_id overlap. deterministic_scores also independently confirm correlation f1=1.0 and mapping_recall=1.0. No names, counts, or ids in the narrative/claims are absent from or inconsistent with the logic_flow evidence (names 'Phishing', 'Phishing for Information', 'Initial Access', 'Reconnaissance' all appear verbatim in the records). No hallucinations found."
+}

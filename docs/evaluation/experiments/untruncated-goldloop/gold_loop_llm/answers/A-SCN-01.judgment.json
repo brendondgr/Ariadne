@@ -1,0 +1,12 @@
+{
+ "case_id": "A-SCN-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "hallucinations": [],
+ "rationale": "Gold for this bounded-scan case only asserts min_records=250 and max_records=300 (no specific id list required). The executed query 'MATCH (n:Software) RETURN n.attack_id AS id, n.name AS name LIMIT 300' returned exactly 300 unique Software records, satisfying the bound (at the ceiling, as expected for a bounded scan capped at 300). The deterministic composer's claims (narrative was empty due to LLM timeout, so claims were graded as the answer) list entity_ids for all 300 record ids with zero additions and zero omissions versus the logic_flow evidence (claim_ids == rec_ids, verified by set comparison). The narrative text (fallback preview string) also enumerates all 300 ids verbatim, matching evidence order exactly. No names, aliases, counts, or properties beyond the raw id list are asserted, so there is nothing ungrounded to hallucinate."
+}

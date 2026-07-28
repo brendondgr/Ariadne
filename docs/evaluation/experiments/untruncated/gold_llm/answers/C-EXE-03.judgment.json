@@ -1,0 +1,12 @@
+{
+  "case_id": "C-EXE-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 7,
+  "gold_present": 7,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-163 plus all six execution-step ids (capec:attack-pattern:163:step:1 through :6). The evidence record for CAPEC-163 (Spear Phishing) lists exactly these six ExecutionStep neighbors. The answer's claims enumerate all six ids verbatim, and the narrative also names all six ids explicitly in its closing sentence while accurately paraphrasing steps 1, 2, 3, 5, and 6 from their evidence descriptions (contextual recon, spoofed cert/domain, duplicate site, deceptive message to harvest credentials, use of stolen credentials to log in). Step 4 (custom localized website variants) is covered by id in the enumeration/narrative closing line though not paraphrased in prose - a minor stylistic gap, not a completeness failure since the id itself is surfaced as required by the gold's must_include_related. No invented facts, names, counts, or properties were found beyond what's in the evidence (e.g., the 'Spear Phishing' name and step descriptions all trace directly to the retrieved record)."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.55,
+  "faithfulness": 1.0,
+  "groundedness": 0.9,
+  "completeness": 0.32,
+  "gold_expected": 47,
+  "gold_present": 15,
+  "hallucinations": [],
+  "rationale": "The retrieval and underlying claims are fully correct: the claims' entity_ids cover all 10 gold CAPEC ids (CAPEC-474/509/551/555/560/561/600/644/645/652), all 12 gold ATT&CK ids (T1021, T1021.002, T1078, T1110.004, T1114.002, T1133, T1543, T1550.002, T1550.003, T1552.004, T1558, T1558.003), and all 25 gold mitigation ids (M1013...M1060), matching the gold assertions exactly with correct counts (10 CAPEC, 12 ATT&CK). However, the prose narrative shown to the analyst -- which is present and substantive, not thin/empty, so it is graded as the answer per instructions -- only names a subset of each required list: 3/10 CAPEC ids (CAPEC-474, CAPEC-560, CAPEC-555), 4/12 ATT&CK ids (T1552.004, T1078, T1558, T1543), and 8/25 mitigation ids (M1047, M1026, M1027, M1018, M1032, M1041, M1015, M1035), using 'including'/'such as' framing instead of exhaustive enumeration. Since the question ('Which CAPEC patterns... which ATT&CK techniques... what mitigations apply') calls for exhaustive lists, the narrative under-delivers completeness (15/47 gold entities explicitly surfaced) even though the correct aggregate counts are stated and every named entity/name pair (e.g., CAPEC-474=Signature Spoofing by Key Theft, T1543=Create or Modify System Process, M1015=Active Directory Configuration) was verified against logic_flow evidence with no fabricated names, ids, or counts. No hallucinations found -- all stated identifiers and names trace to the retrieved records."
+}

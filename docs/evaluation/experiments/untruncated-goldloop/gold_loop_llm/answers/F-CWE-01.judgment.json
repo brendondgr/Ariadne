@@ -1,0 +1,12 @@
+{
+ "case_id": "F-CWE-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 47,
+ "gold_present": 47,
+ "hallucinations": [],
+ "rationale": "The deterministic claims (used as the answer since narrative is thin/redundant with claims) surface all 10 required CAPEC ids (CAPEC-474, 509, 551, 555, 560, 561, 600, 644, 645, 652) each correctly linked to CWE-522, all 12 required ATT&CK T-numbers as cross-source correlations (T1021, T1021.002, T1078, T1110.004, T1114.002, T1133, T1543, T1550.002, T1550.003, T1552.004, T1558, T1558.003), and the full union of 25 required mitigation ids (M1013...M1060), all matching gold's must_include_ids/must_include_related/must_correlate exactly with zero missing and zero extras. Verified every CAPEC record's Abstraction/Status property against logic_flow.results (capec) and every ATT&CK technique's related-mitigation list against logic_flow.results (attack): CAPEC-474 Detailed/Draft, CAPEC-560 Meta/Stable, CAPEC-561 Detailed/Draft, CAPEC-652 Standard/Draft, CAPEC-551 Detailed/Draft, CAPEC-600 Standard/Stable, CAPEC-644 Detailed/Stable, CAPEC-555 Standard/Stable, CAPEC-645 Detailed/Stable, CAPEC-509 Detailed/Stable -- all exact matches to evidence, and all 12 technique->mitigation enumerations (e.g. T1543 -> 9 items, T1078 -> 8 items) are byte-for-byte identical to the retrieved records' related-neighbour lists. No invented facts, counts, names, or aliases found."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-02",
+  "verdict": "CORRECT",
+  "correctness": 0.95,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 13,
+  "gold_present": 13,
+  "hallucinations": [],
+  "rationale": "Evidence confirms CAPEC-13 maps to T1574.006, T1574.007, T1562.003 and CAPEC-640 maps to T1505.005, T1574.006, T1574.013, T1620 (join_values in the q1 records), with T1574.006 as the sole overlap -- exactly what the narrative states. The gold's must_correlate set (T1505.005, T1574.006, T1574.007, T1574.013, T1620) is fully covered by the answer's 5 'correlation' claims, each citing both capec and attack sources. capec.must_include_ids (CAPEC-13, CAPEC-640) and capec.must_include_related (same 5 techniques, plus the extra grounded T1562.003) are both present via the two enumeration claims. attack.must_include_ids (the same 5 techniques, matching the gold's exact min=max=5 record count) and attack.must_include_related (M1022, M1024, M1028, M1038, M1040, M1047) are fully covered by the four per-technique mitigation enumeration claims, which together union to exactly 6 unique mitigations as the narrative states. T1620's empty related[] and T1562.003's absence from the q2 attack results correctly support the narrative's closing statement that neither has associated mitigation records. Every property cited (CAPEC-13/640 Abstraction: Detailed, Status: Stable; technique/mitigation names and counts) matches the retrieved records verbatim -- no fabricated names, counts, or aliases were found. Minor stylistic gap: the prose only names 3 of the 6 mitigations explicitly (M1047, M1038, M1022) rather than spelling out all six, though it correctly states the count and the full set is enumerated in the supporting claims shown to the analyst."
+}

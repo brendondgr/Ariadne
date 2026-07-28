@@ -1,0 +1,12 @@
+{
+  "case_id": "C-CSQ-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-66] plus must_include_related=[capec:attack-pattern:66:consequence:1/2/3/4] (5 entities). The single retrieved record in logic_flow (primary_id CAPEC-66, name 'SQL Injection') lists related[] containing exactly those four Consequence ids and no others. The answer's narrative/claims state 'Found 1 CAPEC record(s): CAPEC-66' and 'CAPEC-66 (SQL Injection) has 4 Consequences: consequence:1, consequence:2, consequence:3, consequence:4', which names all 5 required entities with the correct record name, fully traceable to the evidence. No counts, aliases, or properties beyond the evidence are asserted, so there is no fabrication. deterministic_scores.coverage independently confirms gold=5, found=5, coverage=1.0."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_empty=true for nonexistent group G9999 (assertions.expect_empty=true, ex_gold.expected=[]). The executed query MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN ['G9999'] correctly ran with row_count=0 (logic_flow.results[0].records=[], traces show execute/assess/normalize all report 0 rows). The answer has zero claims, and its single abstention correctly states the attack source found no matching records for the query, matching the executed query exactly. The narrative abstains cleanly ('The routed sources returned no matching records for this question') without inventing any technique, group name, or count. No fabricated ids, names, or properties are present anywhere in the narrative or claims. This is a fully correct, fully grounded negative-case response."
+}

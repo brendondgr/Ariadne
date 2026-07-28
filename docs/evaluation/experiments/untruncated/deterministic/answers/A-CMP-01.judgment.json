@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=['C0027'] and expect_names={'C0027':'C0027'}, with exactly 1 record (min/max_records=1). The retrieved record in logic_flow has primary_id='C0027', name='C0027', label='Campaign', matching the single evidence row returned by the Cypher query. The narrative/claim 'Found ATT&CK record C0027: C0027.' states exactly this id and name, satisfying both gold assertions with no extraneous or fabricated content. Every token in the claim (id, name) is directly traceable to the single retrieved record's properties (attack_id='C0027', name='C0027'); no invented aliases, counts, or dates appear. The answer is minimal (a deterministic-composer template that omits the rich description present in evidence, e.g. Scattered Spider attribution, SIM swapping, telecom/BPO targeting), but since gold's assertions only require the id and name to be surfaced -- not a narrative summary -- the answer is complete per the authoritative gold criteria."
+}

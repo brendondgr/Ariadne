@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.3,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.33,
+  "gold_expected": 3,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-98] and must_include_related=[T1566, T1598] (the ATT&CK techniques CAPEC-98 maps to). The retrieval query (q1) fetched CAPEC-98's elementMap plus outE/inE projected only by relationship label and neighbour node LABEL (inV().label()/outV().label()), never the neighbour node's id/name properties -- so the evidence contains only the fact that CAPEC-98 has a MAPS_TO facet with count=2 to TaxonomyEntry nodes, with zero populated 'related' entries and no T-number anywhere in logic_flow. The answer (deterministic claims + narrative) correctly surfaces CAPEC-98 (id, name 'Phishing', Abstraction=Standard, Status=Draft -- all grounded in the record) and honestly states '...two MAPS_TO relationships... The specific identifiers for these mapped entries are not included in the provided records, so the exact techniques cannot be identified,' rather than fabricating T1566/T1598. This is faithful and fully grounded (no hallucinations), but it fails to answer the actual question asked ('which ATT&CK techniques') since neither required T-number is surfaced -- consistent with the pipeline's own deterministic_scores.coverage (found=1/3=0.33, missing=[T1566,T1598]). Correctness is scored low because the specific entities the question asks for are entirely absent, though the abstention is honest rather than wrong, so this is graded PARTIAL rather than INCORRECT."
+}

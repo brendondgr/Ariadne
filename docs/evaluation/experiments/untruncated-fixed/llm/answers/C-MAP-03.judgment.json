@@ -1,0 +1,14 @@
+{
+  "case_id": "C-MAP-03",
+  "verdict": "INCORRECT",
+  "correctness": 0.35,
+  "faithfulness": 0.5,
+  "groundedness": 0.6,
+  "completeness": 0.5,
+  "gold_expected": 4,
+  "gold_present": 2,
+  "hallucinations": [
+    "Narrative's closing sentence ('The evidence confirms these mappings and does not indicate any additional ATT&CK techniques linked to this attack pattern') contradicts the retrieved evidence itself: the CAPEC-564 record's MAPS_TO traversal returned four ATT&CK taxonomy entries (T1037, T1543.001, T1543.004, T1547), so the evidence does in fact indicate two additional linked techniques that the narrative explicitly denies."
+  ],
+  "rationale": "Gold requires all four ATT&CK techniques CAPEC-564 maps to: T1037, T1543.001, T1543.004, T1547 (must_include_related). The q1 CAPEC query correctly retrieved the full MAPS_TO neighborhood showing all four taxonomy entries (evidence records[0].related and join_values). However the q2 ATT&CK query used 'MATCH (n:Technique) WHERE n.attack_id IN $ids', which excludes SubTechnique-labeled nodes (T1543.001 and T1543.004 are subtechniques), so it only returned T1037 and T1547 as confirmed ATT&CK records -- a retrieval gap versus the plan's stated intent to fetch 'Technique and SubTechnique nodes'. The narrative under test explicitly names only T1037 and T1547, and its final sentence asserts the evidence 'does not indicate any additional ATT&CK techniques linked to this attack pattern' -- a claim directly contradicted by the CAPEC record's own MAPS_TO evidence (four taxonomy entries, named earlier in the same narrative). This is a materially misleading answer to 'which ATT&CK techniques does CAPEC-564 map to': it surfaces only 2 of 4 gold-required ids and actively denies the other two exist, rather than flagging them as CAPEC-side matches unconfirmed on the ATT&CK side. Note the underlying claims array (not the narrative) does list all four ids in claim text 'ATT&CK mappings: T1037, T1543.001, T1543.004, T1547', but per grading instructions the narrative is the answer under test here since it is present and substantive, and the narrative itself contradicts/undercuts that fuller claim data. deterministic_scores.coverage in the artifact independently confirms coverage=0.6 (3/5, using a 5-item gold count) with T1543.001 and T1543.004 listed as missing, corroborating the completeness failure."
+}

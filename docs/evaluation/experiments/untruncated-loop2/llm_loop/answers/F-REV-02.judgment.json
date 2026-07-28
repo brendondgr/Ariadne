@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-98 (with must_include_related T1566) and T1566 (name 'Phishing') to be surfaced and cross-source correlated. The narrative states 'Only one CAPEC pattern, CAPEC-98 (Phishing), maps to the ATT&CK technique T1566' -- matching the single q2 record (capec.records[0].primary_id=CAPEC-98, related=[T1566]) -- and correctly names T1566 as 'Phishing'. CAPEC-98 properties (Abstraction: Standard, Status: Draft) match record properties exactly. T1566 properties (stix_type: attack-pattern, x_mitre_version: 2.7, revoked/x_mitre_deprecated/x_mitre_is_subtechnique: False) all match attack.records[0].properties exactly. The claim 'T1566 is corroborated across attack and capec (3 record(s) share it)' is grounded: three records across the two sub-questions/sources carry join_values=['T1566'] (capec q2 record, attack q1 record, attack q3 record). The 'exactly one related item, TA0001' matches q3's related entry (TA0001, Initial Access). must_correlate T1566 is explicitly stated via the correlation claim/narrative. No invented ids, names, counts, or properties were found -- every stated fact traces to logic_flow records. Both required gold ids (CAPEC-98, T1566) and the required name (Phishing) are surfaced, satisfying completeness."
+}

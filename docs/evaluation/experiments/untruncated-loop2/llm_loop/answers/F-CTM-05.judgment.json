@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 12,
+  "gold_present": 12,
+  "hallucinations": [],
+  "rationale": "The narrative correctly identifies CAPEC-21 (Exploitation of Trusted Identifiers) mapping to all three required ATT&CK techniques T1134, T1528, T1539 (matches gold must_correlate and capec.must_include_related), and states CAPEC-21's Abstraction: Meta / Status: Stable exactly as recorded in the evidence properties. It reports exactly 3 ATT&CK records (matches attack.min_records=3, max_records=3, must_include_ids). Per-technique mitigation lists are verified verbatim against the evidence's related arrays: T1539 -> M1051, M1047, M1054, M1032, M1017, M1021 (exact match, 6/6); T1528 -> M1047, M1018, M1017, M1021 (exact match, 4/4); T1134 -> M1026, M1018 (exact match, 2/2). The union of stated mitigations (M1017, M1018, M1021, M1026, M1032, M1047, M1051, M1054) exactly equals gold's attack.must_include_related set of 8 mitigations, with no extras and no omissions. No invented ids, names, counts, or aliases were found; every entity and attribute traces directly to logic_flow.results records/related. All 12 unique gold-required entities (CAPEC-21, T1134, T1528, T1539, M1017, M1018, M1021, M1026, M1032, M1047, M1051, M1054) are surfaced."
+}

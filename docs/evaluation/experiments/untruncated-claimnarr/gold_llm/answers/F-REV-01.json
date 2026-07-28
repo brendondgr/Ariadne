@@ -1,0 +1,575 @@
+{
+  "id": "F-REV-01",
+  "kind": "federated",
+  "tier": "medium",
+  "category": "F-REV",
+  "question": "Which CAPEC patterns map to ATT&CK technique T1040 (Network Sniffing), and what is that technique?",
+  "gold": {
+    "assertions": {
+      "must_correlate": [
+        "T1040"
+      ],
+      "capec": {
+        "min_records": 3,
+        "must_include_ids": [
+          "CAPEC-57",
+          "CAPEC-65",
+          "CAPEC-158"
+        ],
+        "must_include_related": [
+          "T1040"
+        ]
+      },
+      "attack": {
+        "min_records": 1,
+        "max_records": 1,
+        "must_include_ids": [
+          "T1040"
+        ],
+        "expect_names": {
+          "T1040": "Network Sniffing"
+        }
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 1
+  },
+  "answer": {
+    "headline": "Gathered 4 record(s) from 2 source(s); 1 cross-source correlation(s) on shared identifiers.",
+    "narrative": "Three CAPEC patterns map to ATT&CK technique T1040: CAPEC-57 (Utilizing REST's Trust in the System Resource to Obtain Sensitive Data), CAPEC-158 (Sniffing Network Traffic), and CAPEC-65 (Sniff Application Code). Each of these patterns has Abstraction: Detailed and Status: Draft, and each references exactly one TaxonomyEntry, capec:taxonomy:ATTACK:1040. The ATT&CK record T1040 is named Network Sniffing, carries stix_type attack-pattern, and has x_mitre_version 1.7 with revoked, x_mitre_deprecated, and x_mitre_is_subtechnique all set to False. The identifier T1040 is corroborated across the attack and capec sources, with four records sharing it.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 3 CAPEC record(s) for CAPEC-158, CAPEC-57, CAPEC-65; ATT&CK mappings: T1040.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-57",
+          "CAPEC-158",
+          "CAPEC-65"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-57"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-158"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-65"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-57 (Utilizing REST's Trust in the System Resource to Obtain Sensitive Data) has Abstraction: Detailed; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-57"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-57"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-158 (Sniffing Network Traffic) has Abstraction: Detailed; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-158"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-158"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-65 (Sniff Application Code) has Abstraction: Detailed; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-65"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-65"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-57 (Utilizing REST's Trust in the System Resource to Obtain Sensitive Data) has 1 TaxonomyEntrys: capec:taxonomy:ATTACK:1040.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "capec:taxonomy:ATTACK:1040"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-57"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-158 (Sniffing Network Traffic) has 1 TaxonomyEntrys: capec:taxonomy:ATTACK:1040.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "capec:taxonomy:ATTACK:1040"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-158"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-65 (Sniff Application Code) has 1 TaxonomyEntrys: capec:taxonomy:ATTACK:1040.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "capec:taxonomy:ATTACK:1040"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-65"
+          }
+        ]
+      },
+      {
+        "text": "Found ATT&CK record T1040: Network Sniffing.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1040"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1040"
+          }
+        ]
+      },
+      {
+        "text": "T1040 (Network Sniffing) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.7.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1040"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1040"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1040 is corroborated across attack and capec (4 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1040"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-57"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-158"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-65"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1040"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which CAPEC patterns map to ATT&CK technique T1040?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What is ATT&CK technique T1040?",
+        "seed_from": null
+      }
+    ],
+    "sequenced": false,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Which CAPEC patterns map to ATT&CK technique T1040?",
+        "query": "g.V().hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").has(\"entry_id\", within(entryIds)).as(\"tax\").in(\"MAPS_TO\").hasLabel(\"AttackPattern\").as(\"ap\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 3 CAPEC record(s) for CAPEC-158, CAPEC-57, CAPEC-65; ATT&CK mappings: T1040.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1040"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_reverse_maps",
+              "query": "g.V().hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").has(\"entry_id\", within(entryIds)).as(\"tax\").in(\"MAPS_TO\").hasLabel(\"AttackPattern\").as(\"ap\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
+              "injected": [],
+              "timing_ms": 0.083
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 3,
+              "timing_ms": 5.2
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 3,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 3,
+              "timing_ms": 0.108
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-57",
+            "name": "Utilizing REST's Trust in the System Resource to Obtain Sensitive Data",
+            "label": "AttackPattern",
+            "description": "This attack utilizes a REST(REpresentational State Transfer)-style applications' trust in the system resources and environment to obtain sensitive data once SSL is terminated.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Utilizing REST's Trust in the System Resource to Obtain Sensitive Data",
+              "description": "This attack utilizes a REST(REpresentational State Transfer)-style applications' trust in the system resources and environment to obtain sensitive data once SSL is terminated.",
+              "id": "capec:attack-pattern:57",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1040"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1040",
+                "entry_id": "1040",
+                "name": "Network Sniffing",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-158",
+            "name": "Sniffing Network Traffic",
+            "label": "AttackPattern",
+            "description": "In this attack pattern, the adversary monitors network traffic between nodes of a public or multicast network in an attempt to capture sensitive information at the protocol level. Network sniffing applications can reveal TCP/IP, DNS, Ethernet, and other low-level network communication information. The adversary takes a passive role in this attack pattern and simply observes and analyzes the traffic. The adversary may precipitate or indirectly influence the content of the observed transaction, but is never the intended recipient of the target information.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Sniffing Network Traffic",
+              "description": "In this attack pattern, the adversary monitors network traffic between nodes of a public or multicast network in an attempt to capture sensitive information at the protocol level. Network sniffing applications can reveal TCP/IP, DNS, Ethernet, and other low-level network communication information. The adversary takes a passive role in this attack pattern and simply observes and analyzes the traffic. The adversary may precipitate or indirectly influence the content of the observed transaction, but is never the intended recipient of the target information.",
+              "id": "capec:attack-pattern:158",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1040"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1040",
+                "entry_id": "1040",
+                "name": "Network Sniffing",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-65",
+            "name": "Sniff Application Code",
+            "label": "AttackPattern",
+            "description": "An adversary passively sniffs network communications and captures application code bound for an authorized client. Once obtained, they can use it as-is, or through reverse-engineering glean sensitive information or exploit the trust relationship between the client and server. Such code may belong to a dynamic update to the client, a patch being applied to a client component or any such interaction where the client is authorized to communicate with the server.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Sniff Application Code",
+              "description": "An adversary passively sniffs network communications and captures application code bound for an authorized client. Once obtained, they can use it as-is, or through reverse-engineering glean sensitive information or exploit the trust relationship between the client and server. Such code may belong to a dynamic update to the client, a patch being applied to a client component or any such interaction where the client is authorized to communicate with the server.",
+              "id": "capec:attack-pattern:65",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1040"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1040",
+                "entry_id": "1040",
+                "name": "Network Sniffing",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "What is ATT&CK technique T1040?",
+        "query": "MATCH (n:Technique) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 20000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found ATT&CK record T1040: Network Sniffing.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1040"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "MATCH (n:Technique) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 20000",
+              "injected": [
+                "LIMIT 20000 appended (none present)"
+              ],
+              "timing_ms": 0.121
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 3.2
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.005
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 78.039
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1040",
+            "name": "Network Sniffing",
+            "label": "Technique",
+            "description": "Adversaries may passively sniff network traffic to capture information about an environment, including authentication material passed over the network. Network sniffing refers to using the network interface on a system to monitor or capture information sent over a wired or wireless connection. An adversary may place a network interface into promiscuous mode to passively access data in transit over the network, or use span ports to capture a larger amount of data.\n\nData captured via this technique may include user credentials, especially those sent over an insecure, unencrypted protocol. Techniques for name service resolution poisoning, such as [Name Resolution Poisoning and SMB Relay](https://attack.mitre.org/techniques/T1557/001), can also be used to capture credentials to websites, proxies, and internal systems by redirecting traffic to an adversary.\n\nNetwork sniffing may reveal configuration details, such as running services, version numbers, and other network characteristics (e.g. IP addresses, hostnames, VLAN IDs) necessary for subsequent [Lateral Movement](https://attack.mitre.org/tactics/TA0008) and/or [Stealth](https://attack.mitre.org/tactics/TA0005) activities. Adversaries may likely also utilize network sniffing during [Adversary-in-the-Middle](https://attack.mitre.org/techniques/T1557) (AiTM) to passively gain additional knowledge about the environment.\n\nIn cloud-based environments, adversaries may still be able to use traffic mirroring services to sniff network traffic from virtual machines. For example, AWS Traffic Mirroring, GCP Packet Mirroring, and Azure vTap allow users to define specified instances to collect traffic from and specified targets to send collected traffic to.(Citation: AWS Traffic Mirroring)(Citation: GCP Packet Mirroring)(Citation: Azure Virtual Network TAP) Often, much of this traffic will be in cleartext due to the use of TLS termination at the load balancer level to reduce the strain of encrypting and decrypting traffic.(Citation: Rhino Security Labs AWS VPC Traffic Mirroring)(Citation: SpecterOps AWS Traffic Mirroring) The adversary can then use exfiltration techniques such as Transfer Data to Cloud Account in order to access the sniffed traffic.(Citation: Rhino Security Labs AWS VPC Traffic Mirroring)\n\nOn network devices, adversaries may perform network captures using [Network Device CLI](https://attack.mitre.org/techniques/T1059/008) commands such as `monitor capture`.(Citation: US-CERT-TA18-106A)(Citation: capture_embedded_packet_on_software)",
+            "properties": {
+              "attack_id": "T1040",
+              "description": "Adversaries may passively sniff network traffic to capture information about an environment, including authentication material passed over the network. Network sniffing refers to using the network interface on a system to monitor or capture information sent over a wired or wireless connection. An adversary may place a network interface into promiscuous mode to passively access data in transit over the network, or use span ports to capture a larger amount of data.\n\nData captured via this technique may include user credentials, especially those sent over an insecure, unencrypted protocol. Techniques for name service resolution poisoning, such as [Name Resolution Poisoning and SMB Relay](https://attack.mitre.org/techniques/T1557/001), can also be used to capture credentials to websites, proxies, and internal systems by redirecting traffic to an adversary.\n\nNetwork sniffing may reveal configuration details, such as running services, version numbers, and other network characteristics (e.g. IP addresses, hostnames, VLAN IDs) necessary for subsequent [Lateral Movement](https://attack.mitre.org/tactics/TA0008) and/or [Stealth](https://attack.mitre.org/tactics/TA0005) activities. Adversaries may likely also utilize network sniffing during [Adversary-in-the-Middle](https://attack.mitre.org/techniques/T1557) (AiTM) to passively gain additional knowledge about the environment.\n\nIn cloud-based environments, adversaries may still be able to use traffic mirroring services to sniff network traffic from virtual machines. For example, AWS Traffic Mirroring, GCP Packet Mirroring, and Azure vTap allow users to define specified instances to collect traffic from and specified targets to send collected traffic to.(Citation: AWS Traffic Mirroring)(Citation: GCP Packet Mirroring)(Citation: Azure Virtual Network TAP) Often, much of this traffic will be in cleartext due to the use of TLS termination at the load balancer level to reduce the strain of encrypting and decrypting traffic.(Citation: Rhino Security Labs AWS VPC Traffic Mirroring)(Citation: SpecterOps AWS Traffic Mirroring) The adversary can then use exfiltration techniques such as Transfer Data to Cloud Account in order to access the sniffed traffic.(Citation: Rhino Security Labs AWS VPC Traffic Mirroring)\n\nOn network devices, adversaries may perform network captures using [Network Device CLI](https://attack.mitre.org/techniques/T1059/008) commands such as `monitor capture`.(Citation: US-CERT-TA18-106A)(Citation: capture_embedded_packet_on_software)",
+              "id": "attack-pattern--3257eb21-f9a7-4430-8de1-d8b6e288f529",
+              "name": "Network Sniffing",
+              "revoked": false,
+              "stix_type": "attack-pattern",
+              "x_mitre_deprecated": false,
+              "x_mitre_is_subtechnique": false,
+              "x_mitre_platforms": [
+                "IaaS",
+                "Linux",
+                "macOS",
+                "Network Devices",
+                "Windows"
+              ],
+              "x_mitre_version": "1.7",
+              "_omitted_properties": [
+                "external_references"
+              ]
+            },
+            "facets": [
+              {
+                "rel": "DETECTS",
+                "direction": "in",
+                "neighbour_label": "DetectionStrategy",
+                "count": 1
+              },
+              {
+                "rel": "HAS_SUBTECHNIQUE",
+                "direction": "out",
+                "neighbour_label": "SubTechnique",
+                "count": 0
+              },
+              {
+                "rel": "HAS_TECHNIQUE",
+                "direction": "in",
+                "neighbour_label": "Tactic",
+                "count": 2
+              },
+              {
+                "rel": "MITIGATES",
+                "direction": "in",
+                "neighbour_label": "Mitigation",
+                "count": 4
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Campaign",
+                "count": 3
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Group",
+                "count": 8
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Software",
+                "count": 17
+              }
+            ],
+            "join_values": [
+              "T1040"
+            ],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 1,
+      "n_got": 1
+    },
+    "mapping_recall": {
+      "gold": 1,
+      "found": 1,
+      "recall": 1.0,
+      "missing": []
+    },
+    "coverage": null,
+    "provenance": {
+      "citations": 15,
+      "compliant": 15,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "gold_llm",
+  "run_meta": {
+    "planner": "gold-replay",
+    "synthesis": "llm",
+    "wall_s": 47.54
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 4,
+    "related": 3
+  }
+}

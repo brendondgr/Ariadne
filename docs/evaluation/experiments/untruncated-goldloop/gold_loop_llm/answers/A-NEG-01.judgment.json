@@ -1,0 +1,12 @@
+{
+  "case_id": "A-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result for nonexistent technique T9999 (expect_empty: true, ex_gold.expected: []). The evidence confirms the query 'MATCH (n:Technique) WHERE n.attack_id IN $ids ...' executed cleanly against seed_ids ['T9999'] with row_count 0 and records: []. The answer's claims array is empty (no fabricated entity), and the narrative correctly states 'The routed sources returned no matching records for this question' and invites the analyst to supply a valid id, without inventing any name, alias, or property for T9999. This is exactly the correct abstention behavior for a NEG case."
+}

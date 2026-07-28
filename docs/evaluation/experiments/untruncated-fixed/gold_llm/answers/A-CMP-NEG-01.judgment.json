@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty: true, ex_gold.expected: []) since campaign C9999 does not exist. The executed query MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN ['C9999'] correctly returned 0 rows (execute/assess/normalize traces all show row_count 0), and the pipeline abstained with no claims, no fabricated technique ids, and an accurate abstention statement naming the source and query. Narrative correctly reports no matching records and offers example valid ids (T1566, M1017, CAPEC-98) without asserting any exist for C9999. No hallucinations found; answer fully matches gold."
+}

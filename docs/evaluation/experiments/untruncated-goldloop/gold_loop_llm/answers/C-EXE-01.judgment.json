@@ -1,0 +1,12 @@
+{
+  "case_id": "C-EXE-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-66] and must_include_related=[capec:attack-pattern:66:step:1..4] (5 ids total). The narrative names CAPEC-66 explicitly and enumerates all four execution-step ids (capec:attack-pattern:66:step:1, :2, :3, :4), so gold_present=5/5. Every stated fact traces directly to the single retrieved record in logic_flow: name 'SQL Injection', Abstraction 'Standard', Status 'Draft' all match record.properties exactly, and each step's paraphrased description (survey application/inventory functionality; determine user-controllable input via special SQL characters; hypothesize underlying query and iteratively extract/modify/delete data; craft and execute the refined query, possibly multiple queries for denial of service) matches the corresponding related[].description text closely with no invented details, counts, or aliases. No entity, count, or property appears in the narrative or claims that is absent from the evidence."
+}

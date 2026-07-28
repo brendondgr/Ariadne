@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-98 to map to T1566 and T1598 (must_correlate + capec.must_include_related), and those techniques to belong to TA0001 (Initial Access) and TA0043 (Reconnaissance) (attack.must_include_related). The narrative states exactly this: 'CAPEC-98 (Phishing) maps to two ATT&CK techniques, T1566 and T1598. T1566 belongs to the TA0001 (Initial Access) tactic, while T1598 belongs to the TA0043 (Reconnaissance) tactic.' This is fully supported by logic_flow evidence: q1 record CAPEC-98 has join_values [T1566, T1598] with related TaxonomyEntry nodes named 'Phishing' (1566) and 'Phishing for Information' (1598); q2 records show T1566 -> related TA0001 'Initial Access' and T1598 -> related TA0043 'Reconnaissance', matching tactic names verbatim. All 5 required gold ids (T1566, T1598, TA0001, TA0043, CAPEC-98) are surfaced by name and correctly paired. No counts, names, or aliases in the narrative or claims are absent from the retrieved evidence -- no hallucinations. deterministic_scores also independently confirm exact correlation (precision/recall/f1 = 1.0) and mapping_recall 2/2."
+}

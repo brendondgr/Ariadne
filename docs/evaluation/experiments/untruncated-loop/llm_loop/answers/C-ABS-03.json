@@ -1,0 +1,880 @@
+{
+  "id": "C-ABS-03",
+  "kind": "capec",
+  "tier": "hard",
+  "category": "C-ABS",
+  "question": "Walk the abstraction hierarchy up from CAPEC-13: what are its standard and meta ancestors?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "CAPEC-13"
+      ],
+      "must_include_related": [
+        "CAPEC-77",
+        "CAPEC-22"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "CAPEC-22",
+        "CAPEC-77"
+      ],
+      "scheme": "capec"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 4 record(s) from 1 source(s).",
+    "narrative": "The analysis retrieved one CAPEC record, CAPEC-13, named Subverting Environment Variable Values. This attack pattern has an Abstraction value of Detailed and a Status of Stable. Traversing the ParentOf relationship to find standard and meta ancestors returned no related records, confirming that CAPEC-13 has no standard or meta ancestors in the hierarchy.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-13.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-13"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-13 (Subverting Environment Variable Values) has Abstraction: Detailed; Status: Stable.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-13"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          }
+        ]
+      },
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-13.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-13"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-13 (Subverting Environment Variable Values) has Abstraction: Detailed; Status: Stable.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-13"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          }
+        ]
+      },
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-13.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-13"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-13 (Subverting Environment Variable Values) has Abstraction: Detailed; Status: Stable.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-13"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          }
+        ]
+      },
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-13.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-13"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-13 (Subverting Environment Variable Values) has Abstraction: Detailed; Status: Stable.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-13"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-13"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "C-ABS-03",
+      "source": "capec",
+      "text": "Which standard pattern is CAPEC-13 a child of, and which meta pattern does that standard pattern belong to?",
+      "entities": [
+        "AttackPattern",
+        "ChildOf",
+        "ChildOf"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-13"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Retrieve the standard and meta ancestors of AttackPattern CAPEC-13 by traversing the ParentOf relationship hierarchy.",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-13.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern"
+              ],
+              "relationships": [
+                "ParentOf"
+              ],
+              "seed_ids": [
+                "CAPEC-13"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.075
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 4.9
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.188
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-13",
+            "name": "Subverting Environment Variable Values",
+            "label": "AttackPattern",
+            "description": "The adversary directly or indirectly modifies environment variables used by or controlling the target software. The adversary's goal is to cause the target software to deviate from its expected operation in a manner that benefits the adversary.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Subverting Environment Variable Values",
+              "description": "The adversary directly or indirectly modifies environment variables used by or controlling the target software. The adversary's goal is to cause the target software to deviate from its expected operation in a manner that benefits the adversary.",
+              "id": "capec:attack-pattern:13",
+              "Abstraction": "Detailed"
+            },
+            "facets": [
+              {
+                "rel": "CAN_ALSO_BE",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_ALSO_BE",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_FOLLOW",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_FOLLOW",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_PRECEDE",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_PRECEDE",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 1
+              },
+              {
+                "rel": "CHILD_OF",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CHILD_OF",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 1
+              },
+              {
+                "rel": "EXPLOITS_WEAKNESS",
+                "direction": "out",
+                "neighbour_label": "Weakness",
+                "count": 8
+              },
+              {
+                "rel": "HAS_CONSEQUENCE",
+                "direction": "out",
+                "neighbour_label": "Consequence",
+                "count": 5
+              },
+              {
+                "rel": "HAS_EXECUTION_STEP",
+                "direction": "out",
+                "neighbour_label": "ExecutionStep",
+                "count": 3
+              },
+              {
+                "rel": "HAS_MITIGATION",
+                "direction": "out",
+                "neighbour_label": "Mitigation",
+                "count": 4
+              },
+              {
+                "rel": "HAS_REFERENCE",
+                "direction": "out",
+                "neighbour_label": "ExternalReference",
+                "count": 1
+              },
+              {
+                "rel": "IN_VIEW",
+                "direction": "out",
+                "neighbour_label": "View",
+                "count": 0
+              },
+              {
+                "rel": "MAPS_TO",
+                "direction": "out",
+                "neighbour_label": "TaxonomyEntry",
+                "count": 3
+              },
+              {
+                "rel": "MEMBER_OF",
+                "direction": "out",
+                "neighbour_label": "Category",
+                "count": 0
+              },
+              {
+                "rel": "PEER_OF",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "PEER_OF",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 1
+              },
+              {
+                "rel": "REQUIRES_SKILL",
+                "direction": "out",
+                "neighbour_label": "Skill",
+                "count": 2
+              }
+            ],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q2",
+        "sub_question": "In capec, retrieve the AttackPattern reached from CAPEC-13 via CanPrecede",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"CAN_PRECEDE\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-13.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern"
+              ],
+              "relationships": [
+                "CanPrecede"
+              ],
+              "seed_ids": [
+                "CAPEC-13"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_neighbors",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"CAN_PRECEDE\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.116
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 3.5
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.065
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-13",
+            "name": "Subverting Environment Variable Values",
+            "label": "AttackPattern",
+            "description": "The adversary directly or indirectly modifies environment variables used by or controlling the target software. The adversary's goal is to cause the target software to deviate from its expected operation in a manner that benefits the adversary.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Subverting Environment Variable Values",
+              "description": "The adversary directly or indirectly modifies environment variables used by or controlling the target software. The adversary's goal is to cause the target software to deviate from its expected operation in a manner that benefits the adversary.",
+              "id": "capec:attack-pattern:13",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "CAPEC-14",
+                "name": "Client-side Injection-induced Buffer Overflow",
+                "label": "AttackPattern",
+                "type": "CAN_PRECEDE",
+                "description": "This type of attack exploits a buffer overflow vulnerability in targeted client software through injection of malicious content from a custom-built hostile service. This hostile service is created to deliver the correct content to the client software. For example, if the client-side application is a browser, the service will host a webpage that the browser loads."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q3",
+        "sub_question": "In capec, retrieve the AttackPattern reached from CAPEC-13 via ChildOf",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"CHILD_OF\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-13.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern"
+              ],
+              "relationships": [
+                "ChildOf"
+              ],
+              "seed_ids": [
+                "CAPEC-13"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_neighbors",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"CHILD_OF\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.079
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 2.9
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.004
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.056
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-13",
+            "name": "Subverting Environment Variable Values",
+            "label": "AttackPattern",
+            "description": "The adversary directly or indirectly modifies environment variables used by or controlling the target software. The adversary's goal is to cause the target software to deviate from its expected operation in a manner that benefits the adversary.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Subverting Environment Variable Values",
+              "description": "The adversary directly or indirectly modifies environment variables used by or controlling the target software. The adversary's goal is to cause the target software to deviate from its expected operation in a manner that benefits the adversary.",
+              "id": "capec:attack-pattern:13",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "CAPEC-77",
+                "name": "Manipulating User-Controlled Variables",
+                "label": "AttackPattern",
+                "type": "CHILD_OF",
+                "description": "This attack targets user controlled variables (DEBUG=1, PHP Globals, and So Forth). An adversary can override variables leveraging user-supplied, untrusted query variables directly used on the application server without any data sanitization. In extreme cases, the adversary can change variables controlling the business logic of the application. For instance, in languages like PHP, a number of poorly set default configurations may allow the user to override variables."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q4",
+        "sub_question": "In capec, retrieve the AttackPattern reached from CAPEC-13 via PeerOf",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-13.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern"
+              ],
+              "relationships": [
+                "PeerOf"
+              ],
+              "seed_ids": [
+                "CAPEC-13"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.076
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 8.9
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.004
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.255
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-13",
+            "name": "Subverting Environment Variable Values",
+            "label": "AttackPattern",
+            "description": "The adversary directly or indirectly modifies environment variables used by or controlling the target software. The adversary's goal is to cause the target software to deviate from its expected operation in a manner that benefits the adversary.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Subverting Environment Variable Values",
+              "description": "The adversary directly or indirectly modifies environment variables used by or controlling the target software. The adversary's goal is to cause the target software to deviate from its expected operation in a manner that benefits the adversary.",
+              "id": "capec:attack-pattern:13",
+              "Abstraction": "Detailed"
+            },
+            "facets": [
+              {
+                "rel": "CAN_ALSO_BE",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_ALSO_BE",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_FOLLOW",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_FOLLOW",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_PRECEDE",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_PRECEDE",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 1
+              },
+              {
+                "rel": "CHILD_OF",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CHILD_OF",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 1
+              },
+              {
+                "rel": "EXPLOITS_WEAKNESS",
+                "direction": "out",
+                "neighbour_label": "Weakness",
+                "count": 8
+              },
+              {
+                "rel": "HAS_CONSEQUENCE",
+                "direction": "out",
+                "neighbour_label": "Consequence",
+                "count": 5
+              },
+              {
+                "rel": "HAS_EXECUTION_STEP",
+                "direction": "out",
+                "neighbour_label": "ExecutionStep",
+                "count": 3
+              },
+              {
+                "rel": "HAS_MITIGATION",
+                "direction": "out",
+                "neighbour_label": "Mitigation",
+                "count": 4
+              },
+              {
+                "rel": "HAS_REFERENCE",
+                "direction": "out",
+                "neighbour_label": "ExternalReference",
+                "count": 1
+              },
+              {
+                "rel": "IN_VIEW",
+                "direction": "out",
+                "neighbour_label": "View",
+                "count": 0
+              },
+              {
+                "rel": "MAPS_TO",
+                "direction": "out",
+                "neighbour_label": "TaxonomyEntry",
+                "count": 3
+              },
+              {
+                "rel": "MEMBER_OF",
+                "direction": "out",
+                "neighbour_label": "Category",
+                "count": 0
+              },
+              {
+                "rel": "PEER_OF",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "PEER_OF",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 1
+              },
+              {
+                "rel": "REQUIRES_SKILL",
+                "direction": "out",
+                "neighbour_label": "Skill",
+                "count": 2
+              }
+            ],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 3,
+      "found": 1,
+      "coverage": 0.3333333333333333,
+      "missing": [
+        "CAPEC-22",
+        "CAPEC-77"
+      ]
+    },
+    "provenance": {
+      "citations": 8,
+      "compliant": 8,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm_loop",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "Retrieve the standard and meta ancestors of AttackPattern CAPEC-13 by traversing the ParentOf relationship hierarchy.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "capec",
+        "text": "In capec, retrieve the AttackPattern reached from CAPEC-13 via CanPrecede",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q3",
+        "source": "capec",
+        "text": "In capec, retrieve the AttackPattern reached from CAPEC-13 via ChildOf",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q4",
+        "source": "capec",
+        "text": "In capec, retrieve the AttackPattern reached from CAPEC-13 via PeerOf",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 59.208
+  },
+  "evidence_volume": {
+    "results": 4,
+    "records": 4,
+    "related": 2
+  }
+}

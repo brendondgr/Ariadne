@@ -1,0 +1,17 @@
+{
+  "case_id": "F-CWE-04",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 0.15,
+  "groundedness": 0.35,
+  "completeness": 0.73,
+  "gold_expected": 45,
+  "gold_present": 33,
+  "hallucinations": [
+    "Narrative implies CAPEC-1 (Accessing Functionality Not Properly Constrained by ACLs) is among the CAPEC patterns exploiting CWE-308; evidence shows this record came from an unfiltered g.V().hasLabel(\"AttackPattern\").out(\"MAPS_TO\")... query with no CWE-308 join at all (logic_flow.results[1].query), so no evidence ties CAPEC-1 to CWE-308",
+    "Same unfiltered-query defect applies to the other 60+ CAPEC ids surfaced as if relevant (e.g. CAPEC-11, CAPEC-112, CAPEC-114, CAPEC-464, CAPEC-465, CAPEC-469, CAPEC-471, CAPEC-473...) -- none are evidenced as exploiting CWE-308",
+    "Headline 'Gathered 428 record(s)... 80 cross-source correlation(s)' presents the retrieval as successful, while the pipeline's own notes state 'The capec specialist failed and contributed no evidence: pre-run gate rejected all drafts: traversal depth 2 exceeds max_traversal_depth 1' -- i.e. the actual CWE-308-to-CAPEC join never executed",
+    "Dozens of unrelated ATT&CK techniques are asserted as relevant findings for this CWE-308 question (e.g. T1557 Adversary-in-the-Middle, T1592 Gather Victim Host Information, T1499/T1498 Endpoint/Network DoS Flood, T1542 Bootkit/System Firmware, T1195.001 Compromise Software Dependencies, T1566 Spearphishing, T1543 Create/Modify System Process, T1003 OS Credential Dumping, T1005 Data from Local System) -- none of these are in gold's must_correlate/must_include_ids list and none trace back to CWE-308 in the evidence"
+  ],
+  "rationale": "The plan's first, correctly-scoped sub-question (q1: 'Retrieve AttackPattern nodes that EXPLOIT_WEAKNESS a Weakness node with id CWE-308') failed outright -- logic_flow.results[0] shows all 3 query attempts rejected by a 'max_traversal_depth 1' gate, returning 0 records, and answer.notes explicitly says 'The capec specialist failed and contributed no evidence.' Instead of abstaining (answer.abstentions is empty), the pipeline silently fell back to an unconstrained query (g.V().hasLabel('AttackPattern').out('MAPS_TO')...limit(100)) with no CWE-308 filter, returning 67 arbitrary CAPEC records (CAPEC-1, CAPEC-11, CAPEC-112...) most of which have no relation to CWE-308, and seeded all downstream ATT&CK queries from that wrong id set. The narrative/claims present this as a successful answer ('Found 67 CAPEC record(s)...', '80 cross-source correlation(s)'), which is misleading given the pipeline's own diagnostics. Of the gold's 12 required CAPEC ids only 6 appear (CAPEC-49, 55, 509, 555, 560, 561), missing CAPEC-70, 565, 600, 644, 645, 652; of the 14 required ATT&CK/must_correlate ids only 8 appear (T1021, T1021.002, T1078, T1110.001, T1110.002, T1114.002, T1133, T1558.003), missing T1078.001, T1110.003, T1110.004, T1550.002, T1550.003, T1558. All 19 required mitigation ids happen to appear, but only because the flooded, unfiltered retrieval pulled in ~186 distinct entity ids total (vs. the ~45 actually required), so the correct entities are indistinguishable from noise in the output -- an analyst reading this narrative cannot tell which of the 67+109 listed items are the actual CWE-308 answer. Given the core join failed, the answer misrepresents unrelated data as relevant, and completeness is materially degraded, this is graded INCORRECT."
+}

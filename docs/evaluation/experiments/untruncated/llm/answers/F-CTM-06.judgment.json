@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-06",
+  "verdict": "PARTIAL",
+  "correctness": 0.8,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.65,
+  "gold_expected": 17,
+  "gold_present": 11,
+  "hallucinations": [],
+  "rationale": "The narrative correctly identifies all 3 must_correlate techniques (T1211, T1542.002, T1556) and CAPEC-665's mapping, matching the evidence's join_values exactly (deterministic_scores confirm correlation f1=1.0, mapping_recall=1.0). Mitigation counts stated in prose are also accurate and fully grounded: T1542.002->1 mitigation (M1051, matches evidence exactly), T1211->4 mitigations (M1051, M1050, M1048, M1019, matches evidence exactly and names all 4), T1556->9 mitigations (matches evidence's 9-item related list) but the narrative only names 3 of the 9 (M1047, M1032, M1028) as 'including' examples, leaving M1024, M1026, M1022, M1018, M1027, M1025 unnamed. Against gold's attack.must_include_related (13 mitigation ids: M1018,M1019,M1022,M1024,M1025,M1026,M1027,M1028,M1032,M1047,M1048,M1050,M1051), the answer explicitly names only 7 of 13 (M1051,M1047,M1032,M1028,M1050,M1048,M1019); combined with the 4 correctly-named entity ids (CAPEC-665, T1211, T1542.002, T1556), gold_present=11 of gold_expected=17. Every stated fact (names, ids, counts) is traceable to the logic_flow evidence with no invented aliases, dates, or counts -- faithfulness and groundedness are perfect. The gap is completeness: the answer correctly summarizes but does not enumerate all 13 required mitigations by name, so it is right but incomplete rather than fully correct."
+}

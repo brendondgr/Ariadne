@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold (expect_empty=true, ex_gold.expected=[]) requires the pipeline to correctly report no ATT&CK mappings exist for CAPEC-116. The capec_maps_to query executed cleanly against seed CAPEC-116 (g.V().hasLabel(\"AttackPattern\").has(\"id\",within(ids)).out(\"MAPS_TO\")...) and returned row_count 0, with no records, no partial flag, no error. The answer's claims list is empty and its single abstention correctly states the capec source doesn't establish this and returns no matching records for the question, with the executed query and reasoning attached (fully_provenanced true, abstention_proof_ok true). No entity, count, or name is fabricated anywhere in the narrative or abstention text. This is exactly the correct behavior for a NEG case: abstain rather than invent a mapping."
+}

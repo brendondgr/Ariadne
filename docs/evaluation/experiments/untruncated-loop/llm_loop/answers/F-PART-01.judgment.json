@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.15,
+  "faithfulness": 0.9,
+  "groundedness": 0.9,
+  "completeness": 0.0,
+  "gold_expected": 2,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires the CAPEC side to 'stay intact': at least 1 CAPEC record with id CAPEC-555 related to T1021 (assertions.capec.must_include_ids=['CAPEC-555'], must_include_related=['T1021'], min_records 1). The pipeline instead abstained on the CAPEC leg entirely (claims=[], answer.abstentions[0]), reporting 0 records. The executed Gremlin query is the likely cause: it filters `g.V().hasLabel('AttackPattern').has('id', within(ids))` where ids was resolved to the seed ['T1021'] (or empty per run_meta.observed_plan seed_ids=[]) -- i.e. it looks for a CAPEC AttackPattern node whose id literally equals 'T1021' instead of traversing MAPS_TO from a TaxonomyEntry(entry_id='T1021', taxonomy='ATTACK') node, so it can never match CAPEC-555 regardless of what data exists. No CAPEC-555 appears anywhere in logic_flow.results (records=[], evidence_volume.records=0), so the required entity is entirely missing -- completeness is 0/2 (CAPEC-555 id, T1021 relation not surfaced). The attack-side boundary refusal (assets are ICS-only, attack schema doesn't expose them) does correctly satisfy assertions.attack.expect_boundary, and expect_no_correlation is trivially satisfied since nothing was correlated -- but this does not compensate for failing to surface the mandatory CAPEC-555 mapping, which is the core of the question. The narrative itself is faithful and grounded (it accurately reports what the query returned, no fabricated ids/names/counts), so faithfulness/groundedness stay high, but correctness/completeness are low because the pipeline failed to answer the half of the question gold says must be answered."
+}

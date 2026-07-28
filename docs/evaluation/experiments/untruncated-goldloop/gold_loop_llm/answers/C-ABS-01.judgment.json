@@ -1,0 +1,12 @@
+{
+  "case_id": "C-ABS-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-7] and must_include_related=[CAPEC-66, CAPEC-248]. The narrative names CAPEC-7 (Blind SQL Injection, Abstraction: Detailed, Status: Draft) and correctly walks the hierarchy to CAPEC-66 as the 'standard ancestor' and CAPEC-248 as the 'meta ancestor'. This matches the retrieved evidence exactly: the single record's related[] array lists CAPEC-66 with role='standard'/abstraction='Standard' and CAPEC-248 with role='meta'/abstraction='Meta', and CAPEC-7's own properties show Abstraction=Detailed, Status=Draft, name=Blind SQL Injection. All three gold-required ids (CAPEC-7, CAPEC-66, CAPEC-248) are surfaced with correctly labeled roles, every stated fact (name, abstraction, status, ancestor role) traces directly to the logic_flow evidence, and no invented facts, aliases, or counts appear. deterministic_scores.coverage also confirms 3/3. Full completeness, no hallucinations."
+}

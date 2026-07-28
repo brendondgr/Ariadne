@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires: must_correlate T1110.001, CAPEC-49 mapping to T1110.001 via TaxonomyEntry, and ATT&CK T1110.001 named 'Password Guessing'. The narrative states all three: 'CAPEC-49, named \"Password Brute Forcing,\" is the one CAPEC pattern that maps to ATT&CK technique T1110.001 via a TaxonomyEntry' and 'T1110.001, titled \"Password Guessing,\"' with an accurate paraphrase of the technique description (management-service ports, SSO/cloud targeting, wifi router brute forcing) that matches the retrieved record's description field verbatim in substance. Supporting claims cite CAPEC-49 Abstraction=Standard/Status=Draft and T1110.001 revoked=False/stix_type=attack-pattern/x_mitre_deprecated=False/x_mitre_is_subtechnique=True/x_mitre_version=1.7, all of which match logic_flow.results[*].records[*].properties exactly. The cross-source correlation claim (T1110.001 shared by 2 records across attack and capec) matches deterministic_scores.correlation (exact=true, precision/recall=1.0). No entity, count, or property is asserted beyond what appears in the retrieved evidence; no hallucinations found."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-09",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-645 -> T1550.003 mapping (capec.must_include_ids/must_include_related), the cross-source correlation on T1550.003 (must_correlate), and four mitigations M1015/M1018/M1026/M1027 (attack.must_include_related), all attested in the retrieved evidence: q1 record CAPEC-645 (Abstraction: Detailed, Status: Stable) -> related TaxonomyEntry entry_id 1550.003; q3 record T1550.003 (Pass the Ticket) -> related M1015, M1026, M1018, M1027; deterministic_scores.correlation confirms exact 1/1 match on T1550.003. The narrative states all six required identifiers, correctly attributes the abstraction/status properties, and correctly lists all four mitigations verbatim. It also transparently flags that the broad q2 label-scan (100 Technique records, e.g. T1047/T1687/T1113 -- all genuinely present in the evidence) is noise and that only T1550.003 is actually mapped to CAPEC-645, which is accurate and not a hallucination since those ids are real retrieved records, merely irrelevant ones the answer correctly excludes from the mapping claim. No invented facts, aliases, counts, or entities found; every stated identifier and property traces directly to the logic_flow records."
+}

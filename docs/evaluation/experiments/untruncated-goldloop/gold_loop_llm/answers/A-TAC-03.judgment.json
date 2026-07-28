@@ -1,0 +1,12 @@
+{
+  "case_id": "A-TAC-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 18,
+  "gold_present": 18,
+  "hallucinations": [],
+  "rationale": "The narrative and claims list exactly 18 technique IDs (T1556, T1686, T1687, T1666, T1578, T1600, T1689, T1207, T1112, T1222, T1647, T1601, T1599, T1690, T1553, T1685, T1688, T1484). This set is an exact match to gold.ex_gold.expected (18 IDs) and a superset covering all 5 gold.assertions.must_include_ids (T1112, T1207, T1222, T1484, T1553). Every cited ID/name pair is directly traceable to logic_flow.results[0].records (18 records returned by the Cypher query MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique) for TA0112), with no invented names, counts, or extra IDs beyond the evidence. min_records (5) is exceeded. No abstention was warranted since this is not a negative case. Deterministic self-scores (coverage 1.0, citation_provenance_rate 1.0) are independently confirmed by direct comparison against the evidence."
+}

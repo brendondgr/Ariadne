@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-555 (mapping to T1021) and the ATT&CK record T1021 named 'Remote Services', plus a cross-source correlation on T1021. The answer's narrative and claims state CAPEC-555 (titled 'Remote Services with Stolen Credentials') maps to T1021, matching evidence record CAPEC-555 in q1 (Abstraction: Standard, Status: Stable, related TaxonomyEntry entry_id 1021 name 'Remote Services'). It states T1021 is named 'Remote Services', matching the q2 attack record exactly (attack_id T1021, name 'Remote Services', revoked: false, stix_type: attack-pattern, x_mitre_deprecated: false, x_mitre_is_subtechnique: false, x_mitre_version: 1.6 -- all verbatim from properties). It reports T1021 has 1 related item TA0008, matching q3's related list (TA0008, Lateral Movement) exactly, and count 1 matches the correlation and the answer's own facet enumeration (note: TA0008 appears as a related tactic in q3's results, not the technique's DETECTS/HAS_SUBTECHNIQUE/MITIGATES/USES facets which are counts not enumerated entities -- the claim correctly scopes 'related item' to the q3 tactic relationship). Finally it states T1021 is corroborated across attack and capec sources with 3 records sharing it, matching evidence_volume (3 records, 1 correlation) and deterministic_scores.correlation (exact: true, precision/recall/f1: 1.0). No fabricated names, counts, or ids were found; every stated fact traces directly to the retrieved records in logic_flow.results."
+}

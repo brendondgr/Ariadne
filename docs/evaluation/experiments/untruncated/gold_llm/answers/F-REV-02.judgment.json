@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-98 mapping to T1566 (capec.must_include_ids/must_include_related) and the ATT&CK record T1566 named 'Phishing' (attack.must_include_ids/expect_names), plus the cross-source correlation on T1566 (must_correlate). The narrative states exactly this: 'The only CAPEC pattern that maps to ATT&CK technique T1566 is CAPEC-98, which shares the same Phishing name,' and correctly identifies T1566 as 'Phishing.' The evidence record for CAPEC-98 (properties.name='Phishing', related TaxonomyEntry capec:taxonomy:ATTACK:1566) and the T1566 Technique record (name='Phishing', matching description text) fully support every sentence of the narrative, including the paraphrase of spearphishing vs. mass spam, malicious attachments/links, phone-number redirection, email spoofing, and thread hijacking, all of which are verbatim themes in the retrieved T1566 description field. No count, alias, or property is invented; the claims list mirrors the same two records and the single correlation. Both required entities (CAPEC-98, T1566) are surfaced with correct names, satisfying min_records=1/max_records=1 constraints exactly (1 CAPEC record, 1 ATT&CK record)."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-08",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 6,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "The pipeline hit a total timeout before either sub-question executed ('Skipped capec: total pipeline timeout exceeded before this sub-question ran'; 'Skipped attack: ...'). logic_flow.results is empty and evidence_volume is all zeros, so there is no retrieved evidence at all. The gold requires surfacing CAPEC-644 -> T1550.002 (must_correlate/must_include_related) and the four ATT&CK mitigations M1018, M1026, M1051, M1052 for T1550.002 -- none of these 6 required ids appear anywhere in the answer. The narrative is a generic abstention ('No records were returned by the routed specialists... If you meant a specific ATT&CK or CAPEC entity, name it') that doesn't even echo the CAPEC-644 id the analyst supplied, despite this not being a negative/no-match gold case (min_records=1 on both capec and attack legs). Since the abstention accurately reflects the (empty) evidence actually retrieved, there is no fabrication, so faithfulness/groundedness score high, but correctness and completeness are 0 -- this is a total pipeline failure (infrastructure timeout), not a correct or even partially correct answer to the question asked."
+}

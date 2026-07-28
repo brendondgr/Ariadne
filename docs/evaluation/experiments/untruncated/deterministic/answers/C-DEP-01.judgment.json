@@ -1,0 +1,12 @@
+{
+  "case_id": "C-DEP-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty: true, ex_gold.expected: []) because CAPEC-91 is deprecated and excluded at load. The executed Gremlin query against AttackPattern with id CAPEC-91 returned row_count 0 (logic_flow.results[0].summary: 'No CAPEC records found.', records: []). The answer correctly abstains: narrative states 'The routed sources returned no matching records for this question' and claims is an empty array, with an explicit abstention statement naming the capec source and the query that ran cleanly with no matches. No entity, id, or fact is fabricated -- the answer surfaces nothing beyond what the empty evidence supports, which is exactly the required behavior for this negative case."
+}

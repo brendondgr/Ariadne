@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 32,
+  "gold_present": 32,
+  "hallucinations": [],
+  "rationale": "The deterministic claims (no narrative distinct from claims) surface all 8 gold-required CAPEC ids (CAPEC-49,55,70,112,509,555,561,565), each correctly linked to CWE-521 and with Abstraction/Status values that match the evidence exactly (e.g. CAPEC-565 Detailed/Draft, CAPEC-555 Standard/Stable, CAPEC-509 Detailed/Stable, CAPEC-112 Meta/Draft), verified against logic_flow capec records. All 10 gold-required ATT&CK technique ids (T1021, T1021.002, T1078.001, T1110, T1110.001, T1110.002, T1110.003, T1114.002, T1133, T1558.003) are surfaced via enumeration claims, matching min/max_records=10 exactly. The union of mitigations listed across the ten enumeration claims (M1036,M1051,M1032,M1027,M1035,M1021,M1030,M1042,M1037,M1026,M1047,M1018,M1041,M1060) covers all 14 gold-required mitigation ids with no additions. Ten correlation claims state exactly the gold's must_correlate T-numbers, matching the cross-source join requirement. Cross-checking every enumeration claim's related-id list against the raw logic_flow.results records (capec and attack) shows an exact match with no counts, aliases, or ids invented beyond the evidence. gold_expected=32 counts the 8 CAPEC ids + 10 ATT&CK ids + 14 mitigation ids required by gold (must_correlate T-numbers are a subset of the ATT&CK ids already counted); all 32 are present in the answer. No fabricated facts found; this is a fully complete and faithful deterministic answer."
+}

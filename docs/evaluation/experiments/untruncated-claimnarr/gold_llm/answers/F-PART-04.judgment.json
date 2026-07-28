@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "This adversarial case tests that when the CAPEC-555 producer (q1) is unavailable ('CAPEC source down'), the dependent ATT&CK sub-question (q2, seeded from q1) must degrade to a dependency abstention rather than firing a broad unseeded query. The gold requires: capec.expect_skipped=true, attack.expect_dependency_skip=true, must_correlate=[] (expect_no_correlation=true). The answer's notes state 'Skipped capec: no specialist available for source capec' (satisfies capec skip), and the single abstention states 'the sub-question it depends on (q1) produced no seed identifiers, so no query was executed for: What mitigations does ATT&CK list for those mapped techniques?' (satisfies attack.expect_dependency_skip). logic_flow.results confirms this: q2's trace shows step='dependency', reasons=['producer q1: it was not run'], records=[]. Claims list is empty and no correlation is asserted, matching must_correlate=[]. The narrative correctly reports zero matching records and does not fabricate any technique, mitigation, or CAPEC-555 mapping. deterministic_scores.correlation shows negative=true, exact=true confirming the harness itself scored this as a correct negative match. No hallucinations found; every statement in the answer traces directly to the dependency-skip trace in logic_flow."
+}

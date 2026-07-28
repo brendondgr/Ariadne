@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 38,
+  "gold_present": 38,
+  "hallucinations": [],
+  "rationale": "The answer (claims, since narrative is the deterministic id-line summary) surfaces all 8 required CAPEC ids (CAPEC-60, CAPEC-94, CAPEC-509, CAPEC-555, CAPEC-561, CAPEC-644, CAPEC-645, CAPEC-652), each correctly tied to CWE-294 as the shared related weakness. All 11 must_correlate/must_include ATT&CK technique ids (T1021, T1021.002, T1114.002, T1133, T1134.001, T1550.002, T1550.003, T1550.004, T1557, T1558, T1558.003) are present as ATT&CK records (11 total, matching gold min/max_records=11) and each is stated as a correlation claim linking the correct CAPEC id via its join_values (verified against logic_flow: e.g. CAPEC-555 join_values=[T1021,T1114.002,T1133] matches the three correlation claims citing CAPEC-555; CAPEC-60 join_values=[T1134.001,T1550.004] matches). All 19 required mitigation ids (M1015, M1017, M1018, M1021, M1026, M1027, M1030, M1031, M1032, M1035, M1037, M1041, M1042, M1043, M1047, M1051, M1052, M1054, M1060) appear across the per-technique enumeration claims, union-covering the full gold set. Spot-checked every CAPEC Abstraction/Status pair (e.g. CAPEC-94: Meta/Stable, CAPEC-561: Detailed/Draft, CAPEC-652: Standard/Draft) and every technique's related-mitigation list against logic_flow.results records verbatim -- all match exactly with no invented values, counts, or names. No abstentions were needed (this is not a negative case) and none were issued. gold_present computed as 8 CAPEC ids + 11 T-ids (must_correlate/must_include, counted once) + 19 mitigation ids = 38, all fully covered."
+}

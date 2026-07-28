@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 27,
+  "gold_present": 27,
+  "hallucinations": [],
+  "rationale": "The narrative states CAPEC-150 (Standard/Draft, matching evidence properties) maps to all 6 gold-required ATT&CK techniques (T1003, T1119, T1213, T1530, T1555, T1602), satisfying capec.must_include_related and must_correlate exactly. For each technique it then lists mitigations that were checked one-for-one against logic_flow.results[1].records: T1003->M1041,M1015,M1026,M1040,M1027,M1025,M1043,M1028,M1017; T1602->M1041,M1051,M1054,M1030,M1037,M1031; T1119->M1029,M1041; T1530->M1041,M1047,M1032,M1022,M1018,M1037; T1555->M1051,M1026,M1027; T1213->M1041,M1047,M1054,M1032,M1018,M1060,M1017 -- every id and order matches the retrieved 'related' arrays exactly, and the union of these 6 sets is precisely the 20-id set in gold attack.must_include_related (M1015,M1017,M1018,M1022,M1025,M1026,M1027,M1028,M1029,M1030,M1031,M1032,M1037,M1040,M1041,M1043,M1047,M1051,M1054,M1060), with no extra or missing mitigation ids. Record counts (1 CAPEC, 6 ATT&CK) match gold min/max_records. No unsupported names, aliases, dates, or counts were introduced; gold_expected=27 (CAPEC-150 + 6 techniques + 20 mitigations), gold_present=27."
+}

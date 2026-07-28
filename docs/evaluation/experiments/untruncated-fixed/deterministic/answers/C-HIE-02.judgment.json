@@ -1,0 +1,12 @@
+{
+  "case_id": "C-HIE-02",
+  "verdict": "CORRECT",
+  "correctness": 0.9,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-564 (must_include_ids) and CAPEC-542 (must_include_related, the ChildOf parent). The query used CHILD_OF traversal and the single retrieved record's 'related' list contains exactly CAPEC-542 ('Targeted Malware'), matching gold's ex_gold.expected=['CAPEC-542'] under the capec scheme. The answer's claims surface both ids: 'Found 1 CAPEC record(s): CAPEC-564' and 'CAPEC-564 ... has 1 AttackPatterns: CAPEC-542', so gold_present=2/2 (coverage 1.0, matching deterministic_scores.coverage). Abstraction (Detailed) and Status (Draft) stated in the answer match the record's properties exactly, and CAPEC-542's name/id are not fabricated -- they appear verbatim in the 'related' evidence. Docking correctness slightly (0.9) because the claim text is generically worded as 'has 1 AttackPatterns: CAPEC-542' rather than explicitly naming the ChildOf/parent relationship the question asks about, though the underlying query (out('CHILD_OF')) and gold assertion confirm the semantics are correct. No hallucinated facts, counts, or aliases were found."
+}

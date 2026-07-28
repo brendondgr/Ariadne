@@ -1,0 +1,12 @@
+{
+  "case_id": "A-AST-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires expect_boundary=true: T1047 (Windows Management Instrumentation) is an Enterprise ATT&CK technique with no ICS asset-targeting data, so the correct behavior is to answer what is grounded and explicitly refuse to invent ICS-specific asset targets. The narrative does exactly this: it states T1047 targets Windows systems for administration, command execution, and discovery (directly supported by the record's x_mitre_platforms:['Windows'] property and its description text about WMI enabling local/remote administration, Discovery, and Execution activities), then explicitly states 'the evidence contains no information regarding ICS-specific assets or targets' and declines to invent such details -- consistent with the capec sub-query (q2) legitimately returning 0 rows (row_count:0, 'No CAPEC records found'). No claim in the narrative or claims list (only 'Found ATT&CK record T1047...') goes beyond the single retrieved attack record; no fabricated ICS assets, aliases, counts, or properties appear anywhere. This is the ideal honest-refusal behavior the case is designed to test."
+}

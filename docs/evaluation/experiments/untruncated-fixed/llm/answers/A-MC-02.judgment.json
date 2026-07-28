@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MC-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 11,
+  "gold_present": 11,
+  "hallucinations": [],
+  "rationale": "Gold requires all 9 technique ids (T1047, T1059, T1106, T1127, T1129, T1204, T1574, T1609, T1674) plus the two related anchors TA0002 and M1038 (11 total gold entities). The narrative names all 9 techniques with their exact evidence-sourced names (e.g. T1127 'Trusted Developer Utilities Proxy Execution', T1674 'Input Injection', T1574 'Hijack Execution Flow') and explicitly states the tactic 'TA0002' (Execution) and mitigation 'M1038' (Execution Prevention), matching the query's 9-row result set exactly (min_records=max_records=9, satisfied). Every technique name used in the narrative matches its record's 'name' field verbatim, and each record's related array confirms both the TA0002 HAS_TECHNIQUE edge and the M1038 MITIGATES edge, so all facts are fully grounded with no fabricated names, counts, or aliases. No extra or missing ids."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-SKL-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.5,
+  "gold_expected": 2,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question asks 'What skills does CAPEC-163 require?' Gold requires surfacing CAPEC-163 (must_include_ids) and the skill node capec:attack-pattern:163:skill:1 (must_include_related). The retrieval (logic_flow.results[0].records[0].related) DID fetch the correct skill node: id 'capec:attack-pattern:163:skill:1', description 'Spear phishing attacks require specific knowledge of the victims being targeted, such as which bank is being used by the victims, or websites they commonly log into (Google, Facebook, etc).' However, neither the narrative nor the two claims ever mention this skill, its id, or its description -- the narrative only states CAPEC-163's Abstraction (Detailed) and Status (Draft), which is metadata not even requested. The answer therefore never actually answers the question asked, despite the correct evidence having been retrieved. This is corroborated by the pipeline's own deterministic_scores.coverage: found=1/gold=2, coverage=0.5, missing=['capec:attack-pattern:163:skill:1']. What is stated (CAPEC-163 id, Spear Phishing name, Abstraction=Detailed, Status=Draft) is fully grounded in the evidence with no fabrication, so faithfulness and groundedness are high, but correctness is very low because the core deliverable (the required skill) is entirely absent from the answer surfaced to the analyst."
+}

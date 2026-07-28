@@ -1,0 +1,12 @@
+{
+  "case_id": "A-AST-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold assertion is expect_boundary: true — this is an adversarial ICS-asset-targeting question about T1490, and the only correct behavior is an honest refusal rather than invented ICS asset data. The retrieved evidence (single Technique record for T1490) contains no ICS-specific asset/targeting information at all — only a description of Windows/Linux/macOS/ESXi/network-device/cloud recovery-feature sabotage and an x_mitre_platforms list of ['Containers','ESXi','IaaS','Linux','macOS','Network Devices','Windows']. The narrative correctly states the evidence 'does not contain any information regarding ICS-specific assets or targets,' accurately paraphrases the platforms actually present (Windows, Linux, macOS, ESXi, IaaS, network devices — a strict subset of the evidence, omitting only 'Containers' which is an omission, not a fabrication), and explicitly declines to name any ICS asset target. No count, alias, status, or entity is invented; the single claim ('Found ATT&CK record T1490') is directly grounded in the record. This satisfies the boundary requirement fully, so it is graded CORRECT with no hallucinations, despite the bookkeeping 'abstentions' array being empty (the narrative itself performs the required abstention)."
+}

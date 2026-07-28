@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-TEC-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold must_include_ids = [T1005, T1016, T1020, T1033, T1041]; all 5 appear in the answer's enumeration claim and are backed by citations to records retrieved via the query MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN ['C0001']. The full ex_gold expected pool (13 ids: T1005, T1016, T1020, T1033, T1041, T1047, T1057, T1082, T1105, T1119, T1140, T1203, T1221) matches the 13 records returned in logic_flow exactly, and the answer's enumeration claim lists all 13 with matching technique names (e.g. T1105=Ingress Tool Transfer, T1221=Template Injection, T1047=Windows Management Instrumentation) that agree verbatim with the evidence records' name fields. No id, name, or count in the narrative/claims is unsupported by the evidence -- every entity_id/citation traces to a record with matching primary_id and name. min_records=5 satisfied (13 found). No fabricated aliases, counts, or properties."
+}

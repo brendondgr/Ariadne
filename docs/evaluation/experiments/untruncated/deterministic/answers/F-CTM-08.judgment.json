@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-08",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "The claims (deterministic arm, narrative is a restatement of claims) correctly identify CAPEC-644 mapping to T1550.002 via the TaxonomyEntry capec:taxonomy:ATTACK:1550.002 (record 1, gate template capec_maps_to), satisfying gold.capec.must_include_ids=[CAPEC-644] and must_include_related=[T1550.002]. The attack sub-query (record 2, template technique_mitigations) returns exactly the 4 mitigations required by gold.attack.must_include_related: M1051, M1026, M1018, M1052 - all four are named in claim 4 and the narrative, matching gold.attack.must_include_ids=[T1550.002] with max_records=1 (exactly 1 technique row returned). The correlation claim correctly states T1550.002 is corroborated across capec and attack, satisfying must_correlate=[T1550.002], and this matches deterministic_scores.correlation (exact=true, f1=1.0). Every id and name cited (CAPEC-644, T1550.002, M1051, M1026, M1018, M1052) is directly present in the logic_flow records/related evidence with no invented names, counts, or aliases - the mitigation names (Update Software, Privileged Account Management, User Account Management, User Account Control) all match the evidence verbatim. All 6 unique gold-required entities (CAPEC-644, T1550.002, M1018, M1026, M1051, M1052) are surfaced, so this is a fully correct, complete, and grounded answer."
+}

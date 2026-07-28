@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 7,
+  "gold_present": 7,
+  "hallucinations": [],
+  "rationale": "Gold requires T1110 plus 6 related items (DET0463, AN1275-AN1279). The narrative names all six explicitly and correctly labels DET0463 with its exact evidence name 'Brute Force Authentication Failures with Multi-Platform Log Correlation'. Each analytic's behavioral description in the narrative is a faithful paraphrase of the corresponding evidence record: AN1275 (failed logons followed by success from suspicious source), AN1276 (multiple auth failures for valid/invalid users), AN1277 (password spraying across user pool), AN1278 (excessive attempts in unified logs like sshd/loginwindow), AN1279 (successful SaaS logins like O365/Dropbox after excessive attempts) - all match the evidence descriptions in logic_flow.results[0].records[0].related with no invented facts, counts, or names. The two supporting claims (fact + enumeration) also cite all 6 related ids under T1110. deterministic_scores.coverage confirms 7/7 gold ids found. No abstention was warranted (this is a positive case with min_records:1, satisfied). No hallucinations found."
+}

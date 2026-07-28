@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.05,
+  "faithfulness": 0.8,
+  "groundedness": 0.85,
+  "completeness": 0.0,
+  "gold_expected": 2,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires the CAPEC side to 'stay intact' and surface CAPEC-98 mapped to T1566 (assertions.capec.min_records=1, must_include_ids=['CAPEC-98'], must_include_related=['T1566']), while the ATT&CK side is expected to honestly hit an ICS-asset boundary (assertions.attack.expect_boundary=true) with no cross-source correlation (expect_no_correlation=true). The pipeline only ever executed the capec sub-question (logic_flow.results has exactly one entry; observed_plan drops the second, attack, sub-question entirely even though plan lists it) -- so 'what assets does T1566 target' was never even attempted, let alone answered with an honest boundary refusal. The single capec query that did run (an AttackPattern lookup keyed on within(ids)=['T1566'], i.e. searching CAPEC AttackPattern.id for the ATT&CK technique id instead of joining via a TaxonomyEntry with entry_id='T1566') returned row_count=0 (logic_flow.results[0].traces execute/assess/normalize all show 0 rows), so no CAPEC-98 record was ever retrieved as evidence. The final answer's narrative/claims are empty and it abstains wholesale ('The routed sources returned no matching records for this question'), never surfacing CAPEC-98 or the T1566 mapping the gold requires. Nothing in the answer is fabricated relative to the (empty) evidence returned -- it faithfully reports the zero-row capec query and adds only generic example-id suggestions (T1566, M1017, CAPEC-98) rather than asserted facts -- so there are no hallucinations and groundedness is high, but because the CAPEC side that gold expects to 'stay intact' instead came back empty, and the attack side was never queried to test its expected boundary behavior, the answer fails the question outright. completeness: gold_present=0 of gold_expected=2 (CAPEC-98 id, T1566 relation) surfaced. The deterministic correlation score (precision/recall/f1=1.0, n_expected=0, n_got=0) only credits the trivial no-correlation outcome and does not offset the missed per-source requirements."
+}

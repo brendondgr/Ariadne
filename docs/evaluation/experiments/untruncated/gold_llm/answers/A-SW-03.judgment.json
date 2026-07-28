@@ -1,0 +1,14 @@
+{
+  "case_id": "A-SW-03",
+  "verdict": "CORRECT",
+  "correctness": 0.95,
+  "faithfulness": 0.85,
+  "groundedness": 0.95,
+  "completeness": 1.0,
+  "gold_expected": 55,
+  "gold_present": 55,
+  "hallucinations": [
+    "Narrative groups T1021.005 (VNC) under 'discovery and persistence' techniques, but VNC is a Lateral Movement technique per its own retrieved description; the evidence records carry no tactic field at all, so this tactic-bucketing in the prose is an unsupported inference rather than a fact drawn from the graph."
+  ],
+  "rationale": "Gold requires S0266 plus 55 related technique ids (must_include_related, 55 items after de-duplication). The retrieved evidence (join_values/related on the single S0266 record) contains exactly the same 55 T-ids with matching names/descriptions -- no gap between gold and evidence. The deterministic answer's claims (used as the answer since narrative is thin/templated) enumerate all 55 ids verbatim plus cite S0266 itself, so completeness is 55/55 and every id is traceable to the retrieved record (groundedness high). The one weak spot is the free-text narrative's tactic groupings ('discovery and persistence', 'credential access and defense evasion'): T1053.005 (Scheduled Task), T1033 (System Owner/User Discovery), T1543.003 (Windows Service) fit that framing, but T1021.005 (VNC) is Lateral Movement, not discovery/persistence, and no tactic property exists in the evidence to support any of this categorization -- a minor invented interpretive layer on top of an otherwise fully grounded, complete id list. No ids, counts, or names are fabricated; the count of 55 matches both gold and evidence exactly."
+}

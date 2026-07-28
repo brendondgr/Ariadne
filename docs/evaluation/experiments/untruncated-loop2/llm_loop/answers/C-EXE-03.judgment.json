@@ -1,0 +1,12 @@
+{
+  "case_id": "C-EXE-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 7,
+  "gold_present": 7,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-163 plus all 6 execution steps (capec:attack-pattern:163:step:1..6). The narrative names CAPEC-163 (Spear Phishing) and enumerates all six step ids with correct, evidence-matching content: step 1 = obtaining contextual info about the target, step 2 = obtaining domain/certificate to spoof the legitimate site, step 3 = exploring/duplicating the legitimate website, step 4 = building user-specific variants, step 5 = convincing the user to enter sensitive info, step 6 = using stolen credentials to log into the legitimate site. All descriptions are directly traceable to the 'related' array of the q4 record in logic_flow (HAS_EXECUTION_STEP results), and the structured 'claims' also enumerate CAPEC-163's Status (Draft), Abstraction (Detailed), and ChildOf parent CAPEC-98, all present in the record's properties/related fields. No invented ids, counts, names, or properties were found; the one abstention (CAN_PRECEDE returning no records) correctly matches q3's empty result. All 7 gold-required ids are surfaced."
+}

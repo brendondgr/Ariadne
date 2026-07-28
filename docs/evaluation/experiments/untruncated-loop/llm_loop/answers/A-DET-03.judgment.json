@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 8,
+  "gold_present": 8,
+  "hallucinations": [],
+  "rationale": "Gold requires T1566 plus all 7 related items (DET0070, AN0188-AN0193) per must_include_ids/must_include_related. The narrative (the answer under test here, since it is substantial, not thin) explicitly names all seven: 'the detection strategy DET0070 and the analytics AN0189, AN0188, AN0193, AN0191, AN0190, and AN0192', alongside the subject T1566 (Phishing) itself -- 8/8 gold entities surfaced. Each analytic's paraphrase is traceable to its evidence description in logic_flow.results[0].records[0].related: AN0189 'malicious payload delivery through email clients' matches the evidence ('malicious payload delivery through phishing where attachments or URLs in email clients'); AN0188 'correlating unusual inbound email activity with subsequent process execution' matches evidence almost verbatim; AN0193 'anomalous link clicks or file uploads on SaaS collaboration platforms' matches; AN0191 'Office documents with embedded macros spawning processes' matches; AN0190 'anomalous Mail app activity involving disk saves or URL launches' matches; AN0192 'suspicious login attempts or MFA bypasses targeting identity providers following phishing delivery' matches. The stated count of 'seven items' matches evidence_volume.related=7 exactly. No invented ids, counts, aliases, or properties were found. Note: the deterministic_scores.coverage field in the artifact self-reports coverage=0.125 because its claims[] array only carries a citation for T1566 (the analytics are named only in narrative prose, not as separate structured claims) -- this is a provenance/instrumentation gap in the pipeline's own scoring, not a factual defect in the narrative shown to the analyst, so it does not reduce the independent grade."
+}

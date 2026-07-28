@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-03",
+  "verdict": "PARTIAL",
+  "correctness": 0.7,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.53,
+  "gold_expected": 15,
+  "gold_present": 8,
+  "hallucinations": [],
+  "rationale": "The narrative correctly identifies all 3 required cross-source techniques (T1185, T1550.001, T1563) mapped from CAPEC-593, matching gold must_correlate/must_include_ids exactly, and correctly states the aggregate mitigation count (eleven), matching the exact union of the 11 gold-required mitigations (M1013,M1017,M1018,M1021,M1026,M1027,M1030,M1036,M1041,M1042,M1047) computed from the evidence (T1185->M1018,M1017; T1563->M1042,M1026,M1018,M1027,M1030; T1550.001->M1041,M1036,M1047,M1013,M1021). However, the narrative only names 4 of the 11 required mitigations explicitly (M1018, M1017, M1042, M1041), using 'including' as a hedge rather than enumerating the full list, so 7 required mitigation ids (M1013, M1021, M1026, M1027, M1030, M1036, M1047) are never surfaced in the narrative text itself even though they are fully present and correctly attributed in the supporting claims/enumeration list with correct citations. Every fact stated (names, IDs, counts) is verifiably grounded in the retrieved evidence -- no fabricated names, counts, or aliases were found -- so faithfulness and groundedness are full marks, but the narrative's partial enumeration of the required mitigation set makes this an incomplete (not incorrect) answer to 'what mitigations apply to those techniques.'"
+}

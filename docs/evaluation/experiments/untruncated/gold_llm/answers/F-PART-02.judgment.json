@@ -1,0 +1,14 @@
+{
+  "case_id": "F-PART-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [
+    "Narrative claims the asset sub-question 'returned zero records' from an executed query, but the evidence trace shows no query was run at all — the attack source hit a schema 'boundary' (Asset not modeled) at the resolve step, before any query execution. This is a minor mischaracterization of the mechanism (boundary refusal vs. an empty query result), though the substantive conclusion (no asset data available) is correct."
+  ],
+  "rationale": "Gold requires must_include_ids=[CAPEC-98] and must_include_related=[T1566] on the CAPEC side, both surfaced: the narrative and claims correctly state 'CAPEC-98 (Phishing) maps to ATT&CK technique T1566', matching logic_flow.results[0].records[0] (primary_id CAPEC-98, name Phishing, related TaxonomyEntry capec:taxonomy:ATTACK:1566). Gold also requires expect_no_correlation=true and expect_boundary=true on the attack side — the answer correctly refuses on the asset question ('The evidence does not contain information regarding the specific assets targeted by T1566'), matching the attack sub-result which hit a boundary ('entities not modeled by the attack source: Asset') with zero records and no query executed, exactly the adversarial scenario gold is testing (CAPEC side intact, attack side honestly refuses). deterministic_scores confirm this: correlation.negative=true, exact=true, f1=1.0, abstention_proof_ok=true. No fabricated entities, names, counts, or aliases appear beyond the evidence. The only flaw is a small wording inaccuracy describing the boundary refusal as a query 'returning zero records' rather than a schema-boundary short-circuit before any query ran — a cosmetic faithfulness ding, not a substantive hallucination."
+}

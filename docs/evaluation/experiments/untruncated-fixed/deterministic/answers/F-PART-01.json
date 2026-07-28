@@ -1,0 +1,300 @@
+{
+  "id": "F-PART-01",
+  "kind": "federated",
+  "tier": "adversarial",
+  "category": "F-PART",
+  "question": "Which CAPEC patterns map to T1021, and what assets does it target? (Assets are ICS-only: the attack side must refuse honestly while the CAPEC side stays intact)",
+  "gold": {
+    "assertions": {
+      "must_correlate": [],
+      "expect_no_correlation": true,
+      "capec": {
+        "min_records": 1,
+        "must_include_ids": [
+          "CAPEC-555"
+        ],
+        "must_include_related": [
+          "T1021"
+        ]
+      },
+      "attack": {
+        "expect_boundary": true
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 2
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 2 source(s); 1 question(s) the sources don't establish.",
+    "narrative": "Found 1 CAPEC record(s) for CAPEC-555; ATT&CK mappings: T1021. CAPEC-555 (Remote Services with Stolen Credentials) has Abstraction: Standard; Status: Stable. CAPEC-555 (Remote Services with Stolen Credentials) has 1 TaxonomyEntrys: capec:taxonomy:ATTACK:1021. The attack source doesn't establish this — it doesn't model the entities this question asks about, so no query was executed for: What assets does technique T1021 target?",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s) for CAPEC-555; ATT&CK mappings: T1021.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-555"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-555"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-555 (Remote Services with Stolen Credentials) has Abstraction: Standard; Status: Stable.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-555"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-555"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-555 (Remote Services with Stolen Credentials) has 1 TaxonomyEntrys: capec:taxonomy:ATTACK:1021.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "capec:taxonomy:ATTACK:1021"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-555"
+          }
+        ]
+      }
+    ],
+    "abstentions": [
+      {
+        "source": "attack",
+        "statement": "The attack source doesn't establish this — it doesn't model the entities this question asks about, so no query was executed for: What assets does technique T1021 target?",
+        "query": ""
+      }
+    ],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which CAPEC patterns map to ATT&CK technique T1021?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What assets does technique T1021 target?",
+        "seed_from": null
+      }
+    ],
+    "sequenced": false,
+    "partial_mode": "boundary",
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Which CAPEC patterns map to ATT&CK technique T1021?",
+        "query": "g.V().hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").has(\"entry_id\", within(entryIds)).as(\"tax\").in(\"MAPS_TO\").hasLabel(\"AttackPattern\").as(\"ap\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s) for CAPEC-555; ATT&CK mappings: T1021.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1021"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_reverse_maps",
+              "query": "g.V().hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").has(\"entry_id\", within(entryIds)).as(\"tax\").in(\"MAPS_TO\").hasLabel(\"AttackPattern\").as(\"ap\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
+              "injected": [],
+              "timing_ms": 0.09
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 6.7
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.057
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-555",
+            "name": "Remote Services with Stolen Credentials",
+            "label": "AttackPattern",
+            "description": "This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Remote Services with Stolen Credentials",
+              "description": "This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
+              "id": "capec:attack-pattern:555",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [
+              "T1021"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1021",
+                "entry_id": "1021",
+                "name": "Remote Services",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "What assets does technique T1021 target?",
+        "query": "",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "The attack source doesn't model Asset — no query can express this question against its schema.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [
+              "entities not in card: ['Asset']"
+            ],
+            "detail": {
+              "labels": [
+                "Technique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1021"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "boundary",
+            "ok": true,
+            "reasons": [
+              "entities not modeled by the attack source: Asset"
+            ],
+            "detail": {
+              "unknown_entities": [
+                "Asset"
+              ]
+            }
+          }
+        ],
+        "records": []
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": true,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 0,
+      "n_got": 0
+    },
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 3,
+      "compliant": 3,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "deterministic",
+  "run_meta": {
+    "planner": "gold-replay",
+    "synthesis": "deterministic",
+    "wall_s": 0.017
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 1,
+    "related": 1
+  }
+}

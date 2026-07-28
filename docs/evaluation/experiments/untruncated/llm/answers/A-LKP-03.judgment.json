@@ -1,0 +1,12 @@
+{
+  "case_id": "A-LKP-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 0.95,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[T1566] with expect_names T1566->Phishing; the answer's claim 'Found ATT&CK record T1566: Phishing.' and narrative both state this exactly, matching the single retrieved record (properties.name='Phishing', attack_id='T1566'). Coverage is 1/1 (gold_present=1 of gold_expected=1), and deterministic_scores.coverage/provenance confirm full citation to source T1566. The narrative's platform list ('Windows, Linux, and macOS') is a true subset of evidence x_mitre_platforms (which also includes Identity Provider, Office Suite, SaaS) rather than a fabrication, and 'currently active' is a reasonable paraphrase of revoked=false/x_mitre_deprecated=false present in the record -- a minor stylistic liberty rather than an invented fact, so faithfulness is docked slightly rather than failed."
+}

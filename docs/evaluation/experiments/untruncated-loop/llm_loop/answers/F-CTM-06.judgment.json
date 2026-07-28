@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 17,
+  "gold_present": 17,
+  "hallucinations": [],
+  "rationale": "The narrative correctly identifies CAPEC-665's three ATT&CK mappings (T1211, T1542.002, T1556), matching gold must_correlate and both capec/attack must_include_ids exactly (attack record count is exactly 3, satisfying min/max_records=3). CAPEC-665 properties (Status: Stable, Abstraction: Detailed) are stated and match the evidence properties block verbatim. For mitigations, the narrative enumerates M1051, M1050, M1048, M1019 for T1211; M1051 for T1542.002; and M1047, M1032, M1024, M1026, M1022, M1018, M1027, M1025, M1028 for T1556 -- the union of these 13 ids exactly matches the gold attack.must_include_related list (M1018, M1019, M1022, M1024, M1025, M1026, M1027, M1028, M1032, M1047, M1048, M1050, M1051), and each per-technique grouping is verified against the corresponding 'related' list in logic_flow.results[1].records. The correlation claims (T1211/T1542.002/T1556 each corroborated across capec and attack, 2 records sharing each) match deterministic_scores.correlation (precision/recall/f1 = 1.0). No invented ids, aliases, counts, or names were found; every stated fact traces to logic_flow evidence."
+}

@@ -1,0 +1,14 @@
+{
+  "case_id": "F-PART-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.7,
+  "faithfulness": 0.85,
+  "groundedness": 0.95,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [
+    "Narrative/claims assert 'The identifier T1021 is corroborated across attack and capec (2 record(s) share it)' framed as a cross-source correlation finding, but the gold explicitly sets expect_no_correlation:true and must_correlate:[] for this adversarial case; the shared T1021 id is a trivial artifact of both sub-queries being independently seeded with T1021 (not an emergent joint discovery), and the pipeline's own deterministic_scores.correlation block confirms the violation (negative:true, n_expected:0, n_got:1, precision:0.0, f1:0.0)."
+  ],
+  "rationale": "The CAPEC side is fully correct and grounded: CAPEC-555 'Remote Services with Stolen Credentials' is surfaced with Abstraction=Standard, Status=Stable (matching logic_flow.records[0].properties), and its related TaxonomyEntry shows entry_id 1021 / name 'Remote Services', satisfying gold.capec.must_include_ids=[CAPEC-555] and must_include_related=[T1021]. The attack/asset side correctly honors expect_boundary: the narrative explicitly refuses ('attack source schema does not expose Asset nodes...ICS-specific assets...not available') rather than fabricating ICS asset data, matching abstention_proof_ok:true in deterministic_scores. However, the answer also emits an explicit cross-source 'correlation' claim on T1021 ('corroborated across attack and capec, 2 records share it'), which directly violates gold.assertions.expect_no_correlation:true and must_correlate:[] for this adversarial test; the run's own deterministic_scores.correlation block flags this exact violation (negative:true, n_expected:0, n_got:1, f1:0.0). This is the specific adversarial trap the case is designed to catch (don't over-claim a meaningful correlation when the T-number overlap is just an artifact of seeding both sub-queries with the same technique id), and the pipeline fell into it, so the answer cannot be called fully CORRECT despite being factually accurate and well-grounded elsewhere. gold_expected=2 (CAPEC-555, T1021-as-related) both present -> completeness 1.0; no fabricated properties, names, or counts beyond the flagged spurious correlation framing."
+}

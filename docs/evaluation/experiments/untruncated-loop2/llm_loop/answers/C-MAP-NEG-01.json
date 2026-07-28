@@ -1,0 +1,559 @@
+{
+  "id": "C-MAP-NEG-01",
+  "kind": "capec",
+  "tier": "adversarial",
+  "category": "C-MAP",
+  "question": "ATT&CK mappings for CAPEC-116 (Excavation) — verified none; must be empty.",
+  "gold": {
+    "assertions": {
+      "expect_empty": true
+    },
+    "ex_gold": {
+      "pool": "join",
+      "expected": [],
+      "scheme": "capec"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 2 record(s) from 1 source(s); 1 question(s) the sources don't establish.",
+    "narrative": "The investigation identified a single CAPEC record, CAPEC-116 (Excavation), which carries an Abstraction of Meta and a Status of Stable. This attack pattern has exactly one CanPrecede predecessor, CAPEC-163. The capec source does not establish any ATT&CK mappings for CAPEC-116, as the executed query ran cleanly and returned no matching records for AttackPatterns reached via ChildOf relationships.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-116.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-116"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-116"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-116 (Excavation) has Abstraction: Meta; Status: Stable.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-116"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-116"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-116 (Excavation) has 1 CanPrecede predecessor: CAPEC-163.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CAPEC-163"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-116"
+          }
+        ]
+      }
+    ],
+    "abstentions": [
+      {
+        "source": "capec",
+        "statement": "The capec source doesn't establish this — the executed query ran cleanly and returned no matching records for: In capec, list all AttackPattern reached from CAPEC-116 via ChildOf",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"CHILD_OF\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)"
+      }
+    ],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "C-MAP-NEG-01",
+      "source": "capec",
+      "text": "Which ATT&CK techniques does CAPEC-116 map to?",
+      "entities": [
+        "AttackPattern",
+        "TaxonomyEntry"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": "attack-technique-id",
+      "seed_ids": [
+        "CAPEC-116"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Find the AttackPattern node with ID 'CAPEC-116' or name 'Excavation', traverse the MAPS_TO relationship to TaxonomyEntry nodes, and return any TaxonomyEntry where taxonomy is 'ATTACK'.",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(100)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-116.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [
+                "MAPS_TO"
+              ],
+              "seed_ids": [
+                "CAPEC-116"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(100)",
+              "injected": [],
+              "timing_ms": 0.088
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 13.6
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.005
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.196
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-116",
+            "name": "Excavation",
+            "label": "AttackPattern",
+            "description": "An adversary actively probes the target in a manner that is designed to solicit information that could be leveraged for malicious purposes.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Excavation",
+              "description": "An adversary actively probes the target in a manner that is designed to solicit information that could be leveraged for malicious purposes.",
+              "id": "capec:attack-pattern:116",
+              "Abstraction": "Meta"
+            },
+            "facets": [
+              {
+                "rel": "CAN_ALSO_BE",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_ALSO_BE",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_FOLLOW",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_FOLLOW",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_PRECEDE",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_PRECEDE",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 1
+              },
+              {
+                "rel": "CHILD_OF",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 5
+              },
+              {
+                "rel": "CHILD_OF",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "EXPLOITS_WEAKNESS",
+                "direction": "out",
+                "neighbour_label": "Weakness",
+                "count": 2
+              },
+              {
+                "rel": "HAS_CONSEQUENCE",
+                "direction": "out",
+                "neighbour_label": "Consequence",
+                "count": 1
+              },
+              {
+                "rel": "HAS_EXECUTION_STEP",
+                "direction": "out",
+                "neighbour_label": "ExecutionStep",
+                "count": 0
+              },
+              {
+                "rel": "HAS_MITIGATION",
+                "direction": "out",
+                "neighbour_label": "Mitigation",
+                "count": 2
+              },
+              {
+                "rel": "HAS_REFERENCE",
+                "direction": "out",
+                "neighbour_label": "ExternalReference",
+                "count": 0
+              },
+              {
+                "rel": "IN_VIEW",
+                "direction": "out",
+                "neighbour_label": "View",
+                "count": 0
+              },
+              {
+                "rel": "MAPS_TO",
+                "direction": "out",
+                "neighbour_label": "TaxonomyEntry",
+                "count": 0
+              },
+              {
+                "rel": "MEMBER_OF",
+                "direction": "out",
+                "neighbour_label": "Category",
+                "count": 5
+              },
+              {
+                "rel": "PEER_OF",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "PEER_OF",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "REQUIRES_SKILL",
+                "direction": "out",
+                "neighbour_label": "Skill",
+                "count": 0
+              }
+            ],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q2",
+        "sub_question": "In capec, list all AttackPattern reached from CAPEC-116 via CanPrecede",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"CAN_PRECEDE\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-116.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern"
+              ],
+              "relationships": [
+                "CanPrecede"
+              ],
+              "seed_ids": [
+                "CAPEC-116"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_neighbors",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"CAN_PRECEDE\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.076
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 3.8
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.005
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.045
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-116",
+            "name": "Excavation",
+            "label": "AttackPattern",
+            "description": "An adversary actively probes the target in a manner that is designed to solicit information that could be leveraged for malicious purposes.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Excavation",
+              "description": "An adversary actively probes the target in a manner that is designed to solicit information that could be leveraged for malicious purposes.",
+              "id": "capec:attack-pattern:116",
+              "Abstraction": "Meta"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "CAPEC-163",
+                "name": "Spear Phishing",
+                "label": "AttackPattern",
+                "type": "CAN_PRECEDE",
+                "description": "An adversary targets a specific user or group with a Phishing (CAPEC-98) attack tailored to a category of users in order to have maximum relevance and deceptive capability. Spear Phishing is an enhanced version of the Phishing attack targeted to a specific user or group. The quality of the targeted email is usually enhanced by appearing to come from a known or trusted entity. If the email account of some trusted entity has been compromised the message may be digitally signed. The message will contain information specific to the targeted users that will enhance the probability that they will follow the URL to the compromised site. For example, the message may indicate knowledge of the targets employment, residence, interests, or other information that suggests familiarity. As soon as the user follows the instructions in the message, the attack proceeds as a standard Phishing attack."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q3",
+        "sub_question": "In capec, list all AttackPattern reached from CAPEC-116 via ChildOf",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"CHILD_OF\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "No CAPEC records found.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern"
+              ],
+              "relationships": [
+                "ChildOf"
+              ],
+              "seed_ids": [
+                "CAPEC-116"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_neighbors",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"CHILD_OF\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.072
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0,
+              "timing_ms": 2.3
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0,
+              "empty_with_seeds": [
+                "CAPEC-116"
+              ],
+              "timing_ms": 0.004
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 0,
+              "timing_ms": 0.002
+            }
+          }
+        ],
+        "records": []
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 3,
+      "compliant": 3,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm_loop",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "Find the AttackPattern node with ID 'CAPEC-116' or name 'Excavation', traverse the MAPS_TO relationship to TaxonomyEntry nodes, and return any TaxonomyEntry where taxonomy is 'ATTACK'.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 2,
+          "max_result_rows": 100,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "capec",
+        "text": "In capec, list all AttackPattern reached from CAPEC-116 via CanPrecede",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q3",
+        "source": "capec",
+        "text": "In capec, list all AttackPattern reached from CAPEC-116 via ChildOf",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 78.535
+  },
+  "evidence_volume": {
+    "results": 3,
+    "records": 2,
+    "related": 1
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-555] and must_include_related=[T1021, T1114.002, T1133]. The narrative and claims state CAPEC-555 (Remote Services with Stolen Credentials) maps to exactly T1021, T1114.002, and T1133, matching the single retrieved record's join_values and related TaxonomyEntrys (capec:taxonomy:ATTACK:1021/1114.002/1133) verbatim. The additional attribute claims (Abstraction: Standard; Status: Stable) exactly match the record's properties block, and the name matches properties.name. No entity, count, or attribute value appears in the answer that is absent from logic_flow.results[0].records[0]. All 4 gold-required ids (CAPEC-555 + 3 T-numbers) are surfaced, so coverage is complete with zero hallucinations."
+}

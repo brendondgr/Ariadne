@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-09",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 6,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "The pipeline retrieved zero records: run_meta shows exit_code 1, status 'partial', and both sub-questions (capec: CAPEC-645 -> MAPS_TO Technique; attack: Technique -> Mitigation) were skipped due to a total pipeline timeout (see answer.notes and logic_flow.results = []). The narrative is a generic abstention ('No records were returned by the routed specialists... name it or give its id') that does not surface CAPEC-645, T1550.003, or any of the required mitigations M1015/M1018/M1026/M1027. This is not a negative/no-match case per the gold (min_records >= 1 on both capec and attack, must_correlate = [T1550.003]), so abstaining is a complete failure to answer rather than a correct abstention. Faithfulness and groundedness score high only because the answer made no claims at all, so nothing is fabricated -- but correctness and completeness are both 0 since none of the 6 gold-required ids (CAPEC-645, T1550.003, M1015, M1018, M1026, M1027) are surfaced."
+}

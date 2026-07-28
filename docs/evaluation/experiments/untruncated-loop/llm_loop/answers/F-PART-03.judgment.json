@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-03",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 4,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires a PARTIAL answer: the capec side must still succeed (min_records>=1, must_include_ids=[CAPEC-555], must_include_related=[T1021, T1114.002, T1133]) while only the attack/mitigation side is allowed to skip honestly (attack.expect_skipped=true). The actual run instead skipped BOTH sub-questions ('Skipped capec: total pipeline timeout exceeded before this sub-question ran', 'Skipped attack: no specialist available for source attack'), producing zero records (evidence_volume.records=0) and a blanket abstention narrative ('No records were returned by the routed specialists... If you meant a specific ATT&CK or CAPEC entity, name it...'). None of CAPEC-555, T1021, T1114.002, or T1133 are surfaced anywhere in claims/abstentions/logic_flow.results (results=[] entirely), so gold_present=0/4. This is not the scenario gold describes (capec resilient, attack down) — it is a pipeline timeout that killed the capec query before it ran, i.e. the system failed the one source that was supposed to work. Faithfulness/groundedness score high because the answer invents nothing (it is an honest abstention with no fabricated ids, names, or counts), but correctness and completeness are both 0 since the mandatory CAPEC-555 mapping content is entirely absent. run_meta confirms exit_code=1, status='partial', wall_s=120.142 (hit the timeout), corroborating a system defect rather than a graceful degrade."
+}

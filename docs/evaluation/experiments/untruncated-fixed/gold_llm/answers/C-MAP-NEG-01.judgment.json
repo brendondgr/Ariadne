@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty ATT&CK-mapping result for CAPEC-116 (expect_empty: true, ex_gold.expected: []). The logic_flow shows the capec_maps_to query executed cleanly against seed CAPEC-116 with row_count 0 at both execute and assess trace steps, and records: [] confirms no MAPS_TO edges exist. The answer correctly abstains: narrative states 'The routed sources returned no matching records for this question,' claims is empty, and the single abstention cites the exact executed query and states it ran cleanly with no matches. No entity ids, technique numbers, or other facts are fabricated anywhere in the narrative or claims. This is a textbook correct negative-case abstention with full provenance (deterministic_scores.provenance.abstention_proof_ok: true, fully_provenanced: true)."
+}

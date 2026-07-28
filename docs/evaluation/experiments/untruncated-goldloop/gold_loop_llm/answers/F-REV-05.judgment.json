@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires the cross-source join on T1133, CAPEC-555 as the sole CAPEC pattern mapping to T1133, and the ATT&CK record T1133 named 'External Remote Services'. The narrative states all three: 'The only CAPEC pattern mapping to ATT&CK technique T1133 is CAPEC-555 (Remote Services with Stolen Credentials)... ATT&CK record T1133 is named External Remote Services'. Every attribute cited (Abstraction: Standard, Status: Stable for CAPEC-555; stix_type attack-pattern, x_mitre_version 2.5, revoked/x_mitre_deprecated/x_mitre_is_subtechnique all False for T1133; related TA0003 Persistence and TA0001 Initial Access) matches the evidence records verbatim in logic_flow.results (capec q1 record properties, attack q2 record properties, attack q3 related list). The correlation claim '3 record(s) share it' is grounded in the raw evidence_volume.records count (3 records across capec/attack all keyed to join_value T1133), consistent with deterministic_scores.correlation (n_expected=1, n_got=1, exact match on the unique join id). No fabricated names, counts, or identifiers were found outside the retrieved evidence."
+}

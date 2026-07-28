@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SW-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 18,
+  "gold_present": 18,
+  "hallucinations": [],
+  "rationale": "Gold requires S0002 (must_include_ids) plus 17 techniques (must_include_related): T1003.001/.002/.004/.006, T1098, T1134.005, T1207, T1547.005, T1550.002/.003, T1552.004, T1555, T1555.003/.004, T1558.001/.002, T1649. The narrative names S0002 (Mimikatz) explicitly and enumerates all 17 technique IDs verbatim; the enumeration claim's entity_ids list matches the gold set exactly (verified 1:1 set comparison, no extras, no omissions). Every listed technique id/name pair is directly traceable to the single retrieved record's 'related' array in logic_flow (e.g. T1003.006/DCSync, T1558.001/Golden Ticket, T1649/Steal or Forge Authentication Certificates all present with matching names), and the query itself (software_techniques template, MATCH (s:Software)-[:USES]->(t)) is the correct join for this question. No counts, names, or ids beyond the retrieved evidence were introduced. Coverage is complete and fully grounded."
+}

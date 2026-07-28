@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 12,
+  "gold_present": 12,
+  "hallucinations": [],
+  "rationale": "The answer correctly maps CAPEC-21 to all three gold-required ATT&CK techniques (T1134, T1528, T1539) via the TaxonomyEntry relations, matching must_correlate and capec.must_include_related exactly (3 of 3, matching the exact min/max_records=3 constraint on the attack side too). For mitigations, the answer enumerates per-technique: T1539 -> M1051, M1047, M1054, M1032, M1017, M1021 (6, matches evidence exactly); T1528 -> M1047, M1018, M1017, M1021 (4, matches evidence exactly); T1134 -> M1026, M1018 (2, matches evidence exactly). The union of these covers all 8 gold-required mitigations (M1017, M1018, M1021, M1026, M1032, M1047, M1051, M1054) with none missing and none invented. CAPEC-21's Abstraction (Meta) and Status (Stable) properties are also correctly stated and traceable to the record's properties block. The correlation claim ('3 identifiers are corroborated across both CAPEC and ATT&CK') matches the gold must_correlate set and the deterministic_scores block (correlation f1=1.0, mapping_recall=1.0). Every id, name, and count in the claims/narrative is directly traceable to the logic_flow records and related lists -- no fabricated aliases, counts, or properties were found."
+}

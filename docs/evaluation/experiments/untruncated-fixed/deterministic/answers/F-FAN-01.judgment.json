@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 13,
+  "gold_present": 13,
+  "hallucinations": [],
+  "rationale": "The answer surfaces all 3 gold CAPEC ids (CAPEC-19, CAPEC-35, CAPEC-448) with their exact Abstraction/Status properties matching the retrieved records (CAPEC-19: Standard/Stable; CAPEC-35: Detailed/Draft; CAPEC-448: Detailed/Stable). The deduplicated union of ATT&CK technique mappings (T1027.006, T1027.009, T1546.004, T1546.016, T1564.009) is stated exactly as gold's must_correlate/must_include_related, and per-CAPEC taxonomy links (e.g. CAPEC-19 -> 1027.009/1546.004/1546.016) trace directly to the logic_flow 'related' TaxonomyEntry lists. All 5 mandated ATT&CK technique records are present, and the union of mitigations gold requires (M1013, M1022, M1040, M1048, M1049) is fully enumerated via the per-technique claims (T1027.009->M1049,M1040; T1564.009->M1013; T1546.004->M1022; T1027.006->M1048), each matching the 'related' Mitigation nodes verbatim (T1546.016 correctly contributes none, evidence shows related:[]). The correlation claims' shared-record counts (e.g. T1027.009 shared by 4 records, others by 2) were checked against the record set and are arithmetically correct. No invented ids, names, counts, or properties were found; every entity_id/citation resolves to a record or related-node actually present in logic_flow. This matches the deterministic_scores self-report (correlation f1=1.0, mapping_recall=1.0) and independently verifies clean."
+}

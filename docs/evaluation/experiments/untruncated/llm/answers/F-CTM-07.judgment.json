@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-07",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "Evidence (logic_flow) shows CAPEC-600 'Credential Stuffing' MAPS_TO TaxonomyEntry capec:taxonomy:ATTACK:1110.004 named 'Brute Force:Credential Stuffing', matching join_values ['T1110.004'] — this satisfies gold.capec.must_include_ids=[CAPEC-600] and must_include_related=[T1110.004], and gold.must_correlate=[T1110.004]. Q2 evidence shows Technique T1110.004 with related Mitigation nodes M1036 (Account Use Policies), M1032 (Multi-factor Authentication), M1018 (User Account Management), M1027 (Password Policies) — exactly satisfying gold.attack.must_include_ids=[T1110.004] and must_include_related=[M1018,M1027,M1032,M1036] with no extras (max_records:1 respected). The narrative states all of these correctly: CAPEC-600 maps to exactly T1110.004, names the taxonomy link, lists all four mitigations by id and name, and paraphrases their function (lockouts/MFA/account lifecycle/password policy) consistently with the evidence's mitigation descriptions. Claims and deterministic_scores (mapping_recall=1.0, correlation f1=1.0, citation_provenance_rate=1.0) corroborate full grounding. No invented ids, names, counts, or aliases were found; every stated fact traces to a retrieved record."
+}

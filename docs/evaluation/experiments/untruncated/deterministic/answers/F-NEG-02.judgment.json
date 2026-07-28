@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty: must_correlate is [], expect_no_correlation/expect_empty/expect_dependency_skip are all true. The capec query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within([\"CAPEC-66\"]))...out(\"MAPS_TO\")...) executed cleanly and returned row_count 0, so no CAPEC-66 to MAPS_TO edge exists in the graph for taxonomy_name ATTACK. The dependent q2 (ATT&CK mitigations) was correctly skipped since q1 produced no join identifiers. The answer's claims array is empty and its two abstentions accurately describe exactly this (clean empty query for capec; dependency-skip for attack) without inventing any T-numbers, mitigation IDs, or CWEs. No fabricated correlation, no hallucinated entities. This matches the deterministic_scores block (correlation.negative=true, exact=true, precision/recall/f1=1.0, abstention_proof_ok=true)."
+}

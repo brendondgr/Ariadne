@@ -1,0 +1,12 @@
+{
+  "case_id": "A-EXC-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty: true; ex_gold.expected: [] with pool 'node', scheme 'attack') for retired/excluded technique T1004. The executed Cypher query MATCH (n:Technique) WHERE n.attack_id IN $ids ... correctly targeted T1004, executed cleanly (ok: true, no errors), and returned row_count 0 / records []. The answer has no narrative-bearing claims (claims: []) and an abstention entry stating 'the executed query ran cleanly and returned no matching records for: Retrieve the Technique node with identifier T1004' — an accurate, grounded description of the evidence. The narrative correctly reports no matching records and does not fabricate any technique data, name, status, or properties for T1004. This is exactly the correct behavior for a NEG/excluded-entity case: abstain rather than fabricate."
+}

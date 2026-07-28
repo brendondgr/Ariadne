@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-04",
+  "verdict": "CORRECT",
+  "correctness": 0.9,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "This is a negative/adversarial dependency-abstention case: gold requires capec.expect_skipped=true, attack.expect_dependency_skip=true, expect_partial=true, expect_no_correlation=true, must_correlate=[]. The logic_flow confirms the correct behavior: q1 (capec, CAPEC-555 -> ATT&CK mapping) was never run ('Skipped capec: no specialist available for source capec'), and q2 (attack mitigations) correctly short-circuited as a dependency skip ('producer q1: it was not run') rather than falling back to a broad unseeded query -- records=[] for q2, evidence_volume.records=0. The answer's abstentions array states this exactly ('the sub-question it depends on (q1) produced no seed identifiers, so no query was executed'), and notes correctly flags the capec skip. No correlation ids are claimed (must_correlate=[] satisfied trivially, n_got=0 matches n_expected=0), and no entity/count/alias is fabricated anywhere in narrative, abstentions, or notes -- the only unverified content is generic placeholder example ids (T1566, M1017, CAPEC-98) offered as illustrative suggestions for the analyst to supply, not asserted facts, so not a hallucination. Minor deduction to correctness because the top-level prose narrative alone ('no matching records ... name it or give its id') is generic and doesn't explicitly surface the 'CAPEC source down / dependency abstention' framing on its own -- that specific reasoning only appears in the structured abstentions/notes fields -- so an analyst reading only the narrative sentence could momentarily mistake this for an ordinary no-match rather than an upstream-outage-driven dependency skip. Overall the system behaved exactly as the adversarial gold intends: it degraded to dependency abstention with no broad unseeded query and no fabricated correlation."
+}

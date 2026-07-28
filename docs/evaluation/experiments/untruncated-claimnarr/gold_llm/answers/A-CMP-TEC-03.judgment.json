@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-TEC-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The query MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id='C0001' returned exactly 13 Technique records (T1105, T1221, T1203, T1041, T1057, T1020, T1016, T1140, T1005, T1082, T1119, T1033, T1047). All 5 must_include_ids (T1005, T1016, T1020, T1033, T1041) are present, and the answer additionally surfaces all 13 of the ex_gold expected neighbor techniques (T1047, T1057, T1082, T1105, T1119, T1140, T1203, T1221 beyond the required 5), so completeness is full against both the strict assertion and the extended gold pool. Every technique id and name cited in the narrative and claims (e.g. T1105 'Ingress Tool Transfer', T1221 'Template Injection') matches the retrieved record exactly, with no invented ids, names, counts, or properties. Deterministic self-scores (coverage 1.0, citation_provenance_rate 1.0) are independently confirmed by direct comparison against logic_flow records."
+}

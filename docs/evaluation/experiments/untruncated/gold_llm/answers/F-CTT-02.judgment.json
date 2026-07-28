@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires: CAPEC-49 must map to T1110.001 (capec.must_include_related), the ATT&CK side must surface T1110.001 with related tactic TA0006 (attack.must_include_ids/must_include_related), and the cross-source correlation on T1110.001 (must_correlate). The narrative states exactly this: 'CAPEC-49 (Password Brute Forcing) maps to one ATT&CK technique, T1110.001 (Password Guessing). This technique belongs to the ATT&CK tactic TA0006 (Credential Access).' Every fact traces directly to logic_flow: the capec q1 record's related entry capec:taxonomy:ATTACK:1110.001 named 'Brute Force:Password Guessing' (properties confirm CAPEC-49 name/description match), and the attack q2 record for T1110.001 with related TA0006 named 'Credential Access'. The claims list also states the correlation ('T1110.001 is corroborated across attack and capec'), matching deterministic_scores.correlation (exact:true, f1:1.0) and mapping_recall (recall:1.0). attack.max_records:1 is respected (only TA0006 surfaced, no extra tactics fabricated). No invented names, counts, or ids -- all three required entities (CAPEC-49, T1110.001, TA0006) are present and correctly linked with no unsupported additions."
+}

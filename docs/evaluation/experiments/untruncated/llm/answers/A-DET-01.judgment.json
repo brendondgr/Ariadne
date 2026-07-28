@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.35,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.33,
+  "gold_expected": 3,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to surface T1047, DET0364, and AN1031 (must_include_ids/must_include_related). The evidence in logic_flow only ran a facet-count query on T1047: it correctly shows a facets entry {rel: DETECTS, direction: in, neighbour_label: DetectionStrategy, count: 1}, confirming one DetectionStrategy exists, but the 'related' array for the T1047 record is empty -- no DetectionStrategy or Analytic node (i.e. DET0364, AN1031) was ever expanded/retrieved. The narrative is faithful to this gap: it correctly states a detection strategy exists ('exactly one DetectionStrategy... single in-bound DETECTS relationship') but honestly abstains from naming it or any analytics, explicitly saying 'the provided records do not list the specific identifier or name of that detection strategy, nor... the associated analytics.' This is accurate given the evidence (no fabrication), so faithfulness/groundedness are high. However the question specifically asks 'via which analytics' and the answer surfaces neither DET0364 nor AN1031 -- the deterministic_scores block itself confirms coverage=0.333 with missing=[AN1031, DET0364]. Only 1 of 3 gold-required ids (T1047) is present, so correctness/completeness are low despite the answer being an honest non-fabricating abstention rather than an outright hallucination."
+}

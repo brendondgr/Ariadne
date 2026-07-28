@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-07",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-600 mapping to T1110.004 (must_correlate + capec.must_include_related), the attack record T1110.004 itself, and its four mitigations M1018, M1027, M1032, M1036. The narrative states 'CAPEC-600 (Credential Stuffing) maps to the ATT&CK technique T1110.004' and names all four mitigations by id and name (M1036 Account Use Policies, M1032 Multi-factor Authentication, M1018 User Account Management, M1027 Password Policies), matching q1's record (CAPEC-600 -> TaxonomyEntry entry_id 1110.004) and q2's related list (M1036, M1032, M1018, M1027) exactly. The correlation claim also states T1110.004 is corroborated across capec and attack, satisfying must_correlate. deterministic_scores confirm exact correlation (precision/recall/f1 = 1.0) and full mapping_recall (1.0, no missing). No entity, count, or property in the narrative/claims falls outside the retrieved evidence (Abstraction: Standard, Status: Stable for CAPEC-600 also match the record properties). All 6 gold-required ids (T1110.004 x2 assertions collapse to same id, CAPEC-600, M1018, M1027, M1032, M1036) are surfaced."
+}

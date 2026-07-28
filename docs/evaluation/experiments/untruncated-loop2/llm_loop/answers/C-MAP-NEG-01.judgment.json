@@ -1,0 +1,15 @@
+{
+  "case_id": "C-MAP-NEG-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.85,
+  "faithfulness": 0.7,
+  "groundedness": 0.8,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [
+    "Narrative justifies 'no ATT&CK mappings for CAPEC-116' by citing that the ChildOf query (q3, for AttackPattern-to-AttackPattern hierarchy) returned no records; ChildOf is unrelated to ATT&CK mapping. The actual grounds for the empty-mapping conclusion is the MAPS_TO facet (count: 0, out, to TaxonomyEntry) on the q1 record, which the narrative never cites — a misattributed/non-sequitur justification.",
+    "Claim 'CAPEC-116 (Excavation) has 1 CanPrecede predecessor: CAPEC-163' mislabels the relationship direction: the retrieved edge is CAPEC-116 --CAN_PRECEDE--> CAPEC-163 (outbound from the query 'out(\"CAN_PRECEDE\")'), meaning CAPEC-163 is a successor CAPEC-116 can precede, not a predecessor of CAPEC-116."
+  ],
+  "rationale": "Gold (expect_empty: true, ex_gold.expected: []) requires the answer to correctly report zero ATT&CK correlations for CAPEC-116 without fabricating any technique id. The answer does this: no ATT&CK/T-number id appears anywhere in claims or narrative, and the evidence supports the emptiness (q1's record shows a MAPS_TO->TaxonomyEntry facet count of 0). So the headline requirement is met and completeness is 1.0 (0 of 0 required ids surfaced, correctly). However, the narrative's stated justification for the empty-mapping conclusion cites the wrong evidence — it attributes the finding to q3's ChildOf traversal (an AttackPattern hierarchy relation, irrelevant to ATT&CK mapping) rather than to the MAPS_TO facet that actually proves it, which is a faithfulness/groundedness defect (the cited reasoning doesn't support the claim even though the claim happens to be true). Separately, the claim about CAPEC-163 mislabels it a 'CanPrecede predecessor' when the record's related-entry shows CAPEC-116 as the CAN_PRECEDE source and CAPEC-163 as the target (i.e., CAPEC-163 is what CAPEC-116 precedes, a successor, not a predecessor) — an incorrect characterization of a real but mis-described relationship. Neither issue fabricates a new entity/id, so correctness on the core (negative) question stands, but the unsupported/incorrect explanatory details warrant PARTIAL rather than CORRECT."
+}

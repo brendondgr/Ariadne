@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 17,
+  "gold_present": 17,
+  "hallucinations": [],
+  "rationale": "All gold assertions are satisfied and traceable to logic_flow evidence. must_correlate (T1005, T1039, T1552.001, T1552.003, T1552.004, T1552.006) are each stated as cross-source correlations in the claims list and are named in the narrative's 'all six identifiers ... corroborated across both sources' clause. capec.must_include_ids CAPEC-37 and CAPEC-639 are both present with correct names, and their union of mapped T-numbers (CAPEC-639: T1552.001/.003/.004/.006/T1039; CAPEC-37: T1005/T1552.004) exactly matches capec.must_include_related, matching the evidence's 'related' TaxonomyEntry lists and join_values verbatim. attack.must_include_ids (the same 6 T-numbers) are all present as the 6 returned ATT&CK records (matching min/max_records=6). attack.must_include_related mitigations M1015, M1017, M1022, M1027, M1028, M1041, M1047, M1051, M1057 are all enumerated in the narrative's per-technique mitigation clauses (T1005->M1057; T1552.004->M1041,M1047,M1022,M1027; T1552.003->M1028; T1552.001->M1047,M1022,M1027,M1017; T1552.006->M1051,M1015,M1047), each verified against the corresponding record's 'related' list in logic_flow with matching counts (1,4,1,4,3). T1039 correctly has no mitigations mentioned since its evidence 'related' array is empty. CAPEC status/abstraction values (CAPEC-639: Stable/Detailed; CAPEC-37: Draft/Detailed) and taxonomy-entry counts (5 and 2) match the record properties exactly. No invented identifiers, aliases, counts, or properties were found; technique names used (e.g. 'Shell History') match the evidence's actual names rather than informal CAPEC-taxonomy aliases. The only minor imperfection is that the narrative's opening sentence initially lists only 5 of 6 mapped T-numbers before the same sentence's second clause supplies all 6 with corroboration language -- a phrasing quirk, not a factual error or omission, since every required id and mitigation is stated correctly and completely elsewhere in the same narrative."
+}

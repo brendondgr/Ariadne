@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-TEC-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The query returned exactly 10 Campaign-USES->Technique records for C0027, matching evidence 1:1 with the answer's narrative and claims (all 10 technique IDs and their exact names: T1105 Ingress Tool Transfer, T1046 Network Service Discovery, T1621 Multi-Factor Authentication Request Generation, T1102 Web Service, T1090 Proxy, T1572 Protocol Tunneling, T1190 Exploit Public-Facing Application, T1530 Data from Cloud Storage, T1133 External Remote Services, T1047 Windows Management Instrumentation). All 5 gold must_include_ids (T1046, T1047, T1090, T1102, T1105) are surfaced in both narrative and claims, each with a matching citation (source=attack, primary_id). The answer's 10-technique set also matches the extended gold pool (ex_gold.expected) exactly, item for item, with no additions or omissions. No name, count, or id in the narrative/claims is unsupported by logic_flow.results[0].records - every technique name is copied verbatim from the retrieved record. Deterministic_scores confirms coverage=1.0 and citation_provenance_rate=1.0. No hallucinations found."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty correlation (must_correlate: [], expect_no_correlation: true, capec.expect_empty: true, attack.expect_dependency_skip: true). The evidence shows the capec query (g.V().hasLabel('AttackPattern').has('id', within(['CAPEC-3']))...out('MAPS_TO')...) executed cleanly with row_count 0, and the attack sub-question was correctly skipped because its dependency q1 produced no join values ('producer q1: it returned no join values'). The answer's narrative and abstentions state exactly this: 'The routed sources returned no matching records for this question' and the two per-source abstention statements accurately describe the empty CAPEC query and the dependency skip for ATT&CK. No claims, ids, techniques, or mitigations were fabricated — claims list is empty and no entity names appear anywhere in the narrative. This matches the deterministic_scores block (correlation.negative=true, exact=true, precision/recall/f1=1.0, abstention_proof_ok=true) and constitutes a fully correct, fully grounded abstention on an adversarial negative case."
+}

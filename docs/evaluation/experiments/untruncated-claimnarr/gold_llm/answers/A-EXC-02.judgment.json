@@ -1,0 +1,12 @@
+{
+  "case_id": "A-EXC-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (assertions.expect_empty=true; ex_gold.expected=[]) because T1004 was excluded at load. The executed query (MATCH (n:Technique) WHERE n.attack_id IN ['T1004'] ...) ran cleanly with row_count 0 (logic_flow.results[0].records=[], traces show execute/assess/normalize all report 0 rows). The answer correctly abstains: claims=[], one abstention citing the attack source with the actual executed query and stating no matching records were found, and the narrative reflects this without inventing any technique data, aliases, counts, or properties for T1004. No fabricated content appears anywhere in the answer. This matches the negative-case requirement exactly."
+}

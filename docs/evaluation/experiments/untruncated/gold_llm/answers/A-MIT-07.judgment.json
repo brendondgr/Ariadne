@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MIT-07",
+  "verdict": "CORRECT",
+  "correctness": 0.95,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 9,
+  "gold_present": 9,
+  "hallucinations": [],
+  "rationale": "Gold requires T1078 plus exactly 8 mitigations (M1013, M1015, M1017, M1018, M1026, M1027, M1032, M1036). The retrieved evidence (logic_flow.results[0].records[0].related) contains exactly these 8 ids and no others, confirming the retrieval was complete and correct. The answer's claims (an explicit enumeration claim) list all 8 mitigation ids verbatim, matching gold and evidence 1:1 with zero extras -- full completeness and groundedness. The narrative correctly states 'eight mitigations' (matching the true count) and names four of them by id/name (M1027, M1032, M1018, M1026), with the remaining themes (training, interactive-login restriction, monitoring) paraphrased from M1017/M1015/M1026 content without misattributing ids; it does not fabricate any id, count, alias, or property not present in the evidence -- every named mitigation and description detail (Group Policy, MFA, PAM, account lifecycle) is drawn directly from the corresponding evidence descriptions. Correctness is docked slightly (0.95) only because the free-text narrative alone names just 4 of the 8 mitigations explicitly rather than all 8 by id, though the accompanying claims (also part of the answer object shown to the analyst) supply the full, exact 8-item enumeration, so no gold-required entity is actually withheld from the analyst."
+}

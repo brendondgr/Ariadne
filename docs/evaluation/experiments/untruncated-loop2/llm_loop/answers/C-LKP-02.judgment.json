@@ -1,0 +1,14 @@
+{
+  "case_id": "C-LKP-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.9,
+  "faithfulness": 0.8,
+  "groundedness": 0.95,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [
+    "Narrative/claims describe CAPEC-163 as a 'CanPrecede predecessor' of CAPEC-116, but the evidence shows the edge is CAPEC-116 --CAN_PRECEDE(out)--> CAPEC-163 (facet: 'CAN_PRECEDE', direction 'out', count 1; related record type 'CAN_PRECEDE'). That means CAPEC-116 precedes CAPEC-163, so CAPEC-163 is the successor, not a predecessor. The relationship direction/label is misstated."
+  ],
+  "rationale": "All gold-required facts for CAPEC-116 are correctly and completely surfaced: the id (CAPEC-116), name (Excavation), Abstraction (Meta), and Status (Stable) all match expect_names/expect_properties exactly and are traceable to the q1 record's properties block. gold_expected=1 (CAPEC-116), gold_present=1 -> completeness 1.0. The abstention for q3 (ChildOf) is correctly proven by an empty result set (row_count 0), so no fabrication there. However, the answer adds an unrequested extra claim that is directionally wrong: it calls CAPEC-163 a 'CanPrecede predecessor' of CAPEC-116, when the underlying facet/related-record data (CAN_PRECEDE, direction=out) show CAPEC-116 is the source of the CAN_PRECEDE edge to CAPEC-163, i.e. CAPEC-163 is what CAPEC-116 can precede (a successor), not a predecessor. This is a real-entity correct-citation but mislabeled-relationship error, which is a faithfulness defect on an otherwise correct and complete answer to the actual gold question. Downgraded to PARTIAL rather than CORRECT because of this mislabeling, though it does not affect the gold-required Abstraction/Status answer."
+}

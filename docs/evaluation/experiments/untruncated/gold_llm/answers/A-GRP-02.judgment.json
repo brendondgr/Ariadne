@@ -1,0 +1,14 @@
+{
+  "case_id": "A-GRP-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.55,
+  "faithfulness": 0.7,
+  "groundedness": 0.9,
+  "completeness": 0.4,
+  "gold_expected": 5,
+  "gold_present": 2,
+  "hallucinations": [
+    "Narrative states 'Group G0032 (Lazarus Group) uses 35 techniques' but only 34 technique records were actually retrieved (evidence_volume.records=34, answer.headline='Gathered 34 record(s) from 1 source(s).', logic_flow row_count=34) — the '35' count is fabricated and contradicts the pipeline's own evidence."
+  ],
+  "rationale": "The retrieved evidence (34 USES edges from G0032/Lazarus Group to Technique nodes) exactly matches the gold ex_gold.expected set of 34 T-numbers, and the underlying claims/citations list correctly enumerates all 34, including all 5 must_include_ids (T1005, T1008, T1010, T1012, T1016). However, the narrative under test (which is substantive, not thin, per grading instructions) only names 13 of the 34 techniques explicitly (T1529, T1124, T1680, T1008, T1105, T1046, T1078, T1041, T1083, T1485, T1012, T1203, T1685), and of the 5 gold-required ids it only names T1008 and T1012 in text — T1005, T1010, and T1016 are never mentioned in the narrative itself (gold_present=2/5). The narrative also asserts the group 'uses 35 techniques,' a count that is not supported by and directly contradicts the evidence (34 records, 34 unique technique ids, headline text). Because the primary answer text is both incomplete relative to the gold-required ids and contains a fabricated total count, this is graded PARTIAL: the technique ids that ARE named are all correctly grounded in the retrieved records, but the narrative fails to fully satisfy the must_include_ids requirement in its own text and introduces an unsupported figure."
+}

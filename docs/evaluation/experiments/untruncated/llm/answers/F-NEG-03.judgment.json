@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty correlation: CAPEC-3 must show expect_empty=true for its ATT&CK mapping and the ATT&CK sub-question must show expect_dependency_skip=true. Evidence confirms this exactly: CAPEC-3's MAPS_TO facet count is 0 and join_values is [], and q2 (the ATT&CK technique/mitigation lookup) was correctly skipped with reason 'producer q1: it returned no join values'. The narrative states CAPEC-3 has zero mapped ATT&CK techniques, no ATT&CK mitigations, and that cross-source join verification returned no corroborated identifiers -- all directly traceable to the retrieved record and the dependency-skip trace. It does not fabricate any technique, mitigation, or correlation, and does not conflate CAPEC-3's own HAS_MITIGATION facet (count 3, a CAPEC-native relation) with ATT&CK mitigations. deterministic_scores confirm exact negative match (precision/recall/f1 = 1.0, n_expected=0, n_got=0) and fully_provenanced=true. No hallucinations found; this is a clean, fully-grounded abstention."
+}

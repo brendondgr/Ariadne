@@ -1,0 +1,12 @@
+{
+  "case_id": "C-DEP-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty: true) since CAPEC-106 is deprecated/excluded at load time. The logic_flow evidence shows the query executed cleanly against AttackPattern nodes with seed_id CAPEC-106 and returned row_count 0 at both execute and assess steps, with 0 records and 0 related entities in evidence_volume. The answer correctly abstains: claims is empty, narrative states 'The routed sources returned no matching records for this question' and prompts the analyst to supply a different id, and the abstentions block cites the exact executed Gremlin query with a truthful statement that it ran cleanly and found nothing. No entity, count, alias, or fact is fabricated - the answer surfaces zero unsupported claims, matching the gold requirement of zero expected entities. This is a textbook correct abstention for a negative/adversarial case."
+}

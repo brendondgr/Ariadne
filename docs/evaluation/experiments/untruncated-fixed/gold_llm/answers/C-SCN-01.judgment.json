@@ -1,0 +1,12 @@
+{
+  "case_id": "C-SCN-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.2,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 1,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold assertion requires min_records=250 and max_records=300 for this bounded CAPEC scan. The executed query was 'g.V().hasLabel(\"AttackPattern\").elementMap().limit(20000)' (task.limits.max_result_rows=20000, no per-question bound applied), returning 558 AttackPattern records (logic_flow.results[0] row_count=558). The narrative/claims faithfully report this figure ('Found 558 CAPEC record(s)... All 558 result(s) for this question'), and every CAPEC id sampled in the claim (200 checked) is verifiably present in the retrieved record set, so there is no fabrication and groundedness/faithfulness are high. However, 558 is 258 records (86%) over the gold's max_records=300, meaning the 'bounded' scan behavior the question and gold explicitly require was not honored -- the pipeline performed an effectively unbounded scan instead. Because the record-count bound is the sole gold assertion for this case and it is decisively violated, the answer fails the question as posed despite being internally faithful to what was actually retrieved."
+}

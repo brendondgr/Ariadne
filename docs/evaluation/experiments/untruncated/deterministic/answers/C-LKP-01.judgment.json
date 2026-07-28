@@ -1,0 +1,12 @@
+{
+  "case_id": "C-LKP-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.2,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.25,
+  "gold_expected": 4,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question explicitly asks to look up CAPEC-555 and report its abstraction and status. The evidence (logic_flow.results[0].records[0].properties) correctly contains Abstraction='Standard' and Status='Stable', matching gold's expect_properties exactly, and the record's name 'Remote Services with Stolen Credentials' matches expect_names. However, the answer surfaced to the analyst -- both narrative ('Found 1 CAPEC record(s): CAPEC-555.') and the single claim (identical text) -- states only the bare id CAPEC-555 with a correctly grounded citation, and never states the Abstraction or Status values, nor restates the name. Nothing is fabricated (faithfulness/groundedness are clean, and the retrieval itself satisfied min_records/max_records=1 and coverage=1.0 per deterministic_scores), but the deliverable the question specifically asked for -- the abstraction and status values -- is completely absent from the answer text, so it fails to actually answer the question. Of the 4 gold-required facts (must_include_ids: CAPEC-555; expect_names: name; expect_properties: Abstraction, Status), only the id is present in the answer (1/4)."
+}

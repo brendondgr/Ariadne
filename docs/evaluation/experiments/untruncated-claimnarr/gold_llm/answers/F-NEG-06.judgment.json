@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty join for this adversarial negative case: expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true, with must_correlate=[]. The evidence confirms this exactly: the capec query 'g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...out(\"MAPS_TO\")...' executed cleanly against seed CAPEC-18 and returned row_count 0 (logic_flow.results[0], traces execute/assess steps), and the q2 attack sub-question was skipped per the dependency trace 'producer q1: it returned no join values' rather than being silently run or fabricated. The answer (narrative + claims, since claims is empty and the narrative is the deterministic composer's output) correctly states 'no matching records' and offers no invented technique IDs, mitigations, or correlations — claims=[] and both abstentions accurately restate the query outcomes verbatim from the traces. No entity, count, or name appears in the answer that isn't in the evidence, so there is no hallucination. All three gold conditions (no correlation, capec empty, attack dependency-skip) are surfaced, so completeness is full and correctness is full."
+}

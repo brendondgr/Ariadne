@@ -1,0 +1,14 @@
+{
+  "case_id": "F-CTM-04",
+  "verdict": "INCORRECT",
+  "correctness": 0.05,
+  "faithfulness": 0.4,
+  "groundedness": 0.5,
+  "completeness": 0.0,
+  "gold_expected": 13,
+  "gold_present": 0,
+  "hallucinations": [
+    "Narrative states 'Queries for mitigations applying to those mapped techniques returned zero records, meaning no mitigations are currently linked to them in the graph' — this misrepresents the evidence. Per logic_flow, q2 was never executed at all (query: \"\", trace step 'dependency': 'producer q1: it returned no join values'); the abstention explicitly says 'no query was executed'. The answer converts an unexecuted/skipped query into a false claim of a definitive zero-result finding, which is not supported by the evidence."
+  ],
+  "rationale": "Gold requires the 5 ATT&CK technique IDs (T1039, T1552.001, T1552.003, T1552.004, T1552.006) that CAPEC-639 maps to via must_correlate/must_include_ids, plus the 8 mitigations (M1015, M1017, M1022, M1027, M1028, M1041, M1047, M1051) that apply to those techniques. The answer surfaces zero of these 13 required identifiers. The retrieval for q1 used a 'describe' template that fetched CAPEC-639's elementMap and adjacent edge labels/counts (correctly showing MAPS_TO -> TaxonomyEntry count=5, confirming the CAPEC record itself and the count of 5 mapped techniques are grounded), but never expanded the MAPS_TO edges to retrieve the actual TaxonomyEntry.entry_id values (the T-numbers), so q1 produced no seed identifiers. q2 (mitigations) was consequently skipped entirely per its dependency trace, not executed with an empty result. The narrative's claim that mitigations 'returned zero records' meaning 'no mitigations are currently linked' is an unsupported (and incorrect) characterization of a skipped query as a completed negative finding — this is a faithfulness violation, not merely an incompleteness. Net effect: none of the gold must_correlate T-numbers or must_include_related mitigations are named, and the pipeline's own deterministic_scores confirm this (mapping_recall.recall=0.0, correlation.recall=0.0, missing all 5 T-numbers). This is a hard federated case that requires both source correlation and mitigation attribution, and the answer accomplishes neither, so it fails the question despite correctly reporting the CAPEC-639 record and its 5-mapping count."
+}

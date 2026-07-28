@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-03",
+  "verdict": "CORRECT",
+  "correctness": 0.95,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 8,
+  "gold_present": 8,
+  "hallucinations": [],
+  "rationale": "Gold requires the technique T1566 plus 7 related items (DET0070, AN0188-AN0193). The single retrieved record for T1566 (name 'Phishing') lists exactly these 7 related ids with matching names/descriptions in logic_flow.records[0].related, and the answer's claims/narrative enumerate all 7 (DET0070, AN0189, AN0188, AN0193, AN0191, AN0190, AN0192) alongside the T1566 subject, so gold_present = 8/8 with no invented ids, names, or counts (the '7 item(s)' count matches the evidence exactly). Minor deduction on correctness only because the deterministic narrative answers 'which analytics/strategies detect it' (by id) but does not surface the qualitative 'how' - the detection-strategy/analytic descriptions present in the evidence (e.g. DET0070's 'Detection Strategy for Phishing across platforms', AN0189's mail/file-write correlation logic) are not restated in the narrative, leaving the mechanism side of the question thinner than the entity-coverage side. No hallucinations found; every id and name traces directly to logic_flow.records[0]."
+}

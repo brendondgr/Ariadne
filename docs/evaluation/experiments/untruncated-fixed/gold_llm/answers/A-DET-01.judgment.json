@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[T1047] and must_include_related=[DET0364, AN1031]. The narrative names all three: T1047 (Windows Management Instrumentation), DET0364 titled 'Behavioral Detection Strategy for WMI Execution Abuse on Windows' (matches evidence record.related[0].name exactly), and AN1031 with its description reproduced almost verbatim from evidence ('adversarial abuse of WMI to execute local or remote commands via WMIC, PowerShell, or COM API' / 'multi-event chain: process creation, command execution, and corresponding network connection' -> narrative's 'multi-event chain that includes process creation, command execution, and corresponding network connections'). No counts, names, or dates are invented; the single retrieved record (T1047 with two related nodes DET0364 and AN1031) is the only evidence and it fully supports every claim. Coverage in deterministic_scores also confirms 3/3 (coverage=1.0). No abstention issue since this is a positive case with 1 record found (min_records=1 satisfied)."
+}

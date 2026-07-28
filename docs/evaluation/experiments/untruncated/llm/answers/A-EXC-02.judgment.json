@@ -1,0 +1,12 @@
+{
+  "case_id": "A-EXC-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative case: T1004 is asserted excluded at load, gold expects an empty result (expect_empty: true, ex_gold.expected: []). The logic_flow shows the query for Technique node with attack_id T1004 executed cleanly and returned row_count 0 / records: []. The pipeline's answer correctly reports no matching records ('The routed sources returned no matching records for this question') and formally abstains ('The attack source doesn't establish this... returned no matching records for: Retrieve the Technique node with identifier T1004'), matching the executed query exactly. No entity, alias, count, or property is fabricated; the narrative only offers example ids (T1566, M1017, CAPEC-98) as generic guidance, none framed as facts about T1004. This is the fully correct behavior for a NEG-style exclusion case."
+}

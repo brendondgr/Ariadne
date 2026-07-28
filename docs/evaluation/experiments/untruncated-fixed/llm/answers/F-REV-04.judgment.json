@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-555 (mapping to T1021), the ATT&CK T1021 record with name 'Remote Services', and the cross-source correlation on T1021 (gold.assertions.must_correlate=['T1021'], capec.must_include_ids=['CAPEC-555'], capec.must_include_related=['T1021'], attack.must_include_ids=['T1021'], attack.expect_names={'T1021':'Remote Services'}). The narrative states exactly one CAPEC pattern maps to T1021 -- CAPEC-555, named 'Remote Services with Stolen Credentials' -- and correctly reports its Status=Stable and Abstraction=Standard, both taken verbatim from logic_flow.results[0].records[0].properties. It correctly identifies T1021 as 'Remote Services' and paraphrases the technique's description (valid accounts used to log into telnet/SSH/VNC services) faithfully from logic_flow.results[1].records[0].description. It explicitly states the CAPEC-to-ATT&CK correlation, matching deterministic_scores.correlation (precision=recall=f1=1.0, n_expected=1, n_got=1) and mapping_recall (gold=1, found=1, recall=1.0, missing=[]). No counts, names, aliases, or properties in the narrative are absent from the evidence -- every claim traces to the single capec and single attack record retrieved. All gold-required entities (CAPEC-555, T1021 id, T1021 name 'Remote Services') are surfaced, so completeness is full."
+}

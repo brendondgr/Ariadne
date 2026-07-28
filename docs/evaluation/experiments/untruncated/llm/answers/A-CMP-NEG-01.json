@@ -1,0 +1,95 @@
+{
+  "id": "A-CMP-NEG-01",
+  "kind": "attack",
+  "tier": "adversarial",
+  "category": "A-CMP",
+  "question": "Techniques for nonexistent campaign C9999 — must return empty.",
+  "gold": {
+    "assertions": {
+      "expect_empty": true
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "No records were returned by the routed specialists.",
+    "narrative": "None of the live graph sources cover this request. If you meant a specific ATT&CK or CAPEC entity, name it or give its id (e.g. T1566, M1017, or CAPEC-98).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [],
+    "abstentions": [],
+    "notes": [
+      "Skipped attack: total pipeline timeout exceeded before this sub-question ran"
+    ]
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-CMP-NEG-01",
+      "source": "attack",
+      "text": "Which techniques did ATT&CK campaign C9999 use?",
+      "entities": [
+        "Campaign",
+        "Technique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "C9999"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": []
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 0,
+      "compliant": 0,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "In attack, identify Campaign, HAS_TECHNIQUE, SubTechnique, Technique relevant to: Techniques for nonexistent campaign C9999 — must return empty.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 1,
+    "status": "partial",
+    "wall_s": 120.142
+  },
+  "evidence_volume": {
+    "results": 0,
+    "records": 0,
+    "related": 0
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an honest empty correlation (expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true) for CAPEC-116, since it has no ATT&CK mapping. The evidence confirms this: the capec query 'g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\")...' executed cleanly against seed CAPEC-116 and returned row_count 0, and q2 (ATT&CK mitigations) was correctly skipped as a dependency failure ('producer q1: it returned no join values') rather than fabricating a join. The narrative/abstentions state exactly this — no matching records, sub-question q2 skipped for lack of seed identifiers — with zero claims and zero hallucinated ids, techniques, or mitigations. deterministic_scores.correlation shows negative=true, exact=true, precision/recall/f1=1.0, matching the expected empty result. This is a fully faithful, fully grounded abstention with no gold-required entities to surface."
+}

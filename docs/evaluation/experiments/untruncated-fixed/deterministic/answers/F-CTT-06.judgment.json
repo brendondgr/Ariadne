@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "The question asks which ATT&CK tactics the techniques mapped from CAPEC-37 belong to. Gold requires must_correlate [T1005, T1552.004], capec.must_include_related [T1005, T1552.004], and attack.must_include_related [TA0006, TA0009] with exactly 2 attack records. The answer's claims surface CAPEC-37 mapping to T1005 and T1552.004 (matching logic_flow q1 record: related TaxonomyEntry entries capec:taxonomy:ATTACK:1005 and capec:taxonomy:ATTACK:1552.004), then states T1005 belongs to TA0009 (Collection) and T1552.004 belongs to TA0006 (Credential Access) -- exactly matching the q2 evidence records (T1005 related=[TA0009 Collection], T1552.004 related=[TA0006 Credential Access]). Both cross-source correlations (T1005, T1552.004 corroborated across capec and attack) are explicitly stated, matching must_correlate. CAPEC-37 Abstraction=Detailed and Status=Draft are correctly quoted from record properties. Record/entity counts (1 CAPEC record, 2 ATT&CK records, 2 correlations) match the evidence exactly and the deterministic_scores confirm exact correlation/mapping recall (f1=1.0, recall=1.0). No claim in the narrative or claims list introduces an id, name, count, or property absent from logic_flow evidence -- every citation traces to the CAPEC-37 record or the T1005/T1552.004 attack records. All 4 gold-required entities (T1005, T1552.004, TA0006, TA0009) are surfaced with correct tactic-technique pairing, so this is a fully correct, fully grounded answer."
+}

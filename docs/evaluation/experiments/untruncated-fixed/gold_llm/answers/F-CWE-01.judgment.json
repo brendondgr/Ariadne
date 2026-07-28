@@ -1,0 +1,12 @@
+{
+ "case_id": "F-CWE-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 47,
+ "gold_present": 47,
+ "hallucinations": [],
+ "rationale": "The answer (deterministic 'claims' arm, LLM narrator fell back due to a timeout) surfaces all 10 required CAPEC ids (CAPEC-474/509/551/555/560/561/600/644/645/652), each correctly tied to CWE-522 as the related weakness, matching gold's capec.must_include_ids and must_include_related exactly. All 12 required ATT&CK technique ids (T1021, T1021.002, T1078, T1110.004, T1114.002, T1133, T1543, T1550.002, T1550.003, T1552.004, T1558, T1558.003) are present and match gold's attack.must_include_ids and must_correlate lists. Cross-checking the union of mitigation ids cited across the 12 per-technique enumeration claims (M1013,15,17,18,21,22,26,27,28,30,32,33,35,36,37,40,41,42,43,45,47,51,52,54,60) yields exactly the 25 ids in gold's attack.must_include_related, so mitigation coverage is complete. Every stated CAPEC Abstraction/Status/name pair (e.g. CAPEC-474 Detailed/Draft, CAPEC-560 Meta/Stable) and every technique's mitigation set (e.g. T1078 -> M1013,M1017,M1027,M1018,M1026,M1032,M1015,M1036) was verified against the logic_flow records' properties/related fields and matches verbatim. The 12 cross-source correlation claims also match the CAPEC records' join_values field exactly (e.g. CAPEC-555 joins T1021, T1114.002, T1133; CAPEC-474 joins T1552.004), so all must_correlate T-numbers are grounded. No invented ids, counts, aliases, or property values were found. Total gold-required distinct entities: 10 CAPEC + 12 ATT&CK + 25 mitigations = 47, all present."
+}

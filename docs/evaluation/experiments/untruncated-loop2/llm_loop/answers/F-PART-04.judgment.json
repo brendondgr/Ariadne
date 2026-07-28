@@ -1,0 +1,15 @@
+{
+  "case_id": "F-PART-04",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 0.3,
+  "groundedness": 0.6,
+  "completeness": 0.5,
+  "gold_expected": 4,
+  "gold_present": 3,
+  "hallucinations": [
+    "Narrative implies the 1000 ATT&CK records are a valid, on-topic answer to the question, but the question explicitly demands that the seeded ATT&CK sub-question degrade to a dependency abstention (no broad unseeded query) once the CAPEC-555 producer is unavailable -- the run_meta.observed_plan shows the LLM planner issued q1 (source=attack) with seed_ids: [] and depends_on: null, i.e. an independent unseeded query, even though the canonical template plan (logic_flow.plan) correctly encodes attack as seed_from: 'q1' (dependent on the capec step)",
+    "Answer surfaces 1000 unseeded ATT&CK technique/procedure ids (AN0110, AN0613, AN0769, ...) as if they answer the question, when the gold requires zero technique output on the attack side absent the CAPEC-555 seed"
+  ],
+  "rationale": "The gold for this federated case is explicit: with CAPEC down, capec.expect_skipped=true and attack.expect_dependency_skip=true -- the ATT&CK sub-question must abstain (via dependency on the failed CAPEC-555 producer) rather than fall back to a broad unseeded query. The artifact's own logic_flow.plan shows the correct dependent template (q2 attack seed_from: 'q1'), and answer.notes confirms capec was correctly skipped ('Skipped capec: no specialist available for source capec'), satisfying that half of the gold. However run_meta.observed_plan shows the LLM planner re-issued the attack sub-question with seed_ids: [] and depends_on: null -- an independent unseeded query -- which the attack specialist then executed, returning 1000 raw ATT&CK records (verified: all 200 claim.entity_ids are a subset of the 1000 logic_flow records, so the ids themselves are grounded/not fabricated). The narrative and sole 'fact' claim present this 1000-record dump as the answer, never mentioning CAPEC-555, the dependency, or an abstention -- exactly the 'broad unseeded query' the question says must not happen. Since must_correlate is empty and no cross-source correlation is claimed, expect_no_correlation is trivially satisfied, and status='partial' satisfies expect_partial, but the answer fails the one assertion that is the actual point of the test case (attack.expect_dependency_skip). This is the same planner-defect class described in project history (a declared join/dependency not reaching its sub-questions) recurring in this run; the correct response would have been an explicit abstention on the attack side, not 1000 records."
+}

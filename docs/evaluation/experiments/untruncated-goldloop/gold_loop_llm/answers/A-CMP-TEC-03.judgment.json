@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-TEC-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The gold requires must_include_ids T1005, T1016, T1020, T1033, T1041 (min_records 5), and the extended ex_gold neighbor pool lists 13 expected techniques (T1005, T1016, T1020, T1033, T1041, T1047, T1057, T1082, T1105, T1119, T1140, T1203, T1221). The retrieved evidence (logic_flow.results[0].records) contains exactly these 13 Technique records with matching primary_id and name fields, and the narrative/claims list all 13 IDs verbatim with correct names (e.g. T1105 Ingress Tool Transfer, T1041 Exfiltration Over C2 Channel, T1033 System Owner/User Discovery). All 5 must_include_ids are present, and all 13 ex_gold expected IDs are surfaced -- full coverage with no extras and no omissions. Every claim traces directly to a record in the evidence with no fabricated names, counts, or aliases; the deterministic_scores block independently confirms coverage=1.0 and citation_provenance_rate=1.0. No hallucinations found."
+}

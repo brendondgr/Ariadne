@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 12,
+  "gold_present": 12,
+  "hallucinations": [],
+  "rationale": "Gold requires: CAPEC-21 itself, the 3 correlated ATT&CK T-numbers (T1134, T1528, T1539) via must_correlate/must_include_related on both the capec and attack assertion blocks, and the 8 mitigation ids (M1017, M1018, M1021, M1026, M1032, M1047, M1051, M1054) under attack.must_include_related. The answer's claims state all of these: CAPEC-21 maps to T1134/T1528/T1539 (matches logic_flow record CAPEC-21 related TaxonomyEntrys capec:taxonomy:ATTACK:1134/1528/1539 exactly, including names Access Token Manipulation / Steal Application Access Token / Steal Web Session Cookie), and per-technique mitigation enumerations: T1539->{M1051,M1047,M1054,M1032,M1017,M1021} (6, matches the 6 related Mitigation nodes in logic_flow for T1539 exactly), T1528->{M1047,M1018,M1017,M1021} (4, matches logic_flow exactly), T1134->{M1026,M1018} (2, matches logic_flow exactly). Union of stated mitigations is exactly the 8 gold-required ids {M1017,M1018,M1021,M1026,M1032,M1047,M1051,M1054} with no additions or omissions. The 3 correlation claims (T1134, T1528, T1539 corroborated across capec/attack) satisfy must_correlate exactly, matching deterministic_scores.correlation (precision/recall/f1 = 1.0, exact match) and mapping_recall (3/3, missing: []). Record counts also satisfy gold: 1 CAPEC record (min_records 1) and 3 ATT&CK records (min/max 3). Every id, name, and mitigation-count cited in the claims traces directly to logic_flow.results records/related fields with no invented names, aliases, or counts found."
+}

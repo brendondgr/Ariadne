@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-555 (must_include_ids), the CAPEC->T1114.002 mapping (must_include_related), the T1114.002/T1114.002 cross-source correlation (must_correlate), and the ATT&CK record T1114.002 named 'Remote Email Collection' (must_include_ids/expect_names). The narrative and claims state all of these: CAPEC-555 'Remote Services with Stolen Credentials' with a TaxonomyEntry capec:taxonomy:ATTACK:1114.002 mapping to T1114.002 (matches evidence record CAPEC-555's related field), the ATT&CK record T1114.002 named exactly 'Remote Email Collection' (matches evidence record primary_id T1114.002/name), and an explicit correlation claim that T1114.002 is corroborated across attack and capec (2 records share it), matching deterministic_scores.correlation exact=true, precision/recall/f1=1.0. Every stated property (Abstraction: Standard, Status: Stable, revoked: False, stix_type: attack-pattern, x_mitre_deprecated: False, x_mitre_is_subtechnique: True, x_mitre_version: 1.3) is verbatim from the retrieved records' properties fields in logic_flow, with no invented facts, aliases, or counts. All gold-required ids (CAPEC-555, T1114.002) and the required correlation and name are fully surfaced."
+}

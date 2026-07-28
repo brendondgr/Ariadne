@@ -1,0 +1,12 @@
+{
+  "case_id": "A-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty=true, ex_gold.expected=[]) for the nonexistent technique T9999. The logic_flow shows the executed Cypher query against :Technique with attack_id T9999 returned row_count 0 and records=[]. The answer correctly reports 'The routed sources returned no matching records for this question' and abstains explicitly ('The attack source doesn't establish this ... returned no matching records for: What is the name of ATT&CK technique T9999?'), inviting the analyst to supply a real id instead of fabricating a name or description for T9999. No technique name, alias, or property is invented anywhere in the narrative or claims (claims list is empty). This is a clean, fully grounded abstention matching the negative-case requirement exactly."
+}

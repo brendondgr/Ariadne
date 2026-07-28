@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-98] and must_include_related=[T1566, T1598] (3 required ids total). The evidence record (logic_flow.results[0].records[0]) shows CAPEC-98 named 'Phishing' with join_values ['T1566','T1598'] and related TaxonomyEntry nodes for T1566 ('Phishing') and T1598 ('Phishing for Information'). The narrative and claims correctly state 'CAPEC-98, identified as the Phishing attack pattern, maps to exactly two ATT&CK techniques: T1566 and T1598' and enumerate both taxonomy entry ids (capec:taxonomy:ATTACK:1566, capec:taxonomy:ATTACK:1598). All three gold-required ids are surfaced, no additional or fabricated technique ids/names/counts appear, and the row_count of 2 techniques matches the evidence exactly. The artifact's own deterministic_scores also confirm coverage=1.0."
+}

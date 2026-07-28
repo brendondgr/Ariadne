@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-98] and must_include_related=[T1566, T1598]; the narrative and claims state CAPEC-98 (Phishing) maps to T1566 and T1598, satisfying all three. Every stated fact is traceable to logic_flow: CAPEC-98's Abstraction=Standard/Status=Draft match record properties (q1); T1566/T1598 names, revoked/x_mitre_deprecated/x_mitre_is_subtechnique/x_mitre_version values match q2 records exactly; the 4 sub-techniques listed per parent (T1566.001-004, T1598.001-004) match q3/q4 related lists; the single tactic per technique (TA0001 for T1566, TA0043 for T1598) matches q5/q6. The correlation counts are also verifiable by counting record occurrences across results: T1566 appears in q1 (via CAPEC-98's related entry), q2, q3, q5, q6 = 5 records; T1598 appears in q1, q2, q4, q6 = 4 records, matching the stated 'corroborated by five/four records'. deterministic_scores confirms coverage=1.0 (3/3) and full provenance (17/17 citations compliant). No invented facts, aliases, or counts found."
+}

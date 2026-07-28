@@ -1,0 +1,275 @@
+{
+  "id": "A-AST-02",
+  "kind": "attack",
+  "tier": "adversarial",
+  "category": "A-AST",
+  "question": "What assets does T1490 (Inhibit System Recovery) target? (ICS-only concept — must refuse honestly, not invent)",
+  "gold": {
+    "assertions": {
+      "expect_boundary": true
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s); 1 part(s) unsupported.",
+    "narrative": "The evidence for T1490 (Inhibit System Recovery) indicates it targets seven platforms, including Containers, ESXi, IaaS, Linux, macOS, Network Devices, and Windows. However, the request to identify ICS-only assets cannot be answered because the live 'attack' source schema does not define an 'Asset' node label, and the request explicitly specifies an ICS-only concept which falls outside the provided Enterprise ATT&CK schema bounds. As a result, the join to determine ICS-specific targets could not be made.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found ATT&CK record T1490: Inhibit System Recovery.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1490"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1490"
+          }
+        ]
+      },
+      {
+        "text": "T1490 (Inhibit System Recovery) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.6.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1490"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1490"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": [
+      "Unsupported by the available sources: ICS-specific context and identification of 'assets' targeted by T1490. (The live 'attack' source schema does not define an 'Asset' node label, and the request explicitly specifies an ICS-only concept which falls outside the provided Enterprise ATT&CK schema bounds.)"
+    ]
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-AST-02",
+      "source": "attack",
+      "text": "What assets does technique T1490 target?",
+      "entities": [
+        "Technique",
+        "Asset"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "T1490"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "Retrieve details for the ATT&CK Technique or SubTechnique with identifier 'T1490'.",
+        "query": "MATCH (n:Technique) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found ATT&CK record T1490: Inhibit System Recovery.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "SubTechnique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1490"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "MATCH (n:Technique) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.1
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 4.6
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.005
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.127
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1490",
+            "name": "Inhibit System Recovery",
+            "label": "Technique",
+            "description": "Adversaries may delete or remove built-in data and turn off services designed to aid in the recovery of a corrupted system to prevent recovery.(Citation: Talos Olympic Destroyer 2018)(Citation: FireEye WannaCry 2017) This may deny access to available backups and recovery options.\n\nOperating systems may contain features that can help fix corrupted systems, such as a backup catalog, volume shadow copies, and automatic repair features. Adversaries may disable or delete system recovery features to augment the effects of [Data Destruction](https://attack.mitre.org/techniques/T1485) and [Data Encrypted for Impact](https://attack.mitre.org/techniques/T1486).(Citation: Talos Olympic Destroyer 2018)(Citation: FireEye WannaCry 2017) Furthermore, adversaries may disable recovery notifications, then corrupt backups.(Citation: disable_notif_synology_ransom)\n\nA number of native Windows utilities have been used by adversaries to disable or delete system recovery features:\n\n* <code>vssadmin.exe</code> can be used to delete all volume shadow copies on a system - <code>vssadmin.exe delete shadows /all /quiet</code>\n* [Windows Management Instrumentation](https://attack.mitre.org/techniques/T1047) can be used to delete volume shadow copies - <code>wmic shadowcopy delete</code>\n* <code>wbadmin.exe</code> can be used to delete the Windows Backup Catalog - <code>wbadmin.exe delete catalog -quiet</code>\n* <code>bcdedit.exe</code> can be used to disable automatic Windows recovery features by modifying boot configuration data - <code>bcdedit.exe /set {default} bootstatuspolicy ignoreallfailures & bcdedit /set {default} recoveryenabled no</code>\n* <code>REAgentC.exe</code> can be used to disable Windows Recovery Environment (WinRE) repair/recovery options of an infected system\n* <code>diskshadow.exe</code> can be used to delete all volume shadow copies on a system - <code>diskshadow delete shadows all</code> (Citation: Diskshadow) (Citation: Crytox Ransomware)\n\nOn network devices, adversaries may leverage [Disk Wipe](https://attack.mitre.org/techniques/T1561) to delete backup firmware images and reformat the file system, then [System Shutdown/Reboot](https://attack.mitre.org/techniques/T1529) to reload the device. Together this activity may leave network devices completely inoperable and inhibit recovery operations.\n\nOn ESXi servers, adversaries may delete or encrypt snapshots of virtual machines to support [Data Encrypted for Impact](https://attack.mitre.org/techniques/T1486), preventing them from being leveraged as backups (e.g., via ` vim-cmd vmsvc/snapshot.removeall`).(Citation: Cybereason)\n\nAdversaries may also delete “online” backups that are connected to their network – whether via network storage media or through folders that sync to cloud services.(Citation: ZDNet Ransomware Backups 2020) In cloud environments, adversaries may disable versioning and backup policies and delete snapshots, database backups, machine images, and prior versions of objects designed to be used in disaster recovery scenarios.(Citation: Dark Reading Code Spaces Cyber Attack)(Citation: Rhino Security Labs AWS S3 Ransomware)",
+            "properties": {
+              "attack_id": "T1490",
+              "description": "Adversaries may delete or remove built-in data and turn off services designed to aid in the recovery of a corrupted system to prevent recovery.(Citation: Talos Olympic Destroyer 2018)(Citation: FireEye WannaCry 2017) This may deny access to available backups and recovery options.\n\nOperating systems may contain features that can help fix corrupted systems, such as a backup catalog, volume shadow copies, and automatic repair features. Adversaries may disable or delete system recovery features to augment the effects of [Data Destruction](https://attack.mitre.org/techniques/T1485) and [Data Encrypted for Impact](https://attack.mitre.org/techniques/T1486).(Citation: Talos Olympic Destroyer 2018)(Citation: FireEye WannaCry 2017) Furthermore, adversaries may disable recovery notifications, then corrupt backups.(Citation: disable_notif_synology_ransom)\n\nA number of native Windows utilities have been used by adversaries to disable or delete system recovery features:\n\n* <code>vssadmin.exe</code> can be used to delete all volume shadow copies on a system - <code>vssadmin.exe delete shadows /all /quiet</code>\n* [Windows Management Instrumentation](https://attack.mitre.org/techniques/T1047) can be used to delete volume shadow copies - <code>wmic shadowcopy delete</code>\n* <code>wbadmin.exe</code> can be used to delete the Windows Backup Catalog - <code>wbadmin.exe delete catalog -quiet</code>\n* <code>bcdedit.exe</code> can be used to disable automatic Windows recovery features by modifying boot configuration data - <code>bcdedit.exe /set {default} bootstatuspolicy ignoreallfailures & bcdedit /set {default} recoveryenabled no</code>\n* <code>REAgentC.exe</code> can be used to disable Windows Recovery Environment (WinRE) repair/recovery options of an infected system\n* <code>diskshadow.exe</code> can be used to delete all volume shadow copies on a system - <code>diskshadow delete shadows all</code> (Citation: Diskshadow) (Citation: Crytox Ransomware)\n\nOn network devices, adversaries may leverage [Disk Wipe](https://attack.mitre.org/techniques/T1561) to delete backup firmware images and reformat the file system, then [System Shutdown/Reboot](https://attack.mitre.org/techniques/T1529) to reload the device. Together this activity may leave network devices completely inoperable and inhibit recovery operations.\n\nOn ESXi servers, adversaries may delete or encrypt snapshots of virtual machines to support [Data Encrypted for Impact](https://attack.mitre.org/techniques/T1486), preventing them from being leveraged as backups (e.g., via ` vim-cmd vmsvc/snapshot.removeall`).(Citation: Cybereason)\n\nAdversaries may also delete “online” backups that are connected to their network – whether via network storage media or through folders that sync to cloud services.(Citation: ZDNet Ransomware Backups 2020) In cloud environments, adversaries may disable versioning and backup policies and delete snapshots, database backups, machine images, and prior versions of objects designed to be used in disaster recovery scenarios.(Citation: Dark Reading Code Spaces Cyber Attack)(Citation: Rhino Security Labs AWS S3 Ransomware)",
+              "id": "attack-pattern--f5d8eed6-48a9-4cdf-a3d7-d1ffa99c3d2a",
+              "name": "Inhibit System Recovery",
+              "revoked": false,
+              "stix_type": "attack-pattern",
+              "x_mitre_deprecated": false,
+              "x_mitre_is_subtechnique": false,
+              "x_mitre_platforms": [
+                "Containers",
+                "ESXi",
+                "IaaS",
+                "Linux",
+                "macOS",
+                "Network Devices",
+                "Windows"
+              ],
+              "x_mitre_version": "1.6",
+              "_omitted_properties": [
+                "external_references"
+              ]
+            },
+            "facets": [
+              {
+                "rel": "DETECTS",
+                "direction": "in",
+                "neighbour_label": "DetectionStrategy",
+                "count": 1
+              },
+              {
+                "rel": "HAS_SUBTECHNIQUE",
+                "direction": "out",
+                "neighbour_label": "SubTechnique",
+                "count": 0
+              },
+              {
+                "rel": "HAS_TECHNIQUE",
+                "direction": "in",
+                "neighbour_label": "Tactic",
+                "count": 1
+              },
+              {
+                "rel": "MITIGATES",
+                "direction": "in",
+                "neighbour_label": "Mitigation",
+                "count": 4
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Campaign",
+                "count": 1
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Group",
+                "count": 7
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Software",
+                "count": 48
+              }
+            ],
+            "join_values": [
+              "T1490"
+            ],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 2,
+      "compliant": 2,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "Retrieve details for the ATT&CK Technique or SubTechnique with identifier 'T1490'.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 1,
+    "status": "partial",
+    "wall_s": 72.279
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 0
+  }
+}

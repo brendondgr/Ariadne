@@ -1,0 +1,12 @@
+{
+  "case_id": "C-CWE-03",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-66 (must_include_ids) plus CWE-1286 and CWE-89 (must_include_related). The narrative states \"CAPEC-66, identified as SQL Injection, exploits exactly two weaknesses: CWE-1286 and CWE-89,\" matching the single retrieved record's `related` array exactly (CWE-1286 and CWE-89 via EXPLOITS_WEAKNESS, no other weaknesses present). The claims mirror this: a fact claim for CAPEC-66, a fact claim for its Abstraction=Standard/Status=Draft (both verified against the record's `properties`), and an enumeration claim for the 2 weaknesses. Every entity id, name, and property value in the answer is traceable to the evidence record for CAPEC-66; no fabricated counts, aliases, or extra weaknesses. Coverage is 3/3 gold entities surfaced with correct grounding."
+}

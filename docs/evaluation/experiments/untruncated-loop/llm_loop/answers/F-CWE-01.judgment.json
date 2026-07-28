@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.55,
+  "faithfulness": 0.95,
+  "groundedness": 0.95,
+  "completeness": 0.6,
+  "gold_expected": 48,
+  "gold_present": 32,
+  "hallucinations": [],
+  "rationale": "The answer (deterministic-composer claims, no LLM narrative) correctly and completely surfaces all 10 gold CAPEC ids (CAPEC-474, 509, 551, 555, 560, 561, 600, 644, 645, 652) exploiting CWE-522, with accurate Abstraction/Status properties matching logic_flow result[0] exactly, and correctly states each CAPEC's 1 related item is CWE-522, satisfying capec.must_include_related. For the ATT&CK correlation (must_correlate, 12 T-numbers), only 10 of 12 appear as literal text (T1021, T1021.002, T1078, T1110.004, T1114.002, T1133, T1543, T1550.002, T1558, T1558.003) -- T1550.003 and T1552.004 are never printed, only referenced obliquely via '12 identifiers are corroborated ... and 4 more'; the pipeline's own evidence (logic_flow result[5]/[13]/[15]) confirms all 12 were retrieved, so this is a surfacing gap, not a retrieval gap. The larger shortfall is on the mitigation half of the question ('what mitigations apply'): logic_flow result[5] shows the full evidence contains exactly the 25 gold mitigation ids (M1013...M1060) spread across the 12 techniques, but the narrative/claims only name 11 of them (M1013, M1015, M1017, M1021, M1027, M1030, M1032, M1035, M1041, M1042, M1047) via truncated 'e.g. ...' samples for just 4 of the 12 techniques (T1021, T1078, T1133, T1558); mitigations for T1543, T1021.002, T1110.004, T1114.002, T1550.002, T1550.003, T1552.004 and T1558.003 are never enumerated at all, and 14 gold mitigation ids never appear anywhere in the text (M1018, M1022, M1026, M1028, M1033, M1036, M1037, M1040, M1043, M1045, M1051, M1052, M1054, M1060). Every property, count, and id that IS stated (CAPEC abstraction/status, ATT&CK x_mitre_version, revoked/stix_type flags, CAPEC-CWE relations) was cross-checked against logic_flow and is faithful and grounded -- no invented facts, aliases, or counts were found. Net effect: strong on CAPEC identification and CWE-522 correlation, weak on comprehensively answering the mitigations portion of the question, hence PARTIAL rather than CORRECT."
+}

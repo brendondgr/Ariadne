@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-555] and must_include_related=[T1021, T1114.002, T1133]. The single retrieved record (logic_flow.results[0].records[0]) shows CAPEC-555 'Remote Services with Stolen Credentials' with join_values exactly [T1021, T1114.002, T1133] and related TaxonomyEntry nodes capec:taxonomy:ATTACK:1021 (Remote Services), :1114.002 (Email Collection:Remote Email Collection), :1133 (External Remote Services). The narrative and claims state precisely these three techniques and correctly name the CAPEC pattern; the claims enumeration cites all three taxonomy entry ids with proper citations. The narrative's shorthand 'Remote Email Collection' for the sub-technique named 'Email Collection:Remote Email Collection' in evidence is a reasonable paraphrase (it is literally the sub-technique's own name/suffix), not a fabrication. No ids, counts, or names appear that are absent from the evidence. All 4 gold-required ids (CAPEC-555 + 3 techniques) are surfaced, so completeness/correctness/faithfulness/groundedness are all 1.0."
+}

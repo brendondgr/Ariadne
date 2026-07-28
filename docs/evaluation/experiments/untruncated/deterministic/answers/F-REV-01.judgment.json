@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "Gold requires must_correlate=[T1040], capec must_include_ids=[CAPEC-57, CAPEC-65, CAPEC-158] each mapped to T1040 (must_include_related), and attack must_include_ids=[T1040] with expect_names T1040='Network Sniffing'. The answer's claims name all three CAPEC ids (CAPEC-57 'Utilizing REST's Trust in the System Resource to Obtain Sensitive Data', CAPEC-158 'Sniffing Network Traffic', CAPEC-65 'Sniff Application Code'), each explicitly cited with its taxonomy entry 'capec:taxonomy:ATTACK:1040' matching the related TaxonomyEntry records in logic_flow (name 'Network Sniffing', entry_id '1040'). It states the ATT&CK record T1040: Network Sniffing (matching the retrieved Technique record's name exactly), and reports the cross-source correlation on T1040 across capec and attack, satisfying must_correlate. Every id, name, and taxonomy reference in the claims traces exactly to logic_flow records/related fields with no invented facts (no fabricated counts, aliases, or properties beyond what was retrieved). All 6 gold-required elements (T1040 correlation, CAPEC-57, CAPEC-65, CAPEC-158, T1040 attack record, T1040 name) are surfaced, and deterministic_scores confirm correlation f1=1.0 and mapping_recall=1.0."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "The narrative names all three gold-required CAPEC patterns (CAPEC-57, CAPEC-65, CAPEC-158) with correct titles, each shown in logic_flow.results[0].records with a 'related' entry pointing to T1040 (Network Sniffing), satisfying capec.must_include_ids and must_include_related. It states T1040 is 'Network Sniffing', matching gold expect_names, and reports the correct ATT&CK properties (revoked: False, stix_type: attack-pattern, x_mitre_deprecated: False, x_mitre_is_subtechnique: False, x_mitre_version: 1.7) verbatim from the q2 record's properties block. The must_correlate T1040 cross-source join is explicitly stated ('corroborated across the attack and capec sources'), matching deterministic_scores.correlation (exact:true, precision/recall/f1:1.0). CAPEC Abstraction/Status values ('Detailed'/'Draft') match every CAPEC record's properties exactly. The related tactics TA0007 (Discovery) and TA0006 (Credential Access) match q3's records[0].related exactly. The 'five records sharing it' figure matches evidence_volume.records:5 (3 capec + 2 attack sub-question hits on T1040). No invented facts, aliases, counts, or ids were found outside the evidence; every claim traces to a specific record or facet in logic_flow."
+}

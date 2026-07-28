@@ -1,0 +1,12 @@
+{
+  "case_id": "C-HIE-03",
+  "verdict": "INCORRECT",
+  "correctness": 0.15,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.5,
+  "gold_expected": 2,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question asks for the parent (ChildOf) of CAPEC-555; gold requires the answer to name CAPEC-560 as that parent (must_include_related). The retrieved record for CAPEC-555 shows a CHILD_OF facet with direction=out, count=1 (an outgoing parent link exists) but the record's 'related' array is empty (the Gremlin query only projected inV().label(), not the neighbour's id, so the actual parent id was never captured in this evidence). The narrative and single claim correctly state CAPEC-555 was found and correctly note (faithfully, without fabricating an id) that a parent relationship exists but its identifier isn't present in the evidence — this is fully grounded and non-hallucinatory given what was retrieved. However, the answer never surfaces CAPEC-560, which is the actual gold-required answer to the question asked. deterministic_scores.coverage confirms this directly (gold:2, found:1, missing:['CAPEC-560'], coverage:0.5). Since the core informational need (which pattern is the parent) is left unanswered, this fails as a correct answer despite being an honest, non-fabricating response to an evidence gap in retrieval."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-EXE-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-66] and must_include_related=[capec:attack-pattern:66:step:1..4]. The narrative (the answer under test, since it is substantive prose, not the thin single-claim 'claims' array) explicitly names CAPEC-66 (labeled SQL Injection, matching evidence record properties.name) and all four step ids in sequence. Each step's paraphrase is faithfully grounded in the evidence's 'related' array descriptions: step:1 survey/inventory functionality, step:2 testing special SQL characters for invalid syntax, step:3 hypothesizing query structure and iteratively adding logic to extract/modify data, step:4 crafting/executing refined queries to reveal/alter/delete data or cause denial of service -- all verbatim in substance from the retrieved ExecutionStep descriptions. No invented facts, counts, or aliases. Note: the 'deterministic_scores.coverage' field in the artifact reports found=1/missing=4 steps, but this is an artifact of scoring only the 'claims' array's entity_ids rather than the narrative text, and per grading instructions the narrative is the answer under test here."
+}

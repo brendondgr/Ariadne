@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires must_correlate T1110.001; capec.must_include_ids CAPEC-49 with must_include_related T1110.001; attack.must_include_ids T1110.001 with expect_names T1110.001='Password Guessing'. The narrative states CAPEC-49 (Password Brute Forcing) maps to T1110.001, correctly names T1110.001 as 'Password Guessing', and states the identifier is corroborated across attack/capec with three records sharing it, matching q1 (CAPEC-49, join_values=[T1110.001]), q2 (T1110.001 SubTechnique), and q3 (T1110.001 Technique) in the evidence -- exactly the count the deterministic correlation scorer confirms (precision/recall/f1=1.0). CAPEC-49's Abstraction (Standard) and Status (Draft) match the record properties exactly. T1110.001's stated properties (revoked False, stix_type attack-pattern, x_mitre_deprecated False, x_mitre_is_subtechnique True, x_mitre_version 1.7) all match the raw record properties verbatim. The related-item claims (T1110.001 -> TA0006 via q3, T1110 'Brute Force' -> T1110.001 via q4) are both directly grounded in the retrieved 'related' arrays. No invented facts, aliases, counts, or ids were found; every stated identifier (CAPEC-49, T1110.001, T1110, TA0006) traces to a specific evidence record."
+}

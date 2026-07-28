@@ -1,0 +1,12 @@
+{
+  "case_id": "C-EXE-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-66 plus its four execution steps (capec:attack-pattern:66:step:1..4). The evidence's single record for CAPEC-66 includes all four related ExecutionStep nodes with full descriptions, and the narrative explicitly names 'four execution steps' and walks through Step 1 (survey application/inventory functionality), Step 2 (determine user-controllable input, inject special SQL characters), Step 3 (hypothesize underlying query, iteratively extract/modify/delete data), and Step 4 (craft and execute the refined SQL query, noting the multi-query denial-of-service variant) -- each paraphrase is a faithful, accurate compression of the corresponding evidence.related[].description text with no invented detail. It also correctly states CAPEC-66's Abstraction (Standard) and Status (Draft), both present in evidence.properties. The only oddity is structural, not factual: the answer.claims array lists only 2 claims (the record find + the properties) and omits explicit claims/entity_ids for the four ExecutionStep ids, which drives the pipeline's internal deterministic_scores.coverage to 0.2/missing-all-4 -- but that is a self-reported pipeline metric on the claims scaffold, not a defect in the analyst-facing narrative, which does surface all four steps' substantive content. No fabricated names, counts, or properties were found anywhere in the narrative relative to the evidence."
+}

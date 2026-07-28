@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DCA-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 10,
+  "gold_present": 10,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[DC0084] and must_include_related=[AN0316, AN0405, AN0444, AN0671, AN0675, AN0770, AN1000, AN1144, AN1444] (9 analytics, min/max_records=1 for the DC0084 record). The narrative states 'nine analytics monitor the Active Directory Credential Request data component (DC0084)' and lists AN0405, AN1144, AN0671, AN1444, AN0675, AN0316, AN1000, AN0444, and AN0770 -- all 9 required analytic ids plus the DC0084 anchor, matching the single retrieved record's 'related' list exactly (query MATCH (a:Analytic)-[:MONITORS]->(dc:DataComponent) returned row_count=9, normalize to 1 record with 9 related items). No id, name, or count in the narrative is absent from or inconsistent with the evidence. Note: the deterministic_scores.coverage block in the artifact reports coverage=0.1 because it only checks the single 'claims' entry's entity_ids (which cites just DC0084), but per grading instructions the narrative -- not the internal claims/citation bookkeeping -- is the answer under test here, and the narrative fully and correctly enumerates all gold-required entities."
+}

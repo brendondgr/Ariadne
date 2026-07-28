@@ -1,0 +1,12 @@
+{
+  "case_id": "A-EXC-02",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative case: gold.assertions.expect_empty=true, ex_gold.expected=[] for retired/excluded technique T1004. The executed query \"MATCH (n:Technique) WHERE n.attack_id IN $ids ...\" with seed_ids=[\"T1004\"] ran cleanly and returned row_count=0 (see logic_flow.results[0].records=[] and traces execute/assess steps), consistent with T1004 having been excluded at load time. The answer correctly abstains: claims=[], abstentions=[{\"source\":\"attack\",\"statement\":\"The attack source doesn't establish this \u2014 the executed query ran cleanly and returned no matching records...\"}], and the narrative states \"no matching records for this question\" and invites the analyst to supply a different id. No entity, count, alias, or property is fabricated anywhere in the narrative or claims \u2014 everything stated (zero records, clean query execution) is directly grounded in the logic_flow trace. Since gold expects zero entities, gold_expected=0 and gold_present=0, satisfying completeness trivially. This is exactly the correct behavior for an excluded/negative id case."
+}

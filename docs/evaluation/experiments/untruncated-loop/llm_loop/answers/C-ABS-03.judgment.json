@@ -1,0 +1,16 @@
+{
+  "case_id": "C-ABS-03",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 0.1,
+  "groundedness": 0.2,
+  "completeness": 0.33,
+  "gold_expected": 3,
+  "gold_present": 1,
+  "hallucinations": [
+    "Narrative states 'Traversing the ParentOf relationship to find standard and meta ancestors returned no related records, confirming that CAPEC-13 has no standard or meta ancestors in the hierarchy' -- this is directly contradicted by the pipeline's own q3 evidence, which retrieved CAPEC-13 --CHILD_OF--> CAPEC-77 ('Manipulating User-Controlled Variables').",
+    "Fails to surface CAPEC-77 anywhere in the narrative or claims despite it being present in the q3 record's related[] array.",
+    "Fails to surface CAPEC-22 (the meta-pattern ancestor of CAPEC-77) -- this reflects an incomplete retrieval (the plan never traversed a second ChildOf hop from CAPEC-77), and the narrative papers over the gap by asserting no ancestors exist at all rather than noting the limitation."
+  ],
+  "rationale": "Gold requires the answer to surface CAPEC-13 (must_include_ids) plus its standard and meta ancestors CAPEC-77 and CAPEC-22 (must_include_related). The evidence in logic_flow.results[2] (sub_question q3, 'retrieve the AttackPattern reached from CAPEC-13 via ChildOf') explicitly returned CAPEC-77 as a CHILD_OF-related record of CAPEC-13, yet the narrative asserts the opposite -- that 'CAPEC-13 has no standard or meta ancestors in the hierarchy' -- which is a direct contradiction of the pipeline's own retrieved data, not merely an omission. CAPEC-22 (the meta ancestor, one hop further from CAPEC-77) was never retrieved at all because no sub-question traversed beyond CAPEC-77, so it is absent from evidence entirely and correctly cannot be surfaced, but the narrative should have reported the partial finding (CAPEC-13 -> CAPEC-77) and abstained only on the meta-ancestor, rather than falsely claiming zero ancestors. The claims[] array (8 entries, all duplicates of two facts) likewise never mentions CAPEC-77 or CAPEC-22, so neither the narrative nor the claims meet the gold bar. The pipeline's own self-reported deterministic_scores.coverage confirms this: gold=3, found=1, coverage=0.33, missing=['CAPEC-22','CAPEC-77'] -- consistent with this independent read. gold_present=1 (only CAPEC-13, the seed record, is validly surfaced); CAPEC-77 and CAPEC-22 are both absent from the delivered answer. Because the answer affirmatively asserts a false conclusion contradicted by its own evidence rather than simply under-reporting, this is INCORRECT, not PARTIAL."
+}

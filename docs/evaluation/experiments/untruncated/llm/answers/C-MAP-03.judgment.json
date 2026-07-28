@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-564] and must_include_related=[T1037, T1543.001, T1543.004, T1547]. The narrative states all four ATT&CK identifiers explicitly ('T1037, T1543.001, T1543.004, and T1547') and names CAPEC-564 as the source pattern, matching the q1 evidence record's join_values and related TaxonomyEntry list exactly (capec:taxonomy:ATTACK:1037/1543.001/1543.004/1547). The narrative's claim that T1037 and T1547 are 'corroborated across sources as established techniques for boot or logon initialization and autostart execution' is grounded in the q2 ATT&CK records, whose names ('Boot or Logon Initialization Scripts', 'Boot or Logon Autostart Execution') match verbatim. It correctly notes T1543.001 and T1543.004 as 'included in the mapped set' without overclaiming cross-source corroboration for them, since q2 only returned Technique nodes for T1037 and T1547 (honest hedging, not fabrication). No invented names, counts, or IDs were found; all 5 gold-required identifiers (CAPEC-564 + 4 technique IDs) are surfaced."
+}

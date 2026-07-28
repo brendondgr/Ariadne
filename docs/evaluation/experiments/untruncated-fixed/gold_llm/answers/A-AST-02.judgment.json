@@ -1,0 +1,12 @@
+{
+  "case_id": "A-AST-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires expect_boundary=true: this is an ICS-only concept (T1490 targets ICS assets) that the attack (ATT&CK) source cannot model, so the correct behavior is an honest refusal rather than invention. The answer's narrative and abstention correctly state the attack source returned no records because it doesn't model the 'Asset' entity ('entities not in card: [\\'Asset\\']', 'unknown_entities: [\\'Asset\\']' in the boundary trace), and it does not fabricate any asset names, counts, or relationships. Claims list is empty and no unsupported facts are asserted anywhere in the narrative. This is a clean, fully grounded abstention matching the gold boundary expectation exactly, so all four sub-scores are 1.0."
+}

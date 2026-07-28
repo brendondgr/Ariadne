@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-10",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 8,
+  "gold_present": 8,
+  "hallucinations": [],
+  "rationale": "The narrative correctly states CAPEC-652 (Use of Known Kerberos Credentials) maps to ATT&CK technique T1558 (Steal or Forge Kerberos Tickets), matching the CAPEC record's 'related' TaxonomyEntry (capec:taxonomy:ATTACK:1558) and satisfying gold's must_correlate [T1558] and capec.must_include_related [T1558]. It then lists all six mitigations returned in the attack sub-query for T1558 (M1041 Encrypt Sensitive Information, M1015 Active Directory Configuration, M1047 Audit, M1026 Privileged Account Management, M1027 Password Policies, M1043 Credential Access Protection), which is an exact match to gold's attack.must_include_related [M1015, M1026, M1027, M1041, M1043, M1047] with no extras and no omissions. Every name, id, and count (6 mitigations) is directly traceable to the logic_flow evidence records (q1 CAPEC record and q2 T1558/Mitigation record); deterministic_scores confirm mapping_recall=1.0 and correlation f1=1.0. No fabricated facts, aliases, or counts were found."
+}

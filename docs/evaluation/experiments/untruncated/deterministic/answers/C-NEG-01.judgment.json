@@ -1,0 +1,12 @@
+{
+  "case_id": "C-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects expect_empty=true (pool: node, scheme: capec, expected: []) for nonexistent CAPEC-99999. The executed Gremlin query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...) ran cleanly with row_count 0 (logic_flow.results[0].traces execute/assess/normalize all show record_count 0), and records is []. The answer's claims array is empty and narrative correctly states 'The routed sources returned no matching records for this question' with an explicit abstention citing the executed query and CAPEC-99999 seed id. No entity, alias, count, or property was invented. This is the correct abstention behavior for a negative test case."
+}

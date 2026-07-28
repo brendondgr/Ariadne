@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty correlation (must_correlate=[], expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true). The retrieved evidence confirms this exactly: q1's Gremlin query against AttackPattern CAPEC-16 -> MAPS_TO -> TaxonomyEntry(taxonomy_name=ATTACK) executed cleanly (ok=true, no error) and returned row_count=0, so no T-number correlation exists in the graph for CAPEC-16. q2 (the ATT&CK mitigation lookup) was correctly skipped via the dependency trace ('producer q1: it returned no join values'), matching expect_dependency_skip. The answer's narrative and abstentions state plainly that no matching records were returned and prompt the analyst for a specific id, without inventing any technique, mitigation, or CAPEC-16 mapping. deterministic_scores.correlation shows negative=true, exact=true, precision/recall/f1=1.0, n_expected=0, n_got=0, consistent with the evidence. No fabricated T-numbers, mitigations, or names appear anywhere in the narrative or claims."
+}

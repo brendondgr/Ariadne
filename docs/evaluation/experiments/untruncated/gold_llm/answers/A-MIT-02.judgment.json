@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MIT-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 9,
+  "gold_present": 9,
+  "hallucinations": [],
+  "rationale": "The evidence (logic_flow.results[0].records[0]) shows T1021.001 (Remote Desktop Protocol) with exactly 8 MITIGATES-related Mitigation nodes: M1035, M1028, M1030, M1018, M1026, M1032, M1047, M1042 -- matching gold's must_include_ids ([T1021.001]) and must_include_related (all 8 M-ids) exactly, with no extra or missing ids. The narrative names the seed technique T1021.001 and explicitly enumerates all 8 mitigations with their correct evidence names (M1035 Limit Access to Resource Over Network, M1028 Operating System Configuration, M1032 Multi-factor Authentication, M1030 Network Segmentation, M1018 User Account Management, M1026 Privileged Account Management, M1047 Audit, M1042 Disable or Remove Feature or Program), all verbatim matches to the related[].name fields in evidence. The structured enumeration claim independently lists the same 8 ids. No id, name, count, or property in the narrative/claims is absent from or inconsistent with the retrieved evidence -- the deterministic_scores.coverage also confirms 9/9 gold ids found. Fully correct, complete, and faithful."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-03",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The single Cypher query (MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id='G0007') returned exactly 37 Technique records, and the answer's 37 claim entity_ids/citations are an exact set match to those 37 evidence records (verified by diffing the two 37-id lists \u2014 identical, only reordered). All five gold must_include_ids (T1003, T1005, T1014, T1025, T1030) are present in both the evidence and the answer's claims. The extended ex_gold 'neighbors' pool of 37 expected technique ids also matches the answer's 37 ids exactly, i.e. the answer surfaces 100% of even the non-mandatory expected set. The narrative's specific facts \u2014 total count of 37, and the four called-out example techniques with correct names (T1211 Exploitation for Stealth, T1669 Wi-Fi Networks, T1105 Ingress Tool Transfer, T1003 in the claims text) \u2014 all trace directly to the retrieved records with no invented names, counts, or aliases. The narrative's statement that no CAPEC patterns or cross-source corroborations were found is accurate (the query and evidence are ATT&CK-only, no CAPEC nodes present). deterministic_scores also confirm coverage=1.0 and citation_provenance_rate=1.0 independently. No hallucinations found; this is a fully grounded, complete, correct answer."
+}

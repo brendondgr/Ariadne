@@ -1,0 +1,12 @@
+{
+  "case_id": "A-EXC-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative/adversarial case: T1002 was deliberately excluded at load time, and gold expects an empty result (expect_empty: true, ex_gold.expected: []). The retrieval query 'MATCH (n:Technique) WHERE n.attack_id IN [\"T1002\"] ...' executed cleanly with row_count 0 (see logic_flow.results[0].records = [] and traces.execute.detail.row_count = 0), correctly reflecting that T1002 is absent from the loaded graph. The answer has no LLM narrative content of substance (composer: deterministic) beyond the standard abstention template, no claims (claims: []), and one properly formed abstention citing the exact query and stating no matching records were found. It does not fabricate any technique data, name, or properties for T1002. This matches the gold requirement exactly (nothing to surface), so gold_expected/gold_present = 0/0 and correctness/faithfulness/groundedness/completeness are all perfect."
+}

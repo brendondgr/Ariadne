@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-02",
+  "verdict": "CORRECT",
+  "correctness": 0.95,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The retrieved evidence contains exactly the 34 techniques listed in gold.ex_gold.expected (T1005...T1685), a perfect 34/34 match with zero extras and zero omissions; deterministic_scores.coverage independently confirms 5/5 on must_include_ids. All 5 required ids (T1005, T1008, T1010, T1012, T1016) appear among the claim's 34 entity_ids, each backed by a citation whose primary_id and name match the logic_flow record verbatim (e.g. T1008='Fallback Channels', T1012='Query Registry', T1005='Data from Local System') -- no invented names, counts, or aliases. The one soft gap: the prose narrative explicitly names only 2 of the 5 must_include ids (T1008, T1012) by name, leaving T1005/T1010/T1016 folded into the closing phrase 'remaining identifiers covering exfiltration, discovery, and execution capabilities' rather than named -- so a reader relying on prose alone would not see those three named, even though the structured claims/citations attached to the same answer do surface them with full traceability. This keeps correctness just under a perfect score while faithfulness/groundedness/completeness are effectively full."
+}

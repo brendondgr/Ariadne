@@ -1,0 +1,289 @@
+{
+  "id": "A-LKP-03",
+  "kind": "attack",
+  "tier": "easy",
+  "category": "A-LKP",
+  "question": "Look up T1566 — what is it called?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "max_records": 1,
+      "must_include_ids": [
+        "T1566"
+      ],
+      "expect_names": {
+        "T1566": "Phishing"
+      }
+    },
+    "ex_gold": {
+      "pool": "node",
+      "expected": [
+        "T1566"
+      ],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "Based on the retrieved evidence, the MITRE ATT&CK technique identified as T1566 is named Phishing. The record explicitly lists its name as Phishing and describes it as a method where adversaries send electronically delivered social engineering messages, such as emails with malicious attachments or links, to gain access to victim systems. This technique is currently active and not deprecated within the ATT&CK framework.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found ATT&CK record T1566: Phishing.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1566"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1566"
+          }
+        ]
+      },
+      {
+        "text": "T1566 (Phishing) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.7.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1566"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1566"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-LKP-03",
+      "source": "attack",
+      "text": "What is the name of ATT&CK object T1566?",
+      "entities": [
+        "Technique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "T1566"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "What is the name of Technique with id T1566?",
+        "query": "MATCH (n:Technique) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found ATT&CK record T1566: Phishing.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1566"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "MATCH (n:Technique) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1",
+              "injected": [
+                "LIMIT 1 appended (none present)"
+              ],
+              "timing_ms": 0.106
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 3.6
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.005
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.12
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1566",
+            "name": "Phishing",
+            "label": "Technique",
+            "description": "Adversaries may send phishing messages to gain access to victim systems. All forms of phishing are electronically delivered social engineering. Phishing can be targeted, known as spearphishing. In spearphishing, a specific individual, company, or industry will be targeted by the adversary. More generally, adversaries can conduct non-targeted phishing, such as in mass malware spam campaigns.\n\nAdversaries may send victims emails containing malicious attachments or links, typically to execute malicious code on victim systems. Phishing may also be conducted via third-party services, like social media platforms. Phishing may also involve social engineering techniques, such as posing as a trusted source, as well as evasive techniques such as removing or manipulating emails or metadata/headers from compromised accounts being abused to send messages (e.g., [Email Hiding Rules](https://attack.mitre.org/techniques/T1564/008)).(Citation: Microsoft OAuth Spam 2022)(Citation: Palo Alto Unit 42 VBA Infostealer 2014) Another way to accomplish this is by [Email Spoofing](https://attack.mitre.org/techniques/T1684/002)(Citation: Proofpoint-spoof) the identity of the sender, which can be used to fool both the human recipient as well as automated security tools,(Citation: cyberproof-double-bounce) or by including the intended target as a party to an existing email thread that includes malicious files or links (i.e., \"thread hijacking\").(Citation: phishing-krebs)\n\nVictims may also receive phishing messages that instruct them to call a phone number where they are directed to visit a malicious URL, download malware,(Citation: sygnia Luna Month)(Citation: CISA Remote Monitoring and Management Software) or install adversary-accessible remote management tools onto their computer (i.e., [User Execution](https://attack.mitre.org/techniques/T1204)).(Citation: Unit42 Luna Moth)",
+            "properties": {
+              "attack_id": "T1566",
+              "description": "Adversaries may send phishing messages to gain access to victim systems. All forms of phishing are electronically delivered social engineering. Phishing can be targeted, known as spearphishing. In spearphishing, a specific individual, company, or industry will be targeted by the adversary. More generally, adversaries can conduct non-targeted phishing, such as in mass malware spam campaigns.\n\nAdversaries may send victims emails containing malicious attachments or links, typically to execute malicious code on victim systems. Phishing may also be conducted via third-party services, like social media platforms. Phishing may also involve social engineering techniques, such as posing as a trusted source, as well as evasive techniques such as removing or manipulating emails or metadata/headers from compromised accounts being abused to send messages (e.g., [Email Hiding Rules](https://attack.mitre.org/techniques/T1564/008)).(Citation: Microsoft OAuth Spam 2022)(Citation: Palo Alto Unit 42 VBA Infostealer 2014) Another way to accomplish this is by [Email Spoofing](https://attack.mitre.org/techniques/T1684/002)(Citation: Proofpoint-spoof) the identity of the sender, which can be used to fool both the human recipient as well as automated security tools,(Citation: cyberproof-double-bounce) or by including the intended target as a party to an existing email thread that includes malicious files or links (i.e., \"thread hijacking\").(Citation: phishing-krebs)\n\nVictims may also receive phishing messages that instruct them to call a phone number where they are directed to visit a malicious URL, download malware,(Citation: sygnia Luna Month)(Citation: CISA Remote Monitoring and Management Software) or install adversary-accessible remote management tools onto their computer (i.e., [User Execution](https://attack.mitre.org/techniques/T1204)).(Citation: Unit42 Luna Moth)",
+              "id": "attack-pattern--a62a8db3-f23a-4d8f-afd6-9dbc77e7813b",
+              "name": "Phishing",
+              "revoked": false,
+              "stix_type": "attack-pattern",
+              "x_mitre_deprecated": false,
+              "x_mitre_is_subtechnique": false,
+              "x_mitre_platforms": [
+                "Identity Provider",
+                "Linux",
+                "macOS",
+                "Office Suite",
+                "SaaS",
+                "Windows"
+              ],
+              "x_mitre_version": "2.7",
+              "_omitted_properties": [
+                "external_references"
+              ]
+            },
+            "facets": [
+              {
+                "rel": "DETECTS",
+                "direction": "in",
+                "neighbour_label": "DetectionStrategy",
+                "count": 1
+              },
+              {
+                "rel": "HAS_SUBTECHNIQUE",
+                "direction": "out",
+                "neighbour_label": "SubTechnique",
+                "count": 4
+              },
+              {
+                "rel": "HAS_TECHNIQUE",
+                "direction": "in",
+                "neighbour_label": "Tactic",
+                "count": 1
+              },
+              {
+                "rel": "MITIGATES",
+                "direction": "in",
+                "neighbour_label": "Mitigation",
+                "count": 6
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Campaign",
+                "count": 0
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Group",
+                "count": 8
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Software",
+                "count": 3
+              }
+            ],
+            "join_values": [
+              "T1566"
+            ],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 1,
+      "found": 1,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 2,
+      "compliant": 2,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "What is the name of Technique with id T1566?",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 1,
+          "max_result_rows": 1,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 31.967
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 0
+  }
+}

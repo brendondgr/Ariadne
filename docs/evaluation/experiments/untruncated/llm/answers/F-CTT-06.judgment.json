@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-37 to map to T1005 and T1552.004 (must_correlate/must_include_related), and those techniques to belong to tactics TA0009 (Collection) and TA0006 (Credential Access) respectively. The evidence (logic_flow.results) shows exactly this: CAPEC-37's related TaxonomyEntry nodes are capec:taxonomy:ATTACK:1005 ('Data from Local System') and capec:taxonomy:ATTACK:1552.004 ('Unsecured Credentials: Private Keys'), and the q2 ATT&CK query returns T1005 related to TA0009/Collection and T1552.004 related to TA0006/Credential Access. The narrative states all five required identifiers (CAPEC-37, T1005, T1552.004, TA0006, TA0009) with correct tactic-to-technique pairing, matching deterministic_scores (correlation f1=1.0, mapping_recall=1.0). No invented names, counts, or aliases; every stated fact traces directly to the retrieved records."
+}

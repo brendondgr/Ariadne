@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an honest empty join (must_correlate: [], expect_no_correlation: true, capec.expect_empty: true, attack.expect_dependency_skip: true) since CAPEC-3 has no ATT&CK MAPS_TO relationship in this dataset. The evidence confirms this: the capec query 'g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\")...' executed cleanly against seed CAPEC-3 and returned row_count 0 (traces show gate/execute/assess all ok with 0 rows, not an error). The dependent attack sub-question (q2) was correctly skipped because q1 produced no join values, per the dependency trace 'producer q1: it returned no join values'. The narrative/abstentions state exactly this - no fabricated techniques, mitigations, or correlations are asserted anywhere in claims (empty) or narrative. This matches the required negative-case behavior perfectly, with zero hallucinated ids."
+}

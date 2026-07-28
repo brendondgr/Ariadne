@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-49 to map to T1110.001 (capec.must_include_related), T1110.001 to be the sole ATT&CK technique (attack.must_include_ids, max_records:1), and T1110.001 to belong to tactic TA0006 (attack.must_include_related), with T1110.001 as the cross-source correlate (must_correlate). The narrative states all three: 'CAPEC-49 (Password Brute Forcing) ... maps to the ATT&CK technique T1110.001 ... corroborated across both the attack and capec sources ... T1110.001 is related to exactly one MITRE ATT&CK item, TA0006 (Credential Access).' Every stated fact is directly traceable to logic_flow.results: q1's record CAPEC-49 has related TaxonomyEntry entry_id 1110.001 (mapping to T1110.001), and q2's record T1110.001 has related TA0006/Credential Access. The Abstraction (Standard) and Status (Draft) properties cited also match the CAPEC-49 record's properties exactly. No invented ids, names, counts, or aliases; the answer neither over- nor under-claims relative to the single-tactic, single-technique gold shape."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-SCN-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.2,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 300,
+  "gold_present": 558,
+  "hallucinations": [],
+  "rationale": "Gold asserts min_records=250, max_records=300 for this bounded CAPEC scan, and the sub-question's own declared limits confirm this intent (logic_flow.task.limits.max_result_rows = 300). But the executed Gremlin query was 'g.V().hasLabel(\"AttackPattern\").elementMap().limit(1000)' (logic_flow.results[0].query), i.e. it ignored the 300-row task limit and used a hardcoded limit(1000) instead, returning 558 distinct CAPEC records (evidence_volume.records=558, row_count=558 at both execute and normalize trace steps). 558 is nearly double the gold max_records=300, so the core assertion under test -- that the scan respects its bound -- fails outright. The answer's claims (deterministic composer, no LLM narrative: 'Found 558 CAPEC record(s): CAPEC-1, CAPEC-10, CAPEC-100...') are faithful and fully grounded -- spot-checked CAPEC-1 ('Accessing Functionality Not Properly Constrained by ACLs') matches its evidence record exactly, all 558 ids are unique and present in logic_flow.results[0].records, and there are no fabricated ids, names, or counts. So faithfulness/groundedness are high and completeness (in the sense of 'did it surface every real CAPEC record it retrieved') is 1.0 -- but correctness against the gold's bounding assertion is a clear failure: the system delivered 258 more records than the allowed max, which is the specific behavior C-SCN-01 was designed to catch."
+}

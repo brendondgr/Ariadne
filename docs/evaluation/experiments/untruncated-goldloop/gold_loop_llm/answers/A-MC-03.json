@@ -1,0 +1,465 @@
+{
+  "id": "A-MC-03",
+  "kind": "attack",
+  "tier": "hard",
+  "category": "A-MC",
+  "question": "Which techniques in tactic TA0006 are mitigated by M1041?",
+  "gold": {
+    "assertions": {
+      "min_records": 6,
+      "max_records": 6,
+      "must_include_ids": [
+        "T1003",
+        "T1040",
+        "T1552",
+        "T1557",
+        "T1558",
+        "T1649"
+      ],
+      "must_include_related": [
+        "TA0006",
+        "M1041"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "T1003",
+        "T1040",
+        "T1552",
+        "T1557",
+        "T1558",
+        "T1649"
+      ],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 6 record(s) from 1 source(s).",
+    "narrative": "The query identified six ATT&CK techniques under tactic TA0006 that are mitigated by M1041: T1557 (Adversary-in-the-Middle), T1003 (OS Credential Dumping), T1040 (Network Sniffing), T1558 (Steal or Forge Kerberos Tickets), T1552 (Unsecured Credentials), and T1649 (Steal or Forge Authentication Certificates). Each of these six techniques has exactly two related items, TA0006 and M1041.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 6 ATT&CK record(s) including T1557, T1003, T1040 and more.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1557",
+          "T1003",
+          "T1040",
+          "T1558",
+          "T1552",
+          "T1649"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1557"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1003"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1040"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1558"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1552"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1649"
+          }
+        ]
+      },
+      {
+        "text": "T1557 (Adversary-in-the-Middle) has 2 related item(s): TA0006, M1041.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "TA0006",
+          "M1041"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1557"
+          }
+        ]
+      },
+      {
+        "text": "T1003 (OS Credential Dumping) has 2 related item(s): TA0006, M1041.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "TA0006",
+          "M1041"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1003"
+          }
+        ]
+      },
+      {
+        "text": "T1040 (Network Sniffing) has 2 related item(s): TA0006, M1041.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "TA0006",
+          "M1041"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1040"
+          }
+        ]
+      },
+      {
+        "text": "T1558 (Steal or Forge Kerberos Tickets) has 2 related item(s): TA0006, M1041.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "TA0006",
+          "M1041"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1558"
+          }
+        ]
+      },
+      {
+        "text": "T1552 (Unsecured Credentials) has 2 related item(s): TA0006, M1041.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "TA0006",
+          "M1041"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1552"
+          }
+        ]
+      },
+      {
+        "text": "T1649 (Steal or Forge Authentication Certificates) has 2 related item(s): TA0006, M1041.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "TA0006",
+          "M1041"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1649"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-MC-03",
+      "source": "attack",
+      "text": "Which techniques under tactic TA0006 are mitigated by mitigation M1041?",
+      "entities": [
+        "Tactic",
+        "Technique",
+        "Mitigation"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "TA0006",
+        "M1041"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "A-MC-03",
+        "sub_question": "Which techniques under tactic TA0006 are mitigated by mitigation M1041?",
+        "query": "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique) WHERE ta.attack_id IN $tactic_ids MATCH (t)<-[:MITIGATES]-(m:Mitigation) WHERE m.attack_id IN $mitigation_ids RETURN ta.attack_id AS tactic_id, ta.name AS tactic_name, t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 20000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 6 ATT&CK record(s) including T1557, T1003, T1040 and more.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Tactic",
+                "Technique",
+                "Mitigation"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "TA0006",
+                "M1041"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "tactic_technique_mitigations",
+              "query": "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique) WHERE ta.attack_id IN $tactic_ids MATCH (t)<-[:MITIGATES]-(m:Mitigation) WHERE m.attack_id IN $mitigation_ids RETURN ta.attack_id AS tactic_id, ta.name AS tactic_name, t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 20000",
+              "injected": [
+                "LIMIT 20000 appended (none present)"
+              ],
+              "timing_ms": 0.109
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 6,
+              "timing_ms": 2.0
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 6,
+              "timing_ms": 0.005
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 6,
+              "timing_ms": 1.249
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1557",
+            "name": "Adversary-in-the-Middle",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1557"
+            ],
+            "related": [
+              {
+                "id": "TA0006",
+                "name": "Credential Access",
+                "description": "The adversary is trying to steal account names and passwords.\n\nCredential Access consists of techniques for stealing credentials like account names and passwords. Techniques used to get credentials include keylogging or credential dumping. Using legitimate credentials can give adversaries access to systems, make them harder to detect, and provide the opportunity to create more accounts to help achieve their goals."
+              },
+              {
+                "id": "M1041",
+                "name": "Encrypt Sensitive Information",
+                "description": "Protect sensitive information at rest, in transit, and during processing by using strong encryption algorithms. Encryption ensures the confidentiality and integrity of data, preventing unauthorized access or tampering. This mitigation can be implemented through the following measures:\n\nEncrypt Data at Rest:\n\n- Use Case: Use full-disk encryption or file-level encryption to secure sensitive data stored on devices.\n- Implementation: Implement BitLocker for Windows systems or FileVault for macOS devices to encrypt hard drives.\n\nEncrypt Data in Transit:\n\n- Use Case: Use secure communication protocols (e.g., TLS, HTTPS) to encrypt sensitive data as it travels over networks.\n- Implementation: Enable HTTPS for all web applications and configure mail servers to enforce STARTTLS for email encryption.\n\nEncrypt Backups:\n\n- Use Case: Ensure that backup data is encrypted both during storage and transfer to prevent unauthorized access.\n- Implementation: Encrypt cloud backups using AES-256 before uploading them to Amazon S3 or Google Cloud.\n\nEncrypt Application Secrets:\n\n- Use Case: Store sensitive credentials, API keys, and configuration files in encrypted vaults.\n- Implementation: Use HashiCorp Vault or AWS Secrets Manager to manage and encrypt secrets.\n\nDatabase Encryption:\n\n- Use Case: Enable Transparent Data Encryption (TDE) or column-level encryption in database management systems.\n- Implementation: Use MySQL’s built-in encryption features to encrypt sensitive database fields such as social security numbers."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1003",
+            "name": "OS Credential Dumping",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1003"
+            ],
+            "related": [
+              {
+                "id": "TA0006",
+                "name": "Credential Access",
+                "description": "The adversary is trying to steal account names and passwords.\n\nCredential Access consists of techniques for stealing credentials like account names and passwords. Techniques used to get credentials include keylogging or credential dumping. Using legitimate credentials can give adversaries access to systems, make them harder to detect, and provide the opportunity to create more accounts to help achieve their goals."
+              },
+              {
+                "id": "M1041",
+                "name": "Encrypt Sensitive Information",
+                "description": "Protect sensitive information at rest, in transit, and during processing by using strong encryption algorithms. Encryption ensures the confidentiality and integrity of data, preventing unauthorized access or tampering. This mitigation can be implemented through the following measures:\n\nEncrypt Data at Rest:\n\n- Use Case: Use full-disk encryption or file-level encryption to secure sensitive data stored on devices.\n- Implementation: Implement BitLocker for Windows systems or FileVault for macOS devices to encrypt hard drives.\n\nEncrypt Data in Transit:\n\n- Use Case: Use secure communication protocols (e.g., TLS, HTTPS) to encrypt sensitive data as it travels over networks.\n- Implementation: Enable HTTPS for all web applications and configure mail servers to enforce STARTTLS for email encryption.\n\nEncrypt Backups:\n\n- Use Case: Ensure that backup data is encrypted both during storage and transfer to prevent unauthorized access.\n- Implementation: Encrypt cloud backups using AES-256 before uploading them to Amazon S3 or Google Cloud.\n\nEncrypt Application Secrets:\n\n- Use Case: Store sensitive credentials, API keys, and configuration files in encrypted vaults.\n- Implementation: Use HashiCorp Vault or AWS Secrets Manager to manage and encrypt secrets.\n\nDatabase Encryption:\n\n- Use Case: Enable Transparent Data Encryption (TDE) or column-level encryption in database management systems.\n- Implementation: Use MySQL’s built-in encryption features to encrypt sensitive database fields such as social security numbers."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1040",
+            "name": "Network Sniffing",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1040"
+            ],
+            "related": [
+              {
+                "id": "TA0006",
+                "name": "Credential Access",
+                "description": "The adversary is trying to steal account names and passwords.\n\nCredential Access consists of techniques for stealing credentials like account names and passwords. Techniques used to get credentials include keylogging or credential dumping. Using legitimate credentials can give adversaries access to systems, make them harder to detect, and provide the opportunity to create more accounts to help achieve their goals."
+              },
+              {
+                "id": "M1041",
+                "name": "Encrypt Sensitive Information",
+                "description": "Protect sensitive information at rest, in transit, and during processing by using strong encryption algorithms. Encryption ensures the confidentiality and integrity of data, preventing unauthorized access or tampering. This mitigation can be implemented through the following measures:\n\nEncrypt Data at Rest:\n\n- Use Case: Use full-disk encryption or file-level encryption to secure sensitive data stored on devices.\n- Implementation: Implement BitLocker for Windows systems or FileVault for macOS devices to encrypt hard drives.\n\nEncrypt Data in Transit:\n\n- Use Case: Use secure communication protocols (e.g., TLS, HTTPS) to encrypt sensitive data as it travels over networks.\n- Implementation: Enable HTTPS for all web applications and configure mail servers to enforce STARTTLS for email encryption.\n\nEncrypt Backups:\n\n- Use Case: Ensure that backup data is encrypted both during storage and transfer to prevent unauthorized access.\n- Implementation: Encrypt cloud backups using AES-256 before uploading them to Amazon S3 or Google Cloud.\n\nEncrypt Application Secrets:\n\n- Use Case: Store sensitive credentials, API keys, and configuration files in encrypted vaults.\n- Implementation: Use HashiCorp Vault or AWS Secrets Manager to manage and encrypt secrets.\n\nDatabase Encryption:\n\n- Use Case: Enable Transparent Data Encryption (TDE) or column-level encryption in database management systems.\n- Implementation: Use MySQL’s built-in encryption features to encrypt sensitive database fields such as social security numbers."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1558",
+            "name": "Steal or Forge Kerberos Tickets",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1558"
+            ],
+            "related": [
+              {
+                "id": "TA0006",
+                "name": "Credential Access",
+                "description": "The adversary is trying to steal account names and passwords.\n\nCredential Access consists of techniques for stealing credentials like account names and passwords. Techniques used to get credentials include keylogging or credential dumping. Using legitimate credentials can give adversaries access to systems, make them harder to detect, and provide the opportunity to create more accounts to help achieve their goals."
+              },
+              {
+                "id": "M1041",
+                "name": "Encrypt Sensitive Information",
+                "description": "Protect sensitive information at rest, in transit, and during processing by using strong encryption algorithms. Encryption ensures the confidentiality and integrity of data, preventing unauthorized access or tampering. This mitigation can be implemented through the following measures:\n\nEncrypt Data at Rest:\n\n- Use Case: Use full-disk encryption or file-level encryption to secure sensitive data stored on devices.\n- Implementation: Implement BitLocker for Windows systems or FileVault for macOS devices to encrypt hard drives.\n\nEncrypt Data in Transit:\n\n- Use Case: Use secure communication protocols (e.g., TLS, HTTPS) to encrypt sensitive data as it travels over networks.\n- Implementation: Enable HTTPS for all web applications and configure mail servers to enforce STARTTLS for email encryption.\n\nEncrypt Backups:\n\n- Use Case: Ensure that backup data is encrypted both during storage and transfer to prevent unauthorized access.\n- Implementation: Encrypt cloud backups using AES-256 before uploading them to Amazon S3 or Google Cloud.\n\nEncrypt Application Secrets:\n\n- Use Case: Store sensitive credentials, API keys, and configuration files in encrypted vaults.\n- Implementation: Use HashiCorp Vault or AWS Secrets Manager to manage and encrypt secrets.\n\nDatabase Encryption:\n\n- Use Case: Enable Transparent Data Encryption (TDE) or column-level encryption in database management systems.\n- Implementation: Use MySQL’s built-in encryption features to encrypt sensitive database fields such as social security numbers."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1552",
+            "name": "Unsecured Credentials",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1552"
+            ],
+            "related": [
+              {
+                "id": "TA0006",
+                "name": "Credential Access",
+                "description": "The adversary is trying to steal account names and passwords.\n\nCredential Access consists of techniques for stealing credentials like account names and passwords. Techniques used to get credentials include keylogging or credential dumping. Using legitimate credentials can give adversaries access to systems, make them harder to detect, and provide the opportunity to create more accounts to help achieve their goals."
+              },
+              {
+                "id": "M1041",
+                "name": "Encrypt Sensitive Information",
+                "description": "Protect sensitive information at rest, in transit, and during processing by using strong encryption algorithms. Encryption ensures the confidentiality and integrity of data, preventing unauthorized access or tampering. This mitigation can be implemented through the following measures:\n\nEncrypt Data at Rest:\n\n- Use Case: Use full-disk encryption or file-level encryption to secure sensitive data stored on devices.\n- Implementation: Implement BitLocker for Windows systems or FileVault for macOS devices to encrypt hard drives.\n\nEncrypt Data in Transit:\n\n- Use Case: Use secure communication protocols (e.g., TLS, HTTPS) to encrypt sensitive data as it travels over networks.\n- Implementation: Enable HTTPS for all web applications and configure mail servers to enforce STARTTLS for email encryption.\n\nEncrypt Backups:\n\n- Use Case: Ensure that backup data is encrypted both during storage and transfer to prevent unauthorized access.\n- Implementation: Encrypt cloud backups using AES-256 before uploading them to Amazon S3 or Google Cloud.\n\nEncrypt Application Secrets:\n\n- Use Case: Store sensitive credentials, API keys, and configuration files in encrypted vaults.\n- Implementation: Use HashiCorp Vault or AWS Secrets Manager to manage and encrypt secrets.\n\nDatabase Encryption:\n\n- Use Case: Enable Transparent Data Encryption (TDE) or column-level encryption in database management systems.\n- Implementation: Use MySQL’s built-in encryption features to encrypt sensitive database fields such as social security numbers."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1649",
+            "name": "Steal or Forge Authentication Certificates",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1649"
+            ],
+            "related": [
+              {
+                "id": "TA0006",
+                "name": "Credential Access",
+                "description": "The adversary is trying to steal account names and passwords.\n\nCredential Access consists of techniques for stealing credentials like account names and passwords. Techniques used to get credentials include keylogging or credential dumping. Using legitimate credentials can give adversaries access to systems, make them harder to detect, and provide the opportunity to create more accounts to help achieve their goals."
+              },
+              {
+                "id": "M1041",
+                "name": "Encrypt Sensitive Information",
+                "description": "Protect sensitive information at rest, in transit, and during processing by using strong encryption algorithms. Encryption ensures the confidentiality and integrity of data, preventing unauthorized access or tampering. This mitigation can be implemented through the following measures:\n\nEncrypt Data at Rest:\n\n- Use Case: Use full-disk encryption or file-level encryption to secure sensitive data stored on devices.\n- Implementation: Implement BitLocker for Windows systems or FileVault for macOS devices to encrypt hard drives.\n\nEncrypt Data in Transit:\n\n- Use Case: Use secure communication protocols (e.g., TLS, HTTPS) to encrypt sensitive data as it travels over networks.\n- Implementation: Enable HTTPS for all web applications and configure mail servers to enforce STARTTLS for email encryption.\n\nEncrypt Backups:\n\n- Use Case: Ensure that backup data is encrypted both during storage and transfer to prevent unauthorized access.\n- Implementation: Encrypt cloud backups using AES-256 before uploading them to Amazon S3 or Google Cloud.\n\nEncrypt Application Secrets:\n\n- Use Case: Store sensitive credentials, API keys, and configuration files in encrypted vaults.\n- Implementation: Use HashiCorp Vault or AWS Secrets Manager to manage and encrypt secrets.\n\nDatabase Encryption:\n\n- Use Case: Enable Transparent Data Encryption (TDE) or column-level encryption in database management systems.\n- Implementation: Use MySQL’s built-in encryption features to encrypt sensitive database fields such as social security numbers."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 8,
+      "found": 8,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 12,
+      "compliant": 12,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "gold_loop_llm",
+  "run_meta": {
+    "planner": "gold-plan (injected)",
+    "synthesis": "llm (claim-grounded)",
+    "loop": "facet-chasing",
+    "observed_plan": [
+      {
+        "sub_question_id": "A-MC-03",
+        "source": "attack",
+        "text": "Which techniques under tactic TA0006 are mitigated by mitigation M1041?",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 20000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 40.649
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 6,
+    "related": 12
+  }
+}

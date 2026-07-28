@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative federated case: gold asserts must_correlate=[] with expect_no_correlation=true, capec.expect_empty=true, and attack.expect_dependency_skip=true. The evidence confirms both sub-questions actually executed/attempted and returned nothing: q1 (capec) ran the MAPS_TO Gremlin query seeded on CAPEC-116 and got row_count=0 with no ATT&CK TaxonomyEntry matches; q2 (attack, mitigations) was correctly skipped because it depends on q1's join output which was empty (dependency trace: 'producer q1: it returned no join values'). The answer (no LLM narrative substance beyond a templated abstention, so claims/abstentions are graded) has zero claims and two abstentions that accurately restate the honest-empty outcome for both capec and attack, naming the exact query executed and the dependency-skip reason, without fabricating any T-number, mitigation id, or correlation. deterministic_scores.correlation shows negative=true, exact=true, precision/recall/f1=1.0, matching gold. No entity, count, or relationship is invented anywhere in the narrative or abstentions -- fully grounded in the logic_flow evidence."
+}

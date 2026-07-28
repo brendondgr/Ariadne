@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 7,
+  "gold_present": 7,
+  "hallucinations": [],
+  "rationale": "Gold requires T1110 plus all six related ids (DET0463, AN1275, AN1276, AN1277, AN1278, AN1279). The narrative names all six ids explicitly and paraphrases each analytic's detection pattern (failed-logon volume followed by success, multi-auth failures from same IP/user, excessive unified-log logins e.g. loginwindow/sshd, password spraying across a user pool, excessive SaaS login attempts e.g. O365/Dropbox) which match the evidence record's related[].description fields for AN1275-AN1279 verbatim in substance, and the DET0463 name is quoted correctly from evidence ('Brute Force Authentication Failures with Multi-Platform Log Correlation' referenced generically as a detection strategy). The claims list mirrors the same 6 entity_ids with correct citation to T1110/attack source. No counts, names, or attributes are invented beyond what is present in logic_flow.results[0].records[0].related; the technique_id T1110 and name 'Brute Force' are also correctly sourced from the record itself."
+}

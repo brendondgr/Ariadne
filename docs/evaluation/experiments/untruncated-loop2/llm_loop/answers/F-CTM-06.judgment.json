@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 17,
+  "gold_present": 17,
+  "hallucinations": [],
+  "rationale": "Evidence in logic_flow.results shows CAPEC-665 maps to T1211, T1542.002, T1556 (matches gold must_correlate exactly, 3 ATT&CK records as required by min/max_records=3), and confirms Status=Stable/Abstraction=Detailed for CAPEC-665, both correctly stated in the narrative. Per-technique mitigation evidence: T1542.002 -> {M1051}; T1556 -> {M1047,M1032,M1024,M1026,M1022,M1018,M1027,M1025,M1028}; T1211 -> {M1051,M1050,M1048,M1019}. The union of these is exactly the 13 mitigation ids in gold.attack.must_include_related. The narrative enumerates all 13 mitigations correctly attributed to the correct technique ('T1211 applies mitigations M1051, M1050, M1048, and M1019. T1542.002 applies mitigation M1051. T1556 applies mitigations M1047, M1032, M1024, M1026, M1022, M1018, M1027, M1025, and M1028'), with no extras, no omissions, and no fabricated names/counts/aliases. All gold-required entities (CAPEC-665, T1211, T1542.002, T1556, 13 mitigation ids = 17 total) are surfaced, giving full completeness."
+}

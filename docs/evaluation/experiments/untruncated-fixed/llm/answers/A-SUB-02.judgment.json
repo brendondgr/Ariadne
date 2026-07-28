@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SUB-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.2,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.5,
+  "gold_expected": 2,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question asks which parent Technique T1055.012 belongs to; gold requires the answer to name T1055 (must_include_ids) and reference T1055.012 (must_include_related). The answer surfaces T1055.012 correctly (Process Hollowing, properties all accurate: revoked=false, stix_type=attack-pattern, x_mitre_deprecated=false, x_mitre_is_subtechnique=true, x_mitre_version=2.0 - all match the evidence record verbatim) but explicitly fails to name T1055, stating 'the specific identifier for that parent Technique is not included in the record's related nodes or properties, so I cannot provide it.' This is accurate self-reporting, not a hallucination - the retrieved record's 'related' array is genuinely empty ([]) and only a HAS_SUBTECHNIQUE facet count (count=1, direction=in, neighbour_label=Technique) is present, not the actual neighbor id/name. So the retrieval query (an aggregated facet-count query, not a full neighbor-expansion query) structurally could not surface T1055's identifier, and the deterministic narrative correctly abstained rather than fabricating it. However, since the core ask ('which technique') goes unanswered, the answer fails the question despite being fully faithful and grounded in what little evidence it had. Coverage self-score of 0.5 (missing: T1055) in deterministic_scores confirms the same gap. Completeness = 1/2 gold ids surfaced (T1055.012 yes, T1055 no)."
+}

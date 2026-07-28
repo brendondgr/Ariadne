@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires: CAPEC-633 present with related T1134 (capec assertion), T1134 present with related tactics TA0004/TA0005 (attack assertion), and cross-source correlation on T1134 (must_correlate). The answer's claims state exactly this: 'Found 1 CAPEC record(s) for CAPEC-633; ATT&CK mappings: T1134', 'CAPEC-633 ... has 1 TaxonomyEntrys: capec:taxonomy:ATTACK:1134' (matches evidence related entry entry_id 1134), 'Found 2 item(s) related to T1134 (e.g. TA0005, TA0004)' and 'T1134 (Access Token Manipulation) has 2 related item(s): TA0005, TA0004' (matches logic_flow q2 record T1134 with related TA0005 Stealth and TA0004 Privilege Escalation, exactly the two tactics required and no more, matching gold's max_records:1/exact tactic set), and the correlation claim 'T1134 is corroborated across attack and capec' satisfies must_correlate. All ids, names (Token Impersonation, Access Token Manipulation, Stealth, Privilege Escalation), and properties (Abstraction: Detailed, Status: Stable) are verified verbatim against the logic_flow records/properties/related arrays -- no invented facts. deterministic_scores also confirm correlation f1=1.0 and mapping_recall=1.0 independently. This is a fully correct, fully grounded, fully complete answer."
+}

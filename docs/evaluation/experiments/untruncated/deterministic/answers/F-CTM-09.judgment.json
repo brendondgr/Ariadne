@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-09",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-645 and its ATT&CK mapping T1550.003 (must_correlate + capec.must_include_related), the attack record T1550.003 itself, and its four mitigations M1015, M1018, M1026, M1027. The claims (used as the answer since narrative is thin/deterministic) state all of these: claim 1/2 name CAPEC-645 and its taxonomy mapping to T1550.003 (matches record CAPEC-645's related entry capec:taxonomy:ATTACK:1550.003 with entry_id 1550.003); claim 3/4 enumerate T1550.003's four mitigations M1015, M1026, M1018, M1027, exactly matching the attack record's related list (no extra or missing mitigations, no invented names); claim 5 states the T1550.003 correlation across capec and attack, matching the gold must_correlate and the deterministic_scores.correlation (precision/recall/f1 = 1.0). No name, count, or id in the claims is absent from logic_flow.results evidence -- CAPEC-645's name 'Use of Captured Tickets (Pass The Ticket)', T1550.003's name 'Pass the Ticket', and all four mitigation ids/names are verbatim from the records. All 6 gold-required ids (CAPEC-645, T1550.003, M1015, M1018, M1026, M1027) are surfaced, so this is a fully correct, fully grounded, fully complete answer."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-TAC-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The answer (deterministic narrative + single fact claim) lists all 17 technique ids returned by the query MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique) for TA0006: T1056, T1556, T1111, T1557, T1003, T1539, T1040, T1558, T1555, T1552, T1649, T1528, T1606, T1621, T1212, T1110, T1187. All 5 gold must_include_ids (T1003, T1040, T1056, T1110, T1111) are present, and the full 17-id set matches the gold ex_gold.expected list exactly (same 17 T-numbers, order-independent), so completeness is 1.0 against the full neighbor pool as well. Every cited id is traceable one-to-one to a record in logic_flow.results[0].records with matching primary_id and name (e.g. T1003='OS Credential Dumping', T1110='Brute Force'), and no id, name, count, or extra property appears in the narrative/claims that is absent from the evidence, so faithfulness and groundedness are both 1.0. No hallucinations found."
+}

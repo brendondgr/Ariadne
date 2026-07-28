@@ -216,6 +216,30 @@ def build_pipeline_graph(
             set(state.get("frontier") or set()),
             gaps=gaps,
         )
+        if orch.chase_facets:
+            # The other half of the chase: a facet the first hop only *counted*.
+            # Emitted as ordinary sub-questions so the expansion runs through the
+            # same draft → gate → execute → normalise path as any other hop.
+            from utils.orchestration.agents.assess.facets import (
+                facet_sub_questions,
+                relevant_facets,
+            )
+            from utils.orchestration.agents.assess.frontier import extract_facet_frontier
+            from utils.orchestration.agents.assess.policy import _expanded_neighbourhoods
+
+            evidence = state["evidence"]
+            picks = relevant_facets(
+                extract_facet_frontier(evidence.results),
+                request=state["question"],
+                plan=state["plan"],
+                already_expanded=_expanded_neighbourhoods(evidence),
+                limit=orch.max_facet_expansions,
+            )
+            expansion.sub_questions.extend(
+                facet_sub_questions(
+                    picks, cards=agent._cards, start_index=len(expansion.sub_questions)
+                )
+            )
         merged = merge_plans(state["plan"], expansion, hop=new_hop)
         run = state["run"]
         run.plan = merged

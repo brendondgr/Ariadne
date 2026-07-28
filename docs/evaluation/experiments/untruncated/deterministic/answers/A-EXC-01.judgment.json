@@ -1,0 +1,12 @@
+{
+  "case_id": "A-EXC-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative case: T1002 was deliberately excluded at load time, and gold expects an empty result (expect_empty=true, ex_gold.expected=[]). The executed query (MATCH (n:Technique) WHERE n.attack_id IN ['T1002'] ...) ran cleanly with row_count 0, and the pipeline correctly abstained rather than fabricating a technique description. The answer's claims list is empty, no entity ids or properties are invented, and the narrative accurately states no matching records were found and invites the analyst to specify an entity. This matches the gold ground truth exactly with zero hallucinations."
+}

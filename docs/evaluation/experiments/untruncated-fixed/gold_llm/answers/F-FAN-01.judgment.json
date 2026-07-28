@@ -1,0 +1,14 @@
+{
+  "case_id": "F-FAN-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.55,
+  "faithfulness": 0.6,
+  "groundedness": 0.9,
+  "completeness": 0.8,
+  "gold_expected": 10,
+  "gold_present": 8,
+  "hallucinations": [
+    "Narrative states 'the mitigations for this union total four' — the evidence actually contains five distinct mitigations (M1049, M1040, M1013, M1022, M1048), matching gold's must_include_related exactly; the narrative's total and its enumerated list (M1049, M1040, M1013, M1022) silently drop M1048 (the mitigation for T1027.006/HTML Smuggling), which is itself named earlier in the same sentence as one of the mapped techniques."
+  ],
+  "rationale": "Gold requires 5 correlated techniques (T1027.006, T1027.009, T1546.004, T1546.016, T1564.009) and 5 mitigations (M1013, M1022, M1040, M1048, M1049) as the deduplicated union. The deterministic 'claims' array is fully correct and complete: it lists all 5 CAPEC-to-ATT&CK mappings, all 5 technique records, and individually cites all 5 mitigations including M1048 for T1027.006. However the narrative (the analyst-facing answer under test, and substantive rather than thin) asserts the mitigation union 'total[s] four' and enumerates only M1049, M1040, M1013, M1022 — omitting M1048 even though it names T1027.006 (M1048's technique) as one of the three example techniques earlier in the same sentence. This is a genuine factual/count error on the specific quantity the question asks for ('what mitigations apply to the deduplicated union'), not merely a stylistic omission, since the evidence unambiguously supports 5 mitigations and gold pins the count at exactly 5. The narrative also only explicitly names 4 of the 5 required technique ids (T1027.009, T1027.006, T1546.004, T1546.016), leaving T1564.009 unnamed in prose even though it correctly states the total count of techniques is five. Everything the narrative does state (technique names, mitigation ids, the T1546.016-has-no-mitigations detail) is accurate and traceable to logic_flow records, so groundedness is high; the correctness/faithfulness penalty is specifically for the incorrect mitigation total and the missing M1048."
+}

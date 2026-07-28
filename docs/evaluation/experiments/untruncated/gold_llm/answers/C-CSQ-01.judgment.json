@@ -1,0 +1,12 @@
+{
+  "case_id": "C-CSQ-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-66 plus all four consequence ids (capec:attack-pattern:66:consequence:1..4). The evidence (logic_flow.results[0].records[0]) confirms CAPEC-66 = 'SQL Injection' with exactly 4 related Consequence nodes bearing those four ids and no other properties (name field for each consequence equals its id, no description). The narrative and claims both name CAPEC-66 and enumerate all four consequence ids verbatim, and correctly caveat that the evidence contains no descriptive text/names for the consequences beyond their identifiers -- an accurate reflection of the retrieved data rather than a fabrication. No invented names, counts, or properties are present; the stated count of 'exactly four' matches row_count=4 in the trace. All 5 gold-required ids are surfaced, so completeness is full."
+}

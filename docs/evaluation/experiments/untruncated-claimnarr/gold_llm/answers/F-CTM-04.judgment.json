@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 13,
+  "gold_present": 13,
+  "hallucinations": [],
+  "rationale": "Gold requires 5 correlated T-numbers (T1039, T1552.001, T1552.003, T1552.004, T1552.006) as CAPEC-639's ATT&CK mappings and 8 mitigations across those techniques (M1015, M1017, M1022, M1027, M1028, M1041, M1047, M1051). The narrative names all 5 techniques as CAPEC-639's mappings and states each is corroborated across capec and attack sources, matching the q1 record's join_values/related TaxonomyEntry ids (capec:taxonomy:ATTACK:1552.001/.003/.004/.006/1039) exactly. For mitigations it enumerates, per technique, T1552.004: M1041/M1047/M1022/M1027, T1552.003: M1028, T1552.001: M1047/M1022/M1027/M1017, T1552.006: M1051/M1015/M1047, and correctly states T1039 has none listed (its 'related' array in logic_flow is empty) -- the union of these is exactly the 8 gold mitigation ids, no more, no less. CAPEC-639's Abstraction (Detailed) and Status (Stable) properties are also stated and match the evidence record exactly. Every id, name, and count in the narrative traces to the q1 (capec_maps_to) and q2 (technique_mitigations) records/related arrays in logic_flow; deterministic_scores confirms exact correlation (precision/recall/f1 = 1.0) and mapping_recall 5/5. No fabricated names, aliases, counts, or ids were found."
+}

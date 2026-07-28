@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 2,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires the capec side to actually return data (min_records=1, must_include_ids=[CAPEC-98], must_include_related=[T1566]) while only the attack/ICS-asset side is supposed to be a boundary refusal. The pipeline instead abstained on both halves. The capec query is malformed: it filters AttackPattern.id within('T1566') (join_key: null in the resolve trace) instead of traversing AttackPattern -MAPS_TO-> TaxonomyEntry(entry_id='T1566'), so it can never match CAPEC-98 (a CAPEC id, not an ATT&CK id) and returns row_count=0. Worse, the attack sub-question ('What assets does technique T1566 target?') was planned but never executed at all -- observed_plan contains only the capec q1 step -- so the answer never even attempts the ICS-asset boundary check the question actually turns on. The narrative/claims contain no fabricated facts (faithfulness/groundedness are clean, and the pipeline's own 'expect_no_correlation' check trivially passes because nothing was retrieved), but the answer fails the headline requirement: CAPEC-98's mapping to T1566 is completely absent (gold_present=0 of 2 required items: CAPEC-98 id and the T1566 relation), and the assets question goes unaddressed rather than being honestly refused via an actual boundary check. This is a retrieval/planner defect producing a false abstention, not a correct negative case."
+}

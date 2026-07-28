@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.35,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.62,
+  "gold_expected": 13,
+  "gold_present": 8,
+  "hallucinations": [],
+  "rationale": "The question has two explicit required outputs: (1) which ATT&CK techniques CAPEC-19/35/448 map to, and (2) what mitigations apply to the deduplicated union of those techniques. The answer fully and accurately nails part (1): all 3 CAPEC ids, all 5 gold T-numbers (T1027.006, T1027.009, T1546.004, T1546.016, T1564.009), and the 5 must_correlate cross-source correlations are stated with correct share-counts (verified against join_values/related arrays in the evidence: T1027.009 shared by 4 records, the other four shared by 2 each) and correct CAPEC Abstraction/Status properties (CAPEC-19 Standard/Stable, CAPEC-35 Detailed/Draft, CAPEC-448 Detailed/Stable all match logic_flow.results[0].records). No fabricated facts were found. However, part (2) is entirely missing: gold requires must_include_related mitigations M1013, M1022, M1040, M1048, M1049, and the pipeline's own q2 sub-question retrieved exactly these five mitigations (M1049/M1040 under T1027.009, M1013 under T1564.009, M1022 under T1546.004, M1048 under T1027.006) into logic_flow, but neither the narrative nor any claim mentions a single mitigation by id or name. This is not a minor gap but a complete omission of an explicitly-asked-for, gold-required component of the answer, so despite perfect faithfulness/groundedness on what it does say, the answer fails to answer the question as posed. gold_expected=13 (3 CAPEC ids + 5 T-numbers + 5 mitigation ids), gold_present=8 (3 CAPEC + 5 T-numbers; 0 mitigations)."
+}

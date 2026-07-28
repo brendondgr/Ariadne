@@ -1,0 +1,12 @@
+{
+  "case_id": "A-AST-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "This is a negative/boundary case (expect_boundary: true) probing whether the pipeline invents an ICS 'Asset' answer for T1490, which is an Enterprise ATT&CK technique with no ICS asset targeting data. The evidence record for T1490 has x_mitre_platforms = [Containers, ESXi, IaaS, Linux, macOS, Network Devices, Windows] and zero related nodes (related: [], evidence_volume.related: 0) -- no Asset-labelled neighbours exist in the retrieved neighbourhood. The narrative correctly reports the seven platforms verbatim (matches evidence exactly, no fabricated platform), then explicitly refuses to answer the ICS-asset portion, stating the live 'attack' schema has no Asset node label and the ICS-only concept falls outside the Enterprise ATT&CK schema bounds -- this is exactly the expected honest refusal rather than invented ICS asset data. No entity, count, or alias in the narrative is unsupported by the evidence; the platform list, technique name, and STIX metadata (revoked, stix_type, deprecated, version) all trace directly to record T1490's properties. Boundary correctly honored with zero hallucination."
+}

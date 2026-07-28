@@ -1,0 +1,275 @@
+{
+  "id": "A-SUB-02",
+  "kind": "attack",
+  "tier": "medium",
+  "category": "A-SUB",
+  "question": "Which technique is T1055.012 a sub-technique of?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "T1055"
+      ],
+      "must_include_related": [
+        "T1055.012"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "T1055"
+      ],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "Based on the provided evidence, the record for T1055.012 indicates a single parent Technique relationship through the HAS_SUBTECHNIQUE facet, but the related identifiers are not populated in the record. Consequently, the specific parent technique identifier cannot be determined from the available data. The evidence confirms the sub-technique exists and has one parent, but does not name it.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found ATT&CK record T1055.012: Process Hollowing.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1055.012"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1055.012"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-SUB-02",
+      "source": "attack",
+      "text": "Which parent technique does sub-technique T1055.012 belong to?",
+      "entities": [
+        "Technique",
+        "SubTechnique",
+        "HAS_SUBTECHNIQUE"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "T1055.012"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "Find the parent Technique of SubTechnique with id 'T1055.012'.",
+        "query": "MATCH (n:SubTechnique) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found ATT&CK record T1055.012: Process Hollowing.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "SubTechnique",
+                "Technique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1055.012"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "MATCH (n:SubTechnique) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1",
+              "injected": [
+                "LIMIT 1 appended (none present)"
+              ],
+              "timing_ms": 0.163
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 4.7
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.129
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1055.012",
+            "name": "Process Hollowing",
+            "label": "SubTechnique",
+            "description": "Adversaries may inject malicious code into suspended and hollowed processes in order to evade process-based defenses. Process hollowing is a method of executing arbitrary code in the address space of a separate live process.  \n\nProcess hollowing is commonly performed by creating a process in a suspended state then unmapping/hollowing its memory, which can then be replaced with malicious code. A victim process can be created with native Windows API calls such as <code>CreateProcess</code>, which includes a flag to suspend the processes primary thread. At this point the process can be unmapped using APIs calls such as <code>ZwUnmapViewOfSection</code> or <code>NtUnmapViewOfSection</code>  before being written to, realigned to the injected code, and resumed via <code>VirtualAllocEx</code>, <code>WriteProcessMemory</code>, <code>SetThreadContext</code>, then <code>ResumeThread</code> respectively.(Citation: Leitch Hollowing)(Citation: Elastic Process Injection July 2017)\n\nThis is very similar to [Thread Local Storage](https://attack.mitre.org/techniques/T1055/005) but creates a new process rather than targeting an existing process. This behavior will likely not result in elevated privileges since the injected process was spawned from (and thus inherits the security context) of the injecting process. However, execution via process hollowing may also evade detection from security products since the execution is masked under a legitimate process. ",
+            "properties": {
+              "attack_id": "T1055.012",
+              "description": "Adversaries may inject malicious code into suspended and hollowed processes in order to evade process-based defenses. Process hollowing is a method of executing arbitrary code in the address space of a separate live process.  \n\nProcess hollowing is commonly performed by creating a process in a suspended state then unmapping/hollowing its memory, which can then be replaced with malicious code. A victim process can be created with native Windows API calls such as <code>CreateProcess</code>, which includes a flag to suspend the processes primary thread. At this point the process can be unmapped using APIs calls such as <code>ZwUnmapViewOfSection</code> or <code>NtUnmapViewOfSection</code>  before being written to, realigned to the injected code, and resumed via <code>VirtualAllocEx</code>, <code>WriteProcessMemory</code>, <code>SetThreadContext</code>, then <code>ResumeThread</code> respectively.(Citation: Leitch Hollowing)(Citation: Elastic Process Injection July 2017)\n\nThis is very similar to [Thread Local Storage](https://attack.mitre.org/techniques/T1055/005) but creates a new process rather than targeting an existing process. This behavior will likely not result in elevated privileges since the injected process was spawned from (and thus inherits the security context) of the injecting process. However, execution via process hollowing may also evade detection from security products since the execution is masked under a legitimate process. ",
+              "id": "attack-pattern--b200542e-e877-4395-875b-cf1a44537ca4",
+              "name": "Process Hollowing",
+              "revoked": false,
+              "stix_type": "attack-pattern",
+              "x_mitre_deprecated": false,
+              "x_mitre_is_subtechnique": true,
+              "x_mitre_platforms": [
+                "Windows"
+              ],
+              "x_mitre_version": "2.0",
+              "_omitted_properties": [
+                "external_references"
+              ]
+            },
+            "facets": [
+              {
+                "rel": "DETECTS",
+                "direction": "in",
+                "neighbour_label": "DetectionStrategy",
+                "count": 1
+              },
+              {
+                "rel": "HAS_SUBTECHNIQUE",
+                "direction": "in",
+                "neighbour_label": "Technique",
+                "count": 1
+              },
+              {
+                "rel": "HAS_TECHNIQUE",
+                "direction": "in",
+                "neighbour_label": "Tactic",
+                "count": 2
+              },
+              {
+                "rel": "MITIGATES",
+                "direction": "in",
+                "neighbour_label": "Mitigation",
+                "count": 1
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Campaign",
+                "count": 0
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Group",
+                "count": 8
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Software",
+                "count": 35
+              }
+            ],
+            "join_values": [
+              "T1055.012"
+            ],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 2,
+      "found": 1,
+      "coverage": 0.5,
+      "missing": [
+        "T1055"
+      ]
+    },
+    "provenance": {
+      "citations": 1,
+      "compliant": 1,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "Find the parent Technique of SubTechnique with id 'T1055.012'.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 1,
+          "max_result_rows": 1,
+          "query_timeout_ms": 1000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 63.603
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 0
+  }
+}

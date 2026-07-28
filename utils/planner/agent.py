@@ -101,7 +101,10 @@ class PlanningAgent:
             {"request": request, "live_view": live_view, "iteration": 0, "feedback": None},
             config={"recursion_limit": orch.recursion_limit},
         )
-        return out["plan"]
+        # A declared join must reach the sub-questions it joins, or the specialist
+        # router downgrades the bridge hop to ``describe`` and the join silently
+        # never happens (see Plan.reconcile_join_keys).
+        return out["plan"].reconcile_join_keys()
 
     def replan(
         self,

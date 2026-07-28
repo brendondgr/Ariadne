@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-02",
+  "verdict": "CORRECT",
+  "correctness": 0.97,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 13,
+  "gold_present": 13,
+  "hallucinations": [],
+  "rationale": "Evidence shows CAPEC-13 -> {T1574.006, T1574.007, T1562.003} and CAPEC-640 -> {T1505.005, T1574.006, T1574.013, T1620} (join_values in the q1 CAPEC records), with the overlap being T1574.006 (matching the question's '(they overlap)' cue). The narrative states this exactly, correctly names both CAPEC ids (gold capec.must_include_ids: CAPEC-13, CAPEC-640) and all 5 must_correlate T-numbers (T1505.005, T1574.006, T1574.007, T1574.013, T1620), satisfying gold attack.min_records=5/max_records=5. For mitigations, the q2 ATT&CK records give: T1574.007->{M1047,M1022,M1038}, T1505.005->{M1047,M1024}, T1574.006->{M1038,M1028}, T1574.013->{M1040}, T1620->{} ; the deduplicated union is exactly {M1047,M1038,M1028,M1022,M1024,M1040}, which matches gold attack.must_include_related exactly and is what the narrative lists (three named directly, three named as 'remaining'). The narrative's closing statement that T1620 and T1562.003 lack mitigation records is faithful to the evidence: T1620's related array is empty and T1562.003 never resolved to a Technique node in the q2 results (5 of 6 seeded ids returned records), so no mitigation data exists for it in the retrieved evidence. Cross-checked against the artifact's own deterministic_scores (correlation f1=1.0, mapping_recall=1.0, missing=[]), which corroborates full coverage. No invented ids, names, counts, or properties were found; all named entities (2 CAPECs, 5 correlated techniques, 6 mitigations) trace directly to logic_flow records. Minor deduction from a perfect 1.0 correctness only because the narrative doesn't explicitly flag T1562.003 as CAPEC-side-only/uncorrelated-with-ATT&CK-in-this-retrieval versus the other 5, though it does correctly exclude it from the mitigation union discussion."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MIT-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires the seed T1110 plus all four mitigations M1018, M1027, M1032, M1036 (assertions.must_include_ids/must_include_related). The single retrieved record's related list contains exactly these four mitigations with names Account Use Policies (M1036), Multi-factor Authentication (M1032), User Account Management (M1018), and Password Policies (M1027) -- matching the evidence verbatim. The narrative names all four IDs with their correct names and correctly attributes T1110 (Brute Force) as the technique. The elaboration (account lockout thresholds, login time restrictions, inactivity/session timeouts, MFA, password complexity, dormant-account cleanup) is directly traceable to the mitigation description text in the evidence (e.g. M1036's description literally lists 'Account Lockout Policies', 'Login Time Restrictions', 'Inactivity Timeout and Session Termination'; M1018's covers password policy and dormant-account management). deterministic_scores.coverage confirms 5/5 with no missing ids. No invented names, counts, or aliases were found."
+}

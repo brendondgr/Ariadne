@@ -1,0 +1,12 @@
+{
+  "case_id": "C-SCN-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 250,
+  "gold_present": 300,
+  "hallucinations": [],
+  "rationale": "Gold requires a bounded CAPEC scan yielding between 250 and 300 records (min_records=250, max_records=300), no specific ids, correlations, or properties required. The evidence (logic_flow) contains exactly 300 unique CAPEC records (e.g. CAPEC-1, CAPEC-10, CAPEC-100, ...), which is within the allowed [250,300] window and at the upper bound. The answer's claims list all 300 ids, and the claim entity_ids set is exactly identical (set-equal) to the full evidence id set -- no fabricated ids, no omissions, no invented counts. The narrative correctly states 'Found 300 CAPEC record(s)' matching the true record count."
+}

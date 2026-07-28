@@ -1,0 +1,12 @@
+{
+  "case_id": "C-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result for this adversarial negative case (CAPEC-557, a deprecated pattern excluded at load; assertions.expect_empty=true, ex_gold.expected=[]). The executed Gremlin query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within([\"CAPEC-557\"]))...) returned row_count=0 at every trace step (gate/execute/assess/normalize), and logic_flow.results[0].records is empty \u2014 confirming CAPEC-557 truly has no node in the graph. The answer's claims array is empty (no fabricated data), and the sole abstention statement accurately reports \"the executed query ran cleanly and returned no matching records for: What is CAPEC pattern CAPEC-557?\" The narrative similarly states no matching records were found and invites the analyst to supply a different id, without inventing any CAPEC-557 properties, aliases, or related nodes. This is exactly the correct behavior for a NEG case: abstain rather than hallucinate. No unsupported claims, counts, or ids appear anywhere in the answer."
+}

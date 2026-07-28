@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-09",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-645 to map to T1550.003 (must_correlate, capec.must_include_ids/must_include_related, attack.must_include_ids) with mitigations M1015, M1018, M1026, M1027 (attack.must_include_related). The narrative states exactly this: 'CAPEC-645 (Use of Captured Tickets) maps directly to the ATT&CK technique T1550.003 (Pass the Ticket)... covered by four listed mitigations: M1015 (Active Directory Configuration), M1026 (Privileged Account Management), M1018 (User Account Management), and M1027 (Password Policies)'. All six required identifiers (CAPEC-645, T1550.003, M1015, M1018, M1026, M1027) are present with correctly named entities matching the retrieved records exactly (e.g. the capec record's related TaxonomyEntry capec:taxonomy:ATTACK:1550.003 -> T1550.003, and the attack record's 4 related mitigations with matching names/descriptions). The cross-source correlation on T1550.003 is correctly reported (deterministic_scores.correlation exact=true, f1=1.0). The narrative's closing sentence paraphrasing what the mitigations 'collectively address' (account lifecycle, logon restriction, least privilege, credential policies) is a reasonable summary directly traceable to the mitigation description text in the evidence, not an invented fact. No counts, aliases, or entities appear that are absent from logic_flow.records. Minor stylistic shortening of CAPEC-645's full name (dropping the parenthetical 'Pass The Ticket') is not a factual error. No hallucinations found; answer is fully grounded and complete."
+}

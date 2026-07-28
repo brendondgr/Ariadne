@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-10",
+  "verdict": "PARTIAL",
+  "correctness": 0.75,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.625,
+  "gold_expected": 8,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-652 -> T1558 mapping (correlated correctly, deterministic_scores confirms exact 1.0 correlation), and all six T1558 mitigations M1015, M1026, M1027, M1041, M1043, M1047 (must_include_related on the attack assertion). The evidence (logic_flow records) shows exactly these six mitigations related to T1558, matching the gold list one-for-one. The narrative correctly states CAPEC-652 maps to T1558 (Steal or Forge Kerberos Tickets) and correctly states 'six mitigations' are associated, but only names three of them explicitly in prose (M1041, M1015, M1043); M1026 (Privileged Account Management), M1027 (Password Policies), and M1047 (Audit) are never mentioned in the narrative text even though they appear correctly enumerated in the supporting claims/citations. All facts stated in the narrative are grounded and faithful to the retrieved evidence (names, ids, and the T1558 correlation all match the logic_flow records exactly) -- no invented ids, names, or counts. Because the analyst-facing narrative is judged as the answer under test and it omits half the required mitigation ids by name (using 'including' for a partial 3-of-6 example list rather than a full enumeration), completeness is only 5/8 (CAPEC-652, T1558, M1041, M1015, M1043 present; M1026, M1027, M1047 absent from prose). This yields a PARTIAL verdict: correct on the mapping/correlation and correct on the total mitigation count, but an incomplete enumeration of the gold-required mitigation set in the delivered narrative."
+}

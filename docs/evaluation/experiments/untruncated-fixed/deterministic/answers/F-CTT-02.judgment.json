@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-49 to surface its ATT&CK mapping T1110.001 (capec.must_include_ids/must_include_related), the ATT&CK side to return T1110.001 with related tactic TA0006 (attack.must_include_ids/must_include_related), and a cross-source correlation on T1110.001 (must_correlate). The claims state all three: 'Found 1 CAPEC record(s) for CAPEC-49; ATT&CK mappings: T1110.001' (matches record CAPEC-49 -> related capec:taxonomy:ATTACK:1110.001 / join_values T1110.001), 'T1110.001 (Password Guessing) has 1 related item(s): TA0006' (matches the attack-source record T1110.001 -> related TA0006/Credential Access), and 'The identifier T1110.001 is corroborated across attack and capec' (satisfies must_correlate). The abstraction/status detail (Standard/Draft) matches record properties exactly, and the technique/tactic names (Password Guessing, Credential Access) match the evidence verbatim. No claim references an id or fact absent from logic_flow.results; no fabricated counts, aliases, or dates. deterministic_scores confirm exact correlation (f1=1.0) and full mapping recall (1.0), consistent with this independent check."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-TEC-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids T1046, T1047, T1090, T1102, T1105 (min_records 5). The deterministic query MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN ['C0027'] returned exactly 10 technique records (row_count 10), and the answer's enumeration claim lists all 10 by id: T1105, T1046, T1621, T1102, T1090, T1572, T1190, T1530, T1133, T1047 -- all 5 gold-required ids are present. The 10 returned ids also exactly match the ex_gold expected neighbor pool (T1046, T1047, T1090, T1102, T1105, T1133, T1190, T1530, T1572, T1621), so the answer is not just sufficient but complete against the full expected pool. No id, name, count, or property in the narrative/claims is absent from or inconsistent with the retrieved evidence (each cited primary_id has a matching record with matching name); the stated record count of 10 matches the executed query's row_count. No hallucinations found."
+}

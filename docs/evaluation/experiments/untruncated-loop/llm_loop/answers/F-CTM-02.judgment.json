@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 14,
+  "gold_present": 14,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-555 to map to T1021, T1114.002, T1133 (must_correlate and capec.must_include_related), all three ATT&CK records to be returned (attack.must_include_ids, exactly 3 records per min/max_records:3), and the union of 10 mitigations M1018/M1021/M1027/M1030/M1032/M1035/M1041/M1042/M1047/M1060 (attack.must_include_related). The narrative/claims state CAPEC-555's Abstraction (Standard) and Status (Stable) exactly matching evidence properties, name all three T-numbers with correlation across capec/attack sources (matching the 3 correlation claims and deterministic_scores.correlation f1=1.0), and list per-technique mitigations: T1021 -> M1042,M1047,M1032,M1018,M1027,M1035 (evidence record T1021.related exact match, 6/6); T1114.002 -> M1041,M1032,M1060 (evidence exact match, 3/3); T1133 -> M1035,M1021,M1030,M1032,M1042 (evidence exact match, 5/5). The union of stated mitigations is exactly the 10 required in gold with no extras and no omissions. Every id/name/property cited traces directly to logic_flow records/related entries; nothing is invented (e.g. no fabricated aliases, counts, or extra mitigations)."
+}

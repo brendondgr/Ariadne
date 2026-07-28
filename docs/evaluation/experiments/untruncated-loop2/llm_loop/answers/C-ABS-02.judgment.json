@@ -1,0 +1,15 @@
+{
+  "case_id": "C-ABS-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.35,
+  "faithfulness": 0.5,
+  "groundedness": 0.7,
+  "completeness": 0.67,
+  "gold_expected": 3,
+  "gold_present": 2,
+  "hallucinations": [
+    "Narrative states 'The graph contains no standard or meta ancestors for this attack pattern,' which is directly contradicted one sentence later by its own statement that CAPEC-16 has 'one ChildOf parent: CAPEC-49' -- an unsupported/self-contradictory blanket claim not grounded in the evidence it itself cites.",
+    "Narrative and claim #3 label the five CAN_PRECEDE targets (CAPEC-151, CAPEC-560, CAPEC-561, CAPEC-600, CAPEC-653) as 'predecessors' of CAPEC-16, but the query traversed out('CAN_PRECEDE') from CAPEC-16, meaning CAPEC-16 precedes them -- they are successors of CAPEC-16, not predecessors. The relationship direction is reversed."
+  ],
+  "rationale": "Gold requires must_include_ids=[CAPEC-16] and must_include_related=[CAPEC-49, CAPEC-112] (CAPEC-49 is the standard-level ChildOf ancestor, CAPEC-112 the meta-level ancestor one hop further up). The pipeline's plan (q1-q3) only ever queried CAPEC-16's direct CHILD_OF/CAN_PRECEDE neighbors and never traversed a second hop from CAPEC-49 up to its own parent, so CAPEC-112 never entered the evidence and cannot be surfaced -- coverage is 2/3 (0.67), matching the run's own deterministic_scores.coverage. Worse, the narrative opens with the false, self-contradicting claim 'The graph contains no standard or meta ancestors for this attack pattern' immediately before correctly naming CAPEC-49 as the ChildOf parent in the very next clause -- this is not grounded in the evidence (which shows a CHILD_OF edge to CAPEC-49) and actively misleads an analyst skimming the first sentence. The narrative also mislabels the five CAN_PRECEDE targets as 'predecessors' when the query direction (CAPEC-16 -[CAN_PRECEDE]-> nbr) makes them successors of CAPEC-16. Net: the answer partially succeeds (correctly finds CAPEC-49, entities are otherwise traceable to records/related in logic_flow), but fails to reach the required meta ancestor CAPEC-112, contains a directly self-contradictory factual claim, and reverses a relationship's directionality -- PARTIAL, not CORRECT."
+}

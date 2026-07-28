@@ -1,0 +1,399 @@
+{
+  "id": "F-REV-02",
+  "kind": "federated",
+  "tier": "medium",
+  "category": "F-REV",
+  "question": "Which CAPEC patterns map to ATT&CK technique T1566 (Phishing), and what is that technique?",
+  "gold": {
+    "assertions": {
+      "must_correlate": [
+        "T1566"
+      ],
+      "capec": {
+        "min_records": 1,
+        "must_include_ids": [
+          "CAPEC-98"
+        ],
+        "must_include_related": [
+          "T1566"
+        ]
+      },
+      "attack": {
+        "min_records": 1,
+        "max_records": 1,
+        "must_include_ids": [
+          "T1566"
+        ],
+        "expect_names": {
+          "T1566": "Phishing"
+        }
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 1
+  },
+  "answer": {
+    "headline": "Gathered 2 record(s) from 2 source(s); 1 cross-source correlation(s) on shared identifiers.",
+    "narrative": "The evidence indicates that one CAPEC pattern, CAPEC-98, maps to ATT&CK technique T1566. CAPEC-98 is named Phishing, carries the Status Draft and Abstraction Standard, and defines phishing as a social engineering technique where an attacker masquerades as a legitimate entity to prompt users to reveal confidential information. ATT&CK technique T1566 is also named Phishing and is associated with the Initial Access tactic (TA0001).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s) for CAPEC-98; ATT&CK mappings: T1566.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-98"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-98"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-98 (Phishing) has Abstraction: Standard; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-98"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-98"
+          }
+        ]
+      },
+      {
+        "text": "Found 1 item(s) related to T1566 (e.g. TA0001) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1566"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1566"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1566 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1566"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-98"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1566"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which CAPEC patterns map to ATT&CK technique T1566?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What is ATT&CK technique T1566?",
+        "seed_from": null
+      }
+    ],
+    "sequenced": false,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q2",
+        "sub_question": "Find AttackPattern nodes that have a TaxonomyEntry mapping to the ATT&CK technique id 'T1566'.",
+        "query": "g.V().hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").has(\"entry_id\", within(entryIds)).as(\"tax\").in(\"MAPS_TO\").hasLabel(\"AttackPattern\").as(\"ap\").select(\"ap\",\"tax\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s) for CAPEC-98; ATT&CK mappings: T1566.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1566"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_reverse_maps",
+              "query": "g.V().hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").has(\"entry_id\", within(entryIds)).as(\"tax\").in(\"MAPS_TO\").hasLabel(\"AttackPattern\").as(\"ap\").select(\"ap\",\"tax\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.087
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 6.0
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.048
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-98",
+            "name": "Phishing",
+            "label": "AttackPattern",
+            "description": "Phishing is a social engineering technique where an attacker masquerades as a legitimate entity with which the victim might do business in order to prompt the user to reveal some confidential information (very frequently authentication credentials) that can later be used by an attacker. Phishing is essentially a form of information gathering or \"fishing\" for information.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Phishing",
+              "description": "Phishing is a social engineering technique where an attacker masquerades as a legitimate entity with which the victim might do business in order to prompt the user to reveal some confidential information (very frequently authentication credentials) that can later be used by an attacker. Phishing is essentially a form of information gathering or \"fishing\" for information.",
+              "id": "capec:attack-pattern:98",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [
+              "T1566"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1566",
+                "entry_id": "1566",
+                "name": "Phishing",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q1",
+        "sub_question": "Retrieve the Technique node with id 'T1566' and name 'Phishing', including its description and associated Tactic nodes.",
+        "query": "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids RETURN t.attack_id AS technique_id, t.name AS technique_name, ta.attack_id AS in_tactic_id, ta.name AS in_tactic_name LIMIT 1",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 item(s) related to T1566 (e.g. TA0001) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "Tactic"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1566"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "technique_tactics",
+              "query": "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids RETURN t.attack_id AS technique_id, t.name AS technique_name, ta.attack_id AS in_tactic_id, ta.name AS in_tactic_name LIMIT 1",
+              "injected": [
+                "LIMIT 1 appended (none present)"
+              ],
+              "timing_ms": 0.067
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 3.3
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.009
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 1.35
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1566",
+            "name": "Phishing",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1566"
+            ],
+            "related": [
+              {
+                "id": "TA0001",
+                "name": "Initial Access",
+                "description": "The adversary is trying to get into your network.\n\nInitial Access consists of techniques that use various entry vectors to gain their initial foothold within a network. Techniques used to gain a foothold include targeted spearphishing and exploiting weaknesses on public-facing web servers. Footholds gained through initial access may allow for continued access, like valid accounts and use of external remote services, or may be limited-use due to changing passwords."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 1,
+      "n_got": 1
+    },
+    "mapping_recall": {
+      "gold": 1,
+      "found": 1,
+      "recall": 1.0,
+      "missing": []
+    },
+    "coverage": null,
+    "provenance": {
+      "citations": 5,
+      "compliant": 5,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "Retrieve the Technique node with id 'T1566' and name 'Phishing', including its description and associated Tactic nodes.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 1,
+          "max_result_rows": 1,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "capec",
+        "text": "Find AttackPattern nodes that have a TaxonomyEntry mapping to the ATT&CK technique id 'T1566'.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 2,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 88.602
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 2,
+    "related": 2
+  }
+}

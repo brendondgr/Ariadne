@@ -1,0 +1,1310 @@
+{
+  "id": "F-CWE-04",
+  "kind": "federated",
+  "tier": "hard",
+  "category": "F-CWE",
+  "question": "Which CAPEC patterns exploit weakness CWE-308, which ATT&CK techniques do they map to, and what mitigations apply?",
+  "gold": {
+    "assertions": {
+      "must_correlate": [
+        "T1021",
+        "T1021.002",
+        "T1078",
+        "T1078.001",
+        "T1110.001",
+        "T1110.002",
+        "T1110.003",
+        "T1110.004",
+        "T1114.002",
+        "T1133",
+        "T1550.002",
+        "T1550.003",
+        "T1558",
+        "T1558.003"
+      ],
+      "capec": {
+        "min_records": 1,
+        "must_include_ids": [
+          "CAPEC-49",
+          "CAPEC-55",
+          "CAPEC-70",
+          "CAPEC-509",
+          "CAPEC-555",
+          "CAPEC-560",
+          "CAPEC-561",
+          "CAPEC-565",
+          "CAPEC-600",
+          "CAPEC-644",
+          "CAPEC-645",
+          "CAPEC-652"
+        ],
+        "must_include_related": [
+          "CWE-308"
+        ]
+      },
+      "attack": {
+        "min_records": 14,
+        "max_records": 14,
+        "must_include_ids": [
+          "T1021",
+          "T1021.002",
+          "T1078",
+          "T1078.001",
+          "T1110.001",
+          "T1110.002",
+          "T1110.003",
+          "T1110.004",
+          "T1114.002",
+          "T1133",
+          "T1550.002",
+          "T1550.003",
+          "T1558",
+          "T1558.003"
+        ],
+        "must_include_related": [
+          "M1013",
+          "M1015",
+          "M1017",
+          "M1018",
+          "M1021",
+          "M1026",
+          "M1027",
+          "M1030",
+          "M1032",
+          "M1035",
+          "M1036",
+          "M1037",
+          "M1041",
+          "M1042",
+          "M1043",
+          "M1047",
+          "M1051",
+          "M1052",
+          "M1060"
+        ]
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 3
+  },
+  "answer": {
+    "headline": "Gathered 16 record(s) from 2 source(s); 4 cross-source correlation(s) on shared identifiers.",
+    "narrative": "Eleven CAPEC attack patterns exploit the credential-related weakness CWE-308, including CAPEC-560 (Use of Known Domain Credentials), CAPEC-70 (Try Common or Default Usernames and Passwords), and CAPEC-555 (Remote Services with Stolen Credentials). These patterns map to ATT&CK techniques T1078 (Valid Accounts), T1021 (Remote Services), T1558 (Steal or Forge Kerberos Tickets), and T1133 (External Remote Services), along with their respective subtechniques. The retrieved ATT&CK records indicate that these techniques have associated mitigations, with T1078 carrying 8 mitigations, T1021 and T1558 each carrying 6, and T1133 carrying 5, though the specific mitigation identifiers are not provided in the current evidence set.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 12 CAPEC record(s) for CAPEC-49, CAPEC-509, CAPEC-55, CAPEC-555, CAPEC-560 … (+7 more); ATT&CK mappings: T1021, T1021.002, T1078, T1078.001, T1110.001.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-560",
+          "CAPEC-70",
+          "CAPEC-561",
+          "CAPEC-55",
+          "CAPEC-652",
+          "CAPEC-600",
+          "CAPEC-565",
+          "CAPEC-555",
+          "CAPEC-644",
+          "CAPEC-49",
+          "CAPEC-509",
+          "CAPEC-645"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-560"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-70"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-561"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-55"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-652"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-600"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-565"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-555"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-644"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-49"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-509"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-645"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-560 (Use of Known Domain Credentials) has 1 related item(s): CWE-308.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CWE-308"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-560"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-70 (Try Common or Default Usernames and Passwords) has 1 related item(s): CWE-308.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CWE-308"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-70"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-561 (Windows Admin Shares with Stolen Credentials) has 1 related item(s): CWE-308.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CWE-308"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-561"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-55 (Rainbow Table Password Cracking) has 1 related item(s): CWE-308.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CWE-308"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-55"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-652 (Use of Known Kerberos Credentials) has 1 related item(s): CWE-308.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CWE-308"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-652"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-600 (Credential Stuffing) has 1 related item(s): CWE-308.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CWE-308"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-600"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-565 (Password Spraying) has 1 related item(s): CWE-308.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CWE-308"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-565"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-555 (Remote Services with Stolen Credentials) has 1 related item(s): CWE-308.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CWE-308"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-555"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-644 (Use of Captured Hashes (Pass The Hash)) has 1 related item(s): CWE-308.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CWE-308"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-644"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-49 (Password Brute Forcing) has 1 related item(s): CWE-308.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CWE-308"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-49"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-509 (Kerberoasting) has 1 related item(s): CWE-308.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CWE-308"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-509"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-645 (Use of Captured Tickets (Pass The Ticket)) has 1 related item(s): CWE-308.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CWE-308"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-645"
+          }
+        ]
+      },
+      {
+        "text": "Found 4 ATT&CK record(s) including T1133, T1558, T1021 and more.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1133",
+          "T1558",
+          "T1021",
+          "T1078"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1133"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1558"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1021"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1078"
+          }
+        ]
+      },
+      {
+        "text": "T1133 (External Remote Services) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.5.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1133"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1133"
+          }
+        ]
+      },
+      {
+        "text": "T1558 (Steal or Forge Kerberos Tickets) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.7.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1558"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1558"
+          }
+        ]
+      },
+      {
+        "text": "T1021 (Remote Services) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.6.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1021"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1021"
+          }
+        ]
+      },
+      {
+        "text": "T1078 (Valid Accounts) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 3.0.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1078"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1078"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1021 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1021"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-555"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1021"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1078 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1078"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-560"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1078"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1133 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1133"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-555"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1133"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1558 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1558"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-652"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1558"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which attack patterns exploit CWE-308 and which ATT&CK techniques do they map to?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What mitigations does ATT&CK list for those mapped techniques?",
+        "seed_from": "q1"
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Find AttackPattern nodes that EXPLOITS_WEAKNESS a Weakness node with name 'CWE-308'. For each AttackPattern, retrieve Mitigation nodes via HAS_MITIGATION and TaxonomyEntry nodes via MAPS_TO where taxonomy is 'ATTACK'.",
+        "query": "g.V().hasLabel(\"Weakness\").has(\"id\", within(cweIds)).as(\"w\").in(\"EXPLOITS_WEAKNESS\").hasLabel(\"AttackPattern\").as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"w\",\"ap\",\"tax\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 12 CAPEC record(s) for CAPEC-49, CAPEC-509, CAPEC-55, CAPEC-555, CAPEC-560 … (+7 more); ATT&CK mappings: T1021, T1021.002, T1078, T1078.001, T1110.001.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "Weakness",
+                "Mitigation",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CWE-308"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "cwe_chain",
+              "query": "g.V().hasLabel(\"Weakness\").has(\"id\", within(cweIds)).as(\"w\").in(\"EXPLOITS_WEAKNESS\").hasLabel(\"AttackPattern\").as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"w\",\"ap\",\"tax\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.13
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 14,
+              "timing_ms": 5.9
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 14,
+              "timing_ms": 0.01
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 12,
+              "timing_ms": 0.273
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-560",
+            "name": "Use of Known Domain Credentials",
+            "label": "AttackPattern",
+            "description": "An adversary guesses or obtains (i.e. steals or purchases) legitimate credentials (e.g. userID/password) to achieve authentication and to perform authorized actions under the guise of an authenticated user or service.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Use of Known Domain Credentials",
+              "description": "An adversary guesses or obtains (i.e. steals or purchases) legitimate credentials (e.g. userID/password) to achieve authentication and to perform authorized actions under the guise of an authenticated user or service.",
+              "id": "capec:attack-pattern:560",
+              "Abstraction": "Meta"
+            },
+            "facets": [],
+            "join_values": [
+              "T1078"
+            ],
+            "related": [
+              {
+                "id": "CWE-308"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-70",
+            "name": "Try Common or Default Usernames and Passwords",
+            "label": "AttackPattern",
+            "description": "An adversary may try certain common or default usernames and passwords to gain access into the system and perform unauthorized actions. An adversary may try an intelligent brute force using empty passwords, known vendor default credentials, as well as a dictionary of common usernames and passwords. Many vendor products come preconfigured with default (and thus well-known) usernames and passwords that should be deleted prior to usage in a production environment. It is a common mistake to forget to remove these default login credentials. Another problem is that users would pick very simple (common) passwords (e.g. \"secret\" or \"password\") that make it easier for the attacker to gain access to the system compared to using a brute force attack or even a dictionary attack using a full dictionary.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Try Common or Default Usernames and Passwords",
+              "description": "An adversary may try certain common or default usernames and passwords to gain access into the system and perform unauthorized actions. An adversary may try an intelligent brute force using empty passwords, known vendor default credentials, as well as a dictionary of common usernames and passwords. Many vendor products come preconfigured with default (and thus well-known) usernames and passwords that should be deleted prior to usage in a production environment. It is a common mistake to forget to remove these default login credentials. Another problem is that users would pick very simple (common) passwords (e.g. \"secret\" or \"password\") that make it easier for the attacker to gain access to the system compared to using a brute force attack or even a dictionary attack using a full dictionary.",
+              "id": "capec:attack-pattern:70",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1078.001"
+            ],
+            "related": [
+              {
+                "id": "CWE-308"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-561",
+            "name": "Windows Admin Shares with Stolen Credentials",
+            "label": "AttackPattern",
+            "description": "An adversary guesses or obtains (i.e. steals or purchases) legitimate Windows administrator credentials (e.g. userID/password) to access Windows Admin Shares on a local machine or within a Windows domain.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Windows Admin Shares with Stolen Credentials",
+              "description": "An adversary guesses or obtains (i.e. steals or purchases) legitimate Windows administrator credentials (e.g. userID/password) to access Windows Admin Shares on a local machine or within a Windows domain.",
+              "id": "capec:attack-pattern:561",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1021.002"
+            ],
+            "related": [
+              {
+                "id": "CWE-308"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-55",
+            "name": "Rainbow Table Password Cracking",
+            "label": "AttackPattern",
+            "description": "An attacker gets access to the database table where hashes of passwords are stored. They then use a rainbow table of pre-computed hash chains to attempt to look up the original password. Once the original password corresponding to the hash is obtained, the attacker uses the original password to gain access to the system.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Rainbow Table Password Cracking",
+              "description": "An attacker gets access to the database table where hashes of passwords are stored. They then use a rainbow table of pre-computed hash chains to attempt to look up the original password. Once the original password corresponding to the hash is obtained, the attacker uses the original password to gain access to the system.",
+              "id": "capec:attack-pattern:55",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1110.002"
+            ],
+            "related": [
+              {
+                "id": "CWE-308"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-652",
+            "name": "Use of Known Kerberos Credentials",
+            "label": "AttackPattern",
+            "description": "An adversary obtains (i.e. steals or purchases) legitimate Kerberos credentials (e.g. Kerberos service account userID/password or Kerberos Tickets) with the goal of achieving authenticated access to additional systems, applications, or services within the domain.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Use of Known Kerberos Credentials",
+              "description": "An adversary obtains (i.e. steals or purchases) legitimate Kerberos credentials (e.g. Kerberos service account userID/password or Kerberos Tickets) with the goal of achieving authenticated access to additional systems, applications, or services within the domain.",
+              "id": "capec:attack-pattern:652",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [
+              "T1558"
+            ],
+            "related": [
+              {
+                "id": "CWE-308"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-600",
+            "name": "Credential Stuffing",
+            "label": "AttackPattern",
+            "description": "An adversary tries known username/password combinations against different systems, applications, or services to gain additional authenticated access. Credential Stuffing attacks rely upon the fact that many users leverage the same username/password combination for multiple systems, applications, and services.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Credential Stuffing",
+              "description": "An adversary tries known username/password combinations against different systems, applications, or services to gain additional authenticated access. Credential Stuffing attacks rely upon the fact that many users leverage the same username/password combination for multiple systems, applications, and services.",
+              "id": "capec:attack-pattern:600",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [
+              "T1110.004"
+            ],
+            "related": [
+              {
+                "id": "CWE-308"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-565",
+            "name": "Password Spraying",
+            "label": "AttackPattern",
+            "description": "In a Password Spraying attack, an adversary tries a small list (e.g. 3-5) of common or expected passwords, often matching the target's complexity policy, against a known list of user accounts to gain valid credentials. The adversary tries a particular password for each user account, before moving onto the next password in the list. This approach assists the adversary in remaining undetected by avoiding rapid or frequent account lockouts. The adversary may then reattempt the process with additional passwords, once enough time has passed to prevent inducing a lockout.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Password Spraying",
+              "description": "In a Password Spraying attack, an adversary tries a small list (e.g. 3-5) of common or expected passwords, often matching the target's complexity policy, against a known list of user accounts to gain valid credentials. The adversary tries a particular password for each user account, before moving onto the next password in the list. This approach assists the adversary in remaining undetected by avoiding rapid or frequent account lockouts. The adversary may then reattempt the process with additional passwords, once enough time has passed to prevent inducing a lockout.",
+              "id": "capec:attack-pattern:565",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1110.003"
+            ],
+            "related": [
+              {
+                "id": "CWE-308"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-555",
+            "name": "Remote Services with Stolen Credentials",
+            "label": "AttackPattern",
+            "description": "This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Remote Services with Stolen Credentials",
+              "description": "This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
+              "id": "capec:attack-pattern:555",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [
+              "T1021",
+              "T1114.002",
+              "T1133"
+            ],
+            "related": [
+              {
+                "id": "CWE-308"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-644",
+            "name": "Use of Captured Hashes (Pass The Hash)",
+            "label": "AttackPattern",
+            "description": "An adversary obtains (i.e. steals or purchases) legitimate Windows domain credential hash values to access systems within the domain that leverage the Lan Man (LM) and/or NT Lan Man (NTLM) authentication protocols.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Use of Captured Hashes (Pass The Hash)",
+              "description": "An adversary obtains (i.e. steals or purchases) legitimate Windows domain credential hash values to access systems within the domain that leverage the Lan Man (LM) and/or NT Lan Man (NTLM) authentication protocols.",
+              "id": "capec:attack-pattern:644",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1550.002"
+            ],
+            "related": [
+              {
+                "id": "CWE-308"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-49",
+            "name": "Password Brute Forcing",
+            "label": "AttackPattern",
+            "description": "An adversary tries every possible value for a password until they succeed. A brute force attack, if feasible computationally, will always be successful because it will essentially go through all possible passwords given the alphabet used (lower case letters, upper case letters, numbers, symbols, etc.) and the maximum length of the password.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Password Brute Forcing",
+              "description": "An adversary tries every possible value for a password until they succeed. A brute force attack, if feasible computationally, will always be successful because it will essentially go through all possible passwords given the alphabet used (lower case letters, upper case letters, numbers, symbols, etc.) and the maximum length of the password.",
+              "id": "capec:attack-pattern:49",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [
+              "T1110.001"
+            ],
+            "related": [
+              {
+                "id": "CWE-308"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-509",
+            "name": "Kerberoasting",
+            "label": "AttackPattern",
+            "description": "Through the exploitation of how service accounts leverage Kerberos authentication with Service Principal Names (SPNs), the adversary obtains and subsequently cracks the hashed credentials of a service account target to exploit its privileges. The Kerberos authentication protocol centers around a ticketing system which is used to request/grant access to services and to then access the requested services. As an authenticated user, the adversary may request Active Directory and obtain a service ticket with portions encrypted via RC4 with the private key of the authenticated account. By extracting the local ticket and saving it disk, the adversary can brute force the hashed value to reveal the target account credentials.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Kerberoasting",
+              "description": "Through the exploitation of how service accounts leverage Kerberos authentication with Service Principal Names (SPNs), the adversary obtains and subsequently cracks the hashed credentials of a service account target to exploit its privileges. The Kerberos authentication protocol centers around a ticketing system which is used to request/grant access to services and to then access the requested services. As an authenticated user, the adversary may request Active Directory and obtain a service ticket with portions encrypted via RC4 with the private key of the authenticated account. By extracting the local ticket and saving it disk, the adversary can brute force the hashed value to reveal the target account credentials.",
+              "id": "capec:attack-pattern:509",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1558.003"
+            ],
+            "related": [
+              {
+                "id": "CWE-308"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-645",
+            "name": "Use of Captured Tickets (Pass The Ticket)",
+            "label": "AttackPattern",
+            "description": "An adversary uses stolen Kerberos tickets to access systems/resources that leverage the Kerberos authentication protocol. The Kerberos authentication protocol centers around a ticketing system which is used to request/grant access to services and to then access the requested services. An adversary can obtain any one of these tickets (e.g. Service Ticket, Ticket Granting Ticket, Silver Ticket, or Golden Ticket) to authenticate to a system/resource without needing the account's credentials. Depending on the ticket obtained, the adversary may be able to access a particular resource or generate TGTs for any account within an Active Directory Domain.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Use of Captured Tickets (Pass The Ticket)",
+              "description": "An adversary uses stolen Kerberos tickets to access systems/resources that leverage the Kerberos authentication protocol. The Kerberos authentication protocol centers around a ticketing system which is used to request/grant access to services and to then access the requested services. An adversary can obtain any one of these tickets (e.g. Service Ticket, Ticket Granting Ticket, Silver Ticket, or Golden Ticket) to authenticate to a system/resource without needing the account's credentials. Depending on the ticket obtained, the adversary may be able to access a particular resource or generate TGTs for any account within an Active Directory Domain.",
+              "id": "capec:attack-pattern:645",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1550.003"
+            ],
+            "related": [
+              {
+                "id": "CWE-308"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "Find Technique and SubTechnique nodes where attack_id matches the entry_id from CAPEC TaxonomyEntry nodes.",
+        "query": "MATCH (n:Technique) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 4 ATT&CK record(s) including T1133, T1558, T1021 and more.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "SubTechnique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1021",
+                "T1021.002",
+                "T1078",
+                "T1078.001",
+                "T1110.001",
+                "T1110.002",
+                "T1110.003",
+                "T1110.004",
+                "T1114.002",
+                "T1133",
+                "T1550.002",
+                "T1550.003",
+                "T1558",
+                "T1558.003"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "MATCH (n:Technique) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.113
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 4,
+              "timing_ms": 3.4
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 4,
+              "timing_ms": 0.005
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 4,
+              "timing_ms": 0.266
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1133",
+            "name": "External Remote Services",
+            "label": "Technique",
+            "description": "Adversaries may leverage external-facing remote services to initially access and/or persist within a network. Remote services such as VPNs, Citrix, and other access mechanisms allow users to connect to internal enterprise network resources from external locations. There are often remote service gateways that manage connections and credential authentication for these services. Services such as [Windows Remote Management](https://attack.mitre.org/techniques/T1021/006) and [VNC](https://attack.mitre.org/techniques/T1021/005) can also be used externally.(Citation: MacOS VNC software for Remote Desktop)\n\nAccess to [Valid Accounts](https://attack.mitre.org/techniques/T1078) to use the service is often a requirement, which could be obtained through credential pharming or by obtaining the credentials from users after compromising the enterprise network.(Citation: Volexity Virtual Private Keylogging) Access to remote services may be used as a redundant or persistent access mechanism during an operation.\n\nAccess may also be gained through an exposed service that doesn’t require authentication. In containerized environments, this may include an exposed Docker API, Kubernetes API server, kubelet, or web application such as the Kubernetes dashboard.(Citation: Trend Micro Exposed Docker Server)(Citation: Unit 42 Hildegard Malware)\n\nAdversaries may also establish persistence on network by configuring a Tor hidden service on a compromised system. Adversaries may utilize the tool `ShadowLink` to facilitate the installation and configuration of the Tor hidden service. Tor hidden service is then accessible via the Tor network because `ShadowLink` sets up a .onion address on the compromised system. `ShadowLink` may be used to forward any inbound connections to RDP, allowing the adversaries to have remote access.(Citation: The BadPilot campaign) Adversaries may get `ShadowLink` to persist on a system by masquerading it as an MS Defender application.(Citation: Russian threat actors dig in, prepare to seize on war fatigue)",
+            "properties": {
+              "attack_id": "T1133",
+              "description": "Adversaries may leverage external-facing remote services to initially access and/or persist within a network. Remote services such as VPNs, Citrix, and other access mechanisms allow users to connect to internal enterprise network resources from external locations. There are often remote service gateways that manage connections and credential authentication for these services. Services such as [Windows Remote Management](https://attack.mitre.org/techniques/T1021/006) and [VNC](https://attack.mitre.org/techniques/T1021/005) can also be used externally.(Citation: MacOS VNC software for Remote Desktop)\n\nAccess to [Valid Accounts](https://attack.mitre.org/techniques/T1078) to use the service is often a requirement, which could be obtained through credential pharming or by obtaining the credentials from users after compromising the enterprise network.(Citation: Volexity Virtual Private Keylogging) Access to remote services may be used as a redundant or persistent access mechanism during an operation.\n\nAccess may also be gained through an exposed service that doesn’t require authentication. In containerized environments, this may include an exposed Docker API, Kubernetes API server, kubelet, or web application such as the Kubernetes dashboard.(Citation: Trend Micro Exposed Docker Server)(Citation: Unit 42 Hildegard Malware)\n\nAdversaries may also establish persistence on network by configuring a Tor hidden service on a compromised system. Adversaries may utilize the tool `ShadowLink` to facilitate the installation and configuration of the Tor hidden service. Tor hidden service is then accessible via the Tor network because `ShadowLink` sets up a .onion address on the compromised system. `ShadowLink` may be used to forward any inbound connections to RDP, allowing the adversaries to have remote access.(Citation: The BadPilot campaign) Adversaries may get `ShadowLink` to persist on a system by masquerading it as an MS Defender application.(Citation: Russian threat actors dig in, prepare to seize on war fatigue)",
+              "id": "attack-pattern--10d51417-ee35-4589-b1ff-b6df1c334e8d",
+              "name": "External Remote Services",
+              "revoked": false,
+              "stix_type": "attack-pattern",
+              "x_mitre_deprecated": false,
+              "x_mitre_is_subtechnique": false,
+              "x_mitre_platforms": [
+                "Containers",
+                "Linux",
+                "macOS",
+                "Windows"
+              ],
+              "x_mitre_version": "2.5",
+              "_omitted_properties": [
+                "external_references"
+              ]
+            },
+            "facets": [
+              {
+                "rel": "DETECTS",
+                "direction": "in",
+                "neighbour_label": "DetectionStrategy",
+                "count": 1
+              },
+              {
+                "rel": "HAS_SUBTECHNIQUE",
+                "direction": "out",
+                "neighbour_label": "SubTechnique",
+                "count": 0
+              },
+              {
+                "rel": "HAS_TECHNIQUE",
+                "direction": "in",
+                "neighbour_label": "Tactic",
+                "count": 2
+              },
+              {
+                "rel": "MITIGATES",
+                "direction": "in",
+                "neighbour_label": "Mitigation",
+                "count": 5
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Campaign",
+                "count": 10
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Group",
+                "count": 28
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Software",
+                "count": 5
+              }
+            ],
+            "join_values": [
+              "T1133"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1558",
+            "name": "Steal or Forge Kerberos Tickets",
+            "label": "Technique",
+            "description": "Adversaries may attempt to subvert Kerberos authentication by stealing or forging Kerberos tickets to enable [Pass the Ticket](https://attack.mitre.org/techniques/T1550/003). Kerberos is an authentication protocol widely used in modern Windows domain environments. In Kerberos environments, referred to as “realms”, there are three basic participants: client, service, and Key Distribution Center (KDC).(Citation: ADSecurity Kerberos Ring Decoder) Clients request access to a service and through the exchange of Kerberos tickets, originating from KDC, they are granted access after having successfully authenticated. The KDC is responsible for both authentication and ticket granting.  Adversaries may attempt to abuse Kerberos by stealing tickets or forging tickets to enable unauthorized access.\n\nOn Windows, the built-in <code>klist</code> utility can be used to list and analyze cached Kerberos tickets.(Citation: Microsoft Klist)\n",
+            "properties": {
+              "attack_id": "T1558",
+              "description": "Adversaries may attempt to subvert Kerberos authentication by stealing or forging Kerberos tickets to enable [Pass the Ticket](https://attack.mitre.org/techniques/T1550/003). Kerberos is an authentication protocol widely used in modern Windows domain environments. In Kerberos environments, referred to as “realms”, there are three basic participants: client, service, and Key Distribution Center (KDC).(Citation: ADSecurity Kerberos Ring Decoder) Clients request access to a service and through the exchange of Kerberos tickets, originating from KDC, they are granted access after having successfully authenticated. The KDC is responsible for both authentication and ticket granting.  Adversaries may attempt to abuse Kerberos by stealing tickets or forging tickets to enable unauthorized access.\n\nOn Windows, the built-in <code>klist</code> utility can be used to list and analyze cached Kerberos tickets.(Citation: Microsoft Klist)\n",
+              "id": "attack-pattern--3fc01293-ef5e-41c6-86ce-61f10706b64a",
+              "name": "Steal or Forge Kerberos Tickets",
+              "revoked": false,
+              "stix_type": "attack-pattern",
+              "x_mitre_deprecated": false,
+              "x_mitre_is_subtechnique": false,
+              "x_mitre_platforms": [
+                "Linux",
+                "macOS",
+                "Windows"
+              ],
+              "x_mitre_version": "1.7",
+              "_omitted_properties": [
+                "external_references"
+              ]
+            },
+            "facets": [
+              {
+                "rel": "DETECTS",
+                "direction": "in",
+                "neighbour_label": "DetectionStrategy",
+                "count": 1
+              },
+              {
+                "rel": "HAS_SUBTECHNIQUE",
+                "direction": "out",
+                "neighbour_label": "SubTechnique",
+                "count": 5
+              },
+              {
+                "rel": "HAS_TECHNIQUE",
+                "direction": "in",
+                "neighbour_label": "Tactic",
+                "count": 1
+              },
+              {
+                "rel": "MITIGATES",
+                "direction": "in",
+                "neighbour_label": "Mitigation",
+                "count": 6
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Campaign",
+                "count": 1
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Group",
+                "count": 1
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Software",
+                "count": 0
+              }
+            ],
+            "join_values": [
+              "T1558"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1021",
+            "name": "Remote Services",
+            "label": "Technique",
+            "description": "Adversaries may use [Valid Accounts](https://attack.mitre.org/techniques/T1078) to log into a service that accepts remote connections, such as telnet, SSH, and VNC. The adversary may then perform actions as the logged-on user.\n\nIn an enterprise environment, servers and workstations can be organized into domains. Domains provide centralized identity management, allowing users to login using one set of credentials across the entire network. If an adversary is able to obtain a set of valid domain credentials, they could login to many different machines using remote access protocols such as secure shell (SSH) or remote desktop protocol (RDP).(Citation: SSH Secure Shell)(Citation: TechNet Remote Desktop Services) They could also login to accessible SaaS or IaaS services, such as those that federate their identities to the domain, or management platforms for internal virtualization environments such as VMware vCenter. \n\nLegitimate applications (such as [Software Deployment Tools](https://attack.mitre.org/techniques/T1072) and other administrative programs) may utilize [Remote Services](https://attack.mitre.org/techniques/T1021) to access remote hosts. For example, Apple Remote Desktop (ARD) on macOS is native software used for remote management. ARD leverages a blend of protocols, including [VNC](https://attack.mitre.org/techniques/T1021/005) to send the screen and control buffers and [SSH](https://attack.mitre.org/techniques/T1021/004) for secure file transfer.(Citation: Remote Management MDM macOS)(Citation: Kickstart Apple Remote Desktop commands)(Citation: Apple Remote Desktop Admin Guide 3.3) Adversaries can abuse applications such as ARD to gain remote code execution and perform lateral movement. In versions of macOS prior to 10.14, an adversary can escalate an SSH session to an ARD session which enables an adversary to accept TCC (Transparency, Consent, and Control) prompts without user interaction and gain access to data.(Citation: FireEye 2019 Apple Remote Desktop)(Citation: Lockboxx ARD 2019)(Citation: Kickstart Apple Remote Desktop commands)",
+            "properties": {
+              "attack_id": "T1021",
+              "description": "Adversaries may use [Valid Accounts](https://attack.mitre.org/techniques/T1078) to log into a service that accepts remote connections, such as telnet, SSH, and VNC. The adversary may then perform actions as the logged-on user.\n\nIn an enterprise environment, servers and workstations can be organized into domains. Domains provide centralized identity management, allowing users to login using one set of credentials across the entire network. If an adversary is able to obtain a set of valid domain credentials, they could login to many different machines using remote access protocols such as secure shell (SSH) or remote desktop protocol (RDP).(Citation: SSH Secure Shell)(Citation: TechNet Remote Desktop Services) They could also login to accessible SaaS or IaaS services, such as those that federate their identities to the domain, or management platforms for internal virtualization environments such as VMware vCenter. \n\nLegitimate applications (such as [Software Deployment Tools](https://attack.mitre.org/techniques/T1072) and other administrative programs) may utilize [Remote Services](https://attack.mitre.org/techniques/T1021) to access remote hosts. For example, Apple Remote Desktop (ARD) on macOS is native software used for remote management. ARD leverages a blend of protocols, including [VNC](https://attack.mitre.org/techniques/T1021/005) to send the screen and control buffers and [SSH](https://attack.mitre.org/techniques/T1021/004) for secure file transfer.(Citation: Remote Management MDM macOS)(Citation: Kickstart Apple Remote Desktop commands)(Citation: Apple Remote Desktop Admin Guide 3.3) Adversaries can abuse applications such as ARD to gain remote code execution and perform lateral movement. In versions of macOS prior to 10.14, an adversary can escalate an SSH session to an ARD session which enables an adversary to accept TCC (Transparency, Consent, and Control) prompts without user interaction and gain access to data.(Citation: FireEye 2019 Apple Remote Desktop)(Citation: Lockboxx ARD 2019)(Citation: Kickstart Apple Remote Desktop commands)",
+              "id": "attack-pattern--54a649ff-439a-41a4-9856-8d144a2551ba",
+              "name": "Remote Services",
+              "revoked": false,
+              "stix_type": "attack-pattern",
+              "x_mitre_deprecated": false,
+              "x_mitre_is_subtechnique": false,
+              "x_mitre_platforms": [
+                "Linux",
+                "macOS",
+                "Windows",
+                "IaaS",
+                "ESXi"
+              ],
+              "x_mitre_version": "1.6",
+              "_omitted_properties": [
+                "external_references"
+              ]
+            },
+            "facets": [
+              {
+                "rel": "DETECTS",
+                "direction": "in",
+                "neighbour_label": "DetectionStrategy",
+                "count": 1
+              },
+              {
+                "rel": "HAS_SUBTECHNIQUE",
+                "direction": "out",
+                "neighbour_label": "SubTechnique",
+                "count": 8
+              },
+              {
+                "rel": "HAS_TECHNIQUE",
+                "direction": "in",
+                "neighbour_label": "Tactic",
+                "count": 1
+              },
+              {
+                "rel": "MITIGATES",
+                "direction": "in",
+                "neighbour_label": "Mitigation",
+                "count": 6
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Campaign",
+                "count": 0
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Group",
+                "count": 3
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Software",
+                "count": 4
+              }
+            ],
+            "join_values": [
+              "T1021"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1078",
+            "name": "Valid Accounts",
+            "label": "Technique",
+            "description": "Adversaries may obtain and abuse credentials of existing accounts as a means of gaining Initial Access, Persistence, Privilege Escalation, or Defense Evasion. Compromised credentials may be used to bypass access controls placed on various resources on systems within the network and may even be used for persistent access to remote systems and externally available services, such as VPNs, Outlook Web Access, network devices, and remote desktop.(Citation: volexity_0day_sophos_FW) Compromised credentials may also grant an adversary increased privilege to specific systems or access to restricted areas of the network. Adversaries may choose not to use malware or tools in conjunction with the legitimate access those credentials provide to make it harder to detect their presence.\n\nIn some cases, adversaries may abuse inactive accounts: for example, those belonging to individuals who are no longer part of an organization. Using these accounts may allow the adversary to evade detection, as the original account user will not be present to identify any anomalous activity taking place on their account.(Citation: CISA MFA PrintNightmare)\n\nThe overlap of permissions for local, domain, and cloud accounts across a network of systems is of concern because the adversary may be able to pivot across accounts and systems to reach a high level of access (i.e., domain or enterprise administrator) to bypass access controls set within the enterprise.(Citation: TechNet Credential Theft)",
+            "properties": {
+              "attack_id": "T1078",
+              "description": "Adversaries may obtain and abuse credentials of existing accounts as a means of gaining Initial Access, Persistence, Privilege Escalation, or Defense Evasion. Compromised credentials may be used to bypass access controls placed on various resources on systems within the network and may even be used for persistent access to remote systems and externally available services, such as VPNs, Outlook Web Access, network devices, and remote desktop.(Citation: volexity_0day_sophos_FW) Compromised credentials may also grant an adversary increased privilege to specific systems or access to restricted areas of the network. Adversaries may choose not to use malware or tools in conjunction with the legitimate access those credentials provide to make it harder to detect their presence.\n\nIn some cases, adversaries may abuse inactive accounts: for example, those belonging to individuals who are no longer part of an organization. Using these accounts may allow the adversary to evade detection, as the original account user will not be present to identify any anomalous activity taking place on their account.(Citation: CISA MFA PrintNightmare)\n\nThe overlap of permissions for local, domain, and cloud accounts across a network of systems is of concern because the adversary may be able to pivot across accounts and systems to reach a high level of access (i.e., domain or enterprise administrator) to bypass access controls set within the enterprise.(Citation: TechNet Credential Theft)",
+              "id": "attack-pattern--b17a1a56-e99c-403c-8948-561df0cffe81",
+              "name": "Valid Accounts",
+              "revoked": false,
+              "stix_type": "attack-pattern",
+              "x_mitre_deprecated": false,
+              "x_mitre_is_subtechnique": false,
+              "x_mitre_platforms": [
+                "Containers",
+                "ESXi",
+                "IaaS",
+                "Identity Provider",
+                "Linux",
+                "macOS",
+                "Network Devices",
+                "Office Suite",
+                "SaaS",
+                "Windows"
+              ],
+              "x_mitre_version": "3.0",
+              "_omitted_properties": [
+                "external_references"
+              ]
+            },
+            "facets": [
+              {
+                "rel": "DETECTS",
+                "direction": "in",
+                "neighbour_label": "DetectionStrategy",
+                "count": 1
+              },
+              {
+                "rel": "HAS_SUBTECHNIQUE",
+                "direction": "out",
+                "neighbour_label": "SubTechnique",
+                "count": 4
+              },
+              {
+                "rel": "HAS_TECHNIQUE",
+                "direction": "in",
+                "neighbour_label": "Tactic",
+                "count": 4
+              },
+              {
+                "rel": "MITIGATES",
+                "direction": "in",
+                "neighbour_label": "Mitigation",
+                "count": 8
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Campaign",
+                "count": 11
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Group",
+                "count": 45
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Software",
+                "count": 7
+              }
+            ],
+            "join_values": [
+              "T1078"
+            ],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": false,
+      "precision": 1.0,
+      "recall": 0.2857142857142857,
+      "f1": 0.4444444444444445,
+      "n_expected": 14,
+      "n_got": 4
+    },
+    "mapping_recall": {
+      "gold": 14,
+      "found": 14,
+      "recall": 1.0,
+      "missing": []
+    },
+    "coverage": null,
+    "provenance": {
+      "citations": 40,
+      "compliant": 40,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "Find AttackPattern nodes that EXPLOITS_WEAKNESS a Weakness node with name 'CWE-308'. For each AttackPattern, retrieve Mitigation nodes via HAS_MITIGATION and TaxonomyEntry nodes via MAPS_TO where taxonomy is 'ATTACK'.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "Find Technique and SubTechnique nodes where attack_id matches the entry_id from CAPEC TaxonomyEntry nodes.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 131.979
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 16,
+    "related": 12
+  }
+}

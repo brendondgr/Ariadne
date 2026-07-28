@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an honest empty correlation (expect_no_correlation=true, expect_empty=true) plus a dependency skip on the mitigations sub-question (expect_dependency_skip=true). The evidence confirms CAPEC-16's capec_maps_to query executed cleanly and returned row_count 0 (traces: execute/assess/normalize all show record_count 0 with seed CAPEC-16), and q2 (attack mitigations) was correctly skipped because q1 produced no join values. The answer's claims array is empty and both abstentions state exactly this (no matching records for capec; skipped due to q1 dependency for attack), with zero fabricated ids, technique numbers, or mitigation names. This matches the gold-required negative outcome exactly, so correctness/faithfulness/groundedness/completeness are all full marks."
+}

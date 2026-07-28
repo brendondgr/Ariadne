@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 38,
+  "gold_present": 38,
+  "hallucinations": [],
+  "rationale": "Gold requires 8 CAPEC ids (CAPEC-60/94/509/555/561/644/645/652) each related to CWE-294, 11 ATT&CK ids (T1021, T1021.002, T1114.002, T1133, T1134.001, T1550.002, T1550.003, T1550.004, T1557, T1558, T1558.003) with exactly 11 records (min=max=11), 19 mitigation ids (M1015/17/18/21/26/27/30/31/32/35/37/41/42/43/47/51/52/54/60), and 11 must_correlate T-numbers. The claims (no narrative synthesis beyond a concatenation, graded as the answer per instructions) surface all 8 CAPEC ids each with a CWE-294 enumeration claim, all 11 ATT&CK ids with 'Found 11 ATT&CK record(s)' matching min/max_records=11, a correlation claim for every one of the 11 must_correlate T-numbers pairing each technique to its correct source CAPEC (e.g. T1557<->CAPEC-94, T1558.003<->CAPEC-509), and enumeration claims listing mitigations per technique whose union is exactly the 19 required M-ids, no more no less. Cross-checked every claim against logic_flow.results[0].records (CAPEC->CWE-294, join_values giving the CAPEC->ATT&CK T-number mapping) and logic_flow.results[1].records (ATT&CK technique->mitigation 'related' lists): every id, name, and count in the claims (e.g. 'T1557 ... has 7 related item(s): M1041, M1042, M1030, M1017, M1037, M1035, M1031') matches the evidence exactly. No invented ids, names, counts, or aliases found; abstentions list is empty and correctly so (this is not a negative case)."
+}

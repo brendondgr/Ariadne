@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty join (must_correlate: [], expect_no_correlation: true, expect_dependency_skip: true) for CAPEC-7 -> ATT&CK mapping. The evidence confirms the capec_maps_to query executed cleanly against seed CAPEC-7 and returned row_count 0 (logic_flow.results[0], traces.assess.detail.row_count=0), and q2 (ATT&CK mitigations) was correctly skipped because q1 produced no join values (traces.dependency.reasons). The answer's narrative/abstentions state exactly this: no matching records for the CAPEC source and a dependency skip for the ATT&CK source, with zero claims asserted and no fabricated technique or mitigation ids. This is a fully faithful, fully grounded, complete honest-abstention response matching the negative gold exactly."
+}

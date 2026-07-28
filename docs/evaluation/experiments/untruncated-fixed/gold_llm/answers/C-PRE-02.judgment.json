@@ -1,0 +1,12 @@
+{
+  "case_id": "C-PRE-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-555] and must_include_related=[CAPEC-151]; both are surfaced in the narrative and claims. The single retrieved record (logic_flow.results[0].records[0]) shows CAPEC-555 named 'Remote Services with Stolen Credentials' with Abstraction=Standard and Status=Stable, and its related entity CAPEC-151 named 'Identity Spoofing' via the CAN_PRECEDE edge. The narrative states exactly this: CAPEC-555 precedes exactly one pattern, CAPEC-151/Identity Spoofing, with no additional patterns shown - which matches the evidence (1 record, 1 related entity) and correctly reflects that this is the full neighbourhood (retrieval caps lifted). All properties cited (Abstraction: Standard, Status: Stable, names) match the evidence verbatim; no invented facts, counts, or aliases were found."
+}

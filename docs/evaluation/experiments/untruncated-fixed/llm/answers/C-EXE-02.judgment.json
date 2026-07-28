@@ -1,0 +1,12 @@
+{
+  "case_id": "C-EXE-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-98 plus its four execution steps (capec:attack-pattern:98:step:1..4). The narrative names all four step ids explicitly and paraphrases each step's description faithfully against the retrieved evidence: step 1 (obtain domain name and certificate to spoof legitimate site) matches the evidence bracketed summary verbatim in substance; step 2 (explore target website and create a duplicate) matches; step 3 (send email with call to action to get user to enter sensitive info on attacker's site) matches; step 4 (use stolen credentials to log into legitimate site) matches, and 'access the victim's account' is a reasonable generalization of the evidence's 'log into their bank account and transfer money' rather than a fabrication. It also correctly names the attack pattern as Phishing (matches record name) and, via the claims list, correctly states Abstraction: Standard and Status: Draft (both present in record properties). No entity, count, alias, or property was invented beyond what is in the single retrieved record and its four related ExecutionStep nodes. All 5 gold-required ids (CAPEC-98 + 4 steps) are surfaced, so this is a fully correct and grounded answer despite the deterministic_scores.coverage field showing 0.2 (that field only reflects the structured 'claims' array, not the narrative that is the actual answer under test per the grading instructions)."
+}

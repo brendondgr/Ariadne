@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-04",
+  "verdict": "INCORRECT",
+  "correctness": 0.05,
+  "faithfulness": 0.6,
+  "groundedness": 0.6,
+  "completeness": 0.0,
+  "gold_expected": 1,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "The gold requires that with CAPEC down, the CAPEC-555 producer (q1) never runs and the seeded ATT&CK step (q2, seed_from: q1) must degrade to a dependency abstention rather than falling back to a broad unseeded query (attack.expect_dependency_skip=true, capec.expect_skipped=true, expect_no_correlation=true, expect_partial=true). The logic_flow confirms capec correctly never ran (no capec entry in results; partial_mode=capec_down) and no CAPEC-ATT&CK correlation was claimed, satisfying expect_no_correlation. But the ATT&CK step did NOT abstain: its resolve trace shows seed_ids=[] (the CAPEC seed never materialized) yet the gate step still built and executed 'MATCH (n:Technique) RETURN n.attack_id AS id, n.name AS name LIMIT 1000' -- exactly the broad unseeded label-scan the question says must not happen -- and returned 222 Technique records, which the deterministic composer then dumped verbatim as the narrative/claims ('Found 222 ATT&CK record(s) including T1047, T1687, T1113 and more... All 222 result(s)...'). This is the precise defect under test: no dependency-skip abstention was recorded (answer.abstentions=[]), so gold_present=0 of the required 1 (the dependency-skip behavior). The individual technique ids (T1047, T1687, T1113, etc.) are themselves real nodes present in the evidence, so there is no fabricated entity data (faithfulness/groundedness on the raw facts is moderate), but the answer as a whole fails the actual question being asked -- it should have reported an abstention/skip for the ATT&CK side due to the missing CAPEC dependency, and instead surfaced an unbounded, unseeded 222-record dump. Verdict: INCORRECT."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-565 to map to T1110.003 (must_correlate/capec.must_include_related), the attack record for T1110.003 (attack.must_include_ids), and T1110.003 belonging to tactic TA0006 (attack.must_include_related). The narrative states all three: 'CAPEC-565 (Password Spraying) maps to the ATT&CK technique T1110.003 ... corroborated across the attack and capec sources' and 'This technique belongs to the TA0006 tactic, Credential Access.' This matches logic_flow evidence exactly: the q1 capec record for CAPEC-565 has related TaxonomyEntry entry_id '1110.003' (T1110.003), and the q2 attack record for T1110.003 has related TA0006/Credential Access. The narrative's additional details -- Abstraction: Detailed, Status: Draft -- are directly present in the CAPEC-565 record's properties (Status: Draft, Abstraction: Detailed), so no fabrication there. The correlation claim (2 records sharing T1110.003 across capec and attack) matches evidence_volume (2 results, 2 records) and the deterministic_scores.correlation block (exact match, precision/recall/f1 = 1.0). No entity, count, alias, or property is stated that is absent from the retrieved evidence."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-13 to map to T1574.006/T1574.007 (must_correlate + capec.must_include_related), those two techniques to appear as ATT&CK records (attack.must_include_ids), and both to belong to tactics TA0002/TA0005 (attack.must_include_related), with exactly 2 ATT&CK records (min=max=2). The narrative states CAPEC-13 (Detailed, Stable) maps to T1574.006 and T1574.007 (plus T1562.003, which is present in the capec record's join_values/related TaxonomyEntrys and correctly excluded from the tactic lookup since the q2 query returned records only for T1574.006/T1574.007 -- matching the gold's exact max_records=2), and that both techniques belong to TA0005 (Stealth) and TA0002 (Execution), which matches the 'related' arrays in both attack records verbatim. Names (Path Interception by PATH Environment Variable, Dynamic Linker Hijacking), the cross-source correlation count (2 records sharing each identifier), and CAPEC-13's Abstraction/Status properties all trace directly to logic_flow.results records/properties/related fields -- no invented facts, counts, or aliases. All 5 gold-required ids (CAPEC-13, T1574.006, T1574.007, TA0002, TA0005) are surfaced, and deterministic_scores confirms exact correlation and mapping_recall (both 1.0/1.0)."
+}

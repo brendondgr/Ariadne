@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.45,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.6,
+  "gold_expected": 13,
+  "gold_present": 8,
+  "hallucinations": [],
+  "rationale": "The question has two required parts: (1) which ATT&CK techniques CAPEC-19/35/448 map to, and (2) what mitigations apply to the deduplicated union of those techniques. Part 1 is answered perfectly: the narrative and claims correctly name all 3 CAPEC IDs (CAPEC-19, CAPEC-35, CAPEC-448), all 5 required must_correlate/must_include_related T-numbers (T1027.006, T1027.009, T1546.004, T1546.016, T1564.009), and correctly state each CAPEC's Abstraction/Status (CAPEC-19 Standard/Stable, CAPEC-35 Detailed/Draft, CAPEC-448 Detailed/Stable) and the correlation share-counts (T1027.009 shared by 4 records; the other four T-numbers each shared by 2 records) -- all verified against logic_flow records/join_values, so faithfulness and groundedness are 1.0 with zero hallucinations. However, part 2 is entirely missing: the gold's attack.must_include_related requires the 5 mitigation IDs M1013, M1022, M1040, M1048, M1049, all of which are present in the retrieved evidence (q2 records: T1027.009->M1049/M1040, T1564.009->M1013, T1546.004->M1022, T1027.006->M1048), yet neither the narrative nor any claim names a single mitigation. The pipeline retrieved the mitigation data (evidence_volume.related=12) but the composer/narrative never surfaces it, so the second half of the analyst's question goes unanswered. Of 13 unique gold-required identifiers (3 CAPEC ids + 5 technique ids + 5 mitigation ids), only 8 are surfaced (0/5 mitigations), so despite a flawless and fully faithful first half, the answer fails to address a core, explicitly-required part of the question and is scored INCORRECT rather than merely PARTIAL."
+}

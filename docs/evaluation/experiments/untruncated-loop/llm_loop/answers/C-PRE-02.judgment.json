@@ -1,0 +1,14 @@
+{
+  "case_id": "C-PRE-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 0.3,
+  "groundedness": 0.5,
+  "completeness": 0.5,
+  "gold_expected": 2,
+  "gold_present": 1,
+  "hallucinations": [
+    "Narrative states 'The established claims do not identify any specific attack patterns that CAPEC-555 can precede' — this is false. The retrieved record's own related[] array shows CAPEC-555 CAN_PRECEDE CAPEC-151 (Identity Spoofing), and gold's must_include_related explicitly requires CAPEC-151. The Gremlin query executed (out('CAN_PRECEDE')) even had row_count=1 for exactly this edge, but no claim was ever synthesized from it and the narrative asserts the opposite of what the evidence shows."
+  ],
+  "rationale": "The question asks which patterns CAPEC-555 can precede. Gold requires must_include_ids=[CAPEC-555] (surfaced) and must_include_related=[CAPEC-151] (NOT surfaced). The logic_flow evidence unambiguously contains the answer: the single retrieved record for CAPEC-555 has related=[{id: CAPEC-151, name: Identity Spoofing, type: CAN_PRECEDE}], confirming the query (out('CAN_PRECEDE')) found the edge to CAPEC-151. Yet neither the claims list nor the narrative mentions CAPEC-151; instead the narrative affirmatively (and incorrectly) states no such patterns were identified. This is worse than a mere omission — it is a false negative assertion contradicted by the pipeline's own retrieved evidence, so the answer fails the core question despite the correct data being present in logic_flow.records[0].related. Only the incidental CAPEC-555 attributes (Abstraction: Standard, Status: Stable) are correctly reported and grounded. deterministic_scores.coverage in the artifact itself already flags this (found=1/gold=2, missing=[CAPEC-151]), corroborating the failure."
+}

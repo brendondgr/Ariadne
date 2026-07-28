@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold for this adversarial negative case requires expect_no_correlation=true / capec.expect_empty=true / attack.expect_dependency_skip=true — i.e. the correct behavior is an honest empty answer, not a fabricated CAPEC-7-to-ATT&CK mapping. The pipeline's q1 CAPEC query (g.V().hasLabel('AttackPattern').has('id', within(['CAPEC-7'])).out('MAPS_TO')...) executed cleanly against the full un-truncated graph and returned row_count=0, correctly reflecting that CAPEC-7 has no MAPS_TO edge to an ATT&CK TaxonomyEntry in this KG version. q2 (ATT&CK technique/mitigation lookup) correctly shows a dependency-skip trace ('producer q1: it returned no join values') rather than running with empty/garbage seeds. claims=[] (no fabricated technique or mitigation ids), abstentions=[capec, attack] both state the true reason for the empty result, and deterministic_scores.correlation shows negative=true, exact=true, precision=recall=f1=1.0, n_expected=n_got=0 — an exact match to the negative gold. The narrative shown to the analyst ('The routed sources returned no matching records... name it or give its id') introduces no entity, count, alias, or mapping not present in the evidence. Since must_include_ids/must_correlate are empty, gold_expected=gold_present=0 and completeness is trivially satisfied. No hallucinations found."
+}

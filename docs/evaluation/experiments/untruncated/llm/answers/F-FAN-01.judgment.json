@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.8,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.85,
+  "gold_expected": 13,
+  "gold_present": 11,
+  "hallucinations": [],
+  "rationale": "All statements in the narrative are grounded in logic_flow evidence: CAPEC-19/35/448 correctly map to the 5 required T-ids (T1027.006, T1027.009, T1546.004, T1546.016, T1564.009), T1027.009 is correctly identified as the overlap present in all three CAPEC join_values, and the 5-mitigation union (M1049, M1040, M1013, M1022, M1048) plus the T1546.016-has-no-mitigation fact are all traceable to the q2 records. No fabricated ids, counts, or names were found. However the answer is incomplete against gold: the narrative prose only names 3 of the 5 required mitigations (M1049, M1040, M1013) and never states M1022 or M1048 anywhere in the narrative or claims' entity_ids, even though the underlying evidence (T1546.004->M1022, T1027.006->M1048) fully supports them. T1564.009 is likewise omitted from the narrative prose (though it is captured in the structured claims/correlations, so it is not counted as missing). The 3 CAPEC ids and all 5 T-ids are fully surfaced via claims/citations. Net: correct on substance and no hallucination, but the mitigation union is under-reported (3/5 named), so this is PARTIAL rather than CORRECT."
+}

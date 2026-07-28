@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SW-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 55,
+  "gold_present": 55,
+  "hallucinations": [],
+  "rationale": "Gold requires S0266 plus exactly 55 must_include_related technique ids. The answer surfaces S0266 (named 'TrickBot') and both the narrative and the enumeration claim list exactly the same 55 technique ids as gold's must_include_related, verified by programmatic set equality (gold == claim_ids == join_values == related_ids, all True, no set difference either direction). Every listed technique id is directly grounded in the single retrieved Software->USES->Technique record's 'related' neighbours from logic_flow, with matching names/descriptions present in evidence. No extraneous, invented, or missing ids."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-555] and must_include_related=[T1021, T1114.002, T1133]. The claims (no LLM narrative beyond the deterministic composer text, which matches the claims) state 'Found 1 CAPEC record(s) for CAPEC-555; ATT&CK mappings: T1021, T1114.002, T1133' and enumerate the 3 TaxonomyEntrys (capec:taxonomy:ATTACK:1021, 1114.002, 1133) plus the CAPEC-555 name 'Remote Services with Stolen Credentials'. All of these are directly present in logic_flow.results[0].records[0]: primary_id CAPEC-555, name matches, related list contains exactly the three TaxonomyEntry ids/entry_ids (1021, 1114.002, 1133) with matching names (Remote Services; Email Collection:Remote Email Collection; External Remote Services). No count, alias, status, or name in the answer is absent from or contradicted by the evidence (Status Stable, Abstraction Standard are not asserted in the narrative but that is fine since gold does not require them). deterministic_scores.coverage also independently reports 4/4 gold ids found. All 4 gold-required entities are surfaced, so completeness and correctness are full and there is no fabrication."
+}

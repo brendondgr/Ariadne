@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MIT-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 7,
+  "gold_present": 7,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[T1566] and must_include_related=[M1017, M1021, M1031, M1047, M1049, M1054] (7 ids total). The narrative names T1566 (Phishing) and enumerates all six mitigations by id and name: M1047 (Audit), M1054 (Software Configuration), M1049 (Antivirus/Antimalware), M1017 (User Training), M1021 (Restrict Web-Based Content), M1031 (Network Intrusion Prevention). All six ids and names match exactly the 'related' array returned by the q2 MITIGATES query in logic_flow.results[1].records[0].related. The technique properties stated in the narrative (revoked: False, stix_type: attack-pattern, x_mitre_deprecated: False, x_mitre_is_subtechnique: False, x_mitre_version: 2.7) match verbatim the properties object in logic_flow.results[0].records[0].properties. No invented ids, names, counts, or properties were found; the '6 related mitigations' count matches the facets MITIGATES count=6 and the 6 related records returned. This is a full, grounded, complete answer to the gold assertions."
+}

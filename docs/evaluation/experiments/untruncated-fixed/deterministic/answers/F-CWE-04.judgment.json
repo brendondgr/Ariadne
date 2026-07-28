@@ -1,0 +1,12 @@
+{
+ "case_id": "F-CWE-04",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 45,
+ "gold_present": 45,
+ "hallucinations": [],
+ "rationale": "The deterministic claims enumerate exactly the 12 gold CAPEC ids (CAPEC-49, CAPEC-55, CAPEC-70, CAPEC-509, CAPEC-555, CAPEC-560, CAPEC-561, CAPEC-565, CAPEC-600, CAPEC-644, CAPEC-645, CAPEC-652), each correctly linked to CWE-308 as in the evidence records. It enumerates exactly the 14 gold ATT&CK ids (T1021, T1021.002, T1078, T1078.001, T1110.001, T1110.002, T1110.003, T1110.004, T1114.002, T1133, T1550.002, T1550.003, T1558, T1558.003), matching min/max_records=14 precisely, with per-technique mitigation lists (e.g. T1078 -> M1013, M1017, M1018, M1026, M1027, M1032, M1015, M1036) that match the retrieved 'related' fields verbatim. The union of surfaced mitigations equals the full 19-item gold must_include_related set (M1013...M1060) with no gaps. The narrative states '14 identifiers are corroborated across both CAPEC and ATT&CK', matching gold's must_correlate list of 14 T-numbers exactly. No id, name, or count appears in the claims that is absent from logic_flow's capec/attack records (26 total, matching the stated 12+14). gold_expected=45 (12 CAPEC + 14 ATT&CK + 19 mitigations; the 14 must_correlate ids are a subset of the ATT&CK ids already counted), gold_present=45."
+}

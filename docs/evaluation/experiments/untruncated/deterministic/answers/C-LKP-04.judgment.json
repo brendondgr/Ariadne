@@ -1,0 +1,12 @@
+{
+  "case_id": "C-LKP-04",
+  "verdict": "INCORRECT",
+  "correctness": 0.2,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.25,
+  "gold_expected": 4,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question explicitly asks for CAPEC-163's abstraction and status. The correct record was retrieved (logic_flow.results[0].records[0] has properties.Abstraction='Detailed', properties.Status='Draft', name='Spear Phishing'), matching gold's expect_properties and expect_names exactly, so nothing is fabricated (faithfulness/groundedness are clean). However, the deterministic composer's narrative/claims text is only 'Found 1 CAPEC record(s): CAPEC-163.' — it surfaces the id but omits the name, the Abstraction value, and the Status value entirely, i.e. it never answers the actual question asked. Of the 4 gold-required facts (id CAPEC-163, name 'Spear Phishing', Abstraction='Detailed', Status='Draft'), only the id is present in what the analyst is shown (gold_present=1/4). Because the substantive content of the question (abstraction and status) is completely absent rather than merely thin, this is graded INCORRECT rather than PARTIAL despite perfect retrieval — a case of the deterministic-composer id-line ceiling (summarize() = id-line) noted in prior evals, not a retrieval failure."
+}

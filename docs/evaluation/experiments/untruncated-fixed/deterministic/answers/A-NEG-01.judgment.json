@@ -1,0 +1,12 @@
+{
+  "case_id": "A-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_empty=true (ex_gold.expected=[]) for the nonexistent technique T9999. The logic_flow shows the attack-source Cypher query executed cleanly against the Technique node keyed on attack_id T9999, returned row_count 0, and normalize/assess steps confirm records=0 with empty_with_seeds=['T9999']. The answer has zero claims and correctly abstains: 'The attack source doesn't establish this — the executed query ran cleanly and returned no matching records for: What is the name of ATT&CK technique T9999?' The narrative likewise states no matching records were found and invites the analyst to supply a real id, inventing nothing (no fabricated name, properties, or facets for T9999). This exactly matches the required negative-case behavior of abstaining rather than hallucinating a result."
+}

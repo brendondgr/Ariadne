@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-09",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "Gold requires: must_correlate T1550.003; capec assertions CAPEC-645 with must_include_related T1550.003; attack assertions must_include_ids T1550.003 with must_include_related M1015, M1018, M1026, M1027 (6 unique required ids: T1550.003, CAPEC-645, M1015, M1018, M1026, M1027). The narrative states CAPEC-645 (Use of Captured Tickets) maps to T1550.003 (Pass the Ticket) and names all four mitigations M1015 (Active Directory Configuration), M1026 (Privileged Account Management), M1018 (User Account Management), M1027 (Password Policies), matching mitigation names verbatim from the attack record's related list (lines 322-341 of the artifact). The CAPEC->ATT&CK mapping is directly grounded in the capec record's related TaxonomyEntry (capec:taxonomy:ATTACK:1550.003, entry_id 1550.003, line 222-228), and the cross-source correlation on T1550.003 matches deterministic_scores.correlation (exact=true, precision/recall/f1=1.0). No unsupported names, counts, or attributes were introduced; the narrative's characterizations of each mitigation (e.g. 'least privilege and multi-factor authentication' for M1026, 'strong password rules' for M1027) are accurate paraphrases of the full mitigation descriptions in the evidence. All 6 required entities are surfaced with no fabrication."
+}

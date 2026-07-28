@@ -1,0 +1,12 @@
+{
+  "case_id": "A-TAC-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The query MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique) WHERE ta.attack_id IN ['TA0112'] returned exactly 18 Technique records, and the retrieved set of ids (T1112, T1207, T1222, T1484, T1553, T1556, T1578, T1599, T1600, T1601, T1647, T1666, T1685, T1686, T1687, T1688, T1689, T1690) is an exact match to the gold ex_gold.expected list of 18 ids -- no extras, none missing. All 5 must_include_ids (T1112, T1207, T1222, T1484, T1553) are present both in the evidence and explicitly named in the narrative and claim entity_ids. Every id/name pair in the narrative (e.g. T1556 Modify Authentication Process, T1686 Disable or Modify System Firewall, T1687 Exploitation for Defense Impairment, T1666 Modify Cloud Resource Hierarchy, plus the remaining 14 ids listed) traces directly to a record in logic_flow.results[0].records with matching primary_id and name -- no invented names, counts, or ids. The stated total of 18 matches row_count=18 and evidence_volume.records=18. deterministic_scores confirm coverage=1.0 and citation_provenance_rate=1.0. This is a full, faithful, fully grounded answer to the tactic-to-technique enumeration question."
+}

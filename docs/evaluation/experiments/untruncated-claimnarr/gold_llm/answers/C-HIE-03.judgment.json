@@ -1,0 +1,12 @@
+{
+  "case_id": "C-HIE-03",
+  "verdict": "CORRECT",
+  "correctness": 0.95,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-555] and must_include_related=[CAPEC-560]; both appear in the answer (narrative and claims), grounded in the single retrieved record (query traverses out('CHILD_OF') from CAPEC-555 to CAPEC-560, matching the question 'What is the parent (ChildOf) of CAPEC-555?'). The narrative correctly states CAPEC-555 (Remote Services with Stolen Credentials, Abstraction=Standard, Status=Stable) has one related AttackPattern, CAPEC-560 (Use of Known Domain Credentials) -- all properties and names match the evidence record exactly, with no invented facts, counts, or aliases. Minor deduction on correctness only because the narrative/claims describe the link generically as 'related AttackPattern' rather than explicitly labeling it 'parent'/'ChildOf', though this is implicit from the question framing and the underlying CHILD_OF query, not a factual error."
+}

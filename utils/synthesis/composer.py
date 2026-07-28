@@ -37,6 +37,17 @@ from .contracts import Abstention, Citation, Claim, SynthesizedAnswer
 _MAX_ENUMERATION_IDS = 200
 _MAX_ENUMERATION_CLAIMS_PER_RESULT = 25
 
+
+def _enum_bound(name: str, default: int) -> int:
+    """This bound's live value: ``SYNTHESIS_<NAME>`` when set, else the default.
+
+    Read at call time so an un-truncated profile can enumerate a whole related
+    set without the module's committed defaults changing.
+    """
+    from utils.config import env_int
+
+    return env_int(f"SYNTHESIS_{name}", default)
+
 # Example ids offered when asking the analyst to disambiguate by identifier.
 _ID_EXAMPLES = "e.g. T1566, M1017, or CAPEC-98"
 
@@ -163,6 +174,80 @@ def _fact_claim(result: SpecialistResult, cap: int) -> Claim:
     )
 
 
+# A record's own scalar attributes ARE the answer to a lookup question ("what is
+# CAPEC-555's abstraction and status?"), but the fact claim's text is the
+# normalizer's id-line summary, which never reads them. Identity/prose keys are
+# excluded: they are either already in the claim or are not attribute answers.
+_NON_ATTRIBUTE_PROPERTIES = frozenset({
+    "description", "name", "id", "attack_id", "properties_json",
+    "external_references", "created", "modified",
+})
+_MAX_ATTRIBUTE_RECORDS = 10
+_MAX_ATTRIBUTES_PER_RECORD = 12
+_MAX_ATTRIBUTE_VALUE_CHARS = 120
+
+
+def _attribute_pairs(record: EvidenceRecord) -> list[tuple[str, str]]:
+    """The record's own short scalar attributes, in a stable order."""
+    pairs: list[tuple[str, str]] = []
+    for key, value in sorted((record.properties or {}).items()):
+        if key in _NON_ATTRIBUTE_PROPERTIES or key.startswith("_"):
+            continue
+        if value is None or isinstance(value, (list, dict, tuple)):
+            continue
+        text = str(value).strip()
+        if not text or len(text) > _MAX_ATTRIBUTE_VALUE_CHARS:
+            continue
+        pairs.append((key, text))
+        if len(pairs) >= _MAX_ATTRIBUTES_PER_RECORD:
+            break
+    return pairs
+
+
+def _attribute_claim(result: SpecialistResult, record: EvidenceRecord) -> Claim | None:
+    """One citation-backed claim stating a record's own attribute values.
+
+    Closes the projection gap the independent panel found: the evidence carried
+    ``Abstraction``/``Status`` and the answer said only "Found 1 CAPEC record(s)",
+    because ``summarize()`` templates ids and never reads a record's properties.
+    """
+    pairs = _attribute_pairs(record)
+    if not pairs:
+        return None
+    anchor = f"{record.primary_id} ({record.name})" if record.name else record.primary_id
+    body = "; ".join(f"{key}: {value}" for key, value in pairs)
+    return Claim(
+        text=f"{anchor} has {body}.",
+        citations=(
+            Citation(
+                source=result.task.source,
+                primary_id=record.primary_id,
+                record_id=record.provenance.record_id if record.provenance else "",
+            ),
+        ),
+        entity_ids=(record.primary_id,),
+        kind="fact",
+        sub_question_id=result.task.sub_question_id,
+    )
+
+
+def _attribute_claims(result: SpecialistResult) -> list[Claim]:
+    """Attribute claims for the records of a lookup-shaped result.
+
+    Bounded to the first few records: on a 300-row scan the per-record attributes
+    are noise, but on the 1-3 records a lookup returns they are the answer.
+    """
+    records = [r for r in result.records if r.primary_id][:_MAX_ATTRIBUTE_RECORDS]
+    if len(result.records) > _MAX_ATTRIBUTE_RECORDS:
+        return []
+    claims = []
+    for record in records:
+        claim = _attribute_claim(result, record)
+        if claim is not None:
+            claims.append(claim)
+    return claims
+
+
 def _correlation_claim(
     value: str, entries: list[dict[str, str]], cap: int
 ) -> Claim:
@@ -203,8 +288,68 @@ def _related_ids(record: EvidenceRecord) -> list[str]:
     return list(seen)
 
 
-def _related_noun(record: EvidenceRecord) -> str:
-    """A readable plural for a record's related set, from its neighbours' labels."""
+#: Edge types whose plain-English name is the answer to the question that asked
+#: for them. "CAPEC-98 has 1 AttackPatterns: CAPEC-151" is true but useless — it
+#: never says CAPEC-151 is the *parent*, so an answer bound to this claim cannot
+#: name the relationship and will honestly report it cannot confirm one.
+_REL_NOUNS = {
+    "CHILD_OF": "ChildOf parent",
+    "PARENT_OF": "ParentOf child",
+    # Direction matters and these were inverted. The neighbours template walks
+    # OUT from the anchor, so `A -CAN_PRECEDE-> B` means A precedes B: B is the
+    # **successor**. Likewise `A -CAN_FOLLOW-> B` means A follows B, so B is the
+    # **predecessor**. Naming them the other way round states the relationship
+    # backwards — a grounded id with an ungrounded claim about it, which the
+    # independent judge correctly flagged as a hallucination on C-LKP-02/05.
+    "CAN_FOLLOW": "CanFollow predecessor",
+    "CAN_PRECEDE": "CanPrecede successor",
+    "PEER_OF": "PeerOf peer",
+    "HAS_MITIGATION": "mitigation",
+    "HAS_CONSEQUENCE": "consequence",
+    "HAS_EXECUTION_STEP": "execution step",
+    "HAS_PREREQUISITE": "prerequisite",
+    "HAS_SKILL": "required skill",
+    "EXPLOITS_WEAKNESS": "exploited weakness",
+    "MAPS_TO": "ATT&CK mapping",
+    "SUBTECHNIQUE_OF": "parent technique",
+    "USES": "used technique",
+    "MITIGATES": "mitigated technique",
+}
+
+
+def _plural(noun: str, count: int) -> str:
+    """Pluralise the head word, respecting the sibilant and -y endings."""
+    if count == 1:
+        return noun
+    head, sep, tail = noun.rpartition(" ")
+    word = tail or noun
+    if word.endswith(("s", "x", "z", "ch", "sh")):
+        plural = f"{word}es"
+    elif word.endswith("y") and not word.endswith(("ay", "ey", "iy", "oy", "uy")):
+        plural = f"{word[:-1]}ies"
+    else:
+        plural = f"{word}s"
+    return f"{head}{sep}{plural}" if tail else plural
+
+
+def _related_noun(record: EvidenceRecord, count: int = 0) -> str:
+    """A readable plural for a record's related set.
+
+    Prefers the *relationship* over the neighbour's label: the edge is what the
+    question asked about, and a label-only noun ("AttackPatterns") silently drops
+    the semantics a hierarchy or mitigation question turns on.
+    """
+    rel_types = {
+        str(rel.get("type")).strip().upper()
+        for rel in record.related
+        if isinstance(rel, dict) and rel.get("type")
+    }
+    if len(rel_types) == 1:
+        noun = _REL_NOUNS.get(next(iter(rel_types)))
+        if noun:
+            return _plural(noun, count)
+    # A per-neighbour role (an abstraction ancestor's "standard"/"meta") is
+    # annotated on each id already; fall back to the neighbour label.
     labels = {
         str(rel.get("label")).strip()
         for rel in record.related
@@ -245,9 +390,9 @@ def _enumeration_claim(result: SpecialistResult, record: EvidenceRecord) -> Clai
         # exist — the distinction the hierarchy questions demand.
         role = rel.get("role")
         parts.append(f"{rid} ({role})" if role else rid)
-        if len(ids) >= _MAX_ENUMERATION_IDS:
+        if len(ids) >= _enum_bound("MAX_ENUMERATION_IDS", _MAX_ENUMERATION_IDS):
             break
-    noun = _related_noun(record)
+    noun = _related_noun(record, len(ids))
     anchor = record.name and f"{record.primary_id} ({record.name})" or record.primary_id
     text = f"{anchor} has {len(ids)} {noun}: {', '.join(parts)}."
     return Claim(
@@ -273,7 +418,9 @@ def _primary_enumeration_claim(result: SpecialistResult) -> Claim:
     the fact claim cites only the first ``cap``. This lists them all, each cited
     to its own record so every id is grounded."""
     records = [r for r in result.records if r.primary_id]
-    ids: list[str] = list(dict.fromkeys(r.primary_id for r in records))[:_MAX_ENUMERATION_IDS]
+    ids: list[str] = list(dict.fromkeys(r.primary_id for r in records))[
+        : _enum_bound("MAX_ENUMERATION_IDS", _MAX_ENUMERATION_IDS)
+    ]
     idset = set(ids)
     citations: list[Citation] = []
     seen: set[str] = set()
@@ -317,7 +464,9 @@ def _enumeration_claims(result: SpecialistResult, cap: int) -> list[Claim]:
         ids = _related_ids(record)
         if ids and (enumerative or len(ids) > cap):
             claims.append(_enumeration_claim(result, record))
-        if len(claims) >= _MAX_ENUMERATION_CLAIMS_PER_RESULT:
+        if len(claims) >= _enum_bound(
+            "MAX_ENUMERATION_CLAIMS", _MAX_ENUMERATION_CLAIMS_PER_RESULT
+        ):
             return claims
     # Shape B: many primary records the fact claim would truncate. Skipped when A
     # already enumerated (the related sets are the answer, not the anchors).
@@ -345,6 +494,7 @@ class DeterministicComposer:
         for result in evidence.results:
             if result.records:
                 claims.append(_fact_claim(result, cap))
+                claims.extend(_attribute_claims(result))
                 claims.extend(_enumeration_claims(result, cap))
             elif result.ok:
                 abstentions.append(abstention_for(result))
@@ -357,6 +507,21 @@ class DeterministicComposer:
         join_index = evidence.join_index()
         for value in evidence.cross_source_join_values():
             claims.append(_correlation_claim(value, join_index.get(value, []), cap))
+
+        # An iterative run re-describes the same anchor on every hop, so the
+        # identical fact/attribute claim is composed once per hop — C-HIE-01 came
+        # back with four copies of "Found 1 CAPEC record(s): CAPEC-98". The text
+        # is the claim's identity for a reader, so collapse exact repeats while
+        # keeping the first occurrence's citations and order.
+        deduped: list[Claim] = []
+        seen_text: set[str] = set()
+        for claim in claims:
+            key = (claim.text or "").strip()
+            if key and key in seen_text:
+                continue
+            seen_text.add(key)
+            deduped.append(claim)
+        claims = deduped
 
         for part in evidence.unsupported:
             notes.append(_unsupported_note(part, evidence.request))

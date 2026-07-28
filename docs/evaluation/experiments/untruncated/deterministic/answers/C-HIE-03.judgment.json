@@ -1,0 +1,12 @@
+{
+  "case_id": "C-HIE-03",
+  "verdict": "PARTIAL",
+  "correctness": 0.7,
+  "faithfulness": 0.95,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer surface CAPEC-555 (must_include_ids) and its ChildOf-parent CAPEC-560 (must_include_related). The evidence record for CAPEC-555 shows the query g.V()...out('CHILD_OF')... returning exactly one related node, id 'capec:attack-pattern:560' (name 'Use of Known Domain Credentials'), so the answer's cited id (capec:attack-pattern:560 == CAPEC-560) is fully grounded and both required ids are present (gold_present=2/2, matching deterministic_scores.coverage=1.0). No invented facts, names, counts, or aliases were found beyond the evidence. However, the question specifically asks 'what is the parent (ChildOf)', and the narrative/claim never states the ChildOf relationship or that 560 is the parent -- it uses the generic deterministic-composer template 'CAPEC-555 ... has 1 AttackPatterns: capec:attack-pattern:560', the same generic phrasing that would appear for any relation type. This omits the semantic content the question asked for (parent/child direction), so despite correct entity retrieval the answer does not clearly and explicitly answer the actual question, matching the known deterministic-composer relationship-labeling ceiling. Downgraded to PARTIAL / correctness 0.7 for that reason; faithfulness/groundedness/completeness remain high since every stated fact is evidence-backed and both gold ids are surfaced."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-TAC-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The question asks which techniques belong to tactic TA0001 (Initial Access). The evidence (logic_flow.results[0].records) contains exactly 11 Technique records returned by the query 'MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique) ... TA0001', with ids T1669, T1189, T1200, T1078, T1566, T1199, T1659, T1190, T1195, T1091, T1133. All 5 gold must_include_ids (T1078, T1091, T1133, T1189, T1190) are present, and in fact the answer's claim/narrative enumerates all 11 ids, which exactly matches the full ex_gold expected set of 11 (T1078, T1091, T1133, T1189, T1190, T1195, T1199, T1200, T1566, T1659, T1669) with no extra and no missing ids. Every id cited in the narrative and the single 'fact' claim has a matching citation (source: attack, primary_id) and a corresponding evidence record, and the technique names used are not fabricated (the narrative only lists ids, not names, avoiding any name-mismatch risk). No cross-source correlation was required (join_key null, single source). This is a fully grounded, complete, and faithful answer to a straightforward listing question."
+}

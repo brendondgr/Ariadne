@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-03",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 0.125,
+  "gold_expected": 8,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires T1566 plus the DetectionStrategy DET0070 and analytics AN0188-AN0193 (8 ids total). The retrieval only ran a 'describe' facet-count query on T1566, which surfaced a single facet {rel: DETECTS, direction: in, neighbour_label: DetectionStrategy, count: 1} but never expanded to the actual DetectionStrategy or Analytic node records (records[0].related is empty, and no Analytic facet exists at all since analytics attach to DetectionStrategy, not directly to Technique). Because of this evidence gap, the answer's narrative correctly states only that T1566 is associated with 'exactly one DetectionStrategy' whose identifier is not in evidence, and that no Analytic nodes are present in the evidence — both statements are faithful and traceable to the single retrieved record (groundedness 1.0, no fabricated ids/names/counts). However, the answer surfaces none of the 7 required must_include_related ids (DET0070, AN0188-AN0193) — deterministic_scores.coverage confirms found=1/gold=8 (0.125). Since the question specifically asks 'via which analytics' and the answer supplies zero detection-strategy or analytic identifiers, it fails to answer the substantive question despite being honest about the gap, so it is graded INCORRECT rather than a partial credit case."
+}

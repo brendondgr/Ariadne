@@ -1,0 +1,12 @@
+{
+  "case_id": "C-CSQ-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-66] and must_include_related=[capec:attack-pattern:66:consequence:1..4]. The narrative states CAPEC-66 is identified as SQL Injection (matches evidence record name 'SQL Injection') and explicitly names all four consequence node ids (consequence:1, consequence:2, consequence:3, consequence:4), which exactly match the four 'related' entries in logic_flow.results[0].records[0]. It also correctly notes the evidence provides no further descriptive properties for the consequence nodes themselves -- true, since the related entries only carry id/name/label with no extra description fields. No entity, name, count, or property is invented; everything traces directly to the retrieved record. This is a full, correctly-scoped, well-grounded answer. Note: the artifact's own deterministic_scores.coverage reports 0.2 (marking the 4 consequence ids as 'missing'), but that appears to be an internal claims/citation-structure metric that did not count entities named only in the narrative prose -- the narrative itself does surface all 4 required related ids plus the seed CAPEC-66 id, so the pipeline's self-reported coverage understates what the analyst-facing answer actually delivers."
+}

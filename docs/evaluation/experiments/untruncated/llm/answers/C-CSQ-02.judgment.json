@@ -1,0 +1,12 @@
+{
+  "case_id": "C-CSQ-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-98 plus its three HAS_CONSEQUENCE neighbors capec:attack-pattern:98:consequence:1/2/3. The evidence (logic_flow.results[0].records[0].related) shows exactly these three Consequence nodes attached to CAPEC-98 (Phishing) via HAS_CONSEQUENCE, matching the retrieval query. The narrative names CAPEC-98 by its label (Phishing), states it is connected to exactly three consequence nodes via HAS_CONSEQUENCE, and lists all three consequence ids verbatim (capec:attack-pattern:98:consequence:1, :2, :3), satisfying both must_include_ids and must_include_related. It also correctly notes that no descriptive names/details exist for these consequence nodes beyond their ids, which matches the evidence (related entries have name==id with no separate description). No fabricated names, counts, or properties were introduced. The claims array only records the CAPEC-98 fact and the deterministic_scores.coverage block (0.25) reflects a scoring artifact of the claims-only structure, not the narrative, which is the substantive answer shown to the analyst and is fully correct and complete."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-555 with a related mapping to T1114.002, and ATT&CK record T1114.002 named 'Remote Email Collection', plus a cross-source correlation on T1114.002. The answer's claims state exactly this: 'Found 1 CAPEC record(s) for CAPEC-555; ATT&CK mappings: T1114.002', names CAPEC-555 as 'Remote Services with Stolen Credentials' (matches record.name/properties in logic_flow q1), cites the TaxonomyEntry capec:taxonomy:ATTACK:1114.002 (present in q1's related list), states 'Found ATT&CK record T1114.002: Remote Email Collection' (matches q2 record.name exactly, satisfying expect_names), and states the T1114.002 correlation across capec and attack (matching must_correlate and the deterministic_scores.correlation f1=1.0). All entity ids (CAPEC-555, T1114.002) and the technique name are directly traceable to the two retrieved records in logic_flow.results; no invented names, counts, or aliases were found. Not a negative case, so full CAPEC+ATT&CK+correlation coverage is required and delivered."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-ATT-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[C0027] and must_include_related=[G1015]. The narrative states 'Campaign C0027 is attributed to group G1015, Scattered Spider,' correctly naming both the campaign id and the required related group id. The retrieved evidence (logic_flow.results[0].records[0]) shows the query MATCH (c:Campaign)-[:ATTRIBUTED_TO]->(g:Group) returned exactly one row: c.attack_id=C0027 with related G1015 named 'Scattered Spider' -- matching the narrative's alias exactly (not an invented informal alias, it is the actual ATT&CK group name found in related[0].name). min_records=1/max_records=1 satisfied with row_count=1. No entities, counts, or names beyond the evidence are asserted; the description text quoted in evidence is not paraphrased into any fabricated claim in the narrative. Fully correct, faithful, grounded, and complete."
+}

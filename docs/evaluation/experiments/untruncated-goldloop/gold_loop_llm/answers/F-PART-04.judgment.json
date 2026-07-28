@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "This is an adversarial negative case: with CAPEC down, gold requires capec.expect_skipped=true, attack.expect_dependency_skip=true, expect_no_correlation=true, and no must_correlate ids. The pipeline's notes explicitly state 'Skipped capec: no specialist available for source capec' (satisfies capec.expect_skipped), and the single abstention for source 'attack' states the dependency q2 was not run because 'the sub-question it depends on (q1) produced no seed identifiers' (satisfies attack.expect_dependency_skip) — logic_flow confirms q2's trace step is 'dependency' with reason 'producer q1: it was not run' and zero records. claims=[] correctly avoids emitting an unseeded broad ATT&CK query or any fabricated T-number/mitigation, matching expect_no_correlation. The narrative correctly reports zero matching records rather than inventing content. deterministic_scores corroborate this (correlation negative/exact=true, precision/recall/f1=1.0, abstention_proof_ok=true, fully_provenanced=true). No entity, count, or identifier in the answer is unsupported by the evidence; nothing is missing relative to the gold's behavioral requirements."
+}

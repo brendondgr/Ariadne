@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-02",
+  "verdict": "CORRECT",
+  "correctness": 0.95,
+  "faithfulness": 0.92,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 13,
+  "gold_present": 13,
+  "hallucinations": [],
+  "rationale": "Gold requires 2 CAPEC ids (CAPEC-13, CAPEC-640), 5 must_correlate/must_include_related ATT&CK T-numbers (T1505.005, T1574.006, T1574.007, T1574.013, T1620), and 6 mitigations (M1022, M1024, M1028, M1038, M1040, M1047) = 13 unique required entities. The claims surface all 13: both CAPEC ids with correct Abstraction/Status ('Detailed'/'Stable', matching properties in the CAPEC-13/CAPEC-640 records); the per-CAPEC TaxonomyEntry enumerations correctly list CAPEC-13->{T1574.006,T1574.007,T1562.003} (3 items, matches evidence) and CAPEC-640->{T1505.005,T1574.006,T1574.013,T1620} (4 items, matches evidence); the 5 correlation claims correctly name all 5 must_correlate T-numbers with accurate cross-source citations (e.g. T1574.006 correctly flagged as shared by both CAPEC-13 and CAPEC-640 plus ATT&CK, 3 records); and the per-technique mitigation enumerations union to exactly the 6 required mitigations (M1047/M1022/M1038 for T1574.007, M1047/M1024 for T1505.005, M1038/M1028 for T1574.006, M1040 for T1574.013), all counts matching the 'related' arrays in logic_flow. deterministic_scores confirms this internally (correlation f1=1.0, mapping_recall=5/5). The correct exclusion of T1562.003 from must_correlate (it has no Technique/SubTechnique node returned by q2, evidenced by only 5 of 6 seed_ids yielding attack records) is properly reflected -- the answer does not fabricate a T1562.003 mitigation entry. One flaw: the first summary sentence ('ATT&CK mappings: T1505.005, T1562.003, T1574.006, T1574.007, T1574.013') undercounts the deduplicated union by omitting T1620, presenting an incomplete list as if exhaustive -- not a fabrication (T1620 is real and correctly surfaced later in the CAPEC-640 enumeration and the T1620 correlation claim), but an inaccuracy that costs a small faithfulness/correctness deduction. No invented ids, counts, or names were found elsewhere; all entity_ids and citations trace cleanly to logic_flow records."
+}

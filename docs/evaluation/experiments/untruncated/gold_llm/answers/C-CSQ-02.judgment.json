@@ -1,0 +1,12 @@
+{
+  "case_id": "C-CSQ-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-98] and must_include_related=[capec:attack-pattern:98:consequence:1,2,3]. The narrative and claims name CAPEC-98 (correctly labeled 'Phishing', matching the record's name/properties) and enumerate all three consequence ids verbatim, matching the 3 'related' entries returned by the Gremlin query (out('HAS_CONSEQUENCE') from CAPEC-98). The answer also correctly notes that the evidence provides only bare identifiers for the Consequence nodes (their 'name' field is literally the same string as 'id', with no description property in logic_flow), so it does not fabricate impact descriptions -- it explicitly and accurately states the limitation instead of inventing content. No unsupported facts, counts, or aliases were introduced; the deterministic_scores.coverage=1.0 corroborates full coverage of the 4 gold entities (1 AttackPattern + 3 Consequence ids)."
+}

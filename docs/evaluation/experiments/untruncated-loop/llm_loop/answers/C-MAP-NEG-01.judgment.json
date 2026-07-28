@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (ex_gold.expected=[], assertions.expect_empty=true) for ATT&CK mappings of CAPEC-116. The logic_flow shows q1 correctly seeded with CAPEC-116 and executed the exact MAPS_TO/taxonomy=ATTACK traversal (row_count 0, empty_with_seeds=['CAPEC-116']), and q2 correctly skipped as dependent on q1's (absent) join values. The answer has zero claims and two abstentions, both accurately describing that the queries ran cleanly and found nothing rather than claiming a system failure. The narrative states 'The routed sources returned no matching records for this question' and invites the analyst to supply a specific id -- it does not fabricate any technique, mitigation, or mapping. No entity ids appear anywhere in the answer that aren't grounded in the (empty) evidence, so there is nothing ungrounded or hallucinated."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 26,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to surface 6 ATT&CK techniques (T1003, T1119, T1213, T1530, T1555, T1602) that CAPEC-150 maps to, plus the 20 mitigations (M1015...M1060) that apply to those techniques -- 26 required ids total, with min_records 6 on the attack side. The pipeline's q1 CAPEC query fetched CAPEC-150 and its facet summary correctly shows a MAPS_TO edge count of 6 to TaxonomyEntry nodes, but the 'describe' query template used (elementMap + facet counts only) never actually traversed those 6 edges to extract the TaxonomyEntry entry_id values -- the record's 'related' array is empty despite the facet count of 6. Because q1 produced no join values, q2 (the ATT&CK technique/mitigation lookup) was skipped entirely, per the traces ('producer q1: it returned no join values'). The narrative and single claim ('Found 1 CAPEC record(s): CAPEC-150') report zero of the 6 required T-numbers and zero of the 20 required mitigation ids -- gold_present = 0 of 26. This is not a negative/abstention case (gold min_records=1 for capec and min/max=6 for attack, both satisfiable from the graph), so the correct behavior was to surface the six techniques and their mitigations, not abstain. The answer does not fabricate any technique, mitigation, alias, or count -- everything it states (CAPEC-150's identity, the '6 mapped entries' fact, and the abstention on q2) is directly grounded in the evidence (facets count=6 for MAPS_TO; q2 trace shows it was skipped) -- so faithfulness and groundedness are high. But because the answer supplies none of the gold-required technique or mitigation ids, correctness and completeness are both zero: this is a retrieval-depth failure (the describe template stopped at facet counts instead of resolving the related TaxonomyEntry nodes) that left the analyst with no answer to the question asked."
+}

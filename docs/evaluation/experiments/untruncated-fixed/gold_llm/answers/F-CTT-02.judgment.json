@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-49 -> T1110.001 mapping and T1110.001 -> TA0006 tactic membership (must_correlate T1110.001; capec.must_include_ids=CAPEC-49/must_include_related=T1110.001; attack.must_include_ids=T1110.001/must_include_related=TA0006). The narrative states exactly this: 'CAPEC-49 (Password Brute Forcing) maps to the ATT&CK technique T1110.001 (Password Guessing). That technique belongs to the ATT&CK tactic TA0006, which is named Credential Access.' Every fact is directly traceable to logic_flow evidence: the capec record for CAPEC-49 lists related taxonomy entry capec:taxonomy:ATTACK:1110.001 named 'Brute Force:Password Guessing' with join_values T1110.001, and the attack record for T1110.001 (name 'Password Guessing') lists related TA0006 named 'Credential Access'. The cross-source correlation on T1110.001 is also correctly reported as a claim. All three required entities (CAPEC-49, T1110.001, TA0006) are surfaced with correct names, and no additional counts, aliases, or properties beyond what's in the evidence are introduced (the narrative omits Abstraction/Status details from claims, which is fine since gold doesn't require them). No hallucinations found."
+}

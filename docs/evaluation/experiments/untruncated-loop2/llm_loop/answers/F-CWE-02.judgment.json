@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 36,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "The pipeline produced zero evidence and zero claims. The capec specialist's q1 query ('cwe_chain' template: Weakness -> in(EXPLOITS_WEAKNESS) -> AttackPattern -> out(MAPS_TO) -> TaxonomyEntry) was rejected by a pre-run gate for exceeding max_traversal_depth (depth 2 > limit 1) on all 3 retry attempts, so q1 returned zero records. q2 (attack/mitigations) then cascaded to a skip since it depends on q1's seed ids. The answer's narrative and claims list are empty; it correctly abstains rather than fabricating anything, which is why faithfulness and groundedness score 1.0 (nothing stated is ungrounded). But this is not a negative case -- gold requires 7 CAPEC ids (CAPEC-57, CAPEC-94, CAPEC-114, CAPEC-115, CAPEC-593, CAPEC-633, CAPEC-650) related to CWE-287, 8 correlated ATT&CK techniques (T1040, T1134, T1185, T1505.003, T1548, T1550.001, T1557, T1563), and 20 associated mitigations (M1013 etc.), none of which were surfaced. This is a total retrieval failure caused by an overly strict traversal-depth gate (limit 1) rejecting a legitimate 2-hop CWE->AttackPattern->TaxonomyEntry chain query, not a case where the gold expects no results. deterministic_scores in the artifact itself confirm mapping_recall.recall=0.0 and correlation.recall=0.0 with all 8 T-numbers listed as missing."
+}

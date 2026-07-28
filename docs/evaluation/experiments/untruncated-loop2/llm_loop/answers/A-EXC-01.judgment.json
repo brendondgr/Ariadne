@@ -1,0 +1,12 @@
+{
+  "case_id": "A-EXC-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative case: gold asserts expect_empty=true for T1002 (retired/excluded technique), with ex_gold.expected=[]. The executed Cypher query (MATCH (n:Technique) WHERE n.attack_id IN $ids ...) ran cleanly against seed_ids=['T1002'] and returned row_count=0 at every trace step (execute, assess, normalize), and logic_flow.results[0].records is empty. The answer correctly abstains: claims=[], and the sole abstention states the attack source query 'ran cleanly and returned no matching records' for T1002, matching the evidence exactly. The narrative shown to the analyst ('The routed sources returned no matching records for this question... name it or give its id (e.g. T1566, M1017, or CAPEC-98)') states no fabricated facts about T1002 -- the example ids given (T1566, M1017, CAPEC-98) are generic illustrative examples, not claims about T1002 or its properties, so they are not hallucinations. No entity, count, or property was invented. Since gold requires zero entities to be surfaced and none were, completeness is 1.0 (0/0)."
+}

@@ -1,0 +1,14 @@
+{
+  "case_id": "F-CTM-10",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 8,
+  "gold_present": 0,
+  "hallucinations": [
+    "Narrative implies the request is out of scope for the live graph sources (\"None of the live graph sources cover this request\"), but logic_flow shows the real cause was a pipeline timeout that skipped both the capec and attack sub-questions before they ran (run_meta.exit_code=1, status='partial', notes: 'Skipped capec: total pipeline timeout exceeded...', 'Skipped attack: total pipeline timeout exceeded...') -- this mischaracterizes a retrieval failure as a coverage gap, though it does not invent any specific entity or fact."
+  ],
+  "rationale": "This is not a NEG case: the gold requires CAPEC-652 -> T1558 mapping plus six ATT&CK mitigations (M1015, M1026, M1027, M1041, M1043, M1047) via must_correlate/must_include_ids/must_include_related. The pipeline's own run_meta shows it planned two sub-questions (q1 against capec, q2 against attack) but both were skipped due to a total pipeline timeout (wall_s=120.151, exit_code=1, status='partial'), leaving logic_flow.results empty and evidence_volume all zeros. The answer has no narrative substance to speak of and zero claims/abstentions, so nothing was surfaced: gold_present=0 of gold_expected=8 unique required ids (CAPEC-652, T1558, M1015, M1026, M1027, M1041, M1043, M1047). The pipeline's own deterministic_scores confirm this: correlation recall=0.0, mapping_recall=0.0 with missing=['T1558']. There is no fabricated entity or count, so faithfulness is high, but the generic fallback narrative ('None of the live graph sources cover this request') misrepresents a timeout as a scope/coverage limitation, which is a mild faithfulness ding. Because the question demanded concrete technique/mitigation ids and the answer supplied none, this fails the headline correctness test entirely -- INCORRECT."
+}

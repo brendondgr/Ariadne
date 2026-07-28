@@ -1,0 +1,12 @@
+{
+  "case_id": "A-AST-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold assertion is expect_boundary: true — this is an ICS-only concept (Asset) applied to T1047, an enterprise ATT&CK technique, so the correct behavior is honest refusal rather than invented targets. The answer's narrative states 'None of the live graph sources cover this request' and offers to help if the analyst names a specific ATT&CK/CAPEC entity (e.g. T1566, M1017, CAPEC-98) — all of which are generic examples, not claims about T1047 itself, so nothing is fabricated. claims and abstentions arrays are both empty, logic_flow.results is empty (evidence_volume.records=0), and deterministic_scores confirms abstention_proof_ok=true and fully_provenanced=true. The notes reveal the sub-questions were actually skipped due to a pipeline timeout rather than a deliberate ICS-boundary determination, so the correct abstention was reached for the wrong internal reason — but the externally observable answer given to the analyst is exactly the required honest refusal with zero invented facts, satisfying the single gold requirement in full."
+}

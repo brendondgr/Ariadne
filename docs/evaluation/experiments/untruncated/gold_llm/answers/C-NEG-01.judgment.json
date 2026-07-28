@@ -1,0 +1,12 @@
+{
+  "case_id": "C-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty: true, ex_gold.expected: []) for the nonexistent CAPEC-99999. The executed Gremlin query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within([\"CAPEC-99999\"]))...) correctly returned row_count 0, and logic_flow.results[0].records is empty. The deterministic composer abstained rather than fabricating: claims is empty, and the sole abstention states 'the executed query ran cleanly and returned no matching records for: What is CAPEC pattern CAPEC-99999?' The narrative shown to the analyst says the same and invites the user to supply a valid id, without inventing any CAPEC-99999 name, description, or related techniques. No entity, count, or property is asserted that isn't in the evidence. This is exactly the correct negative-case behavior."
+}

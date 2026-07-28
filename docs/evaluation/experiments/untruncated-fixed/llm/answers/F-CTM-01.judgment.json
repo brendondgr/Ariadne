@@ -1,0 +1,14 @@
+{
+  "case_id": "F-CTM-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.55,
+  "faithfulness": 0.65,
+  "groundedness": 0.75,
+  "completeness": 0.6,
+  "gold_expected": 27,
+  "gold_present": 17,
+  "hallucinations": [
+    "Narrative states 'M1041 applying to all six' techniques, but evidence shows T1555 (Credentials from Password Stores) mitigations are only M1026, M1027, M1051 -- M1041 is absent. M1041 actually mitigates only 5 of the 6 techniques (all but T1555)."
+  ],
+  "rationale": "The answer correctly surfaces CAPEC-150 and all six required ATT&CK techniques (T1003, T1119, T1213, T1530, T1555, T1602) with correct per-technique mitigation counts (9/6/2/6/3/7 summing to the evidence's row_count of 33), and the six cross-source correlation claims match gold's must_correlate set exactly. However the narrative's headline claim that M1041 applies to 'all six' techniques is directly contradicted by the evidence: T1555's related mitigations are M1026/M1027/M1051, with no M1041. This is a clear, checkable hallucination about a relational fact, not just a missing detail. Separately, of the 20 gold-required mitigation ids (attack.must_include_related), the narrative only explicitly names 10 (M1041, M1015, M1025, M1051, M1030, M1029, M1047, M1022, M1060, M1017) via 'including X and Y' sampling rather than full enumeration, leaving 10 required mitigation ids unstated in the delivered text even though they exist in the evidence. Net: technique-level coverage and correlation are complete and correct, but mitigation-level completeness is roughly half and one universal claim is fabricated, so this lands as PARTIAL rather than CORRECT."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-SCN-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.25,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 300,
+  "gold_present": 558,
+  "hallucinations": [],
+  "rationale": "The question is explicitly 'Scan CAPEC attack patterns (bounded)' and the gold assertion caps the correct result at min_records=250, max_records=300 -- i.e. a proper bounded scan should return between 250 and 300 CAPEC records. The pipeline instead returned 558 records (claim[0]/claim[1] both state 'Found 558 CAPEC record(s)' and enumerate all 558 CAPEC-* ids), 86% over the max_records=300 ceiling and well outside the gold window. Root cause is visible in logic_flow.results[0].traces: the sub-question task explicitly carried limits.max_result_rows=300, but the gate step executed the Gremlin template 'capec_scan' as g.V().hasLabel(\"AttackPattern\").elementMap().limit(1000) -- the task-level 300-row bound was never applied to the query, so it returned every AttackPattern node up to the template's own limit(1000) cap (558 actual). Every one of the 558 ids in the answer's claims is genuinely present in the retrieved records (verified: claim entity_ids match logic_flow records' primary_id set 1:1, record_count=558 in the normalize trace), so there is no fabrication -- faithfulness and groundedness are full marks, and completeness is trivially 1.0 since the (unbounded) result is a superset of any legitimate bounded answer. But correctness is the headline score and this case is specifically testing whether the pipeline respects a result-count bound: it does not, exceeding the gold's max_records assertion by nearly 2x, so the answer fails the actual question asked ('bounded' scan) despite every individual fact being true."
+}

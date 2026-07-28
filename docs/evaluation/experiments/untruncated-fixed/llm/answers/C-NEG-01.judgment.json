@@ -1,0 +1,12 @@
+{
+  "case_id": "C-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires expect_empty:true (pool=node, scheme=capec, expected=[]) for a lookup of nonexistent CAPEC-99999. The executed Gremlin query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...) ran cleanly, returned row_count 0, and the pipeline correctly abstained rather than inventing a record: narrative states 'The routed sources returned no matching records for this question' and offers to accept a valid id (e.g. T1566, M1017, CAPEC-98) instead. Claims list is empty, no fabricated CAPEC-99999 name/description/properties appear anywhere in the answer, and the abstention statement accurately describes the query result. This is exactly the correct behavior for a C-NEG adversarial case."
+}

@@ -1,0 +1,16 @@
+{
+  "case_id": "F-CWE-05",
+  "verdict": "INCORRECT",
+  "correctness": 0.05,
+  "faithfulness": 0.15,
+  "groundedness": 0.2,
+  "completeness": 0.15,
+  "gold_expected": 32,
+  "gold_present": 8,
+  "hallucinations": [
+    "The answer presents 'All 558 result(s) for this question' as if it were the set of CAPEC patterns exploiting CWE-521, but the actual q1 query (Find AttackPattern EXPLOITS_WEAKNESS Weakness 'CWE-521') returned 0 rows (trace: seed_ids=['CWE-521'], row_count=0) because it was miswired to match AttackPattern.id against 'CWE-521' rather than traversing the Weakness node; q2/q3 then silently fell back to unfiltered queries over the ENTIRE CAPEC corpus (all 558 AttackPattern nodes) and mislabeled that dump as answering the CWE-521 question.",
+    "No ATT&CK technique required by gold (T1021, T1021.002, T1078.001, T1110, T1110.001, T1110.002, T1110.003, T1114.002, T1133, T1558.003) is named anywhere in the answer; the 'ATT&CK mappings' cited (T1001.002, T1003, T1005, T1007, T1012) come from the unfiltered corpus dump and are unrelated to CWE-521.",
+    "No mitigation required by gold (M1018, M1021, M1026, M1027, M1030, M1032, M1035, M1036, M1037, M1041, M1042, M1047, M1051, M1060) appears anywhere — the ATT&CK mitigation sub-question (q4) was skipped entirely because it depended on q3, which itself never produced real technique seeds (q3 also fell back to 'g.V().hasLabel(\"AttackPattern\").elementMap()' with no CWE-521 filter)."
+  ],
+  "rationale": "This is the deterministic/no-LLM arm (fallback_reason shows the narrator LLM call 400'd on context length), so the 'claims' are graded as the answer per instructions. The pipeline's own evidence shows the real query for AttackPattern-EXPLOITS_WEAKNESS-CWE-521 returned zero rows (logic_flow result[0]: query has('id', within(ids)) with seed_ids=['CWE-521'], row_count=0 — a seeding bug, since AttackPattern ids are CAPEC-* not CWE-*), and an explicit abstention says exactly this ('the executed query ran cleanly and returned no matching records for: Find AttackPattern nodes that EXPLOITS_WEAKNESS Weakness nodes with name CWE-521'). Despite that, the claims/narrative simultaneously assert 'Found 558 CAPEC record(s)... All 558 result(s) for this question' — which is just every AttackPattern node in the KB with no CWE-521 filter applied (q2/q3 fell back to unfiltered elementMap() scans). Because the dump is the entire corpus, the 8 gold must_include_ids (CAPEC-49/55/70/112/509/555/561/565) happen to appear as bare substrings, but none are attributed to CWE-521 — the answer never states the required relationship (must_include_related: CWE-521), so this credit is largely spurious. Zero of the 10 required must_correlate ATT&CK technique ids and zero of the 14 required mitigation ids appear anywhere; the ATT&CK sub-question was skipped outright ('q3 produced no seed identifiers'). The answer both denies finding any CWE-521-linked pattern and simultaneously presents an irrelevant full-corpus dump as if it answered the question — a self-contradictory, non-responsive, and effectively hallucinated framing of unfiltered data as targeted results. Overall this fails the question outright: no technique/mitigation correlation is ever established, matching none of the gold's core assertions beyond incidental substring overlap."
+}

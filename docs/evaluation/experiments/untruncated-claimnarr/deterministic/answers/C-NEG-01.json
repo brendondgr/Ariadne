@@ -1,0 +1,162 @@
+{
+  "id": "C-NEG-01",
+  "kind": "capec",
+  "tier": "adversarial",
+  "category": "C-NEG",
+  "question": "Look up nonexistent CAPEC-99999 — must return empty, not invent.",
+  "gold": {
+    "assertions": {
+      "expect_empty": true
+    },
+    "ex_gold": {
+      "pool": "node",
+      "expected": [],
+      "scheme": "capec"
+    }
+  },
+  "answer": {
+    "headline": "No records were returned by the routed specialists; 1 question(s) the sources don't establish.",
+    "narrative": "The routed sources returned no matching records for this question. If you're after a specific entity, name it or give its id (e.g. T1566, M1017, or CAPEC-98).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [],
+    "abstentions": [
+      {
+        "source": "capec",
+        "statement": "The capec source doesn't establish this — the executed query ran cleanly and returned no matching records for: What is CAPEC pattern CAPEC-99999?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(20000)"
+      }
+    ],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "C-NEG-01",
+      "source": "capec",
+      "text": "What is CAPEC pattern CAPEC-99999?",
+      "entities": [
+        "AttackPattern"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-99999"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "C-NEG-01",
+        "sub_question": "What is CAPEC pattern CAPEC-99999?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(20000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "No CAPEC records found.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CAPEC-99999"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(20000)",
+              "injected": [],
+              "timing_ms": 0.076
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0,
+              "timing_ms": 10.1
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0,
+              "empty_with_seeds": [
+                "CAPEC-99999"
+              ],
+              "timing_ms": 0.005
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 0,
+              "timing_ms": 0.002
+            }
+          }
+        ],
+        "records": []
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 0,
+      "compliant": 0,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "deterministic",
+  "run_meta": {
+    "planner": "gold-replay",
+    "synthesis": "deterministic",
+    "wall_s": 0.016
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 0,
+    "related": 0
+  }
+}

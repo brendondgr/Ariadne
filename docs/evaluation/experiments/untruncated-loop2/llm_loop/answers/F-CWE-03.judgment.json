@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 39,
+  "gold_present": 39,
+  "hallucinations": [],
+  "rationale": "The answer (deterministic claims, thin narrative) surfaces all 8 gold CAPEC ids (CAPEC-60, 94, 509, 555, 561, 644, 645, 652) with correct Abstraction/Status attributes verified exactly against logic_flow properties (e.g. CAPEC-94 Abstraction=Meta/Status=Stable, CAPEC-509 Abstraction=Detailed/Status=Stable), and CWE-294 as the related weakness for each, matching gold must_include_related. All 11 required ATT&CK technique ids (T1021, T1021.002, T1114.002, T1133, T1134.001, T1550.002, T1550.003, T1550.004, T1557, T1558, T1558.003) are present and explicit correlation claims join each to its CAPEC source, satisfying gold must_correlate exactly (11/11, no extras). The mitigation enumerations per technique (e.g. T1557: M1017,M1030,M1031,M1035,M1037,M1041,M1042; T1558: M1015,M1026,M1027,M1041,M1043,M1047) were cross-checked against the ATT&CK query's 'related' fields and match verbatim; the union of all listed mitigations equals exactly the gold's 19-item must_include_related set (M1015,M1017,M1018,M1021,M1026,M1027,M1030,M1031,M1032,M1035,M1037,M1041,M1042,M1043,M1047,M1051,M1052,M1054,M1060) with none missing or extraneous. Gold_expected totals 8 CAPEC ids + 1 CWE + 11 ATT&CK ids + 19 mitigations = 39; all 39 are surfaced. No fabricated names, counts, or aliases were found; every numeric count in the narrative (e.g. 'has 7 related item(s)') matches the record's actual related-array length in logic_flow."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold (expect_empty: true, ex_gold.expected: []) requires the pipeline to abstain rather than fabricate a CAPEC-99999 record. The executed Gremlin query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within([\"CAPEC-99999\"]))...) ran cleanly (traces show gate/execute/assess/normalize all ok:true) and returned row_count 0, records []. The answer has zero claims, one correctly-worded abstention citing the exact query and stating \"the executed query ran cleanly and returned no matching records,\" and a narrative that plainly tells the analyst no records were found and suggests supplying a real id (e.g. T1566, M1017, CAPEC-98 \u2014 all illustrative examples, not asserted facts about CAPEC-99999). No entity, name, property, or count was invented for the nonexistent id. This fully satisfies the negative-case requirement with no hallucinations."
+}

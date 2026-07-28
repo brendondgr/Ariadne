@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 12,
+  "gold_present": 12,
+  "hallucinations": [],
+  "rationale": "The narrative and claims correctly identify CAPEC-21 (Exploitation of Trusted Identifiers, Abstraction: Meta, Status: Stable) mapping to all three gold-required ATT&CK techniques T1134, T1528, T1539 (must_correlate and capec.must_include_related, all present), matching the evidence's TaxonomyEntry related list (capec:taxonomy:ATTACK:1134/1528/1539) exactly. The attack-side result returns exactly the 3 required technique records (min_records=3, max_records=3 satisfied) and enumerates mitigations per technique that match the evidence verbatim: T1539 -> M1051,M1047,M1054,M1032,M1017,M1021; T1528 -> M1047,M1018,M1017,M1021; T1134 -> M1026,M1018. The union of these covers all 8 gold must_include_related mitigations (M1017,M1018,M1021,M1026,M1032,M1047,M1051,M1054) exactly, with no extras or omissions. The cross-source correlation claims (T1134/T1528/T1539 each corroborated across capec and attack, 2 records sharing each id) are consistent with the retrieved records (CAPEC-21's join_values vs the 3 separate Technique records) and the deterministic_scores.correlation block (exact=true, precision=recall=1.0). No entity, count, name, or property in the answer is absent from logic_flow.results; all 12 gold-required ids (CAPEC-21, T1134, T1528, T1539, M1017, M1018, M1021, M1026, M1032, M1047, M1051, M1054) are surfaced."
+}

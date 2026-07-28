@@ -1,0 +1,12 @@
+{
+  "case_id": "C-DEP-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative case: CAPEC-106 is deprecated/excluded at load, and gold expects an empty result (assertions.expect_empty=true, ex_gold.expected=[]). The evidence confirms the query executed cleanly with row_count 0 (logic_flow.results[0].summary='No CAPEC records found', trace 'assess' step shows empty_with_seeds=['CAPEC-106']). The answer correctly abstains: narrative states 'The routed sources returned no matching records for this question' and the abstentions array cites the capec source explaining the query ran cleanly with zero matches for CAPEC-106. No fabricated entity, name, or property was introduced. This matches the required behavior for a NEG-style/exclusion case exactly."
+}

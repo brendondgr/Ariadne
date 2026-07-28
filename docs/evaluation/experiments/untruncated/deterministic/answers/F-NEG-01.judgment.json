@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty join for CAPEC-116 -> ATT&CK (must_correlate: [], expect_no_correlation: true, capec.expect_empty: true, attack.expect_dependency_skip: true). The evidence confirms this: q1's capec_maps_to query executed cleanly against seed CAPEC-116 and returned row_count 0 (logic_flow.results[0], trace step 'execute'/'assess'), and q2 (ATT&CK mitigations) was correctly skipped via the dependency step because q1 produced no join values (logic_flow.results[1], trace step 'dependency'). The answer's claims array is empty and both abstentions explicitly state the capec query 'ran cleanly and returned no matching records' and the attack sub-question was skipped because q1 'produced no seed identifiers' -- no fabricated technique, mitigation, or correlation is asserted anywhere in the narrative or claims. deterministic_scores.correlation shows negative=true, exact=true, n_expected=0, n_got=0, matching the gold exactly. This is precisely the abstain-and-cite-why behavior the negative case demands."
+}

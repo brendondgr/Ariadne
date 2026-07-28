@@ -1,0 +1,275 @@
+{
+  "id": "C-EXE-02",
+  "kind": "capec",
+  "tier": "medium",
+  "category": "C-EXE",
+  "question": "What are the execution steps of CAPEC-98?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "CAPEC-98"
+      ],
+      "must_include_related": [
+        "capec:attack-pattern:98:step:1",
+        "capec:attack-pattern:98:step:2",
+        "capec:attack-pattern:98:step:3",
+        "capec:attack-pattern:98:step:4"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "capec:attack-pattern:98:step:1",
+        "capec:attack-pattern:98:step:2",
+        "capec:attack-pattern:98:step:3",
+        "capec:attack-pattern:98:step:4"
+      ],
+      "scheme": "capec"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "The analysis identified one CAPEC record, CAPEC-98, which is classified as a Standard abstraction with a Draft status. This attack pattern, named Phishing, describes a social engineering technique where an attacker masquerades as a legitimate entity to obtain confidential information.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-98.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-98"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-98"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-98 (Phishing) has Abstraction: Standard; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-98"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-98"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "C-EXE-02",
+      "source": "capec",
+      "text": "What are the execution steps of CAPEC-98?",
+      "entities": [
+        "AttackPattern",
+        "HAS_EXECUTION_STEP",
+        "ExecutionStep"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-98"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Retrieve the ExecutionStep nodes connected to the AttackPattern node with identifier 'CAPEC-98' via the HAS_EXECUTION_STEP relationship.",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"HAS_EXECUTION_STEP\").hasLabel(\"ExecutionStep\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-98.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "ExecutionStep"
+              ],
+              "relationships": [
+                "HAS_EXECUTION_STEP"
+              ],
+              "seed_ids": [
+                "CAPEC-98"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_neighbors",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"HAS_EXECUTION_STEP\").hasLabel(\"ExecutionStep\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.099
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 4,
+              "timing_ms": 16.0
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 4,
+              "timing_ms": 0.008
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.1
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-98",
+            "name": "Phishing",
+            "label": "AttackPattern",
+            "description": "Phishing is a social engineering technique where an attacker masquerades as a legitimate entity with which the victim might do business in order to prompt the user to reveal some confidential information (very frequently authentication credentials) that can later be used by an attacker. Phishing is essentially a form of information gathering or \"fishing\" for information.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Phishing",
+              "description": "Phishing is a social engineering technique where an attacker masquerades as a legitimate entity with which the victim might do business in order to prompt the user to reveal some confidential information (very frequently authentication credentials) that can later be used by an attacker. Phishing is essentially a form of information gathering or \"fishing\" for information.",
+              "id": "capec:attack-pattern:98",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "capec:attack-pattern:98:step:1",
+                "name": "Step 1",
+                "label": "ExecutionStep",
+                "step": "1",
+                "type": "HAS_EXECUTION_STEP",
+                "description": "[Obtain domain name and certificate to spoof legitimate site] This optional step can be used to help the attacker impersonate the legitimate site more convincingly. The attacker can use homograph attacks to convince users that they are using the legitimate website. Note that this step is not required for phishing attacks, and many phishing attacks simply supply URLs containing an IP address and no SSL certificate."
+              },
+              {
+                "id": "capec:attack-pattern:98:step:2",
+                "name": "Step 2",
+                "label": "ExecutionStep",
+                "step": "2",
+                "type": "HAS_EXECUTION_STEP",
+                "description": "[Explore legitimate website and create duplicate] An attacker creates a website (optionally at a URL that looks similar to the original URL) that closely resembles the website that they are trying to impersonate. That website will typically have a login form for the victim to put in their authentication credentials. There can be different variations on a theme here."
+              },
+              {
+                "id": "capec:attack-pattern:98:step:3",
+                "name": "Step 3",
+                "label": "ExecutionStep",
+                "step": "3",
+                "type": "HAS_EXECUTION_STEP",
+                "description": "[Convince user to enter sensitive information on attacker's site.] An attacker sends an e-mail to the victim that has some sort of a call to action to get the user to click on the link included in the e-mail (which takes the victim to attacker's website) and log in. The key is to get the victim to believe that the e-mail is coming from a legitimate entity with which the victim does business and that the website pointed to by the URL in the e-mail is the legitimate website. A call to action will usually need to sound legitimate and urgent enough to prompt action from the user."
+              },
+              {
+                "id": "capec:attack-pattern:98:step:4",
+                "name": "Step 4",
+                "label": "ExecutionStep",
+                "step": "4",
+                "type": "HAS_EXECUTION_STEP",
+                "description": "[Use stolen credentials to log into legitimate site] Once the attacker captures some sensitive information through phishing (login credentials, credit card information, etc.) the attacker can leverage this information. For instance, the attacker can use the victim's login credentials to log into their bank account and transfer money to an account of their choice."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 5,
+      "found": 1,
+      "coverage": 0.2,
+      "missing": [
+        "capec:attack-pattern:98:step:1",
+        "capec:attack-pattern:98:step:2",
+        "capec:attack-pattern:98:step:3",
+        "capec:attack-pattern:98:step:4"
+      ]
+    },
+    "provenance": {
+      "citations": 2,
+      "compliant": 2,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm_loop",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "Retrieve the ExecutionStep nodes connected to the AttackPattern node with identifier 'CAPEC-98' via the HAS_EXECUTION_STEP relationship.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 2,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 69.319
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 4
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty join: must_correlate=[], expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true. Evidence confirms the capec MAPS_TO query for seed CAPEC-18 executed cleanly (row_count 0, empty_with_seeds=['CAPEC-18']), and the dependent attack sub-question (q2) was correctly skipped because 'producer q1: it returned no join values'. The answer's claims list is empty and its two abstentions state exactly these facts without inventing any technique IDs, mitigation IDs, or CAPEC-18 details. No fabricated correlation appears anywhere, matching the deterministic_scores block (correlation.negative=true, exact=true, precision/recall/f1=1.0)."
+}

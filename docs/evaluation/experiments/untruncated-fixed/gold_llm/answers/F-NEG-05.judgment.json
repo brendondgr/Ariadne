@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an honest empty join (must_correlate=[], expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true) since CAPEC-16 has no ATT&CK MAPS_TO edge in this dataset (attack_version 19.0 / capec_version 3.9). The evidence confirms this: q1's gremlin query executed cleanly against seed CAPEC-16 (trace step 'execute' row_count=0, 'assess' shows empty_with_seeds=[CAPEC-16]) and q2 was correctly skipped as a dependency failure ('producer q1: it returned no join values'), never firing a query. The narrative/abstentions state exactly this ('capec source doesn't establish this... ran cleanly and returned no matching records', 'attack source... sub-question it depends on (q1) produced no seed identifiers') with no invented technique, mitigation, or correlation id. This matches the F-NEG requirement of abstaining rather than fabricating."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty (expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true) since CAPEC-3 has no ATT&CK mapping. The evidence confirms the q1 capec query executed correctly against seed_ids=['CAPEC-3'] via the capec_maps_to template and returned row_count=0, and q2 (mitigations) was correctly skipped with reason 'producer q1: it returned no join values'. The answer's abstentions accurately describe both: capec 'ran cleanly and returned no matching records', attack 'sub-question it depends on (q1) produced no seed identifiers, so no query was executed'. Claims list is empty, no T-numbers, mitigation ids, or fabricated correlations appear anywhere in the narrative/abstentions. deterministic_scores.correlation confirms negative=true, exact=true, precision/recall/f1=1.0. This is a fully correct, fully grounded abstention with zero hallucinations."
+}

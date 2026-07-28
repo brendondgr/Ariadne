@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-02",
+  "verdict": "CORRECT",
+  "correctness": 0.95,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 14,
+  "gold_present": 14,
+  "hallucinations": [],
+  "rationale": "Gold requires: 3 correlated technique IDs (T1021, T1114.002, T1133), CAPEC-555 itself, and the union of 10 mitigation IDs across the three techniques (M1018, M1021, M1027, M1030, M1032, M1035, M1041, M1042, M1047, M1060). The narrative correctly states CAPEC-555 maps to T1021, T1114.002, T1133 (matches evidence record CAPEC-555's related TaxonomyEntry list exactly), and correctly states per-technique mitigation counts (T1021: 6, T1114.002: 3, T1133: 5) which exactly match the retrieved 'related' arrays in logic_flow.results[1].records. The narrative names 3 example mitigations per technique using 'including/such as/notably' phrasing rather than exhaustively listing all 10 in prose, but the accompanying enumeration claims (kind:'enumeration') explicitly list every mitigation ID per technique (M1035,M1021,M1030,M1032,M1042 for T1133; M1042,M1047,M1032,M1018,M1027,M1035 for T1021; M1041,M1032,M1060 for T1114.002), so all 10 gold-required mitigation IDs are surfaced in the delivered answer. CAPEC-555 properties (Abstraction: Standard, Status: Stable) are also correctly reported and match evidence verbatim. Correlation claims for T1021/T1114.002/T1133 match deterministic_scores (precision/recall/f1 = 1.0, mapping_recall = 3/3). No counts, names, or IDs in the narrative or claims are absent from or contradicted by the retrieved evidence; no fabricated aliases, dates, or entities were found. Correctness is scored just under 1.0 only because the prose narrative itself relies on partial 'including/such as' lists rather than fully enumerating every mitigation in the human-readable text, though the structured claims shown alongside it do so completely."
+}

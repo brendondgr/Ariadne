@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an honest empty: expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true. The capec query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within([\"CAPEC-66\"]))...out(\"MAPS_TO\")...) ran cleanly (trace step \"execute\" row_count:0) and correctly found zero MAPS_TO edges from CAPEC-66 to any ATT&CK TaxonomyEntry \u2014 matching capec.expect_empty. The attack sub-question (q2), which depended on q1's seed ids, was correctly skipped with an honest dependency-skip trace (\"producer q1: it returned no join values\"), matching attack.expect_dependency_skip. The narrative/answer (\"The routed sources returned no matching records for this question... name it or give its id\") makes no fabricated correlation, no invented technique/mitigation ids, and both abstention statements are traceable to the executed (or skipped) queries in logic_flow. deterministic_scores.correlation confirms negative=true, exact=true, precision/recall/f1=1.0. No entities were required to be surfaced (must_correlate=[]), so gold_expected=0 and the answer surfaces 0 fabricated ids, i.e. gold_present=0/0 \u2014 fully compliant with the negative-case bar."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-DEP-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative case: CAPEC-91 is deprecated/excluded at load, and gold asserts expect_empty=true with an empty expected list. The evidence trace shows the query 'g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...' for seed_ids=[\"CAPEC-91\"] executed cleanly (execute step ok=true, row_count=0) and the normalize step also confirms record_count=0. The pipeline correctly abstained: narrative states 'The routed sources returned no matching records for this question' and the abstention explicitly names the query and confirms it 'ran cleanly and returned no matching records' for CAPEC-91. No records or claims were fabricated (claims=[], records=[]), and the answer does not invent any CAPEC-91 attributes, aliases, or relationships. This matches the gold requirement exactly — correct abstention on a deliberately excluded/deprecated id — so all dimensions score 1.0."
+}

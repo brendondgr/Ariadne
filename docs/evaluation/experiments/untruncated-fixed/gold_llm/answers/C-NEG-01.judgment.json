@@ -1,0 +1,12 @@
+{
+  "case_id": "C-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (assertions.expect_empty=true, ex_gold.expected=[]) for a nonexistent CAPEC-99999 lookup. The retrieval trace shows the Gremlin query executed cleanly (ok=true, row_count=0) and logic_flow.results[0].records is empty, confirming there is genuinely nothing to surface. The answer's narrative correctly abstains ('The routed sources returned no matching records for this question') and claims=[] with an explicit abstention entry citing the executed query and zero-match outcome. The example ids offered in the narrative (T1566, M1017, CAPEC-98) are generic format hints for the analyst to retry with a real id, not fabricated facts about CAPEC-99999 itself, so they are not hallucinations. No entities were invented; the answer fully matches the negative-case gold expectation."
+}

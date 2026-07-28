@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires expect_no_correlation=true and expect_dependency_skip=true (CAPEC-66 has no MAPS_TO edge to any ATT&CK TaxonomyEntry in this evidence). The capec query executed cleanly, returned row_count=0 for seed CAPEC-66 (logic_flow.results[0]), and the attack sub-question q2 was correctly skipped as a dependency failure since q1 produced no join values (logic_flow.results[1], step='dependency', reasons='producer q1: it returned no join values'). The answer's claims array is empty and both abstentions accurately describe what happened (clean empty query for capec, dependency skip for attack) without inventing any T-number, mitigation, or correlation. deterministic_scores.correlation confirms negative=true, exact=true, n_expected=0, n_got=0. No fabricated entities or counts anywhere in the narrative/abstentions."
+}

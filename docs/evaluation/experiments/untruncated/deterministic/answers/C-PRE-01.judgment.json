@@ -1,0 +1,12 @@
+{
+  "case_id": "C-PRE-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 7,
+  "gold_present": 7,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-98 plus its 6 CAN_PRECEDE neighbors (CAPEC-543, 611, 630, 631, 632, 89). The evidence (logic_flow.results[0].records[0].related) contains exactly these 6 neighbors with matching names (SoundSquatting, Homograph Attack via Homoglyphs, Pharming, Counterfeit Websites, BitSquatting, TypoSquatting). The answer's claims (used as the graded answer since narrative/claims are identical here and there is no separate LLM narrative) enumerate all 6 ids in the capec:attack-pattern:NNN form matching the evidence's related[].id values (631,632,89,543,611,630), and the narrative names CAPEC-98 as 'Phishing' matching the record's name field. All 7 required ids (seed + 6 related) are surfaced with correct names; no id, name, or count is present that isn't in the evidence -- the '6 AttackPatterns' figure matches len(related)=6 exactly. No hallucinations found."
+}

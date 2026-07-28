@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty: must_correlate=[], expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true. The pipeline executed the correct capec_maps_to query seeded on CAPEC-18 (g.V().hasLabel('AttackPattern').has('id', within(['CAPEC-18']))...out('MAPS_TO')...taxonomy_name='ATTACK'), which correctly returned 0 rows (row_count 0 at execute/assess/normalize steps) since CAPEC-18 has no ATT&CK mapping. Sub-question q2 (mitigations) was correctly skipped via the dependency trace ('producer q1: it returned no join values') rather than fabricating a join. The answer's narrative/abstentions state plainly that no matching records were returned and that q2 was skipped because q1 produced no seed identifiers — no technique IDs, mitigation IDs, or correlations were invented. deterministic_scores.correlation shows negative=true, exact=true, precision/recall/f1=1.0, n_expected=0, n_got=0, consistent with a fully correct honest-empty result."
+}

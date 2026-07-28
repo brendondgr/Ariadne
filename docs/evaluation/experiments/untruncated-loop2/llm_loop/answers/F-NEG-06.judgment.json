@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty join: expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true, must_correlate=[]. The evidence confirms the capec query for CAPEC-18's MAPS_TO -> TaxonomyEntry(taxonomy_name=ATTACK) executed cleanly and returned row_count=0 (q1), and q2 (attack mitigations) was correctly skipped because its dependency q1 produced no join values, exactly matching the expect_dependency_skip assertion. The deterministic composer's narrative and claims (empty list) report no matching records and no fabricated correlation, with two abstentions whose statements accurately describe the executed/skipped queries. deterministic_scores.correlation shows negative=true, exact=true, precision/recall/f1=1.0, confirming an exact negative match. No technique IDs, mitigation IDs, or correlations were invented anywhere in the narrative or claims."
+}

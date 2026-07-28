@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an honest empty: expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true, must_correlate=[]. The evidence confirms the q1 CAPEC->ATT&CK MAPS_TO query for CAPEC-7 executed cleanly (traces show gate/execute/assess all ok) and returned row_count 0, and q2 (ATT&CK mitigations) was correctly skipped because its seed producer q1 yielded no join values (dependency trace: 'producer q1: it returned no join values'). The answer's narrative and abstentions state exactly this: no matching records for either source, with the capec abstention citing the executed query and zero rows, and the attack abstention citing the dependency skip. No claims were fabricated, no CAPEC-7-to-ATT&CK correlation was invented, and no technique/mitigation ids were surfaced. This matches the deterministic_scores block (correlation.negative=true, exact=true, precision/recall/f1=1.0) and is a textbook correct abstention for an F-NEG adversarial case."
+}

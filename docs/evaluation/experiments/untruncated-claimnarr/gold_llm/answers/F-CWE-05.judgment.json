@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 43,
+  "gold_present": 43,
+  "hallucinations": [],
+  "rationale": "The answer (narrative + claims, deterministic arm) surfaces all 8 required CAPEC ids (CAPEC-49, CAPEC-55, CAPEC-70, CAPEC-112, CAPEC-509, CAPEC-555, CAPEC-561, CAPEC-565), each explicitly linked to CWE-521 via an enumeration claim, matching gold.capec.must_include_ids and must_include_related exactly. All 10 required ATT&CK technique ids (T1021, T1021.002, T1078.001, T1110, T1110.001, T1110.002, T1110.003, T1114.002, T1133, T1558.003) are present, matching gold.attack min_records=max_records=10 exactly. All 10 must_correlate T-numbers are stated as explicit correlation claims citing the correct joining CAPEC id (e.g. 'T1021 is corroborated across attack and capec' citing CAPEC-555 and attack T1021, which matches CAPEC-555's join_values=['T1021','T1114.002','T1133'] in the evidence). The union of mitigation ids across the per-technique enumeration claims (M1018, M1021, M1026, M1027, M1030, M1032, M1035, M1036, M1037, M1041, M1042, M1047, M1051, M1060) is exactly the 14-item gold.attack.must_include_related set -- a perfect match with no omissions. Counting distinct requirements: 8 CAPEC ids + 1 CWE-521 relation + 10 ATT&CK ids + 14 mitigation ids + 10 must_correlate T-numbers = 43 total, all 43 satisfied. Cross-checked every stated Abstraction/Status pair (e.g. CAPEC-565 Detailed/Draft, CAPEC-112 Meta/Draft, CAPEC-555 Standard/Stable, CAPEC-509 Detailed/Stable) and every related-item count (e.g. T1021 lists 6 related mitigations M1042/M1047/M1032/M1018/M1027/M1035, T1133 lists 5: M1035/M1021/M1030/M1032/M1042) against logic_flow['results'][0]['records'] properties/related and logic_flow['results'][1]['records'] properties/related, and every value is verbatim-correct against the retrieved evidence -- no invented abstraction, status, count, name, or alias was found. Zero hallucinations, full grounding, full completeness."
+}

@@ -1,0 +1,282 @@
+{
+  "id": "C-CWE2-01",
+  "kind": "capec",
+  "tier": "medium",
+  "category": "C-CWE2",
+  "question": "Which CWE weaknesses does CAPEC-600 target?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "CAPEC-600"
+      ],
+      "must_include_related": [
+        "CWE-262",
+        "CWE-263",
+        "CWE-307",
+        "CWE-308",
+        "CWE-309",
+        "CWE-522",
+        "CWE-654"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "CWE-262",
+        "CWE-263",
+        "CWE-307",
+        "CWE-308",
+        "CWE-309",
+        "CWE-522",
+        "CWE-654"
+      ],
+      "scheme": "capec"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "CAPEC-600, labeled as Credential Stuffing with a Standard abstraction and Stable status, targets seven CWE weaknesses. The specific weaknesses it exploits are CWE-262, CWE-263, CWE-307, CWE-308, CWE-309, CWE-522, and CWE-654. These relationships are directly corroborated by the retrieved graph records linking the attack pattern to each weakness identifier.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-600.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-600"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-600"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-600 (Credential Stuffing) has Abstraction: Standard; Status: Stable.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-600"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-600"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-600 (Credential Stuffing) has 7 Weakness: CWE-262, CWE-263, CWE-307, CWE-308, CWE-309, CWE-522, CWE-654.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CWE-262",
+          "CWE-263",
+          "CWE-307",
+          "CWE-308",
+          "CWE-309",
+          "CWE-522",
+          "CWE-654"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-600"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "C-CWE2-01",
+      "source": "capec",
+      "text": "Which weaknesses does CAPEC-600 exploit?",
+      "entities": [
+        "AttackPattern",
+        "EXPLOITS_WEAKNESS",
+        "Weakness"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-600"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "C-CWE2-01",
+        "sub_question": "Which weaknesses does CAPEC-600 exploit?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"EXPLOITS_WEAKNESS\").hasLabel(\"Weakness\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-600.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "Weakness"
+              ],
+              "relationships": [
+                "EXPLOITS_WEAKNESS"
+              ],
+              "seed_ids": [
+                "CAPEC-600"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_neighbors",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"EXPLOITS_WEAKNESS\").hasLabel(\"Weakness\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+              "injected": [],
+              "timing_ms": 0.178
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 7,
+              "timing_ms": 6.0
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 7,
+              "timing_ms": 0.009
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.119
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-600",
+            "name": "Credential Stuffing",
+            "label": "AttackPattern",
+            "description": "An adversary tries known username/password combinations against different systems, applications, or services to gain additional authenticated access. Credential Stuffing attacks rely upon the fact that many users leverage the same username/password combination for multiple systems, applications, and services.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Credential Stuffing",
+              "description": "An adversary tries known username/password combinations against different systems, applications, or services to gain additional authenticated access. Credential Stuffing attacks rely upon the fact that many users leverage the same username/password combination for multiple systems, applications, and services.",
+              "id": "capec:attack-pattern:600",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "CWE-262",
+                "name": "CWE-262",
+                "label": "Weakness"
+              },
+              {
+                "id": "CWE-263",
+                "name": "CWE-263",
+                "label": "Weakness"
+              },
+              {
+                "id": "CWE-307",
+                "name": "CWE-307",
+                "label": "Weakness"
+              },
+              {
+                "id": "CWE-308",
+                "name": "CWE-308",
+                "label": "Weakness"
+              },
+              {
+                "id": "CWE-309",
+                "name": "CWE-309",
+                "label": "Weakness"
+              },
+              {
+                "id": "CWE-522",
+                "name": "CWE-522",
+                "label": "Weakness"
+              },
+              {
+                "id": "CWE-654",
+                "name": "CWE-654",
+                "label": "Weakness"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 8,
+      "found": 8,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 3,
+      "compliant": 3,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "gold_llm",
+  "run_meta": {
+    "planner": "gold-replay",
+    "synthesis": "llm",
+    "wall_s": 16.32
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 7
+  }
+}

@@ -1,0 +1,463 @@
+{
+  "id": "F-CTT-06",
+  "kind": "federated",
+  "tier": "medium",
+  "category": "F-CTT",
+  "question": "Which ATT&CK tactics do the techniques mapped from CAPEC-37 (Retrieve Embedded Sensitive Data) belong to?",
+  "gold": {
+    "assertions": {
+      "must_correlate": [
+        "T1005",
+        "T1552.004"
+      ],
+      "capec": {
+        "min_records": 1,
+        "must_include_ids": [
+          "CAPEC-37"
+        ],
+        "must_include_related": [
+          "T1005",
+          "T1552.004"
+        ]
+      },
+      "attack": {
+        "min_records": 2,
+        "max_records": 2,
+        "must_include_ids": [
+          "T1005",
+          "T1552.004"
+        ],
+        "must_include_related": [
+          "TA0006",
+          "TA0009"
+        ]
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 2
+  },
+  "answer": {
+    "headline": "Gathered 3 record(s) from 2 source(s); 2 cross-source correlation(s) on shared identifiers.",
+    "narrative": "CAPEC-37, or Retrieve Embedded Sensitive Data, maps to two ATT&CK techniques: T1005 (Data from Local System) and T1552.004 (Private Keys). These techniques belong to two distinct ATT&CK tactics. Specifically, T1005 is associated with the Collection tactic (TA0009), while T1552.004 falls under the Credential Access tactic (TA0006). Therefore, the techniques mapped from CAPEC-37 belong to the Collection and Credential Access tactics.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s) for CAPEC-37; ATT&CK mappings: T1005, T1552.004.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-37"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-37"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-37 (Retrieve Embedded Sensitive Data) has Abstraction: Detailed; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-37"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-37"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-37 (Retrieve Embedded Sensitive Data) has 2 TaxonomyEntrys: capec:taxonomy:ATTACK:1005, capec:taxonomy:ATTACK:1552.004.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "capec:taxonomy:ATTACK:1005",
+          "capec:taxonomy:ATTACK:1552.004"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-37"
+          }
+        ]
+      },
+      {
+        "text": "Found 2 ATT&CK record(s) including T1005, T1552.004.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1005",
+          "T1552.004"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1005"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1552.004"
+          }
+        ]
+      },
+      {
+        "text": "T1005 (Data from Local System) has 1 related item(s): TA0009.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "TA0009"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1005"
+          }
+        ]
+      },
+      {
+        "text": "T1552.004 (Private Keys) has 1 related item(s): TA0006.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "TA0006"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1552.004"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1005 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1005"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-37"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1005"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1552.004 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1552.004"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-37"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1552.004"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which ATT&CK techniques does CAPEC-37 map to?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "Which tactics do those techniques belong to?",
+        "seed_from": "q1"
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Which ATT&CK techniques does CAPEC-37 map to?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s) for CAPEC-37; ATT&CK mappings: T1005, T1552.004.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CAPEC-37"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_maps_to",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
+              "injected": [],
+              "timing_ms": 0.097
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2,
+              "timing_ms": 5.7
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2,
+              "timing_ms": 0.005
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.102
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-37",
+            "name": "Retrieve Embedded Sensitive Data",
+            "label": "AttackPattern",
+            "description": "An attacker examines a target system to find sensitive data that has been embedded within it. This information can reveal confidential contents, such as account numbers or individual keys/credentials that can be used as an intermediate step in a larger attack.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Retrieve Embedded Sensitive Data",
+              "description": "An attacker examines a target system to find sensitive data that has been embedded within it. This information can reveal confidential contents, such as account numbers or individual keys/credentials that can be used as an intermediate step in a larger attack.",
+              "id": "capec:attack-pattern:37",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1005",
+              "T1552.004"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1005",
+                "entry_id": "1005",
+                "name": "Data from Local System",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1552.004",
+                "entry_id": "1552.004",
+                "name": "Unsecured Credentials: Private Keys",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "Which tactics do those techniques belong to?",
+        "query": "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids RETURN t.attack_id AS technique_id, t.name AS technique_name, ta.attack_id AS in_tactic_id, ta.name AS in_tactic_name LIMIT 20000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 2 ATT&CK record(s) including T1005, T1552.004.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Tactic",
+                "Technique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1005",
+                "T1552.004"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "technique_tactics",
+              "query": "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids RETURN t.attack_id AS technique_id, t.name AS technique_name, ta.attack_id AS in_tactic_id, ta.name AS in_tactic_name LIMIT 20000",
+              "injected": [
+                "LIMIT 20000 appended (none present)"
+              ],
+              "timing_ms": 0.088
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2,
+              "timing_ms": 3.6
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2,
+              "timing_ms": 0.003
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 2,
+              "timing_ms": 2.101
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1005",
+            "name": "Data from Local System",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1005"
+            ],
+            "related": [
+              {
+                "id": "TA0009",
+                "name": "Collection",
+                "description": "The adversary is trying to gather data of interest to their goal.\n\nCollection consists of techniques adversaries may use to gather information and the sources information is collected from that are relevant to following through on the adversary's objectives. Frequently, the next goal after collecting data is to either steal (exfiltrate) the data or to use the data to gain more information about the target environment. Common target sources include various drive types, browsers, audio, video, and email. Common collection methods include capturing screenshots and keyboard input."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1552.004",
+            "name": "Private Keys",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1552.004"
+            ],
+            "related": [
+              {
+                "id": "TA0006",
+                "name": "Credential Access",
+                "description": "The adversary is trying to steal account names and passwords.\n\nCredential Access consists of techniques for stealing credentials like account names and passwords. Techniques used to get credentials include keylogging or credential dumping. Using legitimate credentials can give adversaries access to systems, make them harder to detect, and provide the opportunity to create more accounts to help achieve their goals."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 2,
+      "n_got": 2
+    },
+    "mapping_recall": {
+      "gold": 2,
+      "found": 2,
+      "recall": 1.0,
+      "missing": []
+    },
+    "coverage": null,
+    "provenance": {
+      "citations": 11,
+      "compliant": 11,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "gold_llm",
+  "run_meta": {
+    "planner": "gold-replay",
+    "synthesis": "llm",
+    "wall_s": 30.527
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 3,
+    "related": 4
+  }
+}

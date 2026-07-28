@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-03",
+  "verdict": "CORRECT",
+  "correctness": 0.97,
+  "faithfulness": 0.95,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 8,
+  "gold_present": 8,
+  "hallucinations": [],
+  "rationale": "Gold requires T1566 plus 7 related ids (DET0070, AN0188-AN0193). The narrative names all 8: 'detection strategy DET0070, which addresses phishing across platforms' matches the evidence description verbatim in substance; it explicitly names AN0188, AN0189, AN0190, AN0191, AN0192, AN0193 and correctly states there are 'six analytics' (matching the 6 Analytic records returned). The per-analytic descriptions are faithful paraphrases of the evidence (AN0191=Office macro delivery, AN0192=IdP login anomalies, AN0193=SaaS-delivered links/attachments all match evidence text closely; AN0188/189/190 are compressed into one summary sentence about 'email metadata, file creation, and network activity following malicious payload delivery', which is a reasonable generalization of AN0188/AN0189's near-identical descriptions and loosely covers AN0190's Mail-app/UnifiedLogs description, so it is a minor stylistic merge rather than a fabrication). No invented ids, counts, aliases, or dates were found. Note: the pipeline's own deterministic_scores.coverage (0.125) is misleadingly low because it only scores the single 'claims' entry's entity_ids/citations (T1566 only) and ignores the fully-populated narrative and the related[] evidence attached to the T1566 record; grading the narrative (per instructions, since it is the substantive answer) shows full coverage of the 7 required related ids plus the seed T1566."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty join: must_correlate=[], expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true. The q1 CAPEC trace shows the MAPS_TO query for AttackPattern CAPEC-116 executed cleanly (gate/execute/assess steps all ok) and returned row_count 0, correctly logged as an abstention rather than a fabricated technique correlation. The q2 ATT&CK sub-question correctly did not execute at all (query: \"\") because it depends on q1's seed identifiers, which were empty; its trace records step 'dependency' with reason 'producer q1: it returned no join values', matching expect_dependency_skip. The narrative states plainly that no matching records were returned and invites the analyst to supply a specific id, with zero claims and two abstentions citing the exact queries run/skipped. No technique ids, mitigation ids, or correlations are invented anywhere in the answer. deterministic_scores.correlation also self-reports negative=true, exact=true, f1=1.0, consistent with the evidence. This is a fully faithful, fully grounded, complete honest-negative response."
+}

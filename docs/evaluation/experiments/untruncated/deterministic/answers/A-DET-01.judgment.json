@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires the technique T1047 plus its two related detection entities DET0364 and AN1031 (must_include_ids=[T1047], must_include_related=[DET0364,AN1031]). The evidence (logic_flow.results[0].records[0]) shows exactly one T1047 record whose 'related' array contains DET0364 ('Behavioral Detection Strategy for WMI Execution Abuse on Windows') and AN1031 ('Analytic 1031', with its full description text). The answer's claims (used as the graded output since narrative is deterministic/thin) name T1047, DET0364, and AN1031 verbatim, and the enumeration claim correctly states there are 2 related items. No names, counts, or descriptions in the claims deviate from the evidence, and no id is asserted that isn't present in the retrieved record. All 3 gold-required ids are surfaced, so completeness is 1.0 and there is no fabricated content."
+}

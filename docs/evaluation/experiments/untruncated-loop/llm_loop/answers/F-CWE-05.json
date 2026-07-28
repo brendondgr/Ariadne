@@ -1,0 +1,1217 @@
+{
+  "id": "F-CWE-05",
+  "kind": "federated",
+  "tier": "hard",
+  "category": "F-CWE",
+  "question": "Which CAPEC patterns exploit weakness CWE-521, which ATT&CK techniques do they map to, and what mitigations apply?",
+  "gold": {
+    "assertions": {
+      "must_correlate": [
+        "T1021",
+        "T1021.002",
+        "T1078.001",
+        "T1110",
+        "T1110.001",
+        "T1110.002",
+        "T1110.003",
+        "T1114.002",
+        "T1133",
+        "T1558.003"
+      ],
+      "capec": {
+        "min_records": 1,
+        "must_include_ids": [
+          "CAPEC-49",
+          "CAPEC-55",
+          "CAPEC-70",
+          "CAPEC-112",
+          "CAPEC-509",
+          "CAPEC-555",
+          "CAPEC-561",
+          "CAPEC-565"
+        ],
+        "must_include_related": [
+          "CWE-521"
+        ]
+      },
+      "attack": {
+        "min_records": 10,
+        "max_records": 10,
+        "must_include_ids": [
+          "T1021",
+          "T1021.002",
+          "T1078.001",
+          "T1110",
+          "T1110.001",
+          "T1110.002",
+          "T1110.003",
+          "T1114.002",
+          "T1133",
+          "T1558.003"
+        ],
+        "must_include_related": [
+          "M1018",
+          "M1021",
+          "M1026",
+          "M1027",
+          "M1030",
+          "M1032",
+          "M1035",
+          "M1036",
+          "M1037",
+          "M1041",
+          "M1042",
+          "M1047",
+          "M1051",
+          "M1060"
+        ]
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 3
+  },
+  "answer": {
+    "headline": "Gathered 18 record(s) from 2 source(s); 10 cross-source correlation(s) on shared identifiers.",
+    "narrative": "Eight CAPEC patterns exploit weakness CWE-521: CAPEC-112 (Brute Force, Abstraction: Meta, Status: Draft), CAPEC-49 (Password Brute Forcing, Abstraction: Standard, Status: Draft), CAPEC-509 (Kerberoasting, Abstraction: Detailed, Status: Stable), CAPEC-55 (Rainbow Table Password Cracking, Abstraction: Detailed, Status: Draft), CAPEC-555 (Remote Services with Stolen Credentials, Abstraction: Standard, Status: Stable), CAPEC-561 (Windows Admin Shares with Stolen Credentials, Abstraction: Detailed, Status: Draft), CAPEC-565 (Password Spraying, Abstraction: Detailed, Status: Draft), and CAPEC-70 (Try Common or Default Usernames and Passwords, Abstraction: Detailed, Status: Draft). These patterns map to ten ATT&CK techniques that are corroborated across both the attack and capec sources: T1021, T1021.002, T1078.001, T1110, T1110.001, T1110.002, T1110.003, T1114.002, T1133, and T1558.003. The mitigations associated with these techniques include M1018 (User Account Management), M1021 (Restrict Web-Based Content), M1026 (Privileged Account Management), M1027 (Password Policies), M1030 (Network Segmentation), M1032 (Multi-factor Authentication), M1035 (Limit Access to Resource Over Network), M1036 (Account Use Policies), M1037 (Filter Network Traffic), M1041 (Encrypt Sensitive Information), M1042 (Disable or Remove Feature or Program), M1047 (Audit), M1051 (Update Software), and M1060 (Out-of-Band Communications Channel).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 8 CAPEC record(s) for CAPEC-112, CAPEC-49, CAPEC-509, CAPEC-55, CAPEC-555 … (+3 more); ATT&CK mappings: T1021, T1021.002, T1078.001, T1110, T1110.001.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-565",
+          "CAPEC-70",
+          "CAPEC-112",
+          "CAPEC-555",
+          "CAPEC-561",
+          "CAPEC-55",
+          "CAPEC-49",
+          "CAPEC-509"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-565"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-70"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-112"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-555"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-561"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-55"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-49"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-509"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-565 (Password Spraying) has Abstraction: Detailed; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-565"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-565"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-70 (Try Common or Default Usernames and Passwords) has Abstraction: Detailed; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-70"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-70"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-112 (Brute Force) has Abstraction: Meta; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-112"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-112"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-555 (Remote Services with Stolen Credentials) has Abstraction: Standard; Status: Stable.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-555"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-555"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-561 (Windows Admin Shares with Stolen Credentials) has Abstraction: Detailed; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-561"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-561"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-55 (Rainbow Table Password Cracking) has Abstraction: Detailed; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-55"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-55"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-49 (Password Brute Forcing) has Abstraction: Standard; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-49"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-49"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-509 (Kerberoasting) has Abstraction: Detailed; Status: Stable.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-509"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-509"
+          }
+        ]
+      },
+      {
+        "text": "Found 10 ATT&CK record(s) including T1110.001, T1133, T1110.002 and more.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1110.001",
+          "T1133",
+          "T1110.002",
+          "T1021.002",
+          "T1021",
+          "T1078.001",
+          "T1110.003",
+          "T1110",
+          "T1114.002",
+          "T1558.003"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1110.001"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1133"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1110.002"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1021.002"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1021"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1078.001"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1110.003"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1110"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1114.002"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1558.003"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1021 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1021"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-555"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1021"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1021.002 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1021.002"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-561"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1021.002"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1078.001 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1078.001"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-70"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1078.001"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1110 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1110"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-112"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1110"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1110.001 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1110.001"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-49"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1110.001"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1110.002 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1110.002"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-55"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1110.002"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1110.003 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1110.003"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-565"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1110.003"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1114.002 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1114.002"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-555"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1114.002"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1133 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1133"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-555"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1133"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1558.003 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1558.003"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-509"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1558.003"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which attack patterns exploit CWE-521 and which ATT&CK techniques do they map to?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What mitigations does ATT&CK list for those mapped techniques?",
+        "seed_from": "q1"
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Retrieve AttackPattern nodes that are linked to a Weakness node with identifier 'CWE-521'. Return the AttackPattern names and IDs.",
+        "query": "g.V().hasLabel(\"Weakness\").has(\"id\", within(cweIds)).as(\"w\").in(\"EXPLOITS_WEAKNESS\").hasLabel(\"AttackPattern\").as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"w\",\"ap\",\"tax\").by(elementMap()).limit(500)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 8 CAPEC record(s) for CAPEC-112, CAPEC-49, CAPEC-509, CAPEC-55, CAPEC-555 … (+3 more); ATT&CK mappings: T1021, T1021.002, T1078.001, T1110, T1110.001.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "Weakness",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CWE-521"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "cwe_chain",
+              "query": "g.V().hasLabel(\"Weakness\").has(\"id\", within(cweIds)).as(\"w\").in(\"EXPLOITS_WEAKNESS\").hasLabel(\"AttackPattern\").as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"w\",\"ap\",\"tax\").by(elementMap()).limit(500)",
+              "injected": [],
+              "timing_ms": 0.114
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 10,
+              "timing_ms": 14.0
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 10,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 8,
+              "timing_ms": 0.13
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-565",
+            "name": "Password Spraying",
+            "label": "AttackPattern",
+            "description": "In a Password Spraying attack, an adversary tries a small list (e.g. 3-5) of common or expected passwords, often matching the target's complexity policy, against a known list of user accounts to gain valid credentials. The adversary tries a particular password for each user account, before moving onto the next password in the list. This approach assists the adversary in remaining undetected by avoiding rapid or frequent account lockouts. The adversary may then reattempt the process with additional passwords, once enough time has passed to prevent inducing a lockout.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Password Spraying",
+              "description": "In a Password Spraying attack, an adversary tries a small list (e.g. 3-5) of common or expected passwords, often matching the target's complexity policy, against a known list of user accounts to gain valid credentials. The adversary tries a particular password for each user account, before moving onto the next password in the list. This approach assists the adversary in remaining undetected by avoiding rapid or frequent account lockouts. The adversary may then reattempt the process with additional passwords, once enough time has passed to prevent inducing a lockout.",
+              "id": "capec:attack-pattern:565",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1110.003"
+            ],
+            "related": [
+              {
+                "id": "CWE-521"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-70",
+            "name": "Try Common or Default Usernames and Passwords",
+            "label": "AttackPattern",
+            "description": "An adversary may try certain common or default usernames and passwords to gain access into the system and perform unauthorized actions. An adversary may try an intelligent brute force using empty passwords, known vendor default credentials, as well as a dictionary of common usernames and passwords. Many vendor products come preconfigured with default (and thus well-known) usernames and passwords that should be deleted prior to usage in a production environment. It is a common mistake to forget to remove these default login credentials. Another problem is that users would pick very simple (common) passwords (e.g. \"secret\" or \"password\") that make it easier for the attacker to gain access to the system compared to using a brute force attack or even a dictionary attack using a full dictionary.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Try Common or Default Usernames and Passwords",
+              "description": "An adversary may try certain common or default usernames and passwords to gain access into the system and perform unauthorized actions. An adversary may try an intelligent brute force using empty passwords, known vendor default credentials, as well as a dictionary of common usernames and passwords. Many vendor products come preconfigured with default (and thus well-known) usernames and passwords that should be deleted prior to usage in a production environment. It is a common mistake to forget to remove these default login credentials. Another problem is that users would pick very simple (common) passwords (e.g. \"secret\" or \"password\") that make it easier for the attacker to gain access to the system compared to using a brute force attack or even a dictionary attack using a full dictionary.",
+              "id": "capec:attack-pattern:70",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1078.001"
+            ],
+            "related": [
+              {
+                "id": "CWE-521"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-112",
+            "name": "Brute Force",
+            "label": "AttackPattern",
+            "description": "In this attack, some asset (information, functionality, identity, etc.) is protected by a finite secret value. The attacker attempts to gain access to this asset by using trial-and-error to exhaustively explore all the possible secret values in the hope of finding the secret (or a value that is functionally equivalent) that will unlock the asset.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Brute Force",
+              "description": "In this attack, some asset (information, functionality, identity, etc.) is protected by a finite secret value. The attacker attempts to gain access to this asset by using trial-and-error to exhaustively explore all the possible secret values in the hope of finding the secret (or a value that is functionally equivalent) that will unlock the asset.",
+              "id": "capec:attack-pattern:112",
+              "Abstraction": "Meta"
+            },
+            "facets": [],
+            "join_values": [
+              "T1110"
+            ],
+            "related": [
+              {
+                "id": "CWE-521"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-555",
+            "name": "Remote Services with Stolen Credentials",
+            "label": "AttackPattern",
+            "description": "This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Remote Services with Stolen Credentials",
+              "description": "This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
+              "id": "capec:attack-pattern:555",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [
+              "T1021",
+              "T1114.002",
+              "T1133"
+            ],
+            "related": [
+              {
+                "id": "CWE-521"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-561",
+            "name": "Windows Admin Shares with Stolen Credentials",
+            "label": "AttackPattern",
+            "description": "An adversary guesses or obtains (i.e. steals or purchases) legitimate Windows administrator credentials (e.g. userID/password) to access Windows Admin Shares on a local machine or within a Windows domain.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Windows Admin Shares with Stolen Credentials",
+              "description": "An adversary guesses or obtains (i.e. steals or purchases) legitimate Windows administrator credentials (e.g. userID/password) to access Windows Admin Shares on a local machine or within a Windows domain.",
+              "id": "capec:attack-pattern:561",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1021.002"
+            ],
+            "related": [
+              {
+                "id": "CWE-521"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-55",
+            "name": "Rainbow Table Password Cracking",
+            "label": "AttackPattern",
+            "description": "An attacker gets access to the database table where hashes of passwords are stored. They then use a rainbow table of pre-computed hash chains to attempt to look up the original password. Once the original password corresponding to the hash is obtained, the attacker uses the original password to gain access to the system.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Rainbow Table Password Cracking",
+              "description": "An attacker gets access to the database table where hashes of passwords are stored. They then use a rainbow table of pre-computed hash chains to attempt to look up the original password. Once the original password corresponding to the hash is obtained, the attacker uses the original password to gain access to the system.",
+              "id": "capec:attack-pattern:55",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1110.002"
+            ],
+            "related": [
+              {
+                "id": "CWE-521"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-49",
+            "name": "Password Brute Forcing",
+            "label": "AttackPattern",
+            "description": "An adversary tries every possible value for a password until they succeed. A brute force attack, if feasible computationally, will always be successful because it will essentially go through all possible passwords given the alphabet used (lower case letters, upper case letters, numbers, symbols, etc.) and the maximum length of the password.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Password Brute Forcing",
+              "description": "An adversary tries every possible value for a password until they succeed. A brute force attack, if feasible computationally, will always be successful because it will essentially go through all possible passwords given the alphabet used (lower case letters, upper case letters, numbers, symbols, etc.) and the maximum length of the password.",
+              "id": "capec:attack-pattern:49",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [
+              "T1110.001"
+            ],
+            "related": [
+              {
+                "id": "CWE-521"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-509",
+            "name": "Kerberoasting",
+            "label": "AttackPattern",
+            "description": "Through the exploitation of how service accounts leverage Kerberos authentication with Service Principal Names (SPNs), the adversary obtains and subsequently cracks the hashed credentials of a service account target to exploit its privileges. The Kerberos authentication protocol centers around a ticketing system which is used to request/grant access to services and to then access the requested services. As an authenticated user, the adversary may request Active Directory and obtain a service ticket with portions encrypted via RC4 with the private key of the authenticated account. By extracting the local ticket and saving it disk, the adversary can brute force the hashed value to reveal the target account credentials.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Kerberoasting",
+              "description": "Through the exploitation of how service accounts leverage Kerberos authentication with Service Principal Names (SPNs), the adversary obtains and subsequently cracks the hashed credentials of a service account target to exploit its privileges. The Kerberos authentication protocol centers around a ticketing system which is used to request/grant access to services and to then access the requested services. As an authenticated user, the adversary may request Active Directory and obtain a service ticket with portions encrypted via RC4 with the private key of the authenticated account. By extracting the local ticket and saving it disk, the adversary can brute force the hashed value to reveal the target account credentials.",
+              "id": "capec:attack-pattern:509",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1558.003"
+            ],
+            "related": [
+              {
+                "id": "CWE-521"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "Retrieve Technique and SubTechnique nodes that are mapped to by the AttackPatterns from q1, and fetch their associated Mitigation nodes.",
+        "query": "MATCH (t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 500",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 10 ATT&CK record(s) including T1110.001, T1133, T1110.002 and more.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "SubTechnique",
+                "Mitigation"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1021",
+                "T1021.002",
+                "T1078.001",
+                "T1110",
+                "T1110.001",
+                "T1110.002",
+                "T1110.003",
+                "T1114.002",
+                "T1133",
+                "T1558.003"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "technique_mitigations",
+              "query": "MATCH (t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 500",
+              "injected": [
+                "LIMIT 500 appended (none present)"
+              ],
+              "timing_ms": 0.092
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 36,
+              "timing_ms": 36.3
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 36,
+              "timing_ms": 0.01
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 10,
+              "timing_ms": 2.848
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1110.001",
+            "name": "Password Guessing",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1110.001"
+            ],
+            "related": [
+              {
+                "id": "M1036",
+                "name": "Account Use Policies",
+                "description": "Account Use Policies help mitigate unauthorized access by configuring and enforcing rules that govern how and when accounts can be used. These policies include enforcing account lockout mechanisms, restricting login times, and setting inactivity timeouts. Proper configuration of these policies reduces the risk of brute-force attacks, credential theft, and unauthorized access by limiting the opportunities for malicious actors to exploit accounts. This mitigation can be implemented through the following measures:\n\nAccount Lockout Policies:\n\n- Implementation: Configure account lockout settings so that after a defined number of failed login attempts (e.g., 3-5 attempts), the account is locked for a specific time period (e.g., 15 minutes) or requires an administrator to unlock it.\n- Use Case: This prevents brute-force attacks by limiting how many incorrect password attempts can be made before the account is temporarily disabled, reducing the likelihood of an attacker successfully guessing a password.\n\nLogin Time Restrictions:\n\n- Implementation: Set up login time policies to restrict when users or groups can log into systems. For example, only allowing login during standard business hours (e.g., 8 AM to 6 PM) for non-administrative accounts.\n- Use Case: This prevents unauthorized access outside of approved working hours, where login attempts might be more suspicious or harder to monitor. For example, if an account that is only supposed to be active during the day logs in at 2 AM, it should raise an alert or be blocked.\n\nInactivity Timeout and Session Termination:\n\n- Implementation: Enforce session timeouts after a period of inactivity (e.g., 10-15 minutes) and require users to re-authenticate if they wish to resume the session.\n- Use Case: This policy prevents attackers from hijacking active sessions left unattended. For example, if an employee walks away from their computer without locking it, an attacker with physical access to the system would be unable to exploit the session.\n\nPassword Aging Policies:\n\n- Implementation: Enforce password aging rules, requiring users to change their passwords after a defined period (e.g., 90 days) and ensure passwords are not reused by maintaining a password history.\n- Use Case: This limits the risk of compromised passwords being used indefinitely. Regular password changes make it more difficult for attackers to reuse stolen credentials.\n\nAccount Expiration and Deactivation:\n\n- Implementation: Configure user accounts, especially for temporary or contract workers, to automatically expire after a set date or event. Accounts that remain unused for a specific period should be deactivated automatically.\n- Use Case: This prevents dormant accounts from becoming an attack vector. For example, an attacker can exploit unused accounts if they are not properly monitored or deactivated.\n\n**Tools for Implementation**:\n\n- Group Policy Objects (GPOs) in Windows: To enforce account lockout thresholds, login time restrictions, session timeouts, and password policies.\n- Identity and Access Management (IAM) solutions: For centralized management of user accounts, session policies, and automated deactivation of accounts.\n- Security Information and Event Management (SIEM) platforms: To monitor and alert on unusual login activity, such as failed logins or out-of-hours access attempts.\n- Multi-Factor Authentication (MFA) Tools: To further enforce secure login attempts, preventing brute-force or credential stuffing attacks.\n"
+              },
+              {
+                "id": "M1051",
+                "name": "Update Software",
+                "description": "Software updates ensure systems are protected against known vulnerabilities by applying patches and upgrades provided by vendors. Regular updates reduce the attack surface and prevent adversaries from exploiting known security gaps. This includes patching operating systems, applications, drivers, and firmware. This mitigation can be implemented through the following measures:\n\nRegular Operating System Updates\n\n- Implementation: Apply the latest Windows security updates monthly using WSUS (Windows Server Update Services) or a similar patch management solution. Configure systems to check for updates automatically and schedule reboots during maintenance windows.\n- Use Case: Prevents exploitation of OS vulnerabilities such as privilege escalation or remote code execution.\n\nApplication Patching\n\n- Implementation: Monitor Apache's update release notes for security patches addressing vulnerabilities. Schedule updates for off-peak hours to avoid downtime while maintaining security compliance.\n- Use Case: Prevents exploitation of web application vulnerabilities, such as those leading to unauthorized access or data breaches.\n\nFirmware Updates\n\n- Implementation: Regularly check the vendor’s website for firmware updates addressing vulnerabilities. Plan for update deployment during scheduled maintenance to minimize business disruption.\n- Use Case: Protects against vulnerabilities that adversaries could exploit to gain access to network devices or inject malicious traffic.\n\nEmergency Patch Deployment\n\n- Implementation: Use the emergency patch deployment feature of the organization's patch management tool to apply updates to all affected Exchange servers within 24 hours.\n- Use Case: Reduces the risk of exploitation by rapidly addressing critical vulnerabilities.\n\nCentralized Patch Management\n\n- Implementation: Implement a centralized patch management system, such as SCCM or ManageEngine, to automate and track patch deployment across all environments. Generate regular compliance reports to ensure all systems are updated.\n- Use Case: Streamlines patching processes and ensures no critical systems are missed.\n\n*Tools for Implementation*\n\nPatch Management Tools:\n\n- WSUS: Manage and deploy Microsoft updates across the organization.\n- ManageEngine Patch Manager Plus: Automate patch deployment for OS and third-party apps.\n- Ansible: Automate updates across multiple platforms, including Linux and Windows.\n\nVulnerability Scanning Tools:\n\n- OpenVAS: Open-source vulnerability scanning to identify missing patches."
+              },
+              {
+                "id": "M1032",
+                "name": "Multi-factor Authentication",
+                "description": "Multi-Factor Authentication (MFA) enhances security by requiring users to provide at least two forms of verification to prove their identity before granting access. These factors typically include:\n\n- *Something you know*: Passwords, PINs.\n- *Something you have*: Physical tokens, smartphone authenticator apps.\n- *Something you are*: Biometric data such as fingerprints, facial recognition, or retinal scans.\n\nImplementing MFA across all critical systems and services ensures robust protection against account takeover and unauthorized access. This mitigation can be implemented through the following measures:\n\nIdentity and Access Management (IAM):\n\n- Use IAM solutions like Azure Active Directory, Okta, or AWS IAM to enforce MFA policies for all user logins, especially for privileged roles.\n- Enable conditional access policies to enforce MFA for risky sign-ins (e.g., unfamiliar devices, geolocations).\n- Enable Conditional Access policies to only allow logins from trusted devices, such as those enrolled in Intune or joined via Hybrid/Entra.\n\nAuthentication Tools and Methods:\n\n- Use authenticator applications such as Google Authenticator, Microsoft Authenticator, or Authy for time-based one-time passwords (TOTP).\n- Deploy hardware-based tokens like YubiKey, RSA SecurID, or smart cards for additional security.\n- Enforce biometric authentication for compatible devices and applications.\n\nSecure Legacy Systems:\n\n- Integrate MFA solutions with older systems using third-party tools like Duo Security or Thales SafeNet.\n- Enable RADIUS/NPS servers to facilitate MFA for VPNs, RDP, and other network logins.\n\nMonitoring and Alerting:\n\n- Use SIEM tools to monitor failed MFA attempts, login anomalies, or brute-force attempts against MFA systems.\n- Implement alerts for suspicious MFA activities, such as repeated failed codes or new device registrations.\n\nTraining and Policy Enforcement:\n\n- Educate employees on the importance of MFA and secure authenticator usage.\n- Enforce policies that require MFA on all critical systems, especially for remote access, privileged accounts, and cloud applications."
+              },
+              {
+                "id": "M1027",
+                "name": "Password Policies",
+                "description": "Set and enforce secure password policies for accounts to reduce the likelihood of unauthorized access. Strong password policies include enforcing password complexity, requiring regular password changes, and preventing password reuse. This mitigation can be implemented through the following measures:\n\nWindows Systems:\n\n- Use Group Policy Management Console (GPMC) to configure:\n    - Minimum password length (e.g., 12+ characters).\n    - Password complexity requirements.\n    - Password history (e.g., disallow last 24 passwords).\n    - Account lockout duration and thresholds.\n\nLinux Systems:\n\n- Configure Pluggable Authentication Modules (PAM):\n- Use `pam_pwquality` to enforce complexity and length requirements.\n- Implement `pam_tally2` or `pam_faillock` for account lockouts.\n- Use `pwunconv` to disable password reuse.\n\nPassword Managers:\n\n- Enforce usage of enterprise password managers (e.g., Bitwarden, 1Password, LastPass) to generate and store strong passwords.\n\nPassword Blacklisting:\n\n- Use tools like Have I Been Pwned password checks or NIST-based blacklist solutions to prevent users from setting compromised passwords.\n\nRegular Auditing:\n\n- Periodically audit password policies and account configurations to ensure compliance using tools like LAPS (Local Admin Password Solution) and vulnerability scanners.\n\n*Tools for Implementation*\n\nWindows:\n\n- Group Policy Management Console (GPMC): Enforce password policies.\n- Microsoft Local Administrator Password Solution (LAPS): Enforce random, unique admin passwords.\n\nLinux/macOS:\n\n- PAM Modules (pam_pwquality, pam_tally2, pam_faillock): Enforce password rules.\n- Lynis: Audit password policies and system configurations.\n\nCross-Platform:\n\n- Password Managers (Bitwarden, 1Password, KeePass): Manage and enforce strong passwords.\n- Have I Been Pwned API: Prevent the use of breached passwords.\n- NIST SP 800-63B compliant tools: Enforce password guidelines and blacklisting."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1133",
+            "name": "External Remote Services",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1133"
+            ],
+            "related": [
+              {
+                "id": "M1035",
+                "name": "Limit Access to Resource Over Network",
+                "description": "Restrict access to network resources, such as file shares, remote systems, and services, to only those users, accounts, or systems with a legitimate business requirement. This can include employing technologies like network concentrators, RDP gateways, and zero-trust network access (ZTNA) models, alongside hardening services and protocols. This mitigation can be implemented through the following measures:\n\nAudit and Restrict Access:\n\n- Regularly audit permissions for file shares, network services, and remote access tools.\n- Remove unnecessary access and enforce least privilege principles for users and services.\n- Use Active Directory and IAM tools to restrict access based on roles and attributes.\n\nDeploy Secure Remote Access Solutions:\n\n- Use RDP gateways, VPN concentrators, and ZTNA solutions to aggregate and secure remote access connections.\n- Configure access controls to restrict connections based on time, device, and user identity.\n- Enforce MFA for all remote access mechanisms.\n\nDisable Unnecessary Services:\n\n- Identify running services using tools like netstat (Windows/Linux) or Nmap.\n- Disable unused services, such as Telnet, FTP, and legacy SMB, to reduce the attack surface.\n- Use firewall rules to block traffic on unused ports and protocols.\n\nNetwork Segmentation and Isolation:\n\n- Use VLANs, firewalls, or micro-segmentation to isolate critical network resources from general access.\n- Restrict communication between subnets to prevent lateral movement.\n\nMonitor and Log Access:\n\n- Monitor access attempts to file shares, RDP, and remote network resources using SIEM tools.\n- Enable auditing and logging for successful and failed attempts to access restricted resources.\n\n*Tools for Implementation*\n\nFile Share Management:\n\n- Microsoft Active Directory Group Policies\n- Samba (Linux/Unix file share management)\n- AccessEnum (Windows access auditing tool)\n\nSecure Remote Access:\n\n- Microsoft Remote Desktop Gateway\n- Apache Guacamole (open-source RDP/VNC gateway)\n- Zero Trust solutions: Tailscale, Cloudflare Zero Trust\n\nService and Protocol Hardening:\n\n- Nmap or Nessus for network service discovery\n- Windows Group Policy Editor for disabling SMBv1, Telnet, and legacy protocols\n- iptables or firewalld (Linux) for blocking unnecessary traffic\n\nNetwork Segmentation:\n\n- pfSense for open-source network isolation"
+              },
+              {
+                "id": "M1021",
+                "name": "Restrict Web-Based Content",
+                "description": "Restricting web-based content involves enforcing policies and technologies that limit access to potentially malicious websites, unsafe downloads, and unauthorized browser behaviors. This can include URL filtering, download restrictions, script blocking, and extension control to protect against exploitation, phishing, and malware delivery. This mitigation can be implemented through the following measures:\n\nDeploy Web Proxy Filtering:\n\n- Use solutions to filter web traffic based on categories, reputation, and content types.\n- Enforce policies that block unsafe websites or file types at the gateway level.\n\nEnable DNS-Based Filtering:\n\n- Implement tools to restrict access to domains associated with malware or phishing campaigns.\n- Use public DNS filtering services to enhance protection.\n\nEnforce Content Security Policies (CSP):\n\n- Configure CSP headers on internal and external web applications to restrict script execution, iframe embedding, and cross-origin requests.\n\nControl Browser Features:\n\n- Disable unapproved browser features like automatic downloads, developer tools, or unsafe scripting.\n- Enforce policies through tools like Group Policy Management to control browser settings.\n\nMonitor and Alert on Web-Based Threats:\n\n- Use SIEM tools to collect and analyze web proxy logs for signs of anomalous or malicious activity.\n- Configure alerts for access attempts to blocked domains or repeated file download failures."
+              },
+              {
+                "id": "M1030",
+                "name": "Network Segmentation",
+                "description": "Network segmentation involves dividing a network into smaller, isolated segments to control and limit the flow of traffic between devices, systems, and applications. By segmenting networks, organizations can reduce the attack surface, restrict lateral movement by adversaries, and protect critical assets from compromise.\n\nEffective network segmentation leverages a combination of physical boundaries, logical separation through VLANs, and access control policies enforced by network appliances like firewalls, routers, and cloud-based configurations. This mitigation can be implemented through the following measures:\n\nSegment Critical Systems:\n\n- Identify and group systems based on their function, sensitivity, and risk. Examples include payment systems, HR databases, production systems, and internet-facing servers.\n- Use VLANs, firewalls, or routers to enforce logical separation.\n\nImplement DMZ for Public-Facing Services:\n\n- Host web servers, DNS servers, and email servers in a DMZ to limit their access to internal systems.\n- Apply strict firewall rules to filter traffic between the DMZ and internal networks.\n\nUse Cloud-Based Segmentation:\n\n- In cloud environments, use VPCs, subnets, and security groups to isolate applications and enforce traffic rules.\n- Apply AWS Transit Gateway or Azure VNet peering for controlled connectivity between cloud segments.\n\nApply Microsegmentation for Workloads:\n\n- Use software-defined networking (SDN) tools to implement workload-level segmentation and prevent lateral movement.\n\nRestrict Traffic with ACLs and Firewalls:\n\n- Apply Access Control Lists (ACLs) to network devices to enforce \"deny by default\" policies.\n- Use firewalls to restrict both north-south (external-internal) and east-west (internal-internal) traffic.\n\nMonitor and Audit Segmented Networks:\n\n- Regularly review firewall rules, ACLs, and segmentation policies.\n- Monitor network flows for anomalies to ensure segmentation is effective.\n\nTest Segmentation Effectiveness:\n\n- Perform periodic penetration tests to verify that unauthorized access is blocked between network segments."
+              },
+              {
+                "id": "M1032",
+                "name": "Multi-factor Authentication",
+                "description": "Multi-Factor Authentication (MFA) enhances security by requiring users to provide at least two forms of verification to prove their identity before granting access. These factors typically include:\n\n- *Something you know*: Passwords, PINs.\n- *Something you have*: Physical tokens, smartphone authenticator apps.\n- *Something you are*: Biometric data such as fingerprints, facial recognition, or retinal scans.\n\nImplementing MFA across all critical systems and services ensures robust protection against account takeover and unauthorized access. This mitigation can be implemented through the following measures:\n\nIdentity and Access Management (IAM):\n\n- Use IAM solutions like Azure Active Directory, Okta, or AWS IAM to enforce MFA policies for all user logins, especially for privileged roles.\n- Enable conditional access policies to enforce MFA for risky sign-ins (e.g., unfamiliar devices, geolocations).\n- Enable Conditional Access policies to only allow logins from trusted devices, such as those enrolled in Intune or joined via Hybrid/Entra.\n\nAuthentication Tools and Methods:\n\n- Use authenticator applications such as Google Authenticator, Microsoft Authenticator, or Authy for time-based one-time passwords (TOTP).\n- Deploy hardware-based tokens like YubiKey, RSA SecurID, or smart cards for additional security.\n- Enforce biometric authentication for compatible devices and applications.\n\nSecure Legacy Systems:\n\n- Integrate MFA solutions with older systems using third-party tools like Duo Security or Thales SafeNet.\n- Enable RADIUS/NPS servers to facilitate MFA for VPNs, RDP, and other network logins.\n\nMonitoring and Alerting:\n\n- Use SIEM tools to monitor failed MFA attempts, login anomalies, or brute-force attempts against MFA systems.\n- Implement alerts for suspicious MFA activities, such as repeated failed codes or new device registrations.\n\nTraining and Policy Enforcement:\n\n- Educate employees on the importance of MFA and secure authenticator usage.\n- Enforce policies that require MFA on all critical systems, especially for remote access, privileged accounts, and cloud applications."
+              },
+              {
+                "id": "M1042",
+                "name": "Disable or Remove Feature or Program",
+                "description": "Disable or remove unnecessary and potentially vulnerable software, features, or services to reduce the attack surface and prevent abuse by adversaries. This involves identifying software or features that are no longer needed or that could be exploited and ensuring they are either removed or properly disabled. This mitigation can be implemented through the following measures: \n\nRemove Legacy Software:\n\n- Use Case: Disable or remove older versions of software that no longer receive updates or security patches (e.g., legacy Java, Adobe Flash).\n- Implementation: A company removes Flash Player from all employee systems after it has reached its end-of-life date.\n\nDisable Unused Features:\n\n- Use Case: Turn off unnecessary operating system features like SMBv1, Telnet, or RDP if they are not required.\n- Implementation: Disable SMBv1 in a Windows environment to mitigate vulnerabilities like EternalBlue.\n\nControl Applications Installed by Users:\n\n- Use Case: Prevent users from installing unauthorized software via group policies or other management tools.\n- Implementation: Block user installations of unauthorized file-sharing applications (e.g., BitTorrent clients) in an enterprise environment.\n\nRemove Unnecessary Services:\n\n- Use Case: Identify and disable unnecessary default services running on endpoints, servers, or network devices.\n- Implementation: Disable unused administrative shares (e.g., C$, ADMIN$) on workstations.\n\nRestrict Add-ons and Plugins:\n\n- Use Case: Remove or disable browser plugins and add-ons that are not needed for business purposes.\n- Implementation: Disable Java and ActiveX plugins in web browsers to prevent drive-by attacks.\n\n"
+              }
+            ]
+          },
+          {
+            "primary_id": "T1110.002",
+            "name": "Password Cracking",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1110.002"
+            ],
+            "related": [
+              {
+                "id": "M1032",
+                "name": "Multi-factor Authentication",
+                "description": "Multi-Factor Authentication (MFA) enhances security by requiring users to provide at least two forms of verification to prove their identity before granting access. These factors typically include:\n\n- *Something you know*: Passwords, PINs.\n- *Something you have*: Physical tokens, smartphone authenticator apps.\n- *Something you are*: Biometric data such as fingerprints, facial recognition, or retinal scans.\n\nImplementing MFA across all critical systems and services ensures robust protection against account takeover and unauthorized access. This mitigation can be implemented through the following measures:\n\nIdentity and Access Management (IAM):\n\n- Use IAM solutions like Azure Active Directory, Okta, or AWS IAM to enforce MFA policies for all user logins, especially for privileged roles.\n- Enable conditional access policies to enforce MFA for risky sign-ins (e.g., unfamiliar devices, geolocations).\n- Enable Conditional Access policies to only allow logins from trusted devices, such as those enrolled in Intune or joined via Hybrid/Entra.\n\nAuthentication Tools and Methods:\n\n- Use authenticator applications such as Google Authenticator, Microsoft Authenticator, or Authy for time-based one-time passwords (TOTP).\n- Deploy hardware-based tokens like YubiKey, RSA SecurID, or smart cards for additional security.\n- Enforce biometric authentication for compatible devices and applications.\n\nSecure Legacy Systems:\n\n- Integrate MFA solutions with older systems using third-party tools like Duo Security or Thales SafeNet.\n- Enable RADIUS/NPS servers to facilitate MFA for VPNs, RDP, and other network logins.\n\nMonitoring and Alerting:\n\n- Use SIEM tools to monitor failed MFA attempts, login anomalies, or brute-force attempts against MFA systems.\n- Implement alerts for suspicious MFA activities, such as repeated failed codes or new device registrations.\n\nTraining and Policy Enforcement:\n\n- Educate employees on the importance of MFA and secure authenticator usage.\n- Enforce policies that require MFA on all critical systems, especially for remote access, privileged accounts, and cloud applications."
+              },
+              {
+                "id": "M1027",
+                "name": "Password Policies",
+                "description": "Set and enforce secure password policies for accounts to reduce the likelihood of unauthorized access. Strong password policies include enforcing password complexity, requiring regular password changes, and preventing password reuse. This mitigation can be implemented through the following measures:\n\nWindows Systems:\n\n- Use Group Policy Management Console (GPMC) to configure:\n    - Minimum password length (e.g., 12+ characters).\n    - Password complexity requirements.\n    - Password history (e.g., disallow last 24 passwords).\n    - Account lockout duration and thresholds.\n\nLinux Systems:\n\n- Configure Pluggable Authentication Modules (PAM):\n- Use `pam_pwquality` to enforce complexity and length requirements.\n- Implement `pam_tally2` or `pam_faillock` for account lockouts.\n- Use `pwunconv` to disable password reuse.\n\nPassword Managers:\n\n- Enforce usage of enterprise password managers (e.g., Bitwarden, 1Password, LastPass) to generate and store strong passwords.\n\nPassword Blacklisting:\n\n- Use tools like Have I Been Pwned password checks or NIST-based blacklist solutions to prevent users from setting compromised passwords.\n\nRegular Auditing:\n\n- Periodically audit password policies and account configurations to ensure compliance using tools like LAPS (Local Admin Password Solution) and vulnerability scanners.\n\n*Tools for Implementation*\n\nWindows:\n\n- Group Policy Management Console (GPMC): Enforce password policies.\n- Microsoft Local Administrator Password Solution (LAPS): Enforce random, unique admin passwords.\n\nLinux/macOS:\n\n- PAM Modules (pam_pwquality, pam_tally2, pam_faillock): Enforce password rules.\n- Lynis: Audit password policies and system configurations.\n\nCross-Platform:\n\n- Password Managers (Bitwarden, 1Password, KeePass): Manage and enforce strong passwords.\n- Have I Been Pwned API: Prevent the use of breached passwords.\n- NIST SP 800-63B compliant tools: Enforce password guidelines and blacklisting."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1021.002",
+            "name": "SMB/Windows Admin Shares",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1021.002"
+            ],
+            "related": [
+              {
+                "id": "M1035",
+                "name": "Limit Access to Resource Over Network",
+                "description": "Restrict access to network resources, such as file shares, remote systems, and services, to only those users, accounts, or systems with a legitimate business requirement. This can include employing technologies like network concentrators, RDP gateways, and zero-trust network access (ZTNA) models, alongside hardening services and protocols. This mitigation can be implemented through the following measures:\n\nAudit and Restrict Access:\n\n- Regularly audit permissions for file shares, network services, and remote access tools.\n- Remove unnecessary access and enforce least privilege principles for users and services.\n- Use Active Directory and IAM tools to restrict access based on roles and attributes.\n\nDeploy Secure Remote Access Solutions:\n\n- Use RDP gateways, VPN concentrators, and ZTNA solutions to aggregate and secure remote access connections.\n- Configure access controls to restrict connections based on time, device, and user identity.\n- Enforce MFA for all remote access mechanisms.\n\nDisable Unnecessary Services:\n\n- Identify running services using tools like netstat (Windows/Linux) or Nmap.\n- Disable unused services, such as Telnet, FTP, and legacy SMB, to reduce the attack surface.\n- Use firewall rules to block traffic on unused ports and protocols.\n\nNetwork Segmentation and Isolation:\n\n- Use VLANs, firewalls, or micro-segmentation to isolate critical network resources from general access.\n- Restrict communication between subnets to prevent lateral movement.\n\nMonitor and Log Access:\n\n- Monitor access attempts to file shares, RDP, and remote network resources using SIEM tools.\n- Enable auditing and logging for successful and failed attempts to access restricted resources.\n\n*Tools for Implementation*\n\nFile Share Management:\n\n- Microsoft Active Directory Group Policies\n- Samba (Linux/Unix file share management)\n- AccessEnum (Windows access auditing tool)\n\nSecure Remote Access:\n\n- Microsoft Remote Desktop Gateway\n- Apache Guacamole (open-source RDP/VNC gateway)\n- Zero Trust solutions: Tailscale, Cloudflare Zero Trust\n\nService and Protocol Hardening:\n\n- Nmap or Nessus for network service discovery\n- Windows Group Policy Editor for disabling SMBv1, Telnet, and legacy protocols\n- iptables or firewalld (Linux) for blocking unnecessary traffic\n\nNetwork Segmentation:\n\n- pfSense for open-source network isolation"
+              },
+              {
+                "id": "M1037",
+                "name": "Filter Network Traffic",
+                "description": "Employ network appliances and endpoint software to filter ingress, egress, and lateral network traffic. This includes protocol-based filtering, enforcing firewall rules, and blocking or restricting traffic based on predefined conditions to limit adversary movement and data exfiltration. This mitigation can be implemented through the following measures:\n\nIngress Traffic Filtering:\n\n- Use Case: Configure network firewalls to allow traffic only from authorized IP addresses to public-facing servers.\n- Implementation: Limit SSH (port 22) and RDP (port 3389) traffic to specific IP ranges.\n\nEgress Traffic Filtering:\n\n- Use Case: Use firewalls or endpoint security software to block unauthorized outbound traffic to prevent data exfiltration and command-and-control (C2) communications.\n- Implementation: Block outbound traffic to known malicious IPs or regions where communication is unexpected.\n\nProtocol-Based Filtering:\n\n- Use Case: Restrict the use of specific protocols that are commonly abused by adversaries, such as SMB, RPC, or Telnet, based on business needs.\n- Implementation: Disable SMBv1 on endpoints to prevent exploits like EternalBlue.\n\nNetwork Segmentation:\n\n- Use Case: Create network segments for critical systems and restrict communication between segments unless explicitly authorized.\n- Implementation: Implement VLANs to isolate IoT devices or guest networks from core business systems.\n\nApplication Layer Filtering:\n\n- Use Case: Use proxy servers or Web Application Firewalls (WAFs) to inspect and block malicious HTTP/S traffic.\n- Implementation: Configure a WAF to block SQL injection attempts or other web application exploitation techniques."
+              },
+              {
+                "id": "M1027",
+                "name": "Password Policies",
+                "description": "Set and enforce secure password policies for accounts to reduce the likelihood of unauthorized access. Strong password policies include enforcing password complexity, requiring regular password changes, and preventing password reuse. This mitigation can be implemented through the following measures:\n\nWindows Systems:\n\n- Use Group Policy Management Console (GPMC) to configure:\n    - Minimum password length (e.g., 12+ characters).\n    - Password complexity requirements.\n    - Password history (e.g., disallow last 24 passwords).\n    - Account lockout duration and thresholds.\n\nLinux Systems:\n\n- Configure Pluggable Authentication Modules (PAM):\n- Use `pam_pwquality` to enforce complexity and length requirements.\n- Implement `pam_tally2` or `pam_faillock` for account lockouts.\n- Use `pwunconv` to disable password reuse.\n\nPassword Managers:\n\n- Enforce usage of enterprise password managers (e.g., Bitwarden, 1Password, LastPass) to generate and store strong passwords.\n\nPassword Blacklisting:\n\n- Use tools like Have I Been Pwned password checks or NIST-based blacklist solutions to prevent users from setting compromised passwords.\n\nRegular Auditing:\n\n- Periodically audit password policies and account configurations to ensure compliance using tools like LAPS (Local Admin Password Solution) and vulnerability scanners.\n\n*Tools for Implementation*\n\nWindows:\n\n- Group Policy Management Console (GPMC): Enforce password policies.\n- Microsoft Local Administrator Password Solution (LAPS): Enforce random, unique admin passwords.\n\nLinux/macOS:\n\n- PAM Modules (pam_pwquality, pam_tally2, pam_faillock): Enforce password rules.\n- Lynis: Audit password policies and system configurations.\n\nCross-Platform:\n\n- Password Managers (Bitwarden, 1Password, KeePass): Manage and enforce strong passwords.\n- Have I Been Pwned API: Prevent the use of breached passwords.\n- NIST SP 800-63B compliant tools: Enforce password guidelines and blacklisting."
+              },
+              {
+                "id": "M1026",
+                "name": "Privileged Account Management",
+                "description": "Privileged Account Management focuses on implementing policies, controls, and tools to securely manage privileged accounts (e.g., SYSTEM, root, or administrative accounts). This includes restricting access, limiting the scope of permissions, monitoring privileged account usage, and ensuring accountability through logging and auditing.This mitigation can be implemented through the following measures:\n\nAccount Permissions and Roles:\n\n- Implement RBAC and least privilege principles to allocate permissions securely.\n- Use tools like Active Directory Group Policies to enforce access restrictions.\n\nCredential Security:\n\n- Deploy password vaulting tools like CyberArk, HashiCorp Vault, or KeePass for secure storage and rotation of credentials.\n- Enforce password policies for complexity, uniqueness, and expiration using tools like Microsoft Group Policy Objects (GPO).\n\nMulti-Factor Authentication (MFA):\n\n- Enforce MFA for all privileged accounts using Duo Security, Okta, or Microsoft Azure AD MFA.\n\nPrivileged Access Management (PAM):\n\n- Use PAM solutions like CyberArk, BeyondTrust, or Thycotic to manage, monitor, and audit privileged access.\n\nAuditing and Monitoring:\n\n- Integrate activity monitoring into your SIEM (e.g., Splunk or QRadar) to detect and alert on anomalous privileged account usage.\n\nJust-In-Time Access:\n\n- Deploy JIT solutions like Azure Privileged Identity Management (PIM) or configure ephemeral roles in AWS and GCP to grant time-limited elevated permissions.\n\n*Tools for Implementation*\n\nPrivileged Access Management (PAM):\n\n- CyberArk, BeyondTrust, Thycotic, HashiCorp Vault.\n\nCredential Management:\n\n- Microsoft LAPS (Local Admin Password Solution), Password Safe, HashiCorp Vault, KeePass.\n\nMulti-Factor Authentication:\n\n- Duo Security, Okta, Microsoft Azure MFA, Google Authenticator.\n\nLinux Privilege Management:\n\n- sudo configuration, SELinux, AppArmor.\n\nJust-In-Time Access:\n\n- Azure Privileged Identity Management (PIM), AWS IAM Roles with session constraints, GCP Identity-Aware Proxy."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1021",
+            "name": "Remote Services",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1021"
+            ],
+            "related": [
+              {
+                "id": "M1042",
+                "name": "Disable or Remove Feature or Program",
+                "description": "Disable or remove unnecessary and potentially vulnerable software, features, or services to reduce the attack surface and prevent abuse by adversaries. This involves identifying software or features that are no longer needed or that could be exploited and ensuring they are either removed or properly disabled. This mitigation can be implemented through the following measures: \n\nRemove Legacy Software:\n\n- Use Case: Disable or remove older versions of software that no longer receive updates or security patches (e.g., legacy Java, Adobe Flash).\n- Implementation: A company removes Flash Player from all employee systems after it has reached its end-of-life date.\n\nDisable Unused Features:\n\n- Use Case: Turn off unnecessary operating system features like SMBv1, Telnet, or RDP if they are not required.\n- Implementation: Disable SMBv1 in a Windows environment to mitigate vulnerabilities like EternalBlue.\n\nControl Applications Installed by Users:\n\n- Use Case: Prevent users from installing unauthorized software via group policies or other management tools.\n- Implementation: Block user installations of unauthorized file-sharing applications (e.g., BitTorrent clients) in an enterprise environment.\n\nRemove Unnecessary Services:\n\n- Use Case: Identify and disable unnecessary default services running on endpoints, servers, or network devices.\n- Implementation: Disable unused administrative shares (e.g., C$, ADMIN$) on workstations.\n\nRestrict Add-ons and Plugins:\n\n- Use Case: Remove or disable browser plugins and add-ons that are not needed for business purposes.\n- Implementation: Disable Java and ActiveX plugins in web browsers to prevent drive-by attacks.\n\n"
+              },
+              {
+                "id": "M1047",
+                "name": "Audit",
+                "description": "Auditing is the process of recording activity and systematically reviewing and analyzing the activity and system configurations. The primary purpose of auditing is to detect anomalies and identify potential threats or weaknesses in the environment. Proper auditing configurations can also help to meet compliance requirements. The process of auditing encompasses regular analysis of user behaviors and system logs in support of proactive security measures.\n\nAuditing is applicable to all systems used within an organization, from the front door of a building to accessing a file on a fileserver. It is considered more critical for regulated industries such as, healthcare, finance and government where compliance requirements demand stringent tracking of user and system activates.This mitigation can be implemented through the following measures: \n\nSystem Audit:\n\n- Use Case: Regularly assess system configurations to ensure compliance with organizational security policies.\n- Implementation: Use tools to scan for deviations from established benchmarks.\n\nPermission Audits:\n\n- Use Case: Review file and folder permissions to minimize the risk of unauthorized access or privilege escalation.\n- Implementation: Run access reviews to identify users or groups with excessive permissions.\n\nSoftware Audits:\n\n- Use Case: Identify outdated, unsupported, or insecure software that could serve as an attack vector.\n- Implementation: Use inventory and vulnerability scanning tools to detect outdated versions and recommend secure alternatives.\n\nConfiguration Audits:\n\n- Use Case: Evaluate system and network configurations to ensure secure settings (e.g., disabled SMBv1, enabled MFA).\n- Implementation: Implement automated configuration scanning tools like SCAP (Security Content Automation Protocol) to identify non-compliant systems.\n\nNetwork Audits:\n\n- Use Case: Examine network traffic, firewall rules, and endpoint communications to identify unauthorized or insecure connections.\n- Implementation: Utilize tools such as Wireshark, or Zeek to monitor and log suspicious network behavior."
+              },
+              {
+                "id": "M1032",
+                "name": "Multi-factor Authentication",
+                "description": "Multi-Factor Authentication (MFA) enhances security by requiring users to provide at least two forms of verification to prove their identity before granting access. These factors typically include:\n\n- *Something you know*: Passwords, PINs.\n- *Something you have*: Physical tokens, smartphone authenticator apps.\n- *Something you are*: Biometric data such as fingerprints, facial recognition, or retinal scans.\n\nImplementing MFA across all critical systems and services ensures robust protection against account takeover and unauthorized access. This mitigation can be implemented through the following measures:\n\nIdentity and Access Management (IAM):\n\n- Use IAM solutions like Azure Active Directory, Okta, or AWS IAM to enforce MFA policies for all user logins, especially for privileged roles.\n- Enable conditional access policies to enforce MFA for risky sign-ins (e.g., unfamiliar devices, geolocations).\n- Enable Conditional Access policies to only allow logins from trusted devices, such as those enrolled in Intune or joined via Hybrid/Entra.\n\nAuthentication Tools and Methods:\n\n- Use authenticator applications such as Google Authenticator, Microsoft Authenticator, or Authy for time-based one-time passwords (TOTP).\n- Deploy hardware-based tokens like YubiKey, RSA SecurID, or smart cards for additional security.\n- Enforce biometric authentication for compatible devices and applications.\n\nSecure Legacy Systems:\n\n- Integrate MFA solutions with older systems using third-party tools like Duo Security or Thales SafeNet.\n- Enable RADIUS/NPS servers to facilitate MFA for VPNs, RDP, and other network logins.\n\nMonitoring and Alerting:\n\n- Use SIEM tools to monitor failed MFA attempts, login anomalies, or brute-force attempts against MFA systems.\n- Implement alerts for suspicious MFA activities, such as repeated failed codes or new device registrations.\n\nTraining and Policy Enforcement:\n\n- Educate employees on the importance of MFA and secure authenticator usage.\n- Enforce policies that require MFA on all critical systems, especially for remote access, privileged accounts, and cloud applications."
+              },
+              {
+                "id": "M1018",
+                "name": "User Account Management",
+                "description": "User Account Management involves implementing and enforcing policies for the lifecycle of user accounts, including creation, modification, and deactivation. Proper account management reduces the attack surface by limiting unauthorized access, managing account privileges, and ensuring accounts are used according to organizational policies. This mitigation can be implemented through the following measures:\n\nEnforcing the Principle of Least Privilege\n\n- Implementation: Assign users only the minimum permissions required to perform their job functions. Regularly audit accounts to ensure no excess permissions are granted.\n- Use Case: Reduces the risk of privilege escalation by ensuring accounts cannot perform unauthorized actions.\n\nImplementing Strong Password Policies\n\n- Implementation: Enforce password complexity requirements (e.g., length, character types). Require password expiration every 90 days and disallow password reuse.\n- Use Case: Prevents adversaries from gaining unauthorized access through password guessing or brute force attacks.\n\nManaging Dormant and Orphaned Accounts\n\n- Implementation: Implement automated workflows to disable accounts after a set period of inactivity (e.g., 30 days). Remove orphaned accounts (e.g., accounts without an assigned owner) during regular account audits.\n- Use Case: Eliminates dormant accounts that could be exploited by attackers.\n\nAccount Lockout Policies\n\n- Implementation: Configure account lockout thresholds (e.g., lock accounts after five failed login attempts). Set lockout durations to a minimum of 15 minutes.\n- Use Case: Mitigates automated attack techniques that rely on repeated login attempts.\n\nMulti-Factor Authentication (MFA) for High-Risk Accounts\n\n- Implementation: Require MFA for all administrative accounts and high-risk users. Use MFA mechanisms like hardware tokens, authenticator apps, or biometrics.\n- Use Case: Prevents unauthorized access, even if credentials are stolen.\n\nRestricting Interactive Logins\n\n- Implementation: Restrict interactive logins for privileged accounts to specific secure systems or management consoles. Use group policies to enforce logon restrictions.\n- Use Case: Protects sensitive accounts from misuse or exploitation.\n\n*Tools for Implementation*\n\nBuilt-in Tools:\n\n- Microsoft Active Directory (AD): Centralized account management and RBAC enforcement.\n- Group Policy Object (GPO): Enforce password policies, logon restrictions, and account lockout policies.\n\nIdentity and Access Management (IAM) Tools:\n\n- Okta: Centralized user provisioning, MFA, and SSO integration.\n- Microsoft Azure Active Directory: Provides advanced account lifecycle management, role-based access, and conditional access policies.\n\nPrivileged Account Management (PAM):\n- CyberArk, BeyondTrust, Thycotic: Manage and monitor privileged account usage, enforce session recording, and JIT access."
+              },
+              {
+                "id": "M1027",
+                "name": "Password Policies",
+                "description": "Set and enforce secure password policies for accounts to reduce the likelihood of unauthorized access. Strong password policies include enforcing password complexity, requiring regular password changes, and preventing password reuse. This mitigation can be implemented through the following measures:\n\nWindows Systems:\n\n- Use Group Policy Management Console (GPMC) to configure:\n    - Minimum password length (e.g., 12+ characters).\n    - Password complexity requirements.\n    - Password history (e.g., disallow last 24 passwords).\n    - Account lockout duration and thresholds.\n\nLinux Systems:\n\n- Configure Pluggable Authentication Modules (PAM):\n- Use `pam_pwquality` to enforce complexity and length requirements.\n- Implement `pam_tally2` or `pam_faillock` for account lockouts.\n- Use `pwunconv` to disable password reuse.\n\nPassword Managers:\n\n- Enforce usage of enterprise password managers (e.g., Bitwarden, 1Password, LastPass) to generate and store strong passwords.\n\nPassword Blacklisting:\n\n- Use tools like Have I Been Pwned password checks or NIST-based blacklist solutions to prevent users from setting compromised passwords.\n\nRegular Auditing:\n\n- Periodically audit password policies and account configurations to ensure compliance using tools like LAPS (Local Admin Password Solution) and vulnerability scanners.\n\n*Tools for Implementation*\n\nWindows:\n\n- Group Policy Management Console (GPMC): Enforce password policies.\n- Microsoft Local Administrator Password Solution (LAPS): Enforce random, unique admin passwords.\n\nLinux/macOS:\n\n- PAM Modules (pam_pwquality, pam_tally2, pam_faillock): Enforce password rules.\n- Lynis: Audit password policies and system configurations.\n\nCross-Platform:\n\n- Password Managers (Bitwarden, 1Password, KeePass): Manage and enforce strong passwords.\n- Have I Been Pwned API: Prevent the use of breached passwords.\n- NIST SP 800-63B compliant tools: Enforce password guidelines and blacklisting."
+              },
+              {
+                "id": "M1035",
+                "name": "Limit Access to Resource Over Network",
+                "description": "Restrict access to network resources, such as file shares, remote systems, and services, to only those users, accounts, or systems with a legitimate business requirement. This can include employing technologies like network concentrators, RDP gateways, and zero-trust network access (ZTNA) models, alongside hardening services and protocols. This mitigation can be implemented through the following measures:\n\nAudit and Restrict Access:\n\n- Regularly audit permissions for file shares, network services, and remote access tools.\n- Remove unnecessary access and enforce least privilege principles for users and services.\n- Use Active Directory and IAM tools to restrict access based on roles and attributes.\n\nDeploy Secure Remote Access Solutions:\n\n- Use RDP gateways, VPN concentrators, and ZTNA solutions to aggregate and secure remote access connections.\n- Configure access controls to restrict connections based on time, device, and user identity.\n- Enforce MFA for all remote access mechanisms.\n\nDisable Unnecessary Services:\n\n- Identify running services using tools like netstat (Windows/Linux) or Nmap.\n- Disable unused services, such as Telnet, FTP, and legacy SMB, to reduce the attack surface.\n- Use firewall rules to block traffic on unused ports and protocols.\n\nNetwork Segmentation and Isolation:\n\n- Use VLANs, firewalls, or micro-segmentation to isolate critical network resources from general access.\n- Restrict communication between subnets to prevent lateral movement.\n\nMonitor and Log Access:\n\n- Monitor access attempts to file shares, RDP, and remote network resources using SIEM tools.\n- Enable auditing and logging for successful and failed attempts to access restricted resources.\n\n*Tools for Implementation*\n\nFile Share Management:\n\n- Microsoft Active Directory Group Policies\n- Samba (Linux/Unix file share management)\n- AccessEnum (Windows access auditing tool)\n\nSecure Remote Access:\n\n- Microsoft Remote Desktop Gateway\n- Apache Guacamole (open-source RDP/VNC gateway)\n- Zero Trust solutions: Tailscale, Cloudflare Zero Trust\n\nService and Protocol Hardening:\n\n- Nmap or Nessus for network service discovery\n- Windows Group Policy Editor for disabling SMBv1, Telnet, and legacy protocols\n- iptables or firewalld (Linux) for blocking unnecessary traffic\n\nNetwork Segmentation:\n\n- pfSense for open-source network isolation"
+              }
+            ]
+          },
+          {
+            "primary_id": "T1078.001",
+            "name": "Default Accounts",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1078.001"
+            ],
+            "related": [
+              {
+                "id": "M1032",
+                "name": "Multi-factor Authentication",
+                "description": "Multi-Factor Authentication (MFA) enhances security by requiring users to provide at least two forms of verification to prove their identity before granting access. These factors typically include:\n\n- *Something you know*: Passwords, PINs.\n- *Something you have*: Physical tokens, smartphone authenticator apps.\n- *Something you are*: Biometric data such as fingerprints, facial recognition, or retinal scans.\n\nImplementing MFA across all critical systems and services ensures robust protection against account takeover and unauthorized access. This mitigation can be implemented through the following measures:\n\nIdentity and Access Management (IAM):\n\n- Use IAM solutions like Azure Active Directory, Okta, or AWS IAM to enforce MFA policies for all user logins, especially for privileged roles.\n- Enable conditional access policies to enforce MFA for risky sign-ins (e.g., unfamiliar devices, geolocations).\n- Enable Conditional Access policies to only allow logins from trusted devices, such as those enrolled in Intune or joined via Hybrid/Entra.\n\nAuthentication Tools and Methods:\n\n- Use authenticator applications such as Google Authenticator, Microsoft Authenticator, or Authy for time-based one-time passwords (TOTP).\n- Deploy hardware-based tokens like YubiKey, RSA SecurID, or smart cards for additional security.\n- Enforce biometric authentication for compatible devices and applications.\n\nSecure Legacy Systems:\n\n- Integrate MFA solutions with older systems using third-party tools like Duo Security or Thales SafeNet.\n- Enable RADIUS/NPS servers to facilitate MFA for VPNs, RDP, and other network logins.\n\nMonitoring and Alerting:\n\n- Use SIEM tools to monitor failed MFA attempts, login anomalies, or brute-force attempts against MFA systems.\n- Implement alerts for suspicious MFA activities, such as repeated failed codes or new device registrations.\n\nTraining and Policy Enforcement:\n\n- Educate employees on the importance of MFA and secure authenticator usage.\n- Enforce policies that require MFA on all critical systems, especially for remote access, privileged accounts, and cloud applications."
+              },
+              {
+                "id": "M1027",
+                "name": "Password Policies",
+                "description": "Set and enforce secure password policies for accounts to reduce the likelihood of unauthorized access. Strong password policies include enforcing password complexity, requiring regular password changes, and preventing password reuse. This mitigation can be implemented through the following measures:\n\nWindows Systems:\n\n- Use Group Policy Management Console (GPMC) to configure:\n    - Minimum password length (e.g., 12+ characters).\n    - Password complexity requirements.\n    - Password history (e.g., disallow last 24 passwords).\n    - Account lockout duration and thresholds.\n\nLinux Systems:\n\n- Configure Pluggable Authentication Modules (PAM):\n- Use `pam_pwquality` to enforce complexity and length requirements.\n- Implement `pam_tally2` or `pam_faillock` for account lockouts.\n- Use `pwunconv` to disable password reuse.\n\nPassword Managers:\n\n- Enforce usage of enterprise password managers (e.g., Bitwarden, 1Password, LastPass) to generate and store strong passwords.\n\nPassword Blacklisting:\n\n- Use tools like Have I Been Pwned password checks or NIST-based blacklist solutions to prevent users from setting compromised passwords.\n\nRegular Auditing:\n\n- Periodically audit password policies and account configurations to ensure compliance using tools like LAPS (Local Admin Password Solution) and vulnerability scanners.\n\n*Tools for Implementation*\n\nWindows:\n\n- Group Policy Management Console (GPMC): Enforce password policies.\n- Microsoft Local Administrator Password Solution (LAPS): Enforce random, unique admin passwords.\n\nLinux/macOS:\n\n- PAM Modules (pam_pwquality, pam_tally2, pam_faillock): Enforce password rules.\n- Lynis: Audit password policies and system configurations.\n\nCross-Platform:\n\n- Password Managers (Bitwarden, 1Password, KeePass): Manage and enforce strong passwords.\n- Have I Been Pwned API: Prevent the use of breached passwords.\n- NIST SP 800-63B compliant tools: Enforce password guidelines and blacklisting."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1110.003",
+            "name": "Password Spraying",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1110.003"
+            ],
+            "related": [
+              {
+                "id": "M1036",
+                "name": "Account Use Policies",
+                "description": "Account Use Policies help mitigate unauthorized access by configuring and enforcing rules that govern how and when accounts can be used. These policies include enforcing account lockout mechanisms, restricting login times, and setting inactivity timeouts. Proper configuration of these policies reduces the risk of brute-force attacks, credential theft, and unauthorized access by limiting the opportunities for malicious actors to exploit accounts. This mitigation can be implemented through the following measures:\n\nAccount Lockout Policies:\n\n- Implementation: Configure account lockout settings so that after a defined number of failed login attempts (e.g., 3-5 attempts), the account is locked for a specific time period (e.g., 15 minutes) or requires an administrator to unlock it.\n- Use Case: This prevents brute-force attacks by limiting how many incorrect password attempts can be made before the account is temporarily disabled, reducing the likelihood of an attacker successfully guessing a password.\n\nLogin Time Restrictions:\n\n- Implementation: Set up login time policies to restrict when users or groups can log into systems. For example, only allowing login during standard business hours (e.g., 8 AM to 6 PM) for non-administrative accounts.\n- Use Case: This prevents unauthorized access outside of approved working hours, where login attempts might be more suspicious or harder to monitor. For example, if an account that is only supposed to be active during the day logs in at 2 AM, it should raise an alert or be blocked.\n\nInactivity Timeout and Session Termination:\n\n- Implementation: Enforce session timeouts after a period of inactivity (e.g., 10-15 minutes) and require users to re-authenticate if they wish to resume the session.\n- Use Case: This policy prevents attackers from hijacking active sessions left unattended. For example, if an employee walks away from their computer without locking it, an attacker with physical access to the system would be unable to exploit the session.\n\nPassword Aging Policies:\n\n- Implementation: Enforce password aging rules, requiring users to change their passwords after a defined period (e.g., 90 days) and ensure passwords are not reused by maintaining a password history.\n- Use Case: This limits the risk of compromised passwords being used indefinitely. Regular password changes make it more difficult for attackers to reuse stolen credentials.\n\nAccount Expiration and Deactivation:\n\n- Implementation: Configure user accounts, especially for temporary or contract workers, to automatically expire after a set date or event. Accounts that remain unused for a specific period should be deactivated automatically.\n- Use Case: This prevents dormant accounts from becoming an attack vector. For example, an attacker can exploit unused accounts if they are not properly monitored or deactivated.\n\n**Tools for Implementation**:\n\n- Group Policy Objects (GPOs) in Windows: To enforce account lockout thresholds, login time restrictions, session timeouts, and password policies.\n- Identity and Access Management (IAM) solutions: For centralized management of user accounts, session policies, and automated deactivation of accounts.\n- Security Information and Event Management (SIEM) platforms: To monitor and alert on unusual login activity, such as failed logins or out-of-hours access attempts.\n- Multi-Factor Authentication (MFA) Tools: To further enforce secure login attempts, preventing brute-force or credential stuffing attacks.\n"
+              },
+              {
+                "id": "M1032",
+                "name": "Multi-factor Authentication",
+                "description": "Multi-Factor Authentication (MFA) enhances security by requiring users to provide at least two forms of verification to prove their identity before granting access. These factors typically include:\n\n- *Something you know*: Passwords, PINs.\n- *Something you have*: Physical tokens, smartphone authenticator apps.\n- *Something you are*: Biometric data such as fingerprints, facial recognition, or retinal scans.\n\nImplementing MFA across all critical systems and services ensures robust protection against account takeover and unauthorized access. This mitigation can be implemented through the following measures:\n\nIdentity and Access Management (IAM):\n\n- Use IAM solutions like Azure Active Directory, Okta, or AWS IAM to enforce MFA policies for all user logins, especially for privileged roles.\n- Enable conditional access policies to enforce MFA for risky sign-ins (e.g., unfamiliar devices, geolocations).\n- Enable Conditional Access policies to only allow logins from trusted devices, such as those enrolled in Intune or joined via Hybrid/Entra.\n\nAuthentication Tools and Methods:\n\n- Use authenticator applications such as Google Authenticator, Microsoft Authenticator, or Authy for time-based one-time passwords (TOTP).\n- Deploy hardware-based tokens like YubiKey, RSA SecurID, or smart cards for additional security.\n- Enforce biometric authentication for compatible devices and applications.\n\nSecure Legacy Systems:\n\n- Integrate MFA solutions with older systems using third-party tools like Duo Security or Thales SafeNet.\n- Enable RADIUS/NPS servers to facilitate MFA for VPNs, RDP, and other network logins.\n\nMonitoring and Alerting:\n\n- Use SIEM tools to monitor failed MFA attempts, login anomalies, or brute-force attempts against MFA systems.\n- Implement alerts for suspicious MFA activities, such as repeated failed codes or new device registrations.\n\nTraining and Policy Enforcement:\n\n- Educate employees on the importance of MFA and secure authenticator usage.\n- Enforce policies that require MFA on all critical systems, especially for remote access, privileged accounts, and cloud applications."
+              },
+              {
+                "id": "M1027",
+                "name": "Password Policies",
+                "description": "Set and enforce secure password policies for accounts to reduce the likelihood of unauthorized access. Strong password policies include enforcing password complexity, requiring regular password changes, and preventing password reuse. This mitigation can be implemented through the following measures:\n\nWindows Systems:\n\n- Use Group Policy Management Console (GPMC) to configure:\n    - Minimum password length (e.g., 12+ characters).\n    - Password complexity requirements.\n    - Password history (e.g., disallow last 24 passwords).\n    - Account lockout duration and thresholds.\n\nLinux Systems:\n\n- Configure Pluggable Authentication Modules (PAM):\n- Use `pam_pwquality` to enforce complexity and length requirements.\n- Implement `pam_tally2` or `pam_faillock` for account lockouts.\n- Use `pwunconv` to disable password reuse.\n\nPassword Managers:\n\n- Enforce usage of enterprise password managers (e.g., Bitwarden, 1Password, LastPass) to generate and store strong passwords.\n\nPassword Blacklisting:\n\n- Use tools like Have I Been Pwned password checks or NIST-based blacklist solutions to prevent users from setting compromised passwords.\n\nRegular Auditing:\n\n- Periodically audit password policies and account configurations to ensure compliance using tools like LAPS (Local Admin Password Solution) and vulnerability scanners.\n\n*Tools for Implementation*\n\nWindows:\n\n- Group Policy Management Console (GPMC): Enforce password policies.\n- Microsoft Local Administrator Password Solution (LAPS): Enforce random, unique admin passwords.\n\nLinux/macOS:\n\n- PAM Modules (pam_pwquality, pam_tally2, pam_faillock): Enforce password rules.\n- Lynis: Audit password policies and system configurations.\n\nCross-Platform:\n\n- Password Managers (Bitwarden, 1Password, KeePass): Manage and enforce strong passwords.\n- Have I Been Pwned API: Prevent the use of breached passwords.\n- NIST SP 800-63B compliant tools: Enforce password guidelines and blacklisting."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1110",
+            "name": "Brute Force",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1110"
+            ],
+            "related": [
+              {
+                "id": "M1036",
+                "name": "Account Use Policies",
+                "description": "Account Use Policies help mitigate unauthorized access by configuring and enforcing rules that govern how and when accounts can be used. These policies include enforcing account lockout mechanisms, restricting login times, and setting inactivity timeouts. Proper configuration of these policies reduces the risk of brute-force attacks, credential theft, and unauthorized access by limiting the opportunities for malicious actors to exploit accounts. This mitigation can be implemented through the following measures:\n\nAccount Lockout Policies:\n\n- Implementation: Configure account lockout settings so that after a defined number of failed login attempts (e.g., 3-5 attempts), the account is locked for a specific time period (e.g., 15 minutes) or requires an administrator to unlock it.\n- Use Case: This prevents brute-force attacks by limiting how many incorrect password attempts can be made before the account is temporarily disabled, reducing the likelihood of an attacker successfully guessing a password.\n\nLogin Time Restrictions:\n\n- Implementation: Set up login time policies to restrict when users or groups can log into systems. For example, only allowing login during standard business hours (e.g., 8 AM to 6 PM) for non-administrative accounts.\n- Use Case: This prevents unauthorized access outside of approved working hours, where login attempts might be more suspicious or harder to monitor. For example, if an account that is only supposed to be active during the day logs in at 2 AM, it should raise an alert or be blocked.\n\nInactivity Timeout and Session Termination:\n\n- Implementation: Enforce session timeouts after a period of inactivity (e.g., 10-15 minutes) and require users to re-authenticate if they wish to resume the session.\n- Use Case: This policy prevents attackers from hijacking active sessions left unattended. For example, if an employee walks away from their computer without locking it, an attacker with physical access to the system would be unable to exploit the session.\n\nPassword Aging Policies:\n\n- Implementation: Enforce password aging rules, requiring users to change their passwords after a defined period (e.g., 90 days) and ensure passwords are not reused by maintaining a password history.\n- Use Case: This limits the risk of compromised passwords being used indefinitely. Regular password changes make it more difficult for attackers to reuse stolen credentials.\n\nAccount Expiration and Deactivation:\n\n- Implementation: Configure user accounts, especially for temporary or contract workers, to automatically expire after a set date or event. Accounts that remain unused for a specific period should be deactivated automatically.\n- Use Case: This prevents dormant accounts from becoming an attack vector. For example, an attacker can exploit unused accounts if they are not properly monitored or deactivated.\n\n**Tools for Implementation**:\n\n- Group Policy Objects (GPOs) in Windows: To enforce account lockout thresholds, login time restrictions, session timeouts, and password policies.\n- Identity and Access Management (IAM) solutions: For centralized management of user accounts, session policies, and automated deactivation of accounts.\n- Security Information and Event Management (SIEM) platforms: To monitor and alert on unusual login activity, such as failed logins or out-of-hours access attempts.\n- Multi-Factor Authentication (MFA) Tools: To further enforce secure login attempts, preventing brute-force or credential stuffing attacks.\n"
+              },
+              {
+                "id": "M1032",
+                "name": "Multi-factor Authentication",
+                "description": "Multi-Factor Authentication (MFA) enhances security by requiring users to provide at least two forms of verification to prove their identity before granting access. These factors typically include:\n\n- *Something you know*: Passwords, PINs.\n- *Something you have*: Physical tokens, smartphone authenticator apps.\n- *Something you are*: Biometric data such as fingerprints, facial recognition, or retinal scans.\n\nImplementing MFA across all critical systems and services ensures robust protection against account takeover and unauthorized access. This mitigation can be implemented through the following measures:\n\nIdentity and Access Management (IAM):\n\n- Use IAM solutions like Azure Active Directory, Okta, or AWS IAM to enforce MFA policies for all user logins, especially for privileged roles.\n- Enable conditional access policies to enforce MFA for risky sign-ins (e.g., unfamiliar devices, geolocations).\n- Enable Conditional Access policies to only allow logins from trusted devices, such as those enrolled in Intune or joined via Hybrid/Entra.\n\nAuthentication Tools and Methods:\n\n- Use authenticator applications such as Google Authenticator, Microsoft Authenticator, or Authy for time-based one-time passwords (TOTP).\n- Deploy hardware-based tokens like YubiKey, RSA SecurID, or smart cards for additional security.\n- Enforce biometric authentication for compatible devices and applications.\n\nSecure Legacy Systems:\n\n- Integrate MFA solutions with older systems using third-party tools like Duo Security or Thales SafeNet.\n- Enable RADIUS/NPS servers to facilitate MFA for VPNs, RDP, and other network logins.\n\nMonitoring and Alerting:\n\n- Use SIEM tools to monitor failed MFA attempts, login anomalies, or brute-force attempts against MFA systems.\n- Implement alerts for suspicious MFA activities, such as repeated failed codes or new device registrations.\n\nTraining and Policy Enforcement:\n\n- Educate employees on the importance of MFA and secure authenticator usage.\n- Enforce policies that require MFA on all critical systems, especially for remote access, privileged accounts, and cloud applications."
+              },
+              {
+                "id": "M1018",
+                "name": "User Account Management",
+                "description": "User Account Management involves implementing and enforcing policies for the lifecycle of user accounts, including creation, modification, and deactivation. Proper account management reduces the attack surface by limiting unauthorized access, managing account privileges, and ensuring accounts are used according to organizational policies. This mitigation can be implemented through the following measures:\n\nEnforcing the Principle of Least Privilege\n\n- Implementation: Assign users only the minimum permissions required to perform their job functions. Regularly audit accounts to ensure no excess permissions are granted.\n- Use Case: Reduces the risk of privilege escalation by ensuring accounts cannot perform unauthorized actions.\n\nImplementing Strong Password Policies\n\n- Implementation: Enforce password complexity requirements (e.g., length, character types). Require password expiration every 90 days and disallow password reuse.\n- Use Case: Prevents adversaries from gaining unauthorized access through password guessing or brute force attacks.\n\nManaging Dormant and Orphaned Accounts\n\n- Implementation: Implement automated workflows to disable accounts after a set period of inactivity (e.g., 30 days). Remove orphaned accounts (e.g., accounts without an assigned owner) during regular account audits.\n- Use Case: Eliminates dormant accounts that could be exploited by attackers.\n\nAccount Lockout Policies\n\n- Implementation: Configure account lockout thresholds (e.g., lock accounts after five failed login attempts). Set lockout durations to a minimum of 15 minutes.\n- Use Case: Mitigates automated attack techniques that rely on repeated login attempts.\n\nMulti-Factor Authentication (MFA) for High-Risk Accounts\n\n- Implementation: Require MFA for all administrative accounts and high-risk users. Use MFA mechanisms like hardware tokens, authenticator apps, or biometrics.\n- Use Case: Prevents unauthorized access, even if credentials are stolen.\n\nRestricting Interactive Logins\n\n- Implementation: Restrict interactive logins for privileged accounts to specific secure systems or management consoles. Use group policies to enforce logon restrictions.\n- Use Case: Protects sensitive accounts from misuse or exploitation.\n\n*Tools for Implementation*\n\nBuilt-in Tools:\n\n- Microsoft Active Directory (AD): Centralized account management and RBAC enforcement.\n- Group Policy Object (GPO): Enforce password policies, logon restrictions, and account lockout policies.\n\nIdentity and Access Management (IAM) Tools:\n\n- Okta: Centralized user provisioning, MFA, and SSO integration.\n- Microsoft Azure Active Directory: Provides advanced account lifecycle management, role-based access, and conditional access policies.\n\nPrivileged Account Management (PAM):\n- CyberArk, BeyondTrust, Thycotic: Manage and monitor privileged account usage, enforce session recording, and JIT access."
+              },
+              {
+                "id": "M1027",
+                "name": "Password Policies",
+                "description": "Set and enforce secure password policies for accounts to reduce the likelihood of unauthorized access. Strong password policies include enforcing password complexity, requiring regular password changes, and preventing password reuse. This mitigation can be implemented through the following measures:\n\nWindows Systems:\n\n- Use Group Policy Management Console (GPMC) to configure:\n    - Minimum password length (e.g., 12+ characters).\n    - Password complexity requirements.\n    - Password history (e.g., disallow last 24 passwords).\n    - Account lockout duration and thresholds.\n\nLinux Systems:\n\n- Configure Pluggable Authentication Modules (PAM):\n- Use `pam_pwquality` to enforce complexity and length requirements.\n- Implement `pam_tally2` or `pam_faillock` for account lockouts.\n- Use `pwunconv` to disable password reuse.\n\nPassword Managers:\n\n- Enforce usage of enterprise password managers (e.g., Bitwarden, 1Password, LastPass) to generate and store strong passwords.\n\nPassword Blacklisting:\n\n- Use tools like Have I Been Pwned password checks or NIST-based blacklist solutions to prevent users from setting compromised passwords.\n\nRegular Auditing:\n\n- Periodically audit password policies and account configurations to ensure compliance using tools like LAPS (Local Admin Password Solution) and vulnerability scanners.\n\n*Tools for Implementation*\n\nWindows:\n\n- Group Policy Management Console (GPMC): Enforce password policies.\n- Microsoft Local Administrator Password Solution (LAPS): Enforce random, unique admin passwords.\n\nLinux/macOS:\n\n- PAM Modules (pam_pwquality, pam_tally2, pam_faillock): Enforce password rules.\n- Lynis: Audit password policies and system configurations.\n\nCross-Platform:\n\n- Password Managers (Bitwarden, 1Password, KeePass): Manage and enforce strong passwords.\n- Have I Been Pwned API: Prevent the use of breached passwords.\n- NIST SP 800-63B compliant tools: Enforce password guidelines and blacklisting."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1114.002",
+            "name": "Remote Email Collection",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1114.002"
+            ],
+            "related": [
+              {
+                "id": "M1041",
+                "name": "Encrypt Sensitive Information",
+                "description": "Protect sensitive information at rest, in transit, and during processing by using strong encryption algorithms. Encryption ensures the confidentiality and integrity of data, preventing unauthorized access or tampering. This mitigation can be implemented through the following measures:\n\nEncrypt Data at Rest:\n\n- Use Case: Use full-disk encryption or file-level encryption to secure sensitive data stored on devices.\n- Implementation: Implement BitLocker for Windows systems or FileVault for macOS devices to encrypt hard drives.\n\nEncrypt Data in Transit:\n\n- Use Case: Use secure communication protocols (e.g., TLS, HTTPS) to encrypt sensitive data as it travels over networks.\n- Implementation: Enable HTTPS for all web applications and configure mail servers to enforce STARTTLS for email encryption.\n\nEncrypt Backups:\n\n- Use Case: Ensure that backup data is encrypted both during storage and transfer to prevent unauthorized access.\n- Implementation: Encrypt cloud backups using AES-256 before uploading them to Amazon S3 or Google Cloud.\n\nEncrypt Application Secrets:\n\n- Use Case: Store sensitive credentials, API keys, and configuration files in encrypted vaults.\n- Implementation: Use HashiCorp Vault or AWS Secrets Manager to manage and encrypt secrets.\n\nDatabase Encryption:\n\n- Use Case: Enable Transparent Data Encryption (TDE) or column-level encryption in database management systems.\n- Implementation: Use MySQL’s built-in encryption features to encrypt sensitive database fields such as social security numbers."
+              },
+              {
+                "id": "M1032",
+                "name": "Multi-factor Authentication",
+                "description": "Multi-Factor Authentication (MFA) enhances security by requiring users to provide at least two forms of verification to prove their identity before granting access. These factors typically include:\n\n- *Something you know*: Passwords, PINs.\n- *Something you have*: Physical tokens, smartphone authenticator apps.\n- *Something you are*: Biometric data such as fingerprints, facial recognition, or retinal scans.\n\nImplementing MFA across all critical systems and services ensures robust protection against account takeover and unauthorized access. This mitigation can be implemented through the following measures:\n\nIdentity and Access Management (IAM):\n\n- Use IAM solutions like Azure Active Directory, Okta, or AWS IAM to enforce MFA policies for all user logins, especially for privileged roles.\n- Enable conditional access policies to enforce MFA for risky sign-ins (e.g., unfamiliar devices, geolocations).\n- Enable Conditional Access policies to only allow logins from trusted devices, such as those enrolled in Intune or joined via Hybrid/Entra.\n\nAuthentication Tools and Methods:\n\n- Use authenticator applications such as Google Authenticator, Microsoft Authenticator, or Authy for time-based one-time passwords (TOTP).\n- Deploy hardware-based tokens like YubiKey, RSA SecurID, or smart cards for additional security.\n- Enforce biometric authentication for compatible devices and applications.\n\nSecure Legacy Systems:\n\n- Integrate MFA solutions with older systems using third-party tools like Duo Security or Thales SafeNet.\n- Enable RADIUS/NPS servers to facilitate MFA for VPNs, RDP, and other network logins.\n\nMonitoring and Alerting:\n\n- Use SIEM tools to monitor failed MFA attempts, login anomalies, or brute-force attempts against MFA systems.\n- Implement alerts for suspicious MFA activities, such as repeated failed codes or new device registrations.\n\nTraining and Policy Enforcement:\n\n- Educate employees on the importance of MFA and secure authenticator usage.\n- Enforce policies that require MFA on all critical systems, especially for remote access, privileged accounts, and cloud applications."
+              },
+              {
+                "id": "M1060",
+                "name": "Out-of-Band Communications Channel",
+                "description": "Establish secure out-of-band communication channels to ensure the continuity of critical communications during security incidents, data integrity attacks, or in-network communication failures. Out-of-band communication refers to using an alternative, separate communication path that is not dependent on the potentially compromised primary network infrastructure. This method can include secure messaging apps, encrypted phone lines, satellite communications, or dedicated emergency communication systems. Leveraging these alternative channels reduces the risk of adversaries intercepting, disrupting, or tampering with sensitive communications and helps coordinate an effective incident response.(Citation: TrustedSec OOB Communications)(Citation: NIST Special Publication 800-53 Revision 5)"
+              }
+            ]
+          },
+          {
+            "primary_id": "T1558.003",
+            "name": "Kerberoasting",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1558.003"
+            ],
+            "related": [
+              {
+                "id": "M1041",
+                "name": "Encrypt Sensitive Information",
+                "description": "Protect sensitive information at rest, in transit, and during processing by using strong encryption algorithms. Encryption ensures the confidentiality and integrity of data, preventing unauthorized access or tampering. This mitigation can be implemented through the following measures:\n\nEncrypt Data at Rest:\n\n- Use Case: Use full-disk encryption or file-level encryption to secure sensitive data stored on devices.\n- Implementation: Implement BitLocker for Windows systems or FileVault for macOS devices to encrypt hard drives.\n\nEncrypt Data in Transit:\n\n- Use Case: Use secure communication protocols (e.g., TLS, HTTPS) to encrypt sensitive data as it travels over networks.\n- Implementation: Enable HTTPS for all web applications and configure mail servers to enforce STARTTLS for email encryption.\n\nEncrypt Backups:\n\n- Use Case: Ensure that backup data is encrypted both during storage and transfer to prevent unauthorized access.\n- Implementation: Encrypt cloud backups using AES-256 before uploading them to Amazon S3 or Google Cloud.\n\nEncrypt Application Secrets:\n\n- Use Case: Store sensitive credentials, API keys, and configuration files in encrypted vaults.\n- Implementation: Use HashiCorp Vault or AWS Secrets Manager to manage and encrypt secrets.\n\nDatabase Encryption:\n\n- Use Case: Enable Transparent Data Encryption (TDE) or column-level encryption in database management systems.\n- Implementation: Use MySQL’s built-in encryption features to encrypt sensitive database fields such as social security numbers."
+              },
+              {
+                "id": "M1026",
+                "name": "Privileged Account Management",
+                "description": "Privileged Account Management focuses on implementing policies, controls, and tools to securely manage privileged accounts (e.g., SYSTEM, root, or administrative accounts). This includes restricting access, limiting the scope of permissions, monitoring privileged account usage, and ensuring accountability through logging and auditing.This mitigation can be implemented through the following measures:\n\nAccount Permissions and Roles:\n\n- Implement RBAC and least privilege principles to allocate permissions securely.\n- Use tools like Active Directory Group Policies to enforce access restrictions.\n\nCredential Security:\n\n- Deploy password vaulting tools like CyberArk, HashiCorp Vault, or KeePass for secure storage and rotation of credentials.\n- Enforce password policies for complexity, uniqueness, and expiration using tools like Microsoft Group Policy Objects (GPO).\n\nMulti-Factor Authentication (MFA):\n\n- Enforce MFA for all privileged accounts using Duo Security, Okta, or Microsoft Azure AD MFA.\n\nPrivileged Access Management (PAM):\n\n- Use PAM solutions like CyberArk, BeyondTrust, or Thycotic to manage, monitor, and audit privileged access.\n\nAuditing and Monitoring:\n\n- Integrate activity monitoring into your SIEM (e.g., Splunk or QRadar) to detect and alert on anomalous privileged account usage.\n\nJust-In-Time Access:\n\n- Deploy JIT solutions like Azure Privileged Identity Management (PIM) or configure ephemeral roles in AWS and GCP to grant time-limited elevated permissions.\n\n*Tools for Implementation*\n\nPrivileged Access Management (PAM):\n\n- CyberArk, BeyondTrust, Thycotic, HashiCorp Vault.\n\nCredential Management:\n\n- Microsoft LAPS (Local Admin Password Solution), Password Safe, HashiCorp Vault, KeePass.\n\nMulti-Factor Authentication:\n\n- Duo Security, Okta, Microsoft Azure MFA, Google Authenticator.\n\nLinux Privilege Management:\n\n- sudo configuration, SELinux, AppArmor.\n\nJust-In-Time Access:\n\n- Azure Privileged Identity Management (PIM), AWS IAM Roles with session constraints, GCP Identity-Aware Proxy."
+              },
+              {
+                "id": "M1027",
+                "name": "Password Policies",
+                "description": "Set and enforce secure password policies for accounts to reduce the likelihood of unauthorized access. Strong password policies include enforcing password complexity, requiring regular password changes, and preventing password reuse. This mitigation can be implemented through the following measures:\n\nWindows Systems:\n\n- Use Group Policy Management Console (GPMC) to configure:\n    - Minimum password length (e.g., 12+ characters).\n    - Password complexity requirements.\n    - Password history (e.g., disallow last 24 passwords).\n    - Account lockout duration and thresholds.\n\nLinux Systems:\n\n- Configure Pluggable Authentication Modules (PAM):\n- Use `pam_pwquality` to enforce complexity and length requirements.\n- Implement `pam_tally2` or `pam_faillock` for account lockouts.\n- Use `pwunconv` to disable password reuse.\n\nPassword Managers:\n\n- Enforce usage of enterprise password managers (e.g., Bitwarden, 1Password, LastPass) to generate and store strong passwords.\n\nPassword Blacklisting:\n\n- Use tools like Have I Been Pwned password checks or NIST-based blacklist solutions to prevent users from setting compromised passwords.\n\nRegular Auditing:\n\n- Periodically audit password policies and account configurations to ensure compliance using tools like LAPS (Local Admin Password Solution) and vulnerability scanners.\n\n*Tools for Implementation*\n\nWindows:\n\n- Group Policy Management Console (GPMC): Enforce password policies.\n- Microsoft Local Administrator Password Solution (LAPS): Enforce random, unique admin passwords.\n\nLinux/macOS:\n\n- PAM Modules (pam_pwquality, pam_tally2, pam_faillock): Enforce password rules.\n- Lynis: Audit password policies and system configurations.\n\nCross-Platform:\n\n- Password Managers (Bitwarden, 1Password, KeePass): Manage and enforce strong passwords.\n- Have I Been Pwned API: Prevent the use of breached passwords.\n- NIST SP 800-63B compliant tools: Enforce password guidelines and blacklisting."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 10,
+      "n_got": 10
+    },
+    "mapping_recall": {
+      "gold": 10,
+      "found": 10,
+      "recall": 1.0,
+      "missing": []
+    },
+    "coverage": null,
+    "provenance": {
+      "citations": 46,
+      "compliant": 46,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm_loop",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "Retrieve AttackPattern nodes that are linked to a Weakness node with identifier 'CWE-521'. Return the AttackPattern names and IDs.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 2,
+          "max_result_rows": 500,
+          "query_timeout_ms": 4000
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "Retrieve Technique and SubTechnique nodes that are mapped to by the AttackPatterns from q1, and fetch their associated Mitigation nodes.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 2,
+          "max_result_rows": 500,
+          "query_timeout_ms": 4000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 193.831
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 18,
+    "related": 44
+  }
+}

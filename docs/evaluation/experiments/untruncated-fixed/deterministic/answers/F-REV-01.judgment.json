@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "The gold requires the three CAPEC ids CAPEC-57, CAPEC-65, CAPEC-158 each related to T1040, plus the ATT&CK record T1040 named 'Network Sniffing', with a cross-source correlation on T1040. The answer's claims surface all three CAPEC-57/65/158 records with their evidence-matching Abstraction (Detailed) and Status (Draft) properties, each citing the TaxonomyEntry capec:taxonomy:ATTACK:1040 (entry_id 1040, name 'Network Sniffing') exactly as present in logic_flow.results[0].records. It reports the ATT&CK record T1040 named 'Network Sniffing' with properties (revoked: False, stix_type: attack-pattern, x_mitre_deprecated: False, x_mitre_is_subtechnique: False, x_mitre_version: 1.7) that match logic_flow.results[1].records[0].properties verbatim. It also states the T1040 correlation across capec and attack (4 records share it), matching must_correlate. All 4 required identifiers (CAPEC-57, CAPEC-65, CAPEC-158, T1040) are present and correctly attributed; no invented facts, aliases, counts, or properties were found outside the retrieved evidence."
+}

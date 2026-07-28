@@ -1,0 +1,12 @@
+{
+  "case_id": "C-EXE-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-98] and must_include_related=[capec:attack-pattern:98:step:1..4] (5 ids total). The evidence record for CAPEC-98 (Phishing, Abstraction=Standard, Status=Draft) has exactly 4 related ExecutionStep nodes matching these ids. The narrative names CAPEC-98 and Phishing, and correctly summarizes all four steps in order: (1) obtain domain name/certificate to spoof the legit site, (2) explore the legitimate site and create a duplicate, (3) convince the user to enter sensitive info on the attacker's site, (4) use stolen credentials to log into the legitimate site -- each matches the corresponding step description verbatim in substance. The claims array also explicitly enumerates all 4 step ids and cites CAPEC-98. No invented names, counts, or properties were found; Abstraction/Status values in the claims match the record properties exactly. All 5 gold-required ids are surfaced (1/1 must_include_ids, 4/4 must_include_related), so completeness/correctness/faithfulness/groundedness are all full marks."
+}

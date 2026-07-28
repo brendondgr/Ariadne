@@ -1,0 +1,12 @@
+{
+  "case_id": "C-DEP-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative/adversarial case: CAPEC-91 is a deprecated pattern excluded at load time, and gold expects an empty result (expect_empty: true, ex_gold.expected: []). The executed query 'g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...' with seed_ids=['CAPEC-91'] returned row_count 0 at every trace step (gate/execute/assess/normalize), and logic_flow.results[0].records is empty. The answer correctly abstains: claims=[], and the single abstention states 'the executed query ran cleanly and returned no matching records for: Retrieve the AttackPattern node with ID 'CAPEC-91'', with narrative explicitly telling the analyst no matching records were found and inviting a different id. No entity, name, count, or property is fabricated anywhere in the narrative or claims — nothing to hallucinate against since the evidence set is empty and the answer surfaces nothing beyond that fact. This matches the gold requirement exactly (0 required ids, 0 surfaced, correct abstention on a deprecated/excluded node)."
+}

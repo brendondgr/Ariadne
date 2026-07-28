@@ -1,0 +1,410 @@
+{
+  "id": "F-CTM-05",
+  "kind": "federated",
+  "tier": "hard",
+  "category": "F-CTM",
+  "question": "Which ATT&CK techniques does CAPEC-21 (Exploitation of Trusted Identifiers) map to, and what mitigations apply to those techniques?",
+  "gold": {
+    "assertions": {
+      "must_correlate": [
+        "T1134",
+        "T1528",
+        "T1539"
+      ],
+      "capec": {
+        "min_records": 1,
+        "must_include_ids": [
+          "CAPEC-21"
+        ],
+        "must_include_related": [
+          "T1134",
+          "T1528",
+          "T1539"
+        ]
+      },
+      "attack": {
+        "min_records": 3,
+        "max_records": 3,
+        "must_include_ids": [
+          "T1134",
+          "T1528",
+          "T1539"
+        ],
+        "must_include_related": [
+          "M1017",
+          "M1018",
+          "M1021",
+          "M1026",
+          "M1032",
+          "M1047",
+          "M1051",
+          "M1054"
+        ]
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 2
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 2 source(s); 1 question(s) the sources don't establish.",
+    "narrative": "The retrieved evidence shows that CAPEC-21 (Exploitation of Trusted Identifiers) has a MAPS_TO relationship pointing to three TaxonomyEntry nodes, but the specific ATT&CK technique identifiers and their associated mitigations are not listed in the records. A targeted query for matching Technique and SubTechnique nodes returned zero results, and no cross-source join values were corroborated. Consequently, the evidence does not contain the requested ATT&CK technique mappings or their corresponding mitigations.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-21.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-21"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-21"
+          }
+        ]
+      }
+    ],
+    "abstentions": [
+      {
+        "source": "attack",
+        "statement": "The attack source doesn't establish this — the sub-question it depends on (q1) produced no seed identifiers, so no query was executed for: Find all Technique and SubTechnique nodes where attack_id matches the entry_id from CAPEC-21's mapping, and retrieve their names and associated Mitigation nodes.",
+        "query": ""
+      }
+    ],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which ATT&CK techniques does CAPEC-21 map to?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What mitigations does ATT&CK list for those mapped techniques?",
+        "seed_from": "q1"
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Find the TaxonomyEntry node linked from AttackPattern named 'Exploitation of Trusted Identifiers' (CAPEC-21) where taxonomy='ATTACK', and return its entry_id.",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(100)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-21.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CAPEC-21"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(100)",
+              "injected": [],
+              "timing_ms": 0.098
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 12.2
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.009
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.301
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-21",
+            "name": "Exploitation of Trusted Identifiers",
+            "label": "AttackPattern",
+            "description": "An adversary guesses, obtains, or \"rides\" a trusted identifier (e.g. session ID, resource ID, cookie, etc.) to perform authorized actions under the guise of an authenticated user or service.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Exploitation of Trusted Identifiers",
+              "description": "An adversary guesses, obtains, or \"rides\" a trusted identifier (e.g. session ID, resource ID, cookie, etc.) to perform authorized actions under the guise of an authenticated user or service.",
+              "id": "capec:attack-pattern:21",
+              "Abstraction": "Meta"
+            },
+            "facets": [
+              {
+                "rel": "CAN_ALSO_BE",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_ALSO_BE",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_FOLLOW",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_FOLLOW",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_PRECEDE",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_PRECEDE",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CHILD_OF",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 4
+              },
+              {
+                "rel": "CHILD_OF",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "EXPLOITS_WEAKNESS",
+                "direction": "out",
+                "neighbour_label": "Weakness",
+                "count": 9
+              },
+              {
+                "rel": "HAS_CONSEQUENCE",
+                "direction": "out",
+                "neighbour_label": "Consequence",
+                "count": 3
+              },
+              {
+                "rel": "HAS_EXECUTION_STEP",
+                "direction": "out",
+                "neighbour_label": "ExecutionStep",
+                "count": 5
+              },
+              {
+                "rel": "HAS_MITIGATION",
+                "direction": "out",
+                "neighbour_label": "Mitigation",
+                "count": 7
+              },
+              {
+                "rel": "HAS_REFERENCE",
+                "direction": "out",
+                "neighbour_label": "ExternalReference",
+                "count": 1
+              },
+              {
+                "rel": "IN_VIEW",
+                "direction": "out",
+                "neighbour_label": "View",
+                "count": 0
+              },
+              {
+                "rel": "MAPS_TO",
+                "direction": "out",
+                "neighbour_label": "TaxonomyEntry",
+                "count": 3
+              },
+              {
+                "rel": "MEMBER_OF",
+                "direction": "out",
+                "neighbour_label": "Category",
+                "count": 2
+              },
+              {
+                "rel": "PEER_OF",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 1
+              },
+              {
+                "rel": "PEER_OF",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "REQUIRES_SKILL",
+                "direction": "out",
+                "neighbour_label": "Skill",
+                "count": 1
+              }
+            ],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "Find all Technique and SubTechnique nodes where attack_id matches the entry_id from CAPEC-21's mapping, and retrieve their names and associated Mitigation nodes.",
+        "query": "",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Skipped: this sub-question depends on q1 for its seed identifiers, but it returned no join values.",
+        "traces": [
+          {
+            "step": "dependency",
+            "ok": true,
+            "reasons": [
+              "producer q1: it returned no join values"
+            ],
+            "detail": {
+              "producer": "q1"
+            }
+          }
+        ],
+        "records": []
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "n_expected": 3,
+      "n_got": 0
+    },
+    "mapping_recall": {
+      "gold": 3,
+      "found": 0,
+      "recall": 0.0,
+      "missing": [
+        "T1134",
+        "T1528",
+        "T1539"
+      ]
+    },
+    "coverage": null,
+    "provenance": {
+      "citations": 1,
+      "compliant": 1,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "Find the TaxonomyEntry node linked from AttackPattern named 'Exploitation of Trusted Identifiers' (CAPEC-21) where taxonomy='ATTACK', and return its entry_id.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 100,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "Find all Technique and SubTechnique nodes where attack_id matches the entry_id from CAPEC-21's mapping, and retrieve their names and associated Mitigation nodes.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 100,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 67.513
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 1,
+    "related": 0
+  }
+}

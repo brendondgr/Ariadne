@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SUB-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.25,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.11,
+  "gold_expected": 9,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to surface T1021 plus all 8 named sub-technique ids (T1021.001-.008). The retrieved evidence (logic_flow.results[0].records[0]) is a single 'describe' record for T1021 whose facets only report an aggregate count (HAS_SUBTECHNIQUE -> SubTechnique, count: 8) with an empty 'related' array -- the actual sub-technique nodes/ids were never fetched by the query, so no sub-technique identifiers exist anywhere in the evidence for the answer to draw on. The narrative correctly states T1021 (Remote Services) has 8 sub-techniques linked via HAS_SUBTECHNIQUE and explicitly abstains from naming them since the evidence doesn't contain the ids -- this is honest and fully grounded (no invented ids, aliases, or names), so faithfulness and groundedness are high. However, the question asks 'what are the sub-techniques', and the answer supplies zero of the 8 required T1021.00x ids, so it fails the substantive ask despite getting the parent id and count right. gold_present=1 (T1021 only) of gold_expected=9 (T1021 + 8 sub-ids), giving completeness ~0.11. This is a retrieval-depth gap (facet-only describe template lacking expansion to the actual neighbor records), not a fabrication -- hence PARTIAL rather than INCORRECT."
+}

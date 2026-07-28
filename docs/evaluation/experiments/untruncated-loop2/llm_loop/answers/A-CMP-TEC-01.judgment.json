@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-TEC-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The query MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN $ids retrieved exactly 10 Technique records for campaign C0027: T1105, T1046, T1621, T1102, T1090, T1572, T1190, T1530, T1133, T1047. All 5 required must_include_ids (T1046, T1047, T1090, T1102, T1105) are present in both the retrieved evidence and the answer's narrative/claims. Beyond the minimum requirement, the answer's full set of 10 technique IDs exactly matches the extended ex_gold.expected list (T1046, T1047, T1090, T1102, T1105, T1133, T1190, T1530, T1572, T1621) with no additions, omissions, or substitutions. Every ID and technique name cited (e.g. T1105 'Ingress Tool Transfer', T1046 'Network Service Discovery') is directly traceable to the logic_flow records. No fabricated names, counts, or aliases were introduced; the deterministic narrative sticks strictly to listing retrieved IDs. This is a full, faithful, and complete answer."
+}

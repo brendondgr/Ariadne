@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-70] and must_include_related=[T1078.001], with a required cross-source join on T1078.001. The narrative states CAPEC-70 maps to exactly one ATT&CK technique, T1078.001, and explicitly calls out the cross-source correlation ('corroborated across three records in both the attack and capec sources'), satisfying both the must_include and must_correlate assertions. Every stated fact is traceable to logic_flow: CAPEC-70 name 'Try Common or Default Usernames and Passwords', Abstraction=Detailed, Status=Draft all match the q1 record properties exactly; the q1 record's related TaxonomyEntry (capec:taxonomy:ATTACK:1078.001, entry_id 1078.001) grounds the T1078.001 mapping. T1078.001 properties (revoked=False, stix_type=attack-pattern, x_mitre_deprecated=False, x_mitre_is_subtechnique=True, x_mitre_version=2.0) match the q2 record's properties verbatim. The T1078 (Valid Accounts) parent relationship with '1 related item(s): T1078.001' matches q3's related list exactly (one entry, T1078.001). The tactic enumeration 'TA0001, TA0005, TA0004, and TA0003' matches q4's related list exactly (4 entries, same ids and order). deterministic_scores confirms coverage=1.0 (gold=2, found=2) and citation_provenance_rate=1.0. No invented ids, counts, names, or properties were found; every numeric claim (1 CAPEC mapping, 1 related item for T1078, 4 related items for T1078.001, 3 corroborating records) checks out against the evidence."
+}

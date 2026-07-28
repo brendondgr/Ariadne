@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SW-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 73,
+  "gold_present": 73,
+  "hallucinations": [],
+  "rationale": "Gold requires S0154 plus all 73 technique ids listed in must_include_related (e.g. T1021.004, T1003.001, T1055, T1573.001). The retrieved evidence record for S0154 (Cobalt Strike) has exactly 73 related entries, and the set of related ids in logic_flow matches the gold set exactly (no missing, no extra). The answer's narrative and its enumeration claim both list 73 technique ids for S0154; comparing the answer's claim entity_ids set to the gold must_include_related set yields zero missing and zero extra ids -- a perfect match. Every technique id named in the answer (e.g. T1021.004='SSH', spot-checked against evidence) is traceable to the logic_flow related-neighbour list, so nothing is fabricated. No abstention was issued, which is correct since this is a positive case (min_records=1, not a NEG id) with a clear match. Both the count claim ('73 item(s)') and the full enumeration are grounded in the single S0154 record's related array."
+}

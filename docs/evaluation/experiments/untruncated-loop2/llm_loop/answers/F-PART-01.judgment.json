@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 0.85,
+  "groundedness": 0.85,
+  "completeness": 0.0,
+  "gold_expected": 3,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires the capec side to surface CAPEC-555 (must_include_ids) related to T1021 (must_include_related), with the attack side honestly refusing the ICS-asset-targeting question (expect_boundary). The answer under test surfaces neither: it abstains entirely, claiming 'No CAPEC records found' and 'no matching records for this question,' with zero claims and zero records. This is a genuine retrieval failure, not a benign abstention: the sibling deterministic-arm run of the identical case (docs/evaluation/experiments/untruncated/deterministic/answers/F-PART-01.json) executed a correct join query and found exactly the gold record - CAPEC-555 'Remote Services with Stolen Credentials' -> TaxonomyEntry capec:taxonomy:ATTACK:1021 'Remote Services' - proving CAPEC-555 is present and reachable in the same underlying graph. The llm_loop run's executed Gremlin query ('g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...' with ids=['T1021']) is malformed for the stated sub-question: it filters AttackPattern nodes by id=T1021 (which will never match, since T1021 is an ATT&CK id, not a CAPEC AttackPattern id) instead of joining AttackPattern -MAPS_TO-> TaxonomyEntry(entry_id='T1021') as the sub_question text itself specifies. This is a planner/query-generation bug that produced a false negative on the primary (non-negative) half of this partial-correlation case. Additionally, the attack sub-question ('What assets does technique T1021 target?') was never even executed - observed_plan contains only the capec step - so the required ICS-asset boundary refusal was never explicitly produced either; the generic notes text is not a substitute for the specific boundary abstention gold expects. No fabricated facts are present (faithfulness/groundedness scored high because the narrative accurately reflects its own - flawed - retrieval trace), but correctness and completeness are both 0 since the single gold-required entity (CAPEC-555/T1021 mapping) is completely absent from the answer, making this a failed answer to the headline question despite looking superficially 'clean' (no hallucinated content, self-reported deterministic_scores of correlation f1=1.0 are misleading since they only score the negative/no-correlation half and ignore the missed capec mapping)."
+}

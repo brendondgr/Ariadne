@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.75,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.6,
+  "gold_expected": 27,
+  "gold_present": 16,
+  "hallucinations": [],
+  "rationale": "All six gold must_correlate/must_include T-numbers (T1003, T1119, T1213, T1530, T1555, T1602) are correctly identified as CAPEC-150's ATT&CK mappings, matching the retrieved TaxonomyEntry evidence exactly, and every per-technique mitigation count stated in the narrative (T1003=9, T1602=6, T1119=2, T1530=6, T1555=3, T1213=7) matches the record counts in logic_flow verbatim -- no fabricated counts, names, or properties (CAPEC-150 Abstraction=Standard/Status=Draft also matches evidence). However, the narrative only names 9 of the 20 gold-required mitigation ids (must_include_related: M1015,M1017,M1018,M1022,M1025,M1026,M1027,M1028,M1029,M1030,M1031,M1032,M1037,M1040,M1041,M1043,M1047,M1051,M1054,M1060) by using 'including'/'such as' examples rather than full enumeration; it fully names all mitigations only for T1119 (M1029, M1041) and T1555 (M1051, M1026, M1027), leaving T1003, T1602, T1530, and T1213 partially enumerated in prose. The structured 'claims' array (enumeration-kind) does list every one of the 20 mitigations correctly and the union matches the gold set exactly, and correlation claims cover all 6 T-numbers, so the full answer object is not missing data -- but graded strictly on the narrative (the answer under test, since it is substantive rather than empty/thin), completeness is reduced. Present: CAPEC-150 (1) + 6 T-numbers + 9 named mitigations = 16 of 27 unique gold-required entities."
+}

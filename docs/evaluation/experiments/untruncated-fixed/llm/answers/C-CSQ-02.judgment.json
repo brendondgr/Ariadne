@@ -1,0 +1,12 @@
+{
+  "case_id": "C-CSQ-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-98] and must_include_related=[capec:attack-pattern:98:consequence:1/2/3] (4 ids total). The narrative under test ('CAPEC-98, identified as Phishing, is directly connected to three consequence nodes through HAS_CONSEQUENCE relationships... capec:attack-pattern:98:consequence:1, ...:2, and ...:3') names all 4 required ids verbatim, so gold_present=4/4. Cross-checking against logic_flow.results[0].records[0]: the AttackPattern node (id capec:attack-pattern:98, name Phishing, Abstraction Standard, Status Draft) has exactly 3 related Consequence nodes with those exact ids, retrieved via the g.V()...out('HAS_CONSEQUENCE')... query, matching the narrative's relationship claim and its closing statement that no additional consequences exist (row_count=3, related length=3, no more). No invented names, counts, or properties — the claims' Abstraction/Status values also match the evidence's properties block exactly. The only oddity is the pipeline's own deterministic_scores.coverage field reporting 0.25/missing all three consequence ids — but that metric evidently only scans the 'claims' array (which indeed omits the consequence ids), not the narrative; per grading instructions the narrative is the answer under test here since it is substantive, and it fully and faithfully covers the gold."
+}

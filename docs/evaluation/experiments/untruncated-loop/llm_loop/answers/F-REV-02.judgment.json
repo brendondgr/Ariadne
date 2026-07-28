@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "The narrative states CAPEC-98 (Phishing) maps to ATT&CK T1566, corroborated across capec and attack sources, satisfying gold.must_correlate=['T1566'] and capec.must_include_ids=['CAPEC-98']/must_include_related=['T1566']. It reports CAPEC-98's Abstraction=Standard and Status=Draft, matching the capec record's properties exactly (logic_flow.results[0].records[0].properties). It reports T1566's name as Phishing, stix_type=attack-pattern, x_mitre_version=2.7, revoked/x_mitre_deprecated/x_mitre_is_subtechnique all False, matching the attack record's properties verbatim (logic_flow.results[1].records[0].properties), satisfying attack.must_include_ids=['T1566'] and expect_names={'T1566':'Phishing'}. It also mentions the related tactic TA0001, which is present in logic_flow.results[2].records[0].related as {id: TA0001, name: Initial Access} -- accurately reported as a related item without inventing the tactic name in the narrative. No counts, aliases, or entities appear in the narrative that are absent from the evidence; every stated fact traces directly to the retrieved records. All gold assertions are fully surfaced."
+}

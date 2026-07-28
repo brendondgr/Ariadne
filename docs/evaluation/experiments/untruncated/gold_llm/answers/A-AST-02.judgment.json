@@ -1,0 +1,12 @@
+{
+  "case_id": "A-AST-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires expect_boundary: true (T1490/Inhibit System Recovery targeting 'Asset' is an ICS-only concept the ATT&CK graph does not model, so the correct behavior is an honest refusal, not invented data). The logic_flow trace shows the resolve/boundary steps correctly detecting 'entities not in card: [Asset]' and 'entities not modeled by the attack source: Asset', executing no query (query: \"\", records: []). The narrative and single abstention state plainly that the attack source doesn't establish this and no query was run, matching the gold boundary expectation exactly with zero fabricated assets, names, or counts. deterministic_scores confirm abstention_proof_ok: true and fully_provenanced: true. No hallucinations found."
+}

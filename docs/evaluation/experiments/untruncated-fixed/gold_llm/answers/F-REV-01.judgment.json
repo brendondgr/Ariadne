@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "The narrative names all three required CAPEC patterns (CAPEC-57 'Utilizing REST's Trust in the System Resource to Obtain Sensitive Data', CAPEC-158 'Sniffing Network Traffic', CAPEC-65 'Sniff Application Code'), matching the gold must_include_ids and the retrieved records exactly (names, Abstraction=Detailed, Status=Draft all verified against logic_flow.results[0].records). It correctly states the cross-source join id T1040 (must_correlate) and the ATT&CK technique name 'Network Sniffing' (expect_names.T1040), matching logic_flow.results[1].records[0] exactly. The technique description (promiscuous mode, span ports, user credentials/configuration data) and platform list (IaaS, Linux, macOS, Network Devices, Windows) are faithful paraphrases of the evidence's description and x_mitre_platforms fields, with no invented facts. The correlation claim '4 record(s) share it' matches the 3 CAPEC + 1 ATT&CK record count. All 3 must_include_ids for CAPEC plus the T1040 attack/correlate id (4 unique gold entities) are surfaced, satisfying min_records>=3 for CAPEC and exactly 1 for ATT&CK. No hallucinated aliases, counts, or properties were found."
+}

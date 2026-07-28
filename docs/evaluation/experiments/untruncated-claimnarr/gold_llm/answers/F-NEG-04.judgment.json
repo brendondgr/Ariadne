@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty join: must_correlate=[], expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true. The evidence shows the capec query (capec_maps_to template) executed against seed CAPEC-7 and returned row_count=0, and the attack sub-question q2 was correctly skipped because its dependency q1 produced no join values (dependency trace: 'producer q1: it returned no join values'). The answer (deterministic composer, no LLM narrative to speak of beyond the templated abstention) has zero claims and two abstentions that precisely restate these two facts ('the executed query ran cleanly and returned no matching records' for capec; 'the sub-question it depends on (q1) produced no seed identifiers, so no query was executed' for attack). No technique IDs, mitigations, or correlations are fabricated anywhere in the narrative or claims. This is exactly the required behavior for an F-NEG adversarial case and matches the deterministic_scores block (correlation.negative=true, exact=true, precision/recall/f1=1.0, abstention_proof_ok=true)."
+}

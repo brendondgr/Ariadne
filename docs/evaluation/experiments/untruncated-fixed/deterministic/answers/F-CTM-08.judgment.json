@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-08",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "The answer surfaces CAPEC-644 (Use of Captured Hashes (Pass The Hash)) with Abstraction=Detailed, Status=Stable, matching the evidence record's properties exactly. It correctly maps CAPEC-644 to ATT&CK T1550.002 via the TaxonomyEntry capec:taxonomy:ATTACK:1550.002, satisfying gold.assertions.capec.must_include_related and must_correlate=[T1550.002]. For the ATT&CK side it names T1550.002 (Pass the Hash) and enumerates all 4 required mitigations M1051, M1026, M1018, M1052, matching gold.assertions.attack.must_include_related exactly (4 of 4, no extras, no omissions) and the max_records=1 technique constraint. The single cross-source correlation on T1550.002 is stated and matches must_correlate. Every mitigation description quoted in the evidence (Update Software/M1051, Privileged Account Management/M1026, User Account Management/M1018, User Account Control/M1052) is present verbatim in logic_flow.results[1].records[0].related, so nothing is fabricated. No invented aliases, counts, or properties were found; deterministic_scores also independently confirm exact correlation (f1=1.0) and mapping_recall=1.0."
+}

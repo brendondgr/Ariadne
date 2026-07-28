@@ -1,0 +1,772 @@
+{
+  "id": "F-FAN-01",
+  "kind": "federated",
+  "tier": "hard",
+  "category": "F-FAN",
+  "question": "Which ATT&CK techniques do CAPEC-19, CAPEC-35, CAPEC-448 map to (they overlap), and what mitigations apply to the deduplicated union?",
+  "gold": {
+    "assertions": {
+      "must_correlate": [
+        "T1027.006",
+        "T1027.009",
+        "T1546.004",
+        "T1546.016",
+        "T1564.009"
+      ],
+      "capec": {
+        "min_records": 3,
+        "must_include_ids": [
+          "CAPEC-19",
+          "CAPEC-35",
+          "CAPEC-448"
+        ],
+        "must_include_related": [
+          "T1027.006",
+          "T1027.009",
+          "T1546.004",
+          "T1546.016",
+          "T1564.009"
+        ]
+      },
+      "attack": {
+        "min_records": 5,
+        "max_records": 5,
+        "must_include_ids": [
+          "T1027.006",
+          "T1027.009",
+          "T1546.004",
+          "T1546.016",
+          "T1564.009"
+        ],
+        "must_include_related": [
+          "M1013",
+          "M1022",
+          "M1040",
+          "M1048",
+          "M1049"
+        ]
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 2
+  },
+  "answer": {
+    "headline": "Gathered 8 record(s) from 2 source(s); 5 cross-source correlation(s) on shared identifiers.",
+    "narrative": "CAPEC-19, CAPEC-35, and CAPEC-448 collectively map to five deduplicated ATT&CK techniques, including T1027.009, T1027.006, and T1546.004, with T1027.009 shared across all three CAPEC entries. The mitigations for this union total four, including M1049, M1040, M1013, and M1022, while T1546.016 has no mitigations listed in the evidence.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 3 CAPEC record(s) for CAPEC-19, CAPEC-35, CAPEC-448; ATT&CK mappings: T1027.006, T1027.009, T1546.004, T1546.016, T1564.009.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-19",
+          "CAPEC-35",
+          "CAPEC-448"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-19"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-35"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-448"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-19 (Embedding Scripts within Scripts) has Abstraction: Standard; Status: Stable.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-19"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-19"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-35 (Leverage Executable Code in Non-Executable Files) has Abstraction: Detailed; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-35"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-35"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-448 (Embed Virus into DLL) has Abstraction: Detailed; Status: Stable.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-448"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-448"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-19 (Embedding Scripts within Scripts) has 3 TaxonomyEntrys: capec:taxonomy:ATTACK:1027.009, capec:taxonomy:ATTACK:1546.004, capec:taxonomy:ATTACK:1546.016.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "capec:taxonomy:ATTACK:1027.009",
+          "capec:taxonomy:ATTACK:1546.004",
+          "capec:taxonomy:ATTACK:1546.016"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-19"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-35 (Leverage Executable Code in Non-Executable Files) has 3 TaxonomyEntrys: capec:taxonomy:ATTACK:1027.006, capec:taxonomy:ATTACK:1027.009, capec:taxonomy:ATTACK:1564.009.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "capec:taxonomy:ATTACK:1027.006",
+          "capec:taxonomy:ATTACK:1027.009",
+          "capec:taxonomy:ATTACK:1564.009"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-35"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-448 (Embed Virus into DLL) has 1 TaxonomyEntrys: capec:taxonomy:ATTACK:1027.009.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "capec:taxonomy:ATTACK:1027.009"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-448"
+          }
+        ]
+      },
+      {
+        "text": "Found 5 ATT&CK record(s) including T1027.009, T1564.009, T1546.004 and more.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1027.009",
+          "T1564.009",
+          "T1546.004",
+          "T1027.006",
+          "T1546.016"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1027.009"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1564.009"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1546.004"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1027.006"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1546.016"
+          }
+        ]
+      },
+      {
+        "text": "T1027.009 (Embedded Payloads) has 2 related item(s): M1049, M1040.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1049",
+          "M1040"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1027.009"
+          }
+        ]
+      },
+      {
+        "text": "T1564.009 (Resource Forking) has 1 related item(s): M1013.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1013"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1564.009"
+          }
+        ]
+      },
+      {
+        "text": "T1546.004 (Unix Shell Configuration Modification) has 1 related item(s): M1022.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1022"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1546.004"
+          }
+        ]
+      },
+      {
+        "text": "T1027.006 (HTML Smuggling) has 1 related item(s): M1048.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1048"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1027.006"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1027.006 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1027.006"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-35"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1027.006"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1027.009 is corroborated across attack and capec (4 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1027.009"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-19"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-35"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-448"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1027.009"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1546.004 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1546.004"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-19"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1546.004"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1546.016 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1546.016"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-19"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1546.016"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1564.009 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1564.009"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-35"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1564.009"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which ATT&CK techniques do CAPEC-19, CAPEC-35, CAPEC-448 map to?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What mitigations does ATT&CK list for those mapped techniques?",
+        "seed_from": "q1"
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Which ATT&CK techniques do CAPEC-19, CAPEC-35, CAPEC-448 map to?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 3 CAPEC record(s) for CAPEC-19, CAPEC-35, CAPEC-448; ATT&CK mappings: T1027.006, T1027.009, T1546.004, T1546.016, T1564.009.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CAPEC-19",
+                "CAPEC-35",
+                "CAPEC-448"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_maps_to",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
+              "injected": [],
+              "timing_ms": 0.098
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 7,
+              "timing_ms": 6.1
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 7,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 3,
+              "timing_ms": 0.08
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-19",
+            "name": "Embedding Scripts within Scripts",
+            "label": "AttackPattern",
+            "description": "An adversary leverages the capability to execute their own script by embedding it within other scripts that the target software is likely to execute due to programs' vulnerabilities that are brought on by allowing remote hosts to execute scripts.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Embedding Scripts within Scripts",
+              "description": "An adversary leverages the capability to execute their own script by embedding it within other scripts that the target software is likely to execute due to programs' vulnerabilities that are brought on by allowing remote hosts to execute scripts.",
+              "id": "capec:attack-pattern:19",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [
+              "T1027.009",
+              "T1546.004",
+              "T1546.016"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1027.009",
+                "entry_id": "1027.009",
+                "name": "Obfuscated Files or Information: Embedded Payloads",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1546.004",
+                "entry_id": "1546.004",
+                "name": "Event Triggered Execution:.bash_profile and .bashrc",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1546.016",
+                "entry_id": "1546.016",
+                "name": "Event Triggered Execution: Installer Packages",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-35",
+            "name": "Leverage Executable Code in Non-Executable Files",
+            "label": "AttackPattern",
+            "description": "An attack of this type exploits a system's trust in configuration and resource files. When the executable loads the resource (such as an image file or configuration file) the attacker has modified the file to either execute malicious code directly or manipulate the target process (e.g. application server) to execute based on the malicious configuration parameters. Since systems are increasingly interrelated mashing up resources from local and remote sources the possibility of this attack occurring is high.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Leverage Executable Code in Non-Executable Files",
+              "description": "An attack of this type exploits a system's trust in configuration and resource files. When the executable loads the resource (such as an image file or configuration file) the attacker has modified the file to either execute malicious code directly or manipulate the target process (e.g. application server) to execute based on the malicious configuration parameters. Since systems are increasingly interrelated mashing up resources from local and remote sources the possibility of this attack occurring is high.",
+              "id": "capec:attack-pattern:35",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1027.006",
+              "T1027.009",
+              "T1564.009"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1027.006",
+                "entry_id": "1027.006",
+                "name": "Obfuscated Files or Information: HTML Smuggling",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1027.009",
+                "entry_id": "1027.009",
+                "name": "Obfuscated Files or Information: Embedded Payloads",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1564.009",
+                "entry_id": "1564.009",
+                "name": "Hide Artifacts: Resource Forking",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-448",
+            "name": "Embed Virus into DLL",
+            "label": "AttackPattern",
+            "description": "An adversary tampers with a DLL and embeds a computer virus into gaps between legitimate machine instructions. These gaps may be the result of compiler optimizations that pad memory blocks for performance gains. The embedded virus then attempts to infect any machine which interfaces with the product, and possibly steal private data or eavesdrop.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Embed Virus into DLL",
+              "description": "An adversary tampers with a DLL and embeds a computer virus into gaps between legitimate machine instructions. These gaps may be the result of compiler optimizations that pad memory blocks for performance gains. The embedded virus then attempts to infect any machine which interfaces with the product, and possibly steal private data or eavesdrop.",
+              "id": "capec:attack-pattern:448",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1027.009"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1027.009",
+                "entry_id": "1027.009",
+                "name": "Obfuscated Files or Information: Embedded Payloads",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "What mitigations does ATT&CK list for those mapped techniques?",
+        "query": "MATCH (t:SubTechnique) WHERE t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 20000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 5 ATT&CK record(s) including T1027.009, T1564.009, T1546.004 and more.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "Mitigation"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1027.006",
+                "T1027.009",
+                "T1546.004",
+                "T1546.016",
+                "T1564.009"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "technique_mitigations",
+              "query": "MATCH (t:SubTechnique) WHERE t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 20000",
+              "injected": [
+                "LIMIT 20000 appended (none present)"
+              ],
+              "timing_ms": 0.099
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 6,
+              "timing_ms": 3.6
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 6,
+              "timing_ms": 0.005
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 5,
+              "timing_ms": 2.058
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1027.009",
+            "name": "Embedded Payloads",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1027.009"
+            ],
+            "related": [
+              {
+                "id": "M1049",
+                "name": "Antivirus/Antimalware",
+                "description": "Antivirus/Antimalware solutions utilize signatures, heuristics, and behavioral analysis to detect, block, and remediate malicious software, including viruses, trojans, ransomware, and spyware. These solutions continuously monitor endpoints and systems for known malicious patterns and suspicious behaviors that indicate compromise. Antivirus/Antimalware software should be deployed across all devices, with automated updates to ensure protection against the latest threats. This mitigation can be implemented through the following measures:\n\nSignature-Based Detection:\n\n- Implementation: Use predefined signatures to identify known malware based on unique patterns such as file hashes, byte sequences, or command-line arguments. This method is effective against known threats.\n- Use Case: When malware like \"Emotet\" is detected, its signature (such as a specific file hash) matches a known database of malicious software, triggering an alert and allowing immediate quarantine of the infected file.\n\nHeuristic-Based Detection:\n\n- Implementation: Deploy heuristic algorithms that analyze behavior and characteristics of files and processes to identify potential malware, even if it doesn’t match a known signature.\n- Use Case: If a program attempts to modify multiple critical system files or initiate suspicious network communications, heuristic analysis may flag it as potentially malicious, even if no specific malware signature is available.\n\nBehavioral Detection (Behavior Prevention):\n\n- Implementation: Use behavioral analysis to detect patterns of abnormal activities, such as unusual system calls, unauthorized file encryption, or attempts to escalate privileges.\n- Use Case: Behavioral analysis can detect ransomware attacks early by identifying behavior like mass file encryption, even before a specific ransomware signature has been identified.\n\nReal-Time Scanning:\n\n- Implementation: Enable real-time scanning to automatically inspect files and network traffic for signs of malware as they are accessed, downloaded, or executed.\n- Use Case: When a user downloads an email attachment, the antivirus solution scans the file in real-time, checking it against both signatures and heuristics to detect any malicious content before it can be opened.\n\nCloud-Assisted Threat Intelligence:\n\n- Implementation: Use cloud-based threat intelligence to ensure the antivirus solution can access the latest malware definitions and real-time threat feeds from a global database of emerging threats.\n- Use Case: Cloud-assisted antivirus solutions quickly identify newly discovered malware by cross-referencing against global threat databases, providing real-time protection against zero-day attacks.\n\n**Tools for Implementation**:\n\n- Endpoint Security Platforms: Use solutions such as EDR for comprehensive antivirus/antimalware protection across all systems.\n- Centralized Management: Implement centralized antivirus management consoles that provide visibility into threat activity, enable policy enforcement, and automate updates.\n- Behavioral Analysis Tools: Leverage solutions with advanced behavioral analysis capabilities to detect malicious activity patterns that don’t rely on known signatures."
+              },
+              {
+                "id": "M1040",
+                "name": "Behavior Prevention on Endpoint",
+                "description": "Behavior Prevention on Endpoint refers to the use of technologies and strategies to detect and block potentially malicious activities by analyzing the behavior of processes, files, API calls, and other endpoint events. Rather than relying solely on known signatures, this approach leverages heuristics, machine learning, and real-time monitoring to identify anomalous patterns indicative of an attack. This mitigation can be implemented through the following measures:\n\nSuspicious Process Behavior:\n\n- Implementation: Use Endpoint Detection and Response (EDR) tools to monitor and block processes exhibiting unusual behavior, such as privilege escalation attempts.\n- Use Case: An attacker uses a known vulnerability to spawn a privileged process from a user-level application. The endpoint tool detects the abnormal parent-child process relationship and blocks the action.\n\nUnauthorized File Access:\n\n- Implementation: Leverage Data Loss Prevention (DLP) or endpoint tools to block processes attempting to access sensitive files without proper authorization.\n- Use Case: A process tries to read or modify a sensitive file located in a restricted directory, such as /etc/shadow on Linux or the SAM registry hive on Windows. The endpoint tool identifies this anomalous behavior and prevents it.\n\nAbnormal API Calls:\n\n- Implementation: Implement runtime analysis tools to monitor API calls and block those associated with malicious activities.\n- Use Case: A process dynamically injects itself into another process to hijack its execution. The endpoint detects the abnormal use of APIs like `OpenProcess` and `WriteProcessMemory` and terminates the offending process.\n\nExploit Prevention:\n\n- Implementation: Use behavioral exploit prevention tools to detect and block exploits attempting to gain unauthorized access.\n- Use Case: A buffer overflow exploit is launched against a vulnerable application. The endpoint detects the anomalous memory write operation and halts the process."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1564.009",
+            "name": "Resource Forking",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1564.009"
+            ],
+            "related": [
+              {
+                "id": "M1013",
+                "name": "Application Developer Guidance",
+                "description": "Application Developer Guidance focuses on providing developers with the knowledge, tools, and best practices needed to write secure code, reduce vulnerabilities, and implement secure design principles. By integrating security throughout the software development lifecycle (SDLC), this mitigation aims to prevent the introduction of exploitable weaknesses in applications, systems, and APIs. This mitigation can be implemented through the following measures:\n \nPreventing SQL Injection (Secure Coding Practice):\n\n- Implementation: Train developers to use parameterized queries or prepared statements instead of directly embedding user input into SQL queries.\n- Use Case: A web application accepts user input to search a database. By sanitizing and validating user inputs, developers can prevent attackers from injecting malicious SQL commands.\n\nCross-Site Scripting (XSS) Mitigation:\n\n- Implementation: Require developers to implement output encoding for all user-generated content displayed on a web page.\n- Use Case: An e-commerce site allows users to leave product reviews. Properly encoding and escaping user inputs prevents malicious scripts from being executed in other users’ browsers.\n\nSecure API Design:\n\n- Implementation: Train developers to authenticate all API endpoints and avoid exposing sensitive information in API responses.\n- Use Case: A mobile banking application uses APIs for account management. By enforcing token-based authentication for every API call, developers reduce the risk of unauthorized access.\n\nStatic Code Analysis in the Build Pipeline:\n\n- Implementation: Incorporate tools into CI/CD pipelines to automatically scan for vulnerabilities during the build process.\n- Use Case: A fintech company integrates static analysis tools to detect hardcoded credentials in their source code before deployment.\n\nThreat Modeling in the Design Phase:\n\n- Implementation: Use frameworks like STRIDE (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege) to assess threats during application design.\n- Use Case: Before launching a customer portal, a SaaS company identifies potential abuse cases, such as session hijacking, and designs mitigations like secure session management.\n\n**Tools for Implementation**:\n\n- Static Code Analysis Tools: Use tools that can scan for known vulnerabilities in source code.\n- Dynamic Application Security Testing (DAST): Use tools like Burp Suite or OWASP ZAP to simulate runtime attacks and identify vulnerabilities.\n- Secure Frameworks: Recommend secure-by-default frameworks (e.g., Django for Python, Spring Security for Java) that enforce security best practices."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1546.004",
+            "name": "Unix Shell Configuration Modification",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1546.004"
+            ],
+            "related": [
+              {
+                "id": "M1022",
+                "name": "Restrict File and Directory Permissions",
+                "description": "Restricting file and directory permissions involves setting access controls at the file system level to limit which users, groups, or processes can read, write, or execute files. By configuring permissions appropriately, organizations can reduce the attack surface for adversaries seeking to access sensitive data, plant malicious code, or tamper with system files.\n\nEnforce Least Privilege Permissions:\n\n- Remove unnecessary write permissions on sensitive files and directories.\n- Use file ownership and groups to control access for specific roles.\n\nExample (Windows): Right-click the shared folder → Properties → Security tab → Adjust permissions for NTFS ACLs.\n\nHarden File Shares:\n\n- Disable anonymous access to shared folders.\n- Enforce NTFS permissions for shared folders on Windows.\n\nExample: Set permissions to restrict write access to critical files, such as system executables (e.g., `/bin` or `/sbin` on Linux). Use tools like `chown` and `chmod` to assign file ownership and limit access.\n\nOn Linux, apply:\n`chmod 750 /etc/sensitive.conf`\n`chown root:admin /etc/sensitive.conf`\n\nFile Integrity Monitoring (FIM):\n\n- Use tools like Tripwire, Wazuh, or OSSEC to monitor changes to critical file permissions.\n\nAudit File System Access:\n\n- Enable auditing to track permission changes or unauthorized access attempts.\n- Use auditd (Linux) or Event Viewer (Windows) to log activities.\n\nRestrict Startup Directories:\n\n- Configure permissions to prevent unauthorized writes to directories like `C:\\ProgramData\\Microsoft\\Windows\\Start Menu`.\n\nExample: Restrict write access to critical directories like `/etc/`, `/usr/local/`, and Windows directories such as `C:\\Windows\\System32`.\n\n- On Windows, use icacls to modify permissions: `icacls \"C:\\Windows\\System32\" /inheritance:r /grant:r SYSTEM:(OI)(CI)F`\n- On Linux, monitor permissions using tools like `lsattr` or `auditd`."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1027.006",
+            "name": "HTML Smuggling",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1027.006"
+            ],
+            "related": [
+              {
+                "id": "M1048",
+                "name": "Application Isolation and Sandboxing",
+                "description": "Application Isolation and Sandboxing refers to the technique of restricting the execution of code to a controlled and isolated environment (e.g., a virtual environment, container, or sandbox). This method prevents potentially malicious code from affecting the rest of the system or network by limiting access to sensitive resources and critical operations. The goal is to contain threats and minimize their impact. This mitigation can be implemented through the following measures:\n\nBrowser Sandboxing:\n\n- Use Case: Implement browser sandboxing to isolate untrusted web content and prevent malicious web pages or scripts from accessing sensitive system resources or initiating unauthorized downloads.\n- Implementation: Use browsers with built-in sandboxing features (e.g., Google Chrome, Microsoft Edge) or deploy enhanced browser security frameworks that limit the execution scope of active content. Consider controls that monitor or restrict script-based file generation and downloads commonly abused in evasion techniques like HTML smuggling.\n\nApplication Virtualization:\n\n- Use Case: Deploy critical or high-risk applications in a virtualized environment to ensure any compromise does not affect the host system.\n- Implementation: Use application virtualization platforms to run applications in isolated environments.\n\nEmail Attachment Sandboxing:\n\n- Use Case: Route email attachments to a sandbox environment to detect and block malware before delivering emails to end-users.\n- Implementation: Integrate security solutions with sandbox capabilities to analyze email attachments.\n\nEndpoint Sandboxing:\n\n- Use Case: Run all downloaded files and applications in a restricted environment to monitor their behavior for malicious activity.\n- Implementation: Use endpoint protection tools for sandboxing at the endpoint level."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1546.016",
+            "name": "Installer Packages",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1546.016"
+            ],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 5,
+      "n_got": 5
+    },
+    "mapping_recall": {
+      "gold": 5,
+      "found": 5,
+      "recall": 1.0,
+      "missing": []
+    },
+    "coverage": null,
+    "provenance": {
+      "citations": 30,
+      "compliant": 30,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "gold_llm",
+  "run_meta": {
+    "planner": "gold-replay",
+    "synthesis": "llm",
+    "wall_s": 63.068
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 8,
+    "related": 12
+  }
+}

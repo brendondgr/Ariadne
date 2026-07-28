@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The deterministic answer's enumeration claim lists all 34 technique IDs (T1529, T1124, T1680, T1008, T1105, T1046, T1189, T1485, T1012, T1203, T1685, T1571, T1078, T1098, T1591, T1041, T1057, T1104, T1049, T1047, T1033, T1489, T1082, T1106, T1202, T1005, T1140, T1218, T1620, T1010, T1560, T1016, T1070, T1083), which is an exact set match to gold's ex_gold.expected list of 34 techniques for G0032 (Lazarus Group). All 5 required must_include_ids (T1005, T1008, T1010, T1012, T1016) are present. Every cited ID is traceable to a logic_flow record with matching primary_id from the executed query 'MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN $ids ...' (34 rows returned, 34 records normalized). The stated count of 34 records matches evidence exactly. No technique names, dates, or extra properties were asserted beyond the retrieved T-number IDs, so there is no unsupported detail to penalize. Coverage per deterministic_scores also reports gold=5/found=5=1.0, corroborating full requirement satisfaction."
+}

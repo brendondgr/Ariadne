@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-13 mapping to T1574.006/T1574.007 (correlation), and both techniques' tactic membership TA0002 and TA0005. The claims/narrative state CAPEC-13's 3 TaxonomyEntrys (1574.006, 1574.007, 1562.003) exactly matching the 'related' array in logic_flow, CAPEC-13's Abstraction: Detailed / Status: Stable exactly matching its properties, both ATT&CK technique records (T1574.007 Path Interception by PATH Environment Variable, T1574.006 Dynamic Linker Hijacking) with their tactic ids TA0005 and TA0002 for each, matching the 'related' arrays in the attack results verbatim, and the 2-way cross-source correlation on T1574.006 and T1574.007 matching must_correlate exactly. deterministic_scores confirms exact 1.0 precision/recall on correlation and 2/2 mapping_recall. T1562.003 (present in the CAPEC mapping but excluded from the attack query's 2 returned records, consistent with gold's max_records:2 for the attack block) was correctly not given fabricated tactic memberships. No invented names, counts, or ids were found; every stated fact traces directly to the retrieved records."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SW-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 56,
+  "gold_present": 56,
+  "hallucinations": [],
+  "rationale": "Gold requires S0266 (must_include_ids) plus 55 ATT&CK technique/sub-technique ids (must_include_related, e.g. T1005, T1027.002, T1685). The evidence (logic_flow.results[0].records[0]) is the single Software record for S0266/TrickBot with join_values listing exactly those 55 technique ids and a 'related' array giving each id's name/description from the same query (MATCH (s:Software)-[:USES]->(t) ... s.attack_id IN ['S0266']), so every named id is directly grounded in the retrieved evidence with none invented. The answer's claims (both the fact claim citing S0266 and the enumeration claim) list all 55 technique ids verbatim, matching the gold set one-for-one (cross-checked each of the 55 gold ids against the answer's entity_ids list; all present, no extras, no omissions), and correctly names the software as TrickBot per the evidence record. No fabricated aliases, counts, or properties were found -- the '55 item(s)' count matches the query's row_count. This is a full, faithful, fully grounded match to the gold requirement."
+}

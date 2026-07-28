@@ -1,0 +1,14 @@
+{
+  "case_id": "C-ABS-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.2,
+  "faithfulness": 0.6,
+  "groundedness": 0.8,
+  "completeness": 0.67,
+  "gold_expected": 3,
+  "gold_present": 2,
+  "hallucinations": [
+    "Narrative states 'The evidence does not identify any standard or meta ancestors for CAPEC-7' in the same paragraph that just named CAPEC-66 as its ChildOf parent -- a self-contradictory, unsupported negation that would mislead the analyst into thinking no ancestor was found at all."
+  ],
+  "rationale": "Gold requires CAPEC-7 (present) plus related ancestors CAPEC-66 and CAPEC-248 (must_include_related). The evidence (logic_flow) only performed a single-hop CHILD_OF traversal from CAPEC-7 and found CAPEC-66 (the standard-level ancestor); it never traversed a second hop to CAPEC-248 (the meta-level ancestor), so CAPEC-248 is genuinely absent from the retrieved evidence (2/3 gold ids surfaced). Beyond the retrieval gap, the narrative under test is internally contradictory: it correctly states CAPEC-7 'has exactly one ChildOf parent, CAPEC-66' but then immediately claims 'The evidence does not identify any standard or meta ancestors for CAPEC-7' -- directly negating the fact it just gave. An analyst reading only the narrative would wrongly conclude no ancestor was found for CAPEC-7 at all, even though CAPEC-66 (a required gold id) is right there in the same sentence. No entities were fabricated (CAPEC-66's id/name are grounded in the q2 record's 'related' field), but the false blanket denial is an unsupported/incorrect synthesis claim on top of an already incomplete evidence set, so the answer fails to correctly answer the question."
+}

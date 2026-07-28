@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 12,
+  "gold_present": 12,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-21 to map to exactly T1134, T1528, T1539 (must_correlate/must_include_ids/must_include_related), and the union of mitigations across those three techniques (M1017, M1018, M1021, M1026, M1032, M1047, M1051, M1054) to be surfaced. The evidence in logic_flow confirms: CAPEC-21's related TaxonomyEntry nodes are exactly T1134/T1528/T1539 (record CAPEC-21, join_values), and the attack query returns exactly 3 Technique records (row_count 12 total mitigation rows -> 3 records normalized) with T1539 having 6 mitigations (M1051, M1047, M1054, M1032, M1017, M1021), T1528 having 4 (M1047, M1018, M1017, M1021), and T1134 having 2 (M1026, M1018) - the union is exactly the 8 gold mitigation ids, with no extras or omissions. The narrative states the correct abstraction (Meta, matching properties.Abstraction), correctly names all three techniques, and correctly states the per-technique mitigation counts (six/four/two) while naming a representative subset (M1051, M1047, M1032, M1018, M1021, M1026) accurately by id and name against the evidence; the structured 'claims' (enumeration-kind) fully list every mitigation id per technique including M1054 and M1017 that the prose only implies via count, so the full answer object (narrative+claims, both shown to the analyst) surfaces all 12 gold-required ids (CAPEC-21, T1134, T1528, T1539, M1017, M1018, M1021, M1026, M1032, M1047, M1051, M1054). Correlation claims correctly identify T1134/T1528/T1539 as corroborated across capec and attack sources, matching the federated must_correlate requirement. No name, count, abstraction value, or mitigation-technique linkage in the answer diverges from the retrieved evidence; every mitigation name cited (e.g., 'Update Software', 'Audit', 'Multi-factor Authentication', 'User Account Management', 'Restrict Web-Based Content', 'Privileged Account Management') matches the evidence's related[].name verbatim, so there are no hallucinations."
+}

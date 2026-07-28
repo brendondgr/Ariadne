@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires the CAPEC side to surface CAPEC-555 with related ATT&CK mappings T1021, T1114.002, T1133 (capec.must_include_ids/must_include_related), and requires the ATT&CK/mitigation side to be an honest skip (attack.expect_skipped=true, expect_no_correlation=true). The narrative and claims state exactly this: CAPEC-555 'Remote Services with Stolen Credentials' maps to T1021, T1114.002, and T1133, all four ids present and matching the single retrieved record in logic_flow.results[0].records[0] (primary_id CAPEC-555, join_values [T1021, T1114.002, T1133], related TaxonomyEntrys 1021/1114.002/1133). The stated Abstraction=Standard and Status=Stable match record.properties exactly, and the TaxonomyEntry names (Remote Services, Email Collection:Remote Email Collection, External Remote Services) match record.related exactly -- no fabricated properties or aliases. The answer correctly reports the attack/mitigation side as skipped ('no specialist available for source attack'), matching notes=['Skipped attack: no specialist available for source \\'attack\\''] and gold's attack.expect_skipped=true; it does not fabricate any mitigations or ATT&CK correlation, consistent with expect_no_correlation=true. No unsupported claims found."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result for the nonexistent campaign C9999 (expect_empty: true, ex_gold.expected: []). The executed query (MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN $ids ...) ran cleanly with seed_ids=['C9999'] and returned row_count 0 / records []. The answer's claims list is empty (no fabricated techniques), and the narrative correctly abstains: 'The routed sources returned no matching records for this question,' with a matching abstention entry citing the exact query and stating it 'returned no matching records.' No entity, id, count, or property is invented anywhere in the narrative or claims. This is a textbook correct abstention for a NEG test case."
+}

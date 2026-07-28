@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty correlation (must_correlate: [], expect_no_correlation: true, capec.expect_empty: true) with the ATT&CK-side sub-question skipped (attack.expect_dependency_skip: true). The evidence confirms CAPEC-3's MAPS_TO facet count is 0 (no TaxonomyEntry/ATT&CK link), and the observed_plan shows only 3 executed sub-questions, all source='capec' (q1 describe, q2 HAS_MITIGATION, q3 CHILD_OF) — no attack-source query ran, matching the expected dependency skip. The narrative/claims correctly state 'CAPEC-3 has zero mapped ATT&CK techniques' and fabricate no T-number or correlation. The additional claims (3 mitigations capec:attack-pattern:3:mitigation:1/2/3, ChildOf parent CAPEC-267, Abstraction=Detailed, Status=Draft) are all directly supported by the records/related arrays in logic_flow. No hallucinations found; this is a fully grounded, correctly abstaining negative case."
+}

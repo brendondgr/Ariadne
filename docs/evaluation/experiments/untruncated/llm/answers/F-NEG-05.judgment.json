@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-05",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty (must_correlate: [], expect_no_correlation: true, capec.expect_empty: true, attack.expect_dependency_skip: true). The evidence shows the capec query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within([\"CAPEC-16\"]))...out(\"MAPS_TO\")...) executed cleanly with row_count 0 (trace step 'execute'/'assess'), and the downstream attack sub-question q2 was correctly skipped via the 'dependency' trace citing 'producer q1: it returned no join values' \u2014 exactly matching expect_dependency_skip. The answer's narrative and abstentions state plainly that no matching records were found and invite the analyst to supply a concrete id, without inventing any technique, mitigation, or correlation. deterministic_scores.correlation confirms negative/exact with precision=recall=f1=1.0. No fabricated ids, names, counts, or aliases appear anywhere in the narrative or claims (claims list is empty). This is a clean, fully faithful abstention matching the gold exactly."
+}

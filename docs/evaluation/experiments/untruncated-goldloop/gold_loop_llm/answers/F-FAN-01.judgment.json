@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 13,
+  "gold_present": 13,
+  "hallucinations": [],
+  "rationale": "All three gold CAPEC ids (CAPEC-19, CAPEC-35, CAPEC-448) are surfaced with their evidence-matched Abstraction/Status properties (CAPEC-19 Standard/Stable, CAPEC-35 Detailed/Draft, CAPEC-448 Detailed/Stable, all verified against logic_flow.records[0].properties). All 5 required ATT&CK correlation ids (T1027.006, T1027.009, T1546.004, T1546.016, T1564.009) are named and each CAPEC's mapped subset matches its 'related' TaxonomyEntry list exactly (CAPEC-19 -> 1027.009/1546.004/1546.016; CAPEC-35 -> 1027.006/1027.009/1564.009; CAPEC-448 -> 1027.009 only). The narrative's corroboration counts (T1027.009 shared by 4 records, others by 2) match the record-level cross-source overlap. All 5 required mitigations (M1013, M1022, M1040, M1048, M1049) are stated and correctly attributed per technique (T1027.009->M1049/M1040, T1564.009->M1013, T1546.004->M1022, T1027.006->M1048), matching logic_flow.results[1].records related lists; T1546.016 (Installer Packages) is correctly omitted from the mitigation list since its 'related' array is empty in evidence -- no fabrication. deterministic_scores confirms exact correlation match (5/5, f1=1.0) and full mapping recall (5/5). No invented names, counts, or ids were found anywhere in the narrative or claims."
+}

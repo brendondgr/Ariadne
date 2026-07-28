@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-70] and must_include_related=[T1078.001], with the join scheme expecting T1078.001. The narrative names CAPEC-70 (Try Common or Default Usernames and Passwords) and states it maps to exactly one ATT&CK technique, T1078.001, via taxonomy entry capec:taxonomy:ATTACK:1078.001 named 'Valid Accounts:Default Accounts' -- this matches the single record in logic_flow.results[0].records[0].related exactly (id capec:taxonomy:ATTACK:1078.001, entry_id 1078.001, name 'Valid Accounts:Default Accounts', join_values=[T1078.001]). The additional properties cited (Abstraction: Detailed, Status: Draft) are verbatim from the record's properties block. No count, name, or attribute in the narrative or claims is unsupported by the retrieved evidence; the deterministic_scores.coverage confirms gold=2/found=2. Both required gold ids are surfaced, so this is a full correct answer with no hallucinations."
+}

@@ -1,0 +1,246 @@
+{
+  "id": "C-CWE2-02",
+  "kind": "capec",
+  "tier": "medium",
+  "category": "C-CWE2",
+  "question": "Which CWE weaknesses does CAPEC-640 target?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "CAPEC-640"
+      ],
+      "must_include_related": [
+        "CWE-114",
+        "CWE-829"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "CWE-114",
+        "CWE-829"
+      ],
+      "scheme": "capec"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "Analysis found one CAPEC record for CAPEC-640, which is titled Inclusion of Code in Existing Process and carries a Detailed abstraction with a Stable status. This attack pattern targets two CWE weaknesses: CWE-114 and CWE-829.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-640.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-640"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-640"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-640 (Inclusion of Code in Existing Process) has Abstraction: Detailed; Status: Stable.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-640"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-640"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "C-CWE2-02",
+      "source": "capec",
+      "text": "Which weaknesses does CAPEC-640 exploit?",
+      "entities": [
+        "AttackPattern",
+        "EXPLOITS_WEAKNESS",
+        "Weakness"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-640"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Retrieve the Weakness nodes connected to the AttackPattern node identified as 'CAPEC-640' via the EXPLOITS_WEAKNESS relationship.",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"EXPLOITS_WEAKNESS\").hasLabel(\"Weakness\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(100)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-640.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "Weakness"
+              ],
+              "relationships": [
+                "EXPLOITS_WEAKNESS"
+              ],
+              "seed_ids": [
+                "CAPEC-640"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_neighbors",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"EXPLOITS_WEAKNESS\").hasLabel(\"Weakness\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(100)",
+              "injected": [],
+              "timing_ms": 0.09
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2,
+              "timing_ms": 4.8
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 2,
+              "timing_ms": 0.005
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.063
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-640",
+            "name": "Inclusion of Code in Existing Process",
+            "label": "AttackPattern",
+            "description": "The adversary takes advantage of a bug in an application failing to verify the integrity of the running process to execute arbitrary code in the address space of a separate live process. The adversary could use running code in the context of another process to try to access process's memory, system/network resources, etc. The goal of this attack is to evade detection defenses and escalate privileges by masking the malicious code under an existing legitimate process. Examples of approaches include but not limited to: dynamic-link library (DLL) injection, portable executable injection, thread execution hijacking, ptrace system calls, VDSO hijacking, function hooking, reflective code loading, and more.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Inclusion of Code in Existing Process",
+              "description": "The adversary takes advantage of a bug in an application failing to verify the integrity of the running process to execute arbitrary code in the address space of a separate live process. The adversary could use running code in the context of another process to try to access process's memory, system/network resources, etc. The goal of this attack is to evade detection defenses and escalate privileges by masking the malicious code under an existing legitimate process. Examples of approaches include but not limited to: dynamic-link library (DLL) injection, portable executable injection, thread execution hijacking, ptrace system calls, VDSO hijacking, function hooking, reflective code loading, and more.",
+              "id": "capec:attack-pattern:640",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "CWE-114",
+                "name": "CWE-114",
+                "label": "Weakness",
+                "type": "EXPLOITS_WEAKNESS"
+              },
+              {
+                "id": "CWE-829",
+                "name": "CWE-829",
+                "label": "Weakness",
+                "type": "EXPLOITS_WEAKNESS"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 3,
+      "found": 3,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 2,
+      "compliant": 2,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm_loop",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "Retrieve the Weakness nodes connected to the AttackPattern node identified as 'CAPEC-640' via the EXPLOITS_WEAKNESS relationship.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 1,
+          "max_result_rows": 100,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 38.902
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 2
+  }
+}

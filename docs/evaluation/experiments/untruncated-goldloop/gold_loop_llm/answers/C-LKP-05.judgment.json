@@ -1,0 +1,14 @@
+{
+  "case_id": "C-LKP-05",
+  "verdict": "CORRECT",
+  "correctness": 0.95,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [
+    "Narrative labels the 5 nodes reached via an outbound CAN_PRECEDE edge from CAPEC-70 (CAPEC-151/560/561/600/653) as 'CanPrecede predecessors'. Since the edge is CAPEC-70 -CAN_PRECEDE-> {those nodes}, CAPEC-70 precedes them, meaning they are its successors, not predecessors. The IDs, edge type, and count (5) are all correctly grounded in the q3 'related' evidence, but the directional label is inverted/misleading."
+  ],
+  "rationale": "Gold requires only CAPEC-70 with name 'Try Common or Default Usernames and Passwords', Abstraction=Detailed, Status=Draft (min_records=1, max_records=1). The answer's narrative and claims state exactly these values, matching logic_flow.results[0].records[0].properties (Status: Draft, Abstraction: Detailed) verbatim. gold_present=1/1, coverage 1.0. The answer adds two bonus enumerations beyond the gold ask: 5 CAN_PRECEDE targets (CAPEC-151, CAPEC-560, CAPEC-561, CAPEC-600, CAPEC-653) and 1 CHILD_OF parent (CAPEC-49), both of which are fully present and correctly identified in the q3/q4 'related' evidence blocks with matching ids, names, and edge types -- no fabricated ids, names, or counts. The only defect is a directional mislabeling: calling the CAN_PRECEDE-outbound neighbours 'predecessors' when the edge direction (CAPEC-70 -> them) makes them successors of CAPEC-70. This is a minor terminology/faithfulness slip on bonus content the question did not require (question only asks for abstraction and status), not a fabrication of ids or property values, so it does not undermine the core answer. No abstention was needed (positive lookup case) and none was given. Verdict CORRECT with a small faithfulness deduction for the inverted relationship-direction label."
+}

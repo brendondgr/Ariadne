@@ -1,0 +1,16 @@
+{
+  "case_id": "F-PART-04",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 0.4,
+  "groundedness": 0.5,
+  "completeness": 0.5,
+  "gold_expected": 2,
+  "gold_present": 1,
+  "hallucinations": [
+    "Answer runs and presents a broad, unseeded ATT&CK query (1000 records, e.g. AN0110, AN0613, AN0769, ...) despite the question explicitly requiring the seeded ATT&CK step to degrade to a dependency abstention 'no broad unseeded query' when the CAPEC-555 producer is down",
+    "No abstention is emitted for the ATT&CK sub-question (answer.abstentions == []) even though its seed_from='q1' (the CAPEC-555 mapping) never produced seed ids, since capec was skipped ('Skipped capec: no specialist available for source capec')",
+    "Narrative/claims imply the 1000 ATT&CK records are a valid answer to the correlation question, when in fact zero of them are correlated to CAPEC-555 (expect_no_correlation=true is violated by implication -- the answer presents results as if responsive rather than reporting the required no-correlation/dependency-skip outcome)"
+  ],
+  "rationale": "Gold requires a negative-degradation behavior: capec.expect_skipped=true (satisfied -- notes correctly record 'Skipped capec: no specialist available for source capec') and attack.expect_dependency_skip=true (violated -- instead of aborting/abstaining because its seed_from='q1' had no CAPEC-555-derived seed ids, the pipeline ran an unbounded, unseeded ATT&CK query and returned all 1000 matching records as the 'answer', with zero abstentions recorded). The question itself states the correct behavior in plain language ('the seeded ATT&CK side must degrade to a dependency abstention -- no broad unseeded query'), and the pipeline did exactly the forbidden thing. must_correlate is empty and expect_no_correlation=true, so no T-number correlation claim is required or made, but the deliverable should have been an abstention/skip notice for the ATT&CK leg, not a 1000-record dump presented as a substantive result. Individual AN* ids are technically grounded in the retrieved evidence (logic_flow.results[0].source='attack', 1000 records), so this is not fabrication of nonexistent entities, but the overall response misrepresents an unseeded broad scan as a valid answer to a question that demanded abstention, which fails correctness entirely (0.0) and partially undermines faithfulness/groundedness at the behavioral level even though the raw ids are real. Of the 2 required degradation behaviors (capec skip, attack dependency skip), only 1 (capec skip) was actually honored."
+}

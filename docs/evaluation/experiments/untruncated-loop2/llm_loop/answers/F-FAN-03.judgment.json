@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-03",
+  "verdict": "PARTIAL",
+  "correctness": 0.35,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.47,
+  "gold_expected": 17,
+  "gold_present": 8,
+  "hallucinations": [],
+  "rationale": "The answer correctly and completely handles the first half of the question: it names CAPEC-37 and CAPEC-639, correctly derives the deduplicated ATT&CK union {T1005, T1039, T1552.001, T1552.003, T1552.004, T1552.006} matching gold must_correlate exactly, correctly states CAPEC-639 is Stable/Detailed and CAPEC-37 is Draft/Detailed, and reports all 6 cross-source correlations with accurate per-technique share counts (T1552.004 shared by 3 records, others by 2) -- every one of these is traceable to logic_flow (q1 records' join_values/related, q2 records). No hallucinated ids, names, or counts were found. However, the question explicitly asks 'what mitigations apply to the deduplicated union', and the answer fails this entirely: the narrative states outright 'The verified claims do not address the mitigations for the deduplicated union of these techniques,' and the claims array contains zero mitigation entries, despite q2's retrieved evidence (logic_flow.results[1].records) containing the full mitigation set needed to satisfy gold's attack.must_include_related -- M1057 (T1005), M1041/M1047/M1022/M1027 (T1552.004), M1028 (T1552.003), M1047/M1022/M1027/M1017 (T1552.001), M1051/M1015/M1047 (T1552.006) -- whose union is exactly the 9 gold-required ids {M1015, M1017, M1022, M1027, M1028, M1041, M1047, M1051, M1057}. This is a synthesis/claim-generation gap, not a retrieval gap: the data was fetched but never surfaced to the analyst. Counting unique gold-required entities (6 T-ids + 2 CAPEC ids + 9 mitigations = 17), the answer surfaces 8 (all T-ids and CAPEC ids, 0 mitigations), giving completeness ~0.47. Because the answer truthfully disclosed the omission rather than fabricating mitigation content, faithfulness and groundedness remain high, but correctness is marked down sharply since a full, explicitly-asked half of the question went unanswered despite the evidence being present."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_correlate T1110.001; capec.must_include_ids CAPEC-49 with must_include_related T1110.001; attack.must_include_ids T1110.001 with must_include_related TA0006. The narrative states all five: 'CAPEC-49 (Password Brute Forcing) maps to the ATT&CK technique T1110.001, which is corroborated across two records in the attack and capec sources' (covers CAPEC-49, T1110.001, and the correlation), and 'T1110.001 is related to exactly one MITRE ATT&CK tactic, TA0006' (covers the attack side must_include_related TA0006). The CAPEC-49 attribute claims (Abstraction: Standard, Status: Draft) match the evidence record's properties exactly. The claims list mirrors the same facts with correct citations to capec/CAPEC-49 and attack/T1110.001, plus a correlation claim citing both sources for the shared identifier T1110.001. All identifiers and values are directly traceable to logic_flow.results[0].records[0] (CAPEC-49 -> T1110.001, Abstraction=Standard, Status=Draft) and logic_flow.results[1].records[0] (T1110.001 -> TA0006 'Credential Access'). No invented facts, aliases, or counts; deterministic_scores also confirm exact correlation (precision/recall/f1 = 1.0) and full mapping recall. gold_expected=5 (T1110.001-correlate, CAPEC-49, T1110.001-capec-related, T1110.001-attack, TA0006), gold_present=5."
+}

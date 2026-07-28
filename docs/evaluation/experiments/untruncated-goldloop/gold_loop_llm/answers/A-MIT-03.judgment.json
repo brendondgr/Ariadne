@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MIT-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[T1110] and must_include_related=[M1018, M1027, M1032, M1036]. The evidence (logic_flow.results[0].records[0]) shows T1110 (Brute Force) with exactly four related Mitigation nodes: M1036 (Account Use Policies), M1032 (Multi-factor Authentication), M1018 (User Account Management), M1027 (Password Policies) -- an exact match to the gold expected set, no more, no fewer. The narrative and claims (this is the deterministic arm's claim-grounded output) name all four mitigation ids and correctly pair each with its evidence-sourced name (M1036=Account Use Policies, M1032=Multi-factor Authentication, M1018=User Account Management, M1027=Password Policies), matching the 'name' fields in the related array verbatim. T1110 itself is named and cited. No invented ids, names, counts, or aliases -- the claimed count of 4 related items matches row_count=4 in the execute trace. All 5 required entities (T1110 + 4 mitigations) are surfaced with correct names, fully grounded in the retrieved evidence."
+}

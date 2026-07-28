@@ -1,0 +1,12 @@
+{
+  "case_id": "C-CWE-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to surface CAPEC-98 (must_include_ids) and CWE-451 (must_include_related). The narrative states 'CAPEC-98 (Phishing) exploits CWE-451,' correctly naming both the seed AttackPattern and its sole EXPLOITS_WEAKNESS neighbour, matching the single retrieved record in logic_flow.results[0].records[0] (primary_id CAPEC-98, related: CWE-451). The added attribute claim 'Abstraction of Standard and a Status of Draft' is verbatim from the record's properties (Abstraction: Standard, Status: Draft), so no invented facts. The neighborhood was retrieved with an uncapped limit(100) and returned exactly one Weakness edge, so there is nothing missing to report. Both gold-required ids are present and fully grounded in the evidence."
+}

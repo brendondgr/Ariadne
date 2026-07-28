@@ -1,0 +1,12 @@
+{
+  "case_id": "C-DEP-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold (expect_empty: true) requires the deprecated CAPEC-106 lookup to return nothing. The executed Gremlin query in logic_flow ran cleanly with row_count 0 and empty_with_seeds ['CAPEC-106'], confirming no matching AttackPattern node exists. The answer correctly abstains: 0 claims, narrative states no matching records were returned and invites the analyst to specify another id, and the abstention entry cites the actual executed query. No fabricated CAPEC-106 name, abstraction level, or relationships were introduced. deterministic_scores confirm abstention_proof_ok=true and fully_provenanced=true, matching the negative-case expectation exactly."
+}

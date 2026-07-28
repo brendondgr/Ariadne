@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DCA-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 10,
+  "gold_present": 10,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[DC0084] plus must_include_related=[AN0316, AN0405, AN0444, AN0671, AN0675, AN0770, AN1000, AN1144, AN1444] (10 ids total, min/max_records=1). The answer's claims name DC0084 (Active Directory Credential Request) and enumerate all 9 AN ids (AN0405, AN1144, AN0671, AN1444, AN0675, AN0316, AN1000, AN0444, AN0770) exactly matching the gold set with no additions or omissions. Every id and the DC0084 name are directly present in logic_flow.results[0].records[0] (primary_id=DC0084, name='Active Directory Credential Request') and its 'related' array, which lists exactly these 9 analytics with matching ids/names — no invented names, counts, or aliases (the 'e.g.' sample in the fact claim and the full enumeration claim both cite only evidence-backed ids). deterministic_scores.coverage confirms 10/10 found. This is a full, faithful, fully-grounded match to the gold single-hop query."
+}

@@ -48,6 +48,21 @@ VALUES; use kind "fact" otherwise.
 plainly states the sources don't establish it. Do NOT write claims about \
 those sub-questions and do NOT guess.
 - Never state more than the records show. If the evidence is thin, say less.
+- NEVER explain why something is missing except by quoting the reason given \
+under "SUB-QUESTIONS THAT DID NOT RUN OR FAILED" or "DEPENDENT-HOP SEEDING". \
+You do not know why a query returned nothing unless it is stated there. In \
+particular: do NOT say a query "returned zero results" unless it appears under \
+EMPTY SUB-QUESTIONS, do NOT say a source is "not covered"/"does not cover this \
+request" unless it appears under NOT SUPPORTED, and do NOT describe a timeout \
+or a skipped hop as an absence of data.
+- NEVER assert that a relationship does not exist for a source that was not \
+queried. Absence of a sub-question is not evidence of absence.
+- NEVER state a count you did not read off the evidence. Counts must come from \
+the number of records, a record's "facets" count, or the length of its \
+"related" list — never from an estimate or a sum you assume.
+- Do NOT group, categorise, or interpret identifiers (e.g. assigning techniques \
+to tactics or "phases") unless the evidence carries that relationship \
+explicitly. Descriptive framing that the records do not support is a fabrication.
 
 Output ONLY a single JSON object (no prose, no markdown fences) with this shape:
 {
@@ -71,6 +86,8 @@ sentences; if the evidence does not answer the question, say so plainly>",
 
 # Bound the evidence context: per-record related entries and total records per
 # result are capped so the prompt stays within the model's context window.
+# Each bound is read through the env at call time, so an un-truncated profile can
+# hand the composer the *whole* neighbourhood (the caps below stay the default).
 _MAX_RECORDS_PER_RESULT = 50
 _MAX_RELATED_PER_RECORD = 30
 _MAX_FACETS_PER_RECORD = 20
@@ -79,6 +96,13 @@ _MAX_PROP_CHARS = 600
 # there can be many neighbours, but a neighbour's description is often its only
 # content (a CAPEC mitigation/consequence node carries no name), so it must survive.
 _MAX_RELATED_DESC_CHARS = 400
+
+
+def _bound(name: str, default: int) -> int:
+    """This bound's live value: ``SYNTHESIS_<NAME>`` when set, else the default."""
+    from utils.config import env_int
+
+    return env_int(f"SYNTHESIS_{name}", default)
 
 
 def _related_entry(rel: dict) -> dict:
@@ -92,9 +116,8 @@ def _related_entry(rel: dict) -> dict:
     }
     desc = rel.get("description")
     if isinstance(desc, str) and desc.strip():
-        out["description"] = desc[:_MAX_RELATED_DESC_CHARS] + (
-            "…" if len(desc) > _MAX_RELATED_DESC_CHARS else ""
-        )
+        cap = _bound("MAX_RELATED_DESC_CHARS", _MAX_RELATED_DESC_CHARS)
+        out["description"] = desc[:cap] + ("…" if len(desc) > cap else "")
     return out
 # Bulky citation arrays carry no evidentiary value for the composer — dropped
 # with an explicit marker rather than silently, so a long value is never mistaken
@@ -107,18 +130,20 @@ def _bounded_properties(properties) -> dict:
     long strings are marked-truncated, bulky arrays are dropped with a marker)."""
     out: dict = {}
     dropped: list[str] = []
+    prop_chars = _bound("MAX_PROP_CHARS", _MAX_PROP_CHARS)
+    list_items = _bound("MAX_PROP_LIST_ITEMS", 10)
     for key, value in (properties or {}).items():
         if key in _SKIP_PROPERTIES:
             dropped.append(key)
             continue
         if isinstance(value, str):
-            out[key] = value[:_MAX_PROP_CHARS] + ("…" if len(value) > _MAX_PROP_CHARS else "")
+            out[key] = value[:prop_chars] + ("…" if len(value) > prop_chars else "")
         elif isinstance(value, bool) or isinstance(value, (int, float)) or value is None:
             out[key] = value
         elif isinstance(value, list):
-            out[key] = [str(v) for v in value[:10]]
-            if len(value) > 10:
-                out[key].append(f"…(+{len(value) - 10} more)")
+            out[key] = [str(v) for v in value[:list_items]]
+            if len(value) > list_items:
+                out[key].append(f"…(+{len(value) - list_items} more)")
     if dropped:
         out["_omitted_properties"] = sorted(dropped)
     return out
@@ -143,13 +168,13 @@ def _record_line(record) -> str:
                 "neighbour_label": f.get("label"),
                 "count": f.get("count"),
             }
-            for f in (record.facets or [])[:_MAX_FACETS_PER_RECORD]
+            for f in (record.facets or [])[:_bound("MAX_FACETS_PER_RECORD", _MAX_FACETS_PER_RECORD)]
         ],
         # Related neighbours keep their edge semantics (type/direction) AND a
         # bounded description — the neighbour's text is often its only content.
         "related": [
             _related_entry(rel)
-            for rel in record.related[:_MAX_RELATED_PER_RECORD]
+            for rel in record.related[:_bound("MAX_RELATED_PER_RECORD", _MAX_RELATED_PER_RECORD)]
         ],
     }
     return json.dumps(entry, ensure_ascii=False)
@@ -163,10 +188,12 @@ def build_evidence_context(evidence: FederatedEvidence) -> str:
     """
     blocks: list[str] = []
     empties: list[str] = []
+    failures: list[str] = []
+    sequencing: list[str] = []
     for result in evidence.results:
         task = result.task
         if result.records:
-            shown = result.records[:_MAX_RECORDS_PER_RESULT]
+            shown = result.records[:_bound("MAX_RECORDS_PER_RESULT", _MAX_RECORDS_PER_RESULT)]
             lines = "\n".join(f"    {_record_line(r)}" for r in shown)
             more = (
                 f"\n    ... {len(result.records) - len(shown)} more record(s) omitted"
@@ -182,6 +209,39 @@ def build_evidence_context(evidence: FederatedEvidence) -> str:
                 f"- sub_question {task.sub_question_id} (source={task.source}): "
                 f"{task.text}"
             )
+        else:
+            # Previously dropped on the floor. A sub-question that errored or was
+            # dependency-skipped vanished from the narrator's view entirely, so the
+            # model saw an unanswered part of the request with no reason attached
+            # and invented one ("a follow-up query returned zero results").
+            failures.append(
+                f"- sub_question {task.sub_question_id} (source={task.source}): "
+                f"{task.text}\n  OUTCOME: did not produce evidence — "
+                f"{result.error or 'no valid evidence'}"
+            )
+
+    # The federation records why a hop was skipped, unsupported, or unseeded; none
+    # of it reached the prompt before, which is where absence-explaining prose came
+    # from. Attribution must come from here, never from the model's guess.
+    for skip in evidence.skipped or []:
+        failures.append(
+            f"- sub_question {skip.get('sub_question')} (source={skip.get('source')}): "
+            f"NEVER RAN — {skip.get('reason') or 'no reason recorded'}"
+        )
+    for unsupported in evidence.unsupported or []:
+        failures.append(
+            f"- {unsupported.get('capability') or unsupported.get('source') or 'request part'}: "
+            f"NOT SUPPORTED by the available sources — "
+            f"{unsupported.get('reason') or 'no reason recorded'}"
+        )
+    for seq in evidence.sequencing or []:
+        seeded = seq.get("seed_ids") or []
+        detail = (
+            f"seeded with {len(seeded)} id(s) from {seq.get('producer')}"
+            if seeded else
+            f"NOT seeded — {seq.get('reason') or 'the producer returned no join values'}"
+        )
+        sequencing.append(f"- sub_question {seq.get('sub_question')}: {detail}")
 
     context = [
         f"ANALYST REQUEST:\n{evidence.request}",
@@ -194,6 +254,17 @@ def build_evidence_context(evidence: FederatedEvidence) -> str:
         "",
         "EMPTY SUB-QUESTIONS (ran cleanly, zero records — MUST abstain):",
         "\n".join(empties) if empties else "  (none)",
+        "",
+        "SUB-QUESTIONS THAT DID NOT RUN OR FAILED (this is the ONLY permitted "
+        "explanation for a missing part of the answer — quote the stated reason, "
+        "never invent one, and never call this 'not covered by the sources'):",
+        "\n".join(failures) if failures else "  (none)",
+        "",
+        "DEPENDENT-HOP SEEDING (an unseeded hop asked a broader question than the "
+        "analyst did — its emptiness does NOT mean the relationship is absent):",
+        "\n".join(sequencing) if sequencing else "  (none)",
+        "",
+        f"RUN STATUS: {'PARTIAL — some of the request was not answered' if evidence.partial else 'complete'}",
     ]
     return "\n".join(context)
 

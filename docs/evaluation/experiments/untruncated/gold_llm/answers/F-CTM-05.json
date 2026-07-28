@@ -1,0 +1,575 @@
+{
+  "id": "F-CTM-05",
+  "kind": "federated",
+  "tier": "hard",
+  "category": "F-CTM",
+  "question": "Which ATT&CK techniques does CAPEC-21 (Exploitation of Trusted Identifiers) map to, and what mitigations apply to those techniques?",
+  "gold": {
+    "assertions": {
+      "must_correlate": [
+        "T1134",
+        "T1528",
+        "T1539"
+      ],
+      "capec": {
+        "min_records": 1,
+        "must_include_ids": [
+          "CAPEC-21"
+        ],
+        "must_include_related": [
+          "T1134",
+          "T1528",
+          "T1539"
+        ]
+      },
+      "attack": {
+        "min_records": 3,
+        "max_records": 3,
+        "must_include_ids": [
+          "T1134",
+          "T1528",
+          "T1539"
+        ],
+        "must_include_related": [
+          "M1017",
+          "M1018",
+          "M1021",
+          "M1026",
+          "M1032",
+          "M1047",
+          "M1051",
+          "M1054"
+        ]
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 2
+  },
+  "answer": {
+    "headline": "Gathered 4 record(s) from 2 source(s); 3 cross-source correlation(s) on shared identifiers.",
+    "narrative": "CAPEC-21, which is tagged as a Meta abstraction, maps to three ATT&CK techniques: T1134 (Access Token Manipulation), T1528 (Steal Application Access Token), and T1539 (Steal Web Session Cookie). The evidence identifies eight distinct mitigations across these techniques, including M1047 (Audit), M1017 (User Training), M1021 (Restrict Web-Based Content), and M1018 (User Account Management). T1539 is associated with six mitigations such as M1051 (Update Software) and M1032 (Multi-factor Authentication), while T1528 shares several of those and adds M1018. T1134 is linked to two mitigations, primarily M1026 (Privileged Account Management) and M1018.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s) for CAPEC-21; ATT&CK mappings: T1134, T1528, T1539.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-21"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-21"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-21 (Exploitation of Trusted Identifiers) has 3 TaxonomyEntrys: capec:taxonomy:ATTACK:1134, capec:taxonomy:ATTACK:1528, capec:taxonomy:ATTACK:1539.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "capec:taxonomy:ATTACK:1134",
+          "capec:taxonomy:ATTACK:1528",
+          "capec:taxonomy:ATTACK:1539"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-21"
+          }
+        ]
+      },
+      {
+        "text": "Found 3 ATT&CK record(s) including T1539, T1528, T1134.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1539",
+          "T1528",
+          "T1134"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1539"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1528"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1134"
+          }
+        ]
+      },
+      {
+        "text": "T1539 (Steal Web Session Cookie) has 6 related item(s): M1051, M1047, M1054, M1032, M1017, M1021.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1051",
+          "M1047",
+          "M1054",
+          "M1032",
+          "M1017",
+          "M1021"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1539"
+          }
+        ]
+      },
+      {
+        "text": "T1528 (Steal Application Access Token) has 4 related item(s): M1047, M1018, M1017, M1021.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1047",
+          "M1018",
+          "M1017",
+          "M1021"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1528"
+          }
+        ]
+      },
+      {
+        "text": "T1134 (Access Token Manipulation) has 2 related item(s): M1026, M1018.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1026",
+          "M1018"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1134"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1134 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1134"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-21"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1134"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1528 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1528"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-21"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1528"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1539 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1539"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-21"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1539"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which ATT&CK techniques does CAPEC-21 map to?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What mitigations does ATT&CK list for those mapped techniques?",
+        "seed_from": "q1"
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Which ATT&CK techniques does CAPEC-21 map to?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s) for CAPEC-21; ATT&CK mappings: T1134, T1528, T1539.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CAPEC-21"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_maps_to",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
+              "injected": [],
+              "timing_ms": 0.055
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 3,
+              "timing_ms": 15.6
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 3,
+              "timing_ms": 0.003
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.052
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-21",
+            "name": "Exploitation of Trusted Identifiers",
+            "label": "AttackPattern",
+            "description": "An adversary guesses, obtains, or \"rides\" a trusted identifier (e.g. session ID, resource ID, cookie, etc.) to perform authorized actions under the guise of an authenticated user or service.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Exploitation of Trusted Identifiers",
+              "description": "An adversary guesses, obtains, or \"rides\" a trusted identifier (e.g. session ID, resource ID, cookie, etc.) to perform authorized actions under the guise of an authenticated user or service.",
+              "id": "capec:attack-pattern:21",
+              "Abstraction": "Meta"
+            },
+            "facets": [],
+            "join_values": [
+              "T1134",
+              "T1528",
+              "T1539"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1134",
+                "entry_id": "1134",
+                "name": "Access Token Manipulation",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1528",
+                "entry_id": "1528",
+                "name": "Steal Application Access Token",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1539",
+                "entry_id": "1539",
+                "name": "Steal Web Session Cookie",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "What mitigations does ATT&CK list for those mapped techniques?",
+        "query": "MATCH (t:Technique) WHERE t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 20000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 3 ATT&CK record(s) including T1539, T1528, T1134.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "Mitigation"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1134",
+                "T1528",
+                "T1539"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "technique_mitigations",
+              "query": "MATCH (t:Technique) WHERE t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 20000",
+              "injected": [
+                "LIMIT 20000 appended (none present)"
+              ],
+              "timing_ms": 0.147
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 12,
+              "timing_ms": 9.9
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 12,
+              "timing_ms": 0.003
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 3,
+              "timing_ms": 4.677
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1539",
+            "name": "Steal Web Session Cookie",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1539"
+            ],
+            "related": [
+              {
+                "id": "M1051",
+                "name": "Update Software",
+                "description": "Software updates ensure systems are protected against known vulnerabilities by applying patches and upgrades provided by vendors. Regular updates reduce the attack surface and prevent adversaries from exploiting known security gaps. This includes patching operating systems, applications, drivers, and firmware. This mitigation can be implemented through the following measures:\n\nRegular Operating System Updates\n\n- Implementation: Apply the latest Windows security updates monthly using WSUS (Windows Server Update Services) or a similar patch management solution. Configure systems to check for updates automatically and schedule reboots during maintenance windows.\n- Use Case: Prevents exploitation of OS vulnerabilities such as privilege escalation or remote code execution.\n\nApplication Patching\n\n- Implementation: Monitor Apache's update release notes for security patches addressing vulnerabilities. Schedule updates for off-peak hours to avoid downtime while maintaining security compliance.\n- Use Case: Prevents exploitation of web application vulnerabilities, such as those leading to unauthorized access or data breaches.\n\nFirmware Updates\n\n- Implementation: Regularly check the vendor’s website for firmware updates addressing vulnerabilities. Plan for update deployment during scheduled maintenance to minimize business disruption.\n- Use Case: Protects against vulnerabilities that adversaries could exploit to gain access to network devices or inject malicious traffic.\n\nEmergency Patch Deployment\n\n- Implementation: Use the emergency patch deployment feature of the organization's patch management tool to apply updates to all affected Exchange servers within 24 hours.\n- Use Case: Reduces the risk of exploitation by rapidly addressing critical vulnerabilities.\n\nCentralized Patch Management\n\n- Implementation: Implement a centralized patch management system, such as SCCM or ManageEngine, to automate and track patch deployment across all environments. Generate regular compliance reports to ensure all systems are updated.\n- Use Case: Streamlines patching processes and ensures no critical systems are missed.\n\n*Tools for Implementation*\n\nPatch Management Tools:\n\n- WSUS: Manage and deploy Microsoft updates across the organization.\n- ManageEngine Patch Manager Plus: Automate patch deployment for OS and third-party apps.\n- Ansible: Automate updates across multiple platforms, including Linux and Windows.\n\nVulnerability Scanning Tools:\n\n- OpenVAS: Open-source vulnerability scanning to identify missing patches."
+              },
+              {
+                "id": "M1047",
+                "name": "Audit",
+                "description": "Auditing is the process of recording activity and systematically reviewing and analyzing the activity and system configurations. The primary purpose of auditing is to detect anomalies and identify potential threats or weaknesses in the environment. Proper auditing configurations can also help to meet compliance requirements. The process of auditing encompasses regular analysis of user behaviors and system logs in support of proactive security measures.\n\nAuditing is applicable to all systems used within an organization, from the front door of a building to accessing a file on a fileserver. It is considered more critical for regulated industries such as, healthcare, finance and government where compliance requirements demand stringent tracking of user and system activates.This mitigation can be implemented through the following measures: \n\nSystem Audit:\n\n- Use Case: Regularly assess system configurations to ensure compliance with organizational security policies.\n- Implementation: Use tools to scan for deviations from established benchmarks.\n\nPermission Audits:\n\n- Use Case: Review file and folder permissions to minimize the risk of unauthorized access or privilege escalation.\n- Implementation: Run access reviews to identify users or groups with excessive permissions.\n\nSoftware Audits:\n\n- Use Case: Identify outdated, unsupported, or insecure software that could serve as an attack vector.\n- Implementation: Use inventory and vulnerability scanning tools to detect outdated versions and recommend secure alternatives.\n\nConfiguration Audits:\n\n- Use Case: Evaluate system and network configurations to ensure secure settings (e.g., disabled SMBv1, enabled MFA).\n- Implementation: Implement automated configuration scanning tools like SCAP (Security Content Automation Protocol) to identify non-compliant systems.\n\nNetwork Audits:\n\n- Use Case: Examine network traffic, firewall rules, and endpoint communications to identify unauthorized or insecure connections.\n- Implementation: Utilize tools such as Wireshark, or Zeek to monitor and log suspicious network behavior."
+              },
+              {
+                "id": "M1054",
+                "name": "Software Configuration",
+                "description": "Software configuration refers to making security-focused adjustments to the settings of applications, middleware, databases, or other software to mitigate potential threats. These changes help reduce the attack surface, enforce best practices, and protect sensitive data. This mitigation can be implemented through the following measures:\n\nConduct a Security Review of Application Settings:\n\n- Review the software documentation to identify recommended security configurations.\n- Compare default settings against organizational policies and compliance requirements.\n\nImplement Access Controls and Permissions:\n\n- Restrict access to sensitive features or data within the software.\n- Enforce least privilege principles for all roles and accounts interacting with the software.\n\nEnable Logging and Monitoring:\n\n- Configure detailed logging for key application events such as authentication failures, configuration changes, or unusual activity.\n- Integrate logs with a centralized monitoring solution, such as a SIEM.\n\nUpdate and Patch Software Regularly:\n\n- Ensure the software is kept up-to-date with the latest security patches to address known vulnerabilities.\n- Use automated patch management tools to streamline the update process.\n\nDisable Unnecessary Features or Services:\n\n- Turn off unused functionality or components that could introduce vulnerabilities, such as debugging interfaces or deprecated APIs.\n\nTest Configuration Changes:\n\n- Perform configuration changes in a staging environment before applying them in production.\n- Conduct regular audits to ensure that settings remain aligned with security policies.\n\n*Tools for Implementation*\n\nConfiguration Management Tools:\n\n- Ansible: Automates configuration changes across multiple applications and environments.\n- Chef: Ensures consistent application settings through code-based configuration management.\n- Puppet: Automates software configurations and audits changes for compliance.\n\nSecurity Benchmarking Tools:\n\n- CIS-CAT: Provides benchmarks and audits for secure software configurations.\n- Aqua Security Trivy: Scans containerized applications for configuration issues.\n\nVulnerability Management Solutions:\n\n- Nessus: Identifies misconfigurations and suggests corrective actions.\n\nLogging and Monitoring Tools:\n\n- Splunk: Aggregates and analyzes application logs to detect suspicious activity."
+              },
+              {
+                "id": "M1032",
+                "name": "Multi-factor Authentication",
+                "description": "Multi-Factor Authentication (MFA) enhances security by requiring users to provide at least two forms of verification to prove their identity before granting access. These factors typically include:\n\n- *Something you know*: Passwords, PINs.\n- *Something you have*: Physical tokens, smartphone authenticator apps.\n- *Something you are*: Biometric data such as fingerprints, facial recognition, or retinal scans.\n\nImplementing MFA across all critical systems and services ensures robust protection against account takeover and unauthorized access. This mitigation can be implemented through the following measures:\n\nIdentity and Access Management (IAM):\n\n- Use IAM solutions like Azure Active Directory, Okta, or AWS IAM to enforce MFA policies for all user logins, especially for privileged roles.\n- Enable conditional access policies to enforce MFA for risky sign-ins (e.g., unfamiliar devices, geolocations).\n- Enable Conditional Access policies to only allow logins from trusted devices, such as those enrolled in Intune or joined via Hybrid/Entra.\n\nAuthentication Tools and Methods:\n\n- Use authenticator applications such as Google Authenticator, Microsoft Authenticator, or Authy for time-based one-time passwords (TOTP).\n- Deploy hardware-based tokens like YubiKey, RSA SecurID, or smart cards for additional security.\n- Enforce biometric authentication for compatible devices and applications.\n\nSecure Legacy Systems:\n\n- Integrate MFA solutions with older systems using third-party tools like Duo Security or Thales SafeNet.\n- Enable RADIUS/NPS servers to facilitate MFA for VPNs, RDP, and other network logins.\n\nMonitoring and Alerting:\n\n- Use SIEM tools to monitor failed MFA attempts, login anomalies, or brute-force attempts against MFA systems.\n- Implement alerts for suspicious MFA activities, such as repeated failed codes or new device registrations.\n\nTraining and Policy Enforcement:\n\n- Educate employees on the importance of MFA and secure authenticator usage.\n- Enforce policies that require MFA on all critical systems, especially for remote access, privileged accounts, and cloud applications."
+              },
+              {
+                "id": "M1017",
+                "name": "User Training",
+                "description": "User Training involves educating employees and contractors on recognizing, reporting, and preventing cyber threats that rely on human interaction, such as phishing, social engineering, and other manipulative techniques. Comprehensive training programs create a human firewall by empowering users to be an active component of the organization's cybersecurity defenses. This mitigation can be implemented through the following measures:\n\nCreate Comprehensive Training Programs:\n\n- Design training modules tailored to the organization's risk profile, covering topics such as phishing, password management, and incident reporting.\n- Provide role-specific training for high-risk employees, such as helpdesk staff or executives.\n\nUse Simulated Exercises:\n\n- Conduct phishing simulations to measure user susceptibility and provide targeted follow-up training.\n- Run social engineering drills to evaluate employee responses and reinforce protocols.\n\nLeverage Gamification and Engagement:\n\n- Introduce interactive learning methods such as quizzes, gamified challenges, and rewards for successful detection and reporting of threats.\n\nIncorporate Security Policies into Onboarding:\n\n- Include cybersecurity training as part of the onboarding process for new employees.\n- Provide easy-to-understand materials outlining acceptable use policies and reporting procedures.\n\nRegular Refresher Courses:\n\n- Update training materials to include emerging threats and techniques used by adversaries.\n- Ensure all employees complete periodic refresher courses to stay informed.\n\nEmphasize Real-World Scenarios:\n\n- Use case studies of recent attacks to demonstrate the consequences of successful phishing or social engineering.\n- Discuss how specific employee actions can prevent or mitigate such attacks."
+              },
+              {
+                "id": "M1021",
+                "name": "Restrict Web-Based Content",
+                "description": "Restricting web-based content involves enforcing policies and technologies that limit access to potentially malicious websites, unsafe downloads, and unauthorized browser behaviors. This can include URL filtering, download restrictions, script blocking, and extension control to protect against exploitation, phishing, and malware delivery. This mitigation can be implemented through the following measures:\n\nDeploy Web Proxy Filtering:\n\n- Use solutions to filter web traffic based on categories, reputation, and content types.\n- Enforce policies that block unsafe websites or file types at the gateway level.\n\nEnable DNS-Based Filtering:\n\n- Implement tools to restrict access to domains associated with malware or phishing campaigns.\n- Use public DNS filtering services to enhance protection.\n\nEnforce Content Security Policies (CSP):\n\n- Configure CSP headers on internal and external web applications to restrict script execution, iframe embedding, and cross-origin requests.\n\nControl Browser Features:\n\n- Disable unapproved browser features like automatic downloads, developer tools, or unsafe scripting.\n- Enforce policies through tools like Group Policy Management to control browser settings.\n\nMonitor and Alert on Web-Based Threats:\n\n- Use SIEM tools to collect and analyze web proxy logs for signs of anomalous or malicious activity.\n- Configure alerts for access attempts to blocked domains or repeated file download failures."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1528",
+            "name": "Steal Application Access Token",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1528"
+            ],
+            "related": [
+              {
+                "id": "M1047",
+                "name": "Audit",
+                "description": "Auditing is the process of recording activity and systematically reviewing and analyzing the activity and system configurations. The primary purpose of auditing is to detect anomalies and identify potential threats or weaknesses in the environment. Proper auditing configurations can also help to meet compliance requirements. The process of auditing encompasses regular analysis of user behaviors and system logs in support of proactive security measures.\n\nAuditing is applicable to all systems used within an organization, from the front door of a building to accessing a file on a fileserver. It is considered more critical for regulated industries such as, healthcare, finance and government where compliance requirements demand stringent tracking of user and system activates.This mitigation can be implemented through the following measures: \n\nSystem Audit:\n\n- Use Case: Regularly assess system configurations to ensure compliance with organizational security policies.\n- Implementation: Use tools to scan for deviations from established benchmarks.\n\nPermission Audits:\n\n- Use Case: Review file and folder permissions to minimize the risk of unauthorized access or privilege escalation.\n- Implementation: Run access reviews to identify users or groups with excessive permissions.\n\nSoftware Audits:\n\n- Use Case: Identify outdated, unsupported, or insecure software that could serve as an attack vector.\n- Implementation: Use inventory and vulnerability scanning tools to detect outdated versions and recommend secure alternatives.\n\nConfiguration Audits:\n\n- Use Case: Evaluate system and network configurations to ensure secure settings (e.g., disabled SMBv1, enabled MFA).\n- Implementation: Implement automated configuration scanning tools like SCAP (Security Content Automation Protocol) to identify non-compliant systems.\n\nNetwork Audits:\n\n- Use Case: Examine network traffic, firewall rules, and endpoint communications to identify unauthorized or insecure connections.\n- Implementation: Utilize tools such as Wireshark, or Zeek to monitor and log suspicious network behavior."
+              },
+              {
+                "id": "M1018",
+                "name": "User Account Management",
+                "description": "User Account Management involves implementing and enforcing policies for the lifecycle of user accounts, including creation, modification, and deactivation. Proper account management reduces the attack surface by limiting unauthorized access, managing account privileges, and ensuring accounts are used according to organizational policies. This mitigation can be implemented through the following measures:\n\nEnforcing the Principle of Least Privilege\n\n- Implementation: Assign users only the minimum permissions required to perform their job functions. Regularly audit accounts to ensure no excess permissions are granted.\n- Use Case: Reduces the risk of privilege escalation by ensuring accounts cannot perform unauthorized actions.\n\nImplementing Strong Password Policies\n\n- Implementation: Enforce password complexity requirements (e.g., length, character types). Require password expiration every 90 days and disallow password reuse.\n- Use Case: Prevents adversaries from gaining unauthorized access through password guessing or brute force attacks.\n\nManaging Dormant and Orphaned Accounts\n\n- Implementation: Implement automated workflows to disable accounts after a set period of inactivity (e.g., 30 days). Remove orphaned accounts (e.g., accounts without an assigned owner) during regular account audits.\n- Use Case: Eliminates dormant accounts that could be exploited by attackers.\n\nAccount Lockout Policies\n\n- Implementation: Configure account lockout thresholds (e.g., lock accounts after five failed login attempts). Set lockout durations to a minimum of 15 minutes.\n- Use Case: Mitigates automated attack techniques that rely on repeated login attempts.\n\nMulti-Factor Authentication (MFA) for High-Risk Accounts\n\n- Implementation: Require MFA for all administrative accounts and high-risk users. Use MFA mechanisms like hardware tokens, authenticator apps, or biometrics.\n- Use Case: Prevents unauthorized access, even if credentials are stolen.\n\nRestricting Interactive Logins\n\n- Implementation: Restrict interactive logins for privileged accounts to specific secure systems or management consoles. Use group policies to enforce logon restrictions.\n- Use Case: Protects sensitive accounts from misuse or exploitation.\n\n*Tools for Implementation*\n\nBuilt-in Tools:\n\n- Microsoft Active Directory (AD): Centralized account management and RBAC enforcement.\n- Group Policy Object (GPO): Enforce password policies, logon restrictions, and account lockout policies.\n\nIdentity and Access Management (IAM) Tools:\n\n- Okta: Centralized user provisioning, MFA, and SSO integration.\n- Microsoft Azure Active Directory: Provides advanced account lifecycle management, role-based access, and conditional access policies.\n\nPrivileged Account Management (PAM):\n- CyberArk, BeyondTrust, Thycotic: Manage and monitor privileged account usage, enforce session recording, and JIT access."
+              },
+              {
+                "id": "M1017",
+                "name": "User Training",
+                "description": "User Training involves educating employees and contractors on recognizing, reporting, and preventing cyber threats that rely on human interaction, such as phishing, social engineering, and other manipulative techniques. Comprehensive training programs create a human firewall by empowering users to be an active component of the organization's cybersecurity defenses. This mitigation can be implemented through the following measures:\n\nCreate Comprehensive Training Programs:\n\n- Design training modules tailored to the organization's risk profile, covering topics such as phishing, password management, and incident reporting.\n- Provide role-specific training for high-risk employees, such as helpdesk staff or executives.\n\nUse Simulated Exercises:\n\n- Conduct phishing simulations to measure user susceptibility and provide targeted follow-up training.\n- Run social engineering drills to evaluate employee responses and reinforce protocols.\n\nLeverage Gamification and Engagement:\n\n- Introduce interactive learning methods such as quizzes, gamified challenges, and rewards for successful detection and reporting of threats.\n\nIncorporate Security Policies into Onboarding:\n\n- Include cybersecurity training as part of the onboarding process for new employees.\n- Provide easy-to-understand materials outlining acceptable use policies and reporting procedures.\n\nRegular Refresher Courses:\n\n- Update training materials to include emerging threats and techniques used by adversaries.\n- Ensure all employees complete periodic refresher courses to stay informed.\n\nEmphasize Real-World Scenarios:\n\n- Use case studies of recent attacks to demonstrate the consequences of successful phishing or social engineering.\n- Discuss how specific employee actions can prevent or mitigate such attacks."
+              },
+              {
+                "id": "M1021",
+                "name": "Restrict Web-Based Content",
+                "description": "Restricting web-based content involves enforcing policies and technologies that limit access to potentially malicious websites, unsafe downloads, and unauthorized browser behaviors. This can include URL filtering, download restrictions, script blocking, and extension control to protect against exploitation, phishing, and malware delivery. This mitigation can be implemented through the following measures:\n\nDeploy Web Proxy Filtering:\n\n- Use solutions to filter web traffic based on categories, reputation, and content types.\n- Enforce policies that block unsafe websites or file types at the gateway level.\n\nEnable DNS-Based Filtering:\n\n- Implement tools to restrict access to domains associated with malware or phishing campaigns.\n- Use public DNS filtering services to enhance protection.\n\nEnforce Content Security Policies (CSP):\n\n- Configure CSP headers on internal and external web applications to restrict script execution, iframe embedding, and cross-origin requests.\n\nControl Browser Features:\n\n- Disable unapproved browser features like automatic downloads, developer tools, or unsafe scripting.\n- Enforce policies through tools like Group Policy Management to control browser settings.\n\nMonitor and Alert on Web-Based Threats:\n\n- Use SIEM tools to collect and analyze web proxy logs for signs of anomalous or malicious activity.\n- Configure alerts for access attempts to blocked domains or repeated file download failures."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1134",
+            "name": "Access Token Manipulation",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1134"
+            ],
+            "related": [
+              {
+                "id": "M1026",
+                "name": "Privileged Account Management",
+                "description": "Privileged Account Management focuses on implementing policies, controls, and tools to securely manage privileged accounts (e.g., SYSTEM, root, or administrative accounts). This includes restricting access, limiting the scope of permissions, monitoring privileged account usage, and ensuring accountability through logging and auditing.This mitigation can be implemented through the following measures:\n\nAccount Permissions and Roles:\n\n- Implement RBAC and least privilege principles to allocate permissions securely.\n- Use tools like Active Directory Group Policies to enforce access restrictions.\n\nCredential Security:\n\n- Deploy password vaulting tools like CyberArk, HashiCorp Vault, or KeePass for secure storage and rotation of credentials.\n- Enforce password policies for complexity, uniqueness, and expiration using tools like Microsoft Group Policy Objects (GPO).\n\nMulti-Factor Authentication (MFA):\n\n- Enforce MFA for all privileged accounts using Duo Security, Okta, or Microsoft Azure AD MFA.\n\nPrivileged Access Management (PAM):\n\n- Use PAM solutions like CyberArk, BeyondTrust, or Thycotic to manage, monitor, and audit privileged access.\n\nAuditing and Monitoring:\n\n- Integrate activity monitoring into your SIEM (e.g., Splunk or QRadar) to detect and alert on anomalous privileged account usage.\n\nJust-In-Time Access:\n\n- Deploy JIT solutions like Azure Privileged Identity Management (PIM) or configure ephemeral roles in AWS and GCP to grant time-limited elevated permissions.\n\n*Tools for Implementation*\n\nPrivileged Access Management (PAM):\n\n- CyberArk, BeyondTrust, Thycotic, HashiCorp Vault.\n\nCredential Management:\n\n- Microsoft LAPS (Local Admin Password Solution), Password Safe, HashiCorp Vault, KeePass.\n\nMulti-Factor Authentication:\n\n- Duo Security, Okta, Microsoft Azure MFA, Google Authenticator.\n\nLinux Privilege Management:\n\n- sudo configuration, SELinux, AppArmor.\n\nJust-In-Time Access:\n\n- Azure Privileged Identity Management (PIM), AWS IAM Roles with session constraints, GCP Identity-Aware Proxy."
+              },
+              {
+                "id": "M1018",
+                "name": "User Account Management",
+                "description": "User Account Management involves implementing and enforcing policies for the lifecycle of user accounts, including creation, modification, and deactivation. Proper account management reduces the attack surface by limiting unauthorized access, managing account privileges, and ensuring accounts are used according to organizational policies. This mitigation can be implemented through the following measures:\n\nEnforcing the Principle of Least Privilege\n\n- Implementation: Assign users only the minimum permissions required to perform their job functions. Regularly audit accounts to ensure no excess permissions are granted.\n- Use Case: Reduces the risk of privilege escalation by ensuring accounts cannot perform unauthorized actions.\n\nImplementing Strong Password Policies\n\n- Implementation: Enforce password complexity requirements (e.g., length, character types). Require password expiration every 90 days and disallow password reuse.\n- Use Case: Prevents adversaries from gaining unauthorized access through password guessing or brute force attacks.\n\nManaging Dormant and Orphaned Accounts\n\n- Implementation: Implement automated workflows to disable accounts after a set period of inactivity (e.g., 30 days). Remove orphaned accounts (e.g., accounts without an assigned owner) during regular account audits.\n- Use Case: Eliminates dormant accounts that could be exploited by attackers.\n\nAccount Lockout Policies\n\n- Implementation: Configure account lockout thresholds (e.g., lock accounts after five failed login attempts). Set lockout durations to a minimum of 15 minutes.\n- Use Case: Mitigates automated attack techniques that rely on repeated login attempts.\n\nMulti-Factor Authentication (MFA) for High-Risk Accounts\n\n- Implementation: Require MFA for all administrative accounts and high-risk users. Use MFA mechanisms like hardware tokens, authenticator apps, or biometrics.\n- Use Case: Prevents unauthorized access, even if credentials are stolen.\n\nRestricting Interactive Logins\n\n- Implementation: Restrict interactive logins for privileged accounts to specific secure systems or management consoles. Use group policies to enforce logon restrictions.\n- Use Case: Protects sensitive accounts from misuse or exploitation.\n\n*Tools for Implementation*\n\nBuilt-in Tools:\n\n- Microsoft Active Directory (AD): Centralized account management and RBAC enforcement.\n- Group Policy Object (GPO): Enforce password policies, logon restrictions, and account lockout policies.\n\nIdentity and Access Management (IAM) Tools:\n\n- Okta: Centralized user provisioning, MFA, and SSO integration.\n- Microsoft Azure Active Directory: Provides advanced account lifecycle management, role-based access, and conditional access policies.\n\nPrivileged Account Management (PAM):\n- CyberArk, BeyondTrust, Thycotic: Manage and monitor privileged account usage, enforce session recording, and JIT access."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 3,
+      "n_got": 3
+    },
+    "mapping_recall": {
+      "gold": 3,
+      "found": 3,
+      "recall": 1.0,
+      "missing": []
+    },
+    "coverage": null,
+    "provenance": {
+      "citations": 14,
+      "compliant": 14,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "gold_llm",
+  "run_meta": {
+    "planner": "gold-replay",
+    "synthesis": "llm",
+    "wall_s": 100.248
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 4,
+    "related": 15
+  }
+}

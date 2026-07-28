@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MIT-07",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 9,
+  "gold_present": 9,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[T1078] and must_include_related=[M1013,M1015,M1017,M1018,M1026,M1027,M1032,M1036] (9 ids total). The answer's claims name T1078 and enumerate all 8 mitigations (M1013, M1017, M1027, M1018, M1026, M1032, M1015, M1036) -- an exact set match with the gold list, just in a different order. Every id and name (e.g. M1032 'Multi-factor Authentication', M1015 'Active Directory Configuration') is directly traceable to the single retrieved record's 'related' list in logic_flow, which contains exactly these 8 mitigations with matching names/descriptions and no others. No counts, aliases, or entities are fabricated -- the '8 item(s)' count matches the evidence's related array length. Deterministic pipeline's own coverage metric (9/9=1.0) and citation provenance (1.0) corroborate this. No abstention was needed since gold expects a positive answer."
+}

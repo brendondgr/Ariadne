@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 7,
+  "gold_present": 7,
+  "hallucinations": [],
+  "rationale": "Gold requires T1110 plus DET0463 and the five analytics AN1275-AN1279 (must_include_ids/must_include_related). The evidence record for T1110 in logic_flow.results[0].records[0].related contains exactly these 6 related entities with names/descriptions. The narrative names all of them: DET0463 with its exact evidence name 'Brute Force Authentication Failures with Multi-Platform Log Correlation', and each analytic AN1275-AN1279 with descriptions that are verbatim paraphrases of the evidence descriptions (e.g. AN1277 'password spraying or brute force attempts across a user pool within short time intervals' matches evidence 'Password spraying or brute force attempts across user pool within short time intervals'). The stated count 'five analytics' and 'one detection strategy' both match the evidence exactly. No names, counts, or descriptions in the narrative are absent from or inconsistent with the retrieved evidence. Note the pipeline's own claims/deterministic_scores.coverage undercounts (found=1/7) because the structured claim extraction only captured a single generic claim about T1110, but per grading instructions the narrative is the answer under test here since it is substantive (not thin), and it fully and faithfully answers the question."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty: true) for nonexistent group G9999. The evidence (logic_flow) confirms the executed Neo4j query 'MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN $ids ...' with seed_ids=['G9999'] returned row_count 0 and records []. The answer correctly abstains: claims is empty, and the abstentions entry states the attack source query ran cleanly and returned no matching records for G9999, citing the exact executed query. The narrative accurately reports no matching records and does not invent any group, technique, or count. No entity ids or facts are asserted beyond what the evidence supports, so there is nothing ungrounded to penalize."
+}

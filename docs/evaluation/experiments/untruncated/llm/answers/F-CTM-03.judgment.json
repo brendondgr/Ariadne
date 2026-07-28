@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-03",
+  "verdict": "PARTIAL",
+  "correctness": 0.7,
+  "faithfulness": 0.95,
+  "groundedness": 1.0,
+  "completeness": 0.8,
+  "gold_expected": 15,
+  "gold_present": 12,
+  "hallucinations": [],
+  "rationale": "The narrative correctly identifies all 3 required ATT&CK techniques (T1185, T1550.001, T1563 — matching must_correlate and both must_include_ids sets) and CAPEC-593 by name, and reports accurate mitigation counts for each technique that match the evidence exactly (T1185: 2, T1563: 5, T1550.001: 5, matching logic_flow.results[1].records related lists). No fabricated ids, names, or counts were found — every mitigation id and name cited (M1018, M1017, M1042, M1026, M1030, M1041, M1036, M1021) is verbatim from the evidence. However, gold's attack.must_include_related demands all 11 mitigation ids (M1013, M1017, M1018, M1021, M1026, M1027, M1030, M1036, M1041, M1042, M1047) be surfaced, and the narrative deliberately truncates with 'such as'/'including' phrasing, naming only 3 of T1563's 5 mitigations (omitting M1018-already counted elsewhere, M1027) and 3 of T1550.001's 5 (omitting M1047, M1013). Net: 8 of the 11 required mitigation ids are actually named in the answer. Combined with the fully-satisfied technique/CAPEC assertions (4 of 4), this gives 12/15 required gold entities surfaced. The answer is correct and well-grounded but incomplete against the gold's exhaustive-enumeration bar, warranting PARTIAL rather than CORRECT."
+}

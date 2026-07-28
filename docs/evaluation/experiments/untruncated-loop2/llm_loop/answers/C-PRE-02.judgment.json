@@ -1,0 +1,14 @@
+{
+  "case_id": "C-PRE-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 0.4,
+  "groundedness": 0.5,
+  "completeness": 0.5,
+  "gold_expected": 2,
+  "gold_present": 1,
+  "hallucinations": [
+    "Narrative states 'The verified claims do not list any specific patterns that CAPEC-555 precedes' — this is false; the retrieved evidence (logic_flow.results[0].records[0].related) explicitly contains CAPEC-151 'Identity Spoofing' joined via a CAN_PRECEDE edge from CAPEC-555, and the executed query (q1) was specifically 'Find AttackPattern nodes that CAPEC-555 can precede,' which returned exactly this row. The answer denies the existence of data that is present in its own evidence."
+  ],
+  "rationale": "Gold requires must_include_ids=[CAPEC-555] and must_include_related=[CAPEC-151]. CAPEC-555 is correctly surfaced with accurate properties (Abstraction: Standard, Status: Stable, name: Remote Services with Stolen Credentials) grounded in the evidence record. However the actual question -- which patterns CAPEC-555 can precede -- is answered incorrectly: the sole record's 'related' array contains CAPEC-151 (Identity Spoofing) via a CAN_PRECEDE edge, matching the gold's required related id exactly, yet neither the claims list nor the narrative surfaces it. Worse, the narrative affirmatively asserts no such patterns exist ('do not list any specific patterns that CAPEC-555 precedes'), which directly contradicts the retrieved evidence and the query's own stated intent. This is a synthesis/composer failure to project the related-neighbour data into claims, not a retrieval gap (deterministic_scores.coverage confirms found=1/gold=2, missing=[CAPEC-151]). Because the answer both omits the required entity and makes a false negative statement about it, this is graded INCORRECT rather than merely PARTIAL."
+}

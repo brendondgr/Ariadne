@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids T1005, T1020, T1027, T1039, T1046 (min_records 5); the ex_gold neighbor pool expects 13 total techniques (T1005, T1020, T1027, T1039, T1046, T1080, T1082, T1083, T1102, T1119, T1199, T1202, T1537). The retrieved logic_flow evidence returns exactly these same 13 Technique records via a single g:Group-[:USES]->t:Technique query for G1039, with 13/13 row_count. The narrative names all 13 technique IDs and correctly pairs three of them with their evidence-backed names (T1046=Network Service Discovery, T1027=Obfuscated Files or Information, T1005=Data from Local System, all matching the records exactly), then lists the remaining 10 IDs (T1537, T1039, T1199, T1102, T1083, T1020, T1202, T1082, T1119, T1080) without inventing extra names. Every ID cited traces to a record in the evidence with no additions, omissions, or count errors (headline '13 record(s)' matches row_count=13). All 5 required must_include_ids are present, so completeness is 1.0 and no hallucinations were found."
+}

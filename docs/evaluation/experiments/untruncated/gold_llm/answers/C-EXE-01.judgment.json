@@ -1,0 +1,12 @@
+{
+  "case_id": "C-EXE-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-66 plus its 4 execution steps (capec:attack-pattern:66:step:1..4). The evidence record for CAPEC-66 (SQL Injection) lists exactly these 4 ExecutionStep neighbors with descriptions. The narrative names all 4 steps in order and paraphrases each step's description accurately: Step 1 (survey application/inventory functionality) matches the evidence verbatim in substance; Step 2 (determine user-controllable input susceptible to injection via special SQL characters) matches; Step 3 (hypothesize query structure, iteratively add logic to extract/modify data) matches; Step 4 (craft and execute refined SQL queries to exploit) matches. The claims array also enumerates all 4 step ids explicitly and cites CAPEC-66 as source, so both the narrative and the underlying claims are fully grounded with no invented names, counts, or properties. All 5 gold-required ids (CAPEC-66 + 4 steps) are surfaced, coverage.coverage=1.0 in deterministic_scores confirms this independently."
+}

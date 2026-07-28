@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-10",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 8,
+  "gold_present": 8,
+  "hallucinations": [],
+  "rationale": "The claims (no LLM narrative synthesis beyond the deterministic composer's templated summary, but same content) correctly identify CAPEC-652 (Use of Known Kerberos Credentials, Abstraction: Standard, Status: Draft matching evidence properties exactly) mapping via TaxonomyEntry capec:taxonomy:ATTACK:1558 to T1558 (Steal or Forge Kerberos Tickets), satisfying gold.capec.must_include_ids=[CAPEC-652] and must_include_related=[T1558]. It then enumerates all 6 mitigations for T1558 from the attack query results: M1041, M1015, M1047, M1026, M1027, M1043 — an exact match to gold.attack.must_include_related=[M1015,M1026,M1027,M1041,M1043,M1047] (order differs, set identical), satisfying must_include_ids=[T1558] and the max_records=1/min_records=1 constraint (evidence shows exactly 1 attack record). The correlation claim states T1558 is corroborated across capec and attack, matching gold.must_correlate=[T1558] and the deterministic_scores block (correlation exact=true, precision/recall/f1=1.0). Every fact/count/name in the claims is directly traceable to the logic_flow records (CAPEC-652 properties, T1558 related list of 6 mitigations with matching ids/names) with no fabricated abstraction levels, aliases, or extra mitigations. All 8 unique gold-required ids (CAPEC-652, T1558, M1015, M1026, M1027, M1041, M1043, M1047) are surfaced."
+}

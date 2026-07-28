@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 38,
+  "gold_present": 38,
+  "hallucinations": [],
+  "rationale": "The deterministic narrative/claims fully satisfy every gold assertion. All 8 required CAPEC ids (CAPEC-60, CAPEC-94, CAPEC-509, CAPEC-555, CAPEC-561, CAPEC-644, CAPEC-645, CAPEC-652) are named, each correctly linked to CWE-294 and each with an Abstraction/Status pair that matches the retrieved record properties verbatim (e.g. CAPEC-94 Meta/Stable, CAPEC-509 Detailed/Stable, CAPEC-652 Standard/Draft - all confirmed against logic_flow.results[capec].records). All 11 required ATT&CK technique ids (T1021, T1021.002, T1114.002, T1133, T1134.001, T1550.002, T1550.003, T1550.004, T1557, T1558, T1558.003) are enumerated, matching the exact 11-record ATT&CK result set (min/max_records=11 satisfied). All 19 required mitigation ids (M1015, M1017, M1018, M1021, M1026, M1027, M1030, M1031, M1032, M1035, M1037, M1041, M1042, M1043, M1047, M1051, M1052, M1054, M1060) appear in the per-technique mitigation enumerations, and cross-checking each technique's listed mitigations against logic_flow.results[attack].records[*].related confirms an exact match with no additions or omissions. The must_correlate set (same 11 T-numbers) is explicitly asserted as '11 identifiers... corroborated across both CAPEC and ATT&CK', with 8 spelled out by name and the remaining 3 (T1557, T1558, T1558.003) already named earlier in the ATT&CK enumeration, so all 11 are surfaced somewhere in the answer. No invented ids, aliases, counts, or properties were found; every stated fact traces directly to the retrieved logic_flow records. gold_expected/gold_present computed as 8 CAPEC ids + 11 ATT&CK ids + 19 mitigation ids = 38, all present."
+}

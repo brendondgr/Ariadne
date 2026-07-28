@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-98 to be surfaced with a MAPS_TO relation to T1566, the ATT&CK record T1566 named 'Phishing', and the cross-source correlation on T1566. The answer's claims/narrative state exactly this: 'Found 1 CAPEC record(s) for CAPEC-98; ATT&CK mappings: T1566', 'CAPEC-98 (Phishing) has 1 TaxonomyEntrys: capec:taxonomy:ATTACK:1566', 'Found ATT&CK record T1566: Phishing', and 'The identifier T1566 is corroborated across attack and capec'. All of these are directly traceable to logic_flow records: the capec query returned CAPEC-98 (name Phishing, Abstraction Standard, Status Draft) related to TaxonomyEntry capec:taxonomy:ATTACK:1566 (entry_id 1566), and the attack query returned T1566 named Phishing. No invented ids, names, counts, or aliases were found beyond the evidence. All 3 gold-required elements (CAPEC-98 id, T1566 name='Phishing', and the T1566 correlation) are present, matching deterministic_scores which independently report recall=1.0, correlation f1=1.0 and full provenance."
+}

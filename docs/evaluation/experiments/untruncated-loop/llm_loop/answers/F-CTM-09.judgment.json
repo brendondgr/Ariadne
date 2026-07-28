@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-09",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 0.0,
+  "completeness": 0.0,
+  "gold_expected": 6,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a positive case (min_records 1 on both capec and attack legs, must_correlate T1550.003) but the pipeline never ran the retrieval: run_meta.notes show both the capec and attack sub-questions were skipped because the total pipeline timeout was exceeded before they executed (logic_flow.results is empty, evidence_volume.records = 0). The narrative abstains entirely ('No records were returned by the routed specialists'), surfacing none of the six gold-required entities: CAPEC-645, T1550.003 (the CAPEC-to-ATT&CK mapping and correlation id), and mitigations M1015, M1018, M1026, M1027. deterministic_scores confirms this independently: correlation recall 0.0, mapping_recall 0.0 with T1550.003 listed as missing. The abstention is not fabricated (no hallucinated ids or facts, so faithfulness is scored high), but it is not a legitimate negative-case abstention either — the gold clearly expects a substantive answer, so the case fails outright due to an infrastructure/timeout failure rather than a correct 'no data' finding."
+}

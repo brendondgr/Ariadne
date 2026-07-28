@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty join: no CAPEC-7 to ATT&CK mapping exists, and the dependent ATT&CK mitigation sub-question must be skipped (must_correlate=[], expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true). The evidence confirms this: the capec query (g.V().hasLabel('AttackPattern').has('id', within(['CAPEC-7']))...out('MAPS_TO')...) executed cleanly with row_count 0, and the attack sub-question (q2) was correctly skipped with reason 'producer q1: it returned no join values'. The answer's claims array is empty (no fabricated technique/mitigation ids), and both abstentions explicitly and accurately state the capec query ran cleanly with no matches and the attack query was skipped due to q1 producing no seed identifiers. The narrative correctly reports no matching records rather than inventing a correlation. Deterministic_scores confirm exact negative match (precision/recall/f1 = 1.0, n_expected=0, n_got=0). No hallucinations present; this is a textbook correct handling of the adversarial negative case."
+}

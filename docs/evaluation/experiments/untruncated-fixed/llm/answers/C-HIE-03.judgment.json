@@ -1,0 +1,12 @@
+{
+  "case_id": "C-HIE-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer surface CAPEC-555 (must_include_ids) and identify CAPEC-560 as its ChildOf parent (must_include_related). The narrative states exactly this: 'CAPEC-560 is identified as the parent of CAPEC-555 ... CAPEC-560, named Use of Known Domain Credentials.' The single retrieved record (logic_flow.results[0].records[0]) confirms CAPEC-555 = 'Remote Services with Stolen Credentials' (Abstraction: Standard, Status: Stable) with a CHILD_OF-traversed related node CAPEC-560 = 'Use of Known Domain Credentials' -- both names in the narrative match the evidence verbatim. No invented names, counts, or properties. Both gold-required ids are present, so completeness is 2/2."
+}

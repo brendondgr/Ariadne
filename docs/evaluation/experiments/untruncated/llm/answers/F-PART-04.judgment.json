@@ -1,0 +1,16 @@
+{
+  "case_id": "F-PART-04",
+  "verdict": "INCORRECT",
+  "correctness": 0.2,
+  "faithfulness": 0.2,
+  "groundedness": 0.45,
+  "completeness": 0.75,
+  "gold_expected": 4,
+  "gold_present": 3,
+  "hallucinations": [
+    "Narrative claims 'the query for ATT&CK techniques explicitly linked to CAPEC-555' but the executed query (logic_flow.results[0].query) is 'MATCH (n:Technique) RETURN n.attack_id AS id, n.name AS name LIMIT 100' with seed_ids: [] and template 'label_scan' -- a generic unseeded scan of all Technique nodes with no CAPEC-555 filter whatsoever.",
+    "Narrative states the empty related arrays 'confirm that none of these techniques currently hold explicit graph relationships or cross-source joins to CAPEC-555' -- false framing; the related arrays are empty because the label-scan query never traverses relationships or checks for CAPEC-555 links at all, not because such a check was performed and came back negative.",
+    "Narrative asserts this result 'validates the dependency abstention state' -- it does the opposite: this is precisely the prohibited broad unseeded query the gold says must NOT run when the CAPEC-555 producer is down (attack.expect_dependency_skip: true)."
+  ],
+  "rationale": "Gold requires that with CAPEC-555's producer down, the seeded ATT&CK step must degrade to a dependency skip rather than firing a broad unseeded query (attack.expect_dependency_skip=true). The observed_plan/logic_flow show seed_ids=[] and the executed query is an unfiltered 'MATCH (n:Technique) ... LIMIT 100' label scan -- exactly the forbidden broad unseeded query, not a skip. Of the four structural gold requirements, 3/4 were met (capec.expect_skipped: satisfied via the notes 'Unsupported by the available sources: CAPEC source...'; expect_no_correlation: satisfied, no T-number correlation asserted; expect_partial: satisfied, headline/run_meta report 'partial'/1 unsupported part), but the central tested behavior (attack.expect_dependency_skip) was violated -- the pipeline ran the broad unseeded query it was supposed to avoid. Worse, the narrative actively mischaracterizes this failure as a successful 'dependency abstention validation,' fabricating the claim that the query specifically targeted CAPEC-555 relationships and that their absence was confirmed, when the query never referenced CAPEC-555 at all. The 100 T-IDs cited (T1047, T1687, T1113, etc.) are grounded in the retrieved records, but the interpretive claims wrapped around them are not. The deterministic self-score (correlation exact=true, fully_provenanced=true) is misleadingly clean because it only checks the no-correlation sub-assertion, masking the core failure that an independent read must catch."
+}

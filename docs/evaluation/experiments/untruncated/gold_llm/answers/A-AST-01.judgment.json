@@ -1,0 +1,12 @@
+{
+  "case_id": "A-AST-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "This is a boundary/negative case (gold.assertions.expect_boundary = true): the question asks what 'assets' T1047 targets, but ATT&CK is an ICS-only concept here and the attack source's schema has no 'Asset' entity. The logic_flow trace confirms this: the resolve/boundary steps explicitly report 'entities not in card: [\\'Asset\\']' and 'entities not modeled by the attack source: Asset', with 0 records returned and no query executed. The answer correctly abstains rather than inventing an asset list: narrative states 'The routed sources returned no matching records for this question' and the single abstention cites the exact reason ('the attack source doesn't establish this — it doesn't model the entities this question asks about'). No claims, ids, counts, or names were fabricated — the answer contains zero assertions beyond the honest refusal, so there is nothing ungrounded. This is exactly the behavior the gold requires for an expect_boundary case, so gold_expected=1 (produce a correct refusal) and gold_present=1 (it did)."
+}

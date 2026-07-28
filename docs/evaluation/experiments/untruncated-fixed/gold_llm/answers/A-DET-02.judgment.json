@@ -1,0 +1,14 @@
+{
+  "case_id": "A-DET-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 7,
+  "gold_present": 7,
+  "hallucinations": [
+    "Narrative phrase 'excessive login attempts in unified logs' conflates two distinct evidence descriptions (AN1278: 'Multiple failed authentications in unified logs e.g. loginwindow or sshd' and AN1279: 'Excessive login attempts followed by success from SaaS apps like O365, Dropbox, etc.') into one imprecise, garbled statement not literally present in either record."
+  ],
+  "rationale": "Gold requires T1110 plus DET0463 and AN1275-AN1279 (7 ids total); the narrative and claims name all 7 explicitly and correctly, matching the single evidence record's related list exactly (deterministic_scores.coverage confirms 7/7=1.0). The narrative's descriptive gloss of each analytic is well-grounded for AN1275 (failed-then-successful logons), AN1276 (multi-user auth failures), and AN1277 (password spraying) as well as DET0463's name, matching the evidence text closely. However, the phrase 'excessive login attempts in unified logs' merges AN1278's 'unified logs (loginwindow/sshd)' wording with AN1279's 'excessive login attempts ... from SaaS apps' wording into a single conflated claim that doesn't accurately represent either analytic on its own -- a minor faithfulness slip, not a fabrication of new ids/counts/names. No entity, count, or id outside the evidence was invented, and this is not a negative/abstention case so full disclosure was expected and delivered."
+}

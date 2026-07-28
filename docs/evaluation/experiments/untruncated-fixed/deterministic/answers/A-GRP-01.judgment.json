@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids T1005, T1037, T1047, T1068, T1078 (min_records 5); the deterministic claims/enumeration lists all 17 retrieved techniques (T1068, T1665, T1105, T1651, T1203, T1573, T1047, T1037, T1133, T1005, T1190, T1568, T1649, T1528, T1621, T1199, T1078), which include all 5 required ids plus all 12 extra ids in gold.ex_gold.expected. Every id named in the answer corresponds 1:1 to a record in logic_flow.results[0].records (17 rows from the g:Group-[:USES]->t:Technique query for G0016), so nothing is fabricated. No abstentions were needed since this is a positive case with 17 matches well above min_records=5."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-LKP-03",
+  "verdict": "INCORRECT",
+  "correctness": 0.3,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.25,
+  "gold_expected": 4,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question explicitly asks for CAPEC-98's abstraction and status. The evidence (logic_flow.results[0].records[0].properties) correctly contains Abstraction='Standard' and Status='Draft' and name='Phishing', so retrieval succeeded and nothing fabricated. However the answer surfaced to the analyst -- both narrative ('Found 1 CAPEC record(s): CAPEC-98.') and the single claim with identical text -- states only the id CAPEC-98 and never mentions the name 'Phishing', the Abstraction value, or the Status value. Of the 4 gold-required facts (must_include_ids: CAPEC-98; expect_names: Phishing; expect_properties: Abstraction=Standard, Status=Draft) only the id is present (gold_present=1/4). Since the entire point of the question (abstraction and status) goes unanswered despite being available in evidence, this is a correctness failure of the deterministic composer, not a retrieval failure -- hence INCORRECT rather than PARTIAL."
+}

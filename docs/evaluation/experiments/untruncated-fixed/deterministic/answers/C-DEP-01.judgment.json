@@ -1,0 +1,12 @@
+{
+  "case_id": "C-DEP-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty=true, ex_gold.expected=[]) since CAPEC-91 is deprecated/excluded at load. The executed Gremlin query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))... for seed_ids=[\"CAPEC-91\"]) returned row_count=0 per the execute/assess traces, and logic_flow.results[0].records is empty. The answer correctly abstains: claims=[] and the abstention statement 'the executed query ran cleanly and returned no matching records for: What is CAPEC pattern CAPEC-91?' matches the evidence exactly. The narrative invents no entity, id, or property, and does not claim CAPEC-91 exists or provide any fabricated detail. This is a fully correct, fully faithful negative-case abstention."
+}

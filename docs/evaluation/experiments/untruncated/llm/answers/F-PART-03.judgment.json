@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-03",
+  "verdict": "PARTIAL",
+  "correctness": 0.45,
+  "faithfulness": 0.95,
+  "groundedness": 1.0,
+  "completeness": 0.25,
+  "gold_expected": 4,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The answer correctly retrieves CAPEC-555 (Standard abstraction, 'Remote Services with Stolen Credentials'), correctly reports zero cross-source join values (matches must_correlate:[] / expect_no_correlation:true, confirmed by deterministic_scores.correlation.negative=true, f1=1.0), and honestly declines to fabricate identifiers it doesn't have for the mapped TaxonomyEntry nodes or the Mitigation -- consistent with the adversarial scenario's intent that the ATT&CK-dependent side degrade gracefully. However, gold.assertions.capec.must_include_related requires the answer to surface T1021, T1114.002, and T1133 as the ATT&CK techniques CAPEC-555 maps to, and none of these three IDs appear anywhere in the answer or in the retrieved evidence itself (the CAPEC-555 record's 'related' array is empty; the retrieval only returned a facet count of MAPS_TO=3 without expanding the neighbour identities). So while the answer is faithful and grounded in what was retrieved (no invented facts -- the '7 Weaknesses', '3 TaxonomyEntry', '1 Mitigation' counts all match the record's facets, and the Abstraction/Status values match the record's properties), it fails the core completeness bar of the gold: 0 of the 3 required T-number correlations are surfaced, and the attack.expect_skipped condition is met only implicitly (no explicit abstention record was emitted, abstentions:[] in the answer object) rather than as a clearly labeled skip. Net: correct on the entity-identification and no-correlation aspects, but materially incomplete on the mandated technique-mapping identifiers -> PARTIAL, not CORRECT."
+}

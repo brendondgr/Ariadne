@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MIT-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[T1110] and must_include_related=[M1018,M1027,M1032,M1036]. The single retrieved record (primary_id=T1110, name='Brute Force') lists exactly these four related mitigations with matching names (M1036 Account Use Policies, M1032 Multi-factor Authentication, M1018 User Account Management, M1027 Password Policies). The deterministic claims/narrative state 'T1110 (Brute Force) has 4 related item(s): M1036, M1032, M1018, M1027', surfacing all 5 required ids (1 technique + 4 mitigations) with no extra or fabricated entities, names, or counts. Every id and name in the answer traces directly to logic_flow.results[0].records[0] and its related array; no invented aliases, statuses, or counts. deterministic_scores.coverage also independently confirms coverage=1.0 (5/5)."
+}

@@ -1,0 +1,795 @@
+{
+  "id": "F-FAN-03",
+  "kind": "federated",
+  "tier": "hard",
+  "category": "F-FAN",
+  "question": "Which ATT&CK techniques do CAPEC-37, CAPEC-639 map to (they overlap), and what mitigations apply to the deduplicated union?",
+  "gold": {
+    "assertions": {
+      "must_correlate": [
+        "T1005",
+        "T1039",
+        "T1552.001",
+        "T1552.003",
+        "T1552.004",
+        "T1552.006"
+      ],
+      "capec": {
+        "min_records": 2,
+        "must_include_ids": [
+          "CAPEC-37",
+          "CAPEC-639"
+        ],
+        "must_include_related": [
+          "T1005",
+          "T1039",
+          "T1552.001",
+          "T1552.003",
+          "T1552.004",
+          "T1552.006"
+        ]
+      },
+      "attack": {
+        "min_records": 6,
+        "max_records": 6,
+        "must_include_ids": [
+          "T1005",
+          "T1039",
+          "T1552.001",
+          "T1552.003",
+          "T1552.004",
+          "T1552.006"
+        ],
+        "must_include_related": [
+          "M1015",
+          "M1017",
+          "M1022",
+          "M1027",
+          "M1028",
+          "M1041",
+          "M1047",
+          "M1051",
+          "M1057"
+        ]
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 2
+  },
+  "answer": {
+    "headline": "Gathered 8 record(s) from 2 source(s); 6 cross-source correlation(s) on shared identifiers.",
+    "narrative": "Found 2 CAPEC record(s) for CAPEC-37, CAPEC-639; ATT&CK mappings: T1005, T1039, T1552.001, T1552.003, T1552.004. CAPEC-639 (Probe System Files) has 5 TaxonomyEntrys: capec:taxonomy:ATTACK:1552.001, capec:taxonomy:ATTACK:1552.003, capec:taxonomy:ATTACK:1552.004, capec:taxonomy:ATTACK:1552.006, capec:taxonomy:ATTACK:1039. CAPEC-37 (Retrieve Embedded Sensitive Data) has 2 TaxonomyEntrys: capec:taxonomy:ATTACK:1005, capec:taxonomy:ATTACK:1552.004. Found 6 ATT&CK record(s) including T1005, T1552.004, T1552.003 and more. T1005 (Data from Local System) has 1 related item(s): M1057. T1552.004 (Private Keys) has 4 related item(s): M1041, M1047, M1022, M1027. T1552.003 (Shell History) has 1 related item(s): M1028. T1552.001 (Credentials In Files) has 4 related item(s): M1047, M1022, M1027, M1017. T1552.006 (Group Policy Preferences) has 3 related item(s): M1051, M1015, M1047. 6 identifiers are corroborated across both CAPEC and ATT&CK (T1005, T1039, T1552.001, T1552.003, T1552.004, T1552.006).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 2 CAPEC record(s) for CAPEC-37, CAPEC-639; ATT&CK mappings: T1005, T1039, T1552.001, T1552.003, T1552.004.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-639",
+          "CAPEC-37"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-639"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-37"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-639 (Probe System Files) has 5 TaxonomyEntrys: capec:taxonomy:ATTACK:1552.001, capec:taxonomy:ATTACK:1552.003, capec:taxonomy:ATTACK:1552.004, capec:taxonomy:ATTACK:1552.006, capec:taxonomy:ATTACK:1039.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "capec:taxonomy:ATTACK:1552.001",
+          "capec:taxonomy:ATTACK:1552.003",
+          "capec:taxonomy:ATTACK:1552.004",
+          "capec:taxonomy:ATTACK:1552.006",
+          "capec:taxonomy:ATTACK:1039"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-639"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-37 (Retrieve Embedded Sensitive Data) has 2 TaxonomyEntrys: capec:taxonomy:ATTACK:1005, capec:taxonomy:ATTACK:1552.004.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "capec:taxonomy:ATTACK:1005",
+          "capec:taxonomy:ATTACK:1552.004"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-37"
+          }
+        ]
+      },
+      {
+        "text": "Found 6 ATT&CK record(s) including T1005, T1552.004, T1552.003 and more.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1005",
+          "T1552.004",
+          "T1552.003",
+          "T1552.001",
+          "T1552.006",
+          "T1039"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1005"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1552.004"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1552.003"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1552.001"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1552.006"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1039"
+          }
+        ]
+      },
+      {
+        "text": "T1005 (Data from Local System) has 1 related item(s): M1057.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1057"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1005"
+          }
+        ]
+      },
+      {
+        "text": "T1552.004 (Private Keys) has 4 related item(s): M1041, M1047, M1022, M1027.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1041",
+          "M1047",
+          "M1022",
+          "M1027"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1552.004"
+          }
+        ]
+      },
+      {
+        "text": "T1552.003 (Shell History) has 1 related item(s): M1028.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1028"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1552.003"
+          }
+        ]
+      },
+      {
+        "text": "T1552.001 (Credentials In Files) has 4 related item(s): M1047, M1022, M1027, M1017.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1047",
+          "M1022",
+          "M1027",
+          "M1017"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1552.001"
+          }
+        ]
+      },
+      {
+        "text": "T1552.006 (Group Policy Preferences) has 3 related item(s): M1051, M1015, M1047.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1051",
+          "M1015",
+          "M1047"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1552.006"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1005 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1005"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-37"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1005"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1039 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1039"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-639"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1039"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1552.001 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1552.001"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-639"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1552.001"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1552.003 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1552.003"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-639"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1552.003"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1552.004 is corroborated across attack and capec (3 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1552.004"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-639"
+          },
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-37"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1552.004"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1552.006 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1552.006"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-639"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1552.006"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which ATT&CK techniques do CAPEC-37, CAPEC-639 map to?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What mitigations does ATT&CK list for those mapped techniques?",
+        "seed_from": "q1"
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Which ATT&CK techniques do CAPEC-37, CAPEC-639 map to?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 2 CAPEC record(s) for CAPEC-37, CAPEC-639; ATT&CK mappings: T1005, T1039, T1552.001, T1552.003, T1552.004.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CAPEC-37",
+                "CAPEC-639"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_maps_to",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
+              "injected": [],
+              "timing_ms": 0.081
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 7,
+              "timing_ms": 10.2
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 7,
+              "timing_ms": 0.01
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 2,
+              "timing_ms": 0.131
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-639",
+            "name": "Probe System Files",
+            "label": "AttackPattern",
+            "description": "An adversary obtains unauthorized information due to improperly protected files. If an application stores sensitive information in a file that is not protected by proper access control, then an adversary can access the file and search for sensitive information.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Probe System Files",
+              "description": "An adversary obtains unauthorized information due to improperly protected files. If an application stores sensitive information in a file that is not protected by proper access control, then an adversary can access the file and search for sensitive information.",
+              "id": "capec:attack-pattern:639",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1552.001",
+              "T1552.003",
+              "T1552.004",
+              "T1552.006",
+              "T1039"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1552.001",
+                "entry_id": "1552.001",
+                "name": "Unsecured Credentials:Credentials in files",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1552.003",
+                "entry_id": "1552.003",
+                "name": "Unsecured Credentials: Bash History",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1552.004",
+                "entry_id": "1552.004",
+                "name": "Unsecured Credentials: Private Keys",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1552.006",
+                "entry_id": "1552.006",
+                "name": "Unsecured Credentials: Group Policy Preferences",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1039",
+                "entry_id": "1039",
+                "name": "Data from Network Shared Drive",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          },
+          {
+            "primary_id": "CAPEC-37",
+            "name": "Retrieve Embedded Sensitive Data",
+            "label": "AttackPattern",
+            "description": "An attacker examines a target system to find sensitive data that has been embedded within it. This information can reveal confidential contents, such as account numbers or individual keys/credentials that can be used as an intermediate step in a larger attack.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Retrieve Embedded Sensitive Data",
+              "description": "An attacker examines a target system to find sensitive data that has been embedded within it. This information can reveal confidential contents, such as account numbers or individual keys/credentials that can be used as an intermediate step in a larger attack.",
+              "id": "capec:attack-pattern:37",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [
+              "T1005",
+              "T1552.004"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1005",
+                "entry_id": "1005",
+                "name": "Data from Local System",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1552.004",
+                "entry_id": "1552.004",
+                "name": "Unsecured Credentials: Private Keys",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "What mitigations does ATT&CK list for those mapped techniques?",
+        "query": "MATCH (t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 20000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 6 ATT&CK record(s) including T1005, T1552.004, T1552.003 and more.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "Mitigation"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1005",
+                "T1039",
+                "T1552.001",
+                "T1552.003",
+                "T1552.004",
+                "T1552.006"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "technique_mitigations",
+              "query": "MATCH (t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 20000",
+              "injected": [
+                "LIMIT 20000 appended (none present)"
+              ],
+              "timing_ms": 0.09
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 14,
+              "timing_ms": 18.2
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 14,
+              "timing_ms": 0.009
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 6,
+              "timing_ms": 5.013
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1005",
+            "name": "Data from Local System",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1005"
+            ],
+            "related": [
+              {
+                "id": "M1057",
+                "name": "Data Loss Prevention",
+                "description": "Data Loss Prevention (DLP) involves implementing strategies and technologies to identify, categorize, monitor, and control the movement of sensitive data within an organization. This includes protecting data formats indicative of Personally Identifiable Information (PII), intellectual property, or financial data from unauthorized access, transmission, or exfiltration. DLP solutions integrate with network, endpoint, and cloud platforms to enforce security policies and prevent accidental or malicious data leaks. (Citation: PurpleSec Data Loss Prevention) This mitigation can be implemented through the following measures:\n\nSensitive Data Categorization:\n\n- Use Case: Identify and classify data based on sensitivity (e.g., PII, financial data, trade secrets).\n- Implementation: Use DLP solutions to scan and tag files containing sensitive information using predefined patterns, such as Social Security Numbers or credit card details.\n\nExfiltration Restrictions:\n\n- Use Case: Prevent unauthorized transmission of sensitive data.\n- Implementation: Enforce policies to block unapproved email attachments, unauthorized USB usage, or unencrypted data uploads to cloud storage.\n\nData-in-Transit Monitoring:\n\n- Use Case: Detect and prevent the transmission of sensitive data over unapproved channels.\n- Implementation: Deploy network-based DLP tools to inspect outbound traffic for sensitive content (e.g., financial records or PII) and block unapproved transmissions.\n\nEndpoint Data Protection:\n\n- Use Case: Monitor and control sensitive data usage on endpoints.\n- Implementation: Use endpoint-based DLP agents to block copy-paste actions of sensitive data and unauthorized printing or file sharing.\n\nCloud Data Security:\n\n- Use Case: Protect data stored in cloud platforms.\n- Implementation: Integrate DLP with cloud storage platforms like Google Drive, OneDrive, or AWS to monitor and restrict sensitive data sharing or downloads."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1552.004",
+            "name": "Private Keys",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1552.004"
+            ],
+            "related": [
+              {
+                "id": "M1041",
+                "name": "Encrypt Sensitive Information",
+                "description": "Protect sensitive information at rest, in transit, and during processing by using strong encryption algorithms. Encryption ensures the confidentiality and integrity of data, preventing unauthorized access or tampering. This mitigation can be implemented through the following measures:\n\nEncrypt Data at Rest:\n\n- Use Case: Use full-disk encryption or file-level encryption to secure sensitive data stored on devices.\n- Implementation: Implement BitLocker for Windows systems or FileVault for macOS devices to encrypt hard drives.\n\nEncrypt Data in Transit:\n\n- Use Case: Use secure communication protocols (e.g., TLS, HTTPS) to encrypt sensitive data as it travels over networks.\n- Implementation: Enable HTTPS for all web applications and configure mail servers to enforce STARTTLS for email encryption.\n\nEncrypt Backups:\n\n- Use Case: Ensure that backup data is encrypted both during storage and transfer to prevent unauthorized access.\n- Implementation: Encrypt cloud backups using AES-256 before uploading them to Amazon S3 or Google Cloud.\n\nEncrypt Application Secrets:\n\n- Use Case: Store sensitive credentials, API keys, and configuration files in encrypted vaults.\n- Implementation: Use HashiCorp Vault or AWS Secrets Manager to manage and encrypt secrets.\n\nDatabase Encryption:\n\n- Use Case: Enable Transparent Data Encryption (TDE) or column-level encryption in database management systems.\n- Implementation: Use MySQL’s built-in encryption features to encrypt sensitive database fields such as social security numbers."
+              },
+              {
+                "id": "M1047",
+                "name": "Audit",
+                "description": "Auditing is the process of recording activity and systematically reviewing and analyzing the activity and system configurations. The primary purpose of auditing is to detect anomalies and identify potential threats or weaknesses in the environment. Proper auditing configurations can also help to meet compliance requirements. The process of auditing encompasses regular analysis of user behaviors and system logs in support of proactive security measures.\n\nAuditing is applicable to all systems used within an organization, from the front door of a building to accessing a file on a fileserver. It is considered more critical for regulated industries such as, healthcare, finance and government where compliance requirements demand stringent tracking of user and system activates.This mitigation can be implemented through the following measures: \n\nSystem Audit:\n\n- Use Case: Regularly assess system configurations to ensure compliance with organizational security policies.\n- Implementation: Use tools to scan for deviations from established benchmarks.\n\nPermission Audits:\n\n- Use Case: Review file and folder permissions to minimize the risk of unauthorized access or privilege escalation.\n- Implementation: Run access reviews to identify users or groups with excessive permissions.\n\nSoftware Audits:\n\n- Use Case: Identify outdated, unsupported, or insecure software that could serve as an attack vector.\n- Implementation: Use inventory and vulnerability scanning tools to detect outdated versions and recommend secure alternatives.\n\nConfiguration Audits:\n\n- Use Case: Evaluate system and network configurations to ensure secure settings (e.g., disabled SMBv1, enabled MFA).\n- Implementation: Implement automated configuration scanning tools like SCAP (Security Content Automation Protocol) to identify non-compliant systems.\n\nNetwork Audits:\n\n- Use Case: Examine network traffic, firewall rules, and endpoint communications to identify unauthorized or insecure connections.\n- Implementation: Utilize tools such as Wireshark, or Zeek to monitor and log suspicious network behavior."
+              },
+              {
+                "id": "M1022",
+                "name": "Restrict File and Directory Permissions",
+                "description": "Restricting file and directory permissions involves setting access controls at the file system level to limit which users, groups, or processes can read, write, or execute files. By configuring permissions appropriately, organizations can reduce the attack surface for adversaries seeking to access sensitive data, plant malicious code, or tamper with system files.\n\nEnforce Least Privilege Permissions:\n\n- Remove unnecessary write permissions on sensitive files and directories.\n- Use file ownership and groups to control access for specific roles.\n\nExample (Windows): Right-click the shared folder → Properties → Security tab → Adjust permissions for NTFS ACLs.\n\nHarden File Shares:\n\n- Disable anonymous access to shared folders.\n- Enforce NTFS permissions for shared folders on Windows.\n\nExample: Set permissions to restrict write access to critical files, such as system executables (e.g., `/bin` or `/sbin` on Linux). Use tools like `chown` and `chmod` to assign file ownership and limit access.\n\nOn Linux, apply:\n`chmod 750 /etc/sensitive.conf`\n`chown root:admin /etc/sensitive.conf`\n\nFile Integrity Monitoring (FIM):\n\n- Use tools like Tripwire, Wazuh, or OSSEC to monitor changes to critical file permissions.\n\nAudit File System Access:\n\n- Enable auditing to track permission changes or unauthorized access attempts.\n- Use auditd (Linux) or Event Viewer (Windows) to log activities.\n\nRestrict Startup Directories:\n\n- Configure permissions to prevent unauthorized writes to directories like `C:\\ProgramData\\Microsoft\\Windows\\Start Menu`.\n\nExample: Restrict write access to critical directories like `/etc/`, `/usr/local/`, and Windows directories such as `C:\\Windows\\System32`.\n\n- On Windows, use icacls to modify permissions: `icacls \"C:\\Windows\\System32\" /inheritance:r /grant:r SYSTEM:(OI)(CI)F`\n- On Linux, monitor permissions using tools like `lsattr` or `auditd`."
+              },
+              {
+                "id": "M1027",
+                "name": "Password Policies",
+                "description": "Set and enforce secure password policies for accounts to reduce the likelihood of unauthorized access. Strong password policies include enforcing password complexity, requiring regular password changes, and preventing password reuse. This mitigation can be implemented through the following measures:\n\nWindows Systems:\n\n- Use Group Policy Management Console (GPMC) to configure:\n    - Minimum password length (e.g., 12+ characters).\n    - Password complexity requirements.\n    - Password history (e.g., disallow last 24 passwords).\n    - Account lockout duration and thresholds.\n\nLinux Systems:\n\n- Configure Pluggable Authentication Modules (PAM):\n- Use `pam_pwquality` to enforce complexity and length requirements.\n- Implement `pam_tally2` or `pam_faillock` for account lockouts.\n- Use `pwunconv` to disable password reuse.\n\nPassword Managers:\n\n- Enforce usage of enterprise password managers (e.g., Bitwarden, 1Password, LastPass) to generate and store strong passwords.\n\nPassword Blacklisting:\n\n- Use tools like Have I Been Pwned password checks or NIST-based blacklist solutions to prevent users from setting compromised passwords.\n\nRegular Auditing:\n\n- Periodically audit password policies and account configurations to ensure compliance using tools like LAPS (Local Admin Password Solution) and vulnerability scanners.\n\n*Tools for Implementation*\n\nWindows:\n\n- Group Policy Management Console (GPMC): Enforce password policies.\n- Microsoft Local Administrator Password Solution (LAPS): Enforce random, unique admin passwords.\n\nLinux/macOS:\n\n- PAM Modules (pam_pwquality, pam_tally2, pam_faillock): Enforce password rules.\n- Lynis: Audit password policies and system configurations.\n\nCross-Platform:\n\n- Password Managers (Bitwarden, 1Password, KeePass): Manage and enforce strong passwords.\n- Have I Been Pwned API: Prevent the use of breached passwords.\n- NIST SP 800-63B compliant tools: Enforce password guidelines and blacklisting."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1552.003",
+            "name": "Shell History",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1552.003"
+            ],
+            "related": [
+              {
+                "id": "M1028",
+                "name": "Operating System Configuration",
+                "description": "Operating System Configuration involves adjusting system settings and hardening the default configurations of an operating system (OS) to mitigate adversary exploitation and prevent abuse of system functionality. Proper OS configurations address security vulnerabilities, limit attack surfaces, and ensure robust defense against a wide range of techniques. This mitigation can be implemented through the following measures: \n\nDisable Unused Features:\n\n- Turn off SMBv1, LLMNR, and NetBIOS where not needed.\n- Disable remote registry and unnecessary services.\n\nEnforce OS-level Protections:\n\n- Enable Data Execution Prevention (DEP), Address Space Layout Randomization (ASLR), and Control Flow Guard (CFG) on Windows.\n- Use AppArmor or SELinux on Linux for mandatory access controls.\n\nSecure Access Settings:\n\n- Enable User Account Control (UAC) for Windows.\n- Restrict root/sudo access on Linux/macOS and enforce strong permissions using sudoers files.\n\nFile System Hardening:\n\n- Implement least-privilege access for critical files and system directories.\n- Audit permissions regularly using tools like icacls (Windows) or getfacl/chmod (Linux/macOS).\n\nSecure Remote Access:\n\n- Restrict RDP, SSH, and VNC to authorized IPs using firewall rules.\n- Enable NLA for RDP and enforce strong password/lockout policies.\n\nHarden Boot Configurations:\n\n- Enable Secure Boot and enforce UEFI/BIOS password protection.\n- Use BitLocker or LUKS to encrypt boot drives.\n\nRegular Audits:\n\n- Periodically audit OS configurations using tools like CIS Benchmarks or SCAP tools.\n\n*Tools for Implementation*\n\nWindows:\n\n- Microsoft Group Policy Objects (GPO): Centrally enforce OS security settings.\n- Windows Defender Exploit Guard: Built-in OS protection against exploits.\n- CIS-CAT Pro: Audit Windows security configurations based on CIS Benchmarks.\n\nLinux/macOS:\n\n- AppArmor/SELinux: Enforce mandatory access controls.\n- Lynis: Perform comprehensive security audits.\n- SCAP Security Guide: Automate configuration hardening using Security Content Automation Protocol.\n\nCross-Platform:\n\n- Ansible or Chef/Puppet: Automate configuration hardening at scale.\n- OpenSCAP: Perform compliance and configuration checks."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1552.001",
+            "name": "Credentials In Files",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1552.001"
+            ],
+            "related": [
+              {
+                "id": "M1047",
+                "name": "Audit",
+                "description": "Auditing is the process of recording activity and systematically reviewing and analyzing the activity and system configurations. The primary purpose of auditing is to detect anomalies and identify potential threats or weaknesses in the environment. Proper auditing configurations can also help to meet compliance requirements. The process of auditing encompasses regular analysis of user behaviors and system logs in support of proactive security measures.\n\nAuditing is applicable to all systems used within an organization, from the front door of a building to accessing a file on a fileserver. It is considered more critical for regulated industries such as, healthcare, finance and government where compliance requirements demand stringent tracking of user and system activates.This mitigation can be implemented through the following measures: \n\nSystem Audit:\n\n- Use Case: Regularly assess system configurations to ensure compliance with organizational security policies.\n- Implementation: Use tools to scan for deviations from established benchmarks.\n\nPermission Audits:\n\n- Use Case: Review file and folder permissions to minimize the risk of unauthorized access or privilege escalation.\n- Implementation: Run access reviews to identify users or groups with excessive permissions.\n\nSoftware Audits:\n\n- Use Case: Identify outdated, unsupported, or insecure software that could serve as an attack vector.\n- Implementation: Use inventory and vulnerability scanning tools to detect outdated versions and recommend secure alternatives.\n\nConfiguration Audits:\n\n- Use Case: Evaluate system and network configurations to ensure secure settings (e.g., disabled SMBv1, enabled MFA).\n- Implementation: Implement automated configuration scanning tools like SCAP (Security Content Automation Protocol) to identify non-compliant systems.\n\nNetwork Audits:\n\n- Use Case: Examine network traffic, firewall rules, and endpoint communications to identify unauthorized or insecure connections.\n- Implementation: Utilize tools such as Wireshark, or Zeek to monitor and log suspicious network behavior."
+              },
+              {
+                "id": "M1022",
+                "name": "Restrict File and Directory Permissions",
+                "description": "Restricting file and directory permissions involves setting access controls at the file system level to limit which users, groups, or processes can read, write, or execute files. By configuring permissions appropriately, organizations can reduce the attack surface for adversaries seeking to access sensitive data, plant malicious code, or tamper with system files.\n\nEnforce Least Privilege Permissions:\n\n- Remove unnecessary write permissions on sensitive files and directories.\n- Use file ownership and groups to control access for specific roles.\n\nExample (Windows): Right-click the shared folder → Properties → Security tab → Adjust permissions for NTFS ACLs.\n\nHarden File Shares:\n\n- Disable anonymous access to shared folders.\n- Enforce NTFS permissions for shared folders on Windows.\n\nExample: Set permissions to restrict write access to critical files, such as system executables (e.g., `/bin` or `/sbin` on Linux). Use tools like `chown` and `chmod` to assign file ownership and limit access.\n\nOn Linux, apply:\n`chmod 750 /etc/sensitive.conf`\n`chown root:admin /etc/sensitive.conf`\n\nFile Integrity Monitoring (FIM):\n\n- Use tools like Tripwire, Wazuh, or OSSEC to monitor changes to critical file permissions.\n\nAudit File System Access:\n\n- Enable auditing to track permission changes or unauthorized access attempts.\n- Use auditd (Linux) or Event Viewer (Windows) to log activities.\n\nRestrict Startup Directories:\n\n- Configure permissions to prevent unauthorized writes to directories like `C:\\ProgramData\\Microsoft\\Windows\\Start Menu`.\n\nExample: Restrict write access to critical directories like `/etc/`, `/usr/local/`, and Windows directories such as `C:\\Windows\\System32`.\n\n- On Windows, use icacls to modify permissions: `icacls \"C:\\Windows\\System32\" /inheritance:r /grant:r SYSTEM:(OI)(CI)F`\n- On Linux, monitor permissions using tools like `lsattr` or `auditd`."
+              },
+              {
+                "id": "M1027",
+                "name": "Password Policies",
+                "description": "Set and enforce secure password policies for accounts to reduce the likelihood of unauthorized access. Strong password policies include enforcing password complexity, requiring regular password changes, and preventing password reuse. This mitigation can be implemented through the following measures:\n\nWindows Systems:\n\n- Use Group Policy Management Console (GPMC) to configure:\n    - Minimum password length (e.g., 12+ characters).\n    - Password complexity requirements.\n    - Password history (e.g., disallow last 24 passwords).\n    - Account lockout duration and thresholds.\n\nLinux Systems:\n\n- Configure Pluggable Authentication Modules (PAM):\n- Use `pam_pwquality` to enforce complexity and length requirements.\n- Implement `pam_tally2` or `pam_faillock` for account lockouts.\n- Use `pwunconv` to disable password reuse.\n\nPassword Managers:\n\n- Enforce usage of enterprise password managers (e.g., Bitwarden, 1Password, LastPass) to generate and store strong passwords.\n\nPassword Blacklisting:\n\n- Use tools like Have I Been Pwned password checks or NIST-based blacklist solutions to prevent users from setting compromised passwords.\n\nRegular Auditing:\n\n- Periodically audit password policies and account configurations to ensure compliance using tools like LAPS (Local Admin Password Solution) and vulnerability scanners.\n\n*Tools for Implementation*\n\nWindows:\n\n- Group Policy Management Console (GPMC): Enforce password policies.\n- Microsoft Local Administrator Password Solution (LAPS): Enforce random, unique admin passwords.\n\nLinux/macOS:\n\n- PAM Modules (pam_pwquality, pam_tally2, pam_faillock): Enforce password rules.\n- Lynis: Audit password policies and system configurations.\n\nCross-Platform:\n\n- Password Managers (Bitwarden, 1Password, KeePass): Manage and enforce strong passwords.\n- Have I Been Pwned API: Prevent the use of breached passwords.\n- NIST SP 800-63B compliant tools: Enforce password guidelines and blacklisting."
+              },
+              {
+                "id": "M1017",
+                "name": "User Training",
+                "description": "User Training involves educating employees and contractors on recognizing, reporting, and preventing cyber threats that rely on human interaction, such as phishing, social engineering, and other manipulative techniques. Comprehensive training programs create a human firewall by empowering users to be an active component of the organization's cybersecurity defenses. This mitigation can be implemented through the following measures:\n\nCreate Comprehensive Training Programs:\n\n- Design training modules tailored to the organization's risk profile, covering topics such as phishing, password management, and incident reporting.\n- Provide role-specific training for high-risk employees, such as helpdesk staff or executives.\n\nUse Simulated Exercises:\n\n- Conduct phishing simulations to measure user susceptibility and provide targeted follow-up training.\n- Run social engineering drills to evaluate employee responses and reinforce protocols.\n\nLeverage Gamification and Engagement:\n\n- Introduce interactive learning methods such as quizzes, gamified challenges, and rewards for successful detection and reporting of threats.\n\nIncorporate Security Policies into Onboarding:\n\n- Include cybersecurity training as part of the onboarding process for new employees.\n- Provide easy-to-understand materials outlining acceptable use policies and reporting procedures.\n\nRegular Refresher Courses:\n\n- Update training materials to include emerging threats and techniques used by adversaries.\n- Ensure all employees complete periodic refresher courses to stay informed.\n\nEmphasize Real-World Scenarios:\n\n- Use case studies of recent attacks to demonstrate the consequences of successful phishing or social engineering.\n- Discuss how specific employee actions can prevent or mitigate such attacks."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1552.006",
+            "name": "Group Policy Preferences",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1552.006"
+            ],
+            "related": [
+              {
+                "id": "M1051",
+                "name": "Update Software",
+                "description": "Software updates ensure systems are protected against known vulnerabilities by applying patches and upgrades provided by vendors. Regular updates reduce the attack surface and prevent adversaries from exploiting known security gaps. This includes patching operating systems, applications, drivers, and firmware. This mitigation can be implemented through the following measures:\n\nRegular Operating System Updates\n\n- Implementation: Apply the latest Windows security updates monthly using WSUS (Windows Server Update Services) or a similar patch management solution. Configure systems to check for updates automatically and schedule reboots during maintenance windows.\n- Use Case: Prevents exploitation of OS vulnerabilities such as privilege escalation or remote code execution.\n\nApplication Patching\n\n- Implementation: Monitor Apache's update release notes for security patches addressing vulnerabilities. Schedule updates for off-peak hours to avoid downtime while maintaining security compliance.\n- Use Case: Prevents exploitation of web application vulnerabilities, such as those leading to unauthorized access or data breaches.\n\nFirmware Updates\n\n- Implementation: Regularly check the vendor’s website for firmware updates addressing vulnerabilities. Plan for update deployment during scheduled maintenance to minimize business disruption.\n- Use Case: Protects against vulnerabilities that adversaries could exploit to gain access to network devices or inject malicious traffic.\n\nEmergency Patch Deployment\n\n- Implementation: Use the emergency patch deployment feature of the organization's patch management tool to apply updates to all affected Exchange servers within 24 hours.\n- Use Case: Reduces the risk of exploitation by rapidly addressing critical vulnerabilities.\n\nCentralized Patch Management\n\n- Implementation: Implement a centralized patch management system, such as SCCM or ManageEngine, to automate and track patch deployment across all environments. Generate regular compliance reports to ensure all systems are updated.\n- Use Case: Streamlines patching processes and ensures no critical systems are missed.\n\n*Tools for Implementation*\n\nPatch Management Tools:\n\n- WSUS: Manage and deploy Microsoft updates across the organization.\n- ManageEngine Patch Manager Plus: Automate patch deployment for OS and third-party apps.\n- Ansible: Automate updates across multiple platforms, including Linux and Windows.\n\nVulnerability Scanning Tools:\n\n- OpenVAS: Open-source vulnerability scanning to identify missing patches."
+              },
+              {
+                "id": "M1015",
+                "name": "Active Directory Configuration",
+                "description": "Implement robust Active Directory (AD) configurations using group policies to secure user accounts, control access, and minimize the attack surface. AD configurations enable centralized control over account settings, logon policies, and permissions, reducing the risk of unauthorized access and lateral movement within the network. This mitigation can be implemented through the following measures:\n\nAccount Configuration:\n\n- Implementation: Use domain accounts instead of local accounts to leverage AD’s centralized management, including group policies, auditing, and access control.\n- Use Case: For IT staff managing shared resources, provision domain accounts that allow IT teams to log in centrally, reducing the risk of unmanaged, rogue local accounts on individual machines.\n\nInteractive Logon Restrictions:\n\n- Implementation: Configure group policies to restrict interactive logons (e.g., direct physical or RDP logons) for service accounts or privileged accounts that do not require such access.\n- Use Case: Prevent service accounts, such as SQL Server accounts, from having interactive logon privileges. This reduces the risk of these accounts being leveraged for lateral movement if compromised.\n\nRemote Desktop Settings:\n\n- Implementation: Limit Remote Desktop Protocol (RDP) access to specific, authorized accounts. Use group policies to enforce this, allowing only necessary users to establish RDP sessions.\n- Use Case: On sensitive servers (e.g., domain controllers or financial databases), restrict RDP access to administrative accounts only, while all other users are denied access.\n\nDedicated Administrative Accounts:\n\n- Implementation: Create domain-wide administrative accounts that are restricted from interactive logons, designed solely for high-level tasks (e.g., software installation, patching).\n- Use Case: Create separate administrative accounts for different purposes, such as one set of accounts for installations and another for managing repository access. This limits exposure and helps reduce attack vectors.\n\nAuthentication Silos:\n\n- Implementation: Configure Authentication Silos in AD, using group policies to create access zones with restrictions based on membership, such as the Protected Users security group. This restricts access to critical accounts and minimizes exposure to potential threats.\n- Use Case: Place high-risk or high-value accounts, such as executive or administrative accounts, in an Authentication Silo with extra controls, limiting their exposure to only necessary systems. This reduces the risk of credential misuse or abuse if these accounts are compromised.\n\n**Tools for Implementation**:\n\n- Active Directory Group Policies: Use Group Policy Management Console (GPMC) to configure, deploy, and enforce policies across AD environments.\n- PowerShell: Automate account configuration, logon restrictions, and policy application using PowerShell scripts.\n- AD Administrative Center: Manage Authentication Silos and configure high-level policies for critical user groups within AD."
+              },
+              {
+                "id": "M1047",
+                "name": "Audit",
+                "description": "Auditing is the process of recording activity and systematically reviewing and analyzing the activity and system configurations. The primary purpose of auditing is to detect anomalies and identify potential threats or weaknesses in the environment. Proper auditing configurations can also help to meet compliance requirements. The process of auditing encompasses regular analysis of user behaviors and system logs in support of proactive security measures.\n\nAuditing is applicable to all systems used within an organization, from the front door of a building to accessing a file on a fileserver. It is considered more critical for regulated industries such as, healthcare, finance and government where compliance requirements demand stringent tracking of user and system activates.This mitigation can be implemented through the following measures: \n\nSystem Audit:\n\n- Use Case: Regularly assess system configurations to ensure compliance with organizational security policies.\n- Implementation: Use tools to scan for deviations from established benchmarks.\n\nPermission Audits:\n\n- Use Case: Review file and folder permissions to minimize the risk of unauthorized access or privilege escalation.\n- Implementation: Run access reviews to identify users or groups with excessive permissions.\n\nSoftware Audits:\n\n- Use Case: Identify outdated, unsupported, or insecure software that could serve as an attack vector.\n- Implementation: Use inventory and vulnerability scanning tools to detect outdated versions and recommend secure alternatives.\n\nConfiguration Audits:\n\n- Use Case: Evaluate system and network configurations to ensure secure settings (e.g., disabled SMBv1, enabled MFA).\n- Implementation: Implement automated configuration scanning tools like SCAP (Security Content Automation Protocol) to identify non-compliant systems.\n\nNetwork Audits:\n\n- Use Case: Examine network traffic, firewall rules, and endpoint communications to identify unauthorized or insecure connections.\n- Implementation: Utilize tools such as Wireshark, or Zeek to monitor and log suspicious network behavior."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1039",
+            "name": "Data from Network Shared Drive",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1039"
+            ],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 6,
+      "n_got": 6
+    },
+    "mapping_recall": {
+      "gold": 6,
+      "found": 6,
+      "recall": 1.0,
+      "missing": []
+    },
+    "coverage": null,
+    "provenance": {
+      "citations": 28,
+      "compliant": 28,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "deterministic",
+  "run_meta": {
+    "planner": "gold-replay",
+    "synthesis": "deterministic",
+    "wall_s": 0.04
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 8,
+    "related": 20
+  }
+}

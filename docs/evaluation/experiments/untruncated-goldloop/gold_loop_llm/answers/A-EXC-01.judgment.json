@@ -1,0 +1,12 @@
+{
+  "case_id": "A-EXC-01",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_empty=true (ex_gold.expected=[]) because T1002 was excluded at load time; the correct behavior is abstention, not fabricated data. The executed query ran cleanly against the attack source (traces show gate/execute/assess/normalize all ok, row_count 0) and returned zero records. The answer's narrative and abstentions correctly state that no matching records were found for T1002 and does not invent any properties, aliases, or facets for it. The suggested example ids in the narrative (T1566, M1017, CAPEC-98) are offered only as generic alternative-query examples, not asserted as facts about T1002, so they are not hallucinations against this record. deterministic_scores confirm abstention_proof_ok=true and fully_provenanced=true. Since gold requires zero entities to be surfaced, gold_expected=0 and gold_present=0, satisfying completeness fully."
+}

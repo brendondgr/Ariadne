@@ -1,0 +1,12 @@
+{
+  "case_id": "C-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold asserts expect_empty=true for the nonexistent CAPEC-99999 lookup. The executed Gremlin query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...) ran cleanly with row_count=0 and record_count=0, confirmed by the assess/normalize traces. The answer correctly abstains: narrative states 'The routed sources returned no matching records for this question' and offers to accept a different id, with a matching structured abstention entry citing the exact query. Claims list is empty (no fabricated entity), and no properties, names, or ids not present in evidence were asserted. This exactly matches the required negative-case behavior."
+}

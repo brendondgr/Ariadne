@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-57, CAPEC-65, CAPEC-158 (must_include_ids), the T1040 related-id join on each, and the attack record T1040 named 'Network Sniffing' (must_correlate/expect_names). The narrative names all three CAPEC ids with their exact evidence names (CAPEC-57 'Utilizing REST's Trust...', CAPEC-158 'Sniffing Network Traffic', CAPEC-65 'Sniff Application Code'), correctly states the ATT&CK mapping to T1040, and gives the technique's name 'Network Sniffing' with a description (promiscuous mode, span ports, credential capture, lateral movement/stealth support, cloud traffic mirroring) that paraphrases the retrieved Technique.description verbatim content in logic_flow without adding unsupported facts. All 3 CAPEC records' related array explicitly links to capec:taxonomy:ATTACK:1040 'Network Sniffing', confirming the cross-source correlation on T1040, matching deterministic_scores (correlation f1=1.0, mapping_recall=1.0). No invented ids, counts, aliases, or properties were found; every claim traces to the 4 retrieved records (3 CAPEC + 1 Technique)."
+}

@@ -1,0 +1,462 @@
+{
+  "id": "A-GRP-04",
+  "kind": "attack",
+  "tier": "medium",
+  "category": "A-GRP",
+  "question": "Which techniques does group G1039 (RedCurl) use?",
+  "gold": {
+    "assertions": {
+      "min_records": 5,
+      "must_include_ids": [
+        "T1005",
+        "T1020",
+        "T1027",
+        "T1039",
+        "T1046"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "T1005",
+        "T1020",
+        "T1027",
+        "T1039",
+        "T1046",
+        "T1080",
+        "T1082",
+        "T1083",
+        "T1102",
+        "T1119",
+        "T1199",
+        "T1202",
+        "T1537"
+      ],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 13 record(s) from 1 source(s).",
+    "narrative": "Found 13 ATT&CK record(s) including T1046, T1537, T1027 and more. All 13 result(s) for this question: T1046, T1537, T1027, T1039, T1199, T1102, T1083, T1020, T1005, T1202, T1082, T1119, T1080.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 13 ATT&CK record(s) including T1046, T1537, T1027 and more.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1046",
+          "T1537",
+          "T1027",
+          "T1039",
+          "T1199",
+          "T1102",
+          "T1083",
+          "T1020"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1046"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1537"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1027"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1039"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1199"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1102"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1083"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1020"
+          }
+        ]
+      },
+      {
+        "text": "All 13 result(s) for this question: T1046, T1537, T1027, T1039, T1199, T1102, T1083, T1020, T1005, T1202, T1082, T1119, T1080.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "T1046",
+          "T1537",
+          "T1027",
+          "T1039",
+          "T1199",
+          "T1102",
+          "T1083",
+          "T1020",
+          "T1005",
+          "T1202",
+          "T1082",
+          "T1119",
+          "T1080"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1046"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1537"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1027"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1039"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1199"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1102"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1083"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1020"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1005"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1202"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1082"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1119"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1080"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-GRP-04",
+      "source": "attack",
+      "text": "Which techniques does group G1039 use according to ATT&CK?",
+      "entities": [
+        "Group",
+        "Technique"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "G1039"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "A-GRP-04",
+        "sub_question": "Which techniques does group G1039 use according to ATT&CK?",
+        "query": "MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN $ids RETURN g.attack_id AS group_id, g.name AS group_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 20000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 13 ATT&CK record(s) including T1046, T1537, T1027 and more.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Group",
+                "Technique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "G1039"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "group_techniques",
+              "query": "MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN $ids RETURN g.attack_id AS group_id, g.name AS group_name, t.attack_id AS technique_id, t.name AS technique_name LIMIT 20000",
+              "injected": [
+                "LIMIT 20000 appended (none present)"
+              ],
+              "timing_ms": 0.076
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 13,
+              "timing_ms": 29.7
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 13,
+              "timing_ms": 0.008
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 13,
+              "timing_ms": 0.127
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1046",
+            "name": "Network Service Discovery",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1046"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1537",
+            "name": "Transfer Data to Cloud Account",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1537"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1027",
+            "name": "Obfuscated Files or Information",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1027"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1039",
+            "name": "Data from Network Shared Drive",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1039"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1199",
+            "name": "Trusted Relationship",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1199"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1102",
+            "name": "Web Service",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1102"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1083",
+            "name": "File and Directory Discovery",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1083"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1020",
+            "name": "Automated Exfiltration",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1020"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1005",
+            "name": "Data from Local System",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1005"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1202",
+            "name": "Indirect Command Execution",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1202"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1082",
+            "name": "System Information Discovery",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1082"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1119",
+            "name": "Automated Collection",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1119"
+            ],
+            "related": []
+          },
+          {
+            "primary_id": "T1080",
+            "name": "Taint Shared Content",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1080"
+            ],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 5,
+      "found": 5,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 21,
+      "compliant": 21,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "deterministic",
+  "run_meta": {
+    "planner": "gold-replay",
+    "synthesis": "deterministic",
+    "wall_s": 0.034
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 13,
+    "related": 0
+  }
+}

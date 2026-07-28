@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-70] and must_include_related=[T1078.001], with the federated join expecting T1078.001. The evidence record (logic_flow.results[0].records[0]) has primary_id 'CAPEC-70', name 'Try Common or Default Usernames and Passwords', join_values=['T1078.001'], and a related TaxonomyEntry 'capec:taxonomy:ATTACK:1078.001' named 'Valid Accounts:Default Accounts'. The claims/narrative state exactly this: 'Found 1 CAPEC record(s) for CAPEC-70; ATT&CK mappings: T1078.001' and name the taxonomy entry id capec:taxonomy:ATTACK:1078.001. Both gold-required ids are surfaced verbatim and every fact (name, status not claimed, taxonomy id, technique id) is traceable to the retrieved record with no invented names, counts, or aliases. Deterministic_scores.coverage also confirms 2/2 gold ids found."
+}

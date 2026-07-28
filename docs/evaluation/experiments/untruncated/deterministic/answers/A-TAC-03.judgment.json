@@ -1,0 +1,12 @@
+{
+  "case_id": "A-TAC-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The query 'MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique) WHERE ta.attack_id IN $ids ...' against seed TA0112 returned exactly 18 Technique records, and the answer's enumeration claim lists all 18 technique ids verbatim (T1556, T1686, T1687, T1666, T1578, T1600, T1689, T1207, T1112, T1222, T1647, T1601, T1599, T1690, T1553, T1685, T1688, T1484). This set is an exact match (same 18 elements, order differs) to gold's ex_gold.expected list, and all 5 must_include_ids (T1112, T1207, T1222, T1484, T1553) are present. No technique names, counts, or other attributes beyond the ids/row-count (which correctly equals 18) are asserted, so there is nothing ungrounded or fabricated. deterministic_scores.coverage confirms 5/5 gold ids found with 1.0 coverage."
+}

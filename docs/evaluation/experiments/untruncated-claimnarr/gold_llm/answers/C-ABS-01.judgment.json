@@ -1,0 +1,12 @@
+{
+  "case_id": "C-ABS-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "The question asks to walk the abstraction hierarchy up from CAPEC-7. The narrative states CAPEC-7 is 'Blind SQL Injection', a Detailed abstraction with Draft status, and names its two ancestors: CAPEC-66 as the standard pattern and CAPEC-248 as the meta pattern. This exactly matches the single retrieved record in logic_flow.results[0].records[0]: properties Abstraction='Detailed', Status='Draft', name='Blind SQL Injection', and related=[{id:CAPEC-66, role:standard, abstraction:Standard}, {id:CAPEC-248, role:meta, abstraction:Meta}]. All three gold-required ids (must_include_ids: CAPEC-7; must_include_related: CAPEC-66, CAPEC-248) are surfaced correctly with the correct standard/meta role labeling, matching the ex_gold expected set {CAPEC-248, CAPEC-66}. No invented names, counts, or properties were found; every stated fact traces directly to the single evidence record. The deterministic_scores block corroborates full coverage (3/3) and full provenance (3/3 citations compliant)."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-10",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 8,
+  "gold_present": 8,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-652 to map to T1558 (must_correlate/must_include_related), and T1558's mitigations must include M1015, M1026, M1027, M1041, M1043, M1047 (attack.must_include_related), with exactly 1 attack record (T1558) and the cross-source correlation on T1558. The claims state CAPEC-652 (Use of Known Kerberos Credentials) maps via taxonomy entry capec:taxonomy:ATTACK:1558 to T1558, matching the evidence record's 'related' field exactly (capec:taxonomy:ATTACK:1558 / Steal or Forge Kerberos Tickets). The second claim enumerates T1558's 6 mitigations as M1041, M1015, M1047, M1026, M1027, M1043 -- an exact match, in identity if not order, to the evidence's 'related' list for the T1558 record (M1041 Encrypt Sensitive Information, M1015 Active Directory Configuration, M1047 Audit, M1026 Privileged Account Management, M1027 Password Policies, M1043 Credential Access Protection) and to gold's must_include_related set. The correlation claim correctly identifies T1558 as shared across capec and attack sources (1 correlation, matching deterministic_scores.correlation exact=true, precision/recall/f1=1.0). All 8 gold-required identifiers (CAPEC-652, T1558, M1015, M1026, M1027, M1041, M1043, M1047) are surfaced, every stated fact and count traces directly to the retrieved records with no invented names, aliases, or extra entities, and the deterministic_scores block corroborates full mapping_recall (1/1) and provenance (6/6 citations compliant)."
+}

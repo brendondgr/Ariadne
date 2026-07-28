@@ -1,0 +1,12 @@
+{
+  "case_id": "A-TAC-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids T1003, T1040, T1056, T1110, T1111 (5 of 5 present) and an extended ex_gold neighbor pool of 17 technique ids under TA0006. The narrative and claims list all 17 ids (T1056, T1556, T1111, T1557, T1003, T1539, T1040, T1558, T1555, T1552, T1649, T1528, T1606, T1621, T1212, T1110, T1187) exactly matching the 17 records returned by the executed Cypher query (MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique) WHERE ta.attack_id IN $ids). No extra or missing ids versus the ex_gold expected set of 17, and no id/name is asserted beyond what logic_flow.results[0].records contains. The narrative's claim that these are 'direct children of TA0006 via the HAS_TECHNIQUE relationship' is directly supported by the query and trace evidence. Fully grounded, complete, no fabrication."
+}

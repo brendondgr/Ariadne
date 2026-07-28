@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "The narrative states CAPEC-565 maps to T1110.003, and T1110.003 belongs to tactic TA0006 (Credential Access), directly answering the question. This matches the evidence exactly: the capec record's related field shows CAPEC-565 -> capec:taxonomy:ATTACK:1110.003 (join_values ['T1110.003']), and the attack record shows T1110.003's related item TA0006 named 'Credential Access', matching the description text verbatim. All gold assertions are satisfied: must_correlate T1110.003 is stated and confirmed via the correlation claim (deterministic_scores.correlation exact=true, precision/recall/f1=1.0); capec.must_include_ids CAPEC-565 and must_include_related T1110.003 are both surfaced; attack.must_include_ids T1110.003 and must_include_related TA0006 are both surfaced with the correct name. No fabricated names, counts, or ids -- all Abstraction/Status/name details in the supporting claims also match the record properties exactly."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires: must_correlate T1021; capec.must_include_ids CAPEC-555; capec.must_include_related T1021; attack.must_include_ids T1021; attack.expect_names T1021='Remote Services'. The narrative states CAPEC-555 (Remote Services with Stolen Credentials) maps to T1021 via TaxonomyEntry capec:taxonomy:ATTACK:1021 (matches record properties Abstraction=Standard, Status=Stable, and related TaxonomyEntry exactly as in logic_flow q1 record), names the ATT&CK technique T1021 as 'Remote Services' with properties revoked=False, stix_type=attack-pattern, x_mitre_deprecated=False, x_mitre_is_subtechnique=False, x_mitre_version=1.6 (all match q2 record properties verbatim), reports the related tactic TA0008 (matches q3 record's related entry, primary_id TA0008), and explicitly states the cross-source correlation on T1021 across attack and capec with 3 records sharing it (matches evidence_volume.records=3 and deterministic_scores.correlation exact=true, precision/recall/f1=1.0). All 5 gold-required elements are surfaced, no unsupported facts, aliases, counts, or names were found outside the retrieved evidence."
+}

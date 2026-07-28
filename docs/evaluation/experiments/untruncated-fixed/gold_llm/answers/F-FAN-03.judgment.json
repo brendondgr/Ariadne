@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-03",
+  "verdict": "CORRECT",
+  "correctness": 0.95,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 17,
+  "gold_present": 17,
+  "hallucinations": [],
+  "rationale": "All 17 gold-required entities are surfaced and verifiable against logic_flow evidence: both CAPEC ids (CAPEC-37, CAPEC-639), all 6 must_correlate/must_include_related ATT&CK techniques (T1005, T1039, T1552.001, T1552.003, T1552.004, T1552.006), and all 9 must_include_related mitigations (M1015, M1017, M1022, M1027, M1028, M1041, M1047, M1051, M1057). The narrative correctly states the union size ('six ATT&CK techniques') and enumerates all nine mitigations by id (representative M1057/M1041/M1022 plus 'remaining' M1047/M1027/M1017/M1028/M1051/M1015 = 9), matching gold exactly. Supporting claims enumerate every technique-to-mitigation mapping (e.g. T1552.004->M1041,M1047,M1022,M1027; T1552.006->M1051,M1015,M1047) and every correlation count (T1552.004 shared by 3 records, others by 2), all of which check out against the retrieved records' related[] lists and join_values. CAPEC-639/CAPEC-37 Abstraction/Status property claims (Detailed/Stable and Detailed/Draft) also match the evidence properties exactly. attack.min_records=6/max_records=6 is satisfied (6 records returned). The only minor shortfall is stylistic: the narrative prose names only 3 of the 6 techniques explicitly ('including T1005, T1039, and T1552.004') rather than listing all six by name, though the correct count and the full set are present in the accompanying structured claims/citations the analyst is also shown. No fabricated ids, counts, aliases, or properties were found."
+}

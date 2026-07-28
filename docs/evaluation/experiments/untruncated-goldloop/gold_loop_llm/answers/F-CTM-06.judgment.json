@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 17,
+  "gold_present": 17,
+  "hallucinations": [],
+  "rationale": "The answer identifies CAPEC-665 (Exploitation of Thunderbolt Protection Flaws, Abstraction: Detailed, Status: Stable per evidence properties) and its 3 TaxonomyEntry mappings to T1211, T1542.002, T1556, all three of which are stated as corroborated across capec and attack sources, exactly matching gold's must_correlate [T1211, T1542.002, T1556] and capec.must_include_related. All 3 required ATT&CK technique records (attack.must_include_ids) are present. Per-technique mitigation lists in the narrative/claims exactly match the 'related' arrays in the retrieved evidence: T1542.002 -> M1051 (1 item), T1556 -> M1047, M1032, M1024, M1026, M1022, M1018, M1027, M1025, M1028 (9 items), T1211 -> M1051, M1050, M1048, M1019 (4 items). The union of these 13 mitigation ids {M1018, M1019, M1022, M1024, M1025, M1026, M1027, M1028, M1032, M1047, M1048, M1050, M1051} matches gold's attack.must_include_related set exactly (13/13). No counts, names, or ids in the narrative/claims are unsupported by the evidence -- row counts (14 mitigation rows, 3 taxonomy entries) and the deterministic_scores block (correlation f1=1.0, mapping_recall=1.0) independently corroborate full recall and precision. No hallucinations found."
+}

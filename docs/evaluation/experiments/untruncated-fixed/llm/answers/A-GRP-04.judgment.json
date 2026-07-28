@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The gold must_include_ids (T1005, T1020, T1027, T1039, T1046) are all present verbatim in both the narrative and the claims/citations. The narrative lists all 13 techniques (T1046, T1537, T1027, T1039, T1199, T1102, T1083, T1020, T1005, T1202, T1082, T1119, T1080), and every one of these matches a record actually returned by the Cypher query in logic_flow.results[0].records (13/13, technique_id and technique_name pairs match exactly, e.g. T1046='Network Service Discovery', T1537='Transfer Data to Cloud Account'). The 13 surfaced ids are also exactly the full ex_gold 'neighbors' expected set of 13 (T1005, T1020, T1027, T1039, T1046, T1080, T1082, T1119, T1102, T1199, T1202, T1537, T1083) with no additions or omissions. No names, counts, or ids in the narrative are unsupported by the evidence; the group name 'RedCurl' matches the question's phrasing (group_name was not returned in the projection but the question itself supplies it, so this is not a fabrication). deterministic_scores.coverage confirms 5/5 gold ids found with coverage 1.0. This is a fully correct, fully grounded, non-hallucinated answer."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-70] and must_include_related=[T1078.001] (join scheme capec, expected T1078.001); both are surfaced. The narrative states CAPEC-70 ('Try Common or Default Usernames and Passwords') is Draft/Abstraction Detailed, matching q1's properties (Status: Draft, Abstraction: Detailed) exactly, and that it maps to exactly one ATT&CK technique, T1078.001 (Default Accounts) -- matching q1's join_values=['T1078.001'] and the single TaxonomyEntry related record ('Valid Accounts:Default Accounts', entry_id 1078.001). The stix_type/subtechnique/version/revoked/deprecated details (attack-pattern, x_mitre_is_subtechnique True, x_mitre_version 2.0, revoked False, x_mitre_deprecated False) exactly match q2's record properties. The 'corroborated across three records' claim checks out arithmetically: T1078.001 appears as a join_value/primary_id in q1 (CAPEC-70), q2 (T1078.001), and q4 (T1078.001) = 3 records. The 'four MITRE ATT&CK items' (TA0001, TA0005, TA0004, TA0003) exactly matches q4's related list, and 'parent technique T1078 has one related item, T1078.001' exactly matches q3. Every stated fact traces to a specific record/field in logic_flow; no invented names, counts, or aliases were found. Coverage per deterministic_scores also reports gold=2/found=2=1.0. This is a fully correct, fully grounded answer."
+}

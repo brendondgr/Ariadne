@@ -1,0 +1,12 @@
+{
+  "case_id": "C-CSQ-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-98] and must_include_related=[capec:attack-pattern:98:consequence:1,2,3]. The single retrieved record (logic_flow.results[0].records[0]) shows CAPEC-98 (Phishing, Abstraction=Standard, Status=Draft) with exactly 3 related Consequence nodes bearing those 3 ids, matching the evidence one-to-one (row_count 3, related count 3). The narrative and claims name all three consequence ids plus CAPEC-98 itself (4/4 gold entities surfaced), correctly note the Abstraction/Status attributes present in evidence, and explicitly and accurately state that no further descriptive text exists for the consequence nodes beyond their identifiers (the evidence's related entries for Consequence have only id/name/label with name==id, no other properties) -- this is a faithful characterization of a sparse graph, not a hallucination. No entity, count, alias, or property is asserted beyond what evidence/gold support."
+}

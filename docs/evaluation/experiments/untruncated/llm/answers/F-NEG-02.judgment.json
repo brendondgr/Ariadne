@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty join for CAPEC-66 -> ATT&CK (must_correlate: [], expect_no_correlation: true, capec.expect_empty: true, attack.expect_dependency_skip: true). The evidence confirms: q1 resolved CAPEC-66 (SQL Injection, Draft/Standard) with a MAPS_TO facet count of 1 to a TaxonomyEntry, but join_values is [] and related is []; q2 (ATT&CK technique/mitigation lookup) was correctly skipped via the dependency trace 'producer q1: it returned no join values', returning zero records. The narrative/claims state exactly this: one MAPS_TO relationship exists but join_values is empty, zero techniques/sub-techniques match, and consequently zero mitigations are reported -- no ATT&CK ID, technique name, or mitigation is fabricated. deterministic_scores.correlation also shows negative:true, exact:true, n_expected=0, n_got=0, consistent with the narrative. Every statement traces directly to the retrieved records and trace steps; no invented entities, counts, or names were found."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SCN-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 0.85,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 1,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold assertion for A-SCN-01 ('bounded scan') requires min_records=250 and max_records=300. The task definition itself (logic_flow.task.limits.max_result_rows) declares the intended cap as 300, matching gold. However, the LLM planner's observed_plan (run_meta.observed_plan[0].limits.max_result_rows) silently overrode this to 1000, and the retrieval returned 821 unique Software records (evidence_volume.records=821), roughly 2.7x the gold upper bound of 300 and well outside the required 250-300 window. The answer's narrative and claims list all 821 S-ids verbatim, faithfully matching the 821 retrieved records (ids are all traceable to logic_flow.results[0].records, so groundedness is high and there are no fabricated ids/names/counts -- the '821' headline correctly reflects the evidence). But because the core thing the question tests -- that the scan stays bounded to 250-300 records -- was violated by nearly 3x, the answer fails the gold assertion outright. This is not a hallucination (nothing invented) but a correctness/completeness failure: the pipeline did not respect the declared bound, so gold_present=0 of the gold_expected=1 bounded-scan requirement is satisfied."
+}

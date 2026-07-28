@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-49 (must_include_ids) mapped to T1110.001 (must_include_related), and the ATT&CK record T1110.001 named 'Password Guessing' (expect_names), plus cross-source correlation on T1110.001 (must_correlate). All are satisfied verbatim by the evidence: the capec record CAPEC-49 has properties Status='Draft', Abstraction='Standard' (matching the claims), and its related TaxonomyEntry 'capec:taxonomy:ATTACK:1110.001' (entry_id '1110.001') establishes the mapping to T1110.001. The attack record T1110.001 has name 'Password Guessing' exactly as expected, and every cited property (revoked=false, stix_type='attack-pattern', x_mitre_deprecated=false, x_mitre_is_subtechnique=true, x_mitre_version='1.7') is present verbatim in its properties. The correlation claim correctly identifies T1110.001 as shared across capec and attack sources (deterministic_scores.correlation shows exact=true, f1=1.0). No invented names, counts, aliases, or entities were found; every claim traces directly to logic_flow records."
+}

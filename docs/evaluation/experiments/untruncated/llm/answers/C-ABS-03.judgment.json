@@ -1,0 +1,12 @@
+{
+  "case_id": "C-ABS-03",
+  "verdict": "INCORRECT",
+  "correctness": 0.15,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.33,
+  "gold_expected": 3,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-13] and must_include_related=[CAPEC-77, CAPEC-22] (the standard-pattern and meta-pattern ancestors of CAPEC-13 via ChildOf). The single retrieved record for CAPEC-13 (Subverting Environment Variable Values) has facets showing CHILD_OF out count=1 (confirming a parent exists) but the 'related' array is empty (evidence_volume.related=0) -- the actual neighbor node (CAPEC-77 and, transitively, CAPEC-22) was never resolved by the retrieval/normalize step, only its count. The narrative and sole claim ('Found 1 CAPEC record(s): CAPEC-13') correctly refrain from inventing CAPEC-77/CAPEC-22 given this gap, so there is no fabrication -- faithfulness and groundedness are high. However, the question specifically asks to walk the abstraction hierarchy and name the standard/meta ancestors, and the answer surfaces zero of the two required ancestor ids (0/2), leaving the analyst with no actionable answer to the question asked. This is a genuine end-to-end failure to answer the question (root-caused by a retrieval gap that captured degree counts but not neighbor identities), not a fabrication, so it is graded INCORRECT rather than a faithfulness violation. deterministic_scores.coverage confirms coverage=0.333, missing=[CAPEC-22, CAPEC-77], consistent with this assessment."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-SCN-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.2,
+  "faithfulness": 0.85,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 1,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires a bounded CAPEC scan yielding between 250 and 300 AttackPattern records (assertions.min_records=250, max_records=300). The executed Gremlin query 'g.V().hasLabel(\"AttackPattern\").elementMap().limit(20000)' applied no meaningful bound (limit(20000) against a corpus of only 558 AttackPattern nodes) and returned all 558 records, which the narrative/headline correctly reports ('Found 558 CAPEC record(s)'). This is 258 records (86%) over the gold max of 300, so the core assertion of the question -- a bounded scan -- is violated; the answer fails the question as posed even though it is internally consistent with the evidence. Every CAPEC id cited (e.g. CAPEC-1, CAPEC-10, CAPEC-100, CAPEC-460, CAPEC-599, etc.) was verified present in logic_flow.results[0].records (558/558 ids match, 0 missing), so there is no fabricated data and groundedness/faithfulness are high. Because there are no must_include_ids/must_correlate/expect_names in this gold (only a record-count band), gold_expected/gold_present are expressed as the single count-band assertion, which the answer does not satisfy (0/1)."
+}

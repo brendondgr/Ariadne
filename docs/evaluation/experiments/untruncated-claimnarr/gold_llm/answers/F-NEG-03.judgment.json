@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an honest empty join (expect_no_correlation: true, capec.expect_empty: true, attack.expect_dependency_skip: true) since CAPEC-3 has no ATT&CK MAPS_TO edge. The evidence confirms this: the capec query 'g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\")...' executed cleanly against seed CAPEC-3 and returned row_count 0 (logic_flow.results[0]), and q2 (ATT&CK mitigations) was correctly skipped per the dependency trace 'producer q1: it returned no join values' rather than being fabricated. The answer (no LLM narrative beyond the deterministic composer's abstention text, so the claims/abstentions are graded as the answer) states exactly this: 'The routed sources returned no matching records for this question' and cites both abstentions with their queries/reasons, matching deterministic_scores.correlation (negative:true, exact:true, precision/recall/f1 1.0). No entity, count, or mapping was invented; no must_include_ids/must_correlate were required (both empty in gold) so nothing was missed. This is a textbook correct negative-case abstention."
+}

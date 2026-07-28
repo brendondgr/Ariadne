@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-633 map to T1134 (must_correlate/must_include_related), and T1134 map to tactics TA0004 and TA0005 (attack.must_include_related). The narrative states exactly this: 'CAPEC-633 (Token Impersonation) maps to the ATT&CK technique T1134' and 'T1134 is related to two MITRE ATT&CK items, specifically TA0005 (Stealth) and TA0004 (Privilege Escalation)'. All four required identifiers (CAPEC-633, T1134, TA0004, TA0005) are surfaced and match the evidence exactly: q1 record shows CAPEC-633 -> related T1134 (Access Token Manipulation), q2 record shows T1134 -> related TA0005 (Stealth) and TA0004 (Privilege Escalation). The added CAPEC-633 Abstraction=Detailed/Status=Stable detail is directly present in the record's properties, so no fabrication. The claims list mirrors the same facts. No unsupported names, counts, or aliases were found; the count '2 records sharing the identifier' matches evidence_volume/correlation exact match (n_expected=1, n_got=1, f1=1.0). Fully correct and fully grounded."
+}

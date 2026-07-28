@@ -1,0 +1,244 @@
+{
+  "id": "A-CMP-01",
+  "kind": "attack",
+  "tier": "easy",
+  "category": "A-CMP",
+  "question": "Look up ATT&CK campaign C0027.",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "max_records": 1,
+      "must_include_ids": [
+        "C0027"
+      ],
+      "expect_names": {
+        "C0027": "C0027"
+      }
+    },
+    "ex_gold": {
+      "pool": "node",
+      "expected": [
+        "C0027"
+      ],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "ATT&CK record C0027 is identified as C0027. It has a revoked status of False, a stix_type of campaign, an x_mitre_deprecated status of False, and an x_mitre_version of 1.0. This financially-motivated campaign is linked to Scattered Spider and targeted telecommunications and business process outsourcing companies from at least June through December of 2022, during which it utilized social engineering, SIM swapping, and attempts to leverage access to mobile carrier networks.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found ATT&CK record C0027: C0027.",
+        "kind": "fact",
+        "entity_ids": [
+          "C0027"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "C0027"
+          }
+        ]
+      },
+      {
+        "text": "C0027 (C0027) has revoked: False; stix_type: campaign; x_mitre_deprecated: False; x_mitre_version: 1.0.",
+        "kind": "fact",
+        "entity_ids": [
+          "C0027"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "C0027"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-CMP-01",
+      "source": "attack",
+      "text": "What is campaign C0027 in ATT&CK?",
+      "entities": [
+        "Campaign"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "C0027"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "A-CMP-01",
+        "sub_question": "What is campaign C0027 in ATT&CK?",
+        "query": "MATCH (n:Campaign) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 20000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found ATT&CK record C0027: C0027.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Campaign"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "C0027"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "MATCH (n:Campaign) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 20000",
+              "injected": [
+                "LIMIT 20000 appended (none present)"
+              ],
+              "timing_ms": 0.14
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 3.6
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.144
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "C0027",
+            "name": "C0027",
+            "label": "Campaign",
+            "description": "[C0027](https://attack.mitre.org/campaigns/C0027) was a financially-motivated campaign linked to [Scattered Spider](https://attack.mitre.org/groups/G1015) that targeted telecommunications and business process outsourcing (BPO) companies from at least June through December of 2022. During [C0027](https://attack.mitre.org/campaigns/C0027) [Scattered Spider](https://attack.mitre.org/groups/G1015) used various forms of social engineering, performed SIM swapping, and attempted to leverage access from victim environments to mobile carrier networks.(Citation: Crowdstrike TELCO BPO Campaign December 2022)\n",
+            "properties": {
+              "attack_id": "C0027",
+              "description": "[C0027](https://attack.mitre.org/campaigns/C0027) was a financially-motivated campaign linked to [Scattered Spider](https://attack.mitre.org/groups/G1015) that targeted telecommunications and business process outsourcing (BPO) companies from at least June through December of 2022. During [C0027](https://attack.mitre.org/campaigns/C0027) [Scattered Spider](https://attack.mitre.org/groups/G1015) used various forms of social engineering, performed SIM swapping, and attempted to leverage access from victim environments to mobile carrier networks.(Citation: Crowdstrike TELCO BPO Campaign December 2022)\n",
+              "id": "campaign--df74f7ad-b10d-431c-9f1d-a2bc18dadefa",
+              "name": "C0027",
+              "revoked": false,
+              "stix_type": "campaign",
+              "x_mitre_deprecated": false,
+              "x_mitre_version": "1.0",
+              "_omitted_properties": [
+                "external_references"
+              ]
+            },
+            "facets": [
+              {
+                "rel": "ATTRIBUTED_TO",
+                "direction": "out",
+                "neighbour_label": "Group",
+                "count": 1
+              },
+              {
+                "rel": "USES",
+                "direction": "out",
+                "neighbour_label": "Software",
+                "count": 1
+              },
+              {
+                "rel": "USES",
+                "direction": "out",
+                "neighbour_label": "SubTechnique",
+                "count": 18
+              },
+              {
+                "rel": "USES",
+                "direction": "out",
+                "neighbour_label": "Technique",
+                "count": 10
+              }
+            ],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 1,
+      "found": 1,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 2,
+      "compliant": 2,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "gold_llm",
+  "run_meta": {
+    "planner": "gold-replay",
+    "synthesis": "llm",
+    "wall_s": 26.923
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 0
+  }
+}

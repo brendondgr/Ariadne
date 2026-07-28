@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-09",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-645 to map to T1550.003 (must_correlate + capec.must_include_related), and T1550.003 to list mitigations M1015, M1018, M1026, M1027 (attack.must_include_related), with T1550.003 itself as the required attack id and the cross-source correlation on T1550.003. The claims/narrative state all of these: 'CAPEC-645 ... has 1 TaxonomyEntrys: capec:taxonomy:ATTACK:1550.003' (matches evidence record CAPEC-645 -> related TaxonomyEntry id 'capec:taxonomy:ATTACK:1550.003', entry_id '1550.003'), 'T1550.003 (Pass the Ticket) has 4 related item(s): M1015, M1026, M1018, M1027' (matches the attack-source record's related list of exactly these four mitigation ids/names), and 'The identifier T1550.003 is corroborated across attack and capec' (matches the join_values in both records). Abstraction 'Detailed' and Status 'Stable' claimed for CAPEC-645 match its properties exactly in the evidence. All 6 unique gold-required entities (T1550.003, CAPEC-645, M1015, M1018, M1026, M1027) are surfaced, and no name/count/id in the answer is absent from the retrieved evidence, so there is no hallucination."
+}

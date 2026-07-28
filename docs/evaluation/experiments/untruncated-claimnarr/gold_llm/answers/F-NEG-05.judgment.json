@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative/adversarial case: gold asserts must_correlate=[], expect_no_correlation=true, capec.expect_empty=true, and attack.expect_dependency_skip=true. The evidence confirms this exactly: the capec query for CAPEC-16 -> MAPS_TO -> ATTACK TaxonomyEntry executed cleanly (gate/execute/assess traces all ok) and returned row_count 0 with seed CAPEC-16 correctly resolved, and the dependent attack sub-question (q2, mitigations) was correctly skipped because q1 produced no join values (dependency trace: 'producer q1: it returned no join values'). The answer's narrative honestly reports 'no matching records' and offers no fabricated technique or mitigation, and its two abstentions cite the exact executed query and the correct dependency-skip reason, matching the logic_flow traces verbatim. No CAPEC/ATT&CK ids, mitigation ids, or correlations are invented. deterministic_scores.correlation shows negative=true, exact=true, precision/recall/f1=1.0, confirming the honest-empty join was produced. Since gold requires zero entities to be surfaced, gold_expected=0 and gold_present=0, satisfied fully."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_correlate T1110.001, capec.must_include_ids CAPEC-49 with must_include_related T1110.001, and attack.must_include_ids T1110.001 with expect_names Password Guessing. The narrative states CAPEC-49 (Password Brute Forcing) maps to T1110.001, matching the q1 record whose 'related' TaxonomyEntry is entry_id '1110.001' / 'Brute Force:Password Guessing'. It correctly names T1110.001 as 'Password Guessing' (matches q2 record name). All cited attributes are verified against the q1/q2 evidence verbatim: CAPEC-49 Abstraction=Standard, Status=Draft (q1 properties); T1110.001 revoked=false, stix_type=attack-pattern, x_mitre_deprecated=false, x_mitre_is_subtechnique=true, x_mitre_version=1.7 (q2 properties). The correlation claim of 3 records sharing join_value T1110.001 matches the evidence (CAPEC-49 in q1, T1110.001 in q2, T1110.001 in q3 all carry join_values=['T1110.001']), consistent with deterministic_scores.correlation exact=true, n_expected=1, n_got=1. The extra context about TA0006 (Credential Access, q3) and parent technique T1110 (q4) is also fully grounded and adds useful detail without fabrication. No invented ids, names, counts, or properties were found; every stated fact traces to a specific evidence record."
+}

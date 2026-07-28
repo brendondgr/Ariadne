@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 17,
+  "gold_present": 17,
+  "hallucinations": [],
+  "rationale": "The claims (deterministic arm has no narrative synthesis beyond the templated summary, so claims were graded as the answer surface) correctly identify CAPEC-665 and its 3 ATT&CK taxonomy mappings T1211, T1542.002, T1556, matching gold's must_include_related and must_correlate exactly (3/3 in deterministic_scores.correlation, f1=1.0). The attack-side query returned exactly 3 technique records (satisfying gold's min_records=3/max_records=3), and their names ('Component Firmware' for T1542.002, 'Modify Authentication Process' for T1556, 'Exploitation for Stealth' for T1211) match logic_flow.results[1].records exactly. The union of mitigations enumerated across the three technique claims -- M1051 (T1542.002); M1047, M1032, M1024, M1026, M1022, M1018, M1027, M1025, M1028 (T1556); M1051, M1050, M1048, M1019 (T1211) -- reduces to the exact 13-element set {M1018, M1019, M1022, M1024, M1025, M1026, M1027, M1028, M1032, M1047, M1048, M1050, M1051} required by gold.attack.must_include_related, with zero extras and zero omissions (verified programmatically). All related-item counts stated in the claims (CAPEC-665: 3 TaxonomyEntrys; T1542.002: 1 related; T1556: 9 related; T1211: 4 related) match the length of the corresponding 'related' arrays in logic_flow evidence. No technique/mitigation name, count, or id in the claims is absent from or inconsistent with the retrieved evidence, and no property (e.g. CAPEC-665's Abstraction='Detailed', Status='Stable') was fabricated or misstated. gold_expected=17 (CAPEC-665 + 3 techniques + 13 mitigations, de-duplicated across overlapping assertion buckets); gold_present=17 (all surfaced)."
+}

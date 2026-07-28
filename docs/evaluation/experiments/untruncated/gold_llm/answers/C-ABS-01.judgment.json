@@ -1,0 +1,14 @@
+{
+  "case_id": "C-ABS-01",
+  "verdict": "CORRECT",
+  "correctness": 0.9,
+  "faithfulness": 0.85,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [
+    "Narrative opens with 'CAPEC-7 has two direct ancestors' — but per the executed query (ap -> CHILD_OF -> parent -> CHILD_OF -> grandparent), only CAPEC-66 is a direct (one-hop) ancestor of CAPEC-7; CAPEC-248 is the parent of CAPEC-66 (two hops from CAPEC-7), not a direct ancestor of CAPEC-7 itself. Calling both 'direct' overstates the hierarchy relationship, though the standard/meta role labels themselves are correct."
+  ],
+  "rationale": "Gold requires CAPEC-7 plus its related ancestors CAPEC-66 and CAPEC-248 (must_include_ids/must_include_related); all three ids are present in both the narrative and the structured claims, with names (SQL Injection, Command Injection) and roles (standard, meta) matching the sole retrieved record's 'related' entries exactly (evidence: record primary_id=CAPEC-7, related=[{id:CAPEC-66,role:standard,abstraction:Standard},{id:CAPEC-248,role:meta,abstraction:Meta}]). Deterministic coverage score in the artifact itself confirms 3/3 gold ids found. The one imprecision is the narrative's framing of CAPEC-248 as a 'direct ancestor' when the underlying two-hop CHILD_OF traversal (CAPEC-7->CAPEC-66->CAPEC-248) makes it the meta-ancestor-of-the-standard-ancestor, not a direct neighbor of CAPEC-7 — a chain-walk nuance the question ('walk the abstraction hierarchy up') specifically invited but the narrative glossed over. No ids, names, counts, or roles outside the evidence were invented, so this is a minor completeness-of-explanation issue rather than a fabrication, keeping the verdict CORRECT with a small faithfulness deduction."
+}

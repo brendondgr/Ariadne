@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "The question asks which techniques G0016 (APT29) uses. The gold requires min 5 records and must_include_ids [T1005, T1037, T1047, T1068, T1078], all of which appear in both the narrative and the claims/citations. The gold's ex_gold expected pool lists exactly 17 technique ids (T1005, T1037, T1047, T1068, T1078, T1105, T1133, T1190, T1199, T1203, T1528, T1568, T1573, T1621, T1649, T1651, T1665), and the retrieved evidence (logic_flow.results[0].records) contains exactly these same 17 technique ids with matching names (e.g. T1078=Valid Accounts, T1068=Exploitation for Privilege Escalation, T1105=Ingress Tool Transfer, T1047=Windows Management Instrumentation, T1005=Data from Local System) -- a perfect 1:1 match with no extras and no omissions. The narrative correctly states 'a total of 17 techniques' and names representative examples, all verifiable against the evidence records; the full set of 17 ids is also listed in the claim's entity_ids/citations. No invented names, counts, or ids were found -- every id and name in the narrative traces back to a record in logic_flow.results[0].records."
+}

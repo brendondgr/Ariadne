@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty join: must_correlate=[], expect_no_correlation=true, capec.expect_empty=true, attack.expect_dependency_skip=true. The evidence confirms q1's capec_maps_to query against seed CAPEC-3 executed cleanly with row_count 0 (no MAPS_TO edge to any ATT&CK TaxonomyEntry), and q2 was correctly skipped because it depends on q1's seed identifiers, which were empty. The answer's narrative and abstentions state exactly this: 'no matching records' for capec, and 'the sub-question it depends on (q1) produced no seed identifiers, so no query was executed' for attack. No technique, mitigation, or CAPEC-to-ATT&CK correlation is fabricated; claims list is empty as required for a negative case. This is a fully grounded, correct abstention matching the gold ground truth exactly."
+}

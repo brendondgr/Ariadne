@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DCA-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 10,
+  "gold_present": 10,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[DC0084] plus must_include_related=[AN0316,AN0405,AN0444,AN0671,AN0675,AN0770,AN1000,AN1144,AN1444] (10 entities total). The single retrieved record has primary_id DC0084 (name 'Active Directory Credential Request') with exactly 9 related analytics via MONITORS, and the returned related ids are exactly the 9 gold-required AN ids with no extras. The narrative explicitly names DC0084 and enumerates all nine analytic ids (AN0405, AN1144, AN0671, AN1444, AN0675, AN0316, AN1000, AN0444, AN0770), matching the evidence set exactly with no invented ids, names, or counts. This is a positive single-record case (min/max_records=1), correctly satisfied. Note: the artifact's own deterministic_scores.coverage field reports found=1/missing=9, which appears to be an internal scoring bug that only checks the primary_id against the related-id list rather than the answer's actual coverage of the related ids — it does not reflect an actual gap in the narrative, which surfaces all 9 required related ids verbatim."
+}

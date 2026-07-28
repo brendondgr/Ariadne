@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "hallucinations": [],
+  "rationale": "The narrative names all three required CAPEC patterns (CAPEC-57, CAPEC-65, CAPEC-158) with their exact evidence names and correctly reports each one's MAPS_TO relation to ATT&CK T1040 via the TaxonomyEntry 'capec:taxonomy:ATTACK:1040' records in logic_flow. It states the cross-source correlation on T1040 explicitly ('Three CAPEC patterns map to ATT&CK technique T1040'), satisfying must_correlate. The ATT&CK record T1040 is named 'Network Sniffing' matching gold expect_names exactly. The technique description (promiscuous mode, span ports, credential capture, enabling lateral movement/stealth/adversary-in-the-middle) paraphrases only content present verbatim in the T1040 record's description field in logic_flow -- no invented properties, counts, dates, or aliases. All 3 CAPEC ids + T1040 (4 of 4 gold-required entities) are surfaced; min_records thresholds (capec>=3, attack==1) are met exactly. No fabricated facts found."
+}

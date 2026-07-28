@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires the CAPEC side to surface CAPEC-555 (must_include_ids) mapped to T1021 (must_include_related), and requires the ATT&CK side to honestly refuse (expect_boundary) since ATT&CK does not model ICS 'Asset' targeting. The answer's claims state 'Found 1 CAPEC record(s) for CAPEC-555; ATT&CK mappings: T1021' and 'CAPEC-555 (Remote Services with Stolen Credentials) has 1 TaxonomyEntrys: capec:taxonomy:ATTACK:1021' -- this matches the sole retrieved record exactly (primary_id CAPEC-555, name 'Remote Services with Stolen Credentials', related TaxonomyEntry id capec:taxonomy:ATTACK:1021 / entry_id 1021 / name 'Remote Services', join_values ['T1021']). No property, count, or name is invented. The attack-side abstention correctly explains the refusal ('doesn't model the entities this question asks about ... What assets does technique T1021 target?'), which traces to the boundary step reason 'entities not modeled by the attack source: Asset' -- an honest, evidence-grounded refusal rather than a fabricated answer, satisfying expect_boundary. deterministic_scores.correlation shows negative=true/exact=true/precision=recall=f1=1.0, consistent with expect_no_correlation=true (no cross-source join was fabricated). All three gold requirements (CAPEC-555 present, T1021 relation present, honest ATT&CK boundary refusal) are satisfied with full fidelity to the retrieved evidence."
+}

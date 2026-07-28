@@ -46,6 +46,26 @@ def union_sets(left: set, right: set) -> set:
     return set(left) | set(right)
 
 
+def append_new(left: list, right: list) -> list:
+    """Reducer: append only entries the accumulator does not already hold.
+
+    ``operator.add`` is wrong for anything the specialist subgraph produces. That
+    subgraph shares ``PipelineState``, so it *inherits* the accumulated list and
+    returns it in its final state; the parent then adds it a second time. A
+    single-pass run never notices — there is nothing to re-append — but once the
+    retrieval loop actually iterates, the evidence **doubles every hop**: a 5-hop
+    question came back with 90 results built from 14 distinct sub-questions
+    (16×, 8×, 4×, 2×).
+
+    Identity, not equality, is the right test: every execution mints a fresh
+    result object, so two entries are the same entry only when they are literally
+    the same object — which is exactly the re-merge case. Order is preserved, so
+    the sequential-ordering guarantee the evaluation baselines depend on holds.
+    """
+    seen = {id(item) for item in left}
+    return list(left) + [item for item in right if id(item) not in seen]
+
+
 class PipelineState(TypedDict, total=False):
     """State for the top-level Q/A super-graph."""
 
@@ -64,10 +84,10 @@ class PipelineState(TypedDict, total=False):
     plan: Plan
 
     # Specialist loop (accumulate per iteration).
-    results: Annotated[list[SpecialistResult], operator.add]
-    skipped: Annotated[list[dict[str, Any]], operator.add]
-    sequencing: Annotated[list[dict[str, Any]], operator.add]
-    specialist_timings: Annotated[list[dict[str, Any]], operator.add]
+    results: Annotated[list[SpecialistResult], append_new]
+    skipped: Annotated[list[dict[str, Any]], append_new]
+    sequencing: Annotated[list[dict[str, Any]], append_new]
+    specialist_timings: Annotated[list[dict[str, Any]], append_new]
     by_id: Annotated[dict[str, SpecialistResult], merge_dicts]
     cursor: int  # index of the next sub-question in execution order
 

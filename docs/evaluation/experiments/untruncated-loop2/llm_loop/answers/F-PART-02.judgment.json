@@ -1,0 +1,14 @@
+{
+  "case_id": "F-PART-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.6,
+  "faithfulness": 0.7,
+  "groundedness": 0.9,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [
+    "Answer asserts a cross-source 'correlation' (\"corroborated across both the attack and capec sources\"; headline: \"1 cross-source correlation(s) on shared identifiers\"; claims[4] kind=correlation) even though gold sets must_correlate=[] and expect_no_correlation=true for this case. The shared T1566 identifier is not an independently discovered cross-source match -- both sub-queries were seeded directly with the literal string 'T1566' (q1 filters TaxonomyEntry.entry_id within [T1566]; q2 filters Technique.attack_id in [T1566]), so the 'corroboration' is tautological, not evidentiary. This is exactly the adversarial trap the case's expect_no_correlation flag is designed to catch, and the pipeline's own deterministic_scores confirm the miss (correlation.negative=true, precision=0.0, n_expected=0, n_got=1)."
+  ],
+  "rationale": "The answer gets the two substantive halves right: it surfaces CAPEC-98 (Phishing, Abstraction: Standard, Status: Draft) mapped to T1566 exactly as required by gold.capec.must_include_ids=['CAPEC-98'] and must_include_related=['T1566'] (both fully grounded in logic_flow.results[0].records[0], including the capec:taxonomy:ATTACK:1566 related node), and it honestly refuses the ICS-asset half of the question ('the attack source schema does not list Asset as a node label... requiring an honest refusal'), satisfying gold.attack.expect_boundary=true -- the refusal is itself grounded (no Asset-labeled neighbours appear anywhere in T1566's facets, which only list DetectionStrategy/SubTechnique/Tactic/Mitigation/Campaign/Group/Software). However, the answer violates the case's other explicit gold assertion, expect_no_correlation=true / must_correlate=[], by prominently claiming a cross-source correlation on T1566 in both the headline and a dedicated claim -- a claim the case was specifically designed to catch as a false-confidence artifact of seeding both sub-questions with the same literal ID rather than a genuinely discovered join. This is a real, test-relevant defect (also flagged by the artifact's own deterministic_scores.correlation block), so the answer is PARTIAL rather than CORRECT despite full entity coverage (gold_present=2/2 for CAPEC-98 and T1566)."
+}

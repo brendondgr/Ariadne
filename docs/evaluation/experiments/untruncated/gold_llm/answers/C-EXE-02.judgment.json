@@ -1,0 +1,12 @@
+{
+  "case_id": "C-EXE-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-98 plus its four execution steps (capec:attack-pattern:98:step:1..4). The narrative names CAPEC-98 as 'Phishing' (matches evidence record name) and explicitly cites all four step ids, correctly summarizing each: step:1 optional domain/certificate spoofing, step:2 duplicating the legitimate site with a login form, step:3 convincing the victim via a deceptive email, step:4 using captured credentials to log into the legitimate site -- all paraphrased faithfully from the retrieved ExecutionStep descriptions with no invented facts, counts, or aliases. The claims list also enumerates the same 4 step ids under the 'enumeration' claim plus the CAPEC-98 fact claim, matching logic_flow.records[0].related exactly. Coverage is 5/5 (CAPEC-98 + 4 steps), consistent with the artifact's own deterministic_scores.coverage (5/5, 1.0)."
+}

@@ -1,0 +1,559 @@
+{
+  "id": "F-CTM-03",
+  "kind": "federated",
+  "tier": "hard",
+  "category": "F-CTM",
+  "question": "Which ATT&CK techniques does CAPEC-593 (Session Hijacking) map to, and what mitigations apply to those techniques?",
+  "gold": {
+    "assertions": {
+      "must_correlate": [
+        "T1185",
+        "T1550.001",
+        "T1563"
+      ],
+      "capec": {
+        "min_records": 1,
+        "must_include_ids": [
+          "CAPEC-593"
+        ],
+        "must_include_related": [
+          "T1185",
+          "T1550.001",
+          "T1563"
+        ]
+      },
+      "attack": {
+        "min_records": 3,
+        "max_records": 3,
+        "must_include_ids": [
+          "T1185",
+          "T1550.001",
+          "T1563"
+        ],
+        "must_include_related": [
+          "M1013",
+          "M1017",
+          "M1018",
+          "M1021",
+          "M1026",
+          "M1027",
+          "M1030",
+          "M1036",
+          "M1041",
+          "M1042",
+          "M1047"
+        ]
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 2
+  },
+  "answer": {
+    "headline": "Gathered 4 record(s) from 2 source(s); 3 cross-source correlation(s) on shared identifiers.",
+    "narrative": "CAPEC-593 (Session Hijacking) maps to three ATT&CK techniques, including T1185 (Browser Session Hijacking), T1550.001 (Application Access Token), and T1563 (Remote Service Session Hijacking). T1185 is mitigated by two controls, such as M1018 (User Account Management) and M1017 (User Training). T1563 is addressed by five mitigations, including M1042 (Disable or Remove Feature or Program), M1026 (Privileged Account Management), and M1030 (Network Segmentation). T1550.001 is mitigated by five controls, including M1041 (Encrypt Sensitive Information), M1036 (Account Use Policies), and M1021 (Restrict Web-Based Content).",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s) for CAPEC-593; ATT&CK mappings: T1185, T1550.001, T1563.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-593"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-593"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-593 (Session Hijacking) has Abstraction: Standard; Status: Stable.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-593"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-593"
+          }
+        ]
+      },
+      {
+        "text": "Found 3 ATT&CK record(s) including T1185, T1563, T1550.001.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1185",
+          "T1563",
+          "T1550.001"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1185"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1563"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1550.001"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1185 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1185"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-593"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1185"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1550.001 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1550.001"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-593"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1550.001"
+          }
+        ]
+      },
+      {
+        "text": "The identifier T1563 is corroborated across attack and capec (2 record(s) share it).",
+        "kind": "correlation",
+        "entity_ids": [
+          "T1563"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-593"
+          },
+          {
+            "source": "attack",
+            "primary_id": "T1563"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which ATT&CK techniques does CAPEC-593 map to?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What mitigations does ATT&CK list for those mapped techniques?",
+        "seed_from": "q1"
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Retrieve the AttackPattern node for CAPEC-593 (Session Hijacking) and follow MAPS_TO relationships to TaxonomyEntry nodes.",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(100)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s) for CAPEC-593; ATT&CK mappings: T1185, T1550.001, T1563.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [
+                "MAPS_TO"
+              ],
+              "seed_ids": [
+                "CAPEC-593"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_maps_to",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(100)",
+              "injected": [],
+              "timing_ms": 0.08
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 3,
+              "timing_ms": 9.3
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 3,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.07
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-593",
+            "name": "Session Hijacking",
+            "label": "AttackPattern",
+            "description": "This type of attack involves an adversary that exploits weaknesses in an application's use of sessions in performing authentication. The adversary is able to steal or manipulate an active session and use it to gain unathorized access to the application.",
+            "properties": {
+              "Status": "Stable",
+              "name": "Session Hijacking",
+              "description": "This type of attack involves an adversary that exploits weaknesses in an application's use of sessions in performing authentication. The adversary is able to steal or manipulate an active session and use it to gain unathorized access to the application.",
+              "id": "capec:attack-pattern:593",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [
+              "T1185",
+              "T1550.001",
+              "T1563"
+            ],
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1185",
+                "entry_id": "1185",
+                "name": "Browser Session Hijacking",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1550.001",
+                "entry_id": "1550.001",
+                "name": "Use Alternate Authentication Material:Application Access Token",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1563",
+                "entry_id": "1563",
+                "name": "Remote Service Session Hijacking",
+                "label": "TaxonomyEntry"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "Given mapped TaxonomyEntry IDs, retrieve the corresponding ATT&CK Technique or SubTechnique nodes and their associated Mitigation nodes.",
+        "query": "MATCH (t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 100",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 3 ATT&CK record(s) including T1185, T1563, T1550.001.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "SubTechnique",
+                "Mitigation"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1185",
+                "T1550.001",
+                "T1563"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "technique_mitigations",
+              "query": "MATCH (t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 100",
+              "injected": [
+                "LIMIT 100 appended (none present)"
+              ],
+              "timing_ms": 0.084
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 12,
+              "timing_ms": 3.6
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 12,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 3,
+              "timing_ms": 1.488
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1185",
+            "name": "Browser Session Hijacking",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1185"
+            ],
+            "related": [
+              {
+                "id": "M1018",
+                "name": "User Account Management",
+                "description": "User Account Management involves implementing and enforcing policies for the lifecycle of user accounts, including creation, modification, and deactivation. Proper account management reduces the attack surface by limiting unauthorized access, managing account privileges, and ensuring accounts are used according to organizational policies. This mitigation can be implemented through the following measures:\n\nEnforcing the Principle of Least Privilege\n\n- Implementation: Assign users only the minimum permissions required to perform their job functions. Regularly audit accounts to ensure no excess permissions are granted.\n- Use Case: Reduces the risk of privilege escalation by ensuring accounts cannot perform unauthorized actions.\n\nImplementing Strong Password Policies\n\n- Implementation: Enforce password complexity requirements (e.g., length, character types). Require password expiration every 90 days and disallow password reuse.\n- Use Case: Prevents adversaries from gaining unauthorized access through password guessing or brute force attacks.\n\nManaging Dormant and Orphaned Accounts\n\n- Implementation: Implement automated workflows to disable accounts after a set period of inactivity (e.g., 30 days). Remove orphaned accounts (e.g., accounts without an assigned owner) during regular account audits.\n- Use Case: Eliminates dormant accounts that could be exploited by attackers.\n\nAccount Lockout Policies\n\n- Implementation: Configure account lockout thresholds (e.g., lock accounts after five failed login attempts). Set lockout durations to a minimum of 15 minutes.\n- Use Case: Mitigates automated attack techniques that rely on repeated login attempts.\n\nMulti-Factor Authentication (MFA) for High-Risk Accounts\n\n- Implementation: Require MFA for all administrative accounts and high-risk users. Use MFA mechanisms like hardware tokens, authenticator apps, or biometrics.\n- Use Case: Prevents unauthorized access, even if credentials are stolen.\n\nRestricting Interactive Logins\n\n- Implementation: Restrict interactive logins for privileged accounts to specific secure systems or management consoles. Use group policies to enforce logon restrictions.\n- Use Case: Protects sensitive accounts from misuse or exploitation.\n\n*Tools for Implementation*\n\nBuilt-in Tools:\n\n- Microsoft Active Directory (AD): Centralized account management and RBAC enforcement.\n- Group Policy Object (GPO): Enforce password policies, logon restrictions, and account lockout policies.\n\nIdentity and Access Management (IAM) Tools:\n\n- Okta: Centralized user provisioning, MFA, and SSO integration.\n- Microsoft Azure Active Directory: Provides advanced account lifecycle management, role-based access, and conditional access policies.\n\nPrivileged Account Management (PAM):\n- CyberArk, BeyondTrust, Thycotic: Manage and monitor privileged account usage, enforce session recording, and JIT access."
+              },
+              {
+                "id": "M1017",
+                "name": "User Training",
+                "description": "User Training involves educating employees and contractors on recognizing, reporting, and preventing cyber threats that rely on human interaction, such as phishing, social engineering, and other manipulative techniques. Comprehensive training programs create a human firewall by empowering users to be an active component of the organization's cybersecurity defenses. This mitigation can be implemented through the following measures:\n\nCreate Comprehensive Training Programs:\n\n- Design training modules tailored to the organization's risk profile, covering topics such as phishing, password management, and incident reporting.\n- Provide role-specific training for high-risk employees, such as helpdesk staff or executives.\n\nUse Simulated Exercises:\n\n- Conduct phishing simulations to measure user susceptibility and provide targeted follow-up training.\n- Run social engineering drills to evaluate employee responses and reinforce protocols.\n\nLeverage Gamification and Engagement:\n\n- Introduce interactive learning methods such as quizzes, gamified challenges, and rewards for successful detection and reporting of threats.\n\nIncorporate Security Policies into Onboarding:\n\n- Include cybersecurity training as part of the onboarding process for new employees.\n- Provide easy-to-understand materials outlining acceptable use policies and reporting procedures.\n\nRegular Refresher Courses:\n\n- Update training materials to include emerging threats and techniques used by adversaries.\n- Ensure all employees complete periodic refresher courses to stay informed.\n\nEmphasize Real-World Scenarios:\n\n- Use case studies of recent attacks to demonstrate the consequences of successful phishing or social engineering.\n- Discuss how specific employee actions can prevent or mitigate such attacks."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1563",
+            "name": "Remote Service Session Hijacking",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1563"
+            ],
+            "related": [
+              {
+                "id": "M1042",
+                "name": "Disable or Remove Feature or Program",
+                "description": "Disable or remove unnecessary and potentially vulnerable software, features, or services to reduce the attack surface and prevent abuse by adversaries. This involves identifying software or features that are no longer needed or that could be exploited and ensuring they are either removed or properly disabled. This mitigation can be implemented through the following measures: \n\nRemove Legacy Software:\n\n- Use Case: Disable or remove older versions of software that no longer receive updates or security patches (e.g., legacy Java, Adobe Flash).\n- Implementation: A company removes Flash Player from all employee systems after it has reached its end-of-life date.\n\nDisable Unused Features:\n\n- Use Case: Turn off unnecessary operating system features like SMBv1, Telnet, or RDP if they are not required.\n- Implementation: Disable SMBv1 in a Windows environment to mitigate vulnerabilities like EternalBlue.\n\nControl Applications Installed by Users:\n\n- Use Case: Prevent users from installing unauthorized software via group policies or other management tools.\n- Implementation: Block user installations of unauthorized file-sharing applications (e.g., BitTorrent clients) in an enterprise environment.\n\nRemove Unnecessary Services:\n\n- Use Case: Identify and disable unnecessary default services running on endpoints, servers, or network devices.\n- Implementation: Disable unused administrative shares (e.g., C$, ADMIN$) on workstations.\n\nRestrict Add-ons and Plugins:\n\n- Use Case: Remove or disable browser plugins and add-ons that are not needed for business purposes.\n- Implementation: Disable Java and ActiveX plugins in web browsers to prevent drive-by attacks.\n\n"
+              },
+              {
+                "id": "M1026",
+                "name": "Privileged Account Management",
+                "description": "Privileged Account Management focuses on implementing policies, controls, and tools to securely manage privileged accounts (e.g., SYSTEM, root, or administrative accounts). This includes restricting access, limiting the scope of permissions, monitoring privileged account usage, and ensuring accountability through logging and auditing.This mitigation can be implemented through the following measures:\n\nAccount Permissions and Roles:\n\n- Implement RBAC and least privilege principles to allocate permissions securely.\n- Use tools like Active Directory Group Policies to enforce access restrictions.\n\nCredential Security:\n\n- Deploy password vaulting tools like CyberArk, HashiCorp Vault, or KeePass for secure storage and rotation of credentials.\n- Enforce password policies for complexity, uniqueness, and expiration using tools like Microsoft Group Policy Objects (GPO).\n\nMulti-Factor Authentication (MFA):\n\n- Enforce MFA for all privileged accounts using Duo Security, Okta, or Microsoft Azure AD MFA.\n\nPrivileged Access Management (PAM):\n\n- Use PAM solutions like CyberArk, BeyondTrust, or Thycotic to manage, monitor, and audit privileged access.\n\nAuditing and Monitoring:\n\n- Integrate activity monitoring into your SIEM (e.g., Splunk or QRadar) to detect and alert on anomalous privileged account usage.\n\nJust-In-Time Access:\n\n- Deploy JIT solutions like Azure Privileged Identity Management (PIM) or configure ephemeral roles in AWS and GCP to grant time-limited elevated permissions.\n\n*Tools for Implementation*\n\nPrivileged Access Management (PAM):\n\n- CyberArk, BeyondTrust, Thycotic, HashiCorp Vault.\n\nCredential Management:\n\n- Microsoft LAPS (Local Admin Password Solution), Password Safe, HashiCorp Vault, KeePass.\n\nMulti-Factor Authentication:\n\n- Duo Security, Okta, Microsoft Azure MFA, Google Authenticator.\n\nLinux Privilege Management:\n\n- sudo configuration, SELinux, AppArmor.\n\nJust-In-Time Access:\n\n- Azure Privileged Identity Management (PIM), AWS IAM Roles with session constraints, GCP Identity-Aware Proxy."
+              },
+              {
+                "id": "M1018",
+                "name": "User Account Management",
+                "description": "User Account Management involves implementing and enforcing policies for the lifecycle of user accounts, including creation, modification, and deactivation. Proper account management reduces the attack surface by limiting unauthorized access, managing account privileges, and ensuring accounts are used according to organizational policies. This mitigation can be implemented through the following measures:\n\nEnforcing the Principle of Least Privilege\n\n- Implementation: Assign users only the minimum permissions required to perform their job functions. Regularly audit accounts to ensure no excess permissions are granted.\n- Use Case: Reduces the risk of privilege escalation by ensuring accounts cannot perform unauthorized actions.\n\nImplementing Strong Password Policies\n\n- Implementation: Enforce password complexity requirements (e.g., length, character types). Require password expiration every 90 days and disallow password reuse.\n- Use Case: Prevents adversaries from gaining unauthorized access through password guessing or brute force attacks.\n\nManaging Dormant and Orphaned Accounts\n\n- Implementation: Implement automated workflows to disable accounts after a set period of inactivity (e.g., 30 days). Remove orphaned accounts (e.g., accounts without an assigned owner) during regular account audits.\n- Use Case: Eliminates dormant accounts that could be exploited by attackers.\n\nAccount Lockout Policies\n\n- Implementation: Configure account lockout thresholds (e.g., lock accounts after five failed login attempts). Set lockout durations to a minimum of 15 minutes.\n- Use Case: Mitigates automated attack techniques that rely on repeated login attempts.\n\nMulti-Factor Authentication (MFA) for High-Risk Accounts\n\n- Implementation: Require MFA for all administrative accounts and high-risk users. Use MFA mechanisms like hardware tokens, authenticator apps, or biometrics.\n- Use Case: Prevents unauthorized access, even if credentials are stolen.\n\nRestricting Interactive Logins\n\n- Implementation: Restrict interactive logins for privileged accounts to specific secure systems or management consoles. Use group policies to enforce logon restrictions.\n- Use Case: Protects sensitive accounts from misuse or exploitation.\n\n*Tools for Implementation*\n\nBuilt-in Tools:\n\n- Microsoft Active Directory (AD): Centralized account management and RBAC enforcement.\n- Group Policy Object (GPO): Enforce password policies, logon restrictions, and account lockout policies.\n\nIdentity and Access Management (IAM) Tools:\n\n- Okta: Centralized user provisioning, MFA, and SSO integration.\n- Microsoft Azure Active Directory: Provides advanced account lifecycle management, role-based access, and conditional access policies.\n\nPrivileged Account Management (PAM):\n- CyberArk, BeyondTrust, Thycotic: Manage and monitor privileged account usage, enforce session recording, and JIT access."
+              },
+              {
+                "id": "M1027",
+                "name": "Password Policies",
+                "description": "Set and enforce secure password policies for accounts to reduce the likelihood of unauthorized access. Strong password policies include enforcing password complexity, requiring regular password changes, and preventing password reuse. This mitigation can be implemented through the following measures:\n\nWindows Systems:\n\n- Use Group Policy Management Console (GPMC) to configure:\n    - Minimum password length (e.g., 12+ characters).\n    - Password complexity requirements.\n    - Password history (e.g., disallow last 24 passwords).\n    - Account lockout duration and thresholds.\n\nLinux Systems:\n\n- Configure Pluggable Authentication Modules (PAM):\n- Use `pam_pwquality` to enforce complexity and length requirements.\n- Implement `pam_tally2` or `pam_faillock` for account lockouts.\n- Use `pwunconv` to disable password reuse.\n\nPassword Managers:\n\n- Enforce usage of enterprise password managers (e.g., Bitwarden, 1Password, LastPass) to generate and store strong passwords.\n\nPassword Blacklisting:\n\n- Use tools like Have I Been Pwned password checks or NIST-based blacklist solutions to prevent users from setting compromised passwords.\n\nRegular Auditing:\n\n- Periodically audit password policies and account configurations to ensure compliance using tools like LAPS (Local Admin Password Solution) and vulnerability scanners.\n\n*Tools for Implementation*\n\nWindows:\n\n- Group Policy Management Console (GPMC): Enforce password policies.\n- Microsoft Local Administrator Password Solution (LAPS): Enforce random, unique admin passwords.\n\nLinux/macOS:\n\n- PAM Modules (pam_pwquality, pam_tally2, pam_faillock): Enforce password rules.\n- Lynis: Audit password policies and system configurations.\n\nCross-Platform:\n\n- Password Managers (Bitwarden, 1Password, KeePass): Manage and enforce strong passwords.\n- Have I Been Pwned API: Prevent the use of breached passwords.\n- NIST SP 800-63B compliant tools: Enforce password guidelines and blacklisting."
+              },
+              {
+                "id": "M1030",
+                "name": "Network Segmentation",
+                "description": "Network segmentation involves dividing a network into smaller, isolated segments to control and limit the flow of traffic between devices, systems, and applications. By segmenting networks, organizations can reduce the attack surface, restrict lateral movement by adversaries, and protect critical assets from compromise.\n\nEffective network segmentation leverages a combination of physical boundaries, logical separation through VLANs, and access control policies enforced by network appliances like firewalls, routers, and cloud-based configurations. This mitigation can be implemented through the following measures:\n\nSegment Critical Systems:\n\n- Identify and group systems based on their function, sensitivity, and risk. Examples include payment systems, HR databases, production systems, and internet-facing servers.\n- Use VLANs, firewalls, or routers to enforce logical separation.\n\nImplement DMZ for Public-Facing Services:\n\n- Host web servers, DNS servers, and email servers in a DMZ to limit their access to internal systems.\n- Apply strict firewall rules to filter traffic between the DMZ and internal networks.\n\nUse Cloud-Based Segmentation:\n\n- In cloud environments, use VPCs, subnets, and security groups to isolate applications and enforce traffic rules.\n- Apply AWS Transit Gateway or Azure VNet peering for controlled connectivity between cloud segments.\n\nApply Microsegmentation for Workloads:\n\n- Use software-defined networking (SDN) tools to implement workload-level segmentation and prevent lateral movement.\n\nRestrict Traffic with ACLs and Firewalls:\n\n- Apply Access Control Lists (ACLs) to network devices to enforce \"deny by default\" policies.\n- Use firewalls to restrict both north-south (external-internal) and east-west (internal-internal) traffic.\n\nMonitor and Audit Segmented Networks:\n\n- Regularly review firewall rules, ACLs, and segmentation policies.\n- Monitor network flows for anomalies to ensure segmentation is effective.\n\nTest Segmentation Effectiveness:\n\n- Perform periodic penetration tests to verify that unauthorized access is blocked between network segments."
+              }
+            ]
+          },
+          {
+            "primary_id": "T1550.001",
+            "name": "Application Access Token",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1550.001"
+            ],
+            "related": [
+              {
+                "id": "M1041",
+                "name": "Encrypt Sensitive Information",
+                "description": "Protect sensitive information at rest, in transit, and during processing by using strong encryption algorithms. Encryption ensures the confidentiality and integrity of data, preventing unauthorized access or tampering. This mitigation can be implemented through the following measures:\n\nEncrypt Data at Rest:\n\n- Use Case: Use full-disk encryption or file-level encryption to secure sensitive data stored on devices.\n- Implementation: Implement BitLocker for Windows systems or FileVault for macOS devices to encrypt hard drives.\n\nEncrypt Data in Transit:\n\n- Use Case: Use secure communication protocols (e.g., TLS, HTTPS) to encrypt sensitive data as it travels over networks.\n- Implementation: Enable HTTPS for all web applications and configure mail servers to enforce STARTTLS for email encryption.\n\nEncrypt Backups:\n\n- Use Case: Ensure that backup data is encrypted both during storage and transfer to prevent unauthorized access.\n- Implementation: Encrypt cloud backups using AES-256 before uploading them to Amazon S3 or Google Cloud.\n\nEncrypt Application Secrets:\n\n- Use Case: Store sensitive credentials, API keys, and configuration files in encrypted vaults.\n- Implementation: Use HashiCorp Vault or AWS Secrets Manager to manage and encrypt secrets.\n\nDatabase Encryption:\n\n- Use Case: Enable Transparent Data Encryption (TDE) or column-level encryption in database management systems.\n- Implementation: Use MySQL’s built-in encryption features to encrypt sensitive database fields such as social security numbers."
+              },
+              {
+                "id": "M1036",
+                "name": "Account Use Policies",
+                "description": "Account Use Policies help mitigate unauthorized access by configuring and enforcing rules that govern how and when accounts can be used. These policies include enforcing account lockout mechanisms, restricting login times, and setting inactivity timeouts. Proper configuration of these policies reduces the risk of brute-force attacks, credential theft, and unauthorized access by limiting the opportunities for malicious actors to exploit accounts. This mitigation can be implemented through the following measures:\n\nAccount Lockout Policies:\n\n- Implementation: Configure account lockout settings so that after a defined number of failed login attempts (e.g., 3-5 attempts), the account is locked for a specific time period (e.g., 15 minutes) or requires an administrator to unlock it.\n- Use Case: This prevents brute-force attacks by limiting how many incorrect password attempts can be made before the account is temporarily disabled, reducing the likelihood of an attacker successfully guessing a password.\n\nLogin Time Restrictions:\n\n- Implementation: Set up login time policies to restrict when users or groups can log into systems. For example, only allowing login during standard business hours (e.g., 8 AM to 6 PM) for non-administrative accounts.\n- Use Case: This prevents unauthorized access outside of approved working hours, where login attempts might be more suspicious or harder to monitor. For example, if an account that is only supposed to be active during the day logs in at 2 AM, it should raise an alert or be blocked.\n\nInactivity Timeout and Session Termination:\n\n- Implementation: Enforce session timeouts after a period of inactivity (e.g., 10-15 minutes) and require users to re-authenticate if they wish to resume the session.\n- Use Case: This policy prevents attackers from hijacking active sessions left unattended. For example, if an employee walks away from their computer without locking it, an attacker with physical access to the system would be unable to exploit the session.\n\nPassword Aging Policies:\n\n- Implementation: Enforce password aging rules, requiring users to change their passwords after a defined period (e.g., 90 days) and ensure passwords are not reused by maintaining a password history.\n- Use Case: This limits the risk of compromised passwords being used indefinitely. Regular password changes make it more difficult for attackers to reuse stolen credentials.\n\nAccount Expiration and Deactivation:\n\n- Implementation: Configure user accounts, especially for temporary or contract workers, to automatically expire after a set date or event. Accounts that remain unused for a specific period should be deactivated automatically.\n- Use Case: This prevents dormant accounts from becoming an attack vector. For example, an attacker can exploit unused accounts if they are not properly monitored or deactivated.\n\n**Tools for Implementation**:\n\n- Group Policy Objects (GPOs) in Windows: To enforce account lockout thresholds, login time restrictions, session timeouts, and password policies.\n- Identity and Access Management (IAM) solutions: For centralized management of user accounts, session policies, and automated deactivation of accounts.\n- Security Information and Event Management (SIEM) platforms: To monitor and alert on unusual login activity, such as failed logins or out-of-hours access attempts.\n- Multi-Factor Authentication (MFA) Tools: To further enforce secure login attempts, preventing brute-force or credential stuffing attacks.\n"
+              },
+              {
+                "id": "M1047",
+                "name": "Audit",
+                "description": "Auditing is the process of recording activity and systematically reviewing and analyzing the activity and system configurations. The primary purpose of auditing is to detect anomalies and identify potential threats or weaknesses in the environment. Proper auditing configurations can also help to meet compliance requirements. The process of auditing encompasses regular analysis of user behaviors and system logs in support of proactive security measures.\n\nAuditing is applicable to all systems used within an organization, from the front door of a building to accessing a file on a fileserver. It is considered more critical for regulated industries such as, healthcare, finance and government where compliance requirements demand stringent tracking of user and system activates.This mitigation can be implemented through the following measures: \n\nSystem Audit:\n\n- Use Case: Regularly assess system configurations to ensure compliance with organizational security policies.\n- Implementation: Use tools to scan for deviations from established benchmarks.\n\nPermission Audits:\n\n- Use Case: Review file and folder permissions to minimize the risk of unauthorized access or privilege escalation.\n- Implementation: Run access reviews to identify users or groups with excessive permissions.\n\nSoftware Audits:\n\n- Use Case: Identify outdated, unsupported, or insecure software that could serve as an attack vector.\n- Implementation: Use inventory and vulnerability scanning tools to detect outdated versions and recommend secure alternatives.\n\nConfiguration Audits:\n\n- Use Case: Evaluate system and network configurations to ensure secure settings (e.g., disabled SMBv1, enabled MFA).\n- Implementation: Implement automated configuration scanning tools like SCAP (Security Content Automation Protocol) to identify non-compliant systems.\n\nNetwork Audits:\n\n- Use Case: Examine network traffic, firewall rules, and endpoint communications to identify unauthorized or insecure connections.\n- Implementation: Utilize tools such as Wireshark, or Zeek to monitor and log suspicious network behavior."
+              },
+              {
+                "id": "M1013",
+                "name": "Application Developer Guidance",
+                "description": "Application Developer Guidance focuses on providing developers with the knowledge, tools, and best practices needed to write secure code, reduce vulnerabilities, and implement secure design principles. By integrating security throughout the software development lifecycle (SDLC), this mitigation aims to prevent the introduction of exploitable weaknesses in applications, systems, and APIs. This mitigation can be implemented through the following measures:\n \nPreventing SQL Injection (Secure Coding Practice):\n\n- Implementation: Train developers to use parameterized queries or prepared statements instead of directly embedding user input into SQL queries.\n- Use Case: A web application accepts user input to search a database. By sanitizing and validating user inputs, developers can prevent attackers from injecting malicious SQL commands.\n\nCross-Site Scripting (XSS) Mitigation:\n\n- Implementation: Require developers to implement output encoding for all user-generated content displayed on a web page.\n- Use Case: An e-commerce site allows users to leave product reviews. Properly encoding and escaping user inputs prevents malicious scripts from being executed in other users’ browsers.\n\nSecure API Design:\n\n- Implementation: Train developers to authenticate all API endpoints and avoid exposing sensitive information in API responses.\n- Use Case: A mobile banking application uses APIs for account management. By enforcing token-based authentication for every API call, developers reduce the risk of unauthorized access.\n\nStatic Code Analysis in the Build Pipeline:\n\n- Implementation: Incorporate tools into CI/CD pipelines to automatically scan for vulnerabilities during the build process.\n- Use Case: A fintech company integrates static analysis tools to detect hardcoded credentials in their source code before deployment.\n\nThreat Modeling in the Design Phase:\n\n- Implementation: Use frameworks like STRIDE (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege) to assess threats during application design.\n- Use Case: Before launching a customer portal, a SaaS company identifies potential abuse cases, such as session hijacking, and designs mitigations like secure session management.\n\n**Tools for Implementation**:\n\n- Static Code Analysis Tools: Use tools that can scan for known vulnerabilities in source code.\n- Dynamic Application Security Testing (DAST): Use tools like Burp Suite or OWASP ZAP to simulate runtime attacks and identify vulnerabilities.\n- Secure Frameworks: Recommend secure-by-default frameworks (e.g., Django for Python, Spring Security for Java) that enforce security best practices."
+              },
+              {
+                "id": "M1021",
+                "name": "Restrict Web-Based Content",
+                "description": "Restricting web-based content involves enforcing policies and technologies that limit access to potentially malicious websites, unsafe downloads, and unauthorized browser behaviors. This can include URL filtering, download restrictions, script blocking, and extension control to protect against exploitation, phishing, and malware delivery. This mitigation can be implemented through the following measures:\n\nDeploy Web Proxy Filtering:\n\n- Use solutions to filter web traffic based on categories, reputation, and content types.\n- Enforce policies that block unsafe websites or file types at the gateway level.\n\nEnable DNS-Based Filtering:\n\n- Implement tools to restrict access to domains associated with malware or phishing campaigns.\n- Use public DNS filtering services to enhance protection.\n\nEnforce Content Security Policies (CSP):\n\n- Configure CSP headers on internal and external web applications to restrict script execution, iframe embedding, and cross-origin requests.\n\nControl Browser Features:\n\n- Disable unapproved browser features like automatic downloads, developer tools, or unsafe scripting.\n- Enforce policies through tools like Group Policy Management to control browser settings.\n\nMonitor and Alert on Web-Based Threats:\n\n- Use SIEM tools to collect and analyze web proxy logs for signs of anomalous or malicious activity.\n- Configure alerts for access attempts to blocked domains or repeated file download failures."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 3,
+      "n_got": 3
+    },
+    "mapping_recall": {
+      "gold": 3,
+      "found": 3,
+      "recall": 1.0,
+      "missing": []
+    },
+    "coverage": null,
+    "provenance": {
+      "citations": 11,
+      "compliant": 11,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "llm",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "Retrieve the AttackPattern node for CAPEC-593 (Session Hijacking) and follow MAPS_TO relationships to TaxonomyEntry nodes.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 2,
+          "max_result_rows": 100,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "Given mapped TaxonomyEntry IDs, retrieve the corresponding ATT&CK Technique or SubTechnique nodes and their associated Mitigation nodes.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 2,
+          "max_result_rows": 100,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 107.514
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 4,
+    "related": 15
+  }
+}

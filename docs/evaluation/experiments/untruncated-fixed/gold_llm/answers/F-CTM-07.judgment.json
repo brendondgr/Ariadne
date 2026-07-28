@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-07",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "hallucinations": [],
+  "rationale": "Evidence (logic_flow) shows CAPEC-600 mapping to TaxonomyEntry capec:taxonomy:ATTACK:1110.004 (i.e. T1110.004), and the ATT&CK query returns exactly 4 mitigations for T1110.004: M1036 (Account Use Policies), M1032 (Multi-factor Authentication), M1018 (User Account Management), M1027 (Password Policies). The narrative states the CAPEC-600 -> T1110.004 mapping and names all four mitigations with correct names and IDs, satisfying gold's must_correlate (T1110.004), capec.must_include_ids/related (CAPEC-600, T1110.004), and attack.must_include_ids/related (T1110.004; M1018, M1027, M1032, M1036) -- 6/6 required ids surfaced. Mitigation descriptions in the narrative (account lockouts, MFA, account lifecycle management, password rules) are consistent with the full mitigation descriptions in the evidence. No counts, names, or ids in the narrative/claims are absent from or contradicted by the retrieved records; the correlation claim (T1110.004 corroborated across attack and capec) matches the deterministic_scores correlation block (precision/recall/f1 = 1.0). No hallucinations detected."
+}

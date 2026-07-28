@@ -1,0 +1,12 @@
+{
+  "case_id": "C-DEP-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a NEG/adversarial case: gold asserts expect_empty=true because CAPEC-106 is deprecated/excluded at load time, and the expected node pool is []. The retrieval query executed cleanly (g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))... for seed_ids=[\"CAPEC-106\"]) and returned row_count=0, records=[]. The pipeline correctly abstained: claims=[] and abstentions=[{source:capec, statement: \"the executed query ran cleanly and returned no matching records for: Retrieve the AttackPattern node with ID 'CAPEC-106'.\"}]. The narrative states 'The routed sources returned no matching records for this question,' which is the correct behavior for a negative case -- no fabricated node, properties, or relationships were invented. All trace steps (intake/resolve/gate/execute/assess/normalize) confirm zero records were found and the abstention is fully provenanced (abstention_proof_ok=true). No hallucinations present."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-HIE-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-98] and must_include_related=[CAPEC-151]. The evidence (logic_flow.results[0].records[0]) shows CAPEC-98 'Phishing' with a single related node CAPEC-151 'Identity Spoofing' via the ChildOf/out('CHILD_OF') traversal. The narrative states exactly this: 'CAPEC-98 (Phishing) has exactly one parent AttackPattern linked via the ChildOf relationship. That parent is CAPEC-151, identified as Identity Spoofing,' and correctly notes no additional parents exist, matching the single-row result. Both required ids are surfaced with names that match the evidence verbatim, and no counts, aliases, or properties beyond the evidence appear anywhere in the narrative."
+}

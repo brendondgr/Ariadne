@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires T1047 plus related DET0364 and AN1031 (must_include_ids=[T1047], must_include_related=[DET0364, AN1031]). The narrative names all three: 'DET0364 is a behavioral detection strategy for WMI execution abuse on Windows' matches the evidence record related[0].name verbatim ('Behavioral Detection Strategy for WMI Execution Abuse on Windows'), and the AN1031 description ('detects adversarial abuse of WMI to execute local or remote commands via WMIC, PowerShell, or COM API through a multi-event chain involving process creation, command execution, and corresponding network connections if remote') is a faithful paraphrase of the evidence record related[1].description with no added or altered facts. Both supporting claims (fact + enumeration) cite T1047/attack correctly and list exactly the two related ids present in logic_flow.results[0].records[0].related, matching evidence_volume (records=1, related=2) and deterministic_scores.coverage (3/3). No counts, names, or aliases in the answer are absent from or inconsistent with the retrieved evidence."
+}

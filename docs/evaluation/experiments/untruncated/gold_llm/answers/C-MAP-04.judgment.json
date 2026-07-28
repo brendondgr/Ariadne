@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[CAPEC-70] and must_include_related=[T1078.001]. The single retrieved record (query capec_maps_to, out('MAPS_TO') from AttackPattern CAPEC-70 to TaxonomyEntry) shows join_values=['T1078.001'] and related entry capec:taxonomy:ATTACK:1078.001 with name 'Valid Accounts:Default Accounts'. The narrative states CAPEC-70 (Try Common or Default Usernames and Passwords) maps to exactly one ATT&CK technique, T1078.001, naming it 'Valid Accounts:Default Accounts' -- this matches the evidence's related.name field verbatim. The claims list mirrors the same single mapping with correct citations. Both gold ids (CAPEC-70, T1078.001) are surfaced, no other techniques are fabricated, and the 'exactly one' / 'no additional techniques' framing is accurate given only 1 related record was returned. No unsupported facts found."
+}
