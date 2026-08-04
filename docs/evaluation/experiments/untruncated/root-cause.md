@@ -33,6 +33,12 @@ related), so the decomposition finally holds.
 | B − C | **LLM planning alone** | **−0.1960** |
 | A − C | deterministic vs LLM synthesis | −0.0120 |
 
+> **These deltas are from the pre-defect-fix judge run** (Arm C at 0.9620,
+> 109/9/2). Do not quote them beside the post-fix table in
+> [`../../2026-07-26/README.md`](../../2026-07-26/README.md), where Arm C is
+> 0.9690 (110/8/2) and B − C is **−0.1185**. Both runs are faithfully recorded;
+> the numbers are simply not interchangeable.
+
 Un-truncation was **strictly positive on all four metrics** (+0.067 correctness, +0.067
 completeness, +0.022 faithfulness, +0.032 groundedness). It was never the regression.
 The entire regression is the planner.

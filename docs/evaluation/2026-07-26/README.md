@@ -54,10 +54,20 @@ Cost and volume, same 120 questions:
    Arm C against the baseline (identical config, only the caps lifted):
    **+0.067 correctness, +0.067 completeness, +0.022 faithfulness, +0.032
    groundedness** — positive on all four.
-2. **LLM planning is the whole regression.** Arm B − Arm C = **−0.196
-   correctness**, with identical extraction and identical synthesis. The
-   baseline never had to *find* its cross-source join; `seed_from: q1` is
-   authored into the gold.
+2. **LLM planning is the whole regression.** Arm B − Arm C = **−0.1185
+   correctness** (0.8505 − 0.9690), with identical extraction and identical
+   synthesis. The baseline never had to *find* its cross-source join;
+   `seed_from: q1` is authored into the gold.
+
+   > **Corrected 2026-08-04.** This finding previously read −0.196. That figure
+   > was computed against an *earlier* judge run in which Arm C scored 0.9620
+   > (110/8/2 became 109/9/2 — see `changelog.jsonl`), before the eight defect
+   > fixes below. It is not reproducible from the post-fix table above, which is
+   > the one printed here. Quote **−0.1185** within this run. The qualitative
+   > finding is unaffected: with extraction and synthesis held constant, LLM
+   > planning is still the dominant single effect in the matrix, and against the
+   > best deterministic-planned arm the gap is larger still (F 0.9957 − E 0.8560
+   > = **−0.1397**, which is the ~0.14 quoted in the headline).
 3. **The accuracy-vs-readability trade is not real.** Arm F scores 0.9957
    against the deterministic ceiling's 0.9972 — a 0.0015 gap — with **zero
    INCORRECT**, full gold coverage, and readable analyst prose instead of a

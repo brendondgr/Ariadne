@@ -35,13 +35,22 @@ Four components:
 3. **Source-specific query agents** — Cypher specialist (Neo4j) and Gremlin specialist (bounded traversals). Each validates queries, enforces safety constraints, normalizes evidence, and returns grounded summaries with evaluator traces.
 4. **Synthesis and reporting agent** — Reconciles partial evidence across sources by aligning shared identifiers (ATT&CK technique IDs, CAPEC IDs), detects conflicts, assembles provenance-linked answers, tables, and diagrams.
 
+**As implemented**, components 2–4 run deterministically by default: the planner
+matches schema labels from the source cards, the query agents compile
+card-validated read-only templates (no LLM writes a query), and the synthesis
+agent composes claims from evidence and verifies each one before rendering. Each
+LLM seam is opt-in, individually backstopped, and off in `.env.example`. The
+controlled seven-arm evaluation in `evaluation/2026-07-26/README.md` is why:
+the deterministic path scores highest, and LLM planning is the single largest
+source of loss. See the "What actually runs" table in the [README](../README.md).
+
 ## Example Analyst Flow
 
 **Question:** "Which CAPEC patterns related to credential theft map to ATT&CK techniques, and what mitigations appear for those techniques?"
 
-1. **Planner** emits a CAPEC task (find credential-theft patterns and mapped ATT&CK IDs) and an ATT&CK task (retrieve technique names and mitigations for those IDs).
-2. **Cypher specialist** executes a bounded pattern query and summarizes: "CAPEC-560 and CAPEC-565 map to T1555."
-3. **Gremlin specialist** executes `g.V(ids).out('mitigatedBy')` and summarizes: "T1555 is linked to credential-access mitigations M1026 and M1027."
+1. **Planner** emits a CAPEC task (find credential-theft patterns and mapped ATT&CK IDs) and a dependent ATT&CK task (retrieve technique names and mitigations for those IDs).
+2. **Gremlin specialist** (CAPEC) executes a bounded traversal over the `MAPS_TO` edges, filtered to the `ATTACK` taxonomy, and summarizes: "CAPEC-560 and CAPEC-565 map to T1555."
+3. **Cypher specialist** (ATT&CK) is seeded with the join values the Gremlin side produced, executes a bounded `MITIGATES` match, and summarizes: "T1555 is linked to credential-access mitigations M1026 and M1027."
 4. **Synthesis agent** joins on ATT&CK IDs and returns a provenance-linked answer, table, and compact CAPEC–ATT&CK–mitigation network plot.
 
 ## Team

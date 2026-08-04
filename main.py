@@ -252,10 +252,11 @@ VERSION OVERRIDES (--docker start only)
     graph.add_argument(
         "--graph",
         choices=sorted(GRAPH_ACTIONS),
-        metavar="{neo4j,gremlin,all,verify,health}",
+        metavar="{neo4j,gremlin,all,verify,fixture-qa,health}",
         help=(
             "neo4j / gremlin / all: load --dataset into that backend\n"
             "verify: validate already-loaded data (requires --dataset)\n"
+            "fixture-qa: reconcile raw == manifest == live (requires --dataset)\n"
             "health: ping backends only — no --dataset needed"
         ),
     )
