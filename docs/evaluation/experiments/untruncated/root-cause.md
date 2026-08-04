@@ -7,7 +7,7 @@ and records what each fix bought.
 
 ## 1. The comparison was invalid
 
-The committed baseline (`docs/evaluation/independent-eval.md`) is produced by
+The committed baseline (`docs/evaluation/archive/independent-eval.md`) is produced by
 `utils/evaluation/generate_e2e.py`, which replays each catalogue entry's **pre-authored
 gold plan**. For a federated entry that plan hard-wires the cross-source join:
 

@@ -2,7 +2,7 @@
 
 ## 1. Introduction
 
-The independent cross-model evaluation (`docs/evaluation/independent-eval-analysis.md`)
+The independent cross-model evaluation (`docs/evaluation/archive/independent-eval-analysis.md`)
 surfaced four actionable items: one **judging-harness artifact** that depressed the
 measured faithfulness/groundedness, one **measurement blind spot**, and two genuine
 pipeline defects (**under-enumeration** and **C-ABS hierarchy role labeling**). This
