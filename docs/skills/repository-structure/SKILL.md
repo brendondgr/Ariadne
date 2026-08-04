@@ -90,22 +90,25 @@ We use `uv` as the primary package manager for all Python projects.
 
 ### Utility Organization (`utils/`)
 
-- **Single Functionality:**
-  - `utils/logger.py` – A lightweight logging class.
-- **Complex Sub-system:**
-  - `utils/auth_handler/`
-    - `__init__.py` – Orchestrates the authentication exports.
-    - `oauth.py` – Handles OAuth2 flows.
-    - `session.py` – Manages user sessions.
+- **Single Functionality:** a module at the package root.
+  - `utils/recovery.py` – backup/clean/restore plus failure classification.
+  - `utils/yolo.py` – the `--yolo-all` single-command pipeline runner.
+- **Complex Sub-system:** a package with an `__init__.py` that defines the seam.
+  - `utils/specialists/`
+    - `__init__.py` – exports the router and the shared scaffold.
+    - `cypher/`, `gremlin/` – one sub-package per backend (builder, validator, connector, normalizer).
+    - `tests/` – lives beside the code it covers.
 
 ### Directory Summary Table
 
 | File / Folder | Purpose |
 | :--- | :--- |
-| `utils/<domain>/` | Domain-specific Python utilities |
-| `web/` | React/Vite webfront |
+| `utils/<domain>/` | Domain-specific Python utilities; tests live in `<domain>/tests/` |
+| `api/` | FastAPI service wrapping `utils/` for the UI |
+| `web/` | Next.js App Router webfront (TypeScript + Tailwind v4) |
 | `docs/skills/` | Canonical agent instructions |
+| `docs/plans/` | Implementation plans, kept as a historical record |
 
 ---
 
-*Last Updated: 2026-03-27*
+*Last Updated: 2026-08-04*

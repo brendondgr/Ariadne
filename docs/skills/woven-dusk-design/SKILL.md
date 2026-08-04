@@ -395,8 +395,8 @@ Install via `@fontsource-variable/geist` and `@fontsource-variable/geist-mono`.
 
 | Resource | Path |
 |----------|------|
-| CSS tokens | `web/src/styles/tokens.css` |
-| Tailwind theme | `web/src/index.css` |
+| CSS tokens + Tailwind v4 `@theme` + keyframes | `web/app/globals.css` |
+| Root layout (font wiring) | `web/app/layout.tsx` |
 | Color details | `docs/skills/ui-frontend/ui/colors.md` |
 | Typography details | `docs/skills/ui-frontend/ui/typography.md` |
 | Anti-generic quality | `docs/skills/ui-frontend/ui/design-quality.md` |

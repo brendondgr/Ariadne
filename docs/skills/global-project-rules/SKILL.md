@@ -29,19 +29,24 @@ Ariadne is a **federated agentic graph-database access prototype** for cybersecu
 | Web API | `api/` | FastAPI service wrapping `utils/` for the UI (health, config, query SSE, admin SSE) |
 | Webfront | `web/` | Analyst workbench UI (Next.js App Router + Tailwind v4 + Motion, Woven Dusk); proxies `/api/*` to `api/` |
 | Launcher | `app.py` | Starts the FastAPI service + Next.js app together (`python app.py`) |
-| Future | TBD per `docs/skills/repository-structure/` | Synthesis agent, graph fixtures, evaluation |
+| Synthesis | `utils/synthesis/` | Claims-with-citations composer (always deterministic) + unconditional verifier; the LLM seam rewrites narrative prose only |
+| Evaluation | `utils/evaluation/`, `utils/specialists/evalset/` | Component + end-to-end scorers, the 120-question golden catalogue, the golden-eval harness |
 
 Supported agents: Claude Code (`.claude/skills/`), OpenAI Codex (`.agents/skills/`), Cursor (`.cursor/rules/`). Agent folders are pointers only — never duplicate instructions outside `docs/skills/`.
 
 ## Operational Rules
 
-1. **ALWAYS commit AND push to GitHub at every step of the plan — this is mandatory, not optional.** After each step's changes are made and validations pass, immediately `git commit` and `git push` to the GitHub remote. Do not batch multiple steps into one commit and do not leave work unpushed. Every completed step must end with a pushed commit on GitHub.
-2. After all testing is complete for a set of changes, ensure they are committed and pushed to GitHub (no local-only work should remain).
+1. **ALWAYS commit at every step of the plan — this is mandatory, not optional.** After each step's changes are made and validations pass, immediately `git commit`. Do not batch multiple steps into one commit. **Do not `git push`** unless the operator explicitly asks for it in the current session; this repository is worked locally and pushing is the operator's call.
+2. After all testing is complete for a set of changes, ensure they are committed (no uncommitted work should remain in the tree).
 3. If working on a separate branch/worktree and EVERYTHING IS FUNCTIONAL 100%, then merge onto the main branch.
-4. **Always** append a new entry to `docs/changelog.jsonl` for every change — no matter how small or what type (code, docs, config, tests, skills). No change ships without a changelog entry. Each entry is simplistic jsonl recording when the change was made and a high-level overview of what was changed and why (preferably 2-4 sentences AT MAX).
-5. If changes are made to the webfront, always ensure that `npm run build` are executed to ensure that everything compiles/runs correctly.
+4. **Never edit files under `docs/research/` or `docs/plans/` in place.** They are dated historical records; write a new file instead.
+5. **Always** append a new entry to `docs/changelog.jsonl` for every change — no matter how small or what type (code, docs, config, tests, skills). No change ships without a changelog entry. Each entry is simplistic jsonl recording when the change was made and a high-level overview of what was changed and why (preferably 2-4 sentences AT MAX).
+6. If changes are made to the webfront, always ensure that `npm run build` are executed to ensure that everything compiles/runs correctly.
 
 ## Commands
+
+The complete, verified command reference is [`docs/commands.md`](../../commands.md).
+The subset below is what most changes need.
 
 ```bash
 # Install
@@ -102,5 +107,11 @@ One JSON object per line in `docs/changelog.jsonl`:
 | Planner | `docs/skills/planner/SKILL.md` |
 | Accessibility mobile | `docs/skills/accessibility-mobile/SKILL.md` |
 | ADA compliance | `docs/skills/ada-compliance/SKILL.md` |
+| Portfolio README | `docs/skills/portfolio-readme/SKILL.md` |
 
 Implementation plans go in `docs/plans/` when needed.
+
+Every skill listed above has exactly one pointer in each of `.claude/skills/`,
+`.agents/skills/`, and `.cursor/rules/`, and the pointers contain no
+instructions of their own. Parity is enforced by
+`utils/specialists/tests/test_docs_contracts.py`.
