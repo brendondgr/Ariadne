@@ -216,6 +216,15 @@ Component-level evaluation (`--component-eval`) and end-to-end evaluation (`--e2
 | [`docs/evaluation/README.md`](docs/evaluation/README.md) | Which evaluation report is current, and what each measures |
 | [`docs/research/audit-2026-08-03.md`](docs/research/audit-2026-08-03.md) | External research audit: novelty, positioning, blocking gaps |
 | [`docs/skills/global-project-rules/SKILL.md`](docs/skills/global-project-rules/SKILL.md) | Agent workflow rules (read first) |
+| [`NOTICE`](NOTICE) | MITRE ATT&CK® and CAPEC™ attribution, licence text, and the pinned dataset versions |
+
+## Data attribution
+
+Ariadne is built on MITRE ATT&CK® and MITRE CAPEC™, used under their respective
+terms of use. The required attribution, the licence and disclaimer text, and the
+exact snapshots in use (ATT&CK 19.0, CAPEC 3.9, with SHA256 pins) are in
+[`NOTICE`](NOTICE). Ariadne is not affiliated with or endorsed by The MITRE
+Corporation.
 
 ## Team
 
