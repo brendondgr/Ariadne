@@ -241,3 +241,36 @@ The tag necessarily precedes those two edits and this log entry — a commit
 cannot contain its own SHA. What the tag freezes is the code and the evaluation
 record, which is what the holdout is measured against; the audit trail after it
 is documentation only.
+
+Commit `623a047`.
+
+### Task 12 — Self-verification — 2026-08-05T01:55
+
+`_overnight/verification.md`. All three required re-derivations were done from
+the raw files by a *different* method from the one that produced
+`numbers.json` — plain `grep` over the file text rather than the JSON and AST
+parsers — and all three agree exactly:
+
+| Figure | numbers.json | Re-derived |
+|---|---|---|
+| Arm G mean correctness | 0.638833 | 0.638833 (sum 76.66, n=120) |
+| Arm A evidence records | 1,061 | 1,061 over 120 files |
+| Distinct templates | 25 | 25 |
+
+`git diff freeze/holdout-v1 -- utils/specialists/` is empty. The Task 8 range
+(`a509f63 → freeze/holdout-v1`) was verified AST-identical after stripping
+docstrings.
+
+All twelve prohibitions re-checked and listed in `verification.md` §4.
+
+### Not done — and why
+
+Nothing in the plan was skipped. Two things were deliberately *not* extended
+beyond it:
+
+- **"seven-arm study" was not rewritten to "eight-arm"** across the six other
+  documents that use the phrase. Arm G moves a variable the original matrix held
+  fixed, so calling it a cell of that matrix is a framing decision, not a
+  mechanical correction.
+- **The `.gitignore` hunk was not reverted.** Reverting an uncommitted local
+  change is destructive to operator state; it is recorded as Q1 instead.

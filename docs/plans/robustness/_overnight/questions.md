@@ -94,6 +94,21 @@ the same treatment; a grep at the time of writing found none.
 
 ---
 
+## Q5 — `checkin-pitch.md` carried the pre-fix Arm A cost figures
+
+**Found:** Task 6. `docs/pitch/checkin-pitch.md` is a pitch document with a human
+author, and Task 2 says to commit it without editing its contents. Task 6 then
+requires correcting a number inside it.
+
+**What was done:** Task 2 committed it verbatim, and Task 6 corrected only the
+figure the plan names (2.6 → 1.6 seconds) in a separate commit, so the edit
+reads as a diff against the original rather than disappearing into the import.
+
+**Decision needed:** none, unless the author would rather a pitch document were
+annotated than corrected in place.
+
+---
+
 ## Q3 — The local model's quantisation is unknown
 
 **Found:** Task 10. The evaluation record can now name the model but not how it
