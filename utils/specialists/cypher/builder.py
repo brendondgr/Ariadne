@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Deterministic Cypher query builder for the MITRE ATT&CK / Neo4j specialist.
 
-Picks one of fifteen intent templates based on the resolved task and always
+Picks one of seventeen templates based on the resolved task and always
 produces a query that will pass ``CypherValidator`` by construction — real
 card labels/edges, parameterised values, an explicit LIMIT placeholder.
 """
@@ -125,15 +125,24 @@ def _all_subtechnique(ids: tuple[str, ...]) -> bool:
 class CypherQueryBuilder:
     """Drafts a bounded Cypher query from a resolved task.
 
-    The fifteen intent templates — ``technique_detection``,
-    ``technique_mitigations``, ``campaign_attribution``, ``campaign_techniques``,
-    ``group_techniques``, ``subtechnique_parent``, ``software_techniques``,
+    Seventeen template identifiers are declared here.  Fifteen are reachable
+    from :meth:`build` — ``technique_detection``, ``technique_mitigations``,
+    ``campaign_attribution``, ``campaign_techniques``, ``group_techniques``,
+    ``subtechnique_parent``, ``software_techniques``,
     ``tactic_technique_mitigations``, ``technique_tactics``,
-    ``tactic_techniques``, ``datacomponent_analytics``, ``node_lookup``,
-    ``node_dossier``, ``node_dossier_by_name``, and ``label_scan`` — cover the
-    common ATT&CK query patterns.  The builder picks deterministically;
-    ``feedback`` from a failed gate attempt is accepted but the deterministic
-    path should already pass without needing it.
+    ``tactic_techniques``, ``datacomponent_analytics``, ``describe``,
+    ``describe_by_name``, ``generic_neighbors`` and ``label_scan`` — and cover
+    the common ATT&CK query patterns.  ``expand`` is reached only from
+    :meth:`expand`, the separate paging compiler.  ``node_lookup`` has no
+    caller at all.
+
+    ``describe``/``describe_by_name`` replaced the former ``node_dossier`` and
+    ``node_dossier_by_name`` templates; ``generic_neighbors`` is emitted only
+    under ``SPECIALIST_GENERIC_ONLY``.
+
+    The builder picks deterministically; ``feedback`` from a failed gate
+    attempt is accepted but the deterministic path should already pass without
+    needing it.
     """
 
     def build(
@@ -392,6 +401,9 @@ class CypherQueryBuilder:
             meta={"seed_ids": seed_ids},
         )
 
+    # Dead: no production caller — `build()` routes every seeded task to
+    # `_describe`, which returns the full record instead of this id/name pair.
+    # Kept rather than deleted; removing it is a behavioural change.
     def _node_lookup(self, resolved: ResolvedTask) -> QueryDraft:
         """MATCH (n:<Label>) WHERE n.attack_id IN $ids RETURN id and name."""
         label = resolved.primary_label() or "Technique"

@@ -142,11 +142,23 @@ class GremlinQueryBuilder:
         """Draft a bounded Gremlin query from *resolved* task context.
 
         Chooses template in priority order:
-          1. capec_maps_to  — join_key is set (ATT&CK join)
-          2. capec_lookup   — seed CAPEC ids present, no neighbour relationship
-          3. capec_neighbors — seed ids + neighbour relationship in scope
-          4. capec_dossier_by_name — seedless definitional name lookup
-          5. capec_scan     — fallback: scan by primary label
+          1. capec_hierarchy_chain — seeds + two or more ``ChildOf`` entities
+          2. capec_neighbors / capec_facets — CAPEC-seeded, neighbour
+             relationships in scope, and no mapping intent: one rel takes
+             ``capec_neighbors``, several take ``capec_facets``
+          3. join branch, when a join key is declared —
+             cwe_chain (CWE-shaped seeds), capec_reverse_maps (ATT&CK-shaped
+             seeds), else capec_maps_to
+          4. describe — any remaining seeded task
+          5. describe_by_name — seedless *definitional* question naming an
+             entity (both emitted by :meth:`_describe`, which picks by whether
+             seeds are present)
+          6. capec_scan — fallback: scan by primary label
+
+        ``capec_lookup`` was subsumed by ``describe`` and has no caller;
+        ``capec_dossier_by_name`` was replaced by ``describe_by_name``.
+        Under ``SPECIALIST_GENERIC_ONLY`` the cascade is bypassed entirely for
+        the generic-primitives branch below.
         """
         has_seeds = bool(resolved.seed_ids)
         has_join = resolved.has_join or resolved.join_key == "attack-technique-id"
@@ -240,6 +252,10 @@ class GremlinQueryBuilder:
             meta=request.to_dict(),
         )
 
+    # Dead: no production caller — `build()` routes every seeded task to
+    # `_describe`, which subsumes this shape. Still referenced by
+    # `utils/specialists/tests/test_gremlin_validator.py:215`, so it is kept
+    # rather than deleted; removing it is a behavioural change, not tidying.
     def _capec_lookup(self, resolved: ResolvedTask) -> QueryDraft:
         ids = [_capec_gremlin_id(s) for s in resolved.seed_ids]
         lim = resolved.task.max_rows()
