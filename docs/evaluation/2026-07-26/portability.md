@@ -69,12 +69,23 @@ Counted, not estimated:
 
 | Asset | Count | Notes |
 |---|---|---|
-| Named query templates | **24 total**, of which ~**19 are MITRE-specific** | `capec_maps_to`, `technique_mitigations`, `group_techniques`, `cwe_chain`, `subtechnique_parent`, … |
-| Generic templates (survive as-is) | **5** | `describe`, `describe_by_name`, `expand`, `label_scan`, `node_lookup` |
+| Named query templates | **25 distinct identifiers**, of which **19 are exercised by the 120-question bank** and **19 are MITRE-specific** | 17 declared in the Cypher builder, 11 in the Gremlin builder, `describe` / `describe_by_name` / `expand` in both. `capec_maps_to`, `technique_mitigations`, `group_techniques`, `cwe_chain`, `subtechnique_parent`, … |
+| Generic templates (survive as-is) | **6** | `describe`, `describe_by_name`, `expand`, `label_scan`, `node_lookup`, `generic_neighbors` |
 | Id-shape regexes | ~6 | `T\d{4}`, `CAPEC-\d+`, `CWE-\d+`, `M\d{4}`, plus the Gremlin composite forms |
 | Canonical join keys | 1 | `attack-technique-id` (CAPEC↔ATT&CK bridge) |
 | Relationship→noun map (`_REL_NOUNS`) | ~16 entries | Degrades gracefully to the neighbour label if unmapped |
 | Golden catalogue | 120 questions | Hand-authored against MITRE |
+
+> The two 19s are a coincidence, not the same set. **19 exercised** is the count
+> of distinct `expected_template` values in the three question banks; **19
+> MITRE-specific** is 25 minus the six generic templates. `describe` and
+> `label_scan` are generic *and* exercised; `capec_facets` is MITRE-specific and
+> *not* exercised. Both figures, and the per-template breakdown, are derived
+> mechanically in
+> [`_overnight/numbers.json`](../../plans/robustness/_overnight/numbers.json)
+> under `templates` — see
+> [`_overnight/derive_templates.py`](../../plans/robustness/_overnight/derive_templates.py)
+> for the derivation.
 
 ---
 
