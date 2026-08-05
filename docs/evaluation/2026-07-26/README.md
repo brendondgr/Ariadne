@@ -335,12 +335,16 @@ Recorded so the numbers are not over-read.
 * **Arm A's 120/120 splices two judge runs** — 118 verdicts from the pre-scan-fix
   run plus 2 re-judged — justified only because the other 118 artifacts were
   verified materially identical.
-* **One model, one day.** `skynet` (vLLM). An earlier Arm B on the relay's other
-  model ran ~6× slower and was discarded. Nothing here generalises to other
-  models without re-running.
+* **One model, one day.** `skynet` (vLLM) — **Gemma 4 31B**. An earlier Arm B on
+  the relay's other model ran ~6× slower and was discarded. Nothing here
+  generalises to other models without re-running. The quantisation and the
+  served context window are **unrecorded**; see
+  [`../README.md`](../README.md) for what is and is not known about this model.
 * **Two questions overflow the context.** C-SCN-01 (558 records) and F-CWE-05
-  (1,470 records) exceed skynet's 64k window under the un-truncation profile and
-  fall back to the deterministic narrative.
+  (1,470 records) exceed the served window under the un-truncation profile and
+  fall back to the deterministic narrative. *(This previously read "skynet's 64k
+  window". That figure was an estimate, never verified against the server —
+  corrected 2026-08-04. The overflow is observed; its exact threshold is not.)*
 
 ### Method traps worth remembering
 

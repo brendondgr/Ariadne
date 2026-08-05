@@ -9,7 +9,7 @@ quoted out of the run that produced it.
 | Report | What it measures | How to regenerate |
 |---|---|---|
 | [`2026-07-26/README.md`](2026-07-26/README.md) | **The standing record.** Seven full runs over the 120-question catalogue, each answer graded by an independent Sonnet 5 agent. Deterministic planning + deterministic synthesis (Arm A) scores 0.9972 / 120 CORRECT / zero hallucinations; LLM planning is the largest single regression. Also lists the eight defects found and fixed, and the limitations. | `utils/evaluation/experiment_untruncated.py` per arm, then the judge workflow — see §6 of that file |
-| [`2026-07-26/portability.md`](2026-07-26/portability.md) | What survives a dataset that isn't MITRE: which layers are schema-agnostic and which of the 24 query templates are MITRE-specific. | Audit, not a run |
+| [`2026-07-26/portability.md`](2026-07-26/portability.md) | What survives a dataset that isn't MITRE: which layers are schema-agnostic and which of the 25 distinct query templates are MITRE-specific. | Audit, not a run |
 | [`component-evaluation.md`](component-evaluation.md) / `.json` | Planner (source selection, sub-question quality, schema adherence) and specialists (query validity, execution accuracy vs snapshot gold, safety adherence, latency). Deterministic; no LLM judge. | `uv run main.py --component-eval` |
 | [`e2e-evaluation.md`](e2e-evaluation.md) / `.json` | The four `goals.md` end-to-end metrics — cross-source answer accuracy, CAPEC→ATT&CK mapping recall, provenance correctness, analyst inspectability — plus the opt-in LLM judge. | `uv run main.py --e2e-eval [--judge]` |
 | [`answers/`](answers/) | The 120 saved end-to-end answers and their judgments backing `e2e-evaluation.md`. | `uv run main.py --e2e-generate` |
@@ -31,6 +31,39 @@ LLM plans from raw question text and a local LLM grades correctness — so its
 lower pass rate is measuring the LLM-planned arm, not the deterministic one, and
 is consistent with the 2026-07-26 finding rather than in tension with it.
 Regenerate it rather than citing a stale copy.
+
+## The model behind `skynet`
+
+Every report above that says `skynet` means one model, and the repository never
+named it. It is:
+
+| Field | Value | Source |
+|---|---|---|
+| Model | **Gemma 4 31B** | Operator, 2026-08-04 |
+| Served by | vLLM, OpenAI-compatible endpoint on the local relay | `.env` (`*_BASE_URL`) |
+| Quantisation | **Unknown** | — |
+| Context window | **Unknown** | — |
+
+The last two are genuinely open and are recorded as unknown rather than guessed.
+They are tracked in
+[`../plans/robustness/_overnight/questions.md`](../plans/robustness/_overnight/questions.md)
+as Q3 and Q4.
+
+**On the context window specifically**, the repository has given three different
+answers, none of them authoritative. They are listed here so the history stays
+visible and so none of them gets quoted as settled:
+
+| Figure | Where it appeared | What it actually was |
+|---|---|---|
+| "unknown from the client side" | [`../plans/answer-truncation-fix-plan.md`](../plans/answer-truncation-fix-plan.md) | The honest answer, and still the correct one |
+| "~64k" | [`2026-07-26/README.md`](2026-07-26/README.md) (limitations) | An estimate, never verified against the server |
+| `48000` | `.env` (`EVAL_LLM_NUM_CTX`, `SKYNET_NUM_CTX`, and two comments) | A **client request**, not a server capability — what the client asks for, which the server may cap lower |
+
+A client-side `num_ctx` request and a served `max_model_len` are different
+numbers, and only the second one is the context window. Until someone reads it
+off the model server, quote none of the three: say the window is unrecorded and
+that two questions (C-SCN-01, F-CWE-05) overflowed it under the un-truncation
+profile, which is an observation that does not depend on knowing its size.
 
 ## Reading rule
 

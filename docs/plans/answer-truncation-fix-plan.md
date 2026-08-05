@@ -53,6 +53,9 @@ each phase lands as its own validated, locally-committed unit (commit, never pus
   `completion_tokens` / `finish_reason` in logs so the operator can see when the
   window (not `max_tokens`) is the binding constraint; raising the server's
   context length is an operator action, documented in `.env.example`.
+  *(2026-08-04: still unknown, and this is the reading the repository has
+  settled on. `skynet` is Gemma 4 31B; the served window and the quantisation
+  are recorded as open in [`../evaluation/README.md`](../evaluation/README.md).)*
 
 ## 3. Hierarchical Step-by-Step Instructions
 
