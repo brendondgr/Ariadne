@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 0.95,
+  "groundedness": 1.0,
+  "completeness": 0.15,
+  "gold_expected": 13,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "The question's core ask is which ATT&CK techniques CAPEC-13/CAPEC-640 map to and what mitigations apply to the deduplicated union. Gold requires 5 correlated T-numbers (T1505.005, T1574.006, T1574.007, T1574.013, T1620) and 6 ATT&CK mitigations (M1022, M1024, M1028, M1038, M1040, M1047). The evidence shows the retrieval pipeline never actually resolved these: q5/q6 (MAPS_TO from CAPEC-13/640) only returned facet counts (MAPS_TO out-degree 3 and 4 respectively) with empty 'related' arrays -- the actual TaxonomyEntry/T-number nodes were never fetched -- and both CAPEC records' join_values are empty, so the dependent attack sub-question (q2/mitigations) was skipped twice ('producer q1/q6: it returned no join values' / 'it was not run'). deterministic_scores confirms this: mapping_recall.found=0, missing all 5 T-numbers, correlation.n_got=0. The answer (narrative + claims) correctly surfaces the 2 CAPEC ids (CAPEC-13, CAPEC-640), their Status/Abstraction, their CAPEC-side mitigation lists (4 for CAPEC-13, 7 for CAPEC-640 -- all grounded in the q3/q4 evidence), and CanPrecede/ChildOf relations (CAPEC-14, CAPEC-77, grounded in q7/q8). It honestly abstains on the ATT&CK side rather than fabricating anything, so there are no hallucinations and groundedness/faithfulness are high. But because zero of the 5 required T-numbers and zero of the 6 required ATT&CK mitigations (M1022/M1024/M1028/M1038/M1040/M1047) are surfaced, the answer fails the central question entirely -- only 2 of 13 unique gold-required ids (the two CAPEC ids) are present. This is a retrieval/plan defect (MAPS_TO neighbor expansion and join-value propagation both failed) masquerading as a well-cited partial answer; per the grading rubric, an answer that omits the entire correlate/attack requirement set is INCORRECT despite being faithful to what little it did retrieve."
+}

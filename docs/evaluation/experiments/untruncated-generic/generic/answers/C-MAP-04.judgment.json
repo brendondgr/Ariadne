@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-04",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.5,
+  "gold_expected": 2,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question asks which ATT&CK techniques CAPEC-70 maps to, and gold requires must_include_related T1078.001 via the MAPS_TO/TaxonomyEntry join. The retrieval (sub-question q2, 'list all TaxonomyEntry reached from CAPEC-70 via MAPS_TO') ran but its record's 'related' array is empty -- only the CAPEC-70 node's own facet count (MAPS_TO out=1) was captured, the actual TaxonomyEntry/ATT&CK-technique node was never expanded into evidence. Consequently the answer (narrative and claims, since this is the deterministic composer) never mentions any ATT&CK technique or T1078.001 at all; it substitutes unrelated but accurate CAPEC-internal facts (Abstraction: Detailed, Status: Draft, 5 CanPrecede successors CAPEC-151/560/561/600/653, 1 ChildOf parent CAPEC-49). None of that addresses the question asked. The pipeline's own deterministic_scores.coverage block confirms the gap: gold=2, found=1, missing=['T1078.001']. Of the two gold-required ids (CAPEC-70, T1078.001), only CAPEC-70 is surfaced -> completeness 0.5. Every statement actually made is grounded in the retrieved records/facets (faithfulness/groundedness 1.0, no hallucinations), but correctness is very low because the answer fails to surface the one thing the question and gold require, and does not abstain to flag the gap either."
+}

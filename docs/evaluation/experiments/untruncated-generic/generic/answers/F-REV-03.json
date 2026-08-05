@@ -1,0 +1,694 @@
+{
+  "id": "F-REV-03",
+  "kind": "federated",
+  "tier": "medium",
+  "category": "F-REV",
+  "question": "Which CAPEC patterns map to ATT&CK technique T1110.001 (Password Guessing), and what is that technique?",
+  "gold": {
+    "assertions": {
+      "must_correlate": [
+        "T1110.001"
+      ],
+      "capec": {
+        "min_records": 1,
+        "must_include_ids": [
+          "CAPEC-49"
+        ],
+        "must_include_related": [
+          "T1110.001"
+        ]
+      },
+      "attack": {
+        "min_records": 1,
+        "max_records": 1,
+        "must_include_ids": [
+          "T1110.001"
+        ],
+        "expect_names": {
+          "T1110.001": "Password Guessing"
+        }
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 1
+  },
+  "answer": {
+    "headline": "Gathered 3 record(s) from 2 source(s); 1 question(s) the sources don't establish.",
+    "narrative": "ATT&CK technique T1110.001 is Password Guessing, which has a stix_type of attack-pattern, x_mitre_version 1.7, is a subtechnique (x_mitre_is_subtechnique: True), and is neither revoked (revoked: False) nor deprecated (x_mitre_deprecated: False). It is associated with 1 Tactic, TA0006 (Credential Access), and 1 Technique, T1110 (Brute Force). The capec source doesn't establish which CAPEC patterns map to T1110.001 because the executed query ran cleanly and returned no matching records.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found ATT&CK record T1110.001: Password Guessing.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1110.001"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1110.001"
+          }
+        ]
+      },
+      {
+        "text": "T1110.001 (Password Guessing) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 1.7.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1110.001"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1110.001"
+          }
+        ]
+      },
+      {
+        "text": "Found 1 item(s) related to T1110.001 (e.g. TA0006) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1110.001"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1110.001"
+          }
+        ]
+      },
+      {
+        "text": "T1110.001 (Password Guessing) has 1 Tactics: TA0006.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "TA0006"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1110.001"
+          }
+        ]
+      },
+      {
+        "text": "Found 1 item(s) related to T1110.001 (e.g. T1110) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1110.001"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1110.001"
+          }
+        ]
+      },
+      {
+        "text": "T1110.001 (Password Guessing) has 1 Techniques: T1110.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "T1110"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1110.001"
+          }
+        ]
+      }
+    ],
+    "abstentions": [
+      {
+        "source": "capec",
+        "statement": "The capec source doesn't establish this — the executed query ran cleanly and returned no matching records for: Which CAPEC patterns map to ATT&CK technique T1110.001?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(20000)"
+      }
+    ],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which CAPEC patterns map to ATT&CK technique T1110.001?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What is ATT&CK technique T1110.001?",
+        "seed_from": null
+      }
+    ],
+    "sequenced": false,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Which CAPEC patterns map to ATT&CK technique T1110.001?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(20000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "No CAPEC records found.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1110.001"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(20000)",
+              "injected": [],
+              "timing_ms": 0.101
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0,
+              "timing_ms": 4.0
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0,
+              "empty_with_seeds": [
+                "T1110.001"
+              ],
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 0,
+              "timing_ms": 0.003
+            }
+          }
+        ],
+        "records": []
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "What is ATT&CK technique T1110.001?",
+        "query": "MATCH (n:SubTechnique) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 20000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found ATT&CK record T1110.001: Password Guessing.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "SubTechnique"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1110.001"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "MATCH (n:SubTechnique) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 20000",
+              "injected": [
+                "LIMIT 20000 appended (none present)"
+              ],
+              "timing_ms": 0.126
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 49.3
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.194
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1110.001",
+            "name": "Password Guessing",
+            "label": "SubTechnique",
+            "description": "Adversaries with no prior knowledge of legitimate credentials within the system or environment may guess passwords to attempt access to accounts. Without knowledge of the password for an account, an adversary may opt to systematically guess the password using a repetitive or iterative mechanism. An adversary may guess login credentials without prior knowledge of system or environment passwords during an operation by using a list of common passwords. Password guessing may or may not take into account the target's policies on password complexity or use policies that may lock accounts out after a number of failed attempts.\n\nGuessing passwords can be a risky option because it could cause numerous authentication failures and account lockouts, depending on the organization's login failure policies. (Citation: Cylance Cleaver)\n\nTypically, management services over commonly used ports are used when guessing passwords. Commonly targeted services include the following:\n\n* SSH (22/TCP)\n* Telnet (23/TCP)\n* FTP (21/TCP)\n* NetBIOS / SMB / Samba (139/TCP & 445/TCP)\n* LDAP (389/TCP)\n* Kerberos (88/TCP)\n* RDP / Terminal Services (3389/TCP)\n* HTTP/HTTP Management Services (80/TCP & 443/TCP)\n* MSSQL (1433/TCP)\n* Oracle (1521/TCP)\n* MySQL (3306/TCP)\n* VNC (5900/TCP)\n* SNMP (161/UDP and 162/TCP/UDP)\n\nIn addition to management services, adversaries may \"target single sign-on (SSO) and cloud-based applications utilizing federated authentication protocols,\" as well as externally facing email applications, such as Office 365.(Citation: US-CERT TA18-068A 2018). Further, adversaries may abuse network device interfaces (such as `wlanAPI`) to brute force accessible wifi-router(s) via wireless authentication protocols.(Citation: Trend Micro Emotet 2020)\n\nIn default environments, LDAP and Kerberos connection attempts are less likely to trigger events over SMB, which creates Windows \"logon failure\" event ID 4625.",
+            "properties": {
+              "attack_id": "T1110.001",
+              "description": "Adversaries with no prior knowledge of legitimate credentials within the system or environment may guess passwords to attempt access to accounts. Without knowledge of the password for an account, an adversary may opt to systematically guess the password using a repetitive or iterative mechanism. An adversary may guess login credentials without prior knowledge of system or environment passwords during an operation by using a list of common passwords. Password guessing may or may not take into account the target's policies on password complexity or use policies that may lock accounts out after a number of failed attempts.\n\nGuessing passwords can be a risky option because it could cause numerous authentication failures and account lockouts, depending on the organization's login failure policies. (Citation: Cylance Cleaver)\n\nTypically, management services over commonly used ports are used when guessing passwords. Commonly targeted services include the following:\n\n* SSH (22/TCP)\n* Telnet (23/TCP)\n* FTP (21/TCP)\n* NetBIOS / SMB / Samba (139/TCP & 445/TCP)\n* LDAP (389/TCP)\n* Kerberos (88/TCP)\n* RDP / Terminal Services (3389/TCP)\n* HTTP/HTTP Management Services (80/TCP & 443/TCP)\n* MSSQL (1433/TCP)\n* Oracle (1521/TCP)\n* MySQL (3306/TCP)\n* VNC (5900/TCP)\n* SNMP (161/UDP and 162/TCP/UDP)\n\nIn addition to management services, adversaries may \"target single sign-on (SSO) and cloud-based applications utilizing federated authentication protocols,\" as well as externally facing email applications, such as Office 365.(Citation: US-CERT TA18-068A 2018). Further, adversaries may abuse network device interfaces (such as `wlanAPI`) to brute force accessible wifi-router(s) via wireless authentication protocols.(Citation: Trend Micro Emotet 2020)\n\nIn default environments, LDAP and Kerberos connection attempts are less likely to trigger events over SMB, which creates Windows \"logon failure\" event ID 4625.",
+              "id": "attack-pattern--09c4c11e-4fa1-4f8c-8dad-3cf8e69ad119",
+              "name": "Password Guessing",
+              "revoked": false,
+              "stix_type": "attack-pattern",
+              "x_mitre_deprecated": false,
+              "x_mitre_is_subtechnique": true,
+              "x_mitre_platforms": [
+                "Containers",
+                "ESXi",
+                "IaaS",
+                "Identity Provider",
+                "Linux",
+                "macOS",
+                "Network Devices",
+                "Office Suite",
+                "SaaS",
+                "Windows"
+              ],
+              "x_mitre_version": "1.7",
+              "_omitted_properties": [
+                "external_references"
+              ]
+            },
+            "facets": [
+              {
+                "rel": "DETECTS",
+                "direction": "in",
+                "neighbour_label": "DetectionStrategy",
+                "count": 1
+              },
+              {
+                "rel": "HAS_SUBTECHNIQUE",
+                "direction": "in",
+                "neighbour_label": "Technique",
+                "count": 1
+              },
+              {
+                "rel": "HAS_TECHNIQUE",
+                "direction": "in",
+                "neighbour_label": "Tactic",
+                "count": 1
+              },
+              {
+                "rel": "MITIGATES",
+                "direction": "in",
+                "neighbour_label": "Mitigation",
+                "count": 4
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Campaign",
+                "count": 0
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Group",
+                "count": 3
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Software",
+                "count": 9
+              }
+            ],
+            "join_values": [
+              "T1110.001"
+            ],
+            "related": []
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q3",
+        "sub_question": "In attack, list all Tactic reached from T1110.001 via HAS_TECHNIQUE",
+        "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r:HAS_TECHNIQUE]-(m) RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(m.attack_id, m.id) AS neighbour_id, m.name AS neighbour_name, labels(m)[0] AS neighbour_label, type(r) AS rel_type LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 item(s) related to T1110.001 (e.g. TA0006) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Tactic"
+              ],
+              "relationships": [
+                "HAS_TECHNIQUE"
+              ],
+              "seed_ids": [
+                "T1110.001"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "generic_neighbors",
+              "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r:HAS_TECHNIQUE]-(m) RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(m.attack_id, m.id) AS neighbour_id, m.name AS neighbour_name, labels(m)[0] AS neighbour_label, type(r) AS rel_type LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.111
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 4.6
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.005
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 1.791
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1110.001",
+            "name": "Password Guessing",
+            "label": "SubTechnique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1110.001"
+            ],
+            "related": [
+              {
+                "id": "TA0006",
+                "name": "Credential Access",
+                "label": "Tactic",
+                "type": "HAS_TECHNIQUE",
+                "description": "The adversary is trying to steal account names and passwords.\n\nCredential Access consists of techniques for stealing credentials like account names and passwords. Techniques used to get credentials include keylogging or credential dumping. Using legitimate credentials can give adversaries access to systems, make them harder to detect, and provide the opportunity to create more accounts to help achieve their goals."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q4",
+        "sub_question": "In attack, list all Technique reached from T1110.001 via HAS_SUBTECHNIQUE",
+        "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r:HAS_SUBTECHNIQUE]-(m) RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(m.attack_id, m.id) AS neighbour_id, m.name AS neighbour_name, labels(m)[0] AS neighbour_label, type(r) AS rel_type LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 item(s) related to T1110.001 (e.g. T1110) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique"
+              ],
+              "relationships": [
+                "HAS_SUBTECHNIQUE"
+              ],
+              "seed_ids": [
+                "T1110.001"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "generic_neighbors",
+              "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r:HAS_SUBTECHNIQUE]-(m) RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(m.attack_id, m.id) AS neighbour_id, m.name AS neighbour_name, labels(m)[0] AS neighbour_label, type(r) AS rel_type LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.106
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 36.2
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.008
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 2.436
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1110.001",
+            "name": "Password Guessing",
+            "label": "SubTechnique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1110.001"
+            ],
+            "related": [
+              {
+                "id": "T1110",
+                "name": "Brute Force",
+                "label": "Technique",
+                "type": "HAS_SUBTECHNIQUE",
+                "description": "Adversaries may use brute force techniques to gain access to accounts when passwords are unknown or when password hashes are obtained.(Citation: TrendMicro Pawn Storm Dec 2020) Without knowledge of the password for an account or set of accounts, an adversary may systematically guess the password using a repetitive or iterative mechanism.(Citation: Dragos Crashoverride 2018) Brute forcing passwords can take place via interaction with a service that will check the validity of those credentials or offline against previously acquired credential data, such as password hashes.\n\nBrute forcing credentials may take place at various points during a breach. For example, adversaries may attempt to brute force access to [Valid Accounts](https://attack.mitre.org/techniques/T1078) within a victim environment leveraging knowledge gathered from other post-compromise behaviors such as [OS Credential Dumping](https://attack.mitre.org/techniques/T1003), [Account Discovery](https://attack.mitre.org/techniques/T1087), or [Password Policy Discovery](https://attack.mitre.org/techniques/T1201). Adversaries may also combine brute forcing activity with behaviors such as [External Remote Services](https://attack.mitre.org/techniques/T1133) as part of Initial Access. \n\nIf an adversary guesses the correct password but fails to login to a compromised account due to location-based conditional access policies, they may change their infrastructure until they match the victim’s location and therefore bypass those policies.(Citation: ReliaQuest Health Care Social Engineering Campaign 2024)"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": false,
+      "exact": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "n_expected": 1,
+      "n_got": 0
+    },
+    "mapping_recall": {
+      "gold": 1,
+      "found": 0,
+      "recall": 0.0,
+      "missing": [
+        "T1110.001"
+      ]
+    },
+    "coverage": null,
+    "provenance": {
+      "citations": 6,
+      "compliant": 6,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "generic",
+  "run_meta": {
+    "planner": "gold-plan (injected)",
+    "synthesis": "llm (claim-grounded)",
+    "loop": "facet-chasing",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "Which CAPEC patterns map to ATT&CK technique T1110.001?",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 20000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "What is ATT&CK technique T1110.001?",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 20000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q3",
+        "source": "attack",
+        "text": "In attack, list all Tactic reached from T1110.001 via HAS_TECHNIQUE",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q4",
+        "source": "attack",
+        "text": "In attack, list all Technique reached from T1110.001 via HAS_SUBTECHNIQUE",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 29.731
+  },
+  "evidence_volume": {
+    "results": 4,
+    "records": 3,
+    "related": 2
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-ABS-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.5,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.6666666666666666,
+  "gold_expected": 3,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "The question asks to walk the abstraction hierarchy up from CAPEC-16 and report both its standard ancestor and its meta ancestor. Gold requires must_include_ids=[CAPEC-16] and must_include_related=[CAPEC-49, CAPEC-112], i.e. the standard parent CAPEC-49 AND the meta pattern CAPEC-112 that CAPEC-49 itself belongs to. The retrieval (logic_flow.results[0].query) only executed a single-hop CHILD_OF traversal from CAPEC-16, returning CAPEC-49 as the sole related record; it never issued the second hop (CAPEC-49 -> CHILD_OF -> CAPEC-112) even though the task's entities list ['AttackPattern','ChildOf','ChildOf'] signals a two-hop question. Consequently CAPEC-112 is absent from the evidence entirely, and the answer/claims correctly report only 'one ChildOf parent: CAPEC-49' with no mention of a further meta ancestor and no abstention flagging the gap. Every stated fact (CAPEC-16 name, Status=Draft, Abstraction=Detailed, ChildOf CAPEC-49) is exactly supported by the retrieved record's properties/related array, so faithfulness and groundedness are both perfect (1.0) -- there is no fabrication. But the answer only surfaces 2 of the 3 gold-required ids (CAPEC-16, CAPEC-49; CAPEC-112 missing), matching the file's own deterministic_scores.coverage (gold=3, found=2, missing=[CAPEC-112]). Because the question explicitly asks for both standard AND meta ancestors and the answer supplies only the standard one with no acknowledgment of the missing meta level, this is a materially incomplete answer to the actual question -- PARTIAL, not CORRECT."
+}

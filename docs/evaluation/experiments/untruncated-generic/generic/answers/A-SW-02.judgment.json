@@ -1,0 +1,14 @@
+{
+  "case_id": "A-SW-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.75,
+  "faithfulness": 0.6,
+  "groundedness": 0.85,
+  "completeness": 1.0,
+  "gold_expected": 73,
+  "gold_present": 73,
+  "hallucinations": [
+    "Claim states 'S0154 (Cobalt Strike) has 109 used techniques' and enumerates all 109 related entity ids as techniques, but per the evidence's 'related' array only 73 of those 109 are Technique/SubTechnique records (29 Technique + 44 SubTechnique); the other 36 are 30 Group and 6 Campaign records that USE Cobalt Strike (the reverse relationship), not techniques Cobalt Strike uses. Labeling group/campaign ids like G0016 (APT29), G0096 (APT41), C0024 (SolarWinds Compromise) as 'used techniques' is an unsupported/incorrect characterization of the evidence."
+  ],
+  "rationale": "All 73 gold must_include_related ATT&CK technique ids (T1001.003 ... T1685) are present verbatim in the answer's enumeration claim and its entity_ids list, so completeness is a full 73/73 and the analyst's actual question ('which techniques does S0154 use') is answerable from the text. However, the single enumeration claim conflates two different relationship directions from the same flattened 'related' array (all edges typed generically 'USES'): the 73 real techniques used BY Cobalt Strike, plus 30 Groups and 6 Campaigns that use Cobalt Strike, and mislabels the combined set of 109 as '109 used techniques.' That is a factual mischaracterization not supported by the evidence (which distinguishes label:Technique/SubTechnique from label:Group/Campaign), and it would mislead an analyst skimming the narrative into thinking APT29, APT41, SolarWinds Compromise, etc. are ATT&CK techniques. Individual ids are still traceable to the retrieved record (S0154's related list), so groundedness is high, but faithfulness is penalized for the false aggregate claim and the technique/non-technique conflation. Net: PARTIAL — right answer buried in a mislabeled, noisier claim than the gold expects."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MIT-08",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids T1490 and must_include_related M1018, M1028, M1038, M1053. The answer's narrative and claims state 'Found ATT&CK record T1490: Inhibit System Recovery' and 'T1490 (Inhibit System Recovery) has 4 mitigated techniques: M1028, M1053, M1038, M1018' — all 4 gold mitigation ids plus the seed technique id are surfaced verbatim. Cross-checking against logic_flow.results[1].records[0].related confirms exactly these 4 Mitigation nodes (M1028 Operating System Configuration, M1053 Data Backup, M1038 Execution Prevention, M1018 User Account Management) reached via MITIGATES from T1490, matching the claim's entity_ids and citations. The T1490 attribute claim (revoked: False, stix_type: attack-pattern, x_mitre_deprecated: False, x_mitre_is_subtechnique: False, x_mitre_version: 1.6) also matches logic_flow.results[0].records[0].properties exactly. No counts, names, or ids appear in the answer that are absent from the evidence, so there is no fabrication despite the LLM narrator having failed over to the deterministic composer."
+}

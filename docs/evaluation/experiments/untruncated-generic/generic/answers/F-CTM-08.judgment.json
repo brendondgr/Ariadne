@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-08",
+  "verdict": "INCORRECT",
+  "correctness": 0.15,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.17,
+  "gold_expected": 6,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question asks which ATT&CK techniques CAPEC-644 maps to and what mitigations apply to those techniques. Gold requires T1550.002 (must_correlate, capec.must_include_related, attack.must_include_ids) and its ATT&CK mitigations M1018/M1026/M1051/M1052 (attack.must_include_related). Grepping the full artifact shows 'T1550' appears only inside the gold assertions block -- it is never retrieved into any record, related list, or claim (q1 and q5, the MAPS_TO queries, both return 'related': [] despite the facet showing MAPS_TO out-count=1, so the CAPEC->ATT&CK correlation was never materialized by retrieval). Consequently q2 (attack mitigations) had no seed and was skipped twice, and the answer explicitly abstains: 'The attack source does not establish the mapped ATT&CK techniques or their mitigations.' deterministic_scores confirms this independently: mapping_recall.found=0/1 (missing T1550.002) and correlation.n_got=0/1. The only gold entity the answer surfaces is CAPEC-644 itself (already a given, not really a 'mapping' result); it also correctly reports CAPEC-644's 5 CAPEC-side mitigations and 1 ChildOf parent (CAPEC-653), which are accurate per the evidence but not part of the gold assertions for this question. Because the retrieval never surfaced the technique id, the answer cannot state the required T1550.002 or any of M1018/M1026/M1051/M1052 -- this is not a negative case (gold min_records>=1, must_include_ids non-empty), so abstaining on the central ask is a failure, not the correct behavior. Faithfulness and groundedness are high (every claim is traceable to retrieved records/facets and the abstention is honestly worded, no fabricated technique or mitigation ids), but correctness and completeness are low since the answer misses the technique correlation and all four required mitigations -- the core of what was asked. gold_present=1 of gold_expected=6 (CAPEC-644, T1550.002, M1018, M1026, M1051, M1052)."
+}

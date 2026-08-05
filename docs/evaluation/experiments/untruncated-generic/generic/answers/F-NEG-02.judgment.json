@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty correlation for this adversarial negative case: no ATT&CK techniques stated for CAPEC-66 (expect_no_correlation/capec.expect_empty), and an explicit dependency-skip explanation on the ATT&CK side (attack.expect_dependency_skip). The answer's claims/narrative never assert any ATT&CK technique mapping, and correctly explain that q2 (ATT&CK mitigations) was skipped because its dependency q5 (CAPEC ChildOf traversal, the seed producer) 'was not run' / 'returned no join values' -- matching logic_flow results for sub_question_id q2 verbatim (traces show 'producer q5: it was not run' and 'producer q1: it returned no join values'). Notably, CAPEC-66's own facets show a MAPS_TO->TaxonomyEntry edge (count=1), and q4 retrieved that TaxonomyEntry node but its 'related' array came back empty (the describe template did not resolve the target's identity/label), so the answer correctly declines to name any ATT&CK technique from it rather than fabricating one -- exactly the restraint this adversarial case is testing. The three grounded claims it does make (CAPEC-66 exists with Abstraction=Standard/Status=Draft, and 3 mitigations capec:attack-pattern:66:mitigation:1/2/3) are all directly supported by the q1/q3 evidence records and are in-source additions, not fabricated correlations. No invented ids, counts, or names found anywhere in the narrative or claims."
+}

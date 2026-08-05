@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-10",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 0.9,
+  "groundedness": 0.9,
+  "completeness": 0.13,
+  "gold_expected": 8,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to state that CAPEC-652 maps to ATT&CK technique T1558 (must_correlate, capec.must_include_related, attack.must_include_ids) and to list T1558's ATT&CK mitigations M1015, M1026, M1027, M1041, M1043, M1047 (attack.must_include_related). None of these 8 required ids (only CAPEC-652 itself is present) appear anywhere in the answer or in the retrieved evidence: the logic_flow shows a q5 sub-question ('list all TaxonomyEntry reached from CAPEC-652 via MAPS_TO') was actually executed and returned CAPEC-652's node with a facet 'MAPS_TO count: 1' proving the T1558 edge exists in the graph, but the query used the generic 'describe' template (project node/out/in with only elementMap+label, no target-node fetch) instead of the 'capec_neighbors' template used for q3/q4, so the related TaxonomyEntry (T1558) itself was never fetched and no join value was produced. Consequently the downstream ATT&CK sub-question (mitigations for the mapped technique) was skipped entirely, and the narrative correctly reports this as an abstention ('The attack source doesn't establish the mapped ATT&CK techniques or their mitigations because the sub-question it depends on (q5) produced no seed identifiers'). Everything the answer does state (Abstraction: Standard, Status: Draft, the 7 CAPEC-native mitigations capec:attack-pattern:652:mitigation:1-7, and the ChildOf parent CAPEC-560) is faithfully grounded in the q1/q3/q4 evidence with no fabricated facts, aliases, or counts. But because this is a positive case (gold expects attack.min_records=1, not an abstention) and the pipeline's retrieval bug prevented the core deliverable of the question -- the ATT&CK technique mapping and its mitigations -- from ever being surfaced, the answer fails to answer the question asked despite being internally honest about what it could not establish. gold_present=1/8 (CAPEC-652 only)."
+}

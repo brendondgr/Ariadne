@@ -1,0 +1,12 @@
+{
+  "case_id": "C-DEP-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty: true, ex_gold.expected: []) since CAPEC-106 is deprecated/excluded at load. The retrieval query executed cleanly (execute step row_count: 0, records: []) and the pipeline correctly abstained: claims is empty, and the abstention statement accurately says the capec source returned no matching records for CAPEC-106, with an offer to name a different entity/id. No records or facts were fabricated, no ids were invented, and the narrative does not claim CAPEC-106 exists or has any properties. This matches the required negative-case behavior exactly."
+}

@@ -1,0 +1,732 @@
+{
+  "id": "F-NEG-05",
+  "kind": "federated",
+  "tier": "adversarial",
+  "category": "F-NEG",
+  "question": "Which ATT&CK techniques does CAPEC-16 (Dictionary-based Password Attack) map to, and what mitigations apply? (verified: NO mapping — the join must be an honest empty, never a fabricated correlation)",
+  "gold": {
+    "assertions": {
+      "must_correlate": [],
+      "expect_no_correlation": true,
+      "capec": {
+        "expect_empty": true
+      },
+      "attack": {
+        "expect_dependency_skip": true
+      }
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    },
+    "sources": [
+      "capec",
+      "attack"
+    ],
+    "hops": 2
+  },
+  "answer": {
+    "headline": "Gathered 3 record(s) from 2 source(s); 2 question(s) the sources don't establish.",
+    "narrative": "CAPEC-16 (Dictionary-based Password Attack) has a Status of Draft and an Abstraction of Detailed. It has 3 mitigations: capec:attack-pattern:16:mitigation:1, capec:attack-pattern:16:mitigation:2, and capec:attack-pattern:16:mitigation:3. CAPEC-16 has 5 CanPrecede successors: CAPEC-151, CAPEC-560, CAPEC-561, CAPEC-600, and CAPEC-653. The attack source does not establish ATT&CK mitigations because the sub-question it depends on (q5) produced no seed identifiers.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-16.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-16"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-16"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-16 (Dictionary-based Password Attack) has Abstraction: Detailed; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-16"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-16"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-16 (Dictionary-based Password Attack) has 3 mitigations: capec:attack-pattern:16:mitigation:1, capec:attack-pattern:16:mitigation:2, capec:attack-pattern:16:mitigation:3.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "capec:attack-pattern:16:mitigation:1",
+          "capec:attack-pattern:16:mitigation:2",
+          "capec:attack-pattern:16:mitigation:3"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-16"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-16 (Dictionary-based Password Attack) has 5 CanPrecede successors: CAPEC-151, CAPEC-560, CAPEC-561, CAPEC-600, CAPEC-653.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "CAPEC-151",
+          "CAPEC-560",
+          "CAPEC-561",
+          "CAPEC-600",
+          "CAPEC-653"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-16"
+          }
+        ]
+      }
+    ],
+    "abstentions": [
+      {
+        "source": "attack",
+        "statement": "The attack source doesn't establish this — the sub-question it depends on (q5) produced no seed identifiers, so no query was executed for: What mitigations does ATT&CK list for those mapped techniques?",
+        "query": ""
+      },
+      {
+        "source": "attack",
+        "statement": "The attack source doesn't establish this — the sub-question it depends on (q5) produced no seed identifiers, so no query was executed for: What mitigations does ATT&CK list for those mapped techniques?",
+        "query": ""
+      }
+    ],
+    "notes": []
+  },
+  "logic_flow": {
+    "plan": [
+      {
+        "sub_question_id": null,
+        "source": "capec",
+        "text": "Which ATT&CK techniques does CAPEC-16 map to?",
+        "seed_from": null
+      },
+      {
+        "sub_question_id": null,
+        "source": "attack",
+        "text": "What mitigations does ATT&CK list for those mapped techniques?",
+        "seed_from": "q1"
+      }
+    ],
+    "sequenced": true,
+    "partial_mode": null,
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "q1",
+        "sub_question": "Which ATT&CK techniques does CAPEC-16 map to?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(20000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-16.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "TaxonomyEntry"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "CAPEC-16"
+              ],
+              "join_key": "attack-technique-id"
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(20000)",
+              "injected": [],
+              "timing_ms": 0.107
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 3.5
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.241
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-16",
+            "name": "Dictionary-based Password Attack",
+            "label": "AttackPattern",
+            "description": "An attacker tries each of the words in a dictionary as passwords to gain access to the system via some user's account. If the password chosen by the user was a word within the dictionary, this attack will be successful (in the absence of other mitigations). This is a specific instance of the password brute forcing attack pattern. Dictionary Attacks differ from similar attacks such as Password Spraying (CAPEC-565) and Credential Stuffing (CAPEC-600), since they leverage unknown username/password combinations and don't care about inducing account lockouts.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Dictionary-based Password Attack",
+              "description": "An attacker tries each of the words in a dictionary as passwords to gain access to the system via some user's account. If the password chosen by the user was a word within the dictionary, this attack will be successful (in the absence of other mitigations). This is a specific instance of the password brute forcing attack pattern. Dictionary Attacks differ from similar attacks such as Password Spraying (CAPEC-565) and Credential Stuffing (CAPEC-600), since they leverage unknown username/password combinations and don't care about inducing account lockouts.",
+              "id": "capec:attack-pattern:16",
+              "Abstraction": "Detailed"
+            },
+            "facets": [
+              {
+                "rel": "CAN_ALSO_BE",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_ALSO_BE",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_FOLLOW",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_FOLLOW",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_PRECEDE",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CAN_PRECEDE",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 5
+              },
+              {
+                "rel": "CHILD_OF",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "CHILD_OF",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 1
+              },
+              {
+                "rel": "EXPLOITS_WEAKNESS",
+                "direction": "out",
+                "neighbour_label": "Weakness",
+                "count": 7
+              },
+              {
+                "rel": "HAS_CONSEQUENCE",
+                "direction": "out",
+                "neighbour_label": "Consequence",
+                "count": 3
+              },
+              {
+                "rel": "HAS_EXECUTION_STEP",
+                "direction": "out",
+                "neighbour_label": "ExecutionStep",
+                "count": 4
+              },
+              {
+                "rel": "HAS_MITIGATION",
+                "direction": "out",
+                "neighbour_label": "Mitigation",
+                "count": 3
+              },
+              {
+                "rel": "HAS_REFERENCE",
+                "direction": "out",
+                "neighbour_label": "ExternalReference",
+                "count": 0
+              },
+              {
+                "rel": "IN_VIEW",
+                "direction": "out",
+                "neighbour_label": "View",
+                "count": 0
+              },
+              {
+                "rel": "MAPS_TO",
+                "direction": "out",
+                "neighbour_label": "TaxonomyEntry",
+                "count": 0
+              },
+              {
+                "rel": "MEMBER_OF",
+                "direction": "out",
+                "neighbour_label": "Category",
+                "count": 0
+              },
+              {
+                "rel": "PEER_OF",
+                "direction": "in",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "PEER_OF",
+                "direction": "out",
+                "neighbour_label": "AttackPattern",
+                "count": 0
+              },
+              {
+                "rel": "REQUIRES_SKILL",
+                "direction": "out",
+                "neighbour_label": "Skill",
+                "count": 1
+              }
+            ],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "What mitigations does ATT&CK list for those mapped techniques?",
+        "query": "",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Skipped: this sub-question depends on q1 for its seed identifiers, but it returned no join values.",
+        "traces": [
+          {
+            "step": "dependency",
+            "ok": true,
+            "reasons": [
+              "producer q1: it returned no join values"
+            ],
+            "detail": {
+              "producer": "q1"
+            }
+          }
+        ],
+        "records": []
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "What mitigations does ATT&CK list for those mapped techniques?",
+        "query": "",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Skipped: this sub-question depends on q5 for its seed identifiers, but it was not run.",
+        "traces": [
+          {
+            "step": "dependency",
+            "ok": true,
+            "reasons": [
+              "producer q5: it was not run"
+            ],
+            "detail": {
+              "producer": "q5"
+            }
+          }
+        ],
+        "records": []
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q3",
+        "sub_question": "In capec, list all Mitigation reached from CAPEC-16 via HAS_MITIGATION",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"HAS_MITIGATION\").hasLabel(\"Mitigation\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-16.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Mitigation"
+              ],
+              "relationships": [
+                "HAS_MITIGATION"
+              ],
+              "seed_ids": [
+                "CAPEC-16"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_neighbors",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"HAS_MITIGATION\").hasLabel(\"Mitigation\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.091
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 3,
+              "timing_ms": 2.8
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 3,
+              "timing_ms": 0.004
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.061
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-16",
+            "name": "Dictionary-based Password Attack",
+            "label": "AttackPattern",
+            "description": "An attacker tries each of the words in a dictionary as passwords to gain access to the system via some user's account. If the password chosen by the user was a word within the dictionary, this attack will be successful (in the absence of other mitigations). This is a specific instance of the password brute forcing attack pattern. Dictionary Attacks differ from similar attacks such as Password Spraying (CAPEC-565) and Credential Stuffing (CAPEC-600), since they leverage unknown username/password combinations and don't care about inducing account lockouts.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Dictionary-based Password Attack",
+              "description": "An attacker tries each of the words in a dictionary as passwords to gain access to the system via some user's account. If the password chosen by the user was a word within the dictionary, this attack will be successful (in the absence of other mitigations). This is a specific instance of the password brute forcing attack pattern. Dictionary Attacks differ from similar attacks such as Password Spraying (CAPEC-565) and Credential Stuffing (CAPEC-600), since they leverage unknown username/password combinations and don't care about inducing account lockouts.",
+              "id": "capec:attack-pattern:16",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "capec:attack-pattern:16:mitigation:1",
+                "name": "capec:attack-pattern:16:mitigation:1",
+                "label": "Mitigation",
+                "type": "HAS_MITIGATION",
+                "description": "Create a strong password policy and ensure that your system enforces this policy."
+              },
+              {
+                "id": "capec:attack-pattern:16:mitigation:2",
+                "name": "capec:attack-pattern:16:mitigation:2",
+                "label": "Mitigation",
+                "type": "HAS_MITIGATION",
+                "description": "Implement an intelligent password throttling mechanism. Care must be taken to assure that these mechanisms do not excessively enable account lockout attacks such as CAPEC-2."
+              },
+              {
+                "id": "capec:attack-pattern:16:mitigation:3",
+                "name": "capec:attack-pattern:16:mitigation:3",
+                "label": "Mitigation",
+                "type": "HAS_MITIGATION",
+                "description": "Leverage multi-factor authentication for all authentication services."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "capec",
+        "sub_question_id": "q4",
+        "sub_question": "In capec, list all AttackPattern reached from CAPEC-16 via CanPrecede",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"CAN_PRECEDE\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-16.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern"
+              ],
+              "relationships": [
+                "CanPrecede"
+              ],
+              "seed_ids": [
+                "CAPEC-16"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_neighbors",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"CAN_PRECEDE\").hasLabel(\"AttackPattern\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+              "injected": [],
+              "timing_ms": 0.075
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 5,
+              "timing_ms": 2.5
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 5,
+              "timing_ms": 0.004
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.07
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-16",
+            "name": "Dictionary-based Password Attack",
+            "label": "AttackPattern",
+            "description": "An attacker tries each of the words in a dictionary as passwords to gain access to the system via some user's account. If the password chosen by the user was a word within the dictionary, this attack will be successful (in the absence of other mitigations). This is a specific instance of the password brute forcing attack pattern. Dictionary Attacks differ from similar attacks such as Password Spraying (CAPEC-565) and Credential Stuffing (CAPEC-600), since they leverage unknown username/password combinations and don't care about inducing account lockouts.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Dictionary-based Password Attack",
+              "description": "An attacker tries each of the words in a dictionary as passwords to gain access to the system via some user's account. If the password chosen by the user was a word within the dictionary, this attack will be successful (in the absence of other mitigations). This is a specific instance of the password brute forcing attack pattern. Dictionary Attacks differ from similar attacks such as Password Spraying (CAPEC-565) and Credential Stuffing (CAPEC-600), since they leverage unknown username/password combinations and don't care about inducing account lockouts.",
+              "id": "capec:attack-pattern:16",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "CAPEC-151",
+                "name": "Identity Spoofing",
+                "label": "AttackPattern",
+                "type": "CAN_PRECEDE",
+                "description": "Identity Spoofing refers to the action of assuming (i.e., taking on) the identity of some other entity (human or non-human) and then using that identity to accomplish a goal. An adversary may craft messages that appear to come from a different principle or use stolen / spoofed authentication credentials."
+              },
+              {
+                "id": "CAPEC-560",
+                "name": "Use of Known Domain Credentials",
+                "label": "AttackPattern",
+                "type": "CAN_PRECEDE",
+                "description": "An adversary guesses or obtains (i.e. steals or purchases) legitimate credentials (e.g. userID/password) to achieve authentication and to perform authorized actions under the guise of an authenticated user or service."
+              },
+              {
+                "id": "CAPEC-561",
+                "name": "Windows Admin Shares with Stolen Credentials",
+                "label": "AttackPattern",
+                "type": "CAN_PRECEDE",
+                "description": "An adversary guesses or obtains (i.e. steals or purchases) legitimate Windows administrator credentials (e.g. userID/password) to access Windows Admin Shares on a local machine or within a Windows domain."
+              },
+              {
+                "id": "CAPEC-600",
+                "name": "Credential Stuffing",
+                "label": "AttackPattern",
+                "type": "CAN_PRECEDE",
+                "description": "An adversary tries known username/password combinations against different systems, applications, or services to gain additional authenticated access. Credential Stuffing attacks rely upon the fact that many users leverage the same username/password combination for multiple systems, applications, and services."
+              },
+              {
+                "id": "CAPEC-653",
+                "name": "Use of Known Operating System Credentials",
+                "label": "AttackPattern",
+                "type": "CAN_PRECEDE",
+                "description": "An adversary guesses or obtains (i.e. steals or purchases) legitimate operating system credentials (e.g. userID/password) to achieve authentication and to perform authorized actions on the system, under the guise of an authenticated user or service. This applies to any Operating System."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": {
+      "negative": true,
+      "exact": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n_expected": 0,
+      "n_got": 0
+    },
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 4,
+      "compliant": 4,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "generic",
+  "run_meta": {
+    "planner": "gold-plan (injected)",
+    "synthesis": "llm (claim-grounded)",
+    "loop": "facet-chasing",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "capec",
+        "text": "Which ATT&CK techniques does CAPEC-16 map to?",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 20000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "What mitigations does ATT&CK list for those mapped techniques?",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 20000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q3",
+        "source": "capec",
+        "text": "In capec, list all Mitigation reached from CAPEC-16 via HAS_MITIGATION",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q4",
+        "source": "capec",
+        "text": "In capec, list all AttackPattern reached from CAPEC-16 via CanPrecede",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q5",
+        "source": "capec",
+        "text": "In capec, list all AttackPattern reached from CAPEC-16 via ChildOf",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 25.972
+  },
+  "evidence_volume": {
+    "results": 5,
+    "records": 3,
+    "related": 8
+  }
+}

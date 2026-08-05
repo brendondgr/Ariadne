@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-ATT-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to surface campaign C0028 (must_include_ids) and its attributed group G0034 (must_include_related). The narrative and claims state exactly this: 'the campaign is attributed to 1 group: G0034' and the enumeration claim 'C0028 (2015 Ukraine Electric Power Attack) has 1 Groups: G0034.' This is directly grounded in the logic_flow evidence: the q2 query traversal returns related=[{id: G0034, name: Sandworm Team, type: ATTRIBUTED_TO}], and the facets on the C0028 record show an ATTRIBUTED_TO -> Group count of 1, matching min/max_records=1. All other stated properties (stix_type=campaign, x_mitre_version=1.0, revoked=False, x_mitre_deprecated=False) are verbatim from the record's properties block, and the name '2015 Ukraine Electric Power Attack' matches. No invented facts, aliases, counts, or dates. Both gold entities (C0028, G0034) are present."
+}

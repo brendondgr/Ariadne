@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.25,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 0.5,
+  "gold_expected": 2,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question has two parts: (1) which CAPEC patterns map to T1566, (2) what T1566 is. The answer correctly and faithfully answers part (2) -- T1566 is 'Phishing', with revoked=False, x_mitre_version=2.7, stix_type=attack-pattern, related Tactic TA0001 -- all directly grounded in the retrieved attack-source record (T1566 name/properties, and the q3 related record TA0001 'Initial Access'), matching gold's attack.expect_names {T1566: Phishing}. However, the answer completely fails part (1), the core ask: gold requires CAPEC-98 (capec.must_include_ids) with must_include_related T1566, but the capec query (g.V().hasLabel('AttackPattern').has('id', within(['T1566']))...) searched CAPEC's AttackPattern vertices for a primary id literally equal to 'T1566' -- which will never match a CAPEC pattern id like 'CAPEC-98' -- so it returned 0 rows, and the answer abstains: 'the capec source doesn't establish which CAPEC patterns map to ATT&CK technique T1566.' This abstention is itself faithful to the (broken) evidence returned -- no fabrication occurred -- but the answer does not surface CAPEC-98 at all, so it does not answer the question the analyst actually asked. This is corroborated by the artifact's own deterministic_scores: mapping_recall.recall=0.0 with missing=['T1566'], and correlation f1=0.0. Of the 2 required identifiers (CAPEC-98, T1566), only T1566 is surfaced (gold_present=1/2). Because the answer fails to establish the CAPEC-to-ATT&CK mapping that is the primary subject of the question, this is graded INCORRECT despite the T1566 description being accurate and well-grounded."
+}

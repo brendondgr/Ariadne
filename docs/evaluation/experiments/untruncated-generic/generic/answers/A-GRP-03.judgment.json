@@ -1,0 +1,12 @@
+{
+  "case_id": "A-GRP-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 37,
+  "gold_present": 37,
+  "hallucinations": [],
+  "rationale": "The answer (graded via its claims, since the LLM narrative fell back to a deterministic dump after an upstream timeout) enumerates all 122 entities related to G0007 (APT28) via USES edges. All 5 must_include_ids (T1003, T1005, T1014, T1025, T1030) and all 37 ex_gold.expected technique ids are present verbatim in the claim's entity_ids. Cross-checking against logic_flow evidence: the record for G0007 has exactly 122 related entries, and the claim's 122 entity_ids match the evidence's related ids exactly (zero set difference either direction) -- no fabricated or omitted ids. The property claim (revoked: False; stix_type: intrusion-set; x_mitre_deprecated: False; x_mitre_version: 5.3) also matches the G0007 record properties in the evidence. No hallucinations found."
+}

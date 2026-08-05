@@ -1,0 +1,14 @@
+{
+  "case_id": "A-CMP-TEC-03",
+  "verdict": "PARTIAL",
+  "correctness": 0.95,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [
+    "S0363 (Empire) is labeled 'Software' with rel_type USES in the retrieved evidence (facets: USES->Software count 1), but the narrative/claims enumerate it as one of '28 used techniques' — a mislabeling of a tool as a technique."
+  ],
+  "rationale": "All 5 must_include_ids (T1005, T1016, T1020, T1033, T1041) are present in the answer's enumeration claim, and in fact all 13 ex_gold expected neighbor ids (T1005, T1016, T1020, T1033, T1041, T1047, T1057, T1082, T1105, T1119, T1140, T1203, T1221) are also present, giving full coverage of both the required and extended gold sets. Every listed id traces to the 'q2' USES-neighbor query evidence (28 related records matching the facet counts: 1 Software + 14 SubTechnique + 13 Technique = 28). The one flaw is that the claim text calls the full list of 28 items 'used techniques,' which folds in S0363 (Empire), explicitly labeled 'Software' in the evidence, not a Technique/SubTechnique — a minor mislabeling rather than a fabrication (the entity and its USES relation to C0001 are both real and grounded). Deterministic composer output (LLM narrator timed out) but claims are well cited (4/4 citations, deterministic_scores.coverage=1.0). This is a strong, well-grounded answer with one small taxonomic imprecision, so PARTIAL rather than a clean CORRECT."
+}

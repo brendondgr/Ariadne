@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.15,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 2,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires the CAPEC side to stay intact: min_records>=1, must_include_ids=['CAPEC-98'], must_include_related=['T1566'], while the attack side must honestly refuse (expect_boundary=true). The answer got the attack side right (source correctly reports 'entities not in card: Asset' and abstains via a boundary trace), but the capec side also returned zero records and abstained, so CAPEC-98 is never surfaced. Inspecting the executed capec query, the retrieval bug is visible in the evidence itself: it runs g.V().hasLabel('AttackPattern').has('id', within(ids)) with ids=['T1566'], i.e. it searches for an AttackPattern node whose own id equals the ATT&CK technique id, even though the resolve trace records join_key='attack-technique-id' (implying CAPEC-98 should be matched via a technique-id property, not node id). CAPEC pattern ids look like 'CAPEC-98', not 'T1566', so this query can never match and correctly-existing gold data (CAPEC-98 -> T1566) is missed. The narrative itself invents nothing (faithful/grounded to the empty result set it received), so there are no hallucinations, but it fails the headline task: it does not surface CAPEC-98 or the CAPEC-98->T1566 relation that gold requires, making the answer incorrect despite the honest framing. Note: the pipeline's own deterministic correlation score (1.0) only measures the expect_no_correlation boundary condition, not the missing capec.min_records/must_include_ids requirement, which explains the discrepancy with this independent grade."
+}

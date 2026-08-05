@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.05,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 4,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to state that CAPEC-98 maps to ATT&CK techniques T1566 and T1598, which belong to tactics TA0001 and TA0043 (must_correlate: T1566/T1598; attack.must_include_related: TA0001/TA0043; min_records 2). The pipeline never surfaces any of this: q1's Gremlin query against CAPEC-98 returned facets showing MAPS_TO -> TaxonomyEntry count=2 (confirming the technique mapping exists in the graph), but the normalized record's 'related' list was empty, so no technique ids were extracted as seeds. The downstream attack-source sub-question (tactics for those techniques) was consequently skipped twice ('producer q1: it returned no join values' and 'producer q6: it was not run'), and the narrative/claims explicitly abstain: 'The ATT&CK tactics for the mapped techniques could not be established.' The answer instead reports only tangential CAPEC-98 metadata (Status: Draft, Abstraction: Standard) and its 6 CanPrecede successors (CAPEC-631/632/89/543/611/630), none of which are gold-required entities. Because this is not a NEGATIVE test case (gold expects exactly 2 attack records, not zero), the correct answer should have surfaced T1566, T1598, TA0001, and TA0043; it surfaced none of them (0/4). The deterministic_scores block in the artifact corroborates this: correlation precision/recall/f1 all 0.0, mapping_recall 0/2 with T1566 and T1598 both listed as missing. The abstention is honest and internally consistent with the evidence (no fabricated technique or tactic names), so faithfulness and groundedness are high, but correctness and completeness are near zero since the core question goes unanswered."
+}

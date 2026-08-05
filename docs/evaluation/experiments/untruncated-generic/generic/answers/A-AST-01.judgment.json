@@ -1,0 +1,12 @@
+{
+  "case_id": "A-AST-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires expect_boundary: true — the question asks what 'assets' T1047 targets, but 'Asset' is an ICS-only concept the ATT&CK (enterprise) source does not model, so the correct behavior is an honest refusal rather than fabricated targets. The answer's claims/narrative correctly abstain: the abstention statement explicitly says 'the attack source doesn't establish this — it doesn't model the entities this question asks about' and no query was executed. This matches logic_flow, whose boundary trace explicitly states 'entities not modeled by the attack source: Asset' and returns zero records. No entity, name, count, or property is invented anywhere in the narrative or claims — it only states the boundary fact and offers to help if the analyst supplies a different concrete entity (T1566, M1017, CAPEC-98 are given only as generic format examples, not asserted facts about T1047). This is a full, correctly grounded refusal."
+}

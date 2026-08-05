@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 35,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is not a NEG case: gold requires capec.min_records=1 with must_include_ids CAPEC-57/94/114/115/593/633/650 (related CWE-287), attack.min_records=8 with must_include_ids T1040/T1134/T1185/T1505.003/T1548/T1550.001/T1557/T1563, and must_include_related mitigations M1013..M1052 (20 ids). The pipeline returned zero records and abstained entirely, surfacing none of the 7 CAPEC ids, 8 ATT&CK technique ids, or 20 mitigation ids. The retrieval itself appears bugged: the executed Gremlin query is `g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"EXPLOITS_WEAKNESS\")...` where the resolve step set seed_ids=[\"CWE-287\"] — i.e. it filtered AttackPattern.id against a CWE id instead of filtering the target Weakness node by CWE-287, so it structurally cannot match any AttackPattern (whose ids are CAPEC-*). That guarantees row_count=0, which cascades to q2 (attack mitigations) being skipped for lack of seeds ('producer q1: it returned no join values'). The answer/claims are empty and the narrative is a generic abstention offering no entity coverage. Nothing fabricated was stated (faithfulness/groundedness are trivially satisfied since the answer asserts nothing beyond 'no records found'), but correctness and completeness are both 0 against the gold's 35 required distinct entities (8 correlate T-numbers + 7 CAPEC ids + 20 mitigation ids), since none were surfaced. This is a genuine pipeline failure (broken CAPEC->Weakness join direction), not a legitimate negative/abstention case."
+}

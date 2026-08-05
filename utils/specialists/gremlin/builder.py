@@ -84,6 +84,19 @@ _AP_LABEL_TO_REL: dict[str, str] = {
 }
 
 
+def _generic_only() -> bool:
+    """True when the MITRE-specific query templates are disabled.
+
+    Set by ``SPECIALIST_GENERIC_ONLY`` for the "no hand-written templates"
+    experiment: the pipeline must answer using only schema-driven primitives
+    (describe / walk-one-declared-relationship / label scan), the way it would
+    have to on a graph nobody has authored templates for. Off by default.
+    """
+    from utils.config import env_bool
+
+    return env_bool("SPECIALIST_GENERIC_ONLY", False)
+
+
 def _resolve_neighbor_rels(resolved: ResolvedTask) -> list[str]:
     """Every native AttackPattern facet relationship the task names, in order.
 
@@ -138,6 +151,20 @@ class GremlinQueryBuilder:
         has_seeds = bool(resolved.seed_ids)
         has_join = resolved.has_join or resolved.join_key == "attack-technique-id"
         neighbor_rels = _resolve_neighbor_rels(resolved)
+
+        if _generic_only():
+            # Schema-driven primitives only — no CAPEC question-shapes (no
+            # MAPS_TO bridge, no hierarchy chain, no CWE chain). Everything here
+            # is parameterised by a card-declared relationship or nothing at all.
+            if has_seeds and len(neighbor_rels) == 1:
+                return self._capec_neighbors(resolved, neighbor_rels[0])
+            if has_seeds and neighbor_rels:
+                return self._capec_facets(resolved, neighbor_rels)
+            if has_seeds:
+                return self._describe(resolved)
+            if resolved.name_terms:
+                return self._describe(resolved)
+            return self._capec_scan(resolved)
 
         # NEW: capec_hierarchy_chain — two or more "ChildOf" in raw entities AND seeds.
         if (

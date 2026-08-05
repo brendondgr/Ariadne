@@ -1,0 +1,12 @@
+{
+  "case_id": "C-HIE-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-98 (must_include_ids) and its ChildOf parent CAPEC-151 (must_include_related). The narrative states 'CAPEC-98 (Phishing) has 1 ChildOf parent: CAPEC-151', matching both. The evidence (logic_flow.results[0].records[0]) shows CAPEC-98 (Phishing, Abstraction=Standard, Status=Draft) with a single related record CAPEC-151 (Identity Spoofing) via CHILD_OF edge -- exactly what the query 'out(\"CHILD_OF\")' returns, so the parent claim is fully grounded and there is only one parent to report (no missing siblings). The narrative's additional detail (Abstraction: Standard, Status: Draft) is also directly present in the record's properties, so no fabricated attributes. Both gold ids are surfaced with correct labeling of the relationship as ChildOf/parent."
+}

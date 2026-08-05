@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-06",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.2,
+  "gold_expected": 5,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question asks which ATT&CK tactics the techniques mapped from CAPEC-37 belong to. Gold requires surfacing T1005 and T1552.004 (must_correlate/capec.must_include_related) and their tactics TA0006 and TA0009 (attack.must_include_related), on top of CAPEC-37 itself. The answer surfaces only CAPEC-37's Status/Abstraction and explicitly abstains from the tactic question, stating 'the attack source does not establish which ATT&CK tactics the mapped techniques belong to because the sub-question it depends on (q5) produced no seed identifiers.' Neither T1005/T1552.004 nor TA0006/TA0009 appear anywhere in the narrative or claims. This is a genuine pipeline retrieval failure, not a faithfulness problem: q3 (MAPS_TO from CAPEC-37) executed but returned CAPEC-37's own elementMap again with an empty 'related' list, even though the node's own facets show MAPS_TO->TaxonomyEntry count=2 -- the technique join ids were never extracted from the edge traversal, so q2 (attack tactics) had no seeds and was skipped twice ('producer q1: it returned no join values' / 'producer q5: it was not run'). The deterministic_scores block itself confirms the failure: correlation precision/recall/f1 = 0.0, mapping_recall.recall = 0.0 with missing=[T1005, T1552.004]. Everything the answer does state (CAPEC-37 id, name, Status=Draft, Abstraction=Detailed) is directly grounded in the retrieved record properties, and it correctly abstains rather than fabricating tactics -- so there is no hallucination and faithfulness/groundedness are high -- but the answer fails to address the question asked. Of the 5 core gold entities (CAPEC-37, T1005, T1552.004, TA0006, TA0009), only CAPEC-37 (1/5) is surfaced, giving completeness 0.2 and correctness 0.0."
+}

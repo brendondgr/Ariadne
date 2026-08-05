@@ -1,0 +1,12 @@
+{
+  "case_id": "C-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result for the nonexistent CAPEC-99999 (expect_empty: true, ex_gold.expected: []). The logic_flow shows the executed Gremlin query against AttackPattern with seed_ids ['CAPEC-99999'] ran cleanly (ok: true, no error) and returned row_count 0 / records: []. The answer correctly abstains: claims is empty, and the narrative states 'The routed sources returned no matching records for this question' with an explicit abstention citing the exact executed query and a clean-run confirmation, matching the golden-eval expectation of abstaining rather than inventing a record. No entity, name, property, or count is fabricated anywhere in the narrative or claims. This is a clean, fully faithful negative-case pass."
+}

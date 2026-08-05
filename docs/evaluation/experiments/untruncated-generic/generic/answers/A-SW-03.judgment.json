@@ -1,0 +1,14 @@
+{
+  "case_id": "A-SW-03",
+  "verdict": "PARTIAL",
+  "correctness": 0.9,
+  "faithfulness": 0.85,
+  "groundedness": 0.95,
+  "completeness": 1.0,
+  "gold_expected": 56,
+  "gold_present": 56,
+  "hallucinations": [
+    "The enumeration claim labels G0092 (TA505) and G0102 (Wizard Spider) as part of 'S0266 (TrickBot) has 57 used techniques', but the evidence (facets: USES/in/Group count=2, and the related records) shows these are Groups that USE TrickBot (incoming edge), not techniques TrickBot uses. They are not Technique/SubTechnique nodes and should not be counted in a 'used techniques' total of 57."
+  ],
+  "rationale": "The answer (deterministic claims, since narrative is absent/fallback) surfaces S0266 (must_include_ids, satisfied) and all 55 T-numbers from gold's must_include_related (T1005...T1685) verbatim in the enumeration claim, verified by set-diff against logic_flow records showing 29 SubTechnique + 26 Technique = 55 outgoing USES edges. Property claims (revoked=False, stix_type=malware, x_mitre_deprecated=False, x_mitre_version=2.2) match logic_flow.records[0].properties exactly. However, the claim conflates the 2 incoming Group->Software USES edges (G0092 TA505, G0102 Wizard Spider) with the 55 outgoing Software->Technique USES edges, stating TrickBot 'has 57 used techniques' and listing the two groups alongside the techniques — this misrepresents direction/type and is not supported as written (Groups are not techniques). Because every gold-required id is nonetheless present, completeness is full (56/56), but the mislabeling is a genuine faithfulness defect, warranting PARTIAL rather than CORRECT."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SUB-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 9,
+  "gold_present": 9,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[T1021] and must_include_related=[T1021.001..T1021.008] (9 ids total). The evidence (logic_flow.results[0].records[0]) shows anchor T1021 (Remote Services) with exactly 8 related SubTechnique nodes: T1021.001 (Remote Desktop Protocol), .002 (SMB/Windows Admin Shares), .003 (DCOM), .004 (SSH), .005 (VNC), .006 (WinRM), .007 (Cloud Services), .008 (Direct Cloud VM Connections) -- matching the gold list exactly with no extras or omissions. The deterministic claims/narrative name T1021 itself and enumerate all 8 sub-technique ids verbatim, so all 9 required entities are surfaced. Every id and name cited traces directly to the retrieved 'related' records; no invented names, counts, or aliases were found (the count '8 SubTechniques' matches len(related)==8 in evidence). Answer fully and correctly answers the question with complete grounding."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DCA-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.1,
+  "gold_expected": 10,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question asks which analytics monitor DC0084; gold requires naming all 9 AN ids (AN0316, AN0405, AN0444, AN0671, AN0675, AN0770, AN1000, AN1144, AN1444) plus surfacing DC0084 itself. The answer's narrative/claims only restate DC0084's own properties (revoked, stix_type, x_mitre_deprecated, x_mitre_version) and never name a single analytic. The retrieved evidence itself only computed a facet aggregate (MONITORS, direction in, neighbour_label AttackObject, count 9 -- matching the expected 9 analytics) but the 'related' array is empty, i.e. the describe-template query never expanded to fetch the actual AN* records, so the pipeline had a signal that 9 monitoring entities exist but neither retrieved nor reported which ones. Every statement made is accurate and grounded in the DC0084 record (faithfulness/groundedness = 1.0), but the answer fails the actual question being asked. This matches the artifact's own deterministic_scores.coverage: gold=10, found=1, coverage=0.1, missing all 9 AN ids -- confirming this is a retrieval/expansion gap, not a narration error, and the correct verdict is INCORRECT."
+}

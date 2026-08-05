@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-05",
+  "verdict": "PARTIAL",
+  "correctness": 0.5,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.5,
+  "gold_expected": 2,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question has two parts. Part 2 (what is T1133) is fully and correctly answered: the narrative/claims state T1133 = External Remote Services, stix_type attack-pattern, x_mitre_version 2.5, revoked/deprecated/subtechnique all False, and related Tactics TA0003 (Persistence) and TA0001 (Initial Access) via HAS_TECHNIQUE -- all of this is verbatim in logic_flow.results[1].records[0].properties and results[2].records[0].related, matching gold's attack.expect_names {T1133: External Remote Services} and must_correlate [T1133]. Part 1 (CAPEC patterns mapping to T1133, gold requires CAPEC-555 per capec.must_include_ids) is NOT answered: the capec query executed cleanly but returned 0 rows (traces show row_count 0, records: []), and the pipeline's own deterministic_scores.mapping_recall confirms recall 0.0 with missing: [T1133]. The answer correctly abstains rather than fabricating a CAPEC id -- no hallucination -- but this is still a real gap against the gold requirement, not a negative case (gold expects CAPEC-555 to be found, min_records 1). Scoring: gold_expected=2 (T1133 for attack, CAPEC-555 for capec), gold_present=1 (only T1133). Faithfulness and groundedness are full marks because every stated fact traces cleanly to evidence and the abstention is honest rather than invented. Correctness/completeness are capped at 0.5 because the CAPEC-mapping half of a two-part question goes unanswered."
+}

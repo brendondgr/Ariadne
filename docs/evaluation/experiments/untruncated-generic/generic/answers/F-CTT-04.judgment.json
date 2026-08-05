@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-04",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.25,
+  "gold_expected": 4,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to state that CAPEC-633 maps to technique T1134 (must_correlate, capec.must_include_related) and that T1134 belongs to tactics TA0004 and TA0005 (attack.must_include_ids/must_include_related). The answer only surfaces CAPEC-633 itself with Status=Stable and Abstraction=Detailed (matches evidence, no fabrication) and then abstains entirely on the tactics question. The underlying retrieval failed the join: q3's evidence shows CAPEC-633 has a MAPS_TO edge (facet count=1, neighbour_label TaxonomyEntry) but the 'related' array for that record is empty, so the technique id T1134 was never extracted as a join value; q2 (tactics lookup) was consequently skipped because its seed-producer q1/q4 returned no join values. Every statement made is faithful and grounded (no hallucinated names/counts), but none of the four gold-required ids (T1134 twice across capec/attack assertions, TA0004, TA0005) are surfaced, so of the 4 distinct required entities only CAPEC-633 itself (not separately gold-required as related content but present as the queried subject) is echoed — gold_present=1 (CAPEC-633 identity) out of gold_expected=4 (T1134, TA0004, TA0005, plus the CAPEC-633 anchor). The answer fails to answer the actual question asked (which tactics the mapped techniques belong to), so per the INCORRECT criterion ('fails the question') this is not merely PARTIAL."
+}

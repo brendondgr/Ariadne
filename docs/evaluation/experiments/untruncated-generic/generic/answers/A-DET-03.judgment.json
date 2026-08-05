@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-03",
+  "verdict": "PARTIAL",
+  "correctness": 0.35,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.25,
+  "gold_expected": 8,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires T1566 plus 7 related ids (DET0070 and analytics AN0188-AN0193; deterministic_scores.coverage confirms gold=8). The answer correctly identifies T1566 (Phishing) and its single DetectionStrategy DET0070, and every stated fact (revoked/stix_type/deprecated/subtechnique/version, the DET0070 relation) is directly supported by the retrieved 'attack' records, so there is no fabrication (faithfulness/groundedness = 1.0). However the question explicitly asks 'via which analytics', and the answer surfaces zero analytics -- the pipeline's own q2 query only traversed T1566 -[DETECTS]-> DetectionStrategy and never expanded DET0070 -[DETECTS_BY or similar]-> Analytic to reach AN0188-AN0193, so those 6 required ids are absent from both the evidence and the answer (matches deterministic_scores.coverage: found=2/8, missing all six AN00xx ids). This is a retrieval-depth gap, not a synthesis hallucination, but it means half of the two-part question ('via which analytics') goes completely unanswered. gold_present=2 (T1566, DET0070) out of gold_expected=8."
+}

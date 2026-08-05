@@ -139,6 +139,13 @@ class CypherNormalizer:
         """Return one ``EvidenceRecord`` per logical result entity."""
         id_scheme = card.provenance.get("id_scheme", "attack-id")
 
+        # generic_neighbors — the schema-driven walk. Its columns are named for
+        # their ROLE (anchor/neighbour) rather than for an ATT&CK entity, because
+        # the compiler does not know what the edge means; that is the whole point
+        # of the template. Checked first: no other shape carries ``anchor_id``.
+        if rows and "anchor_id" in rows[0] and "neighbour_id" in rows[0]:
+            return self._normalize_generic_neighbors(rows, query, card, id_scheme)
+
         # Detect the template from column names in the first row
         # NEW: technique_detection — technique_id + detection_id (must check before
         # the generic technique_id+mitigation_id branch)
@@ -207,6 +214,63 @@ class CypherNormalizer:
                     label="Technique",
                     name=info["technique_name"],
                     related=info["mitigations"],
+                    join_values=join_values,
+                )
+            )
+        return records
+
+    def _normalize_generic_neighbors(
+        self,
+        rows: list[dict[str, Any]],
+        query: str,
+        card: Any,
+        id_scheme: str,
+    ) -> list[EvidenceRecord]:
+        """Group a schema-driven walk into one record per anchor.
+
+        The counterpart to :meth:`CypherQueryBuilder._generic_neighbors`: it knows
+        the *roles* (anchor, neighbour, edge type) but nothing about what the edge
+        means, so it carries the edge type through on each related entry and lets
+        the composer name the relationship. Join values still fall out for free
+        wherever the anchor's id is a technique — the cross-source bridge does not
+        need a bespoke template to notice a shared identifier.
+        """
+        groups: dict[str, dict[str, Any]] = defaultdict(
+            lambda: {"name": "", "label": "", "related": []}
+        )
+        for row in rows:
+            anchor = str(row.get("anchor_id") or "")
+            if not anchor:
+                continue
+            group = groups[anchor]
+            group["name"] = str(row.get("anchor_name") or "") or group["name"]
+            group["label"] = str(row.get("anchor_label") or "") or group["label"]
+            nid = str(row.get("neighbour_id") or "")
+            if not nid:
+                continue  # OPTIONAL MATCH miss: an honest empty neighbourhood
+            entry = {
+                "id": nid,
+                "name": str(row.get("neighbour_name") or ""),
+                "label": str(row.get("neighbour_label") or ""),
+            }
+            rel = str(row.get("rel_type") or "")
+            if rel:
+                entry["type"] = rel
+            group["related"].append(entry)
+
+        records: list[EvidenceRecord] = []
+        for anchor, info in groups.items():
+            join_values = (anchor,) if _is_technique_id(anchor) else ()
+            records.append(
+                emit_record(
+                    card=card,
+                    query=query,
+                    record_id=anchor,
+                    primary_id=anchor,
+                    id_scheme=id_scheme,
+                    label=info["label"] or "Technique",
+                    name=info["name"],
+                    related=info["related"],
                     join_values=join_values,
                 )
             )

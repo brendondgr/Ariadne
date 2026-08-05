@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-03",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 0.95,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 2,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to state that CAPEC-565 maps to T1110.003 (must_correlate / capec.must_include_related) and that T1110.003 belongs to tactic TA0006 (attack.must_include_related). The answer surfaces neither id: q1's 'describe' query on CAPEC-565 only returned facet counts (MAPS_TO -> TaxonomyEntry count=1) with an empty 'related' list, so no technique id was ever materialized as a join value; q2 (attack tactics) was consequently skipped for lack of a seed, and the narrative/claims correctly say so ('the attack source does not establish the tactics ... no seed identifiers'). No fabricated ids, names, or counts are present — the CanPrecede successors listed (CAPEC-151/560/561/600/653) are all grounded in q4's 'related' evidence, and the Status/Abstraction properties match the record exactly — so faithfulness and groundedness are high. But the answer never provides T1110.003 or TA0006, which is the entire point of the question (which ATT&CK tactics map from CAPEC-565), and instead answers an unrelated fact (CanPrecede successors) plus an abstention. gold_present=0 of 2 required ids (T1110.003, TA0006). This is a retrieval-template limitation (describe template drops the actual MAPS_TO neighbor despite reporting its count), not analyst-facing fabrication, but the question is left unanswered, so verdict is INCORRECT per the grading rubric (honest failure to answer still fails the question)."
+}

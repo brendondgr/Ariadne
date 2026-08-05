@@ -1,0 +1,12 @@
+{
+  "case_id": "A-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty: true, ex_gold.expected: []) for a nonexistent group G9999. The executed Neo4j query (MATCH (n:Group) WHERE n.attack_id IN $ids ...) ran cleanly and returned row_count 0 / records: []. The answer correctly abstains: claims is empty, and the narrative/abstention states 'The routed sources returned no matching records for this question' with a suggestion to name a specific entity. No ids, names, or facts are fabricated — the answer surfaces zero entities, matching the zero required by gold. This is a clean, fully grounded negative-case pass with no hallucinations."
+}

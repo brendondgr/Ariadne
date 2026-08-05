@@ -1,0 +1,12 @@
+{
+  "case_id": "A-EXC-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty=true, ex_gold.expected=[]) since T1002 is excluded/retired at load. The executed Cypher query (MATCH n:Technique WHERE attack_id IN ['T1002']) correctly returned row_count=0 (see logic_flow.results[0].records=[] and traces execute/assess steps). The answer's narrative and abstention correctly state no matching records were found and do not fabricate any entity, alias, or property for T1002. No claims were made, so there is nothing ungrounded or unfaithful. This fully satisfies the negative-case requirement."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 0.0,
+  "completeness": 0.0,
+  "gold_expected": 48,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is not a negative case: gold requires 10 CAPEC ids (CAPEC-474, 509, 551, 555, 560, 561, 600, 644, 645, 652), the join CWE-522, 12 ATT&CK T-numbers (T1021, T1021.002, T1078, T1110.004, T1114.002, T1133, T1543, T1550.002, T1550.003, T1552.004, T1558, T1558.003), and 25 mitigations (M1013...M1060). The pipeline returned zero records for both sub-questions and abstained entirely ('The routed sources returned no matching records'). The q1 CAPEC query itself looks bug-affected: the Gremlin trace shows resolve.seed_ids=['CWE-522'] but the executed query is `g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...` i.e. it filters AttackPattern nodes by an id set that should contain CWE-522-derived CAPEC ids but the CAPEC neighbors template appears to have been given the wrong seed set (Weakness id used to filter AttackPattern.id), yielding row_count 0 with 'empty_with_seeds: [CWE-522]'. Because q1 produced no seeds, q2 (ATT&CK mitigations) was skipped by dependency-chain logic. The answer surfaces none of the 10 required CAPEC ids, none of the 12 required T-numbers/must_correlate ids, and none of the 25 required mitigations (gold_present=0 of 48). deterministic_scores in the artifact itself confirm this: correlation recall 0.0, mapping_recall 0.0/12. No fabricated facts were stated (faithfulness scores clean since the answer made no false claims, only a correct-format abstention), but the abstention itself is factually wrong given the gold ground truth establishes real records exist — so correctness, groundedness, and completeness are all 0."
+}

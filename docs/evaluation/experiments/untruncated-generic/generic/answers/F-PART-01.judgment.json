@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.25,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 2,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires two independent behaviors: (1) the CAPEC side must stay intact and surface CAPEC-555 as related to T1021 (min_records:1, must_include_ids:[CAPEC-555], must_include_related:[T1021]), and (2) the ATT&CK side must refuse honestly because it has no Asset entity (expect_boundary:true). The pipeline got half of this right and half wrong. The ATT&CK/asset sub-question correctly abstained with a genuine boundary trace ('entities not in card: [Asset]', 'entities not modeled by the attack source: Asset') -- this matches gold's expect_boundary requirement and expect_no_correlation (deterministic_scores.correlation shows exact:true, precision/recall/f1 1.0 for the 0-expected/0-got case). However, the CAPEC sub-question, which gold says must stay intact and return CAPEC-555, instead returned zero records ('No CAPEC records found', row_count:0) and the answer abstained on it too, contradicting the gold requirement. Inspecting the executed query and trace shows the likely root cause: resolve identified join_key 'attack-technique-id' for CAPEC AttackPattern nodes, but the gate/execute step ran g.V().hasLabel('AttackPattern').has('id', within(ids)) with ids=['T1021'] -- i.e. it searched CAPEC node ids for the literal ATT&CK technique id 'T1021' instead of matching the attack-technique-id property, so a real CAPEC-555<->T1021 mapping (per gold_provenance capec_version 3.9 / attack_version 19.0) was never surfaced. The narrative/claims contain no fabricated facts (faithfulness/groundedness are high -- everything stated tracks the actual empty query result), but the answer fails the headline question 'which CAPEC patterns map to T1021' by surfacing 0 of the 2 gold-required identifiers (CAPEC-555, T1021-as-related). Net verdict is INCORRECT: correct boundary refusal on the ICS-asset half does not offset a complete miss on the CAPEC-intact half that the question and gold explicitly require."
+}

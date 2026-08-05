@@ -1,0 +1,12 @@
+{
+  "case_id": "A-EXC-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty: true, ex_gold.expected: []) for retired/excluded technique T1004. The executed Cypher query (MATCH (n:Technique) WHERE n.attack_id IN ['T1004'] ...) returned row_count 0, confirmed by the assess trace ('empty_with_seeds': ['T1004']) and evidence_volume.records: 0. The answer's claims list is empty and it abstains explicitly: 'The attack source doesn't establish this — the executed query ran cleanly and returned no matching records for: What is ATT&CK technique T1004?' The narrative correctly reports no matches and does not fabricate a technique name, abstraction level, or any property for T1004. No entities needed to be surfaced (gold_expected=0), and none were incorrectly surfaced (gold_present=0), so completeness is 1.0. No hallucinations found."
+}

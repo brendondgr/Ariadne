@@ -1,0 +1,12 @@
+{
+  "case_id": "C-LKP-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-116 named 'Excavation' with Abstraction=Meta and Status=Stable, with exactly 1 record (min/max_records=1). The answer's claims state exactly this: 'Found 1 CAPEC record(s): CAPEC-116' and 'CAPEC-116 (Excavation) has Abstraction: Meta; Status: Stable', both directly matching the evidence record's properties (properties.Abstraction='Meta', properties.Status='Stable', name='Excavation'). The extra claim about a CAN_PRECEDE successor CAPEC-163 (Spear Phishing) is grounded in the q2 result's 'related' field and does not contradict anything; it's additive detail, not a hallucination. The abstention about ChildOf is also correctly grounded (q3 execute step returned row_count 0). All 3 gold-required facts (id/name, Abstraction, Status) are present and correct; no invented facts, no missing entities."
+}

@@ -1,0 +1,461 @@
+{
+  "id": "A-MIT-08",
+  "kind": "attack",
+  "tier": "easy",
+  "category": "A-MIT",
+  "question": "What mitigations does ATT&CK list for T1490 (Inhibit System Recovery)?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "T1490"
+      ],
+      "must_include_related": [
+        "M1018",
+        "M1028",
+        "M1038",
+        "M1053"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "M1018",
+        "M1028",
+        "M1038",
+        "M1053"
+      ],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 2 record(s) from 1 source(s).",
+    "narrative": "Found ATT&CK record T1490: Inhibit System Recovery. T1490 (Inhibit System Recovery) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.6. Found 4 item(s) related to T1490 (e.g. M1028, M1053, M1038) in MITRE ATT&CK. T1490 (Inhibit System Recovery) has 4 mitigated techniques: M1028, M1053, M1038, M1018.",
+    "composer": "deterministic",
+    "fallback_reason": "LLM narrator unavailable (request failed: HTTPConnectionPool(host='localhost', port=4000): Read timed out. (read timeout=120.0))",
+    "claims": [
+      {
+        "text": "Found ATT&CK record T1490: Inhibit System Recovery.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1490"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1490"
+          }
+        ]
+      },
+      {
+        "text": "T1490 (Inhibit System Recovery) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.6.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1490"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1490"
+          }
+        ]
+      },
+      {
+        "text": "Found 4 item(s) related to T1490 (e.g. M1028, M1053, M1038) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "T1490"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1490"
+          }
+        ]
+      },
+      {
+        "text": "T1490 (Inhibit System Recovery) has 4 mitigated techniques: M1028, M1053, M1038, M1018.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "M1028",
+          "M1053",
+          "M1038",
+          "M1018"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "T1490"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-MIT-08",
+      "source": "attack",
+      "text": "What mitigations does ATT&CK list for technique T1490?",
+      "entities": [
+        "Technique",
+        "Mitigation"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "T1490"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "A-MIT-08",
+        "sub_question": "What mitigations does ATT&CK list for technique T1490?",
+        "query": "MATCH (n:Technique) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 20000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found ATT&CK record T1490: Inhibit System Recovery.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Technique",
+                "Mitigation"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "T1490"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "MATCH (n:Technique) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 20000",
+              "injected": [
+                "LIMIT 20000 appended (none present)"
+              ],
+              "timing_ms": 0.138
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 8.9
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.161
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1490",
+            "name": "Inhibit System Recovery",
+            "label": "Technique",
+            "description": "Adversaries may delete or remove built-in data and turn off services designed to aid in the recovery of a corrupted system to prevent recovery.(Citation: Talos Olympic Destroyer 2018)(Citation: FireEye WannaCry 2017) This may deny access to available backups and recovery options.\n\nOperating systems may contain features that can help fix corrupted systems, such as a backup catalog, volume shadow copies, and automatic repair features. Adversaries may disable or delete system recovery features to augment the effects of [Data Destruction](https://attack.mitre.org/techniques/T1485) and [Data Encrypted for Impact](https://attack.mitre.org/techniques/T1486).(Citation: Talos Olympic Destroyer 2018)(Citation: FireEye WannaCry 2017) Furthermore, adversaries may disable recovery notifications, then corrupt backups.(Citation: disable_notif_synology_ransom)\n\nA number of native Windows utilities have been used by adversaries to disable or delete system recovery features:\n\n* <code>vssadmin.exe</code> can be used to delete all volume shadow copies on a system - <code>vssadmin.exe delete shadows /all /quiet</code>\n* [Windows Management Instrumentation](https://attack.mitre.org/techniques/T1047) can be used to delete volume shadow copies - <code>wmic shadowcopy delete</code>\n* <code>wbadmin.exe</code> can be used to delete the Windows Backup Catalog - <code>wbadmin.exe delete catalog -quiet</code>\n* <code>bcdedit.exe</code> can be used to disable automatic Windows recovery features by modifying boot configuration data - <code>bcdedit.exe /set {default} bootstatuspolicy ignoreallfailures & bcdedit /set {default} recoveryenabled no</code>\n* <code>REAgentC.exe</code> can be used to disable Windows Recovery Environment (WinRE) repair/recovery options of an infected system\n* <code>diskshadow.exe</code> can be used to delete all volume shadow copies on a system - <code>diskshadow delete shadows all</code> (Citation: Diskshadow) (Citation: Crytox Ransomware)\n\nOn network devices, adversaries may leverage [Disk Wipe](https://attack.mitre.org/techniques/T1561) to delete backup firmware images and reformat the file system, then [System Shutdown/Reboot](https://attack.mitre.org/techniques/T1529) to reload the device. Together this activity may leave network devices completely inoperable and inhibit recovery operations.\n\nOn ESXi servers, adversaries may delete or encrypt snapshots of virtual machines to support [Data Encrypted for Impact](https://attack.mitre.org/techniques/T1486), preventing them from being leveraged as backups (e.g., via ` vim-cmd vmsvc/snapshot.removeall`).(Citation: Cybereason)\n\nAdversaries may also delete “online” backups that are connected to their network – whether via network storage media or through folders that sync to cloud services.(Citation: ZDNet Ransomware Backups 2020) In cloud environments, adversaries may disable versioning and backup policies and delete snapshots, database backups, machine images, and prior versions of objects designed to be used in disaster recovery scenarios.(Citation: Dark Reading Code Spaces Cyber Attack)(Citation: Rhino Security Labs AWS S3 Ransomware)",
+            "properties": {
+              "attack_id": "T1490",
+              "description": "Adversaries may delete or remove built-in data and turn off services designed to aid in the recovery of a corrupted system to prevent recovery.(Citation: Talos Olympic Destroyer 2018)(Citation: FireEye WannaCry 2017) This may deny access to available backups and recovery options.\n\nOperating systems may contain features that can help fix corrupted systems, such as a backup catalog, volume shadow copies, and automatic repair features. Adversaries may disable or delete system recovery features to augment the effects of [Data Destruction](https://attack.mitre.org/techniques/T1485) and [Data Encrypted for Impact](https://attack.mitre.org/techniques/T1486).(Citation: Talos Olympic Destroyer 2018)(Citation: FireEye WannaCry 2017) Furthermore, adversaries may disable recovery notifications, then corrupt backups.(Citation: disable_notif_synology_ransom)\n\nA number of native Windows utilities have been used by adversaries to disable or delete system recovery features:\n\n* <code>vssadmin.exe</code> can be used to delete all volume shadow copies on a system - <code>vssadmin.exe delete shadows /all /quiet</code>\n* [Windows Management Instrumentation](https://attack.mitre.org/techniques/T1047) can be used to delete volume shadow copies - <code>wmic shadowcopy delete</code>\n* <code>wbadmin.exe</code> can be used to delete the Windows Backup Catalog - <code>wbadmin.exe delete catalog -quiet</code>\n* <code>bcdedit.exe</code> can be used to disable automatic Windows recovery features by modifying boot configuration data - <code>bcdedit.exe /set {default} bootstatuspolicy ignoreallfailures & bcdedit /set {default} recoveryenabled no</code>\n* <code>REAgentC.exe</code> can be used to disable Windows Recovery Environment (WinRE) repair/recovery options of an infected system\n* <code>diskshadow.exe</code> can be used to delete all volume shadow copies on a system - <code>diskshadow delete shadows all</code> (Citation: Diskshadow) (Citation: Crytox Ransomware)\n\nOn network devices, adversaries may leverage [Disk Wipe](https://attack.mitre.org/techniques/T1561) to delete backup firmware images and reformat the file system, then [System Shutdown/Reboot](https://attack.mitre.org/techniques/T1529) to reload the device. Together this activity may leave network devices completely inoperable and inhibit recovery operations.\n\nOn ESXi servers, adversaries may delete or encrypt snapshots of virtual machines to support [Data Encrypted for Impact](https://attack.mitre.org/techniques/T1486), preventing them from being leveraged as backups (e.g., via ` vim-cmd vmsvc/snapshot.removeall`).(Citation: Cybereason)\n\nAdversaries may also delete “online” backups that are connected to their network – whether via network storage media or through folders that sync to cloud services.(Citation: ZDNet Ransomware Backups 2020) In cloud environments, adversaries may disable versioning and backup policies and delete snapshots, database backups, machine images, and prior versions of objects designed to be used in disaster recovery scenarios.(Citation: Dark Reading Code Spaces Cyber Attack)(Citation: Rhino Security Labs AWS S3 Ransomware)",
+              "id": "attack-pattern--f5d8eed6-48a9-4cdf-a3d7-d1ffa99c3d2a",
+              "name": "Inhibit System Recovery",
+              "revoked": false,
+              "stix_type": "attack-pattern",
+              "x_mitre_deprecated": false,
+              "x_mitre_is_subtechnique": false,
+              "x_mitre_platforms": [
+                "Containers",
+                "ESXi",
+                "IaaS",
+                "Linux",
+                "macOS",
+                "Network Devices",
+                "Windows"
+              ],
+              "x_mitre_version": "1.6",
+              "_omitted_properties": [
+                "external_references"
+              ]
+            },
+            "facets": [
+              {
+                "rel": "DETECTS",
+                "direction": "in",
+                "neighbour_label": "DetectionStrategy",
+                "count": 1
+              },
+              {
+                "rel": "HAS_SUBTECHNIQUE",
+                "direction": "out",
+                "neighbour_label": "SubTechnique",
+                "count": 0
+              },
+              {
+                "rel": "HAS_TECHNIQUE",
+                "direction": "in",
+                "neighbour_label": "Tactic",
+                "count": 1
+              },
+              {
+                "rel": "MITIGATES",
+                "direction": "in",
+                "neighbour_label": "Mitigation",
+                "count": 4
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Campaign",
+                "count": 1
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Group",
+                "count": 7
+              },
+              {
+                "rel": "USES",
+                "direction": "in",
+                "neighbour_label": "Software",
+                "count": 48
+              }
+            ],
+            "join_values": [
+              "T1490"
+            ],
+            "related": []
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "In attack, list all Mitigation reached from T1490 via MITIGATES",
+        "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r:MITIGATES]-(m) RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(m.attack_id, m.id) AS neighbour_id, m.name AS neighbour_name, labels(m)[0] AS neighbour_label, type(r) AS rel_type LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 4 item(s) related to T1490 (e.g. M1028, M1053, M1038) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Mitigation"
+              ],
+              "relationships": [
+                "MITIGATES"
+              ],
+              "seed_ids": [
+                "T1490"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "generic_neighbors",
+              "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r:MITIGATES]-(m) RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(m.attack_id, m.id) AS neighbour_id, m.name AS neighbour_name, labels(m)[0] AS neighbour_label, type(r) AS rel_type LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.11
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 4,
+              "timing_ms": 3.4
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 4,
+              "timing_ms": 0.004
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 1.814
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "T1490",
+            "name": "Inhibit System Recovery",
+            "label": "Technique",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [
+              "T1490"
+            ],
+            "related": [
+              {
+                "id": "M1028",
+                "name": "Operating System Configuration",
+                "label": "Mitigation",
+                "type": "MITIGATES",
+                "description": "Operating System Configuration involves adjusting system settings and hardening the default configurations of an operating system (OS) to mitigate adversary exploitation and prevent abuse of system functionality. Proper OS configurations address security vulnerabilities, limit attack surfaces, and ensure robust defense against a wide range of techniques. This mitigation can be implemented through the following measures: \n\nDisable Unused Features:\n\n- Turn off SMBv1, LLMNR, and NetBIOS where not needed.\n- Disable remote registry and unnecessary services.\n\nEnforce OS-level Protections:\n\n- Enable Data Execution Prevention (DEP), Address Space Layout Randomization (ASLR), and Control Flow Guard (CFG) on Windows.\n- Use AppArmor or SELinux on Linux for mandatory access controls.\n\nSecure Access Settings:\n\n- Enable User Account Control (UAC) for Windows.\n- Restrict root/sudo access on Linux/macOS and enforce strong permissions using sudoers files.\n\nFile System Hardening:\n\n- Implement least-privilege access for critical files and system directories.\n- Audit permissions regularly using tools like icacls (Windows) or getfacl/chmod (Linux/macOS).\n\nSecure Remote Access:\n\n- Restrict RDP, SSH, and VNC to authorized IPs using firewall rules.\n- Enable NLA for RDP and enforce strong password/lockout policies.\n\nHarden Boot Configurations:\n\n- Enable Secure Boot and enforce UEFI/BIOS password protection.\n- Use BitLocker or LUKS to encrypt boot drives.\n\nRegular Audits:\n\n- Periodically audit OS configurations using tools like CIS Benchmarks or SCAP tools.\n\n*Tools for Implementation*\n\nWindows:\n\n- Microsoft Group Policy Objects (GPO): Centrally enforce OS security settings.\n- Windows Defender Exploit Guard: Built-in OS protection against exploits.\n- CIS-CAT Pro: Audit Windows security configurations based on CIS Benchmarks.\n\nLinux/macOS:\n\n- AppArmor/SELinux: Enforce mandatory access controls.\n- Lynis: Perform comprehensive security audits.\n- SCAP Security Guide: Automate configuration hardening using Security Content Automation Protocol.\n\nCross-Platform:\n\n- Ansible or Chef/Puppet: Automate configuration hardening at scale.\n- OpenSCAP: Perform compliance and configuration checks."
+              },
+              {
+                "id": "M1053",
+                "name": "Data Backup",
+                "label": "Mitigation",
+                "type": "MITIGATES",
+                "description": "Data Backup involves taking and securely storing backups of data from end-user systems and critical servers. It ensures that data remains available in the event of system compromise, ransomware attacks, or other disruptions. Backup processes should include hardening backup systems, implementing secure storage solutions, and keeping backups isolated from the corporate network to prevent compromise during active incidents. This mitigation can be implemented through the following measures:\n\nRegular Backup Scheduling:\n- Use Case: Ensure timely and consistent backups of critical data.\n- Implementation: Schedule daily incremental backups and weekly full backups for all critical servers and systems.\n\nImmutable Backups:\n- Use Case: Protect backups from modification or deletion, even by attackers.\n- Implementation: Use write-once-read-many (WORM) storage for backups, preventing ransomware from encrypting or deleting backup files.\n\nBackup Encryption:\n- Use Case: Protect data integrity and confidentiality during transit and storage.\n- Implementation: Encrypt backups using strong encryption protocols (e.g., AES-256) before storing them in local, cloud, or remote locations.\n\nOffsite Backup Storage:\n- Use Case: Ensure data availability during physical disasters or onsite breaches.\n- Implementation: Use cloud-based solutions like AWS S3, Azure Backup, or physical offsite storage to maintain a copy of critical data.\n\nBackup Testing:\n- Use Case: Validate backup integrity and ensure recoverability.\n- Implementation: Regularly test data restoration processes to ensure that backups are not corrupted and can be recovered quickly."
+              },
+              {
+                "id": "M1038",
+                "name": "Execution Prevention",
+                "label": "Mitigation",
+                "type": "MITIGATES",
+                "description": "Prevent the execution of unauthorized or malicious code on systems by implementing application control, script blocking, and other execution prevention mechanisms. This ensures that only trusted and authorized code is executed, reducing the risk of malware and unauthorized actions. This mitigation can be implemented through the following measures:\n\nApplication Control:\n\n- Use Case: Use tools like AppLocker or Windows Defender Application Control (WDAC) to create whitelists of authorized applications and block unauthorized ones. On Linux, use tools like SELinux or AppArmor to define mandatory access control policies for application execution.\n- Implementation: Allow only digitally signed or pre-approved applications to execute on servers and endpoints. (e.g., `New-AppLockerPolicy -PolicyType Enforced -FilePath \"C:\\Policies\\AppLocker.xml\"`) \n\n\nScript Blocking:\n\n- Use Case: Use script control mechanisms to block unauthorized execution of scripts, such as PowerShell or JavaScript. Web Browsers: Use browser extensions or settings to block JavaScript execution from untrusted sources.\n- Implementation: Configure PowerShell to enforce Constrained Language Mode for non-administrator users. (e.g., `Set-ExecutionPolicy AllSigned`) \n\nExecutable Blocking:\n\n- Use Case: Prevent execution of binaries from suspicious locations, such as `%TEMP%` or `%APPDATA%` directories.\n- Implementation: Block execution of `.exe`, `.bat`, or `.ps1` files from user-writable directories.\n\nDynamic Analysis Prevention:\n- Use Case: Use behavior-based execution prevention tools to identify and block malicious activity in real time.\n- Implemenation: Employ EDR solutions that analyze runtime behavior and block suspicious code execution."
+              },
+              {
+                "id": "M1018",
+                "name": "User Account Management",
+                "label": "Mitigation",
+                "type": "MITIGATES",
+                "description": "User Account Management involves implementing and enforcing policies for the lifecycle of user accounts, including creation, modification, and deactivation. Proper account management reduces the attack surface by limiting unauthorized access, managing account privileges, and ensuring accounts are used according to organizational policies. This mitigation can be implemented through the following measures:\n\nEnforcing the Principle of Least Privilege\n\n- Implementation: Assign users only the minimum permissions required to perform their job functions. Regularly audit accounts to ensure no excess permissions are granted.\n- Use Case: Reduces the risk of privilege escalation by ensuring accounts cannot perform unauthorized actions.\n\nImplementing Strong Password Policies\n\n- Implementation: Enforce password complexity requirements (e.g., length, character types). Require password expiration every 90 days and disallow password reuse.\n- Use Case: Prevents adversaries from gaining unauthorized access through password guessing or brute force attacks.\n\nManaging Dormant and Orphaned Accounts\n\n- Implementation: Implement automated workflows to disable accounts after a set period of inactivity (e.g., 30 days). Remove orphaned accounts (e.g., accounts without an assigned owner) during regular account audits.\n- Use Case: Eliminates dormant accounts that could be exploited by attackers.\n\nAccount Lockout Policies\n\n- Implementation: Configure account lockout thresholds (e.g., lock accounts after five failed login attempts). Set lockout durations to a minimum of 15 minutes.\n- Use Case: Mitigates automated attack techniques that rely on repeated login attempts.\n\nMulti-Factor Authentication (MFA) for High-Risk Accounts\n\n- Implementation: Require MFA for all administrative accounts and high-risk users. Use MFA mechanisms like hardware tokens, authenticator apps, or biometrics.\n- Use Case: Prevents unauthorized access, even if credentials are stolen.\n\nRestricting Interactive Logins\n\n- Implementation: Restrict interactive logins for privileged accounts to specific secure systems or management consoles. Use group policies to enforce logon restrictions.\n- Use Case: Protects sensitive accounts from misuse or exploitation.\n\n*Tools for Implementation*\n\nBuilt-in Tools:\n\n- Microsoft Active Directory (AD): Centralized account management and RBAC enforcement.\n- Group Policy Object (GPO): Enforce password policies, logon restrictions, and account lockout policies.\n\nIdentity and Access Management (IAM) Tools:\n\n- Okta: Centralized user provisioning, MFA, and SSO integration.\n- Microsoft Azure Active Directory: Provides advanced account lifecycle management, role-based access, and conditional access policies.\n\nPrivileged Account Management (PAM):\n- CyberArk, BeyondTrust, Thycotic: Manage and monitor privileged account usage, enforce session recording, and JIT access."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 5,
+      "found": 5,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 4,
+      "compliant": 4,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "generic",
+  "run_meta": {
+    "planner": "gold-plan (injected)",
+    "synthesis": "llm (claim-grounded)",
+    "loop": "facet-chasing",
+    "observed_plan": [
+      {
+        "sub_question_id": "A-MIT-08",
+        "source": "attack",
+        "text": "What mitigations does ATT&CK list for technique T1490?",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 20000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "In attack, list all Mitigation reached from T1490 via MITIGATES",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 120.156
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 2,
+    "related": 4
+  }
+}

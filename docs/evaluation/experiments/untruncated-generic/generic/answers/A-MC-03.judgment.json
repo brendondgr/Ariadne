@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MC-03",
+  "verdict": "INCORRECT",
+  "correctness": 0.05,
+  "faithfulness": 0.8,
+  "groundedness": 0.9,
+  "completeness": 0.5,
+  "gold_expected": 8,
+  "gold_present": 7,
+  "hallucinations": [],
+  "rationale": "The question asks which techniques in TA0006 are mitigated by M1041, but the retrieval never queried or joined against M1041 at all: logic_flow shows only a single-node 'describe' on TA0006 (plus generic HAS_TECHNIQUE/HAS_TACTIC expansions), and M1041 never appears anywhere in the answer's narrative or claims (verified: 'M1041' in answer JSON == False). Instead the answer dumps the unfiltered set of all 67 techniques/sub-techniques adjacent to TA0006 in MITRE ATT&CK, with no indication of which are mitigated by M1041. The six gold-required ids (T1003, T1040, T1552, T1557, T1558, T1649) do happen to appear as substrings inside that 67-item enumeration, but only as noise indistinguishable from the other 61 unrelated techniques -- the answer gives the analyst no way to identify the actual correlated answer, so it does not correctly answer the question the gold specifies (must_correlate-style join on M1041 was never executed). TA0006 itself is correctly described (grounded, no fabricated properties), but the required must_include_related entity M1041 is entirely absent. Nothing in the answer is fabricated (all listed ids trace to genuine TA0006 neighbors in the evidence), so faithfulness/groundedness are reasonably high, but correctness is near-zero because the core join the question demands was never performed and the response is non-responsive to 'mitigated by M1041'."
+}

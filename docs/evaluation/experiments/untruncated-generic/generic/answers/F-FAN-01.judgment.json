@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.08,
+  "faithfulness": 0.9,
+  "groundedness": 0.9,
+  "completeness": 0.23,
+  "gold_expected": 13,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "The question asks which ATT&CK techniques CAPEC-19/35/448 map to and what mitigations apply to the deduplicated union of those techniques. The answer never names a single ATT&CK technique (gold must_correlate/must_include_ids: T1027.006, T1027.009, T1546.004, T1546.016, T1564.009) and never names a single ATT&CK mitigation (gold must_include_related: M1013, M1022, M1040, M1048, M1049) -- it only restates the 3 CAPEC ids (satisfying capec.must_include_ids) plus CAPEC-level abstraction/status, CAPEC-native mitigation stubs (capec:attack-pattern:*:mitigation:N), and ChildOf parents CAPEC-242/CAPEC-636, none of which the gold requires. Root cause is visible in the evidence itself: q6/q7/q8 executed 'list all TaxonomyEntry reached via MAPS_TO' for each CAPEC id and the facets show MAPS_TO out-counts of 3, 3, and 1 respectively, but each record's 'related' array came back empty (0 entries) -- the T-number identifiers were never actually materialized in the retrieved evidence, so q2 (ATT&CK mitigations) had no seed to run on and was correctly skipped/abstained. Everything the answer does state (abstraction Standard/Stable for CAPEC-19, Detailed/Draft for CAPEC-35, Detailed/Stable for CAPEC-448; mitigation counts/ids 10/5/1; ChildOf CAPEC-242 and CAPEC-636) is verifiably grounded in the evidence with no fabricated facts, so faithfulness/groundedness stay high. But per the gold's assertions the answer surfaces only 3 of 13 required unique entities (the 3 CAPEC ids; zero of the 5 T-numbers, zero of the 5 M-numbers), and it completely fails the actual question asked, so correctness and completeness are very low and the verdict is INCORRECT."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MC-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.15,
+  "faithfulness": 0.55,
+  "groundedness": 0.85,
+  "completeness": 0.91,
+  "gold_expected": 11,
+  "gold_present": 10,
+  "hallucinations": [],
+  "rationale": "The question asks which techniques in TA0002 are mitigated by M1038. The gold answer is exactly 9 techniques (T1047, T1059, T1106, T1127, T1129, T1204, T1574, T1609, T1674). The retrieval trace (logic_flow.results) shows the pipeline seeded on ['TA0002','M1038'] and declared entities ['Tactic','Technique','Mitigation'], but every executed sub-query (q1 describe, q2/q4 HAS_TECHNIQUE neighbors, q3 HAS_TACTIC neighbors) only traverses from TA0002 -- none of the four queries ever touch M1038 or any MITIGATES relationship. M1038 is never mentioned anywhere in the narrative or claims. Instead the deterministic composer dumps the raw 64-item TA0002 neighbourhood (a mix of techniques and sub-techniques reached via HAS_TECHNIQUE) with no filtering by mitigation at all -- this is 7x the gold's 9 records and does not represent 'mitigated by M1038' in any way, it represents 'everything under TA0002'. Coincidentally, checking entity_ids in the enumeration claim, all 9 gold technique ids (T1047, T1059, T1106, T1127, T1129, T1204, T1574, T1609, T1674) happen to appear buried inside the undifferentiated 64-item list, and TA0002 itself is described -- hence gold_present=10/11 (missing only M1038, which is never surfaced). But surfacing the right ids by accident inside a 64-item unfiltered dump is not the same as correctly answering the question: the pipeline never establishes or asserts the M1038 mitigation relationship for any of them, so an analyst reading this narrative cannot actually determine which of the 64 are the answer. This is a retrieval/join failure (missing Mitigation-side query despite it being in the declared entity set and seed_ids), not a synthesis wording issue. No fabricated facts were found (all stated ids/relations are grounded in the HAS_TECHNIQUE query results), so faithfulness is only moderately penalized for the misleading framing/omission rather than invention. correctness is scored low because the answer fails the actual question asked."
+}

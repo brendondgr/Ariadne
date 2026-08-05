@@ -1,0 +1,12 @@
+{
+  "case_id": "C-SCN-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 0.9,
+  "groundedness": 0.9,
+  "completeness": 0.0,
+  "gold_expected": 250,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires a bounded scan yielding between 250 and 300 CAPEC AttackPattern records (min_records=250, max_records=300). The pipeline instead misinterpreted the sub-question text 'List CAPEC attack patterns.' as an entity name to look up, executing a describe_by_name regex query for a node named '(?i).*(List.CAPEC).*' rather than an unbounded/bounded scan of all AttackPattern nodes (e.g. g.V().hasLabel(\"AttackPattern\").limit(300)). That malformed query legitimately returned 0 rows, so the deterministic composer correctly abstained given what it retrieved -- there is no fabricated content, hence no hallucinations and reasonably high faithfulness/groundedness for the narrow claim it made ('no entity named List CAPEC found'). But this is a total task failure against the gold: 0 of the required ~250-300 AttackPattern records were surfaced, and the narrative even tells the analyst to search by a specific CAPEC id instead of listing the corpus, which is the opposite of what a bounded scan question calls for. correctness and completeness are both 0."
+}

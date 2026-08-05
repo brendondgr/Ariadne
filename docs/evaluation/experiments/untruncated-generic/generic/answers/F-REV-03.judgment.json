@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-03",
+  "verdict": "INCORRECT",
+  "correctness": 0.3,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.33,
+  "gold_expected": 3,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question has two parts: (1) which CAPEC patterns map to T1110.001, and (2) what T1110.001 is. Part (2) is answered fully and correctly and faithfully: the answer states T1110.001 is 'Password Guessing', a subtechnique (x_mitre_is_subtechnique: True), not revoked/deprecated, version 1.7, under Tactic TA0006 (Credential Access) and parent Technique T1110 (Brute Force) — all of this is directly grounded in the attack-source record and related facets in logic_flow (q2-q4), matching gold's attack.expect_names {T1110.001: Password Guessing}. Part (1), the core cross-source ask, is entirely unanswered: gold requires CAPEC-49 to be surfaced with must_include_related T1110.001 (min_records 1) and requires the must_correlate id T1110.001 to be established as a CAPEC<->ATT&CK join, but the capec sub-query (q1) executed cleanly and returned 0 records ('No CAPEC records found' / row_count 0), and the answer correctly abstains rather than fabricating a CAPEC-49 mapping — so there is no hallucination and the abstention is faithful to the retrieved evidence. However, this means the answer fails the question's primary intent (naming a CAPEC pattern) and the deterministic_scores in the artifact itself confirm this: correlation f1=0.0/recall=0.0 and mapping_recall.recall=0.0 with missing=['T1110.001']. Notably the capec query used has('id', within(ids)) against seed ids=['T1110.001'] despite resolve step recording join_key='attack-technique-id' — i.e. it searched AttackPattern.id for a MITRE technique id rather than joining on the attack-technique-id property, which is why CAPEC-49 (the gold-required id) was never retrieved even though it should exist for T1110.001. Because the retrieval evidence available to the answer genuinely contains no CAPEC-49 record, this is graded as a completeness/correctness failure (only 1 of the 3 required facts — CAPEC-49 id, T1110.001 identity, and the CAPEC<->ATT&CK correlation — is surfaced) rather than a faithfulness violation."
+}

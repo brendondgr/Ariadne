@@ -1,0 +1,12 @@
+{
+  "case_id": "A-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold (expect_empty: true, ex_gold.expected: []) requires the pipeline to abstain rather than invent a record for nonexistent technique T9999. The executed query 'MATCH (n:Technique) WHERE n.attack_id IN $ids ...' with seed_ids ['T9999'] returned row_count 0 (execute/assess/normalize traces all confirm 0 records), and logic_flow.results[0].records is empty. The answer has no claims, one properly-scoped abstention citing the exact sub-question and query, and a narrative stating 'no matching records for this question' plus a helpful prompt to supply a valid id/example (T1566, M1017, CAPEC-98) — none of these examples are asserted as facts about T9999, so nothing is fabricated. deterministic_scores confirm abstention_proof_ok: true and fully_provenanced: true. No entities were required by gold (must_include_ids/related absent), so completeness is trivially satisfied at 0/0. No hallucinations found."
+}

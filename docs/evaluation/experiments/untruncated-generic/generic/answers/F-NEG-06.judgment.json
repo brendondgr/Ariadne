@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-06",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is a negative federated case: gold requires expect_no_correlation=true and attack.expect_dependency_skip=true, i.e. the correct answer is to honestly report no CAPEC-18-to-ATT&CK mapping rather than fabricate one. The evidence confirms CAPEC-18's MAPS_TO facet (direction out, neighbour_label TaxonomyEntry) has count 0, and q1's query against the ATT&CK join produced zero join values, causing q2 (ATT&CK mitigations for mapped techniques) to be correctly skipped via dependency-not-satisfied logic (traces show 'producer q1: it returned no join values' and 'producer q4: it was not run'). The answer's narrative and claims explicitly state the attack source establishes no mapping and cites the dependency-skip reason verbatim, matching gold's expect_dependency_skip requirement. The narrative also reports CAPEC-18's own properties (Status: Draft, Abstraction: Detailed) and its 2 HAS_MITIGATION neighbours (capec:attack-pattern:18:mitigation:1 and :2), both fully grounded in the q3 record's 'related' array with matching ids and descriptions. No entity, count, name, or correlation is fabricated; the deterministic_scores block independently confirms correlation.negative=true, exact=true, precision=recall=f1=1.0. Since must_correlate/must_include_ids are empty for this NEG case, gold_expected=0 and the answer surfaces 0 fabricated entries (gold_present=0), satisfying the negative-case bar."
+}

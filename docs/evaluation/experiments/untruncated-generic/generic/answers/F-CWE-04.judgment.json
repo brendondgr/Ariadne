@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-04",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 46,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is not a negative case: gold requires min_records>=1 CAPEC patterns (CAPEC-49, CAPEC-55, CAPEC-70, CAPEC-509, CAPEC-555, CAPEC-560, CAPEC-561, CAPEC-565, CAPEC-600, CAPEC-644, CAPEC-645, CAPEC-652), exactly 14 ATT&CK techniques via must_correlate/must_include_ids (T1021, T1021.002, T1078, T1078.001, T1110.001-004, T1114.002, T1133, T1550.002/.003, T1558, T1558.003), and 19 mitigations (M1013...M1060). The pipeline returned zero records for both sub-questions and abstained entirely, surfacing none of the 46 required gold entities (gold_present=0). Root cause visible in logic_flow: the capec query 'g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...' was executed with seed_ids=[\"CWE-308\"] filtering AttackPattern.id, but CWE-308 is a Weakness id, not an AttackPattern id, so the query could never match and trivially returned 0 rows (row_count 0, seed CWE-308 marked empty_with_seeds). Because q1 produced no seeds, q2 (mitigations) was skipped as a dependency failure. The narrative/abstention text ('the executed query ran cleanly and returned no matching records') is technically accurate about what happened and introduces no fabricated ids, counts, or names, so there is no faithfulness violation and the abstention trace is fully grounded in the logic_flow — but the answer completely fails the question: it surfaces none of the required CAPEC ids, none of the 14 ATT&CK techniques, and none of the 19 mitigations, and its correlation/mapping_recall scores in the artifact itself confirm recall=0.0 against 14 expected techniques. This is a retrieval/query-construction bug producing a false 'no data' impression rather than a genuine negative case, so it is graded INCORRECT."
+}

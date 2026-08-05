@@ -101,6 +101,19 @@ def _describe_label(resolved: ResolvedTask) -> str:
     return resolved.primary_label() or "Technique"
 
 
+def _generic_only() -> bool:
+    """True when the MITRE-specific query templates are disabled.
+
+    Set by ``SPECIALIST_GENERIC_ONLY`` for the "no hand-written templates"
+    experiment: the pipeline must answer using only schema-driven primitives
+    (describe / walk-one-declared-relationship / label scan), the way it would
+    have to on a graph nobody has authored templates for. Off by default.
+    """
+    from utils.config import env_bool
+
+    return env_bool("SPECIALIST_GENERIC_ONLY", False)
+
+
 def _is_technique_id(aid: str) -> bool:
     return bool(_TECHNIQUE_RE.match(aid))
 
@@ -127,6 +140,8 @@ class CypherQueryBuilder:
         self, resolved: ResolvedTask, feedback: list[str] | None = None
     ) -> QueryDraft:
         """Return a ``QueryDraft`` whose query string is valid Cypher."""
+        if _generic_only():
+            return self._build_generic(resolved)
         # Choose intent deterministically from the resolved task context.
         technique_ids = [aid for aid in resolved.seed_ids if _is_technique_id(aid)]
         has_technique_seeds = bool(technique_ids)
@@ -443,6 +458,59 @@ class CypherQueryBuilder:
             template="describe_by_name",
             expected_nonempty=False,
             meta={"name_terms": list(resolved.name_terms)},
+        )
+
+    def _build_generic(self, resolved: ResolvedTask) -> QueryDraft:
+        """Route using ONLY schema-driven primitives — no MITRE question-shapes.
+
+        This is the "point it at a graph nobody wrote templates for" path:
+        describe an anchor, walk one declared relationship, or scan a label.
+        Everything it knows comes from the source card and the derived schema
+        registry; nothing encodes what a mitigation or a technique *means*.
+        """
+        rels = [r for r in resolved.relationships if r]
+        if resolved.seed_ids and len(rels) == 1:
+            return self._generic_neighbors(resolved, rels[0])
+        if resolved.seed_ids:
+            return self._describe(resolved)
+        if resolved.name_terms:
+            return self._describe(resolved)
+        return self._label_scan(resolved)
+
+    def _generic_neighbors(
+        self, resolved: ResolvedTask, rel: str, direction: str = "both"
+    ) -> QueryDraft:
+        """Walk ONE card-declared relationship from the seeded anchors.
+
+        The schema-driven counterpart to the named ATT&CK templates: it knows
+        only that ``rel`` is a relationship the source card declares, and returns
+        the neighbours on the other side of it. Nothing about ATT&CK's meaning is
+        encoded — the same compiler serves ``MITIGATES``, ``USES``, ``DETECTS`` or
+        any edge a future dataset brings, which is what makes it the primitive a
+        new schema can be answered with before anyone writes a template for it.
+
+        The relationship is interpolated rather than parameterised because Cypher
+        does not bind relationship types; the validator gates it against the
+        card's declared types, so an undeclared edge never reaches the database.
+        """
+        arrow = {
+            "out": f"-[r:{rel}]->",
+            "in": f"<-[r:{rel}]-",
+        }.get(direction, f"-[r:{rel}]-")
+        query = (
+            "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids "
+            f"OPTIONAL MATCH (n){arrow}(m) "
+            "RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, "
+            "labels(n)[0] AS anchor_label, "
+            "coalesce(m.attack_id, m.id) AS neighbour_id, m.name AS neighbour_name, "
+            "labels(m)[0] AS neighbour_label, type(r) AS rel_type"
+        )
+        return QueryDraft(
+            query=query,
+            params={"ids": list(resolved.seed_ids)},
+            template="generic_neighbors",
+            expected_nonempty=False,
+            meta={"rel": rel, "direction": direction, "seed_ids": list(resolved.seed_ids)},
         )
 
     def expand(self, request: ExpandRequest) -> QueryDraft:

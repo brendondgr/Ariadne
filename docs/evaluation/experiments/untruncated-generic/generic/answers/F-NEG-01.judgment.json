@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty ATT&CK correlation (must_correlate=[], expect_no_correlation=true) plus an honest dependency-skip explanation on the attack side (attack.expect_dependency_skip=true). The answer's narrative states plainly that 'the attack source doesn't establish the mapped ATT&CK techniques or their mitigations because the sub-question it depends on (q5) produced no seed identifiers, so no query was executed' — it never invents a T-number or mitigation for ATT&CK, matching both assertions exactly (deterministic_scores.correlation also confirms negative=true, exact=true, f1=1.0). All additional CAPEC-side facts the answer volunteers are traceable to the retrieved evidence: Status=Stable and Abstraction=Meta match logic_flow.results[0].records[0].properties; the two mitigation ids capec:attack-pattern:116:mitigation:1/2 match the q3 HAS_MITIGATION related-records; and the single CanPrecede successor CAPEC-163 matches the q4 CAN_PRECEDE related record (name 'Spear Phishing', not stated in the narrative so no name fabrication risk). The only imprecision is that the narrative's abstention text cites the q5 'not run' dependency reason but omits mention of the separate q1 'returned no join values' abstention recorded in logic_flow.results[1] — both abstention entries in the answer are verbatim duplicates of the q5 reasoning. This is a minor internal bookkeeping quirk in the pipeline's abstention generation, not a factual error or hallucination, since the substantive claim (no ATT&CK mapping exists / was queryable) is correct either way. No fabricated entity ids, counts, names, or correlations were found anywhere in the answer."
+}

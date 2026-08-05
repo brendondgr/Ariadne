@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-ATT-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[C0027] and must_include_related=[G1015]. The narrator's LLM call timed out, so the deterministic claims serve as the answer (per instructions): claim 1-2 identify record C0027 (campaign, revoked=false, version 1.0, matching the properties_json in the C0027 record); claim 3-4 state 'C0027 (C0027) has 1 Groups: G1015', directly answering the question 'which group is C0027 attributed to' with the correct group id G1015. This is grounded in the second logic_flow result's related[] entry: {id: G1015, name: Scattered Spider, type: ATTRIBUTED_TO}, and the facets on the first record show exactly 1 ATTRIBUTED_TO->Group edge, consistent with a single-group attribution and matching min_records=1/max_records=1. No counts, names, or properties in the claims are absent from evidence (revoked/stix_type/version all appear verbatim in properties_json; the '1 Groups' count matches the ATTRIBUTED_TO facet count of 1). Both gold-required ids (C0027, G1015) are surfaced with correct relationship framing, so completeness and correctness are full."
+}

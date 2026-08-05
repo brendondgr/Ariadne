@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CWE-03",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 39,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "This is not a negative case: gold requires 8 CAPEC ids (CAPEC-60, 94, 509, 555, 561, 644, 645, 652) related to CWE-294, 11 correlated ATT&CK techniques (T1021, T1021.002, T1114.002, T1133, T1134.001, T1550.002/.003/.004, T1557, T1558, T1558.003), and 19 ATT&CK mitigations (M1015...M1060). The pipeline surfaced zero of these. The q1 Gremlin query is malformed: it filters AttackPattern.id within seed_ids, but resolve() set seed_ids=['CWE-294'] (a Weakness id, not an AttackPattern id), so `hasLabel('AttackPattern').has('id', within(['CWE-294']))` can never match anything -- the query should instead have started from the Weakness node CWE-294 and traversed the incoming EXPLOITS_WEAKNESS edge from AttackPattern. This retrieval bug caused a false-negative empty result (row_count=0), which cascaded: q2 (mitigations) was skipped entirely because it depends on q1's join output. The answer/abstentions text ('the source doesn't establish this... returned no matching records') is literally consistent with what the buggy query returned, so it fabricates nothing (faithfulness/groundedness scored high), but it completely fails to answer a question the knowledge graph can clearly answer -- correctness and completeness are both 0. Verdict INCORRECT."
+}

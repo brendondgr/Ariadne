@@ -1,0 +1,400 @@
+{
+  "id": "A-CMP-ATT-02",
+  "kind": "attack",
+  "tier": "medium",
+  "category": "A-CMP",
+  "question": "Which group is campaign C0028 (2015 Ukraine Electric Power Attack) attributed to?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "max_records": 1,
+      "must_include_ids": [
+        "C0028"
+      ],
+      "must_include_related": [
+        "G0034"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "G0034"
+      ],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 2 record(s) from 1 source(s).",
+    "narrative": "The ATT&CK record C0028, 2015 Ukraine Electric Power Attack, has a stix_type of campaign, x_mitre_version of 1.0, x_mitre_deprecated of False, and revoked of False. There is 1 item related to C0028 in MITRE ATT&CK, and the campaign is attributed to 1 group: G0034.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found ATT&CK record C0028: 2015 Ukraine Electric Power Attack.",
+        "kind": "fact",
+        "entity_ids": [
+          "C0028"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "C0028"
+          }
+        ]
+      },
+      {
+        "text": "C0028 (2015 Ukraine Electric Power Attack) has revoked: False; stix_type: campaign; x_mitre_deprecated: False; x_mitre_version: 1.0.",
+        "kind": "fact",
+        "entity_ids": [
+          "C0028"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "C0028"
+          }
+        ]
+      },
+      {
+        "text": "Found 1 item(s) related to C0028 (e.g. G0034) in MITRE ATT&CK.",
+        "kind": "fact",
+        "entity_ids": [
+          "C0028"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "C0028"
+          }
+        ]
+      },
+      {
+        "text": "C0028 (2015 Ukraine Electric Power Attack) has 1 Groups: G0034.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "G0034"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "C0028"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-CMP-ATT-02",
+      "source": "attack",
+      "text": "Which group is ATT&CK campaign C0028 attributed to?",
+      "entities": [
+        "Campaign",
+        "Group"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "C0028"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "A-CMP-ATT-02",
+        "sub_question": "Which group is ATT&CK campaign C0028 attributed to?",
+        "query": "MATCH (n:Campaign) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 20000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found ATT&CK record C0028: 2015 Ukraine Electric Power Attack.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Campaign",
+                "Group"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "C0028"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "MATCH (n:Campaign) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 20000",
+              "injected": [
+                "LIMIT 20000 appended (none present)"
+              ],
+              "timing_ms": 0.137
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 3.7
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.127
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "C0028",
+            "name": "2015 Ukraine Electric Power Attack",
+            "label": "Campaign",
+            "description": "[2015 Ukraine Electric Power Attack](https://attack.mitre.org/campaigns/C0028) was a [Sandworm Team](https://attack.mitre.org/groups/G0034) campaign during which they used [BlackEnergy](https://attack.mitre.org/software/S0089) (specifically BlackEnergy3) and [KillDisk](https://attack.mitre.org/software/S0607) to target and disrupt transmission and distribution substations within the Ukrainian power grid. This campaign was the first major public attack conducted against the Ukrainian power grid by Sandworm Team.",
+            "properties": {
+              "attack_id": "C0028",
+              "description": "[2015 Ukraine Electric Power Attack](https://attack.mitre.org/campaigns/C0028) was a [Sandworm Team](https://attack.mitre.org/groups/G0034) campaign during which they used [BlackEnergy](https://attack.mitre.org/software/S0089) (specifically BlackEnergy3) and [KillDisk](https://attack.mitre.org/software/S0607) to target and disrupt transmission and distribution substations within the Ukrainian power grid. This campaign was the first major public attack conducted against the Ukrainian power grid by Sandworm Team.",
+              "id": "campaign--46421788-b6e1-4256-b351-f8beffd1afba",
+              "name": "2015 Ukraine Electric Power Attack",
+              "revoked": false,
+              "stix_type": "campaign",
+              "x_mitre_deprecated": false,
+              "x_mitre_version": "1.0",
+              "_omitted_properties": [
+                "external_references"
+              ]
+            },
+            "facets": [
+              {
+                "rel": "ATTRIBUTED_TO",
+                "direction": "out",
+                "neighbour_label": "Group",
+                "count": 1
+              },
+              {
+                "rel": "USES",
+                "direction": "out",
+                "neighbour_label": "Software",
+                "count": 2
+              },
+              {
+                "rel": "USES",
+                "direction": "out",
+                "neighbour_label": "SubTechnique",
+                "count": 8
+              },
+              {
+                "rel": "USES",
+                "direction": "out",
+                "neighbour_label": "Technique",
+                "count": 9
+              }
+            ],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      },
+      {
+        "source": "attack",
+        "sub_question_id": "q2",
+        "sub_question": "In attack, list all Group reached from C0028 via ATTRIBUTED_TO",
+        "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r:ATTRIBUTED_TO]-(m) RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(m.attack_id, m.id) AS neighbour_id, m.name AS neighbour_name, labels(m)[0] AS neighbour_label, type(r) AS rel_type LIMIT 1000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 item(s) related to C0028 (e.g. G0034) in MITRE ATT&CK.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Group"
+              ],
+              "relationships": [
+                "ATTRIBUTED_TO"
+              ],
+              "seed_ids": [
+                "C0028"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "generic_neighbors",
+              "query": "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r:ATTRIBUTED_TO]-(m) RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, labels(n)[0] AS anchor_label, coalesce(m.attack_id, m.id) AS neighbour_id, m.name AS neighbour_name, labels(m)[0] AS neighbour_label, type(r) AS rel_type LIMIT 1000",
+              "injected": [
+                "LIMIT 1000 appended (none present)"
+              ],
+              "timing_ms": 0.085
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 2.7
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.003
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 1.638
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "C0028",
+            "name": "2015 Ukraine Electric Power Attack",
+            "label": "Campaign",
+            "description": "",
+            "properties": {},
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "G0034",
+                "name": "Sandworm Team",
+                "label": "Group",
+                "type": "ATTRIBUTED_TO",
+                "description": "[Sandworm Team](https://attack.mitre.org/groups/G0034) is a destructive threat group that has been attributed to Russia's General Staff Main Intelligence Directorate (GRU) Main Center for Special Technologies (GTsST) military unit 74455.(Citation: US District Court Indictment GRU Unit 74455 October 2020)(Citation: UK NCSC Olympic Attacks October 2020) This group has been active since at least 2009.(Citation: iSIGHT Sandworm 2014)(Citation: CrowdStrike VOODOO BEAR)(Citation: USDOJ Sandworm Feb 2020)(Citation: NCSC Sandworm Feb 2020)\n\nIn October 2020, the US indicted six GRU Unit 74455 officers associated with [Sandworm Team](https://attack.mitre.org/groups/G0034) for the following cyber operations: the 2015 and 2016 attacks against Ukrainian electrical companies and government organizations, the 2017 worldwide [NotPetya](https://attack.mitre.org/software/S0368) attack, targeting of the 2017 French presidential campaign, the 2018 [Olympic Destroyer](https://attack.mitre.org/software/S0365) attack against the Winter Olympic Games, the 2018 operation against the Organisation for the Prohibition of Chemical Weapons, and attacks against the country of Georgia in 2018 and 2019.(Citation: US District Court Indictment GRU Unit 74455 October 2020)(Citation: UK NCSC Olympic Attacks October 2020) Some of these were conducted with the assistance of GRU Unit 26165, which is also referred to as [APT28](https://attack.mitre.org/groups/G0007).(Citation: US District Court Indictment GRU Oct 2018)"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 2,
+      "found": 2,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 4,
+      "compliant": 4,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "generic",
+  "run_meta": {
+    "planner": "gold-plan (injected)",
+    "synthesis": "llm (claim-grounded)",
+    "loop": "facet-chasing",
+    "observed_plan": [
+      {
+        "sub_question_id": "A-CMP-ATT-02",
+        "source": "attack",
+        "text": "Which group is ATT&CK campaign C0028 attributed to?",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 20000,
+          "query_timeout_ms": 5000
+        }
+      },
+      {
+        "sub_question_id": "q2",
+        "source": "attack",
+        "text": "In attack, list all Group reached from C0028 via ATTRIBUTED_TO",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 49.992
+  },
+  "evidence_volume": {
+    "results": 2,
+    "records": 2,
+    "related": 1
+  }
+}

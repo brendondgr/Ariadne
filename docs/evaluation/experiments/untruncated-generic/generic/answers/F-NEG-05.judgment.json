@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-05",
+  "verdict": "CORRECT",
+  "correctness": 0.9,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.9,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty CAPEC->ATT&CK correlation (must_correlate: [], expect_no_correlation, capec.expect_empty, attack.expect_dependency_skip) since CAPEC-16 has no ATT&CK mapping in this dataset. The evidence confirms this: CAPEC-16's facets list MAPS_TO(out, TaxonomyEntry) count=0, and q2/q2(retry) traces show the ATT&CK-mitigations sub-question was correctly skipped because its dependency (q1, then q5) produced no seed identifiers/was not run. The answer never fabricates any T-number or ATT&CK technique/mitigation correlation, matching deterministic_scores.correlation (n_expected=0, n_got=0, exact=true, negative=true) and abstention_proof_ok=true. The narrative's stated CAPEC facts (Status=Draft, Abstraction=Detailed, 3 HAS_MITIGATION mitigations capec:attack-pattern:16:mitigation:1/2/3, 5 CAN_PRECEDE successors CAPEC-151/560/561/600/653) are all directly grounded in the q3/q4 evidence records verbatim, with no invented names, counts, or aliases. Minor deduction: the narrative never explicitly states that CAPEC-16 has zero ATT&CK technique mappings (it only implicitly conveys this via the mitigation-side abstention), so the first half of the question is answered by omission rather than an explicit statement, and the mitigations surfaced are CAPEC's own rather than ATT&CK's (correctly, since none exist) but the question's phrasing is not directly closed out. No hallucinations found."
+}

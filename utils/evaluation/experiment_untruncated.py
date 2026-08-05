@@ -42,7 +42,7 @@ DEFAULT_ROOT = "docs/evaluation/experiments/untruncated"
 # committed baseline's exact configuration (gold-replay plan + LLM drafter + LLM
 # synthesis) with ONLY the un-truncation profile added, so C − baseline isolates
 # un-truncation, A − C isolates the composer, and B − C isolates LLM planning.
-ARMS = ("deterministic", "llm", "gold_llm", "llm_loop", "gold_loop_llm")
+ARMS = ("deterministic", "llm", "gold_llm", "llm_loop", "gold_loop_llm", "generic")
 
 # -- the un-truncation profile ----------------------------------------------
 # Every one of these keys is read *at call time* by the bound it names, with the
@@ -84,7 +84,7 @@ TASK_MAX_TRAVERSAL_DEPTH = 3  # unchanged: depth is the question's shape, not a 
 def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[str, str]:
     """The full env overlay for one arm (bounds + that arm's LLM posture)."""
     env = dict(UNTRUNCATED_ENV)
-    if arm in ("llm_loop", "gold_loop_llm"):
+    if arm in ("llm_loop", "gold_loop_llm", "generic"):
         # ARM E — the workbench flow as designed: LLM planning + LLM synthesis
         # **with the iterative retrieval loop actually chasing something**. Arm B
         # ran at ORCH_MAX_HOPS=5 but still executed a single pass, because
@@ -108,6 +108,12 @@ def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[st
             "ORCH_CHASE_FACETS": "true",
             "ORCH_MAX_FACET_EXPANSIONS": "4",
         })
+        if arm == "generic":
+            # ARM G — the "no hand-written templates" control. Identical to ARM F
+            # except every MITRE question-shape template is disabled, so the
+            # pipeline must answer from schema-driven primitives alone. The delta
+            # F − G is exactly what the 19 bespoke templates are worth.
+            env["SPECIALIST_GENERIC_ONLY"] = "true"
     elif arm == "gold_llm":
         # Match the committed baseline byte-for-byte except the bounds: the .env
         # LLM seams stay exactly as generate_e2e.py reads them.
@@ -471,6 +477,7 @@ RUNNERS = {
     "gold_llm": run_gold_llm,
     "llm_loop": run_llm,   # same driver; the arm differs only in its env
     "gold_loop_llm": run_gold_loop_llm,
+    "generic": run_gold_loop_llm,   # same driver; templates disabled via env
 }
 
 
@@ -514,7 +521,7 @@ def run_arm(
     # ARM B builds its own specialists inside iter_pipeline; the gold-replay arms
     # share a thread-local router set (ARM C keeps the .env LLM drafter, as the
     # baseline did; ARM A forces it off).
-    pool = (None if arm in ("llm", "llm_loop", "gold_loop_llm")
+    pool = (None if arm in ("llm", "llm_loop", "gold_loop_llm", "generic")
             else _RouterPool(llm_enabled=(arm == "gold_llm")))
 
     manifest: list[dict[str, Any]] = []

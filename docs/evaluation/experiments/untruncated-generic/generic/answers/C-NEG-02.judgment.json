@@ -1,0 +1,12 @@
+{
+  "case_id": "C-NEG-02",
+  "verdict": "CORRECT",
+  "correctness": 1,
+  "faithfulness": 1,
+  "groundedness": 1,
+  "completeness": 1,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold (expect_empty: true, ex_gold.expected: []) requires the pipeline to abstain for the deprecated/excluded CAPEC-557. The executed Gremlin query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...) against seed_ids: [\"CAPEC-557\"] returned row_count: 0 and records: []. The answer's narrative and single abstention correctly state no matching records were found and invite the analyst to supply a valid id, with zero claims made \u2014 no entity, count, or property is asserted that isn't backed by the empty evidence. This matches the required negative-case behavior exactly, with no fabrication."
+}

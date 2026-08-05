@@ -1,0 +1,12 @@
+{
+  "case_id": "F-PART-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "hallucinations": [],
+  "rationale": "This adversarial case tests dependency-skip behavior when the CAPEC source is unavailable: gold requires (1) capec expect_skipped, (2) attack expect_dependency_skip (q2 depends on q1's seed ids and must not run an unseeded broad query), and (3) expect_no_correlation / must_correlate=[]. The answer satisfies all three: notes state 'Skipped capec: no specialist available for source capec'; the attack abstention explicitly says q2 'depends on q1 for its seed identifiers, so no query was executed', matching the logic_flow trace ('producer q1: it was not run') and observed_plan (q2 seed_ids=[], depends_on shown in plan.seed_from='q1'); claims/records/related are all empty (evidence_volume records=0), so correlation is correctly empty (deterministic_scores.correlation.negative=true, exact=true, f1=1.0). No entity, id, count, or name is fabricated -- the narrative correctly refuses to invent a broad unseeded ATT&CK query and instead names the exact producer dependency. Nothing in the answer is unsupported by logic_flow."
+}

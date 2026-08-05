@@ -1,0 +1,287 @@
+{
+  "id": "C-EXE-01",
+  "kind": "capec",
+  "tier": "medium",
+  "category": "C-EXE",
+  "question": "What are the execution steps of CAPEC-66?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "CAPEC-66"
+      ],
+      "must_include_related": [
+        "capec:attack-pattern:66:step:1",
+        "capec:attack-pattern:66:step:2",
+        "capec:attack-pattern:66:step:3",
+        "capec:attack-pattern:66:step:4"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "capec:attack-pattern:66:step:1",
+        "capec:attack-pattern:66:step:2",
+        "capec:attack-pattern:66:step:3",
+        "capec:attack-pattern:66:step:4"
+      ],
+      "scheme": "capec"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "One CAPEC record was found for CAPEC-66 (SQL Injection), which has a Status of Draft and an Abstraction of Standard. CAPEC-66 has 4 execution steps: capec:attack-pattern:66:step:1, capec:attack-pattern:66:step:2, capec:attack-pattern:66:step:3, and capec:attack-pattern:66:step:4.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-66.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-66"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-66"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-66 (SQL Injection) has Abstraction: Standard; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-66"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-66"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-66 (SQL Injection) has 4 execution steps: capec:attack-pattern:66:step:1, capec:attack-pattern:66:step:2, capec:attack-pattern:66:step:3, capec:attack-pattern:66:step:4.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "capec:attack-pattern:66:step:1",
+          "capec:attack-pattern:66:step:2",
+          "capec:attack-pattern:66:step:3",
+          "capec:attack-pattern:66:step:4"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-66"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "C-EXE-01",
+      "source": "capec",
+      "text": "What are the execution steps of CAPEC-66?",
+      "entities": [
+        "AttackPattern",
+        "HAS_EXECUTION_STEP",
+        "ExecutionStep"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-66"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "C-EXE-01",
+        "sub_question": "What are the execution steps of CAPEC-66?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"HAS_EXECUTION_STEP\").hasLabel(\"ExecutionStep\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-66.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "ExecutionStep"
+              ],
+              "relationships": [
+                "HAS_EXECUTION_STEP"
+              ],
+              "seed_ids": [
+                "CAPEC-66"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_neighbors",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"HAS_EXECUTION_STEP\").hasLabel(\"ExecutionStep\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+              "injected": [],
+              "timing_ms": 0.097
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 4,
+              "timing_ms": 13.9
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 4,
+              "timing_ms": 0.006
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.104
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-66",
+            "name": "SQL Injection",
+            "label": "AttackPattern",
+            "description": "This attack exploits target software that constructs SQL statements based on user input. An attacker crafts input strings so that when the target software constructs SQL statements based on the input, the resulting SQL statement performs actions other than those the application intended. SQL Injection results from failure of the application to appropriately validate input.",
+            "properties": {
+              "Status": "Draft",
+              "name": "SQL Injection",
+              "description": "This attack exploits target software that constructs SQL statements based on user input. An attacker crafts input strings so that when the target software constructs SQL statements based on the input, the resulting SQL statement performs actions other than those the application intended. SQL Injection results from failure of the application to appropriately validate input.",
+              "id": "capec:attack-pattern:66",
+              "Abstraction": "Standard"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "capec:attack-pattern:66:step:1",
+                "name": "Step 1",
+                "label": "ExecutionStep",
+                "step": "1",
+                "type": "HAS_EXECUTION_STEP",
+                "description": "[Survey application] The attacker first takes an inventory of the functionality exposed by the application."
+              },
+              {
+                "id": "capec:attack-pattern:66:step:2",
+                "name": "Step 2",
+                "label": "ExecutionStep",
+                "step": "2",
+                "type": "HAS_EXECUTION_STEP",
+                "description": "[Determine user-controllable input susceptible to injection] Determine the user-controllable input susceptible to injection. For each user-controllable input that the attacker suspects is vulnerable to SQL injection, attempt to inject characters that have special meaning in SQL (such as a single quote character, a double quote character, two hyphens, a parenthesis, etc.). The goal is to create a SQL query with an invalid syntax."
+              },
+              {
+                "id": "capec:attack-pattern:66:step:3",
+                "name": "Step 3",
+                "label": "ExecutionStep",
+                "step": "3",
+                "type": "HAS_EXECUTION_STEP",
+                "description": "[Experiment with SQL Injection vulnerabilities] After determining that a given input is vulnerable to SQL Injection, hypothesize what the underlying query looks like. Iteratively try to add logic to the query to extract information from the database, or to modify or delete information in the database."
+              },
+              {
+                "id": "capec:attack-pattern:66:step:4",
+                "name": "Step 4",
+                "label": "ExecutionStep",
+                "step": "4",
+                "type": "HAS_EXECUTION_STEP",
+                "description": "[Exploit SQL Injection vulnerability] After refining and adding various logic to SQL queries, craft and execute the underlying SQL query that will be used to attack the target system. The goal is to reveal, modify, and/or delete database data, using the knowledge obtained in the previous step. This could entail crafting and executing multiple SQL queries if a denial of service attack is the intent."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 5,
+      "found": 5,
+      "coverage": 1.0,
+      "missing": []
+    },
+    "provenance": {
+      "citations": 3,
+      "compliant": 3,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "generic",
+  "run_meta": {
+    "planner": "gold-plan (injected)",
+    "synthesis": "llm (claim-grounded)",
+    "loop": "facet-chasing",
+    "observed_plan": [
+      {
+        "sub_question_id": "C-EXE-01",
+        "source": "capec",
+        "text": "What are the execution steps of CAPEC-66?",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 20000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 29.952
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 4
+  }
+}

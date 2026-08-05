@@ -1,0 +1,14 @@
+{
+ "case_id": "A-CMP-TEC-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "hallucinations": [
+  "The claim 'C0024 (SolarWinds Compromise) has 82 used techniques' mislabels the full related set as techniques, but 11 of the 82 related ids (S0552, S0002, S0562, S0682, S0597, S0559, S0154, S0589, S0588, S0565, S0560) are labeled 'Software' in the evidence, not 'Technique'/'SubTechnique' -- they are tools/malware C0024 used, not ATT&CK techniques."
+ ],
+ "rationale": "The pipeline (deterministic arm, thin narrative == claims) surfaces all 5 required gold ids (T1005, T1018, T1047, T1057, T1069) and in fact all 24 ids in the broader ex_gold neighbor list (T1005, T1018, T1047, T1057, T1069, T1070, T1078, T1083, T1087, T1105, T1133, T1140, T1190, T1199, T1213, T1482, T1539, T1550, T1555, T1568, T1665, T1680, T1685, T1686), each verified present in the evidence's C0024 related-neighbour list of 82 USES-typed entries. C0024's properties (revoked=False, stix_type=campaign, x_mitre_deprecated=False, x_mitre_version=1.1) and the related count of 82 are both exactly grounded in logic_flow. The single fault: the enumeration claim asserts '82 used techniques,' but per the evidence's own 'label' field, 11 of those 82 ids are Software (e.g. S0552 AdFind, S0002 Mimikatz) rather than Technique/SubTechnique -- a mislabeling of entity type rather than a fabricated id, since every id itself is grounded. This keeps groundedness and completeness perfect but costs a faithfulness/correctness fraction for conflating tool usage with technique usage, so the verdict is PARTIAL rather than CORRECT."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-TAC-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 18,
+  "gold_present": 18,
+  "hallucinations": [],
+  "rationale": "The answer (deterministic enumeration claim, no LLM narrative beyond the templated summary) surfaces all 5 must_include_ids (T1112, T1207, T1222, T1484, T1553) and all 18 ex_gold expected ids (T1112, T1207, T1222, T1484, T1553, T1556, T1578, T1599, T1600, T1601, T1647, T1666, T1685, T1686, T1687, T1688, T1689, T1690), each present either as a base technique or via one of its listed subtechniques within the 56-item enumeration. Every fact is traceable to logic_flow evidence: tactic properties (revoked False, stix_type x-mitre-tactic, x_mitre_deprecated False, x_mitre_shortname defense-impairment, x_mitre_version 1.0) match the retrieved node properties exactly; the facet counts (38 SubTechnique + 18 Technique = 56 HAS_TECHNIQUE relations, 1 HAS_TACTIC relation to Matrix) match record group0's facets field; and the 56-id enumeration in claim/narrative is an exact set match (verified programmatically, zero diff) against the 'related' array of the HAS_TECHNIQUE query record. The single Matrix claim (enterprise-attack) is likewise grounded in the group2 record. No invented ids, counts, names, or properties were found."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 0.33,
+  "gold_expected": 3,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question asks which ATT&CK techniques CAPEC-98 maps to; gold requires must_include_ids=[CAPEC-98] and must_include_related=[T1566, T1598] via the MAPS_TO join (attack-technique-id). The evidence itself shows the retrieval reached CAPEC-98's MAPS_TO facet (count=2, target label TaxonomyEntry) but the q2 sub-query's 'related' array for that record is empty -- the actual TaxonomyEntry/ATT&CK technique nodes were never expanded in logic_flow, so T1566 and T1598 never appear anywhere in the evidence. The narrative/claims correctly identify CAPEC-98 (Phishing), its Abstraction=Standard/Status=Draft, its 6 CanPrecede successors (CAPEC-631/632/89/543/611/630), and its ChildOf parent (CAPEC-151) -- all of which are faithfully grounded in the evidence with no invented facts. However, the answer never mentions ATT&CK techniques, T1566, T1598, or even the MAPS_TO relationship/facet count at all, and does not abstain or flag the gap -- it simply answers an adjacent but different question (CAPEC-to-CAPEC relationships) while ignoring the one actually asked. This matches the artifact's own deterministic_scores.coverage (gold=3, found=1, missing=[T1566,T1598]). Only 1 of 3 gold-required entities (CAPEC-98 itself) is surfaced; the two must_include_related technique ids are entirely absent, making this a failure to answer the analyst's actual question despite the stated facts being individually accurate and traceable."
+}

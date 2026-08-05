@@ -1,0 +1,14 @@
+{
+  "case_id": "A-CMP-TEC-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.85,
+  "faithfulness": 0.8,
+  "groundedness": 0.95,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "hallucinations": [
+    "Narrative claims 'Campaign C0027 used 29 techniques' and the enumeration claim says 'C0027 has 29 used techniques', but the 29-item related list includes S0357 (Impacket), which the evidence explicitly labels 'Software' (facets: USES->Software count 1), not a Technique or SubTechnique. Counting/labeling it as one of the '29 techniques' mischaracterizes the evidence."
+  ],
+  "rationale": "All 5 must_include_ids (T1046, T1047, T1090, T1102, T1105) are present in both the narrative prose and the enumeration claim, correctly traced to the q2 USES-neighbor query records (row_count 29, matching facets 10 Technique + 18 SubTechnique + 1 Software = 29). The broader ex_gold neighbor pool (T1046, T1047, T1090, T1102, T1105, T1133, T1190, T1530, T1572, T1621 — 10 ids) is also fully covered: all 10 appear in the answer's 29-item list. min_records (5) is satisfied. However, the answer's framing overstates precision: it labels all 29 related entities as 'used techniques,' but one of them (S0357/Impacket) is Software per its evidence label, not a Technique. The remaining 18 SubTechnique-labeled entries (e.g. T1598.001, T1003.006) being folded into 'techniques' is defensible under common ATT&CK usage, but the Software item is a clear category error that inflates the technique count from 28 to 29 without qualification. Groundedness is otherwise strong — every id cited traces directly to the retrieved records/related list, with no ids invented outside the evidence. Deterministic composer's own coverage score (5/5, 1.0) confirms the required-id check passed; the docked score here reflects the independent faithfulness check on the '29 techniques' claim, which the self-reported metrics do not catch since they only check id coverage, not category accuracy."
+}

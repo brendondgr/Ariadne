@@ -1,0 +1,14 @@
+{
+  "case_id": "A-SW-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.7,
+  "faithfulness": 0.6,
+  "groundedness": 0.9,
+  "completeness": 1.0,
+  "gold_expected": 18,
+  "gold_present": 18,
+  "hallucinations": [
+    "Narrative/claim states 'S0002 (Mimikatz) has 77 used techniques' followed by a list of 77 ids, but only 17 of those ids are actually Techniques/SubTechniques (evidence facets show 4 outgoing USES->Technique + 13 outgoing USES->SubTechnique = 17). The remaining 60 ids (51 Group, 9 Campaign) are entities that use Mimikatz (inbound USES, i.e. groups/campaigns that use the tool), not techniques Mimikatz uses. Labeling all 77 as 'used techniques' conflates the two USES directions and is not supported by the evidence's own facet breakdown, which clearly separates in/out direction and neighbour label."
+  ],
+  "rationale": "All gold-required entities are present and grounded: S0002 (must_include_ids) and all 17 required technique ids (T1003.001, T1003.002, T1003.004, T1003.006, T1098, T1134.005, T1207, T1547.005, T1550.002, T1550.003, T1552.004, T1555, T1555.003, T1555.004, T1558.001, T1558.002, T1649) appear verbatim in the answer's enumeration claim, and cross-checking the retrieved 'related' records confirms exactly these 17 ids carry label Technique or SubTechnique (verified via evidence extraction: 4 Technique + 13 SubTechnique = 17, matching gold exactly with no extras and no misses). Completeness is therefore 18/18. However, the answer's own framing is inaccurate: it asserts S0002 'has 77 used techniques' and dumps 51 Group ids and 9 Campaign ids into the same list as if they were techniques Mimikatz uses, when the evidence facets show these are entities that use Mimikatz (the reverse USES direction), not techniques it uses. An analyst reading the narrative/claim without separately parsing id prefixes would be misled about what 'techniques' means here and how many there actually are (17, not 77). This is a real, evidence-contradicted mislabeling (the query results themselves distinguish direction and neighbour_label), so it costs faithfulness and correctness even though every individual id is grounded and the required set is fully covered. This lands as PARTIAL rather than CORRECT."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.25,
+  "faithfulness": 0.95,
+  "groundedness": 1.0,
+  "completeness": 0.25,
+  "gold_expected": 4,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to surface CAPEC-57, CAPEC-65, CAPEC-158 as patterns mapping to T1040 (min_records 3) plus the T1040/Network Sniffing correlation and name. The answer correctly and faithfully identifies T1040 as 'Network Sniffing' with its stix properties (revoked=False, stix_type=attack-pattern, x_mitre_version=1.7) and its two tactics TA0007 (Discovery) and TA0006 (Credential Access), all of which are grounded in the attack-side evidence records verbatim. However, it entirely fails the core ask of the question: it surfaces zero CAPEC patterns and abstains ('the capec source doesn't establish which CAPEC patterns map to T1040'). The logic_flow shows the capec Gremlin query (`g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...` with ids=[\"T1040\"]) returned 0 rows -- the resolve trace itself records the intended join_key as 'attack-technique-id', but the executed query filtered on the CAPEC node's primary 'id' property against the ATT&CK id 'T1040', which cannot match any CAPEC-* id. So the retrieval evidence supplied to the answer genuinely contains no CAPEC-side records, and the abstention is truthful relative to that evidence (no fabrication) -- but it still leaves the must_include_ids (CAPEC-57, CAPEC-65, CAPEC-158) and the must_correlate join completely unsatisfied. This matches the pipeline's own deterministic_scores (mapping_recall.recall=0.0, correlation.f1=0.0, missing=['T1040']). Of the 4 distinct gold-required ids (T1040, CAPEC-57, CAPEC-65, CAPEC-158), only T1040 is surfaced (via the attack side) -> gold_present=1/4. Because a positive case (min_records 3 for capec) received no CAPEC results at all, this is a failure to answer the question, not an acceptable abstention, so the verdict is INCORRECT despite the answer being internally faithful to the (defective) evidence it was given."
+}

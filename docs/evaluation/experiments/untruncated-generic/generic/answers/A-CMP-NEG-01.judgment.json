@@ -1,0 +1,12 @@
+{
+  "case_id": "A-CMP-NEG-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an empty result (expect_empty: true) for nonexistent campaign C9999. The executed Cypher query ran cleanly against Campaign nodes filtered by attack_id C9999 and returned 0 rows (logic_flow.results[0].records = [], row_count 0 at both execute and assess trace steps). The answer correctly abstains: narrative states 'no matching records for this question' and claims list is empty, with a proper abstention record citing the exact executed query. The example ids mentioned (T1566, M1017, CAPEC-98) are generic usage-hint suggestions for how to phrase a follow-up query, not assertions about C9999 or its neighborhood, so they are not hallucinations. No fabricated techniques, names, or counts are present. This fully matches the negative-case requirement."
+}

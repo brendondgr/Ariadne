@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-07",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 0.85,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 5,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires the answer to state the ATT&CK technique CAPEC-600 maps to (T1110.004, both as the must_correlate join and as capec.must_include_related / attack.must_include_ids) and the ATT&CK mitigations for that technique (M1018, M1027, M1032, M1036). The pipeline surfaces none of these five required ids (0/5). The evidence shows the graph does have a MAPS_TO edge from CAPEC-600 to a TaxonomyEntry (facets list MAPS_TO/out/TaxonomyEntry count:1 in both the q1 and q4 result records), but the retrieval for q4 ('list all TaxonomyEntry reached from CAPEC-600 via MAPS_TO') used the wrong template ('describe' instead of a neighbor-expansion template) and returned an empty 'related' list, so the technique id was never actually fetched. Because q1/q5 produced no ATT&CK seed identifiers, the downstream ATT&CK sub-question (mitigations for the mapped technique) was correctly skipped rather than fabricated — the two abstention statements are honest and grounded. However, the narrative/claims that ARE presented (CAPEC-600's own 8 HAS_MITIGATION mitigations, Abstraction/Status, and 2 CAN_PRECEDE successors CAPEC-151/CAPEC-653) are all faithfully grounded in the q3/q4/q5 evidence records, so there is no fabrication. The core defect is completeness/correctness, not hallucination: the answer never identifies T1110.004 and substitutes CAPEC-native mitigations for the ATT&CK mitigations the question actually asked about, without clearly flagging that these are not the same thing, which fails the 'hard' federated question entirely."
+}

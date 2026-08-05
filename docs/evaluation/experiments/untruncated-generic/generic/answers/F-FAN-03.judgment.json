@@ -1,0 +1,12 @@
+{
+  "case_id": "F-FAN-03",
+  "verdict": "INCORRECT",
+  "correctness": 0.05,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 0.12,
+  "gold_expected": 17,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "The question asks which ATT&CK techniques CAPEC-37 and CAPEC-639 map to and which mitigations apply to the deduplicated union. Gold requires 6 T-numbers (T1005, T1039, T1552.001, T1552.003, T1552.004, T1552.006) and 9 ATT&CK mitigations (M1015, M1017, M1022, M1027, M1028, M1041, M1047, M1051, M1057) surfaced. The answer surfaces zero of these 15 required ids: q1/q4/q5 (the CAPEC-side MAPS_TO queries) used the 'describe' template, which returned elementMap() facet counts (MAPS_TO out-degree 5 for CAPEC-639, 2 for CAPEC-37) but never populated the 'related' array with the actual TaxonomyEntry/technique targets, so no T-number ever appears anywhere in the retrieved evidence. Consequently q2 (the ATT&CK-source mitigation lookup) had no seed ids and was skipped twice, and the deterministic scorer embedded in the artifact itself confirms this: mapping_recall.recall=0.0, correlation.recall=0.0, n_expected=6, n_got=0. The pipeline's own narrative and claims correctly refuse to fabricate the missing techniques/mitigations and instead report only the CAPEC-side metadata that was actually retrieved (CAPEC-639 Abstraction=Detailed/Status=Stable with mitigation capec:attack-pattern:639:mitigation:1; CAPEC-37 Abstraction=Detailed/Status=Draft with ChildOf parent CAPEC-167) -- both fully grounded in the q1/q3/q7 evidence records. No fabricated ids, names, or counts appear (faithfulness is high), but this is not a negative/abstention case: gold expects real ATT&CK correlates and mitigations to exist and be retrievable, so honest abstention on the entire core ask (technique mapping + mitigation union) still fails the question. Only the 2 CAPEC seed ids (CAPEC-37, CAPEC-639) out of 17 gold-required ids (2 CAPEC + 6 T-numbers + 9 mitigations) are surfaced, so completeness and correctness are very low despite perfect groundedness of what little was said. Minor faithfulness note: the narrative says the attack sub-question 'depends on q6' and 'produced no seed identifiers,' but per the second attack abstention entry it actually depended on q1 (whose join returned no values) and separately a duplicate abstention cites q6 as 'not run' -- a slightly garbled but not fact-inventing description of the dependency chain."
+}

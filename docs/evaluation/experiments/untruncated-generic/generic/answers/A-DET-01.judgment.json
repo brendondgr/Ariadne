@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.45,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.6666666666666666,
+  "gold_expected": 3,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires T1047 (must_include_ids) plus DET0364 and AN1031 (must_include_related). The answer/claims correctly identify T1047 as Windows Management Instrumentation and correctly surface the single DetectionStrategy DET0364 ('Behavioral Detection Strategy for WMI Execution Abuse on Windows'), matching the q2 evidence record's 'related' field. However, the question explicitly asks 'via which analytics', and the answer never mentions any Analytic entity, in particular AN1031 is entirely absent from both the narrative/claims and from the retrieved evidence (logic_flow only traversed the DETECTS relationship from T1047 to DetectionStrategy, never expanded DET0364 to its Analytic nodes). This matches the artifact's own deterministic_scores.coverage, which reports found=2/gold=3 with missing=['AN1031']. Every statement made (T1047's properties: stix_type attack-pattern, x_mitre_version 1.6, not revoked/deprecated/subtechnique, and the single DET0364 relation) is directly grounded in the retrieved records with no fabricated facts, so faithfulness and groundedness are both full. But because the analytics half of the question is completely unanswered (2 of 3 gold entities surfaced, and the more specific 'analytics' ask is 0-for-1), correctness is materially reduced -- this is a partial, not a full, answer to the stated question."
+}

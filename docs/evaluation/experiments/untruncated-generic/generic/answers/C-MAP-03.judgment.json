@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-03",
+  "verdict": "INCORRECT",
+  "correctness": 0.05,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 4,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "The question asks which ATT&CK techniques CAPEC-564 maps to; gold requires T1037, T1543.001, T1543.004, T1547 to be surfaced (must_include_related). The narrative/claims never mention any ATT&CK technique ID at all — they only restate CAPEC-564's Abstraction (Detailed), Status (Draft), and its single ChildOf parent CAPEC-542. This is 0/4 gold-required entities surfaced, so the answer never actually answers the question asked, despite claiming success (headline 'Gathered 3 record(s)'). The retrieval evidence itself is the root cause: the CAPEC-564 record's facets show MAPS_TO -> TaxonomyEntry count=4 (line 278), confirming 4 ATT&CK mappings exist in the graph, but sub-question q2 ('list all TaxonomyEntry reached from CAPEC-564 via MAPS_TO', lines 312-519) returned the CAPEC-564 record again with an empty 'related': [] list — the join to the actual TaxonomyEntry/T-number nodes never materialized in the evidence. So the answer is grounded and faithful to what little evidence it had (no fabricated names/counts/aliases — Abstraction/Status/ChildOf parent CAPEC-542 are all directly supported by the record and its 'related' entry), but it is fundamentally incomplete/incorrect relative to the gold: 0 of the 4 required T-number ids (T1037, T1543.001, T1543.004, T1547) are present anywhere in the answer, and it does not even abstain or flag that the MAPS_TO targets were retrieved-but-unresolved — it silently omits the core of the question."
+}

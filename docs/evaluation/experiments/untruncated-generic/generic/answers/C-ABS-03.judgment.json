@@ -1,0 +1,12 @@
+{
+  "case_id": "C-ABS-03",
+  "verdict": "PARTIAL",
+  "correctness": 0.55,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.6666666666666666,
+  "gold_expected": 3,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-13 (must_include_ids) plus CAPEC-77 and CAPEC-22 (must_include_related) — the question explicitly asks to walk up TWO abstraction levels, the standard-pattern parent (CAPEC-77) and the meta-pattern grandparent (CAPEC-22) of CAPEC-13. The answer correctly reports CAPEC-13's Abstraction (Detailed) and Status (Stable), and correctly names its one ChildOf parent as CAPEC-77 (Manipulating User-Controlled Variables) — both fully grounded in the evidence record, matching properties.Abstraction/Status and related[0].id/name exactly. However the retrieval query itself only executed a single CHILD_OF hop (out('CHILD_OF') once, not chained twice), so CAPEC-22 never appears anywhere in logic_flow.results — it is a retrieval gap, not a synthesis fabrication, confirmed by the pipeline's own deterministic_scores.coverage (gold:3, found:2, missing:['CAPEC-22'], coverage 0.667). No claim is unsupported or invented (faithfulness/groundedness both clean), but the answer only surfaces 2 of 3 required gold ids and stops one hop short of the meta-pattern ancestor the question asks for, so it does not fully answer the question as posed."
+}

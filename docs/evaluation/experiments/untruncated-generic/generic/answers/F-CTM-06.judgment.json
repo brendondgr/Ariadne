@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-06",
+  "verdict": "INCORRECT",
+  "correctness": 0.08,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 16,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "The question asks which ATT&CK techniques CAPEC-665 maps to and what mitigations apply to those techniques. Gold requires the 3 must_correlate techniques (T1211, T1542.002, T1556) and 13 ATT&CK mitigations (M1018, M1019, M1022, M1024, M1025, M1026, M1027, M1028, M1032, M1047, M1048, M1050, M1051); the pipeline's own deterministic_scores confirm mapping_recall.found=0/3 and correlation n_got=0. None of these 16 ids appear anywhere in the retrieved logic_flow evidence (grep confirms T1211/T1542/T1556/M10xx occur only inside the gold block and the deterministic_scores.mapping_recall.missing list, never inside logic_flow.results or answer.claims). The MAPS_TO facet on CAPEC-665 (q1/q5) reports count=3, correctly signalling that 3 ATT&CK technique mappings exist, but q5's gate step used the generic 'describe' template instead of the neighbor-expansion template used successfully for q3 (HAS_MITIGATION) and q4 (CHILD_OF), so it returned an empty 'related' array instead of the 3 TaxonomyEntry nodes -- a retrieval/template-selection failure, not a synthesis error. As a direct consequence, sub-question q2 (ATT&CK mitigations for the mapped techniques) never had seed ids to run on and was skipped. The answer/claims report only CAPEC-side facts that ARE grounded in evidence (Status: Stable, Abstraction: Detailed, the 7 CAPEC-native HAS_MITIGATION ids, and the CHILD_OF parent CAPEC-276) plus an abstention statement blaming q6, which is misleading (the actual blocked producer was q5/MAPS_TO, not q6/PeerOf, though the abstention text says 'q6 produced no seed identifiers' -- the trace correctly names q6 as the direct dependency of the skipped q2, so this is not a fabrication but is confusing). Faithfulness and groundedness are high because every stated fact does trace to a retrieved record and nothing is invented. But correctness and completeness are near zero: 0 of the 3 required T-numbers and 0 of the 13 required M-numbers are surfaced, so the actual question (technique mapping + applicable mitigations) is unanswered. Not a negative/abstain-is-correct case -- gold expects real data (min_records 3 for attack, min_records 1 with 3 related ids for capec) -- so the correct abstention behavior does not save this from an INCORRECT verdict."
+}

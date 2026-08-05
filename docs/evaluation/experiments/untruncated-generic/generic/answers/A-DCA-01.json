@@ -1,0 +1,277 @@
+{
+  "id": "A-DCA-01",
+  "kind": "attack",
+  "tier": "easy",
+  "category": "A-DCA",
+  "question": "Which analytics monitor data component DC0084?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "max_records": 1,
+      "must_include_ids": [
+        "DC0084"
+      ],
+      "must_include_related": [
+        "AN0316",
+        "AN0405",
+        "AN0444",
+        "AN0671",
+        "AN0675",
+        "AN0770",
+        "AN1000",
+        "AN1144",
+        "AN1444"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "AN0316",
+        "AN0405",
+        "AN0444",
+        "AN0671",
+        "AN0675",
+        "AN0770",
+        "AN1000",
+        "AN1144",
+        "AN1444"
+      ],
+      "scheme": "attack"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "Found ATT&CK record DC0084: Active Directory Credential Request. DC0084 (Active Directory Credential Request) has revoked: False; stix_type: x-mitre-data-component; x_mitre_deprecated: False; x_mitre_version: 2.0.",
+    "composer": "deterministic",
+    "fallback_reason": "LLM narrator unavailable (request failed: HTTPConnectionPool(host='localhost', port=4000): Read timed out. (read timeout=120.0))",
+    "claims": [
+      {
+        "text": "Found ATT&CK record DC0084: Active Directory Credential Request.",
+        "kind": "fact",
+        "entity_ids": [
+          "DC0084"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "DC0084"
+          }
+        ]
+      },
+      {
+        "text": "DC0084 (Active Directory Credential Request) has revoked: False; stix_type: x-mitre-data-component; x_mitre_deprecated: False; x_mitre_version: 2.0.",
+        "kind": "fact",
+        "entity_ids": [
+          "DC0084"
+        ],
+        "citations": [
+          {
+            "source": "attack",
+            "primary_id": "DC0084"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-DCA-01",
+      "source": "attack",
+      "text": "Which analytics monitor data component DC0084?",
+      "entities": [
+        "DataComponent",
+        "Analytic"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "DC0084"
+      ],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "A-DCA-01",
+        "sub_question": "Which analytics monitor data component DC0084?",
+        "query": "MATCH (n:DataComponent) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 20000",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found ATT&CK record DC0084: Active Directory Credential Request.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "DataComponent",
+                "Analytic"
+              ],
+              "relationships": [],
+              "seed_ids": [
+                "DC0084"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe",
+              "query": "MATCH (n:DataComponent) WHERE n.attack_id IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 20000",
+              "injected": [
+                "LIMIT 20000 appended (none present)"
+              ],
+              "timing_ms": 0.138
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 41.0
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.008
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.17
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "DC0084",
+            "name": "Active Directory Credential Request",
+            "label": "DataComponent",
+            "description": "Requests for authentication credentials via Kerberos or other methods like NTLM and LDAP queries. Examples:\n\n- Kerberos TGT and Service Tickets (Event IDs 4768, 4769)\n- NTLM Authentication Events\n- LDAP Bind Requests.",
+            "properties": {
+              "attack_id": "DC0084",
+              "description": "Requests for authentication credentials via Kerberos or other methods like NTLM and LDAP queries. Examples:\n\n- Kerberos TGT and Service Tickets (Event IDs 4768, 4769)\n- NTLM Authentication Events\n- LDAP Bind Requests.",
+              "id": "x-mitre-data-component--02d090b6-8157-48da-98a2-517f7edd49fc",
+              "name": "Active Directory Credential Request",
+              "revoked": false,
+              "stix_type": "x-mitre-data-component",
+              "x_mitre_deprecated": false,
+              "x_mitre_version": "2.0",
+              "_omitted_properties": [
+                "external_references"
+              ]
+            },
+            "facets": [
+              {
+                "rel": "MONITORS",
+                "direction": "in",
+                "neighbour_label": "Analytic",
+                "count": 0
+              },
+              {
+                "rel": "MONITORS",
+                "direction": "in",
+                "neighbour_label": "AttackObject",
+                "count": 9
+              }
+            ],
+            "join_values": [],
+            "related": []
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 10,
+      "found": 1,
+      "coverage": 0.1,
+      "missing": [
+        "AN0316",
+        "AN0405",
+        "AN0444",
+        "AN0671",
+        "AN0675",
+        "AN0770",
+        "AN1000",
+        "AN1144",
+        "AN1444"
+      ]
+    },
+    "provenance": {
+      "citations": 2,
+      "compliant": 2,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "generic",
+  "run_meta": {
+    "planner": "gold-plan (injected)",
+    "synthesis": "llm (claim-grounded)",
+    "loop": "facet-chasing",
+    "observed_plan": [
+      {
+        "sub_question_id": "A-DCA-01",
+        "source": "attack",
+        "text": "Which analytics monitor data component DC0084?",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 20000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 120.187
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 0
+  }
+}

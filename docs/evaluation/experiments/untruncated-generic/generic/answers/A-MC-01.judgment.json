@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MC-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 0.55,
+  "groundedness": 0.6,
+  "completeness": 0.4,
+  "gold_expected": 9,
+  "gold_present": 8,
+  "hallucinations": [],
+  "rationale": "The question asks which techniques under TA0006 are mitigated by M1027 (gold: exactly 7 techniques T1003, T1110, T1187, T1552, T1555, T1556, T1558, joined via M1027). The retrieval plan's task record correctly seeded ['TA0006','M1027'], but every executed query (logic_flow results 0-3) only expands TA0006's own neighborhood via HAS_TECHNIQUE/HAS_TACTIC -- M1027 is never queried, never joined, and never mentioned anywhere in the narrative or claims (confirmed by string search: 'M1027' does not appear in answer.narrative or answer.claims). Instead the answer dumps all 67 techniques/sub-techniques adjacent to TA0006 (e.g. T1056, T1111, T1539, T1040, T1212, T1621...), none of which are filtered by the M1027 mitigation relation. The 7 gold-required technique ids do happen to appear as substrings inside this 67-item enumeration, and TA0006 itself is named, so a literal id-surfacing count gives gold_present=8/9 (missing only M1027). But this is coincidental: the answer never identifies the 7 as the mitigated subset, never states a mitigation relationship at all, and buries them among 60 techniques that are NOT mitigated by M1027 per gold -- an analyst reading this narrative cannot determine which techniques M1027 actually mitigates. This is a retrieval/join failure (the mitigation edge was never traversed), not merely an incomplete answer, so it fails the question asked despite having no fabricated facts (the 67-item list is itself accurate per the HAS_TECHNIQUE query evidence, hence no listed hallucinations)."
+}

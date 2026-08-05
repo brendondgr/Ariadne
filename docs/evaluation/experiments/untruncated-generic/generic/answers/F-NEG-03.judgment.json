@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires an honest empty join (must_correlate=[], expect_no_correlation=true) plus capec.expect_empty (the CAPEC-3 -> ATT&CK MAPS_TO edge must be empty) and attack.expect_dependency_skip=true. The evidence confirms this at the data level: CAPEC-3's facets list MAPS_TO/out -> TaxonomyEntry count 0, so there is genuinely no ATT&CK mapping to traverse. The answer's narrative and claims never fabricate any ATT&CK technique ID or mitigation; instead it explicitly abstains, citing that the dependent sub-question (seeded from q1/q4) produced no seed identifiers so no ATT&CK query was executed, matching the two dependency-skip trace records in logic_flow.results (producer q1: no join values; producer q4: not run). The CAPEC-side facts it does state -- Status: Draft, Abstraction: Detailed, and the 3 CAPEC mitigations (capec:attack-pattern:3:mitigation:1/2/3 with matching descriptions: allowlist input validation, canonicalize data, iterative input validation) -- are all verbatim from the q1/q3 records and related-neighbour list, with no invented names, counts, or aliases. Since must_include_ids/must_correlate are empty, there is nothing gold-required to surface (gold_expected=0, gold_present=0), and the answer correctly surfaces zero fabricated correlations while still giving the analyst the genuinely available CAPEC context."
+}

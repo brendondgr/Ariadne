@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.05,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 26,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "The question asks which ATT&CK techniques CAPEC-150 maps to and what mitigations apply to those techniques. Gold requires 6 T-numbers (T1003, T1119, T1213, T1530, T1555, T1602) via must_correlate/must_include_related, plus 20 mitigation ids (M1015..M1060) via attack.must_include_related. The answer surfaces zero of these 26 required ids: it only reports CAPEC-150's own properties (Abstraction: Standard, Status: Draft) and abstains entirely on the technique mapping and mitigations, citing 'q4 produced no seed identifiers, so no query was executed.' Critically, the retrieved evidence itself shows the CAPEC-150 node's facets include 'MAPS_TO' -> TaxonomyEntry with count: 6 (line 318, repeated line 574) -- i.e. the graph does have exactly 6 mapped entries matching the gold's cardinality -- but the record's 'related' array is empty ([]) in both q1 and q3 results, so the pipeline's describe/facet-chase query counted the edges but never expanded them into actual ids, leaving q1 with no join_values to seed q2 (mitigations) or downstream technique identification. This is a genuine retrieval gap in the artifact evidence, not an LLM/answer fabrication -- the narrative and claims are fully faithful and grounded in what was retrieved (no hallucinated T-numbers, mitigations, names, or counts). But because the answer fails to surface any of the 6 required technique correlations or 20 required mitigations that gold demands, and this is not a NEG case where abstention is correct, the answer does not answer the question and is INCORRECT despite being honest about its own gap."
+}

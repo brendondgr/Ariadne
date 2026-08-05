@@ -1,0 +1,12 @@
+{
+  "case_id": "F-NEG-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold expects an honest empty ATT&CK correlation for CAPEC-7 (must_correlate: [], expect_no_correlation: true, attack.expect_dependency_skip: true). The evidence's CAPEC-7 record shows a MAPS_TO facet count of 0 (line 281-285), confirming no ATT&CK mapping exists, and q2's dependency trace explicitly reports it was skipped because q1 (the CAPEC->ATT&CK lookup) returned no join values, and a further q2 skip because q4 was not run. The answer's narrative and claims correctly report no ATT&CK techniques or ATT&CK-side mitigations were found and explain why (dependent sub-question produced no seed identifiers) rather than fabricating a T-number or mitigation. The deterministic_scores.correlation block confirms negative=true, exact=true, n_expected=0, n_got=0, precision/recall/f1=1.0. The answer additionally surfaces CAPEC-7's own attributes (Status: Draft, Abstraction: Detailed) and its two CAPEC-side mitigations (capec:attack-pattern:7:mitigation:1 and :2), both of which are present verbatim in the q3 'related' evidence (lines 454-467) with matching descriptions, so these are grounded, in-scope facts rather than hallucinations. No entity, count, or identifier in the narrative/claims is absent from logic_flow. This is a fully correct, honest-abstention answer to a negative federated case."
+}

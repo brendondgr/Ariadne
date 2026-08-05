@@ -1,0 +1,12 @@
+{
+  "case_id": "A-MIT-05",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 10,
+  "gold_present": 10,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[T1003] and must_include_related=[M1015, M1017, M1025, M1026, M1027, M1028, M1040, M1041, M1043] (9 mitigations, 10 total gold entities). The evidence (q2 record's 'related' list, MITIGATES edges from T1003) contains exactly these 9 mitigation ids with matching names, and the T1003 record itself is present with name 'OS Credential Dumping'. The narrative states 'ATT&CK lists 9 mitigations for T1003 (OS Credential Dumping)' and enumerates all 9 by id and name (M1041 Encrypt Sensitive Information, M1015 Active Directory Configuration, M1026 Privileged Account Management, M1040 Behavior Prevention on Endpoint, M1027 Password Policies, M1025 Privileged Process Integrity, M1043 Credential Access Protection, M1028 Operating System Configuration, M1017 User Training) — every id/name pair matches the evidence's 'related' array exactly, no extras and no substitutions. The claims array (enumeration claim citing T1003) also lists all 9 ids correctly. No count, alias, or property is invented; deterministic_scores.coverage confirms 10/10 found. This is a full, faithful, fully grounded answer to the question."
+}

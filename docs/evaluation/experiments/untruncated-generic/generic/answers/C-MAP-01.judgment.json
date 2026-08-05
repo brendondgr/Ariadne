@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.25,
+  "gold_expected": 4,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question asks which ATT&CK techniques CAPEC-555 maps to. Gold requires must_include_ids=[CAPEC-555] and must_include_related=[T1021, T1114.002, T1133] (ATT&CK technique IDs reached via the MAPS_TO edge to TaxonomyEntry). The retrieved evidence shows the CAPEC-555 node's facets correctly report a MAPS_TO->TaxonomyEntry count of 3 (matching the 3 expected T-numbers), but the dedicated sub-question q2 that explicitly traverses 'TaxonomyEntry reached from CAPEC-555 via MAPS_TO' returned the seed record with an empty 'related': [] array -- the actual TaxonomyEntry/technique nodes were never materialized in the evidence, so no T-number is groundable anywhere in logic_flow. The answer's narrative and claims only surface CAPEC-555 itself plus two unrelated CAPEC-to-CAPEC edges (CanPrecede successor CAPEC-151, ChildOf parent CAPEC-560) -- neither is an ATT&CK technique and neither answers the question asked. Zero of the three required T-numbers (T1021, T1114.002, T1133) are present. This matches the pipeline's own deterministic_scores.coverage (gold:4, found:1, coverage:0.25, missing all three T-numbers) and correlation/mapping_recall are null, confirming no cross-source join was ever established. Every statement actually made (Abstraction: Standard, Status: Stable, CAPEC-151 CanPrecede, CAPEC-560 ChildOf) is faithfully grounded in the evidence with no fabrication, so faithfulness/groundedness score high, but correctness is 0 because the core question is entirely unanswered -- this is a retrieval gap (MAPS_TO neighbours never fetched despite a nonzero facet count), not a synthesis-quality issue."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.05,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.33,
+  "gold_expected": 3,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question asks which ATT&CK tactics the techniques mapped from CAPEC-49 belong to. Gold requires surfacing T1110.001 (must_correlate, capec.must_include_related, attack.must_include_ids) and TA0006 (attack.must_include_related), in addition to CAPEC-49 itself (capec.must_include_ids). The retrieved evidence never contains T1110.001 or TA0006 anywhere (confirmed by grep across the full artifact) despite the CAPEC-49 record's own facets showing a MAPS_TO edge count of 1 to a TaxonomyEntry -- q3 explicitly targeted that MAPS_TO edge but its 'related' list came back empty, so the pipeline's own retrieval failed to expand the target node even though the edge exists. The answer (claims + narrative) correctly and faithfully reports CAPEC-49's Status/Abstraction and its 5 CAN_PRECEDE successors (CAPEC-151, CAPEC-560, CAPEC-561, CAPEC-600, CAPEC-653), all grounded in the q4 record. It then honestly abstains on tactics rather than fabricating, citing that sub-question q5/q2 produced no seed identifiers -- so there is no hallucination and everything stated is traceable to evidence (faithfulness/groundedness = 1.0). However, the abstention means the actual question asked -- which ATT&CK tactic(s) the mapped technique belongs to -- is left completely unanswered: neither T1110.001 nor TA0006 is ever named. Only 1 of the 3 gold-required entities (CAPEC-49) is surfaced; the two entities central to the question (T1110.001, TA0006) are entirely missing. deterministic_scores in the artifact itself confirm this: mapping_recall.found=0/1 (missing T1110.001) and correlation recall/precision/f1 = 0.0. Because the core deliverable of the question is 0% answered, this is graded INCORRECT despite the answer's honesty and lack of fabrication."
+}

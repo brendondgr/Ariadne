@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-04",
+  "verdict": "INCORRECT",
+  "correctness": 0.35,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.5,
+  "gold_expected": 2,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question has two parts: (1) which CAPEC patterns map to T1021, and (2) what T1021 is. Part (2) is answered correctly and faithfully: the answer states T1021 = 'Remote Services', matching gold expect_names, and cites accurate properties (stix_type attack-pattern, x_mitre_version 1.6, revoked false, deprecated false, not a subtechnique) and the HAS_TECHNIQUE relation to Tactic TA0008 (Lateral Movement) -- all traceable to the attack record in logic_flow.results[1]. Part (1), the actual crux of the question, fails completely: gold requires CAPEC-555 be surfaced (capec.must_include_ids) with a related-T1021 edge (capec.must_include_related), but the executed capec Gremlin query filters AttackPattern nodes by g.V().hasLabel('AttackPattern').has('id', within(['T1021'])) -- i.e. it searches CAPEC node 'id' property for the literal string 'T1021', even though the resolve trace itself records the correct join_key as 'attack-technique-id'. This is a query-construction bug, not evidence absence: it guarantees zero rows regardless of whether CAPEC-555 exists in the graph. The pipeline's own deterministic_scores confirm the failure (mapping_recall.recall=0.0, missing=['T1021']; correlation.recall=0.0, n_expected=1, n_got=0), and the answer abstains ('the capec source doesn't establish which CAPEC patterns map to T1021... query ran cleanly and returned no matching records'). That abstention is honest about the query outcome but is nonetheless a false negative relative to gold -- CAPEC-555 is never surfaced anywhere in the answer. No fabricated facts are present (faithfulness/groundedness are clean), but because the question's core ask (the CAPEC-to-T1021 mapping) is entirely unanswered, this is graded INCORRECT rather than PARTIAL. gold_expected=2 (CAPEC-555 id, T1021 id+name), gold_present=1 (T1021 only)."
+}

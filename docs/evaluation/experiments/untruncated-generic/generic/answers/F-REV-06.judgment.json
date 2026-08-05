@@ -1,0 +1,12 @@
+{
+  "case_id": "F-REV-06",
+  "verdict": "INCORRECT",
+  "correctness": 0.3,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.33,
+  "gold_expected": 3,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question has two explicit parts: (1) which CAPEC patterns map to T1114.002, and (2) what T1114.002 is. Part 2 is answered correctly and faithfully: the narrative/claims state T1114.002 = 'Remote Email Collection', stix_type attack-pattern, x_mitre_version 1.3, x_mitre_is_subtechnique True, revoked False, related Tactic TA0009 and parent Technique T1114 -- all directly grounded in the q2/q3/q4 evidence records, matching gold's expect_names{T1114.002: 'Remote Email Collection'} and must_include_ids[T1114.002]. Part 1, however, is a hard miss: the capec query (q1) executed cleanly but returned 0 rows, so CAPEC-555 (gold's required capec.must_include_ids/must_include_related) never surfaces, and the cross-source correlation gold requires (must_correlate: T1114.002) is never established -- confirmed by the artifact's own deterministic_scores.correlation (precision/recall/f1 = 0.0) and mapping_recall (recall 0.0, missing: [T1114.002]). The pipeline abstains honestly ('the capec source doesn't establish which CAPEC patterns map to T1114.002...returned no matching records') rather than fabricating a mapping, so there is no hallucination and everything stated is traceable to the retrieved records (faithfulness/groundedness = 1.0). But since this is not a NEG case -- gold expects at least 1 CAPEC record (min_records:1) and explicitly requires CAPEC-555 -- the complete absence of the CAPEC-side answer on the untruncated (full-neighbourhood) retrieval means the headline question ('which CAPEC patterns map...') goes unanswered. Counting required gold elements as {T1114.002 correlate/attack id+name, CAPEC-555 capec id+related}: only the T1114.002/attack portion is surfaced (1 of 3), so completeness is low and correctness is graded as a failure on the primary ask despite the graceful, non-hallucinated abstention."
+}

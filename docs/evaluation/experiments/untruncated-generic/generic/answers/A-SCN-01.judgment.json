@@ -1,0 +1,12 @@
+{
+  "case_id": "A-SCN-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 250,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold requires a bounded scan yielding between 250 and 300 ATT&CK software entries (min_records=250, max_records=300), i.e. the correct behavior is to enumerate :Software-labeled nodes up to the LIMIT 300 cap. Instead the planner/resolve step misread the question's words 'software' and 'tracked' as literal name-search terms and ran a describe_by_name CONTAINS query (WHERE toLower(n.name) CONTAINS term for term in ['software','tracked']) against Technique/SubTechnique/Mitigation/Tactic/Group/Software/Campaign/DataComponent/DetectionStrategy nodes, matching on node NAME rather than scanning the Software LABEL. That query correctly returned 0 rows (no node is literally named 'software' or 'tracked'), and the system abstained: 'No entity named software or tracked was found in the attack source.' No fact was fabricated (faithfulness/groundedness are vacuously satisfied since zero claims were made), but the answer completely fails the question -- it surfaces 0 of the required 250-300 software entries. This is not a negative/abstention case (gold expects a large positive record set, not 'no match'), so the abstention itself is the failure: the retrieval template chosen (name search) was the wrong template for a 'list all X' bounded-scan query, and it should instead have issued a label scan (MATCH (n:Software) RETURN ... LIMIT 300)."
+}

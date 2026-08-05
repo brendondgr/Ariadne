@@ -1,0 +1,12 @@
+{
+  "case_id": "A-DET-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.35,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.29,
+  "gold_expected": 7,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "Gold requires T1110 plus DET0463 and analytics AN1275-AN1279 (7 ids total, per deterministic_scores.coverage.gold=7). The answer/claims correctly surface T1110 (properties: revoked False, stix_type attack-pattern, x_mitre_deprecated False, x_mitre_is_subtechnique False, x_mitre_version 2.8 - all match evidence exactly) and the single DetectionStrategy DET0463 'Brute Force Authentication Failures with Multi-Platform Log Correlation' via the DETECTS relationship, both directly grounded in logic_flow records (result 1 and result q2). No fabricated facts, names, or counts were found - everything stated traces to the retrieved records, so faithfulness and groundedness are full marks. However, the question explicitly asks 'via which analytics?' and the retrieval plan (observed_plan) only executed two queries: a describe of T1110 and a one-hop DETECTS traversal to DetectionStrategy; it never took the second hop from DET0463 to its Analytic nodes (AN1275-AN1279), so those five gold-required ids are entirely absent from both the evidence and the answer. deterministic_scores.coverage confirms this self-reported gap (found=2/7, missing the five AN* ids). Because the analytics dimension - the crux of the question - is completely unaddressed, correctness is scored low despite the answer being accurate as far as it goes; completeness is 2/7 = 0.286."
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "A-AST-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "Gold requires expect_boundary=true: this is an ICS-only concept (Asset entity) that the ATT&CK source does not model, so the correct answer is an honest refusal, not invention. The pipeline's boundary trace correctly identifies 'entities not modeled by the attack source: Asset' (logic_flow.results[0].traces[2]) and the deterministic composer produces a narrative that abstains, explains why (attack source doesn't model Asset so no query was executed), and offers to help with a named entity/id instead. No claims were fabricated (claims=[], records=[]), no asset names, counts, or relationships were invented, and the abstention is directly grounded in the resolve/boundary trace steps. This exactly matches the gold expectation of an honest refusal with no fabricated data."
+}

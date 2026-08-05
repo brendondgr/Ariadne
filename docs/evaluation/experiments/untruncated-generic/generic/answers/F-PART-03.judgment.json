@@ -1,0 +1,14 @@
+{
+  "case_id": "F-PART-03",
+  "verdict": "INCORRECT",
+  "correctness": 0.2,
+  "faithfulness": 0.65,
+  "groundedness": 0.85,
+  "completeness": 0.25,
+  "gold_expected": 4,
+  "gold_present": 1,
+  "hallucinations": [
+    "Narrative attributes the missing ATT&CK technique mapping to sub_question q2 (source=attack) 'never running', but q2 was the mitigations sub-question, not the CAPEC-to-ATT&CK mapping. The actual mapping sub-questions (q1: 'Which ATT&CK techniques does CAPEC-555 map to?', source=capec; q4: MAPS_TO to TaxonomyEntry, source=capec) both executed successfully (ok:true) and returned CAPEC-555's facets showing MAPS_TO out-count=3, but their 'related'/'join_values' arrays came back empty — a capec-side retrieval gap, not an attack-side skip. The narrative's causal explanation misrepresents which sub-question and which source actually failed to surface the mapping."
+  ],
+  "rationale": "Gold requires that, even with the ATT&CK source down, the CAPEC side must still surface CAPEC-555's mapping to ATT&CK techniques T1021, T1114.002, and T1133 (capec.must_include_related), while only the mitigation side (the attack specialist) is allowed to honestly skip (attack.expect_skipped=true). The answer gets the skip half right: it correctly abstains from attack-sourced mitigations and states 'Skipped attack: no specialist available', and deterministic_scores confirm no fabricated correlation (n_expected=0, n_got=0, matching expect_no_correlation=true and must_correlate=[]). However, it completely fails the 'must still answer' half: T1021, T1114.002, and T1133 never appear anywhere in the answer's narrative or claims, and critically they are also absent from the retrieved logic_flow evidence itself (grep confirms these three IDs occur only in the gold assertions, nowhere in the retrieved records) — the capec-side q1/q4 sub-questions ran (ok:true, source=capec, no attack specialist needed) but returned empty related/join_values despite facets showing MAPS_TO count=3, so the technique mapping was never actually retrieved. The narrative compounds this by misattributing the gap to q2 (the attack-mitigations sub-question) never running, when the actual failure was q1/q4 (capec-sourced) returning an empty neighbour list. What the answer does state (CAPEC-555's Status=Stable/Abstraction=Standard, 1 HAS_MITIGATION to capec:attack-pattern:555:mitigation:1, 1 CAN_PRECEDE successor CAPEC-151) is fully grounded in the evidence — no fabricated names, counts, or IDs. But since the question's central adversarial point is that the CAPEC mapping must still answer despite ATT&CK being down, and that mapping is entirely absent (gold_present=1 of 4: only CAPEC-555 itself; none of T1021/T1114.002/T1133), the answer fails the question on its own terms even though it is internally faithful to the (incomplete) evidence it was given."
+}

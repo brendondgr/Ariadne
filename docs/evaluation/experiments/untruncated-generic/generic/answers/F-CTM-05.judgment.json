@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTM-05",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 0.95,
+  "groundedness": 1.0,
+  "completeness": 0.08,
+  "gold_expected": 12,
+  "gold_present": 1,
+  "hallucinations": [],
+  "rationale": "The question asks which ATT&CK techniques CAPEC-21 maps to and what mitigations apply to those techniques. Gold requires surfacing T1134/T1528/T1539 (must_correlate, capec.must_include_related, attack.must_include_ids) plus 8 ATT&CK mitigations (M1017, M1018, M1021, M1026, M1032, M1047, M1051, M1054). The answer surfaces none of these 11 items -- it only reports CAPEC-21's Status/Abstraction and its 7 CAPEC-side (capec:attack-pattern:21:mitigation:N) mitigations, which are not the gold-required entities at all. Checking the evidence itself (logic_flow.results): q1 and q5 both queried CAPEC-21's outgoing MAPS_TO edges and the facet block confirms 'MAPS_TO'/'out'/count:3 exists in the graph, but both queries used the 'describe' template, which only returns facet counts, not the actual related TaxonomyEntry nodes -- 'related': [] in both records. So the three T-numbers were never actually retrieved into evidence, and the pipeline's abstention ('the attack source does not establish which ATT&CK techniques map to CAPEC-21... because q6 produced no seed identifiers') is consistent with what the evidence shows (q1's join_values are empty), i.e. a genuine upstream retrieval/template-selection gap rather than a fabrication. Every fact the narrative and claims do state (CAPEC-21 id/name, Status=Stable, Abstraction=Meta, the 7 capec:attack-pattern:21:mitigation:1..7 ids and their HAS_MITIGATION relation) is directly grounded in the q1/q3/q5/q6 records, so faithfulness and groundedness are high and no hallucinations were found. But because the core deliverable of the question -- the technique correlation and the ATT&CK mitigations tied to those techniques -- is entirely absent, completeness is 1/12 (only CAPEC-21 itself surfaced) and correctness is very low; this is graded INCORRECT because the pipeline fails the actual question despite behaving honestly about the gap."
+}

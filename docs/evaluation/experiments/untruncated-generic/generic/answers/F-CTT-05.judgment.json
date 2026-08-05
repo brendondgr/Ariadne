@@ -1,0 +1,12 @@
+{
+  "case_id": "F-CTT-05",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 0.9,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 4,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "The question asks which ATT&CK tactics the techniques mapped from CAPEC-13 belong to. Gold requires the pipeline to surface T1574.006 and T1574.007 (must_correlate / attack.must_include_ids / capec.must_include_related) and their tactics TA0002 and TA0005 (attack.must_include_related). The answer surfaces none of these four ids -- it only reports CAPEC-13's Status/Abstraction and its CanPrecede (CAPEC-14) and ChildOf (CAPEC-77) neighbors, then abstains entirely on the tactics sub-question, blaming a missing seed from an unrelated sub-question (q6, which was actually a PeerOf traversal, not the MAPS_TO traversal that should have produced the technique ids). This is a genuine retrieval-pipeline defect: q1's own facets show MAPS_TO out-degree = 3 on CAPEC-13 (confirming ATT&CK technique mappings exist in the graph), and the join_key 'attack-technique-id' was correctly resolved in the 'resolve' trace, yet join_values stayed empty because the executed query was a generic describe() that only counts edges via facets and never actually walked the MAPS_TO edges to fetch the related TaxonomyEntry/technique nodes -- so q1 produced zero seeds for q2, and the attack-side query was skipped outright (evidence_volume.related = 2, both CAPEC-internal, none ATT&CK). Everything the answer does state (CAPEC-13's Abstraction=Detailed/Status=Stable, CAPEC-14 as CanPrecede successor, CAPEC-77 as ChildOf parent) is faithfully grounded in the retrieved records with no fabricated facts, so faithfulness/groundedness stay high, but the answer fails the actual headline question (0 of 4 required T1574.006/T1574.007/TA0002/TA0005 ids surfaced) and this is not a negative/no-match gold case, so correctness and completeness are 0."
+}

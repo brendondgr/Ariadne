@@ -1,0 +1,170 @@
+{
+  "id": "A-SCN-01",
+  "kind": "attack",
+  "tier": "easy",
+  "category": "A-SCN",
+  "question": "List ATT&CK software entries (bounded scan).",
+  "gold": {
+    "assertions": {
+      "min_records": 250,
+      "max_records": 300
+    }
+  },
+  "answer": {
+    "headline": "No records were returned by the routed specialists; 1 question(s) the sources don't establish.",
+    "narrative": "I couldn't find 'software' or 'tracked' in the live ATT&CK/CAPEC graphs. Check the name, or tell me the entity's id (e.g. T1566, M1017, or CAPEC-98) and I'll look it up.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [],
+    "abstentions": [
+      {
+        "source": "attack",
+        "statement": "No entity named 'software' or 'tracked' was found in the attack source. Check the name, or give its ATT&CK/CAPEC id (e.g. T1566, M1017, or CAPEC-98).",
+        "query": "MATCH (n) WHERE (n:Technique OR n:SubTechnique OR n:Mitigation OR n:Tactic OR n:Group OR n:Software OR n:Campaign OR n:DataComponent OR n:DetectionStrategy) AND any(term IN $names WHERE toLower(n.name) CONTAINS term) OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 300"
+      }
+    ],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "A-SCN-01",
+      "source": "attack",
+      "text": "List software tracked in ATT&CK.",
+      "entities": [
+        "Software"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 300,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [],
+      "rationale": "golden evalset"
+    },
+    "results": [
+      {
+        "source": "attack",
+        "sub_question_id": "A-SCN-01",
+        "sub_question": "List software tracked in ATT&CK.",
+        "query": "MATCH (n) WHERE (n:Technique OR n:SubTechnique OR n:Mitigation OR n:Tactic OR n:Group OR n:Software OR n:Campaign OR n:DataComponent OR n:DetectionStrategy) AND any(term IN $names WHERE toLower(n.name) CONTAINS term) OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 300",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "No records found in ATT&CK for this query.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "attack",
+              "card": "attack"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "Software"
+              ],
+              "relationships": [],
+              "seed_ids": [],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "describe_by_name",
+              "query": "MATCH (n) WHERE (n:Technique OR n:SubTechnique OR n:Mitigation OR n:Tactic OR n:Group OR n:Software OR n:Campaign OR n:DataComponent OR n:DetectionStrategy) AND any(term IN $names WHERE toLower(n.name) CONTAINS term) OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN n.attack_id AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 300",
+              "injected": [
+                "LIMIT 300 appended (none present)"
+              ],
+              "timing_ms": 0.159
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0,
+              "timing_ms": 70.5
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 0,
+              "timing_ms": 0.009
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 0,
+              "timing_ms": 0.011
+            }
+          }
+        ],
+        "records": []
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": null,
+    "provenance": {
+      "citations": 0,
+      "compliant": 0,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "generic",
+  "run_meta": {
+    "planner": "gold-plan (injected)",
+    "synthesis": "llm (claim-grounded)",
+    "loop": "facet-chasing",
+    "observed_plan": [
+      {
+        "sub_question_id": "A-SCN-01",
+        "source": "attack",
+        "text": "List software tracked in ATT&CK.",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 300,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 0.118
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 0,
+    "related": 0
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C-ABS-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.5,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.6667,
+  "gold_expected": 3,
+  "gold_present": 2,
+  "hallucinations": [],
+  "rationale": "The question asks to walk the abstraction hierarchy up from CAPEC-7 through both its standard ancestor and its meta ancestor. Gold requires CAPEC-7 (must_include_ids) plus CAPEC-66 and CAPEC-248 (must_include_related). The executed Gremlin query only performed a single CHILD_OF hop from CAPEC-7 (out('CHILD_OF')), so the retrieved evidence contains only CAPEC-7 and its one related record CAPEC-66 (SQL Injection, Abstraction not shown in evidence) - CAPEC-248 never appears anywhere in logic_flow.results. The answer's narrative/claims ('CAPEC-7 has 1 ChildOf parent: CAPEC-66') accurately reflect the retrieved evidence and correctly state CAPEC-7's Abstraction (Detailed) and Status (Draft), with no fabricated facts, so faithfulness and groundedness are full marks. However the answer never surfaces or even alludes to the meta-pattern ancestor CAPEC-248, so it does not actually answer the 'meta ancestors' half of the question - this is a retrieval-depth failure (only 1 hop instead of the 2 needed) rather than a synthesis hallucination. The pipeline's own deterministic_scores.coverage confirms this: found=2/3 with missing=['CAPEC-248']. Because the core ask (meta ancestor) is unmet, correctness is capped at 0.5 despite faithful reporting of what was retrieved."
+}

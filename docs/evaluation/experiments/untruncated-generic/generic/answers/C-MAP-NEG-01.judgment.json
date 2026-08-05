@@ -1,0 +1,12 @@
+{
+  "case_id": "C-MAP-NEG-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.45,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "hallucinations": [],
+  "rationale": "Gold (expect_empty=true, ex_gold.expected=[]) requires confirming CAPEC-116 has no ATT&CK/TaxonomyEntry mapping. The evidence directly supports this: the describe-template record's facets array shows 'MAPS_TO' out to neighbour_label 'TaxonomyEntry' with count 0 -- the actual, on-topic proof of the negative. Every individual claim the answer makes is faithful and grounded: 'Found 1 CAPEC record(s): CAPEC-116' matches the record; 'Abstraction: Meta; Status: Stable' matches properties.Abstraction/Status; 'has 1 CanPrecede successor: CAPEC-163' matches the related[] entry and CAN_PRECEDE facet count of 1 from q2's results; and the abstention statement verbatim matches q3's trace (row_count 0, empty_with_seeds CAPEC-116) for the CanPrecede/ChildOf traversal. No fabricated ATT&CK id, count, alias or name appears anywhere -- so no hallucinations, and the negative is not violated in the strict fabrication sense. However, correctness suffers materially: the narrative and claims never mention MAPS_TO, TaxonomyEntry, or ATT&CK/technique at all, and the one abstention statement it surfaces concerns an unrelated relationship (ChildOf, sub_question q3), not the MAPS_TO/ATT&CK join the question actually asks about. An analyst reading this narrative gets no explicit confirmation that ATT&CK mapping was checked and found empty; the pipeline had the right evidence (facet count 0 for MAPS_TO) but the synthesizer composed an off-topic abstention instead of surfacing it. gold_expected/gold_present are both 0 since the gold requires zero ids to be surfaced, so completeness is trivially satisfied, but the answer's failure to directly and legibly state the actual negative finding is a real defect worth scoring down on correctness."
+}
