@@ -1,0 +1,468 @@
+{
+  "_derivation": {
+    "generated_by": "docs/plans/robustness/_overnight/ Task 4",
+    "generated_at": "2026-08-04",
+    "method": "Every metric is recomputed from the committed artifacts. Means are unweighted over the arm's *.judgment.json files; verdict counts are of the judgment `verdict` field; hallucinations count entries in the judgment `hallucinations` list, and `hallucination_cases` counts judgments with a non-empty list. `evidence_records` and `related` sum `evidence_volume.records` and `evidence_volume.related` over the answer files; `mean_coverage` averages `deterministic_scores.coverage.coverage`. `wall_s` is read from the arm's manifest.json. No figure is carried in from prose.",
+    "superseded_rule": "untruncated/ and untruncated-loop/ are the pre-defect-fix runs. They are reported separately and must never be aggregated with the post-fix arms.",
+    "unjudged": "Arms with n=0 have answers but no judgment files. Their means are null by construction; only their artifact-level counts are meaningful."
+  },
+  "arms": {
+    "untruncated-claimnarr/deterministic": {
+      "letter": null,
+      "n": 0,
+      "mean_correctness": null,
+      "mean_completeness": null,
+      "mean_faithfulness": null,
+      "mean_groundedness": null,
+      "verdicts": {
+        "CORRECT": 0,
+        "PARTIAL": 0,
+        "INCORRECT": 0,
+        "other": {}
+      },
+      "hallucinations_total": 0,
+      "hallucination_cases": 0,
+      "evidence_records": 1061,
+      "related": 839,
+      "mean_coverage": 1.0,
+      "wall_s": 1.3,
+      "manifest_count": 120,
+      "manifest_ok": 120,
+      "llm": {
+        "planner": "false",
+        "specialist": "false",
+        "synthesis": "false",
+        "model": "skynet",
+        "max_hops": "1"
+      },
+      "source_files": {
+        "judgments": 0,
+        "answers": 120,
+        "manifest": 1
+      }
+    },
+    "untruncated-claimnarr/gold_llm": {
+      "letter": "D",
+      "n": 120,
+      "mean_correctness": 0.991667,
+      "mean_completeness": 0.995833,
+      "mean_faithfulness": 0.993583,
+      "mean_groundedness": 0.9975,
+      "verdicts": {
+        "CORRECT": 119,
+        "PARTIAL": 0,
+        "INCORRECT": 1,
+        "other": {}
+      },
+      "hallucinations_total": 1,
+      "hallucination_cases": 1,
+      "evidence_records": 1061,
+      "related": 839,
+      "mean_coverage": 1.0,
+      "wall_s": 501.0,
+      "manifest_count": 120,
+      "manifest_ok": 120,
+      "llm": {
+        "planner": "false",
+        "specialist": "true",
+        "synthesis": "true",
+        "model": "skynet",
+        "max_hops": "1"
+      },
+      "source_files": {
+        "judgments": 120,
+        "answers": 120,
+        "manifest": 1
+      }
+    },
+    "untruncated-claimnarr2/gold_llm": {
+      "letter": null,
+      "n": 0,
+      "mean_correctness": null,
+      "mean_completeness": null,
+      "mean_faithfulness": null,
+      "mean_groundedness": null,
+      "verdicts": {
+        "CORRECT": 0,
+        "PARTIAL": 0,
+        "INCORRECT": 0,
+        "other": {}
+      },
+      "hallucinations_total": 0,
+      "hallucination_cases": 0,
+      "evidence_records": 1061,
+      "related": 839,
+      "mean_coverage": 1.0,
+      "wall_s": 514.3,
+      "manifest_count": 120,
+      "manifest_ok": 120,
+      "llm": {
+        "planner": "false",
+        "specialist": "true",
+        "synthesis": "true",
+        "model": "skynet",
+        "max_hops": "1"
+      },
+      "source_files": {
+        "judgments": 0,
+        "answers": 120,
+        "manifest": 1
+      }
+    },
+    "untruncated-fixed/deterministic": {
+      "letter": "A",
+      "n": 120,
+      "mean_correctness": 0.99725,
+      "mean_completeness": 1.0,
+      "mean_faithfulness": 0.999333,
+      "mean_groundedness": 1.0,
+      "verdicts": {
+        "CORRECT": 120,
+        "PARTIAL": 0,
+        "INCORRECT": 0,
+        "other": {}
+      },
+      "hallucinations_total": 0,
+      "hallucination_cases": 0,
+      "evidence_records": 1061,
+      "related": 839,
+      "mean_coverage": 1.0,
+      "wall_s": 1.6,
+      "manifest_count": 120,
+      "manifest_ok": 120,
+      "llm": {
+        "planner": "false",
+        "specialist": "false",
+        "synthesis": "false",
+        "model": "skynet",
+        "max_hops": "1"
+      },
+      "source_files": {
+        "judgments": 120,
+        "answers": 120,
+        "manifest": 1
+      }
+    },
+    "untruncated-fixed/gold_llm": {
+      "letter": "C",
+      "n": 120,
+      "mean_correctness": 0.969,
+      "mean_completeness": 0.967208,
+      "mean_faithfulness": 0.992083,
+      "mean_groundedness": 0.998333,
+      "verdicts": {
+        "CORRECT": 110,
+        "PARTIAL": 8,
+        "INCORRECT": 2,
+        "other": {}
+      },
+      "hallucinations_total": 3,
+      "hallucination_cases": 3,
+      "evidence_records": 1840,
+      "related": 839,
+      "mean_coverage": 1.0,
+      "wall_s": 583.8,
+      "manifest_count": 120,
+      "manifest_ok": 120,
+      "llm": {
+        "planner": "false",
+        "specialist": "true",
+        "synthesis": "true",
+        "model": "skynet",
+        "max_hops": "1"
+      },
+      "source_files": {
+        "judgments": 120,
+        "answers": 120,
+        "manifest": 1
+      }
+    },
+    "untruncated-fixed/llm": {
+      "letter": "B",
+      "n": 120,
+      "mean_correctness": 0.8505,
+      "mean_completeness": 0.86925,
+      "mean_faithfulness": 0.968333,
+      "mean_groundedness": 0.975,
+      "verdicts": {
+        "CORRECT": 92,
+        "PARTIAL": 14,
+        "INCORRECT": 14,
+        "other": {}
+      },
+      "hallucinations_total": 12,
+      "hallucination_cases": 8,
+      "evidence_records": 2814,
+      "related": 621,
+      "mean_coverage": 0.807395,
+      "wall_s": 1019.7,
+      "manifest_count": 120,
+      "manifest_ok": 120,
+      "llm": {
+        "planner": "true",
+        "specialist": "true",
+        "synthesis": "true",
+        "model": "skynet",
+        "max_hops": "5"
+      },
+      "source_files": {
+        "judgments": 120,
+        "answers": 120,
+        "manifest": 1
+      }
+    },
+    "untruncated-generic/generic": {
+      "letter": "G",
+      "n": 120,
+      "mean_correctness": 0.638833,
+      "mean_completeness": 0.680222,
+      "mean_faithfulness": 0.965833,
+      "mean_groundedness": 0.97875,
+      "verdicts": {
+        "CORRECT": 64,
+        "PARTIAL": 14,
+        "INCORRECT": 42,
+        "other": {}
+      },
+      "hallucinations_total": 7,
+      "hallucination_cases": 7,
+      "evidence_records": 252,
+      "related": 1749,
+      "mean_coverage": 0.897859,
+      "wall_s": 914.8,
+      "manifest_count": 120,
+      "manifest_ok": 120,
+      "llm": {
+        "planner": "true",
+        "specialist": "true",
+        "synthesis": "true",
+        "model": "skynet",
+        "max_hops": "5",
+        "chase_facets": "true"
+      },
+      "source_files": {
+        "judgments": 120,
+        "answers": 120,
+        "manifest": 1
+      }
+    },
+    "untruncated-goldloop/gold_loop_llm": {
+      "letter": "F",
+      "n": 120,
+      "mean_correctness": 0.995667,
+      "mean_completeness": 0.999,
+      "mean_faithfulness": 0.996,
+      "mean_groundedness": 0.999167,
+      "verdicts": {
+        "CORRECT": 119,
+        "PARTIAL": 1,
+        "INCORRECT": 0,
+        "other": {}
+      },
+      "hallucinations_total": 3,
+      "hallucination_cases": 3,
+      "evidence_records": 1080,
+      "related": 866,
+      "mean_coverage": 1.0,
+      "wall_s": 533.4,
+      "manifest_count": 120,
+      "manifest_ok": 120,
+      "llm": {
+        "planner": "true",
+        "specialist": "true",
+        "synthesis": "true",
+        "model": "skynet",
+        "max_hops": "5",
+        "chase_facets": "true"
+      },
+      "source_files": {
+        "judgments": 120,
+        "answers": 120,
+        "manifest": 1
+      }
+    },
+    "untruncated-loop2/llm_loop": {
+      "letter": "E",
+      "n": 120,
+      "mean_correctness": 0.856,
+      "mean_completeness": 0.887667,
+      "mean_faithfulness": 0.9575,
+      "mean_groundedness": 0.972917,
+      "verdicts": {
+        "CORRECT": 97,
+        "PARTIAL": 7,
+        "INCORRECT": 16,
+        "other": {}
+      },
+      "hallucinations_total": 15,
+      "hallucination_cases": 9,
+      "evidence_records": 3449,
+      "related": 2000,
+      "mean_coverage": 0.881898,
+      "wall_s": 1043.1,
+      "manifest_count": 120,
+      "manifest_ok": 120,
+      "llm": {
+        "planner": "true",
+        "specialist": "true",
+        "synthesis": "true",
+        "model": "skynet",
+        "max_hops": "5",
+        "chase_facets": "true"
+      },
+      "source_files": {
+        "judgments": 120,
+        "answers": 120,
+        "manifest": 1
+      }
+    }
+  },
+  "derived": {
+    "b_minus_c_correctness": -0.1185,
+    "g_minus_f_correctness": -0.356834,
+    "wall_ratio_B_over_A": 637.31,
+    "wall_ratio_F_over_A": 333.37,
+    "wall_ratio_E_over_A": 651.94,
+    "sign_convention": "Both deltas are treated-minus-reference, so both are negative and directly comparable: B - C isolates LLM planning against the same extraction and synthesis; G - F isolates disabling the templates against the best deterministic-planned arm. Plan 01 calls the second one the 'F - G delta (-0.357)'; F - G is +0.356834, so the figure it quotes is this G - F value and the letters in its label are the wrong way round.",
+    "wall_ratio_note": "Wall ratios divide the arm's manifest wall_s by Arm A's 1.6 s. The pre-fix record quoted 392x for B over A, which is 1019.7 / 2.6 - the same numerator against the superseded Arm A wall time."
+  },
+  "superseded": {
+    "untruncated/deterministic": {
+      "letter": null,
+      "n": 120,
+      "mean_correctness": 0.95,
+      "mean_completeness": 0.953417,
+      "mean_faithfulness": 0.997917,
+      "mean_groundedness": 0.999167,
+      "verdicts": {
+        "CORRECT": 112,
+        "PARTIAL": 1,
+        "INCORRECT": 7,
+        "other": {}
+      },
+      "hallucinations_total": 0,
+      "hallucination_cases": 0,
+      "evidence_records": 1840,
+      "related": 839,
+      "mean_coverage": 1.0,
+      "wall_s": 2.6,
+      "manifest_count": 120,
+      "manifest_ok": 120,
+      "llm": {
+        "planner": "false",
+        "specialist": "false",
+        "synthesis": "false",
+        "model": "skynet",
+        "max_hops": "1"
+      },
+      "source_files": {
+        "judgments": 120,
+        "answers": 120,
+        "manifest": 1
+      }
+    },
+    "untruncated/gold_llm": {
+      "letter": null,
+      "n": 120,
+      "mean_correctness": 0.962,
+      "mean_completeness": 0.961833,
+      "mean_faithfulness": 0.977917,
+      "mean_groundedness": 0.989583,
+      "verdicts": {
+        "CORRECT": 109,
+        "PARTIAL": 9,
+        "INCORRECT": 2,
+        "other": {}
+      },
+      "hallucinations_total": 12,
+      "hallucination_cases": 9,
+      "evidence_records": 1840,
+      "related": 839,
+      "mean_coverage": 1.0,
+      "wall_s": 580.8,
+      "manifest_count": 120,
+      "manifest_ok": 120,
+      "llm": {
+        "planner": "false",
+        "specialist": "true",
+        "synthesis": "true",
+        "model": "skynet",
+        "max_hops": "1"
+      },
+      "source_files": {
+        "judgments": 120,
+        "answers": 120,
+        "manifest": 1
+      }
+    },
+    "untruncated/llm": {
+      "letter": null,
+      "n": 120,
+      "mean_correctness": 0.766,
+      "mean_completeness": 0.777042,
+      "mean_faithfulness": 0.947917,
+      "mean_groundedness": 0.951667,
+      "verdicts": {
+        "CORRECT": 84,
+        "PARTIAL": 11,
+        "INCORRECT": 25,
+        "other": {}
+      },
+      "hallucinations_total": 18,
+      "hallucination_cases": 12,
+      "evidence_records": 3401,
+      "related": 979,
+      "mean_coverage": 0.798903,
+      "wall_s": 973.6,
+      "manifest_count": 120,
+      "manifest_ok": 120,
+      "llm": {
+        "planner": "true",
+        "specialist": "true",
+        "synthesis": "true",
+        "model": "skynet",
+        "max_hops": "5"
+      },
+      "source_files": {
+        "judgments": 120,
+        "answers": 120,
+        "manifest": 1
+      }
+    },
+    "untruncated-loop/llm_loop": {
+      "letter": null,
+      "n": 120,
+      "mean_correctness": 0.815,
+      "mean_completeness": 0.84975,
+      "mean_faithfulness": 0.960833,
+      "mean_groundedness": 0.965,
+      "verdicts": {
+        "CORRECT": 92,
+        "PARTIAL": 7,
+        "INCORRECT": 21,
+        "other": {}
+      },
+      "hallucinations_total": 8,
+      "hallucination_cases": 6,
+      "evidence_records": 2554,
+      "related": 1604,
+      "mean_coverage": 0.833748,
+      "wall_s": 1111.1,
+      "manifest_count": 120,
+      "manifest_ok": 120,
+      "llm": {
+        "planner": "true",
+        "specialist": "true",
+        "synthesis": "true",
+        "model": "skynet",
+        "max_hops": "5",
+        "chase_facets": "true"
+      },
+      "source_files": {
+        "judgments": 120,
+        "answers": 120,
+        "manifest": 1
+      }
+    }
+  }
+}

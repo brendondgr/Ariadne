@@ -46,3 +46,23 @@ path is unaffected. It was therefore committed with the rest of Arm G.
 
 **Decision needed:** confirmation that this reading is right. If it is not, the
 Arm G commit needs splitting before the freeze tag is trusted.
+
+---
+
+## Q6 — The plan's "F − G delta" is signed the other way round
+
+**Found:** Task 4. Plan 01 §Task 5 asks for the "**F − G delta (−0.357)**"
+stated alongside the "**B − C planning delta (−0.1185)**".
+
+The recomputed figures are F 0.995667 and G 0.638833, so **F − G = +0.356834**;
+the quoted −0.357 is **G − F**. The magnitude is right and it is the sign
+convention that matches B − C (0.850500 − 0.969000 = −0.118500, worse arm
+first).
+
+**What was done:** the tables state it as **G − F = −0.3568**, which is the
+figure the plan intends and the convention that makes the two deltas directly
+comparable. `numbers.json` carries both signs and a `sign_convention` note.
+
+**Decision needed:** none, unless the author prefers the F − G ordering — in
+which case the sign in the tables flips to positive and the two deltas stop
+being comparable at a glance.
