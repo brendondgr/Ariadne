@@ -66,3 +66,50 @@ comparable. `numbers.json` carries both signs and a `sign_convention` note.
 **Decision needed:** none, unless the author prefers the F − G ordering — in
 which case the sign in the tables flips to positive and the two deltas stop
 being comparable at a glance.
+
+---
+
+## Q7 — Arm B's coverage cell was spliced from the pre-fix run too
+
+**Found:** Task 6. The plan says only two figures move — Arm A's wall clock and
+its record count — because related neighbours and coverage are identical across
+the pre- and post-fix runs *for Arm A*. That is true for Arm A. It is not true
+for Arm B.
+
+The cost table's Arm B coverage read **0.7989**, which is
+`untruncated/llm` — the pre-fix run. Post-fix `untruncated-fixed/llm` is
+**0.8074**. Arm E's coverage cell was blank; it is **0.8819**
+(`untruncated-loop2/llm_loop`).
+
+All three are macro means over the 66 scorable cases, matching the repository's
+own aggregation in `utils/evaluation/summarize_untruncated.py:81,99`.
+
+**What was done:** corrected in the same commit as the Arm A figures, since it
+is the same splice in the same table, and called out in the dated correction
+note above the table rather than changed silently.
+
+**Decision needed:** none, but it is worth knowing the splice was wider than the
+plan assumed. If any other document quotes 0.7989 as a post-fix figure it needs
+the same treatment; a grep at the time of writing found none.
+
+---
+
+## Q3 — The local model's quantisation is unknown
+
+**Found:** Task 10. The evaluation record can now name the model but not how it
+was quantised. Nothing in the repository records it; it is a property of the
+operator's local serving stack.
+
+**Decision needed:** the operator to state the quantisation (or that the model
+was served unquantised) so the evaluation record is reproducible.
+
+---
+
+## Q4 — The local model's exact context window is unknown
+
+**Found:** Task 10. The repository gives three different figures and none is
+authoritative. The `.env` value is a *client request*, not a server capability —
+it is what the client asks for, and the server may cap it lower.
+
+**Decision needed:** the operator to read the served window off the model server
+and record it.

@@ -40,11 +40,20 @@ Cost and volume, same 120 questions:
 
 | Arm | wall clock | evidence records | related neighbours | answer coverage |
 |---|---|---|---|---|
-| A deterministic | **2.6 s** | 1,840 | 839 | **1.0000** |
+| A deterministic | **1.6 s** | 1,061 | 839 | **1.0000** |
 | F determ. + loop + LLM | 533 s | **1,080** | 866 | **1.0000** |
-| E LLM-planned + loop | 1,043 s | 3,449 | 2,000 | — |
-| B LLM-planned | 1,020 s | 2,814 | 621 | 0.7989 |
+| E LLM-planned + loop | 1,043 s | 3,449 | 2,000 | 0.8819 |
+| B LLM-planned | 1,020 s | 2,814 | 621 | 0.8074 |
 | G templates disabled | 915 s | 252 | 1,749 | 0.8979 |
+
+> **Corrected 2026-08-04.** The Arm A row previously read **2.6 s / 1,840
+> records** and the Arm B coverage cell **0.7989**. Those are the *pre-fix*
+> `untruncated/` figures, spliced next to post-fix correctness. Recomputed from
+> the committed post-fix artifacts, Arm A is **1.6 s / 1,061 records** and Arm B
+> coverage is **0.8074**; Arm E's coverage, previously left blank, is **0.8819**.
+> Arm A's related-neighbour count (839) and coverage (1.0000) are identical
+> across both runs, so nothing else in the row moves. Derivation:
+> [`_overnight/numbers.json`](../../plans/robustness/_overnight/numbers.json).
 
 > **Read this table twice.** Arm F retrieves the *least* evidence of any LLM arm
 > and scores the *highest*. Arm B retrieves 2.6× more than Arm F and surfaces
@@ -246,7 +255,7 @@ not replace it.
 
 **Demo Arm F, keep Arm A as the reproducible fallback.**
 
-* **Arm A (deterministic)** — 0.9972, 120/120, zero hallucinations, **2.6 s** for
+* **Arm A (deterministic)** — 0.9972, 120/120, zero hallucinations, **1.6 s** for
   the whole catalogue, byte-reproducible. The right answer when someone asks you
   to run it again on stage, and the right regression gate in CI.
 * **Arm F (deterministic extraction + LLM writer)** — 0.9957, 119/120, zero

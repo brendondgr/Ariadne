@@ -242,7 +242,7 @@ end-to-end evaluation, plus the Wk 14–15 technical documentation set delivered
 (source card format, agent interface contracts, query safety model, openCypher/GQL migration
 guide — proposal Deliverable #6). Remaining: bug-fix iteration and pitch prep.
 
-**"How fast is it?"** The fully deterministic arm answers all 120 questions in **2.6
+**"How fast is it?"** The fully deterministic arm answers all 120 questions in **1.6
 seconds**. The best LLM-narrated arm takes 533 s for 120 (≈4.4 s/question) and is the one
 that produces analyst prose. Specialist-level warm p50 is 1.1 ms (ATT&CK) / 2.6 ms (CAPEC).
 

@@ -158,7 +158,7 @@ The standing record is [`docs/evaluation/2026-07-26/`](docs/evaluation/2026-07-2
 
 | Configuration | Plan | Synthesize | correctness | verdicts | hallucinations | wall clock |
 |---|---|---|---|---|---|---|
-| **A — deterministic** | authored | deterministic | **0.9972** | **120/0/0** | **0** | **2.6 s** |
+| **A — deterministic** | authored | deterministic | **0.9972** | **120/0/0** | **0** | **1.6 s** |
 | **F — determ. + loop + LLM writer** | authored | LLM over verified claims | 0.9957 | 119/1/0 | 3 | 533 s |
 | E — LLM-planned + loop | **LLM** | LLM over verified claims | 0.8560 | 97/7/16 | 15 | 1,043 s |
 | B — LLM-planned | **LLM** | LLM over verified claims | 0.8505 | 92/14/14 | 12 | 1,020 s |
