@@ -212,6 +212,14 @@ headline number is real.
   attribution requirement, linked from the README. Tag `freeze/holdout-v1` and
   record the SHA in this plan.
   Commit: `Branch A (1/9) Complete: Committed the Arm G control, added MITRE attribution, and tagged the pre-holdout freeze.`
+- **Status — done, 2026-08-05.** Executed as Plan 01
+  (`docs/plans/robustness/01-overnight-safe-work.md`) rather than as a single
+  commit. `freeze/holdout-v1` points at
+  **`974e85a494f020e218e8b73f193543c11ea0d292`**. Arm G's code path and its 241
+  artifacts are committed, `docs/pitch/` is tracked, and `NOTICE` reproduces the
+  ATT&CK and CAPEC terms verbatim from the MITRE pages, linked from `README.md`.
+  Step 1b (the licence) remains open and untouched, as intended — no `LICENSE`
+  file was created. Audit trail: `docs/plans/robustness/_overnight/`.
 
 ### Step 1b: Resolve the license — **open, blocking, PI-owned**
 

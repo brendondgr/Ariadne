@@ -55,6 +55,14 @@ The Author is the only role with a context restriction, and it is absolute.
 
 ## 2. Anchor sampling — mechanical, seeded, uniform
 
+> **The freeze tag exists.** `freeze/holdout-v1` was created on 2026-08-05 by
+> Plan 01 and points at commit
+> **`974e85a494f020e218e8b73f193543c11ea0d292`**
+> (`Overnight (10/12): Record the evaluation model as Gemma 4 31B …`). Every
+> step below runs against that tag — the detached checkout in §4, the arms in
+> §6, and the `git describe --exact-match` check. Templates and planner are
+> immutable from that commit onward.
+
 Write `utils/specialists/evalset/holdout_protocol.py`. It is committed and it is
 part of the artifact.
 

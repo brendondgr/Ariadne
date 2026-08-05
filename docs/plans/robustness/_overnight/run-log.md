@@ -123,4 +123,121 @@ superseded before judging.
 One labelling discrepancy, recorded as **Q6**: the plan's "F − G delta (−0.357)"
 is signed as G − F. F − G is +0.356834.
 
-Commit pending below.
+Commit `1f98e1a`.
+
+### Task 5 — Arm G in both arm tables — 2026-08-05T00:20
+
+Added the Arm G row to the results and cost tables in
+`docs/evaluation/2026-07-26/README.md`, a *two deltas side by side* block
+(G − F = −0.3568 against B − C = −0.1185, both treated-minus-reference so they
+compare directly — losing the templates costs 3.0× what LLM planning costs), and
+a paragraph stating precisely what Arm G is and is not.
+
+`docs/evaluation/experiments/README.md`'s code→letter map gained **D** and **G**
+and a Directory column, because the letter is not a function of the `--arm` code
+alone: C and D both run `gold_llm` and differ only by directory.
+
+Deliberately *not* done: rewriting "seven-arm study" across six documents. Arm G
+was run later and moves a variable the original matrix held fixed, so it is
+reported as an eighth run beside the study rather than folded into it. That is a
+framing call and the plan is decision-free; the narrower phrasing avoids it.
+
+Commit `feb9298`.
+
+### Task 6 — Arm A cost correction — 2026-08-05T00:35
+
+`README.md`, `docs/evaluation/2026-07-26/README.md` (×2), `docs/pitch/checkin-pitch.md`
+and `docs/research/audit-2026-08-03.md` (×2). The audit is dated, so both
+figures stay in place there with dated correction notes beside them.
+
+Arithmetic, recomputed rather than trusted:
+
+```
+pre-fix   1,019.7 / 2.6 = 392.19   -> the recorded 392x
+post-fix  1,019.7 / 1.6 = 637.31   -> 637x
+Arm F       533.4 / 1.6 = 333.37   -> 333x
+```
+
+One figure moved beyond the plan's list, recorded as **Q7**: Arm B's coverage
+cell was 0.7989, the pre-fix value; post-fix is 0.8074. Arm E's blank coverage
+cell is 0.8819.
+
+Commit `a38f424`.
+
+### Task 7 — Template count — 2026-08-05T00:50
+
+`_overnight/derive_templates.py` AST-parses both builders and scans the banks.
+Result: **25 distinct template identifiers, of which 19 are exercised by the
+120-question bank** (17 Cypher + 11 Gremlin, with `describe`,
+`describe_by_name` and `expand` declared in both — which is where every wrong
+total came from). Written to `numbers.json` under `templates`; all four markdown
+locations updated to state it identically. The fifth location is a docstring and
+is Task 8.
+
+Commit `f87d145`.
+
+### Task 8 — Builder docstrings — 2026-08-05T01:05
+
+Docstrings and comments only, verified by parsing both files before and after,
+stripping every docstring, and comparing `ast.dump()` — identical trees.
+Dead-code markers added above `_node_lookup` and `_capec_lookup` without
+deleting either.
+
+Test suite, `ORCH_MAX_HOPS=5 pytest -q`, same invocation both times:
+
+| | failed | passed | skipped |
+|---|---|---|---|
+| before | 4 | 1308 | 213 |
+| after | 4 | 1308 | 213 |
+
+Same four tests both times, none related: two `utils/conversation` graph-order
+tests and one setup-wizard test that assert LLM-off behaviour while a local
+inference server is reachable on `localhost:4000`, and one evaluation test
+needing the live graph subset.
+
+Commit `3e3ebab`.
+
+### Task 9 — `.env.example` — 2026-08-05T01:20
+
+`ORCH_MAX_HOPS` added as a live key set to 1 (**Q8** — that is a shipping-default
+decision, and the comment beside it documents both values);
+`EVAL_LLM_MAX_TOKENS` aligned 1024 → 32000 with the reasoning-model explanation;
+the pipeline comment replaced with the real graph including the
+`bundle → assess → (synthesize | replan → specialists)` cycle and the two
+caveats — inert at `max_hops=1`, and `ORCH_ASSESS_MODE=llm` degrading because
+nothing injects a critic. No code default changed.
+
+Full suite re-run: 4 failed, 1308 passed, 213 skipped — unchanged. The new key
+did expose a latent test-isolation bug, recorded as **Q9** and filed as a
+follow-up rather than fixed here.
+
+Commit `fa26268`.
+
+### Task 10 — Model identity — 2026-08-05T01:35
+
+`docs/evaluation/README.md` records `skynet` = **Gemma 4 31B**, with
+quantisation and served context window written as **unknown** (**Q3**, **Q4**)
+and all three prior window figures listed side by side with the distinction that
+reconciles them: a client-side `num_ctx` request is not a served
+`max_model_len`. `.env` was **not** modified — prohibited, and gitignored
+operator state.
+
+Commit `974e85a`.
+
+### Task 11 — Freeze tag — 2026-08-05T01:40
+
+```
+git tag -a freeze/holdout-v1 -m "Frozen for the blind holdout. Templates and planner immutable from this point."
+```
+
+**`freeze/holdout-v1` → `974e85a494f020e218e8b73f193543c11ea0d292`**
+
+`git describe --exact-match HEAD` confirmed `freeze/holdout-v1` at the time of
+tagging. The SHA is written into
+`docs/plans/robustness/02-holdout-question-generation.md` §2 and
+`docs/plans/branch-a-publication-readiness-plan.md` Step 1.
+
+The tag necessarily precedes those two edits and this log entry — a commit
+cannot contain its own SHA. What the tag freezes is the code and the evaluation
+record, which is what the holdout is measured against; the audit trail after it
+is documentation only.
