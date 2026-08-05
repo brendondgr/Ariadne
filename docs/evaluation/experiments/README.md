@@ -1,6 +1,7 @@
 # Experiment Artifacts — Index
 
-Per-question evidence for the seven-arm study written up in
+Per-question evidence for the seven-arm study — and the Arm G control run
+added afterwards — written up in
 [`../2026-07-26/README.md`](../2026-07-26/README.md). Each arm directory holds
 `answers/<id>.json` (the answer plus the full retrieved evidence and every
 executed query) and `answers/<id>.judgment.json` (one independent Sonnet 5
@@ -15,13 +16,26 @@ The arm code is the `--arm` value accepted by
 `utils/evaluation/experiment_untruncated.py`; the configuration column is read
 from `untruncated_env()` in that file.
 
-| Code | Letter | Plan | Extract | Synthesize |
-|---|---|---|---|---|
-| `deterministic` | A | authored (gold replay) | deterministic templates | deterministic composer |
-| `llm` | B | LLM planner from raw question text | deterministic templates | LLM over evidence |
-| `gold_llm` | C | authored (gold replay) | deterministic templates | LLM over evidence |
-| `llm_loop` | E | LLM planner | deterministic + facet-chasing loop | LLM over verified claims |
-| `gold_loop_llm` | F | authored (gold replay) | deterministic + facet-chasing loop | LLM over verified claims |
+| Code | Letter | Directory | Plan | Extract | Synthesize |
+|---|---|---|---|---|---|
+| `deterministic` | A | `untruncated-fixed/` | authored (gold replay) | deterministic templates | deterministic composer |
+| `llm` | B | `untruncated-fixed/` | LLM planner from raw question text | deterministic templates | LLM over evidence |
+| `gold_llm` | C | `untruncated-fixed/` | authored (gold replay) | deterministic templates | LLM over evidence |
+| `gold_llm` | D | `untruncated-claimnarr/` | authored (gold replay) | deterministic templates | LLM over verified claims |
+| `llm_loop` | E | `untruncated-loop2/` | LLM planner | deterministic + facet-chasing loop | LLM over verified claims |
+| `gold_loop_llm` | F | `untruncated-goldloop/` | authored (gold replay) | deterministic + facet-chasing loop | LLM over verified claims |
+| `generic` | G | `untruncated-generic/` | LLM planner | **generic primitives only** + facet-chasing loop | LLM over verified claims |
+
+The letter is not a function of the code alone: **C and D share the `gold_llm`
+code** and differ only by the directory they were run into, because the
+claims-narrator change is a synthesis-side switch rather than an arm flag. Read
+the letter off the directory, not off `--arm`.
+
+Arm G is the *generic-primitives* control. `SPECIALIST_GENERIC_ONLY=1` disables
+every hand-written intent template and leaves the schema-driven primitives —
+describe an anchor, walk one card-declared relationship, scan a label. It is
+**not** free-form LLM query generation; no LLM writes Cypher or Gremlin in any
+arm here, and that experiment has never been run.
 
 Every arm runs under the same un-truncation profile, whose env keys default to
 the committed values so a normal run is unaffected.
@@ -34,8 +48,9 @@ the committed values so a normal run is unaffected.
 | `untruncated-fixed/` | `deterministic`, `gold_llm`, `llm` | The A/B/C re-run after the eight defects were fixed. |
 | `untruncated-claimnarr/` | `deterministic`, `gold_llm` | The claims-narrator variant — the LLM writes prose over the *verified claims* instead of re-reading raw evidence. `deterministic/` here is un-judged (answers only). |
 | `untruncated-claimnarr2/` | `gold_llm` | Second claims-narrator pass; answers only, un-judged. |
-| `untruncated-loop/`, `untruncated-loop2/` | `llm_loop` | Arm E, LLM-planned with the retrieval loop enabled. |
+| `untruncated-loop/`, `untruncated-loop2/` | `llm_loop` | Arm E, LLM-planned with the retrieval loop enabled. `untruncated-loop/` is the pre-fix run; Arm E's reported figures come from `untruncated-loop2/`. |
 | `untruncated-goldloop/` | `gold_loop_llm` | Arm F, the recommended demo configuration. |
+| `untruncated-generic/` | `generic` | Arm G, the generic-primitives control — templates disabled. |
 
 Directories carrying answers but no `.judgment.json` files were superseded
 before judging and are kept for artifact-level comparison only — do not compute

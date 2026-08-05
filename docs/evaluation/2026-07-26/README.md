@@ -21,8 +21,9 @@ lever is **LLM planning**, which costs ~0.14 correctness on its own.
 ## 1. Results
 
 All figures are means over 120 questions, each graded by a **separate Sonnet 5
-agent** (one per question, 840 agents across seven runs) against the question's
-gold assertions *and* its full retrieved evidence.
+agent** (one per question, 840 agents across the seven study runs, plus 120 more
+for the Arm G control run added afterwards) against the question's gold
+assertions *and* its full retrieved evidence.
 
 | # | Configuration | Plan | Extract | Synthesize | corr | compl | faith | ground | C/P/I | halluc |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -33,6 +34,7 @@ gold assertions *and* its full retrieved evidence.
 | C | Determ. + LLM writer (evidence-grounded) | gold | determ. | LLM (evidence) | 0.9690 | 0.9672 | 0.9921 | 0.9983 | 110/8/2 | 3 |
 | E | LLM-planned + loop | **LLM** | determ.+loop | LLM (claims) | 0.8560 | 0.8877 | 0.9575 | 0.9729 | 97/7/16 | 15 |
 | B | LLM-planned | **LLM** | determ. | LLM (claims) | 0.8505 | 0.8692 | 0.9683 | 0.9750 | 92/14/14 | 12 |
+| **G** | **Templates disabled** (generic primitives) | **LLM** | generic primitives + loop | LLM (claims) | **0.6388** | 0.6802 | 0.9658 | 0.9788 | 64/14/42 | 7 |
 
 Cost and volume, same 120 questions:
 
@@ -42,11 +44,36 @@ Cost and volume, same 120 questions:
 | F determ. + loop + LLM | 533 s | **1,080** | 866 | **1.0000** |
 | E LLM-planned + loop | 1,043 s | 3,449 | 2,000 | — |
 | B LLM-planned | 1,020 s | 2,814 | 621 | 0.7989 |
+| G templates disabled | 915 s | 252 | 1,749 | 0.8979 |
 
 > **Read this table twice.** Arm F retrieves the *least* evidence of any LLM arm
 > and scores the *highest*. Arm B retrieves 2.6× more than Arm F and surfaces
 > 20% less of the gold. Throughout this evaluation, precision in *planning* beat
 > volume in *retrieval*, every time.
+
+### The two deltas, side by side
+
+The matrix isolates two independent effects, and they are an order of magnitude
+apart. Stated in the same direction — treated arm minus its reference, so both
+are negative:
+
+| Effect | Contrast | Delta (correctness) |
+|---|---|---|
+| Disabling the **templates** | **G − F** (0.6388 − 0.9957) | **−0.3568** |
+| Swapping in **LLM planning** | **B − C** (0.8505 − 0.9690) | **−0.1185** |
+
+Losing the hand-written templates costs **3.0× what LLM planning costs**. The
+templates, not the planner, are where this system's accuracy lives.
+
+**What Arm G is, precisely.** It is a *generic-primitives* control: the
+`SPECIALIST_GENERIC_ONLY` gate disables every hand-written intent template and
+leaves only the schema-driven primitives — describe an anchor, walk one
+relationship the source card declares, scan a label
+([`cypher/builder.py`](../../../utils/specialists/cypher/builder.py) `_build_generic`).
+It answers the way the system would have to on a graph nobody has authored
+templates for. It is **not** free-form LLM query generation — no LLM writes
+Cypher or Gremlin in any arm of this study, and that experiment has never been
+run.
 
 ### The three findings that matter
 
@@ -108,6 +135,11 @@ Three independent variables:
   **facet-chasing retrieval loop**.
 * **Synthesize** — deterministic composer, LLM narrator reading *evidence*, or
   LLM narrator reading *verified claims*.
+
+**Arm G is a later eighth run**, not part of the original matrix. It moves a
+fourth variable the seven-arm design held fixed — whether the hand-written
+intent templates exist at all — so it is reported in the same tables but should
+be read as a control against Arm F rather than as a cell of the 2×2×3 design.
 
 Common to every arm: the **un-truncation profile**, which lifts every retrieval,
 synthesis-evidence and judge-artifact bound via env keys whose defaults are the
