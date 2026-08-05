@@ -113,3 +113,48 @@ it is what the client asks for, and the server may cap it lower.
 
 **Decision needed:** the operator to read the served window off the model server
 and record it.
+
+---
+
+## Q8 — `.env.example` now pins `ORCH_MAX_HOPS=1`, which changes fresh-clone behaviour
+
+**Found:** Task 9. The plan says to add the key "with a comment explaining both
+the default and what the evaluation runs used". Adding it as a *live* key is the
+only way to actually close the divergence — commented out, a fresh clone still
+inherits the code default of 5 and still runs with the retrieval loop on, which
+is the state the plan calls a problem.
+
+It is therefore set to **1**, matching the operator's own `.env` and the
+single-pass arms of the evaluation record. The code default
+(`DEFAULT_MAX_HOPS = 5`, `utils/orchestration/config.py`) is untouched.
+
+**Decision needed:** confirmation that a fresh clone should default to
+single-pass. If the intended shipping default is the loop, change the value to
+5 — the comment beside it already documents both.
+
+---
+
+## Q9 — A test-isolation bug that this `.env.example` key exposes
+
+**Found:** Task 9, incidentally.
+
+`utils/setup_wizard/tests/test_steps.py` materialises an env file from
+`.env.example` and loads it with `override=True`, which leaks the file's values
+into `os.environ` for every test that runs afterwards **in the same pytest
+process**. With `ORCH_MAX_HOPS=1` now present in `.env.example`, running
+
+```
+pytest utils/setup_wizard/ utils/orchestration/
+```
+
+fails three `test_event_parity.py` tests that pass in isolation and pass in the
+full suite — because default collection order puts `utils/orchestration` before
+`utils/setup_wizard`, so the pollution lands after they have already run.
+
+**The full suite is unaffected** (verified: same 4 pre-existing failures, 1,308
+passed, before and after). This is a latent ordering dependency, not a
+regression introduced here — the key merely made it observable.
+
+**Decision needed:** none urgently, but the wizard tests should restore
+`os.environ` around the env-file step. Left alone because fixing it is a code
+change and this plan is documentation-only outside Task 8's docstrings.
