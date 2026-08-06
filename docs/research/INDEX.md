@@ -10,6 +10,16 @@ that a dead end is walked into once rather than twice.
 
 | ID | Date | Title | Status | Primary metric | Claims | Link |
 |---|---|---|---|---|---|---|
-| — | — | *no experiments recorded yet* | — | — | — | — |
+| `EXP-2026-07-001` | 2026-07-26 | Arm A — fully deterministic pipeline (planning, extraction, synthesis) | complete | correctness 0.9972 (n=1) | C-001, C-004 | [arm-a-deterministic](experiments/EXP-2026-07-001-arm-a-deterministic/) |
+| `EXP-2026-07-002` | 2026-07-26 | Arm B — LLM planning with deterministic extraction and an LLM writer | complete | correctness 0.8505 (n=1) | C-002, C-003, C-016 | [arm-b-llm-planned](experiments/EXP-2026-07-002-arm-b-llm-planned/) |
+| `EXP-2026-07-003` | 2026-07-26 | Arm C — authored plan with an LLM writer reading raw evidence | complete | correctness 0.9690 (n=1) | C-002, C-005 | [arm-c-llm-writer-evidence](experiments/EXP-2026-07-003-arm-c-llm-writer-evidence/) |
+| `EXP-2026-07-004` | 2026-07-26 | Arm D — authored plan with an LLM writer reading verified claims | complete | correctness 0.9917 (n=1) | C-005 | [arm-d-llm-writer-claims](experiments/EXP-2026-07-004-arm-d-llm-writer-claims/) |
+| `EXP-2026-07-005` | 2026-07-26 | Arm E — LLM planning with the facet-chasing retrieval loop enabled | complete | correctness 0.8560 (n=1) | C-002, C-006 | [arm-e-llm-planned-loop](experiments/EXP-2026-07-005-arm-e-llm-planned-loop/) |
+| `EXP-2026-07-006` | 2026-07-26 | Arm F — authored plan, facet-chasing loop, LLM writer over verified claims | complete | correctness 0.9957 (n=1) | C-004, C-005, C-006 | [arm-f-determ-loop-llm-writer](experiments/EXP-2026-07-006-arm-f-determ-loop-llm-writer/) |
+| `EXP-2026-07-007` | 2026-07-26 | Arm G — generic primitives only, every hand-written template disabled | complete | correctness 0.6388 (n=1) | C-003 | [arm-g-templates-disabled](experiments/EXP-2026-07-007-arm-g-templates-disabled/) |
+| `EXP-2026-07-008` | 2026-07-26 | Component-level evaluation of the planner and both query specialists | complete | planner_source_recall 1.0000 (n=1) | C-007, C-008 | [component-evaluation](experiments/EXP-2026-07-008-component-evaluation/) |
+| `EXP-2026-07-009` | 2026-07-26 | End-to-end evaluation against the four goals.md pipeline metrics | complete | cross_source_answer_accuracy 1.0000 (n=1) | C-007, C-009, C-017 | [e2e-evaluation](experiments/EXP-2026-07-009-e2e-evaluation/) |
+| `EXP-2026-07-011` | 2026-07-26 | Portability audit — what survives a dataset that is not MITRE | complete | — | C-010 | [portability-audit](experiments/EXP-2026-07-011-portability-audit/) |
+| `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 
-**0 experiment(s) on record.**
+**11 experiment(s) on record.**
