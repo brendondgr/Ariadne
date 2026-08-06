@@ -1,0 +1,62 @@
+# Back-filled 2026-08-06 from docs/evaluation/2026-07-26/portability.md.
+# This is an AUDIT, not a run. metrics.values holds the countable findings; there
+# is no primary metric because nothing here was measured against gold.
+id: EXP-2026-07-011
+slug: portability-audit
+title: Portability audit — what survives a dataset that is not MITRE
+status: complete
+date_started: 2026-07-26
+date_completed: 2026-07-26
+authors: [brendondgr]
+
+purpose: >
+  Answers the question a grant host would ask: if handed a real non-MITRE
+  dataset, does any of this transfer? Classifies every layer as schema-agnostic
+  or MITRE-specific and counts the MITRE-specific surface exactly, so the cost
+  of a new dataset is a number rather than a guess.
+
+hypothesis: >
+  exploratory — no prior hypothesis. This is a code audit, not an experiment,
+  and it is recorded here so its findings carry an experiment ID like every
+  other claim-bearing artifact.
+
+code:
+  commit: unknown
+  branch: main
+  entrypoint: "audit — no command; derived by reading utils/specialists/*/builder.py"
+  dirty: false
+config:
+  path: null
+  hash: null
+data:
+  name: ariadne-source-tree
+  version: "as at 2026-07-26"
+  split: null
+  n_examples: 25
+  dvc_path: null
+  hash: null
+seeds: []
+n_runs: 1
+environment:
+  python: "3.13"
+  lockfile: null
+  container: null
+compute:
+  hardware: "n/a — static audit"
+  wall_clock_hours: null
+  estimated_cost_usd: 0.0
+
+metrics:
+  primary: null
+  values:
+    distinct_query_templates: {mean: 25.0, std: null, n: 1}
+    templates_exercised_by_the_bank: {mean: 19.0, std: null, n: 1}
+    mitre_specific_templates: {mean: 19.0, std: null, n: 1}
+baselines_compared: []
+statistical_test: null
+
+supports_claims: [C-010]
+figures: []
+supersedes: null
+superseded_by: null
+related: [EXP-2026-07-001, EXP-2026-07-007]

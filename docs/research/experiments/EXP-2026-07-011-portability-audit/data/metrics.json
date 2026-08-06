@@ -1,0 +1,33 @@
+{
+  "experiment": "EXP-2026-07-011",
+  "kind": "audit \u2014 not a measured run",
+  "source": "docs/evaluation/2026-07-26/portability.md",
+  "template_counts": {
+    "cypher_builder_literals": 17,
+    "gremlin_builder_literals": 11,
+    "distinct_identifiers": 25,
+    "note": "17 + 11 != 28: describe, describe_by_name and expand are declared in BOTH builders",
+    "exercised_by_120q_bank": 19,
+    "derivation": "docs/plans/robustness/_overnight/derive_templates.py \u2014 AST parse, not prose"
+  },
+  "layers": {
+    "fully_portable": [
+      "LangGraph super-graph (probe/plan/specialists/assess/re-plan/synthesize)",
+      "sufficiency policy, hop cap, termination guarantee",
+      "append_new reducers, SSE contract, timeouts, degradation",
+      "claim composition, verifier, abstentions, provenance chain",
+      "the whole evaluation apparatus (arm runner, failure_terminus, judge panel, summarizer)"
+    ],
+    "card_driven": [
+      "describe / expand primitives",
+      "source-card routing glosses"
+    ],
+    "mitre_specific": [
+      "19 hand-written query templates",
+      "id-shape regexes",
+      "the canonical join key (ATT&CK technique ids)",
+      "the 120-question catalogue",
+      "one id regex in failure_terminus.py"
+    ]
+  }
+}

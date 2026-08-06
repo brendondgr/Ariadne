@@ -1,0 +1,69 @@
+# Back-filled 2026-08-06 from docs/evaluation/component-evaluation.{md,json}.
+id: EXP-2026-07-008
+slug: component-evaluation
+title: Component-level evaluation of the planner and both query specialists
+status: complete
+date_started: 2026-07-26
+date_completed: 2026-07-26
+authors: [brendondgr]
+
+purpose: >
+  Measures the planner (source selection, sub-question quality, schema
+  adherence, honesty) and both specialists (query validity, execution accuracy
+  against snapshot gold, safety adherence, latency) independently of the
+  end-to-end pipeline. Fully deterministic — no LLM judge — so unlike the
+  seven-arm study every number here is byte-reproducible.
+
+hypothesis: >
+  exploratory — no prior hypothesis. This is an instrumentation report rather
+  than a test of a prediction.
+
+code:
+  commit: unknown            # not captured; regenerable via the entrypoint
+  branch: main
+  entrypoint: "uv run main.py --component-eval"
+  dirty: false               # unverifiable for a back-filled run
+config:
+  path: null
+  hash: null
+data:
+  name: planner-corpus-and-specialist-gold
+  version: "ATT&CK 19.0 / CAPEC 3.9"
+  split: all
+  n_examples: 43
+  dvc_path: null
+  hash: null
+seeds: []                    # deterministic scoring; no sampling involved
+n_runs: 1
+environment:
+  python: "3.13"
+  lockfile: null
+  container: null
+compute:
+  hardware: "local workstation; Neo4j + TinkerPop Gremlin Server in Docker"
+  wall_clock_hours: null     # not recorded; the run is seconds, not hours
+  estimated_cost_usd: 0.0
+
+# No llm block: this evaluation runs with no model in the loop at all.
+
+metrics:
+  primary: planner_source_recall
+  values:
+    planner_source_recall: {mean: 1.0, std: null, n: 1}
+    planner_source_precision: {mean: 0.919, std: null, n: 1}
+    planner_subquestion_quality: {mean: 0.839, std: null, n: 1}
+    planner_schema_adherence: {mean: 1.0, std: null, n: 1}
+    planner_honesty: {mean: 1.0, std: null, n: 1}
+    attack_query_validity: {mean: 1.0, std: null, n: 1}
+    attack_execution_accuracy: {mean: 1.0, std: null, n: 1}
+    capec_query_validity: {mean: 1.0, std: null, n: 1}
+    capec_execution_accuracy: {mean: 1.0, std: null, n: 1}
+    adversarial_block_rate: {mean: 1.0, std: null, n: 1}
+baselines_compared: []
+statistical_test: null
+
+supports_claims: [C-007, C-008]
+figures: []
+supersedes: null
+superseded_by: null
+related: [EXP-2026-07-009]

@@ -1,0 +1,81 @@
+# Back-filled 2026-08-06 from docs/evaluation/archive/independent-eval.md.
+# SUPERSEDED. Kept deliberately: this is the "Committed baseline" row of the
+# 2026-07-26 standing table — the "before" the eight defect fixes were applied
+# to. Its numbers are historically correct and currently obsolete.
+id: EXP-2026-07-010
+slug: independent-eval-baseline
+title: First independent cross-model grading pass (the pre-fix committed baseline)
+status: superseded
+date_started: 2026-07-20
+date_completed: 2026-07-20
+authors: [brendondgr]
+
+purpose: >
+  The first independent check on the pipeline: 120 saved end-to-end answers
+  graded by a separate Sonnet 5 agent each, against the question gold assertions
+  and full retrieved evidence. Establishes the "before" figure that the eight
+  defect fixes were measured against, and the reason cross-model judging was
+  adopted for the seven-arm study.
+
+hypothesis: >
+  Stated implicitly before the run: that the pipeline's self-judged scores
+  (EXP-2026-07-009) overstated answer quality because the grading model was the
+  model under test. This was borne out — 0.8946 independent correctness against
+  a self-judged picture that looked close to 1.0.
+
+code:
+  commit: unknown            # predates the record; the answers it graded were regenerated afterwards
+  branch: main
+  entrypoint: "uv run main.py --e2e-generate   # then an external Sonnet 5 judge panel"
+  dirty: false
+config:
+  path: null
+  hash: null
+data:
+  name: ariadne-golden-catalogue
+  version: "120q-2026-07"
+  split: all
+  n_examples: 120
+  dvc_path: null
+  hash: null
+seeds: []
+n_runs: 1
+environment:
+  python: "3.13"
+  lockfile: null
+  container: null
+compute:
+  hardware: "local workstation; judging performed externally"
+  wall_clock_hours: null
+  estimated_cost_usd: 0.0
+
+llm:
+  model: "anthropic/claude-sonnet-5"   # the JUDGE; the pipeline under test used skynet
+  temperature: null
+  top_p: null
+  max_tokens: null
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    120 independent judge agents, one per answer. Cross-model by design — the
+    pipeline's own model does not grade its own output. Judge verdicts are not
+    perfectly stable across runs.
+
+metrics:
+  primary: correctness
+  values:
+    correctness: {mean: 0.8946, std: null, n: 1}
+    completeness: {mean: 0.8952, std: null, n: 1}
+    faithfulness: {mean: 0.9558, std: null, n: 1}
+    groundedness: {mean: 0.9575, std: null, n: 1}
+baselines_compared: []
+statistical_test: null
+
+supports_claims: [C-009]
+figures: []
+supersedes: null
+superseded_by: EXP-2026-07-001
+related: [EXP-2026-07-001, EXP-2026-07-003, EXP-2026-07-009]

@@ -1,0 +1,81 @@
+{
+  "experiment": "EXP-2026-07-009",
+  "source": "docs/evaluation/e2e-evaluation.json",
+  "deterministic": {
+    "cross_source_answer_accuracy": {
+      "exact_set_match": 1.0,
+      "k": "30/30",
+      "ci": [
+        0.89,
+        1.0
+      ],
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "no_fabrication_negatives": {
+      "rate": 1.0,
+      "k": "10/10",
+      "ci": [
+        0.72,
+        1.0
+      ]
+    },
+    "capec_attack_mapping_recall": {
+      "micro_recall": 1.0,
+      "mappings": "113/113",
+      "entries": 30,
+      "mean_per_entry": 1.0
+    },
+    "provenance_correctness": {
+      "mean_citation_provenance_rate": 1.0,
+      "fully_provenanced_answers": 1.0,
+      "k": "120/120",
+      "ci": [
+        0.97,
+        1.0
+      ]
+    },
+    "analyst_inspectability": {
+      "mean": 1.0,
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0
+    },
+    "unsupported_claim_rate": 0.0,
+    "cross_source_conflicts": 0
+  },
+  "judge_non_reproducible": {
+    "source": "llm (skynet \u2014 same model that wrote the answers)",
+    "verdicts": 120,
+    "faithfulness": 0.9733,
+    "groundedness": 0.9342,
+    "evidence_sufficiency": 0.95
+  },
+  "by_tier": {
+    "adversarial": {
+      "x_source_exact": 0.0,
+      "mapping_recall": 1.0,
+      "provenance": 1.0,
+      "inspectability": 1.0
+    },
+    "easy": {
+      "x_source_exact": 0.0,
+      "mapping_recall": 1.0,
+      "provenance": 1.0,
+      "inspectability": 1.0
+    },
+    "hard": {
+      "x_source_exact": 1.0,
+      "mapping_recall": 1.0,
+      "provenance": 1.0,
+      "inspectability": 1.0
+    },
+    "medium": {
+      "x_source_exact": 1.0,
+      "mapping_recall": 1.0,
+      "provenance": 1.0,
+      "inspectability": 1.0
+    }
+  }
+}

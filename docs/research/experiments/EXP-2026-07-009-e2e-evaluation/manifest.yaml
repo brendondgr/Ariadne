@@ -1,0 +1,80 @@
+# Back-filled 2026-08-06 from docs/evaluation/e2e-evaluation.{md,json}.
+id: EXP-2026-07-009
+slug: e2e-evaluation
+title: End-to-end evaluation against the four goals.md pipeline metrics
+status: complete
+date_started: 2026-07-26
+date_completed: 2026-07-26
+authors: [brendondgr]
+
+purpose: >
+  Scores the assembled pipeline (probe to plan to specialists to synthesis)
+  against the four end-to-end metrics named in goals.md: cross-source answer
+  accuracy, CAPEC to ATT&CK mapping recall, provenance correctness, and analyst
+  inspectability. The four metrics are deterministic; an opt-in LLM judge
+  contributes qualitative scores that are labelled non-reproducible.
+
+hypothesis: >
+  exploratory — no prior hypothesis.
+
+code:
+  commit: unknown
+  branch: main
+  entrypoint: "uv run main.py --e2e-eval --judge"
+  dirty: false
+config:
+  path: null
+  hash: null
+data:
+  name: ariadne-golden-catalogue
+  version: "120q-2026-07"
+  split: all
+  n_examples: 120
+  dvc_path: null
+  hash: null
+seeds: []
+n_runs: 1
+environment:
+  python: "3.13"
+  lockfile: null
+  container: null
+compute:
+  hardware: "local workstation; Neo4j + TinkerPop Gremlin Server in Docker"
+  wall_clock_hours: null
+  estimated_cost_usd: 0.0
+
+llm:
+  model: "vllm/gemma-4-31b@unknown"   # the relay alias 'skynet'; judge only
+  temperature: null
+  top_p: null
+  max_tokens: null
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    The LLM judge here is the SAME model that wrote the answers, so its scores
+    carry self-preference bias and are explicitly non-reproducible. They are
+    recorded with a judge_ prefix and must never be quoted as the pipeline's
+    correctness. EXP-2026-07-010 is the independent cross-model check.
+
+metrics:
+  primary: cross_source_answer_accuracy
+  values:
+    cross_source_answer_accuracy: {mean: 1.0, std: null, n: 1}
+    no_fabrication_negatives: {mean: 1.0, std: null, n: 1}
+    capec_attack_mapping_recall: {mean: 1.0, std: null, n: 1}
+    provenance_correctness: {mean: 1.0, std: null, n: 1}
+    analyst_inspectability: {mean: 1.0, std: null, n: 1}
+    judge_faithfulness: {mean: 0.9733, std: null, n: 1}
+    judge_groundedness: {mean: 0.9342, std: null, n: 1}
+    judge_evidence_sufficiency: {mean: 0.95, std: null, n: 1}
+baselines_compared: []
+statistical_test: null
+
+supports_claims: [C-007, C-009]
+figures: []
+supersedes: null
+superseded_by: null
+related: [EXP-2026-07-008, EXP-2026-07-010]
