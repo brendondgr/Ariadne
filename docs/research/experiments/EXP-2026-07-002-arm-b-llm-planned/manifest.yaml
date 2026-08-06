@@ -1,0 +1,88 @@
+# Back-filled 2026-08-06 from the 2026-07-26 study. Every metric below is read
+# from docs/plans/robustness/_overnight/numbers.json, which was recomputed from
+# the committed *.judgment.json artifacts — not quoted from prose. See ISSUES.md
+# for what could not be recovered.
+id: EXP-2026-07-002
+slug: arm-b-llm-planned
+title: Arm B — LLM planning with deterministic extraction and an LLM writer
+status: complete
+date_started: 2026-07-26
+date_completed: 2026-07-26
+authors: [brendondgr]
+
+purpose: >
+  One cell of the controlled seven-arm study isolating deterministic from
+  LLM-based query planning over the 120-question golden catalogue, with
+  extraction and synthesis varied independently. Plan: LLM planner from raw question text. Extract:
+  deterministic templates. Synthesize: LLM over evidence. This arm is the evidence for the study's
+  central finding that accuracy lives in the hand-written templates and that
+  LLM planning is the dominant single regression.
+
+hypothesis: >
+  exploratory — no prior hypothesis was registered for this arm. The study was
+  designed as a factorial comparison rather than a test of a stated prediction,
+  and this manifest does not invent one retrospectively.
+
+code:
+  commit: unknown            # per-arm commit was not captured at run time
+  branch: main
+  entrypoint: "uv run python -m utils.evaluation.experiment_untruncated --arm llm --root docs/evaluation/experiments/untruncated-fixed --workers 4"
+  dirty: false               # unverifiable for a back-filled run; see ISSUES.md
+config:
+  path: utils/evaluation/experiment_untruncated.py
+  hash: null                 # the arm's env overlay is code, not a config file
+data:
+  name: ariadne-golden-catalogue
+  version: "120q-2026-07"
+  split: all
+  n_examples: 120
+  dvc_path: null
+  hash: null                 # see datasets/cards/golden-catalogue-120.md
+seeds: []                    # not recorded — see ISSUES.md
+n_runs: 1
+environment:
+  python: "3.13"
+  lockfile: null             # uv.lock at repository root; not snapshotted per arm
+  container: null
+compute:
+  hardware: "local workstation; Neo4j + TinkerPop Gremlin Server in Docker"
+  wall_clock_hours: 0.28325
+  estimated_cost_usd: 0.0    # self-hosted model and graphs; no metered spend
+
+# --- LLM / agentic block ---
+llm:
+  model: "vllm/gemma-4-31b@unknown"   # the relay alias 'skynet'; served build not recorded
+  temperature: null                   # not pinned by the harness — see ISSUES.md
+  top_p: null
+  max_tokens: 16384                   # experiment_untruncated.py --llm-max-tokens default
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null            # not instrumented at run time
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains regardless of sampling settings, and
+    this arm was run once (n_runs: 1), so no variance is reported. The served
+    context window and quantisation of the model are unrecorded; two questions
+    (C-SCN-01, F-CWE-05) overflowed it under the un-truncation profile.
+
+# --- Results block ---
+# Verdicts: 92 CORRECT / 14 PARTIAL / 14 INCORRECT
+# Hallucinations: 12 across 8 answers
+# Evidence: 2814 records, 621 related neighbours
+metrics:
+  primary: correctness
+  values:
+    correctness: {mean: 0.8505, std: null, n: 1}
+    completeness: {mean: 0.86925, std: null, n: 1}
+    faithfulness: {mean: 0.968333, std: null, n: 1}
+    groundedness: {mean: 0.975, std: null, n: 1}
+    answer_coverage: {mean: 0.807395, std: null, n: 1}
+baselines_compared: []       # no external baseline exists — see OPEN_QUESTIONS.md
+statistical_test: null       # single run per arm; no test applied
+
+supports_claims: ["C-002", "C-003"]
+figures: []
+supersedes: null
+superseded_by: null
+related: ["EXP-2026-07-001", "EXP-2026-07-003", "EXP-2026-07-004", "EXP-2026-07-005", "EXP-2026-07-006", "EXP-2026-07-007"]

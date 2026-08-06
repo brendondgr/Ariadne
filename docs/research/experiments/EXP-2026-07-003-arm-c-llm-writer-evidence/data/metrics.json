@@ -1,0 +1,54 @@
+{
+  "experiment": "EXP-2026-07-003",
+  "arm": "C",
+  "arm_code": "gold_llm",
+  "artifact_dir": "docs/evaluation/experiments/untruncated-fixed/gold_llm",
+  "n_questions": 120,
+  "metrics": {
+    "correctness": {
+      "mean": 0.969,
+      "std": null,
+      "n": 1
+    },
+    "completeness": {
+      "mean": 0.967208,
+      "std": null,
+      "n": 1
+    },
+    "faithfulness": {
+      "mean": 0.992083,
+      "std": null,
+      "n": 1
+    },
+    "groundedness": {
+      "mean": 0.998333,
+      "std": null,
+      "n": 1
+    },
+    "answer_coverage": {
+      "mean": 1.0,
+      "std": null,
+      "n": 1
+    }
+  },
+  "verdicts": {
+    "CORRECT": 110,
+    "PARTIAL": 8,
+    "INCORRECT": 2,
+    "other": {}
+  },
+  "hallucinations_total": 3,
+  "hallucination_cases": 3,
+  "evidence_records": 1840,
+  "related_neighbours": 839,
+  "wall_clock_seconds": 583.8,
+  "llm_posture": {
+    "planner": "false",
+    "specialist": "true",
+    "synthesis": "true",
+    "model": "skynet",
+    "max_hops": "1"
+  },
+  "source": "docs/plans/robustness/_overnight/numbers.json",
+  "source_method": "Every metric is recomputed from the committed artifacts. Means are unweighted over the arm's *.judgment.json files; verdict counts are of the judgment `verdict` field; hallucinations count entries in the judgment `hallucinations` list, and `hallucination_cases` counts judgments with a non-empty list. `evidence_records` and `related` sum `evidence_volume.records` and `evidence_volume.related` over the answer files; `mean_coverage` averages `deterministic_scores.coverage.coverage`. `wall_s` is read from the arm's manifest.json. No figure is carried in from prose."
+}
