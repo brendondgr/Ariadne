@@ -27,8 +27,12 @@ output byte-for-byte, the figure is stale and must not reach the paper.
   even then keep the generator.
 - **Deterministic output.** Generators here write SVG by hand rather than through
   a plotting library — matplotlib embeds element ids and creation dates that
-  change on every run and would make `--check` useless. PDF conversion uses
-  `rsvg-convert`, verified byte-identical across runs.
+  change on every run and would make `--check` useless. PDF conversion goes
+  through [`_svg2pdf.py`](_svg2pdf.py), which pins `SOURCE_DATE_EPOCH` so
+  `rsvg-convert` stops embedding a live timestamp in the PDF Info dictionary.
+  Without that pin, two conversions of the *same* SVG differ by ~560 bytes and
+  CI fails on the clock rather than on the figures. **Always convert through that
+  helper**, never by calling `rsvg-convert` directly.
 - **Colour-blind-safe palette, and colour is never the only encoding.** Every bar
   in `fig-arm-comparison` carries its arm letter and its value as text.
 - **No font below 7pt at final print size.** The smallest in use is 8pt.

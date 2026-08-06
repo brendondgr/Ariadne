@@ -20,9 +20,11 @@ every bar carries its arm letter and its value as text.
 from __future__ import annotations
 
 import json
-import subprocess
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _svg2pdf import svg_to_pdf  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[4]
 EXPERIMENTS = ROOT / "docs/research/experiments"
@@ -152,14 +154,7 @@ def main() -> int:
     print(f"wrote {svg_path.relative_to(ROOT)}")
 
     pdf_path = OUT_DIR / f"{STEM}.pdf"
-    try:
-        subprocess.run(
-            ["rsvg-convert", "-f", "pdf", "-o", str(pdf_path), str(svg_path)],
-            check=True, capture_output=True,
-        )
-    except (OSError, subprocess.CalledProcessError) as exc:
-        print(f"error: rsvg-convert failed — {exc}", file=sys.stderr)
-        print("install librsvg2-tools (Fedora) / librsvg2-bin (Debian)", file=sys.stderr)
+    if not svg_to_pdf(svg_path, pdf_path):
         return 1
     print(f"wrote {pdf_path.relative_to(ROOT)}")
     return 0

@@ -55,7 +55,7 @@ visible and so none of them gets quoted as settled:
 
 | Figure | Where it appeared | What it actually was |
 |---|---|---|
-| "unknown from the client side" | [`../plans/answer-truncation-fix-plan.md`](../plans/answer-truncation-fix-plan.md) | The honest answer, and still the correct one |
+| "unknown from the client side" | [`../research/OPEN_QUESTIONS.md`](../research/OPEN_QUESTIONS.md) Q11 | The honest answer, and still the correct one |
 | "~64k" | [`2026-07-26/README.md`](2026-07-26/README.md) (limitations) | An estimate, never verified against the server |
 | `48000` | `.env` (`EVAL_LLM_NUM_CTX`, `SKYNET_NUM_CTX`, and two comments) | A **client request**, not a server capability — what the client asks for, which the server may cap lower |
 

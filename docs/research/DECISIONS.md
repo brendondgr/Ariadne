@@ -169,3 +169,59 @@ zero variance" distinct from "one run, variance unknown".
 recorded — including the two headline deltas. Re-running seven arms with seeds
 is roughly an hour of wall clock plus 840 judge agents, and is a decision for the
 operator rather than something to trigger during a retrofit. Tracked as Q2.
+
+## D-011 — Specialist execution stays strictly sequential, not `Send`-parallel
+
+**Date:** 2026-07 (migrated here 2026-08-06 from the LangGraph orchestration plan
+before that plan was deleted)
+**Context:** LangGraph's `Send` API can run independent sub-questions
+concurrently, which would cut wall clock on the LLM arms substantially.
+**Options:** (a) enable `Send`-based parallel fan-out; (b) preserve strictly
+sequential, `execution_order()`-driven semantics.
+**Decision:** (b). Two reasons: sequential execution is what makes the committed
+evaluation artifacts **byte-reproducible**, and dependent sub-questions are
+seeded from producers' harvested join identifiers, so ordering is load-bearing
+rather than incidental. Parallel execution also failed the snapshot gold, while
+sequenced reproduces it.
+**Consequences:** Arm A's 1.6 s is achieved *without* parallelism, so the 637×
+speed advantage over the LLM arms is not an artifact of a concurrency choice.
+Enabling `Send` later would change result ordering, timings, and the committed
+baselines — it is a decision that invalidates existing artifacts, not a free
+optimisation. The original plan flagged this as needing human input; it remains
+open in that sense, and nothing in the record depends on it changing.
+
+## D-012 — Documentation accuracy is a maintained property with a test behind it
+
+**Date:** 2026-08-04 (migrated here 2026-08-06 from the documentation-accuracy
+purge plan before that plan was deleted)
+**Context:** Documentation was written alongside a system that moved. Several
+load-bearing claims had stopped being true: the README sold an "agentic"
+federated system whose specialists are in fact fully deterministic template
+compilers, `docs/purpose.md` had the two specialists' roles **inverted** in its
+flagship example, the `SPECIALIST_LLM_*` config block it implied was live had
+zero read sites, and skill files pointed at a *web/src/* tree that no longer
+exists and a *utils/logger.py* that never did.
+**Options:** (a) fix the specific errors; (b) fix them and add a test that fails
+when documentation drifts again.
+**Decision:** (b). `utils/specialists/tests/test_docs_contracts.py` now checks
+that every backticked repo-relative path a maintained doc cites exists, that
+every relative markdown link resolves, that serialised wire shapes match the
+dataclasses, and that each canonical skill has exactly one pointer per agent
+folder.
+**Consequences:** Documentation accuracy is enforced rather than trusted. The
+cost is that moving a file now breaks a test — which is the intended behaviour.
+Every defect that purge fixed was one this test would have caught.
+
+---
+
+## Superseded source documents
+
+D-011 and D-012 record decisions originally written up in the
+LangGraph orchestration migration plan and the documentation accuracy purge plan
+under *docs/plans/* (paths deliberately not backticked — the files no longer
+exist). Those plans, along with 51
+others whose work had shipped, were deleted on 2026-08-06 to keep the repository
+navigable; their decision content was migrated here first so no reasoning was
+lost with them. `docs/plans/robustness/` and its `_overnight/` derivation
+scripts are retained — they are live work and the provenance behind the recomputed
+figures in every arm's `metrics.json`.

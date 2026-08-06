@@ -9,9 +9,14 @@ four frozen seams, the safety model, the migration guide) plus the four
 documents that orient a newcomer (README, structure, purpose, goals, commands)
 and the evaluation indexes. ``MAINTAINED_DOCS`` adds every canonical skill.
 
-``docs/plans/`` and ``docs/research/`` are deliberately excluded: they are dated
-historical records, and a plan that cites the tree as it stood when the plan was
-written is correct, not stale.
+``docs/plans/`` is deliberately excluded: it is a dated historical record, and a
+plan that cites the tree as it stood when the plan was written is correct, not
+stale.
+
+``docs/research/`` **is** checked — it is the live research record, not an
+archive — with two exclusions named in ``RESEARCH_EXCLUDED``: the dated audit
+snapshot, which is never edited in place, and ``templates/``, whose placeholders
+are not paths.
 
 Check 1: every repo-relative path a doc cites in backticks exists.
 Check 2: every relative markdown link resolves.
@@ -40,10 +45,22 @@ DOCS = (
     "docs/migration-guide.md",
     "docs/evaluation/README.md",
     "docs/evaluation/experiments/README.md",
+    "CONTRIBUTING.md",
 )
 
 SKILLS_ROOT = Path("docs/skills")
+RESEARCH_ROOT = Path("docs/research")
 AGENT_POINTER_DIRS = (".claude/skills", ".agents/skills")
+
+#: The research record's living ledgers and per-experiment documents are checked
+#: like any maintained doc. ``audit-2026-08-03.md`` is excluded: it is a dated
+#: snapshot, deliberately not edited in place, and its body cites files that were
+#: later removed — its AMENDMENTS section records where that content went.
+#: ``templates/`` is excluded because template placeholders are not paths.
+#: ``AGENT_INSTRUCTIONS.md`` is also excluded: it is the contract installed
+#: verbatim from its source, and its section 6 carries fenced *example* markdown
+#: (the README snippet to paste) whose links are illustrations, not citations.
+RESEARCH_EXCLUDED = ("audit-2026-08-03.md", "templates/", "AGENT_INSTRUCTIONS.md")
 
 
 def _skill_names() -> list[str]:
@@ -51,13 +68,25 @@ def _skill_names() -> list[str]:
     return sorted(p.name for p in root.iterdir() if (p / "SKILL.md").is_file())
 
 
+def _research_docs() -> list[str]:
+    """Every research-record markdown file that is a maintained document."""
+    root = REPO_ROOT / RESEARCH_ROOT
+    if not root.is_dir():
+        return []
+    return sorted(
+        str(p.relative_to(REPO_ROOT))
+        for p in root.rglob("*.md")
+        if not any(token in str(p.relative_to(REPO_ROOT)) for token in RESEARCH_EXCLUDED)
+    )
+
+
 def _maintained_docs() -> list[str]:
-    """DOCS plus every canonical skill file (SKILL.md and its references)."""
+    """DOCS plus every canonical skill file and every research-record document."""
     skills = sorted(
         str(p.relative_to(REPO_ROOT))
         for p in (REPO_ROOT / SKILLS_ROOT).rglob("*.md")
     )
-    return [*DOCS, *skills]
+    return [*DOCS, *skills, *_research_docs()]
 
 # Backtick-quoted repo-relative citations, e.g. `utils/specialists/base.py` or
 # `utils/specialists/gremlin/{builder,validator}.py`. Placeholder citations

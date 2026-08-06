@@ -21,7 +21,7 @@ If ambiguous, ask before writing — don't guess silently.
 
 Read the repo (package manifest, file structure, existing docs) before asking the user anything. Get: what it does, real tech stack, deployment status, 1–2 genuine technical challenges. Never invent metrics, stars, or demo links — leave a `[TODO]` marker instead.
 
-For this repository specifically, verify claims against the code before writing them: the README's accuracy is itself a maintained property (see `docs/plans/documentation-accuracy-purge-plan.md`), and the "What actually runs" table in `README.md` is the pattern to follow — every architectural sentence traceable to a named file.
+For this repository specifically, verify claims against the code before writing them: the README's accuracy is itself a maintained property enforced by `utils/specialists/tests/test_docs_contracts.py` (see `docs/research/DECISIONS.md` D-012), and the "What actually runs" table in `README.md` is the pattern to follow — every architectural sentence traceable to a named file.
 
 ## Step 2 — Project README structure
 
