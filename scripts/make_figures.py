@@ -31,9 +31,17 @@ from utils.research_record.paths import (  # noqa: E402
 )
 
 
+TABLES_ROOT = FIGURES_ROOT.parent / "tables"
+
+
 def generators() -> list[Path]:
+    """Every committed generator, discovered rather than listed.
+
+    A new experiment's figures are picked up without editing this script.
+    """
     found = sorted(EXPERIMENTS_ROOT.glob("EXP-*/figures/make_figures.py"))
     found += sorted((FIGURES_ROOT / "sources").glob("make_*.py"))
+    found += sorted((TABLES_ROOT / "sources").glob("make_*.py"))
     return found
 
 
@@ -49,9 +57,41 @@ def _run(script: Path) -> bool:
     return True
 
 
+#: Artifact types a generator is responsible for producing.
+_ARTIFACT_SUFFIXES = {".svg", ".pdf", ".png", ".tex"}
+
+
+def _output_dir(script: Path) -> Path:
+    """Where a generator writes.
+
+    A generator under ``sources/`` writes to its parent (``figures/``,
+    ``tables/``); a per-experiment ``make_figures.py`` writes beside itself.
+    """
+    return script.parent.parent if script.parent.name == "sources" else script.parent
+
+
+def _artifacts(script: Path) -> list[Path]:
+    out_dir = _output_dir(script)
+    if not out_dir.is_dir():
+        return []
+    return sorted(
+        p for p in out_dir.iterdir() if p.is_file() and p.suffix in _ARTIFACT_SUFFIXES
+    )
+
+
+def _generated_markdown(script: Path) -> list[Path]:
+    """Generated .md tables carry a DO-NOT-EDIT banner; treat those as artifacts too."""
+    out_dir = _output_dir(script)
+    if not out_dir.is_dir():
+        return []
+    return sorted(
+        p for p in out_dir.glob("*.md")
+        if p.is_file() and "GENERATED" in p.read_text()[:200]
+    )
+
+
 def _figure_files(script: Path) -> list[Path]:
-    out_dir = script.parent
-    return sorted(p for p in out_dir.iterdir() if p.suffix in {".svg", ".pdf", ".png"})
+    return [*_artifacts(script), *_generated_markdown(script)]
 
 
 def main() -> int:
