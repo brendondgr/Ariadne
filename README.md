@@ -25,6 +25,13 @@ Ariadne instead reads schema and metadata from each **live** source and routes q
 
 **Funded by:** ReliaQuest Innovation Challenge Fund — Challenge Three: Knowledge Graph Integration (award period June 8 – October 23, 2026)
 
+## Research record
+
+This is a research repository. All experiments, results, figures, and findings
+live in [`docs/research/`](docs/research/). Nothing that will appear in a paper
+is recorded anywhere else. Before running an experiment, read
+[`docs/research/AGENT_INSTRUCTIONS.md`](docs/research/AGENT_INSTRUCTIONS.md).
+
 <p align="center">
   <img src="docs/assets/architecture.svg" alt="Ariadne federated query flow: an analyst question is planned, routed to Cypher and Gremlin specialists over Neo4j and Gremlin, then synthesized into a provenance-linked answer" width="100%">
 </p>
@@ -214,6 +221,9 @@ Component-level evaluation (`--component-eval`) and end-to-end evaluation (`--e2
 | [`docs/query-safety.md`](docs/query-safety.md) | The safety model by enforcement point |
 | [`docs/migration-guide.md`](docs/migration-guide.md) | Adding a new query-language specialist |
 | [`docs/evaluation/README.md`](docs/evaluation/README.md) | Which evaluation report is current, and what each measures |
+| [`docs/research/`](docs/research/README.md) | **The research record.** Every experiment, claim, decision, figure, and open question |
+| [`docs/research/INDEX.md`](docs/research/INDEX.md) | Auto-generated table of every recorded experiment |
+| [`docs/research/CLAIMS.md`](docs/research/CLAIMS.md) | Claim → experiment → artifact ledger, with what is and is not supported |
 | [`docs/research/audit-2026-08-03.md`](docs/research/audit-2026-08-03.md) | External research audit: novelty, positioning, blocking gaps |
 | [`docs/skills/global-project-rules/SKILL.md`](docs/skills/global-project-rules/SKILL.md) | Agent workflow rules (read first) |
 | [`NOTICE`](NOTICE) | MITRE ATT&CK® and CAPEC™ attribution, licence text, and the pinned dataset versions |
@@ -241,7 +251,7 @@ app.py    Workbench launcher: preflight → FastAPI + Next.js → status board �
 setup.py  One-command setup wizard
 api/      FastAPI service wrapping utils/ for the web UI
 docker/   Neo4j and Gremlin Compose stack (pinned image versions)
-docs/     Purpose, goals, structure, commands, skills, evaluation, plans, changelog
+docs/     Purpose, goals, structure, commands, skills, evaluation, research, changelog
 utils/    download · kg_builder · graph_loader · infrastructure · planner ·
           specialists · synthesis · orchestration · conversation · evaluation · launcher
 web/      Analyst-facing workbench (Next.js App Router)
