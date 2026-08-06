@@ -1,0 +1,73 @@
+name: Research record
+
+# Convention without enforcement decays. This job is what stops docs/research/
+# drifting: it re-runs the validator, regenerates INDEX.md and fails on any diff,
+# and regenerates every promoted figure and fails on any mismatch.
+#
+# See docs/research/AGENT_INSTRUCTIONS.md §7.4.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # rsvg-convert regenerates the PDF form of every promoted figure.
+      # The generators pin SOURCE_DATE_EPOCH so the output is byte-deterministic;
+      # without that, this job would fail on the clock. See figures/sources/_svg2pdf.py.
+      - name: Install librsvg
+        run: sudo apt-get update && sudo apt-get install -y librsvg2-bin
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Sync dependencies
+        run: uv sync --frozen
+
+      - name: Validate the research record
+        run: uv run python scripts/validate_research.py
+
+      - name: INDEX.md is current
+        run: uv run python scripts/generate_index.py --check
+
+      - name: Promoted figures reproduce from their generators
+        run: uv run python scripts/make_figures.py --check
+
+      - name: Nothing large entered docs/research/
+        # The record must stay cloneable in seconds; raw artifacts belong in
+        # docs/evaluation/ referenced by pointer + hash (DECISIONS.md D-007).
+        run: |
+          oversized=$(find docs/research -type f -size +10M -printf '%p (%s bytes)\n')
+          if [ -n "$oversized" ]; then
+            echo "::error::Files over 10 MB found under docs/research/:"
+            echo "$oversized"
+            echo "Store the artifact elsewhere and reference it from data/POINTERS.md."
+            exit 1
+          fi
+          echo "docs/research/ total: $(du -sh docs/research | cut -f1)"
+
+      - name: Research-record tests
+        run: uv run pytest utils/research_record/tests -q
+
+      - name: Documentation contract tests
+        run: uv run pytest utils/specialists/tests/test_docs_contracts.py -q
+
+      - name: Working tree is clean after regeneration
+        # If any step above rewrote a committed file, the contributor did not run
+        # `make index` / `make figures` before committing.
+        run: |
+          if ! git diff --quiet; then
+            echo "::error::Regeneration changed committed files. Run 'make index && make figures' and commit."
+            git --no-pager diff --stat
+            exit 1
+          fi

@@ -18,12 +18,16 @@ Command reference: [`docs/commands.md`](docs/commands.md). Repository map:
    depends on.
 
 ```bash
+./scripts/install_hooks.sh  # once — regenerates INDEX.md and validates on commit
 make new-experiment SLUG=my-experiment
 make validate-research      # schema, linkage, figure, and pointer checks
 make index                  # regenerate docs/research/INDEX.md
 make figures                # regenerate every promoted figure and table
 make test-research          # the research-record test suite
 ```
+
+Regenerating figures needs `rsvg-convert` (`librsvg2-tools` on Fedora,
+`librsvg2-bin` on Debian/Ubuntu). Everything else is pure Python.
 
 The full contract is [`docs/research/AGENT_INSTRUCTIONS.md`](docs/research/AGENT_INSTRUCTIONS.md).
 
