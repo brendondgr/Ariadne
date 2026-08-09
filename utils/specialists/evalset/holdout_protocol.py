@@ -496,6 +496,287 @@ def author_prompt(anchor_entry: dict[str, Any]) -> str:
     )
 
 
+# ---------------------------------------------------------------------------
+# the Compiler — gold is computed, never authored
+# ---------------------------------------------------------------------------
+
+BANK_PATH = REPO_ROOT / "utils" / "specialists" / "tests" / "golden" / "holdout_questions.json"
+AUTHORED_PATH = REPO_ROOT / "docs" / "evaluation" / "holdout-v1" / "authored.json"
+
+LIMITS = {"max_traversal_depth": 3, "max_result_rows": 300, "query_timeout_ms": 5000}
+JOIN_KEY = "attack-technique-id"
+
+#: Entity scope per category — the shape the schema card resolves against.
+#: Taken from the equivalent entries in the three committed banks so the
+#: holdout routes through the same builders rather than a parallel path.
+ENTITIES: dict[str, list[str]] = {
+    "mitigations": ["Technique", "Mitigation"],
+    "groups": ["Group", "Technique"],
+    "software": ["Software", "Technique"],
+    "detection": ["Technique", "DetectionStrategy", "Analytic"],
+    "tactics": ["Tactic", "Technique"],
+    "subtechnique": ["Technique", "SubTechnique", "HAS_SUBTECHNIQUE"],
+    "mapping": ["AttackPattern", "TaxonomyEntry"],
+    "weakness": ["AttackPattern", "EXPLOITS_WEAKNESS", "Weakness"],
+    "hierarchy": ["AttackPattern", "ChildOf", "ChildOf"],
+    "execution": ["AttackPattern", "HAS_EXECUTION_STEP", "ExecutionStep"],
+    "consequence": ["AttackPattern", "HAS_CONSEQUENCE", "Consequence"],
+    "prerequisite": ["AttackPattern", "REQUIRES_SKILL", "Skill"],
+}
+
+#: `expected_template` is DERIVED from the anchor's type and category, because
+#: the Author never saw the template inventory and so could not supply it. It is
+#: therefore **not a scoring signal** — template-routing accuracy may not be
+#: reported from this holdout. `expected_template_is_derived: true` on every
+#: entry records that so nobody later mistakes it for ground truth.
+DERIVED_TEMPLATE: dict[str, str] = {
+    "mitigations": "technique_mitigations",
+    "groups": "group_techniques",
+    "software": "software_techniques",
+    "detection": "technique_detection",
+    "tactics": "technique_tactics",
+    "subtechnique": "subtechnique_parent",
+    "mapping": "capec_maps_to",
+    "weakness": "capec_neighbors",
+    "hierarchy": "capec_hierarchy_chain",
+    "execution": "capec_neighbors",
+    "consequence": "capec_neighbors",
+    "prerequisite": "capec_neighbors",
+}
+
+#: Federated sub-question templates, likewise derived.
+FEDERATED_TEMPLATES: dict[str, tuple[str, str]] = {
+    "pattern-to-mitigation": ("capec_maps_to", "technique_mitigations"),
+    "reverse-mapping": ("capec_reverse_maps", "describe"),
+    "cwe-chain": ("cwe_chain", "technique_mitigations"),
+}
+
+
+class GoldComputationError(RuntimeError):
+    """Raised when an anchor cannot be given gold — §6 says discard, never repair."""
+
+
+def _sub(sub_id: str, source: str, text: str, entities: list[str], template: str,
+         *, join_key: str | None = None, seed_from: str | None = None) -> dict[str, Any]:
+    sub = {
+        "id": sub_id,
+        "source": source,
+        "text": text,
+        "entities": entities,
+        "limits": dict(LIMITS),
+        "join_key": join_key,
+        "rationale": "holdout-v1 seeded draw",
+        "expected_template": template,
+    }
+    if seed_from:
+        sub["seed_from"] = seed_from
+    return sub
+
+
+def _meta(entry: dict[str, Any]) -> dict[str, Any]:
+    meta = {
+        "anchor": entry["anchor"],
+        "anchor_draw_index": entry["draw_index"],
+        "category": entry["category"],
+        "author_model": AUTHOR_MODEL,
+        "expected_template_is_derived": True,
+    }
+    if "partition" in entry:
+        meta["federated_partition"] = entry["partition"]
+    return meta
+
+
+def _compile_single(gold: dict[str, Any], entry: dict[str, Any], question: str) -> dict[str, Any]:
+    anchor, category = entry["anchor"], entry["category"]
+    source = "capec" if anchor.startswith("CAPEC-") else "attack"
+    scheme = source
+
+    if category == "lookup":
+        assertions = {
+            "min_records": 1,
+            "max_records": 1,
+            "must_include_ids": [anchor],
+            "expect_names": {anchor: entry["name"]},
+        }
+        ex_gold = {"pool": "node", "expected": [anchor], "scheme": scheme}
+        entities, template = [entity_type(gold, anchor)], "describe"
+    else:
+        related = neighbours(gold, category, anchor)
+        if not related:
+            raise GoldComputationError(
+                f"{anchor}: category {category!r} resolved to an empty neighbour set"
+            )
+        assertions = {
+            "min_records": 1,
+            "must_include_ids": [anchor],
+            "must_include_related": related,
+        }
+        pool = "join" if category == "mapping" else "neighbors"
+        ex_gold = {"pool": pool, "expected": related, "scheme": scheme}
+        entities, template = ENTITIES[category], DERIVED_TEMPLATE[category]
+
+    return {
+        "id": entry["id"],
+        "tier": "easy" if category == "lookup" else "medium",
+        "split": "holdout",
+        "question": question,
+        "expected_template": template,
+        "task": {
+            "sub_question_id": entry["id"],
+            "source": source,
+            "text": question,
+            "entities": entities,
+            "limits": dict(LIMITS),
+            "join_key": None,
+            "seed_ids": [anchor],
+            "rationale": "holdout-v1 seeded draw",
+        },
+        "assertions": assertions,
+        "ex_gold": ex_gold,
+        "gold_provenance": {
+            "attack_version": gold["meta"]["attack_version"],
+            "capec_version": gold["meta"]["capec_version"],
+        },
+        "holdout_meta": _meta(entry),
+    }
+
+
+def _compile_federated(gold: dict[str, Any], entry: dict[str, Any], question: str) -> dict[str, Any]:
+    anchor, category = entry["anchor"], entry["category"]
+    correlate = federated_correlation(gold, category, anchor)
+    negative = not correlate
+    t1, t2 = FEDERATED_TEMPLATES[category]
+    capec_gold, attack_gold = gold["capec"], gold["attack"]
+
+    if category == "pattern-to-mitigation":
+        subs = [
+            _sub("q1", "capec", f"Which ATT&CK techniques does {anchor} map to?",
+                 ["AttackPattern", "TaxonomyEntry"], t1, join_key=JOIN_KEY),
+            _sub("q2", "attack", "What mitigations does ATT&CK list for those mapped techniques?",
+                 ["Technique", "Mitigation"], t2, join_key=JOIN_KEY, seed_from="q1"),
+        ]
+        hops, sequenced = 2, True
+        capec_ids, capec_related = [anchor], correlate
+        attack_related = sorted({
+            m for t in correlate for m in attack_gold["technique_mitigations"].get(t, [])
+        })
+    elif category == "reverse-mapping":
+        patterns = sorted(
+            (cid for cid in capec_gold["patterns"] if anchor in live_mappings(gold, cid)),
+            key=lambda c: int(c.split("-")[1]),
+        )
+        subs = [
+            _sub("q1", "capec", f"Which CAPEC patterns map to ATT&CK technique {anchor}?",
+                 ["AttackPattern", "TaxonomyEntry"], t1, join_key=JOIN_KEY),
+            _sub("q2", "attack", f"What is ATT&CK technique {anchor}?",
+                 [entity_type(gold, anchor)], t2),
+        ]
+        hops, sequenced = 1, False
+        capec_ids, capec_related = patterns, [anchor] if patterns else []
+        attack_related = []
+    else:  # cwe-chain
+        patterns = capec_gold["cwe_to_capec"].get(anchor, [])
+        subs = [
+            _sub("q1", "capec",
+                 f"Which attack patterns exploit {anchor} and which ATT&CK techniques do they map to?",
+                 ["Weakness", "AttackPattern", "TaxonomyEntry"], t1, join_key=JOIN_KEY),
+            _sub("q2", "attack", "What mitigations does ATT&CK list for those mapped techniques?",
+                 ["Technique", "Mitigation"], t2, join_key=JOIN_KEY, seed_from="q1"),
+        ]
+        hops, sequenced = 3, True
+        capec_ids, capec_related = list(patterns), [anchor] if patterns else []
+        attack_related = sorted({
+            m for t in correlate for m in attack_gold["technique_mitigations"].get(t, [])
+        })
+
+    if negative:
+        # The abstention-expected partition. The correct behaviour is an honest
+        # empty carrying the executed query — never a fabricated correlation —
+        # so the assertions say exactly that and nothing about answer content.
+        assertions: dict[str, Any] = {
+            "must_correlate": [],
+            "expect_no_correlation": True,
+            "capec": {"expect_empty": True} if not capec_ids else {
+                "min_records": 1, "must_include_ids": capec_ids,
+            },
+            "attack": {"expect_dependency_skip": True},
+        }
+    else:
+        assertions = {
+            "must_correlate": correlate,
+            "capec": {
+                "min_records": 1,
+                "must_include_ids": capec_ids,
+                "must_include_related": capec_related,
+            },
+            "attack": {
+                "min_records": 1,
+                "must_include_ids": correlate,
+                **({"must_include_related": attack_related} if attack_related else {}),
+            },
+        }
+
+    return {
+        "id": entry["id"],
+        "tier": "hard",
+        "split": "holdout",
+        "hops": hops,
+        "sources": ["capec", "attack"],
+        "sequenced": sequenced,
+        "partial_mode": None,
+        "question": question,
+        "sub_questions": subs,
+        "assertions": assertions,
+        "gold_provenance": {
+            "attack_version": gold["meta"]["attack_version"],
+            "capec_version": gold["meta"]["capec_version"],
+        },
+        "holdout_meta": _meta(entry),
+    }
+
+
+def compile_bank(
+    anchors: dict[str, Any],
+    authored: dict[str, str],
+    gold: dict[str, Any] | None = None,
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """Assemble the holdout bank. Returns ``(bank, discards)``.
+
+    Gold comes only from ``gold_bank.py``'s parse of the raw snapshot. An anchor
+    whose gold cannot be computed is **discarded, not repaired** (§6); the
+    discard and its reason are returned for the anchors.json log, because a high
+    discard rate is itself a finding about the join surface.
+    """
+    gold = gold if gold is not None else load_gold_bank()
+    questions: list[dict[str, Any]] = []
+    discards: list[dict[str, Any]] = []
+    for entry in anchors["anchors"]:
+        question = authored.get(entry["id"])
+        if not question:
+            discards.append({**_meta(entry), "reason": "no authored question returned"})
+            continue
+        try:
+            if entry["stratum"] == "federated":
+                questions.append(_compile_federated(gold, entry, question))
+            else:
+                questions.append(_compile_single(gold, entry, question))
+        except (GoldComputationError, KeyError) as exc:
+            discards.append({**_meta(entry), "reason": f"{type(exc).__name__}: {exc}"})
+    bank = {
+        "meta": {
+            "attack_version": gold["meta"]["attack_version"],
+            "capec_version": gold["meta"]["capec_version"],
+            "gold_bank": "gold_bank.json",
+            "generator": "utils/specialists/evalset/holdout_protocol.py",
+            "split": "holdout",
+            "seed": anchors["seed"],
+            "author_model": AUTHOR_MODEL,
+        },
+        "questions": questions,
+    }
+    return bank, discards
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Draw the blind-holdout anchors.")
     parser.add_argument("--out", type=Path, default=ANCHORS_PATH)
