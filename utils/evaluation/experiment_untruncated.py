@@ -221,11 +221,24 @@ def lift_task_limits(entry: dict) -> dict:
 # -- the work list (identical for both arms) --------------------------------
 
 
-def load_work() -> list[tuple[dict, str]]:
-    """The 120 catalogue entries in a fixed order: federated, then attack, capec."""
-    from utils.evaluation.score_e2e import _load_banks
+def load_work(bank: str | None = None) -> list[tuple[dict, str]]:
+    """The catalogue entries in a fixed order: federated, then attack, capec.
 
-    federated, attack_q, capec_q = _load_banks()
+    With ``bank`` set, load that single bank file instead of the three committed
+    ones — this is how the blind holdout runs through the identical arm code
+    rather than through a parallel path that would have to be trusted separately.
+    A federated entry is the one carrying ``sub_questions``; a single-source
+    entry's kind is its ``task.source``.
+    """
+    if bank:
+        entries = json.loads(Path(bank).read_text())["questions"]
+        federated = [e for e in entries if "sub_questions" in e]
+        attack_q = [e for e in entries if "task" in e and e["task"]["source"] == "attack"]
+        capec_q = [e for e in entries if "task" in e and e["task"]["source"] == "capec"]
+    else:
+        from utils.evaluation.score_e2e import _load_banks
+
+        federated, attack_q, capec_q = _load_banks()
     work: list[tuple[dict, str]] = [(e, "federated") for e in federated]
     work += [(e, "attack") for e in attack_q]
     work += [(e, "capec") for e in capec_q]
@@ -506,11 +519,12 @@ def run_arm(
     workers: int = 4,
     limit: int | None = None,
     only: set[str] | None = None,
+    bank: str | None = None,
 ) -> dict[str, Any]:
-    """Run all 120 questions for one arm and persist every answer + its evidence."""
+    """Run every question in the bank for one arm, persisting answer + evidence."""
     from utils.evaluation.score_e2e import _category_of
 
-    work = load_work()
+    work = load_work(bank)
     if only:
         work = [(e, k) for e, k in work if e["id"] in only]
     if limit is not None:
@@ -556,6 +570,7 @@ def run_arm(
     manifest.sort(key=lambda m: m["id"])
     doc = {
         "arm": arm,
+        "bank": bank or "committed 120-question catalogue",
         "count": len(manifest),
         "ok": sum(1 for m in manifest if m.get("ok")),
         "workers": workers,
@@ -591,6 +606,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--limit", type=int, default=None, help="first N questions (smoke)")
     parser.add_argument("--only", default=None, help="comma-separated case ids")
     parser.add_argument(
+        "--bank",
+        default=None,
+        help="run a single bank file (e.g. the holdout) instead of the committed three",
+    )
+    parser.add_argument(
         "--llm-model",
         default="skynet",
         help="model id for ARM B (the .env default; the relay also exposes 'local')",
@@ -605,7 +625,10 @@ def main(argv: list[str] | None = None) -> int:
         arm=args.arm, llm_model=args.llm_model, llm_max_tokens=args.llm_max_tokens
     ))
     only = {s.strip() for s in args.only.split(",")} if args.only else None
-    run_arm(args.arm, root=args.root, workers=args.workers, limit=args.limit, only=only)
+    run_arm(
+        args.arm, root=args.root, workers=args.workers,
+        limit=args.limit, only=only, bank=args.bank,
+    )
     return 0
 
 
