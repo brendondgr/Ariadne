@@ -1,4 +1,4 @@
-# PROTOCOL — EXP-2026-08-001 Blind holdout v1
+# PROTOCOL — EXP-2026-08-002 Blind holdout v1
 
 > **Pre-registered.** Unlike EXP-2026-07-001…011, this protocol was fixed
 > *before* the run, in `docs/plans/robustness/02-holdout-question-generation.md`

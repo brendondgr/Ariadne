@@ -25,7 +25,7 @@ A and Arm F blind.
 **Cost:** ~4 days. The cheapest high-value experiment available.
 **Blocks:** C-001, C-013, and the interpretation of C-003 and C-005.
 **From:** EXP-2026-07-001 §7, EXP-2026-07-006 §7, D-006.
-**Status: ANSWERED — coverage artifact, substantially.** EXP-2026-08-001 ran on
+**Status: ANSWERED — coverage artifact, substantially.** EXP-2026-08-002 ran on
 2026-08-09 against `freeze/holdout-v1`. Arm A **0.689** (95% CI 0.550–0.817),
 Arm F **0.708** (0.565–0.838), against 0.9972 and 0.9957. C-013 is `refuted`,
 C-001 downgraded to hold only for the relation directions the templates serve.

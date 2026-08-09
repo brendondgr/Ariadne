@@ -58,6 +58,10 @@ _REL_TARGET_LABEL: dict[str, str] = {
     "PeerOf": "AttackPattern",
 }
 
+# How far the generic branch will chase a declared path. Matches the Cypher
+# builder's cap; the traversal-depth limit is the operative bound above it.
+_MAX_WALK_HOPS = 3
+
 _CAPEC_NUM_RE = re.compile(r"CAPEC-(\d+)", re.IGNORECASE)
 _CWE_NUM_RE = re.compile(r"^CWE-(\d+)$", re.IGNORECASE)
 _ATTACK_ENTRY_RE = re.compile(r"^T(\d{4}(?:\.\d{3})?)$", re.IGNORECASE)
@@ -70,6 +74,29 @@ def _capec_gremlin_id(capec_id: str) -> str:
         return f"capec:attack-pattern:{m.group(1)}"
     # Already in gremlin form or unknown: return as-is.
     return capec_id
+
+
+def _gremlin_vertex_id(seed: str) -> str:
+    """Normalise a seed identifier to the canonical vertex ``id`` property.
+
+    The loaded graph keys every vertex by a URN the card's identity policy
+    declares — ``capec:attack-pattern:<n>`` for a pattern, ``cwe:<n>`` for a
+    weakness. This is id-*format* handling, the same category as the ``T``
+    prefix on the declared join key: it says nothing about what a weakness means,
+    only how the dataset spells its identifiers.
+
+    Anything already in URN form, or in a scheme not declared here, is passed
+    through untouched so the query fails visibly rather than silently matching
+    the wrong vertex.
+    """
+    seed = seed.strip()
+    m = _CAPEC_NUM_RE.fullmatch(seed)
+    if m:
+        return f"capec:attack-pattern:{m.group(1)}"
+    m = _CWE_NUM_RE.match(seed)
+    if m:
+        return f"cwe:{m.group(1)}"
+    return seed
 
 
 # Reverse of the AttackPattern-native subset of ``_REL_TARGET_LABEL``: a requested
@@ -165,16 +192,36 @@ class GremlinQueryBuilder:
         neighbor_rels = _resolve_neighbor_rels(resolved)
 
         if _generic_only():
-            # Schema-driven primitives only — no CAPEC question-shapes (no
-            # MAPS_TO bridge, no hierarchy chain, no CWE chain). Everything here
-            # is parameterised by a card-declared relationship or nothing at all.
+            # Schema-driven primitives only — no CAPEC question-shapes. Everything
+            # here is parameterised by a card-declared relationship, by the
+            # declared canonical join key, or by nothing at all.
+            #
+            # The bridge comes first: a dependent federated sub-question is
+            # skipped outright when its producer returns no join values, so a
+            # describe that reports only facet COUNTS loses the second half of
+            # the question. Walking the declared join edge is what turns the
+            # anchor into seed identifiers the consumer can use.
+            if has_seeds and resolved.has_join:
+                bridge = self._generic_bridge(resolved)
+                if bridge is not None:
+                    return bridge
+            if has_seeds:
+                # Registry-driven, so it is not confined to the seven edges that
+                # happen to leave an AttackPattern, and it resolves the anchor
+                # label and the traversal direction rather than assuming both.
+                walk = self._generic_walk(resolved)
+                if walk is not None:
+                    return walk
             if has_seeds and len(neighbor_rels) == 1:
                 return self._capec_neighbors(resolved, neighbor_rels[0])
             if has_seeds and neighbor_rels:
                 return self._capec_facets(resolved, neighbor_rels)
             if has_seeds:
                 return self._describe(resolved)
-            if resolved.name_terms:
+            # Only a *definitional* question is a name lookup; "Scan CAPEC attack
+            # patterns" is an enumeration. Without the gate it becomes a regex
+            # lookup for a node named that, and returns nothing.
+            if resolved.name_terms and is_definitional_request(resolved.task.text):
                 return self._describe(resolved)
             return self._capec_scan(resolved)
 
@@ -490,6 +537,298 @@ class GremlinQueryBuilder:
                 "rel": "MAPS_TO",
             },
         )
+
+    # -- generic-only primitives -------------------------------------------
+    #
+    # Everything below is reachable ONLY under SPECIALIST_GENERIC_ONLY. None of
+    # it is used by the default cascade, so arms A-F and production are
+    # unaffected — see utils/specialists/tests/test_generic_only_isolation.py.
+
+    def _generic_registry(self, resolved: ResolvedTask) -> Any | None:
+        """The derived schema registry, or ``None`` when it cannot be loaded."""
+        from utils.specialists.schema import get_registry
+
+        try:
+            return get_registry()
+        except Exception:  # noqa: BLE001 — no registry, no schema-driven routing
+            return None
+
+    def _self_referential_prefixes(
+        self, resolved: ResolvedTask, registry: Any
+    ) -> list[tuple[str, tuple[tuple[str, str], ...]]]:
+        """Transitive repetitions of a named edge that loops on the anchor label.
+
+        ``AttackPattern -ChildOf-> AttackPattern`` is a hierarchy: asked for the
+        ancestors of a pattern, one hop returns the parent and stops, leaving the
+        grandparent unretrieved. Each repetition up to the hop cap becomes its own
+        branch so every level is returned, not only the deepest.
+
+        Only edges the task actually named are repeated. Walking every self-loop
+        the schema declares would turn any lookup into a full hierarchy crawl.
+
+        **Both** declared directions are emitted. A self-loop appears in the
+        registry twice — as ``out`` and as ``in`` — and nothing in the schema
+        says which one means "up". Ancestor-versus-descendant is precisely the
+        domain nuance a hand-written template encodes and a generic primitive
+        must not guess, so it returns both and lets the answer be over-complete
+        rather than silently half-missing.
+        """
+        out: list[tuple[str, tuple[tuple[str, str], ...]]] = []
+        for anchor_label in [label for label in resolved.labels if label]:
+            for rel in resolved.relationships:
+                for facet in (
+                    registry.label_facets(anchor_label, dataset=resolved.dataset) or []
+                ):
+                    if facet.rel_type != rel or facet.neighbour_label != anchor_label:
+                        continue
+                    hop = (facet.rel_type, facet.direction)
+                    for depth in range(1, _MAX_WALK_HOPS + 1):
+                        candidate = (anchor_label, tuple([hop] * depth))
+                        if candidate not in out:
+                            out.append(candidate)
+        return out
+
+    def _generic_walk(self, resolved: ResolvedTask) -> QueryDraft | None:
+        """Walk every declared path from the resolved anchor to the wanted labels.
+
+        The Gremlin counterpart to the Cypher chain. Three things it does that
+        ``_capec_neighbors`` cannot, each of which cost Arm G whole categories:
+
+        * the anchor label comes from the resolved task, so a ``CWE``-seeded
+          question anchors on ``Weakness`` instead of matching zero
+          ``AttackPattern`` vertices and returning nothing at all;
+        * the direction comes from the declared facet, so ``ParentOf`` and
+          ``CanFollow`` are reachable rather than unroutable;
+        * it is not restricted to the seven edges that leave an ``AttackPattern``.
+
+        Branches are combined with ``union`` so each is evaluated against the
+        anchor independently — the traversal fans out and re-converges rather
+        than multiplying the branches together.
+        """
+        registry = self._generic_registry(resolved)
+        if registry is None:
+            return None
+        candidates = [label for label in resolved.labels if label]
+        if not candidates:
+            return None
+
+        from utils.specialists.schema.paths import edge_prefixes, shortest_paths
+
+        # Every resolved label is tried as the anchor. ``primary_label()`` is
+        # ``labels[0]`` — the order the plan listed entities in — which says
+        # nothing about what the seed actually is. Anchoring on the wrong one
+        # walks the right edge the wrong way and returns nothing.
+        merged: dict[tuple[str, tuple[tuple[str, str], ...]], None] = {}
+        for anchor in candidates:
+            wanted = [label for label in candidates if label != anchor]
+            if not wanted:
+                continue
+            paths = shortest_paths(
+                registry, resolved.dataset, anchor, max_hops=_MAX_WALK_HOPS
+            )
+            for prefix in edge_prefixes(paths, wanted):
+                merged.setdefault((anchor, prefix), None)
+        prefixes = sorted(merged, key=lambda item: (len(item[1]), item[0]))
+
+        # A named edge that lands back on the anchor's own label is a hierarchy,
+        # and the answer to "walk up from here" is the whole ancestry, not the
+        # first step of it. Breadth-first search cannot express that: it stops at
+        # the anchor label because it has already been visited. Repeating the
+        # edge is the transitive walk — the parent, then the grandparent — which
+        # is what an abstraction question asks for.
+        prefixes = [*prefixes, *self._self_referential_prefixes(resolved, registry)]
+        if not prefixes:
+            return None
+
+        # Same guard as the Cypher chain: a branch derived from label L fires on
+        # an anchor of that label, or on an anchor carrying none of the candidate
+        # labels at all — the planner's labels are approximate and a seed's real
+        # label is often a subtype it never named.
+        guard_labels = ", ".join(
+            f'"{_safe_gremlin_ident(label, "candidate label")}"'
+            for label in sorted({root for root, _ in prefixes})
+        )
+        branches: list[str] = []
+        for root, path in prefixes:
+            steps = []
+            for rel, direction in path:
+                edge = gremlin_edge_label(
+                    _safe_gremlin_ident(rel, "relationship type")
+                )
+                steps.append(f'{"out" if direction == "out" else "in"}("{edge}")')
+            safe_root = _safe_gremlin_ident(root, "anchor label")
+            guard = (
+                f'or(__.hasLabel("{safe_root}"), __.not(__.hasLabel({guard_labels})))'
+            )
+            branches.append(f'{guard}.{".".join(steps)}')
+
+        ids = [_gremlin_vertex_id(s) for s in resolved.seed_ids]
+        lim = resolved.task.max_rows()
+        union = ", ".join(f"__.{b}" for b in branches)
+        # Anchored by identifier alone. The canonical vertex id is unique across
+        # labels, so a hasLabel() filter adds nothing but a way to be wrong: it
+        # matches zero vertices whenever the guessed label is not the seed's.
+        query = (
+            'g.V().has("id", within(ids)).as("ap")'
+            f".union({union}).as(\"nbr\")"
+            f'.select("ap","nbr").by(elementMap()).limit({lim})'
+        )
+        return QueryDraft(
+            query=query,
+            params={"ids": ids},
+            template="generic_walk",
+            expected_nonempty=False,
+            meta={
+                "anchor_candidates": candidates,
+                "paths": [
+                    f"{root}|" + "->".join(f"{r}:{d}" for r, d in p)
+                    for root, p in prefixes
+                ],
+                "seed_ids": list(resolved.seed_ids),
+            },
+        )
+
+    def _generic_bridge(self, resolved: ResolvedTask) -> QueryDraft | None:
+        """Walk the declared cross-source join edge and project the key property.
+
+        The bridging edge, the endpoint label and the key property all come from
+        the ``JoinKeyEndpoint`` the planner already resolved
+        (:mod:`utils.planner.join_keys`) — nothing here encodes that CAPEC maps
+        to ATT&CK, only that the registry declares *some* edge reaching *some*
+        label carrying *some* key. The same compiler bridges any future pair of
+        sources whose join key is declared.
+
+        This is the primitive whose absence cost Arm G 40% of its lost
+        correctness: without it a bridge question routes to ``describe``, which
+        returns facet **counts** rather than neighbour ids, so the dependent
+        sub-question is skipped for want of seeds.
+
+        Emits the ``{"ap", "tax"}`` row shape so the existing maps_to
+        normalization path applies; that path owns the key's id-format concern
+        (the ``T`` prefix), which is a property of the declared key, not a
+        question shape.
+        """
+        endpoint = resolved.join_endpoint
+        assert endpoint is not None and endpoint.via_edge  # guarded by has_join
+        edge = gremlin_edge_label(_safe_gremlin_ident(endpoint.via_edge, "join edge"))
+        key_label = _safe_gremlin_ident(endpoint.labels[0], "join endpoint label")
+        key_prop = _safe_gremlin_ident(endpoint.property, "join key property")
+        anchor_label = _safe_gremlin_ident(
+            resolved.primary_label() or "AttackPattern", "anchor label"
+        )
+        lim = resolved.task.max_rows()
+
+        # Seeded on the key's own values (ATT&CK ids) rather than on the anchor:
+        # enter at the key endpoint and walk the edge backwards. This is the
+        # reverse-mapping shape C-MAP and F-REV need.
+        entry_ids = [
+            m.group(1)
+            for m in (_ATTACK_ENTRY_RE.match(s) for s in resolved.seed_ids)
+            if m
+        ]
+        if entry_ids and len(entry_ids) == len(resolved.seed_ids):
+            query = (
+                f'g.V().hasLabel("{key_label}").has("{key_prop}", within(entryIds))'
+                f'.as("tax").in("{edge}").hasLabel("{anchor_label}").as("ap")'
+                f'.select("ap","tax").by(elementMap()).limit({lim})'
+            )
+            return QueryDraft(
+                query=query,
+                params={"entryIds": entry_ids},
+                template="generic_bridge",
+                expected_nonempty=True,
+                meta={
+                    "anchor_label": key_label,
+                    "neighbor_label": anchor_label,
+                    "rel": endpoint.via_edge,
+                    "direction": "in",
+                },
+            )
+
+        ids = [_gremlin_vertex_id(s) for s in resolved.seed_ids]
+
+        # The seed need not sit on the edge that carries the key. A CWE-seeded
+        # question anchors on Weakness, and the pattern that owns the MAPS_TO
+        # edge is one declared hop away; without that prefix the traversal
+        # anchors on the wrong label and matches nothing at all — five F-CWE
+        # questions scored exactly zero in Arm G for this reason.
+        prefix, owner_label = self._path_to_join_owner(
+            resolved, key_label, endpoint.via_edge, anchor_label
+        )
+        if prefix is None:
+            return None
+
+        if prefix:
+            query = (
+                f'g.V().hasLabel("{anchor_label}").has("id", within(ids)).as("w")'
+                f'.{prefix}.hasLabel("{owner_label}").as("ap")'
+                f'.out("{edge}").hasLabel("{key_label}").as("tax")'
+                f'.select("w","ap","tax").by(elementMap()).limit({lim})'
+            )
+        else:
+            query = (
+                f'g.V().hasLabel("{anchor_label}").has("id", within(ids)).as("ap")'
+                f'.out("{edge}").hasLabel("{key_label}").as("tax")'
+                f'.select("ap","tax").by(elementMap()).limit({lim})'
+            )
+        return QueryDraft(
+            query=query,
+            params={"ids": ids},
+            template="generic_bridge",
+            expected_nonempty=False,
+            meta={
+                "anchor_label": anchor_label,
+                "owner_label": owner_label,
+                "neighbor_label": key_label,
+                "rel": endpoint.via_edge,
+                "direction": "out",
+            },
+        )
+
+    def _path_to_join_owner(
+        self,
+        resolved: ResolvedTask,
+        key_label: str,
+        via_edge: str,
+        anchor_label: str,
+    ) -> tuple[str | None, str]:
+        """Traversal steps from the anchor to the label that owns the join edge.
+
+        The owner is read off the registry rather than assumed: it is the label
+        on the far side of an inbound ``via_edge`` facet of the key's label. From
+        there a breadth-first search gives the route from wherever the question
+        is seeded.
+
+        Returns ``("", owner)`` when the anchor already owns the edge, a
+        dot-joined step string when it is reachable, and ``(None, owner)`` when
+        it is not — in which case the caller declines to bridge rather than
+        emitting a traversal that cannot match.
+        """
+        registry = self._generic_registry(resolved)
+        if registry is None:
+            return "", anchor_label
+
+        owner = anchor_label
+        for facet in registry.label_facets(key_label, dataset=resolved.dataset) or []:
+            if facet.rel_type == via_edge and facet.direction == "in":
+                owner = facet.neighbour_label
+                break
+        if owner == anchor_label:
+            return "", owner
+
+        from utils.specialists.schema.paths import shortest_paths
+
+        paths = shortest_paths(
+            registry, resolved.dataset, anchor_label, max_hops=_MAX_WALK_HOPS
+        )
+        route = paths.get(owner)
+        if not route:
+            return None, owner
+        steps = []
+        for rel, direction, _ in route:
+            hop = gremlin_edge_label(_safe_gremlin_ident(rel, "relationship type"))
+            steps.append(f'{"out" if direction == "out" else "in"}("{hop}")')
+        return ".".join(steps), owner
 
     def _capec_scan(self, resolved: ResolvedTask) -> QueryDraft:
         label = resolved.primary_label() or "AttackPattern"

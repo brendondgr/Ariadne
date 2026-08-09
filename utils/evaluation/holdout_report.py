@@ -118,7 +118,7 @@ def build(root: Path = DEFAULT_ROOT) -> dict[str, Any]:
     }
 
     report: dict[str, Any] = {
-        "experiment": "EXP-2026-08-001",
+        "experiment": "EXP-2026-08-002",
         "bank": "utils/specialists/tests/golden/holdout_questions.json",
         "n_questions": len(bank["questions"]),
         "seed": bank["meta"]["seed"],

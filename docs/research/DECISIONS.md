@@ -216,7 +216,7 @@ Every defect that purge fixed was one this test would have caught.
 
 ## D-013 — Keep a malformed blind question rather than repair it (2026-08-09)
 
-**Context:** During the blind holdout (EXP-2026-08-001), one of the 30 authored
+**Context:** During the blind holdout (EXP-2026-08-002), one of the 30 authored
 questions came back incoherent. `H-SW-01` asks what techniques the
 *sub-technique* T1555.005 implements, because the category description handed to
 the Author ("the techniques a piece of software implements") presupposes a

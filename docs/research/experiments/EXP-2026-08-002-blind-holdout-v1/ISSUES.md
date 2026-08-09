@@ -1,4 +1,4 @@
-# ISSUES — EXP-2026-08-001 Blind holdout v1
+# ISSUES — EXP-2026-08-002 Blind holdout v1
 
 Everything that went wrong, was left open, or would need doing differently.
 

@@ -1,4 +1,4 @@
-# RESULTS — EXP-2026-08-001 Blind holdout v1
+# RESULTS — EXP-2026-08-002 Blind holdout v1
 
 Full write-up, including the per-category table, the failure analysis and the
 gate decision: [`docs/evaluation/holdout-v1/README.md`](../../../evaluation/holdout-v1/README.md).

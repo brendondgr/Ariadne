@@ -1,6 +1,6 @@
 # Blind holdout v1 — results
 
-**Experiment:** [`EXP-2026-08-001`](../../research/experiments/EXP-2026-08-001-blind-holdout-v1/)
+**Experiment:** [`EXP-2026-08-002`](../../research/experiments/EXP-2026-08-002-blind-holdout-v1/)
 **Protocol:** `docs/plans/robustness/02-holdout-question-generation.md` (normative),
 `04-holdout-execution-brief.md` (execution), `05-holdout-execution-plan.md` (this run)
 **Frozen at:** `freeze/holdout-v1` = `974e85a494f020e218e8b73f193543c11ea0d292`

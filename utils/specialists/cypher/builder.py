@@ -19,6 +19,16 @@ from ..validation import QueryDraft
 _SAFE_LABEL_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
 _SAFE_REL_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
 
+# How far the generic branch will chase a declared path. Three hops covers every
+# shape in the golden catalogue while keeping the emitted MATCH bounded; the
+# traversal-depth cap (TASK_MAX_TRAVERSAL_DEPTH) is the operative limit above it.
+_MAX_CHAIN_HOPS = 3
+
+# The alphabetic prefix of an identifier ("TA" of TA0006, "M" of M1027). Used
+# only to tell whether two seeds are the same *kind* of thing; it reads the id
+# format the card declares and never what the entity means.
+_ID_PREFIX_RE = re.compile(r"^([A-Za-z]+)[-]?\d")
+
 
 def _safe_ident(value: str, pattern: re.Pattern[str], kind: str) -> str:
     """Guard a facet-sourced label/rel before inlining it into a query string."""
@@ -481,13 +491,216 @@ class CypherQueryBuilder:
         registry; nothing encodes what a mitigation or a technique *means*.
         """
         rels = [r for r in resolved.relationships if r]
+        if resolved.seed_ids:
+            # Two anchors of different kinds ask for what they have in common,
+            # not for each one's neighbourhood. Walking either alone answers a
+            # different question — "techniques under TA0006" is 67 rows where
+            # "techniques under TA0006 that M1027 mitigates" is 7.
+            intersection = self._generic_intersect(resolved)
+            if intersection is not None:
+                return intersection
+            # A requested label two or more declared hops away cannot be reached
+            # by walking one relationship, and describe reports only facet
+            # COUNTS — so the deeper entity (an Analytic behind a
+            # DetectionStrategy) is never retrieved at all. Chain next.
+            chain = self._generic_chain(resolved)
+            if chain is not None:
+                return chain
         if resolved.seed_ids and len(rels) == 1:
             return self._generic_neighbors(resolved, rels[0])
         if resolved.seed_ids:
             return self._describe(resolved)
-        if resolved.name_terms:
+        # Only a *definitional* question ("What is Phishing?") is a name lookup.
+        # Without that gate "List ATT&CK software entries" is read as a request
+        # for an entity literally named that, and a bounded scan returns nothing
+        # — which is how both of the catalogue's scan questions scored zero. The
+        # default cascade already gates this; the generic branch did not.
+        if resolved.name_terms and is_definitional_request(resolved.task.text):
             return self._describe(resolved)
         return self._label_scan(resolved)
+
+    def _generic_intersect(self, resolved: ResolvedTask) -> QueryDraft | None:
+        """Nodes adjacent to **every** seed, when the seeds are of different kinds.
+
+        The primitive is "what do these anchors have in common": group the
+        neighbourhood by neighbour and keep only those reached from all of the
+        seeds. No label, edge or id scheme is named — a node's adjacency to the
+        full seed set is the whole predicate — so the same compiler answers any
+        two-anchor question a future dataset poses.
+
+        Gated on the seeds having **different identifier prefixes**. Six
+        technique seeds are a fan-out ("the mitigations of each of these"), where
+        intersecting would be wrong; a tactic seed alongside a mitigation seed is
+        a conjunction. The prefix is a property of the id format the card
+        declares, not of what the entities mean.
+
+        Returns ``None`` when the seeds are homogeneous, leaving the fan-out
+        shapes to the chain and neighbour primitives.
+        """
+        seeds = [s for s in resolved.seed_ids if s]
+        if len(seeds) < 2:
+            return None
+        prefixes = {m.group(1) for s in seeds if (m := _ID_PREFIX_RE.match(s))}
+        if len(prefixes) < 2:
+            return None
+
+        query = (
+            "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids "
+            "MATCH (n)-[r]-(m) "
+            "WITH m, collect(DISTINCT coalesce(n.attack_id, n.id)) AS anchors, "
+            "collect(DISTINCT {id: coalesce(n.attack_id, n.id), name: n.name, "
+            "label: labels(n)[0], rel: type(r)}) AS sources "
+            "WHERE size(anchors) = $anchorCount "
+            "UNWIND sources AS source "
+            "RETURN coalesce(m.attack_id, m.id) AS anchor_id, m.name AS anchor_name, "
+            "labels(m)[0] AS anchor_label, "
+            "source.id AS neighbour_id, source.name AS neighbour_name, "
+            "source.label AS neighbour_label, source.rel AS rel_type"
+        )
+        return QueryDraft(
+            query=query,
+            params={"ids": seeds, "anchorCount": len(seeds)},
+            template="generic_intersect",
+            expected_nonempty=False,
+            meta={"seed_ids": seeds, "anchor_count": len(seeds)},
+        )
+
+    def _declared_paths(
+        self, resolved: ResolvedTask
+    ) -> list[tuple[str, tuple[tuple[str, str], ...]]] | None:
+        """Shortest declared path from the anchor label to the deepest requested one.
+
+        Breadth-first over the derived schema registry's facets, which are a
+        directed edge list of ``(rel_type, direction, neighbour_label)`` per
+        label. Nothing about ATT&CK is consulted — only what the card's
+        introspected structure declares — so the same search finds
+        ``Technique -> DetectionStrategy -> Analytic`` and any equivalent path a
+        future dataset brings.
+
+        A one-hop path counts. ``_generic_neighbors`` only fires when the plan
+        *named* a relationship, so "which analytics monitor DC0084" — which names
+        two labels and no edge — otherwise falls through to ``describe`` and
+        returns counts. Deriving the edge from the declared structure covers it,
+        and carries the true direction with it.
+
+        **Every** resolved label is tried as the anchor, not just the first.
+        ``primary_label()`` returns ``labels[0]``, which is the order the *plan*
+        listed entities in and says nothing about what the seed actually is: a
+        sub-question seeded with ``T1110.001`` and resolving
+        ``["Tactic", "Technique"]`` would otherwise be anchored as a Tactic and
+        walk ``HAS_TECHNIQUE`` outbound, retrieving nothing and losing the tactic
+        the question asked for. The query matches the anchor by identifier and
+        never by label, so the seed's real label decides which branches match;
+        branches rooted at the wrong label are an ``OPTIONAL MATCH`` that finds
+        nothing, which costs a little breadth and cannot produce a wrong answer.
+        """
+        from utils.specialists.schema import get_registry
+        from utils.specialists.schema.paths import edge_prefixes, shortest_paths
+
+        try:
+            registry = get_registry()
+        except Exception:  # noqa: BLE001 — no registry, no chaining
+            return None
+        if registry is None:
+            return None
+
+        candidates = [label for label in resolved.labels if label]
+        if not candidates:
+            return None
+
+        merged: dict[tuple[str, tuple[tuple[str, str], ...]], None] = {}
+        for anchor in candidates:
+            wanted = [label for label in candidates if label != anchor]
+            if not wanted:
+                continue
+            paths = shortest_paths(
+                registry, resolved.dataset, anchor, max_hops=_MAX_CHAIN_HOPS
+            )
+            for prefix in edge_prefixes(paths, wanted):
+                merged.setdefault((anchor, prefix), None)
+        return sorted(merged, key=lambda item: (len(item[1]), item[0])) or None
+
+    def _generic_chain(self, resolved: ResolvedTask) -> QueryDraft | None:
+        """Walk every declared path to every requested label, one row per hop.
+
+        Each path is matched and aggregated **independently** — one
+        ``OPTIONAL MATCH`` followed by its own ``collect``, never several
+        patterns in one ``MATCH``. Combining them in a single pattern would take
+        the cartesian product of the branches (4 Techniques x 13 SubTechniques =
+        52 rows for one anchor) and duplicate every neighbour; collecting per
+        branch and concatenating keeps it linear.
+
+        Rows carry the ``generic_neighbors`` column contract, so intermediates
+        and terminals alike land in the anchor's related set through the existing
+        normalization path, unchanged.
+
+        ``OPTIONAL MATCH`` keeps the anchor when a path does not exist, which is
+        the honest empty-neighbourhood answer rather than a lost record.
+        """
+        paths = self._declared_paths(resolved)
+        if not paths:
+            return None
+
+        # A branch derived from label L must not fire on an anchor that is
+        # something else, or "which techniques does Mimikatz use" picks up the
+        # inbound USES branch too and returns the fifty-one groups that use
+        # Mimikatz as though they were techniques it uses.
+        #
+        # The second disjunct is what keeps the guard from being too strict: the
+        # planner's labels are approximate, and a sub-technique seed resolving
+        # ``["Tactic", "Technique"]`` carries none of them. When the anchor
+        # matches no candidate at all, every branch is allowed rather than none.
+        candidates = sorted({label for label, _ in paths})
+        candidate_test = " OR ".join(f"n:{label}" for label in candidates)
+        blocks: list[str] = []
+        collected: list[str] = []
+        for i, (root, path) in enumerate(paths):
+            pattern: list[str] = []
+            for j, (rel, direction) in enumerate(path):
+                safe_rel = _safe_ident(rel, _SAFE_REL_RE, "relationship type")
+                # Only the terminal node of the prefix is bound; the ones before
+                # it are matched anonymously because a shorter prefix already
+                # collects them in its own block. The far end is never
+                # label-filtered — the edge decides what is on the other side.
+                var = f"m{i}" if j == len(path) - 1 else ""
+                arrow = (
+                    f"<-[:{safe_rel}]-" if direction == "in" else f"-[:{safe_rel}]->"
+                )
+                pattern.append(f"{arrow}({var})")
+            terminal_rel = _safe_ident(path[-1][0], _SAFE_REL_RE, "relationship type")
+            carry = ", ".join(["n", *collected])
+            guard = f"n:{root} OR NOT ({candidate_test})"
+            blocks.append(
+                f"OPTIONAL MATCH (n){''.join(pattern)} WHERE {guard} "
+                f"WITH {carry}, collect(DISTINCT {{m: m{i}, r: '{terminal_rel}'}}) AS h{i}"
+            )
+            collected.append(f"h{i}")
+
+        combined = " + ".join(collected)
+        query = (
+            "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids "
+            + " ".join(blocks)
+            + f" WITH n, {combined} AS hops "
+            "UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop "
+            "RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, "
+            "labels(n)[0] AS anchor_label, "
+            "coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, "
+            "hop.m.name AS neighbour_name, "
+            "labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type"
+        )
+        return QueryDraft(
+            query=query,
+            params={"ids": list(resolved.seed_ids)},
+            template="generic_chain",
+            expected_nonempty=False,
+            meta={
+                "paths": [
+                    f"{root}|" + "->".join(f"{r}:{d}" for r, d in path)
+                    for root, path in paths
+                ],
+                "seed_ids": list(resolved.seed_ids),
+            },
+        )
 
     def _generic_neighbors(
         self, resolved: ResolvedTask, rel: str, direction: str = "both"

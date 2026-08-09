@@ -1,7 +1,7 @@
 # Dataset Card — Ariadne Blind Holdout (30 questions)
 
 **Version:** `holdout-v1` · **Size:** 30 questions · **Authored by:** Claude Fable 5 (high reasoning effort), blind
-**Used by:** EXP-2026-08-001
+**Used by:** EXP-2026-08-002
 
 ---
 
