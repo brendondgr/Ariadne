@@ -560,8 +560,8 @@ class GremlinQueryBuilder:
 
         ``AttackPattern -ChildOf-> AttackPattern`` is a hierarchy: asked for the
         ancestors of a pattern, one hop returns the parent and stops, leaving the
-        grandparent unretrieved. Each repetition up to the hop cap becomes its own
-        branch so every level is returned, not only the deepest.
+        grandparent unretrieved. The caller turns each of these into a bounded
+        ``repeat(...).times(n).emit()``, which returns every level.
 
         Only edges the task actually named are repeated. Walking every self-loop
         the schema declares would turn any lookup into a full hierarchy crawl.
@@ -573,7 +573,7 @@ class GremlinQueryBuilder:
         must not guess, so it returns both and lets the answer be over-complete
         rather than silently half-missing.
         """
-        out: list[tuple[str, tuple[tuple[str, str], ...]]] = []
+        out: list[tuple[str, tuple[str, str]]] = []
         for anchor_label in [label for label in resolved.labels if label]:
             for rel in resolved.relationships:
                 for facet in (
@@ -581,11 +581,9 @@ class GremlinQueryBuilder:
                 ):
                     if facet.rel_type != rel or facet.neighbour_label != anchor_label:
                         continue
-                    hop = (facet.rel_type, facet.direction)
-                    for depth in range(1, _MAX_WALK_HOPS + 1):
-                        candidate = (anchor_label, tuple([hop] * depth))
-                        if candidate not in out:
-                            out.append(candidate)
+                    candidate = (anchor_label, (facet.rel_type, facet.direction))
+                    if candidate not in out:
+                        out.append(candidate)
         return out
 
     def _generic_walk(self, resolved: ResolvedTask) -> QueryDraft | None:
@@ -636,31 +634,67 @@ class GremlinQueryBuilder:
         # the anchor label because it has already been visited. Repeating the
         # edge is the transitive walk — the parent, then the grandparent — which
         # is what an abstraction question asks for.
-        prefixes = [*prefixes, *self._self_referential_prefixes(resolved, registry)]
-        if not prefixes:
+        transitive = self._self_referential_prefixes(resolved, registry)
+        if not prefixes and not transitive:
             return None
 
         # Same guard as the Cypher chain: a branch derived from label L fires on
         # an anchor of that label, or on an anchor carrying none of the candidate
         # labels at all — the planner's labels are approximate and a seed's real
         # label is often a subtype it never named.
+        roots = {root for root, _ in prefixes} | {root for root, _ in transitive}
         guard_labels = ", ".join(
             f'"{_safe_gremlin_ident(label, "candidate label")}"'
-            for label in sorted({root for root, _ in prefixes})
+            for label in sorted(roots)
         )
-        branches: list[str] = []
-        for root, path in prefixes:
-            steps = []
-            for rel, direction in path:
-                edge = gremlin_edge_label(
-                    _safe_gremlin_ident(rel, "relationship type")
-                )
-                steps.append(f'{"out" if direction == "out" else "in"}("{edge}")')
+
+        def _guard(root: str) -> str:
             safe_root = _safe_gremlin_ident(root, "anchor label")
-            guard = (
+            return (
                 f'or(__.hasLabel("{safe_root}"), __.not(__.hasLabel({guard_labels})))'
             )
-            branches.append(f'{guard}.{".".join(steps)}')
+
+        def _edge(rel: str) -> str:
+            return gremlin_edge_label(_safe_gremlin_ident(rel, "relationship type"))
+
+        # A hierarchy is one bounded ``repeat``, not one branch per depth. Per
+        # depth would be correct and unshippable: the validator counts every
+        # out/in step in the whole query against max_traversal_depth, so six
+        # unrolled branches read as depth 12 and the draft is rejected before it
+        # reaches the database — which is exactly how eight CAPEC hierarchy
+        # questions retrieved nothing at all.
+        branch_specs: list[tuple[int, str]] = []
+        for root, (rel, direction) in transitive:
+            step = "out" if direction == "out" else "in"
+            branch_specs.append(
+                (
+                    1,
+                    f'{_guard(root)}.repeat(__.{step}("{_edge(rel)}"))'
+                    f".times({_MAX_WALK_HOPS}).emit()",
+                )
+            )
+        for root, path in prefixes:
+            steps = [
+                f'{"out" if direction == "out" else "in"}("{_edge(rel)}")'
+                for rel, direction in path
+            ]
+            branch_specs.append((len(steps), f'{_guard(root)}.{".".join(steps)}'))
+
+        # Fit the traversal-step budget. Cheapest branches first, and anything
+        # dropped is named in meta — a silently truncated walk reads as a
+        # complete answer when it is not.
+        budget = resolved.task.max_depth()
+        branches: list[str] = []
+        dropped: list[str] = []
+        spent = 0
+        for cost, branch in sorted(branch_specs, key=lambda spec: spec[0]):
+            if spent + cost > budget:
+                dropped.append(branch)
+                continue
+            branches.append(branch)
+            spent += cost
+        if not branches:
+            return None
 
         ids = [_gremlin_vertex_id(s) for s in resolved.seed_ids]
         lim = resolved.task.max_rows()
@@ -681,9 +715,13 @@ class GremlinQueryBuilder:
             meta={
                 "anchor_candidates": candidates,
                 "paths": [
-                    f"{root}|" + "->".join(f"{r}:{d}" for r, d in p)
-                    for root, p in prefixes
+                    *(f"{root}|{r}:{d}*" for root, (r, d) in transitive),
+                    *(
+                        f"{root}|" + "->".join(f"{r}:{d}" for r, d in p)
+                        for root, p in prefixes
+                    ),
                 ],
+                "dropped_branches": dropped,
                 "seed_ids": list(resolved.seed_ids),
             },
         )

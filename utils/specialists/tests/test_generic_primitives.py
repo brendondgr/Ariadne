@@ -323,7 +323,10 @@ def test_generic_walk_repeats_a_self_referential_edge(generic_only: None) -> Non
     draft = GremlinQueryBuilder().build(resolved)
 
     assert draft.template == "generic_walk"
-    assert '.out("CHILD_OF").out("CHILD_OF")' in draft.query
+    # One bounded repeat, not one branch per depth: the validator counts every
+    # out/in step in the whole query against max_traversal_depth, so unrolling
+    # the levels reads as depth 12 and the draft is rejected before it runs.
+    assert '.repeat(__.out("CHILD_OF")).times(3).emit()' in draft.query
 
 
 def test_generic_walk_emits_both_directions_of_a_self_loop(
@@ -340,8 +343,8 @@ def test_generic_walk_emits_both_directions_of_a_self_loop(
     )
     paths = GremlinQueryBuilder().build(resolved).meta["paths"]
 
-    assert "AttackPattern|ChildOf:out" in paths
-    assert "AttackPattern|ChildOf:in" in paths
+    assert "AttackPattern|ChildOf:out*" in paths
+    assert "AttackPattern|ChildOf:in*" in paths
 
 
 def test_generic_walk_only_repeats_edges_the_task_named(
@@ -354,3 +357,24 @@ def test_generic_walk_only_repeats_edges_the_task_named(
     paths = GremlinQueryBuilder().build(resolved).meta["paths"]
 
     assert not any("ChildOf" in p for p in paths)
+
+
+def test_generic_walk_fits_the_traversal_step_budget(generic_only: None) -> None:
+    """The whole query must stay inside max_traversal_depth, and say what it dropped.
+
+    The validator counts every out/in step in the query, not the depth of any one
+    branch, so a wide union is rejected outright. Branches are fitted cheapest
+    first and anything dropped is named — a silently truncated walk reads as a
+    complete answer when it is not.
+    """
+    import re
+
+    resolved = _capec(
+        "Which CAPEC patterns are children of CAPEC-98 and what mitigations do they have?",
+        ("AttackPattern", "ChildOf", "Mitigation"),
+    )
+    draft = GremlinQueryBuilder().build(resolved)
+
+    steps = len(re.findall(r"\.(out|in|both)\(", draft.query))
+    assert steps <= resolved.task.max_depth()
+    assert draft.meta["dropped_branches"]
