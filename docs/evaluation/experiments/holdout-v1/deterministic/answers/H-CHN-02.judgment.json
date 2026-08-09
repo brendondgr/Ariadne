@@ -1,0 +1,15 @@
+{
+  "case_id": "H-CHN-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.3,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 2,
+  "gold_present": 0,
+  "abstained": true,
+  "abstention_carries_query": true,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "The abstention itself was procedurally clean: the system made no claims, fabricated no CAPEC-to-ATT&CK correlation, and both the capec query and the attack dependency-skip reason are carried verbatim in the abstentions block, so an analyst can see exactly what was searched (g.V().hasLabel(\"Weakness\").has(\"id\",within(cweIds))...out(\"MAPS_TO\")...taxonomy_name==ATTACK). However, gold.assertions is not a blanket 'expect nothing' case: gold.capec specifies min_records=1 and must_include_ids=[CAPEC-456, CAPEC-679], meaning CWE-1316 does have known exploiting attack patterns that a correct answer should surface for the first half of the question ('which attack patterns exploit CWE-1316'). gold.expect_no_correlation/must_correlate=[] and attack.expect_dependency_skip apply to the second half (CAPEC->ATT&CK technique mapping / downstream mitigations), which legitimately has no live mapping and was correctly skipped. The system's single chained Gremlin query joined Weakness->AttackPattern->MAPS_TO->ATTACK TaxonomyEntry as one non-optional traversal, so when the MAPS_TO(ATTACK) hop found nothing, it silently discarded the CAPEC-456/CAPEC-679 matches too (row_count=0 at the 'execute' step), rather than surfacing the known attack patterns and only abstaining on the ATT&CK correlation. This is a retrieval/query-design gap, not a fabrication: nothing false was asserted, but 2 of 2 gold-required CAPEC records were missed, so completeness=0 and correctness is low despite the honest, well-proofed empty response."
+}

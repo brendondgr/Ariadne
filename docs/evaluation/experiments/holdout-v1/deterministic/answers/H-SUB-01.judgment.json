@@ -1,0 +1,17 @@
+{
+  "case_id": "H-SUB-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.75,
+  "faithfulness": 0.8,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [
+    "Narrative states 'T1583 (Acquire Infrastructure) has 1 related item(s): T1583.003', implicitly answering the question's second half ('does that parent have other sub-techniques alongside it?') as 'no'. But the executed Cypher query filters WHERE t.attack_id IN $ids OR st.attack_id IN $ids with $ids=['T1583.003'] -- since parent ids never match a sub-technique seed, this can only ever return the single row matching st.attack_id='T1583.003'. The query is structurally incapable of surfacing sibling sub-techniques of T1583 even if they exist, so the '1 related item(s)' count is not evidence that T1583.003 is the only sub-technique of T1583; it is an artifact of the seed-restricted query."
+  ],
+  "rationale": "Gold assertions (must_include_ids: T1583.003, must_include_related: T1583, min_records 1) are fully satisfied: the answer correctly names T1583 (Acquire Infrastructure) as the parent of T1583.003 (Virtual Private Server), both ids traceable to logic_flow.records[0] (primary_id T1583, related[0].id T1583.003). Coverage per deterministic_scores is 1.0/1.0 and citations are fully provenanced. However, the question explicitly asks a second question -- whether T1583 has other sub-techniques alongside T1583.003 -- and the narrative's phrasing ('has 1 related item(s)') reads as an implicit 'no', which is not actually grounded: the query was seeded on T1583.003 only and structurally cannot retrieve or rule out sibling sub-techniques (e.g. T1583.001 Domains, T1583.002 DNS Server, T1583.004 Server, T1583.005 Botnet, T1583.006 Web Services, all real MITRE ATT&CK v19 sub-techniques of T1583 that this query never had the ability to see). Since gold's ex_gold pool only expects T1583 as a neighbor and does not test sibling completeness, this doesn't sink coverage, but it does mean half of what the analyst literally asked was answered by a query artifact rather than genuine evidence -- a real but minor unsupported implication, not a fabricated fact-name/count. Hence PARTIAL rather than CORRECT."
+}

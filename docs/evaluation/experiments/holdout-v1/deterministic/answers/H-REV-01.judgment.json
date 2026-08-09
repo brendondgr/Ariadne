@@ -1,0 +1,15 @@
+{
+  "case_id": "H-REV-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "abstained": true,
+  "abstention_carries_query": true,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "Gold expects no CAPEC<->ATT&CK correlation for T1055.011 (expect_no_correlation=true, must_correlate=[]). The system correctly abstained on the capec leg: its abstention statement explicitly says the capec source returned no matching records and carries the exact executed Gremlin query (capec_reverse_maps template, g.V()...MAPS_TO...AttackPattern...) as proof it looked. The attack leg independently answered 'what is T1055.011' with facts (revoked, stix_type, deprecated, is_subtechnique, version) that are all directly grounded in the logic_flow record properties for T1055.011 (attack-pattern--0042a9f5-f053-4769-b3ef-9ad018dfa298). No cross-source mapping, CAPEC id, or correlation was asserted anywhere in narrative or claims. deterministic_scores confirms correlation.negative=true, exact=true, f1=1.0, and abstention_proof_ok=true."
+}

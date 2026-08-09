@@ -1,0 +1,15 @@
+{
+  "case_id": "H-SW-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.02,
+  "faithfulness": 0.9,
+  "groundedness": 0.9,
+  "completeness": 0.0,
+  "gold_expected": 170,
+  "gold_present": 0,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "The question asks which software implements T1005; gold requires listing 170 software/tool ids (S0009...S9035). The executed query fetched only the Technique node's own properties and aggregate relationship-type counts (facets), never expanding the 169 incoming USES edges from Software into actual related records ('related': [] in the single record, evidence_volume.related=0). The narrative and both claims only restate T1005's own metadata (revoked, stix_type, version) and name zero software. deterministic_scores.coverage confirms this: coverage=0.0058 (1/170), with all 170 gold software ids listed as missing. The two claims made are individually accurate against the T1005 node evidence (no fabricated facts), so faithfulness/groundedness are high, but the answer fails to address the actual question at all -- it identifies no software whatsoever, making it INCORRECT rather than merely PARTIAL."
+}

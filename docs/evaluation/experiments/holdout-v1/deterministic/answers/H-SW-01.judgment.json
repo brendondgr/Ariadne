@@ -1,0 +1,15 @@
+{
+  "case_id": "H-SW-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.2,
+  "gold_expected": 5,
+  "gold_present": 1,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "Gold requires the T1555.005 node itself plus the four software implementers S0266, S0279, S0652, S1245 (must_include_related, ex_gold pool=neighbors). The retrieved facets on T1555.005 clearly show a USES-in relationship from label Software with count=4, meaning the graph query saw the 4 software edges but the pipeline's 'related' array was never populated (related: []), so none of S0266/S0279/S0652/S1245 appear anywhere in claims, narrative, or evidence. The answer only restates the technique's own metadata (revoked, stix_type, deprecated, is_subtechnique, version) rather than the software that implements it, which is what the question and gold actually target. Everything stated is faithfully grounded in properties_json (no fabrication), so faithfulness/groundedness are high, but coverage is 1/5 (only the seed id itself), matching the artifact's own deterministic_scores.coverage=0.2 with all four required related ids listed as missing. The answer fails to address the substantive ask and should be treated as incorrect rather than merely partial."
+}

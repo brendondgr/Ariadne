@@ -1,0 +1,15 @@
+{
+  "case_id": "H-LKP-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.55,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "Gold requires exactly one record, T1591.003 named 'Identify Business Tempo' (assertions.must_include_ids, expect_names); the retrieved record matches on id and name, and every stated fact (revoked=False, stix_type=attack-pattern, x_mitre_deprecated=False, x_mitre_is_subtechnique=True, x_mitre_version=1.0) is directly grounded in the record's properties, so faithfulness and groundedness are clean and the formal gold coverage (deterministic_scores.coverage=1.0) is satisfied. However the question explicitly asks 'can you give me a description of this sub-technique?' and the evidence (logic_flow.results[0].records[0].description / properties.description) contains the full MITRE description text ('Adversaries may gather information about the victim's business tempo...'), but neither the narrative nor the claims surface any of that description -- the answer only lists STIX metadata flags. This is a real, non-trivial failure to answer what was actually asked, even though it passes the id/name-only gold check, so correctness is marked down to reflect the missing substantive content while faithfulness/groundedness/completeness (against the narrow gold schema) remain high."
+}

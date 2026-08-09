@@ -1,0 +1,15 @@
+{
+  "case_id": "H-REV-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 3,
+  "gold_present": 3,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids CAPEC-21 and CAPEC-633 (both must relate to T1134) plus the ATT&CK record T1134 itself. The answer's claims list both CAPEC-633 (Token Impersonation) and CAPEC-21 (Exploitation of Trusted Identifiers), each correctly cited with TaxonomyEntry capec:taxonomy:ATTACK:1134 matching related records in logic_flow. T1134 (Access Token Manipulation) is retrieved and described from the attack source with properties matching logic_flow exactly (revoked, stix_type, x_mitre_deprecated, x_mitre_is_subtechnique, x_mitre_version all verbatim). The cross-source correlation claim (T1134 corroborated across capec and attack, 3 records) matches must_correlate=[T1134] and is grounded in the three retrieved records. No invented facts, names, or counts found; every claim's entity_ids and properties trace directly to logic_flow.results records."
+}

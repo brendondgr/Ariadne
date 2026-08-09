@@ -1,0 +1,15 @@
+{
+  "case_id": "H-GRP-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 11,
+  "gold_present": 0,
+  "abstained": true,
+  "abstention_carries_query": true,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "Gold requires surfacing groups G0006, G0007, G0050, G0093, G0094, G0096, G0102, G0114, G0143, G1003, G1016 as users of T1550.002. The executed Cypher (logic_flow.results[0].query) is 'MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN $ids ...' with $ids bound to seed_ids=['T1550.002'] -- i.e. it filters Group.attack_id against a technique id, which can never match any group node, so the query is structurally miswired for this question and returns 0 rows regardless of what data exists. The answer correctly reports zero rows and abstains, and the abstention is faithful/grounded (it accurately restates the query and row_count=0 shown in the trace, matching evidence_volume.records=0 and deterministic_scores.coverage.found=0). No hallucinated facts, ids, or names are present. However, per the deterministic_scores.coverage block itself, 0 of 12 gold ids (11 groups + T1550.002) were surfaced, so despite being an honest, well-grounded abstention, it fails to answer the analyst's question at all -- a pipeline join-key bug, not a genuine absence of evidence in the MITRE snapshot."
+}

@@ -1,0 +1,15 @@
+{
+  "case_id": "H-DET-02",
+  "verdict": "CORRECT",
+  "correctness": 0.9,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "Gold requires the seed T1027.015 (present) and must_include_related DET0281 (present, named 'Detection Strategy for Compressed Payload Creation and Execution'), giving gold_present=2/2 and coverage=1.0 per deterministic_scores. The answer's claims enumerate exactly the 4 related items found in logic_flow.records[0].related (DET0281, AN0784, AN0783, AN0782) with matching names/descriptions, and every claim id/text traces directly to the retrieved evidence with no invented facts, aliases, or counts. The analytic descriptions (archive utility extraction, command-line compression followed by execution, compression tool usage tied to suspicious files) substantively answer the 'what log sources/telemetry and detection logic' question even though the deterministic arm has no LLM writer to phrase it as prose telemetry recommendations - this is a minor stylistic/completeness gap (docked slightly in correctness) rather than a factual error, since the underlying detection-strategy and analytic content is exactly what the question asked for."
+}

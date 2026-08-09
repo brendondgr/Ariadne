@@ -1,0 +1,15 @@
+{
+  "case_id": "H-CHN-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.6,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.75,
+  "gold_expected": 9,
+  "gold_present": 8,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "Gold requires two CAPEC attack patterns linked to CWE-1243 (must_include_ids: CAPEC-116, CAPEC-545), but the executed cwe_chain query (logic_flow results[0]) only returned CAPEC-545 (row_count 2, normalized to 1 record with join_values T1005/T1555.001) -- CAPEC-116 (Excavation) is absent from evidence entirely, so the answer's claim 'Found 1 CAPEC record(s) for CAPEC-545' materially understates the true set and the question 'what attack patterns are linked to CWE-1243' is only half-answered. Everything the answer does assert is faithful and grounded: CAPEC-545's CWE-1243 relation, its ATT&CK mappings (T1005, T1555.001), the mitigations (M1027 for T1555.001, M1057 for T1005) and the two cross-source correlations (T1005, T1555.001) all match logic_flow verbatim -- no invented ids, names, or dates. must_correlate (T1005, T1555.001), attack.must_include_ids and attack.must_include_related are fully satisfied (8/9 gold sub-items), but the missing CAPEC-116 is a genuine retrieval gap, not merely a display omission, so this is PARTIAL rather than CORRECT."
+}

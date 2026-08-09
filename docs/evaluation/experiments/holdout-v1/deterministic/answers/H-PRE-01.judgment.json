@@ -1,0 +1,15 @@
+{
+  "case_id": "H-PRE-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.25,
+  "gold_expected": 4,
+  "gold_present": 1,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "The question asks for the preconditions and required resources to execute CAPEC-696. The gold requires the three REQUIRES_SKILL neighbors (capec:attack-pattern:696:skill:1/2/3), which are exactly the 'Skills_Required' fields answering the question. The executed Gremlin query correctly retrieved all three skill records into logic_flow.records[0].related (e.g. skill:1 = 'Detailed knowledge on how various CPU architectures and microcode perform transient execution...', skill:2 = knowledge of compiled binaries/OS layout for data leakage, skill:3 = ability to provoke faulting/assisted loads). However, the answer's narrative and claims never surface any of this retrieved evidence -- they only state CAPEC-696's Abstraction ('Detailed') and Status ('Draft'), which do not answer what preconditions/resources are required. Coverage per deterministic_scores is 1/4 (0.25), matching only must_include_ids CAPEC-696 while all three must_include_related skill ids are listed as missing despite being present in the retrieved evidence. Everything stated is accurate and grounded (no hallucination), but the answer substantively fails to address the question asked, so correctness is very low despite perfect faithfulness/groundedness on the narrow claims it does make."
+}

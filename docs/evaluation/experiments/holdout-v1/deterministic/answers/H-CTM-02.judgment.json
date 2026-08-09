@@ -1,0 +1,15 @@
+{
+  "case_id": "H-CTM-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "abstained": true,
+  "abstention_carries_query": true,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "The anchor CAPEC-40 has no live ATT&CK mapping, matching gold's expect_no_correlation=true and must_correlate=[]. The system executed the real capec_maps_to Gremlin query for q1, got 0 rows, and reported this with the full query text embedded in the abstention statement, giving an analyst visible proof it looked. It then correctly skipped q2 (mitigations) because q1 produced no seed identifiers, again explaining the dependency-skip reason. No claims were asserted and no technique ids, mitigation ids, or correlations were invented anywhere in narrative, claims, or abstentions. deterministic_scores confirm exact negative-correlation match (precision/recall/f1=1.0) and abstention_proof_ok=true."
+}

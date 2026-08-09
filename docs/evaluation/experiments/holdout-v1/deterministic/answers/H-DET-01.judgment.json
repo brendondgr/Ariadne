@@ -1,0 +1,15 @@
+{
+  "case_id": "H-DET-01",
+  "verdict": "CORRECT",
+  "correctness": 0.95,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[T1098.001] and must_include_related=[DET0531]; both appear in the answer's enumeration claim and are directly traceable to the logic_flow record (T1098.001 -> DET0531, AN1469, AN1470, AN1471), satisfying gold_present=2/2. The answer correctly names DET0531 ('Detection Strategy for Additional Cloud Credentials in IaaS/IdP/SaaS') and its three analytics (AN1469-AN1471), whose descriptions in the evidence directly describe the detection logic the question asked about (credential/key additions via portal/API, CreateAccessKey/ImportKeyPair/CreateLoginProfile calls, OAuth/app-token credential changes in productivity apps) -- this is exactly the kind of analytic/detection-logic content the question requested. Every id, name, and description in the claims matches the retrieved records verbatim with no invented facts. Minor deduction on correctness because the deterministic narrative is a bare enumeration and does not explicitly surface 'log sources/data components' as a labeled category (that detail lives only in the analytic descriptions, which the analyst must read themselves), so it answers the question's substance but not its exact framing."
+}

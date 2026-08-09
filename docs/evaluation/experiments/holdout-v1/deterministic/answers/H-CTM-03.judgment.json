@@ -1,0 +1,15 @@
+{
+ "case_id": "H-CTM-03",
+ "verdict": "CORRECT",
+ "correctness": 1,
+ "faithfulness": 1,
+ "groundedness": 1,
+ "completeness": 1,
+ "gold_expected": 8,
+ "gold_present": 8,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "Gold requires CAPEC-652 mapping to T1558 (must_correlate/must_include_related), and T1558 mitigations M1015, M1026, M1027, M1041, M1043, M1047 (must_include_related in attack). The answer's claims correctly report CAPEC-652 -> capec:taxonomy:ATTACK:1558 (mapping to T1558) via the capec_maps_to query, and T1558's 6 mitigations M1041, M1015, M1047, M1026, M1027, M1043 via the technique_mitigations query — an exact match to gold's must_include_related set for both capec and attack assertions. All 8 gold-required ids (T1558, M1015, M1026, M1027, M1041, M1043, M1047, CAPEC-652) are present and correctly attributed. The cross-source correlation claim on T1558 is grounded (same identifier appears in both the CAPEC join_values and the ATT&CK record's primary_id). No fabricated names, counts, or aliases; all properties (Abstraction: Standard, Status: Draft) match the record's properties dict verbatim."
+}

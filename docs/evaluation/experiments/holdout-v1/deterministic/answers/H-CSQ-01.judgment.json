@@ -1,0 +1,15 @@
+{
+  "case_id": "H-CSQ-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.15,
+  "faithfulness": 0.9,
+  "groundedness": 0.9,
+  "completeness": 0.3,
+  "gold_expected": 2,
+  "gold_present": 1,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "The question asks what can go wrong downstream (i.e. the consequences) if CAPEC-671 succeeds. The gold requires must_include_ids=[CAPEC-671] (present) and must_include_related=[capec:attack-pattern:671:consequence:1] (absent from the answer entirely). The logic_flow shows the retrieval correctly traversed HAS_CONSEQUENCE and found the related node capec:attack-pattern:671:consequence:1, so the evidence needed to answer the question was retrieved. However, both narrative and claims only restate CAPEC-671's own properties (Abstraction: Detailed; Status: Draft) and never mention the consequence node at all -- the actual downstream-impact content the question asked for is completely omitted. The system's own deterministic_scores.coverage reports coverage=0.5 with the consequence id listed as missing, confirming the gap. Nothing stated is factually wrong (no fabrication), so faithfulness/groundedness stay high, but correctness is low because the answer fails to address the core of the question, and completeness is low because the one required related entity is entirely absent from the surfaced answer."
+}

@@ -1,0 +1,15 @@
+{
+  "case_id": "H-LKP-03",
+  "verdict": "PARTIAL",
+  "correctness": 0.55,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.5,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "The pipeline correctly resolves CAPEC-321 and matches gold's expect_names ('TCP Sequence Number Probe'), satisfying must_include_ids and the min/max=1 record cardinality in gold.assertions -- so formally the retrieval target is hit. However, the question asks what the attack pattern 'actually involves,' and the answer's claims surface only metadata (Abstraction: Detailed; Status: Stable) rather than the substantive content: the record's evidence.records[0].description explains the actual technique (sending a probe packet and comparing the returned sequence number to the acknowledgement number to fingerprint the OS via one of four categorized response patterns), but this description is never emitted into narrative or claims. Both claims present (id/name found; abstraction+status) are fully grounded in logic_flow.records[0] with no invented facts, dates, or aliases, so faithfulness and groundedness are clean. This mirrors the known deterministic-composer ceiling: gold's structural assertions pass, but the analyst-facing answer does not actually convey what the attack pattern involves, which is the substance of the question asked."
+}

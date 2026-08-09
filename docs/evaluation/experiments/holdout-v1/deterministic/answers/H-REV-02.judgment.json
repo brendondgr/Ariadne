@@ -1,0 +1,15 @@
+{
+  "case_id": "H-REV-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids CAPEC-37, CAPEC-474, CAPEC-485, CAPEC-639 (each must_include_related T1552.004) plus attack must_include_ids T1552.004. The answer's claims list all four CAPEC records with correct names, Abstraction/Status properties matching logic_flow.results[0].records exactly, each citing a TaxonomyEntry capec:taxonomy:ATTACK:1552.004 that matches the 'related' field in evidence. The ATT&CK claim for T1552.004 (Private Keys) reproduces properties (revoked, stix_type, x_mitre_deprecated, x_mitre_is_subtechnique, x_mitre_version) verbatim from logic_flow.results[1].records[0].properties. The cross-source correlation claim correctly identifies T1552.004 as corroborated across capec and attack citing all 5 records, matching must_correlate. No invented facts, names, or ids found; every entity_id and property traces directly to logic_flow evidence."
+}

@@ -1,0 +1,15 @@
+{
+  "case_id": "H-CTM-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 6,
+  "gold_present": 6,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "The gold requires CAPEC-251 mapping to T1055 (via capec.must_include_related), T1055 present in ATT&CK with mitigations M1026 and M1040 (attack.must_include_related), and the cross-source correlation on T1055 (must_correlate). The answer's claims and logic_flow evidence show exactly this: CAPEC-251's TaxonomyEntry capec:taxonomy:ATTACK:1055 maps to T1055 (record 1, capec query), and T1055's related list in the attack query returns M1040 and M1026 with matching names ('Behavior Prevention on Endpoint', 'Privileged Account Management'), plus an explicit correlation claim on T1055 across capec and attack. All identifiers, names, and counts in the narrative and claims are directly traceable to logic_flow records with no invented facts. Deterministic scoring in the artifact itself also confirms mapping_recall=1.0 and correlation f1=1.0, corroborating full coverage of all gold assertions."
+}

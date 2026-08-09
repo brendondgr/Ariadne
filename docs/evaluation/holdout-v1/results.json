@@ -1,0 +1,1084 @@
+{
+ "experiment": "EXP-2026-08-001",
+ "bank": "utils/specialists/tests/golden/holdout_questions.json",
+ "n_questions": 30,
+ "seed": 20260805,
+ "author_model": "claude-fable-5 (high effort)",
+ "frozen_at": "freeze/holdout-v1 (974e85a494f020e218e8b73f193543c11ea0d292)",
+ "judge": "one independent Sonnet 5 agent per case per arm",
+ "malformed_question": {
+  "id": "H-SW-01",
+  "reason": "asks what techniques a SubTechnique implements — the §5 `software` category is phrased for a Software anchor while the stratum's population is techniques",
+  "handling": "kept verbatim; every figure is also reported excluding it"
+ },
+ "arms": {
+  "A": {
+   "arm_code": "deterministic",
+   "holdout": {
+    "all": {
+     "n": 30,
+     "correctness": {
+      "mean": 0.6273,
+      "ci95_low": 0.4773,
+      "ci95_high": 0.7667,
+      "method": "percentile bootstrap, 2000 resamples, seed 1729"
+     },
+     "correct_rate": {
+      "correct": 15,
+      "point": 0.5,
+      "wilson95_low": 0.3315,
+      "wilson95_high": 0.6685
+     },
+     "faithfulness": 0.9733,
+     "groundedness": 0.99,
+     "completeness": 0.6917,
+     "verdicts": {
+      "CORRECT": 15,
+      "PARTIAL": 6,
+      "INCORRECT": 9
+     },
+     "hallucinations": 1,
+     "answers_with_hallucination": 1
+    },
+    "excluding_malformed": {
+     "n": 29,
+     "correctness": {
+      "mean": 0.6455,
+      "ci95_low": 0.499,
+      "ci95_high": 0.7862,
+      "method": "percentile bootstrap, 2000 resamples, seed 1729"
+     },
+     "correct_rate": {
+      "correct": 15,
+      "point": 0.5172,
+      "wilson95_low": 0.3443,
+      "wilson95_high": 0.6861
+     },
+     "faithfulness": 0.9724,
+     "groundedness": 0.9897,
+     "completeness": 0.7086,
+     "verdicts": {
+      "CORRECT": 15,
+      "PARTIAL": 6,
+      "INCORRECT": 8
+     },
+     "hallucinations": 1,
+     "answers_with_hallucination": 1
+    },
+    "answerable": {
+     "n": 26,
+     "correctness": {
+      "mean": 0.5969,
+      "ci95_low": 0.4473,
+      "ci95_high": 0.7519,
+      "method": "percentile bootstrap, 2000 resamples, seed 1729"
+     },
+     "correct_rate": {
+      "correct": 12,
+      "point": 0.4615,
+      "wilson95_low": 0.2876,
+      "wilson95_high": 0.6454
+     },
+     "faithfulness": 0.9692,
+     "groundedness": 0.9885,
+     "completeness": 0.6827,
+     "verdicts": {
+      "CORRECT": 12,
+      "PARTIAL": 5,
+      "INCORRECT": 9
+     },
+     "hallucinations": 1,
+     "answers_with_hallucination": 1
+    },
+    "abstention_expected": {
+     "n": 4,
+     "correctness": {
+      "mean": 0.825,
+      "ci95_low": 0.475,
+      "ci95_high": 1.0,
+      "method": "percentile bootstrap, 2000 resamples, seed 1729"
+     },
+     "correct_rate": {
+      "correct": 3,
+      "point": 0.75,
+      "wilson95_low": 0.3006,
+      "wilson95_high": 0.9544
+     },
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "completeness": 0.75,
+     "verdicts": {
+      "CORRECT": 3,
+      "PARTIAL": 1,
+      "INCORRECT": 0
+     },
+     "hallucinations": 0,
+     "answers_with_hallucination": 0,
+     "abstained": 4,
+     "abstention_carries_query": 4,
+     "fabricated_mapping": 0
+    },
+    "by_stratum": {
+     "attack": {
+      "n": 12,
+      "correctness": {
+       "mean": 0.5683,
+       "ci95_low": 0.3358,
+       "ci95_high": 0.7933,
+       "method": "percentile bootstrap, 2000 resamples, seed 1729"
+      },
+      "correct_rate": {
+       "correct": 5,
+       "point": 0.4167,
+       "wilson95_low": 0.1933,
+       "wilson95_high": 0.6805
+      },
+      "faithfulness": 0.95,
+      "groundedness": 0.9917,
+      "completeness": 0.6833,
+      "verdicts": {
+       "CORRECT": 5,
+       "PARTIAL": 3,
+       "INCORRECT": 4
+      },
+      "hallucinations": 1,
+      "answers_with_hallucination": 1
+     },
+     "capec": {
+      "n": 8,
+      "correctness": {
+       "mean": 0.3875,
+       "ci95_low": 0.1438,
+       "ci95_high": 0.6687,
+       "method": "percentile bootstrap, 2000 resamples, seed 1729"
+      },
+      "correct_rate": {
+       "correct": 2,
+       "point": 0.25,
+       "wilson95_low": 0.0715,
+       "wilson95_high": 0.5907
+      },
+      "faithfulness": 0.975,
+      "groundedness": 0.975,
+      "completeness": 0.475,
+      "verdicts": {
+       "CORRECT": 2,
+       "PARTIAL": 1,
+       "INCORRECT": 5
+      },
+      "hallucinations": 0,
+      "answers_with_hallucination": 0
+     },
+     "federated": {
+      "n": 10,
+      "correctness": {
+       "mean": 0.89,
+       "ci95_low": 0.72,
+       "ci95_high": 1.0,
+       "method": "percentile bootstrap, 2000 resamples, seed 1729"
+      },
+      "correct_rate": {
+       "correct": 8,
+       "point": 0.8,
+       "wilson95_low": 0.4902,
+       "wilson95_high": 0.9433
+      },
+      "faithfulness": 1.0,
+      "groundedness": 1.0,
+      "completeness": 0.875,
+      "verdicts": {
+       "CORRECT": 8,
+       "PARTIAL": 2,
+       "INCORRECT": 0
+      },
+      "hallucinations": 0,
+      "answers_with_hallucination": 0
+     }
+    },
+    "by_category": {
+     "consequence": {
+      "n": 1,
+      "correctness": {
+       "mean": 0.15,
+       "ci95_low": 0.15,
+       "ci95_high": 0.15,
+       "method": "percentile bootstrap, 2000 resamples, seed 1729"
+      },
+      "correct_rate": {
+       "correct": 0,
+       "point": 0.0,
+       "wilson95_low": 0.0,
+       "wilson95_high": 0.7935
+      },
+      "faithfulness": 0.9,
+      "groundedness": 0.9,
+      "completeness": 0.3,
+      "verdicts": {
+       "CORRECT": 0,
+       "PARTIAL": 0,
+       "INCORRECT": 1
+      },
+      "hallucinations": 0,
+      "answers_with_hallucination": 0
+     },
+     "cwe-chain": {
+      "n": 3,
+      "correctness": {
+       "mean": 0.6333,
+       "ci95_low": 0.3,
+       "ci95_high": 1.0,
+       "method": "percentile bootstrap, 2000 resamples, seed 1729"
+      },
+      "correct_rate": {
+       "correct": 1,
+       "point": 0.3333,
+       "wilson95_low": 0.0615,
+       "wilson95_high": 0.7923
+      },
+      "faithfulness": 1.0,
+      "groundedness": 1.0,
+      "completeness": 0.5833,
+      "verdicts": {
+       "CORRECT": 1,
+       "PARTIAL": 2,
+       "INCORRECT": 0
+      },
+      "hallucinations": 0,
+      "answers_with_hallucination": 0
+     },
+     "detection": {
+      "n": 2,
+      "correctness": {
+       "mean": 0.925,
+       "ci95_low": 0.9,
+       "ci95_high": 0.95,
+       "method": "percentile bootstrap, 2000 resamples, seed 1729"
+      },
+      "correct_rate": {
+       "correct": 2,
+       "point": 1.0,
+       "wilson95_low": 0.3424,
+       "wilson95_high": 1.0
+      },
+      "faithfulness": 1.0,
+      "groundedness": 1.0,
+      "completeness": 1.0,
+      "verdicts": {
+       "CORRECT": 2,
+       "PARTIAL": 0,
+       "INCORRECT": 0
+      },
+      "hallucinations": 0,
+      "answers_with_hallucination": 0
+     },
+     "execution": {
+      "n": 1,
+      "correctness": {
+       "mean": 1.0,
+       "ci95_low": 1.0,
+       "ci95_high": 1.0,
+       "method": "percentile bootstrap, 2000 resamples, seed 1729"
+      },
+      "correct_rate": {
+       "correct": 1,
+       "point": 1.0,
+       "wilson95_low": 0.2065,
+       "wilson95_high": 1.0
+      },
+      "faithfulness": 1.0,
+      "groundedness": 1.0,
+      "completeness": 1.0,
+      "verdicts": {
+       "CORRECT": 1,
+       "PARTIAL": 0,
+       "INCORRECT": 0
+      },
+      "hallucinations": 0,
+      "answers_with_hallucination": 0
+     },
+     "groups": {
+      "n": 2,
+      "correctness": {
+       "mean": 0.0,
+       "ci95_low": 0.0,
+       "ci95_high": 0.0,
+       "method": "percentile bootstrap, 2000 resamples, seed 1729"
+      },
+      "correct_rate": {
+       "correct": 0,
+       "point": 0.0,
+       "wilson95_low": 0.0,
+       "wilson95_high": 0.6576
+      },
+      "faithfulness": 0.85,
+      "groundedness": 1.0,
+      "completeness": 0.0,
+      "verdicts": {
+       "CORRECT": 0,
+       "PARTIAL": 0,
+       "INCORRECT": 2
+      },
+      "hallucinations": 0,
+      "answers_with_hallucination": 0
+     },
+     "hierarchy": {
+      "n": 1,
+      "correctness": {
+       "mean": 0.15,
+       "ci95_low": 0.15,
+       "ci95_high": 0.15,
+       "method": "percentile bootstrap, 2000 resamples, seed 1729"
+      },
+      "correct_rate": {
+       "correct": 0,
+       "point": 0.0,
+       "wilson95_low": 0.0,
+       "wilson95_high": 0.7935
+      },
+      "faithfulness": 1.0,
+      "groundedness": 1.0,
+      "completeness": 0.33,
+      "verdicts": {
+       "CORRECT": 0,
+       "PARTIAL": 0,
+       "INCORRECT": 1
+      },
+      "hallucinations": 0,
+      "answers_with_hallucination": 0
+     },
+     "lookup": {
+      "n": 3,
+      "correctness": {
+       "mean": 0.55,
+       "ci95_low": 0.55,
+       "ci95_high": 0.55,
+       "method": "percentile bootstrap, 2000 resamples, seed 1729"
+      },
+      "correct_rate": {
+       "correct": 0,
+       "point": 0.0,
+       "wilson95_low": 0.0,
+       "wilson95_high": 0.5615
+      },
+      "faithfulness": 1.0,
+      "groundedness": 1.0,
+      "completeness": 0.8333,
+      "verdicts": {
+       "CORRECT": 0,
+       "PARTIAL": 3,
+       "INCORRECT": 0
+      },
+      "hallucinations": 0,
+      "answers_with_hallucination": 0
+     },
+     "mapping": {
+      "n": 2,
+      "correctness": {
+       "mean": 0.075,
+       "ci95_low": 0.05,
+       "ci95_high": 0.1,
+       "method": "percentile bootstrap, 2000 resamples, seed 1729"
+      },
+      "correct_rate": {
+       "correct": 0,
+       "point": 0.0,
+       "wilson95_low": 0.0,
+       "wilson95_high": 0.6576
+      },
+      "faithfulness": 0.95,
+      "groundedness": 0.95,
+      "completeness": 0.21,
+      "verdicts": {
+       "CORRECT": 0,
+       "PARTIAL": 0,
+       "INCORRECT": 2
+      },
+      "hallucinations": 0,
+      "answers_with_hallucination": 0
+     },
+     "mitigations": {
+      "n": 2,
+      "correctness": {
+       "mean": 1.0,
+       "ci95_low": 1.0,
+       "ci95_high": 1.0,
+       "method": "percentile bootstrap, 2000 resamples, seed 1729"
+      },
+      "correct_rate": {
+       "correct": 2,
+       "point": 1.0,
+       "wilson95_low": 0.3424,
+       "wilson95_high": 1.0
+      },
+      "faithfulness": 1.0,
+      "groundedness": 1.0,
+      "completeness": 1.0,
+      "verdicts": {
+       "CORRECT": 2,
+       "PARTIAL": 0,
+       "INCORRECT": 0
+      },
+      "hallucinations": 0,
+      "answers_with_hallucination": 0
+     },
+     "pattern-to-mitigation": {
+      "n": 4,
+      "correctness": {
+       "mean": 1.0,
+       "ci95_low": 1.0,
+       "ci95_high": 1.0,
+       "method": "percentile bootstrap, 2000 resamples, seed 1729"
+      },
+      "correct_rate": {
+       "correct": 4,
+       "point": 1.0,
+       "wilson95_low": 0.5101,
+       "wilson95_high": 1.0
+      },
+      "faithfulness": 1.0,
+      "groundedness": 1.0,
+      "completeness": 1.0,
+      "verdicts": {
+       "CORRECT": 4,
+       "PARTIAL": 0,
+       "INCORRECT": 0
+      },
+      "hallucinations": 0,
+      "answers_with_hallucination": 0
+     },
+     "prerequisite": {
+      "n": 1,
+      "correctness": {
+       "mean": 0.1,
+       "ci95_low": 0.1,
+       "ci95_high": 0.1,
+       "method": "percentile bootstrap, 2000 resamples, seed 1729"
+      },
+      "correct_rate": {
+       "correct": 0,
+       "point": 0.0,
+       "wilson95_low": 0.0,
+       "wilson95_high": 0.7935
+      },
+      "faithfulness": 1.0,
+      "groundedness": 1.0,
+      "completeness": 0.25,
+      "verdicts": {
+       "CORRECT": 0,
+       "PARTIAL": 0,
+       "INCORRECT": 1
+      },
+      "hallucinations": 0,
+      "answers_with_hallucination": 0
+     },
+     "reverse-mapping": {
+      "n": 3,
+      "correctness": {
+       "mean": 1.0,
+       "ci95_low": 1.0,
+       "ci95_high": 1.0,
+       "method": "percentile bootstrap, 2000 resamples, seed 1729"
+      },
+      "correct_rate": {
+       "correct": 3,
+       "point": 1.0,
+       "wilson95_low": 0.4385,
+       "wilson95_high": 1.0
+      },
+      "faithfulness": 1.0,
+      "groundedness": 1.0,
+      "completeness": 1.0,
+      "verdicts": {
+       "CORRECT": 3,
+       "PARTIAL": 0,
+       "INCORRECT": 0
+      },
+      "hallucinations": 0,
+      "answers_with_hallucination": 0
+     },
+     "software": {
+      "n": 2,
+      "correctness": {
+       "mean": 0.06,
+       "ci95_low": 0.02,
+       "ci95_high": 0.1,
+       "method": "percentile bootstrap, 2000 resamples, seed 1729"
+      },
+      "correct_rate": {
+       "correct": 0,
+       "point": 0.0,
+       "wilson95_low": 0.0,
+       "wilson95_high": 0.6576
+      },
+      "faithfulness": 0.95,
+      "groundedness": 0.95,
+      "completeness": 0.1,
+      "verdicts": {
+       "CORRECT": 0,
+       "PARTIAL": 0,
+       "INCORRECT": 2
+      },
+      "hallucinations": 0,
+      "answers_with_hallucination": 0
+     },
+     "subtechnique": {
+      "n": 1,
+      "correctness": {
+       "mean": 0.75,
+       "ci95_low": 0.75,
+       "ci95_high": 0.75,
+       "method": "percentile bootstrap, 2000 resamples, seed 1729"
+      },
+      "correct_rate": {
+       "correct": 0,
+       "point": 0.0,
+       "wilson95_low": 0.0,
+       "wilson95_high": 0.7935
+      },
+      "faithfulness": 0.8,
+      "groundedness": 1.0,
+      "completeness": 1.0,
+      "verdicts": {
+       "CORRECT": 0,
+       "PARTIAL": 1,
+       "INCORRECT": 0
+      },
+      "hallucinations": 1,
+      "answers_with_hallucination": 1
+     },
+     "tactics": {
+      "n": 1,
+      "correctness": {
+       "mean": 1.0,
+       "ci95_low": 1.0,
+       "ci95_high": 1.0,
+       "method": "percentile bootstrap, 2000 resamples, seed 1729"
+      },
+      "correct_rate": {
+       "correct": 1,
+       "point": 1.0,
+       "wilson95_low": 0.2065,
+       "wilson95_high": 1.0
+      },
+      "faithfulness": 1.0,
+      "groundedness": 1.0,
+      "completeness": 1.0,
+      "verdicts": {
+       "CORRECT": 1,
+       "PARTIAL": 0,
+       "INCORRECT": 0
+      },
+      "hallucinations": 0,
+      "answers_with_hallucination": 0
+     },
+     "weakness": {
+      "n": 1,
+      "correctness": {
+       "mean": 1.0,
+       "ci95_low": 1.0,
+       "ci95_high": 1.0,
+       "method": "percentile bootstrap, 2000 resamples, seed 1729"
+      },
+      "correct_rate": {
+       "correct": 1,
+       "point": 1.0,
+       "wilson95_low": 0.2065,
+       "wilson95_high": 1.0
+      },
+      "faithfulness": 1.0,
+      "groundedness": 1.0,
+      "completeness": 1.0,
+      "verdicts": {
+       "CORRECT": 1,
+       "PARTIAL": 0,
+       "INCORRECT": 0
+      },
+      "hallucinations": 0,
+      "answers_with_hallucination": 0
+     }
+    }
+   },
+   "development": {
+    "source": "docs/evaluation/experiments/untruncated-fixed/deterministic",
+    "n": 120,
+    "correctness": {
+     "mean": 0.9972,
+     "ci95_low": 0.9943,
+     "ci95_high": 0.9995,
+     "method": "percentile bootstrap, 2000 resamples, seed 1729"
+    },
+    "correct_rate": {
+     "correct": 120,
+     "point": 1.0,
+     "wilson95_low": 0.969,
+     "wilson95_high": 1.0
+    },
+    "faithfulness": 0.9993,
+    "groundedness": 1.0,
+    "completeness": 1.0,
+    "verdicts": {
+     "CORRECT": 120,
+     "PARTIAL": 0,
+     "INCORRECT": 0
+    },
+    "hallucinations": 0,
+    "answers_with_hallucination": 0
+   },
+   "cases": [
+    {
+     "id": "H-ABS-01",
+     "category": "hierarchy",
+     "stratum": "capec",
+     "partition": null,
+     "verdict": "INCORRECT",
+     "correctness": 0.15,
+     "completeness": 0.33,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 3,
+     "gold_present": 1,
+     "hallucinations": [],
+     "rationale": "The question explicitly asks to walk the hierarchy chain up from CAPEC-606 through its parents to the most abstract pattern. The gate query correctly retrieved the full chain: CAPEC-606 -> CAPEC-620 (Drop Encryption Level, role=standard) -> CAPEC-212 (Functionality Misuse, role=meta), visible in the record's 'related' array in logic_flow. However, the answer's narrative and claims only report CAPEC-606's own Abstraction/Status properties and never mention CAPEC-620 or CAPEC-212 at all, despite both being present in evidence and required by gold.must_include_related. This is not a hallucination (nothing false is stated, so faithfulness/groundedness are high) but it is a correctness failure: the answer does not perform the hierarchy walk the analyst asked for, even though the pipeline had all the necessary data in hand. deterministic_scores.coverage confirms this internally (found 1/3, missing CAPEC-212 and CAPEC-620). Verdict is INCORRECT because the core ask of the question goes unanswered despite full evidence availability."
+    },
+    {
+     "id": "H-CHN-01",
+     "category": "cwe-chain",
+     "stratum": "federated",
+     "partition": "answerable",
+     "verdict": "PARTIAL",
+     "correctness": 0.6,
+     "completeness": 0.75,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 9,
+     "gold_present": 8,
+     "hallucinations": [],
+     "rationale": "Gold requires two CAPEC attack patterns linked to CWE-1243 (must_include_ids: CAPEC-116, CAPEC-545), but the executed cwe_chain query (logic_flow results[0]) only returned CAPEC-545 (row_count 2, normalized to 1 record with join_values T1005/T1555.001) -- CAPEC-116 (Excavation) is absent from evidence entirely, so the answer's claim 'Found 1 CAPEC record(s) for CAPEC-545' materially understates the true set and the question 'what attack patterns are linked to CWE-1243' is only half-answered. Everything the answer does assert is faithful and grounded: CAPEC-545's CWE-1243 relation, its ATT&CK mappings (T1005, T1555.001), the mitigations (M1027 for T1555.001, M1057 for T1005) and the two cross-source correlations (T1005, T1555.001) all match logic_flow verbatim -- no invented ids, names, or dates. must_correlate (T1005, T1555.001), attack.must_include_ids and attack.must_include_related are fully satisfied (8/9 gold sub-items), but the missing CAPEC-116 is a genuine retrieval gap, not merely a display omission, so this is PARTIAL rather than CORRECT."
+    },
+    {
+     "id": "H-CHN-02",
+     "category": "cwe-chain",
+     "stratum": "federated",
+     "partition": "abstention-expected",
+     "verdict": "PARTIAL",
+     "correctness": 0.3,
+     "completeness": 0.0,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 2,
+     "gold_present": 0,
+     "hallucinations": [],
+     "rationale": "The abstention itself was procedurally clean: the system made no claims, fabricated no CAPEC-to-ATT&CK correlation, and both the capec query and the attack dependency-skip reason are carried verbatim in the abstentions block, so an analyst can see exactly what was searched (g.V().hasLabel(\"Weakness\").has(\"id\",within(cweIds))...out(\"MAPS_TO\")...taxonomy_name==ATTACK). However, gold.assertions is not a blanket 'expect nothing' case: gold.capec specifies min_records=1 and must_include_ids=[CAPEC-456, CAPEC-679], meaning CWE-1316 does have known exploiting attack patterns that a correct answer should surface for the first half of the question ('which attack patterns exploit CWE-1316'). gold.expect_no_correlation/must_correlate=[] and attack.expect_dependency_skip apply to the second half (CAPEC->ATT&CK technique mapping / downstream mitigations), which legitimately has no live mapping and was correctly skipped. The system's single chained Gremlin query joined Weakness->AttackPattern->MAPS_TO->ATTACK TaxonomyEntry as one non-optional traversal, so when the MAPS_TO(ATTACK) hop found nothing, it silently discarded the CAPEC-456/CAPEC-679 matches too (row_count=0 at the 'execute' step), rather than surfacing the known attack patterns and only abstaining on the ATT&CK correlation. This is a retrieval/query-design gap, not a fabrication: nothing false was asserted, but 2 of 2 gold-required CAPEC records were missed, so completeness=0 and correctness is low despite the honest, well-proofed empty response."
+    },
+    {
+     "id": "H-CHN-03",
+     "category": "cwe-chain",
+     "stratum": "federated",
+     "partition": "answerable",
+     "verdict": "CORRECT",
+     "correctness": 1.0,
+     "completeness": 1.0,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 17,
+     "gold_present": 17,
+     "hallucinations": [],
+     "rationale": "All three gold CAPEC ids (CAPEC-17, CAPEC-30, CAPEC-35) are retrieved and each cites CWE-270 as related, matching must_include_related. All six must_correlate/must_include ATT&CK technique ids (T1027.006, T1027.009, T1055.003, T1564.009, T1574.005, T1574.010) are present with correct names, and all seven required mitigations (M1013, M1018, M1040, M1047, M1048, M1049, M1052) appear correctly attached to their respective techniques in both the evidence records and the claims. Correlation claims correctly identify all 6 shared identifiers across CAPEC and ATT&CK with no false correlations. Every claim's entity_ids and citations trace directly to logic_flow records (e.g. CAPEC-35 -> CWE-270, T1574.005 -> M1047/M1018/M1052), and no invented names, abstractions, statuses or counts were found -- Abstraction/Status values for CAPEC-17/30/35 match the record properties exactly. deterministic_scores confirms 1.0 precision/recall on correlation and mapping_recall. This is a full, grounded answer to the blind question."
+    },
+    {
+     "id": "H-CSQ-01",
+     "category": "consequence",
+     "stratum": "capec",
+     "partition": null,
+     "verdict": "INCORRECT",
+     "correctness": 0.15,
+     "completeness": 0.3,
+     "faithfulness": 0.9,
+     "groundedness": 0.9,
+     "gold_expected": 2,
+     "gold_present": 1,
+     "hallucinations": [],
+     "rationale": "The question asks what can go wrong downstream (i.e. the consequences) if CAPEC-671 succeeds. The gold requires must_include_ids=[CAPEC-671] (present) and must_include_related=[capec:attack-pattern:671:consequence:1] (absent from the answer entirely). The logic_flow shows the retrieval correctly traversed HAS_CONSEQUENCE and found the related node capec:attack-pattern:671:consequence:1, so the evidence needed to answer the question was retrieved. However, both narrative and claims only restate CAPEC-671's own properties (Abstraction: Detailed; Status: Draft) and never mention the consequence node at all -- the actual downstream-impact content the question asked for is completely omitted. The system's own deterministic_scores.coverage reports coverage=0.5 with the consequence id listed as missing, confirming the gap. Nothing stated is factually wrong (no fabrication), so faithfulness/groundedness stay high, but correctness is low because the answer fails to address the core of the question, and completeness is low because the one required related entity is entirely absent from the surfaced answer."
+    },
+    {
+     "id": "H-CTM-01",
+     "category": "pattern-to-mitigation",
+     "stratum": "federated",
+     "partition": "abstention-expected",
+     "verdict": "CORRECT",
+     "correctness": 1.0,
+     "completeness": 1.0,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 0,
+     "gold_present": 0,
+     "hallucinations": [],
+     "rationale": "Gold expects no correlation (expect_no_correlation=true, must_correlate=[]) since CAPEC-603 has no live ATT&CK mapping. The answer abstained cleanly on both sub-questions: claims is empty, and both abstentions carry proof. The q1 (capec->attack) abstention carries the full executed Gremlin query text and the trace shows row_count=0 from an actually-run query against seed CAPEC-603. The q2 (attack mitigations) abstention correctly reports it was skipped because q1 produced no join values, with the dependency trace as proof. No technique id, mitigation, or mapping was fabricated. This matches the deterministic_scores block (correlation.negative=true, exact=true, precision/recall/f1=1.0, abstention_proof_ok=true, fully_provenanced=true), confirming a textbook honest-empty response."
+    },
+    {
+     "id": "H-CTM-02",
+     "category": "pattern-to-mitigation",
+     "stratum": "federated",
+     "partition": "abstention-expected",
+     "verdict": "CORRECT",
+     "correctness": 1.0,
+     "completeness": 1.0,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 0,
+     "gold_present": 0,
+     "hallucinations": [],
+     "rationale": "The anchor CAPEC-40 has no live ATT&CK mapping, matching gold's expect_no_correlation=true and must_correlate=[]. The system executed the real capec_maps_to Gremlin query for q1, got 0 rows, and reported this with the full query text embedded in the abstention statement, giving an analyst visible proof it looked. It then correctly skipped q2 (mitigations) because q1 produced no seed identifiers, again explaining the dependency-skip reason. No claims were asserted and no technique ids, mitigation ids, or correlations were invented anywhere in narrative, claims, or abstentions. deterministic_scores confirm exact negative-correlation match (precision/recall/f1=1.0) and abstention_proof_ok=true."
+    },
+    {
+     "id": "H-CTM-03",
+     "category": "pattern-to-mitigation",
+     "stratum": "federated",
+     "partition": "answerable",
+     "verdict": "CORRECT",
+     "correctness": 1,
+     "completeness": 1,
+     "faithfulness": 1,
+     "groundedness": 1,
+     "gold_expected": 8,
+     "gold_present": 8,
+     "hallucinations": [],
+     "rationale": "Gold requires CAPEC-652 mapping to T1558 (must_correlate/must_include_related), and T1558 mitigations M1015, M1026, M1027, M1041, M1043, M1047 (must_include_related in attack). The answer's claims correctly report CAPEC-652 -> capec:taxonomy:ATTACK:1558 (mapping to T1558) via the capec_maps_to query, and T1558's 6 mitigations M1041, M1015, M1047, M1026, M1027, M1043 via the technique_mitigations query — an exact match to gold's must_include_related set for both capec and attack assertions. All 8 gold-required ids (T1558, M1015, M1026, M1027, M1041, M1043, M1047, CAPEC-652) are present and correctly attributed. The cross-source correlation claim on T1558 is grounded (same identifier appears in both the CAPEC join_values and the ATT&CK record's primary_id). No fabricated names, counts, or aliases; all properties (Abstraction: Standard, Status: Draft) match the record's properties dict verbatim."
+    },
+    {
+     "id": "H-CTM-04",
+     "category": "pattern-to-mitigation",
+     "stratum": "federated",
+     "partition": "answerable",
+     "verdict": "CORRECT",
+     "correctness": 1.0,
+     "completeness": 1.0,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 6,
+     "gold_present": 6,
+     "hallucinations": [],
+     "rationale": "The gold requires CAPEC-251 mapping to T1055 (via capec.must_include_related), T1055 present in ATT&CK with mitigations M1026 and M1040 (attack.must_include_related), and the cross-source correlation on T1055 (must_correlate). The answer's claims and logic_flow evidence show exactly this: CAPEC-251's TaxonomyEntry capec:taxonomy:ATTACK:1055 maps to T1055 (record 1, capec query), and T1055's related list in the attack query returns M1040 and M1026 with matching names ('Behavior Prevention on Endpoint', 'Privileged Account Management'), plus an explicit correlation claim on T1055 across capec and attack. All identifiers, names, and counts in the narrative and claims are directly traceable to logic_flow records with no invented facts. Deterministic scoring in the artifact itself also confirms mapping_recall=1.0 and correlation f1=1.0, corroborating full coverage of all gold assertions."
+    },
+    {
+     "id": "H-CWE-01",
+     "category": "weakness",
+     "stratum": "capec",
+     "partition": null,
+     "verdict": "CORRECT",
+     "correctness": 1.0,
+     "completeness": 1.0,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 2,
+     "gold_present": 2,
+     "hallucinations": [],
+     "rationale": "Gold requires must_include_ids=[CAPEC-691] and must_include_related=[CWE-494]; the answer's claims name both, and logic_flow.results[0].records[0] shows CAPEC-691 (Spoof Open-Source Software Metadata, Abstraction: Standard, Status: Stable) with a single EXPLOITS_WEAKNESS edge to CWE-494, exactly matching the retrieved evidence. All three claims cite CAPEC-691 correctly and no property (Abstraction/Status) or identifier is invented. Coverage 2/2 (CAPEC-691 seed + CWE-494 related) with no missing items."
+    },
+    {
+     "id": "H-DET-01",
+     "category": "detection",
+     "stratum": "attack",
+     "partition": null,
+     "verdict": "CORRECT",
+     "correctness": 0.95,
+     "completeness": 1.0,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 2,
+     "gold_present": 2,
+     "hallucinations": [],
+     "rationale": "Gold requires must_include_ids=[T1098.001] and must_include_related=[DET0531]; both appear in the answer's enumeration claim and are directly traceable to the logic_flow record (T1098.001 -> DET0531, AN1469, AN1470, AN1471), satisfying gold_present=2/2. The answer correctly names DET0531 ('Detection Strategy for Additional Cloud Credentials in IaaS/IdP/SaaS') and its three analytics (AN1469-AN1471), whose descriptions in the evidence directly describe the detection logic the question asked about (credential/key additions via portal/API, CreateAccessKey/ImportKeyPair/CreateLoginProfile calls, OAuth/app-token credential changes in productivity apps) -- this is exactly the kind of analytic/detection-logic content the question requested. Every id, name, and description in the claims matches the retrieved records verbatim with no invented facts. Minor deduction on correctness because the deterministic narrative is a bare enumeration and does not explicitly surface 'log sources/data components' as a labeled category (that detail lives only in the analytic descriptions, which the analyst must read themselves), so it answers the question's substance but not its exact framing."
+    },
+    {
+     "id": "H-DET-02",
+     "category": "detection",
+     "stratum": "attack",
+     "partition": null,
+     "verdict": "CORRECT",
+     "correctness": 0.9,
+     "completeness": 1.0,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 2,
+     "gold_present": 2,
+     "hallucinations": [],
+     "rationale": "Gold requires the seed T1027.015 (present) and must_include_related DET0281 (present, named 'Detection Strategy for Compressed Payload Creation and Execution'), giving gold_present=2/2 and coverage=1.0 per deterministic_scores. The answer's claims enumerate exactly the 4 related items found in logic_flow.records[0].related (DET0281, AN0784, AN0783, AN0782) with matching names/descriptions, and every claim id/text traces directly to the retrieved evidence with no invented facts, aliases, or counts. The analytic descriptions (archive utility extraction, command-line compression followed by execution, compression tool usage tied to suspicious files) substantively answer the 'what log sources/telemetry and detection logic' question even though the deterministic arm has no LLM writer to phrase it as prose telemetry recommendations - this is a minor stylistic/completeness gap (docked slightly in correctness) rather than a factual error, since the underlying detection-strategy and analytic content is exactly what the question asked for."
+    },
+    {
+     "id": "H-EXE-01",
+     "category": "execution",
+     "stratum": "capec",
+     "partition": null,
+     "verdict": "CORRECT",
+     "correctness": 1.0,
+     "completeness": 1.0,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 4,
+     "gold_present": 4,
+     "hallucinations": [],
+     "rationale": "Gold requires CAPEC-26 plus its three execution steps (capec:attack-pattern:26:step:1, step:2, step:3). The answer's claims name CAPEC-26 and enumerate exactly those three step ids, matching logic_flow.results[0].records[0].related verbatim (ids, names Step 1/2/3, descriptions). Abstraction (Meta) and Status (Stable) properties are also correctly cited from the record's properties. No ids or facts outside the retrieved evidence are asserted, and no cross-source correlation is claimed."
+    },
+    {
+     "id": "H-GRP-01",
+     "category": "groups",
+     "stratum": "attack",
+     "partition": null,
+     "verdict": "INCORRECT",
+     "correctness": 0.0,
+     "completeness": 0.0,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 11,
+     "gold_present": 0,
+     "hallucinations": [],
+     "rationale": "Gold requires surfacing groups G0006, G0007, G0050, G0093, G0094, G0096, G0102, G0114, G0143, G1003, G1016 as users of T1550.002. The executed Cypher (logic_flow.results[0].query) is 'MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN $ids ...' with $ids bound to seed_ids=['T1550.002'] -- i.e. it filters Group.attack_id against a technique id, which can never match any group node, so the query is structurally miswired for this question and returns 0 rows regardless of what data exists. The answer correctly reports zero rows and abstains, and the abstention is faithful/grounded (it accurately restates the query and row_count=0 shown in the trace, matching evidence_volume.records=0 and deterministic_scores.coverage.found=0). No hallucinated facts, ids, or names are present. However, per the deterministic_scores.coverage block itself, 0 of 12 gold ids (11 groups + T1550.002) were surfaced, so despite being an honest, well-grounded abstention, it fails to answer the analyst's question at all -- a pipeline join-key bug, not a genuine absence of evidence in the MITRE snapshot."
+    },
+    {
+     "id": "H-GRP-02",
+     "category": "groups",
+     "stratum": "attack",
+     "partition": null,
+     "verdict": "INCORRECT",
+     "correctness": 0.0,
+     "completeness": 0.0,
+     "faithfulness": 0.7,
+     "groundedness": 1.0,
+     "gold_expected": 2,
+     "gold_present": 0,
+     "hallucinations": [],
+     "rationale": "Gold requires the answer to surface T1609 and its using group G0139 (must_include_related: G0139), but the pipeline abstained with zero records. The abstention is not a genuine data gap: the executed Cypher is `MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN $ids ...` with $ids bound to the seed_ids [\"T1609\"] (a technique id). This filters Group.attack_id against a technique id, which can never match any group, so the query is structurally guaranteed to return 0 rows regardless of whether G0139 actually uses T1609 in the underlying data. The correct template would filter t.attack_id IN $ids. Coverage score in the artifact itself confirms this (coverage.gold=2, found=0, missing=[G0139, T1609]). Because the abstention is caused by a query-construction defect rather than an honest absence of evidence, and the gold explicitly expects G0139 to be found, this is graded INCORRECT rather than a legitimate abstention. No fabricated facts were asserted (faithfulness penalized only modestly, since the abstention message itself is truthful about what the flawed query returned), but correctness and completeness are 0 given the pipeline surfaced none of the two gold-required ids."
+    },
+    {
+     "id": "H-LKP-01",
+     "category": "lookup",
+     "stratum": "attack",
+     "partition": null,
+     "verdict": "PARTIAL",
+     "correctness": 0.55,
+     "completeness": 1.0,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 1,
+     "gold_present": 1,
+     "hallucinations": [],
+     "rationale": "Gold requires only that T1036.010 be retrieved with name 'Masquerade Account Name' (min/max 1 record). The answer correctly resolves the single ATT&CK record and every stated fact (revoked, stix_type, x_mitre_deprecated, x_mitre_is_subtechnique, x_mitre_version) matches logic_flow.results[0].records[0].properties exactly, so faithfulness and groundedness are clean and gold coverage (1/1) is satisfied. However the question explicitly asks 'how does this technique actually work' and the retrieved record contains a full mechanism description (masquerading account names during Create Account, mimicking service-account names, generic names like admin/help/root, distinct from Impersonation T1684.001) that is present in the evidence (records[0].description / properties.description) but never surfaced in the narrative or claims -- the answer only emits STIX bookkeeping metadata (revoked/type/deprecated/subtechnique flag/version) and omits the actual substantive explanation the analyst asked for. This is a known deterministic-arm limitation (no LLM writer to turn the description field into a claim) rather than a hallucination, but it means the answer does not substantively address the 'how it works' portion of the question despite technically satisfying the narrow gold assertions."
+    },
+    {
+     "id": "H-LKP-02",
+     "category": "lookup",
+     "stratum": "attack",
+     "partition": null,
+     "verdict": "PARTIAL",
+     "correctness": 0.55,
+     "completeness": 1.0,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 1,
+     "gold_present": 1,
+     "hallucinations": [],
+     "rationale": "Gold requires exactly one record, T1591.003 named 'Identify Business Tempo' (assertions.must_include_ids, expect_names); the retrieved record matches on id and name, and every stated fact (revoked=False, stix_type=attack-pattern, x_mitre_deprecated=False, x_mitre_is_subtechnique=True, x_mitre_version=1.0) is directly grounded in the record's properties, so faithfulness and groundedness are clean and the formal gold coverage (deterministic_scores.coverage=1.0) is satisfied. However the question explicitly asks 'can you give me a description of this sub-technique?' and the evidence (logic_flow.results[0].records[0].description / properties.description) contains the full MITRE description text ('Adversaries may gather information about the victim's business tempo...'), but neither the narrative nor the claims surface any of that description -- the answer only lists STIX metadata flags. This is a real, non-trivial failure to answer what was actually asked, even though it passes the id/name-only gold check, so correctness is marked down to reflect the missing substantive content while faithfulness/groundedness/completeness (against the narrow gold schema) remain high."
+    },
+    {
+     "id": "H-LKP-03",
+     "category": "lookup",
+     "stratum": "capec",
+     "partition": null,
+     "verdict": "PARTIAL",
+     "correctness": 0.55,
+     "completeness": 0.5,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 1,
+     "gold_present": 1,
+     "hallucinations": [],
+     "rationale": "The pipeline correctly resolves CAPEC-321 and matches gold's expect_names ('TCP Sequence Number Probe'), satisfying must_include_ids and the min/max=1 record cardinality in gold.assertions -- so formally the retrieval target is hit. However, the question asks what the attack pattern 'actually involves,' and the answer's claims surface only metadata (Abstraction: Detailed; Status: Stable) rather than the substantive content: the record's evidence.records[0].description explains the actual technique (sending a probe packet and comparing the returned sequence number to the acknowledgement number to fingerprint the OS via one of four categorized response patterns), but this description is never emitted into narrative or claims. Both claims present (id/name found; abstraction+status) are fully grounded in logic_flow.records[0] with no invented facts, dates, or aliases, so faithfulness and groundedness are clean. This mirrors the known deterministic-composer ceiling: gold's structural assertions pass, but the analyst-facing answer does not actually convey what the attack pattern involves, which is the substance of the question asked."
+    },
+    {
+     "id": "H-MAP-01",
+     "category": "mapping",
+     "stratum": "capec",
+     "partition": null,
+     "verdict": "INCORRECT",
+     "correctness": 0.1,
+     "completeness": 0.25,
+     "faithfulness": 0.9,
+     "groundedness": 0.9,
+     "gold_expected": 4,
+     "gold_present": 1,
+     "hallucinations": [],
+     "rationale": "The question asks which ATT&CK techniques CAPEC-21 maps to; gold requires T1134, T1528, T1539 (must_include_related). The answer's narrative and claims never name a single ATT&CK technique -- it only restates CAPEC-21's Abstraction (Meta) and Status (Stable), both of which are accurate per the record's properties. The logic_flow evidence itself shows a MAPS_TO facet with count 3 (out, to TaxonomyEntry), confirming 3 outbound technique mappings exist and were even counted by the query, but the 'related' array was never populated/traversed and the composer surfaced none of them, nor did it abstain to flag the gap. Coverage in deterministic_scores confirms this: gold=4 (CAPEC-21 + 3 techniques), found=1, coverage=0.25, missing=[T1134,T1528,T1539]. No fabricated facts are present (faithfulness/groundedness are high for what was stated), but the answer fails the actual question asked, so it is INCORRECT rather than merely PARTIAL."
+    },
+    {
+     "id": "H-MAP-02",
+     "category": "mapping",
+     "stratum": "capec",
+     "partition": null,
+     "verdict": "INCORRECT",
+     "correctness": 0.05,
+     "completeness": 0.17,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 6,
+     "gold_present": 1,
+     "hallucinations": [],
+     "rationale": "The question explicitly asks which ATT&CK techniques CAPEC-639 maps to. Gold requires T1039, T1552.001, T1552.003, T1552.004, T1552.006 (must_include_related, coverage.gold=6 including CAPEC-639 itself). The answer's narrative and claims report only CAPEC-639's Abstraction/Status metadata and never name a single ATT&CK technique -- the record's 'related' array is empty despite the facets block showing MAPS_TO -> TaxonomyEntry count: 5, meaning the pipeline's own query captured the mapping edges but the normalize step discarded them before they reached the answer. deterministic_scores.coverage confirms this: found=1/gold=6, coverage=0.167, missing all five technique ids. No statement in the answer is factually wrong (Abstraction: Detailed, Status: Stable, and the record id are all grounded in logic_flow.records[0].properties), so faithfulness and groundedness are high, but the answer fails to address the substance of the question, so correctness is near zero."
+    },
+    {
+     "id": "H-MIT-01",
+     "category": "mitigations",
+     "stratum": "attack",
+     "partition": null,
+     "verdict": "CORRECT",
+     "correctness": 1.0,
+     "completeness": 1.0,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 3,
+     "gold_present": 3,
+     "hallucinations": [],
+     "rationale": "Gold requires T1543.005 (Container Service) present with related mitigations M1018 and M1054. The single retrieved record has primary_id T1543.005, name 'Container Service', and related list containing exactly M1054 (Software Configuration) and M1018 (User Account Management), matching the query 'MATCH (t:SubTechnique)... OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation)'. The answer's claims cite T1543.005 and both mitigation ids with correct names, and the narrative states both explicitly. No ids or names in the answer are absent from the evidence, and no invented facts, aliases, or counts appear."
+    },
+    {
+     "id": "H-MIT-02",
+     "category": "mitigations",
+     "stratum": "attack",
+     "partition": null,
+     "verdict": "CORRECT",
+     "correctness": 1.0,
+     "completeness": 1.0,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 2,
+     "gold_present": 2,
+     "hallucinations": [],
+     "rationale": "Gold requires must_include_ids=[T1567.004] and must_include_related=[M1057]. The answer's claims and narrative name both T1567.004 (Exfiltration Over Webhook) and its mitigation M1057 (Data Loss Prevention), matching the single record retrieved in logic_flow.results[0].records[0], whose related list contains exactly M1057 with matching name/description. No unsupported facts, counts, or names are introduced beyond the evidence."
+    },
+    {
+     "id": "H-PRE-01",
+     "category": "prerequisite",
+     "stratum": "capec",
+     "partition": null,
+     "verdict": "INCORRECT",
+     "correctness": 0.1,
+     "completeness": 0.25,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 4,
+     "gold_present": 1,
+     "hallucinations": [],
+     "rationale": "The question asks for the preconditions and required resources to execute CAPEC-696. The gold requires the three REQUIRES_SKILL neighbors (capec:attack-pattern:696:skill:1/2/3), which are exactly the 'Skills_Required' fields answering the question. The executed Gremlin query correctly retrieved all three skill records into logic_flow.records[0].related (e.g. skill:1 = 'Detailed knowledge on how various CPU architectures and microcode perform transient execution...', skill:2 = knowledge of compiled binaries/OS layout for data leakage, skill:3 = ability to provoke faulting/assisted loads). However, the answer's narrative and claims never surface any of this retrieved evidence -- they only state CAPEC-696's Abstraction ('Detailed') and Status ('Draft'), which do not answer what preconditions/resources are required. Coverage per deterministic_scores is 1/4 (0.25), matching only must_include_ids CAPEC-696 while all three must_include_related skill ids are listed as missing despite being present in the retrieved evidence. Everything stated is accurate and grounded (no hallucination), but the answer substantively fails to address the question asked, so correctness is very low despite perfect faithfulness/groundedness on the narrow claims it does make."
+    },
+    {
+     "id": "H-REV-01",
+     "category": "reverse-mapping",
+     "stratum": "federated",
+     "partition": "abstention-expected",
+     "verdict": "CORRECT",
+     "correctness": 1.0,
+     "completeness": 1.0,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 0,
+     "gold_present": 0,
+     "hallucinations": [],
+     "rationale": "Gold expects no CAPEC<->ATT&CK correlation for T1055.011 (expect_no_correlation=true, must_correlate=[]). The system correctly abstained on the capec leg: its abstention statement explicitly says the capec source returned no matching records and carries the exact executed Gremlin query (capec_reverse_maps template, g.V()...MAPS_TO...AttackPattern...) as proof it looked. The attack leg independently answered 'what is T1055.011' with facts (revoked, stix_type, deprecated, is_subtechnique, version) that are all directly grounded in the logic_flow record properties for T1055.011 (attack-pattern--0042a9f5-f053-4769-b3ef-9ad018dfa298). No cross-source mapping, CAPEC id, or correlation was asserted anywhere in narrative or claims. deterministic_scores confirms correlation.negative=true, exact=true, f1=1.0, and abstention_proof_ok=true."
+    },
+    {
+     "id": "H-REV-02",
+     "category": "reverse-mapping",
+     "stratum": "federated",
+     "partition": "answerable",
+     "verdict": "CORRECT",
+     "correctness": 1.0,
+     "completeness": 1.0,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 5,
+     "gold_present": 5,
+     "hallucinations": [],
+     "rationale": "Gold requires must_include_ids CAPEC-37, CAPEC-474, CAPEC-485, CAPEC-639 (each must_include_related T1552.004) plus attack must_include_ids T1552.004. The answer's claims list all four CAPEC records with correct names, Abstraction/Status properties matching logic_flow.results[0].records exactly, each citing a TaxonomyEntry capec:taxonomy:ATTACK:1552.004 that matches the 'related' field in evidence. The ATT&CK claim for T1552.004 (Private Keys) reproduces properties (revoked, stix_type, x_mitre_deprecated, x_mitre_is_subtechnique, x_mitre_version) verbatim from logic_flow.results[1].records[0].properties. The cross-source correlation claim correctly identifies T1552.004 as corroborated across capec and attack citing all 5 records, matching must_correlate. No invented facts, names, or ids found; every entity_id and property traces directly to logic_flow evidence."
+    },
+    {
+     "id": "H-REV-03",
+     "category": "reverse-mapping",
+     "stratum": "federated",
+     "partition": "answerable",
+     "verdict": "CORRECT",
+     "correctness": 1.0,
+     "completeness": 1.0,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 3,
+     "gold_present": 3,
+     "hallucinations": [],
+     "rationale": "Gold requires must_include_ids CAPEC-21 and CAPEC-633 (both must relate to T1134) plus the ATT&CK record T1134 itself. The answer's claims list both CAPEC-633 (Token Impersonation) and CAPEC-21 (Exploitation of Trusted Identifiers), each correctly cited with TaxonomyEntry capec:taxonomy:ATTACK:1134 matching related records in logic_flow. T1134 (Access Token Manipulation) is retrieved and described from the attack source with properties matching logic_flow exactly (revoked, stix_type, x_mitre_deprecated, x_mitre_is_subtechnique, x_mitre_version all verbatim). The cross-source correlation claim (T1134 corroborated across capec and attack, 3 records) matches must_correlate=[T1134] and is grounded in the three retrieved records. No invented facts, names, or counts found; every claim's entity_ids and properties trace directly to logic_flow.results records."
+    },
+    {
+     "id": "H-SUB-01",
+     "category": "subtechnique",
+     "stratum": "attack",
+     "partition": null,
+     "verdict": "PARTIAL",
+     "correctness": 0.75,
+     "completeness": 1.0,
+     "faithfulness": 0.8,
+     "groundedness": 1.0,
+     "gold_expected": 1,
+     "gold_present": 1,
+     "hallucinations": [
+      "Narrative states 'T1583 (Acquire Infrastructure) has 1 related item(s): T1583.003', implicitly answering the question's second half ('does that parent have other sub-techniques alongside it?') as 'no'. But the executed Cypher query filters WHERE t.attack_id IN $ids OR st.attack_id IN $ids with $ids=['T1583.003'] -- since parent ids never match a sub-technique seed, this can only ever return the single row matching st.attack_id='T1583.003'. The query is structurally incapable of surfacing sibling sub-techniques of T1583 even if they exist, so the '1 related item(s)' count is not evidence that T1583.003 is the only sub-technique of T1583; it is an artifact of the seed-restricted query."
+     ],
+     "rationale": "Gold assertions (must_include_ids: T1583.003, must_include_related: T1583, min_records 1) are fully satisfied: the answer correctly names T1583 (Acquire Infrastructure) as the parent of T1583.003 (Virtual Private Server), both ids traceable to logic_flow.records[0] (primary_id T1583, related[0].id T1583.003). Coverage per deterministic_scores is 1.0/1.0 and citations are fully provenanced. However, the question explicitly asks a second question -- whether T1583 has other sub-techniques alongside T1583.003 -- and the narrative's phrasing ('has 1 related item(s)') reads as an implicit 'no', which is not actually grounded: the query was seeded on T1583.003 only and structurally cannot retrieve or rule out sibling sub-techniques (e.g. T1583.001 Domains, T1583.002 DNS Server, T1583.004 Server, T1583.005 Botnet, T1583.006 Web Services, all real MITRE ATT&CK v19 sub-techniques of T1583 that this query never had the ability to see). Since gold's ex_gold pool only expects T1583 as a neighbor and does not test sibling completeness, this doesn't sink coverage, but it does mean half of what the analyst literally asked was answered by a query artifact rather than genuine evidence -- a real but minor unsupported implication, not a fabricated fact-name/count. Hence PARTIAL rather than CORRECT."
+    },
+    {
+     "id": "H-SW-01",
+     "category": "software",
+     "stratum": "attack",
+     "partition": null,
+     "verdict": "INCORRECT",
+     "correctness": 0.1,
+     "completeness": 0.2,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 5,
+     "gold_present": 1,
+     "hallucinations": [],
+     "rationale": "Gold requires the T1555.005 node itself plus the four software implementers S0266, S0279, S0652, S1245 (must_include_related, ex_gold pool=neighbors). The retrieved facets on T1555.005 clearly show a USES-in relationship from label Software with count=4, meaning the graph query saw the 4 software edges but the pipeline's 'related' array was never populated (related: []), so none of S0266/S0279/S0652/S1245 appear anywhere in claims, narrative, or evidence. The answer only restates the technique's own metadata (revoked, stix_type, deprecated, is_subtechnique, version) rather than the software that implements it, which is what the question and gold actually target. Everything stated is faithfully grounded in properties_json (no fabrication), so faithfulness/groundedness are high, but coverage is 1/5 (only the seed id itself), matching the artifact's own deterministic_scores.coverage=0.2 with all four required related ids listed as missing. The answer fails to address the substantive ask and should be treated as incorrect rather than merely partial."
+    },
+    {
+     "id": "H-SW-02",
+     "category": "software",
+     "stratum": "attack",
+     "partition": null,
+     "verdict": "INCORRECT",
+     "correctness": 0.02,
+     "completeness": 0.0,
+     "faithfulness": 0.9,
+     "groundedness": 0.9,
+     "gold_expected": 170,
+     "gold_present": 0,
+     "hallucinations": [],
+     "rationale": "The question asks which software implements T1005; gold requires listing 170 software/tool ids (S0009...S9035). The executed query fetched only the Technique node's own properties and aggregate relationship-type counts (facets), never expanding the 169 incoming USES edges from Software into actual related records ('related': [] in the single record, evidence_volume.related=0). The narrative and both claims only restate T1005's own metadata (revoked, stix_type, version) and name zero software. deterministic_scores.coverage confirms this: coverage=0.0058 (1/170), with all 170 gold software ids listed as missing. The two claims made are individually accurate against the T1005 node evidence (no fabricated facts), so faithfulness/groundedness are high, but the answer fails to address the actual question at all -- it identifies no software whatsoever, making it INCORRECT rather than merely PARTIAL."
+    },
+    {
+     "id": "H-TAC-01",
+     "category": "tactics",
+     "stratum": "attack",
+     "partition": null,
+     "verdict": "CORRECT",
+     "correctness": 1.0,
+     "completeness": 1.0,
+     "faithfulness": 1.0,
+     "groundedness": 1.0,
+     "gold_expected": 3,
+     "gold_present": 3,
+     "hallucinations": [],
+     "rationale": "Gold requires must_include_ids=[T1546.011] and must_include_related=[TA0003, TA0004]. The answer's claims and narrative correctly name T1546.011 and both TA0003 (Persistence) and TA0004 (Privilege Escalation) as its tactics, matching the single retrieved record in logic_flow.results[0].records[0] exactly (related: TA0004 Privilege Escalation, TA0003 Persistence). No extra or invented ids, names, counts, or aliases were introduced. All 3 gold-required ids are present and correctly grounded."
+    }
+   ],
+   "blind_minus_dev": -0.3699
+  }
+ }
+}
