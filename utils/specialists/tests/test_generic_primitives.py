@@ -110,22 +110,65 @@ def test_generic_chain_reaches_a_two_hop_label(generic_only: None) -> None:
     draft = CypherQueryBuilder().build(resolved)
 
     assert draft.template == "generic_chain"
-    assert draft.meta["paths"] == ["DETECTS:in", "DETECTS:in->HAS_ANALYTIC:out"]
     # The intermediate is retrieved in its own right, not just traversed: the
     # one-hop prefix gets its own block alongside the two-hop one.
-    assert "<-[:DETECTS]-(m0)" in draft.query
-    assert "<-[:DETECTS]-()-[:HAS_ANALYTIC]->(m1)" in draft.query
+    assert "Technique|DETECTS:in" in draft.meta["paths"]
+    assert "Technique|DETECTS:in->HAS_ANALYTIC:out" in draft.meta["paths"]
+    assert "<-[:DETECTS]-()-[:HAS_ANALYTIC]->" in draft.query
 
 
 def test_generic_chain_uses_the_declared_direction(generic_only: None) -> None:
-    """DETECTS points DetectionStrategy -> Technique, so the walk is inbound."""
+    """DETECTS points DetectionStrategy -> Technique, so from a Technique it is inbound.
+
+    Both roots are emitted because the seed's real label is not known at build
+    time, but each branch is guarded by the label it was derived from, so only
+    the applicable one fires.
+    """
     resolved = _attack(
         "How is T1047 detected?", ("Technique", "DetectionStrategy")
     )
     draft = CypherQueryBuilder().build(resolved)
 
-    assert "<-[:DETECTS]-" in draft.query
-    assert "-[:DETECTS]->" not in draft.query
+    assert "Technique|DETECTS:in" in draft.meta["paths"]
+    assert "<-[:DETECTS]-(m1) WHERE n:Technique OR NOT (" in draft.query
+
+
+def test_generic_chain_guards_each_branch_by_its_root_label(
+    generic_only: None,
+) -> None:
+    """A branch derived from label L must not fire on an anchor that is not L.
+
+    Without the guard, "which techniques does Mimikatz use" also takes the
+    inbound USES branch and returns the fifty-one groups that use Mimikatz as
+    though they were techniques it uses — the exact conflation behind all six of
+    Arm G's hallucinations.
+    """
+    resolved = _attack(
+        "Which techniques does software S0002 use?", ("Software", "Technique")
+    )
+    query = CypherQueryBuilder().build(resolved).query
+
+    assert "-[:USES]->(m0) WHERE n:Software OR NOT (n:Software OR n:Technique)" in query
+    assert "<-[:USES]-(m1) WHERE n:Technique OR NOT (n:Software OR n:Technique)" in query
+
+
+def test_generic_chain_falls_back_when_the_anchor_matches_no_candidate(
+    generic_only: None,
+) -> None:
+    """A sub-technique seed resolving ["Tactic", "Technique"] carries neither.
+
+    The guard's second disjunct is what stops that anchor from being excluded
+    from every branch: when it matches no candidate label, all branches apply.
+    """
+    resolved = _attack(
+        "Which tactics do those techniques belong to?",
+        ("Tactic", "Technique"),
+        seed_ids=("T1110.001",),
+    )
+    query = CypherQueryBuilder().build(resolved).query
+
+    assert query.count("OR NOT (n:Tactic OR n:Technique)") == 2
+    assert "<-[:HAS_TECHNIQUE]-" in query
 
 
 def test_generic_chain_does_not_filter_the_far_end_by_label(
@@ -143,19 +186,24 @@ def test_generic_chain_does_not_filter_the_far_end_by_label(
     )
     draft = CypherQueryBuilder().build(resolved)
 
-    assert "-[:USES]->(m0)" in draft.query
-    assert ":Technique)" not in draft.query
+    assert "-[:USES]->(m0) WHERE" in draft.query
+    # The far end carries no label filter; the only labels in the query are the
+    # anchor guards, which sit before the WHERE's OR NOT clause.
+    assert "->(m0:Technique)" not in draft.query
+    assert "-(m1:Technique)" not in draft.query
 
 
 def test_generic_chain_dedupes_paths_on_edge_not_label(generic_only: None) -> None:
-    """Two labels behind one edge are one branch, not two."""
+    """Two labels behind one edge are one branch per root, not one per label."""
     resolved = _attack(
         "Which techniques does software S0002 use?",
         ("Software", "Technique", "SubTechnique"),
     )
-    draft = CypherQueryBuilder().build(resolved)
+    paths = CypherQueryBuilder().build(resolved).meta["paths"]
 
-    assert draft.meta["paths"] == ["USES:out"]
+    # Software reaches Technique and SubTechnique by the same edge: one branch.
+    assert paths.count("Software|USES:out") == 1
+    assert not any(p.startswith("Software|USES:out->") for p in paths)
 
 
 def test_generic_chain_aggregates_branches_independently(
@@ -172,8 +220,10 @@ def test_generic_chain_aggregates_branches_independently(
     )
     query = CypherQueryBuilder().build(resolved).query
 
-    assert query.count("OPTIONAL MATCH") == 2
-    assert query.count("collect(DISTINCT") == 2
+    # One OPTIONAL MATCH per branch, each with its own collect — never several
+    # patterns in one MATCH, which would take their cartesian product.
+    assert query.count("OPTIONAL MATCH") == query.count("collect(DISTINCT")
+    assert query.count("OPTIONAL MATCH") >= 2
 
 
 def test_generic_chain_keeps_the_anchor_when_the_path_is_empty(
@@ -251,8 +301,12 @@ def test_generic_walk_resolves_direction_from_the_registry(
     draft = GremlinQueryBuilder().build(resolved)
 
     assert draft.template == "generic_walk"
-    assert 'union(__.out("HAS_MITIGATION"))' in draft.query
+    assert '__.hasLabel("AttackPattern"), __.not(' in draft.query
+    assert '.out("HAS_MITIGATION")' in draft.query
     assert draft.params["ids"] == ["capec:attack-pattern:66"]
+    # Anchored by identifier alone: a hasLabel filter on the anchor can only be
+    # wrong, since the canonical vertex id is already unique across labels.
+    assert draft.query.startswith('g.V().has("id", within(ids))')
 
 
 def test_generic_walk_repeats_a_self_referential_edge(generic_only: None) -> None:
@@ -269,7 +323,7 @@ def test_generic_walk_repeats_a_self_referential_edge(generic_only: None) -> Non
     draft = GremlinQueryBuilder().build(resolved)
 
     assert draft.template == "generic_walk"
-    assert '__.out("CHILD_OF").out("CHILD_OF")' in draft.query
+    assert '.out("CHILD_OF").out("CHILD_OF")' in draft.query
 
 
 def test_generic_walk_emits_both_directions_of_a_self_loop(
@@ -286,8 +340,8 @@ def test_generic_walk_emits_both_directions_of_a_self_loop(
     )
     paths = GremlinQueryBuilder().build(resolved).meta["paths"]
 
-    assert "ChildOf:out" in paths
-    assert "ChildOf:in" in paths
+    assert "AttackPattern|ChildOf:out" in paths
+    assert "AttackPattern|ChildOf:in" in paths
 
 
 def test_generic_walk_only_repeats_edges_the_task_named(

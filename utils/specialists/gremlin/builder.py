@@ -555,7 +555,7 @@ class GremlinQueryBuilder:
 
     def _self_referential_prefixes(
         self, resolved: ResolvedTask, registry: Any
-    ) -> list[tuple[tuple[str, str], ...]]:
+    ) -> list[tuple[str, tuple[tuple[str, str], ...]]]:
         """Transitive repetitions of a named edge that loops on the anchor label.
 
         ``AttackPattern -ChildOf-> AttackPattern`` is a hierarchy: asked for the
@@ -573,21 +573,19 @@ class GremlinQueryBuilder:
         must not guess, so it returns both and lets the answer be over-complete
         rather than silently half-missing.
         """
-        anchor_label = resolved.primary_label()
-        if not anchor_label:
-            return []
-        out: list[tuple[tuple[str, str], ...]] = []
-        for rel in resolved.relationships:
-            for facet in (
-                registry.label_facets(anchor_label, dataset=resolved.dataset) or []
-            ):
-                if facet.rel_type != rel or facet.neighbour_label != anchor_label:
-                    continue
-                hop = (facet.rel_type, facet.direction)
-                for depth in range(1, _MAX_WALK_HOPS + 1):
-                    candidate = tuple([hop] * depth)
-                    if candidate not in out:
-                        out.append(candidate)
+        out: list[tuple[str, tuple[tuple[str, str], ...]]] = []
+        for anchor_label in [label for label in resolved.labels if label]:
+            for rel in resolved.relationships:
+                for facet in (
+                    registry.label_facets(anchor_label, dataset=resolved.dataset) or []
+                ):
+                    if facet.rel_type != rel or facet.neighbour_label != anchor_label:
+                        continue
+                    hop = (facet.rel_type, facet.direction)
+                    for depth in range(1, _MAX_WALK_HOPS + 1):
+                        candidate = (anchor_label, tuple([hop] * depth))
+                        if candidate not in out:
+                            out.append(candidate)
         return out
 
     def _generic_walk(self, resolved: ResolvedTask) -> QueryDraft | None:
@@ -610,19 +608,27 @@ class GremlinQueryBuilder:
         registry = self._generic_registry(resolved)
         if registry is None:
             return None
-        anchor_label = resolved.primary_label()
-        if not anchor_label:
+        candidates = [label for label in resolved.labels if label]
+        if not candidates:
             return None
-        wanted = [
-            label for label in resolved.labels if label and label != anchor_label
-        ]
 
         from utils.specialists.schema.paths import edge_prefixes, shortest_paths
 
-        paths = shortest_paths(
-            registry, resolved.dataset, anchor_label, max_hops=_MAX_WALK_HOPS
-        )
-        prefixes = edge_prefixes(paths, wanted)
+        # Every resolved label is tried as the anchor. ``primary_label()`` is
+        # ``labels[0]`` — the order the plan listed entities in — which says
+        # nothing about what the seed actually is. Anchoring on the wrong one
+        # walks the right edge the wrong way and returns nothing.
+        merged: dict[tuple[str, tuple[tuple[str, str], ...]], None] = {}
+        for anchor in candidates:
+            wanted = [label for label in candidates if label != anchor]
+            if not wanted:
+                continue
+            paths = shortest_paths(
+                registry, resolved.dataset, anchor, max_hops=_MAX_WALK_HOPS
+            )
+            for prefix in edge_prefixes(paths, wanted):
+                merged.setdefault((anchor, prefix), None)
+        prefixes = sorted(merged, key=lambda item: (len(item[1]), item[0]))
 
         # A named edge that lands back on the anchor's own label is a hierarchy,
         # and the answer to "walk up from here" is the whole ancestry, not the
@@ -634,22 +640,36 @@ class GremlinQueryBuilder:
         if not prefixes:
             return None
 
+        # Same guard as the Cypher chain: a branch derived from label L fires on
+        # an anchor of that label, or on an anchor carrying none of the candidate
+        # labels at all — the planner's labels are approximate and a seed's real
+        # label is often a subtype it never named.
+        guard_labels = ", ".join(
+            f'"{_safe_gremlin_ident(label, "candidate label")}"'
+            for label in sorted({root for root, _ in prefixes})
+        )
         branches: list[str] = []
-        for path in prefixes:
+        for root, path in prefixes:
             steps = []
             for rel, direction in path:
                 edge = gremlin_edge_label(
                     _safe_gremlin_ident(rel, "relationship type")
                 )
                 steps.append(f'{"out" if direction == "out" else "in"}("{edge}")')
-            branches.append(".".join(steps))
+            safe_root = _safe_gremlin_ident(root, "anchor label")
+            guard = (
+                f'or(__.hasLabel("{safe_root}"), __.not(__.hasLabel({guard_labels})))'
+            )
+            branches.append(f'{guard}.{".".join(steps)}')
 
         ids = [_gremlin_vertex_id(s) for s in resolved.seed_ids]
-        safe_anchor = _safe_gremlin_ident(anchor_label, "anchor label")
         lim = resolved.task.max_rows()
         union = ", ".join(f"__.{b}" for b in branches)
+        # Anchored by identifier alone. The canonical vertex id is unique across
+        # labels, so a hasLabel() filter adds nothing but a way to be wrong: it
+        # matches zero vertices whenever the guessed label is not the seed's.
         query = (
-            f'g.V().hasLabel("{safe_anchor}").has("id", within(ids)).as("ap")'
+            'g.V().has("id", within(ids)).as("ap")'
             f".union({union}).as(\"nbr\")"
             f'.select("ap","nbr").by(elementMap()).limit({lim})'
         )
@@ -659,8 +679,11 @@ class GremlinQueryBuilder:
             template="generic_walk",
             expected_nonempty=False,
             meta={
-                "anchor_label": anchor_label,
-                "paths": ["->".join(f"{r}:{d}" for r, d in p) for p in prefixes],
+                "anchor_candidates": candidates,
+                "paths": [
+                    f"{root}|" + "->".join(f"{r}:{d}" for r, d in p)
+                    for root, p in prefixes
+                ],
                 "seed_ids": list(resolved.seed_ids),
             },
         )

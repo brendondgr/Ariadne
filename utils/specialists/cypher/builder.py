@@ -567,7 +567,7 @@ class CypherQueryBuilder:
 
     def _declared_paths(
         self, resolved: ResolvedTask
-    ) -> list[tuple[tuple[str, str], ...]] | None:
+    ) -> list[tuple[str, tuple[tuple[str, str], ...]]] | None:
         """Shortest declared path from the anchor label to the deepest requested one.
 
         Breadth-first over the derived schema registry's facets, which are a
@@ -582,6 +582,17 @@ class CypherQueryBuilder:
         two labels and no edge — otherwise falls through to ``describe`` and
         returns counts. Deriving the edge from the declared structure covers it,
         and carries the true direction with it.
+
+        **Every** resolved label is tried as the anchor, not just the first.
+        ``primary_label()`` returns ``labels[0]``, which is the order the *plan*
+        listed entities in and says nothing about what the seed actually is: a
+        sub-question seeded with ``T1110.001`` and resolving
+        ``["Tactic", "Technique"]`` would otherwise be anchored as a Tactic and
+        walk ``HAS_TECHNIQUE`` outbound, retrieving nothing and losing the tactic
+        the question asked for. The query matches the anchor by identifier and
+        never by label, so the seed's real label decides which branches match;
+        branches rooted at the wrong label are an ``OPTIONAL MATCH`` that finds
+        nothing, which costs a little breadth and cannot produce a wrong answer.
         """
         from utils.specialists.schema import get_registry
         from utils.specialists.schema.paths import edge_prefixes, shortest_paths
@@ -593,17 +604,21 @@ class CypherQueryBuilder:
         if registry is None:
             return None
 
-        anchor = resolved.primary_label()
-        if not anchor:
-            return None
-        wanted = [label for label in resolved.labels if label and label != anchor]
-        if not wanted:
+        candidates = [label for label in resolved.labels if label]
+        if not candidates:
             return None
 
-        paths = shortest_paths(
-            registry, resolved.dataset, anchor, max_hops=_MAX_CHAIN_HOPS
-        )
-        return edge_prefixes(paths, wanted) or None
+        merged: dict[tuple[str, tuple[tuple[str, str], ...]], None] = {}
+        for anchor in candidates:
+            wanted = [label for label in candidates if label != anchor]
+            if not wanted:
+                continue
+            paths = shortest_paths(
+                registry, resolved.dataset, anchor, max_hops=_MAX_CHAIN_HOPS
+            )
+            for prefix in edge_prefixes(paths, wanted):
+                merged.setdefault((anchor, prefix), None)
+        return sorted(merged, key=lambda item: (len(item[1]), item[0])) or None
 
     def _generic_chain(self, resolved: ResolvedTask) -> QueryDraft | None:
         """Walk every declared path to every requested label, one row per hop.
@@ -626,16 +641,27 @@ class CypherQueryBuilder:
         if not paths:
             return None
 
+        # A branch derived from label L must not fire on an anchor that is
+        # something else, or "which techniques does Mimikatz use" picks up the
+        # inbound USES branch too and returns the fifty-one groups that use
+        # Mimikatz as though they were techniques it uses.
+        #
+        # The second disjunct is what keeps the guard from being too strict: the
+        # planner's labels are approximate, and a sub-technique seed resolving
+        # ``["Tactic", "Technique"]`` carries none of them. When the anchor
+        # matches no candidate at all, every branch is allowed rather than none.
+        candidates = sorted({label for label, _ in paths})
+        candidate_test = " OR ".join(f"n:{label}" for label in candidates)
         blocks: list[str] = []
         collected: list[str] = []
-        for i, path in enumerate(paths):
+        for i, (root, path) in enumerate(paths):
             pattern: list[str] = []
             for j, (rel, direction) in enumerate(path):
                 safe_rel = _safe_ident(rel, _SAFE_REL_RE, "relationship type")
                 # Only the terminal node of the prefix is bound; the ones before
                 # it are matched anonymously because a shorter prefix already
-                # collects them in its own block. Neither end is label-filtered —
-                # the edge decides what is on the other side.
+                # collects them in its own block. The far end is never
+                # label-filtered — the edge decides what is on the other side.
                 var = f"m{i}" if j == len(path) - 1 else ""
                 arrow = (
                     f"<-[:{safe_rel}]-" if direction == "in" else f"-[:{safe_rel}]->"
@@ -643,8 +669,9 @@ class CypherQueryBuilder:
                 pattern.append(f"{arrow}({var})")
             terminal_rel = _safe_ident(path[-1][0], _SAFE_REL_RE, "relationship type")
             carry = ", ".join(["n", *collected])
+            guard = f"n:{root} OR NOT ({candidate_test})"
             blocks.append(
-                f"OPTIONAL MATCH (n){''.join(pattern)} "
+                f"OPTIONAL MATCH (n){''.join(pattern)} WHERE {guard} "
                 f"WITH {carry}, collect(DISTINCT {{m: m{i}, r: '{terminal_rel}'}}) AS h{i}"
             )
             collected.append(f"h{i}")
@@ -667,7 +694,10 @@ class CypherQueryBuilder:
             template="generic_chain",
             expected_nonempty=False,
             meta={
-                "paths": ["->".join(f"{r}:{d}" for r, d in path) for path in paths],
+                "paths": [
+                    f"{root}|" + "->".join(f"{r}:{d}" for r, d in path)
+                    for root, path in paths
+                ],
                 "seed_ids": list(resolved.seed_ids),
             },
         )
