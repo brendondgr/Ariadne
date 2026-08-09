@@ -1,0 +1,15 @@
+{
+  "case_id": "H-LKP-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.45,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.6,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "The question explicitly asks for 'a description of this sub-technique.' Gold requires the single record T1591.003 named 'Identify Business Tempo' (min_records=1, max_records=1, expect_names matches). The pipeline correctly retrieves and cites T1591.003 with the right name, and logic_flow.results[0].records[0].description contains the actual MITRE description text ('Adversaries may gather information about the victim's business tempo...'). However, neither the narrative nor any claim surfaces that description text — the answer instead lists only structural/administrative metadata (revoked: False, stix_type: attack-pattern, x_mitre_deprecated: False, x_mitre_is_subtechnique: True, x_mitre_version: 1.0) plus tactic/parent-technique relations (TA0043, T1591). Every stated fact is grounded and faithful to the evidence (no hallucinations), and the correct entity/name is surfaced, satisfying the gold's must_include_ids and expect_names checks, so entity-level completeness is met. But because the one thing the analyst explicitly asked for — the descriptive text — is entirely absent from what the analyst is shown, the answer does not actually satisfy the intent of the question, capping correctness well below full credit."
+}

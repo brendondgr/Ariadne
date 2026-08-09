@@ -615,6 +615,15 @@ def _compile_single(gold: dict[str, Any], entry: dict[str, Any], question: str) 
         ex_gold = {"pool": pool, "expected": related, "scheme": scheme}
         entities, template = ENTITIES[category], DERIVED_TEMPLATE[category]
 
+    # The CAPEC `mapping` category is the one single-source shape that declares a
+    # cross-source join: the Gremlin builder gates `capec_maps_to` on the join,
+    # and without it the same question falls through to `describe` and returns
+    # facet counts instead of the mapped techniques. The three committed
+    # `C-MAP-*` entries all carry it. Omitting it here would have compared the
+    # holdout against a *different plan* than the development set gets for the
+    # same category, which is not the comparison this experiment is making.
+    join_key = JOIN_KEY if category == "mapping" else None
+
     return {
         "id": entry["id"],
         "tier": "easy" if category == "lookup" else "medium",
@@ -627,7 +636,7 @@ def _compile_single(gold: dict[str, Any], entry: dict[str, Any], question: str) 
             "text": question,
             "entities": entities,
             "limits": dict(LIMITS),
-            "join_key": None,
+            "join_key": join_key,
             "seed_ids": [anchor],
             "rationale": "holdout-v1 seeded draw",
         },

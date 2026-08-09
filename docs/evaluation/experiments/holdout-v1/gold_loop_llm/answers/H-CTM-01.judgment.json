@@ -1,0 +1,15 @@
+{
+  "case_id": "H-CTM-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "abstained": true,
+  "abstention_carries_query": true,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "The gold marks this anchor as expect_no_correlation=true with must_correlate=[] and an expected dependency skip. The answer abstained cleanly: q1 (CAPEC-603 -> ATT&CK MAPS_TO) executed and returned zero rows, and its abstention statement carries the full executed Gremlin query verbatim. q2 (mitigations for mapped techniques) correctly skipped because q1 produced no seed identifiers, and the answer states this dependency reason explicitly. No claims, no correlations, and no technique/mitigation ids were asserted anywhere in narrative or claims -- nothing to hallucinate against the empty evidence in logic_flow.results. The system's own deterministic_scores (correlation negative/exact, abstention_proof_ok=true, fully_provenanced=true) corroborate this independent read."
+}

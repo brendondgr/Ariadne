@@ -1,0 +1,15 @@
+{
+  "case_id": "H-SW-02",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 0.9,
+  "groundedness": 0.9,
+  "completeness": 0.0,
+  "gold_expected": 170,
+  "gold_present": 0,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "The gold requires naming the 170 Software items (S0009, S0011, S0012, ... S9035) that USE T1005 (Data from Local System). The retrieval facet on T1005 itself shows 'USES in Software count: 169', confirming the graph has this data, but the q2 sub-query ('list all Software reached from T1005 via USES') was executed with a malformed/incorrect Cypher (identical to the q1 describe query, matching only Technique nodes) and returned zero Software records -- only T1005 itself again. As a result no software id ever entered the evidence, and the answer's narrative/claims mention only T1005's own properties and one unrelated Tactic neighbor (TA0009, Collection), never any Software. None of the 170 must_include_related ids (e.g. S0009, S1245, S9035) are present in the answer or even in the logic_flow evidence. The statements made are technically faithful to what little evidence was retrieved (no invented facts), but the answer completely fails to address the question asked -- it identifies zero software implementing T1005, a 0/170 completeness outcome caused by a broken retrieval query rather than an LLM hallucination."
+}

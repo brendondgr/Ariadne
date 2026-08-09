@@ -1,0 +1,15 @@
+{
+  "case_id": "H-CTM-04",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "Gold requires CAPEC-251 to map to T1055 (must_correlate/must_include_related), and T1055 to have mitigations M1026 and M1040. All four gold ids appear in the evidence and are surfaced in the answer's claims: CAPEC-251 record with related TaxonomyEntry ATTACK:1055 (logic_flow q1 record), and T1055 record with related M1040 (Behavior Prevention on Endpoint) and M1026 (Privileged Account Management) from q2. The claims list correctly states 'CAPEC-251 ... has 1 TaxonomyEntrys: capec:taxonomy:ATTACK:1055', 'T1055 (Process Injection) has 2 related item(s): M1040, M1026', and the correlation claim identifies T1055 as corroborated across capec and attack, matching must_correlate=['T1055']. The LLM narrator fell back to the deterministic composer (timeout), but the claims array (which is what the analyst is shown per grading instructions when narrative is thin) fully and accurately covers the gold assertions with no invented facts, names, or ids. deterministic_scores confirm exact correlation match (precision/recall/f1=1.0) and mapping_recall=1.0."
+}

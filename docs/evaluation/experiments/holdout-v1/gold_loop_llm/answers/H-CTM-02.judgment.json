@@ -1,0 +1,15 @@
+{
+  "case_id": "H-CTM-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "abstained": true,
+  "abstention_carries_query": true,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "Gold expects no correlation (expect_no_correlation=true, must_correlate=[]) for CAPEC-40, which has no live ATT&CK mapping. The system executed the actual Gremlin query for q1 (visible in both answer.abstentions and logic_flow.results), got 0 rows, and cleanly abstained with a statement naming the executed query. q2 (mitigations) correctly skipped as a declared dependency failure, also with proof (dependency trace showing 'producer q1: it returned no join values'). No technique id, mitigation, or mapping was invented anywhere in claims/narrative/notes. This is a textbook clean abstention with proof and zero fabrication."
+}

@@ -1,15 +1,15 @@
 {
   "case_id": "H-MAP-02",
-  "verdict": "INCORRECT",
-  "correctness": 0.05,
+  "verdict": "CORRECT",
+  "correctness": 1.0,
   "faithfulness": 1.0,
   "groundedness": 1.0,
-  "completeness": 0.17,
-  "gold_expected": 6,
-  "gold_present": 1,
+  "completeness": 1.0,
+  "gold_expected": 5,
+  "gold_present": 5,
   "abstained": false,
   "abstention_carries_query": false,
   "fabricated_mapping": false,
   "hallucinations": [],
-  "rationale": "The question explicitly asks which ATT&CK techniques CAPEC-639 maps to. Gold requires T1039, T1552.001, T1552.003, T1552.004, T1552.006 (must_include_related, coverage.gold=6 including CAPEC-639 itself). The answer's narrative and claims report only CAPEC-639's Abstraction/Status metadata and never name a single ATT&CK technique -- the record's 'related' array is empty despite the facets block showing MAPS_TO -> TaxonomyEntry count: 5, meaning the pipeline's own query captured the mapping edges but the normalize step discarded them before they reached the answer. deterministic_scores.coverage confirms this: found=1/gold=6, coverage=0.167, missing all five technique ids. No statement in the answer is factually wrong (Abstraction: Detailed, Status: Stable, and the record id are all grounded in logic_flow.records[0].properties), so faithfulness and groundedness are high, but the answer fails to address the substance of the question, so correctness is near zero."
+  "rationale": "Gold requires CAPEC-639 mapping to T1039, T1552.001, T1552.003, T1552.004, T1552.006. The answer's narrative and enumeration claim list all five technique IDs, matching exactly the 'related' TaxonomyEntry records in logic_flow (capec:taxonomy:ATTACK:1552.001/.003/.004/.006/1039), which are ATT&CK-labeled MAPS_TO edges from CAPEC-639. Abstraction (Detailed) and Status (Stable) claims match the record properties exactly. No extra or invented IDs, names, or statuses were introduced."
 }

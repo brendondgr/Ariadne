@@ -1,0 +1,62 @@
+{
+  "arm": "gold_loop_llm",
+  "bank": "utils/specialists/tests/golden/holdout_questions.json",
+  "count": 2,
+  "ok": 2,
+  "workers": 2,
+  "wall_s": 15.8,
+  "profile": {
+    "EVAL_ARTIFACT_MAX_DESC_CHARS": "20000",
+    "EVAL_ARTIFACT_MAX_FACETS": "200",
+    "EVAL_ARTIFACT_MAX_PROP_LIST_ITEMS": "500",
+    "EVAL_ARTIFACT_MAX_RECORDS": "2000",
+    "EVAL_ARTIFACT_MAX_RELATED": "2000",
+    "SPECIALIST_EXPAND_DESC_CHARS": "20000",
+    "SPECIALIST_EXPAND_PAGE_SIZE": "20000",
+    "SPECIALIST_MAX_RESULT_ROWS": "20000",
+    "SPECIALIST_RELATED_DESC_CHARS": "20000",
+    "SYNTHESIS_MAX_CITATIONS": "200",
+    "SYNTHESIS_MAX_ENUMERATION_CLAIMS": "500",
+    "SYNTHESIS_MAX_ENUMERATION_IDS": "2000",
+    "SYNTHESIS_MAX_FACETS_PER_RECORD": "200",
+    "SYNTHESIS_MAX_PROP_CHARS": "20000",
+    "SYNTHESIS_MAX_PROP_LIST_ITEMS": "500",
+    "SYNTHESIS_MAX_RECORDS_PER_RESULT": "2000",
+    "SYNTHESIS_MAX_RELATED_DESC_CHARS": "20000",
+    "SYNTHESIS_MAX_RELATED_PER_RECORD": "2000"
+  },
+  "task_max_result_rows": 20000,
+  "llm": {
+    "planner": "true",
+    "specialist": "true",
+    "synthesis": "true",
+    "model": "skynet",
+    "max_hops": "5",
+    "chase_facets": "true"
+  },
+  "categories": [
+    "H-MAP"
+  ],
+  "cases": [
+    {
+      "id": "H-MAP-01",
+      "ok": true,
+      "kind": "capec",
+      "tier": "medium",
+      "category": "H-MAP",
+      "records": 1,
+      "related": 3,
+      "wall_s": 12.026
+    },
+    {
+      "id": "H-MAP-02",
+      "ok": true,
+      "kind": "capec",
+      "tier": "medium",
+      "category": "H-MAP",
+      "records": 1,
+      "related": 5,
+      "wall_s": 15.771
+    }
+  ]
+}

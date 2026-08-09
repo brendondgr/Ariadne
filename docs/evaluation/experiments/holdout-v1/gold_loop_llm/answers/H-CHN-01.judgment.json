@@ -1,0 +1,15 @@
+{
+  "case_id": "H-CHN-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.55,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.86,
+  "gold_expected": 7,
+  "gold_present": 6,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "Gold requires two CAPEC attack patterns linked to CWE-1243 (CAPEC-116 and CAPEC-545), but the executed cwe_chain query returned only CAPEC-545 -> CWE-1243 with ATT&CK mappings T1005 and T1555.001; CAPEC-116 is entirely absent from logic_flow and thus from the answer, so the question 'what attack patterns are linked to CWE-1243' is only half-answered. Everything the pipeline did surface is accurate and grounded: CAPEC-545's Abstraction/Status match the retrieved properties, the T1005/T1555.001 ATT&CK mappings and their mitigations (M1057 Data Loss Prevention, M1027 Password Policies) are correctly cited from the q2 records, and both required must_correlate ids (T1005, T1555.001) are correctly identified as corroborated across capec and attack, matching deterministic_scores.correlation (precision/recall/f1 = 1.0 on the 2 items it did find). No invented facts, names, or ids were found in the claims. Gold-required id coverage: 6 of 7 (CAPEC-116, CAPEC-545, CWE-1243, T1005, T1555.001, M1027, M1057), missing only CAPEC-116, which is a retrieval-side gap (the graph query never surfaced it) rather than a synthesis hallucination. Because the missing entity is one of only two headline 'attack patterns' the question asks for, correctness is capped well below full credit despite perfect faithfulness/groundedness on what was retrieved."
+}

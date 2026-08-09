@@ -1,0 +1,15 @@
+{
+  "case_id": "H-ABS-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.33,
+  "gold_expected": 3,
+  "gold_present": 1,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "The question explicitly asks to walk up the CAPEC hierarchy from CAPEC-606 through its parents to the most abstract pattern. The gold requires must_include_ids=[CAPEC-606] and must_include_related=[CAPEC-212, CAPEC-620], and the executed query itself retrieved both hops: CAPEC-620 (parent, Standard abstraction) and CAPEC-212 (grandparent, Meta abstraction) are present in logic_flow.results[0].records[0].related. However, the answer's narrative and claims mention only CAPEC-606's own Status (Draft) and Abstraction (Detailed) and never surface CAPEC-620 or CAPEC-212 at all, despite this data being available in the retrieved evidence. This is not a faithfulness problem (nothing stated is false or invented) but a severe correctness/completeness failure: the answer does not perform the hierarchy walk the question asked for. deterministic_scores.coverage confirms this: coverage=0.333, missing=[CAPEC-212, CAPEC-620]. No hallucinations and no fabricated cross-source correlation, but the core ask goes unanswered."
+}

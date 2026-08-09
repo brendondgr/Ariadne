@@ -1,0 +1,15 @@
+{
+  "case_id": "H-CHN-02",
+  "verdict": "PARTIAL",
+  "correctness": 0.5,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 2,
+  "gold_present": 0,
+  "abstained": true,
+  "abstention_carries_query": true,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "Gold's must_correlate/expect_no_correlation only cover the CAPEC->ATT&CK cross-source correlation, which the system correctly abstained from with proof (executed query included, dependency-skip on q2 correctly explained). However gold also asserts a single-source expectation: capec.min_records=1 with must_include_ids [CAPEC-456, CAPEC-679] -- i.e. these attack patterns DO exploit CWE-1316 and should have been surfaced even though they lack a live ATT&CK mapping. The q1 query chained Weakness-EXPLOITS_WEAKNESS->AttackPattern-MAPS_TO->TaxonomyEntry(ATTACK) as a single inner-join traversal, so any CAPEC lacking the MAPS_TO edge (including CAPEC-456/679) was dropped entirely, yielding 0 rows and a blanket 'No CAPEC records found' headline. The system fabricated nothing and its abstention on the cross-source correlation was clean and evidenced, but it failed to report the 2 gold-expected CAPEC entities that do exist in the graph -- an overly restrictive query design conflated 'no cross-source mapping' with 'no source records at all.' This is an honest-but-incomplete result, not a fabrication, so PARTIAL rather than INCORRECT."
+}

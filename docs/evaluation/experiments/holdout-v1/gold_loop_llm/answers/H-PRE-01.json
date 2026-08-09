@@ -1,0 +1,266 @@
+{
+  "id": "H-PRE-01",
+  "kind": "capec",
+  "tier": "medium",
+  "category": "H-PRE",
+  "question": "what are the preconditions and required resources for pulling off CAPEC-696 (Load Value Injection)?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "CAPEC-696"
+      ],
+      "must_include_related": [
+        "capec:attack-pattern:696:skill:1",
+        "capec:attack-pattern:696:skill:2",
+        "capec:attack-pattern:696:skill:3"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "capec:attack-pattern:696:skill:1",
+        "capec:attack-pattern:696:skill:2",
+        "capec:attack-pattern:696:skill:3"
+      ],
+      "scheme": "capec"
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "One CAPEC record was found for CAPEC-696 (Load Value Injection). This record has a status of Draft and an abstraction of Detailed.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-696.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-696"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-696"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-696 (Load Value Injection) has Abstraction: Detailed; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-696"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-696"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "H-PRE-01",
+      "source": "capec",
+      "text": "what are the preconditions and required resources for pulling off CAPEC-696 (Load Value Injection)?",
+      "entities": [
+        "AttackPattern",
+        "REQUIRES_SKILL",
+        "Skill"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-696"
+      ],
+      "rationale": "holdout-v1 seeded draw"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "H-PRE-01",
+        "sub_question": "what are the preconditions and required resources for pulling off CAPEC-696 (Load Value Injection)?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"REQUIRES_SKILL\").hasLabel(\"Skill\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-696.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "Skill"
+              ],
+              "relationships": [
+                "REQUIRES_SKILL"
+              ],
+              "seed_ids": [
+                "CAPEC-696"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_neighbors",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"REQUIRES_SKILL\").hasLabel(\"Skill\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+              "injected": [],
+              "timing_ms": 0.103
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 3,
+              "timing_ms": 3.3
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 3,
+              "timing_ms": 0.008
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.065
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-696",
+            "name": "Load Value Injection",
+            "label": "AttackPattern",
+            "description": "An adversary exploits a hardware design flaw in a CPU implementation of transient instruction execution in which a faulting or assisted load instruction transiently forwards adversary-controlled data from microarchitectural buffers. By inducing a page fault or microcode assist during victim execution, an adversary can force legitimate victim execution to operate on the adversary-controlled data which is stored in the microarchitectural buffers. The adversary can then use existing code gadgets and side channel analysis to discover victim secrets that have not yet been flushed from microarchitectural state or hijack the system control flow.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Load Value Injection",
+              "description": "An adversary exploits a hardware design flaw in a CPU implementation of transient instruction execution in which a faulting or assisted load instruction transiently forwards adversary-controlled data from microarchitectural buffers. By inducing a page fault or microcode assist during victim execution, an adversary can force legitimate victim execution to operate on the adversary-controlled data which is stored in the microarchitectural buffers. The adversary can then use existing code gadgets and side channel analysis to discover victim secrets that have not yet been flushed from microarchitectural state or hijack the system control flow.",
+              "id": "capec:attack-pattern:696",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "capec:attack-pattern:696:skill:1",
+                "name": "capec:attack-pattern:696:skill:1",
+                "label": "Skill",
+                "type": "REQUIRES_SKILL",
+                "description": "Detailed knowledge on how various CPU architectures and microcode perform transient execution for various low-level assembly language code instructions/operations."
+              },
+              {
+                "id": "capec:attack-pattern:696:skill:2",
+                "name": "capec:attack-pattern:696:skill:2",
+                "label": "Skill",
+                "type": "REQUIRES_SKILL",
+                "description": "Detailed knowledge on compiled binaries and operating system shared libraries of instruction sequences, and layout of application and OS/Kernel address spaces for data leakage."
+              },
+              {
+                "id": "capec:attack-pattern:696:skill:3",
+                "name": "capec:attack-pattern:696:skill:3",
+                "label": "Skill",
+                "type": "REQUIRES_SKILL",
+                "description": "The ability to provoke faulting or assisted loads in legitimate execution."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 4,
+      "found": 1,
+      "coverage": 0.25,
+      "missing": [
+        "capec:attack-pattern:696:skill:1",
+        "capec:attack-pattern:696:skill:2",
+        "capec:attack-pattern:696:skill:3"
+      ]
+    },
+    "provenance": {
+      "citations": 2,
+      "compliant": 2,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "gold_loop_llm",
+  "run_meta": {
+    "planner": "gold-plan (injected)",
+    "synthesis": "llm (claim-grounded)",
+    "loop": "facet-chasing",
+    "observed_plan": [
+      {
+        "sub_question_id": "H-PRE-01",
+        "source": "capec",
+        "text": "what are the preconditions and required resources for pulling off CAPEC-696 (Load Value Injection)?",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 20000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 89.957
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 3
+  }
+}

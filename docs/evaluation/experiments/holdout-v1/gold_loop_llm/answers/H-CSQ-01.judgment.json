@@ -1,0 +1,15 @@
+{
+  "case_id": "H-CSQ-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.15,
+  "faithfulness": 0.9,
+  "groundedness": 0.5,
+  "completeness": 0.5,
+  "gold_expected": 2,
+  "gold_present": 1,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "The question asks specifically what can go wrong downstream if CAPEC-671 succeeds — i.e. it asks for the consequence content. The gold requires must_include_related 'capec:attack-pattern:671:consequence:1', and the retrieval (logic_flow.results[0].records[0].related) did in fact find this HAS_CONSEQUENCE edge to a Consequence node. However, the answer's narrative and both claims say nothing about it: they only restate CAPEC-671's Status (Draft) and Abstraction (Detailed) metadata, never mentioning that a consequence relation exists or what it entails. Since the retrieved consequence node itself was returned as a bare stub (id used as both id/name, no scope/impact properties fetched by the query), the pipeline could at minimum have surfaced the relation's existence/id, but did not even do that. What is stated (Status, Abstraction, CAPEC-671 name) is faithful to the evidence — no invented facts — but the answer fails to address the actual question asked. deterministic_scores.coverage confirms this: gold=2, found=1, coverage=0.5, missing=['capec:attack-pattern:671:consequence:1']. Verdict is INCORRECT because the core substance of the question (the downstream consequence) is entirely absent from the answer, not merely under-detailed."
+}

@@ -1,0 +1,15 @@
+{
+  "case_id": "H-PRE-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.1,
+  "faithfulness": 0.9,
+  "groundedness": 0.9,
+  "completeness": 0.25,
+  "gold_expected": 4,
+  "gold_present": 1,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "The question asks specifically for the preconditions and required resources to pull off CAPEC-696. The gold ground truth identifies these as the three REQUIRES_SKILL neighbors capec:attack-pattern:696:skill:1/2/3 (detailed knowledge of CPU transient execution, binary/OS layout knowledge, and ability to provoke faulting/assisted loads). The executed query correctly traversed AttackPattern->REQUIRES_SKILL->Skill and the logic_flow.records[0].related array contains all three skill records verbatim with their descriptions -- the evidence needed to answer the question was successfully retrieved (row_count 3). However, neither the narrative nor the claims array mentions any of the three skills; the answer only restates CAPEC-696's name, Status (Draft), and Abstraction (Detailed), which are metadata unrelated to preconditions/resources. deterministic_scores.coverage confirms this directly: gold=4, found=1, coverage=0.25, missing lists all three skill ids. must_include_ids (CAPEC-696) is satisfied but must_include_related (all 3 skill ids) is entirely unsatisfied. Nothing stated is fabricated (faithfulness/groundedness are fine for what little is said), but the answer fails to actually answer the question that was asked despite having the required evidence in hand -- a retrieval-to-synthesis drop, not a retrieval failure."
+}

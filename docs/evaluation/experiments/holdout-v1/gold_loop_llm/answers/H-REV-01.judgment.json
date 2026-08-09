@@ -1,0 +1,15 @@
+{
+  "case_id": "H-REV-01",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 0,
+  "gold_present": 0,
+  "abstained": true,
+  "abstention_carries_query": true,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "The gold expects no cross-source correlation (expect_no_correlation=true, capec.expect_empty=true). The answer's abstentions[0] explicitly states the capec source doesn't establish any CAPEC mapping for T1055.011 and carries the full executed Gremlin query as proof it looked ('g.V().hasLabel(\"TaxonomyEntry\")...MAPS_TO...'). The two claims made about T1055.011 (name, stix_type, version, revoked/deprecated/subtechnique flags) are directly supported by the attack record in logic_flow.results[1].records[0].properties. No CAPEC id or cross-source mapping was invented; the capec query legitimately returned 0 rows (row_count=0 in trace). This is a clean, well-proven abstention with fully grounded supplementary facts."
+}

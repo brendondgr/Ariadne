@@ -1,0 +1,15 @@
+{
+  "case_id": "H-CHN-03",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 17,
+  "gold_present": 17,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "The answer surfaces all three gold CAPEC ids (CAPEC-17, CAPEC-30, CAPEC-35), each correctly linked to CWE-270 per the retrieved 'related' field, and all six gold ATT&CK techniques (T1027.006, T1027.009, T1055.003, T1564.009, T1574.005, T1574.010) with the exact abstraction/status properties and mitigation ids matching the logic_flow records (e.g. T1574.005/T1574.010 -> M1047, M1018, M1052; T1027.009 -> M1049, M1040; T1055.003 -> M1040; T1564.009 -> M1013; T1027.006 -> M1048). The union of listed mitigations covers all 7 gold must_include_related ids (M1013, M1018, M1040, M1047, M1048, M1049, M1052). The 6 correlation claims exactly match gold must_correlate and the deterministic_scores block (precision/recall/f1 = 1.0, mapping_recall 6/6). No invented facts, names, or ids were found outside the evidence; all 33 citations are provenance-compliant per deterministic_scores."
+}

@@ -36,12 +36,12 @@
   },
   "answer": {
     "headline": "Gathered 1 record(s) from 1 source(s).",
-    "narrative": "Found 1 CAPEC record(s): CAPEC-639. CAPEC-639 (Probe System Files) has Abstraction: Detailed; Status: Stable.",
+    "narrative": "Found 1 CAPEC record(s) for CAPEC-639; ATT&CK mappings: T1039, T1552.001, T1552.003, T1552.004, T1552.006. CAPEC-639 (Probe System Files) has Abstraction: Detailed; Status: Stable. CAPEC-639 (Probe System Files) has 5 TaxonomyEntrys: capec:taxonomy:ATTACK:1552.001, capec:taxonomy:ATTACK:1552.003, capec:taxonomy:ATTACK:1552.004, capec:taxonomy:ATTACK:1552.006, capec:taxonomy:ATTACK:1039.",
     "composer": "deterministic",
     "fallback_reason": null,
     "claims": [
       {
-        "text": "Found 1 CAPEC record(s): CAPEC-639.",
+        "text": "Found 1 CAPEC record(s) for CAPEC-639; ATT&CK mappings: T1039, T1552.001, T1552.003, T1552.004, T1552.006.",
         "kind": "fact",
         "entity_ids": [
           "CAPEC-639"
@@ -58,6 +58,23 @@
         "kind": "fact",
         "entity_ids": [
           "CAPEC-639"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-639"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-639 (Probe System Files) has 5 TaxonomyEntrys: capec:taxonomy:ATTACK:1552.001, capec:taxonomy:ATTACK:1552.003, capec:taxonomy:ATTACK:1552.004, capec:taxonomy:ATTACK:1552.006, capec:taxonomy:ATTACK:1039.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "capec:taxonomy:ATTACK:1552.001",
+          "capec:taxonomy:ATTACK:1552.003",
+          "capec:taxonomy:ATTACK:1552.004",
+          "capec:taxonomy:ATTACK:1552.006",
+          "capec:taxonomy:ATTACK:1039"
         ],
         "citations": [
           {
@@ -84,7 +101,7 @@
         "max_result_rows": 20000,
         "query_timeout_ms": 5000
       },
-      "join_key": null,
+      "join_key": "attack-technique-id",
       "seed_ids": [
         "CAPEC-639"
       ],
@@ -95,11 +112,11 @@
         "source": "capec",
         "sub_question_id": "H-MAP-02",
         "sub_question": "Which ATT&CK techniques does CAPEC-639 (Probe System Files) map to?",
-        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(20000)",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
         "ok": true,
         "partial": false,
         "error": null,
-        "summary": "Found 1 CAPEC record(s): CAPEC-639.",
+        "summary": "Found 1 CAPEC record(s) for CAPEC-639; ATT&CK mappings: T1039, T1552.001, T1552.003, T1552.004, T1552.006.",
         "traces": [
           {
             "step": "intake",
@@ -123,7 +140,7 @@
               "seed_ids": [
                 "CAPEC-639"
               ],
-              "join_key": null
+              "join_key": "attack-technique-id"
             }
           },
           {
@@ -132,10 +149,10 @@
             "reasons": [],
             "detail": {
               "attempt": 1,
-              "template": "describe",
-              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(20000)",
+              "template": "capec_maps_to",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
               "injected": [],
-              "timing_ms": 0.073
+              "timing_ms": 0.231
             }
           },
           {
@@ -143,8 +160,8 @@
             "ok": true,
             "reasons": [],
             "detail": {
-              "row_count": 1,
-              "timing_ms": 8.8
+              "row_count": 5,
+              "timing_ms": 10.7
             }
           },
           {
@@ -152,8 +169,8 @@
             "ok": true,
             "reasons": [],
             "detail": {
-              "row_count": 1,
-              "timing_ms": 0.008
+              "row_count": 5,
+              "timing_ms": 0.014
             }
           },
           {
@@ -162,7 +179,7 @@
             "reasons": [],
             "detail": {
               "record_count": 1,
-              "timing_ms": 0.261
+              "timing_ms": 0.115
             }
           }
         ],
@@ -179,124 +196,46 @@
               "id": "capec:attack-pattern:639",
               "Abstraction": "Detailed"
             },
-            "facets": [
-              {
-                "rel": "CAN_ALSO_BE",
-                "direction": "in",
-                "neighbour_label": "AttackPattern",
-                "count": 0
-              },
-              {
-                "rel": "CAN_ALSO_BE",
-                "direction": "out",
-                "neighbour_label": "AttackPattern",
-                "count": 0
-              },
-              {
-                "rel": "CAN_FOLLOW",
-                "direction": "in",
-                "neighbour_label": "AttackPattern",
-                "count": 0
-              },
-              {
-                "rel": "CAN_FOLLOW",
-                "direction": "out",
-                "neighbour_label": "AttackPattern",
-                "count": 0
-              },
-              {
-                "rel": "CAN_PRECEDE",
-                "direction": "in",
-                "neighbour_label": "AttackPattern",
-                "count": 0
-              },
-              {
-                "rel": "CAN_PRECEDE",
-                "direction": "out",
-                "neighbour_label": "AttackPattern",
-                "count": 0
-              },
-              {
-                "rel": "CHILD_OF",
-                "direction": "in",
-                "neighbour_label": "AttackPattern",
-                "count": 0
-              },
-              {
-                "rel": "CHILD_OF",
-                "direction": "out",
-                "neighbour_label": "AttackPattern",
-                "count": 1
-              },
-              {
-                "rel": "EXPLOITS_WEAKNESS",
-                "direction": "out",
-                "neighbour_label": "Weakness",
-                "count": 1
-              },
-              {
-                "rel": "HAS_CONSEQUENCE",
-                "direction": "out",
-                "neighbour_label": "Consequence",
-                "count": 1
-              },
-              {
-                "rel": "HAS_EXECUTION_STEP",
-                "direction": "out",
-                "neighbour_label": "ExecutionStep",
-                "count": 0
-              },
-              {
-                "rel": "HAS_MITIGATION",
-                "direction": "out",
-                "neighbour_label": "Mitigation",
-                "count": 1
-              },
-              {
-                "rel": "HAS_REFERENCE",
-                "direction": "out",
-                "neighbour_label": "ExternalReference",
-                "count": 0
-              },
-              {
-                "rel": "IN_VIEW",
-                "direction": "out",
-                "neighbour_label": "View",
-                "count": 0
-              },
-              {
-                "rel": "MAPS_TO",
-                "direction": "out",
-                "neighbour_label": "TaxonomyEntry",
-                "count": 5
-              },
-              {
-                "rel": "MEMBER_OF",
-                "direction": "out",
-                "neighbour_label": "Category",
-                "count": 0
-              },
-              {
-                "rel": "PEER_OF",
-                "direction": "in",
-                "neighbour_label": "AttackPattern",
-                "count": 0
-              },
-              {
-                "rel": "PEER_OF",
-                "direction": "out",
-                "neighbour_label": "AttackPattern",
-                "count": 0
-              },
-              {
-                "rel": "REQUIRES_SKILL",
-                "direction": "out",
-                "neighbour_label": "Skill",
-                "count": 0
-              }
+            "facets": [],
+            "join_values": [
+              "T1552.001",
+              "T1552.003",
+              "T1552.004",
+              "T1552.006",
+              "T1039"
             ],
-            "join_values": [],
-            "related": []
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1552.001",
+                "entry_id": "1552.001",
+                "name": "Unsecured Credentials:Credentials in files",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1552.003",
+                "entry_id": "1552.003",
+                "name": "Unsecured Credentials: Bash History",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1552.004",
+                "entry_id": "1552.004",
+                "name": "Unsecured Credentials: Private Keys",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1552.006",
+                "entry_id": "1552.006",
+                "name": "Unsecured Credentials: Group Policy Preferences",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1039",
+                "entry_id": "1039",
+                "name": "Data from Network Shared Drive",
+                "label": "TaxonomyEntry"
+              }
+            ]
           }
         ]
       }
@@ -307,19 +246,13 @@
     "mapping_recall": null,
     "coverage": {
       "gold": 6,
-      "found": 1,
-      "coverage": 0.16666666666666666,
-      "missing": [
-        "T1039",
-        "T1552.001",
-        "T1552.003",
-        "T1552.004",
-        "T1552.006"
-      ]
+      "found": 6,
+      "coverage": 1.0,
+      "missing": []
     },
     "provenance": {
-      "citations": 2,
-      "compliant": 2,
+      "citations": 3,
+      "compliant": 3,
       "citation_provenance_rate": 1.0,
       "abstention_proof_ok": true,
       "fully_provenanced": true
@@ -335,11 +268,11 @@
   "run_meta": {
     "planner": "gold-replay",
     "synthesis": "deterministic",
-    "wall_s": 0.013
+    "wall_s": 0.489
   },
   "evidence_volume": {
     "results": 1,
     "records": 1,
-    "related": 0
+    "related": 5
   }
 }

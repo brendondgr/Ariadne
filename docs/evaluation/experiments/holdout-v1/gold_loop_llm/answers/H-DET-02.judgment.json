@@ -1,0 +1,15 @@
+{
+  "case_id": "H-DET-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "Gold requires must_include_ids=[T1027.015] and must_include_related=[DET0281]; both are present in the answer's claims and match the retrieved record exactly (T1027.015 -> related DET0281, AN0784, AN0783, AN0782, verbatim from logic_flow.results[0].records[0]). The LLM narrator failed (fallback_reason: HTTP read timeout) so the deterministic claims are what the analyst sees; both claims cite T1027.015 and enumerate only ids/names present in the evidence, with no invented facts, aliases, counts, or dates. The answer does not surface the analytic descriptions (e.g. AN0782's compression-tool detection logic text) that would make the response more useful for the 'what detection logic actually works' half of the question, but gold's assertions only require the ids listed, both of which are satisfied, so this is a known deterministic-composer thinness rather than a correctness failure against gold."
+}

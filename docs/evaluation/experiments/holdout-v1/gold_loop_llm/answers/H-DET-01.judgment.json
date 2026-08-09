@@ -1,0 +1,15 @@
+{
+  "case_id": "H-DET-01",
+  "verdict": "CORRECT",
+  "correctness": 0.9,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 2,
+  "gold_present": 2,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "Gold requires T1098.001 (must_include_ids) and DET0531 (must_include_related), both present in the answer's claims and narrative, matching the sole retrieved record in logic_flow (T1098.001 -> DET0531, AN1469, AN1470, AN1471). Every id, name, and count in the narrative and claims traces exactly to the record's 'related' list (DET0531 'Detection Strategy for Additional Cloud Credentials in IaaS/IdP/SaaS', AN1469-AN1471 with their descriptions) -- no invented ids, names, or counts. The question also asks specifically about log sources/data components to monitor; the answer's narrative/claims do not enumerate DataComponent entities or explicit log-source names (the executed query never traversed to DataComponent nodes, so none were retrieved as evidence), leaving that half of the question only implicitly addressed via the analytic descriptions (e.g. AN1470 mentions CreateAccessKey/ImportKeyPair/CreateLoginProfile API calls). This is a minor completeness gap relative to the full phrasing of the question, but does not affect the gold assertions, which are fully satisfied with no hallucination."
+}

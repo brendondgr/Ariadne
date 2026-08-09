@@ -1,0 +1,15 @@
+{
+  "case_id": "H-REV-02",
+  "verdict": "CORRECT",
+  "correctness": 1.0,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 4,
+  "gold_present": 4,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "Gold requires all four CAPEC ids (CAPEC-37, CAPEC-474, CAPEC-485, CAPEC-639) to be found with must_include_related T1552.004, plus the attack record T1552.004 itself. The answer's narrative and claims list exactly these four CAPEC patterns, each correctly linked via TaxonomyEntry capec:taxonomy:ATTACK:1552.004 to T1552.004, matching logic_flow records verbatim (Status/Abstraction values for each CAPEC id match the retrieved properties exactly). The attack record T1552.004 (Private Keys, version 1.3, stix_type attack-pattern, revoked=False, x_mitre_deprecated=False, x_mitre_is_subtechnique=True) is also correctly reported, matching the retrieved node properties. The cross-source correlation claim (5 records sharing T1552.004 across attack and capec) matches deterministic_scores.correlation (precision 1.0, recall 1.0, f1 1.0) and mapping_recall (1/1). No ids, names, or properties in the answer are absent from the evidence; no fabricated details found."
+}

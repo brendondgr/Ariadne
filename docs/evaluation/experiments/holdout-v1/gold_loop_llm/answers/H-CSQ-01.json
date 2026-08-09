@@ -1,0 +1,245 @@
+{
+  "id": "H-CSQ-01",
+  "kind": "capec",
+  "tier": "medium",
+  "category": "H-CSQ",
+  "question": "What can go wrong downstream if CAPEC-671 (Requirements for ASIC Functionality Maliciously Altered) succeeds against a target?",
+  "gold": {
+    "assertions": {
+      "min_records": 1,
+      "must_include_ids": [
+        "CAPEC-671"
+      ],
+      "must_include_related": [
+        "capec:attack-pattern:671:consequence:1"
+      ]
+    },
+    "ex_gold": {
+      "pool": "neighbors",
+      "expected": [
+        "capec:attack-pattern:671:consequence:1"
+      ],
+      "scheme": "capec"
+    },
+    "gold_provenance": {
+      "attack_version": "19.0",
+      "capec_version": "3.9"
+    }
+  },
+  "answer": {
+    "headline": "Gathered 1 record(s) from 1 source(s).",
+    "narrative": "One CAPEC record was found: CAPEC-671 (Requirements for ASIC Functionality Maliciously Altered), which has a Status of Draft and an Abstraction of Detailed.",
+    "composer": "deterministic",
+    "fallback_reason": null,
+    "claims": [
+      {
+        "text": "Found 1 CAPEC record(s): CAPEC-671.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-671"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-671"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-671 (Requirements for ASIC Functionality Maliciously Altered) has Abstraction: Detailed; Status: Draft.",
+        "kind": "fact",
+        "entity_ids": [
+          "CAPEC-671"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-671"
+          }
+        ]
+      }
+    ],
+    "abstentions": [],
+    "notes": []
+  },
+  "logic_flow": {
+    "task": {
+      "sub_question_id": "H-CSQ-01",
+      "source": "capec",
+      "text": "What can go wrong downstream if CAPEC-671 (Requirements for ASIC Functionality Maliciously Altered) succeeds against a target?",
+      "entities": [
+        "AttackPattern",
+        "HAS_CONSEQUENCE",
+        "Consequence"
+      ],
+      "limits": {
+        "max_traversal_depth": 3,
+        "max_result_rows": 20000,
+        "query_timeout_ms": 5000
+      },
+      "join_key": null,
+      "seed_ids": [
+        "CAPEC-671"
+      ],
+      "rationale": "holdout-v1 seeded draw"
+    },
+    "results": [
+      {
+        "source": "capec",
+        "sub_question_id": "H-CSQ-01",
+        "sub_question": "What can go wrong downstream if CAPEC-671 (Requirements for ASIC Functionality Maliciously Altered) succeeds against a target?",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"HAS_CONSEQUENCE\").hasLabel(\"Consequence\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+        "ok": true,
+        "partial": false,
+        "error": null,
+        "summary": "Found 1 CAPEC record(s): CAPEC-671.",
+        "traces": [
+          {
+            "step": "intake",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "source": "capec",
+              "card": "capec"
+            }
+          },
+          {
+            "step": "resolve",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "labels": [
+                "AttackPattern",
+                "Consequence"
+              ],
+              "relationships": [
+                "HAS_CONSEQUENCE"
+              ],
+              "seed_ids": [
+                "CAPEC-671"
+              ],
+              "join_key": null
+            }
+          },
+          {
+            "step": "gate",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "attempt": 1,
+              "template": "capec_neighbors",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"HAS_CONSEQUENCE\").hasLabel(\"Consequence\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(20000)",
+              "injected": [],
+              "timing_ms": 0.13
+            }
+          },
+          {
+            "step": "execute",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 3.7
+            }
+          },
+          {
+            "step": "assess",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "row_count": 1,
+              "timing_ms": 0.007
+            }
+          },
+          {
+            "step": "normalize",
+            "ok": true,
+            "reasons": [],
+            "detail": {
+              "record_count": 1,
+              "timing_ms": 0.067
+            }
+          }
+        ],
+        "records": [
+          {
+            "primary_id": "CAPEC-671",
+            "name": "Requirements for ASIC Functionality Maliciously Altered",
+            "label": "AttackPattern",
+            "description": "An adversary with access to functional requirements for an application specific integrated circuit (ASIC), a chip designed/customized for a singular particular use, maliciously alters requirements derived from originating capability needs. In the chip manufacturing process, requirements drive the chip design which, when the chip is fully manufactured, could result in an ASIC which may not meet the user’s needs, contain malicious functionality, or exhibit other anomalous behaviors thereby affecting the intended use of the ASIC.",
+            "properties": {
+              "Status": "Draft",
+              "name": "Requirements for ASIC Functionality Maliciously Altered",
+              "description": "An adversary with access to functional requirements for an application specific integrated circuit (ASIC), a chip designed/customized for a singular particular use, maliciously alters requirements derived from originating capability needs. In the chip manufacturing process, requirements drive the chip design which, when the chip is fully manufactured, could result in an ASIC which may not meet the user’s needs, contain malicious functionality, or exhibit other anomalous behaviors thereby affecting the intended use of the ASIC.",
+              "id": "capec:attack-pattern:671",
+              "Abstraction": "Detailed"
+            },
+            "facets": [],
+            "join_values": [],
+            "related": [
+              {
+                "id": "capec:attack-pattern:671:consequence:1",
+                "name": "capec:attack-pattern:671:consequence:1",
+                "label": "Consequence",
+                "type": "HAS_CONSEQUENCE"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "deterministic_scores": {
+    "correlation": null,
+    "mapping_recall": null,
+    "coverage": {
+      "gold": 2,
+      "found": 1,
+      "coverage": 0.5,
+      "missing": [
+        "capec:attack-pattern:671:consequence:1"
+      ]
+    },
+    "provenance": {
+      "citations": 2,
+      "compliant": 2,
+      "citation_provenance_rate": 1.0,
+      "abstention_proof_ok": true,
+      "fully_provenanced": true
+    },
+    "inspectability": {
+      "citation_coverage": 1.0,
+      "traceability": 1.0,
+      "abstention_proofs": 1.0,
+      "inspectability": 1.0
+    }
+  },
+  "arm": "gold_loop_llm",
+  "run_meta": {
+    "planner": "gold-plan (injected)",
+    "synthesis": "llm (claim-grounded)",
+    "loop": "facet-chasing",
+    "observed_plan": [
+      {
+        "sub_question_id": "H-CSQ-01",
+        "source": "capec",
+        "text": "What can go wrong downstream if CAPEC-671 (Requirements for ASIC Functionality Maliciously Altered) succeeds against a target?",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 20000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 65.305
+  },
+  "evidence_volume": {
+    "results": 1,
+    "records": 1,
+    "related": 1
+  }
+}

@@ -32,12 +32,12 @@
   },
   "answer": {
     "headline": "Gathered 1 record(s) from 1 source(s).",
-    "narrative": "Found 1 CAPEC record(s): CAPEC-21. CAPEC-21 (Exploitation of Trusted Identifiers) has Abstraction: Meta; Status: Stable.",
+    "narrative": "Found 1 CAPEC record(s) for CAPEC-21; ATT&CK mappings: T1134, T1528, T1539. CAPEC-21 (Exploitation of Trusted Identifiers) has Abstraction: Meta; Status: Stable. CAPEC-21 (Exploitation of Trusted Identifiers) has 3 TaxonomyEntrys: capec:taxonomy:ATTACK:1134, capec:taxonomy:ATTACK:1528, capec:taxonomy:ATTACK:1539.",
     "composer": "deterministic",
     "fallback_reason": null,
     "claims": [
       {
-        "text": "Found 1 CAPEC record(s): CAPEC-21.",
+        "text": "Found 1 CAPEC record(s) for CAPEC-21; ATT&CK mappings: T1134, T1528, T1539.",
         "kind": "fact",
         "entity_ids": [
           "CAPEC-21"
@@ -54,6 +54,21 @@
         "kind": "fact",
         "entity_ids": [
           "CAPEC-21"
+        ],
+        "citations": [
+          {
+            "source": "capec",
+            "primary_id": "CAPEC-21"
+          }
+        ]
+      },
+      {
+        "text": "CAPEC-21 (Exploitation of Trusted Identifiers) has 3 TaxonomyEntrys: capec:taxonomy:ATTACK:1134, capec:taxonomy:ATTACK:1528, capec:taxonomy:ATTACK:1539.",
+        "kind": "enumeration",
+        "entity_ids": [
+          "capec:taxonomy:ATTACK:1134",
+          "capec:taxonomy:ATTACK:1528",
+          "capec:taxonomy:ATTACK:1539"
         ],
         "citations": [
           {
@@ -80,7 +95,7 @@
         "max_result_rows": 20000,
         "query_timeout_ms": 5000
       },
-      "join_key": null,
+      "join_key": "attack-technique-id",
       "seed_ids": [
         "CAPEC-21"
       ],
@@ -91,11 +106,11 @@
         "source": "capec",
         "sub_question_id": "H-MAP-01",
         "sub_question": "Which ATT&CK techniques does CAPEC-21 (Exploitation of Trusted Identifiers) map to?",
-        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(20000)",
+        "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
         "ok": true,
         "partial": false,
         "error": null,
-        "summary": "Found 1 CAPEC record(s): CAPEC-21.",
+        "summary": "Found 1 CAPEC record(s) for CAPEC-21; ATT&CK mappings: T1134, T1528, T1539.",
         "traces": [
           {
             "step": "intake",
@@ -119,7 +134,7 @@
               "seed_ids": [
                 "CAPEC-21"
               ],
-              "join_key": null
+              "join_key": "attack-technique-id"
             }
           },
           {
@@ -128,10 +143,10 @@
             "reasons": [],
             "detail": {
               "attempt": 1,
-              "template": "describe",
-              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(20000)",
+              "template": "capec_maps_to",
+              "query": "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).as(\"ap\").out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").as(\"tax\").select(\"ap\",\"tax\").by(elementMap()).limit(20000)",
               "injected": [],
-              "timing_ms": 0.084
+              "timing_ms": 0.238
             }
           },
           {
@@ -139,8 +154,8 @@
             "ok": true,
             "reasons": [],
             "detail": {
-              "row_count": 1,
-              "timing_ms": 17.6
+              "row_count": 3,
+              "timing_ms": 10.6
             }
           },
           {
@@ -148,8 +163,8 @@
             "ok": true,
             "reasons": [],
             "detail": {
-              "row_count": 1,
-              "timing_ms": 0.007
+              "row_count": 3,
+              "timing_ms": 0.01
             }
           },
           {
@@ -158,7 +173,7 @@
             "reasons": [],
             "detail": {
               "record_count": 1,
-              "timing_ms": 0.204
+              "timing_ms": 0.103
             }
           }
         ],
@@ -175,124 +190,32 @@
               "id": "capec:attack-pattern:21",
               "Abstraction": "Meta"
             },
-            "facets": [
-              {
-                "rel": "CAN_ALSO_BE",
-                "direction": "in",
-                "neighbour_label": "AttackPattern",
-                "count": 0
-              },
-              {
-                "rel": "CAN_ALSO_BE",
-                "direction": "out",
-                "neighbour_label": "AttackPattern",
-                "count": 0
-              },
-              {
-                "rel": "CAN_FOLLOW",
-                "direction": "in",
-                "neighbour_label": "AttackPattern",
-                "count": 0
-              },
-              {
-                "rel": "CAN_FOLLOW",
-                "direction": "out",
-                "neighbour_label": "AttackPattern",
-                "count": 0
-              },
-              {
-                "rel": "CAN_PRECEDE",
-                "direction": "in",
-                "neighbour_label": "AttackPattern",
-                "count": 0
-              },
-              {
-                "rel": "CAN_PRECEDE",
-                "direction": "out",
-                "neighbour_label": "AttackPattern",
-                "count": 0
-              },
-              {
-                "rel": "CHILD_OF",
-                "direction": "in",
-                "neighbour_label": "AttackPattern",
-                "count": 4
-              },
-              {
-                "rel": "CHILD_OF",
-                "direction": "out",
-                "neighbour_label": "AttackPattern",
-                "count": 0
-              },
-              {
-                "rel": "EXPLOITS_WEAKNESS",
-                "direction": "out",
-                "neighbour_label": "Weakness",
-                "count": 9
-              },
-              {
-                "rel": "HAS_CONSEQUENCE",
-                "direction": "out",
-                "neighbour_label": "Consequence",
-                "count": 3
-              },
-              {
-                "rel": "HAS_EXECUTION_STEP",
-                "direction": "out",
-                "neighbour_label": "ExecutionStep",
-                "count": 5
-              },
-              {
-                "rel": "HAS_MITIGATION",
-                "direction": "out",
-                "neighbour_label": "Mitigation",
-                "count": 7
-              },
-              {
-                "rel": "HAS_REFERENCE",
-                "direction": "out",
-                "neighbour_label": "ExternalReference",
-                "count": 1
-              },
-              {
-                "rel": "IN_VIEW",
-                "direction": "out",
-                "neighbour_label": "View",
-                "count": 0
-              },
-              {
-                "rel": "MAPS_TO",
-                "direction": "out",
-                "neighbour_label": "TaxonomyEntry",
-                "count": 3
-              },
-              {
-                "rel": "MEMBER_OF",
-                "direction": "out",
-                "neighbour_label": "Category",
-                "count": 2
-              },
-              {
-                "rel": "PEER_OF",
-                "direction": "in",
-                "neighbour_label": "AttackPattern",
-                "count": 1
-              },
-              {
-                "rel": "PEER_OF",
-                "direction": "out",
-                "neighbour_label": "AttackPattern",
-                "count": 0
-              },
-              {
-                "rel": "REQUIRES_SKILL",
-                "direction": "out",
-                "neighbour_label": "Skill",
-                "count": 1
-              }
+            "facets": [],
+            "join_values": [
+              "T1134",
+              "T1528",
+              "T1539"
             ],
-            "join_values": [],
-            "related": []
+            "related": [
+              {
+                "id": "capec:taxonomy:ATTACK:1134",
+                "entry_id": "1134",
+                "name": "Access Token Manipulation",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1528",
+                "entry_id": "1528",
+                "name": "Steal Application Access Token",
+                "label": "TaxonomyEntry"
+              },
+              {
+                "id": "capec:taxonomy:ATTACK:1539",
+                "entry_id": "1539",
+                "name": "Steal Web Session Cookie",
+                "label": "TaxonomyEntry"
+              }
+            ]
           }
         ]
       }
@@ -303,17 +226,13 @@
     "mapping_recall": null,
     "coverage": {
       "gold": 4,
-      "found": 1,
-      "coverage": 0.25,
-      "missing": [
-        "T1134",
-        "T1528",
-        "T1539"
-      ]
+      "found": 4,
+      "coverage": 1.0,
+      "missing": []
     },
     "provenance": {
-      "citations": 2,
-      "compliant": 2,
+      "citations": 3,
+      "compliant": 3,
       "citation_provenance_rate": 1.0,
       "abstention_proof_ok": true,
       "fully_provenanced": true
@@ -329,11 +248,11 @@
   "run_meta": {
     "planner": "gold-replay",
     "synthesis": "deterministic",
-    "wall_s": 0.026
+    "wall_s": 0.491
   },
   "evidence_volume": {
     "results": 1,
     "records": 1,
-    "related": 0
+    "related": 3
   }
 }

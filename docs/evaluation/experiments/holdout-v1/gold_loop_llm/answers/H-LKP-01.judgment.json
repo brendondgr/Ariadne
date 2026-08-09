@@ -1,0 +1,15 @@
+{
+  "case_id": "H-LKP-01",
+  "verdict": "PARTIAL",
+  "correctness": 0.5,
+  "faithfulness": 1.0,
+  "groundedness": 1.0,
+  "completeness": 1.0,
+  "gold_expected": 1,
+  "gold_present": 1,
+  "abstained": false,
+  "abstention_carries_query": false,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "Gold requires exactly 1 record with id T1036.010 named 'Masquerade Account Name' (assertions.must_include_ids, expect_names); the answer correctly retrieves and cites T1036.010 with the exact name, satisfying gold_present=1/1, and every claim (revoked/stix_type/deprecated/version flags, TA0005 Stealth via HAS_TECHNIQUE, T1036 Masquerading parent via HAS_SUBTECHNIQUE) is directly traceable to logic_flow records/facets/related, so faithfulness and groundedness are clean with zero hallucinations. However the question explicitly asks 'how does this technique actually work,' and the LLM narrator timed out (fallback_reason cites a 120s read timeout), leaving the deterministic composer to emit only STIX metadata flags and a bare relation count ('has 1 related item(s): TA0005') instead of the rich mechanism explanation ('Adversaries may match or approximate the names of legitimate accounts...') that is sitting right in the same record's description/properties.description field in logic_flow but is never surfaced in narrative or claims. Since the substantive 'how it works' content the question asks for was available in evidence but omitted, correctness is marked down to 0.5 despite full structural/entity coverage against the gold's narrow (id+name) assertions."
+}

@@ -1,0 +1,15 @@
+{
+  "case_id": "H-GRP-01",
+  "verdict": "INCORRECT",
+  "correctness": 0.0,
+  "faithfulness": 0.5,
+  "groundedness": 1.0,
+  "completeness": 0.0,
+  "gold_expected": 12,
+  "gold_present": 0,
+  "abstained": true,
+  "abstention_carries_query": true,
+  "fabricated_mapping": false,
+  "hallucinations": [],
+  "rationale": "Gold requires the technique T1550.002 plus 11 groups (G0006, G0007, G0050, G0093, G0094, G0096, G0102, G0114, G0143, G1003, G1016) that use it, per gold.assertions.must_include_related. The pipeline returned zero records and abstained. Inspection of the executed Cypher (logic_flow.results[0].query) shows the bug: 'MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN $ids ...' with seed_ids=['T1550.002'] — the technique id was bound to $ids but filtered against g.attack_id (Group's id field) instead of t.attack_id (Technique's id field), so the WHERE clause can never match any Group node and the query is guaranteed to return 0 rows regardless of underlying data. This is a query-construction defect, not a genuine absence of ATT&CK relationships (T1550.002 Pass the Hash is a well-populated technique in real ATT&CK data with many group associations). The answer's abstention text ('the executed query ran cleanly and returned no matching records') is technically accurate about execution but substantively misleading about data availability, since the query itself was malformed for the question asked. No group ids, names, or facts were fabricated (faithfulness partial credit for not inventing content), and the abstention correctly attaches the failing query as proof (abstention_carries_query=true), but coverage is 0/12 and the analyst is left with a false impression that no groups use this technique."
+}
