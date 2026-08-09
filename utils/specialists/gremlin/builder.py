@@ -553,6 +553,43 @@ class GremlinQueryBuilder:
         except Exception:  # noqa: BLE001 — no registry, no schema-driven routing
             return None
 
+    def _self_referential_prefixes(
+        self, resolved: ResolvedTask, registry: Any
+    ) -> list[tuple[tuple[str, str], ...]]:
+        """Transitive repetitions of a named edge that loops on the anchor label.
+
+        ``AttackPattern -ChildOf-> AttackPattern`` is a hierarchy: asked for the
+        ancestors of a pattern, one hop returns the parent and stops, leaving the
+        grandparent unretrieved. Each repetition up to the hop cap becomes its own
+        branch so every level is returned, not only the deepest.
+
+        Only edges the task actually named are repeated. Walking every self-loop
+        the schema declares would turn any lookup into a full hierarchy crawl.
+
+        **Both** declared directions are emitted. A self-loop appears in the
+        registry twice — as ``out`` and as ``in`` — and nothing in the schema
+        says which one means "up". Ancestor-versus-descendant is precisely the
+        domain nuance a hand-written template encodes and a generic primitive
+        must not guess, so it returns both and lets the answer be over-complete
+        rather than silently half-missing.
+        """
+        anchor_label = resolved.primary_label()
+        if not anchor_label:
+            return []
+        out: list[tuple[tuple[str, str], ...]] = []
+        for rel in resolved.relationships:
+            for facet in (
+                registry.label_facets(anchor_label, dataset=resolved.dataset) or []
+            ):
+                if facet.rel_type != rel or facet.neighbour_label != anchor_label:
+                    continue
+                hop = (facet.rel_type, facet.direction)
+                for depth in range(1, _MAX_WALK_HOPS + 1):
+                    candidate = tuple([hop] * depth)
+                    if candidate not in out:
+                        out.append(candidate)
+        return out
+
     def _generic_walk(self, resolved: ResolvedTask) -> QueryDraft | None:
         """Walk every declared path from the resolved anchor to the wanted labels.
 
@@ -579,8 +616,6 @@ class GremlinQueryBuilder:
         wanted = [
             label for label in resolved.labels if label and label != anchor_label
         ]
-        if not wanted:
-            return None
 
         from utils.specialists.schema.paths import edge_prefixes, shortest_paths
 
@@ -588,6 +623,14 @@ class GremlinQueryBuilder:
             registry, resolved.dataset, anchor_label, max_hops=_MAX_WALK_HOPS
         )
         prefixes = edge_prefixes(paths, wanted)
+
+        # A named edge that lands back on the anchor's own label is a hierarchy,
+        # and the answer to "walk up from here" is the whole ancestry, not the
+        # first step of it. Breadth-first search cannot express that: it stops at
+        # the anchor label because it has already been visited. Repeating the
+        # edge is the transitive walk — the parent, then the grandparent — which
+        # is what an abstraction question asks for.
+        prefixes = [*prefixes, *self._self_referential_prefixes(resolved, registry)]
         if not prefixes:
             return None
 

@@ -253,3 +253,50 @@ def test_generic_walk_resolves_direction_from_the_registry(
     assert draft.template == "generic_walk"
     assert 'union(__.out("HAS_MITIGATION"))' in draft.query
     assert draft.params["ids"] == ["capec:attack-pattern:66"]
+
+
+def test_generic_walk_repeats_a_self_referential_edge(generic_only: None) -> None:
+    """An abstraction hierarchy is the whole ancestry, not the first step.
+
+    ``AttackPattern -ChildOf-> AttackPattern`` loops on its own label, so
+    breadth-first search stops there: the parent is retrieved and the
+    grandparent never is. Repeating the edge per depth is the transitive walk.
+    """
+    resolved = _capec(
+        "Walk the abstraction hierarchy up from CAPEC-7: what are its ancestors?",
+        ("AttackPattern", "ChildOf"),
+    )
+    draft = GremlinQueryBuilder().build(resolved)
+
+    assert draft.template == "generic_walk"
+    assert '__.out("CHILD_OF").out("CHILD_OF")' in draft.query
+
+
+def test_generic_walk_emits_both_directions_of_a_self_loop(
+    generic_only: None,
+) -> None:
+    """Nothing in the schema says which direction of a self-loop means "up".
+
+    Ancestor-versus-descendant is the domain nuance a hand-written template
+    encodes; a generic primitive returns both rather than guessing one.
+    """
+    resolved = _capec(
+        "Walk the abstraction hierarchy up from CAPEC-7: what are its ancestors?",
+        ("AttackPattern", "ChildOf"),
+    )
+    paths = GremlinQueryBuilder().build(resolved).meta["paths"]
+
+    assert "ChildOf:out" in paths
+    assert "ChildOf:in" in paths
+
+
+def test_generic_walk_only_repeats_edges_the_task_named(
+    generic_only: None,
+) -> None:
+    """Repeating every declared self-loop would make a lookup a hierarchy crawl."""
+    resolved = _capec(
+        "Which mitigations apply to CAPEC-66?", ("AttackPattern", "Mitigation")
+    )
+    paths = GremlinQueryBuilder().build(resolved).meta["paths"]
+
+    assert not any("ChildOf" in p for p in paths)
