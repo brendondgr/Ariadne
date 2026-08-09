@@ -10,7 +10,6 @@ that a dead end is walked into once rather than twice.
 
 | ID | Date | Title | Status | Primary metric | Claims | Link |
 |---|---|---|---|---|---|---|
-| `EXP-2026-08-001` | 2026-08-09 | <one line, the question this answers> | planned | <metric name> (not recorded) | — | [arm-h-generic-composed](experiments/EXP-2026-08-001-arm-h-generic-composed/) |
 | `EXP-2026-07-001` | 2026-07-26 | Arm A — fully deterministic pipeline (planning, extraction, synthesis) | complete | correctness 0.9972 (n=1) | C-001, C-004 | [arm-a-deterministic](experiments/EXP-2026-07-001-arm-a-deterministic/) |
 | `EXP-2026-07-002` | 2026-07-26 | Arm B — LLM planning with deterministic extraction and an LLM writer | complete | correctness 0.8505 (n=1) | C-002, C-003, C-016 | [arm-b-llm-planned](experiments/EXP-2026-07-002-arm-b-llm-planned/) |
 | `EXP-2026-07-003` | 2026-07-26 | Arm C — authored plan with an LLM writer reading raw evidence | complete | correctness 0.9690 (n=1) | C-002, C-005 | [arm-c-llm-writer-evidence](experiments/EXP-2026-07-003-arm-c-llm-writer-evidence/) |
@@ -21,6 +20,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-07-008` | 2026-07-26 | Component-level evaluation of the planner and both query specialists | complete | planner_source_recall 1.0000 (n=1) | C-007, C-008 | [component-evaluation](experiments/EXP-2026-07-008-component-evaluation/) |
 | `EXP-2026-07-009` | 2026-07-26 | End-to-end evaluation against the four goals.md pipeline metrics | complete | cross_source_answer_accuracy 1.0000 (n=1) | C-007, C-009, C-017 | [e2e-evaluation](experiments/EXP-2026-07-009-e2e-evaluation/) |
 | `EXP-2026-07-011` | 2026-07-26 | Portability audit — what survives a dataset that is not MITRE | complete | — | C-010 | [portability-audit](experiments/EXP-2026-07-011-portability-audit/) |
+| `EXP-2026-08-001` | 2026-08-09 | Is Arm G's gap a capability gap in the schema-driven layer, or domain knowledge? | complete | gold_in_evidence 1.0000 (n=1) | C-003, C-010 | [arm-h-generic-composed](experiments/EXP-2026-08-001-arm-h-generic-composed/) |
 | `EXP-2026-08-002` | 2026-08-09 | Does the deterministic pipeline's near-ceiling correctness survive a blind, uniformly-sampled holdout? | complete | correctness (not recorded) | C-013, C-001, C-014 | [blind-holdout-v1](experiments/EXP-2026-08-002-blind-holdout-v1/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 

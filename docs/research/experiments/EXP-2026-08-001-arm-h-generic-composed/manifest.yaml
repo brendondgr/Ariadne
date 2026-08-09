@@ -4,52 +4,64 @@
 # a gap.
 id: EXP-2026-08-001
 slug: arm-h-generic-composed
-title: <one line, the question this answers>
-status: planned            # planned | running | complete | failed | superseded
+title: Is Arm G's gap a capability gap in the schema-driven layer, or domain knowledge?
+status: complete           # planned | running | complete | failed | superseded
 date_started: 2026-08-09
-date_completed: null       # null until status is complete/failed
-authors: []
+date_completed: 2026-08-09
+authors: [brendondgr]
 
 purpose: >
-  One paragraph. What question does this answer, and which paper claim
-  does it support or refute?
+  Arm G (EXP-2026-07-007) priced the loss of every hand-written template at
+  -0.3568 correctness, which CLAIMS.md C-003 reads as "accuracy lives in the
+  templates". This asks whether that gap is domain knowledge or a capability
+  gap in the schema-driven layer, by adding three capabilities derivable from
+  declarations the repository already holds - cross-source join projection,
+  composition (multi-hop chaining and two-anchor intersection), and
+  anchor/direction resolution - and re-measuring retrieval on the same 120
+  questions. It qualifies C-003 rather than supporting or refuting it: the
+  retrieval component of the gap closes completely, and what remains
+  template-shaped is precision.
 
 hypothesis: >
-  Stated before the run. If exploratory, write "exploratory — no prior hypothesis".
+  The gap is capability, not knowledge: seed_lost falls to 0, retrieval_empty to
+  at most 2, incomplete_retrieval to at most 5, gold_in_evidence rises to at
+  least 0.97, and no question's gold-in-evidence decreases. Recorded before the
+  full run but after spot checks over 30 of the 120 questions, so not a clean
+  pre-registration - see ISSUES.md.
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
   commit: b6c4f12c67b8e93cbe9c8162123af4c003b49d67          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
-  entrypoint: "<exact command>"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  entrypoint: "uv run python -m utils.evaluation.experiment_untruncated --arm generic --root docs/evaluation/experiments/untruncated-generic-fixed --workers 4"
+  dirty: false            # run started from a clean tree at 0826c3f
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
 data:
-  name: <dataset>
-  version: <version>
-  split: <split>
-  n_examples: 0
+  name: golden-catalogue-120
+  version: "2026-07-26"
+  split: all
+  n_examples: 120
   dvc_path: null           # this repository does not use DVC; leave null
   hash: null               # md5:... or sha256:... of the dataset artifact
 seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
 n_runs: 1
 environment:
   python: "3.13"
-  lockfile: env/requirements.lock
+  lockfile: null             # uv.lock at repository root; not snapshotted per run
   container: null
 compute:
-  hardware: "<cpu/gpu, ram>"
-  wall_clock_hours: 0.0
+  hardware: "unknown — not captured at run time"
+  wall_clock_hours: 0.437
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
 llm:
-  model: "<provider>/<model>@<version-or-date>"
+  model: "local/skynet (Gemma 4 31B)@unknown"
   temperature: 0.0
   top_p: 1.0
-  max_tokens: 2048
+  max_tokens: 16384
   prompt_files: []
   prompt_hash: null
   tool_schema_hash: null
@@ -61,14 +73,19 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: <metric name>
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
-baselines_compared: []
+  primary: gold_in_evidence
+  values:
+    gold_in_evidence: {mean: 1.0, std: null, n: 1}
+    gold_in_evidence_scorable: {mean: 1.0, std: null, n: 1}
+    fully_covered_fraction: {mean: 1.0, std: null, n: 1}
+  # No correctness/faithfulness value exists: this arm was scored mechanically
+  # from the artifacts and no judge ran. See RESULTS.md section 5.
+baselines_compared: [EXP-2026-07-007]
 statistical_test: null
 
 # --- Linkage ---
-supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+supports_claims: [C-003, C-010]   # qualifies C-003; prices C-010's generic path
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
 superseded_by: null
-related: []
+related: [EXP-2026-07-006, EXP-2026-07-007]
