@@ -214,6 +214,58 @@ Every defect that purge fixed was one this test would have caught.
 
 ---
 
+## D-013 — Keep a malformed blind question rather than repair it (2026-08-09)
+
+**Context:** During the blind holdout (EXP-2026-08-001), one of the 30 authored
+questions came back incoherent. `H-SW-01` asks what techniques the
+*sub-technique* T1555.005 implements, because the category description handed to
+the Author ("the techniques a piece of software implements") presupposes a
+Software anchor while the stratum's population is techniques. The defect is in
+the category scheme, not in the sampler or the Author.
+
+**Options:** (a) edit the question so it asks the coherent direction; (b)
+discard the anchor and redraw from the seeded sequence; (c) keep it verbatim and
+report every figure twice, with and without it.
+
+**Decision:** (c). Editing an authored question after seeing its anchor converts
+a blind question into a co-authored one, which is precisely the failure the
+experiment exists to detect — and the result would still look like a number,
+which is what makes that failure dangerous. Discarding is reserved by plan 02 §6
+for anchors whose *gold computation* fails; this one's gold computed fine.
+
+**Consequences:** Arm A reports 0.689 over n=30 and 0.709 over n=29; the
+conclusion does not turn on the difference. The same reasoning governed the one
+change that *was* made mid-run — a missing `join_key` in the Compiler was fixed
+and logged as a deviation, because a defect in the harness is the same class of
+thing as a crash, and §9 permits fixing a crash while forbidding fixing a wrong
+answer. The line is: **the system's output is a result; the apparatus around it
+is a bug.**
+
+---
+
+## D-014 — Apply the publication gate as written, at 0.011 below its threshold (2026-08-09)
+
+**Context:** The Branch A §6 gate sets four bands on blind correctness. Arm A
+landed at **0.689** against a `< 0.70` boundary, with a 95% CI of 0.550–0.817
+spanning three of the four bands, and Arm F landed at 0.708 — in the band above.
+
+**Options:** (a) apply the `< 0.70` branch as written on the primary arm; (b)
+read the gate on Arm F, or on the interval, and take the friendlier branch; (c)
+re-derive the thresholds now that the interval width is known.
+
+**Decision:** (a). The plan states the thresholds are not renegotiated after
+seeing the result, and a gate that moves once the number is in is not a gate.
+Both mitigating facts — the 0.011 margin and Arm F's position — are recorded
+alongside the decision as facts, not as grounds for choosing differently.
+
+**Consequences:** Branch A Steps 6 and 7 do not proceed as written; the re-plan
+takes the coverage-boundary framing, for which this run already supplies the
+boundary. Separately: any future gate on a set this size should be stated as a
+decision on the interval rather than on the point, because at n=30 this one
+could not be resolved sharply and that was not visible when it was written.
+
+---
+
 ## Superseded source documents
 
 D-011 and D-012 record decisions originally written up in the

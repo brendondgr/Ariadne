@@ -1,74 +1,97 @@
-# Filled by scripts/new_experiment.py. Every field below is required unless
-# marked optional. Do not delete a field you do not know — record it as null or
-# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
-# a gap.
 id: EXP-2026-08-001
 slug: blind-holdout-v1
-title: <one line, the question this answers>
-status: planned            # planned | running | complete | failed | superseded
+title: Does the deterministic pipeline's near-ceiling correctness survive a blind, uniformly-sampled holdout?
+status: complete
 date_started: 2026-08-09
-date_completed: null       # null until status is complete/failed
-authors: []
+date_completed: 2026-08-09
+authors: ["brendondgr", "Claude Opus 5"]
 
 purpose: >
-  One paragraph. What question does this answer, and which paper claim
-  does it support or refute?
+  The 120-question golden catalogue was written by the same person, at the same
+  time, as the query templates that answer it, so its 0.9972 correctness figure
+  cannot distinguish capability from coverage. This experiment measures the same
+  two arms on 30 questions written by an author with no access to the template
+  inventory, anchored on entities drawn uniformly by a committed seeded sampler,
+  with gold computed independently from the raw MITRE snapshot. It is the
+  evidence for C-013, which gates C-001.
 
 hypothesis: >
-  Stated before the run. If exploratory, write "exploratory — no prior hypothesis".
+  Pre-registered and directional. Blind correctness will be materially lower
+  than the development figure; the informative quantity is the size of the drop
+  and whether it is uniform across categories or concentrated in the categories
+  whose original anchors were richest. No threshold was set here — the decision
+  rule lives in the Branch A gate and was not renegotiated after the result.
 
-# --- Reproducibility block (all fields mandatory) ---
+# --- Reproducibility block ---
 code:
-  commit: d24dc0ca1aa7e09d59bd189088fe9f38b3537c97          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: ce3a2d2b7f0e6b0e9e4c9c9a2b0d3f5a7c1e8d94
   branch: claude/holdout-execution-process-8d74cd
-  entrypoint: "<exact command>"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  entrypoint: "uv run python -m utils.evaluation.experiment_untruncated --arm {deterministic,gold_loop_llm} --bank utils/specialists/tests/golden/holdout_questions.json --root docs/evaluation/experiments/holdout-v1 --workers 4"
+  dirty: false
 config:
-  path: null               # repo-relative path, or null if the run takes no config file
-  hash: null               # sha256:... of that file
+  path: utils/specialists/tests/golden/holdout_questions.json
+  hash: null
 data:
-  name: <dataset>
-  version: <version>
-  split: <split>
-  n_examples: 0
-  dvc_path: null           # this repository does not use DVC; leave null
-  hash: null               # md5:... or sha256:... of the dataset artifact
-seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+  name: blind-holdout-30
+  version: holdout-v1
+  split: holdout
+  n_examples: 30
+  dvc_path: null
+  hash: null
+seeds: [20260805]
 n_runs: 1
 environment:
   python: "3.13"
-  lockfile: env/requirements.lock
+  lockfile: uv.lock
   container: null
 compute:
-  hardware: "<cpu/gpu, ram>"
-  wall_clock_hours: 0.0
+  hardware: "local workstation, CPU; Neo4j and Gremlin in Docker; local vLLM relay"
+  wall_clock_hours: 0.16
   estimated_cost_usd: 0.0
 
-# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+# --- LLM / agentic block ---
 llm:
-  model: "<provider>/<model>@<version-or-date>"
+  model: "author: anthropic/claude-fable-5 (high reasoning effort); judge: anthropic/claude-sonnet-5; Arm F pipeline: local/skynet (gemma4-31B-mtp via vLLM)"
   temperature: 0.0
   top_p: 1.0
-  max_tokens: 2048
-  prompt_files: []
+  max_tokens: 16384
+  prompt_files:
+    - docs/evaluation/holdout-v1/author-prompt.md
+    - scratchpad/judge_holdout.mjs
   prompt_hash: null
   tool_schema_hash: null
   total_input_tokens: null
   total_output_tokens: null
   nondeterminism_note: >
-    Provider-side nondeterminism remains even at temperature 0; results
-    are reported as mean ± std over n_runs.
+    The Author and the judge are provider-hosted and nondeterministic even at
+    temperature 0; n_runs is 1, so no variance estimate is available for either.
+    Arm A's pipeline is fully deterministic and would replay byte-identically.
+    Arm F's is not. Intervals reported are sampling intervals over the 30
+    questions, not run-to-run variance.
 
 # --- Results block ---
 metrics:
-  primary: <metric name>
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
-baselines_compared: []
-statistical_test: null
+  primary: correctness
+  values:
+    arm_a_blind_correctness: {mean: 0.689, std: 0.0, n: 30}
+    arm_a_dev_correctness: {mean: 0.9972, std: 0.0, n: 120}
+    arm_f_blind_correctness: {mean: 0.7083, std: 0.0, n: 30}
+    arm_f_dev_correctness: {mean: 0.9957, std: 0.0, n: 120}
+    arm_a_blind_minus_dev: {mean: -0.3082, std: 0.0, n: 30}
+    arm_f_blind_minus_dev: {mean: -0.2874, std: 0.0, n: 30}
+    arm_a_federated_abstention_correctness: {mean: 0.825, std: 0.0, n: 4}
+    arm_f_federated_abstention_correctness: {mean: 0.875, std: 0.0, n: 4}
+    fabricated_mappings_both_arms: {mean: 0.0, std: 0.0, n: 8}
+baselines_compared: ["EXP-2026-07-001", "EXP-2026-07-006"]
+statistical_test: >
+  Percentile bootstrap 95% CI over the 30 per-question correctness scores (2000
+  resamples, seed 1729) for the continuous mean; Wilson score 95% interval for
+  the CORRECT-verdict rate. No significance test between arms — n=30 with
+  overlapping intervals does not support one.
 
 # --- Linkage ---
-supports_claims: []        # every ID here must exist in ../../CLAIMS.md
-figures: []                # every name here must have a file in figures/ and vice versa
+supports_claims: ["C-013", "C-001", "C-014"]
+figures: []
 supersedes: null
 superseded_by: null
-related: []
+related: ["EXP-2026-07-001", "EXP-2026-07-006", "EXP-2026-07-007"]

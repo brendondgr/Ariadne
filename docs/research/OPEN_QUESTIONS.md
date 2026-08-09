@@ -25,7 +25,18 @@ A and Arm F blind.
 **Cost:** ~4 days. The cheapest high-value experiment available.
 **Blocks:** C-001, C-013, and the interpretation of C-003 and C-005.
 **From:** EXP-2026-07-001 §7, EXP-2026-07-006 §7, D-006.
-**Status:** A freeze tag (`holdout-v1`) exists; the blind holdout has not reported.
+**Status: ANSWERED — coverage artifact, substantially.** EXP-2026-08-001 ran on
+2026-08-09 against `freeze/holdout-v1`. Arm A **0.689** (95% CI 0.550–0.817),
+Arm F **0.708** (0.565–0.838), against 0.9972 and 0.9957. C-013 is `refuted`,
+C-001 downgraded to hold only for the relation directions the templates serve.
+The drop is concentrated: 1.00 on seven of sixteen categories, 0.00 on
+`groups`. The Branch A §6 gate's `< 0.70` branch applies. See
+[`docs/evaluation/holdout-v1/README.md`](../evaluation/holdout-v1/README.md).
+
+**What Q1 leaves open:** the holdout was LLM-authored, so it controls
+co-authorship bias but not distribution bias — a human-authored set of 15–20
+questions remains the cheap secondary check. And n=30 puts the gate's 0.70
+threshold 0.011 from the result with a CI spanning three of its four bands.
 
 ### Q2 — What is the variance on any of these numbers?
 
