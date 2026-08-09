@@ -100,3 +100,58 @@ comes from an LLM planner, so the metric is not fully deterministic across runs.
 It is far more stable than a judged score, and much less so than a metric on a
 replayed gold plan. Treat single-run deltas of a few gold ids as noise; the
 deltas this experiment reports are an order of magnitude larger.
+
+---
+
+# AMENDMENTS
+
+## 2026-08-09 — The freeze premise changed while this experiment was running
+
+**What changed:** `ISSUES.md` above justifies the generic-only scoping by saying
+the blind holdout "has not reported". It reported the same day, from a
+concurrent session, as `EXP-2026-08-002` — Arm A **0.689** (95% CI 0.550–0.817)
+and Arm F **0.708** (0.565–0.838) against development figures of 0.9972 and
+0.9957. `C-013` is refuted and `C-001` downgraded.
+
+**Impact on this experiment: none to the numbers.** The isolation test is not
+weakened by the holdout reporting — it still proves the default cascade is
+byte-identical to `freeze/holdout-v1`, which is what keeps every arm figure in
+the 2026-07-26 study comparable. Only the *justification* is now historical.
+
+**Impact on the interpretation: substantial**, and in this experiment's favour.
+See the next amendment.
+
+## 2026-08-09 — The holdout's largest failure mode is the one Arm H fixes
+
+**What the holdout found.** Its biggest diagnosed loss is that **the reverse
+relation direction is unserved**: `group_techniques` binds the seed to
+`Group.attack_id`, so a *technique* seed produces a query that cannot match, and
+the `groups` category scores **0.00**. The development bank only ever asks one
+direction, which is why it was invisible for the whole study.
+
+**That is the same defect class this experiment fixed**, independently and on the
+same day, in the generic branch — `_declared_paths` was resolving the anchor from
+`labels[0]` rather than from the seed. Against the live graph, seeded with
+`T1003` and asked which groups use it:
+
+| Path | Query | Rows |
+|---|---|---|
+| default cascade | `group_techniques` — `MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN $ids` | **0** |
+| generic branch | `generic_chain` — branches `Group\|USES:out` and `Technique\|USES:in`, each label-guarded | **21** (13 Groups) |
+
+The generic layer serves both directions **by construction**, because it reads
+the direction off the declared facet instead of encoding the one the development
+set happened to ask for.
+
+**What this does and does not establish.** It is a query-construction result
+against the live graph, verified on one anchor. It is **not** a measured
+correctness figure on the holdout bank: the generic arm has never been run
+against `holdout_questions.json`. Nothing here may be quoted as a holdout score.
+
+**Follow-up, and it is the highest-value experiment now available:** run the
+generic branch (`SPECIALIST_GENERIC_ONLY=true`) against the blind holdout bank
+and judge it under `EXP-2026-08-002`'s protocol. If it beats Arm F's 0.708 there,
+the paper's positioning inverts — the template library would be *narrowing*
+generalisation, not providing it, and `C-003` would need rewriting rather than
+qualifying. If it does not, the precision cost documented above is the reason,
+and that is equally publishable.
