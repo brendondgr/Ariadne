@@ -165,9 +165,17 @@ class GremlinQueryBuilder:
         neighbor_rels = _resolve_neighbor_rels(resolved)
 
         if _generic_only():
-            # Schema-driven primitives only — no CAPEC question-shapes (no
-            # MAPS_TO bridge, no hierarchy chain, no CWE chain). Everything here
-            # is parameterised by a card-declared relationship or nothing at all.
+            # Schema-driven primitives only — no CAPEC question-shapes. Everything
+            # here is parameterised by a card-declared relationship, by the
+            # declared canonical join key, or by nothing at all.
+            #
+            # The bridge comes first: a dependent federated sub-question is
+            # skipped outright when its producer returns no join values, so a
+            # describe that reports only facet COUNTS loses the second half of
+            # the question. Walking the declared join edge is what turns the
+            # anchor into seed identifiers the consumer can use.
+            if has_seeds and resolved.has_join:
+                return self._generic_bridge(resolved)
             if has_seeds and len(neighbor_rels) == 1:
                 return self._capec_neighbors(resolved, neighbor_rels[0])
             if has_seeds and neighbor_rels:
@@ -488,6 +496,88 @@ class GremlinQueryBuilder:
                 "anchor_label": "TaxonomyEntry",
                 "neighbor_label": "AttackPattern",
                 "rel": "MAPS_TO",
+            },
+        )
+
+    # -- generic-only primitives -------------------------------------------
+    #
+    # Everything below is reachable ONLY under SPECIALIST_GENERIC_ONLY. None of
+    # it is used by the default cascade, so arms A-F and production are
+    # unaffected — see utils/specialists/tests/test_generic_only_isolation.py.
+
+    def _generic_bridge(self, resolved: ResolvedTask) -> QueryDraft:
+        """Walk the declared cross-source join edge and project the key property.
+
+        The bridging edge, the endpoint label and the key property all come from
+        the ``JoinKeyEndpoint`` the planner already resolved
+        (:mod:`utils.planner.join_keys`) — nothing here encodes that CAPEC maps
+        to ATT&CK, only that the registry declares *some* edge reaching *some*
+        label carrying *some* key. The same compiler bridges any future pair of
+        sources whose join key is declared.
+
+        This is the primitive whose absence cost Arm G 40% of its lost
+        correctness: without it a bridge question routes to ``describe``, which
+        returns facet **counts** rather than neighbour ids, so the dependent
+        sub-question is skipped for want of seeds.
+
+        Emits the ``{"ap", "tax"}`` row shape so the existing maps_to
+        normalization path applies; that path owns the key's id-format concern
+        (the ``T`` prefix), which is a property of the declared key, not a
+        question shape.
+        """
+        endpoint = resolved.join_endpoint
+        assert endpoint is not None and endpoint.via_edge  # guarded by has_join
+        edge = gremlin_edge_label(_safe_gremlin_ident(endpoint.via_edge, "join edge"))
+        key_label = _safe_gremlin_ident(endpoint.labels[0], "join endpoint label")
+        key_prop = _safe_gremlin_ident(endpoint.property, "join key property")
+        anchor_label = _safe_gremlin_ident(
+            resolved.primary_label() or "AttackPattern", "anchor label"
+        )
+        lim = resolved.task.max_rows()
+
+        # Seeded on the key's own values (ATT&CK ids) rather than on the anchor:
+        # enter at the key endpoint and walk the edge backwards. This is the
+        # reverse-mapping shape C-MAP and F-REV need.
+        entry_ids = [
+            m.group(1)
+            for m in (_ATTACK_ENTRY_RE.match(s) for s in resolved.seed_ids)
+            if m
+        ]
+        if entry_ids and len(entry_ids) == len(resolved.seed_ids):
+            query = (
+                f'g.V().hasLabel("{key_label}").has("{key_prop}", within(entryIds))'
+                f'.as("tax").in("{edge}").hasLabel("{anchor_label}").as("ap")'
+                f'.select("ap","tax").by(elementMap()).limit({lim})'
+            )
+            return QueryDraft(
+                query=query,
+                params={"entryIds": entry_ids},
+                template="generic_bridge",
+                expected_nonempty=True,
+                meta={
+                    "anchor_label": key_label,
+                    "neighbor_label": anchor_label,
+                    "rel": endpoint.via_edge,
+                    "direction": "in",
+                },
+            )
+
+        ids = [_capec_gremlin_id(s) for s in resolved.seed_ids]
+        query = (
+            f'g.V().hasLabel("{anchor_label}").has("id", within(ids)).as("ap")'
+            f'.out("{edge}").hasLabel("{key_label}").as("tax")'
+            f'.select("ap","tax").by(elementMap()).limit({lim})'
+        )
+        return QueryDraft(
+            query=query,
+            params={"ids": ids},
+            template="generic_bridge",
+            expected_nonempty=False,
+            meta={
+                "anchor_label": anchor_label,
+                "neighbor_label": key_label,
+                "rel": endpoint.via_edge,
+                "direction": "out",
             },
         )
 
