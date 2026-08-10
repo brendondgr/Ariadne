@@ -33,7 +33,7 @@ The full contract is [`docs/research/AGENT_INSTRUCTIONS.md`](docs/research/AGENT
 
 ### The rules that get enforced
 
-CI and the pre-commit hook fail on all of these, so it is cheaper to know them:
+The pre-commit hook fails on all of these, so it is cheaper to know them:
 
 - A missing `manifest.yaml`, `PROTOCOL.md`, or `RESULTS.md`.
 - `status: complete` with empty `metrics.values`.
