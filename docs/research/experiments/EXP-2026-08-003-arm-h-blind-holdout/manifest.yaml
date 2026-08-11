@@ -1,0 +1,88 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-08-003
+slug: arm-h-blind-holdout
+title: Do the schema-driven primitives generalise to questions nobody wrote templates for?
+status: complete           # planned | running | complete | failed | superseded
+date_started: 2026-08-10
+date_completed: 2026-08-10
+authors: [brendondgr]
+
+purpose: >
+  EXP-2026-08-002 found the deterministic pipeline's largest blind-set failure to
+  be structural - the hand-written templates serve only the relation direction the
+  development bank happened to ask, so the groups category scored 0.00. Arm H
+  (EXP-2026-08-001) replaced the cascade with primitives that resolve direction
+  from the declared facet. This runs Arm H against the same 30 blind questions to
+  ask whether that generalises. It qualifies C-003 and partly closes C-014's
+  measured cliff: retrieval rises 0.7688 to 0.8952, concentrated entirely in the
+  two diagnosed categories, while roughly half the blind deficit turns out not to
+  be a retrieval problem at all.
+
+hypothesis: >
+  Arm H's retrieval beats the template cascade's on the blind set, with the gain
+  concentrated in the reverse-direction categories (H-GRP, H-SW) rather than
+  spread evenly, and no category regressing. Falsified by a diffuse gain, which
+  would suggest a metric artifact rather than the diagnosed defect.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 23d74ebca848596556ab9a513873a2e9349222d0          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python -m utils.evaluation.experiment_untruncated --arm generic --bank utils/specialists/tests/golden/holdout_questions.json --root docs/evaluation/experiments/holdout-v1-generic --workers 4"
+  dirty: false            # clean tree at 23d74eb
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: blind-holdout-30
+  version: "holdout-v1"
+  split: holdout
+  n_examples: 30
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: null               # md5:... or sha256:... of the dataset artifact
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1
+environment:
+  python: "3.13"
+  lockfile: null             # uv.lock at repository root; not snapshotted per run
+  container: null
+compute:
+  hardware: "unknown — not captured at run time"
+  wall_clock_hours: 0.135
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "local/skynet (Gemma 4 31B)@unknown"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 16384
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: gold_in_evidence
+  values:
+    gold_in_evidence: {mean: 0.8952, std: null, n: 1}
+    fully_covered_fraction: {mean: 0.8667, std: null, n: 1}
+  # No correctness value: Arm H was not judged on this bank. Arm A 0.689 and
+  # Arm F 0.708 come from EXP-2026-08-002 and are NOT comparable to the above.
+baselines_compared: [EXP-2026-08-002]
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: [C-003, C-014]   # qualifies C-003; measures and partly closes C-014's cliff
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null
+superseded_by: null
+related: [EXP-2026-08-001, EXP-2026-08-002]

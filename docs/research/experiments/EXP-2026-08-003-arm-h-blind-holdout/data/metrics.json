@@ -1,0 +1,207 @@
+{
+  "experiment": "EXP-2026-08-003",
+  "arm": "H",
+  "arm_code": "generic",
+  "bank": "utils/specialists/tests/golden/holdout_questions.json",
+  "artifact_dir": "docs/evaluation/experiments/holdout-v1-generic/generic",
+  "n_questions": 30,
+  "metrics": {
+    "gold_in_evidence": {
+      "mean": 0.8952380952380953,
+      "std": null,
+      "n": 1
+    },
+    "fully_covered_fraction": {
+      "mean": 0.8666666666666667,
+      "std": null,
+      "n": 1
+    }
+  },
+  "counts": {
+    "fully_covered": 26,
+    "gold_ids_missing": 5,
+    "skipped_consumers": 3,
+    "evidence_records": 51
+  },
+  "reference_arms": {
+    "arm_a_deterministic": {
+      "gold_in_evidence": 0.7687675070028012,
+      "fully_covered": 22,
+      "gold_ids_missing": 192,
+      "judged_correctness": 0.6890000000000001
+    },
+    "arm_f_loop_llm": {
+      "gold_in_evidence": 0.7687675070028012,
+      "fully_covered": 22,
+      "gold_ids_missing": 192,
+      "judged_correctness": 0.7083333333333334
+    }
+  },
+  "paired_comparison": {
+    "paired": 30,
+    "improved": 4,
+    "regressed": 0,
+    "improved_ids": [
+      "H-GRP-01",
+      "H-GRP-02",
+      "H-SW-01",
+      "H-SW-02"
+    ]
+  },
+  "residual_failures": [
+    {
+      "id": "H-CHN-01",
+      "gold": 7,
+      "in_evidence": 6,
+      "missing": [
+        "CAPEC-116"
+      ],
+      "cause": "generic_bridge inner join drops anchors with no join target"
+    },
+    {
+      "id": "H-CHN-02",
+      "gold": 2,
+      "in_evidence": 0,
+      "missing": [
+        "CAPEC-456",
+        "CAPEC-679"
+      ],
+      "cause": "generic_bridge inner join drops anchors with no join target"
+    },
+    {
+      "id": "H-CTM-01",
+      "gold": 1,
+      "in_evidence": 0,
+      "missing": [
+        "CAPEC-603"
+      ],
+      "cause": "generic_bridge inner join drops anchors with no join target"
+    },
+    {
+      "id": "H-CTM-02",
+      "gold": 1,
+      "in_evidence": 0,
+      "missing": [
+        "CAPEC-40"
+      ],
+      "cause": "generic_bridge inner join drops anchors with no join target"
+    }
+  ],
+  "per_category": {
+    "H-ABS": {
+      "n": 1,
+      "arm_f_retrieval": 1.0,
+      "arm_h_retrieval": 1.0,
+      "arm_a_judged": 0.15,
+      "arm_f_judged": 0.1
+    },
+    "H-CHN": {
+      "n": 3,
+      "arm_f_retrieval": 0.6190476190476191,
+      "arm_h_retrieval": 0.6190476190476191,
+      "arm_a_judged": 0.6333333333333333,
+      "arm_f_judged": 0.6833333333333332
+    },
+    "H-CSQ": {
+      "n": 1,
+      "arm_f_retrieval": 1.0,
+      "arm_h_retrieval": 1.0,
+      "arm_a_judged": 0.15,
+      "arm_f_judged": 0.15
+    },
+    "H-CTM": {
+      "n": 4,
+      "arm_f_retrieval": 0.5,
+      "arm_h_retrieval": 0.5,
+      "arm_a_judged": 1.0,
+      "arm_f_judged": 1.0
+    },
+    "H-CWE": {
+      "n": 1,
+      "arm_f_retrieval": 1.0,
+      "arm_h_retrieval": 1.0,
+      "arm_a_judged": 1.0,
+      "arm_f_judged": 1.0
+    },
+    "H-DET": {
+      "n": 2,
+      "arm_f_retrieval": 1.0,
+      "arm_h_retrieval": 1.0,
+      "arm_a_judged": 0.925,
+      "arm_f_judged": 0.95
+    },
+    "H-EXE": {
+      "n": 1,
+      "arm_f_retrieval": 1.0,
+      "arm_h_retrieval": 1.0,
+      "arm_a_judged": 1.0,
+      "arm_f_judged": 1.0
+    },
+    "H-GRP": {
+      "n": 2,
+      "arm_f_retrieval": 0.0,
+      "arm_h_retrieval": 1.0,
+      "arm_a_judged": 0.0,
+      "arm_f_judged": 0.0
+    },
+    "H-LKP": {
+      "n": 3,
+      "arm_f_retrieval": 1.0,
+      "arm_h_retrieval": 1.0,
+      "arm_a_judged": 0.55,
+      "arm_f_judged": 0.6166666666666667
+    },
+    "H-MAP": {
+      "n": 2,
+      "arm_f_retrieval": 1.0,
+      "arm_h_retrieval": 1.0,
+      "arm_a_judged": 1.0,
+      "arm_f_judged": 1.0
+    },
+    "H-MIT": {
+      "n": 2,
+      "arm_f_retrieval": 1.0,
+      "arm_h_retrieval": 1.0,
+      "arm_a_judged": 1.0,
+      "arm_f_judged": 1.0
+    },
+    "H-PRE": {
+      "n": 1,
+      "arm_f_retrieval": 1.0,
+      "arm_h_retrieval": 1.0,
+      "arm_a_judged": 0.1,
+      "arm_f_judged": 0.1
+    },
+    "H-REV": {
+      "n": 3,
+      "arm_f_retrieval": 1.0,
+      "arm_h_retrieval": 1.0,
+      "arm_a_judged": 1.0,
+      "arm_f_judged": 1.0
+    },
+    "H-SUB": {
+      "n": 1,
+      "arm_f_retrieval": 1.0,
+      "arm_h_retrieval": 1.0,
+      "arm_a_judged": 0.75,
+      "arm_f_judged": 1.0
+    },
+    "H-SW": {
+      "n": 2,
+      "arm_f_retrieval": 0.10294117647058824,
+      "arm_h_retrieval": 1.0,
+      "arm_a_judged": 0.060000000000000005,
+      "arm_f_judged": 0.05
+    },
+    "H-TAC": {
+      "n": 1,
+      "arm_f_retrieval": 1.0,
+      "arm_h_retrieval": 1.0,
+      "arm_a_judged": 1.0,
+      "arm_f_judged": 1.0
+    }
+  },
+  "wall_clock_seconds": 484.9,
+  "judged": false,
+  "judged_note": "Arm H has NO judged correctness on this bank. Retrieval only. Arm A/F judged figures are quoted from EXP-2026-08-002's committed judgments and are NOT comparable to gold_in_evidence."
+}
