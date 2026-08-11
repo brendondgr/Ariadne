@@ -378,3 +378,76 @@ def test_generic_walk_fits_the_traversal_step_budget(generic_only: None) -> None
     steps = len(re.findall(r"\.(out|in|both)\(", draft.query))
     assert steps <= resolved.task.max_depth()
     assert draft.meta["dropped_branches"]
+
+
+# -- the bridge is an outer join --------------------------------------------
+
+
+def test_generic_bridge_is_an_outer_join(generic_only: None) -> None:
+    """The anchor must survive an empty mapping list.
+
+    An inner join drops a pattern that maps to nothing, which is both a recall
+    bug — CAPEC-116 exploits CWE-1243 and maps to no technique — and a grounding
+    bug: "this pattern has no ATT&CK mapping" is a real answer and needs the
+    record it was read from.
+    """
+    resolved = _capec(
+        "Which ATT&CK techniques does CAPEC-603 map to?",
+        ("AttackPattern", "MAPS_TO", "TaxonomyEntry"),
+        join_key="attack-technique-id",
+    )
+    query = GremlinQueryBuilder().build(resolved).query
+
+    assert '.project("ap","tax")' in query
+    assert '.by(__.out("MAPS_TO").hasLabel("TaxonomyEntry").elementMap().fold())' in query
+    # The inner-join form must be gone from the anchored forward shape.
+    assert '.out("MAPS_TO").hasLabel("TaxonomyEntry").as("tax")' not in query
+
+
+def test_bridge_outer_normalizer_keeps_an_unmapped_anchor() -> None:
+    """An empty fold yields a record with no join values, not no record."""
+    from utils.specialists.gremlin.normalizer import GremlinNormalizer
+
+    rows = [{"ap": {"id": "capec:attack-pattern:603", "name": "Blockage"}, "tax": []}]
+    resolved = _capec(
+        "Which ATT&CK techniques does CAPEC-603 map to?",
+        ("AttackPattern", "MAPS_TO", "TaxonomyEntry"),
+        join_key="attack-technique-id",
+    )
+    records = GremlinNormalizer().normalize(
+        rows, resolved, "q", fixture_card("capec")
+    )
+
+    assert len(records) == 1
+    assert records[0].primary_id == "CAPEC-603"
+    # No join values means the dependent federated hop correctly stands down.
+    assert records[0].join_values == ()
+
+
+def test_bridge_outer_normalizer_still_projects_mappings() -> None:
+    """A non-empty fold produces the T-prefixed join values as before."""
+    from utils.specialists.gremlin.normalizer import GremlinNormalizer
+
+    rows = [
+        {
+            "ap": {"id": "capec:attack-pattern:150", "name": "Collect Data"},
+            "tax": [
+                {"id": "capec:taxonomy:ATTACK:1003", "entry_id": "1003",
+                 "taxonomy_name": "ATTACK"},
+                {"id": "capec:taxonomy:WASC:11", "entry_id": "11",
+                 "taxonomy_name": "WASC"},
+            ],
+        }
+    ]
+    resolved = _capec(
+        "Which ATT&CK techniques does CAPEC-150 map to?",
+        ("AttackPattern", "MAPS_TO", "TaxonomyEntry"),
+        join_key="attack-technique-id",
+    )
+    records = GremlinNormalizer().normalize(
+        rows, resolved, "q", fixture_card("capec")
+    )
+
+    assert records[0].join_values == ("T1003",)
+    # The non-ATTACK taxonomy entry is still carried as evidence, just not joined.
+    assert len(records[0].related) == 2

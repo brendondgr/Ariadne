@@ -172,6 +172,12 @@ class GremlinNormalizer:
         # Detect result shape from the first non-empty row.
         # Check most-specific shapes first.
         first = rows[0]
+        # Outer-join bridge: ``tax`` is a *folded list* of mappings, possibly
+        # empty, rather than a single element. Checked before every other shape
+        # because it is the only one whose ``tax`` is a list — the inner-join
+        # shapes below are untouched and still route where they always did.
+        if "ap" in first and isinstance(first.get("tax"), list):
+            return self._normalize_bridge_outer(rows, resolved, query, card)
         if "w" in first and "ap" in first and "tax" in first:
             return self._normalize_cwe_chain(rows, resolved, query, card)
         if "ap" in first and "parent" in first and "grandparent" in first:
@@ -460,6 +466,77 @@ class GremlinNormalizer:
                     properties=grp["props"],
                     related=grp["related"],
                     join_values=tuple(grp["join_values"]),
+                )
+            )
+        return records
+
+    def _normalize_bridge_outer(
+        self,
+        rows: list[dict[str, Any]],
+        resolved: ResolvedTask,
+        query: str,
+        card: Any,
+    ) -> list[EvidenceRecord]:
+        """Outer-join bridge rows: ``{"ap":.., "tax":[..]}`` (+ optional ``"w"``).
+
+        One record per anchor, always — including anchors whose mapping list is
+        **empty**. That empty case is the whole point: it is what lets an answer
+        say "this pattern maps to nothing" and cite the record it read, instead
+        of having no record at all and abstaining without provenance.
+
+        ``join_values`` follows the same rule as the inner-join paths: only
+        ATTACK taxonomy entries contribute, T-prefixed. An anchor with no
+        mappings contributes none, which is what correctly stands the dependent
+        federated hop down.
+        """
+        id_scheme: str = card.provenance.get("id_scheme", "capec-id")
+        records: list[EvidenceRecord] = []
+        for row in rows:
+            ap_m = _row_as_dict(row.get("ap", {}))
+            gid = _safe_str(ap_m.get("id", ""))
+            primary_id = _primary_id_from_gremlin_id(gid)
+
+            join_values: list[str] = []
+            related: list[dict[str, Any]] = []
+
+            # The seed the chain started from, when the anchor was reached
+            # through a prefix (a CWE-anchored question).
+            w_m = _row_as_dict(row.get("w", {}))
+            if w_m:
+                related.append({"id": _cwe_primary_id(_safe_str(w_m.get("id", "")))})
+
+            for entry in row.get("tax") or []:
+                tax_m = _row_as_dict(entry)
+                taxonomy_name = _safe_str(tax_m.get("taxonomy_name", ""))
+                entry_id = _safe_str(tax_m.get("entry_id", ""))
+                if taxonomy_name == "ATTACK" and entry_id:
+                    t_value = (
+                        f"T{entry_id}" if not entry_id.startswith("T") else entry_id
+                    )
+                    if t_value not in join_values:
+                        join_values.append(t_value)
+                related.append(
+                    {
+                        "id": _safe_str(tax_m.get("id", "")),
+                        "name": _safe_str(tax_m.get("name", "")),
+                        "label": _get_label(tax_m) or "TaxonomyEntry",
+                        "entry_id": entry_id,
+                        "taxonomy_name": taxonomy_name,
+                    }
+                )
+
+            records.append(
+                emit_record(
+                    card=card,
+                    query=query,
+                    record_id=_get_record_id(ap_m) or gid,
+                    primary_id=primary_id,
+                    id_scheme=id_scheme,
+                    label=_get_label(ap_m) or "AttackPattern",
+                    name=_safe_str(ap_m.get("name", "")),
+                    properties=_string_props(ap_m),
+                    related=related,
+                    join_values=tuple(join_values),
                 )
             )
         return records

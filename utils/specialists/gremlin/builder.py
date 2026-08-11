@@ -804,10 +804,18 @@ class GremlinQueryBuilder:
                 f'.select("w","ap","tax").by(elementMap()).limit({lim})'
             )
         else:
+            # An **outer** join: one row per anchor, with its mappings folded
+            # into a list that may be empty. ``.out(edge)`` would be an inner
+            # join and drop the anchor entirely when it has no mapping — which
+            # is both a recall bug (CAPEC-116 exploits CWE-1243 and maps to
+            # nothing, so it vanished) and a grounding bug. "This pattern has no
+            # ATT&CK mapping" is a real answer, and an inner join cannot return
+            # the record needed to ground it.
             query = (
-                f'g.V().hasLabel("{anchor_label}").has("id", within(ids)).as("ap")'
-                f'.out("{edge}").hasLabel("{key_label}").as("tax")'
-                f'.select("ap","tax").by(elementMap()).limit({lim})'
+                f'g.V().hasLabel("{anchor_label}").has("id", within(ids))'
+                f'.project("ap","tax").by(elementMap())'
+                f'.by(__.out("{edge}").hasLabel("{key_label}").elementMap().fold())'
+                f".limit({lim})"
             )
         return QueryDraft(
             query=query,
