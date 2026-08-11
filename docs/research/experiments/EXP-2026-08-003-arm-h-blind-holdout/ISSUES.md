@@ -58,3 +58,33 @@ Arm A and Arm F lose the same ids.
 that the judge already scored 1.00 or 0.50 on Arm F. The retrieval metric is
 stricter than the judge here, and correctly so: an ungrounded abstention and a
 grounded one are not the same answer.
+
+---
+
+# AMENDMENTS
+
+## 2026-08-10 — The residual defect is fixed; §4's five ids are recovered
+
+`RESULTS.md` §4 records four questions not fully covered and traces all five
+missing identifiers to `_generic_bridge` being an inner join. That fix landed as
+`EXP-2026-08-004`: the bridge now projects one row per anchor with its mappings
+folded into a possibly-empty list, and the CWE-anchored chain inner-joins its
+first hop and outer-joins its second.
+
+Blind-set retrieval moved **0.8952 → 1.0000**, 26/30 → **30/30**, 0 regressions.
+The development catalogue held at 1.0000 with 0 regressions.
+
+The numbers in this experiment stand as recorded — they are the measurement that
+identified the defect. `EXP-2026-08-004` supersedes §4 and §7 item 1 only.
+
+## 2026-08-10 — §3's "45%" now has a decomposition
+
+`RESULTS.md` §3 reports 45% of Arm F's blind loss sitting on questions that
+retrieved completely, without naming what it consists of.
+`utils/evaluation/answer_gap.py` resolves it: **`under_enumeration` on three
+questions worth 0.0883**, and `judge_nuance` spread over nineteen worth 0.0417.
+
+All three under-enumeration cases are one defect — the answer names the anchor
+and drops the neighbours the query already returned (1 of 4, 1 of 2, 1 of 3).
+That is a composer fix, not a retrieval one, and it is now the largest named
+addressable defect in the system.

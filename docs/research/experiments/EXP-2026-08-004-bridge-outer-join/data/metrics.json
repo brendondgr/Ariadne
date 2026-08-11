@@ -1,0 +1,132 @@
+{
+  "experiment": "EXP-2026-08-004",
+  "arm": "H (outer-join bridge)",
+  "arm_code": "generic",
+  "metrics": {
+    "blind_gold_in_evidence": {
+      "mean": 1.0,
+      "std": null,
+      "n": 1
+    },
+    "dev_gold_in_evidence": {
+      "mean": 1.0,
+      "std": null,
+      "n": 1
+    }
+  },
+  "blind_holdout": {
+    "n": 30,
+    "outer_join": {
+      "n": 30,
+      "gold_in_evidence": 1.0,
+      "gold_in_evidence_scorable": 1.0,
+      "fully_covered": 30,
+      "gold_ids_missing": 0,
+      "skipped_consumers": 3,
+      "records": 56
+    },
+    "inner_join_previous": {
+      "n": 30,
+      "gold_in_evidence": 0.8952380952380953,
+      "gold_in_evidence_scorable": 0.8916256157635468,
+      "fully_covered": 26,
+      "gold_ids_missing": 5,
+      "skipped_consumers": 3,
+      "records": 51
+    },
+    "template_cascade": {
+      "n": 30,
+      "gold_in_evidence": 0.7687675070028012,
+      "gold_in_evidence_scorable": 0.7607939727615185,
+      "fully_covered": 22,
+      "gold_ids_missing": 192,
+      "skipped_consumers": 3,
+      "records": 54
+    },
+    "vs_inner_join": {
+      "paired": 30,
+      "improved": 4,
+      "regressed": 0,
+      "gold_ids_recovered": 5,
+      "gold_ids_lost": 0
+    },
+    "vs_template_cascade": {
+      "paired": 30,
+      "improved": 8,
+      "regressed": 0,
+      "gold_ids_recovered": 192,
+      "gold_ids_lost": 0
+    }
+  },
+  "development_catalogue": {
+    "n": 120,
+    "outer_join": {
+      "n": 120,
+      "gold_in_evidence": 1.0,
+      "gold_in_evidence_scorable": 1.0,
+      "fully_covered": 120,
+      "gold_ids_missing": 0,
+      "skipped_consumers": 7,
+      "records": 966
+    },
+    "inner_join_previous": {
+      "n": 120,
+      "gold_in_evidence": 1.0,
+      "gold_in_evidence_scorable": 1.0,
+      "fully_covered": 120,
+      "gold_ids_missing": 0,
+      "skipped_consumers": 7,
+      "records": 950
+    },
+    "vs_inner_join": {
+      "paired": 120,
+      "improved": 0,
+      "regressed": 0,
+      "gold_ids_recovered": 0,
+      "gold_ids_lost": 0
+    }
+  },
+  "answer_gap_arm_f_blind": {
+    "retrieval_complete": 22,
+    "total_loss": 0.2916666666666667,
+    "loss_with_complete_retrieval": 0.13,
+    "by_reason": {
+      "judge_nuance": {
+        "questions": 19,
+        "loss_share_of_total": 0.041666666666666664,
+        "ids": [
+          "H-CHN-03",
+          "H-CTM-03",
+          "H-CTM-04",
+          "H-CWE-01",
+          "H-DET-01",
+          "H-DET-02",
+          "H-EXE-01",
+          "H-LKP-01",
+          "H-LKP-02",
+          "H-LKP-03",
+          "H-MAP-01",
+          "H-MAP-02",
+          "H-MIT-01",
+          "H-MIT-02",
+          "H-REV-01",
+          "H-REV-02",
+          "H-REV-03",
+          "H-SUB-01",
+          "H-TAC-01"
+        ]
+      },
+      "under_enumeration": {
+        "questions": 3,
+        "loss_share_of_total": 0.08833333333333333,
+        "ids": [
+          "H-ABS-01",
+          "H-CSQ-01",
+          "H-PRE-01"
+        ]
+      }
+    }
+  },
+  "judged": false,
+  "judged_note": "No arm in this experiment is judged. All figures are retrieval; the answer_gap block reuses EXP-2026-08-002's committed Arm F judgments and describes Arm F, not Arm H."
+}

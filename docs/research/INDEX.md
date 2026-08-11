@@ -23,6 +23,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-08-001` | 2026-08-09 | Is Arm G's gap a capability gap in the schema-driven layer, or domain knowledge? | complete | gold_in_evidence 1.0000 (n=1) | C-003, C-010 | [arm-h-generic-composed](experiments/EXP-2026-08-001-arm-h-generic-composed/) |
 | `EXP-2026-08-002` | 2026-08-09 | Does the deterministic pipeline's near-ceiling correctness survive a blind, uniformly-sampled holdout? | complete | correctness (not recorded) | C-013, C-001, C-014 | [blind-holdout-v1](experiments/EXP-2026-08-002-blind-holdout-v1/) |
 | `EXP-2026-08-003` | 2026-08-10 | Do the schema-driven primitives generalise to questions nobody wrote templates for? | complete | gold_in_evidence 0.8952 (n=1) | C-003, C-014 | [arm-h-blind-holdout](experiments/EXP-2026-08-003-arm-h-blind-holdout/) |
+| `EXP-2026-08-004` | 2026-08-10 | Does making the cross-source bridge an outer join close the residual blind-set gap without regressing? | complete | blind_gold_in_evidence 1.0000 (n=1) | C-003, C-014 | [bridge-outer-join](experiments/EXP-2026-08-004-bridge-outer-join/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 
-**14 experiment(s) on record.**
+**15 experiment(s) on record.**
