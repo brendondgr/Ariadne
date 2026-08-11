@@ -451,3 +451,46 @@ def test_bridge_outer_normalizer_still_projects_mappings() -> None:
     assert records[0].join_values == ("T1003",)
     # The non-ATTACK taxonomy entry is still carried as evidence, just not joined.
     assert len(records[0].related) == 2
+
+
+def test_prefixed_bridge_inner_joins_the_first_hop_and_outer_joins_the_second(
+    generic_only: None,
+) -> None:
+    """Only patterns that exploit the CWE belong; but they belong even unmapped.
+
+    CWE-1243 is exploited by CAPEC-116 and CAPEC-545. CAPEC-116 maps to no
+    technique, so an inner join on the second hop deleted it from the answer.
+    """
+    resolved = _capec(
+        "Which CAPEC patterns exploit CWE-1243, and which techniques do they map to?",
+        ("Weakness", "AttackPattern", "TaxonomyEntry"),
+        join_key="attack-technique-id",
+    )
+    query = GremlinQueryBuilder().build(resolved).query
+
+    # First hop: inner, as a traversal step.
+    assert '.in("EXPLOITS_WEAKNESS").hasLabel("AttackPattern").as("ap")' in query
+    # Second hop: outer, as a folded projection.
+    assert '.by(__.out("MAPS_TO").hasLabel("TaxonomyEntry").elementMap().fold())' in query
+    assert '.out("MAPS_TO").hasLabel("TaxonomyEntry").as("tax")' not in query
+
+
+def test_bridge_outer_normalizer_carries_the_chain_seed() -> None:
+    """A CWE-anchored row keeps the weakness as a related entry on each pattern."""
+    from utils.specialists.gremlin.normalizer import GremlinNormalizer
+
+    rows = [{
+        "w": {"id": "cwe:1243"},
+        "ap": {"id": "capec:attack-pattern:116", "name": "Excavation"},
+        "tax": [],
+    }]
+    resolved = _capec(
+        "Which CAPEC patterns exploit CWE-1243?",
+        ("Weakness", "AttackPattern", "TaxonomyEntry"),
+        join_key="attack-technique-id",
+    )
+    records = GremlinNormalizer().normalize(rows, resolved, "q", fixture_card("capec"))
+
+    assert records[0].primary_id == "CAPEC-116"
+    assert {r.get("id") for r in records[0].related} == {"CWE-1243"}
+    assert records[0].join_values == ()

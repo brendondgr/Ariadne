@@ -797,11 +797,18 @@ class GremlinQueryBuilder:
             return None
 
         if prefix:
+            # The *first* hop stays an inner join: only patterns that genuinely
+            # exploit this weakness belong in the answer. The *second* becomes
+            # outer, so a pattern that exploits the CWE but maps to no technique
+            # is still returned — CAPEC-116 is exactly that, and the inner join
+            # was silently deleting it.
             query = (
                 f'g.V().hasLabel("{anchor_label}").has("id", within(ids)).as("w")'
                 f'.{prefix}.hasLabel("{owner_label}").as("ap")'
-                f'.out("{edge}").hasLabel("{key_label}").as("tax")'
-                f'.select("w","ap","tax").by(elementMap()).limit({lim})'
+                f'.project("w","ap","tax")'
+                f'.by(__.select("w").elementMap()).by(__.select("ap").elementMap())'
+                f'.by(__.out("{edge}").hasLabel("{key_label}").elementMap().fold())'
+                f".limit({lim})"
             )
         else:
             # An **outer** join: one row per anchor, with its mappings folded
