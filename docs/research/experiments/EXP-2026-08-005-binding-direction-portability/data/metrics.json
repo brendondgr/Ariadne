@@ -1,0 +1,159 @@
+{
+  "experiment": "EXP-2026-08-005",
+  "arm": "A (deterministic template cascade), binding-checked and direction-resolved",
+  "arm_code": "deterministic",
+  "metrics": {
+    "blind_gold_in_evidence": {
+      "mean": 0.8952380952380953,
+      "std": null,
+      "n": 1
+    },
+    "dev_gold_in_evidence": {
+      "mean": 1.0,
+      "std": null,
+      "n": 1
+    }
+  },
+  "blind_holdout": {
+    "n": 30,
+    "after": {
+      "n": 30,
+      "gold_in_evidence": 0.8952380952380953,
+      "gold_in_evidence_scorable": 0.8916256157635468,
+      "fully_covered": 26,
+      "gold_ids_missing": 5,
+      "skipped_consumers": 3,
+      "records": 216
+    },
+    "before": {
+      "n": 30,
+      "gold_in_evidence": 0.7687675070028012,
+      "gold_in_evidence_scorable": 0.7607939727615185,
+      "fully_covered": 22,
+      "gold_ids_missing": 192,
+      "skipped_consumers": 3,
+      "records": 43
+    },
+    "paired": {
+      "paired": 30,
+      "improved": 4,
+      "regressed": 0,
+      "gold_ids_recovered": 187,
+      "gold_ids_lost": 0,
+      "regressions": [],
+      "improvements": [
+        {
+          "id": "H-SW-02",
+          "delta": 169
+        },
+        {
+          "id": "H-GRP-01",
+          "delta": 12
+        },
+        {
+          "id": "H-SW-01",
+          "delta": 4
+        },
+        {
+          "id": "H-GRP-02",
+          "delta": 2
+        }
+      ]
+    },
+    "residual_missing": {
+      "H-CHN-01": [
+        "CAPEC-116"
+      ],
+      "H-CHN-02": [
+        "CAPEC-456",
+        "CAPEC-679"
+      ],
+      "H-CTM-01": [
+        "CAPEC-603"
+      ],
+      "H-CTM-02": [
+        "CAPEC-40"
+      ]
+    }
+  },
+  "development_catalogue": {
+    "n": 120,
+    "after": {
+      "n": 120,
+      "gold_in_evidence": 1.0,
+      "gold_in_evidence_scorable": 1.0,
+      "fully_covered": 120,
+      "gold_ids_missing": 0,
+      "skipped_consumers": 7,
+      "records": 1061
+    },
+    "before": {
+      "n": 120,
+      "gold_in_evidence": 1.0,
+      "gold_in_evidence_scorable": 1.0,
+      "fully_covered": 120,
+      "gold_ids_missing": 0,
+      "skipped_consumers": 7,
+      "records": 1061
+    },
+    "paired": {
+      "paired": 120,
+      "improved": 0,
+      "regressed": 0,
+      "gold_ids_recovered": 0,
+      "gold_ids_lost": 0,
+      "regressions": [],
+      "improvements": []
+    }
+  },
+  "binding_audit": {
+    "cases": 615,
+    "drafts": 615,
+    "bindings_checked": 670,
+    "mismatch_total": 242,
+    "unchecked": 0,
+    "repairable_remaining": [
+      {
+        "template": "tactic_techniques",
+        "scope": [
+          "Tactic",
+          "Technique",
+          "Mitigation"
+        ],
+        "seed": "M1038",
+        "bound": "Tactic.attack_id"
+      },
+      {
+        "template": "group_techniques",
+        "scope": [
+          "Group",
+          "Software"
+        ],
+        "seed": "S0154",
+        "bound": "Group.attack_id"
+      },
+      {
+        "template": "group_techniques",
+        "scope": [
+          "Software",
+          "Group"
+        ],
+        "seed": "S0154",
+        "bound": "Group.attack_id"
+      }
+    ],
+    "before_fix": {
+      "mismatch_total": 271,
+      "repairable": 16,
+      "repairable_templates": [
+        "campaign_attribution",
+        "campaign_techniques",
+        "group_techniques",
+        "software_techniques",
+        "tactic_techniques"
+      ]
+    }
+  },
+  "baseline_tree": "ec01fe7",
+  "code_commit": "63c2d2a48ab5d2b03601f9e3b834ed41a2d86b07"
+}

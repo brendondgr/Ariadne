@@ -1,0 +1,72 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-08-005
+slug: binding-direction-portability
+title: Is the blind holdout's directional loss a property of these templates, or of a missing schema-driven check?
+status: complete          # planned | running | complete | failed | superseded
+date_started: 2026-08-18
+date_completed: 2026-08-18
+authors: ["brendondgr", "Claude Opus 5"]
+
+purpose: >
+  EXP-2026-08-002 lost four blind questions to queries that filter a property
+  against values it can never hold — Group.attack_id against a technique id —
+  and EXP-2026-08-003 showed the schema-driven branch does not have the defect.
+  This asks whether the default cascade can be given the same property without
+  re-authoring MITRE knowledge: identifier schemes learned from the canonical
+  snapshot, a three-valued binding check in the pre-run gate, and edge direction
+  resolved from the declared triples. It bears on C-001 (the cascade's
+  correctness claim), C-003 and C-014 (what the measured cliff is a property
+  of), and on C-010, since the mechanism is the portability path.
+
+hypothesis: >
+  Stated in docs/plans/binding-and-direction-portability.md before any code
+  changed: the repair is additive — it reaches only task shapes that previously
+  emitted a structurally unsatisfiable query — so the 120-question development
+  catalogue moves by exactly nothing while the blind set improves.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 63c2d2a48ab5d2b03601f9e3b834ed41a2d86b07          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python -m utils.evaluation.experiment_untruncated --arm deterministic [--bank utils/specialists/tests/golden/holdout_questions.json]"
+  dirty: false            # uncommitted changes at run time? if true, explain in ISSUES.md
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: "golden catalogue (120) + blind holdout v1 (30)"
+  version: "attack 19.0 / capec 3.9"
+  split: "development + blind"
+  n_examples: 150
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: null               # md5:... or sha256:... of the dataset artifact
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "local workstation, CPU only; Neo4j + Gremlin in Docker"
+  wall_clock_hours: 0.01
+  estimated_cost_usd: 0.0
+
+# --- Results block ---
+metrics:
+  primary: blind_gold_in_evidence
+  values:
+    blind_gold_in_evidence: {mean: 0.8952380952380953, std: null, n: 1}
+    dev_gold_in_evidence: {mean: 1.0, std: null, n: 1}
+  # Retrieval only. Nothing in this experiment is judged; see ISSUES.md.
+baselines_compared: [EXP-2026-08-002, EXP-2026-08-003, EXP-2026-08-004]
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: [C-001, C-003, C-010, C-014]
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null
+superseded_by: null
+related: [EXP-2026-08-001, EXP-2026-08-002, EXP-2026-08-003, EXP-2026-08-004, EXP-2026-07-011]

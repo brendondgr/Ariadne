@@ -38,6 +38,17 @@ co-authorship bias but not distribution bias — a human-authored set of 15–20
 questions remains the cheap secondary check. And n=30 puts the gate's 0.70
 threshold 0.011 from the result with a CI spanning three of its four bands.
 
+**Update (2026-08-18, EXP-2026-08-005).** The concentrated part of the loss has
+a named cause and a schema-derived repair: blind retrieval for the default
+cascade moves 0.7688 → 0.8952 with the development catalogue unmoved, and the
+residue is five CAPEC identifiers belonging to the *join* defect rather than the
+direction one. Two consequences for this question. First, **a re-run of holdout
+v1 on the repaired system is no longer an independent measurement** — v1
+diagnosed the defect, so its post-fix number is co-authored with its own test,
+exactly the failure this question exists to catch. Second, that makes **holdout
+v2 a prerequisite for any blind figure quoted after the fix**, not an optional
+strengthening.
+
 ### Q2 — What is the variance on any of these numbers?
 
 **Why it matters:** Every arm is `n_runs: 1` with seeds unrecorded. The two
