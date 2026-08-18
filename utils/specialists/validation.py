@@ -79,6 +79,7 @@ class BaseValidator(ABC):
         reasons.extend(self.structural_reasons(query))
         reasons.extend(self.violates_read_only(query, card))
         reasons.extend(self.schema_reasons(query, card))
+        reasons.extend(self.binding_reasons(draft, card))
         reasons.extend(self.cap_reasons(query, card, limits))
 
         if reasons:
@@ -116,3 +117,14 @@ class BaseValidator(ABC):
         self, query: str, card: Any, limits: dict[str, int]
     ) -> list[str]:
         return []
+
+    # Language-agnostic, so it lives in the shared column rather than in a swap
+    # point: a query that filters a property against values that property can
+    # never hold matches nothing, and an empty result from an impossible query
+    # is indistinguishable from an honest "there are none". Timid by design —
+    # see ``utils/specialists/binding.py``; anything unlearned passes.
+    def binding_reasons(self, draft: QueryDraft, card: Any) -> list[str]:
+        from utils.specialists.binding import binding_reasons as _reasons
+
+        dataset = getattr(card, "dataset", "") or ""
+        return _reasons(draft, dataset)

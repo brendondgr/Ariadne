@@ -34,11 +34,11 @@ guard nobody should trust. Both are reported; only the first is a bug.
 from __future__ import annotations
 
 import json
-import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterable, Iterator, Sequence
 
+from utils.specialists.binding import Binding, extract_bindings, unsatisfiable_bindings
 from utils.specialists.contracts import SpecialistTask
 from utils.specialists.cypher.builder import CypherQueryBuilder
 from utils.specialists.gremlin.builder import GremlinQueryBuilder
@@ -46,7 +46,6 @@ from utils.specialists.resolve import ResolvedTask
 from utils.specialists.schema import get_registry
 from utils.specialists.schema.idscheme import CONSISTENT, MISMATCH, scheme_of
 from utils.specialists.schema.registry import SchemaRegistry
-from utils.specialists.validation import QueryDraft
 
 # The committed question banks, used as the source of realistic seed vocabulary.
 # A dataset arrives with a question catalogue; this reads whatever is there and
@@ -60,86 +59,6 @@ _BANK_FILES = (
 )
 
 # -- Cypher / Gremlin binding extraction -------------------------------------
-
-_CY_ALIAS_LABEL = re.compile(r"\((\w+)\s*:\s*(\w+)")
-_CY_IN_PARAM = re.compile(r"(\w+)\.(\w+)\s+IN\s+\$(\w+)")
-_CY_EQ_PARAM = re.compile(r"(\w+)\.(\w+)\s*=\s*\$(\w+)")
-_GR_TOKEN = re.compile(
-    r'hasLabel\(\s*"(?P<label>[^"]+)"\s*\)'
-    r'|has\(\s*"(?P<prop>[^"]+)"\s*,\s*(?:within\(\s*(?P<within>\w+)\s*\)|(?P<bare>\w+))\s*\)'
-)
-
-
-@dataclass(frozen=True)
-class Binding:
-    """One ``label.property`` filtered against the values of one parameter."""
-
-    label: str
-    property: str
-    param: str
-    values: tuple[Any, ...]
-
-
-def _cypher_bindings(query: str, params: dict[str, Any]) -> tuple[Binding, ...]:
-    aliases = {alias: label for alias, label in _CY_ALIAS_LABEL.findall(query)}
-    found: list[Binding] = []
-    for pattern in (_CY_IN_PARAM, _CY_EQ_PARAM):
-        for alias, prop, param in pattern.findall(query):
-            label = aliases.get(alias)
-            if label is None or param not in params:
-                continue
-            found.append(Binding(label, prop, param, _as_values(params[param])))
-    return tuple(found)
-
-
-def _gremlin_bindings(query: str, params: dict[str, Any]) -> tuple[Binding, ...]:
-    """Walk the traversal left to right, carrying the most recent ``hasLabel``."""
-    label: str | None = None
-    found: list[Binding] = []
-    for match in _GR_TOKEN.finditer(query):
-        if match.group("label"):
-            label = match.group("label")
-            continue
-        param = match.group("within") or match.group("bare")
-        prop = match.group("prop")
-        if label is None or param not in params:
-            continue
-        found.append(Binding(label, prop, param, _as_values(params[param])))
-    return tuple(found)
-
-
-def _as_values(value: Any) -> tuple[Any, ...]:
-    if isinstance(value, (list, tuple, set, frozenset)):
-        return tuple(value)
-    return (value,)
-
-
-def extract_bindings(draft: QueryDraft) -> tuple[Binding, ...]:
-    """Every ``(label, property, values)`` the draft filters on.
-
-    A builder may declare its bindings in ``meta["bindings"]`` — a list of
-    ``{"label", "property", "param"}`` dicts — and a declaration wins over
-    parsing. Declaration is the durable mechanism: it travels with the builder
-    and survives a query language the parsers here have never seen.
-    """
-    params = dict(draft.params or {})
-    declared = (draft.meta or {}).get("bindings")
-    if declared:
-        return tuple(
-            Binding(
-                str(entry["label"]),
-                str(entry["property"]),
-                str(entry.get("param", "")),
-                _as_values(params.get(entry.get("param", ""))),
-            )
-            for entry in declared
-            if entry.get("param") in params
-        )
-    query = draft.query or ""
-    if query.lstrip().startswith("g."):
-        return _gremlin_bindings(query, params)
-    return _cypher_bindings(query, params)
-
 
 # -- the case space ----------------------------------------------------------
 
@@ -262,7 +181,6 @@ def enumerate_cases(
 # -- the audit ---------------------------------------------------------------
 
 KIND_MISMATCH = "mismatch"
-KIND_PARTIAL = "partial_mismatch"
 KIND_UNCHECKED = "unchecked"
 
 
@@ -318,7 +236,6 @@ class AuditReport:
             f"{self.cases} cases, {self.drafts} drafts, {self.bindings} bindings checked — "
             f"{len(self.of_kind(KIND_MISMATCH))} mismatch "
             f"({len(self.in_scope())} with the seed's label in scope), "
-            f"{len(self.of_kind(KIND_PARTIAL))} partial, "
             f"{len(self.of_kind(KIND_UNCHECKED))} unchecked"
         )
 
@@ -364,26 +281,16 @@ def audit_bindings(
                 )
             )
             return
+        report.bindings += len(bindings)
+        doomed = set(unsatisfiable_bindings(draft, case.dataset, registry))
         for binding in bindings:
-            report.bindings += 1
-            verdicts = [
-                registry.value_verdict(
-                    binding.label, binding.property, value, dataset=case.dataset
-                )
-                for value in binding.values
-            ]
-            if not verdicts or CONSISTENT in verdicts:
+            if binding not in doomed:
                 continue
-            if all(v == MISMATCH for v in verdicts):
-                kind = KIND_MISMATCH
-            elif MISMATCH in verdicts:
-                kind = KIND_PARTIAL
-            else:
-                continue  # undetermined: nothing is known, nothing is claimed
             report.findings.append(
                 BindingFinding(
-                    kind, case.dataset, draft.template, case.labels, case.seed_ids,
-                    binding.label, binding.property, binding.values, draft.query, in_scope,
+                    KIND_MISMATCH, case.dataset, draft.template, case.labels,
+                    case.seed_ids, binding.label, binding.property, binding.values,
+                    draft.query, in_scope,
                 )
             )
 
@@ -415,7 +322,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         dataset, _, value = entry.partition("=")
         extra.setdefault(dataset, []).append(value)
     report = audit_bindings(args.datasets, extra_seeds=extra)
-    kinds = args.kinds or [KIND_MISMATCH, KIND_PARTIAL, KIND_UNCHECKED]
+    kinds = args.kinds or [KIND_MISMATCH, KIND_UNCHECKED]
     print(report.summary())
     for kind in kinds:
         findings = report.of_kind(kind)
