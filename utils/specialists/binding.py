@@ -32,7 +32,10 @@ from utils.specialists.schema.idscheme import MISMATCH
 from utils.specialists.schema.registry import SchemaRegistry
 from utils.specialists.validation import QueryDraft
 
+# A label reaches an alias two ways: inline in a node pattern, ``(t:Technique)``,
+# or as a predicate, ``WHERE (t:Technique OR t:SubTechnique)``. Both count.
 _CY_ALIAS_LABEL = re.compile(r"\((\w+)\s*:\s*(\w+)")
+_CY_LABEL_PRED = re.compile(r"\b(?:WHERE|AND|OR)\s+\(?\s*(\w+)\s*:\s*(\w+)")
 _CY_IN_PARAM = re.compile(r"(\w+)\.(\w+)\s+IN\s+\$(\w+)")
 _CY_EQ_PARAM = re.compile(r"(\w+)\.(\w+)\s*=\s*\$(\w+)")
 _GR_TOKEN = re.compile(
@@ -61,14 +64,27 @@ def _as_values(value: Any) -> tuple[Any, ...]:
 
 
 def _cypher_bindings(query: str, params: dict[str, Any]) -> tuple[Binding, ...]:
-    aliases = {alias: label for alias, label in _CY_ALIAS_LABEL.findall(query)}
+    """One binding per ``(alias-label, property)`` — an alias may carry several.
+
+    ``MATCH (t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids``
+    binds one alias to two labels. Both are emitted; because they share a
+    parameter, the grouping in :func:`unsatisfiable_bindings` then treats the
+    filter as satisfiable when either label admits the values, which is what the
+    query means.
+    """
+    aliases: dict[str, list[str]] = {}
+    for pattern in (_CY_ALIAS_LABEL, _CY_LABEL_PRED):
+        for alias, label in pattern.findall(query):
+            labels = aliases.setdefault(alias, [])
+            if label not in labels:
+                labels.append(label)
     found: list[Binding] = []
     for pattern in (_CY_IN_PARAM, _CY_EQ_PARAM):
         for alias, prop, param in pattern.findall(query):
-            label = aliases.get(alias)
-            if label is None or param not in params:
+            if param not in params:
                 continue
-            found.append(Binding(label, prop, param, _as_values(params[param])))
+            for label in aliases.get(alias, ()):
+                found.append(Binding(label, prop, param, _as_values(params[param])))
     return tuple(found)
 
 

@@ -170,23 +170,30 @@ def test_every_parameterised_draft_is_actually_checked(report) -> None:
     assert report.bindings >= report.drafts
 
 
-# -- inventory (characterisation — expected to change when the cascade is fixed)
+# -- inventory ---------------------------------------------------------------
 
 
-def test_the_holdout_defect_is_reproduced(report) -> None:
-    """`group_techniques` filtering Group ids against a technique id."""
+def test_the_holdout_defect_is_gone(report) -> None:
+    """`group_techniques` seeded with a technique id no longer filters Group ids."""
     hits = [
         f
         for f in report.of_kind(KIND_MISMATCH)
-        if f.template == "group_techniques" and f.seed_ids == ("T1047",)
+        if f.template == "group_techniques" and f.seed_ids in (("T1047",), ("T1021.001",))
     ]
-    assert hits, "the audit no longer reproduces the blind-holdout defect"
-    assert all(f.label == "Group" and f.property == "attack_id" for f in hits)
+    assert hits == []
 
 
-def test_the_defect_class_is_wider_than_the_two_templates_the_holdout_found(report) -> None:
-    # This is the finding that justifies the audit: the blind set surfaced
-    # `groups` and `software`, and the same shape sits under four more routes.
-    repairable = {f.template for f in report.in_scope()}
-    assert {"group_techniques", "campaign_attribution", "campaign_techniques"} <= repairable
-    assert len(repairable) >= 5
+def test_no_reverse_direction_ask_is_left_unserved(report) -> None:
+    """What survives is misrouting, not direction.
+
+    A finding whose seed label is in scope but whose template walks a different
+    edge entirely — Group+Software seeded with a Software id — is not a
+    direction defect and no flip can repair it. The gate rejects those, so they
+    surface as an honest refusal rather than an empty answer, and they are
+    listed here so the residue stays visible.
+    """
+    residue = {(f.template, f.seed_ids[0]) for f in report.in_scope()}
+    assert residue == {
+        ("group_techniques", "S0154"),
+        ("tactic_techniques", "M1038"),
+    }

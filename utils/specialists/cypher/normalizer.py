@@ -174,7 +174,7 @@ class CypherNormalizer:
             return self._normalize_technique_tactics(rows, query, card, id_scheme)
         # group_techniques / tactic_techniques / campaign_techniques have technique_id
         if rows and "technique_id" in rows[0]:
-            return self._normalize_technique_rows(rows, query, card, id_scheme)
+            return self._normalize_technique_rows(rows, resolved, query, card, id_scheme)
         # describe — full node (properties_json) + bounded facet block
         if rows and "facets" in rows[0]:
             return self._normalize_describe(rows, resolved, query, card, id_scheme)
@@ -557,14 +557,41 @@ class CypherNormalizer:
             )
         return records
 
+    # The other end these listing templates project, in the order the columns
+    # are looked for. Nothing here is a routing decision — the pivot below is
+    # made by asking which column the caller's seeds appear in.
+    _COUNTERPART_COLUMNS = (
+        ("group_id", "group_name", "Group"),
+        ("campaign_id", "campaign_name", "Campaign"),
+        ("tactic_id", "tactic_name", "Tactic"),
+    )
+
     def _normalize_technique_rows(
         self,
         rows: list[dict[str, Any]],
+        resolved: ResolvedTask,
         query: str,
         card: Any,
         id_scheme: str,
     ) -> list[EvidenceRecord]:
-        """One record per row for group_techniques / tactic_techniques."""
+        """One record per row for group_techniques / tactic_techniques.
+
+        Unless the *technique* is what was seeded. "Which techniques does G0082
+        use" and "which groups use T1003" run the same query and return the same
+        rows; only the question differs, and the answer to the second is the
+        column this dedupe used to throw away. The pivot reads which column
+        carries a seed, so it needs no knowledge of which template ran.
+        """
+        seeds = {str(seed) for seed in (resolved.seed_ids or ())}
+        if seeds and any(str(row.get("technique_id") or "") in seeds for row in rows):
+            counterpart = next(
+                (cols for cols in self._COUNTERPART_COLUMNS if rows and cols[0] in rows[0]),
+                None,
+            )
+            if counterpart is not None:
+                return self._normalize_seeded_technique_rows(
+                    rows, counterpart, query, card, id_scheme
+                )
         seen: dict[str, bool] = {}
         records: list[EvidenceRecord] = []
         for row in rows:
@@ -584,6 +611,51 @@ class CypherNormalizer:
                     label="Technique",
                     name=name,
                     join_values=join_values,
+                )
+            )
+        return records
+
+    def _normalize_seeded_technique_rows(
+        self,
+        rows: list[dict[str, Any]],
+        counterpart: tuple[str, str, str],
+        query: str,
+        card: Any,
+        id_scheme: str,
+    ) -> list[EvidenceRecord]:
+        """One record per seeded technique, carrying the other end as ``related``."""
+        id_col, name_col, label = counterpart
+        groups: dict[str, dict[str, Any]] = defaultdict(
+            lambda: {"technique_name": "", "related": [], "seen": set()}
+        )
+        for row in rows:
+            tid = str(row.get("technique_id") or "")
+            if not tid:
+                continue
+            bucket = groups[tid]
+            bucket["technique_name"] = bucket["technique_name"] or str(
+                row.get("technique_name") or ""
+            )
+            other_id = str(row.get(id_col) or "")
+            if not other_id or other_id in bucket["seen"]:
+                continue
+            bucket["seen"].add(other_id)
+            bucket["related"].append(
+                {"id": other_id, "name": str(row.get(name_col) or ""), "label": label}
+            )
+        records: list[EvidenceRecord] = []
+        for tid, info in groups.items():
+            records.append(
+                emit_record(
+                    card=card,
+                    query=query,
+                    record_id=tid,
+                    primary_id=tid,
+                    id_scheme=id_scheme,
+                    label="Technique",
+                    name=info["technique_name"],
+                    related=info["related"],
+                    join_values=(tid,) if _is_technique_id(tid) else (),
                 )
             )
         return records

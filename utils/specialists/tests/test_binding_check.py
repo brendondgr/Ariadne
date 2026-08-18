@@ -69,9 +69,28 @@ def test_the_holdout_query_is_rejected() -> None:
     assert "SubTechnique" in reasons[0]
 
 
-def test_the_gate_fails_the_draft_end_to_end() -> None:
+def test_the_gate_fails_a_misrouted_draft_end_to_end() -> None:
+    # Group+Software seeded with a Software id: the router picks the Group
+    # template because Group was named, and no direction flip repairs it because
+    # the template does not walk that edge. The gate is what stops it executing.
     task = SpecialistTask(
         sub_question_id="q1",
+        source="attack",
+        text="Which groups relate to S0154?",
+        entities=("Group", "Software"),
+        limits=_LIMITS,
+        seed_ids=("S0154",),
+    )
+    card = fixture_card("attack")
+    draft = CypherQueryBuilder().build(resolve(task, card))
+    result = CypherValidator().validate(draft, card, _LIMITS)
+    assert not result.ok
+    assert any("binding mismatch" in reason for reason in result.reasons)
+
+
+def test_the_repaired_reverse_direction_passes_the_gate() -> None:
+    task = SpecialistTask(
+        sub_question_id="q2",
         source="attack",
         text="Which groups use T1047?",
         entities=("Group", "Technique"),
@@ -80,9 +99,8 @@ def test_the_gate_fails_the_draft_end_to_end() -> None:
     )
     card = fixture_card("attack")
     draft = CypherQueryBuilder().build(resolve(task, card))
-    result = CypherValidator().validate(draft, card, _LIMITS)
-    assert not result.ok
-    assert any("binding mismatch" in reason for reason in result.reasons)
+    assert "t.attack_id IN $ids" in draft.query
+    assert CypherValidator().validate(draft, card, _LIMITS).ok
 
 
 # -- it stays silent when it should ------------------------------------------

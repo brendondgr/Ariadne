@@ -13,6 +13,7 @@ from typing import Any
 
 from ...planner.intent import is_definitional_request
 from ..primitives.expand import ExpandRequest
+from ..direction import anchor_expression, resolve_anchor
 from ..resolve import ResolvedTask
 from ..validation import QueryDraft
 
@@ -225,12 +226,15 @@ class CypherQueryBuilder:
 
         # 4b. software_techniques — Software + Technique/SubTechnique entities + S-seeds
         #     (must NOT capture node_lookup for Software-only or label_scan with no seeds)
-        if (
-            has_software_entity
-            and has_technique_entity
-            and bool(software_seed_ids)
+        # Either end may be the anchor: "what does S0154 use" and "what software
+        # uses T1047" are the same edge asked from opposite sides, and the
+        # second fell through to `describe` while there were no S-seeds.
+        if has_software_entity and has_technique_entity and (
+            software_seed_ids or technique_ids
         ):
-            return self._software_techniques(software_seed_ids, resolved)
+            return self._software_techniques(
+                software_seed_ids or technique_ids, resolved
+            )
 
         # 4c. tactic_technique_mitigations — both TA and M seeds present
         if has_tactic and has_mitigation and tactic_seed_ids and mitigation_seed_ids:
@@ -315,9 +319,25 @@ class CypherQueryBuilder:
         """MATCH (Group)-[:USES]->(Technique)."""
         seed_ids = list(resolved.seed_ids)
         if seed_ids:
+            # Which end was seeded is read from the schema rather than assumed:
+            # a technique id anchors the Technique side. The projection already
+            # returns both ends, so the answer shape is unchanged.
+            bound = resolve_anchor(
+                seed_ids,
+                {"Group": "g", "Technique": "t", "SubTechnique": "t"},
+                resolved.dataset,
+            )
+            anchor = bound.expression() if bound else "g.attack_id"
+            # Groups use sub-techniques too, so a sub-technique anchor needs the
+            # target label widened — the pinned (t:Technique) is what made the
+            # pattern narrower than the edge it walks.
+            target = "(t)" if bound and bound.label == "SubTechnique" else "(t:Technique)"
+            predicate = (
+                "(t:Technique OR t:SubTechnique) AND " if target == "(t)" else ""
+            )
             query = (
-                "MATCH (g:Group)-[:USES]->(t:Technique) "
-                "WHERE g.attack_id IN $ids "
+                f"MATCH (g:Group)-[:USES]->{target} "
+                f"WHERE {predicate}{anchor} IN $ids "
                 "RETURN g.attack_id AS group_id, g.name AS group_name, "
                 "t.attack_id AS technique_id, t.name AS technique_name"
             )
@@ -340,9 +360,19 @@ class CypherQueryBuilder:
         """MATCH (Campaign)-[:USES]->(Technique)."""
         seed_ids = list(resolved.seed_ids)
         if seed_ids:
+            bound = resolve_anchor(
+                seed_ids,
+                {"Campaign": "c", "Technique": "t", "SubTechnique": "t"},
+                resolved.dataset,
+            )
+            anchor = bound.expression() if bound else "c.attack_id"
+            target = "(t)" if bound and bound.label == "SubTechnique" else "(t:Technique)"
+            predicate = (
+                "(t:Technique OR t:SubTechnique) AND " if target == "(t)" else ""
+            )
             query = (
-                "MATCH (c:Campaign)-[:USES]->(t:Technique) "
-                "WHERE c.attack_id IN $ids "
+                f"MATCH (c:Campaign)-[:USES]->{target} "
+                f"WHERE {predicate}{anchor} IN $ids "
                 "RETURN c.attack_id AS campaign_id, c.name AS campaign_name, "
                 "t.attack_id AS technique_id, t.name AS technique_name"
             )
@@ -365,9 +395,12 @@ class CypherQueryBuilder:
         """MATCH (Campaign)-[:ATTRIBUTED_TO]->(Group)."""
         seed_ids = list(resolved.seed_ids)
         if seed_ids:
+            anchor = anchor_expression(
+                seed_ids, {"Campaign": "c", "Group": "g"}, resolved.dataset, "c.attack_id"
+            )
             query = (
                 "MATCH (c:Campaign)-[:ATTRIBUTED_TO]->(g:Group) "
-                "WHERE c.attack_id IN $ids "
+                f"WHERE {anchor} IN $ids "
                 "RETURN c.attack_id AS campaign_id, c.name AS campaign_name, "
                 "g.attack_id AS group_id, g.name AS group_name"
             )
@@ -390,9 +423,12 @@ class CypherQueryBuilder:
         """MATCH (Tactic)-[:HAS_TECHNIQUE]->(Technique)."""
         seed_ids = list(resolved.seed_ids)
         if seed_ids:
+            anchor = anchor_expression(
+                seed_ids, {"Tactic": "ta", "Technique": "t"}, resolved.dataset, "ta.attack_id"
+            )
             query = (
                 "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t:Technique) "
-                "WHERE ta.attack_id IN $ids "
+                f"WHERE {anchor} IN $ids "
                 "RETURN ta.attack_id AS tactic_id, ta.name AS tactic_name, "
                 "t.attack_id AS technique_id, t.name AS technique_name"
             )
@@ -823,9 +859,15 @@ class CypherQueryBuilder:
         self, software_ids: list[str], resolved: ResolvedTask
     ) -> QueryDraft:
         """MATCH (Software)-[:USES]->(Technique/SubTechnique)."""
+        anchor = anchor_expression(
+            software_ids,
+            {"Software": "s", "Technique": "t", "SubTechnique": "t"},
+            resolved.dataset,
+            "s.attack_id",
+        )
         query = (
             "MATCH (s:Software)-[:USES]->(t) "
-            "WHERE (t:Technique OR t:SubTechnique) AND s.attack_id IN $ids "
+            f"WHERE (t:Technique OR t:SubTechnique) AND {anchor} IN $ids "
             "RETURN s.attack_id AS software_id, s.name AS software_name, "
             "t.attack_id AS technique_id, t.name AS technique_name"
         )
