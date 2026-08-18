@@ -449,10 +449,18 @@ class GremlinQueryBuilder:
         else:
             anchor = 'g.V().hasLabel("AttackPattern")'
 
+        # An **outer** join, matching the generic bridge (EXP-2026-08-004): one
+        # row per anchor with its mappings folded into a possibly-empty list.
+        # ``.out(edge)`` dropped an anchor that maps to nothing, which is both a
+        # recall bug and a grounding bug — "this pattern has no ATT&CK mapping"
+        # is a real answer, and an inner join cannot return the record that
+        # grounds it.
         query = (
-            f'{anchor}.as("ap")'
-            '.out("MAPS_TO").hasLabel("TaxonomyEntry").has("taxonomy_name","ATTACK").as("tax")'
-            f'.select("ap","tax").by(elementMap()).limit({lim})'
+            f'{anchor}'
+            '.project("ap","tax").by(elementMap())'
+            '.by(__.out("MAPS_TO").hasLabel("TaxonomyEntry")'
+            '.has("taxonomy_name","ATTACK").elementMap().fold())'
+            f'.limit({lim})'
         )
         return QueryDraft(
             query=query,
@@ -495,11 +503,19 @@ class GremlinQueryBuilder:
         ]
         lim = resolved.task.max_rows()
         params: dict[str, Any] = {"cweIds": cwe_ids}
+        # Asymmetric, exactly as the generic chain is: the first hop stays an
+        # inner join because only patterns that genuinely exploit this weakness
+        # belong in the answer, and the second becomes outer so a pattern that
+        # exploits the CWE but maps to no technique is still returned. CAPEC-116
+        # is precisely that case.
         query = (
             'g.V().hasLabel("Weakness").has("id", within(cweIds)).as("w")'
             '.in("EXPLOITS_WEAKNESS").hasLabel("AttackPattern").as("ap")'
-            '.out("MAPS_TO").hasLabel("TaxonomyEntry").has("taxonomy_name","ATTACK").as("tax")'
-            f'.select("w","ap","tax").by(elementMap()).limit({lim})'
+            '.project("w","ap","tax")'
+            '.by(__.select("w").elementMap()).by(__.select("ap").elementMap())'
+            '.by(__.out("MAPS_TO").hasLabel("TaxonomyEntry")'
+            '.has("taxonomy_name","ATTACK").elementMap().fold())'
+            f'.limit({lim})'
         )
         return QueryDraft(
             query=query,

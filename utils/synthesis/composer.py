@@ -82,7 +82,12 @@ def _name_lookup_terms(evidence: FederatedEvidence) -> tuple[str, ...]:
 
 
 def abstention_statement(
-    source: str, text: str, query: str = "", *, dependency: str = ""
+    source: str,
+    text: str,
+    query: str = "",
+    *,
+    dependency: str = "",
+    unlinked_anchors: tuple[str, ...] = (),
 ) -> str:
     """The canonical abstention sentence for one empty-but-clean sub-question.
 
@@ -92,7 +97,19 @@ def abstention_statement(
     trace; ``query`` is empty by design), and a dependency skip where the
     producing sub-question yielded no seed identifiers (proof = the
     federation's dependency trace; ``query`` again empty by design).
+
+    A fourth shape arrived with the outer-join bridges: the query *did* return
+    the anchor, and the anchor links to nothing. "Returned no matching records"
+    would be false there, and the difference matters to an analyst — "I found
+    the pattern and it maps to nothing" is a stronger statement than "I found
+    nothing", and it is the one the retrieved record actually supports.
     """
+    if query and unlinked_anchors:
+        anchors = ", ".join(unlinked_anchors)
+        return (
+            f"The {source} source doesn't establish this — the executed query ran "
+            f"cleanly and returned {anchors} with no linked records for: {text}"
+        )
     if query:
         return (
             f"The {source} source doesn't establish this — the executed query ran "
@@ -143,6 +160,11 @@ def abstention_for(result: SpecialistResult) -> Abstention:
             result.task.text,
             result.query,
             dependency=_dependency_producer(result),
+            unlinked_anchors=tuple(
+                str(record.primary_id)
+                for record in (result.records or ())
+                if record.primary_id
+            )[:5],
         )
     return Abstention(
         sub_question_id=result.task.sub_question_id,

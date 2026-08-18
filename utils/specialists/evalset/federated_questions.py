@@ -371,7 +371,7 @@ def build_federated_questions(gold: dict[str, Any]) -> list[dict[str, Any]]:
                 "assertions": {
                     "must_correlate": [],
                     "expect_no_correlation": True,
-                    "capec": {"expect_empty": True},
+                    "capec": {"expect_no_join": True},
                     "attack": {"expect_dependency_skip": True},
                 },
                 "gold_provenance": prov,

@@ -196,8 +196,14 @@ def _check_synthesis(entry: dict, evidence) -> list[str]:
         return problems
 
     if mode is None:  # F-NEG: double abstention — query proof on capec, none on attack
-        if answer.claims:
-            problems.append(f"negative produced {len(answer.claims)} claim(s)")
+        # Claims are permitted since the outer-join contract (2026-08-18): the
+        # producer returns the anchor, so an answer may legitimately describe it.
+        # What may never happen is a claim that asserts the correlation — that is
+        # covered by _check_correlation and by the unsupported-claim rate above —
+        # or the loss of the abstention that states the join came back empty.
+        for claim in answer.claims:
+            if not claim.citations:
+                problems.append(f"negative claim without citations: {claim.text!r}")
         if len(answer.abstentions) != 2:
             problems.append(f"expected 2 abstentions, got {len(answer.abstentions)}")
         else:

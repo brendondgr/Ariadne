@@ -111,9 +111,16 @@ def _check_answer(entry: dict, result, answer) -> list[str]:
                 problems.append(f"statement does not name the boundary: {abst.statement!r}")
         return problems
 
-    if entry["assertions"].get("expect_empty"):
-        if answer.claims:
+    if entry["assertions"].get("expect_empty") or entry["assertions"].get("expect_no_join"):
+        # expect_empty is a pure abstention. expect_no_join returns the anchor,
+        # so it may also carry cited claims describing it — but the abstention
+        # that states the empty join, with the executed query as proof, is
+        # required in both cases.
+        if entry["assertions"].get("expect_empty") and answer.claims:
             problems.append(f"expected pure abstention, got {len(answer.claims)} claim(s)")
+        for claim in answer.claims:
+            if not claim.citations:
+                problems.append(f"empty-join claim without citations: {claim.text!r}")
         if len(answer.abstentions) != 1:
             problems.append(f"expected 1 abstention, got {len(answer.abstentions)}")
         else:

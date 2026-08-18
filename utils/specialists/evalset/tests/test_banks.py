@@ -104,7 +104,7 @@ def test_entry_resolves_and_routes_to_expected_template(entry: dict) -> None:
 
 def test_assertions_are_well_formed() -> None:
     allowed = {
-        "min_records", "max_records", "expect_empty", "expect_boundary",
+        "min_records", "max_records", "expect_empty", "expect_no_join", "expect_boundary",
         "must_include_ids", "must_include_related", "forbid_ids",
         "expect_names", "expect_properties",
     }
@@ -113,7 +113,10 @@ def test_assertions_are_well_formed() -> None:
         assert assertions, f"{entry['id']}: no assertions"
         unknown = set(assertions) - allowed
         assert not unknown, f"{entry['id']}: unknown assertion keys {unknown}"
-        if not assertions.get("expect_empty") and not assertions.get("expect_boundary"):
+        if not any(
+            assertions.get(key)
+            for key in ("expect_empty", "expect_no_join", "expect_boundary")
+        ):
             assert (
                 "min_records" in assertions or "must_include_ids" in assertions
             ), f"{entry['id']}: non-negative entries need a records floor"
@@ -144,14 +147,14 @@ def test_negative_anchor_capec_116_still_negative() -> None:
     # compile_banks raises if CAPEC-116 ever gains a mapping; the committed
     # bank must contain the abstention question.
     entries = {e["id"]: e for e in _bank_questions(CAPEC_BANK_PATH)}
-    assert entries["C-MAP-NEG-01"]["assertions"] == {"expect_empty": True}
+    assert entries["C-MAP-NEG-01"]["assertions"] == {"expect_no_join": True}
 
 
 # -- federated bank invariants (Slice A) ------------------------------------------
 
 _FEDERATED = _bank_questions(FEDERATED_BANK_PATH)
 _FED_SIDE_KEYS = {
-    "min_records", "max_records", "expect_empty", "expect_boundary",
+    "min_records", "max_records", "expect_empty", "expect_no_join", "expect_boundary",
     "must_include_ids", "must_include_related", "forbid_ids",
     "expect_names", "expect_properties",
     # federated-only vocabulary:

@@ -136,7 +136,28 @@ def _verify_claim(
 
 
 def _empty_ok_results(evidence: FederatedEvidence) -> list[SpecialistResult]:
-    return [r for r in evidence.results if r.ok and not r.records]
+    """Results that must carry an abstention: nothing found, or nothing *joined*.
+
+    "No records" was the whole test until the cross-source bridges became outer
+    joins. An outer join returns the anchor with an empty mapping list, so a
+    pattern that maps to no ATT&CK technique now produces a record — and the
+    producer stopped abstaining, which silently deleted the one statement the
+    question was actually asking for. A sub-question that declared a join key
+    and came back with no join values is an honest empty *for that join*,
+    whatever else its records describe.
+    """
+    results: list[SpecialistResult] = []
+    for result in evidence.results:
+        if not result.ok:
+            continue
+        if not result.records:
+            results.append(result)
+            continue
+        if result.task.join_key and not any(
+            record.join_values for record in result.records
+        ):
+            results.append(result)
+    return results
 
 
 def _enforce_abstentions(

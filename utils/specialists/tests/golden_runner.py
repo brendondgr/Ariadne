@@ -49,6 +49,22 @@ def check_assertions(result: SpecialistResult, assertions: dict[str, Any]) -> li
             problems.append(f"summary does not name the boundary: {result.summary!r}")
         return problems
 
+    if assertions.get("expect_no_join"):
+        # The outer-join contract (D-0NN, 2026-08-18): a cross-source question
+        # whose anchor maps to nothing returns the *anchor*, with an empty join.
+        # Records are expected; join values are not. The record is what lets the
+        # answer say "this pattern maps to nothing" and cite what it read.
+        if not result.ok:
+            problems.append(f"expected ok=True on empty-join, got error={result.error!r}")
+        if not records:
+            problems.append("expected the anchor record, got no records at all")
+        joined = sorted({
+            value for record in records for value in (record.join_values or ())
+        })
+        if joined:
+            problems.append(f"expected no join values, got {joined[:10]}")
+        return problems
+
     if assertions.get("expect_empty"):
         if records:
             got = sorted(id_pool(records))[:10]
@@ -120,6 +136,9 @@ def check_traces(result: SpecialistResult, assertions: dict[str, Any]) -> list[s
     required = {"gate", "execute"} if assertions.get("expect_empty") else {
         "gate", "execute", "assess", "normalize",
     }
+    if assertions.get("expect_no_join"):
+        # Records exist, so normalization ran and must be clean.
+        required = {"gate", "execute", "assess", "normalize"}
     problems = []
     for trace in result.traces:
         if trace.step in required and not trace.ok:

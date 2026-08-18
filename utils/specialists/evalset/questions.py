@@ -14,6 +14,9 @@ at compile time — never typed by hand (Step 7 discipline).
 Assertion vocabulary (consumed by the golden live-test runner):
   min_records / max_records  — bounds on len(result.records)
   expect_empty               — records must be empty AND result.ok True
+  expect_no_join             — records must exist AND carry no join values
+                               (the outer-join contract: the anchor comes back,
+                               the mapping list is empty)
   expect_boundary            — schema-boundary refusal: empty, ok, NO query
                                executed, summary names the unmodeled entity
   must_include_ids           — subset of the returned primary-id pool
@@ -786,7 +789,11 @@ def build_capec_questions(gold: dict[str, Any]) -> list[dict[str, Any]]:
                 ("AttackPattern", "TaxonomyEntry"), ("CAPEC-116",),
                 join_key="attack-technique-id",
             ),
-            "assertions": {"expect_empty": True},
+            # The outer-join contract: CAPEC-116 exists and maps to nothing, so
+            # the honest answer returns the pattern with an empty mapping list.
+            # ``expect_empty`` here would assert that a real pattern is
+            # unretrievable, which is a different and false claim.
+            "assertions": {"expect_no_join": True},
         }
     )
 

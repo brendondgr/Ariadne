@@ -277,3 +277,45 @@ navigable; their decision content was migrated here first so no reasoning was
 lost with them. `docs/plans/robustness/` and its `_overnight/` derivation
 scripts are retained — they are live work and the provenance behind the recomputed
 figures in every arm's `metrics.json`.
+## D-015 — Revise the negative-case gold contract rather than revert the outer join (2026-08-18)
+
+**Context:** Porting the outer-join bridge to `capec_maps_to` and `cwe_chain`
+(the generic branch has had it since `EXP-2026-08-004`) changed what a "this
+maps to nothing" question returns. The producer now retrieves the anchor with an
+empty mapping list, where before it retrieved nothing. Eight committed golden
+negative cases assert the old shape: `expect_empty` on records, and zero claims
+on federated negatives.
+
+The first consequence was a genuine honesty regression, not a test-expectation
+mismatch. `_empty_ok_results` defined an honest empty as "no records", so with a
+record present the producer stopped abstaining — and the answer described
+CAPEC-16's metadata while never stating that it maps to no ATT&CK technique,
+which is the thing the question asked. Fixed before this decision was taken: a
+sub-question that declared a join key and came back with no join values is an
+honest empty *for that join*, and its abstention carries the executed query.
+
+**Options:** (a) revise the gold contract for negative cases; (b) revert the
+template outer join and keep it on the generic branch only, accepting five blind
+identifiers; (c) keep the join but suppress the descriptive claims, preserving
+the pure-abstention answer shape.
+
+**Decision:** (a), taken by the operator. A negative answer may now carry
+supported, cited claims describing the anchor, and **must** still carry the
+abstention that states the join came back empty, with the executed query as
+proof. A new assertion kind, `expect_no_join`, replaces `expect_empty` on the
+seven cases where the anchor genuinely exists — records are required, join
+values are forbidden. `expect_empty` keeps its meaning for cases where nothing
+exists at all (`A-NEG-01`'s nonexistent T9999 is *not* one of these, and an
+early draft of this change wrongly flipped it).
+
+**Consequences:** The honest-abstention property is unchanged in substance and
+strengthened in wording — the statement now reads "returned CAPEC-16 with no
+linked records" rather than the false "returned no matching records". But the
+gold moved, and a moved gold is exactly what this project distrusts elsewhere,
+so: the change is in the bank *generators*, not in the compiled JSON; it is
+seven assertion flips with no gold value altered; and any figure quoted across
+2026-08-18 must say which contract it was measured under. The alternative — gold
+that asserts a retrievable pattern is unretrievable — would have been false in a
+way no reviewer could check.
+
+---
