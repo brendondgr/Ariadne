@@ -107,8 +107,14 @@ Per-arm env overlays are in `untruncated_env()` in
 
 **Honest statement of what a committee would hit:**
 
-1. ❌ **No LICENSE file.** The artifact cannot legally be released. Blocks
-   *Available* outright. ~½ day to fix.
+1. ✅ **LICENSE — resolved 2026-08-18.** Apache-2.0, chosen by the operator;
+   the patent grant is the usual reason to prefer it over MIT for a research
+   artifact with industrial funding. `NOTICE` remains the third-party data
+   attribution and is independent of it. **Still outstanding:** institutional
+   sign-off — the copyright line reads *Florida State University*, which is the
+   ordinary owner for grant-funded university work but has not been confirmed,
+   and the Innovation Challenge Fund terms have not been checked for a release
+   constraint. Both are one-line changes while the repository is unpublished.
 2. ❌ **No archival DOI.**
 3. ⚠️ **`n_runs: 1`, seeds unrecorded** for every arm. *Results Reproduced*
    within tolerance is achievable for Arm A and questionable for the judged arms,
@@ -119,5 +125,6 @@ Per-arm env overlays are in `untruncated_env()` in
 5. ⚠️ **`code.commit: unknown`** on all 11 back-filled experiments. Re-run under
    the current protocol before submission rather than shipping the back-fill.
 
-Items 1 and 2 are blockers. Items 3–5 are disclosures, and each is already
-recorded in the relevant experiment's `ISSUES.md`.
+Item 2 is the remaining blocker. Item 1 is resolved subject to the sign-off
+noted above. Items 3–5 are disclosures, and each is already recorded in the
+relevant experiment's `ISSUES.md`.
