@@ -1,0 +1,101 @@
+{
+  "experiment": "EXP-2026-08-006",
+  "arm": "A (deterministic template cascade) with outer-join bridges",
+  "arm_code": "deterministic",
+  "metrics": {
+    "blind_gold_in_evidence": {
+      "mean": 1.0,
+      "std": null,
+      "n": 1
+    },
+    "dev_gold_in_evidence": {
+      "mean": 1.0,
+      "std": null,
+      "n": 1
+    }
+  },
+  "blind_holdout": {
+    "n": 30,
+    "after": {
+      "n": 30,
+      "gold_in_evidence": 1.0,
+      "gold_in_evidence_scorable": 1.0,
+      "fully_covered": 30,
+      "gold_ids_missing": 0,
+      "skipped_consumers": 3,
+      "records": 221
+    },
+    "before": {
+      "n": 30,
+      "gold_in_evidence": 0.8952380952380953,
+      "gold_in_evidence_scorable": 0.8916256157635468,
+      "fully_covered": 26,
+      "gold_ids_missing": 5,
+      "skipped_consumers": 3,
+      "records": 216
+    },
+    "paired": {
+      "paired": 30,
+      "improved": 4,
+      "regressed": 0,
+      "gold_ids_recovered": 5,
+      "gold_ids_lost": 0,
+      "regressions": [],
+      "improvements": [
+        {
+          "id": "H-CHN-02",
+          "delta": 2
+        },
+        {
+          "id": "H-CHN-01",
+          "delta": 1
+        },
+        {
+          "id": "H-CTM-01",
+          "delta": 1
+        },
+        {
+          "id": "H-CTM-02",
+          "delta": 1
+        }
+      ]
+    }
+  },
+  "development_catalogue": {
+    "n": 120,
+    "after": {
+      "n": 120,
+      "gold_in_evidence": 1.0,
+      "gold_in_evidence_scorable": 1.0,
+      "fully_covered": 120,
+      "gold_ids_missing": 0,
+      "skipped_consumers": 7,
+      "records": 1079
+    },
+    "before": {
+      "n": 120,
+      "gold_in_evidence": 1.0,
+      "gold_in_evidence_scorable": 1.0,
+      "fully_covered": 120,
+      "gold_ids_missing": 0,
+      "skipped_consumers": 7,
+      "records": 1061
+    },
+    "paired": {
+      "paired": 120,
+      "improved": 0,
+      "regressed": 0,
+      "gold_ids_recovered": 0,
+      "gold_ids_lost": 0,
+      "regressions": [],
+      "improvements": []
+    }
+  },
+  "progression_blind": {
+    "template_cascade_original": 0.7687675070028012,
+    "after_binding_and_direction": 0.8952380952380953,
+    "after_outer_join": 1.0
+  },
+  "baseline_tag": "freeze/arm-baseline-2",
+  "code_commit": "c10caaad2c5f6bbbde4ddee93a8e9ec2383ddedb"
+}
