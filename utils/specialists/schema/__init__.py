@@ -30,6 +30,16 @@ from .build import (
     discover_datasets,
     get_registry,
 )
+from .idscheme import (
+    CONSISTENT,
+    ID_PROPERTY,
+    MISMATCH,
+    UNDETERMINED,
+    PropertySchemes,
+    SchemeLearner,
+    learn_schemes,
+    scheme_of,
+)
 from .registry import DatasetSchema, PlausibleFacet, SchemaRegistry
 from .validate import (
     describe_request_reasons,
@@ -38,9 +48,15 @@ from .validate import (
 )
 
 __all__ = [
+    "CONSISTENT",
     "DatasetSchema",
+    "ID_PROPERTY",
+    "MISMATCH",
     "PlausibleFacet",
+    "PropertySchemes",
     "SchemaRegistry",
+    "SchemeLearner",
+    "UNDETERMINED",
     "build_dataset_schema",
     "build_registry",
     "canonical_dir",
@@ -49,4 +65,6 @@ __all__ = [
     "expand_request_reasons",
     "get_registry",
     "is_valid_expand",
+    "learn_schemes",
+    "scheme_of",
 ]

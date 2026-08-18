@@ -17,6 +17,7 @@ from collections import defaultdict
 from functools import lru_cache
 from pathlib import Path
 
+from .idscheme import SchemeLearner
 from .registry import DatasetSchema, SchemaRegistry
 
 
@@ -58,6 +59,7 @@ def build_dataset_schema(
     """
     id_to_label: dict[str, str] = {}
     label_property_keys: dict[str, set[str]] = defaultdict(set)
+    learner = SchemeLearner()
 
     for node in _iter_jsonl(Path(nodes_path)):
         node_id = node.get("id")
@@ -65,6 +67,9 @@ def build_dataset_schema(
         if not node_id or not label:
             continue
         id_to_label[node_id] = label
+        # Learn what an identifier looks like for this label while the node is
+        # in hand — the same walk that records property keys.
+        learner.observe_node(node)
         properties = node.get("properties") or {}
         if isinstance(properties, dict):
             label_property_keys[label].update(properties.keys())
@@ -88,6 +93,7 @@ def build_dataset_schema(
             label: frozenset(keys) for label, keys in label_property_keys.items()
         },
         triples=frozenset(triples),
+        label_id_schemes=learner.result(),
     )
 
 

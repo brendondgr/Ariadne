@@ -16,8 +16,16 @@ walked in Cypher (``-[r]-``) or Gremlin (``bothE()``).
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Iterable
+from dataclasses import dataclass, field
+from typing import Any, Iterable
+
+from .idscheme import (
+    CONSISTENT,
+    ID_PROPERTY,
+    UNDETERMINED,
+    PropertySchemes,
+    combine_verdicts,
+)
 
 # A facet direction is expressed from the *anchor's* point of view:
 #   "out" — the anchor is the edge source  (anchor)-[r]->(neighbour)
@@ -62,6 +70,13 @@ class DatasetSchema:
     dataset: str
     label_property_keys: dict[str, frozenset[str]]
     triples: frozenset[tuple[str, str, str]]
+    # ``{label: {property: PropertySchemes}}`` — the identifier shapes observed
+    # per property, so a caller can ask whether a bound value could inhabit the
+    # property a query filters. Defaulted so a schema may be constructed without
+    # it; an empty map answers ``undetermined`` to everything, which is correct.
+    label_id_schemes: dict[str, dict[str, PropertySchemes]] = field(
+        default_factory=dict
+    )
 
     # -- labels & properties ------------------------------------------------
 
@@ -74,6 +89,42 @@ class DatasetSchema:
     def label_properties(self, label: str) -> frozenset[str]:
         """Property keys observed on nodes of ``label`` (empty for an unknown label)."""
         return self.label_property_keys.get(label, frozenset())
+
+    # -- identifier schemes -------------------------------------------------
+
+    def id_schemes(self, label: str, prop: str = ID_PROPERTY) -> PropertySchemes | None:
+        """The learned shapes for ``label.prop``, or ``None`` if never observed."""
+        return self.label_id_schemes.get(label, {}).get(prop)
+
+    def value_verdict(self, label: str, prop: str, value: Any) -> str:
+        """Can ``value`` inhabit ``label.prop``? Three-valued; see ``idscheme``.
+
+        An unobserved ``(label, property)`` is ``undetermined`` rather than a
+        mismatch: the pair may be absent because this snapshot never carried it,
+        and absence of evidence must not read as evidence of absence.
+        """
+        schemes = self.id_schemes(label, prop)
+        if schemes is None:
+            return UNDETERMINED
+        return schemes.admits(value)
+
+    def labels_for_id(self, value: Any) -> frozenset[str]:
+        """Every label some property of which admits ``value``'s shape.
+
+        One label is an inference; several is an ambiguity the caller must not
+        resolve by guessing; none means the value belongs to no learned scheme.
+        Open (opaque) properties contribute nothing — they admit everything, so
+        they would make every label a candidate.
+        """
+        hits: set[str] = set()
+        for label, properties in self.label_id_schemes.items():
+            for schemes in properties.values():
+                if schemes.is_open:
+                    continue
+                if schemes.admits(value) == CONSISTENT:
+                    hits.add(label)
+                    break
+        return frozenset(hits)
 
     # -- facets -------------------------------------------------------------
 
@@ -172,3 +223,18 @@ class SchemaRegistry:
             schema.facet_exists(anchor_label, rel_type, direction, neighbour_label)
             for schema in self._select(dataset)
         )
+
+    def value_verdict(
+        self, label: str, prop: str, value: Any, dataset: str | None = None
+    ) -> str:
+        """Fold :meth:`DatasetSchema.value_verdict` across the selected dataset(s)."""
+        return combine_verdicts(
+            schema.value_verdict(label, prop, value) for schema in self._select(dataset)
+        )
+
+    def labels_for_id(self, value: Any, dataset: str | None = None) -> frozenset[str]:
+        """Union of :meth:`DatasetSchema.labels_for_id` across the selected dataset(s)."""
+        hits: set[str] = set()
+        for schema in self._select(dataset):
+            hits |= schema.labels_for_id(value)
+        return frozenset(hits)
