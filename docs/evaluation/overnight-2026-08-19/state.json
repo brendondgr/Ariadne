@@ -1,0 +1,653 @@
+{
+  "started": "2026-08-19T03:53:37+00:00",
+  "workers": 12,
+  "commit": "9da80faea1ac52a6eb71506283e87696a864e171",
+  "phases": [
+    {
+      "name": "preflight",
+      "description": "graphs live, model served, answers present",
+      "started": "2026-08-19T03:53:37+00:00",
+      "status": "failed",
+      "error": "RuntimeError: uv run main.py --dataset capec --graph\u2026 exited 1: ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^\n  File \"/home/bdgr/Agents/Ariadne/utils/graph_loader/main.py\", line 68, in run_dataset_verify\n    _verify_dataset(dataset, config=config)\n    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/bdgr/Agents/Ariadne/utils/graph_loader/verify.py\", line 124, in run_dataset_verify\n    raise PreflightError(\"; \".join(result.errors[:5]))\nutils.graph_loader.preflight.PreflightError: node count 0 != expected 4769; edge count 0 != expected 6972; label AttackPattern count 0 != expected 558; label Category count 0 != expected 21; label Consequence count 0 != expected 812\n",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/bdgr/Agents/Ariadne/scripts/overnight_sweep.py\", line 93, in phase\n    result = fn()\n  File \"/home/bdgr/Agents/Ariadne/scripts/overnight_sweep.py\", line 122, in preflight\n    checks[\"gremlin_verify\"] = _run(\n                               ~~~~^\n        [\"uv\", \"run\", \"main.py\", \"--dataset\", \"capec\", \"--graph\", \"verify\"]\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/home/bdgr/Agents/Ariadne/scripts/overnight_sweep.py\", line 233, in _run\n    raise RuntimeError(f\"{' '.join(cmd[:6])}\u2026 exited {proc.returncode}: {output[-600:]}\")\nRuntimeError: uv run main.py --dataset capec --graph\u2026 exited 1: ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^\n  File \"/home/bdgr/Agents/Ariadne/utils/graph_loader/main.py\", line 68, in run_dataset_verify\n    _verify_dataset(dataset, config=config)\n    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/bdgr/Agents/Ariadne/utils/graph_loader/verify.py\", line 124, in run_dataset_verify\n    raise PreflightError(\"; \".join(result.errors[:5]))\nutils.graph_loader.preflight.PreflightError: node count 0 != expected 4769; edge count 0 != expected 6972; label AttackPattern count 0 != expected 558; label Category count 0 != expected 21; label Consequence count 0 != expected 812\n\n",
+      "wall_s": 3.4,
+      "finished": "2026-08-19T03:53:41+00:00"
+    },
+    {
+      "name": "E0",
+      "description": "calibrate the local judge against the committed Sonnet judgments",
+      "started": "2026-08-19T03:53:41+00:00",
+      "status": "ok",
+      "result": {
+        "root": "/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/holdout-v1",
+        "arm": "deterministic",
+        "suffix": ".local",
+        "attempted": 30,
+        "failed": [],
+        "wall_s": 1036.2,
+        "n_compared": 30,
+        "reference_mean": 0.689,
+        "local_mean": 0.72,
+        "mean_delta": 0.031,
+        "mean_abs_delta": 0.103,
+        "verdict_agreement": 0.7,
+        "pearson_r": 0.9275,
+        "label": "reference-blind"
+      },
+      "wall_s": 1036.2,
+      "finished": "2026-08-19T04:10:57+00:00"
+    },
+    {
+      "name": "E1",
+      "description": "judge the repaired cascade on the blind holdout",
+      "started": "2026-08-19T04:10:57+00:00",
+      "status": "ok",
+      "result": {
+        "root": "/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/outerjoin-holdout",
+        "arm": "deterministic",
+        "suffix": "",
+        "attempted": 30,
+        "failed": [],
+        "wall_s": 583.1,
+        "label": "cascade-blind",
+        "roll": {
+          "n": 30,
+          "correctness": {
+            "mean": 0.8367,
+            "ci95": [
+              0.7517,
+              0.915
+            ]
+          },
+          "correct_rate": {
+            "correct": 22,
+            "point": 0.7333,
+            "wilson95": [
+              0.5555,
+              0.8582
+            ]
+          },
+          "verdicts": {
+            "CORRECT": 22,
+            "PARTIAL": 8,
+            "INCORRECT": 0
+          },
+          "faithfulness": 0.98,
+          "groundedness": 0.9217,
+          "completeness": 0.911,
+          "hallucinations": 0,
+          "answers_with_hallucination": 0,
+          "abstained": 3,
+          "abstention_carries_query": 3,
+          "fabricated_mapping": 0
+        }
+      },
+      "wall_s": 583.1,
+      "finished": "2026-08-19T04:20:40+00:00"
+    },
+    {
+      "name": "E3",
+      "description": "judge Arm H on the blind holdout",
+      "started": "2026-08-19T04:20:40+00:00",
+      "status": "ok",
+      "result": {
+        "root": "/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/holdout-v1-generic-outer",
+        "arm": "generic",
+        "suffix": "",
+        "attempted": 30,
+        "failed": [
+          {
+            "case": "H-SW-02",
+            "status": "FAILED ValueError: no JSON object in reply: '\\n\\n{\\n  \"verdict\": \"CORRECT\",\\n  \"correctness\": 0.95,\\n  \"faithfulness\": 0.85,\\n  \"groundedness\": 0.9,\\n  \"completeness\": 1.0,\\n  \"gold_expected\": 170,\\n  \"gold_present\": 170,\\n  \"abstained\": false,\\n  \"abstent'"
+          }
+        ],
+        "wall_s": 588.6,
+        "label": "generic-blind",
+        "roll": {
+          "n": 30,
+          "correctness": {
+            "mean": 0.8483,
+            "ci95": [
+              0.7783,
+              0.915
+            ]
+          },
+          "correct_rate": {
+            "correct": 21,
+            "point": 0.7,
+            "wilson95": [
+              0.5212,
+              0.8334
+            ]
+          },
+          "verdicts": {
+            "CORRECT": 21,
+            "PARTIAL": 9,
+            "INCORRECT": 0
+          },
+          "faithfulness": 0.9517,
+          "groundedness": 0.915,
+          "completeness": 0.911,
+          "hallucinations": 1,
+          "answers_with_hallucination": 1,
+          "abstained": 4,
+          "abstention_carries_query": 2,
+          "fabricated_mapping": 0
+        },
+        "corrected": "H-SW-02 truncated at 8192 and 16384 tokens; re-judged at 32768. n 29 -> 30."
+      },
+      "wall_s": 588.6,
+      "finished": "2026-08-19T04:30:29+00:00"
+    },
+    {
+      "name": "E2a",
+      "description": "second judge pass over the cascade's blind answers",
+      "started": "2026-08-19T04:30:29+00:00",
+      "status": "ok",
+      "result": {
+        "root": "/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/outerjoin-holdout",
+        "arm": "deterministic",
+        "suffix": ".run2",
+        "attempted": 30,
+        "failed": [],
+        "wall_s": 312.2,
+        "label": "cascade-blind",
+        "roll": {
+          "n": 30,
+          "correctness": {
+            "mean": 0.8417,
+            "ci95": [
+              0.7583,
+              0.9183
+            ]
+          },
+          "correct_rate": {
+            "correct": 23,
+            "point": 0.7667,
+            "wilson95": [
+              0.5907,
+              0.8821
+            ]
+          },
+          "verdicts": {
+            "CORRECT": 23,
+            "PARTIAL": 7,
+            "INCORRECT": 0
+          },
+          "faithfulness": 0.97,
+          "groundedness": 0.9183,
+          "completeness": 0.8943,
+          "hallucinations": 1,
+          "answers_with_hallucination": 1,
+          "abstained": 4,
+          "abstention_carries_query": 4,
+          "fabricated_mapping": 0
+        }
+      },
+      "wall_s": 312.3,
+      "finished": "2026-08-19T04:35:41+00:00"
+    },
+    {
+      "name": "E2b",
+      "description": "third judge pass over the cascade's blind answers",
+      "started": "2026-08-19T04:35:41+00:00",
+      "status": "ok",
+      "result": {
+        "root": "/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/outerjoin-holdout",
+        "arm": "deterministic",
+        "suffix": ".run3",
+        "attempted": 60,
+        "failed": [],
+        "wall_s": 522.9,
+        "label": "cascade-blind",
+        "roll": {
+          "n": 30,
+          "correctness": {
+            "mean": 0.84,
+            "ci95": [
+              0.7533,
+              0.92
+            ]
+          },
+          "correct_rate": {
+            "correct": 23,
+            "point": 0.7667,
+            "wilson95": [
+              0.5907,
+              0.8821
+            ]
+          },
+          "verdicts": {
+            "CORRECT": 23,
+            "PARTIAL": 7,
+            "INCORRECT": 0
+          },
+          "faithfulness": 0.9767,
+          "groundedness": 0.9267,
+          "completeness": 0.9043,
+          "hallucinations": 1,
+          "answers_with_hallucination": 1,
+          "abstained": 4,
+          "abstention_carries_query": 4,
+          "fabricated_mapping": 0
+        },
+        "corrected": "judged 60 files: the pass picked up E2a's 30 judgments as answers. Junk quarantined under _contaminated_run3; rolled over the 30 real cases."
+      },
+      "wall_s": 522.9,
+      "finished": "2026-08-19T04:44:24+00:00"
+    },
+    {
+      "name": "E4a",
+      "description": "answer_gap on the cascade",
+      "started": "2026-08-19T04:44:24+00:00",
+      "status": "ok",
+      "result": {
+        "n": 30,
+        "retrieval_complete": 30,
+        "total_loss": 0.16333333333333336,
+        "loss_with_complete_retrieval": 0.16333333333333336,
+        "by_reason": {
+          "judge_nuance": {
+            "questions": 14,
+            "loss_share_of_total": 0.0,
+            "ids": [
+              "H-CHN-01",
+              "H-CHN-03",
+              "H-CTM-03",
+              "H-CTM-04",
+              "H-CWE-01",
+              "H-GRP-01",
+              "H-GRP-02",
+              "H-MAP-01",
+              "H-MAP-02",
+              "H-MIT-01",
+              "H-REV-02",
+              "H-REV-03",
+              "H-SW-02",
+              "H-TAC-01"
+            ]
+          },
+          "ungrounded": {
+            "questions": 11,
+            "loss_share_of_total": 0.095,
+            "ids": [
+              "H-CHN-02",
+              "H-DET-01",
+              "H-DET-02",
+              "H-EXE-01",
+              "H-LKP-01",
+              "H-LKP-02",
+              "H-LKP-03",
+              "H-MIT-02",
+              "H-REV-01",
+              "H-SUB-01",
+              "H-SW-01"
+            ]
+          },
+          "under_enumeration": {
+            "questions": 3,
+            "loss_share_of_total": 0.06333333333333332,
+            "ids": [
+              "H-ABS-01",
+              "H-CSQ-01",
+              "H-PRE-01"
+            ]
+          },
+          "wrongful_abstention": {
+            "questions": 2,
+            "loss_share_of_total": 0.005000000000000001,
+            "ids": [
+              "H-CTM-01",
+              "H-CTM-02"
+            ]
+          }
+        }
+      },
+      "wall_s": 0.1,
+      "finished": "2026-08-19T04:44:24+00:00"
+    },
+    {
+      "name": "E4b",
+      "description": "answer_gap on Arm H",
+      "started": "2026-08-19T04:44:24+00:00",
+      "status": "ok",
+      "result": {
+        "n": 30,
+        "retrieval_complete": 30,
+        "total_loss": 0.1516666666666667,
+        "loss_with_complete_retrieval": 0.1516666666666667,
+        "by_reason": {
+          "judge_nuance": {
+            "questions": 10,
+            "loss_share_of_total": 0.010000000000000002,
+            "ids": [
+              "H-CHN-01",
+              "H-CHN-03",
+              "H-CTM-03",
+              "H-CWE-01",
+              "H-EXE-01",
+              "H-MAP-01",
+              "H-MAP-02",
+              "H-REV-02",
+              "H-REV-03",
+              "H-TAC-01"
+            ]
+          },
+          "ungrounded": {
+            "questions": 8,
+            "loss_share_of_total": 0.058333333333333334,
+            "ids": [
+              "H-DET-01",
+              "H-DET-02",
+              "H-GRP-02",
+              "H-LKP-01",
+              "H-LKP-02",
+              "H-MIT-02",
+              "H-REV-01",
+              "H-SUB-01"
+            ]
+          },
+          "unfaithful": {
+            "questions": 6,
+            "loss_share_of_total": 0.015000000000000003,
+            "ids": [
+              "H-CTM-04",
+              "H-GRP-01",
+              "H-LKP-03",
+              "H-MIT-01",
+              "H-SW-01",
+              "H-SW-02"
+            ]
+          },
+          "under_enumeration": {
+            "questions": 3,
+            "loss_share_of_total": 0.06166666666666667,
+            "ids": [
+              "H-ABS-01",
+              "H-CSQ-01",
+              "H-PRE-01"
+            ]
+          },
+          "wrongful_abstention": {
+            "questions": 3,
+            "loss_share_of_total": 0.006666666666666669,
+            "ids": [
+              "H-CHN-02",
+              "H-CTM-01",
+              "H-CTM-02"
+            ]
+          }
+        }
+      },
+      "wall_s": 0.0,
+      "finished": "2026-08-19T04:44:24+00:00"
+    },
+    {
+      "name": "E5a",
+      "description": "judge the cascade on the 120-question catalogue",
+      "started": "2026-08-19T04:44:24+00:00",
+      "status": "ok",
+      "result": {
+        "root": "/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/outerjoin-dev",
+        "arm": "deterministic",
+        "suffix": "",
+        "attempted": 120,
+        "failed": [],
+        "wall_s": 1099.0,
+        "label": "cascade-dev",
+        "roll": {
+          "n": 120,
+          "correctness": {
+            "mean": 0.9839,
+            "ci95": [
+              0.9768,
+              0.9899
+            ]
+          },
+          "correct_rate": {
+            "correct": 119,
+            "point": 0.9917,
+            "wilson95": [
+              0.9543,
+              0.9985
+            ]
+          },
+          "verdicts": {
+            "CORRECT": 119,
+            "PARTIAL": 1,
+            "INCORRECT": 0
+          },
+          "faithfulness": 0.9884,
+          "groundedness": 0.9782,
+          "completeness": 0.9983,
+          "hallucinations": 7,
+          "answers_with_hallucination": 3,
+          "abstained": 21,
+          "abstention_carries_query": 20,
+          "fabricated_mapping": 0
+        }
+      },
+      "wall_s": 1099.1,
+      "finished": "2026-08-19T05:02:43+00:00"
+    },
+    {
+      "name": "E5b",
+      "description": "judge Arm H on the 120-question catalogue",
+      "started": "2026-08-19T05:02:43+00:00",
+      "status": "ok",
+      "result": {
+        "root": "/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/untruncated-generic-outer",
+        "arm": "generic",
+        "suffix": "",
+        "attempted": 120,
+        "failed": [
+          {
+            "case": "A-SW-02",
+            "status": "FAILED ValueError: no JSON object in reply: ''"
+          }
+        ],
+        "wall_s": 1248.4,
+        "label": "generic-dev",
+        "roll": {
+          "n": 120,
+          "correctness": {
+            "mean": 0.9692,
+            "ci95": [
+              0.955,
+              0.9804
+            ]
+          },
+          "correct_rate": {
+            "correct": 115,
+            "point": 0.9583,
+            "wilson95": [
+              0.9062,
+              0.9821
+            ]
+          },
+          "verdicts": {
+            "CORRECT": 115,
+            "PARTIAL": 5,
+            "INCORRECT": 0
+          },
+          "faithfulness": 0.9751,
+          "groundedness": 0.962,
+          "completeness": 0.995,
+          "hallucinations": 18,
+          "answers_with_hallucination": 9,
+          "abstained": 20,
+          "abstention_carries_query": 11,
+          "fabricated_mapping": 0
+        },
+        "corrected": "A-SW-02 truncated at 8192 and 16384 tokens; re-judged at 32768. n 119 -> 120."
+      },
+      "wall_s": 1248.5,
+      "finished": "2026-08-19T05:23:32+00:00"
+    },
+    {
+      "name": "E7a",
+      "description": "run Arm F generation 2 on the blind holdout",
+      "started": "2026-08-19T05:23:32+00:00",
+      "status": "ok",
+      "result": {
+        "label": "armf-blind",
+        "tail": "[gold_loop_llm] running 30 questions with 4 workers\u2026\n  [gold_loop_llm] \u2026 10/30\n  [gold_loop_llm] \u2026 20/30\n  [gold_loop_llm] \u2026 30/30\n[gold_loop_llm] wrote 30/30 artifacts to /home/bdgr/Agents/Ariadne/docs/evaluation/experiments/gen2-armf-holdout/gold_loop_llm/answers/ in 344.5s\n"
+      },
+      "wall_s": 344.8,
+      "finished": "2026-08-19T05:29:16+00:00"
+    },
+    {
+      "name": "E7b",
+      "description": "judge Arm F on the blind holdout",
+      "started": "2026-08-19T05:29:16+00:00",
+      "status": "ok",
+      "result": {
+        "root": "/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/gen2-armf-holdout",
+        "arm": "gold_loop_llm",
+        "suffix": "",
+        "attempted": 30,
+        "failed": [],
+        "wall_s": 160.7,
+        "label": "armf-blind",
+        "roll": {
+          "n": 30,
+          "correctness": {
+            "mean": 0.9157,
+            "ci95": [
+              0.8557,
+              0.9633
+            ]
+          },
+          "correct_rate": {
+            "correct": 25,
+            "point": 0.8333,
+            "wilson95": [
+              0.6644,
+              0.9266
+            ]
+          },
+          "verdicts": {
+            "CORRECT": 25,
+            "PARTIAL": 5,
+            "INCORRECT": 0
+          },
+          "faithfulness": 0.96,
+          "groundedness": 0.93,
+          "completeness": 0.9583,
+          "hallucinations": 4,
+          "answers_with_hallucination": 4,
+          "abstained": 4,
+          "abstention_carries_query": 4,
+          "fabricated_mapping": 0
+        }
+      },
+      "wall_s": 160.8,
+      "finished": "2026-08-19T05:31:57+00:00"
+    },
+    {
+      "name": "E7c",
+      "description": "run Arm F generation 2 on the catalogue",
+      "started": "2026-08-19T05:31:57+00:00",
+      "status": "ok",
+      "result": {
+        "label": "armf-dev",
+        "tail": " \u2026 30/120\n  [gold_loop_llm] \u2026 40/120\n  [gold_loop_llm] \u2026 50/120\n  [gold_loop_llm] \u2026 60/120\n  [gold_loop_llm] \u2026 70/120\n  [gold_loop_llm] \u2026 80/120\n  [gold_loop_llm] \u2026 90/120\n  [gold_loop_llm] \u2026 100/120\n  [gold_loop_llm] \u2026 110/120\n  [gold_loop_llm] \u2026 120/120\n[gold_loop_llm] wrote 120/120 artifacts to /home/bdgr/Agents/Ariadne/docs/evaluation/experiments/gen2-armf-dev/gold_loop_llm/answers/ in 904.5s\n"
+      },
+      "wall_s": 904.7,
+      "finished": "2026-08-19T05:47:02+00:00"
+    },
+    {
+      "name": "E7d",
+      "description": "judge Arm F on the catalogue",
+      "started": "2026-08-19T05:47:02+00:00",
+      "status": "ok",
+      "result": {
+        "root": "/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/gen2-armf-dev",
+        "arm": "gold_loop_llm",
+        "suffix": "",
+        "attempted": 120,
+        "failed": [
+          {
+            "case": "A-MC-02",
+            "status": "FAILED ValueError: no JSON object in reply: ''"
+          },
+          {
+            "case": "F-CTM-05",
+            "status": "FAILED ValueError: no JSON object in reply: ''"
+          }
+        ],
+        "wall_s": 936.9,
+        "label": "armf-dev",
+        "roll": {
+          "n": 120,
+          "correctness": {
+            "mean": 0.9852,
+            "ci95": [
+              0.9793,
+              0.9904
+            ]
+          },
+          "correct_rate": {
+            "correct": 117,
+            "point": 0.975,
+            "wilson95": [
+              0.9291,
+              0.9915
+            ]
+          },
+          "verdicts": {
+            "CORRECT": 117,
+            "PARTIAL": 3,
+            "INCORRECT": 0
+          },
+          "faithfulness": 0.9777,
+          "groundedness": 0.9743,
+          "completeness": 1.0,
+          "hallucinations": 30,
+          "answers_with_hallucination": 19,
+          "abstained": 21,
+          "abstention_carries_query": 20,
+          "fabricated_mapping": 0
+        },
+        "corrected": "A-MC-02 and F-CTM-05 truncated at 8192 and 16384 tokens; re-judged at 32768. n 118 -> 120."
+      },
+      "wall_s": 937.0,
+      "finished": "2026-08-19T06:02:39+00:00"
+    }
+  ],
+  "finished": "2026-08-19T06:02:39+00:00",
+  "corrections": [
+    {
+      "phase": "E3",
+      "reason": "H-SW-02 truncated at 8192 and 16384 tokens; re-judged at 32768. n 29 -> 30.",
+      "n_before": 29,
+      "n_after": 30,
+      "correctness_before": 0.85,
+      "correctness_after": 0.8483
+    },
+    {
+      "phase": "E2b",
+      "reason": "judged 60 files: the pass picked up E2a's 30 judgments as answers. Junk quarantined under _contaminated_run3; rolled over the 30 real cases.",
+      "n_before": 60,
+      "n_after": 30,
+      "correctness_before": 0.7583,
+      "correctness_after": 0.84
+    },
+    {
+      "phase": "E5b",
+      "reason": "A-SW-02 truncated at 8192 and 16384 tokens; re-judged at 32768. n 119 -> 120.",
+      "n_before": 119,
+      "n_after": 120,
+      "correctness_before": 0.969,
+      "correctness_after": 0.9692
+    },
+    {
+      "phase": "E7d",
+      "reason": "A-MC-02 and F-CTM-05 truncated at 8192 and 16384 tokens; re-judged at 32768. n 118 -> 120.",
+      "n_before": 118,
+      "n_after": 120,
+      "correctness_before": 0.9849,
+      "correctness_after": 0.9852
+    }
+  ]
+}

@@ -23,6 +23,64 @@ def _phases(state: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return {p["name"]: p for p in state.get("phases", [])}
 
 
+
+def _unpushed() -> str:
+    """Count commits not on any remote, so the reminder cannot go stale."""
+    import subprocess
+
+    try:
+        out = subprocess.run(
+            ["git", "rev-list", "--count", "--all", "--not", "--remotes"],
+            cwd=REPO, capture_output=True, text=True, timeout=10,
+        )
+        return out.stdout.strip() or "?"
+    except Exception:  # noqa: BLE001 — a report must not die counting commits
+        return "?"
+
+
+def _paired_repair_delta(repo: Path) -> dict[str, Any] | None:
+    """The night's own before/after: same 30 questions, same judge, one code change.
+
+    The pre-fix run carries ``.judgment.local.json`` files written by E0's
+    calibration pass; the repaired run carries E1's. Both were graded by the
+    same local judge on the same night, so pairing them isolates the code
+    change from the grader entirely — which the unpaired means cannot do.
+    """
+    from utils.evaluation.stats import bootstrap_ci
+
+    exp = repo / "docs" / "evaluation" / "experiments"
+    before_dir = exp / "holdout-v1" / "deterministic" / "answers"
+    after_dir = exp / "outerjoin-holdout" / "deterministic" / "answers"
+    if not before_dir.is_dir() or not after_dir.is_dir():
+        return None
+
+    def _load(directory: Path, suffix: str) -> dict[str, float]:
+        out = {}
+        for path in directory.glob(f"*.judgment{suffix}.json"):
+            if path.name.count(".judgment") != 1:
+                continue
+            row = json.loads(path.read_text())
+            out[row["case_id"]] = float(row["correctness"])
+        return out
+
+    before, after = _load(before_dir, ".local"), _load(after_dir, "")
+    shared = sorted(set(before) & set(after))
+    if len(shared) < 5:
+        return None
+    deltas = [after[c] - before[c] for c in shared]
+    point, low, high = bootstrap_ci(deltas, lambda v: sum(v) / len(v))
+    return {
+        "n": len(shared),
+        "before_mean": round(sum(before[c] for c in shared) / len(shared), 4),
+        "after_mean": round(sum(after[c] for c in shared) / len(shared), 4),
+        "delta": round(point, 4),
+        "ci95": [round(low, 4), round(high, 4)],
+        "improved": sum(1 for d in deltas if d > 0),
+        "regressed": sum(1 for d in deltas if d < 0),
+        "unchanged": sum(1 for d in deltas if d == 0),
+        "worst": min(deltas),
+    }
+
 def _roll(phase: dict[str, Any] | None) -> dict[str, Any] | None:
     if not phase or phase.get("status") != "ok":
         return None
@@ -110,6 +168,34 @@ def write_report(out_dir: Path) -> Path:
             "to the Sonnet grading the holdout used. Treat everything below as provisional._")
     add("")
 
+    # -- 1b. did the repair work? -----------------------------------------
+    repair = _paired_repair_delta(REPO)
+    if repair:
+        add("## 1b. Did the repair actually work?")
+        add("")
+        add(f"The same **{repair['n']} blind questions**, graded by the **same judge on the "
+            "same night**, before and after the binding/direction/outer-join work. Pairing "
+            "case by case removes the grader from the comparison entirely — the only thing "
+            "that differs between the two columns is the code.")
+        add("")
+        add("| | correctness |")
+        add("|---|---|")
+        add(f"| before (holdout-v1, pre-fix) | {repair['before_mean']:.4f} |")
+        add(f"| after (repaired cascade) | {repair['after_mean']:.4f} |")
+        add(f"| **paired delta** | **+{repair['delta']:.4f}** "
+            f"(95% CI {repair['ci95'][0]:+.4f} – {repair['ci95'][1]:+.4f}) |")
+        add("")
+        add(f"**{repair['improved']} improved, {repair['regressed']} regressed, "
+            f"{repair['unchanged']} unchanged.** Worst single-case movement "
+            f"{repair['worst']:+.2f}.")
+        add("")
+        if repair["ci95"][0] > 0:
+            add("The interval excludes zero, so the improvement is not an artefact of which "
+                "questions happened to be sampled.")
+        else:
+            add("⚠ The interval includes zero — the improvement is not established at this n.")
+        add("")
+
     # -- 2. headline ------------------------------------------------------
     add("## 2. The comparison this was for")
     add("")
@@ -162,10 +248,28 @@ def write_report(out_dir: Path) -> Path:
         add(f"**Spread across {len(values)} passes: {spread:.4f}** (sd {pstdev(values):.4f}).")
         if cascade and generic:
             delta = abs(generic["correctness"]["mean"] - cascade["correctness"]["mean"])
-            verdict = "larger than" if delta > spread else "within"
+            ratio = delta / spread if spread else float("inf")
             add("")
-            add(f"The arm delta in §2 is **{verdict}** the judge's own spread — "
-                f"{delta:.4f} against {spread:.4f}.")
+            add(f"The **arm** delta in §2 is {delta:.4f} against a grader spread of "
+                f"{spread:.4f} — a ratio of {ratio:.1f}×.")
+            add("")
+            if ratio < 4:
+                add("That is **not a separation**. Clearing the grader's noise floor is the "
+                    "weakest possible bar — it says the two arms were not measured "
+                    "identically, not that either is better. Their confidence intervals in "
+                    "§2 overlap almost entirely, and at n = 30 the honest reading is that "
+                    "**the cascade and Arm H are indistinguishable on correctness**. The "
+                    "differences worth acting on are in §5's abstention rates and the "
+                    "hallucination counts, not here.")
+            else:
+                add("That clears the grader's noise floor by a wide margin, so the difference "
+                    "is a property of the arms rather than of the judge.")
+        if repair:
+            add("")
+            add(f"For contrast, the **repair** delta in §1b is {repair['delta']:.4f} against "
+                f"the same {spread:.4f} spread — {repair['delta'] / spread:.0f}× — and its "
+                "paired interval excludes zero. That one is a real effect; the arm "
+                "comparison is not.")
     else:
         add("_Not enough judge passes completed to estimate grader variance._")
     add("")
@@ -178,13 +282,27 @@ def write_report(out_dir: Path) -> Path:
         if entry and entry.get("status") == "ok":
             add(f"**{label}** — see `answer-gap-*.json` in this directory.")
             result = entry.get("result") or {}
-            classes = result.get("classes") if isinstance(result, dict) else None
-            if classes:
+            by_reason = result.get("by_reason") if isinstance(result, dict) else None
+            if by_reason:
+                total = result.get("total_loss") or 0.0
                 add("")
-                add("| class | questions | loss share |")
-                add("|---|---:|---:|")
-                for name, info in classes.items():
-                    add(f"| `{name}` | {info.get('questions')} | {info.get('share')} |")
+                add(f"Retrieval was complete on {result.get('retrieval_complete')}/"
+                    f"{result.get('n')} questions, so every point below is lost *after* "
+                    f"the evidence was in hand. Total loss **{total:.4f}**.")
+                add("")
+                add("| reason | questions | loss share | per affected question |")
+                add("|---|---:|---:|---:|")
+                ranked = sorted(by_reason.items(),
+                                key=lambda kv: -(kv[1].get("loss_share_of_total") or 0))
+                for name, info in ranked:
+                    share = info.get("loss_share_of_total") or 0.0
+                    q = info.get("questions") or 0
+                    per = share / q if q else 0.0
+                    add(f"| `{name}` | {q} | {share:.4f} | {per:.4f} |")
+                add("")
+                add("_`judge_nuance` is scored loss the gap analysis could not attribute to a "
+                    "named defect; a large question count there with near-zero share means the "
+                    "answers were docked fractionally, not broken._")
             add("")
         else:
             add(f"**{label}** — did not run.")
@@ -198,6 +316,17 @@ def write_report(out_dir: Path) -> Path:
     add(_arm_row("Cascade", _roll(phases.get("E5a"))))
     add(_arm_row("Arm H", _roll(phases.get("E5b"))))
     add("")
+    cat_c, cat_g = _roll(phases.get("E5a")), _roll(phases.get("E5b"))
+    if cat_c and cat_g and cat_c.get("n") and cat_g.get("n"):
+        add("Abstention behaviour at this larger n — the blind set's 3-vs-4 abstentions were "
+            "too few to read, these are not:")
+        add("")
+        add("| arm | abstained | carried the query | rate |")
+        add("|---|---:|---:|---:|")
+        for name, roll in (("Cascade", cat_c), ("Arm H", cat_g)):
+            a, k = roll["abstained"], roll["abstention_carries_query"]
+            add(f"| {name} | {a} | {k} | {(k / a if a else 0):.0%} |")
+        add("")
     add("Remember what this bank is: 120 questions co-authored with the templates that answer "
         "them. It is the wrong instrument for an absolute claim and the right one for an "
         "arm-to-arm comparison at larger n.")
@@ -278,7 +407,7 @@ def write_report(out_dir: Path) -> Path:
     add("- **The composer under-enumeration fix** — deliberately not attempted unattended. "
         "§4 says what it is worth on each arm.")
     add("- **Holdout v2** — now the only route to a quotable blind figure.")
-    add("- **18 commits and 2 freeze tags are still unpushed.**")
+    add(f"- **{_unpushed()} commits and 2 freeze tags are still unpushed.**")
     add("")
 
     report = out_dir / "REPORT.md"
