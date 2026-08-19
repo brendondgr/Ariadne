@@ -1,0 +1,547 @@
+{
+ "seed": 20260819,
+ "protocol": "utils/specialists/evalset/holdout_protocol.py",
+ "gold_bank": "utils/specialists/tests/golden/gold_bank.json",
+ "snapshot": {
+  "attack_version": "19.0",
+  "capec_version": "3.9",
+  "checksums": {
+   "attack": {
+    "sha256": "df520ea0775a57db7bff760145b02fed89290802913e056b7ed5970b02f3626a",
+    "size_bytes": 52680865
+   },
+   "capec": {
+    "sha256": "70279a2dff0cb0ad79e546adb07828335a704ad5210e047e09e986172fc9e34d",
+    "size_bytes": 3849998
+   }
+  }
+ },
+ "strata": {
+  "attack": 12,
+  "capec": 8,
+  "federated": 10
+ },
+ "scale": 1,
+ "excluded": {
+  "size": 30,
+  "sha256": "aa6004750e70ed24c64de033fd6b013a73881366a87ae7fea25298198b983fa3"
+ },
+ "federated_targets": {
+  "answerable": 6,
+  "abstention-expected": 4
+ },
+ "populations": {
+  "attack": {
+   "size": 697,
+   "sha256": "9075c1501d0856438c7688c46a9b6bb26baa1c8bb447b9539a0e6f27f6c37564"
+  },
+  "capec": {
+   "size": 558,
+   "sha256": "4125347093ad7d4b7cbe15b94858f7ee5ad262bac83fc1f0a9356c433aa344d3"
+  },
+  "cwe": {
+   "size": 336,
+   "sha256": "cf78638a85b92a2e9e1059b132a48fbf9d88689e40553695d025bab729a3575c"
+  }
+ },
+ "anchors": [
+  {
+   "stratum": "attack",
+   "category": "mitigations",
+   "anchor": "T1176",
+   "feasible_population": 571,
+   "id": "H-MIT-01",
+   "name": "Software Extensions",
+   "entity_type": "Technique",
+   "draw_index": 0
+  },
+  {
+   "stratum": "attack",
+   "category": "software",
+   "anchor": "T1134.003",
+   "feasible_population": 475,
+   "id": "H-SW-01",
+   "name": "Make and Impersonate Token",
+   "entity_type": "SubTechnique",
+   "draw_index": 1
+  },
+  {
+   "stratum": "attack",
+   "category": "subtechnique",
+   "anchor": "T1055.002",
+   "feasible_population": 563,
+   "id": "H-SUB-01",
+   "name": "Portable Executable Injection",
+   "entity_type": "SubTechnique",
+   "draw_index": 2
+  },
+  {
+   "stratum": "attack",
+   "category": "groups",
+   "anchor": "T1012",
+   "feasible_population": 481,
+   "id": "H-GRP-01",
+   "name": "Query Registry",
+   "entity_type": "Technique",
+   "draw_index": 3
+  },
+  {
+   "stratum": "attack",
+   "category": "tactics",
+   "anchor": "T1059.005",
+   "feasible_population": 682,
+   "id": "H-TAC-01",
+   "name": "Visual Basic",
+   "entity_type": "SubTechnique",
+   "draw_index": 4
+  },
+  {
+   "stratum": "attack",
+   "category": "lookup",
+   "anchor": "T1090.003",
+   "feasible_population": 682,
+   "id": "H-LKP-01",
+   "name": "Multi-hop Proxy",
+   "entity_type": "SubTechnique",
+   "draw_index": 5
+  },
+  {
+   "stratum": "attack",
+   "category": "detection",
+   "anchor": "T1589.001",
+   "feasible_population": 682,
+   "id": "H-DET-01",
+   "name": "Credentials",
+   "entity_type": "SubTechnique",
+   "draw_index": 6
+  },
+  {
+   "stratum": "attack",
+   "category": "mitigations",
+   "anchor": "T1547.009",
+   "feasible_population": 571,
+   "id": "H-MIT-02",
+   "name": "Shortcut Modification",
+   "entity_type": "SubTechnique",
+   "draw_index": 7
+  },
+  {
+   "stratum": "attack",
+   "category": "software",
+   "anchor": "T1080",
+   "feasible_population": 475,
+   "id": "H-SW-02",
+   "name": "Taint Shared Content",
+   "entity_type": "Technique",
+   "draw_index": 8
+  },
+  {
+   "stratum": "attack",
+   "category": "subtechnique",
+   "anchor": "T1027.011",
+   "feasible_population": 563,
+   "id": "H-SUB-02",
+   "name": "Fileless Storage",
+   "entity_type": "SubTechnique",
+   "draw_index": 9
+  },
+  {
+   "stratum": "attack",
+   "category": "groups",
+   "anchor": "T1003.006",
+   "feasible_population": 481,
+   "id": "H-GRP-02",
+   "name": "DCSync",
+   "entity_type": "SubTechnique",
+   "draw_index": 10
+  },
+  {
+   "stratum": "attack",
+   "category": "tactics",
+   "anchor": "T1599",
+   "feasible_population": 682,
+   "id": "H-TAC-02",
+   "name": "Network Boundary Bridging",
+   "entity_type": "Technique",
+   "draw_index": 11
+  },
+  {
+   "stratum": "capec",
+   "category": "prerequisite",
+   "anchor": "CAPEC-471",
+   "feasible_population": 287,
+   "id": "H-PRE-01",
+   "name": "Search Order Hijacking",
+   "entity_type": "AttackPattern",
+   "draw_index": 12
+  },
+  {
+   "stratum": "capec",
+   "category": "execution",
+   "anchor": "CAPEC-2",
+   "feasible_population": 234,
+   "id": "H-EXE-01",
+   "name": "Inducing Account Lockout",
+   "entity_type": "AttackPattern",
+   "draw_index": 13
+  },
+  {
+   "stratum": "capec",
+   "category": "lookup",
+   "anchor": "CAPEC-136",
+   "feasible_population": 546,
+   "id": "H-LKP-02",
+   "name": "LDAP Injection",
+   "entity_type": "AttackPattern",
+   "draw_index": 14
+  },
+  {
+   "stratum": "capec",
+   "category": "mapping",
+   "anchor": "CAPEC-480",
+   "feasible_population": 169,
+   "id": "H-MAP-01",
+   "name": "Escaping Virtualization",
+   "entity_type": "AttackPattern",
+   "draw_index": 15
+  },
+  {
+   "stratum": "capec",
+   "category": "hierarchy",
+   "anchor": "CAPEC-206",
+   "feasible_population": 488,
+   "id": "H-ABS-01",
+   "name": "Signing Malicious Code",
+   "entity_type": "AttackPattern",
+   "draw_index": 16
+  },
+  {
+   "stratum": "capec",
+   "category": "consequence",
+   "anchor": "CAPEC-594",
+   "feasible_population": 356,
+   "id": "H-CSQ-01",
+   "name": "Traffic Injection",
+   "entity_type": "AttackPattern",
+   "draw_index": 17
+  },
+  {
+   "stratum": "capec",
+   "category": "weakness",
+   "anchor": "CAPEC-461",
+   "feasible_population": 439,
+   "id": "H-CWE-01",
+   "name": "Web Services API Signature Forgery Leveraging Hash Function Extension Weakness",
+   "entity_type": "AttackPattern",
+   "draw_index": 18
+  },
+  {
+   "stratum": "capec",
+   "category": "prerequisite",
+   "anchor": "CAPEC-407",
+   "feasible_population": 287,
+   "id": "H-PRE-02",
+   "name": "Pretexting",
+   "entity_type": "AttackPattern",
+   "draw_index": 19
+  },
+  {
+   "stratum": "federated",
+   "category": "pattern-to-mitigation",
+   "anchor": "CAPEC-572",
+   "partition": "answerable",
+   "correlation_size": 1,
+   "feasible_population": 546,
+   "id": "H-CTM-01",
+   "name": "Artificially Inflate File Sizes",
+   "entity_type": "AttackPattern",
+   "draw_index": 20
+  },
+  {
+   "stratum": "federated",
+   "category": "pattern-to-mitigation",
+   "anchor": "CAPEC-325",
+   "partition": "abstention-expected",
+   "correlation_size": 0,
+   "feasible_population": 546,
+   "id": "H-CTM-02",
+   "name": "TCP Congestion Control Flag (ECN) Probe",
+   "entity_type": "AttackPattern",
+   "draw_index": 21
+  },
+  {
+   "stratum": "federated",
+   "category": "pattern-to-mitigation",
+   "anchor": "CAPEC-140",
+   "partition": "abstention-expected",
+   "correlation_size": 0,
+   "feasible_population": 546,
+   "id": "H-CTM-03",
+   "name": "Bypassing of Intermediate Forms in Multiple-Form Sets",
+   "entity_type": "AttackPattern",
+   "draw_index": 22
+  },
+  {
+   "stratum": "federated",
+   "category": "pattern-to-mitigation",
+   "anchor": "CAPEC-543",
+   "partition": "answerable",
+   "correlation_size": 1,
+   "feasible_population": 546,
+   "id": "H-CTM-04",
+   "name": "Counterfeit Websites",
+   "entity_type": "AttackPattern",
+   "draw_index": 23
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1613",
+   "partition": "abstention-expected",
+   "correlation_size": 0,
+   "feasible_population": 682,
+   "id": "H-REV-01",
+   "name": "Container and Resource Discovery",
+   "entity_type": "Technique",
+   "draw_index": 24
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1587.001",
+   "partition": "answerable",
+   "correlation_size": 1,
+   "feasible_population": 682,
+   "id": "H-REV-02",
+   "name": "Malware",
+   "entity_type": "SubTechnique",
+   "draw_index": 25
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1547.006",
+   "partition": "answerable",
+   "correlation_size": 1,
+   "feasible_population": 682,
+   "id": "H-REV-03",
+   "name": "Kernel Modules and Extensions",
+   "entity_type": "SubTechnique",
+   "draw_index": 26
+  },
+  {
+   "stratum": "federated",
+   "category": "cwe-chain",
+   "anchor": "CWE-1275",
+   "partition": "abstention-expected",
+   "correlation_size": 0,
+   "feasible_population": 333,
+   "id": "H-CHN-01",
+   "name": "CWE-1275",
+   "entity_type": "Weakness",
+   "draw_index": 27
+  },
+  {
+   "stratum": "federated",
+   "category": "cwe-chain",
+   "anchor": "CWE-697",
+   "partition": "answerable",
+   "correlation_size": 1,
+   "feasible_population": 333,
+   "id": "H-CHN-02",
+   "name": "CWE-697",
+   "entity_type": "Weakness",
+   "draw_index": 28
+  },
+  {
+   "stratum": "federated",
+   "category": "cwe-chain",
+   "anchor": "CWE-494",
+   "partition": "answerable",
+   "correlation_size": 4,
+   "feasible_population": 333,
+   "id": "H-CHN-03",
+   "name": "CWE-494",
+   "entity_type": "Weakness",
+   "draw_index": 29
+  }
+ ],
+ "overdraw": [
+  {
+   "stratum": "federated",
+   "category": "pattern-to-mitigation",
+   "anchor": "CAPEC-387",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1053.005",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1564.010",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1204.003",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1546.017",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1580",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1542.005",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1563.002",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1137.002",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1590.005",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1592.001",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1001.001",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1053.003",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1546.012",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1176.002",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1006",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1546.014",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1589.002",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1542.004",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1564",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1542",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1219.002",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "cwe-chain",
+   "anchor": "CWE-241",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "cwe-chain",
+   "anchor": "CWE-1296",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "cwe-chain",
+   "anchor": "CWE-1223",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  }
+ ],
+ "discards": []
+}

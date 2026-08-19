@@ -42,7 +42,8 @@ DEFAULT_ROOT = "docs/evaluation/experiments/untruncated"
 # committed baseline's exact configuration (gold-replay plan + LLM drafter + LLM
 # synthesis) with ONLY the un-truncation profile added, so C − baseline isolates
 # un-truncation, A − C isolates the composer, and B − C isolates LLM planning.
-ARMS = ("deterministic", "llm", "gold_llm", "llm_loop", "gold_loop_llm", "generic")
+ARMS = ("deterministic", "llm", "gold_llm", "llm_loop", "gold_loop_llm", "generic",
+        "llm_query")
 
 # -- the un-truncation profile ----------------------------------------------
 # Every one of these keys is read *at call time* by the bound it names, with the
@@ -126,6 +127,23 @@ def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[st
             "SPECIALIST_LLM_MAX_TOKENS": str(llm_max_tokens),
             "SYNTHESIS_LLM_MAX_TOKENS": str(llm_max_tokens),
             "SYNTHESIS_LLM_THINKING_BUDGET": str(llm_max_tokens // 2),
+        })
+    elif arm == "llm_query":
+        # The C-012 baseline: Arm A exactly — gold-replay plan, deterministic
+        # extraction, deterministic composition — with ONE variable changed, the
+        # thing that writes the query. Holding the plan constant is the point: a
+        # difference against `deterministic` is then attributable to query
+        # generation and to nothing else. `llm` already varies planning.
+        env.update({
+            "PLANNER_LLM_ENABLED": "false",
+            "SYNTHESIS_LLM_ENABLED": "false",
+            "CONVERSATION_LLM_ENABLED": "false",
+            # Distinct from SPECIALIST_LLM_ENABLED, which four other arms set to
+            # mean "LLM drafter/synthesis" and which no builder reads.
+            "SPECIALIST_LLM_QUERY_BUILDER": "true",
+            "SPECIALIST_LLM_ENABLED": "false",
+            "SPECIALIST_LLM_MODEL": llm_model,
+            "SPECIALIST_LLM_MAX_TOKENS": str(llm_max_tokens),
         })
     elif arm == "deterministic":
         # Reproducible mode: no LLM in planning, drafting, or synthesis.
@@ -251,9 +269,10 @@ def load_work(bank: str | None = None) -> list[tuple[dict, str]]:
 class _RouterPool:
     """Thread-local router sets — the Gremlin client is not shareable."""
 
-    def __init__(self, llm_enabled: bool) -> None:
+    def __init__(self, llm_enabled: bool, llm_query_builder: bool = False) -> None:
         self._local = threading.local()
         self._llm = llm_enabled
+        self._llm_query_builder = llm_query_builder
 
     def _build(self) -> dict[str, Any]:
         import dataclasses
@@ -262,7 +281,9 @@ class _RouterPool:
         from utils.specialists.federation import SpecialistRouter
 
         config = dataclasses.replace(
-            SpecialistConfig.from_env(), llm_enabled=self._llm
+            SpecialistConfig.from_env(),
+            llm_enabled=self._llm,
+            llm_query_builder=self._llm_query_builder,
         )
         full = SpecialistRouter(config)
         return {
@@ -491,6 +512,9 @@ RUNNERS = {
     "llm_loop": run_llm,   # same driver; the arm differs only in its env
     "gold_loop_llm": run_gold_loop_llm,
     "generic": run_gold_loop_llm,   # same driver; templates disabled via env
+    # Same driver as ARM A: the arm differs only in who writes the query, which
+    # is decided by the pool's SpecialistConfig, not by the runner.
+    "llm_query": run_deterministic,
 }
 
 
@@ -536,7 +560,10 @@ def run_arm(
     # share a thread-local router set (ARM C keeps the .env LLM drafter, as the
     # baseline did; ARM A forces it off).
     pool = (None if arm in ("llm", "llm_loop", "gold_loop_llm", "generic")
-            else _RouterPool(llm_enabled=(arm == "gold_llm")))
+            else _RouterPool(
+                llm_enabled=(arm == "gold_llm"),
+                llm_query_builder=(arm == "llm_query"),
+            ))
 
     manifest: list[dict[str, Any]] = []
     total = len(work)

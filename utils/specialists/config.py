@@ -56,6 +56,14 @@ class SpecialistConfig:
     expand_page_size: int = 50
     # Optional LLM seam (off by default; deterministic building always works).
     llm_enabled: bool = False
+    # Whether a language model writes the query STRING, rather than a template
+    # being filled. Deliberately NOT folded into `llm_enabled`: that flag is
+    # already set true by Arms B, C, F and H to mean "LLM drafter / LLM
+    # synthesis", and it sat unread by any builder. Consuming it here would have
+    # silently swapped the query builder under four committed arms and
+    # invalidated the whole arm table. This is the C-012 baseline's switch and
+    # nothing else reads it.
+    llm_query_builder: bool = False
     llm_base_url: str = DEFAULT_LLM_BASE_URL
     llm_model: str = DEFAULT_LLM_MODEL
     llm_timeout_s: float = 30.0
@@ -92,6 +100,9 @@ class SpecialistConfig:
             max_retries=env_int("SPECIALIST_MAX_RETRIES", 2),
             expand_page_size=env_int("SPECIALIST_EXPAND_PAGE_SIZE", 50),
             llm_enabled=llm_enabled,
+            llm_query_builder=os.environ.get(
+                "SPECIALIST_LLM_QUERY_BUILDER", ""
+            ).strip().lower() in {"1", "true", "yes", "on"},
             llm_base_url=env_str("SPECIALIST_LLM_BASE_URL", DEFAULT_LLM_BASE_URL),
             llm_model=env_str("SPECIALIST_LLM_MODEL", DEFAULT_LLM_MODEL),
             llm_timeout_s=_env_float("SPECIALIST_LLM_TIMEOUT_S", 30.0),
