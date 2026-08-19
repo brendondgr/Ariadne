@@ -22,7 +22,9 @@ Composition rules:
 
 from __future__ import annotations
 
-from utils.planner.intent import is_definitional_request, is_enumerative_request
+import re
+
+from utils.planner.intent import is_definitional_request
 from utils.specialists.contracts import EvidenceRecord, SpecialistResult
 from utils.specialists.federation import FederatedEvidence
 from utils.specialists.resolve import definitional_name_terms
@@ -32,8 +34,8 @@ from .contracts import Abstention, Citation, Claim, SynthesizedAnswer
 
 # An enumeration claim's id list is bounded generously — far above any real
 # related set in the catalogue — so the answer stays complete without an
-# unbounded claim. Only records with more related ids than the fact claim would
-# sample, or an explicitly enumerative question, get one.
+# unbounded claim. Every record with a related set gets one: the bound exists to
+# stop a pathological set, not to decide which sets are worth stating.
 _MAX_ENUMERATION_IDS = 200
 _MAX_ENUMERATION_CLAIMS_PER_RESULT = 25
 
@@ -384,6 +386,80 @@ def _related_noun(record: EvidenceRecord, count: int = 0) -> str:
     return "related item(s)"
 
 
+#: How much of a record's description a definitional claim carries. Descriptions
+#: run to several paragraphs; the first part carries the mechanism, which is what
+#: a "how does this work" question is asking for.
+_MAX_DESCRIPTION_CHARS = 700
+
+_MARKDOWN_LINK = re.compile(r"\[([^\]]+)\]\((https?://[^)]+)\)")
+
+
+def _strip_markdown_links(text: str) -> str:
+    """``[Create Account](https://attack.mitre.org/techniques/T1136)`` → ``Create Account``.
+
+    MITRE descriptions cross-reference other entities as markdown links whose
+    *URL* carries an identifier. Emitting them verbatim would put ids into the
+    answer that are not in the claim's ``entity_ids`` and are not grounded by the
+    cited record — manufacturing exactly the ungrounded-mention problem this
+    claim exists to reduce. The link text is the readable part and carries no id.
+    """
+    return _MARKDOWN_LINK.sub(r"\1", text or "")
+
+
+def _trim_to_sentence(text: str, limit: int) -> str:
+    """Cut at the last sentence boundary within ``limit``, never mid-word."""
+    if len(text) <= limit:
+        return text
+    window = text[:limit]
+    cut = max(window.rfind(". "), window.rfind(".\n"))
+    if cut > limit // 3:
+        return window[: cut + 1]
+    return window.rsplit(" ", 1)[0] + "…"
+
+
+def _description_claim(result: SpecialistResult, record: EvidenceRecord) -> Claim | None:
+    """State what an entity *is*, for a result that is about one entity.
+
+    The composer's attribute claims deliberately exclude ``description`` (it is
+    prose, not a scalar attribute), and the normalizer summaries are id-lines. So
+    a question like "What is T1036.010 — how does this technique actually work?"
+    was answered with STIX bookkeeping — ``revoked: False``, ``stix_type``,
+    ``x_mitre_version`` — while the description explaining the mechanism sat
+    unread in the same record.
+
+    Three blind-holdout lookups (H-LKP-01/02/03) were judged 0.5 for exactly
+    this, each with the judge noting the description was present in the evidence.
+    They were filed under ``ungrounded`` by the gap classifier only because it
+    has no category for "answered with the wrong field".
+
+    Gated on the *shape* of the result rather than on the question's phrasing:
+    a single-record result is a question about that record. Phrasing gating was
+    tried and rejected — ``is_definitional_request`` matches "What is T1036.010…"
+    but not "CAPEC-321 … what does this attack pattern actually involve?", and
+    both are the same kind of question.
+    """
+    # `description` lives in `properties`, not as a field on EvidenceRecord —
+    # the serialized artifact hoists it to the top level, the dataclass does not.
+    text = str((record.properties or {}).get("description") or "").strip()
+    if not text:
+        return None
+    body = _trim_to_sentence(_strip_markdown_links(text).strip(), _MAX_DESCRIPTION_CHARS)
+    anchor = f"{record.primary_id} ({record.name})" if record.name else record.primary_id
+    return Claim(
+        text=f"{anchor}: {body}",
+        citations=(
+            Citation(
+                source=result.task.source,
+                primary_id=record.primary_id,
+                record_id=record.provenance.record_id if record.provenance else "",
+            ),
+        ),
+        entity_ids=(record.primary_id,),
+        kind="fact",
+        sub_question_id=result.task.sub_question_id,
+    )
+
+
 def _enumeration_claim(result: SpecialistResult, record: EvidenceRecord) -> Claim:
     """A structured claim naming *every* id in a record's related set.
 
@@ -475,16 +551,31 @@ def _enumeration_claims(result: SpecialistResult, cap: int) -> list[Claim]:
     B. a multi-record result whose *primary ids* are themselves the answer set
        (the techniques a group uses).
 
-    Fires on an explicitly enumerative question, or whenever the set outnumbers
-    the fact claim's ``cap`` sample (objective truncation). Correlation is
-    handled separately, so cross-source join values are left to the join logic.
+    Shape A fires for *any* non-empty related set. Correlation is handled
+    separately, so cross-source join values are left to the join logic.
     """
-    enumerative = is_enumerative_request(result.task.text)
     claims: list[Claim] = []
     # Shape A: per-anchor related sets.
+    #
+    # This used to fire only on `enumerative or len(ids) > cap`, on the
+    # assumption that a set small enough not to be truncated was already named
+    # in the fact claim's prose. That assumption holds for one normalizer and
+    # not the other. `cypher/normalizer.summarize` does name a few related ids
+    # ("Found 3 item(s) related to T1055 (e.g. …)"); `gremlin/normalizer`
+    # summarizes only the *primary* ids ("Found 1 CAPEC record(s): CAPEC-606.")
+    # and never mentions the related set at all.
+    #
+    # So for a CAPEC record with a small related set and a question the
+    # enumerative regex did not match, the related ids were retrieved, grounded,
+    # and then stated nowhere — not in a claim, not in the narrative. All three
+    # of the blind holdout's `under_enumeration` cases were exactly this shape:
+    # CAPEC single records with related sets of 1, 2 and 3.
+    #
+    # There is no reason to suppress the completeness surface for a small set.
+    # A set of two costs one short claim; leaving it out costs the answer.
     for record in result.records:
         ids = _related_ids(record)
-        if ids and (enumerative or len(ids) > cap):
+        if ids:
             claims.append(_enumeration_claim(result, record))
         if len(claims) >= _enum_bound(
             "MAX_ENUMERATION_CLAIMS", _MAX_ENUMERATION_CLAIMS_PER_RESULT
@@ -516,6 +607,12 @@ class DeterministicComposer:
         for result in evidence.results:
             if result.records:
                 claims.append(_fact_claim(result, cap))
+                # A result about exactly one entity should say what that entity
+                # is, before it lists the entity's bookkeeping fields.
+                if len(result.records) == 1:
+                    described = _description_claim(result, result.records[0])
+                    if described is not None:
+                        claims.append(described)
                 claims.extend(_attribute_claims(result))
                 claims.extend(_enumeration_claims(result, cap))
             elif result.ok:

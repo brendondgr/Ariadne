@@ -45,8 +45,25 @@ def test_enumerative_question_emits_full_enumeration_claim():
     assert all(v.supported for v in verified.verification.verdicts)
 
 
-def test_non_enumerative_small_related_set_gets_no_enumeration_claim():
-    """An abstraction lookup (2 ancestors, not enumerative) stays a plain fact."""
+def test_a_small_related_set_is_enumerated_too():
+    """The reversal: a two-ancestor abstraction lookup DOES get an enumeration claim.
+
+    This test previously asserted the opposite — that a set small enough not to
+    be truncated "stays a plain fact" — on the reasoning that the fact claim's
+    prose would already have named it. EXP-2026-08-007 refuted that on the blind
+    holdout, and this exact shape is why.
+
+    The prose only names related ids on the ATT&CK side.
+    ``cypher/normalizer.summarize`` emits "Found 3 item(s) related to T1055
+    (e.g. …)", but ``gremlin/normalizer.summarize`` emits "Found 1 CAPEC
+    record(s): CAPEC-606." and never mentions the related set. So on CAPEC a
+    small related set was retrieved, grounded, and then stated nowhere at all.
+
+    All three of the blind holdout's ``under_enumeration`` cases were this:
+    H-ABS-01 (2 ancestors, judged 0.35), H-CSQ-01 (1 consequence) and H-PRE-01
+    (3 prerequisites) — each a CAPEC single record whose answer named only the
+    anchor. The evidence was right there; the answer just did not say it.
+    """
     anchor = make_record(
         "CAPEC-555", source="capec", label="AttackPattern",
         related=[{"id": "CAPEC-560", "role": "parent"}, {"id": "CAPEC-1", "role": "grandparent"}],
@@ -55,7 +72,14 @@ def test_non_enumerative_small_related_set_gets_no_enumeration_claim():
         [make_result(source="capec", text="What abstraction level is CAPEC-555?",
                      records=[anchor], summary="One pattern.")]
     )
-    assert _enum_claims(_compose(evidence)) == []
+    enum = _enum_claims(_compose(evidence))
+    assert len(enum) == 1
+    assert set(enum[0].entity_ids) == {"CAPEC-560", "CAPEC-1"}
+    # the role annotation is what makes a hierarchy answer readable
+    assert "parent" in enum[0].text and "grandparent" in enum[0].text
+    # and it must still verify as grounded, or we have traded one defect for another
+    verified = verify_answer(_compose(evidence), evidence)
+    assert all(v.supported for v in verified.verification.verdicts)
 
 
 def test_large_related_set_enumerates_even_without_enumerative_phrasing():
@@ -349,3 +373,113 @@ def test_draft_is_unverified_and_renders_nothing():
     answer = _compose(make_evidence([make_result(records=[make_record("T1047")])]))
     assert answer.verification is None
     assert answer.rendered_claims() == []
+
+
+# -- definitional description (the "answered with the wrong field" fix) ------
+
+
+def _texts(answer):
+    return " || ".join(c.text for c in answer.claims)
+
+
+def test_a_single_record_result_states_what_the_entity_is():
+    """H-LKP-01's shape: "what is X / how does it work" answered with STIX bookkeeping.
+
+    The composer excludes `description` from attribute claims (it is prose, not a
+    scalar) and the normalizer summary is an id-line, so the substantive field
+    was never stated. Three blind-holdout lookups were judged 0.5 for this, each
+    time with the judge noting the description sat unread in the evidence.
+    """
+    anchor = make_record(
+        "T1036.010", name="Masquerade Account Name",
+        properties={
+            "description": "Adversaries may match or approximate the names of legitimate accounts.",
+            "revoked": False,
+            "x_mitre_version": "2.0",
+        },
+    )
+    evidence = make_evidence([make_result(
+        text="What is T1036.010 (Masquerade Account Name) — how does this technique work?",
+        records=[anchor], summary="Found ATT&CK record T1036.010: Masquerade Account Name.",
+    )])
+    answer = _compose(evidence)
+    assert "approximate the names of legitimate accounts" in _texts(answer)
+    verified = verify_answer(_compose(evidence), evidence)
+    assert all(v.supported for v in verified.verification.verdicts)
+
+
+def test_the_description_claim_does_not_depend_on_question_phrasing():
+    """H-LKP-03 asks "what does this actually involve?" — no "what is" trigger.
+
+    Gating on `is_definitional_request` was tried and rejected: it matches
+    "What is T1036.010…" but not "CAPEC-321 … what does this attack pattern
+    actually involve?", and those are the same kind of question. The gate is the
+    shape of the result instead — one record means the question is about it.
+    """
+    anchor = make_record(
+        "CAPEC-321", source="capec", label="AttackPattern", name="TCP Sequence Number Probe",
+        properties={"description": "An adversary probes TCP sequence number assignment.",
+                    "Status": "Stable"},
+    )
+    evidence = make_evidence([make_result(
+        source="capec", text="CAPEC-321 (TCP Sequence Number Probe) — what does this involve?",
+        records=[anchor], summary="Found 1 CAPEC record(s): CAPEC-321.",
+    )])
+    assert "probes TCP sequence number assignment" in _texts(_compose(evidence))
+
+
+def test_a_multi_record_result_gets_no_description_claim():
+    """37 techniques must not drag 37 descriptions into the answer."""
+    records = [
+        make_record(f"T10{i:02d}", name=f"tech {i}", properties={"description": f"desc {i}"})
+        for i in range(5)
+    ]
+    evidence = make_evidence([make_result(
+        text="Which techniques does G0082 use?", records=records, summary="Five techniques.",
+    )])
+    assert "desc 0" not in _texts(_compose(evidence))
+
+
+def test_a_record_with_no_description_adds_no_claim():
+    anchor = make_record("T1001", name="Data Obfuscation", properties={"revoked": False})
+    evidence = make_evidence([make_result(
+        text="What is T1001?", records=[anchor], summary="One record.")])
+    before = len(_compose(evidence).claims)
+    anchor2 = make_record("T1001", name="Data Obfuscation",
+                          properties={"revoked": False, "description": "Adversaries obfuscate."})
+    evidence2 = make_evidence([make_result(
+        text="What is T1001?", records=[anchor2], summary="One record.")])
+    assert len(_compose(evidence2).claims) == before + 1
+
+
+def test_cross_references_in_a_description_lose_their_identifiers():
+    """MITRE descriptions link to other entities; the URL carries an id.
+
+    Emitting the raw markdown would put `T1136` into the answer text without it
+    being in any claim's `entity_ids` and without the cited record grounding it —
+    manufacturing the ungrounded-mention problem this claim exists to reduce.
+    """
+    anchor = make_record(
+        "T1036.010", name="Masquerade Account Name",
+        properties={"description": (
+            "Accounts may be renamed during "
+            "[Create Account](https://attack.mitre.org/techniques/T1136) operations."
+        )},
+    )
+    evidence = make_evidence([make_result(
+        text="What is T1036.010?", records=[anchor], summary="One record.")])
+    text = _texts(_compose(evidence))
+    assert "Create Account" in text
+    assert "T1136" not in text
+    assert "https://" not in text
+
+
+def test_a_long_description_is_cut_at_a_sentence_boundary():
+    body = ("First sentence here. " * 60).strip()
+    anchor = make_record("T1001", name="X", properties={"description": body})
+    evidence = make_evidence([make_result(
+        text="What is T1001?", records=[anchor], summary="One record.")])
+    claim = next(c for c in _compose(evidence).claims if "First sentence" in c.text)
+    assert claim.text.rstrip().endswith(".")
+    assert "…" not in claim.text
+    assert len(claim.text) < 900
