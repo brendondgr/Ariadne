@@ -22,6 +22,44 @@ services:
       retries: 30
       start_period: 30s
 
+  # The merged-graph counterfactual (C-015). A SECOND Neo4j, deliberately
+  # separate from the one above.
+  #
+  # C-015 asks whether federating two engines beats merging both sources into
+  # one graph, so the counterfactual needs ATT&CK and CAPEC in a single store.
+  # Neo4j Community serves exactly one database per instance, so "merged" cannot
+  # be a database inside `neo4j` — it would have to be the same graph every other
+  # arm queries. Loading CAPEC there would turn `Mitigation` from 44 ATT&CK
+  # mitigations into both catalogues' mitigations and make every unscoped query
+  # return mixed results, silently invalidating figures already recorded against
+  # a clean ATT&CK-only graph.
+  #
+  # Hence a separate instance on its own ports and its own volume. Started only
+  # when asked for: `docker compose --profile merged up -d neo4j-merged`.
+  neo4j-merged:
+    profiles:
+      - merged
+    image: neo4j:${NEO4J_VERSION:-5.26}
+    container_name: ariadne-neo4j-merged
+    restart: unless-stopped
+
+    ports:
+      - "${NEO4J_MERGED_HTTP_PORT:-5457}:7474"   # Browser
+      - "${NEO4J_MERGED_BOLT_PORT:-5458}:7687"   # Bolt
+
+    environment:
+      NEO4J_AUTH: ${NEO4J_AUTH:-neo4j/password}
+
+    volumes:
+      - ./neo4j-merged/data:/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:7474 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
   gremlin:
     image: tinkerpop/gremlin-server:${GREMLIN_VERSION:-3.8.0}
     container_name: ariadne-gremlin
