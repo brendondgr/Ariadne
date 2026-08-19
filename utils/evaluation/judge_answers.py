@@ -1,0 +1,354 @@
+#!/usr/bin/env python3
+"""Grade saved arm answers into the committed judgment schema.
+
+``experiment_untruncated`` writes one answer JSON per case; the blind holdout was
+then graded by one independent Sonnet 5 agent per case, which wrote
+``<case>.judgment.json`` beside it. Everything downstream — ``holdout_report``'s
+bootstrap intervals and strata, ``answer_gap``'s loss decomposition — reads those
+files. There was no runner: the judgments came from agents, one conversation at a
+time, so no arm could be graded without a human driving it.
+
+This is that runner. It grades any arm's saved answers against the same schema,
+so an arm that has never been judged becomes judgeable in one command.
+
+**It is not the same instrument.** The original rubric lived in the subagent
+instructions rather than in a file, so the prompt here is a reconstruction, and
+the model is local rather than cross-provider. Both differences matter and
+neither is knowable in the abstract, which is why ``--calibrate`` exists: point
+it at answers that already carry committed judgments and it reports agreement
+against them instead of overwriting. Run that before trusting anything else this
+produces.
+
+Nothing here touches the system under test. It reads answers and writes
+judgments.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import sys
+import time
+import urllib.error
+import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import dataclass
+from pathlib import Path
+from statistics import mean
+from typing import Any, Iterable
+
+DEFAULT_BASE_URL = os.environ.get("EVAL_LLM_BASE_URL", "http://localhost:4000/v1")
+DEFAULT_MODEL = os.environ.get("EVAL_LLM_MODEL", "skynet")
+# The judge reasons before answering, and the reasoning is billed against the
+# same budget as the answer. Too small a budget truncates mid-thought and yields
+# an *empty* reply — which reads as "the server is down" rather than as the
+# ceiling it is. Observed on a chain question at 4096: reasoning consumed the
+# lot. The escalation in ``judge_one`` is the belt to this braces.
+DEFAULT_MAX_TOKENS = 8192
+DEFAULT_WORKERS = 12
+DEFAULT_TIMEOUT_S = 600.0
+
+# Every field ``holdout_report`` and ``answer_gap`` read.
+REQUIRED_FIELDS = (
+    "verdict",
+    "correctness",
+    "faithfulness",
+    "groundedness",
+    "completeness",
+    "rationale",
+)
+VERDICTS = ("CORRECT", "PARTIAL", "INCORRECT")
+
+RUBRIC = """You are grading one answer produced by a federated graph-retrieval system \
+over MITRE ATT&CK and CAPEC. Grade only what is in front of you.
+
+Return ONLY a JSON object, no prose around it, with exactly these keys:
+
+  verdict        "CORRECT" | "PARTIAL" | "INCORRECT"
+  correctness    0.0-1.0. Does the answer answer the question that was asked?
+                 An answer that states some of the gold entities and omits the
+                 rest is partial in proportion. An answer that describes the
+                 anchor but never addresses what was asked is not correct
+                 however true its statements are.
+  faithfulness   0.0-1.0. Is every statement supported by the evidence shown?
+                 Deduct for anything asserted beyond the records.
+  groundedness   0.0-1.0. Are claims tied to specific cited records rather than
+                 to general knowledge about ATT&CK or CAPEC?
+  completeness   0.0-1.0. Of the gold identifiers expected, what fraction does
+                 the answer actually state?
+  gold_expected  integer: how many gold identifiers the question expected.
+  gold_present   integer: how many of them the answer states.
+  abstained      true if the answer declines to assert rather than guessing.
+  abstention_carries_query  true if an abstention shows the executed query as
+                 proof. False when there is no abstention.
+  fabricated_mapping  true if the answer asserts a cross-source correlation the
+                 evidence does not contain. This is the most serious failure.
+  hallucinations list of strings: any identifier or fact asserted that the
+                 evidence does not support. Empty list if none.
+  rationale      2-4 sentences. Name the specific identifiers involved.
+
+Two rules that decide most hard cases:
+
+1. An honest abstention is not a wrong answer. If the graph genuinely contains
+   no mapping and the system says so and shows the query it ran, that is
+   CORRECT. Reward it. Guessing an answer instead would be the failure.
+2. Retrieving a record is not the same as answering. If the evidence contains
+   the neighbours the question asked for and the answer text does not state
+   them, completeness is low even though retrieval succeeded."""
+
+
+@dataclass
+class JudgeConfig:
+    base_url: str = DEFAULT_BASE_URL
+    model: str = DEFAULT_MODEL
+    max_tokens: int = DEFAULT_MAX_TOKENS
+    timeout_s: float = DEFAULT_TIMEOUT_S
+    temperature: float = 0.0
+    retries: int = 3
+
+
+def _post(config: JudgeConfig, prompt: str, max_tokens: int | None = None) -> str:
+    body = json.dumps(
+        {
+            "model": config.model,
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": max_tokens or config.max_tokens,
+            "temperature": config.temperature,
+        }
+    ).encode()
+    last: Exception | None = None
+    for attempt in range(1, config.retries + 1):
+        try:
+            request = urllib.request.Request(
+                f"{config.base_url.rstrip('/')}/chat/completions",
+                data=body,
+                headers={"Content-Type": "application/json"},
+            )
+            with urllib.request.urlopen(request, timeout=config.timeout_s) as response:
+                payload = json.load(response)
+            return payload["choices"][0]["message"]["content"] or ""
+        except Exception as exc:  # noqa: BLE001 — the server restarts; that is the point
+            last = exc
+            if attempt < config.retries:
+                time.sleep(min(2**attempt, 30))
+    raise RuntimeError(f"judge call failed after {config.retries} attempts: {last}")
+
+
+_JSON_BLOCK = re.compile(r"\{.*\}", re.DOTALL)
+
+
+def _parse(reply: str) -> dict[str, Any]:
+    """Pull the JSON object out of a reply that may carry reasoning around it."""
+    text = reply.strip()
+    if text.startswith("```"):
+        text = text.split("```")[1]
+        text = text[4:] if text.lower().startswith("json") else text
+    match = _JSON_BLOCK.search(text)
+    if not match:
+        raise ValueError(f"no JSON object in reply: {reply[:200]!r}")
+    return json.loads(match.group(0))
+
+
+def _prompt_for(answer: dict[str, Any]) -> str:
+    gold = answer.get("gold") or {}
+    body = {
+        "question": answer.get("question"),
+        "gold_expectations": gold,
+        "answer": answer.get("answer"),
+        "evidence_volume": answer.get("evidence_volume"),
+        "logic_flow": answer.get("logic_flow"),
+    }
+    return f"{RUBRIC}\n\n--- CASE ---\n{json.dumps(body, indent=1)[:24000]}\n"
+
+
+def _normalise(case_id: str, raw: dict[str, Any]) -> dict[str, Any]:
+    """Coerce the model's object into the committed schema, or fail loudly."""
+    missing = [field for field in REQUIRED_FIELDS if field not in raw]
+    if missing:
+        raise ValueError(f"{case_id}: judgment missing {missing}")
+    verdict = str(raw["verdict"]).strip().upper()
+    if verdict not in VERDICTS:
+        raise ValueError(f"{case_id}: verdict {verdict!r} not one of {VERDICTS}")
+
+    def _num(key: str) -> float:
+        value = float(raw.get(key) or 0.0)
+        return max(0.0, min(1.0, value))
+
+    hallucinations = raw.get("hallucinations") or []
+    if isinstance(hallucinations, str):
+        hallucinations = [hallucinations]
+    return {
+        "case_id": case_id,
+        "verdict": verdict,
+        "correctness": _num("correctness"),
+        "faithfulness": _num("faithfulness"),
+        "groundedness": _num("groundedness"),
+        "completeness": _num("completeness"),
+        "gold_expected": int(raw.get("gold_expected") or 0),
+        "gold_present": int(raw.get("gold_present") or 0),
+        "abstained": bool(raw.get("abstained")),
+        "abstention_carries_query": bool(raw.get("abstention_carries_query")),
+        "fabricated_mapping": bool(raw.get("fabricated_mapping")),
+        "hallucinations": [str(h) for h in hallucinations],
+        "rationale": str(raw.get("rationale") or ""),
+        "judge": {"model": DEFAULT_MODEL, "runner": "utils/evaluation/judge_answers.py"},
+    }
+
+
+def answer_files(root: Path, arm: str) -> list[Path]:
+    answers = root / arm / "answers"
+    return [p for p in sorted(answers.glob("*.json")) if not p.name.endswith(".judgment.json")]
+
+
+def judge_one(path: Path, config: JudgeConfig, suffix: str) -> tuple[str, str]:
+    """Grade one case. Returns ``(case_id, status)``; never raises for one case."""
+    case_id = path.stem
+    out = path.with_name(f"{case_id}.judgment{suffix}.json")
+    try:
+        answer = json.loads(path.read_text())
+        prompt = _prompt_for(answer)
+        try:
+            raw = _parse(_post(config, prompt))
+        except ValueError:
+            # An unparseable or empty reply is usually the token ceiling, not a
+            # broken model: give it double and try once more before recording a
+            # failure. A case dropped for a budget is a case silently missing
+            # from the night's numbers.
+            raw = _parse(_post(config, prompt, max_tokens=config.max_tokens * 2))
+        judgment = _normalise(case_id, raw)
+        # Written as soon as it exists: a run that dies at case 90 keeps 89.
+        out.write_text(json.dumps(judgment, indent=1) + "\n")
+        return case_id, "ok"
+    except Exception as exc:  # noqa: BLE001
+        out.with_suffix(".error.txt").write_text(f"{type(exc).__name__}: {exc}\n")
+        return case_id, f"FAILED {type(exc).__name__}: {exc}"
+
+
+def run(
+    root: Path,
+    arm: str,
+    config: JudgeConfig,
+    workers: int = DEFAULT_WORKERS,
+    suffix: str = "",
+    force: bool = False,
+    limit: int | None = None,
+) -> dict[str, Any]:
+    paths = answer_files(root, arm)
+    if not force:
+        paths = [
+            p
+            for p in paths
+            if not p.with_name(f"{p.stem}.judgment{suffix}.json").is_file()
+        ]
+    if limit:
+        paths = paths[:limit]
+    started = time.time()
+    done, failed = 0, []
+    print(f"[judge] {root.name}/{arm}{suffix or ''}: {len(paths)} case(s), {workers} workers", flush=True)
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        futures = {pool.submit(judge_one, p, config, suffix): p for p in paths}
+        for future in as_completed(futures):
+            case_id, status = future.result()
+            done += 1
+            if status != "ok":
+                failed.append({"case": case_id, "status": status})
+            if done % 10 == 0 or done == len(paths):
+                print(f"[judge]   {done}/{len(paths)} ({time.time() - started:.0f}s)", flush=True)
+    return {
+        "root": str(root),
+        "arm": arm,
+        "suffix": suffix,
+        "attempted": len(paths),
+        "failed": failed,
+        "wall_s": round(time.time() - started, 1),
+    }
+
+
+# -- calibration -------------------------------------------------------------
+
+
+def calibrate(root: Path, arm: str, config: JudgeConfig, workers: int) -> dict[str, Any]:
+    """Grade answers that already carry committed judgments, and compare.
+
+    Writes to a ``.local`` suffix so the committed judgments are never touched.
+    Agreement here is the only evidence that this runner's rubric and model
+    reproduce the instrument the holdout was measured with.
+    """
+    summary = run(root, arm, config, workers=workers, suffix=".local", force=True)
+    reference, local = [], []
+    verdict_match, rows = 0, []
+    for path in answer_files(root, arm):
+        ref_path = path.with_name(f"{path.stem}.judgment.json")
+        loc_path = path.with_name(f"{path.stem}.judgment.local.json")
+        if not (ref_path.is_file() and loc_path.is_file()):
+            continue
+        ref, loc = json.loads(ref_path.read_text()), json.loads(loc_path.read_text())
+        reference.append(float(ref["correctness"]))
+        local.append(float(loc["correctness"]))
+        verdict_match += int(ref["verdict"] == loc["verdict"])
+        rows.append(
+            {
+                "case": path.stem,
+                "reference_correctness": ref["correctness"],
+                "local_correctness": loc["correctness"],
+                "reference_verdict": ref["verdict"],
+                "local_verdict": loc["verdict"],
+            }
+        )
+    n = len(rows)
+    deltas = [l - r for l, r in zip(local, reference)]
+    return {
+        **summary,
+        "n_compared": n,
+        "reference_mean": round(mean(reference), 4) if n else None,
+        "local_mean": round(mean(local), 4) if n else None,
+        "mean_delta": round(mean(deltas), 4) if n else None,
+        "mean_abs_delta": round(mean(abs(d) for d in deltas), 4) if n else None,
+        "verdict_agreement": round(verdict_match / n, 4) if n else None,
+        "pearson_r": round(_pearson(reference, local), 4) if n > 1 else None,
+        "cases": rows,
+    }
+
+
+def _pearson(a: list[float], b: list[float]) -> float:
+    ma, mb = mean(a), mean(b)
+    num = sum((x - ma) * (y - mb) for x, y in zip(a, b))
+    da = sum((x - ma) ** 2 for x in a) ** 0.5
+    db = sum((y - mb) ** 2 for y in b) ** 0.5
+    return num / (da * db) if da and db else 0.0
+
+
+def main(argv: Iterable[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
+    parser.add_argument("--root", required=True, help="experiment run root")
+    parser.add_argument("--arm", required=True, help="arm directory under the root")
+    parser.add_argument("--workers", type=int, default=DEFAULT_WORKERS)
+    parser.add_argument("--model", default=DEFAULT_MODEL)
+    parser.add_argument("--max-tokens", type=int, default=DEFAULT_MAX_TOKENS)
+    parser.add_argument("--suffix", default="", help="e.g. .run2 for a repeat pass")
+    parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument("--force", action="store_true", help="re-judge existing")
+    parser.add_argument("--calibrate", action="store_true",
+                        help="grade answers that already have judgments and compare")
+    parser.add_argument("--out", default=None, help="write the run summary here")
+    args = parser.parse_args(list(argv) if argv is not None else None)
+
+    config = JudgeConfig(model=args.model, max_tokens=args.max_tokens)
+    root = Path(args.root)
+    if args.calibrate:
+        summary = calibrate(root, args.arm, config, args.workers)
+    else:
+        summary = run(root, args.arm, config, args.workers, args.suffix,
+                      args.force, args.limit)
+    text = json.dumps(summary, indent=2)
+    if args.out:
+        Path(args.out).write_text(text + "\n")
+    print(text if not summary.get("cases") else json.dumps(
+        {k: v for k, v in summary.items() if k != "cases"}, indent=2))
+    return 1 if summary.get("failed") else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
