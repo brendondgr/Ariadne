@@ -188,6 +188,8 @@ def roll_up(root: Path, arm: str, suffix: str = "") -> dict[str, Any]:
     rows = [
         json.loads(p.read_text())
         for p in sorted(answers.glob(f"*.judgment{suffix}.json"))
+        # belt-and-braces: a doubly-suffixed name is a judgment of a judgment
+        if p.name.count(".judgment") == 1
     ]
     if not rows:
         return {"n": 0}

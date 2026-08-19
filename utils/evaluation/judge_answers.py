@@ -198,8 +198,15 @@ def _normalise(case_id: str, raw: dict[str, Any]) -> dict[str, Any]:
 
 
 def answer_files(root: Path, arm: str) -> list[Path]:
+    """Answer files only — never a judgment this or an earlier pass wrote.
+
+    A suffixed pass writes ``<case>.judgment.run2.json``, which does *not* end
+    in ``.judgment.json``. Matching on the suffix alone let a later pass grade
+    an earlier pass's judgments as though they were answers, doubling ``n`` and
+    poisoning the roll-up. Any ``.judgment`` in the name disqualifies the file.
+    """
     answers = root / arm / "answers"
-    return [p for p in sorted(answers.glob("*.json")) if not p.name.endswith(".judgment.json")]
+    return [p for p in sorted(answers.glob("*.json")) if ".judgment" not in p.name]
 
 
 def judge_one(path: Path, config: JudgeConfig, suffix: str) -> tuple[str, str]:
