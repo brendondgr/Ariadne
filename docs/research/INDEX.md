@@ -26,6 +26,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-08-004` | 2026-08-10 | Does making the cross-source bridge an outer join close the residual blind-set gap without regressing? | complete | blind_gold_in_evidence 1.0000 (n=1) | C-003, C-014 | [bridge-outer-join](experiments/EXP-2026-08-004-bridge-outer-join/) |
 | `EXP-2026-08-005` | 2026-08-18 | Is the blind holdout's directional loss a property of these templates, or of a missing schema-driven check? | complete | blind_gold_in_evidence 0.8952 (n=1) | C-001, C-003, C-010, C-014 | [binding-direction-portability](experiments/EXP-2026-08-005-binding-direction-portability/) |
 | `EXP-2026-08-006` | 2026-08-18 | Does the outer-join bridge close the residual blind gap in the default cascade without regressing it? | complete | blind_gold_in_evidence 1.0000 (n=1) | C-001, C-003, C-014 | [template-outer-join](experiments/EXP-2026-08-006-template-outer-join/) |
+| `EXP-2026-08-007` | 2026-08-19 | Judged, at last — does the repaired cascade answer better, and do the generic and LLM-loop arms differ from it on anything that matters? | complete | blind_correctness_cascade 0.8367 (n=30) | C-001, C-003, C-013, C-014, C-017, C-021 | [judged-arm-comparison-gen2](experiments/EXP-2026-08-007-judged-arm-comparison-gen2/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 
-**17 experiment(s) on record.**
+**18 experiment(s) on record.**

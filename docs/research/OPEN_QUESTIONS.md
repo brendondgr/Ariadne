@@ -59,6 +59,20 @@ confidence interval, and `statistical_test` is null in all eleven manifests.
 C, F, G — and compute a paired bootstrap on the two deltas.
 **Cost:** ~1 hour wall clock plus ~600 judge agents. Operator's call.
 **Blocks:** any claim stated with a p-value. **From:** D-010, every arm's §5.
+**Status: HALF ANSWERED — grader variance measured, pipeline variance still not.**
+EXP-2026-08-007 graded one fixed set of *deterministic* answers three times, so
+every point of the resulting spread is grader variance and none of it is
+pipeline variance: **0.0050** (0.8367 / 0.8417 / 0.8400, sd 0.0021). That is
+the noise floor every delta in that experiment is read against, and it is why
+the arm comparison there is reported as *not* a separation while the repair
+delta is. The first non-null `statistical_test` in the record also lands there —
+a paired percentile bootstrap (2000 resamples, seed 1729) on the repair delta,
+95% CI +0.0333 to +0.2167.
+**What is still open:** the pipeline half. No arm has been run twice, seeds
+remain unrecorded, and grader variance is *not* a substitute for run variance —
+an LLM-in-the-loop arm like F or B would have its own, and it is likely larger
+than the grader's. Any p-value about an *arm* still needs the re-run this
+question originally asked for.
 
 ### Q3 — Does template routing actually beat free-form LLM query generation?
 
@@ -161,6 +175,65 @@ capability. **From:** EXP-2026-07-011 ISSUES.md.
 
 ---
 
+### Q14 — What do the templates actually hold, if not accuracy?
+
+**Why it matters:** C-003 — *"the templates are where the accuracy lives"* — is
+described in the ledger as the strongest result in the study, and
+EXP-2026-08-007 contradicts its plain reading. Arm H disables the templates and
+judged level with the cascade (0.8483 vs 0.8367, 2.3× the grader's spread,
+overlapping intervals). The original 3.0× ratio came from Arm G, a weaker
+generic arm that predates the schema-derived capabilities.
+
+**What resolves it:** rewrite the claim around the property that *did* separate
+the arms — provable abstention, 95% vs 55% — and re-derive the ratio against Arm
+H rather than Arm G. Then decide whether a claim about abstention integrity is
+strong enough to carry the section C-003 currently carries.
+
+**Cost:** ~half a day of analysis, no new runs. **Blocks:** C-003, and the
+framing of the paper's central section. **From:** EXP-2026-08-007 §4, §6.
+
+### Q15 — Why is Arm H's abstention proof rate half the cascade's?
+
+**Why it matters:** honest abstention carrying executed-query proof is the
+property the project leads with (C-017), and it is the one thing that got
+*worse* on the portable path. 11 of 20 against 20 of 21, reproduced
+independently on the blind set (2 of 4 against 3 of 3). If generic primitives
+are the route to new datasets, this defect travels with them.
+
+**What resolves it:** the abstentions are on disk. Read the 9 Arm H catalogue
+abstentions that carried no query and determine whether the query was never
+executed, was executed and lost, or was executed and not attached — three
+different defects with three different fixes.
+
+**Cost:** ~2 hours, no new runs. **Blocks:** C-017 going beyond `partial`, and
+any recommendation of the generic path. **From:** EXP-2026-08-007 §7.
+
+### Q16 — Can a fairly-drawn question bank be produced on demand?
+
+**Why it matters:** every figure in the study is bounded by having exactly two
+question sets — one co-authored with the code (120) and one that has been burned
+by fixing the defects it found (30). Each clean read currently costs a
+hand-commissioned holdout, which is why the blind bank was reused past the point
+where it was still blind.
+
+**What resolves it:** nothing in the pipeline requires this to be manual. Gold
+is already computed mechanically end to end — `gold_bank.py` derives it from the
+pinned raw STIX/XML, and `holdout_protocol.py` states outright *"gold is
+computed, never authored"*. The sampler already takes `--seed` and already
+records population hashes. `author_prompt()` already builds the blind prompt.
+Three gaps remain: draws cannot exclude previously-used anchors, `compile_bank`
+has no command-line entry, and nothing runs the author prompt.
+
+**Cost:** ~1 day. **Blocks:** any measurement of work done after 2026-08-18,
+including the composer fix and both missing baselines. **From:** EXP-2026-08-007
+§5, §7.
+
+**Known limitation to record with it:** a machine-authored bank is as *blind* as
+v1 (same prompt, author never sees the code) but its phrasing will be less
+varied than a human's. It is a regression and comparison instrument. A published
+headline figure still wants human-authored questions.
+
+
 ## Known weaknesses to state in the paper, not resolve
 
 These are limitations to disclose, not questions to answer.
@@ -178,6 +251,8 @@ These are limitations to disclose, not questions to answer.
   truth. An ingest error present in both is invisible.
 - **The safety probe suite is 17 probes.** A 100% block rate over 17 probes is
   weak evidence of a strong property. (C-008)
-- **There is no LICENSE file and no MITRE attribution notice.** The artifact
-  cannot legally be released without them. Half a day of work; see
-  [`paper/venue-targets.md`](paper/venue-targets.md).
+- ~~**There is no LICENSE file and no MITRE attribution notice.**~~ **Closed
+  2026-08-18.** The repository is licensed Apache-2.0 (`LICENSE`, copyright
+  Florida State University) with attribution in `NOTICE`, and `pyproject.toml`
+  declares both. The remaining release blocker is archival identity (a DOI),
+  not licensing.

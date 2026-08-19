@@ -1,0 +1,430 @@
+{
+  "experiment": "EXP-2026-08-007",
+  "title": "Judged arm comparison, generation 2",
+  "run": {
+    "started": "2026-08-19T03:53:37+00:00",
+    "finished": "2026-08-19T06:02:39+00:00",
+    "commit": "9da80faea1ac52a6eb71506283e87696a864e171",
+    "wall_clock_hours": 2.15,
+    "phases_run": 14,
+    "phases_failed": 1,
+    "judge_workers": 12
+  },
+  "judge": {
+    "model": "relay/skynet@qwen38-27B-awq",
+    "runner": "utils/evaluation/judge_answers.py",
+    "calibration_vs_sonnet": {
+      "n": 30,
+      "reference_mean": 0.689,
+      "local_mean": 0.72,
+      "mean_delta": 0.031,
+      "mean_abs_delta": 0.103,
+      "verdict_agreement": 0.7,
+      "pearson_r": 0.9275
+    },
+    "pass_spread": {
+      "passes": {
+        "E1": 0.8367,
+        "E2a": 0.8417,
+        "E2b": 0.84
+      },
+      "spread": 0.005,
+      "note": "three passes over one fixed set of deterministic answers; all variance is grader variance"
+    }
+  },
+  "repair_paired_delta": {
+    "n": 30,
+    "before_mean": 0.72,
+    "after_mean": 0.8367,
+    "delta": 0.1167,
+    "ci95": [
+      0.0333,
+      0.2167
+    ],
+    "improved": 10,
+    "regressed": 3,
+    "unchanged": 17,
+    "worst": -0.15000000000000002,
+    "before": "holdout-v1 deterministic, pre-fix answers, judged by E0's calibration pass",
+    "after": "outerjoin-holdout deterministic, post-fix answers, judged by E1",
+    "note": "same 30 questions, same judge, same night; pairing removes the grader from the comparison"
+  },
+  "arms": {
+    "cascade_blind": {
+      "n": 30,
+      "correctness": {
+        "mean": 0.8367,
+        "ci95": [
+          0.7517,
+          0.915
+        ]
+      },
+      "correct_rate": {
+        "correct": 22,
+        "point": 0.7333,
+        "wilson95": [
+          0.5555,
+          0.8582
+        ]
+      },
+      "verdicts": {
+        "CORRECT": 22,
+        "PARTIAL": 8,
+        "INCORRECT": 0
+      },
+      "faithfulness": 0.98,
+      "groundedness": 0.9217,
+      "completeness": 0.911,
+      "hallucinations": 0,
+      "answers_with_hallucination": 0,
+      "abstained": 3,
+      "abstention_carries_query": 3,
+      "fabricated_mapping": 0
+    },
+    "generic_blind": {
+      "n": 30,
+      "correctness": {
+        "mean": 0.8483,
+        "ci95": [
+          0.7783,
+          0.915
+        ]
+      },
+      "correct_rate": {
+        "correct": 21,
+        "point": 0.7,
+        "wilson95": [
+          0.5212,
+          0.8334
+        ]
+      },
+      "verdicts": {
+        "CORRECT": 21,
+        "PARTIAL": 9,
+        "INCORRECT": 0
+      },
+      "faithfulness": 0.9517,
+      "groundedness": 0.915,
+      "completeness": 0.911,
+      "hallucinations": 1,
+      "answers_with_hallucination": 1,
+      "abstained": 4,
+      "abstention_carries_query": 2,
+      "fabricated_mapping": 0
+    },
+    "cascade_dev": {
+      "n": 120,
+      "correctness": {
+        "mean": 0.9839,
+        "ci95": [
+          0.9768,
+          0.9899
+        ]
+      },
+      "correct_rate": {
+        "correct": 119,
+        "point": 0.9917,
+        "wilson95": [
+          0.9543,
+          0.9985
+        ]
+      },
+      "verdicts": {
+        "CORRECT": 119,
+        "PARTIAL": 1,
+        "INCORRECT": 0
+      },
+      "faithfulness": 0.9884,
+      "groundedness": 0.9782,
+      "completeness": 0.9983,
+      "hallucinations": 7,
+      "answers_with_hallucination": 3,
+      "abstained": 21,
+      "abstention_carries_query": 20,
+      "fabricated_mapping": 0
+    },
+    "generic_dev": {
+      "n": 120,
+      "correctness": {
+        "mean": 0.9692,
+        "ci95": [
+          0.955,
+          0.9804
+        ]
+      },
+      "correct_rate": {
+        "correct": 115,
+        "point": 0.9583,
+        "wilson95": [
+          0.9062,
+          0.9821
+        ]
+      },
+      "verdicts": {
+        "CORRECT": 115,
+        "PARTIAL": 5,
+        "INCORRECT": 0
+      },
+      "faithfulness": 0.9751,
+      "groundedness": 0.962,
+      "completeness": 0.995,
+      "hallucinations": 18,
+      "answers_with_hallucination": 9,
+      "abstained": 20,
+      "abstention_carries_query": 11,
+      "fabricated_mapping": 0
+    },
+    "armf_blind": {
+      "n": 30,
+      "correctness": {
+        "mean": 0.9157,
+        "ci95": [
+          0.8557,
+          0.9633
+        ]
+      },
+      "correct_rate": {
+        "correct": 25,
+        "point": 0.8333,
+        "wilson95": [
+          0.6644,
+          0.9266
+        ]
+      },
+      "verdicts": {
+        "CORRECT": 25,
+        "PARTIAL": 5,
+        "INCORRECT": 0
+      },
+      "faithfulness": 0.96,
+      "groundedness": 0.93,
+      "completeness": 0.9583,
+      "hallucinations": 4,
+      "answers_with_hallucination": 4,
+      "abstained": 4,
+      "abstention_carries_query": 4,
+      "fabricated_mapping": 0
+    },
+    "armf_dev": {
+      "n": 120,
+      "correctness": {
+        "mean": 0.9852,
+        "ci95": [
+          0.9793,
+          0.9904
+        ]
+      },
+      "correct_rate": {
+        "correct": 117,
+        "point": 0.975,
+        "wilson95": [
+          0.9291,
+          0.9915
+        ]
+      },
+      "verdicts": {
+        "CORRECT": 117,
+        "PARTIAL": 3,
+        "INCORRECT": 0
+      },
+      "faithfulness": 0.9777,
+      "groundedness": 0.9743,
+      "completeness": 1.0,
+      "hallucinations": 30,
+      "answers_with_hallucination": 19,
+      "abstained": 21,
+      "abstention_carries_query": 20,
+      "fabricated_mapping": 0
+    }
+  },
+  "coauthorship_gap": {
+    "cascade_dev": 0.9839,
+    "cascade_blind": 0.8367,
+    "gap": 0.1472,
+    "note": "same system, same judge, same night; the catalogue is co-authored with the templates that answer it"
+  },
+  "abstention_proof_rate": {
+    "cascade_dev": {
+      "abstained": 21,
+      "carried": 20
+    },
+    "generic_dev": {
+      "abstained": 20,
+      "carried": 11
+    },
+    "cascade_blind": {
+      "abstained": 3,
+      "carried": 3
+    },
+    "generic_blind": {
+      "abstained": 4,
+      "carried": 2
+    }
+  },
+  "answer_gap": {
+    "cascade": {
+      "n": 30,
+      "retrieval_complete": 30,
+      "total_loss": 0.16333333333333336,
+      "loss_with_complete_retrieval": 0.16333333333333336,
+      "by_reason": {
+        "judge_nuance": {
+          "questions": 14,
+          "loss_share_of_total": 0.0,
+          "ids": [
+            "H-CHN-01",
+            "H-CHN-03",
+            "H-CTM-03",
+            "H-CTM-04",
+            "H-CWE-01",
+            "H-GRP-01",
+            "H-GRP-02",
+            "H-MAP-01",
+            "H-MAP-02",
+            "H-MIT-01",
+            "H-REV-02",
+            "H-REV-03",
+            "H-SW-02",
+            "H-TAC-01"
+          ]
+        },
+        "ungrounded": {
+          "questions": 11,
+          "loss_share_of_total": 0.095,
+          "ids": [
+            "H-CHN-02",
+            "H-DET-01",
+            "H-DET-02",
+            "H-EXE-01",
+            "H-LKP-01",
+            "H-LKP-02",
+            "H-LKP-03",
+            "H-MIT-02",
+            "H-REV-01",
+            "H-SUB-01",
+            "H-SW-01"
+          ]
+        },
+        "under_enumeration": {
+          "questions": 3,
+          "loss_share_of_total": 0.06333333333333332,
+          "ids": [
+            "H-ABS-01",
+            "H-CSQ-01",
+            "H-PRE-01"
+          ]
+        },
+        "wrongful_abstention": {
+          "questions": 2,
+          "loss_share_of_total": 0.005000000000000001,
+          "ids": [
+            "H-CTM-01",
+            "H-CTM-02"
+          ]
+        }
+      }
+    },
+    "generic": {
+      "n": 30,
+      "retrieval_complete": 30,
+      "total_loss": 0.1516666666666667,
+      "loss_with_complete_retrieval": 0.1516666666666667,
+      "by_reason": {
+        "judge_nuance": {
+          "questions": 10,
+          "loss_share_of_total": 0.010000000000000002,
+          "ids": [
+            "H-CHN-01",
+            "H-CHN-03",
+            "H-CTM-03",
+            "H-CWE-01",
+            "H-EXE-01",
+            "H-MAP-01",
+            "H-MAP-02",
+            "H-REV-02",
+            "H-REV-03",
+            "H-TAC-01"
+          ]
+        },
+        "ungrounded": {
+          "questions": 8,
+          "loss_share_of_total": 0.058333333333333334,
+          "ids": [
+            "H-DET-01",
+            "H-DET-02",
+            "H-GRP-02",
+            "H-LKP-01",
+            "H-LKP-02",
+            "H-MIT-02",
+            "H-REV-01",
+            "H-SUB-01"
+          ]
+        },
+        "unfaithful": {
+          "questions": 6,
+          "loss_share_of_total": 0.015000000000000003,
+          "ids": [
+            "H-CTM-04",
+            "H-GRP-01",
+            "H-LKP-03",
+            "H-MIT-01",
+            "H-SW-01",
+            "H-SW-02"
+          ]
+        },
+        "under_enumeration": {
+          "questions": 3,
+          "loss_share_of_total": 0.06166666666666667,
+          "ids": [
+            "H-ABS-01",
+            "H-CSQ-01",
+            "H-PRE-01"
+          ]
+        },
+        "wrongful_abstention": {
+          "questions": 3,
+          "loss_share_of_total": 0.006666666666666669,
+          "ids": [
+            "H-CHN-02",
+            "H-CTM-01",
+            "H-CTM-02"
+          ]
+        }
+      }
+    }
+  },
+  "corrections": [
+    {
+      "phase": "E3",
+      "reason": "H-SW-02 truncated at 8192 and 16384 tokens; re-judged at 32768. n 29 -> 30.",
+      "n_before": 29,
+      "n_after": 30,
+      "correctness_before": 0.85,
+      "correctness_after": 0.8483
+    },
+    {
+      "phase": "E2b",
+      "reason": "judged 60 files: the pass picked up E2a's 30 judgments as answers. Junk quarantined under _contaminated_run3; rolled over the 30 real cases.",
+      "n_before": 60,
+      "n_after": 30,
+      "correctness_before": 0.7583,
+      "correctness_after": 0.84
+    },
+    {
+      "phase": "E5b",
+      "reason": "A-SW-02 truncated at 8192 and 16384 tokens; re-judged at 32768. n 119 -> 120.",
+      "n_before": 119,
+      "n_after": 120,
+      "correctness_before": 0.969,
+      "correctness_after": 0.9692
+    },
+    {
+      "phase": "E7d",
+      "reason": "A-MC-02 and F-CTM-05 truncated at 8192 and 16384 tokens; re-judged at 32768. n 118 -> 120.",
+      "n_before": 118,
+      "n_after": 120,
+      "correctness_before": 0.9849,
+      "correctness_after": 0.9852
+    }
+  ]
+}

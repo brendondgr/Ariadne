@@ -1,0 +1,100 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-08-007
+slug: judged-arm-comparison-gen2
+title: Judged, at last — does the repaired cascade answer better, and do the generic and LLM-loop arms differ from it on anything that matters?
+status: complete          # planned | running | complete | failed | superseded
+date_started: 2026-08-19
+date_completed: 2026-08-19
+authors: ["brendondgr", "Claude Opus 5"]
+
+purpose: >
+  EXP-2026-08-004 through -006 moved blind retrieval 0.7688 → 0.8952 → 1.0000
+  and every one of them closed with the same admission: nothing was judged.
+  Retrieval saturating says the evidence arrived, not that the answer was
+  written. This runs the whole judged chain unattended — a calibrated grader,
+  three arms on both banks, three repeat passes for grader variance, and Arm F
+  regenerated on the post-fix tree — so the arm comparison finally rests on
+  correctness rather than coverage. Bears on C-001, C-003, C-013, C-014, C-017
+  and answers Q2.
+
+hypothesis: >
+  Stated in EXP-2026-08-006 RESULTS §5 before this ran: retrieval is saturated
+  on both banks and can no longer detect anything, so a judged re-run is the
+  only instrument left. No prior hypothesis was recorded for the arm ordering —
+  that half is exploratory.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 9da80faea1ac52a6eb71506283e87696a864e171          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "nohup uv run python scripts/overnight_sweep.py --workers 12"
+  dirty: false            # uncommitted changes at run time? if true, explain in ISSUES.md
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: "golden catalogue (120) + blind holdout v1 (30)"
+  version: "attack 19.0 / capec 3.9"
+  split: "development + blind"
+  n_examples: 150
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: null               # md5:... or sha256:... of the dataset artifact
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "local workstation, CPU only; Neo4j + Gremlin in Docker; LLM relay at localhost:4000, 12 concurrent judge workers"
+  wall_clock_hours: 2.15
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "relay/skynet@qwen38-27B-awq"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 8192
+  prompt_files: ["utils/evaluation/judge_answers.py"]
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0. Rather than
+    report mean ± std over n_runs of the pipeline, this experiment measures
+    grader variance directly: three judge passes over one fixed set of
+    deterministic answers, spread 0.0050. The pipeline itself ran once per arm.
+    The relay's upstream for `skynet` was qwen38-27B-awq on the night of the
+    run; it is hot-swappable and is not pinned.
+
+# --- Results block ---
+metrics:
+  primary: blind_correctness_cascade
+  values:
+    blind_correctness_cascade: {mean: 0.8367, std: null, n: 30}
+    blind_correctness_generic: {mean: 0.8483, std: null, n: 30}
+    blind_correctness_armf: {mean: 0.9157, std: null, n: 30}
+    dev_correctness_cascade: {mean: 0.9839, std: null, n: 120}
+    dev_correctness_generic: {mean: 0.9692, std: null, n: 120}
+    dev_correctness_armf: {mean: 0.9852, std: null, n: 120}
+    repair_paired_delta_blind: {mean: 0.1167, std: null, n: 30}
+    judge_pass_spread: {mean: 0.0050, std: 0.0021, n: 3}
+    judge_calibration_pearson_r: {mean: 0.9275, std: null, n: 30}
+    coauthorship_gap_cascade: {mean: 0.1472, std: null, n: 150}
+  # Correctness is the judge's 0–1 scalar, not the verdict rate. The paired
+  # repair delta is the only figure here that isolates a code change from the
+  # grader; every arm-to-arm figure carries the grader's 0.0050 spread.
+baselines_compared: [EXP-2026-08-002, EXP-2026-08-003, EXP-2026-08-006]
+statistical_test: "paired percentile bootstrap on the repair delta, 2000 resamples, seed 1729 (utils/evaluation/stats.py:bootstrap_ci); 95% CI +0.0333 to +0.2167, excludes zero"
+
+# --- Linkage ---
+supports_claims: [C-001, C-003, C-013, C-014, C-017, C-021]
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null
+superseded_by: null
+related: [EXP-2026-07-006, EXP-2026-07-010, EXP-2026-08-001, EXP-2026-08-004, EXP-2026-08-005]
