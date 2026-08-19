@@ -232,6 +232,26 @@ def write_report(out_dir: Path) -> Path:
         add(f"**`{p['name']}` failed:** `{p.get('error')}`")
         add("")
 
+    # -- 7b. corrections applied after the run ----------------------------
+    corrections = state.get("corrections") or []
+    if corrections:
+        add("## 7b. Figures corrected after the run, and why")
+        add("")
+        add("A roll-up is frozen when its phase ends. Where the data on disk later became "
+            "more complete than the roll recorded, the figure below was **recomputed from the "
+            "judgment files**, never adjusted by hand. Both readings are shown so nothing "
+            "changes silently between the run log and this report.")
+        add("")
+        add("| phase | n before → after | correctness before → after | why |")
+        add("|---|---|---|---|")
+        for c in corrections:
+            cb, ca = c.get("correctness_before"), c.get("correctness_after")
+            cb = f"{cb:.4f}" if isinstance(cb, (int, float)) else "—"
+            ca = f"{ca:.4f}" if isinstance(ca, (int, float)) else "—"
+            add(f"| `{c['phase']}` | {c.get('n_before')} → {c.get('n_after')} | "
+                f"{cb} → {ca} | {c.get('reason')} |")
+        add("")
+
     # -- 8. caveats -------------------------------------------------------
     add("## 8. Caveats that travel with every number above")
     add("")
