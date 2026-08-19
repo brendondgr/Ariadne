@@ -69,7 +69,13 @@ FEDERATED_ABSTENTION = 4
 ATTACK_CATEGORIES: dict[str, str] = {
     "mitigations": "The mitigations listed for a technique",
     "groups": "The techniques a named group uses, or the groups using a technique",
-    "software": "The techniques a piece of software implements",
+    # Direction matters here and it was wrong until 2026-08-19. The anchor in
+    # this stratum is always a Technique and the gold is always the *software*
+    # ids that implement it, but this text asked for the opposite and produced
+    # questions like "What techniques does T1555.005 (Password Managers)
+    # implement?" — unanswerable, and scored against a software gold. `groups`
+    # escaped the same trap only by naming both directions.
+    "software": "The software observed implementing a technique",
     "detection": "How a technique is detected — data components, analytics",
     "tactics": "The tactics a technique belongs to",
     "subtechnique": "The parent/child relationship around a sub-technique",
@@ -245,7 +251,28 @@ def federated_correlation(gold: dict[str, Any], category: str, anchor: str) -> l
 # ---------------------------------------------------------------------------
 
 
-def _feasible(gold: dict[str, Any], population: list[str], category: str) -> list[str]:
+class DrawExhausted(RuntimeError):
+    """No un-drawn anchor remains for a category.
+
+    Reached only when the exclusion set has eaten a category's feasible
+    sub-population. Raised rather than silently returning a short bank, because
+    a bank that is quietly smaller than asked for is a bank whose figures are
+    not comparable to the last one.
+    """
+
+
+#: Safety net on the rejection-sampling loops. Only fires if the exclusion set
+#: has made a category effectively undrawable; at 1x scale with no exclusions
+#: the loops settle in a handful of iterations.
+_MAX_DRAW_ATTEMPTS = 100_000
+
+
+def _feasible(
+    gold: dict[str, Any],
+    population: list[str],
+    category: str,
+    exclude: frozenset[str] = frozenset(),
+) -> list[str]:
     """Anchors for which this category resolves to a non-empty neighbour set.
 
     Category is drawn first and the anchor uniformly *within* the category's
@@ -256,8 +283,15 @@ def _feasible(gold: dict[str, Any], population: list[str], category: str) -> lis
     federated strata are where honest-empty behaviour is measured instead.
     """
     if category == "lookup":
-        return list(population)
-    return [a for a in population if neighbours(gold, category, a)]
+        candidates = list(population)
+    else:
+        candidates = [a for a in population if neighbours(gold, category, a)]
+    # Guarded so that an empty exclusion set is a no-op on the returned list —
+    # `draw(seed=HOLDOUT_SEED)` must stay byte-identical to the committed v1
+    # draw, and that identity is pinned by a test.
+    if not exclude:
+        return candidates
+    return [a for a in candidates if a not in exclude]
 
 
 def _category_allocation(count: int, categories: list[str], rng: random.Random) -> list[str]:
@@ -278,13 +312,25 @@ def _draw_single_source(
     categories: dict[str, str],
     count: int,
     rng: random.Random,
+    exclude: frozenset[str] = frozenset(),
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     drawn: list[dict[str, Any]] = []
     overdraw: list[dict[str, Any]] = []
     used: set[str] = set()
     for category in _category_allocation(count, list(categories), rng):
-        feasible = _feasible(gold, population, category)
+        feasible = _feasible(gold, population, category, exclude)
+        # Checked before the loop so it consumes no randomness: the draw for a
+        # given seed must not depend on whether this guard exists.
+        if not [a for a in feasible if a not in used]:
+            raise DrawExhausted(
+                f"{stratum}/{category}: no un-drawn anchor remains "
+                f"({len(feasible)} feasible, {len(exclude)} excluded)"
+            )
+        attempts = 0
         while True:
+            attempts += 1
+            if attempts > _MAX_DRAW_ATTEMPTS:
+                raise DrawExhausted(f"{stratum}/{category}: rejection sampling did not settle")
             anchor = feasible[rng.randrange(len(feasible))]
             if anchor not in used:
                 break
@@ -307,6 +353,8 @@ def _draw_federated(
     *,
     populations: dict[str, list[str]],
     rng: random.Random,
+    exclude: frozenset[str] = frozenset(),
+    scale: int = 1,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Over-draw and partition, rather than filter (plan §2.4).
 
@@ -321,10 +369,12 @@ def _draw_federated(
         "reverse-mapping": "attack",
         "cwe-chain": "cwe",
     }
+    # Ratios are unchanged by scale — only the absolute targets grow — so the
+    # answerable/abstention balance of a scaled bank matches a 1x one.
     quota = {
         cat: {
-            "answerable": round(FEDERATED_ANSWERABLE * n / STRATA["federated"]),
-            "abstention-expected": round(FEDERATED_ABSTENTION * n / STRATA["federated"]),
+            "answerable": round(FEDERATED_ANSWERABLE * n / STRATA["federated"]) * scale,
+            "abstention-expected": round(FEDERATED_ABSTENTION * n / STRATA["federated"]) * scale,
         }
         for cat, n in FEDERATED_SPLIT.items()
     }
@@ -333,8 +383,21 @@ def _draw_federated(
     used: set[str] = set()
     for category, wanted in quota.items():
         population = populations[source_of[category]]
+        if exclude:
+            population = [a for a in population if a not in exclude]
+            if not population:
+                raise DrawExhausted(
+                    f"federated/{category}: the exclusion set covers the whole population"
+                )
         filled = {"answerable": 0, "abstention-expected": 0}
-        while sum(filled.values()) < FEDERATED_SPLIT[category]:
+        attempts = 0
+        while sum(filled.values()) < FEDERATED_SPLIT[category] * scale:
+            attempts += 1
+            if attempts > _MAX_DRAW_ATTEMPTS:
+                raise DrawExhausted(
+                    f"federated/{category}: could not fill both partitions "
+                    f"({filled}, {len(population)} available)"
+                )
             anchor = population[rng.randrange(len(population))]
             correlate = federated_correlation(gold, category, anchor)
             partition = "answerable" if correlate else "abstention-expected"
@@ -361,9 +424,34 @@ def _draw_federated(
     return drawn, overdraw
 
 
-def draw(gold: dict[str, Any] | None = None, *, seed: int = HOLDOUT_SEED) -> dict[str, Any]:
-    """The full seeded draw. Deterministic: same seed, same bank, same anchors."""
+def draw(
+    gold: dict[str, Any] | None = None,
+    *,
+    seed: int = HOLDOUT_SEED,
+    exclude: set[str] | frozenset[str] | None = None,
+    scale: int = 1,
+) -> dict[str, Any]:
+    """The full seeded draw. Deterministic: same seed, same bank, same anchors.
+
+    ``exclude`` removes anchors from every population before drawing, which is
+    what makes successive banks genuinely disjoint rather than merely differently
+    seeded. A fresh seed alone does *not* guarantee non-overlap, and the effect
+    is not marginal: over 59 reseeds against the v1 draw, **30 (51%) shared at
+    least one anchor**, mean overlap 0.73, max 3. The single-source strata draw
+    from 697 and 558, but categories partition those into far smaller feasible
+    sub-populations and the federated partitions are tighter still. Pass the
+    union of every previously-drawn anchor here to get a genuinely fresh bank.
+
+    ``scale`` multiplies every stratum and both federated partition targets, so
+    ``scale=2`` draws 60 questions in the same proportions.
+
+    Both parameters default to a no-op: ``draw(seed=HOLDOUT_SEED)`` reproduces
+    the committed v1 anchors byte for byte, and a test pins that.
+    """
     gold = gold if gold is not None else load_gold_bank()
+    exclude = frozenset(exclude or ())
+    if scale < 1:
+        raise ValueError(f"scale must be >= 1, got {scale}")
     populations = {
         "attack": attack_population(gold),
         "capec": capec_population(gold),
@@ -373,13 +461,17 @@ def draw(gold: dict[str, Any] | None = None, *, seed: int = HOLDOUT_SEED) -> dic
 
     attack_drawn, attack_over = _draw_single_source(
         gold, stratum="attack", population=populations["attack"],
-        categories=ATTACK_CATEGORIES, count=STRATA["attack"], rng=rng,
+        categories=ATTACK_CATEGORIES, count=STRATA["attack"] * scale, rng=rng,
+        exclude=exclude,
     )
     capec_drawn, capec_over = _draw_single_source(
         gold, stratum="capec", population=populations["capec"],
-        categories=CAPEC_CATEGORIES, count=STRATA["capec"], rng=rng,
+        categories=CAPEC_CATEGORIES, count=STRATA["capec"] * scale, rng=rng,
+        exclude=exclude,
     )
-    fed_drawn, fed_over = _draw_federated(gold, populations=populations, rng=rng)
+    fed_drawn, fed_over = _draw_federated(
+        gold, populations=populations, rng=rng, exclude=exclude, scale=scale,
+    )
 
     anchors = attack_drawn + capec_drawn + fed_drawn
     counts: dict[str, int] = {}
@@ -401,10 +493,12 @@ def draw(gold: dict[str, Any] | None = None, *, seed: int = HOLDOUT_SEED) -> dic
             "capec_version": gold["meta"]["capec_version"],
             "checksums": gold["meta"]["checksums"],
         },
-        "strata": dict(STRATA),
+        "strata": {k: v * scale for k, v in STRATA.items()},
+        "scale": scale,
+        "excluded": {"size": len(exclude), "sha256": _sha256_of(sorted(exclude))},
         "federated_targets": {
-            "answerable": FEDERATED_ANSWERABLE,
-            "abstention-expected": FEDERATED_ABSTENTION,
+            "answerable": FEDERATED_ANSWERABLE * scale,
+            "abstention-expected": FEDERATED_ABSTENTION * scale,
         },
         "populations": {
             name: {"size": len(items), "sha256": _sha256_of(items)}
@@ -748,6 +842,8 @@ def compile_bank(
     anchors: dict[str, Any],
     authored: dict[str, str],
     gold: dict[str, Any] | None = None,
+    *,
+    author_model: str | None = None,
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     """Assemble the holdout bank. Returns ``(bank, discards)``.
 
@@ -779,7 +875,12 @@ def compile_bank(
             "generator": "utils/specialists/evalset/holdout_protocol.py",
             "split": "holdout",
             "seed": anchors["seed"],
-            "author_model": AUTHOR_MODEL,
+            # Defaults to v1's hand-driven author so recompiling the committed
+            # bank is unchanged; a generated bank passes its own model through,
+            # because "who wrote these questions" is provenance, not decoration.
+            "author_model": author_model or AUTHOR_MODEL,
+            "scale": anchors.get("scale", 1),
+            "excluded_anchors": (anchors.get("excluded") or {}).get("size", 0),
         },
         "questions": questions,
     }

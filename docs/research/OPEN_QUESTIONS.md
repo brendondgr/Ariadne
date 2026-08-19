@@ -234,6 +234,40 @@ varied than a human's. It is a regression and comparison instrument. A published
 headline figure still wants human-authored questions.
 
 
+### Q17 — How much of the blind holdout's `software` failure was the question, not the system?
+
+**Why it matters:** EXP-2026-08-002 reports the blind holdout at **0.06 on
+`software`** and 0.00 on `groups`, and that pair is the evidence behind the
+"reverse-direction asks the templates do not serve" reading in C-014. The
+`software` half of that is now partly confounded.
+
+The Author's category description for `software` was
+*"The techniques a piece of software implements"* — written from the software's
+point of view. But the anchor in that stratum is always a **Technique**, and the
+gold is always the **software ids** that implement it. The description asked for
+the opposite of what was scored. One of v1's two software questions came back
+accordingly malformed — *"What techniques does T1555.005 (Password Managers)
+implement?"* — which asks for techniques, names a technique as though it were
+software, and was then graded against a list of software ids. It is not a
+question the system could have answered correctly.
+
+`groups` avoided the trap only by accident: its description names both
+directions (*"…or the groups using a technique"*), so the Author could pick the
+right one. Every other category description matches its gold direction; this was
+the only one that did not.
+
+**What resolves it:** the description is corrected as of 2026-08-19, so any bank
+generated from here on is unaffected. For v1, re-read the two `H-SW-*` questions
+and their judgments and determine how much of the 0.06 is a malformed question
+rather than a retrieval failure. n = 2, so this cannot move much on its own —
+but it bears directly on whether the `software` category belongs in the
+evidence for the directional-cliff claim at all.
+
+**Cost:** ~1 hour, no new runs — the questions and judgments are on disk.
+**Blocks:** the `software` half of C-014's supporting evidence.
+**From:** EXP-2026-08-007 follow-up work; found while automating the Author.
+
+
 ## Known weaknesses to state in the paper, not resolve
 
 These are limitations to disclose, not questions to answer.
