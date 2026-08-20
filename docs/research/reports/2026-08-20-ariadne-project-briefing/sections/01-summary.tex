@@ -1,0 +1,29 @@
+\section{Summary}
+
+\begin{rrsummary}
+Ariadne answers security-analyst questions in English by querying two graph
+databases in their own query languages. Nineteen recorded experiments asked one
+underlying question: are its hand-written query templates worth their cost?
+
+\textbf{One result held up.} Templates beat letting a language model write the
+database query. On two question sets that share no entity, the template cascade
+scored 0.9467 and 0.9417. An arm in which the model writes the Cypher or Gremlin
+itself scored 0.5000 and 0.4183 (Fig.~\ref{fig:two-banks}, $n = 30$ per cell).
+Quadrupling that arm's token budget moved it to 0.5367.
+
+\textbf{Most other headline numbers did not hold up.} The near-perfect 0.9972 on
+the 120-question development catalogue fell to 0.689 on 30 questions written
+without sight of the code. Two software defects and one flaw in the question set
+account for the fall. Repaired, those same 30 questions score 0.9350
+(Fig.~\ref{fig:six-numbers}).
+
+\textbf{The claim that templates hold the accuracy failed outright.} An arm with
+every template disabled scored level with or above the cascade on all three
+question sets. What separates the two is refusal quality: the cascade shows the
+query behind a refusal on 20 of 21 catalogue refusals, against 11 of 20
+(Table~\ref{tab:abstention}).
+
+\textbf{Read the caveats.} No result here is measured against a system outside
+this repository. The merged-graph comparison, which the funding pitch rests on,
+has never been built.
+\end{rrsummary}

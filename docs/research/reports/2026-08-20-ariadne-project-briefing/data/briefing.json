@@ -1,0 +1,436 @@
+{
+  "generated_by": "docs/research/reports/2026-08-20-ariadne-project-briefing/data/collect.py",
+  "seven_arm_catalogue": {
+    "A": {
+      "experiment": "EXP-2026-07-001",
+      "label": "Deterministic",
+      "n": 120,
+      "correctness": 0.99725,
+      "faithfulness": 0.999333,
+      "hallucination_cases": 0,
+      "wall_clock_seconds": 1.6
+    },
+    "B": {
+      "experiment": "EXP-2026-07-002",
+      "label": "LLM planner",
+      "n": 120,
+      "correctness": 0.8505,
+      "faithfulness": 0.968333,
+      "hallucination_cases": 8,
+      "wall_clock_seconds": 1019.7
+    },
+    "C": {
+      "experiment": "EXP-2026-07-003",
+      "label": "Writer on evidence",
+      "n": 120,
+      "correctness": 0.969,
+      "faithfulness": 0.992083,
+      "hallucination_cases": 3,
+      "wall_clock_seconds": 583.8
+    },
+    "D": {
+      "experiment": "EXP-2026-07-004",
+      "label": "Writer on claims",
+      "n": 120,
+      "correctness": 0.991667,
+      "faithfulness": 0.993583,
+      "hallucination_cases": 1,
+      "wall_clock_seconds": 501.0
+    },
+    "E": {
+      "experiment": "EXP-2026-07-005",
+      "label": "LLM planner + loop",
+      "n": 120,
+      "correctness": 0.856,
+      "faithfulness": 0.9575,
+      "hallucination_cases": 9,
+      "wall_clock_seconds": 1043.1
+    },
+    "F": {
+      "experiment": "EXP-2026-07-006",
+      "label": "Authored plan + loop + writer",
+      "n": 120,
+      "correctness": 0.995667,
+      "faithfulness": 0.996,
+      "hallucination_cases": 3,
+      "wall_clock_seconds": 533.4
+    },
+    "G": {
+      "experiment": "EXP-2026-07-007",
+      "label": "Templates disabled",
+      "n": 120,
+      "correctness": 0.638833,
+      "faithfulness": 0.965833,
+      "hallucination_cases": 7,
+      "wall_clock_seconds": 914.8
+    }
+  },
+  "blind_holdout_v1": {
+    "arm_a_catalogue": 0.99725,
+    "arm_f_catalogue": 0.995667,
+    "arm_a_blind": 0.6890000000000001,
+    "arm_f_blind": 0.7083333333333334,
+    "n": 30
+  },
+  "retrieval_repair": {
+    "cascade_original": 0.7687675070028012,
+    "after_binding_and_direction": 0.8952380952380953,
+    "after_outer_join": 1.0,
+    "catalogue_before": 1.0,
+    "catalogue_after": 1.0,
+    "catalogue_regressed": 0,
+    "n_blind": 30,
+    "n_catalogue": 120
+  },
+  "judged_gen2": {
+    "judge_model": "relay/skynet@qwen38-27B-awq",
+    "calibration_pearson_r": 0.9275,
+    "calibration_mean_delta": 0.031,
+    "grader_spread": 0.005,
+    "grader_passes": {
+      "E1": 0.8367,
+      "E2a": 0.8417,
+      "E2b": 0.84
+    },
+    "repair_delta": 0.1167,
+    "repair_before": 0.72,
+    "repair_after": 0.8367,
+    "arms": {
+      "cascade_blind": {
+        "n": 30,
+        "correctness": 0.8367,
+        "abstained": 3,
+        "abstention_carries_query": 3,
+        "answers_with_hallucination": 0
+      },
+      "generic_blind": {
+        "n": 30,
+        "correctness": 0.8483,
+        "abstained": 4,
+        "abstention_carries_query": 2,
+        "answers_with_hallucination": 1
+      },
+      "cascade_dev": {
+        "n": 120,
+        "correctness": 0.9839,
+        "abstained": 21,
+        "abstention_carries_query": 20,
+        "answers_with_hallucination": 3
+      },
+      "generic_dev": {
+        "n": 120,
+        "correctness": 0.9692,
+        "abstained": 20,
+        "abstention_carries_query": 11,
+        "answers_with_hallucination": 9
+      },
+      "armf_blind": {
+        "n": 30,
+        "correctness": 0.9157,
+        "abstained": 4,
+        "abstention_carries_query": 4,
+        "answers_with_hallucination": 4
+      },
+      "armf_dev": {
+        "n": 120,
+        "correctness": 0.9852,
+        "abstained": 21,
+        "abstention_carries_query": 20,
+        "answers_with_hallucination": 19
+      }
+    },
+    "coauthorship_gap": 0.1472
+  },
+  "generated_bank_1": {
+    "composer_fix": {
+      "n": 30,
+      "before_mean": 0.8367,
+      "after_mean": 0.935,
+      "delta": 0.0983,
+      "ci95": [
+        0.025,
+        0.18
+      ],
+      "improved": 10,
+      "regressed": 2,
+      "unchanged": 18,
+      "moved": [
+        {
+          "case": "H-EXE-01",
+          "before": 1.0,
+          "after": 0.7,
+          "delta": -0.3
+        },
+        {
+          "case": "H-SUB-01",
+          "before": 0.9,
+          "after": 0.85,
+          "delta": -0.05
+        },
+        {
+          "case": "H-CHN-02",
+          "before": 0.9,
+          "after": 0.95,
+          "delta": 0.05
+        },
+        {
+          "case": "H-CTM-01",
+          "before": 0.95,
+          "after": 1.0,
+          "delta": 0.05
+        },
+        {
+          "case": "H-SW-01",
+          "before": 0.9,
+          "after": 0.95,
+          "delta": 0.05
+        },
+        {
+          "case": "H-CTM-02",
+          "before": 0.9,
+          "after": 1.0,
+          "delta": 0.1
+        },
+        {
+          "case": "H-CSQ-01",
+          "before": 0.5,
+          "after": 0.95,
+          "delta": 0.45
+        },
+        {
+          "case": "H-LKP-03",
+          "before": 0.5,
+          "after": 0.95,
+          "delta": 0.45
+        },
+        {
+          "case": "H-LKP-01",
+          "before": 0.5,
+          "after": 1.0,
+          "delta": 0.5
+        },
+        {
+          "case": "H-LKP-02",
+          "before": 0.5,
+          "after": 1.0,
+          "delta": 0.5
+        },
+        {
+          "case": "H-ABS-01",
+          "before": 0.35,
+          "after": 0.9,
+          "delta": 0.55
+        },
+        {
+          "case": "H-PRE-01",
+          "before": 0.25,
+          "after": 0.85,
+          "delta": 0.6
+        }
+      ]
+    },
+    "arms": {
+      "deterministic": {
+        "n": 30,
+        "correctness": 0.9467,
+        "ci95": [
+          0.915,
+          0.9717
+        ],
+        "correct": 29,
+        "answers_with_hallucination": 0,
+        "abstained": 4,
+        "abstention_carries_query": 4
+      },
+      "generic": {
+        "n": 30,
+        "correctness": 0.97,
+        "ci95": [
+          0.94,
+          0.9917
+        ],
+        "correct": 29,
+        "answers_with_hallucination": 2,
+        "abstained": 4,
+        "abstention_carries_query": 4
+      },
+      "gold_loop_llm": {
+        "n": 30,
+        "correctness": 0.9773,
+        "ci95": [
+          0.962,
+          0.99
+        ],
+        "correct": 30,
+        "answers_with_hallucination": 0,
+        "abstained": 4,
+        "abstention_carries_query": 4
+      },
+      "llm_query": {
+        "n": 30,
+        "correctness": 0.5,
+        "ci95": [
+          0.415,
+          0.585
+        ],
+        "correct": 11,
+        "answers_with_hallucination": 5,
+        "abstained": 20,
+        "abstention_carries_query": 18
+      }
+    },
+    "llm_query_split": {
+      "answered": 19,
+      "gate_rejected": 3,
+      "execution_failed": 1,
+      "reader_could_not_parse": 7,
+      "no_result": 0
+    },
+    "llm_query_excluding_reader_failures": 0.5739,
+    "catalogue_after_fix": {
+      "n": 119,
+      "correctness": 0.9833,
+      "abstained": 21,
+      "abstention_carries_query": 20,
+      "answers_with_hallucination": 2
+    },
+    "coauthorship_gap_before_fix": 0.1472,
+    "coauthorship_gap_after_fix_same_questions": 0.0483,
+    "coauthorship_gap_after_fix_fresh_bank": 0.0366
+  },
+  "generated_bank_2": {
+    "bank2_questions": 30,
+    "bank2_overlap_with_prior_banks": 0,
+    "arms": {
+      "deterministic": {
+        "n": 30,
+        "correctness": 0.9417,
+        "ci95": [
+          0.885,
+          0.98
+        ],
+        "correct": 28,
+        "answers_with_hallucination": 0,
+        "abstained": 5,
+        "abstention_carries_query": 5
+      },
+      "generic": {
+        "n": 30,
+        "correctness": 0.975,
+        "ci95": [
+          0.955,
+          0.99
+        ],
+        "correct": 29,
+        "answers_with_hallucination": 0,
+        "abstained": 4,
+        "abstention_carries_query": 4
+      },
+      "gold_loop_llm": {
+        "n": 29,
+        "correctness": 0.9645,
+        "ci95": [
+          0.9317,
+          0.9879
+        ],
+        "correct": 28,
+        "answers_with_hallucination": 1,
+        "abstained": 5,
+        "abstention_carries_query": 5
+      },
+      "llm_query": {
+        "n": 30,
+        "correctness": 0.4183,
+        "ci95": [
+          0.3367,
+          0.5017
+        ],
+        "correct": 8,
+        "answers_with_hallucination": 3,
+        "abstained": 19,
+        "abstention_carries_query": 16
+      }
+    },
+    "llm_query_split": {
+      "answered": 16,
+      "gate_rejected": 5,
+      "execution_failed": 1,
+      "reader_could_not_parse": 8,
+      "no_result": 0
+    },
+    "llm_query_funded": 0.5367,
+    "llm_query_funded_split": {
+      "answered": 20,
+      "gate_rejected": 5,
+      "execution_failed": 0,
+      "reader_could_not_parse": 5,
+      "no_result": 0
+    },
+    "self_variance": {
+      "deterministic": [
+        {
+          "root": "repeat-deterministic-r2",
+          "n": 30,
+          "identical": 30
+        },
+        {
+          "root": "repeat-deterministic-r3",
+          "n": 30,
+          "identical": 30
+        }
+      ],
+      "gold_loop_llm": [
+        {
+          "root": "repeat-gold_loop_llm-r2",
+          "n": 30,
+          "identical": 6
+        },
+        {
+          "root": "repeat-gold_loop_llm-r3",
+          "n": 30,
+          "identical": 3
+        }
+      ]
+    },
+    "cross_grader": {
+      "deterministic": {
+        "n": 30,
+        "home_mean": 0.9467,
+        "cross_mean": 0.9833,
+        "offset": -0.0367,
+        "pearson_r": -0.0077
+      },
+      "generic": {
+        "n": 29,
+        "home_mean": 0.969,
+        "cross_mean": 0.9828,
+        "offset": -0.0138,
+        "pearson_r": 0.1717
+      },
+      "gold_loop_llm": {
+        "n": 30,
+        "home_mean": 0.9773,
+        "cross_mean": 0.9833,
+        "offset": -0.006,
+        "pearson_r": 0.3668
+      },
+      "llm_query": {
+        "n": 27,
+        "home_mean": 0.5241,
+        "cross_mean": 0.7407,
+        "offset": -0.2167,
+        "pearson_r": 0.6717
+      }
+    },
+    "merged_store": null,
+    "narrator_self_variance": {
+      "runs": [
+        0.949,
+        0.975,
+        0.9773
+      ],
+      "spread": 0.0283,
+      "source": "docs/evaluation/night2-2026-08-20/repeat_spread.json plus the graded bank-1 run in EXP-2026-08-008"
+    }
+  }
+}

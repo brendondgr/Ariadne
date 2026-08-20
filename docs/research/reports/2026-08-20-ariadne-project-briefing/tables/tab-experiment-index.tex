@@ -1,0 +1,25 @@
+\begin{tabular}{@{}L{0.15\textwidth}L{0.37\textwidth}L{0.13\textwidth}L{0.25\textwidth}@{}}
+\toprule
+ID & Title & Status & Primary metric \\
+\midrule
+EXP-2026-07-001 & Arm A --- fully deterministic pipeline (planning, extraction, synthesis) & complete & correctness 0.9972 (n=1) \\
+EXP-2026-07-002 & Arm B --- LLM planning with deterministic extraction and an LLM writer & complete & correctness 0.8505 (n=1) \\
+EXP-2026-07-003 & Arm C --- authored plan with an LLM writer reading raw evidence & complete & correctness 0.9690 (n=1) \\
+EXP-2026-07-004 & Arm D --- authored plan with an LLM writer reading verified claims & complete & correctness 0.9917 (n=1) \\
+EXP-2026-07-005 & Arm E --- LLM planning with the facet-chasing retrieval loop enabled & complete & correctness 0.8560 (n=1) \\
+EXP-2026-07-006 & Arm F --- authored plan, facet-chasing loop, LLM writer over verified claims & complete & correctness 0.9957 (n=1) \\
+EXP-2026-07-007 & Arm G --- generic primitives only, every hand-written template disabled & complete & correctness 0.6388 (n=1) \\
+EXP-2026-07-008 & Component-level evaluation of the planner and both query specialists & complete & planner\_\allowbreak source\_\allowbreak recall 1.0000 (n=1) \\
+EXP-2026-07-009 & End-to-end evaluation against the four goals.md pipeline metrics & complete & cross\_\allowbreak source\_\allowbreak answer\_\allowbreak accuracy 1.0000 (n=1) \\
+EXP-2026-07-011 & Portability audit --- what survives a dataset that is not MITRE & complete & --- \\
+EXP-2026-08-001 & Is Arm G's gap a capability gap in the schema-driven layer, or domain knowledge? & complete & gold\_\allowbreak in\_\allowbreak evidence 1.0000 (n=1) \\
+EXP-2026-08-002 & Does the deterministic pipeline's near-ceiling correctness survive a blind, uniformly-sampled holdout? & complete & correctness (not recorded) \\
+EXP-2026-08-003 & Do the schema-driven primitives generalise to questions nobody wrote templates for? & complete & gold\_\allowbreak in\_\allowbreak evidence 0.8952 (n=1) \\
+EXP-2026-08-004 & Does making the cross-source bridge an outer join close the residual blind-set gap without regressing? & complete & blind\_\allowbreak gold\_\allowbreak in\_\allowbreak evidence 1.0000 (n=1) \\
+EXP-2026-08-005 & Is the blind holdout's directional loss a property of these templates, or of a missing schema-driven check? & complete & blind\_\allowbreak gold\_\allowbreak in\_\allowbreak evidence 0.8952 (n=1) \\
+EXP-2026-08-006 & Does the outer-join bridge close the residual blind gap in the default cascade without regressing it? & complete & blind\_\allowbreak gold\_\allowbreak in\_\allowbreak evidence 1.0000 (n=1) \\
+EXP-2026-08-007 & Judged, at last --- does the repaired cascade answer better, and do the generic and LLM-loop arms differ from it on anything that matters? & complete & blind\_\allowbreak correctness\_\allowbreak cascade 0.8367 (n=30) \\
+EXP-2026-08-008 & Do the answer-writing fixes help, how do four arms compare on unseen questions, and does an LLM writing its own queries beat templates? & complete & llm\_\allowbreak query\_\allowbreak vs\_\allowbreak templates\_\allowbreak fresh\_\allowbreak bank (not recorded) \\
+EXP-2026-07-010 & First independent cross-model grading pass (the pre-fix committed baseline) & superseded $\rightarrow$ EXP-2026-07-001 & correctness 0.8946 (n=1) \\
+\bottomrule
+\end{tabular}

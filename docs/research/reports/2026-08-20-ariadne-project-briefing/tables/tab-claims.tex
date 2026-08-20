@@ -1,0 +1,24 @@
+\begin{tabular}{@{}L{0.08\textwidth}L{0.62\textwidth}L{0.18\textwidth}@{}}
+\toprule
+ID & Claim & Status \\
+\midrule
+C-001 & On an anchored, in-distribution question set, a fully deterministic pipeline --- template routing, deterministic extraction, deterministic\,\ldots & partial \\
+C-002 & Substituting LLM query planning for an authored plan is the dominant single source of correctness loss in the pipeline, with extraction and synthesis\,\ldots & partial \\
+C-003 & The hand-written query templates, not the planner, are where the system's accuracy lives: disabling them costs roughly three times what substituting\,\ldots & supported \\
+C-004 & The deterministic path is not merely competitive with the LLM-planned path but orders of magnitude cheaper: the full 120-question catalogue completes\,\ldots & supported \\
+C-005 & Binding an LLM narrator to the \emph{verified claim set} rather than to raw retrieved evidence removes the accuracy-versus-readability trade-off. & supported \\
+C-006 & The value of an iterative retrieval loop is a function of plan quality: it compensates for weak planning at substantial cost and does not substitute\,\ldots & supported \\
+C-007 & Constructing queries by filling validated read-only templates places query validity and safety adherence at a ceiling by construction, rather than\,\ldots & supported \\
+C-008 & A deterministic safety gate over templated queries blocks adversarial probes without leakage. & partial \\
+C-009 & Self-judged evaluation materially overstates answer quality relative to independent cross-model judging, which is why the primary evaluation must be\,\ldots & supported \\
+C-010 & The system's dataset-specific surface is bounded and countable rather than pervasive: the schema-agnostic machinery transfers, and re-authoring cost\,\ldots & supported \\
+C-012 & Routing to a fixed library of validated parameterised templates outperforms letting an LLM plan and generate the queries, in correctness and in cost. & supported \\
+C-017 & Claim-level verification with enforced abstention carrying executed-query proof eliminates unsupported claims without reducing answer coverage. & partial \\
+C-021 & Evaluating a graph-question-answering system on questions co-authored with the code that answers them overstates its correctness by a measurable and\,\ldots & supported \\
+C-011 & Federated question answering across cybersecurity knowledge graphs held in \emph{separate engines with different query languages} is a contribution\,\ldots & unsupported \\
+C-013 & The near-ceiling correctness of the deterministic path is a genuine capability rather than an artifact of a question set co-authored with the\,\ldots & refuted \\
+C-014 & The coverage cliff of template routing is measurable: the design's \emph{price} on open-ended, non-anchored questions is bounded and reportable, not\,\ldots & partial \\
+C-015 & Federating across two engines outperforms merging both sources into a single graph and querying that. & unsupported \\
+C-016 & Mechanically localising the last pipeline stage at which the gold answer was still recoverable contradicts the assumption that LLM pipeline failures\,\ldots & partial \\
+\bottomrule
+\end{tabular}

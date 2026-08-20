@@ -1,0 +1,77 @@
+\section{Every experiment on record}
+
+Table~\ref{tab:experiment-index} is parsed from the research record's own
+generated index, which is rebuilt from the experiment manifests by
+\pathname{make index}. Nothing in it is retyped.
+
+\begin{table}[htbp]
+\caption{The nineteen experiments this report draws on. A superseded entry is
+kept deliberately, so that a dead end is walked into once rather than twice.
+Produced by \pathname{tables/make_tables.py}.}
+\label{tab:experiment-index}
+\centering\scriptsize
+\input{tables/tab-experiment-index}
+\end{table}
+
+\section{The claims ledger as it stands today}
+
+Table~\ref{tab:claims} is parsed from \pathname{docs/research/CLAIMS.md}. Claim
+text is truncated; the ledger carries the full wording and the evidence trail.
+
+\begin{table}[htbp]
+\caption{Claim status at 2026-08-20, straight from the ledger. Produced by
+\pathname{tables/make_tables.py}.}
+\label{tab:claims}
+\centering\scriptsize
+\input{tables/tab-claims}
+\end{table}
+
+Two rows in that table disagree with their own notes and should be reconciled
+before anything is written from it.
+
+C-003 reads \texttt{supported} while its notes record that the no-templates arm
+judged level with the cascade and that the claim needs rewriting. On the
+evidence in \S4.4 the status is at best \texttt{partial}.
+
+C-012 reads \texttt{supported} on correctness. Its wording also claims a cost
+advantage, and no cost figure was taken in the run that supports it.
+
+\section{Reproducing the numbers in this report}
+
+One script extracts every value in the figures and tables from the experiments
+into one file. The figure and table generators read only that file:
+
+\begin{quote}\small\ttfamily
+python3 data/collect.py \\
+python3 figures/make\_figures.py \\
+python3 tables/make\_tables.py
+\end{quote}
+
+\pathname{data/collect.py} raises rather than defaulting when a key is absent,
+so a figure cannot be built from a metric that has gone missing. It reads each
+experiment's \pathname{data/metrics.json} and the second night's
+\pathname{docs/evaluation/night2-2026-08-20/metrics.json}.
+
+Raw run artifacts are not in the research record. They live under
+\pathname{docs/evaluation/}, and each experiment carries a directory hash in its
+\pathname{data/POINTERS.md} that folds every file's path and content digest in
+sorted order.
+
+\section{Known problems with this report}
+
+\begin{description}
+  \item[The second night is not yet an experiment.] Section 4.6, 4.7, the second
+    generated question set and the token-budget re-run come from a sweep output
+    directory rather than from a scaffolded experiment. By this project's own
+    rules those numbers do not yet count. This report quotes them anyway,
+    labelled, on the grounds that a briefing that omitted them would be less
+    honest than one that flags them.
+  \item[Two graders are mixed across the record.] Table~\ref{tab:seven-arm} and
+    the first blind measurement come from a Sonnet~5 panel. Everything from
+    2026-08-19 onward comes from a locally served grader calibrated against it.
+    Figure~\ref{fig:six-numbers} uses the local grader throughout for that
+    reason, which is why its first blind bar reads 0.7200 rather than the
+    Sonnet panel's 0.689.
+  \item[Status.] \textbf{Draft.} No second person has worked through the
+    checklist. Reviewer and date: none.
+\end{description}

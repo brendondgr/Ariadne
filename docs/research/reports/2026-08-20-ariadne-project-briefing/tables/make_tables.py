@@ -1,0 +1,164 @@
+#!/usr/bin/env python3
+"""Build every numeric table in the report from ``data/briefing.json``.
+
+Same rule as the figures: no value is typed here. Each table is a booktabs
+fragment that the report ``\\input``s, so editing a number in a table is
+impossible without editing the experiment it came from.
+
+    python3 tables/make_tables.py
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+D = json.loads((HERE.parent / "data" / "briefing.json").read_text())
+
+
+def write(name: str, lines: list[str]) -> None:
+    (HERE / name).write_text("\n".join(lines) + "\n")
+    print(f"wrote tables/{name}")
+
+
+# -- the seven-arm study on the development catalogue ------------------------
+rows = []
+for letter in "ABCDEFG":
+    a = D["seven_arm_catalogue"][letter]
+    rows.append(
+        f'{letter} & {a["label"]} & {a["correctness"]:.4f} & '
+        f'{a["hallucination_cases"]} & {a["wall_clock_seconds"]:,.1f} \\\\')
+write("tab-seven-arm.tex", [
+    r"\begin{tabular}{@{}cL{0.36\textwidth}R{0.14\textwidth}R{0.13\textwidth}R{0.13\textwidth}@{}}",
+    r"\toprule",
+    r"Arm & Configuration & Correctness & Answers with a fabrication & Wall clock (s) \\",
+    r"\midrule", *rows, r"\bottomrule", r"\end{tabular}",
+])
+
+# -- abstention that carries the executed query ------------------------------
+g2, b1, b2 = D["judged_gen2"], D["generated_bank_1"], D["generated_bank_2"]
+LABEL = {"deterministic": "Templates", "generic": "No templates",
+         "gold_loop_llm": "LLM writes the prose",
+         "llm_query": "LLM writes the query"}
+
+
+def cell(v: dict) -> str:
+    a, c = v["abstained"], v["abstention_carries_query"]
+    return f"{c} of {a} & {c / a:.0%}".replace("%", r"\%") if a else "-- & --"
+
+
+abst = [
+    f'Co-authored catalogue & Templates & {cell(g2["arms"]["cascade_dev"])} \\\\',
+    f'Co-authored catalogue & No templates & {cell(g2["arms"]["generic_dev"])} \\\\',
+    f'Blind holdout v1 & Templates & {cell(g2["arms"]["cascade_blind"])} \\\\',
+    f'Blind holdout v1 & No templates & {cell(g2["arms"]["generic_blind"])} \\\\',
+]
+for label, bank in (("Generated set 1", b1), ("Generated set 2", b2)):
+    for key in ("deterministic", "generic", "gold_loop_llm", "llm_query"):
+        abst.append(f'{label} & {LABEL[key]} & {cell(bank["arms"][key])} \\\\')
+write("tab-abstention.tex", [
+    r"\begin{tabular}{@{}L{0.28\textwidth}L{0.26\textwidth}R{0.16\textwidth}R{0.10\textwidth}@{}}",
+    r"\toprule",
+    r"Question set & Configuration & Refusals with proof & Rate \\",
+    r"\midrule", *abst, r"\bottomrule", r"\end{tabular}",
+])
+
+# -- where the query-writing arm's questions ended up ------------------------
+ORDER = [("answered", "Query ran and produced usable evidence"),
+         ("reader_could_not_parse", "Query ran; our evidence reader could not parse it"),
+         ("gate_rejected", "Safety gate refused every attempt"),
+         ("execution_failed", "Database refused the query"),
+         ("no_result", "No result recorded")]
+cols = [b1["llm_query_split"], b2["llm_query_split"], b2["llm_query_funded_split"]]
+split = [f'{label} & ' + " & ".join(str(c.get(key, 0)) for c in cols) + r" \\"
+         for key, label in ORDER]
+write("tab-llm-query-split.tex", [
+    r"\begin{tabular}{@{}L{0.48\textwidth}R{0.13\textwidth}R{0.13\textwidth}R{0.16\textwidth}@{}}",
+    r"\toprule",
+    r"Outcome & Set 1 & Set 2 & Set 2, 4$\times$ budget \\",
+    r"\midrule", *split, r"\bottomrule", r"\end{tabular}",
+])
+
+# -- the second grader over the same saved answers ---------------------------
+def signed(x: float, places: int) -> str:
+    """A signed number in math mode, so a negative renders as a minus sign."""
+    return f'${x:+.{places}f}$'.replace("+", r"+").replace("-", r"-")
+
+
+cross = [f'{LABEL[k]} & {v["n"]} & {v["home_mean"]:.4f} & {v["cross_mean"]:.4f} & '
+         f'{signed(v["offset"], 4)} & {signed(v["pearson_r"], 2)} \\\\'
+         for k, v in b2["cross_grader"].items()]
+write("tab-cross-grader.tex", [
+    r"\begin{tabular}{@{}L{0.26\textwidth}R{0.05\textwidth}R{0.14\textwidth}R{0.15\textwidth}R{0.11\textwidth}R{0.08\textwidth}@{}}",
+    r"\toprule",
+    r"Configuration & $n$ & Our grader & Second grader & Offset & $r$ \\",
+    r"\midrule", *cross, r"\bottomrule", r"\end{tabular}",
+])
+
+# -- does a configuration answer the same way twice? -------------------------
+rep = []
+for arm, runs in b2["self_variance"].items():
+    for r in runs:
+        rep.append(f'{LABEL[arm]} & \\pathname{{{r["root"]}}} & '
+                   f'{r["identical"]} of {r["n"]} \\\\')
+write("tab-repeats.tex", [
+    r"\begin{tabular}{@{}L{0.24\textwidth}L{0.34\textwidth}R{0.28\textwidth}@{}}",
+    r"\toprule",
+    r"Configuration & Repeat run & Answers identical to run~1 \\",
+    r"\midrule", *rep, r"\bottomrule", r"\end{tabular}",
+])
+
+# -- the research record's own index, and the claims ledger's statuses -------
+# Both are parsed rather than retyped. INDEX.md is regenerated by `make index`
+# from the manifests, and CLAIMS.md is the ledger the paper is built from, so
+# an appendix built from them cannot fall out of date silently.
+import re
+
+RESEARCH = HERE.parents[2]
+
+
+def cells(line: str) -> list[str]:
+    return [c.strip() for c in line.strip().strip("|").split("|")]
+
+
+def tex(s: str) -> str:
+    s = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", s)      # markdown links
+    s = re.sub(r"`([^`]*)`", r"\1", s)                   # inline code
+    s = re.sub(r"\*\*([^*]*)\*\*", r"\1", s)             # bold
+    s = re.sub(r"\*([^*]+)\*", r"\\emph{\1}", s)           # italic
+    for a, b in (("&", r"\&"), ("%", r"\%"), ("_", r"\_"), ("#", r"\#"),
+                 ("→", r"$\rightarrow$"), ("—", "---"), ("–", "--")):
+        s = s.replace(a, b)
+    return s
+
+
+index_rows = []
+for line in (RESEARCH / "INDEX.md").read_text().splitlines():
+    if not line.startswith("| `EXP-"):
+        continue
+    c = cells(line)
+    metric = tex(c[4]).replace(r"\_", r"\_\allowbreak ")
+    index_rows.append(f"{tex(c[0])} & {tex(c[2])} & {tex(c[3])} & {metric} \\\\")
+write("tab-experiment-index.tex", [
+    r"\begin{tabular}{@{}L{0.15\textwidth}L{0.37\textwidth}L{0.13\textwidth}L{0.25\textwidth}@{}}",
+    r"\toprule", r"ID & Title & Status & Primary metric \\", r"\midrule",
+    *index_rows, r"\bottomrule", r"\end{tabular}",
+])
+
+claim_rows = []
+for line in (RESEARCH / "CLAIMS.md").read_text().splitlines():
+    m = re.match(r"\| (C-\d+) \| (.+?) \|", line)
+    if not m:
+        continue
+    c = cells(line)
+    if len(c) < 5:
+        continue
+    claim = tex(c[1])
+    claim = claim[:150].rsplit(" ", 1)[0] + "\\,\\ldots" if len(claim) > 150 else claim
+    claim_rows.append(f"{c[0]} & {claim} & {tex(c[4])} \\\\")
+write("tab-claims.tex", [
+    r"\begin{tabular}{@{}L{0.08\textwidth}L{0.62\textwidth}L{0.18\textwidth}@{}}",
+    r"\toprule", r"ID & Claim & Status \\", r"\midrule",
+    *claim_rows, r"\bottomrule", r"\end{tabular}",
+])

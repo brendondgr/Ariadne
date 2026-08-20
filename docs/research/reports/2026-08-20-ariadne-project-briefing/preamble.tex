@@ -1,0 +1,162 @@
+% ============================================================
+%  research-report — shared preamble
+%  Compile with pdflatex (portable) or lualatex/xelatex.
+%  Only packages present in a minimal TeX Live install are
+%  required; optional upgrades are guarded with \IfFileExists.
+% ============================================================
+
+% ---- page geometry -----------------------------------------
+\usepackage[letterpaper,margin=1.15in,footskip=0.5in]{geometry}
+% Text width is ~5.5in — figures are built at that width.
+
+% ---- encoding and fonts ------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\IfFileExists{charter.sty}{\usepackage{charter}}{}   % readable serif body
+\IfFileExists{newtxmath.sty}{\usepackage[charter]{newtxmath}}{}
+\usepackage[scaled=0.86]{helvet}                     % sans for headings
+\usepackage{microtype}
+
+% ---- colour ------------------------------------------------
+\usepackage[dvipsnames]{xcolor}
+\definecolor{rrInk}    {HTML}{1A1A1A}   % body text
+\definecolor{rrMuted}  {HTML}{5A5F66}   % metadata, captions
+\definecolor{rrAccent} {HTML}{0F4C81}   % headings, links
+\definecolor{rrRule}   {HTML}{C9CED6}   % hairlines
+\definecolor{rrBoxBG}  {HTML}{F4F6F8}   % callout background
+\color{rrInk}
+
+% ---- spacing and lists -------------------------------------
+\usepackage{setspace}
+\setstretch{1.10}
+\usepackage{enumitem}
+\setlist{noitemsep,topsep=4pt,leftmargin=1.4em}
+\usepackage{parskip}
+
+% ---- headings ----------------------------------------------
+\usepackage{titlesec}
+\titleformat{\section}
+  {\normalfont\sffamily\bfseries\large\color{rrAccent}}{\thesection}{0.7em}{}
+\titleformat{\subsection}
+  {\normalfont\sffamily\bfseries\normalsize\color{rrInk}}{\thesubsection}{0.6em}{}
+\titleformat{\subsubsection}
+  {\normalfont\sffamily\itshape\normalsize\color{rrInk}}{}{0em}{}
+\titlespacing*{\section}   {0pt}{18pt plus 4pt minus 2pt}{6pt}
+\titlespacing*{\subsection}{0pt}{12pt plus 3pt minus 2pt}{4pt}
+
+% ---- headers and footers -----------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{rrRule}\leaders\hrule height \headrulewidth\hfill}}
+\fancyhead[L]{\footnotesize\sffamily\color{rrMuted}\rrShortTitle}
+\fancyhead[R]{\footnotesize\sffamily\color{rrMuted}\rrStatus\ \textbullet\ \rrDate}
+\fancyfoot[C]{\footnotesize\sffamily\color{rrMuted}\thepage}
+
+% ---- tables ------------------------------------------------
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\renewcommand{\arraystretch}{1.15}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+% numeric column aligned on a fixed decimal count: use \num{}-free plain digits
+
+% ---- figures and captions ----------------------------------
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[font={small,color=rrMuted},labelfont={bf,color=rrInk},
+            labelsep=period,skip=6pt,width=0.95\textwidth]{caption}
+
+% ---- callout boxes -----------------------------------------
+\usepackage[most]{tcolorbox}
+\newtcolorbox{rrsummary}[1][]{
+  colback=rrBoxBG, colframe=rrAccent, boxrule=0pt, leftrule=2.5pt,
+  arc=0pt, outer arc=0pt, left=10pt, right=10pt, top=8pt, bottom=8pt,
+  breakable, #1}
+\newtcolorbox{rrnote}[1][]{
+  colback=white, colframe=rrRule, boxrule=0.6pt,
+  arc=1pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  breakable, #1}
+
+% ---- bibliography ------------------------------------------
+\usepackage[round,authoryear]{natbib}
+\bibliographystyle{plainnat}
+\setlength{\bibsep}{3pt}
+
+% ---- links -------------------------------------------------
+\usepackage[hidelinks,breaklinks=true]{hyperref}
+\hypersetup{colorlinks=true, linkcolor=rrAccent, citecolor=rrAccent,
+            urlcolor=rrAccent, pdfborder={0 0 0}}
+\usepackage{url}
+\urlstyle{same}
+
+% ============================================================
+%  Report metadata — set these in report.tex
+% ============================================================
+\newcommand{\rrTitle}{Untitled report}
+\newcommand{\rrShortTitle}{Untitled}
+\newcommand{\rrAuthors}{Unknown}
+\newcommand{\rrDate}{\today}
+\newcommand{\rrStatus}{Draft}
+\newcommand{\rrSlug}{untitled}
+\newcommand{\rrRelated}{---}
+\newcommand{\rrArtifacts}{---}
+
+\newcommand{\reporttitle}[2]{\renewcommand{\rrTitle}{#1}\renewcommand{\rrShortTitle}{#2}}
+\newcommand{\reportauthors}[1]{\renewcommand{\rrAuthors}{#1}}
+\newcommand{\reportdate}[1]{\renewcommand{\rrDate}{#1}}
+\newcommand{\reportstatus}[1]{\renewcommand{\rrStatus}{#1}}
+\newcommand{\reportslug}[1]{\renewcommand{\rrSlug}{#1}}
+\newcommand{\reportrelated}[1]{\renewcommand{\rrRelated}{#1}}
+\newcommand{\reportartifacts}[1]{\renewcommand{\rrArtifacts}{#1}}
+
+% ---- title block -------------------------------------------
+\newcommand{\makereporthead}{%
+  \thispagestyle{fancy}
+  \begingroup
+  \raggedright
+  {\sffamily\bfseries\LARGE\color{rrAccent}\rrTitle\par}
+  \vspace{6pt}
+  {\sffamily\small\color{rrMuted}\rrAuthors\ \textbullet\ \rrDate\ \textbullet\ Status: \textbf{\rrStatus}\par}
+  \vspace{8pt}
+  {\color{rrRule}\hrule height 0.8pt}
+  \vspace{8pt}
+  {\footnotesize\sffamily\color{rrMuted}
+   \begin{tabular}{@{}p{0.14\textwidth}p{0.80\textwidth}@{}}
+     Slug      & \texttt{\rrSlug} \\
+     Related   & \rrRelated \\
+     Artifacts & \rrArtifacts \\
+   \end{tabular}\par}
+  \vspace{4pt}
+  {\color{rrRule}\hrule height 0.4pt}
+  \vspace{12pt}
+  \endgroup
+}
+
+% ---- confidence tags ---------------------------------------
+% Usage: \confidence{suggestive} inline in the Discussion.
+\newcommand{\confidence}[1]{%
+  \textsf{\footnotesize\color{rrAccent}[\,confidence: #1\,]}}
+
+% ---- provenance pointer ------------------------------------
+% Usage: \source{analysis/pooling_recall.py}
+% \detokenize lets you write underscores, tildes etc. without escaping them.
+\newcommand{\source}[1]{%
+  \textsf{\footnotesize\color{rrMuted}(\texttt{\detokenize{#1}})}}
+
+% ---- inline path / identifier ------------------------------
+% Same escaping-free behaviour for commands, configs, run IDs.
+\newcommand{\pathname}[1]{\texttt{\detokenize{#1}}}
+
+% ---- standard figure include -------------------------------
+% \rrfigure{path}{caption}{label}
+\newcommand{\rrfigure}[3]{%
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics{#1}
+    \caption{#2}
+    \label{#3}
+  \end{figure}}

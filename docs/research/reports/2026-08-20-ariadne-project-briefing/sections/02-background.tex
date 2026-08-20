@@ -1,0 +1,68 @@
+\section{Background}
+
+\subsection{What the system is}
+
+Ariadne answers questions about attacker behaviour by querying two live graph
+databases and joining the results. MITRE ATT\&CK sits in Neo4j and is queried in
+Cypher. MITRE CAPEC sits in a TinkerPop Gremlin Server and is queried in
+Gremlin. The two are joined on shared ATT\&CK technique identifiers. Every
+sentence in an answer carries a citation to a retrieved record and to the query
+that produced it.
+
+The pipeline plans a question into sub-questions, routes each to a source,
+retrieves, verifies each claim against the retrieved records, and composes an
+answer. Almost all of that is deterministic. Query construction fills a fixed
+library of parameterised, read-only templates rather than generating query text.
+
+\subsection{Why the project exists in this form}
+
+The design commitment is unfashionable. A reviewer who expects an agent sees
+hand-written templates and pattern-matched intent classification. The project's
+own external audit concluded that the way to defend this is to stop selling the
+mechanism and start selling the measurement \citep{audit2026}.
+
+That reframing has support in the literature. Writing graph queries from English
+is measurably hard. Zero-shot execution accuracy on an unseen production graph
+averages 0.036 across 11 models \citep{pipecypher}. Zero-shot execution accuracy
+on ISO-GQL is at or below 4\% \citep{text2gql}. A peer-reviewed cross-dialect
+benchmark reports 35.40\% average execution accuracy \citep{gqlbench}.
+
+Choosing templates over generation is not new either. It is a named family in
+knowledge-base question answering since 2015 \citep{aqqu, tqa}, catalogued as
+such in the field's own survey \citep{kbqasurvey}. The modern analogue
+constrains decoding rather than eliminating it, and it works \citep{picard}.
+
+\subsection{The gap}
+
+Two things were missing when this project started, and the audit verified both
+across seven search formulations.
+
+First, nobody had run a controlled head-to-head of a query-template library
+against free-form query generation for graph query languages. The comparison is
+asserted in a relational setting \citep{finai} and never measured for Cypher or
+Gremlin.
+
+Second, nobody had reported federated question answering across security
+knowledge graphs held in separate engines with different query languages. The
+closest prior work, AgCyRAG, builds that architecture in the same domain and
+commits to predefined rather than generated queries \citep{agcyrag}. It reports
+no quantitative evaluation at all. It scoops the design and cannot scoop the
+result.
+
+\subsection{The questions this record set out to answer}
+
+\begin{enumerate}
+  \item Does routing to validated templates beat letting a language model write
+        the query?
+  \item Is the pipeline's near-perfect score a real capability, or an artifact
+        of a question set written alongside the code that answers it?
+  \item Does querying two engines separately beat merging both sources into one
+        graph?
+\end{enumerate}
+
+\subsection{Scope}
+
+This report covers work recorded between 2026-07-20 and 2026-08-20. It covers
+one domain, two catalogues, and one served language model. It compares Ariadne
+against versions of Ariadne. No external system has been implemented or run, and
+question 3 is unanswered.

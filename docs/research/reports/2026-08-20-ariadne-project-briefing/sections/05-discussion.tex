@@ -1,0 +1,100 @@
+\section{What it means}
+
+\subsection{The finding, in one sentence}
+
+Deciding which query to run is where this design earns its keep. Holding the
+templates and writing the prose are not.
+
+\subsection{Interpretation}
+
+\paragraph{The query-writing gap is real and it survives its fairest
+corrections.} Two disjoint question sets put the same gap in the same place.
+Quadrupling the token budget did not close it, and gate refusals went up rather
+than down under the larger budget. Crediting every failure that belongs to our
+own evidence reader still leaves the arm at roughly half the cascade. The
+mechanism behind the gap was not isolated. The failure split separates gate
+refusals from reader failures, and no experiment attributes the residue to a
+specific weakness in the generated queries. \confidence{strong}
+
+\paragraph{The claim that templates hold the accuracy is dead as stated.} It was
+described in the claims ledger as the strongest result in the study, and it
+rested on a no-templates control that predates the schema-derived capabilities.
+Rebuilt, that control matches or beats the cascade on every question set it has
+been graded on. The ratio of 3.0 in Table~\ref{tab:seven-arm} prices a missing
+capability as much as it prices hand-authoring. \confidence{strong}
+
+\paragraph{What the templates do still hold is less than it first looked.} The
+refusal-quality gap in Table~\ref{tab:abstention} was wide on the catalogue and
+on the blind set, and it disappeared on both generated sets once the
+answer-writing fix landed. The most likely reading is that the earlier gap was a
+defect in the generic path rather than a property of templates. That reading was
+not tested directly. The one property the templates hold without qualification
+is reproducibility: identical answers on repeat runs, so any difference the
+cascade shows against another configuration is a real difference.
+\confidence{suggestive}
+
+\paragraph{The question set moved the numbers as much as the code did.} The same
+system spans 0.72 to 0.98 across the six measurements in
+Fig.~\ref{fig:six-numbers}. Two-thirds of what was first attributed to the
+question set turned out to be software defects that hit naturally-phrased
+questions harder than catalogue questions. A bias measurement taken over a
+defective pipeline measures the defect too. \confidence{established}
+
+\paragraph{The top three configurations are not separable.} The prose-writing
+arm varies by 0.0283 against itself over identical inputs. Every difference
+among the top three arms on either generated set is smaller than that. The order
+of the top two also swapped between the two sets. Any table that ranks those
+three describes one run of one question set. \confidence{strong}
+
+\subsection{How this fits what was already known}
+
+The size of the query-writing gap is consistent with the published difficulty of
+the task. Zero-shot execution accuracy on unseen production graphs averages
+0.036 across 11 models \citep{pipecypher}, and a peer-reviewed cross-dialect
+benchmark reports 35.40\% \citep{gqlbench}. Our arm scores well above both,
+which is what a good-faith build given the schema, the seeds and a repair loop
+should do. It is still half the cascade.
+
+Nothing here makes the mechanism novel. Choosing templates over generation is a
+named family in knowledge-base question answering \citep{aqqu, tqa, kbqasurvey},
+and the modern constrained-decoding line is stronger and better evaluated
+\citep{picard}. AgCyRAG independently built this architecture in this domain and
+wrote down the same design argument, with no quantitative evaluation of any kind
+\citep{agcyrag}. The contribution available to this project is the measurement,
+not the design.
+
+The grading protocol is a live vulnerability. Judge-based evaluation in this
+area has been shown to swing win rates by more than 30\% from position alone
+\citep{gzeng}. Our protocol is better than the one that critique dismantles: a
+different model family, given the expected assertions and the full evidence, one
+agent per answer. There is still no agreement statistic against a human.
+
+\subsection{Limitations, ranked by what they would change}
+
+\begin{enumerate}
+  \item \textbf{No external baseline exists.} Every comparison in this report is
+    Ariadne against Ariadne. No result here may be described as beating anything
+    outside this repository. This blocks the federation claim entirely, since
+    the merged-graph counterfactual has never been built.
+  \item \textbf{Both graders are language models, neither validated against a
+    human.} The second grader in Table~\ref{tab:cross-grader} emitted two
+    distinct scores and cannot resolve differences of a few hundredths. It also
+    ran less generous on our grader's weakest arm than on its strongest, which
+    is the pattern that would matter if it held. This changes every absolute
+    correctness value in the report. It does not close the two-to-one gap, which
+    survives the largest offset the second grader produced.
+  \item \textbf{Thirty questions per blind set.} A difference of a few
+    hundredths is noise at that size, which is exactly the regime the top three
+    configurations sit in.
+  \item \textbf{One domain, one served model, one span of days.} Nothing here
+    generalises to another model without re-running, and the served model's
+    quantisation is recorded as unknown rather than guessed.
+\end{enumerate}
+
+\subsection{Confidence roll-up}
+
+Templates beat a model writing the query, at roughly two to one, on anchored
+questions in this domain. \confidence{strong} The near-perfect catalogue figure
+was substantially an artifact of a co-authored question set.
+\confidence{established} The templates are not where the correctness lives.
+\confidence{strong} Federation beats merging. \confidence{unknown}

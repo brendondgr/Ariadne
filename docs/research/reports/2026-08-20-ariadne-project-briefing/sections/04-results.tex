@@ -1,0 +1,188 @@
+\section{What we found}
+
+\subsection{Templates against a model writing the query}
+
+On 30 questions generated the same morning and seen by no arm, the template
+cascade scored 0.9467 (95\% CI 0.915--0.972). An arm in which the model writes
+the Cypher or Gremlin itself scored 0.5000 (95\% CI 0.415--0.585). The plan was
+held constant between them. Query construction was the only variable.
+
+The result replicated on a second set of 30 questions sharing no entity with the
+first: 0.9417 against 0.4183 (Fig.~\ref{fig:two-banks}).
+
+\rrfigure{figures/fig01-two-banks.pdf}{%
+  Letting the model write the query costs about half the correctness, on two
+  question sets that share no entity. Judged correctness for four
+  configurations, $n = 30$ per cell except the prose-writing arm on set 2, where
+  one case failed to grade and $n = 29$. Whiskers are 95\% confidence intervals
+  over questions. Both sets were graded by the same locally served grader.
+  Produced by \pathname{figures/make_figures.py}.}{fig:two-banks}
+
+Three of that arm's failures on set 1 were the safety gate refusing every
+attempt, and two of those three were empty replies from the model. Re-running
+the arm on set 2 with four times the token budget moved it from 0.4183 to
+0.5367 (95\% CI 0.447--0.628, $n = 30$). Gate refusals went from 3 to 5.
+Table~\ref{tab:llm-query-split} gives the full breakdown of where its questions
+ended up.
+
+\begin{table}[htbp]
+\caption{Where the query-writing arm's questions ended up, $n = 30$ per column.
+The second row counts questions whose query ran and returned rows that our own
+evidence reader could not interpret. That reader dispatches on the column
+layouts the templates emit, so the failure is ours rather than the model's.
+Produced by \pathname{tables/make_tables.py}.}
+\label{tab:llm-query-split}
+\centering\small
+\input{tables/tab-llm-query-split}
+\end{table}
+
+Crediting every one of those reader failures as a success raises the arm from
+0.5000 to 0.5739 on set 1 ($n = 23$ scorable).
+
+\subsection{The same system, six defensible numbers}
+
+The deterministic cascade has been graded on three question sets and at three
+code states. One grader scored all six measurements. The values range from
+0.7200 to 0.9833 (Fig.~\ref{fig:six-numbers}).
+
+\rrfigure{figures/fig02-six-numbers.pdf}{%
+  The deterministic template cascade scores anywhere from 0.72 to 0.98
+  depending on which question set and which code state is quoted. Orange bars
+  are the same 30 blind questions at three code states, so those three are
+  paired. The grey and blue bars are different question sets and are not paired
+  with anything. All six were scored by the same locally served grader; an
+  independent Sonnet~5 panel scored the second bar's answers at 0.689 rather
+  than 0.7200. Produced by \pathname{figures/make_figures.py}.}{fig:six-numbers}
+
+The first blind measurement is the sharpest single contrast in the record. Arm A
+scored 0.9972 on the co-authored catalogue ($n = 120$) and 0.689 on the blind
+set ($n = 30$). Arm F scored 0.9957 and 0.7083. The fall was concentrated rather
+than spread: 1.00 on seven of sixteen question categories, 0.00 on the category
+asking which groups use a technique.
+
+\subsection{Where the blind loss sat, and what removed it}
+
+Retrieval accounted for the first part. Gold-in-evidence for the cascade on the
+blind set was 0.7688. Two repairs raised it to 0.8952 and then to 1.0000, with
+the 120-question catalogue unmoved at 1.0000 and 0 of 120 questions regressed.
+
+The remainder sat in answer writing. Two defects were fixed together. The prose
+named at most three items when more had been retrieved and verified. The prose
+was also never itself checked against the verified claim set. Re-graded on the
+same 30 questions, correctness went from 0.8367 to 0.9350, a paired difference
+of $+0.0983$ (95\% CI $+0.025$ to $+0.180$, 10 questions improved, 2 regressed,
+18 unchanged).
+
+The gap between the co-authored catalogue and the blind set was 0.1472 before
+those fixes and 0.0483 after them, on the same questions.
+
+\subsection{Turning the templates off}
+
+An arm with every hand-written template disabled, using only schema-derived
+primitives, scored at or above the cascade on all three blind question sets. The
+figures are 0.8483 against 0.8367 on the blind holdout, 0.9700 against 0.9467 on
+generated set 1, and 0.9750 against 0.9417 on generated set 2 ($n = 30$ each).
+On the catalogue it scored 0.9692 against 0.9839 ($n = 120$).
+
+The two configurations separate on fabrications. On generated set 1 the
+no-templates arm produced 2 answers containing a statement not in the evidence,
+against 0 for the cascade. On the catalogue the counts were 9 and 3 out of 120.
+
+An earlier version of the no-templates arm, before the schema-derived
+capabilities existed, scored 0.6388 on the catalogue.
+
+\subsection{Refusals that carry their query}
+
+Table~\ref{tab:abstention} gives every measurement of refusal quality on record.
+
+\begin{table}[htbp]
+\caption{How often a refusal to answer arrives with the executed query attached.
+Counts are of answers that declined to assert. The first four rows predate the
+answer-writing fix; the last eight follow it. Produced by
+\pathname{tables/make_tables.py}.}
+\label{tab:abstention}
+\centering\small
+\input{tables/tab-abstention}
+\end{table}
+
+On the catalogue the cascade attached the query to 20 of 21 refusals and the
+no-templates arm to 11 of 20. On the blind set the counts were 3 of 3 and 2 of
+4. After the answer-writing fix both arms reach 4 of 4 and 5 of 5 on the two
+generated sets.
+
+\subsection{Repeat runs}
+
+Two configurations were run three times over the same 30 questions
+(Table~\ref{tab:repeats}). The deterministic cascade produced byte-identical
+answers on all 30 questions in both repeats. The arm with a language model
+writing the prose produced 6 identical answers out of 30 in one repeat and 3 out
+of 30 in the other.
+
+\begin{table}[htbp]
+\caption{Answer text compared character by character against the first run, over
+the same 30 questions. Produced by \pathname{tables/make_tables.py}.}
+\label{tab:repeats}
+\centering\small
+\input{tables/tab-repeats}
+\end{table}
+
+Graded, the three runs of the prose-writing arm scored 0.9490, 0.9750 and
+0.9773, a spread of 0.0283 over identical inputs. Answers containing a
+fabrication across those three runs numbered 0, 2 and 1.
+
+\subsection{A second grader over the same saved answers}
+
+A different model re-graded the saved answer files from generated set 1. The
+files were identical, so every difference belongs to the grader
+(Table~\ref{tab:cross-grader}).
+
+\begin{table}[htbp]
+\caption{Two graders over one set of saved answers. \emph{Offset} is our
+grader's mean minus the second grader's mean. $r$ is the Pearson correlation
+between the two graders' per-question scores. The second grader emitted only two
+distinct scores, 0.5 and 1.0, which floors $r$ on the three high-scoring rows.
+Produced by \pathname{tables/make_tables.py}.}
+\label{tab:cross-grader}
+\centering\small
+\input{tables/tab-cross-grader}
+\end{table}
+
+The offset ran from $-0.0060$ to $-0.2167$ across the four configurations, and
+it shrank in the order our own grader ranks them.
+
+\subsection{The seven-configuration study of July 2026}
+
+Table~\ref{tab:seven-arm} gives the original study, all on the co-authored
+catalogue.
+
+\begin{table}[htbp]
+\caption{The July 2026 study, 120 co-authored questions per arm, graded by an
+independent Sonnet~5 panel. Arm G is the pre-2026-08 no-templates control.
+Wall clock is one machine, one run, no parallelism across sub-questions.
+Produced by \pathname{tables/make_tables.py}.}
+\label{tab:seven-arm}
+\centering\small
+\input{tables/tab-seven-arm}
+\end{table}
+
+Three contrasts came out of it. Substituting a language-model planner for the
+authored plan cost $-0.1185$ (arm B minus arm C). Disabling the templates cost
+$-0.3568$ (arm G minus arm F), a ratio of 3.0 between the two effects. Binding
+the prose writer to the verified claim set rather than to raw evidence moved
+correctness from 0.9690 with 8 \textsc{partial} verdicts to 0.9917 with 0.
+
+The deterministic arm completed all 120 questions in 1.6~s against 1019.7~s for
+the language-model-planned arm, a ratio of 637.
+
+\subsection{What did not run}
+
+The merged-graph comparison did not run. Loading both sources into one Neo4j
+instance stopped part-way: ATT\&CK loaded, CAPEC's nodes loaded, and CAPEC's
+relationships did not. The loader admits relationship names matching
+\pathname{^[A-Z][A-Z0-9_]*$}, and six of CAPEC's sixteen relationship names come
+from the source XML in mixed case. The store holds 9138 nodes and ATT\&CK's
+27669 relationships, and must not be queried.
+
+One case in generated set 2 has no grade. Three grading attempts at rising token
+budgets returned two empty replies and one gateway error. That arm reads
+$n = 29$.

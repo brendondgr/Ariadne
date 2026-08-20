@@ -1,0 +1,34 @@
+% ============================================================
+%  Research report — main document
+%  Build:  latexmk -pdf report.tex      (or: python3 scripts/build.py .)
+% ============================================================
+\documentclass[11pt]{article}
+\input{preamble}
+
+% ---- metadata ----------------------------------------------
+\reporttitle{Templates beat LLM-written graph queries two to one; most of Ariadne's other headline numbers were properties of the question set}{Ariadne project briefing}
+\reportauthors{brendondgr}
+\reportdate{2026-08-20}
+\reportstatus{Draft}            % Draft | Exploratory | Reviewed | Superseded
+\reportslug{ariadne-project-briefing}
+\reportrelated{builds-on: \texttt{EXP-2026-07-001}\,--\,\texttt{EXP-2026-08-008} (see Appendix~A) \textbullet\ ledgers: \texttt{CLAIMS.md}, \texttt{DECISIONS.md}, \texttt{OPEN\_QUESTIONS.md}}             % slugs of related / superseded reports
+\reportartifacts{repo \texttt{Ariadne}@\texttt{4773d4f} \textbullet\ runs \texttt{docs/evaluation/} \textbullet\ data MITRE ATT\&CK 19.0, MITRE CAPEC 3.9 \textbullet\ figures from \texttt{data/briefing.json}}
+
+\begin{document}
+\makereporthead
+
+\input{sections/01-summary}
+\input{sections/02-background}
+\input{sections/03-methods}
+\input{sections/04-results}
+\input{sections/05-discussion}
+\input{sections/06-next}
+
+% ---- references (delete if none) ---------------------------
+\bibliography{refs}
+
+% ---- appendix (delete if none) -----------------------------
+\appendix
+\input{sections/A-appendix}
+
+\end{document}
