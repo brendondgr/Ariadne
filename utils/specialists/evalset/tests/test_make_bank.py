@@ -25,10 +25,12 @@ from utils.specialists.evalset import make_bank
 from utils.specialists.evalset.author import identifiers_in, rejection_reason
 from utils.specialists.evalset.gold_bank import load_gold_bank
 from utils.specialists.evalset.holdout_protocol import (
+    AUTHOR_MODEL,
     HOLDOUT_SEED,
     REPO_ROOT,
     DrawExhausted,
     attack_population,
+    compile_bank,
     capec_population,
     cwe_population,
     draw,
@@ -207,3 +209,29 @@ def test_a_batching_model_keeps_its_workers() -> None:
 
     assert workers_for("skynet", 8) == 8
     assert workers_for("skynet", 0) == 1
+
+
+def test_every_question_records_the_model_that_actually_wrote_it() -> None:
+    """Per-question provenance must agree with the bank's own card.
+
+    ``_meta`` hardcoded v1's hand-driven author, so bank-2026-08-19 — authored
+    by ``local`` — shipped 30 questions each claiming a different author than
+    the card printed two directories up. Provenance that disagrees with itself
+    is worse than absent provenance: it reads as fact.
+    """
+    gold = load_gold_bank()
+    drawn = draw(gold, seed=20260819, exclude=set(), scale=1)
+    authored = {entry["id"]: f"What about {entry['anchor']}?" for entry in drawn["anchors"]}
+    bank, _ = compile_bank(drawn, authored, gold, author_model="local @ http://x/v1")
+    models = {q["holdout_meta"]["author_model"] for q in bank["questions"]}
+    assert models == {"local @ http://x/v1"}
+    assert bank["meta"]["author_model"] == "local @ http://x/v1"
+
+
+def test_the_committed_v1_provenance_is_unchanged_when_no_model_is_passed() -> None:
+    """Threading the value must not rewrite the bank already on disk."""
+    gold = load_gold_bank()
+    drawn = draw(gold, seed=HOLDOUT_SEED, exclude=set(), scale=1)
+    authored = {entry["id"]: f"What about {entry['anchor']}?" for entry in drawn["anchors"]}
+    bank, _ = compile_bank(drawn, authored, gold)
+    assert {q["holdout_meta"]["author_model"] for q in bank["questions"]} == {AUTHOR_MODEL}

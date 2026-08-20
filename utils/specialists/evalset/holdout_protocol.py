@@ -667,12 +667,20 @@ def _sub(sub_id: str, source: str, text: str, entities: list[str], template: str
     return sub
 
 
-def _meta(entry: dict[str, Any]) -> dict[str, Any]:
+def _meta(entry: dict[str, Any], author_model: str | None = None) -> dict[str, Any]:
+    """Per-question provenance.
+
+    ``author_model`` defaults to v1's hand-driven author so recompiling the
+    committed bank is byte-unchanged. It is threaded rather than hardcoded
+    because a generated bank that records the wrong author is a provenance
+    defect, not a cosmetic one: bank-2026-08-19 was authored by ``local`` and
+    every question in it claimed otherwise, disagreeing with its own card.
+    """
     meta = {
         "anchor": entry["anchor"],
         "anchor_draw_index": entry["draw_index"],
         "category": entry["category"],
-        "author_model": AUTHOR_MODEL,
+        "author_model": author_model or AUTHOR_MODEL,
         "expected_template_is_derived": True,
     }
     if "partition" in entry:
@@ -680,7 +688,8 @@ def _meta(entry: dict[str, Any]) -> dict[str, Any]:
     return meta
 
 
-def _compile_single(gold: dict[str, Any], entry: dict[str, Any], question: str) -> dict[str, Any]:
+def _compile_single(gold: dict[str, Any], entry: dict[str, Any], question: str,
+                    author_model: str | None = None) -> dict[str, Any]:
     anchor, category = entry["anchor"], entry["category"]
     source = "capec" if anchor.startswith("CAPEC-") else "attack"
     scheme = source
@@ -740,11 +749,12 @@ def _compile_single(gold: dict[str, Any], entry: dict[str, Any], question: str) 
             "attack_version": gold["meta"]["attack_version"],
             "capec_version": gold["meta"]["capec_version"],
         },
-        "holdout_meta": _meta(entry),
+        "holdout_meta": _meta(entry, author_model),
     }
 
 
-def _compile_federated(gold: dict[str, Any], entry: dict[str, Any], question: str) -> dict[str, Any]:
+def _compile_federated(gold: dict[str, Any], entry: dict[str, Any], question: str,
+                       author_model: str | None = None) -> dict[str, Any]:
     anchor, category = entry["anchor"], entry["category"]
     correlate = federated_correlation(gold, category, anchor)
     negative = not correlate
@@ -834,7 +844,7 @@ def _compile_federated(gold: dict[str, Any], entry: dict[str, Any], question: st
             "attack_version": gold["meta"]["attack_version"],
             "capec_version": gold["meta"]["capec_version"],
         },
-        "holdout_meta": _meta(entry),
+        "holdout_meta": _meta(entry, author_model),
     }
 
 
@@ -858,15 +868,17 @@ def compile_bank(
     for entry in anchors["anchors"]:
         question = authored.get(entry["id"])
         if not question:
-            discards.append({**_meta(entry), "reason": "no authored question returned"})
+            discards.append({**_meta(entry, author_model),
+                             "reason": "no authored question returned"})
             continue
         try:
             if entry["stratum"] == "federated":
-                questions.append(_compile_federated(gold, entry, question))
+                questions.append(_compile_federated(gold, entry, question, author_model))
             else:
-                questions.append(_compile_single(gold, entry, question))
+                questions.append(_compile_single(gold, entry, question, author_model))
         except (GoldComputationError, KeyError) as exc:
-            discards.append({**_meta(entry), "reason": f"{type(exc).__name__}: {exc}"})
+            discards.append({**_meta(entry, author_model),
+                             "reason": f"{type(exc).__name__}: {exc}"})
     bank = {
         "meta": {
             "attack_version": gold["meta"]["attack_version"],
