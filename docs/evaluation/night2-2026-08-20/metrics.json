@@ -1,0 +1,733 @@
+{
+  "bank2": {
+    "questions": 30,
+    "overlap_with_prior_banks": [],
+    "tail": "0 H-LKP-02\n[author] 12/30 H-GRP-02\n[author] 13/30 H-LKP-03\n[author] 14/30 H-CWE-01\n[author] 15/30 H-EXE-01\n[author] 16/30 H-ABS-01\n[author] 17/30 H-PRE-01\n[author] 18/30 H-CSQ-01\n[author] 19/30 H-MAP-01\n[author] 20/30 H-LKP-04\n[author] 21/30 H-CTM-01\n[author] 22/30 H-CTM-02\n[author] 23/30 H-CTM-03\n[author] 24/30 H-CTM-04\n[author] 25/30 H-REV-01\n[author] 26/30 H-REV-02\n[author] 27/30 H-REV-03\n[author] 28/30 H-CHN-01\n[author] 29/30 H-CHN-02\n[author] 30/30 H-CHN-03\nwrote /home/bdgr/Agents/Ariadne/docs/evaluation/banks/bank-2026-08-20/bank.json: 30 questions\n  excluded 60 previously-drawn anchors\n"
+  },
+  "bank2_arms": {
+    "deterministic": {
+      "n": 30,
+      "correctness": {
+        "mean": 0.9417,
+        "ci95": [
+          0.885,
+          0.98
+        ]
+      },
+      "correct_rate": {
+        "correct": 28,
+        "point": 0.9333,
+        "wilson95": [
+          0.7868,
+          0.9815
+        ]
+      },
+      "verdicts": {
+        "CORRECT": 28,
+        "PARTIAL": 2,
+        "INCORRECT": 0
+      },
+      "faithfulness": 0.979,
+      "groundedness": 0.9577,
+      "completeness": 0.95,
+      "hallucinations": 0,
+      "answers_with_hallucination": 0,
+      "abstained": 5,
+      "abstention_carries_query": 5,
+      "fabricated_mapping": 0
+    },
+    "generic": {
+      "n": 30,
+      "correctness": {
+        "mean": 0.975,
+        "ci95": [
+          0.955,
+          0.99
+        ]
+      },
+      "correct_rate": {
+        "correct": 29,
+        "point": 0.9667,
+        "wilson95": [
+          0.8333,
+          0.9941
+        ]
+      },
+      "verdicts": {
+        "CORRECT": 29,
+        "PARTIAL": 1,
+        "INCORRECT": 0
+      },
+      "faithfulness": 0.9833,
+      "groundedness": 0.97,
+      "completeness": 1.0,
+      "hallucinations": 0,
+      "answers_with_hallucination": 0,
+      "abstained": 4,
+      "abstention_carries_query": 4,
+      "fabricated_mapping": 0
+    },
+    "gold_loop_llm": {
+      "n": 29,
+      "correctness": {
+        "mean": 0.9645,
+        "ci95": [
+          0.9317,
+          0.9879
+        ]
+      },
+      "correct_rate": {
+        "correct": 28,
+        "point": 0.9655,
+        "wilson95": [
+          0.8282,
+          0.9939
+        ]
+      },
+      "verdicts": {
+        "CORRECT": 28,
+        "PARTIAL": 1,
+        "INCORRECT": 0
+      },
+      "faithfulness": 0.9759,
+      "groundedness": 0.9655,
+      "completeness": 0.9655,
+      "hallucinations": 1,
+      "answers_with_hallucination": 1,
+      "abstained": 5,
+      "abstention_carries_query": 5,
+      "fabricated_mapping": 0
+    },
+    "llm_query": {
+      "n": 30,
+      "correctness": {
+        "mean": 0.4183,
+        "ci95": [
+          0.3367,
+          0.5017
+        ]
+      },
+      "correct_rate": {
+        "correct": 8,
+        "point": 0.2667,
+        "wilson95": [
+          0.1418,
+          0.4445
+        ]
+      },
+      "verdicts": {
+        "CORRECT": 8,
+        "PARTIAL": 21,
+        "INCORRECT": 1
+      },
+      "faithfulness": 0.8517,
+      "groundedness": 0.6483,
+      "completeness": 0.183,
+      "hallucinations": 9,
+      "answers_with_hallucination": 3,
+      "abstained": 19,
+      "abstention_carries_query": 16,
+      "fabricated_mapping": 0
+    }
+  },
+  "bank2_llm_query_split": {
+    "counts": {
+      "answered": 16,
+      "gate_rejected": 5,
+      "execution_failed": 1,
+      "reader_could_not_parse": 8,
+      "no_result": 0
+    },
+    "cases": {
+      "answered": [
+        "H-ABS-01",
+        "H-CHN-01",
+        "H-CSQ-01",
+        "H-CTM-01",
+        "H-CTM-02",
+        "H-CTM-03",
+        "H-CTM-04",
+        "H-CWE-01",
+        "H-EXE-01",
+        "H-LKP-01",
+        "H-LKP-03",
+        "H-LKP-04",
+        "H-REV-02",
+        "H-REV-03",
+        "H-SUB-01",
+        "H-TAC-01"
+      ],
+      "gate_rejected": [
+        "H-CHN-02",
+        "H-CHN-03",
+        "H-MAP-01",
+        "H-REV-01",
+        "H-SUB-02"
+      ],
+      "execution_failed": [
+        "H-PRE-01"
+      ],
+      "reader_could_not_parse": [
+        "H-DET-01",
+        "H-GRP-01",
+        "H-GRP-02",
+        "H-LKP-02",
+        "H-MIT-01",
+        "H-MIT-02",
+        "H-SW-01",
+        "H-SW-02"
+      ],
+      "no_result": []
+    },
+    "details": [
+      {
+        "case": "H-CHN-02",
+        "kind": "gate_rejected",
+        "query": "",
+        "error": "pre-run gate rejected all drafts: empty query"
+      },
+      {
+        "case": "H-CHN-03",
+        "kind": "gate_rejected",
+        "query": "",
+        "error": "pre-run gate rejected all drafts: empty query"
+      },
+      {
+        "case": "H-DET-01",
+        "kind": "reader_could_not_parse",
+        "query": "MATCH (st:SubTechnique {attack_id: $subtechnique_id})<-[:DETECTS]-(ds:DetectionStrategy)-[:HAS_ANALYTIC]->(a:Analytic)-[:MONITORS]->(dc:DataComponent) RETURN DISTINCT dc.attack_id AS data_component_id, dc.name AS data_co",
+        "error": "record has neither a primary_id nor a name; record '' provenance missing 'record_id'; record has neither a primary_id nor a name; record '' provenance missing 'record_id'; record has neither a primary_id nor a name; reco"
+      },
+      {
+        "case": "H-GRP-01",
+        "kind": "reader_could_not_parse",
+        "query": "MATCH (g:Group)-[:USES]->(s:SubTechnique) WHERE s.attack_id = $attack_id RETURN DISTINCT g.attack_id AS group_id, g.name AS group_name, s.attack_id AS subtechnique_id, s.name AS subtechnique_name LIMIT 20000",
+        "error": "record has neither a primary_id nor a name; record '' provenance missing 'record_id'; record has neither a primary_id nor a name; record '' provenance missing 'record_id'; record has neither a primary_id nor a name; reco"
+      },
+      {
+        "case": "H-GRP-02",
+        "kind": "reader_could_not_parse",
+        "query": "MATCH (g:Group)-[:USES]->(t:Technique {attack_id: $technique_id}) RETURN DISTINCT g.attack_id AS group_id, g.name AS group_name LIMIT 20000",
+        "error": "record has neither a primary_id nor a name; record '' provenance missing 'record_id'; record has neither a primary_id nor a name; record '' provenance missing 'record_id'; record has neither a primary_id nor a name; reco"
+      },
+      {
+        "case": "H-LKP-02",
+        "kind": "reader_could_not_parse",
+        "query": "MATCH (s:SubTechnique) WHERE s.attack_id = $id RETURN s.attack_id AS subtechnique_id, s.name AS subtechnique_name LIMIT 20000",
+        "error": "record has neither a primary_id nor a name; record '' provenance missing 'record_id'"
+      },
+      {
+        "case": "H-MAP-01",
+        "kind": "gate_rejected",
+        "query": "",
+        "error": "pre-run gate rejected all drafts: binding mismatch: AttackPattern.id bound to ['CAPEC-645'], but AttackPattern.id looks like ['capec:attack-pattern:#']"
+      },
+      {
+        "case": "H-MIT-01",
+        "kind": "reader_could_not_parse",
+        "query": "MATCH (m:Mitigation)-[:MITIGATES]-(s:SubTechnique {attack_id: $subtechnique_id}) RETURN DISTINCT m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 20000",
+        "error": "record has neither a primary_id nor a name; record '' provenance missing 'record_id'"
+      },
+      {
+        "case": "H-MIT-02",
+        "kind": "reader_could_not_parse",
+        "query": "MATCH (m:Mitigation)-[:MITIGATES]-(s:SubTechnique {attack_id: $subtechnique_id}) RETURN DISTINCT m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 20000",
+        "error": "record has neither a primary_id nor a name; record '' provenance missing 'record_id'; record has neither a primary_id nor a name; record '' provenance missing 'record_id'"
+      },
+      {
+        "case": "H-PRE-01",
+        "kind": "execution_failed",
+        "query": "g.V().hasLabel(within(labels)).has('id', within(ids)).out(within(rels)).elementMap().limit(20000)",
+        "error": "597: No signature of method: org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.DefaultGraphTraversal.out() is applicable for argument types: (org.apache.tinkerpop.gremlin.process.traversal.P) values: [within([REQU"
+      },
+      {
+        "case": "H-REV-01",
+        "kind": "gate_rejected",
+        "query": "",
+        "error": "pre-run gate rejected all drafts: empty query"
+      },
+      {
+        "case": "H-SUB-02",
+        "kind": "gate_rejected",
+        "query": "",
+        "error": "pre-run gate rejected all drafts: empty query"
+      },
+      {
+        "case": "H-SW-01",
+        "kind": "reader_could_not_parse",
+        "query": "MATCH (s:Software)-[:USES]->(st:SubTechnique {attack_id: $subtechnique_id}) RETURN DISTINCT s.attack_id AS software_id, s.name AS software_name LIMIT 20000",
+        "error": "record has neither a primary_id nor a name; record '' provenance missing 'record_id'; record has neither a primary_id nor a name; record '' provenance missing 'record_id'; record has neither a primary_id nor a name; reco"
+      },
+      {
+        "case": "H-SW-02",
+        "kind": "reader_could_not_parse",
+        "query": "MATCH (s:Software)-[:USES]-(st:SubTechnique {attack_id: $subtechnique_id}) RETURN DISTINCT s.attack_id AS software_id, s.name AS software_name LIMIT 20000",
+        "error": "record has neither a primary_id nor a name; record '' provenance missing 'record_id'; record has neither a primary_id nor a name; record '' provenance missing 'record_id'; record has neither a primary_id nor a name; reco"
+      }
+    ]
+  },
+  "llm_query_funded": {
+    "n": 30,
+    "correctness": {
+      "mean": 0.5367,
+      "ci95": [
+        0.4467,
+        0.6283
+      ]
+    },
+    "correct_rate": {
+      "correct": 11,
+      "point": 0.3667,
+      "wilson95": [
+        0.2187,
+        0.5449
+      ]
+    },
+    "verdicts": {
+      "CORRECT": 11,
+      "PARTIAL": 18,
+      "INCORRECT": 1
+    },
+    "faithfulness": 0.8883,
+    "groundedness": 0.7017,
+    "completeness": 0.2693,
+    "hallucinations": 7,
+    "answers_with_hallucination": 3,
+    "abstained": 20,
+    "abstention_carries_query": 18,
+    "fabricated_mapping": 0
+  },
+  "llm_query_funded_split": {
+    "counts": {
+      "answered": 20,
+      "gate_rejected": 5,
+      "execution_failed": 0,
+      "reader_could_not_parse": 5,
+      "no_result": 0
+    },
+    "cases": {
+      "answered": [
+        "H-ABS-01",
+        "H-CHN-01",
+        "H-CHN-03",
+        "H-CSQ-01",
+        "H-CTM-01",
+        "H-CTM-02",
+        "H-CTM-03",
+        "H-CWE-01",
+        "H-DET-01",
+        "H-EXE-01",
+        "H-GRP-01",
+        "H-LKP-02",
+        "H-MAP-01",
+        "H-PRE-01",
+        "H-PRE-02",
+        "H-REV-01",
+        "H-REV-02",
+        "H-SUB-01",
+        "H-SUB-02",
+        "H-TAC-02"
+      ],
+      "gate_rejected": [
+        "H-CHN-02",
+        "H-CTM-04",
+        "H-GRP-02",
+        "H-MIT-02",
+        "H-TAC-01"
+      ],
+      "execution_failed": [],
+      "reader_could_not_parse": [
+        "H-LKP-01",
+        "H-MIT-01",
+        "H-REV-03",
+        "H-SW-01",
+        "H-SW-02"
+      ],
+      "no_result": []
+    },
+    "details": [
+      {
+        "case": "H-CHN-02",
+        "kind": "gate_rejected",
+        "query": "",
+        "error": "pre-run gate rejected all drafts: empty query"
+      },
+      {
+        "case": "H-CTM-04",
+        "kind": "gate_rejected",
+        "query": "",
+        "error": "pre-run gate rejected all drafts: empty query"
+      },
+      {
+        "case": "H-GRP-02",
+        "kind": "gate_rejected",
+        "query": "",
+        "error": "pre-run gate rejected all drafts: empty query"
+      },
+      {
+        "case": "H-LKP-01",
+        "kind": "reader_could_not_parse",
+        "query": "MATCH (s:SubTechnique) WHERE s.attack_id = $id RETURN s.attack_id AS subtechnique_id, s.name AS subtechnique_name, s.description AS subtechnique_description LIMIT 20000",
+        "error": "record has neither a primary_id nor a name; record '' provenance missing 'record_id'"
+      },
+      {
+        "case": "H-MIT-01",
+        "kind": "reader_could_not_parse",
+        "query": "MATCH (t:Technique {attack_id: $technique_id})-[:MITIGATES]-(m:Mitigation) RETURN DISTINCT m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 20000",
+        "error": "record has neither a primary_id nor a name; record '' provenance missing 'record_id'; record has neither a primary_id nor a name; record '' provenance missing 'record_id'; record has neither a primary_id nor a name; reco"
+      },
+      {
+        "case": "H-MIT-02",
+        "kind": "gate_rejected",
+        "query": "",
+        "error": "pre-run gate rejected all drafts: empty query"
+      },
+      {
+        "case": "H-REV-03",
+        "kind": "reader_could_not_parse",
+        "query": "MATCH (s:SubTechnique {attack_id: $attack_id}) RETURN s.attack_id AS subtechnique_id, s.name AS subtechnique_name LIMIT 20000",
+        "error": "record has neither a primary_id nor a name; record '' provenance missing 'record_id'"
+      },
+      {
+        "case": "H-SW-01",
+        "kind": "reader_could_not_parse",
+        "query": "MATCH (s:Software)-[:USES]-(st:SubTechnique {attack_id: $subtechnique_id}) RETURN DISTINCT s.attack_id AS software_id, s.name AS software_name LIMIT 20000",
+        "error": "record has neither a primary_id nor a name; record '' provenance missing 'record_id'; record has neither a primary_id nor a name; record '' provenance missing 'record_id'; record has neither a primary_id nor a name; reco"
+      },
+      {
+        "case": "H-SW-02",
+        "kind": "reader_could_not_parse",
+        "query": "MATCH (s:Software)-[:USES]->(t:Technique {attack_id: $technique_id}) RETURN DISTINCT s.attack_id AS software_id, s.name AS software_name LIMIT 20000",
+        "error": "record has neither a primary_id nor a name; record '' provenance missing 'record_id'; record has neither a primary_id nor a name; record '' provenance missing 'record_id'; record has neither a primary_id nor a name; reco"
+      },
+      {
+        "case": "H-TAC-01",
+        "kind": "gate_rejected",
+        "query": "",
+        "error": "pre-run gate rejected all drafts: empty query"
+      }
+    ]
+  },
+  "self_variance": {
+    "deterministic": {
+      "arm": "deterministic",
+      "baseline": "bank20260819",
+      "repeats": [
+        {
+          "root": "repeat-deterministic-r2",
+          "n": 30,
+          "identical": 30,
+          "differing": []
+        },
+        {
+          "root": "repeat-deterministic-r3",
+          "n": 30,
+          "identical": 30,
+          "differing": []
+        }
+      ]
+    },
+    "gold_loop_llm": {
+      "arm": "gold_loop_llm",
+      "baseline": "bank20260819",
+      "repeats": [
+        {
+          "root": "repeat-gold_loop_llm-r2",
+          "n": 30,
+          "identical": 6,
+          "differing": [
+            "H-ABS-01",
+            "H-CHN-01",
+            "H-CHN-02",
+            "H-CHN-03",
+            "H-CTM-01",
+            "H-CTM-02",
+            "H-CTM-03",
+            "H-CTM-04",
+            "H-EXE-01",
+            "H-GRP-01",
+            "H-LKP-01",
+            "H-LKP-02",
+            "H-MAP-01",
+            "H-MIT-02",
+            "H-PRE-01",
+            "H-PRE-02",
+            "H-REV-01",
+            "H-REV-02",
+            "H-SUB-01",
+            "H-SUB-02",
+            "H-SW-01",
+            "H-SW-02",
+            "H-TAC-01",
+            "H-TAC-02"
+          ]
+        },
+        {
+          "root": "repeat-gold_loop_llm-r3",
+          "n": 30,
+          "identical": 3,
+          "differing": [
+            "H-ABS-01",
+            "H-CHN-01",
+            "H-CHN-02",
+            "H-CHN-03",
+            "H-CSQ-01",
+            "H-CTM-01",
+            "H-CTM-02",
+            "H-CTM-04",
+            "H-EXE-01",
+            "H-GRP-01",
+            "H-GRP-02",
+            "H-LKP-01",
+            "H-LKP-02",
+            "H-MAP-01",
+            "H-MIT-01",
+            "H-MIT-02",
+            "H-PRE-01",
+            "H-PRE-02",
+            "H-REV-01",
+            "H-REV-02",
+            "H-REV-03",
+            "H-SUB-01",
+            "H-SUB-02",
+            "H-SW-01",
+            "H-SW-02",
+            "H-TAC-01",
+            "H-TAC-02"
+          ]
+        }
+      ]
+    }
+  },
+  "cross_grader": {
+    "deterministic": {
+      "n": 30,
+      "home_mean": 0.9467,
+      "cross_mean": 0.9833,
+      "offset": -0.0367,
+      "pearson_r": -0.0077,
+      "biggest_disagreements": [
+        {
+          "case": "H-CTM-01",
+          "home": 0.95,
+          "cross": 0.5,
+          "gap": 0.45
+        },
+        {
+          "case": "H-REV-01",
+          "home": 0.6,
+          "cross": 1.0,
+          "gap": -0.4
+        },
+        {
+          "case": "H-CTM-03",
+          "home": 0.85,
+          "cross": 1.0,
+          "gap": -0.15
+        },
+        {
+          "case": "H-DET-01",
+          "home": 0.85,
+          "cross": 1.0,
+          "gap": -0.15
+        },
+        {
+          "case": "H-CHN-01",
+          "home": 0.9,
+          "cross": 1.0,
+          "gap": -0.1
+        },
+        {
+          "case": "H-LKP-01",
+          "home": 0.9,
+          "cross": 1.0,
+          "gap": -0.1
+        },
+        {
+          "case": "H-PRE-01",
+          "home": 0.9,
+          "cross": 1.0,
+          "gap": -0.1
+        },
+        {
+          "case": "H-SUB-02",
+          "home": 0.9,
+          "cross": 1.0,
+          "gap": -0.1
+        }
+      ]
+    },
+    "generic": {
+      "n": 29,
+      "home_mean": 0.969,
+      "cross_mean": 0.9828,
+      "offset": -0.0138,
+      "pearson_r": 0.1717,
+      "biggest_disagreements": [
+        {
+          "case": "H-CTM-01",
+          "home": 0.9,
+          "cross": 0.5,
+          "gap": 0.4
+        },
+        {
+          "case": "H-REV-01",
+          "home": 0.6,
+          "cross": 1.0,
+          "gap": -0.4
+        },
+        {
+          "case": "H-LKP-01",
+          "home": 0.9,
+          "cross": 1.0,
+          "gap": -0.1
+        },
+        {
+          "case": "H-ABS-01",
+          "home": 0.95,
+          "cross": 1.0,
+          "gap": -0.05
+        },
+        {
+          "case": "H-CTM-02",
+          "home": 0.95,
+          "cross": 1.0,
+          "gap": -0.05
+        },
+        {
+          "case": "H-CTM-03",
+          "home": 0.95,
+          "cross": 1.0,
+          "gap": -0.05
+        },
+        {
+          "case": "H-GRP-01",
+          "home": 0.95,
+          "cross": 1.0,
+          "gap": -0.05
+        },
+        {
+          "case": "H-SW-02",
+          "home": 0.95,
+          "cross": 1.0,
+          "gap": -0.05
+        }
+      ]
+    },
+    "gold_loop_llm": {
+      "n": 30,
+      "home_mean": 0.9773,
+      "cross_mean": 0.9833,
+      "offset": -0.006,
+      "pearson_r": 0.3668,
+      "biggest_disagreements": [
+        {
+          "case": "H-CTM-01",
+          "home": 0.9,
+          "cross": 0.5,
+          "gap": 0.4
+        },
+        {
+          "case": "H-REV-01",
+          "home": 0.85,
+          "cross": 1.0,
+          "gap": -0.15
+        },
+        {
+          "case": "H-CHN-01",
+          "home": 0.9,
+          "cross": 1.0,
+          "gap": -0.1
+        },
+        {
+          "case": "H-CTM-02",
+          "home": 0.92,
+          "cross": 1.0,
+          "gap": -0.08
+        },
+        {
+          "case": "H-CHN-03",
+          "home": 0.95,
+          "cross": 1.0,
+          "gap": -0.05
+        },
+        {
+          "case": "H-CTM-03",
+          "home": 0.95,
+          "cross": 1.0,
+          "gap": -0.05
+        },
+        {
+          "case": "H-DET-01",
+          "home": 0.95,
+          "cross": 1.0,
+          "gap": -0.05
+        },
+        {
+          "case": "H-LKP-01",
+          "home": 0.95,
+          "cross": 1.0,
+          "gap": -0.05
+        }
+      ]
+    },
+    "llm_query": {
+      "n": 27,
+      "home_mean": 0.5241,
+      "cross_mean": 0.7407,
+      "offset": -0.2167,
+      "pearson_r": 0.6717,
+      "biggest_disagreements": [
+        {
+          "case": "H-CTM-03",
+          "home": 0.3,
+          "cross": 1.0,
+          "gap": -0.7
+        },
+        {
+          "case": "H-ABS-01",
+          "home": 0.35,
+          "cross": 1.0,
+          "gap": -0.65
+        },
+        {
+          "case": "H-CHN-01",
+          "home": 0.4,
+          "cross": 1.0,
+          "gap": -0.6
+        },
+        {
+          "case": "H-LKP-02",
+          "home": 0.4,
+          "cross": 1.0,
+          "gap": -0.6
+        },
+        {
+          "case": "H-PRE-01",
+          "home": 0.4,
+          "cross": 1.0,
+          "gap": -0.6
+        },
+        {
+          "case": "H-TAC-01",
+          "home": 0.4,
+          "cross": 1.0,
+          "gap": -0.6
+        },
+        {
+          "case": "H-CWE-01",
+          "home": 0.5,
+          "cross": 1.0,
+          "gap": -0.5
+        },
+        {
+          "case": "H-REV-03",
+          "home": 0.5,
+          "cross": 1.0,
+          "gap": -0.5
+        }
+      ]
+    }
+  },
+  "merged_store": null
+}

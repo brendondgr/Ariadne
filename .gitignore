@@ -125,5 +125,11 @@ logs/
 # Docker runtime data (compose layout and version pins stay tracked)
 docker/neo4j/data/*
 !docker/neo4j/data/.gitkeep
+# The merged-graph counterfactual's store (C-015). Same reasoning as above:
+# a live Neo4j data directory is not source, and this one is created the
+# moment `docker compose --profile merged up` runs.
+# (No .gitkeep counterpart: the container creates this directory owned by
+# Neo4j's uid, so the placeholder cannot be written from the host.)
+docker/neo4j-merged/
 # Golden-eval harness run artifacts (regenerate via `main.py --golden-eval`)
 docs/evaluation/golden/

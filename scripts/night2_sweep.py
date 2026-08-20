@@ -41,6 +41,14 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 
 from scripts.measure_arms import ARMS, EXPERIMENTS, Measurement, _run, now  # noqa: E402
+from utils.config import load_env  # noqa: E402
+
+# Every entry point in this repo loads `.env` explicitly (see `main.py`), and
+# this one did not. Subprocesses were unaffected — they load it themselves — but
+# the sweep's own Neo4j calls fell back to the image-default password and read
+# as "the container never came up". `override=False`, so a real env var still
+# wins and the merged-store URI override in N6 still works.
+load_env()
 
 BANK1 = REPO / "docs" / "evaluation" / "banks" / "bank-2026-08-19" / "bank.json"
 BANK2_DIR = REPO / "docs" / "evaluation" / "banks" / "bank-2026-08-20"
@@ -64,6 +72,29 @@ MERGED_URI = f"bolt://localhost:{os.environ.get('NEO4J_MERGED_BOLT_PORT', '5458'
 
 
 class Night2(Measurement):
+    def __init__(self, out: Path, workers: int, resume: bool = False) -> None:
+        super().__init__(out, workers)
+        #: Phases this night already completed. The sweep's promise is that an
+        #: interrupted run costs the phase it died in and nothing before it —
+        #: which was only half true, because there was no way to pick it back up.
+        self._prior: dict[str, Any] = {}
+        state_path = out / "state.json"
+        if resume and state_path.is_file():
+            prior = json.loads(state_path.read_text())
+            self._prior = {p["name"]: p for p in prior["phases"] if p.get("status") == "ok"}
+            self.state["phases"] = list(prior["phases"])
+            self.state["resumed_from"] = prior.get("started")
+
+    def phase(self, name: str, description: str, fn):
+        done = self._prior.get(name)
+        if done is not None:
+            print(f"=== {name}: reusing the result already on disk", flush=True)
+            return done.get("result")
+        # Drop a previous *failed* attempt so the record shows one entry per
+        # phase rather than a failure and a success sitting side by side.
+        self.state["phases"] = [p for p in self.state["phases"] if p.get("name") != name]
+        return super().phase(name, description, fn)
+
     # -- N1: a second bank -------------------------------------------------
 
     def make_bank2(self) -> dict[str, Any]:
@@ -181,7 +212,15 @@ class Night2(Measurement):
         the arm is a code change with judgment in it. Loading is mechanical and
         it is the slow part, so it happens tonight and the arm happens awake.
         """
-        _run(["docker", "compose", "-f", "docker/docker-compose.yml",
+        # `--env-file` is not optional here. Compose resolves variables against
+        # the compose file's own directory, so a bare invocation reads
+        # `docker/.env` — which deliberately carries only version pins — and the
+        # container comes up on the image default `neo4j/password` while every
+        # client in this repo authenticates with the root `.env` password. The
+        # repo's own `docker_manager.py` layers the root file on top for exactly
+        # this reason; calling compose directly has to do the same.
+        _run(["docker", "compose", "--env-file", str(REPO / ".env"),
+              "-f", "docker/docker-compose.yml",
               "--profile", "merged", "up", "-d", "neo4j-merged"], timeout=600)
         env = {"NEO4J_URI": MERGED_URI, "ARIADNE_ALLOW_MERGED_GRAPH": "1"}
         deadline = time.time() + 300
@@ -325,6 +364,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--out", type=Path,
                         default=REPO / "docs" / "evaluation" / "night2-2026-08-20")
     parser.add_argument("--skip-merged", action="store_true")
+    parser.add_argument("--resume", action="store_true",
+                        help="reuse phases this out-dir already completed")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args(argv)
 
@@ -334,7 +375,7 @@ def main(argv: list[str] | None = None) -> int:
                 print(line.strip())
         return 0
 
-    m = Night2(args.out, args.workers)
+    m = Night2(args.out, args.workers, resume=args.resume)
     bank2_root = EXPERIMENTS / "bank20260820"
     funded_root = EXPERIMENTS / "llmquery-funded"
 

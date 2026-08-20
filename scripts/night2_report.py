@@ -245,7 +245,10 @@ def write_report(out_dir: Path) -> Path:  # noqa: C901 — a report is a long li
             result = _ok(phases, f"N5-cross-{arm}")
             for row in ((result or {}).get("agreement") or {}).get("biggest_disagreements", [])[:3]:
                 worst.append((abs(row["gap"]), label, row))
-        for _, label, row in sorted(worst, reverse=True)[:6]:
+        # Sort on the gap alone. `reverse=True` on the whole tuple falls through
+        # to comparing the row dicts whenever two arms tie on gap *and* label,
+        # which is a TypeError that only fires on the data that produces a tie.
+        for _, label, row in sorted(worst, key=lambda item: -item[0])[:6]:
             add(f"- `{row['case']}` ({label}): ours {row['home']:.2f}, independent "
                 f"{row['cross']:.2f}")
         if worst:
