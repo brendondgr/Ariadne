@@ -27,6 +27,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-08-005` | 2026-08-18 | Is the blind holdout's directional loss a property of these templates, or of a missing schema-driven check? | complete | blind_gold_in_evidence 0.8952 (n=1) | C-001, C-003, C-010, C-014 | [binding-direction-portability](experiments/EXP-2026-08-005-binding-direction-portability/) |
 | `EXP-2026-08-006` | 2026-08-18 | Does the outer-join bridge close the residual blind gap in the default cascade without regressing it? | complete | blind_gold_in_evidence 1.0000 (n=1) | C-001, C-003, C-014 | [template-outer-join](experiments/EXP-2026-08-006-template-outer-join/) |
 | `EXP-2026-08-007` | 2026-08-19 | Judged, at last — does the repaired cascade answer better, and do the generic and LLM-loop arms differ from it on anything that matters? | complete | blind_correctness_cascade 0.8367 (n=30) | C-001, C-003, C-013, C-014, C-017, C-021 | [judged-arm-comparison-gen2](experiments/EXP-2026-08-007-judged-arm-comparison-gen2/) |
+| `EXP-2026-08-008` | 2026-08-19 | Do the answer-writing fixes help, how do four arms compare on unseen questions, and does an LLM writing its own queries beat templates? | complete | llm_query_vs_templates_fresh_bank (not recorded) | C-001, C-003, C-012, C-017, C-021 | [composer-fix-and-fresh-bank](experiments/EXP-2026-08-008-composer-fix-and-fresh-bank/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 
-**18 experiment(s) on record.**
+**19 experiment(s) on record.**

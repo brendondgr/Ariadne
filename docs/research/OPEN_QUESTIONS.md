@@ -268,6 +268,30 @@ evidence for the directional-cliff claim at all.
 **From:** EXP-2026-08-007 follow-up work; found while automating the Author.
 
 
+### Q18 — Should the evidence reader accept column shapes the templates do not emit?
+
+**Why it matters:** it is the one ambiguity in C-012, the study's headline. The
+evidence reader dispatches on the column combinations the templates produce, so
+a free-form query returning `group_id`+`group_name` and nothing else normalises
+to nothing however correct the query and the rows it returned. Seven of the
+LLM-query arm's thirty questions failed that way in EXP-2026-08-008.
+
+**Two defensible readings, and they lead to different papers.** Either the
+reader's coupling is an artifact of our harness and the baseline should be
+measured without it; or guaranteeing that a query's output is consumable is a
+genuine property templates provide, and the arm should wear it. The experiment
+reports both (0.5000 raw, 0.5739 crediting every reader failure) so the
+conclusion holds either way — but a paper has to pick one framing and defend it.
+
+**What resolves it:** either a generic normaliser keyed on `<entity>_id` /
+`<entity>_name` conventions rather than on template shapes, measured as a
+secondary arm; or an explicit written decision in `DECISIONS.md` that the
+coupling is part of what is being compared.
+
+**Cost:** ~1 day for the generic reader, or an afternoon for the decision.
+**Blocks:** how C-012 is phrased in the paper. **From:** EXP-2026-08-008 §7.
+
+
 ## Known weaknesses to state in the paper, not resolve
 
 These are limitations to disclose, not questions to answer.
