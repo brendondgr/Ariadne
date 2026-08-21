@@ -155,14 +155,37 @@ def write_report(out_dir: Path) -> Path:
     add("")
     best = cells.get("deterministic--plan-given") or {}
     families = best.get("by_family") or {}
+    ceiling = (cells.get("oracle--plan-given") or {}).get("by_family") or {}
     if families:
-        ranked = sorted(families.items(), key=lambda kv: kv[1].get("micro_recall", 0))
-        add("| question type | asked | found the right answers |")
-        add("|---|---:|---:|")
-        for name, roll in ranked:
-            pretty = name.replace("relationships_", "").replace("_", " ")
-            add(f"| {pretty} | {roll['n']} | {roll['micro_recall']:.3f} |")
+        add("Read the last column. A zero means Ariadne did as well as the data "
+            "allows. A large negative number means the answer is sitting in the "
+            "graph and Ariadne did not bring it back.")
         add("")
+        ranked = sorted(families.items(),
+                        key=lambda kv: kv[1].get("micro_recall", 0)
+                        - (ceiling.get(kv[0]) or {}).get("micro_recall", 0))
+        add("| question type | asked | ceiling | Ariadne | shortfall |")
+        add("|---|---:|---:|---:|---:|")
+        for name, roll in ranked:
+            top = (ceiling.get(name) or {}).get("micro_recall")
+            pretty = name.replace("relationships_", "").replace("_", " ")
+            if top is None:
+                add(f"| {pretty} | {roll['n']} | — | {roll['micro_recall']:.3f} | — |")
+                continue
+            gap = roll["micro_recall"] - top
+            mark = " **✗**" if gap <= -0.5 else (" ✓" if gap >= -0.01 else "")
+            add(f"| {pretty} | {roll['n']} | {top:.3f} | {roll['micro_recall']:.3f} "
+                f"| {gap:+.3f}{mark} |")
+        add("")
+        dead = [n for n, r in families.items()
+                if (ceiling.get(n) or {}).get("micro_recall", 0) - r["micro_recall"] >= 0.99]
+        matched = [n for n, r in families.items()
+                   if abs(r["micro_recall"] - (ceiling.get(n) or {}).get("micro_recall", 0)) < 0.01]
+        if dead or matched:
+            add(f"**{len(matched)} of {len(families)} question types match the "
+                f"ceiling exactly** — on those, Ariadne returns everything the "
+                f"data holds. **{len(dead)} return nothing at all.**")
+            add("")
 
     by_bench = best.get("by_benchmark") or {}
     if len(by_bench) > 1:
