@@ -1,0 +1,178 @@
+#!/usr/bin/env python3
+"""Merging both catalogues into one dataset (C-015).
+
+The merged graph is a *baseline*, and a baseline that quietly differs from the
+system it is compared against measures the difference rather than the question.
+Three properties are therefore load-bearing here, and each has a way of failing
+that still produces a plausible-looking graph.
+
+**Nothing is lost or duplicated.** A merge is a concatenation; if it silently
+drops a catalogue's relationships the merged arm just scores badly and the
+conclusion reads "merging is worse".
+
+**CAPEC nodes get the public identifier ATT&CK nodes already carry**, and get
+*exactly* the one the federated system reports. Every Cypher query anchors on
+``coalesce(n.attack_id, n.id)``, so without it a seed of ``CAPEC-66`` matches
+nothing; with a differently-shaped one, gold assertions stop matching and the
+arm looks wrong for a formatting reason.
+
+**Nodes with no public form keep their raw id.** Inventing one would give the
+merged arm identifiers the federated arms never emit, which is the same defect
+in the opposite direction.
+"""
+
+from __future__ import annotations
+
+import json
+
+import pytest
+
+from utils.kg_builder.merge import (
+    PUBLIC_ID_PROPERTY,
+    _merge_constraints,
+    _merge_schema,
+    build_merged,
+    promote_public_id,
+)
+
+# -- the public-identifier promotion ----------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("node_id", "expected"),
+    [
+        ("capec:attack-pattern:66", "CAPEC-66"),
+        ("capec:attack-pattern:1", "CAPEC-1"),
+        ("cwe:89", "CWE-89"),
+    ],
+)
+def test_a_capec_node_gains_the_public_id_the_federated_path_reports(
+    node_id: str, expected: str
+) -> None:
+    node = {"id": node_id, "label": "AttackPattern", "properties": {}}
+    assert promote_public_id(node)["properties"][PUBLIC_ID_PROPERTY] == expected
+
+
+@pytest.mark.parametrize(
+    "node_id",
+    [
+        "capec:attack-pattern:100:mitigation:1",   # composite child
+        "capec:attack-pattern:100:consequence:1",
+        "capec:category:118",                       # no public form in the Gremlin path
+        "capec:view:1000",
+        "capec:external-reference:REF-1",
+        "capec:taxonomy:ATTACK:1001.002",
+    ],
+)
+def test_a_node_with_no_public_form_keeps_its_raw_id(node_id: str) -> None:
+    """The Gremlin path reports these raw; the merged store must not differ."""
+    node = {"id": node_id, "label": "Mitigation", "properties": {}}
+    assert PUBLIC_ID_PROPERTY not in promote_public_id(node)["properties"]
+
+
+def test_an_attack_node_is_returned_untouched() -> None:
+    node = {
+        "id": "attack-pattern--abc",
+        "label": "Technique",
+        "properties": {"attack_id": "T1047", "stix_type": "attack-pattern"},
+    }
+    assert promote_public_id(node) is node
+
+
+def test_promotion_does_not_mutate_its_input() -> None:
+    """The ATT&CK half must stay byte-identical to its source."""
+    node = {"id": "capec:attack-pattern:66", "label": "AttackPattern", "properties": {}}
+    before = json.dumps(node, sort_keys=True)
+    promote_public_id(node)
+    assert json.dumps(node, sort_keys=True) == before
+
+
+# -- schema and constraint union --------------------------------------------
+
+
+def test_the_schema_unions_labels_and_keeps_both_edge_patterns() -> None:
+    merged = _merge_schema([
+        {
+            "node_labels": ["Technique", "Mitigation"],
+            "relationship_types": ["MITIGATES"],
+            "node_properties": {"Mitigation": ["attack_id"]},
+        },
+        {
+            "node_labels": ["AttackPattern", "Mitigation"],
+            "relationship_types": ["HAS_MITIGATION", "ChildOf"],
+            "node_properties": {"Mitigation": ["description"]},
+            "allowed_edge_patterns": {"HAS_MITIGATION": [["AttackPattern", "Mitigation"]]},
+        },
+    ])
+    assert merged["node_labels"] == ["AttackPattern", "Mitigation", "Technique"]
+    assert merged["relationship_types"] == ["ChildOf", "HAS_MITIGATION", "MITIGATES"]
+    # The shared label carries both catalogues' properties, not one of them.
+    assert merged["node_properties"]["Mitigation"] == ["attack_id", "description"]
+    assert merged["allowed_edge_patterns"]["HAS_MITIGATION"] == [
+        ["AttackPattern", "Mitigation"]
+    ]
+
+
+def test_constraints_that_require_the_same_thing_are_emitted_once() -> None:
+    """Both catalogues ask for a unique Mitigation id under different names."""
+    text = _merge_constraints([
+        {"constraints": "CREATE CONSTRAINT a IF NOT EXISTS FOR (n:Mitigation) REQUIRE n.id IS UNIQUE;"},
+        {"constraints": "CREATE CONSTRAINT b IF NOT EXISTS FOR (n:Mitigation) REQUIRE n.id IS UNIQUE;"},
+    ])
+    live = [ln for ln in text.splitlines() if ln and not ln.startswith("//")]
+    assert len(live) == 1
+    assert "CREATE CONSTRAINT a " in live[0]
+    assert "dropped as a duplicate" in text   # the drop is recorded, not silent
+
+
+# -- the whole build against the real catalogues -----------------------------
+
+
+@pytest.fixture(scope="module")
+def built():
+    """Compute the merge from the committed canonical artifacts, writing nothing."""
+    return build_merged(write=False)
+
+
+def test_the_merge_is_the_sum_of_its_two_inputs(built) -> None:
+    from utils.kg_builder.io import read_jsonl
+    from utils.kg_builder.merge import SOURCES, canonical_dir
+    from pathlib import Path
+
+    expected_nodes = expected_edges = 0
+    for dataset in SOURCES:
+        canon = canonical_dir(Path("data"), dataset)
+        expected_nodes += sum(1 for _ in read_jsonl(canon / "nodes.jsonl"))
+        expected_edges += sum(1 for _ in read_jsonl(canon / "relationships.jsonl"))
+    assert built["nodes"] == expected_nodes
+    assert built["relationships"] == expected_edges
+
+
+def test_every_capec_pattern_and_weakness_gets_a_public_id(built) -> None:
+    """558 attack patterns + 336 weaknesses; nothing else in CAPEC has one."""
+    assert built["public_ids_promoted"] == 894
+
+
+def test_the_two_catalogues_share_exactly_one_label(built) -> None:
+    """11 ATT&CK labels + 10 CAPEC labels, `Mitigation` in both."""
+    assert built["labels"] == 20
+
+
+def test_colliding_node_ids_are_a_hard_failure(monkeypatch) -> None:
+    """The merge assumes disjoint id spaces. If that ever stops being true, stop."""
+    import utils.kg_builder.merge as merge
+
+    def fake_read(data_dir, dataset):
+        return {
+            "dataset": dataset,
+            "nodes": [{"id": "same", "label": "X", "properties": {}}],
+            "relationships": [],
+            "schema": {"node_labels": ["X"], "relationship_types": []},
+            "manifest": {},
+            "card": {},
+            "constraints": "",
+        }
+
+    monkeypatch.setattr(merge, "_read_source", fake_read)
+    with pytest.raises(ValueError, match="disjoint identifier spaces"):
+        merge.build_merged(write=False)

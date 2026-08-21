@@ -136,6 +136,16 @@ def _expand_member_id(gremlin_id: str) -> str:
     return gid
 
 
+#: Public alias for the rule above. The merged-graph build (C-015) has to give
+#: its CAPEC half the *same* public-id surface the federated Gremlin path gives
+#: it — ``CAPEC-<n>`` and ``CWE-<n>`` and nothing else, with composite children
+#: keeping their raw ids — or the merged arm answers with identifiers no gold
+#: assertion can match, and the comparison measures a formatting difference
+#: rather than an architecture one. Reused rather than copied: two copies of an
+#: id-normalisation rule drift, and the drift is invisible until a figure moves.
+public_member_id = _expand_member_id
+
+
 def _card_plausible_gremlin(card: Any, label: str) -> list[PlausibleFacet]:
     """Plausible facets for ``label`` with rel types in the loaded gremlin form.
 
