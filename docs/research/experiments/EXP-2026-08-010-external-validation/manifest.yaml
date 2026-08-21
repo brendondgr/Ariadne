@@ -5,9 +5,9 @@
 id: EXP-2026-08-010
 slug: external-validation
 title: Does Ariadne survive questions it did not co-author?
-status: planned          # planned | running | complete | failed | superseded
+status: complete          # planned | running | complete | failed | superseded
 date_started: 2026-08-21
-date_completed: null
+date_completed: 2026-08-21
 authors: ["brendondgr"]
 
 purpose: >
@@ -32,7 +32,7 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: a1da6b8dc6a16a448165e51cd40d8772dc0ba18e          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: fa4c941                                   # the tree the run used
   branch: main
   entrypoint: "uv run python scripts/external_validation.py --out docs/evaluation/external-2026-08-21"
   dirty: false            # uncommitted changes at run time? if true, explain in ISSUES.md
@@ -43,7 +43,7 @@ data:
   name: CTIBench cti-ate (60 rows) and AttackQA enumerative subset, against MITRE ATT&CK 19.0
   version: "cti-ate @ AI4Sec/cti-bench; attackqa @ sambanovasystems/attackqa; attack 19.0"
   split: external — neither benchmark was authored with sight of this codebase
-  n_examples: 0
+  n_examples: 182
   dvc_path: null
   hash: null
 seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
@@ -54,7 +54,7 @@ environment:
   container: null
 compute:
   hardware: "<cpu/gpu, ram>"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 0.52
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -74,14 +74,34 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: <metric name>
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
-baselines_compared: []
+  primary: ariadne_minus_oracle_recall
+  values:
+    oracle_plan_given_micro_recall: {mean: 0.9863, std: null, n: 182}
+    oracle_plan_given_micro_precision: {mean: 0.81, std: null, n: 182}
+    oracle_plan_given_exact_match: {mean: 0.7033, std: null, n: 182}
+    deterministic_plan_given_micro_recall: {mean: 0.6836, std: null, n: 182}
+    deterministic_plan_given_micro_precision: {mean: 0.7701, std: null, n: 182}
+    deterministic_plan_given_exact_match: {mean: 0.4451, std: null, n: 182}
+    deterministic_plan_given_subset60_micro_recall: {mean: 0.717, std: null, n: 60}
+    deterministic_plan_given_subset60_micro_precision: {mean: 0.7815, std: null, n: 60}
+    deterministic_plan_given_subset60_exact_match: {mean: 0.4833, std: null, n: 60}
+    generic_plan_given_micro_recall: {mean: 0.9953, std: null, n: 60}
+    generic_plan_given_micro_precision: {mean: 0.81, std: null, n: 60}
+    generic_plan_given_exact_match: {mean: 0.7333, std: null, n: 60}
+    llm_plan_free_micro_recall: {mean: 0.6132, std: null, n: 60}
+    llm_plan_free_micro_precision: {mean: 0.767, std: null, n: 60}
+    llm_plan_free_exact_match: {mean: 0.45, std: null, n: 60}
+    ariadne_minus_oracle_recall: {mean: -0.3027, std: null, n: 182}
+    families_matching_ceiling: {mean: 8, std: null, n: 14}
+    families_returning_nothing: {mean: 4, std: null, n: 14}
+  # "families_*" count question types, not questions: 14 families, of which
+  # 8 match the ceiling to three decimals and 4 return nothing at all.
+baselines_compared: ["oracle (direct graph read)", "generic (no templates)", "llm (plan-free)"]
 statistical_test: null
 
 # --- Linkage ---
-supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+supports_claims: [C-003, C-012, C-013]
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
 superseded_by: null
-related: []
+related: ["EXP-2026-08-007", "EXP-2026-08-008", "EXP-2026-08-009"]

@@ -252,6 +252,7 @@ def score_cell(out: Path, arm: str, condition: str,
 
     lookup = {i.item_id: i for i in build_items()}
     scores: list[Score] = []
+    loose_scores: list[Score] = []
     retrieval_scores: list[Score] = []
     per_item: list[dict] = []
     by_benchmark: dict[str, list[Score]] = {}
@@ -277,8 +278,18 @@ def score_cell(out: Path, arm: str, condition: str,
         said = items_mod.apply_granularity(item, said)
         held = items_mod.apply_granularity(item, held)
 
+        # What the answer names once the anchor is removed, WITHOUT the
+        # type filter. The filtered figure is the fair recall comparison --
+        # both sides get it -- but it is generous about precision to an arm
+        # that dumps every neighbour and lets the filter tidy up. This is what
+        # a reader actually sees.
+        loose = items_mod.apply_granularity(
+            item, {i for i in extract_ids(record.get("answer_text", ""))
+                   if i != item.anchor})
+
         score = Score(frozenset(gold), frozenset(said))
         scores.append(score)
+        loose_scores.append(Score(frozenset(gold), frozenset(loose)))
         retrieval_scores.append(Score(frozenset(gold), frozenset(held)))
         by_benchmark.setdefault(item.benchmark, []).append(score)
         by_family.setdefault(item.family, []).append(score)
@@ -288,6 +299,7 @@ def score_cell(out: Path, arm: str, condition: str,
     return {
         "arm": arm, "condition": condition, "errors": errors,
         "answered": pool(scores),
+        "answered_unfiltered": pool(loose_scores),
         "retrieved": pool(retrieval_scores),
         "by_benchmark": {b: pool(s) for b, s in sorted(by_benchmark.items())},
         "by_family": {f: pool(s) for f, s in sorted(by_family.items())},

@@ -1,0 +1,39 @@
+{
+  "id": "AQA-techniques_parent-T1558.001",
+  "benchmark": "attackqa",
+  "family": "techniques_parent",
+  "anchor": "T1558.001",
+  "question": "What is the parent technique of attack technique 'T1558.001: Steal or Forge Kerberos Tickets: Golden Ticket'?",
+  "gold": [
+    "T1558"
+  ],
+  "arm": "llm",
+  "condition": "plan-free",
+  "answer_text": "Gathered 1 record(s) from 1 source(s).\nThe ATT&CK record for T1558.001 (Golden Ticket) states that adversaries who have the KRBTGT account password hash may forge Kerberos ticket-granting tickets (TGT), also known as a golden ticket. Golden tickets enable adversaries to generate authentication material for any account in Active Directory. Using a golden ticket, adversaries are then able to request ticket granting service (TGS) tickets, which enable access to specific resources. This record has stix_type: attack-pattern, x_mitre_deprecated: False, x_mitre_is_subtechnique: True, and x_mitre_version: 1.2. The parent technique is not mentioned in the record.\nFound ATT&CK record T1558.001: Golden Ticket.\nT1558.001 (Golden Ticket): Adversaries who have the KRBTGT account password hash may forge Kerberos ticket-granting tickets (TGT), also known as a golden ticket.(Citation: AdSecurity Kerberos GT Aug 2015) Golden tickets enable adversaries to generate authentication material for any account in Active Directory.(Citation: CERT-EU Golden Ticket Protection) \n\nUsing a golden ticket, adversaries are then able to request ticket granting service (TGS) tickets, which enable access to specific resources.\nT1558.001 (Golden Ticket) has stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 1.2.",
+  "retrieved_ids": [
+    "T1558.001"
+  ],
+  "composer": "deterministic",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "What is the parent technique of 'T1558.001: Steal or Forge Kerberos Tickets: Golden Ticket'?",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 1,
+          "max_result_rows": 10,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 58.812
+  },
+  "evidence_records": 1
+}

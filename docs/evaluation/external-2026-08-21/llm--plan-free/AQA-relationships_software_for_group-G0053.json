@@ -1,0 +1,49 @@
+{
+  "id": "AQA-relationships_software_for_group-G0053",
+  "benchmark": "attackqa",
+  "family": "relationships_software_for_group",
+  "anchor": "G0053",
+  "question": "What software are used by attack group 'G0053: FIN5'?",
+  "gold": [
+    "S0005",
+    "S0006",
+    "S0029",
+    "S0169",
+    "S0173",
+    "S0195"
+  ],
+  "arm": "llm",
+  "condition": "plan-free",
+  "answer_text": "Gathered 6 record(s) from 1 source(s).\nThe attack group G0053: FIN5 is associated with 6 ATT&CK record(s) including T1018, T1078, T1110 and more.\nFound 6 ATT&CK record(s) including T1018, T1078, T1110 and more.",
+  "retrieved_ids": [
+    "T1018",
+    "T1059",
+    "T1078",
+    "T1110",
+    "T1119",
+    "T1133"
+  ],
+  "composer": "deterministic",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "What software is used by group 'G0053: FIN5'?",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 16.82
+  },
+  "evidence_records": 6
+}
