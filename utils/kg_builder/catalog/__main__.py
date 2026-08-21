@@ -62,9 +62,10 @@ def main(argv: list[str] | None = None) -> int:
         import json as _json
         from pathlib import Path as _Path
 
-        from .card import build_card, examples_from_nodes, load_overlay, write_card
+        from .card import build_card, examples_from_nodes, load_overlay, names_from_nodes, write_card
 
         examples: dict = {}
+        node_names: dict = {}
         nodes_path = _Path(args.nodes)
         if nodes_path.is_file():
             rows = [
@@ -73,12 +74,14 @@ def main(argv: list[str] | None = None) -> int:
                 if line.strip()
             ]
             examples = examples_from_nodes(rows)
+            node_names = names_from_nodes(rows)
         card = build_card(
             catalog,
             load_overlay(args.overlay),
             out_dir=_Path(args.card).parent.parent,
             examples=examples,
             dataset=args.name,
+            names=node_names,
         )
         print(f"wrote {write_card(card, args.card)}")
 

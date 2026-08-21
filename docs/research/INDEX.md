@@ -10,7 +10,6 @@ that a dead end is walked into once rather than twice.
 
 | ID | Date | Title | Status | Primary metric | Claims | Link |
 |---|---|---|---|---|---|---|
-| `EXP-2026-08-011` | 2026-08-21 | Does the schema-agnostic path work on a schema it has never seen? | planned | gold_in_evidence_retrieval (not recorded) | C-010, C-014 | [identity-schema-transfer](experiments/EXP-2026-08-011-identity-schema-transfer/) |
 | `EXP-2026-07-001` | 2026-07-26 | Arm A — fully deterministic pipeline (planning, extraction, synthesis) | complete | correctness 0.9972 (n=1) | C-001, C-004 | [arm-a-deterministic](experiments/EXP-2026-07-001-arm-a-deterministic/) |
 | `EXP-2026-07-002` | 2026-07-26 | Arm B — LLM planning with deterministic extraction and an LLM writer | complete | correctness 0.8505 (n=1) | C-002, C-003, C-016 | [arm-b-llm-planned](experiments/EXP-2026-07-002-arm-b-llm-planned/) |
 | `EXP-2026-07-003` | 2026-07-26 | Arm C — authored plan with an LLM writer reading raw evidence | complete | correctness 0.9690 (n=1) | C-002, C-005 | [arm-c-llm-writer-evidence](experiments/EXP-2026-07-003-arm-c-llm-writer-evidence/) |
@@ -31,6 +30,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-08-008` | 2026-08-19 | Do the answer-writing fixes help, how do four arms compare on unseen questions, and does an LLM writing its own queries beat templates? | complete | llm_query_vs_templates_fresh_bank (not recorded) | C-001, C-003, C-012, C-017, C-021 | [composer-fix-and-fresh-bank](experiments/EXP-2026-08-008-composer-fix-and-fresh-bank/) |
 | `EXP-2026-08-009` | 2026-08-21 | Does federating across two engines beat merging both sources into one graph? | complete | merged_minus_federated_mean -0.0167 (n=60) | C-015, C-003, C-010 | [merged-graph-counterfactual](experiments/EXP-2026-08-009-merged-graph-counterfactual/) |
 | `EXP-2026-08-010` | 2026-08-21 | Does Ariadne survive questions it did not co-author? | complete | ariadne_minus_oracle_recall -0.3027 (n=182) | C-003, C-012, C-013 | [external-validation](experiments/EXP-2026-08-010-external-validation/) |
+| `EXP-2026-08-011` | 2026-08-21 | Does the schema-agnostic path work on a schema it has never seen? | complete | gold_in_evidence_retrieval (not recorded) | C-010, C-014 | [identity-schema-transfer](experiments/EXP-2026-08-011-identity-schema-transfer/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 
 **22 experiment(s) on record.**

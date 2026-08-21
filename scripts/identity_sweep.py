@@ -140,9 +140,31 @@ def run_one(question: str) -> dict[str, Any]:
             answer_text = getattr(answer, "narrative", "") or str(answer or "")
             abstained = bool(getattr(answer, "abstained", False))
 
-    blob = json.loads(json.dumps(evidence_payload, default=str)) if evidence_payload else {}
-    for match in json.dumps(blob).split('"query": "')[1:]:
-        queries.append(match.split('"')[0])
+    # `to_dict()`, not `json.dumps(..., default=str)`. The evidence bundle is a
+    # dataclass tree, and `default=str` silently flattens each node to its repr
+    # -- which yields a JSON *string* where the structure should be, so every
+    # nested query and record id disappears. That produced an empty query list
+    # and an apparent "0/27 questions routed correctly" that was an artifact of
+    # this function, not a measurement.
+    blob: dict[str, Any] = {}
+    if evidence_payload is not None:
+        to_dict = getattr(evidence_payload, "to_dict", None)
+        blob = to_dict() if callable(to_dict) else json.loads(
+            json.dumps(evidence_payload, default=str)
+        )
+
+    def collect_queries(node: Any) -> None:
+        if isinstance(node, dict):
+            value = node.get("query")
+            if isinstance(value, str) and value:
+                queries.append(value)
+            for item in node.values():
+                collect_queries(item)
+        elif isinstance(node, (list, tuple)):
+            for item in node:
+                collect_queries(item)
+
+    collect_queries(blob)
 
     return {
         "plan_sources": plan_sources,

@@ -45,7 +45,9 @@ _TYPE_MAP = {
 
 
 def _node_properties(
-    catalog: DeclaredCatalog, examples: dict[str, dict[str, Any]]
+    catalog: DeclaredCatalog,
+    examples: dict[str, dict[str, Any]],
+    names: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     """Per-label property schema, with an example drawn from real instances.
 
@@ -54,10 +56,24 @@ def _node_properties(
     like — which for a schema mixing ARNs, SIDs, GUIDs and UPNs is the only way
     the card conveys shape at all, since ``STRING`` conveys none.
     """
+    names = names or {}
     out: dict[str, Any] = {}
     for label, attrs in sorted(catalog.node_attributes.items()):
         sample = examples.get(label, {})
-        out[label] = {
+        # `name` is declared for every label even though no catalog row mentions
+        # it. That is not an invention: the canonical loader writes a top-level
+        # `name` on every node, exactly as it does for ATT&CK, whose card
+        # declares it on all eleven labels.
+        #
+        # Omitting it is not cosmetic. Anchor resolution offers a name anchor
+        # only for a property the card declares, so a card without `name` leaves
+        # a question like "what can Database Admins write" with no name to bind
+        # to -- the planner falls back to matching schema words against 72 label
+        # names and 21 relationship names, and ordinary IT English collides with
+        # those constantly. The first sweep floored at 0.07 on both arms for
+        # exactly this reason, which was a defect in this card and not a finding
+        # about the system.
+        properties: dict[str, Any] = {
             attr.name: {
                 "type": _TYPE_MAP.get(attr.value_type, "string"),
                 "declared_type": attr.value_type,
@@ -66,6 +82,14 @@ def _node_properties(
             }
             for attr in sorted(attrs.values())
         }
+        properties["name"] = {
+            "type": "string",
+            "declared_type": "STRING",
+            "optional": False,
+            "example": names.get(label),
+            "source": "canonical loader, not the customer catalog",
+        }
+        out[label] = properties
     return out
 
 
@@ -75,6 +99,7 @@ def build_card(
     out_dir: str | Path,
     examples: dict[str, dict[str, Any]] | None = None,
     dataset: str = "identity",
+    names: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     """Merge the derived schema with the authored overlay into one card."""
     prefix = Path(out_dir).as_posix()
@@ -95,7 +120,7 @@ def build_card(
         },
         "node_labels": sorted(catalog.node_attributes),
         "relationship_types": sorted({t.edge for t in catalog.triples}),
-        "node_properties": _node_properties(catalog, examples or {}),
+        "node_properties": _node_properties(catalog, examples or {}, names or {}),
         "identity": {
             "join_key": ["id"],
             "unique_backstop": "id",
@@ -182,4 +207,13 @@ def examples_from_nodes(nodes: list[dict[str, Any]]) -> dict[str, dict[str, Any]
     out: dict[str, dict[str, Any]] = {}
     for node in nodes:
         out.setdefault(node["label"], node["properties"])
+    return out
+
+
+def names_from_nodes(nodes: list[dict[str, Any]]) -> dict[str, str]:
+    """First-seen `name` per label, for the declared `name` property's example."""
+    out: dict[str, str] = {}
+    for node in nodes:
+        if node.get("name"):
+            out.setdefault(node["label"], node["name"])
     return out
