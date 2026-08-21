@@ -15,10 +15,15 @@ from typing import Any
 REPO = Path(__file__).resolve().parents[1]
 
 ARM_NAMES = {
-    "merged": "One database holding both catalogues",
-    "generic": "Two databases, no templates (the fair comparison)",
+    "merged": "ONE database holding both catalogues",
+    "generic_composed": "TWO databases, everything else identical",
+    "generic": "Two databases, no templates, answer written by a language model",
     "deterministic": "Two databases, pre-written templates",
 }
+
+#: The pair that isolates the architecture. Everything else in these two is the
+#: same code with the same flags; only the number of stores differs.
+COMPARISON = ("merged", "generic_composed")
 
 BANK_NAMES = {
     "bank20260819": "question set 1",
@@ -63,9 +68,15 @@ def write_report(out_dir: Path) -> Path:
     add("## 1. The comparison")
     add("")
     add("Every row below answered **the same questions**, with **the same plan**, "
-        "and was graded by **the same grader in the same session**. The only "
-        "thing that differs between the first two rows is how many databases sit "
-        "behind them.")
+        "and was graded by **the same grader in the same session**.")
+    add("")
+    add("**Read the first two rows against each other and ignore the rest.** They "
+        "are the same code with the same settings; the only difference is how "
+        "many databases sit behind them, and neither has a language model in it, "
+        "so neither wanders between runs. The third row disables the templates "
+        "*and* hands the writing to a language model — it is the study's "
+        "strongest version, but comparing it with the first row would be "
+        "comparing two things at once.")
     add("")
     if cells:
         header = "| version | " + " | ".join(BANK_NAMES[b] for b in banks) + " |"
@@ -88,7 +99,7 @@ def write_report(out_dir: Path) -> Path:
 
         merged_vs = []
         for bank in banks:
-            m, g = cells.get(("merged", bank)), cells.get(("generic", bank))
+            m, g = cells.get((COMPARISON[0], bank)), cells.get((COMPARISON[1], bank))
             if m and g:
                 merged_vs.append((bank, m["correctness"]["mean"] - g["correctness"]["mean"]))
         if merged_vs:

@@ -49,11 +49,25 @@ BANKS = {
     "bank20260820": REPO / "docs" / "evaluation" / "banks" / "bank-2026-08-20" / "bank.json",
 }
 
-#: The arm under test, and the two it is read against. `generic` is the primary
-#: comparison — same primitives, two stores instead of one. `deterministic` is
-#: the arm the paper leads with, read as a secondary.
+#: The arm under test, and the three it is read against.
+#:
+#: `generic_composed` is THE comparison: schema-derived primitives and
+#: deterministic composition, exactly as `merged` runs them, over two stores
+#: instead of one. Both sides are byte-reproducible, so a difference between
+#: them cannot be run variance.
+#:
+#: `generic` was the intended comparison until the first pass showed it turns on
+#: the LLM narrator and the facet loop as well as disabling the templates —
+#: reading `merged` against it varies two things at once. It is kept because it
+#: is the recorded Arm H and the study's strongest arm, but it is a secondary.
+#: `deterministic` is the arm the paper leads with, also a secondary.
 MERGED_ARM = "merged"
-FEDERATED_ARMS = ("generic", "deterministic")
+CONTROL_ARM = "generic_composed"
+FEDERATED_ARMS = (CONTROL_ARM, "generic", "deterministic")
+
+#: Arms whose answers this sweep produces rather than re-judges. The two
+#: recorded arms are re-judged from disk; the control has never been run.
+ARMS_TO_RUN = (MERGED_ARM, CONTROL_ARM)
 
 #: One grader, one session, every cell. A suffixed pass so the committed
 #: judgments are never overwritten — and `roll_up` counts `.judgment` exactly
@@ -107,6 +121,7 @@ class MergedSweep(Measurement):
         store answers questions perfectly happily.
         """
         from scripts.merged_separation import run as separation
+        from utils.evaluation.judge_answers import answer_files
 
         checks: dict[str, Any] = {}
         # CAPEC's Gremlin fixture never survives a container restart. Reload
@@ -124,8 +139,13 @@ class MergedSweep(Measurement):
             if not bank.is_file():
                 raise RuntimeError(f"missing bank: {bank}")
             for arm in FEDERATED_ARMS:
-                answers = EXPERIMENTS / name / arm / "answers"
-                n = len(list(answers.glob("*.json"))) if answers.is_dir() else 0
+                if arm in ARMS_TO_RUN:
+                    continue   # produced by this sweep, not read from disk
+                # Count through the judge's own selector, not a bare glob: the
+                # answers directory also holds `.judgment*.json` sidecars, and a
+                # glob counts 30 answers as 90. Harmless as a presence check and
+                # misleading as a recorded number, which is worse.
+                n = len(answer_files(EXPERIMENTS / name, arm))
                 if n == 0:
                     raise RuntimeError(f"no committed answers for {name}/{arm}")
                 checks[f"{name}/{arm}"] = n
@@ -133,24 +153,24 @@ class MergedSweep(Measurement):
 
     # -- M1/M2: run the merged arm ------------------------------------------
 
-    def run_merged(self, bank_name: str) -> dict[str, Any]:
+    def run_one(self, arm: str, bank_name: str) -> dict[str, Any]:
+        """Run one arm on one bank. The arm's own env overlay does the rest."""
         bank = BANKS[bank_name]
         root = EXPERIMENTS / bank_name
-        env = {
-            "ARIADNE_DATA_DIR": MERGED_DATA_DIR,
-            "NEO4J_URI": MERGED_URI,
-            "ORCH_MAX_HOPS": "5",
-        }
         out = _run(
             ["uv", "run", "python", "-m", "utils.evaluation.experiment_untruncated",
-             "--arm", MERGED_ARM, "--bank", str(bank), "--root", str(root),
+             "--arm", arm, "--bank", str(bank), "--root", str(root),
              "--workers", str(self.workers)],
-            env=env, timeout=3600,
+            env={"ORCH_MAX_HOPS": "5"}, timeout=3600,
         )
-        answers = root / MERGED_ARM / "answers"
+        from utils.evaluation.judge_answers import answer_files
+
         return {
+            "arm": arm,
             "bank": bank_name,
-            "answers": len(list(answers.glob("*.json"))),
+            # Through the judge's selector for the same reason as in preflight:
+            # once this bank has been graded the directory holds sidecars too.
+            "answers": len(answer_files(root, arm)),
             "tail": out.strip().splitlines()[-1] if out.strip() else "",
         }
 
@@ -191,20 +211,22 @@ def main(argv: list[str] | None = None) -> int:
     sweep.phase("P0", "graphs live, merged store whole and separable, banks on disk",
                 sweep.preflight)
 
-    for i, bank in enumerate(BANKS, start=1):
-        sweep.phase(f"M{i}-run", f"run the merged arm on {bank}",
-                    lambda b=bank: sweep.run_merged(b))
-        sweep.phase(f"M{i}-judge", f"grade the merged arm on {bank}",
-                    lambda b=bank: sweep.judge(b, MERGED_ARM))
-
-    n = len(BANKS)
-    for j, arm in enumerate(FEDERATED_ARMS):
-        for i, bank in enumerate(BANKS, start=1):
-            sweep.phase(
-                f"M{n + j + 1}-judge-{arm}-{i}",
-                f"re-grade the committed {arm} answers on {bank} with this session's grader",
-                lambda b=bank, a=arm: sweep.judge(b, a),
-            )
+    # Every cell graded in one session by one grader, so the grader cancels out
+    # of every comparison rather than being a term in it.
+    step = 0
+    for arm in ARMS_TO_RUN:
+        for bank in BANKS:
+            step += 1
+            sweep.phase(f"M{step}-run-{arm}-{bank[-4:]}",
+                        f"run {arm} on {bank}",
+                        lambda a=arm, b=bank: sweep.run_one(a, b))
+    for arm in (MERGED_ARM, *FEDERATED_ARMS):
+        for bank in BANKS:
+            step += 1
+            verb = "grade" if arm in ARMS_TO_RUN else "re-grade the committed"
+            sweep.phase(f"M{step}-judge-{arm}-{bank[-4:]}",
+                        f"{verb} {arm} answers on {bank}",
+                        lambda a=arm, b=bank: sweep.judge(b, a))
 
     def report() -> dict[str, Any]:
         from scripts.merged_report import write_report

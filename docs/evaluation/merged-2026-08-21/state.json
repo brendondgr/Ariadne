@@ -1,0 +1,428 @@
+{
+  "started": "2026-08-21T15:32:41+00:00",
+  "phases": [
+    {
+      "name": "P0",
+      "description": "graphs live, merged store whole and separable, banks on disk",
+      "started": "2026-08-21T15:32:41+00:00",
+      "status": "ok",
+      "result": {
+        "capec_reload": "ok",
+        "separation": {
+          "facts": {
+            "merged_uri": "bolt://localhost:5458",
+            "main_uri": "bolt://localhost:5456",
+            "nodes": 9138,
+            "relationships": 34641,
+            "by_source": {
+              "attack": 4369,
+              "capec": 4769
+            },
+            "mitigation": {
+              "total": 1214,
+              "attack": 44,
+              "capec": 1170
+            },
+            "mitigates_T1047": 4,
+            "has_mitigation_CAPEC_66": 3,
+            "mitre_spelled_relationships": {
+              "ChildOf": 532,
+              "CanPrecede": 162,
+              "CanFollow": 10,
+              "PeerOf": 19,
+              "CanAlsoBe": 3
+            },
+            "main_store": {
+              "nodes": 4369,
+              "capec_nodes": 0
+            }
+          },
+          "checks": [
+            {
+              "check": "every node landed",
+              "ok": true,
+              "detail": "9138 live against 9138 expected"
+            },
+            {
+              "check": "every relationship landed",
+              "ok": true,
+              "detail": "34641 live against 34641 expected"
+            },
+            {
+              "check": "every node carries exactly one source marker",
+              "ok": true,
+              "detail": "attack 4369 + capec 4769 = 9138; 0 unmarked, 0 in both"
+            },
+            {
+              "check": "the shared Mitigation label splits exactly",
+              "ok": true,
+              "detail": "44 ATT&CK + 1170 CAPEC = 1214"
+            },
+            {
+              "check": "a MITIGATES traversal reaches only ATT&CK mitigations",
+              "ok": true,
+              "detail": "4 mitigations for T1047, 0 CAPEC nodes on MITIGATES"
+            },
+            {
+              "check": "a CAPEC anchor resolves by its promoted public id",
+              "ok": true,
+              "detail": "CAPEC-66 has 3 mitigations via HAS_MITIGATION"
+            },
+            {
+              "check": "the relationship names MITRE spells itself are present",
+              "ok": true,
+              "detail": "ChildOf=532, CanPrecede=162, CanFollow=10, PeerOf=19, CanAlsoBe=3"
+            },
+            {
+              "check": "the main ATT&CK store is untouched",
+              "ok": true,
+              "detail": "4369 nodes, 0 of them CAPEC"
+            }
+          ],
+          "passed": true
+        },
+        "bank20260819/generic": 89,
+        "bank20260819/deterministic": 90,
+        "bank20260820/generic": 60,
+        "bank20260820/deterministic": 60
+      },
+      "wall_s": 12.3,
+      "finished": "2026-08-21T15:32:53+00:00"
+    },
+    {
+      "name": "M1-run",
+      "description": "run the merged arm on bank20260819",
+      "started": "2026-08-21T15:32:53+00:00",
+      "status": "ok",
+      "result": {
+        "bank": "bank20260819",
+        "answers": 30,
+        "tail": "[merged] wrote 30/30 artifacts to /home/bdgr/Agents/Ariadne/docs/evaluation/experiments/bank20260819/merged/answers/ in 0.9s"
+      },
+      "wall_s": 1.0,
+      "finished": "2026-08-21T15:32:54+00:00"
+    },
+    {
+      "name": "M1-judge",
+      "description": "grade the merged arm on bank20260819",
+      "started": "2026-08-21T15:32:54+00:00",
+      "status": "ok",
+      "result": {
+        "root": "/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/bank20260819",
+        "arm": "merged",
+        "suffix": ".c015",
+        "attempted": 30,
+        "failed": [
+          {
+            "case": "H-REV-01",
+            "status": "FAILED ValueError: no JSON object in reply: ''"
+          }
+        ],
+        "wall_s": 232.4,
+        "roll": {
+          "n": 29,
+          "correctness": {
+            "mean": 0.9552,
+            "ci95": [
+              0.9,
+              1.0
+            ]
+          },
+          "correct_rate": {
+            "correct": 26,
+            "point": 0.8966,
+            "wilson95": [
+              0.7361,
+              0.9642
+            ]
+          },
+          "verdicts": {
+            "CORRECT": 26,
+            "PARTIAL": 3,
+            "INCORRECT": 0
+          },
+          "faithfulness": 0.9966,
+          "groundedness": 1.0,
+          "completeness": 0.9883,
+          "hallucinations": 2,
+          "answers_with_hallucination": 2,
+          "abstained": 2,
+          "abstention_carries_query": 2,
+          "fabricated_mapping": 0
+        },
+        "bank": "bank20260819"
+      },
+      "wall_s": 232.5,
+      "finished": "2026-08-21T15:36:47+00:00"
+    },
+    {
+      "name": "M2-run",
+      "description": "run the merged arm on bank20260820",
+      "started": "2026-08-21T15:36:47+00:00",
+      "status": "ok",
+      "result": {
+        "bank": "bank20260820",
+        "answers": 30,
+        "tail": "[merged] wrote 30/30 artifacts to /home/bdgr/Agents/Ariadne/docs/evaluation/experiments/bank20260820/merged/answers/ in 1.0s"
+      },
+      "wall_s": 1.1,
+      "finished": "2026-08-21T15:36:48+00:00"
+    },
+    {
+      "name": "M2-judge",
+      "description": "grade the merged arm on bank20260820",
+      "started": "2026-08-21T15:36:48+00:00",
+      "status": "ok",
+      "result": {
+        "root": "/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/bank20260820",
+        "arm": "merged",
+        "suffix": ".c015",
+        "attempted": 30,
+        "failed": [],
+        "wall_s": 203.3,
+        "roll": {
+          "n": 30,
+          "correctness": {
+            "mean": 0.9667,
+            "ci95": [
+              0.9167,
+              1.0
+            ]
+          },
+          "correct_rate": {
+            "correct": 28,
+            "point": 0.9333,
+            "wilson95": [
+              0.7868,
+              0.9815
+            ]
+          },
+          "verdicts": {
+            "CORRECT": 28,
+            "PARTIAL": 2,
+            "INCORRECT": 0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 0.9333,
+          "hallucinations": 1,
+          "answers_with_hallucination": 1,
+          "abstained": 1,
+          "abstention_carries_query": 1,
+          "fabricated_mapping": 0
+        },
+        "bank": "bank20260820"
+      },
+      "wall_s": 203.3,
+      "finished": "2026-08-21T15:40:11+00:00"
+    },
+    {
+      "name": "M3-judge-generic-1",
+      "description": "re-grade the committed generic answers on bank20260819 with this session's grader",
+      "started": "2026-08-21T15:40:11+00:00",
+      "status": "ok",
+      "result": {
+        "root": "/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/bank20260819",
+        "arm": "generic",
+        "suffix": ".c015",
+        "attempted": 30,
+        "failed": [],
+        "wall_s": 157.7,
+        "roll": {
+          "n": 30,
+          "correctness": {
+            "mean": 0.9833,
+            "ci95": [
+              0.95,
+              1.0
+            ]
+          },
+          "correct_rate": {
+            "correct": 29,
+            "point": 0.9667,
+            "wilson95": [
+              0.8333,
+              0.9941
+            ]
+          },
+          "verdicts": {
+            "CORRECT": 29,
+            "PARTIAL": 1,
+            "INCORRECT": 0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 0.9833,
+          "hallucinations": 0,
+          "answers_with_hallucination": 0,
+          "abstained": 2,
+          "abstention_carries_query": 2,
+          "fabricated_mapping": 0
+        },
+        "bank": "bank20260819"
+      },
+      "wall_s": 157.7,
+      "finished": "2026-08-21T15:42:49+00:00"
+    },
+    {
+      "name": "M3-judge-generic-2",
+      "description": "re-grade the committed generic answers on bank20260820 with this session's grader",
+      "started": "2026-08-21T15:42:49+00:00",
+      "status": "ok",
+      "result": {
+        "root": "/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/bank20260820",
+        "arm": "generic",
+        "suffix": ".c015",
+        "attempted": 30,
+        "failed": [],
+        "wall_s": 122.2,
+        "roll": {
+          "n": 30,
+          "correctness": {
+            "mean": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          },
+          "correct_rate": {
+            "correct": 30,
+            "point": 1.0,
+            "wilson95": [
+              0.8865,
+              1.0
+            ]
+          },
+          "verdicts": {
+            "CORRECT": 30,
+            "PARTIAL": 0,
+            "INCORRECT": 0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 1.0,
+          "hallucinations": 0,
+          "answers_with_hallucination": 0,
+          "abstained": 3,
+          "abstention_carries_query": 3,
+          "fabricated_mapping": 0
+        },
+        "bank": "bank20260820"
+      },
+      "wall_s": 122.2,
+      "finished": "2026-08-21T15:44:51+00:00"
+    },
+    {
+      "name": "M4-judge-deterministic-1",
+      "description": "re-grade the committed deterministic answers on bank20260819 with this session's grader",
+      "started": "2026-08-21T15:44:51+00:00",
+      "status": "ok",
+      "result": {
+        "root": "/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/bank20260819",
+        "arm": "deterministic",
+        "suffix": ".c015",
+        "attempted": 30,
+        "failed": [],
+        "wall_s": 129.4,
+        "roll": {
+          "n": 30,
+          "correctness": {
+            "mean": 0.9667,
+            "ci95": [
+              0.9167,
+              1.0
+            ]
+          },
+          "correct_rate": {
+            "correct": 28,
+            "point": 0.9333,
+            "wilson95": [
+              0.7868,
+              0.9815
+            ]
+          },
+          "verdicts": {
+            "CORRECT": 28,
+            "PARTIAL": 2,
+            "INCORRECT": 0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 1.0,
+          "hallucinations": 0,
+          "answers_with_hallucination": 0,
+          "abstained": 1,
+          "abstention_carries_query": 1,
+          "fabricated_mapping": 0
+        },
+        "bank": "bank20260819"
+      },
+      "wall_s": 129.4,
+      "finished": "2026-08-21T15:47:01+00:00"
+    },
+    {
+      "name": "M4-judge-deterministic-2",
+      "description": "re-grade the committed deterministic answers on bank20260820 with this session's grader",
+      "started": "2026-08-21T15:47:01+00:00",
+      "status": "ok",
+      "result": {
+        "root": "/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/bank20260820",
+        "arm": "deterministic",
+        "suffix": ".c015",
+        "attempted": 30,
+        "failed": [
+          {
+            "case": "H-CHN-01",
+            "status": "FAILED ValueError: no JSON object in reply: ''"
+          }
+        ],
+        "wall_s": 178.8,
+        "roll": {
+          "n": 29,
+          "correctness": {
+            "mean": 0.931,
+            "ci95": [
+              0.8621,
+              0.9828
+            ]
+          },
+          "correct_rate": {
+            "correct": 25,
+            "point": 0.8621,
+            "wilson95": [
+              0.6944,
+              0.945
+            ]
+          },
+          "verdicts": {
+            "CORRECT": 25,
+            "PARTIAL": 4,
+            "INCORRECT": 0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 0.9138,
+          "hallucinations": 0,
+          "answers_with_hallucination": 0,
+          "abstained": 3,
+          "abstention_carries_query": 3,
+          "fabricated_mapping": 0
+        },
+        "bank": "bank20260820"
+      },
+      "wall_s": 178.8,
+      "finished": "2026-08-21T15:49:59+00:00"
+    },
+    {
+      "name": "M9",
+      "description": "write the plain-language report",
+      "started": "2026-08-21T15:49:59+00:00",
+      "status": "ok",
+      "result": {
+        "report": "docs/evaluation/merged-2026-08-21/REPORT.md"
+      },
+      "wall_s": 0.0,
+      "finished": "2026-08-21T15:49:59+00:00"
+    }
+  ]
+}

@@ -43,7 +43,7 @@ DEFAULT_ROOT = "docs/evaluation/experiments/untruncated"
 # synthesis) with ONLY the un-truncation profile added, so C − baseline isolates
 # un-truncation, A − C isolates the composer, and B − C isolates LLM planning.
 ARMS = ("deterministic", "llm", "gold_llm", "llm_loop", "gold_loop_llm", "generic",
-        "llm_query", "merged")
+        "llm_query", "merged", "generic_composed")
 
 # -- the un-truncation profile ----------------------------------------------
 # Every one of these keys is read *at call time* by the bound it names, with the
@@ -144,6 +144,25 @@ def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[st
             "SPECIALIST_LLM_ENABLED": "false",
             "SPECIALIST_LLM_MODEL": llm_model,
             "SPECIALIST_LLM_MAX_TOKENS": str(llm_max_tokens),
+        })
+    elif arm == "generic_composed":
+        # The control the merged arm actually needed, and the one that did not
+        # exist. `generic` disables the templates but ALSO turns on the LLM
+        # narrator and the facet loop, so reading `merged` against it compares
+        # two things at once — one store against two, and a deterministic
+        # composer against a language model. This is `generic` with the language
+        # model taken back out: schema-derived primitives, deterministic
+        # composition, two stores. Against `merged` the only remaining
+        # difference is how many stores there are, and both sides are
+        # byte-reproducible, so a difference between them cannot be run
+        # variance. EXP-2026-08-001 measured this configuration's retrieval and
+        # called it Arm H; it has never been judged.
+        env.update({
+            "SPECIALIST_GENERIC_ONLY": "true",
+            "PLANNER_LLM_ENABLED": "false",
+            "SPECIALIST_LLM_ENABLED": "false",
+            "SYNTHESIS_LLM_ENABLED": "false",
+            "CONVERSATION_LLM_ENABLED": "false",
         })
     elif arm == "merged":
         # The C-015 counterfactual: ONE store holding both catalogues instead of
@@ -611,6 +630,9 @@ RUNNERS = {
     # Same driver again: the gold-replay path does not care how many stores are
     # behind the router it is handed. `_MergedPool` is what makes it one.
     "merged": run_deterministic,
+    # And again: this arm differs from `deterministic` only by an env flag the
+    # query builders read, so it needs no driver of its own.
+    "generic_composed": run_deterministic,
 }
 
 

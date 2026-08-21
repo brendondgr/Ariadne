@@ -128,3 +128,31 @@ than computed afterwards.
 - **Neither grader has ever been checked against a human** (Q6).
 - **Every question is anchored.** The open-ended regime, where the two designs
   might differ most, is unmeasured (Q4).
+
+
+---
+
+## AMENDMENT, 2026-08-21, after the first grading pass
+
+The text above stands as written. This section records what changed and why,
+rather than editing the protocol to match its own first result.
+
+**The comparison named above is confounded.** `generic` disables the templates
+*and* turns on the LLM narrator and the facet loop, so it differs from `merged`
+in two ways rather than one. See `ISSUES.md` D1 — the first pass's own answers
+are the evidence.
+
+**The comparison is now `merged` against `generic_composed`**, a new arm with
+schema-derived primitives and deterministic composition over two stores.
+Against `merged` the only remaining difference is the number of stores, and
+neither side has a language model in it, so both are byte-reproducible and a
+difference between them cannot be run variance.
+
+`generic` and `deterministic` are both still graded, in the same session, as
+secondaries.
+
+**Both hypotheses stand unchanged.** They were stated about the architecture,
+not about a particular control, and they are still able to come out either way.
+
+**The first pass's figures are superseded and are not quoted as a C-015 result.**
+They remain on disk under the `.c015` sidecars of that pass's run.
