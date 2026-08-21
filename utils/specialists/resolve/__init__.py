@@ -226,6 +226,30 @@ def definitional_name_terms(text: str) -> tuple[str, ...]:
     return _extract_name_terms(text, set())
 
 
+def subsumed_sources(card: Any) -> frozenset[str]:
+    """Source names a card declares it also answers for (empty for ordinary cards)."""
+    raw = getattr(card, "raw", None) or {}
+    declared = (raw.get("identity") or {}).get("subsumes") or ()
+    return frozenset(str(name) for name in declared)
+
+
+def anchor_dataset(task: SpecialistTask, card: Any) -> str:
+    """Which catalogue's anchor rules apply to this task.
+
+    Ordinarily the card's own dataset, because a specialist serves one source.
+    A card that *subsumes* sources — the merged-graph counterfactual holds both
+    catalogues in one store — serves sub-questions that still declare which
+    catalogue they are about, so the task's source picks the rules. That is what
+    makes each sub-question resolve exactly as it does federated, leaving the
+    number of stores as the only difference between the two conditions.
+    """
+    if card.dataset in ("attack", "capec"):
+        return card.dataset
+    if task.source in subsumed_sources(card):
+        return task.source
+    return card.dataset
+
+
 def resolve(task: SpecialistTask, card: Any) -> ResolvedTask:
     """Ground ``task`` against ``card`` (the shared resolve-to-schema step).
 
@@ -242,9 +266,10 @@ def resolve(task: SpecialistTask, card: Any) -> ResolvedTask:
     attack_ids = list(extract_attack_ids(text))
     capec_ids = list(extract_capec_ids(text))
 
-    if card.dataset == "attack":
+    anchors_as = anchor_dataset(task, card)
+    if anchors_as == "attack":
         native = list(_extract_attack_seed_ids(text))
-    elif card.dataset == "capec":
+    elif anchors_as == "capec":
         # Prioritized CAPEC-native anchors: CAPEC ids first; else CWE ids (the
         # Weakness vertices seeding the CWE -> CAPEC -> ATT&CK chain); else
         # ATT&CK technique ids (the TaxonomyEntry anchors seeding the reverse
@@ -265,7 +290,11 @@ def resolve(task: SpecialistTask, card: Any) -> ResolvedTask:
     if join_key:
         declared = get_join_key(join_key)
         if declared is not None:
-            join_endpoint = declared.endpoint_for(card.dataset)
+            # Endpoint by the catalogue the sub-question is about: in a merged
+            # store the declared join is an ordinary traversal, but which end of
+            # it this sub-question sits on is still the thing that decides
+            # whether it produces join values or consumes them.
+            join_endpoint = declared.endpoint_for(anchors_as)
 
     return ResolvedTask(
         task=task,

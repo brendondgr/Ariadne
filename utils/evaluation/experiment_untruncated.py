@@ -43,7 +43,7 @@ DEFAULT_ROOT = "docs/evaluation/experiments/untruncated"
 # synthesis) with ONLY the un-truncation profile added, so C − baseline isolates
 # un-truncation, A − C isolates the composer, and B − C isolates LLM planning.
 ARMS = ("deterministic", "llm", "gold_llm", "llm_loop", "gold_loop_llm", "generic",
-        "llm_query")
+        "llm_query", "merged")
 
 # -- the un-truncation profile ----------------------------------------------
 # Every one of these keys is read *at call time* by the bound it names, with the
@@ -144,6 +144,28 @@ def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[st
             "SPECIALIST_LLM_ENABLED": "false",
             "SPECIALIST_LLM_MODEL": llm_model,
             "SPECIALIST_LLM_MAX_TOKENS": str(llm_max_tokens),
+        })
+    elif arm == "merged":
+        # The C-015 counterfactual: ONE store holding both catalogues instead of
+        # two engines speaking two languages. Everything else is held at Arm H's
+        # posture — no LLM anywhere, templates disabled so a single uniform
+        # capability answers both halves — because Arm H is what this is
+        # compared against and the number is only worth having if exactly one
+        # thing differs between them.
+        #
+        # The isolation is these two variables and nothing else. ARIADNE_DATA_DIR
+        # points the source-card loader and the schema registry at the merged
+        # dataset, which lives outside `data/` precisely so no other arm can see
+        # it; NEO4J_URI points at the second container. Neither is set anywhere
+        # else, so no other arm can reach the merged store either.
+        env.update({
+            "ARIADNE_DATA_DIR": "data-merged",
+            "NEO4J_URI": "bolt://localhost:5458",
+            "SPECIALIST_GENERIC_ONLY": "true",
+            "PLANNER_LLM_ENABLED": "false",
+            "SPECIALIST_LLM_ENABLED": "false",
+            "SYNTHESIS_LLM_ENABLED": "false",
+            "CONVERSATION_LLM_ENABLED": "false",
         })
     elif arm == "deterministic":
         # Reproducible mode: no LLM in planning, drafting, or synthesis.
@@ -297,6 +319,77 @@ class _RouterPool:
                 "capec_down": SpecialistRouter(
                     config, cards=full.cards, specialists={"capec": None}
                 ),
+            },
+        }
+
+    def get(self) -> dict[str, Any]:
+        state = getattr(self._local, "state", None)
+        if state is None:
+            state = self._build()
+            self._local.state = state
+        return state
+
+
+class _MergedPool:
+    """One Cypher specialist over the merged store, standing in for both sources.
+
+    The federated arms route an ATT&CK sub-question to the Cypher specialist and
+    a CAPEC one to the Gremlin specialist. Here both land on the same specialist,
+    because there is only one store. Everything upstream is untouched: the
+    authored plan still declares two sub-questions and a join, `run_plan` still
+    orders producer before consumer and seeds the consumer from the producer's
+    join values, and synthesis still assembles the answer the same way. What
+    changes is that the two retrievals hit one engine in one language.
+
+    Holding the plan constant is the whole point. A merged arm that also
+    collapsed the decomposition would differ from Arm H in two ways at once, and
+    the resulting number would not say which one moved it.
+
+    Thread-local like `_RouterPool`, for the same reason: a database client is
+    not safely shareable across the worker threads.
+    """
+
+    def __init__(self) -> None:
+        self._local = threading.local()
+
+    def _build(self) -> dict[str, Any]:
+        import dataclasses
+
+        from utils.planner.cards import load_source_cards
+        from utils.specialists import build_specialist
+        from utils.specialists.config import SpecialistConfig
+        from utils.specialists.federation import SpecialistRouter
+
+        config = dataclasses.replace(
+            SpecialistConfig.from_env(), llm_enabled=False, llm_query_builder=False
+        )
+        cards = load_source_cards(config.data_dir)
+        card = cards.get("merged")
+        if card is None:
+            raise RuntimeError(
+                f"no merged source card under {config.data_dir}/source_cards — "
+                "build it with `uv run python -m utils.kg_builder.merge`"
+            )
+        specialist = build_specialist("merged", card, config)
+
+        def router(**overrides: Any) -> SpecialistRouter:
+            # `_specialist_for` short-circuits on this dict, so the merged
+            # specialist answers for both source names the plan uses. A `None`
+            # entry means that source is unreachable, which is how the partial
+            # modes reproduce the abstention behaviour the C-ABS questions test.
+            specialists: dict[str, Any] = {"attack": specialist, "capec": specialist}
+            specialists.update(overrides)
+            return SpecialistRouter(config, cards=cards, specialists=specialists)
+
+        full = router()
+        return {
+            "full": full,
+            "specialist": specialist,
+            "routers": {
+                None: full,
+                "boundary": full,
+                "attack_down": router(attack=None),
+                "capec_down": router(capec=None),
             },
         }
 
@@ -515,6 +608,9 @@ RUNNERS = {
     # Same driver as ARM A: the arm differs only in who writes the query, which
     # is decided by the pool's SpecialistConfig, not by the runner.
     "llm_query": run_deterministic,
+    # Same driver again: the gold-replay path does not care how many stores are
+    # behind the router it is handed. `_MergedPool` is what makes it one.
+    "merged": run_deterministic,
 }
 
 
@@ -559,11 +655,15 @@ def run_arm(
     # ARM B builds its own specialists inside iter_pipeline; the gold-replay arms
     # share a thread-local router set (ARM C keeps the .env LLM drafter, as the
     # baseline did; ARM A forces it off).
-    pool = (None if arm in ("llm", "llm_loop", "gold_loop_llm", "generic")
-            else _RouterPool(
-                llm_enabled=(arm == "gold_llm"),
-                llm_query_builder=(arm == "llm_query"),
-            ))
+    if arm in ("llm", "llm_loop", "gold_loop_llm", "generic"):
+        pool = None
+    elif arm == "merged":
+        pool = _MergedPool()
+    else:
+        pool = _RouterPool(
+            llm_enabled=(arm == "gold_llm"),
+            llm_query_builder=(arm == "llm_query"),
+        )
 
     manifest: list[dict[str, Any]] = []
     total = len(work)

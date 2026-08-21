@@ -31,6 +31,7 @@ from typing import Any
 
 from . import (
     _ATTACK_ID_PATTERNS,
+    anchor_dataset,
     _dedupe,
     _extract_attack_seed_ids,
     _extract_name_terms,
@@ -111,12 +112,14 @@ def _native_ids(task: Any, dataset: str) -> tuple[str, ...]:
         # (TaxonomyEntry seeds for the reverse MAPS_TO join) — priority, not union.
         return extract_capec_ids(text) or extract_cwe_ids(text) or extract_attack_ids(text)
     if dataset == "merged":
-        # One store holding both catalogues, so both id families are native and
+        # One store holding both catalogues, reached only when the task declares
+        # no catalogue of its own (`anchor_dataset` resolves it to `attack` or
+        # `capec` whenever it does). Both id families are native here and
         # neither is a foreign key. Priority still, not union: a question naming
         # a T-id and a CAPEC id is a two-anchor question, and handing both to a
-        # single-anchor describe would resolve as ambiguous. ATT&CK leads because
-        # a CAPEC question that names a technique is asking about the mapping,
-        # which is reached from the technique end in this graph.
+        # single-anchor describe would resolve as ambiguous — and an ambiguous
+        # anchor abstains, so the merged arm would decline exactly the
+        # cross-source questions the counterfactual exists to test.
         return (
             _extract_attack_seed_ids(text)
             or extract_capec_ids(text)
@@ -155,7 +158,9 @@ def resolve_anchor(
     (``dataset``, ``node_labels``/``relationship_types`` for name filtering).
     Returns a :class:`ResolvedAnchor`, an :class:`AmbiguousAnchor`, or ``None``.
     """
-    dataset = getattr(card, "dataset", "")
+    # A card that subsumes several sources (the merged store) takes its anchor
+    # rules from the sub-question's declared source. See `anchor_dataset`.
+    dataset = anchor_dataset(task, card)
 
     # 1. The planner already attached seed ids — the highest-authority anchor.
     seeds = tuple(task.seed_ids or ())

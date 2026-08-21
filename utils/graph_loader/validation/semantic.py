@@ -43,6 +43,20 @@ def validate_semantic_graph(
         allowed_labels = set(schema.get("node_labels", CAPEC_NODE_LABELS))
         allowed_types = set(schema.get("relationship_types", CAPEC_RELATIONSHIP_TYPES))
         edge_patterns = CAPEC_EDGE_PATTERNS
+    elif dataset == "merged":
+        # The C-015 counterfactual holds both catalogues, so both rule sets
+        # apply and neither is relaxed. Without this branch `merged` fell to the
+        # ATT&CK arm below and every CAPEC edge read as an illegal pattern — the
+        # data was fine and the rule set was the wrong one.
+        allowed_labels = set(
+            schema.get("node_labels", ATTACK_NODE_LABELS | CAPEC_NODE_LABELS)
+        )
+        allowed_types = set(
+            schema.get(
+                "relationship_types", ATTACK_RELATIONSHIP_TYPES | CAPEC_RELATIONSHIP_TYPES
+            )
+        )
+        edge_patterns = ATTACK_EDGE_PATTERNS | CAPEC_EDGE_PATTERNS
     else:
         allowed_labels = set(schema.get("node_labels", ATTACK_NODE_LABELS))
         allowed_types = set(schema.get("relationship_types", ATTACK_RELATIONSHIP_TYPES))
@@ -72,16 +86,25 @@ def validate_semantic_graph(
             if required not in node and required not in props:
                 errors.append(f"Node {node_id} missing required property {required!r}")
 
-        if label in LABELS_REQUIRING_ATTACK_ID and dataset == "attack":
+        # In the merged graph `Mitigation` holds both catalogues' entries and
+        # only ATT&CK's carry an attack_id, so the marker label — not the
+        # primary one — decides whether the requirement applies. Checking the
+        # ATT&CK half of a merged store is worth the extra clause: dropping the
+        # check entirely would let a merged load hide a defect the ordinary
+        # load would have caught.
+        is_attack_node = dataset == "attack" or (
+            dataset == "merged" and "AttackObject" in (node.get("labels") or [])
+        )
+        if label in LABELS_REQUIRING_ATTACK_ID and is_attack_node:
             attack_id = props.get("attack_id")
             if not attack_id:
                 errors.append(f"Node {node_id} ({label}) missing attack_id property.")
 
-        if dataset == "attack" and "stix_type" in props and not props.get("stix_type"):
+        if is_attack_node and "stix_type" in props and not props.get("stix_type"):
             errors.append(f"Node {node_id} has empty stix_type.")
 
     errors.extend(validate_relationship_endpoints(nodes, edges))
-    if dataset == "attack":
+    if dataset in ("attack", "merged"):
         errors.extend(validate_tactic_technique_links(nodes, edges))
         errors.extend(validate_subtechnique_links(nodes, edges))
 

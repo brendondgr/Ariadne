@@ -148,9 +148,46 @@ def test_the_merge_is_the_sum_of_its_two_inputs(built) -> None:
     assert built["relationships"] == expected_edges
 
 
-def test_every_capec_pattern_and_weakness_gets_a_public_id(built) -> None:
-    """558 attack patterns + 336 weaknesses; nothing else in CAPEC has one."""
-    assert built["public_ids_promoted"] == 894
+def test_the_public_id_promotion_covers_exactly_three_groups(built) -> None:
+    """558 attack patterns, 336 weaknesses, 189 ATT&CK taxonomy entries.
+
+    The third group is the one that makes the cross-source join work. CAPEC
+    stores the bare `1027.001` where ATT&CK stores `T1027.001`, so without the
+    reconciliation the merged store retrieves the right mapping node and then
+    cannot follow it. Nothing else in CAPEC gets an identifier — categories,
+    views, WASC taxonomy entries and composite children keep their raw ids,
+    which is what the federated system reports for them.
+    """
+    assert built["public_ids_promoted"] == 558 + 336 + 189
+
+
+@pytest.mark.parametrize(
+    ("taxonomy", "entry", "expected"),
+    [
+        ("ATTACK", "1027.001", "T1027.001"),
+        ("ATTACK", "1059", "T1059"),
+        ("ATTACK", "T1059", "T1059"),   # already prefixed: not double-prefixed
+    ],
+)
+def test_an_attack_taxonomy_entry_is_reconciled_to_the_attack_form(
+    taxonomy: str, entry: str, expected: str
+) -> None:
+    node = {
+        "id": f"capec:taxonomy:{taxonomy}:{entry}",
+        "label": "TaxonomyEntry",
+        "properties": {"taxonomy_name": taxonomy, "entry_id": entry},
+    }
+    assert promote_public_id(node)["properties"][PUBLIC_ID_PROPERTY] == expected
+
+
+def test_a_non_attack_taxonomy_entry_is_left_alone() -> None:
+    """CAPEC also maps to WASC. Only the ATT&CK mapping is a join key here."""
+    node = {
+        "id": "capec:taxonomy:WASC:12",
+        "label": "TaxonomyEntry",
+        "properties": {"taxonomy_name": "WASC", "entry_id": "12"},
+    }
+    assert PUBLIC_ID_PROPERTY not in promote_public_id(node)["properties"]
 
 
 def test_the_two_catalogues_share_exactly_one_label(built) -> None:

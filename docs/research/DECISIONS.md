@@ -362,3 +362,52 @@ between stores. It would have handicapped the merged arm in the comparison the
 arm exists to inform, which is the same class of error as building a strawman
 baseline. See D-004 on why that class of error is the one this record most
 guards against.
+
+## D-017 — The merged graph reconciles identifiers at load, and says so (2026-08-20)
+
+**Context:** Building the C-015 counterfactual surfaced two places where the
+merged store cannot answer at all unless something is decided, and both are
+decisions about what the *merged condition* is rather than about how to make it
+win.
+
+**(a) Public identifiers.** Every schema-driven Cypher query anchors on
+`coalesce(n.attack_id, n.id)`. ATT&CK nodes carry `T1047` there. CAPEC nodes
+carry nothing — their public id is *derived from the node id* at read time by
+the Gremlin normalizer. A merged store queried in Cypher has no read-time step,
+so a seed of `CAPEC-66` matches nothing and the arm scores zero for a reason
+that is about plumbing.
+
+**(b) The mapping identifier.** CAPEC's ATT&CK taxonomy entries store the bare
+number `1027.001` where ATT&CK stores `T1027.001`. The federated system
+reconciles that at read time too, in the Gremlin normalizer's `maps_to` handler
+(`f"T{entry_id}"` when `taxonomy_name == "ATTACK"`).
+
+**Options:** (a) leave both, and report the resulting failures as the cost of
+merging; (b) reconcile both at merge time, in the data; (c) reconcile at query
+time in the Cypher path, mirroring the Gremlin code.
+
+**Decision:** (b). Both values are written by `utils/kg_builder/merge.py`, and
+the rule for (a) is *imported* from the Gremlin normalizer (`public_member_id`)
+rather than restated, so the merged store's public-id surface is identical to
+what the federated system reports — `CAPEC-<n>` and `CWE-<n>`, with composite
+children keeping raw ids.
+
+**Consequences.** Option (a) was rejected because it would have measured our
+plumbing and reported it as an architectural finding — the strawman failure D-004
+exists to prevent, in its most tempting form, since the strawman would have
+favoured the conclusion the project already prefers. Reconciling identifiers
+once at load rather than at every query is the merged design's own argument for
+itself; refusing to let the merged arm make that argument is not neutrality.
+
+Option (c) would have worked but puts a CAPEC-shaped rule inside the Cypher
+normalizer that four federated arms also run.
+
+**What travels with the claim.** The merged arm gets its cross-catalogue join
+values from a *neighbour's* identifier, and the federated arms do not
+(`_normalize_generic_neighbors`, gated on the card's `identity.subsumes`). That
+asymmetry is deliberate and is a finding rather than a fudge: in a single-store
+architecture the next hop is reachable without leaving the engine, and in a
+federated one it is not. It must be reported as one of the things merging buys,
+not hidden inside a normaliser. Measured effect on the blind set: consumer
+sub-questions skipped for want of a join value fell from 7 of 30 to 3 of 30, and
+the three that remain are the cases whose gold asserts `expect_dependency_skip`.

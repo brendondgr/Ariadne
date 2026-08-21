@@ -14,7 +14,7 @@ DEFAULT_GREMLIN_URI = "ws://localhost:6455/gremlin"
 
 #: ``merged`` is the C-015 counterfactual: both catalogues in one graph. It is a
 #: real dataset with its own canonical artifacts and card, but it lives under
-#: ``data/merged/`` and is only ever loaded with ``ARIADNE_DATA_DIR`` pointed
+#: ``data-merged/`` and is only ever loaded with ``ARIADNE_DATA_DIR`` pointed
 #: there, so listing it here cannot expose it to a default-configured run.
 SUPPORTED_DATASETS = frozenset({"attack", "capec", "merged"})
 LOAD_BACKENDS = frozenset({"neo4j", "gremlin"})

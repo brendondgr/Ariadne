@@ -24,7 +24,7 @@ from ..evidence import emit_record
 from ..primitives.describe import facets_from_count_rows as _facets_from_rows
 from ..primitives.describe import merge_with_card as _merge_plausible
 from ..primitives.expand import ExpandRequest, ExpandResult, paginate
-from ..resolve import ResolvedTask
+from ..resolve import ResolvedTask, subsumed_sources
 
 _TECHNIQUE_ID_RE = re.compile(r"^T\d{4}(?:\.\d{3})?$")
 
@@ -258,9 +258,27 @@ class CypherNormalizer:
                 entry["type"] = rel
             group["related"].append(entry)
 
+        # In a store that holds only one catalogue, a *neighbour* carrying
+        # another catalogue's identifier is a dead end: this specialist cannot
+        # query the other store, so the value is noise. In a store that holds
+        # both — the merged card declares which sources it subsumes — that same
+        # neighbour IS the cross-source link, reachable in the next hop without
+        # leaving the engine. The asymmetry is a real difference between the two
+        # architectures rather than a concession to either, and gating on the
+        # card keeps it a property of the data. Nothing changes for a card that
+        # subsumes nothing, which is every card but the merged one.
+        cross_catalogue = len(subsumed_sources(card)) > 1
+
         records: list[EvidenceRecord] = []
         for anchor, info in groups.items():
             join_values = (anchor,) if _is_technique_id(anchor) else ()
+            if cross_catalogue:
+                seen = set(join_values)
+                for entry in info["related"]:
+                    nid = str(entry.get("id") or "")
+                    if _is_technique_id(nid) and nid not in seen:
+                        seen.add(nid)
+                        join_values = (*join_values, nid)
             records.append(
                 emit_record(
                     card=card,

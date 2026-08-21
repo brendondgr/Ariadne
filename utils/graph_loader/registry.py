@@ -7,9 +7,18 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from .config import LOAD_BACKENDS, LoaderConfig
+from .config import LOAD_BACKENDS, SUPPORTED_DATASETS, LoaderConfig
 
-SUPPORTED_DATASETS = frozenset({"attack", "capec"})
+__all__ = [
+    "SUPPORTED_DATASETS",   # re-exported: this module had its own copy until
+                            # 2026-08-20, and adding a dataset to the one in
+                            # config.py left this one behind, so the loader
+                            # rejected a dataset the config had allowed.
+    "LoaderResolutionError",
+    "BackendLoadTarget",
+    "DatasetLoadTarget",
+    "resolve_dataset",
+]
 
 
 class LoaderResolutionError(Exception):

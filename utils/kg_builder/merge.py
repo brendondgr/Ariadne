@@ -6,18 +6,27 @@ queried in its own language, is worth the complexity. `CLAIMS.md` C-015 has
 never been contrasted with the obvious alternative — pour both into one graph
 and query that — because the alternative was never built. This module builds it.
 
-**Where the output goes, and why it is not `data/graphs/`.** Everything lands
-under ``data/merged/``, mirroring the ordinary layout (``graphs/merged/canonical``,
-``source_cards/merged.json``) so the loader, the schema registry and the
-specialists all work unchanged when pointed at it with ``ARIADNE_DATA_DIR``.
-Putting it in the ordinary place would have made it visible to every arm:
-:func:`utils.planner.cards.load_source_cards` globs ``source_cards/*.json``, so a
-merged card there becomes a third source the planner can route to, and
-:func:`utils.specialists.schema.build.discover_datasets` walks ``graphs/``, so a
-merged dataset there gets walked into the schema registry that ``binding.py``
-and ``direction.py`` build on the default path. Both would have changed arms
-that are already measured and recorded. Isolation is by directory rather than
-by a flag, because a directory cannot be left switched on by accident.
+**Where the output goes, and why not the ordinary place.** Everything lands
+under ``data-merged/``, mirroring the ordinary layout
+(``graphs/merged/canonical``, ``source_cards/merged.json``) so the loader, the
+schema registry and the specialists all work unchanged when pointed at it with
+``ARIADNE_DATA_DIR``.
+
+Not ``data/graphs/`` and ``data/source_cards/``, because that would make the
+merged dataset visible to every arm: :func:`utils.planner.cards.load_source_cards`
+globs ``source_cards/*.json``, so a merged card there becomes a third source the
+planner can route to, and :func:`utils.specialists.schema.build.discover_datasets`
+walks ``graphs/``, so a merged dataset there enters the schema registry that
+``binding.py`` and ``direction.py`` build on the *default* path. Both would have
+changed arms that are already measured and written up. Isolation is by directory
+rather than by a flag, because a directory cannot be left switched on by accident.
+
+A *sibling* of ``data/`` rather than a child, because the loader resolves a
+card's artifact paths against the data directory's **parent**
+(``_resolve_path`` in ``utils/graph_loader/registry.py``) — which is what makes
+the ordinary cards repo-root-relative. A child directory would need its paths
+written relative to ``data/`` instead, and a card whose paths resolve from only
+one working directory is a trap for whoever reads it next.
 
 **The one substantive transformation.** ATT&CK nodes carry their public
 identifier in ``properties.attack_id`` (``T1047``); :func:`node_merge_cypher`
@@ -38,7 +47,7 @@ the Gremlin path reports them. Recorded as a design decision in `DECISIONS.md`.
 
 Usage::
 
-    uv run python -m utils.kg_builder.merge          # writes data/merged/
+    uv run python -m utils.kg_builder.merge          # writes data-merged/
     uv run python -m utils.kg_builder.merge --check  # verify without writing
 """
 
@@ -51,7 +60,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any, Iterable
 
-from utils.kg_builder.io import ensure_dir, load_json, read_jsonl, write_json
+from utils.kg_builder.io import ensure_dir, file_sha256, load_json, read_jsonl, write_json
 from utils.specialists.gremlin.normalizer import public_member_id
 
 #: The two catalogues, in load order. ATT&CK first so its half of the merged
@@ -65,7 +74,7 @@ SOURCES = ("attack", "capec")
 PUBLIC_ID_PROPERTY = "attack_id"
 
 DEFAULT_DATA_DIR = Path("data")
-DEFAULT_OUT_DIR = Path("data") / "merged"
+DEFAULT_OUT_DIR = Path("data-merged")
 
 
 # -- reading the two sources -------------------------------------------------
@@ -106,6 +115,21 @@ def promote_public_id(node: dict[str, Any]) -> dict[str, Any]:
     props = dict(node.get("properties") or {})
     if props.get(PUBLIC_ID_PROPERTY):
         return node
+
+    # A CAPEC taxonomy entry pointing at ATT&CK stores the bare number that
+    # ATT&CK stores with a T prefix ("1027.001" against "T1027.001"). The
+    # federated system reconciles that at read time, in the Gremlin normalizer's
+    # maps_to handler; a merged graph reconciles identifiers once, at load. That
+    # is the merged design's actual argument for itself, so writing the
+    # reconciled id here is the merged condition, not a thumb on the scale.
+    if node.get("label") == "TaxonomyEntry" and props.get("taxonomy_name") == "ATTACK":
+        entry = str(props.get("entry_id") or "")
+        if entry:
+            props[PUBLIC_ID_PROPERTY] = entry if entry.startswith("T") else f"T{entry}"
+            merged = dict(node)
+            merged["properties"] = props
+            return merged
+
     public = public_member_id(str(node.get("id") or ""))
     if public == node.get("id"):
         return node
@@ -257,6 +281,13 @@ def _merge_card(sources: list[dict[str, Any]], schema: dict[str, Any],
             ),
             "join_key": ["attack_id"],
             "known_collisions": collisions,
+            # The plans this store replays are the federated plans, unchanged:
+            # sub-questions routed to `attack` and `capec`, because holding the
+            # decomposition constant is what makes the C-015 comparison about
+            # storage rather than about planning. One specialist answers for
+            # both, and it learns that here rather than from a special case in
+            # code.
+            "subsumes": list(SOURCES),
             "not_traversable": {
                 **(attack.get("identity", {}).get("not_traversable") or {}),
                 **(capec.get("identity", {}).get("not_traversable") or {}),
@@ -381,10 +412,23 @@ def build_merged(
             for record in records:
                 handle.write(json.dumps(record, sort_keys=True) + "\n")
     write_json(canon / "schema.json", schema)
-    write_json(canon / "manifest.json", manifest)
     (exports / "constraints.cypher").write_text(
         _merge_constraints(sources), encoding="utf-8"
     )
+
+    # Hashes last, over the files as written. The loader's preflight recomputes
+    # every one of these before it touches a database and refuses on a mismatch
+    # (`verify_manifest_hashes`), which is what stops a half-written or
+    # hand-edited artifact from reaching a store. Keys must match the manifest's
+    # own path entries: `canonical` keys as-is, exports as `<backend>_<name>`.
+    manifest["hashes"] = {
+        "nodes_jsonl": file_sha256(canon / "nodes.jsonl"),
+        "relationships_jsonl": file_sha256(canon / "relationships.jsonl"),
+        "schema_json": file_sha256(canon / "schema.json"),
+        "neo4j_constraints_cypher": file_sha256(exports / "constraints.cypher"),
+    }
+    write_json(canon / "manifest.json", manifest)
+
     write_json(out_dir / "source_cards" / "merged.json",
                _merge_card(sources, schema, out_dir))
     return summary

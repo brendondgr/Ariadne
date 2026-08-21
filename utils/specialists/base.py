@@ -216,10 +216,26 @@ class QuerySpecialist:
 
     # -- internals ----------------------------------------------------------
 
+    def _subsumed_sources(self) -> frozenset[str]:
+        """Source names this specialist's card declares it also answers for.
+
+        Empty for every ordinary card, so the check below is unchanged for the
+        attack and capec specialists. The merged-graph counterfactual (C-015) is
+        one store holding both catalogues, and the plans it replays are the same
+        plans the federated arms replay — sub-questions routed to ``attack`` and
+        ``capec``, because holding the decomposition constant is what makes the
+        comparison about storage rather than about planning. Declaring the
+        subsumption on the card keeps that a property of the data rather than a
+        special case named in code.
+        """
+        raw = getattr(self.card, "raw", None) or {}
+        declared = (raw.get("identity") or {}).get("subsumes") or ()
+        return frozenset(str(name) for name in declared)
+
     def _intake(self, task: SpecialistTask) -> str | None:
         if not task.sub_question_id:
             return "task is missing a sub_question_id"
-        if task.source != self.card.dataset:
+        if task.source != self.card.dataset and task.source not in self._subsumed_sources():
             return (
                 f"task targets source {task.source!r} but this specialist serves "
                 f"{self.card.dataset!r}"

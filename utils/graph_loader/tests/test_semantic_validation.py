@@ -119,3 +119,90 @@ def test_real_attack_artifacts_pass_semantic_validation() -> None:
         Path("data/graphs/attack/canonical/schema.json"),
     )
     assert result.valid, result.errors[:3]
+
+
+# -- the merged graph (C-015) ------------------------------------------------
+#
+# `merged` fell through to the ATT&CK arm of the ruleset selector before
+# 2026-08-20, so every CAPEC edge in the merged dataset read as an illegal
+# pattern. The data was correct; the rule set was the wrong one. These pin the
+# fix and, more importantly, pin that it is a union rather than a relaxation —
+# a validator that stops objecting is worth nothing.
+
+
+def _merged_nodes() -> list[dict]:
+    return [
+        _node("t1", "Technique", "T1000"),
+        _node("m1", "Mitigation", "M1000"),
+        {
+            "id": "capec:attack-pattern:1",
+            "label": "AttackPattern",
+            "labels": ["AttackPattern", "CapecObject"],
+            "properties": {"attack_id": "CAPEC-1"},
+        },
+        {
+            "id": "capec:attack-pattern:2",
+            "label": "AttackPattern",
+            "labels": ["AttackPattern", "CapecObject"],
+            "properties": {"attack_id": "CAPEC-2"},
+        },
+        {
+            "id": "capec:attack-pattern:1:mitigation:0",
+            "label": "Mitigation",
+            "labels": ["Mitigation", "CapecObject"],
+            "properties": {},
+        },
+    ]
+
+
+def test_both_catalogues_pass_together_under_the_merged_ruleset() -> None:
+    edges = [
+        {"id": "e1", "type": "MITIGATES", "source_id": "m1", "target_id": "t1"},
+        {"id": "e2", "type": "ChildOf",
+         "source_id": "capec:attack-pattern:1", "target_id": "capec:attack-pattern:2"},
+        {"id": "e3", "type": "HAS_MITIGATION",
+         "source_id": "capec:attack-pattern:1",
+         "target_id": "capec:attack-pattern:1:mitigation:0"},
+    ]
+    result = validate_semantic_graph(_merged_nodes(), edges, schema={"dataset": "merged"})
+    assert result.valid, result.errors
+
+
+def test_the_merged_ruleset_is_a_union_not_an_amnesty() -> None:
+    """A pattern neither catalogue declares must still fail."""
+    edges = [
+        {"id": "bad", "type": "MITIGATES",
+         "source_id": "capec:attack-pattern:1", "target_id": "t1"},
+    ]
+    result = validate_semantic_graph(_merged_nodes(), edges, schema={"dataset": "merged"})
+    assert not result.valid
+    assert any("Illegal edge pattern" in e for e in result.errors)
+
+
+def test_a_capec_mitigation_is_not_asked_for_an_attack_id() -> None:
+    """`Mitigation` is the one label both catalogues use, and only one half has ids."""
+    result = validate_semantic_graph(_merged_nodes(), [], schema={"dataset": "merged"})
+    assert not [e for e in result.errors if "missing attack_id" in e]
+
+
+def test_an_attack_mitigation_is_still_asked_for_one() -> None:
+    """The marker label decides, so the ATT&CK half keeps the check it always had."""
+    nodes = _merged_nodes()
+    nodes[1]["properties"].pop("attack_id")
+    result = validate_semantic_graph(nodes, [], schema={"dataset": "merged"})
+    assert any("missing attack_id" in e for e in result.errors)
+
+
+def test_the_real_merged_artifacts_pass_semantic_validation() -> None:
+    """The whole thing, against what `utils.kg_builder.merge` actually wrote."""
+    from pathlib import Path
+
+    from utils.graph_loader.validation.semantic import validate_semantic_artifacts
+
+    canon = Path("data-merged/graphs/merged/canonical")
+    if not (canon / "nodes.jsonl").is_file():
+        pytest.skip("merged dataset not built — run `python -m utils.kg_builder.merge`")
+    result = validate_semantic_artifacts(
+        canon / "nodes.jsonl", canon / "relationships.jsonl", canon / "schema.json"
+    )
+    assert result.valid, result.errors[:5]

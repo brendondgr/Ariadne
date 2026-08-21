@@ -262,8 +262,12 @@ VERSION OVERRIDES (--docker start only)
     )
     graph.add_argument(
         "--dataset",
-        choices=["attack", "capec", "all"],
-        metavar="{attack,capec,all}",
+        # `merged` is the C-015 counterfactual — both catalogues in one graph.
+        # It is not part of `all` and never will be: it lives under a separate
+        # data directory and is only reachable by naming it *and* pointing
+        # ARIADNE_DATA_DIR at data-merged, so an ordinary run cannot touch it.
+        choices=["attack", "capec", "merged", "all"],
+        metavar="{attack,capec,merged,all}",
         help="Which dataset to load or verify (required for --graph, except --graph health)",
     )
     graph.add_argument(

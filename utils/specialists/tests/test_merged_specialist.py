@@ -79,6 +79,76 @@ def test_the_merged_dataset_is_reachable_when_pointed_at_deliberately() -> None:
 
     from utils.specialists.schema.build import discover_datasets
 
-    if not (Path("data/merged/graphs/merged/canonical/nodes.jsonl")).is_file():
+    if not (Path("data-merged/graphs/merged/canonical/nodes.jsonl")).is_file():
         pytest.skip("merged dataset not built — run `python -m utils.kg_builder.merge`")
-    assert discover_datasets("data/merged") == ["merged"]
+    assert discover_datasets("data-merged") == ["merged"]
+
+
+# -- cross-catalogue join values, and why only the merged store gets them -----
+
+
+def _neighbour_rows():
+    """One CAPEC pattern whose MAPS_TO neighbour is an ATT&CK technique id."""
+    return [{
+        "anchor_id": "CAPEC-572",
+        "anchor_name": "Artificially Inflate File Sizes",
+        "anchor_label": "AttackPattern",
+        "neighbour_id": "T1027.001",
+        "neighbour_name": "Binary Padding",
+        "neighbour_label": "TaxonomyEntry",
+        "rel_type": "MAPS_TO",
+    }]
+
+
+def _normalize(card):
+    from utils.specialists.cypher.normalizer import CypherNormalizer
+
+    return CypherNormalizer()._normalize_generic_neighbors(
+        _neighbour_rows(), "MATCH (n) ...", card, "capec-id"
+    )
+
+
+def test_a_merged_store_carries_a_neighbours_identifier_as_a_join_value() -> None:
+    """In one store the next hop is reachable, so the neighbour is the link."""
+    card = SourceCardView.from_card_dict({
+        "dataset": "merged",
+        "runtime_backend": "neo4j",
+        "node_labels": ["AttackPattern", "TaxonomyEntry"],
+        "relationship_types": ["MAPS_TO"],
+        "identity": {"subsumes": ["attack", "capec"]},
+    })
+    assert _normalize(card)[0].join_values == ("T1027.001",)
+
+
+def test_a_single_catalogue_store_does_not() -> None:
+    """The federated arms must be untouched by that.
+
+    A CAPEC specialist cannot query ATT&CK, so an ATT&CK id on a neighbour is a
+    dead end there rather than a link — and changing what those records carry
+    would move `join_index`, the correlation claims built on it, and therefore
+    arm figures that are already recorded.
+    """
+    card = SourceCardView.from_card_dict({
+        "dataset": "capec",
+        "runtime_backend": "gremlin",
+        "node_labels": ["AttackPattern", "TaxonomyEntry"],
+        "relationship_types": ["MAPS_TO"],
+    })
+    assert _normalize(card)[0].join_values == ()
+
+
+def test_an_anchor_that_is_itself_a_technique_still_joins_everywhere() -> None:
+    """The pre-existing rule is unchanged, with or without subsumption."""
+    from utils.specialists.cypher.normalizer import CypherNormalizer
+
+    rows = [{
+        "anchor_id": "T1047", "anchor_name": "WMI", "anchor_label": "Technique",
+        "neighbour_id": "M1040", "neighbour_name": "x", "neighbour_label": "Mitigation",
+        "rel_type": "MITIGATES",
+    }]
+    card = SourceCardView.from_card_dict({
+        "dataset": "attack", "runtime_backend": "neo4j",
+        "node_labels": ["Technique", "Mitigation"], "relationship_types": ["MITIGATES"],
+    })
+    out = CypherNormalizer()._normalize_generic_neighbors(rows, "q", card, "technique-id")
+    assert out[0].join_values == ("T1047",)
