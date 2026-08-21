@@ -11,8 +11,30 @@ from ..config import ADAPTER_VERSION
 from ..models import AdapterMetadata, ReferentialIntegrityResult
 from .base import GraphStore
 
+#: Names interpolated into Cypher must be identifier-shaped. The rule's job is
+#: to reject anything that could close the identifier and continue the query —
+#: backticks, quotes, whitespace, punctuation — which is why it is an allowlist
+#: rather than an escape.
+#:
+#: Labels and relationship types share one rule. They did not until 2026-08-20:
+#: the relationship rule was `^[A-Z][A-Z0-9_]*$`, screaming-snake only. That was
+#: never a considered decision about safety — case has no bearing on what the
+#: rule blocks — it was an accident of which names the loader had ever seen.
+#: Ten of CAPEC's fifteen relationship names are ones this repo invents, because
+#: the source XML expresses those links by nesting rather than by naming them,
+#: and they are screaming-snake by house style. The other five — ChildOf,
+#: CanPrecede, CanFollow, PeerOf, CanAlsoBe — are copied verbatim from the
+#: `Nature` attribute of the CAPEC XML and are CamelCase. CAPEC had only ever
+#: been loaded into Gremlin, which has no such rule, so MITRE's own spelling met
+#: this validator for the first time when the merged-graph store (C-015) was
+#: built, and it was refused.
+#:
+#: The alternative — renaming those five on the way in — was rejected: it would
+#: make a query written against the merged store fail to port to the Gremlin
+#: store holding the same data, inside the one experiment that is about queries
+#: porting between stores. See DECISIONS.md D-016.
 _SAFE_LABEL = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
-_SAFE_REL = re.compile(r"^[A-Z][A-Z0-9_]*$")
+_SAFE_REL = _SAFE_LABEL
 
 
 def _sanitize_label(label: str) -> str:

@@ -57,6 +57,52 @@ def test_unsafe_label_rejected() -> None:
         node_merge_cypher({"id": "1", "label": "Bad-Label", "labels": ["Bad-Label"], "properties": {}})
 
 
+# -- relationship type names -------------------------------------------------
+#
+# The rule was screaming-snake only until 2026-08-20, which refused the five
+# names CAPEC's own XML supplies (`Nature="ChildOf"` and friends). Widening it
+# to match the label rule is a change to a *safety* validator, so both halves
+# are pinned: the names that must now pass, and the ones that must still not.
+
+
+@pytest.mark.parametrize(
+    "rel_type",
+    ["ChildOf", "CanPrecede", "CanFollow", "PeerOf", "CanAlsoBe", "ParentOf"],
+)
+def test_capecs_own_relationship_names_are_accepted(rel_type: str) -> None:
+    """MITRE spells these CamelCase; the merged store must name them as MITRE does."""
+    query, _ = relationship_merge_cypher(
+        {"id": "e1", "type": rel_type, "source_id": "a", "target_id": "b"}
+    )
+    assert f"MERGE (a)-[r:{rel_type}]->(b)" in query
+
+
+def test_this_repos_own_relationship_names_still_pass() -> None:
+    query, _ = relationship_merge_cypher(
+        {"id": "e1", "type": "EXPLOITS_WEAKNESS", "source_id": "a", "target_id": "b"}
+    )
+    assert "MERGE (a)-[r:EXPLOITS_WEAKNESS]->(b)" in query
+
+
+@pytest.mark.parametrize(
+    "rel_type",
+    [
+        "Can Follow",          # whitespace
+        "Can`Follow",          # a backtick would close the identifier
+        "Can-Follow",          # punctuation
+        "`x`]->() DETACH DELETE (n)-[:`y",   # the injection the rule exists for
+        "1ChildOf",            # leading digit
+        "",                    # empty
+        "Can'Follow",          # quote
+    ],
+)
+def test_unsafe_relationship_names_are_still_rejected(rel_type: str) -> None:
+    with pytest.raises(ValueError):
+        relationship_merge_cypher(
+            {"id": "e1", "type": rel_type, "source_id": "a", "target_id": "b"}
+        )
+
+
 def test_unpack_properties_roundtrips_the_flattened_blob() -> None:
     props = {
         "attack_id": "T1055.011",

@@ -319,3 +319,46 @@ that asserts a retrievable pattern is unretrievable — would have been false in
 way no reviewer could check.
 
 ---
+
+## D-016 — Widen the Neo4j relationship-name rule rather than rename CAPEC's edges (2026-08-20)
+
+**Context:** The merged-graph counterfactual (C-015) needs ATT&CK and CAPEC in
+one Neo4j. ATT&CK loaded; CAPEC's nodes loaded; CAPEC's relationships did not:
+
+    ValueError: Unsafe Neo4j relationship type: 'CanAlsoBe'
+
+`utils/graph_loader/stores/neo4j.py` admitted relationship types matching
+`^[A-Z][A-Z0-9_]*$` while admitting labels matching `^[A-Za-z][A-Za-z0-9_]*$`
+one line above. Ten of CAPEC's fifteen relationship names are ones this repo
+invents — the source XML expresses those links by nesting a `<Mitigation>`
+inside an `<Attack_Pattern>` rather than by naming the relationship, so there is
+no name to copy — and they are screaming-snake by house style. The other five
+(`ChildOf`, `CanPrecede`, `CanFollow`, `PeerOf`, `CanAlsoBe`) are copied
+verbatim from the `Nature` attribute of the CAPEC XML. CAPEC had only ever been
+loaded into Gremlin, which has no such rule, so MITRE's spelling met this
+validator for the first time on 2026-08-19.
+
+**Options:** (a) widen the relationship rule to match the label rule;
+(b) normalise the five to `CAN_ALSO_BE`, `CHILD_OF` and so on at load time,
+leaving the validator untouched; (c) abandon the merged counterfactual.
+
+**Decision:** (a), taken by the operator on 2026-08-20 after the trade was
+written up in `docs/evaluation/night2-2026-08-20/MERGED-LOAD-FINDING.md`.
+
+**Consequences.** This is a change to a function named for safety, and it is
+recorded as such rather than slipped in. What the rule blocks — backticks,
+quotes, whitespace, punctuation, anything that could close the identifier and
+continue the query — is unchanged; only letter case moved, and the label rule
+beside it already permitted mixed case, so the codebase held no position that
+mixed case was dangerous. `utils/graph_loader/tests/test_neo4j_store.py` now
+pins both halves: the six names that must pass, and seven shapes (including a
+literal injection string) that must still raise.
+
+Option (b) was rejected on experimental grounds, not engineering ones. Renaming
+would make the merged store name its relationships differently from the Gremlin
+store holding the same data, so a query written against one would not port to
+the other — inside the one experiment that is about whether queries port
+between stores. It would have handicapped the merged arm in the comparison the
+arm exists to inform, which is the same class of error as building a strawman
+baseline. See D-004 on why that class of error is the one this record most
+guards against.
