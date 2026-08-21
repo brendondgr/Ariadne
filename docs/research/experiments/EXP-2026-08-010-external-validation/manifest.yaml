@@ -1,0 +1,87 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-08-010
+slug: external-validation
+title: Does Ariadne survive questions it did not co-author?
+status: planned          # planned | running | complete | failed | superseded
+date_started: 2026-08-21
+date_completed: null
+authors: ["brendondgr"]
+
+purpose: >
+  Every correctness figure this project has published comes from a question bank
+  Ariadne co-authored; template banks carry a measured co-authorship bias of
+  0.147, and even the LLM-generated banks are schema-aware. This is the first
+  measurement on questions written by someone else: two published benchmarks
+  (CTIBench cti-ate, AttackQA) whose gold is set-valued ATT&CK identifiers, so
+  the metric needs no language-model judge. It answers Q1 and bears on C-003,
+  C-012 and C-013.
+
+hypothesis: >
+  Pre-registered in PROTOCOL.md section 4. (H1) Plan-given Ariadne recall lands
+  within 0.05 of an oracle graph lookup -- the graph holds the answers and
+  retrieving them is what the system claims to do. (H2) External questions score
+  below the 0.92-1.00 band the internal banks produce, by roughly the measured
+  co-authorship bias. (H3) Precision against gold is low for every arm INCLUDING
+  the oracle, because ATT&CK 19.0 records more uses than either benchmark's
+  snapshot; an oracle as imprecise as Ariadne means staleness, not error.
+  (H4) Plan-free scoring falls below plan-given, and the gap measures how much of
+  the published accuracy is the plan the bank hands the system.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: a1da6b8dc6a16a448165e51cd40d8772dc0ba18e          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python scripts/external_validation.py --out docs/evaluation/external-2026-08-21"
+  dirty: false            # uncommitted changes at run time? if true, explain in ISSUES.md
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: CTIBench cti-ate (60 rows) and AttackQA enumerative subset, against MITRE ATT&CK 19.0
+  version: "cti-ate @ AI4Sec/cti-bench; attackqa @ sambanovasystems/attackqa; attack 19.0"
+  split: external — neither benchmark was authored with sight of this codebase
+  n_examples: 0
+  dvc_path: null
+  hash: null
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "<cpu/gpu, ram>"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "<provider>/<model>@<version-or-date>"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 2048
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: <metric name>
+  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+baselines_compared: []
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null
+superseded_by: null
+related: []
