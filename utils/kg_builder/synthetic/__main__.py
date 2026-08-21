@@ -98,12 +98,43 @@ def main(argv: list[str] | None = None) -> int:
     )
     spec_path = spec.write(base / "spec.json")
 
+    # Neo4j constraints: one uniqueness constraint per declared label on `id`.
+    # Unlike ATT&CK there is no second natural key to constrain -- this schema
+    # has no analyst-facing public identifier at all, only opaque platform ids,
+    # which is itself one of the things that makes it a genuinely different
+    # domain to route questions over.
+    exports = Path(args.out) / "graphs" / args.dataset / "exports" / "neo4j"
+    exports.mkdir(parents=True, exist_ok=True)
+    constraints = ["// Identity graph constraints (generated from the declared catalog)"]
+    for label in sorted(catalog.node_attributes):
+        constraints.append(
+            f"CREATE CONSTRAINT {args.dataset}_{label.lower()}_id IF NOT EXISTS "
+            f"FOR (n:{label}) REQUIRE n.id IS UNIQUE;"
+        )
+    constraints_path = exports / "constraints.cypher"
+    constraints_path.write_text("\n".join(constraints) + "\n", encoding="utf-8")
+
     counts = spec.counts()
+    # The loader reads `nodes`, `relationships`, `nodes_by_label` and
+    # `relationships_by_type` (utils/graph_loader/loader.py::_expected_counts).
+    # The blueprint's own vocabulary is `edges` / `edges_by_label`, and it keeps
+    # two counts the loader has no notion of -- declared versus inferred. So the
+    # manifest carries the loader's names, and the richer breakdown travels
+    # beside them rather than replacing them.
+    manifest_counts = {
+        "nodes": counts["nodes"],
+        "relationships": counts["edges"],
+        "nodes_by_label": counts["nodes_by_label"],
+        "relationships_by_type": counts["edges_by_label"],
+        "relationships_declared": counts["edges_declared"],
+        "relationships_inferred": counts["edges_inferred"],
+        "planted_paths": counts["planted_paths"],
+    }
     manifest = {
         "dataset": args.dataset,
         "schema_version": "1.0",
         "seed": args.seed,
-        "counts": counts,
+        "counts": manifest_counts,
         "catalog": {
             "source_files": catalog.source_files,
             "counts": catalog.counts(),
@@ -115,7 +146,22 @@ def main(argv: list[str] | None = None) -> int:
             "schema_json": str(base / "schema.json"),
             "spec_json": str(spec_path),
         },
-        "hashes": {"nodes_jsonl": nodes_hash, "relationships_jsonl": edges_hash},
+        "exports": {
+            "neo4j": {"constraints_cypher": str(constraints_path)},
+        },
+        # Hashes over the files as written. The loader's preflight recomputes
+        # every one before touching a database and refuses on a mismatch, which
+        # is what stops a half-written or hand-edited artifact reaching a store.
+        "hashes": {
+            "nodes_jsonl": nodes_hash,
+            "relationships_jsonl": edges_hash,
+            "schema_json": hashlib.sha256(
+                (base / "schema.json").read_bytes()
+            ).hexdigest(),
+            "neo4j_constraints_cypher": hashlib.sha256(
+                constraints_path.read_bytes()
+            ).hexdigest(),
+        },
         "metadata": {
             "instances": "synthetic",
             "schema": "real — ReliaQuest customer catalog",

@@ -30,7 +30,7 @@ effect.
 from __future__ import annotations
 
 import random
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Callable
 
 from ..catalog.declared import DECLARED, INFERRED, DeclaredCatalog
@@ -94,6 +94,7 @@ class _Builder:
     rng: random.Random
     nodes: list[dict[str, Any]]
     edges: list[dict[str, Any]]
+    _edge_keys: set[tuple[str, str, str]] = field(default_factory=set)
 
     def node(self, label: str, name: str, properties: dict[str, Any]) -> str:
         """Create a node, keeping only property keys the catalog declares.
@@ -132,6 +133,19 @@ class _Builder:
             raise ValueError(
                 f"catalog does not permit {source_label} -{edge_label}-> {target_label}"
             )
+        # Idempotent on (source, edge, target). A planted chain frequently wants
+        # an edge a random pass already created -- `USER -MEMBER_OF-> GROUP` and
+        # `GROUP -DC_SYNC-> DOMAIN` both did on the first real run. Writing it
+        # twice is not two facts, and Neo4j MERGEs the pair back to one on load,
+        # so the blueprint would claim 3,816 edges against a store holding
+        # 3,814. That divergence is exactly what the blueprint exists to make
+        # impossible, and it is caught here rather than being discovered as a
+        # gold mismatch later.
+        key = (source_id, edge_label, target_id)
+        if key in self._edge_keys:
+            return
+        self._edge_keys.add(key)
+
         origin = (
             INFERRED
             if any(

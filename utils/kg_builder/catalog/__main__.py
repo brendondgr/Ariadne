@@ -35,6 +35,20 @@ def main(argv: list[str] | None = None) -> int:
         help="write the delivery alone, without this project's inferred edges",
     )
     parser.add_argument("--name", default="identity")
+    parser.add_argument(
+        "--card",
+        default=None,
+        help="also write a source card here, merging the overlay named by --overlay",
+    )
+    parser.add_argument(
+        "--overlay",
+        default="data-identity/source_cards/overlays/identity.overlay.json",
+    )
+    parser.add_argument(
+        "--nodes",
+        default="data-identity/graphs/identity/canonical/nodes.jsonl",
+        help="generated nodes, read only to fill the card's property examples",
+    )
     args = parser.parse_args(argv)
 
     catalog = read_catalog(args.catalog_dir, name=args.name)
@@ -43,6 +57,30 @@ def main(argv: list[str] | None = None) -> int:
 
     path = catalog.write(args.out)
     counts = catalog.counts()
+
+    if args.card:
+        import json as _json
+        from pathlib import Path as _Path
+
+        from .card import build_card, examples_from_nodes, load_overlay, write_card
+
+        examples: dict = {}
+        nodes_path = _Path(args.nodes)
+        if nodes_path.is_file():
+            rows = [
+                _json.loads(line)
+                for line in nodes_path.read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            ]
+            examples = examples_from_nodes(rows)
+        card = build_card(
+            catalog,
+            load_overlay(args.overlay),
+            out_dir=_Path(args.card).parent.parent,
+            examples=examples,
+            dataset=args.name,
+        )
+        print(f"wrote {write_card(card, args.card)}")
 
     print(f"wrote {path}")
     for key, value in counts.items():

@@ -19,6 +19,7 @@ from .references import (
 )
 from .rules import (
     ATTACK_EDGE_PATTERNS,
+    EdgePattern,
     CAPEC_EDGE_PATTERNS,
     LABELS_REQUIRING_ATTACK_ID,
     REQUIRED_NODE_PROPERTIES,
@@ -57,6 +58,22 @@ def validate_semantic_graph(
             )
         )
         edge_patterns = ATTACK_EDGE_PATTERNS | CAPEC_EDGE_PATTERNS
+    elif dataset == "identity":
+        # EXP-2026-08-011. Unlike every branch above, this one has no hardcoded
+        # rule set to fall back on and does not want one: the legal edge
+        # patterns ARE the declared catalog, so they are read from the schema
+        # the build wrote rather than restated here. A rule set restated in code
+        # can drift from the catalog it describes; one derived from it cannot.
+        #
+        # This is also the only branch whose patterns include homogeneous
+        # triples (GROUP -OWNS-> GROUP and seven more), which the ATT&CK rule
+        # set has essentially none of.
+        allowed_labels = set(schema.get("node_labels", ()))
+        allowed_types = set(schema.get("relationship_types", ()))
+        edge_patterns = frozenset(
+            EdgePattern(entry["source"], entry["type"], entry["target"])
+            for entry in schema.get("relationship_endpoints", ())
+        )
     else:
         allowed_labels = set(schema.get("node_labels", ATTACK_NODE_LABELS))
         allowed_types = set(schema.get("relationship_types", ATTACK_RELATIONSHIP_TYPES))

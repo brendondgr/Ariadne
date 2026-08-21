@@ -16,7 +16,7 @@ DEFAULT_GREMLIN_URI = "ws://localhost:6455/gremlin"
 #: real dataset with its own canonical artifacts and card, but it lives under
 #: ``data-merged/`` and is only ever loaded with ``ARIADNE_DATA_DIR`` pointed
 #: there, so listing it here cannot expose it to a default-configured run.
-SUPPORTED_DATASETS = frozenset({"attack", "capec", "merged"})
+SUPPORTED_DATASETS = frozenset({"attack", "capec", "merged", "identity"})
 LOAD_BACKENDS = frozenset({"neo4j", "gremlin"})
 GRAPH_ACTIONS = frozenset({"neo4j", "gremlin", "all", "verify", "fixture-qa", "health"})
 

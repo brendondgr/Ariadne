@@ -135,7 +135,26 @@ logs/
 # delivered ReliaQuest CSVs are NOT here and must never be: they are
 # funder-supplied, not redistributable, and are referenced by checksum from
 # docs/research/datasets/cards/reliaquest-identity-catalog.md.
-/data-identity/
+# Ignore the derived tree level by level, because git cannot re-include a file
+# whose parent directory is excluded -- a plain `!/data-identity/source_cards/
+# overlays/*.json` after `/data-identity/` silently un-ignores nothing (or, if
+# the directory is negated instead, un-ignores everything).
+/data-identity/*
+!/data-identity/source_cards/
+/data-identity/source_cards/*
+!/data-identity/source_cards/overlays/
+# The negation has to name the FILE, not just the directory: the blanket
+# `*.overlay.json` at the top of this file is an earlier rule, and a later rule
+# only wins where it actually matches. A directory-only negation leaves the file
+# itself still caught by line 5.
+!/data-identity/source_cards/overlays/*.overlay.json
+# The overlay is SOURCE, not derived: connection details, safety limits, and the
+# 72 node and 21 relationship glosses -- the half of the source card no catalog
+# can supply, and the deterministic planner's only signal for telling six kinds
+# of "group" apart. Same exception the ATT&CK and CAPEC overlays get above.
+
+# The identity store (EXP-2026-08-011). Same reasoning as neo4j-merged below.
+docker/neo4j-identity/
 
 docker/neo4j/data/*
 !docker/neo4j/data/.gitkeep

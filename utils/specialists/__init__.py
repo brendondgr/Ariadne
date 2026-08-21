@@ -75,4 +75,14 @@ def build_specialist(dataset: str, card: Any, config: SpecialistConfig):
         from .cypher.specialist import build_cypher_specialist
 
         return build_cypher_specialist(card, config)
+    if dataset == "identity":
+        # EXP-2026-08-011: a schema this codebase has never seen, read from a
+        # declared customer catalog rather than derived by scanning instances.
+        # The specialist is again unmodified, and that is the entire point of
+        # the experiment — if a foreign schema needed a new specialist, C-010's
+        # claim that the machinery is card-driven would be false. Whether it
+        # actually works on 72 unfamiliar labels is what gets measured.
+        from .cypher.specialist import build_cypher_specialist
+
+        return build_cypher_specialist(card, config)
     raise ValueError(f"No specialist for dataset {dataset!r}")
