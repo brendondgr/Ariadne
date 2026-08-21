@@ -390,3 +390,113 @@ def compile_bank(
         "questions": questions,
     }
     return bank, discards
+
+
+# --------------------------------------------------------------------------
+# Runner
+# --------------------------------------------------------------------------
+
+
+def _skynet_caller(
+    base_url: str, model: str, max_tokens: int, timeout: float
+) -> Callable[[str, str], str]:
+    """An OpenAI-compatible caller for the local relay.
+
+    ``max_tokens`` defaults high because the served model is a *reasoning*
+    model: it spends tokens on a reasoning trace before emitting content, and a
+    small budget truncates mid-trace and returns an empty string. An empty reply
+    reads as "the model declined" when it actually means "the budget was too
+    small", so the floor here is deliberately generous for a one-line answer.
+    """
+    import httpx
+
+    def call(system: str, user: str) -> str:
+        response = httpx.post(
+            f"{base_url.rstrip('/')}/chat/completions",
+            json={
+                "model": model,
+                "messages": [
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": user},
+                ],
+                "temperature": 0,
+                "max_tokens": max_tokens,
+            },
+            timeout=timeout,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        return (payload["choices"][0]["message"].get("content") or "").strip()
+
+    return call
+
+
+def main(argv: list[str] | None = None) -> int:
+    import argparse
+    import os
+
+    parser = argparse.ArgumentParser(
+        description="Draw, author and compile the identity question bank."
+    )
+    parser.add_argument("--seed", type=int, default=IDENTITY_SEED)
+    parser.add_argument(
+        "--spec", default="data-identity/graphs/identity/canonical/spec.json"
+    )
+    parser.add_argument("--out", default="docs/evaluation/identity-2026-08-21")
+    parser.add_argument("--base-url", default=os.environ.get("EVAL_LLM_BASE_URL", "http://localhost:4000/v1"))
+    parser.add_argument("--model", default=os.environ.get("EVAL_LLM_MODEL", "skynet"))
+    parser.add_argument("--max-tokens", type=int, default=4096)
+    parser.add_argument("--timeout", type=float, default=300.0)
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="draw and write gold, but do not author (no model needed)",
+    )
+    args = parser.parse_args(argv)
+
+    spec = TenantSpec.read(args.spec)
+    entries, discards = draw(spec, seed=args.seed)
+    out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
+
+    from .identity_gold import write_gold
+
+    write_gold(
+        entries,
+        out / "gold.json",
+        meta={
+            "dataset": "identity",
+            "seed": args.seed,
+            "spec": args.spec,
+            "derivation": "from the generator blueprint, never from the loaded graph",
+        },
+    )
+    (out / "discards.json").write_text(
+        json.dumps(discards, indent=2) + "\n", encoding="utf-8"
+    )
+    print(f"drew {len(entries)} questions, {len(discards)} discards")
+    for kind in sorted({e.kind for e in entries}):
+        print(f"  {kind:14s} {sum(1 for e in entries if e.kind == kind)}")
+
+    if args.dry_run:
+        print("\n--dry-run: gold written, authoring skipped")
+        return 0
+
+    caller = _skynet_caller(args.base_url, args.model, args.max_tokens, args.timeout)
+    authored = author_all(entries, caller, checkpoint=out / "authored.json")
+    print(f"\nauthored {len(authored)}/{len(entries)}")
+
+    bank, compile_discards = compile_bank(
+        entries, authored, seed=args.seed, author_model=args.model
+    )
+    (out / "bank.json").write_text(json.dumps(bank, indent=2) + "\n", encoding="utf-8")
+    if compile_discards:
+        print(f"compile discards: {len(compile_discards)}")
+    print(f"wrote {out / 'bank.json'} with {len(bank['questions'])} questions")
+    return 0
+
+
+if __name__ == "__main__":
+    import sys
+
+    sys.exit(main())

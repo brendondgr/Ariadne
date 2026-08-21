@@ -936,11 +936,25 @@ class CypherQueryBuilder:
         )
 
     def _label_scan(self, resolved: ResolvedTask) -> QueryDraft:
-        """MATCH (n:<Label>) RETURN attack_id and name — no seeds."""
+        """MATCH (n:<Label>) RETURN the node's public id and name — no seeds.
+
+        The id column is ``coalesce(n.attack_id, n.id)`` rather than
+        ``n.attack_id``, which is the same idiom the merged build already uses
+        (D-017) and is byte-identical on ATT&CK, where ``attack_id`` is never
+        null on a scannable label.
+
+        It was ``n.attack_id`` alone until EXP-2026-08-011 ran this template
+        against a schema that has no such property, at which point every row
+        came back with a null id, the normalizer rejected all of them for
+        missing ``record_id``, and a perfectly good query returned nothing. That
+        is a portability defect the AST-based count in EXP-2026-07-011 could not
+        see: it classified templates by their question shape, and this one's
+        MITRE-specificity is in the *property name it emits*, not in its shape.
+        """
         label = _preferred_scan_label(resolved)
         query = (
             f"MATCH (n:{label}) "
-            f"RETURN n.attack_id AS id, n.name AS name"
+            f"RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name"
         )
         return QueryDraft(
             query=query,
