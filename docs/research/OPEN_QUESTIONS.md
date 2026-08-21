@@ -314,6 +314,37 @@ coupling is part of what is being compared.
 **Blocks:** how C-012 is phrased in the paper. **From:** EXP-2026-08-008 §7.
 
 
+### Q19 — Can two graphs be federated on meaning when they share no identifier?
+
+**Why it matters:** every federated result on record joins ATT&CK to CAPEC on a
+*shared identifier* — the same ATT&CK ID appearing in both catalogues. C-015's
+refutation is explicitly scoped to "two catalogues whose identifier spaces do not
+collide". That is the easy case, and it is the only case measured. The
+ReliaQuest identity catalog (EXP-2026-08-011) shares **no identifier at all**
+with MITRE, yet the two are obviously related in meaning: a `DC_SYNC` edge *is*
+T1003.006, `ADD_KEY_CREDENTIAL_LINK` is the shadow-credentials family under
+T1556, `SAME_FOREST_TRUST` bears on T1482. The analyst question ReliaQuest
+actually has — *which ATT&CK techniques do the privilege-escalation edges in this
+tenant correspond to, and what mitigations apply* — is a three-hop federated
+question across two engines with no join key.
+
+**Why it is not folded into EXP-2026-08-011:** the join would have to come from a
+hand-built edge → technique crosswalk, which is a third source with its own
+authorship bias and its own error rate. Running it inside the schema-transfer
+experiment would confound transfer with crosswalk quality, and neither number
+would survive review.
+
+**What resolves it:** a separate experiment in which the crosswalk is a declared,
+versioned artifact with its own dataset card, and the measurement is of the
+federated answer given the crosswalk — so crosswalk error and federation error
+are separable.
+
+**Cost:** ~2 days, most of it authoring and reviewing the crosswalk.
+**Blocks:** whether the surviving federation case (C-015's remainder — provenance,
+licensing, staleness) can be joined by a *capability* argument as well.
+**From:** EXP-2026-08-011 planning.
+
+
 ## Known weaknesses to state in the paper, not resolve
 
 These are limitations to disclose, not questions to answer.

@@ -1,0 +1,98 @@
+# Filled by scripts/new_experiment.py, then completed by hand at pre-registration.
+# Every field below is required unless marked optional. Do not delete a field you
+# do not know — record it as null or "unknown" and explain in ISSUES.md.
+# Inventing a value is worse than admitting a gap.
+id: EXP-2026-08-011
+slug: identity-schema-transfer
+title: Does the schema-agnostic path work on a schema it has never seen?
+status: planned          # planned | running | complete | failed | superseded
+date_started: 2026-08-21
+date_completed: null
+authors: ["brendondgr"]
+
+purpose: >
+  C-010 says the dataset-specific surface is bounded and countable and the
+  schema-agnostic machinery transfers. It is marked supported on the strength of
+  EXP-2026-07-011, an audit whose own threats section states that no non-MITRE
+  dataset was ever loaded and that a code reading misses run-time coupling.
+  ReliaQuest has supplied the catalog of their production customer graph -- 72
+  node types, 21 edge labels, 60 typed triples, 779 node and 118 edge
+  attributes, and zero customer records -- which is the first foreign schema
+  this codebase has had access to. This experiment loads it, generates a
+  catalog-conformant synthetic tenant, and runs the existing blind-bank
+  machinery against it, converting C-010 from a reading into a measurement. It
+  also bears on C-014, whose blind metric is recorded as saturated and unable to
+  detect anything further on the MITRE banks.
+
+hypothesis: >
+  Pre-registered in PROTOCOL.md. (H1) The schema-derived primitives arm retrieves
+  within 0.10 of its MITRE blind figure, so >= 0.90. (H2) The template cascade
+  scores below 0.40, and the arm gap is the dataset-specific surface measured at
+  run time rather than counted by an AST parse. (H3) Retrieval on the eight
+  same-label-both-ends triples falls at least 0.20 below heterogeneous-label
+  triples, because a PlausibleFacet's neighbour_label carries no disambiguating
+  signal when both endpoints share a label -- a failure mode MITRE structurally
+  cannot exercise. (H4) More than 50% of node properties learn as open, so the
+  binding guard cannot fire; and the honesty property holds with zero false
+  mismatches.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 2a7601f7f3933fe319111c00f732929279f65fa7
+  branch: main
+  entrypoint: "uv run python scripts/identity_sweep.py --out docs/evaluation/identity-2026-08-21"
+  dirty: false
+config:
+  path: null
+  hash: null
+data:
+  name: ReliaQuest identity catalog (real schema) + seeded synthetic tenant (instances)
+  version: "catalog delivered 2026-08-21; tenant seed 20260821"
+  split: blind — 30 questions drawn and authored against a schema no template was written for
+  n_examples: 0
+  dvc_path: null
+  hash: null
+seeds: [20260821]
+n_runs: 1
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "unknown — recorded at run time"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block ---
+# The PRIMARY metric takes no model: both arms plan, query and compose
+# deterministically, so the retrieval result is byte-reproducible. A model
+# appears at exactly two points -- authoring the question bank (step 7) and
+# grading the persisted answers (step 9) -- and neither is in the answer path.
+llm:
+  model: "skynet (local, OpenAI-compatible) — exact served version recorded at run time"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 32768
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0. It cannot reach
+    the primary metric, which runs with no model in the loop; it reaches only
+    the authored bank (fixed once and committed) and the judged secondary.
+
+# --- Results block ---
+metrics:
+  primary: gold_in_evidence_retrieval
+  values: {}
+baselines_compared: ["EXP-2026-08-008"]
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: ["C-010", "C-014"]
+figures: []
+supersedes: null
+superseded_by: null
+related: ["EXP-2026-07-011", "EXP-2026-08-008", "EXP-2026-08-009", "EXP-2026-08-010"]

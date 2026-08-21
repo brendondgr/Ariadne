@@ -14,6 +14,7 @@ designation to travel with any copy.
 | MITRE ATT&CK® | 19.0 | [`cards/mitre-attack.md`](cards/mitre-attack.md) | MITRE ATT&CK Terms of Use (royalty-free, attribution required) | The Neo4j side of the federation |
 | MITRE CAPEC™ | 3.9 | [`cards/mitre-capec.md`](cards/mitre-capec.md) | MITRE CAPEC Terms of Use (attribution required) | The Gremlin side of the federation |
 | Ariadne golden catalogue | 120q-2026-07 | [`cards/golden-catalogue-120.md`](cards/golden-catalogue-120.md) | Authored by this project | The evaluation question set for every experiment on record |
+| ReliaQuest identity catalog | delivered 2026-08-21 | [`cards/reliaquest-identity-catalog.md`](cards/reliaquest-identity-catalog.md) | Funder-supplied under the challenge agreement — not redistributable | The first non-MITRE schema on record; schema only, zero customer records |
 
 ## Version pinning
 
