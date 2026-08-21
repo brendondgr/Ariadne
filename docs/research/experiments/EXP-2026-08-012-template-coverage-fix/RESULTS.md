@@ -1,42 +1,72 @@
-# RESULTS — EXP-2026-08-012 <title>
+# EXP-2026-08-012 — Results
 
-## 1. Headline
+Two fixes were proposed. **One shipped. One turned out to be a decision rather
+than a defect and is left to its owner** (ISSUES.md I1).
 
-Two sentences. The number, and whether the hypothesis survived.
+All figures are on the same 182 external questions as EXP-2026-08-010, scored
+the same way, with no language model in the metric.
 
-## 2. Results table
+## Headline
 
-Generated from `data/metrics.json`, not typed. Mean ± std across seeds — never a
-single run without saying so. If `n_runs: 1`, state that here rather than
-letting a bare number imply a distribution.
+| | before | **shipped (Fix 2)** | if Fix 1 is also taken |
+|---|---:|---:|---:|
+| external recall | 0.6836 | **0.7633** | 0.9825 |
+| exact match | 0.4451 | **0.6593** | 0.6923 |
+| families at 0.000 | 4 of 14 | **0 of 14** | 0 of 14 |
+| families matching the ceiling | 8 of 14 | **12 of 14** | 14 of 14 |
+| internal answers changed | — | **0 of 60** | 0 of 60 |
+| internal query strings changed | — | **0** | 2 |
 
-## 3. Figures
+Ceiling is 0.9863 recall, 0.7033 exact.
 
-Each figure embedded with a one-line caption naming the script that produced it.
+## What shipped — the Software↔actor templates
 
-## 4. Interpretation
+Four question families went from **0.000 to 1.000**, each matching the ceiling:
 
-What this means for the paper's argument. Which claim in `../../CLAIMS.md` it
-moves, and in which direction.
+| family | before | after | ceiling |
+|---|---:|---:|---:|
+| `groups_for_software` | 0.000 | **1.000** | 1.000 |
+| `software_for_group` | 0.000 | **1.000** | 1.000 |
+| `campaigns_for_software` | 0.000 | **1.000** | 1.000 |
+| `software_for_campaign` | 0.000 | **1.000** | 1.000 |
 
-## 5. Threats to validity
+The change is one builder (`_actor_software`, either end anchorable, following
+`_software_techniques`), two dispatch branches placed ahead of the branches that
+used to swallow these questions, and one normalizer branch — see ISSUES.md I2
+for why the last of those was nearly missed.
 
-Confounds, leakage, dataset artifacts, cost asymmetries in the comparison. The
-section reviewers read first. Be specific enough that someone could act on it.
+## H4, the hypothesis that could have stopped it
 
-## 6. What surprised us
+**Held completely.** The deterministic arm re-run over both committed banks
+produced **60 of 60 answers byte-identical**, clock readings excluded — and with
+Fix 2 alone, not one query string moved either.
 
-The section that becomes the discussion. If nothing surprised you, the
-experiment was probably not worth running — say that too.
+That was the risk worth pre-registering: the new dispatch branches sit in a long
+`if` chain, and adding to such a chain is how a question that already worked
+quietly starts going somewhere else. The guard is `not has_technique_entity`,
+which keeps every existing actor→technique route exactly where it was, and it is
+pinned by six parametrised tests naming the routes that must not move.
 
-## 7. Follow-ups
+## Pre-registered hypotheses
 
-Each becomes an entry in `../../OPEN_QUESTIONS.md`. Link them.
+| | prediction | outcome |
+|---|---|---|
+| **H1** | the four dead families reach 1.000 | **held** — all four, exactly |
+| **H2** | the two partial families come within 0.01 of ceiling | **not tested as shipped.** Under Fix 1 they reach 0.979 and 0.975 against 0.990 and 0.988 — gaps of 0.011 and 0.013, narrowly outside the pre-registered tolerance |
+| **H3** | overall recall ≥ 0.95 | **not met as shipped** (0.7633). Met only with Fix 1 (0.9825). H3 assumed both fixes would land; one did |
+| **H4** | no internal answer changes | **held** — 60/60 identical, 0 query strings moved |
+| **H5** | the plan-free arm gains less | **not measured.** The plan-free arm was not re-run; with only half the change shipping, the comparison would price a smaller intervention than the hypothesis described |
 
-## 8. Reproduction
+Three of five hypotheses were written assuming both fixes would ship. Recording
+that plainly is more useful than re-scoping them after the fact.
 
-The exact command that regenerates everything in this folder.
+## What this does not show
 
-```bash
-# command here
-```
+- **A fix measured on the benchmark that found it.** These six families are no
+  longer a blind test. This shows the diagnosis was right and the change is
+  safe. It cannot show the system now generalises — only a benchmark nobody has
+  optimised against could.
+- Same limits as EXP-2026-08-010: Enterprise ATT&CK only, enumerating questions
+  only, CAPEC untouched, machine-authored phrasing.
+- The generic arm was not re-run and cannot have moved: `build()` returns
+  `self._build_generic(resolved)` before any changed line.

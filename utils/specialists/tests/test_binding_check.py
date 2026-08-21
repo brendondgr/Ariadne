@@ -69,10 +69,23 @@ def test_the_holdout_query_is_rejected() -> None:
     assert "SubTechnique" in reasons[0]
 
 
-def test_the_gate_fails_a_misrouted_draft_end_to_end() -> None:
-    # Group+Software seeded with a Software id: the router picks the Group
-    # template because Group was named, and no direction flip repairs it because
-    # the template does not walk that edge. The gate is what stops it executing.
+def test_the_group_software_edge_is_answered_rather_than_refused() -> None:
+    """This test used to assert the opposite, and the reason it changed matters.
+
+    Its original comment read: "the router picks the Group template because
+    Group was named, and no direction flip repairs it because the template does
+    not walk that edge. The gate is what stops it executing." That was an
+    accurate description of a gap — the gate was doing the only thing left to
+    do with a question the builder could not express, which is refuse it.
+
+    EXP-2026-08-010 measured what that cost on outside questions: four families
+    at 0.000 against a 1.000 ceiling. `group_software` now walks the edge, so
+    there is no misroute for the gate to catch and the question is answered.
+
+    The gate itself is unchanged and is still exercised by
+    `test_the_binding_gate_rejects_a_seed_bound_to_the_wrong_end` and the
+    audit in test_binding_audit.py.
+    """
     task = SpecialistTask(
         sub_question_id="q1",
         source="attack",
@@ -84,8 +97,10 @@ def test_the_gate_fails_a_misrouted_draft_end_to_end() -> None:
     card = fixture_card("attack")
     draft = CypherQueryBuilder().build(resolve(task, card))
     result = CypherValidator().validate(draft, card, _LIMITS)
-    assert not result.ok
-    assert any("binding mismatch" in reason for reason in result.reasons)
+    assert draft.template == "group_software"
+    assert result.ok, result.reasons
+    assert "(g:Group)-[:USES]->(s:Software)" in result.query
+    assert "s.attack_id IN $ids" in result.query
 
 
 def test_the_repaired_reverse_direction_passes_the_gate() -> None:

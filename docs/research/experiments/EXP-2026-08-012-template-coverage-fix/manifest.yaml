@@ -5,9 +5,9 @@
 id: EXP-2026-08-012
 slug: template-coverage-fix
 title: Do the two template defects EXP-2026-08-010 found close, without moving a recorded number?
-status: planned          # planned | running | complete | failed | superseded
+status: complete          # planned | running | complete | failed | superseded
 date_started: 2026-08-21
-date_completed: null       # null until status is complete/failed
+date_completed: 2026-08-21
 authors: ["brendondgr"]
 
 purpose: >
@@ -52,7 +52,7 @@ environment:
   container: null
 compute:
   hardware: "<cpu/gpu, ram>"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 1.1
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -72,14 +72,25 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: <metric name>
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
-baselines_compared: []
+  primary: external_recall_after_fix
+  values:
+    external_recall_before: {mean: 0.6836, std: null, n: 182}
+    external_recall_after_fix: {mean: 0.7633, std: null, n: 182}
+    external_exact_before: {mean: 0.4451, std: null, n: 182}
+    external_exact_after_fix: {mean: 0.6593, std: null, n: 182}
+    oracle_recall: {mean: 0.9863, std: null, n: 182}
+    families_returning_nothing_before: {mean: 4, std: null, n: 14}
+    families_returning_nothing_after: {mean: 0, std: null, n: 14}
+    families_matching_ceiling_after: {mean: 12, std: null, n: 14}
+    internal_answers_identical: {mean: 60, std: null, n: 60}
+    # Measured but NOT shipped -- Fix 1 is a product decision, see ISSUES.md I1.
+    external_recall_if_fix1_also_taken: {mean: 0.9825, std: null, n: 182}
+baselines_compared: ["EXP-2026-08-010 pre-fix run", "oracle (direct graph read)"]
 statistical_test: null
 
 # --- Linkage ---
-supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+supports_claims: [C-003, C-012]
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
 superseded_by: null
-related: []
+related: ["EXP-2026-08-010"]

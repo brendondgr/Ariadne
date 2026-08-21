@@ -1,0 +1,49 @@
+--- a/utils/specialists/cypher/builder.py	2026-08-21 19:23:02.974249736 -0400
++++ b/a/utils/specialists/cypher/builder.py	2026-08-21 19:23:02.920171241 -0400
+@@ -340,16 +340,18 @@
+                 resolved.dataset,
+             )
+             anchor = bound.expression() if bound else "g.attack_id"
+-            # Groups use sub-techniques too, so a sub-technique anchor needs the
+-            # target label widened — the pinned (t:Technique) is what made the
+-            # pattern narrower than the edge it walks.
+-            target = "(t)" if bound and bound.label == "SubTechnique" else "(t:Technique)"
+-            predicate = (
+-                "(t:Technique OR t:SubTechnique) AND " if target == "(t)" else ""
+-            )
++            # Widened unconditionally, matching `_software_techniques`. The
++            # earlier form widened only for a sub-technique ANCHOR, which left
++            # the group-anchored direction — "what techniques does this group
++            # use" — pinned to (t:Technique) and silently dropping every
++            # sub-technique RESULT. EXP-2026-08-010 priced that at 0.295 against
++            # a 0.990 ceiling: G0020 has four techniques, three of them
++            # sub-techniques, and one came back. A technique-anchored question
++            # is unaffected, because widening the label set cannot change which
++            # node matches t.attack_id.
+             query = (
+-                f"MATCH (g:Group)-[:USES]->{target} "
+-                f"WHERE {predicate}{anchor} IN $ids "
++                "MATCH (g:Group)-[:USES]->(t) "
++                f"WHERE (t:Technique OR t:SubTechnique) AND {anchor} IN $ids "
+                 "RETURN g.attack_id AS group_id, g.name AS group_name, "
+                 "t.attack_id AS technique_id, t.name AS technique_name"
+             )
+@@ -378,13 +380,12 @@
+                 resolved.dataset,
+             )
+             anchor = bound.expression() if bound else "c.attack_id"
+-            target = "(t)" if bound and bound.label == "SubTechnique" else "(t:Technique)"
+-            predicate = (
+-                "(t:Technique OR t:SubTechnique) AND " if target == "(t)" else ""
+-            )
++            # Widened unconditionally, for the reason given in
++            # `_group_techniques`: a campaign-anchored question was dropping
++            # every sub-technique it uses. Measured at 0.326 against 0.988.
+             query = (
+-                f"MATCH (c:Campaign)-[:USES]->{target} "
+-                f"WHERE {predicate}{anchor} IN $ids "
++                "MATCH (c:Campaign)-[:USES]->(t) "
++                f"WHERE (t:Technique OR t:SubTechnique) AND {anchor} IN $ids "
+                 "RETURN c.attack_id AS campaign_id, c.name AS campaign_name, "
+                 "t.attack_id AS technique_id, t.name AS technique_name"
+             )
