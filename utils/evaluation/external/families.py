@@ -25,8 +25,8 @@ class Family:
     direction: str                 # "out" from the anchor, or "in" toward it
     anchor_labels: tuple[str, ...]
     target_labels: tuple[str, ...]
-    #: Entity types for the replayed plan. Two endpoint labels, nothing more --
-    #: any richer hint would be this experiment doing the planner's job.
+    #: Endpoint labels for the replayed plan. The relationship type is appended
+    #: when the entry is built, matching what this project's own entries carry.
     entities: tuple[str, ...]
 
 

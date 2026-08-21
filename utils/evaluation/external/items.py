@@ -66,7 +66,12 @@ class Item:
             "sub_question_id": self.item_id,
             "source": "attack",
             "text": self.question,
-            "entities": list(family.entities),
+            # Two endpoint labels AND the relationship type, because that is
+            # what this project's own banks supply -- H-SUB-01 carries
+            # ["Technique", "SubTechnique", "HAS_SUBTECHNIQUE"]. Labels alone is
+            # not a purer control, it is a weaker plan than the internal
+            # comparison gets, and it silently zeroed two families (ISSUES I9).
+            "entities": [*family.entities, family.rel],
             "limits": {"max_traversal_depth": 3, "max_result_rows": 300,
                        "query_timeout_ms": 5000},
             "join_key": None,

@@ -40,11 +40,17 @@ def _item(**kw):
 # -- what a derived plan is allowed to contain -------------------------------
 
 
-def test_a_plan_given_entry_carries_only_the_anchor_and_the_endpoint_labels() -> None:
+def test_a_plan_given_entry_matches_the_shape_this_projects_own_banks_use() -> None:
+    """Two endpoint labels and the relationship type, as `H-SUB-01` carries.
+
+    Withholding the relationship name looked like the purer control and was the
+    opposite: it handed external questions a weaker plan than internal ones get,
+    and zeroed two families outright (ISSUES.md I9).
+    """
     task = _item().entry(plan_given=True)["task"]
     assert task["seed_ids"] == ["S0066"]
     assert task["source"] == "attack"
-    assert task["entities"] == ["Software", "Technique"]
+    assert task["entities"] == ["Software", "Technique", "USES"]
     assert task["join_key"] is None
 
 

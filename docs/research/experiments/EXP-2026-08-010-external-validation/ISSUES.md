@@ -113,3 +113,54 @@ failures are the system's behaviour, not the harness's.
 Recorded because "the control is contaminated" was the correct suspicion — it
 was the same class of error as EXP-2026-08-009's confounded control — and
 because the check that resolved it very nearly confirmed the wrong answer.
+
+**I8 is itself partly wrong — see I9.** The entities list does matter. The
+probes above never tried the setting that works, so they cleared the harness on
+evidence that could not have convicted it.
+
+## I9 — the derived plan was weaker than the one internal questions get
+
+The suspicion in I8 was right after all, for a reason neither probe tested.
+
+This project's own bank entries put the **relationship type** into `entities`
+alongside the node labels. `H-SUB-01` carries
+`["Technique", "SubTechnique", "HAS_SUBTECHNIQUE"]`. The derivation here supplied
+only the two labels, on the reasoning that naming a relationship would be doing
+the planner's job.
+
+That reasoning was backwards. Withholding it does not make the control purer; it
+makes the external plan **weaker than the internal one**, which converts a
+harness deficit into an apparent system failure — the exact error this
+experiment exists to avoid making about somebody else's benchmark.
+
+Measured effect of appending the relationship type, three items per family:
+
+| family | labels only | labels + relationship |
+|---|---:|---:|
+| techniques_sub | 0.000 | **1.000** |
+| techniques_parent | 0.000 | **1.000** |
+| software_for_group | 0.000 | 0.000 |
+| groups_for_software | 0.000 | 0.000 |
+| campaigns_for_software | 0.000 | 0.000 |
+| software_for_campaign | 0.000 | 0.000 |
+| techniques_for_group | 0.355 | 0.355 |
+| techniques_for_software | 1.000 | 1.000 |
+
+Two families were the harness. Four are unmoved by any planning hint and are a
+real capability gap. One is partial and unmoved.
+
+**Action taken.** The derivation now appends the relationship type. The run was
+stopped and restarted rather than reported; the first run's numbers are
+superseded and quoted nowhere.
+
+**How this was found**, because the route matters. Internal `subtechnique_parent`
+questions were checked against their committed answers, to test whether this
+project's grader had been rewarding answers that omit the requested identifier.
+It had not — the committed answers name `T1055` and `T1027` correctly. Reading
+the bank entry to confirm that is what exposed the third element in `entities`.
+The suspicion was wrong and checking it properly found the real defect anyway.
+
+One intermediate check was also wrong and is worth naming: a substring test for
+`"T1055"` matches inside `"T1055.002"`, and briefly suggested the internal
+answers were passing on a technicality. The word-boundary extractor this
+experiment already ships settled it.
