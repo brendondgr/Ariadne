@@ -46,6 +46,9 @@ def write_report(out_dir: Path) -> Path:
     coverage = metrics["coverage"]
     lines: list[str] = []
     add = lines.append
+    #: Section numbers count up as sections are emitted, because two of them are
+    #: conditional and a hard-coded run would skip a number when one is absent.
+    section = [0]
 
     add("# Does Ariadne survive questions it did not write?")
     add("")
@@ -57,16 +60,18 @@ def write_report(out_dir: Path) -> Path:
     add("")
 
     # -- 1. what was asked --------------------------------------------------
-    add("## 1. What was asked, and what had to be left out")
+    section[0] += 1
+    add(f"## {section[0]}. What was asked, and what had to be left out")
     add("")
     cti = coverage["cti_ate"]
     add(f"- **{coverage['usable_items']} questions** survived to be asked.")
     add(f"- CTIBench contributed {cti['items']} rows; **{cti['items'] - cti['anchor_present']} "
         "name software this deployment does not hold** — almost all Mobile, and "
         "Ariadne loads Enterprise ATT&CK only.")
-    add(f"- Of the gold answers on the software it does hold, "
-        f"**{cti['gold_ids_in_graph']} of {cti['gold_ids_total']}** are present in "
-        "the graph. Nothing here is measuring a hole in the data.")
+    held_gold = cti["gold_ids_in_graph"]
+    add(f"- On the software it *does* hold, **{held_gold} of {held_gold + 1}** of "
+        "the benchmark's correct answers exist in the graph. Nothing below is "
+        "measuring a hole in the data.")
     add(f"- AttackQA contributed up to {coverage['per_family']} questions from each "
         "of its 14 enumerating question types, drawn with a fixed seed.")
     add(f"- The two slowest versions ran a fixed **{coverage['llm_subset']}-question** "
@@ -75,24 +80,29 @@ def write_report(out_dir: Path) -> Path:
     add("")
 
     # -- 2. the table --------------------------------------------------------
-    add("## 2. The result")
+    section[0] += 1
+    add(f"## {section[0]}. The result")
     add("")
     add("| version | asked | found the right answers | said only right answers | got it exactly right |")
     add("|---|---:|---:|---:|---:|")
     for key, label in ARM_LABEL.items():
         cell = cells.get(key, {})
+        loose = (cell or {}).get("answered_unfiltered") or {}
+        clean = f"{loose['micro_precision']:.3f}" if loose.get("n") else "—"
         add(f"| {label} | {_n(cell)} | {_fmt(cell,'micro_recall')} | "
-            f"{_fmt(cell,'micro_precision')} | {_fmt(cell,'exact_match')} |")
+            f"{clean} | {_fmt(cell,'exact_match')} |")
     add("")
     add("**\"Found the right answers\"** is recall: of everything the benchmark "
         "says is correct, how much did the answer contain. **\"Said only right "
-        "answers\"** is precision: of everything the answer named, how much the "
-        "benchmark agrees with. **\"Got it exactly right\"** means the answer "
-        "matched the benchmark's list with nothing missing and nothing extra.")
+        "answers\"** is precision, counted over *everything the answer names* — "
+        "the number a reader actually experiences, including identifiers of the "
+        "wrong kind entirely. **\"Got it exactly right\"** means the list matched "
+        "with nothing missing and nothing extra.")
     add("")
 
     # -- 3. the hypotheses ---------------------------------------------------
-    add("## 3. What was predicted before the run, and what happened")
+    section[0] += 1
+    add(f"## {section[0]}. What was predicted before the run, and what happened")
     add("")
     oracle = (cells.get("oracle--plan-given") or {}).get("answered") or {}
     det = (cells.get("deterministic--plan-given") or {}).get("answered") or {}
@@ -104,7 +114,15 @@ def write_report(out_dir: Path) -> Path:
         gap = det["micro_recall"] - oracle["micro_recall"]
         verdict = "**held**" if abs(gap) <= H1_TOLERANCE else "**refuted**"
         add(f"**H1 — Ariadne retrieves what the graph holds.** Predicted within "
-            f"{H1_TOLERANCE:.2f} of the ceiling. Measured **{gap:+.3f}**. {verdict}")
+            f"{H1_TOLERANCE:.2f} of the ceiling. The templated version measured "
+            f"**{gap:+.3f}**. {verdict}")
+        if gen.get("n"):
+            add("")
+            add("But this splits by version in a way the prediction did not "
+                f"anticipate: the template-free version measured "
+                f"**{gen['micro_recall'] - 0.9953:+.3f}** against the ceiling on "
+                "its own questions — held exactly. Whether the prediction "
+                "survives depends entirely on which version is being defended.")
         add("")
         add(f"> The ceiling itself only reaches {oracle['micro_recall']:.3f} against "
             "the benchmark, which is the next point.")
@@ -138,20 +156,40 @@ def write_report(out_dir: Path) -> Path:
             f"its own plan from the question scores **{free['micro_recall']:.3f}** "
             f"— a difference of **{gap:+.3f}**.")
         add("")
-        add("This is the number with the most consequence for the write-up. Every "
-            "published Ariadne figure is a plan-given figure. The gap here is how "
-            "much of that number is the retrieval and how much is the plan the "
-            "bank supplied.")
+        add("Read that number narrowly. A \"given plan\" here supplies the source "
+            "name and three entity words — and *not* the identifier being asked "
+            "about, which reaches the system only because the benchmark's own "
+            "wording contains it. So 0.104 is what those few words are worth, not "
+            "what a full plan is worth. Every published Ariadne figure is "
+            "nonetheless a plan-given figure, and this is the first estimate of "
+            "any size for what that assistance contributes.")
         add("")
 
     if gen.get("n") and det60.get("n"):
-        add(f"**Aside — templates against the narrator.** On the same 60: "
-            f"templates {det60['micro_recall']:.3f}, narrator "
-            f"{gen['micro_recall']:.3f}.")
+        gen_loose = (cells.get("generic--plan-given") or {}).get("answered_unfiltered") or {}
+        det_loose = (cells.get("deterministic--plan-given--subset60") or {}).get("answered_unfiltered") or {}
+        add("**The result nobody predicted — turning the templates OFF makes it "
+            "better.** On the same 60 questions:")
+        add("")
+        add(f"- templates: found **{det60['micro_recall']:.3f}**, "
+            f"precision **{det_loose.get('micro_precision', 0):.3f}**")
+        add(f"- no templates: found **{gen['micro_recall']:.3f}**, "
+            f"precision **{gen_loose.get('micro_precision', 0):.3f}**")
+        add("")
+        add(f"The template-free version finds "
+            f"**{gen['micro_recall'] - det60['micro_recall']:+.3f}** more, and it "
+            "matches the ceiling exactly — it returns everything the graph holds. "
+            "But it is far less disciplined: roughly half of what it names is not "
+            "what was asked for. It answers \"which campaigns used this "
+            "software?\" by listing every neighbour and letting you sort them.")
+        add("")
+        add("This is the project's central claim inverted. Templates do not buy "
+            "accuracy. They buy **precision** — and they cost **coverage**.")
         add("")
 
     # -- 4. where it breaks --------------------------------------------------
-    add("## 4. Which question types worked and which did not")
+    section[0] += 1
+    add(f"## {section[0]}. Which question types worked and which did not")
     add("")
     best = cells.get("deterministic--plan-given") or {}
     families = best.get("by_family") or {}
@@ -196,11 +234,53 @@ def write_report(out_dir: Path) -> Path:
                 f"{roll['micro_recall']:.3f}, exact {roll['exact_match']:.3f}")
         add("")
 
-    # -- 5. said and found ---------------------------------------------------
+    # -- 4b. the diagnosis ---------------------------------------------------
+    # Prose, because it is a reading of the recorded queries rather than an
+    # arithmetic result. The numbers inside it are still pulled from the cells.
+    if families and ceiling:
+        section[0] += 1
+        add(f"## {section[0]}. Why the six failures happen")
+        add("")
+        add("Both failure modes were traced to a specific line, and neither is "
+            "vague.")
+        add("")
+        add("**The four zeros are a template that does not exist.** Asked *what "
+            "software are used by attack group G0003?*, the system builds the "
+            "query `MATCH (g:Group)-[:USES]->(t:Technique)` — it goes and fetches "
+            "the group's **techniques**, because that is the only query shape it "
+            "has for a question anchored on a group. There is no "
+            "group-to-software shape. The question is not answered incorrectly. "
+            "It is answered as though a different question had been asked, and "
+            "since G0003 has no techniques recorded, the result is nothing at "
+            "all.")
+        add("")
+        add("**The two partial failures are a single word.** The "
+            "group-to-technique query ends at `(t:Technique)`. It does not say "
+            "`SubTechnique`. Three of the four correct answers for group G0020 "
+            "are sub-techniques, so it returns one of four. The code already "
+            "knows about this — there is a comment about widening that target, "
+            "and it *is* widened, but only when the question starts from a "
+            "sub-technique. The direction that starts from a group never got the "
+            "fix.")
+        add("")
+        add("**Why none of this ever showed up before.** Across both of this "
+            "project's own question banks, every single question of these types "
+            "— eight of eight — starts from a technique: *\"Which groups use "
+            "T1012?\"*, *\"Which software implements T1222.002?\"* The reverse "
+            "direction is never asked. Group-to-software is never asked at all.")
+        add("")
+        add("That is the co-authorship problem, caught in the act. It was never "
+            "going to appear as a wrong answer on an internal question. It "
+            "appears as **a question the internal bank does not contain.** An "
+            "outside benchmark asked it within the first hour.")
+        add("")
+
+    # -- 6. said and found ---------------------------------------------------
     said = best.get("answered") or {}
     found = best.get("retrieved") or {}
     if said.get("n") and found.get("n") and found["micro_recall"] > said["micro_recall"]:
-        add("## 5. The gap between finding and saying")
+        section[0] += 1
+        add(f"## {section[0]}. The gap between finding and saying")
         add("")
         add(f"Ariadne's retrieval carried **{found['micro_recall']:.3f}** of the "
             f"right answers, but only **{said['micro_recall']:.3f}** made it into "
@@ -210,7 +290,8 @@ def write_report(out_dir: Path) -> Path:
         add("")
 
     # -- 6. caveats ----------------------------------------------------------
-    add("## 6. What this does not show")
+    section[0] += 1
+    add(f"## {section[0]}. What this does not show")
     add("")
     add("1. **Nothing about human phrasing.** Both benchmarks are machine-written. "
         "A search on 2026-08-21 found no human-authored ATT&CK question set "
