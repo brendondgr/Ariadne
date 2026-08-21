@@ -49,6 +49,25 @@ exactly the failure this question exists to catch. Second, that makes **holdout
 v2 a prerequisite for any blind figure quoted after the fix**, not an optional
 strengthening.
 
+
+**ANSWERED — coverage artifact, and now located exactly (EXP-2026-08-010, 2026-08-21).**
+Measured on two published external benchmarks, not on anything written here. Of
+14 external question types the deterministic cascade matches an oracle graph
+read on 8 and returns **nothing at all** on 4 — every Group↔Software and
+Campaign↔Software ask. Two more lose ~70% to a single pinned label. Overall
+recall against the ceiling is **−0.303**.
+
+The decisive detail is that this is **not** a phrasing effect. Identical
+questions in this project's wording and in AttackQA's produce byte-identical
+queries. Across both generated banks, all eight `group_techniques` /
+`campaign_techniques` / `software_techniques` questions are technique-anchored;
+the reverse direction is never asked, and Group↔Software is never asked at all.
+The banks were drawn from the shapes the templates serve. The artifact was in
+**which questions exist**, not in how they are worded.
+
+Still open within Q1: the external sets are enumerative and Enterprise-only, and
+say nothing about CAPEC or open-ended asks.
+
 ### Q2 — What is the variance on any of these numbers?
 
 **Why it matters:** Every arm is `n_runs: 1` with seeds unrecorded. The two
@@ -248,6 +267,25 @@ has no command-line entry, and nothing runs the author prompt.
 
 **Cost:** ~1 day. **Blocks:** any measurement of work done after 2026-08-18,
 including the composer fix and both missing baselines. **From:** EXP-2026-08-007
+
+**PARTIALLY ANSWERED, and the remaining half is now known to be blocked
+(EXP-2026-08-010, 2026-08-21).** A web search on 2026-08-21 found **no
+human-authored question set over ATT&CK or CAPEC anywhere public.** Every
+candidate checked is LLM-generated or template-generated with humans in a
+validating role; AttackQA ships a `human_question` flag that means *a human
+wrote the generator script*, and reading it as human authorship would be a
+defensible-looking but substantively wrong citation.
+
+What that search did supply is the other half of what this question wanted:
+**externally authored** questions, which control co-authorship without
+controlling phrasing. Two are now in use (CTIBench `cti-ate`, AttackQA), with
+set-valued gold that needs no grader.
+
+So the position is: external authorship — **available and used**. Human phrasing
+— **does not exist to be had**, and constructing 15–20 questions is now a
+build-or-accept decision rather than a search.
+
+
 §5, §7.
 
 **Known limitation to record with it:** a machine-authored bank is as *blind* as

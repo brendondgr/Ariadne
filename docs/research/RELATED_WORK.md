@@ -149,3 +149,48 @@ basis for C-011. Full entries in the audit §9.6.
   citation.
 - **Never add a citation that has not been retrieved.** A plausible-looking
   reference to a paper nobody opened is the fastest way to lose a reviewer.
+
+---
+
+## External question sets over ATT&CK — searched 2026-08-21
+
+The finding first: **no publicly available question set over MITRE ATT&CK or
+CAPEC has human-written questions.** Every candidate checked is LLM-generated or
+template-generated, with humans in a validating or editing role. That is a
+usable negative result — it means a human-authored set would itself be a
+contribution — but it should be stated as "not found in a non-exhaustive
+search", not as proven absence.
+
+Two entries are now used as evaluation data in EXP-2026-08-010.
+
+| entry | questions written by | gold | licence | used here |
+|---|---|---|---|---|
+| **AttackQA** (SambaNova, arXiv 2411.01073) | ~70% code templates, ~30% Llama 3 8B | prose + entity ids | Apache-2.0 | **yes** — 14 enumerating families, questions verbatim |
+| **CTIBench `cti-ate`** (NeurIPS'24) | templated from ATT&CK software pages | ATT&CK's own software→technique mapping | CC-BY-NC-SA-4.0 | **yes** — items and gold; wording taken from AttackQA (ISSUES I1) |
+| **CTIBench `cti-mcq`** | GPT-4o, human-validated; 40 of 2,500 manually collected from public quizzes | multiple choice | CC-BY-NC-SA-4.0 | no — not enumerative |
+| **CTIArena** (arXiv 2510.11974) | LLM over MITRE's official cross-mappings, practitioner-reviewed | MITRE CVE→CWE→CAPEC→ATT&CK mappings | — | no — **data not released**; the repository 404s as of 2026-08-21 |
+| **CyberSOCEval** (Meta + CrowdStrike) | Llama-generated, every pair expert-edited; an unquantified few hand-written | report-derived | — | no — report images, not entity-anchored |
+| **SECURE / MAET** | GPT-4o, MSc/PhD validated | ATT&CK ICS | — | no — ICS; this deployment is Enterprise |
+| **ICSThreatQA** (Warwick, ESWA 2025) | "expert-validated" — **cannot determine** authored vs validated | ATT&CK ICS | paywalled, no download | no — ICS, and not obtainable |
+| **CyberMetric** | GPT-3.5 + RAG over standards, 200+h human validation | general security | — | no — ATT&CK/CAPEC are not among its sources |
+| **AnnoCTR** (Bosch, LREC-COLING 2024) | n/a — 120 reports annotated for ATT&CK techniques by a domain expert | human entity linking | clean, stated | no — entity linking, not QA. **The only human ATT&CK ground truth found**, and a plausible base to build QA on |
+
+**How this differs from us.** Every entry above is flat text or
+text-with-retrieval. **No graph-query benchmark exists over ATT&CK or CAPEC.**
+The general text-to-Cypher benchmarks (CypherBench, Neo4j's text2cypher) cover
+Wikidata and enterprise graphs, not security taxonomies. That gap is real and
+directly supports the resource-novelty argument the 2026-08-03 audit rated
+"Moderate".
+
+**Two traps worth recording.**
+
+AttackQA ships boolean `human_question` / `human_answer` columns, and the paper
+reports a 20/50/30 split. `human_question` means *a human wrote the generator
+script*. Filtering on it and describing the result as human-authored is a
+defensible-looking citation that a reviewer reading §3.3 will catch.
+
+CTIBench `cti-ate` is **four ATT&CK releases stale**. A direct read of ATT&CK
+19.0 scores **0.607** precision against its gold — 466 identifiers where the
+benchmark lists 283. Any `cti-ate` precision figure reported against 1.0
+overstates its own headroom, ours included had we not measured the ceiling
+(D-018).

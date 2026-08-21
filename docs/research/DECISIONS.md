@@ -411,3 +411,76 @@ federated one it is not. It must be reported as one of the things merging buys,
 not hidden inside a normaliser. Measured effect on the blind set: consumer
 sub-questions skipped for want of a join value fell from 7 of 30 to 3 of 30, and
 the three that remain are the cases whose gold asserts `expect_dependency_skip`.
+
+## D-018 — Score external benchmarks against an oracle, not against 1.0 (2026-08-21)
+
+**Context.** Both external benchmarks predate the loaded ATT&CK 19.0. A missing
+gold identifier is either the system's failure or the benchmark's staleness, and
+a score cannot tell them apart.
+
+**Decision.** Every external cell is read against an oracle that reads the
+canonical artifacts directly — no plan, no specialist, no query engine — so it
+bounds what any retriever over this data could return.
+
+**Why it mattered immediately.** The oracle scores **0.607** precision on
+CTIBench's `cti-ate`, returning 466 identifiers where gold lists 283. Without
+it, that 0.393 would have been reported as an Ariadne result. It is the
+benchmark being four ATT&CK releases old.
+
+**Cost.** One more arm, and the discipline of never quoting a raw external
+score without the ceiling beside it.
+
+## D-019 — No language model in the primary metric (2026-08-21)
+
+**Context.** Every headline figure in this project runs through a local judge
+that has never been checked against a human. That caveat appears in every
+report and cannot be removed by writing it again.
+
+**Decision.** External gold is set-valued ATT&CK identifiers, so scoring is set
+arithmetic. Recall, precision, F1 and exact match are computed by one regex and
+two set operations. The judge is not invoked.
+
+**Consequence.** These are the only figures in the record that survive the
+judge being wrong. That is worth more than their sample size suggests.
+
+## D-020 — Fetch the benchmarks, never commit them (2026-08-21)
+
+CTIBench is CC-BY-NC-SA-4.0 and share-alike would follow a redistributed copy
+into this repository's history. AttackQA is Apache-2.0 but is 7 MB of somebody
+else's data. Both are fetched at pinned revisions into a gitignored cache; the
+scores computed from them are ours and are committed.
+
+## D-021 — Count what the data cannot answer, never drop it (2026-08-21)
+
+14 of CTIBench's 60 rows name software this deployment does not hold — 13
+Mobile, plus S0440, retired between the benchmark's snapshot and ATT&CK 19.0.
+One further gold identifier is absent. These are excluded from scoring and
+reported as a coverage figure. Silently dropping them would turn "we load
+Enterprise only" into a better-looking score.
+
+## D-022 — Gold granularity follows the benchmark, per benchmark (2026-08-21)
+
+`cti-ate`'s prompt states that its gold excludes sub-technique identifiers, so
+both sides of that comparison are rolled to parent techniques. AttackQA's gold
+includes sub-techniques and is left alone. Applying one rule to both would have
+manufactured either misses or false hits, depending on direction.
+
+## D-023 — Give an external question the plan an internal one gets (2026-08-21)
+
+**The mistake this corrects.** The derived plan first supplied only the two
+endpoint labels, on the reasoning that naming a relationship would be doing the
+planner's job. This project's own entries carry the relationship type too —
+`H-SUB-01` has `["Technique", "SubTechnique", "HAS_SUBTECHNIQUE"]`.
+
+Withholding it does not make the control purer. It hands external questions a
+**weaker** plan than the internal comparison gets, which converts a harness
+deficit into an apparent system failure — the exact error the experiment exists
+to avoid making about somebody else's benchmark. It zeroed two question
+families outright.
+
+**Decision.** The derivation appends the relationship type. The run was stopped
+and restarted; the first run's numbers are superseded and quoted nowhere.
+
+**The general rule.** A control that gives the external condition less than the
+internal one is not conservative. It is wrong in the direction that flatters the
+conclusion you were hoping to draw.
