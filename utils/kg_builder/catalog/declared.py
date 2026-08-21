@@ -152,9 +152,23 @@ class DeclaredCatalog:
     def inferred_triples(self) -> list[DeclaredTriple]:
         return sorted(t for t in self.triples if t.origin == INFERRED)
 
-    def homogeneous_triples(self) -> list[DeclaredTriple]:
-        """Triples whose endpoints share a label. See :meth:`DeclaredTriple.is_homogeneous`."""
-        return sorted(t for t in self.triples if t.is_homogeneous)
+    def homogeneous_triples(self, origin: str | None = None) -> list[DeclaredTriple]:
+        """Triples whose endpoints share a label.
+
+        ``origin`` filters to :data:`DECLARED` or :data:`INFERRED`. It matters:
+        EXP-2026-08-011's H3 is a prediction about the **eight delivered**
+        homogeneous triples, and one of this project's inferred edges
+        (``GROUP -MEMBER_OF-> GROUP``) is homogeneous too. Measuring H3 over all
+        nine would mix a finding about ReliaQuest's schema with a finding about
+        our own reconstruction. Callers analysing H3 must pass ``DECLARED``.
+
+        See :meth:`DeclaredTriple.is_homogeneous` for why these are the hard case.
+        """
+        return sorted(
+            t
+            for t in self.triples
+            if t.is_homogeneous and (origin is None or t.origin == origin)
+        )
 
     def triples_from(self, label: str) -> list[DeclaredTriple]:
         return sorted(t for t in self.triples if t.source == label)
@@ -183,6 +197,9 @@ class DeclaredCatalog:
             "triples_declared": len(self.declared_triples()),
             "triples_inferred": len(self.inferred_triples()),
             "triples_homogeneous": len(self.homogeneous_triples()),
+            # H3's population is the delivered homogeneous triples alone. Broken
+            # out so no analysis can silently include our own inferred edge.
+            "triples_homogeneous_declared": len(self.homogeneous_triples(DECLARED)),
             "node_attributes": sum(len(v) for v in self.node_attributes.values()),
             "edge_attributes": sum(len(v) for v in self.edge_attributes.values()),
         }
