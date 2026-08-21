@@ -104,6 +104,28 @@ has never been contrasted with a counterfactual.
 **What resolves it:** Build the merged-single-graph baseline.
 **Blocks:** C-015. **From:** D-005.
 
+**Status: ANSWERED — no, not on correctness.** EXP-2026-08-009 ran on
+2026-08-21. The merged store holds both catalogues (9138 nodes, 34641
+relationships, all eight separation checks passing) and is answered by one
+Cypher specialist. Against `generic_composed` — identical primitives, identical
+deterministic composer, two stores instead of one, no language model on either
+side so both are byte-reproducible — merging scores **−0.0334** on one blind set
+and **+0.0000** on the other, n=30 each, intervals overlapping. C-015 is
+`refuted` as written.
+
+**What Q5 leaves open, and it is most of the question.** Correctness was never
+the interesting part of the federation argument; it was just the only part
+anyone had a number for. The reasons to federate that practitioners actually
+give — provenance, licensing, staleness, and not re-running a merge every time a
+catalogue updates — are untested, unclaimed, and now the only case left. Writing
+them as a claim is the follow-up, and it is a different kind of work from this:
+none of them is measured by asking questions and grading answers.
+
+A second gap: both catalogues here have **disjoint identifier spaces and exactly
+one colliding label**. That is the easy case for merging. A pair of sources
+whose ids collide would put the merged design under a strain this experiment
+never applied.
+
 ---
 
 ## Methodological

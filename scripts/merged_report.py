@@ -9,10 +9,12 @@ run says so rather than showing a zero.
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
 REPO = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO))
 
 ARM_NAMES = {
     "merged": "ONE database holding both catalogues",
@@ -32,15 +34,28 @@ BANK_NAMES = {
 
 
 def _cells(state: dict[str, Any]) -> dict[tuple[str, str], dict[str, Any]]:
-    """(arm, bank) -> roll-up, for every judge phase that completed."""
+    """(arm, bank) -> roll-up, recomputed from the judgment files on disk.
+
+    The phase result carries a roll-up too, but it is a snapshot from the moment
+    that phase ended. A case regraded afterwards — the oversized ones need a
+    third attempt at a larger budget — lands on disk and never reaches the
+    cached copy, so a report built from the cache silently keeps saying n=29.
+    The phases are read only to learn which cells exist.
+    """
+    from scripts.overnight_sweep import roll_up
+
+    experiments = REPO / "docs" / "evaluation" / "experiments"
     out: dict[tuple[str, str], dict[str, Any]] = {}
     for phase in state["phases"]:
         if phase.get("status") != "ok" or "judge" not in phase["name"]:
             continue
         result = phase.get("result") or {}
-        roll = result.get("roll") or {}
+        arm, bank = result.get("arm"), result.get("bank")
+        if not arm or not bank:
+            continue
+        roll = roll_up(experiments / bank, arm, suffix=".c015")
         if roll.get("n"):
-            out[(result["arm"], result["bank"])] = roll
+            out[(arm, bank)] = roll
     return out
 
 
@@ -53,9 +68,14 @@ def write_report(out_dir: Path) -> Path:
 
     add("# Is it worth keeping the two databases apart?")
     add("")
+    # A phase carrying no status yet is the one currently running — which,
+    # while this function executes, is always the phase that writes this
+    # report. Counting it as a failure made every report announce a failure it
+    # had itself caused.
+    finished = [p for p in state["phases"] if p.get("status")]
+    failed = [p for p in finished if p["status"] != "ok"]
     add(f"**Run started** {state.get('started')} · "
-        f"**phases** {len(state['phases'])}, "
-        f"{sum(1 for p in state['phases'] if p.get('status') != 'ok')} failed")
+        f"**phases** {len(state['phases'])}, {len(failed)} failed")
     add("")
     add("The project's pitch is that keeping MITRE ATT&CK and MITRE CAPEC in two "
         "separate databases, each spoken to in its own language, is worth the "
@@ -169,13 +189,13 @@ def write_report(out_dir: Path) -> Path:
     add("| phase | what it did | result | time |")
     add("|---|---|---|---:|")
     for p in state["phases"]:
-        status = "ok" if p.get("status") == "ok" else f"**{p.get('status')}**"
+        status = {"ok": "ok", None: "_running_"}.get(
+            p.get("status"), f"**{p.get('status')}**")
         add(f"| `{p['name']}` | {p['description']} | {status} | {p.get('wall_s', 0):.0f}s |")
     add("")
-    for p in state["phases"]:
-        if p.get("status") != "ok":
-            add(f"**`{p['name']}` failed:** `{p.get('error')}`")
-            add("")
+    for p in failed:
+        add(f"**`{p['name']}` failed:** `{p.get('error')}`")
+        add("")
 
     # -- 5. caveats ---------------------------------------------------------
     add("## 5. Things that would make these numbers wrong")

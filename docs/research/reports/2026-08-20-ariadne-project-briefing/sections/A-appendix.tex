@@ -75,3 +75,28 @@ sorted order.
   \item[Status.] \textbf{Draft.} No second person has worked through the
     checklist. Reviewer and date: none.
 \end{description}
+
+\section{Correction, 2026-08-21}
+
+\S4.9 of this report says the merged-graph comparison did not run, \S5 lists its
+absence as the first limitation, and the confidence roll-up tags federation
+\confidence{unknown}. \textbf{Those statements were true when written and are
+now out of date.} They are corrected here rather than edited above, because a
+report that silently rewrites itself is not a record.
+
+The counterfactual was built and measured the next day
+(\texttt{EXP-2026-08-009}). One Neo4j holding both catalogues, answered by one
+Cypher specialist, compared against the same primitives and the same
+deterministic composer over two stores --- no language model on either side, so
+both are byte-reproducible. Merging scored $-0.0334$ against federating on one
+blind question set and $\pm0.0000$ on the other, $n = 30$ each, with intervals
+overlapping almost entirely.
+
+So \textbf{federation does not beat merging on correctness}, and C-015 is
+\texttt{refuted} as written. What survives of the federation argument ---
+provenance, licensing, staleness, not re-running a merge when a catalogue
+updates --- is untested and has never been written down as a claim.
+
+One further correction to \S5: that section says every comparison in the report
+is Ariadne against Ariadne. It still is. The merged arm is another configuration
+of the same system, so it does not close the no-external-baseline gap.

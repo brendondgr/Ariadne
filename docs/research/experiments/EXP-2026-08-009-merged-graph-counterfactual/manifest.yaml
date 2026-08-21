@@ -5,9 +5,9 @@
 id: EXP-2026-08-009
 slug: merged-graph-counterfactual
 title: Does federating across two engines beat merging both sources into one graph?
-status: running           # planned | running | complete | failed | superseded
+status: complete          # planned | running | complete | failed | superseded
 date_started: 2026-08-21
-date_completed: null       # null until status is complete/failed
+date_completed: 2026-08-21 # null until status is complete/failed
 authors: ["brendondgr"]
 
 purpose: >
@@ -29,9 +29,9 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: 2997e3bc35f090038455699fb1ba82eb08538a4d          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: 79e11b0                                  # short sha; the run's tree          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
-  entrypoint: "uv run python scripts/merged_sweep.py --out docs/evaluation/merged-2026-08-21"
+  entrypoint: "uv run python scripts/merged_sweep.py --out docs/evaluation/merged-2026-08-21-v2"
   dirty: false            # uncommitted changes at run time? if true, explain in ISSUES.md
 config:
   path: null               # repo-relative path, or null if the run takes no config file
@@ -51,7 +51,7 @@ environment:
   container: null
 compute:
   hardware: "commodity workstation; Neo4j x2 and Gremlin in Docker"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 0.51
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -71,9 +71,20 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: merged_vs_generic_correctness
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
-baselines_compared: []
+  primary: merged_minus_federated_mean
+  values:
+    merged_bank20260819: {mean: 0.9233, std: null, n: 30}
+    merged_bank20260820: {mean: 0.9367, std: null, n: 30}
+    generic_composed_bank20260819: {mean: 0.9567, std: null, n: 30}
+    generic_composed_bank20260820: {mean: 0.9367, std: null, n: 30}
+    merged_minus_federated_bank20260819: {mean: -0.0334, std: null, n: 30}
+    merged_minus_federated_bank20260820: {mean: 0.0000, std: null, n: 30}
+    # The headline, as one number: the mean of the two sets' deltas. Quoting
+    # either set alone picks a side — one shows -0.0334 and the other shows
+    # exactly nothing — and the point of the result is that they disagree.
+    merged_minus_federated_mean: {mean: -0.0167, std: null, n: 60}
+  # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+baselines_compared: ["generic_composed (two stores, otherwise identical)", "generic", "deterministic"]
 statistical_test: null
 
 # --- Linkage ---
