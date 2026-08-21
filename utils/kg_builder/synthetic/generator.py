@@ -521,63 +521,72 @@ def _plant_paths(
         )
         paths.append(PlantedPath(name=name, steps=steps, uses_inferred=uses_inferred))
 
+    def plant(name: str, steps: list[tuple[str, str, str]]) -> None:
+        """Create every step, or plant nothing at all.
+
+        All-or-nothing because a half-planted chain is worse than an absent one:
+        gold would name a path the graph cannot walk, and the arm would be
+        marked wrong for a generator defect. A chain is skipped only when the
+        catalog lacks one of its edge kinds, which is true of the small test
+        fixtures and of no real delivery.
+        """
+        for source, edge, target in steps:
+            if not b.supports(
+                b.spec.label_of(source), edge, b.spec.label_of(target)
+            ):
+                return
+        for source, edge, target in steps:
+            b.edge(source, edge, target)
+        record(name, steps)
+
     domain_admins = groups[0]
     helpdesk = groups[2]
 
     # 1. The canonical DCSync chain, through a nested group.
-    escalator = b.rng.choice(users)
-    b.edge(escalator, "MEMBER_OF", helpdesk)
-    b.edge(helpdesk, "WRITE_DACL", domain_admins)
-    b.edge(domain_admins, "DC_SYNC", root_domain)
-    record(
+    plant(
         "dcsync-via-helpdesk",
         [
-            (escalator, "MEMBER_OF", helpdesk),
+            (b.rng.choice(users), "MEMBER_OF", helpdesk),
             (helpdesk, "WRITE_DACL", domain_admins),
             (domain_admins, "DC_SYNC", root_domain),
         ],
     )
 
-    # 2. Shadow credentials onto a privileged user.
-    victim = b.rng.choice(users)
+    # 2. Shadow credentials onto a user.
     cert_managers = groups[16] if len(groups) > 16 else groups[-1]
-    b.edge(cert_managers, "ADD_KEY_CREDENTIAL_LINK", victim)
-    record("shadow-credentials", [(cert_managers, "ADD_KEY_CREDENTIAL_LINK", victim)])
-
-    # 3. GROUP -OWNS-> GROUP -GENERIC_ALL-> USER: two homogeneous hops in a row,
-    #    which is the case H3 is about.
-    owner = groups[5]
-    owned = groups[9]
-    target_user = b.rng.choice(users)
-    b.edge(owner, "OWNS", owned)
-    b.edge(owned, "GENERIC_ALL", target_user)
-    record(
-        "owns-chain-to-user",
-        [(owner, "OWNS", owned), (owned, "GENERIC_ALL", target_user)],
+    plant(
+        "shadow-credentials",
+        [(cert_managers, "ADD_KEY_CREDENTIAL_LINK", b.rng.choice(users))],
     )
 
-    # 4. Replication rights short of full DCSync.
-    replicator = groups[10]
-    b.edge(replicator, "GET_CHANGES", root_domain)
-    b.edge(replicator, "GET_CHANGES_ALL", root_domain)
-    record(
-        "replication-rights",
+    # 3. GROUP -OWNS-> GROUP -GENERIC_ALL-> USER: opens on a homogeneous hop,
+    #    which is the case H3 is about.
+    plant(
+        "owns-chain-to-user",
         [
-            (replicator, "GET_CHANGES", root_domain),
-            (replicator, "GET_CHANGES_ALL", root_domain),
+            (groups[5], "OWNS", groups[9]),
+            (groups[9], "GENERIC_ALL", b.rng.choice(users)),
         ],
     )
 
-    # 5. Cross-forest reach, exercising the other homogeneous pair.
-    if len(domains) > 1:
+    # 4. Replication rights short of full DCSync.
+    plant(
+        "replication-rights",
+        [
+            (groups[10], "GET_CHANGES", root_domain),
+            (groups[10], "GET_CHANGES_ALL", root_domain),
+        ],
+    )
+
+    # 5. Cross-forest reach, exercising the other homogeneous pair. The trust
+    #    edge already exists from the trust pass, so this chain records it as
+    #    context rather than re-creating it.
+    if len(domains) > 1 and b.supports("GROUP", "ALL_EXTENDED_RIGHTS", "DOMAIN"):
         trusting = groups[3]
         b.edge(trusting, "ALL_EXTENDED_RIGHTS", domains[1])
-        record(
-            "cross-forest-rights",
-            [
-                (domains[1], "TRUSTED_BY", domains[0]),
-                (trusting, "ALL_EXTENDED_RIGHTS", domains[1]),
-            ],
-        )
+        steps = [(trusting, "ALL_EXTENDED_RIGHTS", domains[1])]
+        if b.supports("DOMAIN", "TRUSTED_BY", "DOMAIN"):
+            steps.insert(0, (domains[1], "TRUSTED_BY", domains[0]))
+        record("cross-forest-rights", steps)
 
     return paths
