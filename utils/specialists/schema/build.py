@@ -16,9 +16,10 @@ import os
 from collections import defaultdict
 from functools import lru_cache
 from pathlib import Path
+from typing import Any
 
 from .idscheme import SchemeLearner
-from .registry import DatasetSchema, SchemaRegistry
+from .registry import DECLARED, DatasetSchema, SchemaRegistry
 
 
 def canonical_dir(data_dir: str | Path, dataset: str) -> Path:
@@ -94,6 +95,47 @@ def build_dataset_schema(
         },
         triples=frozenset(triples),
         label_id_schemes=learner.result(),
+    )
+
+
+def build_declared_schema(catalog: Any, dataset: str | None = None) -> DatasetSchema:
+    """Build a :class:`DatasetSchema` from a declared catalog, without instances.
+
+    The sibling of :func:`build_dataset_schema`, and deliberately a sibling
+    rather than a branch inside it: the scan path is the evidence behind every
+    measured arm on record, and the safest way to add a second path is one that
+    cannot execute a line of the first.
+
+    ``catalog`` is a
+    :class:`utils.kg_builder.catalog.declared.DeclaredCatalog`. It is typed
+    loosely here so this module keeps no import edge into ``kg_builder`` — the
+    schema package is read by the specialists at query time and has no business
+    depending on the builder.
+
+    **Identifier schemes are deliberately left empty.** ``label_id_schemes`` is
+    learned from values, and a catalog has none. An empty map makes
+    :meth:`DatasetSchema.value_verdict` answer ``undetermined`` to everything,
+    which is the honest answer and exactly what ``idscheme``'s docstring
+    prescribes for a source whose values have not been seen: *"it admits
+    everything, because nothing has been learned about it."* The alternative —
+    inventing schemes from declared value types — would manufacture confident
+    verdicts out of a type name, and ``STRING`` says nothing about shape. That
+    the binding guard therefore cannot fire on this source is a measured
+    consequence (EXP-2026-08-011 H4), not a gap to paper over.
+
+    Once instances exist, a caller wanting schemes can build the observed schema
+    from them and keep the declared triples; the two are independent.
+    """
+    node_attributes = catalog.node_attributes
+    return DatasetSchema(
+        dataset=dataset or catalog.name,
+        label_property_keys={
+            label: frozenset(attrs) for label, attrs in node_attributes.items()
+        },
+        triples=frozenset(t.key() for t in catalog.triples),
+        label_id_schemes={},
+        provenance=DECLARED,
+        inferred_triples=frozenset(t.key() for t in catalog.inferred_triples()),
     )
 
 

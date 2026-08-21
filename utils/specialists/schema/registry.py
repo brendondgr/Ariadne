@@ -34,6 +34,22 @@ OUT = "out"
 IN = "in"
 _DIRECTIONS = (OUT, IN)
 
+# How a schema's triples were obtained. The distinction is not cosmetic:
+#
+#   OBSERVED — derived by walking canonical instances. A triple is present
+#              because *some node actually has such an edge*. This is what every
+#              schema in this repository was until EXP-2026-08-011.
+#   DECLARED — read from a catalog somebody else operates. A triple is present
+#              because *the catalog permits such an edge*, whether or not any
+#              node currently has one.
+#
+# A facet block asserting an honest zero means "this label can have such an edge
+# and this node has none" under OBSERVED. Under DECLARED the same zero also
+# admits "no node anywhere has one yet", which is a weaker statement. Carrying
+# the flag lets a caller that cares tell the two apart instead of guessing.
+OBSERVED = "observed"
+DECLARED = "declared"
+
 
 @dataclass(frozen=True, order=True)
 class PlausibleFacet:
@@ -77,6 +93,25 @@ class DatasetSchema:
     label_id_schemes: dict[str, dict[str, PropertySchemes]] = field(
         default_factory=dict
     )
+    # How ``triples`` was obtained — :data:`OBSERVED` or :data:`DECLARED`. See
+    # the constants for why the difference is carried rather than flattened.
+    # Defaulted to OBSERVED so every existing construction keeps its meaning.
+    provenance: str = OBSERVED
+    # The subset of ``triples`` that no source declared and this project added to
+    # make an incompletely-delivered catalog functional. Always empty for an
+    # OBSERVED schema. Non-empty means results traversing these edges are
+    # confounded by our own reconstruction and must be reported separately.
+    inferred_triples: frozenset[tuple[str, str, str]] = frozenset()
+
+    # -- provenance ---------------------------------------------------------
+
+    @property
+    def is_declared(self) -> bool:
+        return self.provenance == DECLARED
+
+    def is_inferred_triple(self, source: str, rel_type: str, target: str) -> bool:
+        """Was this edge kind added by us rather than declared by the source?"""
+        return (source, rel_type, target) in self.inferred_triples
 
     # -- labels & properties ------------------------------------------------
 
