@@ -57,13 +57,102 @@ _SCAN_LABEL_PRIORITY = (
 )
 
 
+def _schema_labels(resolved: ResolvedTask) -> tuple[str, ...]:
+    """Every label this dataset declares, from the derived schema registry.
+
+    The registry is already the generic path's source of structure; using it
+    here too means the name-lookup and scan paths stop carrying ATT&CK label
+    names as literals. Returns ``()`` when no registry is available, and every
+    caller falls back to its previous behaviour in that case.
+    """
+    try:
+        from ..schema.build import get_registry
+
+        schema = get_registry().dataset(resolved.dataset)
+    except Exception:
+        return ()
+    return tuple(sorted(schema.labels())) if schema is not None else ()
+
+
+def _name_bearing_labels(resolved: ResolvedTask) -> tuple[str, ...]:
+    """Labels that declare a ``name`` property, so a name lookup can match them.
+
+    Replaces the hard-coded ``_NAME_DESCRIBE_LABELS`` list of eight ATT&CK
+    labels. On a source whose labels are not ATT&CK's, that list produced a
+    guard like ``n:Technique OR n:SubTechnique OR …`` against a graph
+    containing none of them — so a name lookup could not match anything, ever,
+    however well the name had been extracted.
+
+    Deriving the guard from the declared schema is what makes a name lookup
+    possible on any source. The MITRE list remains the fallback for a dataset
+    with no registry entry.
+    """
+    try:
+        from ..schema.build import get_registry
+
+        schema = get_registry().dataset(resolved.dataset)
+    except Exception:
+        schema = None
+    if schema is None:
+        return _NAME_DESCRIBE_LABELS
+    named = tuple(
+        sorted(
+            label
+            for label in schema.labels()
+            if "name" in schema.label_properties(label)
+        )
+    )
+    return named or _NAME_DESCRIBE_LABELS
+
+
+def _names_a_specific_entity(resolved: ResolvedTask) -> bool:
+    """Does the text name a particular thing, rather than a kind of thing?
+
+    A bare label scan is the weakest answer the builder can give: it returns a
+    slice of a whole label and answers no question in particular. So whenever
+    the alternative is a scan and the text names something specific, the name
+    lookup should win.
+
+    "Specific" is judged structurally, not by a verb. A multi-word proper name
+    ("Database Admins", "Finance Readers") or a dotted identifier
+    ("corp.example") names one entity; a single ordinary word does not, and is
+    left on the definitional gate as before. That distinction is what keeps
+    "List ATT&CK software entries" on the scan path -- the case the gate was
+    put there to protect -- while letting a question that actually names its
+    subject reach it.
+
+    Before this, the only way past the gate was a "what is X" phrasing. Every
+    question in EXP-2026-08-011's bank names its subject and none is phrased
+    definitionally, so all 27 fell through to a scan of whatever label a stray
+    word happened to match.
+    """
+    for term in resolved.name_terms:
+        cleaned = term.strip()
+        # Space: a multi-word proper name ("Database Admins").
+        # Dot or hyphen: a structured identifier ("corp.example", "OU-tier2-11").
+        # Digit: an instance name rather than a category ("srv063").
+        # A single all-alphabetic lowercase word is none of these -- it is far
+        # more likely a category word the question happens to use -- so it stays
+        # on the definitional gate, which is what keeps "List ATT&CK software
+        # entries" on the scan path.
+        if any(ch in cleaned for ch in " .-") or any(ch.isdigit() for ch in cleaned):
+            return True
+    return False
+
+
 def _preferred_scan_label(resolved: ResolvedTask) -> str:
     """Pick the most query-worthy resolved label for a seedless scan."""
     labels = set(resolved.labels)
     for label in _SCAN_LABEL_PRIORITY:
         if label in labels:
             return label
-    return resolved.primary_label() or "Technique"
+    if resolved.primary_label():
+        return resolved.primary_label()
+    # Last resort. It was the literal "Technique", which on a source with no
+    # such label meant a seedless scan queried a label that does not exist —
+    # observed 12 times in EXP-2026-08-011 against a graph holding none.
+    declared = _schema_labels(resolved)
+    return declared[0] if declared else "Technique"
 
 
 # Description-bearing ATT&CK labels a name lookup may resolve to. Explicit (not
@@ -269,7 +358,10 @@ class CypherQueryBuilder:
         if (
             resolved.name_terms
             and not resolved.has_join
-            and is_definitional_request(resolved.task.text)
+            and (
+                is_definitional_request(resolved.task.text)
+                or _names_a_specific_entity(resolved)
+            )
         ):
             return self._describe(resolved)
 
@@ -505,7 +597,9 @@ class CypherQueryBuilder:
                 meta={"label": label, "seed_ids": list(resolved.seed_ids)},
             )
         names = [term.lower() for term in resolved.name_terms]
-        label_guard = " OR ".join(f"n:{label}" for label in _NAME_DESCRIBE_LABELS)
+        label_guard = " OR ".join(
+            f"n:{label}" for label in _name_bearing_labels(resolved)
+        )
         match = (
             f"MATCH (n) WHERE ({label_guard}) "
             "AND any(term IN $names WHERE toLower(n.name) CONTAINS term) "
@@ -546,12 +640,20 @@ class CypherQueryBuilder:
             return self._generic_neighbors(resolved, rels[0])
         if resolved.seed_ids:
             return self._describe(resolved)
+        # No id, but the text names an entity and one declared relationship:
+        # walk it. Describing the anchor instead would return facet counts and
+        # never the related records the question asks for.
+        if resolved.name_terms and rels and _names_a_specific_entity(resolved):
+            return self._generic_neighbors(resolved, rels)
         # Only a *definitional* question ("What is Phishing?") is a name lookup.
         # Without that gate "List ATT&CK software entries" is read as a request
         # for an entity literally named that, and a bounded scan returns nothing
         # — which is how both of the catalogue's scan questions scored zero. The
         # default cascade already gates this; the generic branch did not.
-        if resolved.name_terms and is_definitional_request(resolved.task.text):
+        if resolved.name_terms and (
+            is_definitional_request(resolved.task.text)
+            or _names_a_specific_entity(resolved)
+        ):
             return self._describe(resolved)
         return self._label_scan(resolved)
 
@@ -739,7 +841,7 @@ class CypherQueryBuilder:
         )
 
     def _generic_neighbors(
-        self, resolved: ResolvedTask, rel: str, direction: str = "both"
+        self, resolved: ResolvedTask, rel: str | list[str], direction: str = "both"
     ) -> QueryDraft:
         """Walk ONE card-declared relationship from the seeded anchors.
 
@@ -754,24 +856,68 @@ class CypherQueryBuilder:
         does not bind relationship types; the validator gates it against the
         card's declared types, so an undeclared edge never reaches the database.
         """
+        # A question often names several candidate relationships rather than one
+        # -- "what can X write" matches GENERIC_WRITE, WRITE_DACL, WRITE_OWNER,
+        # WRITE_GP_LINK and WRITE_ACCOUNT_RESTRICTIONS, all of them declared and
+        # all of them plausible. Requiring exactly one meant such a question fell
+        # back to describing the anchor, which reports facet COUNTS and never the
+        # related records. Walking the alternation answers it without choosing
+        # between them on the question's behalf; `type(r)` travels on every row
+        # so the composer can still report per relationship.
+        rels = [rel] if isinstance(rel, str) else list(dict.fromkeys(rel))
+        rel_pattern = "|".join(rels)
         arrow = {
-            "out": f"-[r:{rel}]->",
-            "in": f"<-[r:{rel}]-",
-        }.get(direction, f"-[r:{rel}]-")
-        query = (
-            "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids "
+            "out": f"-[r:{rel_pattern}]->",
+            "in": f"<-[r:{rel_pattern}]-",
+        }.get(direction, f"-[r:{rel_pattern}]-")
+        projection = (
             f"OPTIONAL MATCH (n){arrow}(m) "
             "RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, "
             "labels(n)[0] AS anchor_label, "
             "coalesce(m.attack_id, m.id) AS neighbour_id, m.name AS neighbour_name, "
             "labels(m)[0] AS neighbour_label, type(r) AS rel_type"
         )
+
+        # Anchor by id when the task carries one, by name when it does not.
+        #
+        # The name arm exists because the id arm cannot serve a source that has
+        # no analyst-facing identifier. ATT&CK questions carry `T1055`; a
+        # question about an identity graph carries "Database Admins", and the
+        # only way to reach that node is its name. Without this, walking a
+        # relationship was reachable ONLY from an id-resolved anchor, so on any
+        # source keyed by opaque GUIDs the whole traversal primitive was
+        # unreachable and every relationship question collapsed to describing
+        # the anchor and reporting facet COUNTS instead of the related records
+        # themselves. That is what held 11 of 27 questions at zero in
+        # EXP-2026-08-011 after anchor resolution had been fixed.
+        if resolved.seed_ids:
+            return QueryDraft(
+                query="MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids " + projection,
+                params={"ids": list(resolved.seed_ids)},
+                template="generic_neighbors",
+                expected_nonempty=False,
+                meta={
+                    "rel": rels[0] if len(rels) == 1 else rels,
+                    "rels": rels,
+                    "direction": direction,
+                    "seed_ids": list(resolved.seed_ids),
+                },
+            )
+        names = [term.lower() for term in resolved.name_terms]
         return QueryDraft(
-            query=query,
-            params={"ids": list(resolved.seed_ids)},
+            query=(
+                "MATCH (n) WHERE any(term IN $names WHERE toLower(n.name) CONTAINS term) "
+                + projection
+            ),
+            params={"names": names},
             template="generic_neighbors",
             expected_nonempty=False,
-            meta={"rel": rel, "direction": direction, "seed_ids": list(resolved.seed_ids)},
+            meta={
+                "rel": rels[0] if len(rels) == 1 else rels,
+                "rels": rels,
+                "direction": direction,
+                "name_terms": names,
+            },
         )
 
     def expand(self, request: ExpandRequest) -> QueryDraft:

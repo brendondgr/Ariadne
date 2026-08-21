@@ -77,6 +77,18 @@ def build_dataset_schema(
         else:
             # Ensure the label is registered even with an empty property set.
             label_property_keys.setdefault(label, set())
+        # `name` is a first-class column on the canonical node, not an entry in
+        # its `properties` dict, so scanning `properties` alone never recorded
+        # it -- on any dataset, ATT&CK included. It is queryable as `n.name` in
+        # Cypher and `values('name')` in Gremlin, so a schema that omits it
+        # understates what can be filtered on.
+        #
+        # It was omitted, and the cost was concrete: the name-lookup guard could
+        # not be derived from the schema, so it stayed a hard-coded list of
+        # eight ATT&CK labels and no name lookup could match on any other
+        # source (EXP-2026-08-011).
+        if node.get("name"):
+            label_property_keys[label].add("name")
 
     triples: set[tuple[str, str, str]] = set()
     for edge in _iter_jsonl(Path(relationships_path)):

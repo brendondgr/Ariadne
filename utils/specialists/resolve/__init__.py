@@ -187,6 +187,14 @@ def _acceptable_name(candidate: str, schema_words: set[str]) -> bool:
     return True
 
 
+# A token carrying internal structure -- dots or hyphens between alphanumeric
+# runs. Hostnames, FQDNs, OU names and similar identifiers are one name each,
+# and splitting them on punctuation loses the only anchor the text offers.
+_STRUCTURED_TOKEN_RE = re.compile(
+    r"\b[A-Za-z0-9]+(?:[.\-][A-Za-z0-9]+)+\b"
+)
+
+
 def _extract_name_terms(text: str, schema_words: set[str]) -> tuple[str, ...]:
     """Deterministic name anchors from ``text`` (see module note above)."""
     if not text:
@@ -207,6 +215,17 @@ def _extract_name_terms(text: str, schema_words: set[str]) -> tuple[str, ...]:
     if not terms:
         for m in _TITLECASE_RUN_RE.finditer(text):
             add(m.group(0))
+    # Dotted and hyphenated tokens are single names, not several. A hostname
+    # (`srv063.corp.example`), an FQDN, an OU (`OU-tier2-11`) and an ARN all
+    # carry their structure inside the token, and the bare-word pass below --
+    # which matches `[A-Za-z][A-Za-z0-9]+` -- shreds them into fragments that
+    # anchor on nothing. `corp.corp.example` became `corp` + `example`.
+    #
+    # This runs before the bare-word pass and independently of it, because a
+    # structured token is a much stronger name signal than a loose word and
+    # should not be crowded out by the word cap.
+    for m in _STRUCTURED_TOKEN_RE.finditer(text):
+        add(m.group(0))
     if not terms:
         for w in re.findall(r"[A-Za-z][A-Za-z0-9]+", text):
             add(w)

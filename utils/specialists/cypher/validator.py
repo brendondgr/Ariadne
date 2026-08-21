@@ -23,8 +23,19 @@ from ..validation import BaseValidator, word_present
 # Extracts node labels from patterns like (:Technique) or (n:Technique)
 _NODE_LABEL_RE = re.compile(r"\(\w*\s*:\s*([A-Za-z_][A-Za-z0-9_]*)\s*(?:\{[^}]*\})?\s*\)")
 
-# Extracts relationship types from patterns like [:MITIGATES] or -[r:USES]->
-_REL_TYPE_RE = re.compile(r"\[\s*\w*\s*:\s*([A-Za-z_][A-Za-z0-9_]*)\s*(?:\{[^}]*\})?\s*\]")
+# Extracts relationship types from patterns like [:MITIGATES], -[r:USES]-> or
+# the alternation form -[r:OWNS|WRITE_DACL]->.
+#
+# The alternation arm is not cosmetic. The previous pattern required the type to
+# be followed immediately by `]`, so `[r:OWNS|WRITE_DACL]` matched NOTHING at
+# all -- and a query using alternation therefore had *no* relationship type
+# checked against the card. A validator that silently declines to validate is
+# worse than one that rejects, so the group now spans the alternation and each
+# alternative is checked separately below.
+_REL_TYPE_RE = re.compile(
+    r"\[\s*\w*\s*:\s*([A-Za-z_][A-Za-z0-9_]*(?:\s*\|\s*[A-Za-z_][A-Za-z0-9_]*)*)"
+    r"\s*(?:\{[^}]*\})?\s*\]"
+)
 
 # Matches an existing LIMIT clause and its integer argument
 _LIMIT_RE = re.compile(r"\bLIMIT\s+(\d+)\b", re.IGNORECASE)
@@ -99,7 +110,12 @@ class CypherValidator(BaseValidator):
                 )
 
         # Extract relationship types
-        rel_types = _REL_TYPE_RE.findall(query)
+        rel_types = [
+            alternative.strip()
+            for group in _REL_TYPE_RE.findall(query)
+            for alternative in group.split("|")
+            if alternative.strip()
+        ]
         for rel in rel_types:
             if not card.has_relationship(rel):
                 reasons.append(
