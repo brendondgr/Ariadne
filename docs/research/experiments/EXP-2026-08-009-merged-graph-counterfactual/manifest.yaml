@@ -1,0 +1,84 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-08-009
+slug: merged-graph-counterfactual
+title: Does federating across two engines beat merging both sources into one graph?
+status: running           # planned | running | complete | failed | superseded
+date_started: 2026-08-21
+date_completed: null       # null until status is complete/failed
+authors: ["brendondgr"]
+
+purpose: >
+  C-015 says federating across two engines outperforms merging both sources into
+  one graph. It has been `unsupported` since the record was established because
+  the merged baseline had never been built. It exists now — one Neo4j holding
+  both catalogues, answered by one Cypher specialist running the schema-driven
+  primitives — and this measures it against the federated arm that runs the same
+  primitives, on the same questions, graded by the same grader in one session.
+
+hypothesis: >
+  Stated before the run. (1) On correctness the two will not separate: the merged
+  arm runs the same primitives over the same plans, and a single store removes a
+  hop without adding information, so a difference inside the grader's own 0.0050
+  spread is expected. (2) The merged arm will complete more cross-source chains,
+  because in one store the consumer sub-question's seeds are reachable without
+  leaving the engine. If (1) holds, C-015 as written is not supported by
+  correctness and the federation argument must rest on something else.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 2997e3bc35f090038455699fb1ba82eb08538a4d          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python scripts/merged_sweep.py --out docs/evaluation/merged-2026-08-21"
+  dirty: false            # uncommitted changes at run time? if true, explain in ISSUES.md
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: generated banks 2026-08-19 and 2026-08-20, over MITRE ATT&CK 19.0 + CAPEC 3.9
+  version: "attack 19.0 / capec 3.9"
+  split: blind (drawn against the exclusion registry, authored without sight of the code)
+  n_examples: 60
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: null               # md5:... or sha256:... of the dataset artifact
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "commodity workstation; Neo4j x2 and Gremlin in Docker"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "relay/skynet"   # the grader only; no model is in the loop for  or 
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 8192
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: merged_vs_generic_correctness
+  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+baselines_compared: []
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: [C-015, C-003, C-010]        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null
+superseded_by: null
+related: ["EXP-2026-08-007", "EXP-2026-08-008"]
