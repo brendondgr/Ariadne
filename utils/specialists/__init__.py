@@ -66,4 +66,13 @@ def build_specialist(dataset: str, card: Any, config: SpecialistConfig):
         from .gremlin.specialist import build_gremlin_specialist
 
         return build_gremlin_specialist(card, config)
+    if dataset == "merged":
+        # The C-015 counterfactual: one Neo4j holding both catalogues, so one
+        # Cypher specialist serves questions that the federated arms split
+        # across two engines and two languages. Nothing about the specialist
+        # changes — it reads its labels, relationships and identifier schemes
+        # from the card it is handed, and the merged card declares the union.
+        from .cypher.specialist import build_cypher_specialist
+
+        return build_cypher_specialist(card, config)
     raise ValueError(f"No specialist for dataset {dataset!r}")

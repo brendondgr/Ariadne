@@ -135,6 +135,61 @@ def test_capec_native_priority_prefers_capec_over_technique() -> None:
     assert anchor.label == "AttackPattern"
 
 
+# -- the merged store (C-015) ------------------------------------------------
+#
+# One graph holding both catalogues, so both id families are native there. The
+# branch only fires when a task carries no planner seed ids — every bank
+# question does carry them — but leaving it returning nothing would silently
+# handicap the merged arm on any question that names its anchor only in prose,
+# which is the kind of self-inflicted baseline defect this study exists to avoid.
+
+
+def _merged_card():
+    from utils.planner.cards import SourceCardView
+
+    return SourceCardView.from_card_dict({
+        "dataset": "merged",
+        "runtime_backend": "neo4j",
+        "node_labels": ["Technique", "AttackPattern", "Weakness", "Mitigation"],
+        "relationship_types": ["MITIGATES", "EXPLOITS_WEAKNESS"],
+        "node_properties": {},
+    })
+
+
+def test_the_merged_store_resolves_an_attack_id() -> None:
+    anchor = resolve_anchor(_task("What mitigates T1055?", source="merged"), _merged_card())
+    assert isinstance(anchor, ResolvedAnchor)
+    assert anchor.value == "T1055"
+
+
+def test_the_merged_store_resolves_a_capec_id() -> None:
+    anchor = resolve_anchor(_task("What is CAPEC-66?", source="merged"), _merged_card())
+    assert isinstance(anchor, ResolvedAnchor)
+    assert anchor.value == "CAPEC-66"
+    assert anchor.label == "AttackPattern"
+
+
+def test_the_merged_store_resolves_a_cwe_id() -> None:
+    anchor = resolve_anchor(_task("What is CWE-89?", source="merged"), _merged_card())
+    assert isinstance(anchor, ResolvedAnchor)
+    assert anchor.value == "CWE-89"
+    assert anchor.label == "Weakness"
+
+
+def test_the_merged_store_keeps_a_priority_not_a_union() -> None:
+    """Both families named is one anchor by priority, not two by union.
+
+    A union would make every mapping question ambiguous, and an ambiguous
+    anchor abstains — so the merged arm would decline exactly the cross-source
+    questions the counterfactual exists to test.
+    """
+    anchor = resolve_anchor(
+        _task("Does CAPEC-66 map to T1055?", source="merged"), _merged_card()
+    )
+    assert isinstance(anchor, ResolvedAnchor)
+    assert anchor.value == "T1055"
+
+
 def test_to_dict_round_trips_for_tracing() -> None:
     anchor = resolve_anchor(_task("What is T1055?"), fixture_card("attack"))
     assert resolve_anchor(_task("x and y T1055 T1027"), fixture_card("attack")).to_dict()["candidates"]

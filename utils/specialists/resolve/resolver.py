@@ -110,6 +110,18 @@ def _native_ids(task: Any, dataset: str) -> tuple[str, ...]:
         # CAPEC ids first, else the CWE Weakness anchors, else ATT&CK ids
         # (TaxonomyEntry seeds for the reverse MAPS_TO join) — priority, not union.
         return extract_capec_ids(text) or extract_cwe_ids(text) or extract_attack_ids(text)
+    if dataset == "merged":
+        # One store holding both catalogues, so both id families are native and
+        # neither is a foreign key. Priority still, not union: a question naming
+        # a T-id and a CAPEC id is a two-anchor question, and handing both to a
+        # single-anchor describe would resolve as ambiguous. ATT&CK leads because
+        # a CAPEC question that names a technique is asking about the mapping,
+        # which is reached from the technique end in this graph.
+        return (
+            _extract_attack_seed_ids(text)
+            or extract_capec_ids(text)
+            or extract_cwe_ids(text)
+        )
     return ()
 
 
