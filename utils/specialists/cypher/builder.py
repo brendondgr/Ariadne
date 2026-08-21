@@ -305,6 +305,18 @@ class CypherQueryBuilder:
         if has_campaign and has_technique_entity:
             return self._campaign_techniques(resolved)
 
+        # 2b. Actor → software. Both of these sit ahead of the branches that
+        # used to swallow them: a Campaign+Software task fell through every
+        # campaign branch to `describe`, and a Group+Software task was captured
+        # by the unconditional Group branch below and answered with the group's
+        # techniques. `not has_technique_entity` keeps the existing
+        # actor→technique paths untouched, so a task naming all three labels
+        # still routes exactly where it did.
+        if has_campaign and has_software_entity and not has_technique_entity:
+            return self._campaign_software(resolved)
+        if has_group and has_software_entity and not has_technique_entity:
+            return self._group_software(resolved)
+
         # 3. Group → techniques
         if has_group:
             return self._group_techniques(resolved)
@@ -482,6 +494,51 @@ class CypherQueryBuilder:
             template="campaign_techniques",
             meta={"seed_ids": seed_ids},
         )
+
+    def _actor_software(
+        self, resolved: ResolvedTask, actor_label: str, alias: str, noun: str
+    ) -> QueryDraft:
+        """MATCH (Group|Campaign)-[:USES]->(Software).
+
+        The edge exists in the graph and had no template, so every question
+        over it was answered by whichever branch caught it first — for a Group
+        that was `_group_techniques`, which returns the group's *techniques*
+        and, for a group with none on record, returns nothing at all.
+        EXP-2026-08-010 measured four question families at 0.000 against a
+        1.000 ceiling for this.
+
+        Either end may anchor, following `_software_techniques`: "what software
+        does G0003 use" and "what groups use S0089" are one edge asked from
+        opposite sides.
+        """
+        seed_ids = list(resolved.seed_ids)
+        anchor = anchor_expression(
+            seed_ids,
+            {actor_label: alias, "Software": "s"},
+            resolved.dataset,
+            f"{alias}.attack_id",
+        )
+        where = f"WHERE {anchor} IN $ids " if seed_ids else ""
+        query = (
+            f"MATCH ({alias}:{actor_label})-[:USES]->(s:Software) "
+            f"{where}"
+            f"RETURN {alias}.attack_id AS {noun}_id, {alias}.name AS {noun}_name, "
+            "s.attack_id AS software_id, s.name AS software_name"
+        )
+        return QueryDraft(
+            query=query,
+            params={"ids": seed_ids} if seed_ids else {},
+            template=f"{noun}_software",
+            meta={"seed_ids": seed_ids},
+        )
+
+    def _group_software(self, resolved: ResolvedTask) -> QueryDraft:
+        """MATCH (Group)-[:USES]->(Software)."""
+        return self._actor_software(resolved, "Group", "g", "group")
+
+    def _campaign_software(self, resolved: ResolvedTask) -> QueryDraft:
+        """MATCH (Campaign)-[:USES]->(Software)."""
+        return self._actor_software(resolved, "Campaign", "c", "campaign")
 
     def _campaign_attribution(self, resolved: ResolvedTask) -> QueryDraft:
         """MATCH (Campaign)-[:ATTRIBUTED_TO]->(Group)."""

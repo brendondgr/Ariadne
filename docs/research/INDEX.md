@@ -31,6 +31,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-08-009` | 2026-08-21 | Does federating across two engines beat merging both sources into one graph? | complete | merged_minus_federated_mean -0.0167 (n=60) | C-015, C-003, C-010 | [merged-graph-counterfactual](experiments/EXP-2026-08-009-merged-graph-counterfactual/) |
 | `EXP-2026-08-010` | 2026-08-21 | Does Ariadne survive questions it did not co-author? | complete | ariadne_minus_oracle_recall -0.3027 (n=182) | C-003, C-012, C-013 | [external-validation](experiments/EXP-2026-08-010-external-validation/) |
 | `EXP-2026-08-011` | 2026-08-21 | Does the schema-agnostic path work on a schema it has never seen? | complete | gold_in_evidence_retrieval (not recorded) | C-010, C-014 | [identity-schema-transfer](experiments/EXP-2026-08-011-identity-schema-transfer/) |
+| `EXP-2026-08-012` | 2026-08-21 | Do the two template defects EXP-2026-08-010 found close, without moving a recorded number? | complete | external_recall_after_fix 0.7633 (n=182) | C-003, C-012 | [template-coverage-fix](experiments/EXP-2026-08-012-template-coverage-fix/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 
-**22 experiment(s) on record.**
+**23 experiment(s) on record.**

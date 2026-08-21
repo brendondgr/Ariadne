@@ -194,6 +194,5 @@ def test_no_reverse_direction_ask_is_left_unserved(report) -> None:
     """
     residue = {(f.template, f.seed_ids[0]) for f in report.in_scope()}
     assert residue == {
-        ("group_techniques", "S0154"),
         ("tactic_techniques", "M1038"),
     }

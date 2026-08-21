@@ -163,6 +163,15 @@ class CypherNormalizer:
         # NEW: software_techniques — software_id + technique_id
         if rows and "software_id" in rows[0] and "technique_id" in rows[0]:
             return self._normalize_software_techniques(rows, query, card, id_scheme)
+        # NEW: group_software / campaign_software — an actor and its software.
+        # Must sit after the software_id + technique_id branch above (these rows
+        # carry no technique_id, so the two cannot both match) and before the
+        # flat fallback, which reads neither column and emits `unknown` ids —
+        # the failure this branch exists to close.
+        if rows and "software_id" in rows[0] and (
+            "group_id" in rows[0] or "campaign_id" in rows[0]
+        ):
+            return self._normalize_actor_software(rows, query, card, id_scheme)
         # NEW: subtechnique_parent — parent_id + subtechnique_id
         if rows and "parent_id" in rows[0] and "subtechnique_id" in rows[0]:
             return self._normalize_subtechnique_parent(rows, query, card, id_scheme)
@@ -423,6 +432,59 @@ class CypherNormalizer:
                 )
             )
         return records
+
+    def _normalize_actor_software(
+        self,
+        rows: list[dict[str, Any]],
+        query: str,
+        card: Any,
+        id_scheme: str,
+    ) -> list[EvidenceRecord]:
+        """Group `group_software` / `campaign_software` rows by the actor.
+
+        Grouped on the actor rather than the software so the shape matches
+        `_normalize_software_techniques`: one record per anchor, its software in
+        `related`. Both directions of the question produce readable output —
+        "what software does G0003 use" gives one group with four software, and
+        "what groups use S0089" gives one group per user, each naming S0089.
+
+        `join_values` is empty deliberately. The cross-catalogue join runs on
+        ATT&CK technique identifiers, and neither end of this edge is one;
+        emitting software ids as join values would seed a CAPEC query that
+        cannot match them.
+        """
+        actor_key = "group_id" if "group_id" in rows[0] else "campaign_id"
+        name_key = actor_key.replace("_id", "_name")
+        label = "Group" if actor_key == "group_id" else "Campaign"
+
+        groups: dict[str, dict[str, Any]] = defaultdict(
+            lambda: {"name": "", "software": [], "_seen": set()}
+        )
+        for row in rows:
+            aid = str(row.get(actor_key) or "")
+            groups[aid]["name"] = str(row.get(name_key) or "")
+            sid = str(row.get("software_id") or "")
+            seen = groups[aid]["_seen"]
+            if sid and sid not in seen:
+                seen.add(sid)
+                groups[aid]["software"].append(
+                    {"id": sid, "name": str(row.get("software_name") or "")}
+                )
+
+        return [
+            emit_record(
+                card=card,
+                query=query,
+                record_id=aid,
+                primary_id=aid,
+                id_scheme=id_scheme,
+                label=label,
+                name=info["name"],
+                related=info["software"],
+                join_values=(),
+            )
+            for aid, info in groups.items()
+        ]
 
     def _normalize_subtechnique_parent(
         self,
