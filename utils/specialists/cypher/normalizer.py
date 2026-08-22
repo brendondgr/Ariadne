@@ -25,6 +25,10 @@ from ..primitives.describe import facets_from_count_rows as _facets_from_rows
 from ..primitives.describe import merge_with_card as _merge_plausible
 from ..primitives.expand import ExpandRequest, ExpandResult, paginate
 from ..resolve import ResolvedTask, subsumed_sources
+from utils.planner.edge_correspondence import (
+    SOURCE_DATASET as EDGE_SOURCE_DATASET,
+    produced_technique_ids,
+)
 
 _TECHNIQUE_ID_RE = re.compile(r"^T\d{4}(?:\.\d{3})?$")
 
@@ -277,6 +281,12 @@ class CypherNormalizer:
         # card keeps it a property of the data. Nothing changes for a card that
         # subsumes nothing, which is every card but the merged one.
         cross_catalogue = len(subsumed_sources(card)) > 1
+        # A source that carries no ATT&CK identifier anywhere still bridges to
+        # ATT&CK, through the *type* of the edges it walked rather than through
+        # any value in it (`utils.planner.edge_correspondence`). The declaration
+        # names the dataset it applies to, so this is inert for every other card
+        # — including ATT&CK's own, where the anchor id already is the key.
+        declares_edge_techniques = getattr(card, "dataset", None) == EDGE_SOURCE_DATASET
 
         records: list[EvidenceRecord] = []
         for anchor, info in groups.items():
@@ -288,6 +298,21 @@ class CypherNormalizer:
                     if _is_technique_id(nid) and nid not in seen:
                         seen.add(nid)
                         join_values = (*join_values, nid)
+            if declares_edge_techniques:
+                # Every edge type reached from this anchor, judged together:
+                # `produced_technique_ids` applies the catalog's own rule that a
+                # partial right establishes nothing alone but the pair does, so
+                # a lone GET_CHANGES never seeds ATT&CK with DCSync.
+                walked = {
+                    str(entry.get("type") or "")
+                    for entry in info["related"]
+                    if entry.get("type")
+                }
+                seen = set(join_values)
+                for tid in produced_technique_ids(walked):
+                    if tid not in seen:
+                        seen.add(tid)
+                        join_values = (*join_values, tid)
             records.append(
                 emit_record(
                     card=card,

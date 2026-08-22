@@ -170,3 +170,125 @@ with.
 - The baseline condition was run before the abstention-wording fix and the
   tri-source condition after it. That fix changes narrative text only; retrieval
   is computed from evidence records, so the comparison is unaffected.
+
+---
+
+# Phase 2 — the declared bridge
+
+**Status:** the bridge is built, wired and demonstrated. It has **not** been
+measured on a bank: there is no blind tri-source question set yet, so what
+follows is a capability demonstration and a no-regression result, not a score.
+
+## What had to be built, and why it is a different kind of thing
+
+ATT&CK and CAPEC bridge on a **shared value**: both graphs contain the technique
+id, and the planner compares strings it read out of them. The identity graph
+admits no such bridge — it contains no ATT&CK identifier anywhere, in no
+property, label or edge attribute. There is nothing to join *on*.
+
+What exists instead is a correspondence in **meaning**: a `DC_SYNC` edge *is*
+the technique ATT&CK calls T1003.006. That is a claim about the world, supplied
+by us, derivable from neither graph. It is declared in
+`utils/planner/edge_correspondence.py`, in one reviewed place, exactly as the
+canonical join keys require.
+
+**13 of 21 edge types carry a technique. The other 8 explicitly do not**, each
+with its reason recorded. `MEMBER_OF` is not Account Manipulation — being a
+member of a group is how every directory in the world works, and mapping it
+would report a technique for every user in the tenant. `GP_LINK` is a policy
+deployment; `WRITE_GP_LINK`, the ability to *change* it, is T1484.001 and is
+mapped. A test fails if the schema ever grows an edge nobody classified, because
+absence from both tables is indistinguishable at the call site from "carries no
+technique" — which is a claim nobody made.
+
+Every mapping cites the customer's own description of the edge from the catalog
+they supplied. `ADD_KEY_CREDENTIAL_LINK` maps to T1649 because their text says
+"allowing a certificate to be attached and the target impersonated", not because
+we assumed it. That grounding is what makes the table reviewable **by them**.
+
+The partial/whole distinction is theirs too, and it is enforced rather than
+noted: `GET_CHANGES` is marked partial because the catalog says "Alone it is
+insufficient; combined with GET_CHANGES_ALL it is DCSync", so a lone half-right
+produces **nothing**, and the pair produces T1003.006 through a declared
+composite rule. Seeding ATT&CK with DCSync from a single replication right would
+assert a technique the customer's own description denies.
+
+## What it does
+
+*"Which ATT&CK technique corresponds to what the Domain Admins group can do with
+DC_SYNC, and what mitigates it?"*
+
+| | before the bridge | with the bridge |
+|---|---|---|
+| join declared | none | `identity-edge-technique` |
+| execution order | independent | identity **before** attack |
+| ATT&CK seeds | `[]` | `['T1003.006']` |
+| ATT&CK records | 7 (keyword noise) | **1** (exact) |
+
+*"The App Access 070 group can WRITE_DACL on objects. Which ATT&CK technique is
+that and how is it mitigated?"* seeds `['T1098', 'T1222.001', 'T1484.001']` from
+the edges that anchor actually holds, and ATT&CK returns exactly those three.
+
+Before, ATT&CK reached T1003.006 by string coincidence — the token "sync"
+matching `SyncAppvPublishingServer` and `Asynchronous Procedure Call` — and
+returned six wrong records beside the right one. Now it is *driven*: the
+identity record emits the technique id as a join value because of the edge type
+it walked, and ATT&CK consumes it as a seed.
+
+## Three defects surfaced on the way, and one of them is the gate working
+
+**The gate refused the bridge**, and was right to. Its producer/consumer check
+keyed on `via_edge` alone, saw `producers=[]`, and rejected the join rather than
+shipping one it could not validate. Both it and `dependency_map` now ask the
+endpoint whether it `produces`, which covers both ways of deriving a key —
+walking a mapping edge, and holding an edge whose *type* is the key.
+
+**A leading article was being absorbed into every name.** The Title-Case run for
+*"The App Access 070 group can …"* begins at "The", so the extracted name was
+`The App Access 070`, and the lookup is an unanchored `CONTAINS` against a stored
+name of `App Access 070` — which matches **nothing**. The anchor resolved, looked
+reasonable in a trace, and retrieved zero records. Latent until a question began
+with its subject: every question in banks 1–3 phrases it mid-sentence, where the
+article is lowercase and no Title-Case run reaches it. Trimming leading articles
+also fixed `Describe Phishing for Information` → `Phishing for Information` and
+returned `List ATT&CK software entries` to the label-scan path the builder's own
+docstring says that gate exists to protect.
+
+**The correlation pull-in overrode the router.** With a bridge declared between
+identity and ATT&CK, any identity question the intent classifier reads as
+correlational pulled in ATT&CK to "close the join" — *"Which containers is the
+group policy object GPO-13-baseline linked to?"* routed to both. The pull-in now
+declines to re-add a source the selector deliberately **shed**: shedding is a
+judgement that the source's evidence was subsumed, while the pull-in exists for
+a partner with no keyword evidence at all that is nonetheless needed to close a
+declared join.
+
+## No-regression
+
+The 117 identity-only questions, three sources live, bridge declared:
+
+| | generic | template |
+|---|---|---|
+| 1 source | 0.7094 | 0.2194 |
+| 3 sources + bridge | **0.7094** | **0.2194** |
+| questions differing | **0** | **0** |
+| routed beyond identity | **0/117** | **0/117** |
+| ids per question | 8.24 → **8.24** | 1.95 → **1.95** |
+
+The bridge is **inert for questions that do not invoke it** and fires for those
+that do. That is the property that matters: a declared correspondence that
+leaked into unrelated questions would be worse than no bridge at all.
+
+## What is not claimed
+
+- **Not measured.** Two demonstrated questions are not a result. There is no
+  blind tri-source bank, so nothing here is a score and nothing should be quoted
+  as one.
+- **The mapping is ours.** Any figure whose gold derives from this table measures
+  whether the system *uses* the declared bridge correctly, not whether the bridge
+  is right. Those are different claims and only the first would be tested.
+- **One direction only.** Identity produces technique ids and ATT&CK consumes
+  them. The reverse — "which of our groups could perform T1003.006" — needs the
+  inverse lookup and is not built.
+- CAPEC is reachable from ATT&CK by the existing key, so identity → attack →
+  capec is expressible in principle. It has not been run.

@@ -123,11 +123,20 @@ def _check_join(
         )
     else:
         # Dependent sequencing derives its order from the key's endpoints:
-        # exactly one producer (reaches the key via a mapping edge) and one
-        # consumer (carries the key natively). Two endpoints, one direction —
-        # acyclic by construction; anything else is a mis-declared key.
-        producers = [e.dataset for e in resolved.endpoints if e.via_edge]
-        consumers = [e.dataset for e in resolved.endpoints if not e.via_edge]
+        # exactly one producer (derives the key) and one consumer (carries it
+        # natively). Two endpoints, one direction — acyclic by construction;
+        # anything else is a mis-declared key.
+        #
+        # ``produces`` rather than ``via_edge`` because there are two ways to
+        # derive the key and this check knew only one. CAPEC reaches it by
+        # walking ``MAPS_TO``; the identity graph derives it from the *type* of
+        # the edge it walked, having no such value anywhere in it. Keyed on
+        # ``via_edge`` alone the identity bridge showed producers=[] and the
+        # gate rejected it — correctly, on the information it had. It refused to
+        # ship a join it could not validate rather than shipping a broken one,
+        # which is the gate working, not failing.
+        producers = [e.dataset for e in resolved.endpoints if e.produces]
+        consumers = [e.dataset for e in resolved.endpoints if not e.produces]
         if len(producers) != 1 or len(consumers) != 1:
             reasons.append(
                 f"{label}: canonical key must declare exactly one producing and "

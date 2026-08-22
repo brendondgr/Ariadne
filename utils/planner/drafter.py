@@ -355,6 +355,17 @@ class DeterministicDrafter:
                 partner_card = cards.get(partner)
                 if (
                     partner in selected_live
+                    # A partner the selector deliberately SHED must not be
+                    # re-added here. Shedding is a judgement that the source's
+                    # evidence was wholly subsumed by the leader's; this pull-in
+                    # is for a partner with no keyword evidence at all that is
+                    # nonetheless needed to close a declared join. Overriding
+                    # the judgement with the heuristic reintroduces exactly the
+                    # contamination the selector exists to prevent -- "Which
+                    # containers is the group policy object GPO-13-baseline
+                    # linked to?" reads as correlation, and pulled ATT&CK into a
+                    # question that is entirely about the customer's own graph.
+                    or partner in shed
                     or not live_view.is_live(partner)
                     or partner_card is None
                     or resolve_join_key(cards[selected], partner_card) is None

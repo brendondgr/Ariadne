@@ -35,6 +35,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+# Which two sources this declaration bridges. Named explicitly, as
+# ``CANONICAL_JOIN_KEYS`` names its datasets: a correspondence is between two
+# particular schemas and is not transferable. A second customer schema would
+# add its own block and its own constants rather than reusing these.
+SOURCE_DATASET = "identity"
+TARGET_DATASET = "attack"
+
 
 @dataclass(frozen=True)
 class EdgeCorrespondence:
@@ -196,6 +203,32 @@ NOT_A_TECHNIQUE: dict[str, str] = {
 }
 
 
+@dataclass(frozen=True)
+class CompositeRule:
+    """A technique that only exists when several edges are held *together*."""
+
+    requires: tuple[str, ...]
+    technique_ids: tuple[str, ...]
+    basis: str
+
+
+# The catalog does not merely say GET_CHANGES is half of something; it says what
+# the other half is and what the pair amounts to. Encoding that is the
+# difference between reporting DCSync wherever a single replication right exists
+# -- which their own text calls insufficient -- and reporting it where the
+# combination actually holds.
+COMPOSITE_RULES: tuple[CompositeRule, ...] = (
+    CompositeRule(
+        requires=("GET_CHANGES", "GET_CHANGES_ALL"),
+        technique_ids=("T1003.006",),
+        basis=(
+            "catalog: 'Alone it is insufficient; combined with GET_CHANGES_ALL "
+            "it is DCSync'"
+        ),
+    ),
+)
+
+
 _BY_EDGE: dict[str, EdgeCorrespondence] = {
     entry.edge: entry for entry in IDENTITY_ATTACK_CORRESPONDENCE
 }
@@ -227,6 +260,44 @@ def technique_ids_for(edges: object) -> tuple[str, ...]:
             continue
         for tid in entry.technique_ids:
             found.setdefault(tid, None)
+    return tuple(found)
+
+
+def produced_technique_ids(edges: object) -> tuple[str, ...]:
+    """The techniques a set of edges **actually establishes**, for crossing the bridge.
+
+    Distinct from :func:`technique_ids_for`, and the distinction is the whole
+    point. ``technique_ids_for`` answers "what is this edge related to", which is
+    the right question for explaining a single edge to a reader. This answers
+    "what may be asserted from holding these edges", which is the right question
+    for seeding a query against ATT&CK -- and the two differ precisely where the
+    catalog says a right is partial.
+
+    A ``partial`` edge contributes nothing on its own: emitting T1003.006 for a
+    lone GET_CHANGES would seed ATT&CK with DCSync and produce an answer
+    asserting a technique the customer's own description says the edge is
+    insufficient for. It contributes only through a :class:`CompositeRule` whose
+    requirements are all present.
+    """
+    if isinstance(edges, str):
+        names = [edges]
+    else:
+        try:
+            names = [str(e) for e in edges]  # type: ignore[union-attr]
+        except TypeError:
+            return ()
+    held = {n.strip().upper() for n in names if n}
+    found: dict[str, None] = {}
+    for name in names:
+        entry = correspondence_for(name)
+        if entry is None or entry.partial:
+            continue
+        for tid in entry.technique_ids:
+            found.setdefault(tid, None)
+    for rule in COMPOSITE_RULES:
+        if held.issuperset(rule.requires):
+            for tid in rule.technique_ids:
+                found.setdefault(tid, None)
     return tuple(found)
 
 

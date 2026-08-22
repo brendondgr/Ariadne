@@ -111,7 +111,11 @@ def dependency_map(plan: Plan) -> dict[str, str]:
             continue
         producer_ds = consumer_ds = None
         for endpoint in key.endpoints:
-            if endpoint.via_edge:
+            # `produces` covers both ways an endpoint derives key values: by
+            # walking a mapping edge to reach them, and by holding an edge whose
+            # TYPE corresponds to one. The consumer is always the endpoint whose
+            # records natively carry the key.
+            if endpoint.produces:
                 producer_ds = endpoint.dataset
             else:
                 consumer_ds = endpoint.dataset

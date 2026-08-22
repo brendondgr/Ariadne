@@ -232,6 +232,35 @@ _STRUCTURED_TOKEN_RE = re.compile(
 _INSTANCE_TOKEN_RE = re.compile(r"\b[A-Za-z]{2,}\d+[A-Za-z0-9]*\b")
 
 
+def _trim_edges(candidate: str) -> str:
+    """Drop leading/trailing articles and connectors from an extracted run.
+
+    A connector is meaningful only *between* capitalised words -- "Phishing for
+    Information", "Denial of Service" -- and never at an edge. But a
+    sentence-initial article is capitalised, so the Title-Case run for "The App
+    Access 070 group can ..." begins at "The" and the extracted name is "The App
+    Access 070". The name lookup is an unanchored ``CONTAINS`` against a stored
+    name of "App Access 070", so the article makes it match **nothing**: the
+    anchor resolves, looks reasonable in a trace, and retrieves zero records.
+
+    Latent until a question began with its subject. Every question in banks 1-3
+    phrases it mid-sentence ("What can the Database Admins group ...") where the
+    article is lowercase and no Title-Case run reaches it.
+    """
+    words = candidate.split()
+    # Leading: articles and scaffolding verbs, both of which precede a name and
+    # are never part of one ("The App Access 070", "Describe Phishing ...").
+    while words and words[0].lower() in (_NAME_STOPWORDS | _NAME_SCAFFOLD):
+        words.pop(0)
+    # Trailing: stopwords only. Scaffolding words DO end real names --
+    # "Phishing for Information" is an ATT&CK technique and `information` is on
+    # the scaffold list -- so trimming scaffold from the tail truncates the name
+    # to "Phishing" and matches the wrong technique.
+    while words and words[-1].lower() in _NAME_STOPWORDS:
+        words.pop()
+    return " ".join(words)
+
+
 def _extract_name_terms(
     text: str, schema_words: set[str], catalogue_ids: bool = True
 ) -> tuple[str, ...]:
@@ -242,7 +271,7 @@ def _extract_name_terms(
     seen: set[str] = set()
 
     def add(candidate: str) -> None:
-        cand = candidate.strip().strip(".,;:?!()[]{}")
+        cand = _trim_edges(candidate.strip().strip(".,;:?!()[]{}"))
         low = cand.lower()
         if not cand or low in seen:
             return

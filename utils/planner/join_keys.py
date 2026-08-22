@@ -17,6 +17,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from .edge_correspondence import SOURCE_DATASET, TARGET_DATASET, mapped_edges
+
 if TYPE_CHECKING:  # avoid an import cycle; cards imports nothing from here
     from .cards import SourceCardView
 
@@ -30,6 +32,27 @@ class JoinKeyEndpoint:
     property: str            # the property holding the key value
     via_edge: str | None = None  # edge that must exist to reach the key
     note: str = ""
+    # Edge types whose *type* corresponds to the key, for a source that carries
+    # the key nowhere in its data. ATT&CK and CAPEC bridge on a shared string:
+    # both graphs contain the technique id and the planner compares values it
+    # read out of them. An identity graph contains no ATT&CK identifier at all,
+    # so there is nothing to compare -- the correspondence is that a `DC_SYNC`
+    # edge *is* T1003.006, which is declared in ``edge_correspondence`` and
+    # derivable from neither graph. An endpoint with ``edges`` is present when
+    # the card declares any of them, and produces key values rather than
+    # carrying them.
+    edges: tuple[str, ...] = ()
+
+    @property
+    def produces(self) -> bool:
+        """Does this endpoint *derive* key values rather than store them?
+
+        Either by walking a mapping edge to reach them (CAPEC's ``MAPS_TO``) or
+        by holding an edge whose type corresponds to one (identity's
+        ``DC_SYNC``). The consumer is the endpoint whose records natively carry
+        the key, and it is seeded with what the producer yields.
+        """
+        return bool(self.via_edge) or bool(self.edges)
 
 
 @dataclass(frozen=True)
@@ -74,6 +97,36 @@ CANONICAL_JOIN_KEYS: tuple[JoinKey, ...] = (
             ),
         ),
     ),
+    JoinKey(
+        name="identity-edge-technique",
+        description=(
+            "An identity edge type corresponds to an ATT&CK technique: the "
+            "customer's DC_SYNC edge is T1003.006, WRITE_GP_LINK is T1484.001. "
+            "Unlike attack-technique-id this is NOT a value join — the identity "
+            "graph contains no ATT&CK identifier anywhere — so the mapping is "
+            "authored and declared in utils.planner.edge_correspondence, never "
+            "inferred from either graph."
+        ),
+        endpoints=(
+            JoinKeyEndpoint(
+                dataset=SOURCE_DATASET,
+                labels=(),
+                property="",
+                edges=tuple(sorted(mapped_edges())),
+                note=(
+                    "the edge TYPE is the key; a partial right contributes "
+                    "nothing alone (see produced_technique_ids)"
+                ),
+            ),
+            JoinKeyEndpoint(
+                dataset=TARGET_DATASET,
+                labels=("Technique", "SubTechnique"),
+                property="attack_id",
+                via_edge=None,
+                note="attack_id form 'T####[.###]'",
+            ),
+        ),
+    ),
 )
 
 
@@ -92,9 +145,19 @@ def get_join_key(name: str) -> JoinKey | None:
 
 def _endpoint_present(endpoint: JoinKeyEndpoint, card: "SourceCardView") -> bool:
     """A card carries the key when it has one of the labels and (if required)
-    the bridging edge in its introspected structure."""
+    the bridging edge in its introspected structure.
+
+    An endpoint declared by ``edges`` is label-agnostic: the correspondence is
+    to the edge *type*, which any labelled pair may connect, so requiring a
+    label as well would exclude perfectly valid anchors. It is present when the
+    card declares at least one of the edges — checked against the card's
+    introspected relationship types, so a correspondence declared for an edge
+    this customer does not have simply does not bind.
+    """
     if card.dataset != endpoint.dataset:
         return False
+    if endpoint.edges:
+        return any(card.has_relationship(edge) for edge in endpoint.edges)
     if not any(card.has_label(label) for label in endpoint.labels):
         return False
     if endpoint.via_edge is not None and not card.has_relationship(endpoint.via_edge):
