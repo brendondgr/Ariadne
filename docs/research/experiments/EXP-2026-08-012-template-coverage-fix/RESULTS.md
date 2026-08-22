@@ -70,3 +70,30 @@ that plainly is more useful than re-scoping them after the fact.
   only, CAPEC untouched, machine-authored phrasing.
 - The generic arm was not re-run and cannot have moved: `build()` returns
   `self._build_generic(resolved)` before any changed line.
+
+---
+
+## Addendum, same day — H5 measured after all
+
+H5 was recorded above as "not measured". It has since been run, on the same
+fixed 60 questions, after both shipped changes (the templates and D-024's
+composer fix):
+
+| arm | recall | exact |
+|---|---:|---:|
+| ceiling | 0.9953 | — |
+| plan given (templates) | 0.8184 | 0.7000 |
+| plan-free (it plans from the question text) | 0.6934 | 0.6333 |
+
+**H5 held.** It predicted the plan-free arm would gain less from the fix,
+because it must still infer the entity types the new dispatch branches key on.
+It gained **+0.080** (0.6132 → 0.6934) against the plan-given arm's **+0.101**
+(0.7170 → 0.8184), so the gap widened from −0.1038 to **−0.1250**.
+
+The qualification from ISSUES.md I7 still travels with it: a "given" plan
+supplies a source name and three entity strings, not the anchor. −0.125 is what
+those few words are worth.
+
+**The composer fix changed no external figure.** Recall 0.7633 and exact 0.6593
+before and after, to four decimals — it moved prose and not one identifier,
+externally as well as on the internal banks.
