@@ -354,3 +354,110 @@ The durable fix is to prefer an exact name match and fall back to `CONTAINS`
 only when exact returns nothing — which is a behaviour change to the resolver
 and belongs in its own experiment with a re-run and a re-judge, not an
 amendment.
+
+## I-12 — The device anchor was eaten by an ATT&CK id pattern
+
+`dc234`, `lap191` and `dc212` never appeared in their own evidence. Three
+defects in `_extract_name_terms`, all of a kind, and none visible by reading:
+
+1. `_acceptable_name` rejected any candidate matching `_ANY_ID_RE`. That is
+   correct on ATT&CK, where `T1055` is an identifier and not a name. It is wrong
+   everywhere else: `dc212` — the conventional name for a domain controller, and
+   the single most common host-naming pattern in identity data — matches the
+   DataComponent shape `DC[0-9]{3,}` case-insensitively. The anchor was deleted
+   before it could bind, so the query fell through to a scan of the whole DEVICE
+   label and returned **240 unrelated hosts**. `resolve()` already computed which
+   catalogue's anchor rules apply (`anchor_dataset`); the name path simply was
+   not asking.
+2. The bare-word fallback is gated behind `if not terms`, so a single acceptable
+   Title-Case word suppressed it. *"Who can modify the DACL on the device
+   wks225?"* yielded `('DACL',)` and never saw `wks225`.
+3. When the fallback did run, it spent the four-term budget on `identity`,
+   `operating` and `system` before reaching the host name — and those are not
+   merely wasted slots, since each goes into the `CONTAINS` predicate and pulls
+   in records that have nothing to do with the question.
+
+**Two more defects were hiding underneath**, reachable only once the anchor
+began binding: `_FACET_AGGREGATION` still selected a bare `n.attack_id`, so
+`describe` returned null ids on any source keyed otherwise (the normalizer then
+dropped every row); and `_normalize_flat` labelled every scanned row
+`"Technique"` regardless of source, asserting a DEVICE named `srv000` to the
+judge as an ATT&CK technique. That last is the same species as I-9 and was found
+the same way — by running the template against a graph it was not written for.
+
+**Measured**, bank 3, both arms, 117 questions, zero per-question regressions
+and 15 improvements. Generic retrieval 0.6923 → 0.7094 (facet-out 0.6667 →
+0.7500). The template arm 0.1140 → 0.2194, *entirely* because all 12
+`unanswerable` questions went 0.0 → 1.0: it had been leaking on every one of
+them by returning a 240-row scan that contained everything.
+
+**The larger gain is invisible to the retrieval metric**, exactly as in I-11.
+Evidence volume fell from 20.60 to 8.24 ids per question on the generic arm (max
+480 → 54) and 14.34 → 1.95 on the template arm; precision rose 0.2565 → 0.3054
+and 0.0589 → 0.1373.
+
+## I-13 — The `describe` id column widened, and it is not a no-op on the merged store
+
+Fixing I-12 required `describe` to stop selecting a bare `n.attack_id`. On
+ATT&CK the widening to `coalesce(n.attack_id, n.id)` is a **measured** no-op: of
+4369 nodes in the live store, zero have a null `attack_id` beside a non-null
+`id`, so the coalesce returns `attack_id` every time.
+
+On the **merged** store it is not. 3686 of 9138 nodes — the CAPEC-origin ones —
+have no `attack_id` at all, and previously returned a null id that the
+normalizer dropped. Describing them now returns a record where it returned
+nothing.
+
+That is an improvement, and it is still a behavioural change to the
+merged-graph counterfactual (EXP-2026-08-009), whose figures were taken before
+it. **It is recorded here rather than absorbed**: whether those figures should
+be re-run is a decision, not a cleanup.
+
+The frozen-tree fixture advanced to generation 3 to accommodate the change,
+hand-authored from generation 2 by two exact substitutions with every other byte
+carried across, and the licence recorded in `LICENCES` beside the two the outer
+join was granted.
+
+## I-14 — Two source cards declare container-internal URIs
+
+`attack.json` declares `bolt://localhost:7687` and `capec.json` declares
+`ws://localhost:8182/gremlin` — the ports those services listen on *inside* the
+compose network, which is what the build saw when it introspected them. Neither
+is reachable from the host, where they are published on 5456 and 6455.
+
+This is why `build_gremlin_specialist` documents that "the card's
+`connection.uri` is intentionally ignored per project convention", and why the
+fix for two-sources-on-one-backend could **not** simply make the card
+authoritative — that would break ATT&CK and CAPEC on the first query.
+`identity.json` (5459) and `merged.json` (5458) happen to carry host-reachable
+URIs, so the field is inconsistent as well as unusable.
+
+The consequence is that a source card, which is otherwise the complete
+self-description of a source, cannot say where it lives. Correcting it is a
+build-side change — the introspection must record the published address, not the
+one it dialled — and is left for its own step. Until then the per-source address
+is an explicit `ARIADNE_ENDPOINT_<DATASET>` override.
+
+## I-15 — The golden harness is not reproducible on narrative
+
+Attempting the recorded-answer regression check that precedes any composer
+change, all 120 golden answers differed from the committed
+`docs/evaluation/golden/answers.jsonl` **before any edit was made**, and 98 of
+120 differed between HEAD and the working tree.
+
+Neither number means anything: running the harness twice against *identical*
+code differs on 15 of 20 answers. The narrative is not reproducible, so it
+cannot attribute a change to a cause.
+
+The deterministic fields are: `produced_ids`, `exit_code`, `abstentions` and
+`gold_expected_ids` are all stable across repeat runs (0/20 differ). Judged on
+those, I-12's changes moved **2 of 120** questions, and the two traded the same
+pair of ids (`T1027`, `T1055`) in opposite directions between `A-SCN-01` and
+`F-FAN-03` — a pattern that suggests concurrency rather than the edit. A
+concurrency-1 repeat is running to settle it and is **not yet resolved**.
+
+Two consequences worth recording. The committed `answers.jsonl` is stale with
+respect to `main` and should not be read as a baseline. And the standing
+instruction to "re-run deterministic over both banks and diff excluding clock
+keys" needs narrowing: diff the deterministic fields, because the narrative
+cannot support the comparison.
