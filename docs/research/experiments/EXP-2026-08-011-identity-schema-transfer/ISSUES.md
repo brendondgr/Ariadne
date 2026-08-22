@@ -265,3 +265,46 @@ card lookup, and it belongs with a re-run and a fresh judging pass.
 
 **When fixed, re-judge rather than re-quote.** A-7's numbers are a measurement of
 this defect as much as of the retrieval path, so they do not carry over.
+
+**RESOLVED 2026-08-22.** `summarize()` now reads the source name from each
+record's own `provenance.source`, which `emit_record` already fills from the
+source card — so the label is whatever the card declares rather than a literal.
+Four branches were hard-coded, not two. Two further corrections came with it:
+
+* The source name is rendered after "in", never welded into a noun phrase. A
+  card may legitimately call itself "the ReliaQuest identity graph", and
+  *"Found 5 the ReliaQuest identity graph record(s)"* is not a sentence.
+* A record with no `primary_id` rendered as *"Found record : Database Admins"* —
+  a dangling colon that reads as a missing citation, which is how the judges
+  scored it. The identifier is now included only when one exists.
+
+```
+before:  Found 54 ATT&CK record(s) including unknown and more.
+after:   Found 1 record in the ReliaQuest identity graph: Database Admins.
+```
+
+**This is not a cosmetic change and must not be filed as one.**
+`utils/synthesis/composer.py:181` uses the specialist summary as *claim text*,
+so the false "ATT&CK record" statement was being promoted into an asserted
+claim. That is why independent judges marked it unfaithful, and why the fix is
+expected to move the number rather than tidy the prose.
+
+**It changes ATT&CK's claim text too**, which is a consequence the operator
+should weigh rather than something to ship quietly:
+
+```
+before:  Found ATT&CK record T1055: Process Injection.
+after:   Found 1 record in MITRE ATT&CK: Process Injection (T1055).
+```
+
+Recorded MITRE answers will therefore no longer match byte-for-byte on a re-run.
+**The MITRE golden banks have NOT been re-run to quantify this** — that touches
+other experiments' committed artifacts and is not this experiment's to do. The
+one ATT&CK branch that already read "in MITRE ATT&CK" is unchanged.
+
+Retrieval is unmoved by the fix (0.7877 / 0.3177 before and after), which
+confirms it altered prose and not what was found. 999 tests pass.
+
+**Still latent:** the Gremlin normalizer carries the same hard-coded "CAPEC"
+phrasing. It is not wrong today because CAPEC is the only Gremlin source, but it
+is the identical trap waiting for the next one.

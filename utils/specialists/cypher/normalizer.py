@@ -859,16 +859,49 @@ class CypherNormalizer:
         except (ValueError, TypeError):
             return {}
 
+    @staticmethod
+    def _source_label(
+        records: list[EvidenceRecord], resolved: ResolvedTask
+    ) -> str:
+        """The human-readable name of the source these records came from.
+
+        Read from the records' own provenance, which ``emit_record`` fills from
+        the source card, so it is whatever that card declares rather than a
+        literal in this file.
+
+        This was hard-coded to "ATT&CK" on all four branches below, with no card
+        lookup and no dataset branch. Every answer from every source therefore
+        described its records as ATT&CK records, so an identity graph reported
+        ``GROUP``, ``GPO``, ``DOMAIN`` and ``AWS_EC2_SECURITY_GROUP`` objects as
+        "ATT&CK record(s)" -- a statement about what the evidence *is* that was
+        simply false, and one that several independent judges in
+        EXP-2026-08-011 caught and marked down as unfaithful even when every
+        identifier in the answer was correct (ISSUES I-9).
+
+        Falls back to the dataset key, then to no name at all. Returning an
+        empty string is deliberate: a summary that cannot name its source should
+        say "Found 5 record(s)", not guess at one.
+        """
+        for record in records:
+            provenance = record.provenance
+            if provenance is not None and provenance.source:
+                return provenance.source
+        return getattr(resolved, "dataset", "") or ""
+
     def summarize(
         self, records: list[EvidenceRecord], resolved: ResolvedTask
     ) -> str:
         """Return a short grounded sentence citing real ids found."""
-        if not records:
-            return "No records found in ATT&CK for this query."
+        source = self._source_label(records, resolved)
+        # The source name is always rendered after "in", never welded into a
+        # noun phrase. A card is free to call itself "the ReliaQuest identity
+        # graph", and "Found 5 the ReliaQuest identity graph record(s)" is not a
+        # sentence -- whereas "in the ReliaQuest identity graph" reads correctly
+        # for any name a card might declare, including MITRE ATT&CK's.
+        of_source = f" in {source}" if source else ""
 
-        # Pull a few representative ids for the summary
-        sample_ids = [r.primary_id for r in records[:3] if r.primary_id]
-        id_text = ", ".join(sample_ids) if sample_ids else "unknown"
+        if not records:
+            return f"No records found{of_source} for this query."
 
         total = len(records)
         if total == 1:
@@ -879,13 +912,26 @@ class CypherNormalizer:
                     r.get("id", "") for r in rec.related[:3] if r.get("id")
                 )
                 return (
-                    f"Found {related_count} item(s) related to {rec.primary_id} "
-                    f"(e.g. {related_ids}) in MITRE ATT&CK."
+                    f"Found {related_count} item(s) related to "
+                    f"{rec.primary_id or rec.name}"
+                    f"{f' (e.g. {related_ids})' if related_ids else ''}"
+                    f"{of_source}."
                 )
-            return f"Found ATT&CK record {rec.primary_id}: {rec.name}."
+            # Name first, identifier only when there is one. The identifier was
+            # interpolated unconditionally, so a record without one rendered as
+            # "Found record : Database Admins" -- a dangling colon that reads as
+            # a missing citation, which is how independent judges scored it.
+            label = rec.name or rec.primary_id or "unnamed record"
+            ident = f" ({rec.primary_id})" if rec.primary_id and rec.name else ""
+            return f"Found 1 record{of_source}: {label}{ident}."
 
+        sample_ids = [r.primary_id for r in records[:3] if r.primary_id]
+        if not sample_ids:
+            sample_ids = [r.name for r in records[:3] if r.name]
+        id_text = ", ".join(sample_ids)
+        including = f" including {id_text}" if id_text else ""
         return (
-            f"Found {total} ATT&CK record(s) including {id_text}"
-            + (" and more" if total > 3 else "")
+            f"Found {total} record(s){of_source}{including}"
+            + (" and more" if id_text and total > 3 else "")
             + "."
         )
