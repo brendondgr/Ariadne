@@ -1,0 +1,2898 @@
+[
+  {
+    "question_id": "ID-DESCRIBE-04",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Answer only echoes the found record identifier; never addresses the city attribute asked about, and evidence record has no city field. No false claim, but no explicit statement that city data is unavailable either."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-06",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Same pattern: department question is not addressed at all; evidence record carries no department field; answer is non-responsive rather than an honest abstention."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-09",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 0.4,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.05,
+    "reasons": [
+      "Question asks the OS of device lap191; instead the answer dumps 240 unrelated device records (nearly the entire device inventory) none of which mention an OS. Every cited id does correspond to a real evidence record, but presenting them en masse as if responsive to a specific-device OS question is highly misleading and never answers the question."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-11",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 1.0,
+    "reasons": [
+      "Honest abstention: no evidence exists for OS of srv161 and the answer says so plainly instead of inventing anything. Per rubric this is fully sufficient."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-12",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Privileged-flag question is not addressed; evidence record has no privilege field. Non-responsive rather than a stated abstention."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-04",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Question asks who can generically write to the OU; evidence's related list is empty (no such principals found) but the answer never states this negative finding explicitly, just echoes the record."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-08",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Full-control-on-container question; related list empty in evidence; answer is a non-responsive echo rather than a stated negative/abstention."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-22",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "ACL-write question on OU; evidence shows no related principals; answer does not clarify this, just restates the record."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-24",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Full-control-rights question on container; evidence related list empty; same non-responsive pattern."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-34",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Replication-rights question on a group; evidence related list empty; answer just restates the record without addressing the relationship."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-38",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.3,
+    "groundedness": 0.7,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Question asks what identity dc087 runs as; the 5 evidence records returned are entirely unrelated 'Technique'-labeled entries (ad-cert-template-00..04) with no connection to dc087 or identity at all. Retrieval mismatch: answer presents unrelated records as if responsive."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-42",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Permission-modification question on a group; related list empty in evidence; answer non-responsive echo."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-43",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Directory-replication-target question; related list empty; answer restates record without addressing the relationship."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-15",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Full-control-over-group question; related list empty; non-responsive echo of the record."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-20",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "ACL-modification question; related list empty; answer does not state the negative finding."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-03",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Permission-rewrite question; related list empty; non-responsive echo."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-47",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Group-ownership question; related list empty; answer restates record only."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-56",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Full-control-objects question; related list empty; non-responsive."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-76",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Generic-write-access question; related list empty; answer does not address the relationship."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-79",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Group-modification question; related list empty; non-responsive echo."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-14",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.75,
+    "reasons": [
+      "Question asks for the account name of sgupta524; the evidence record's own name field is 'sgupta524', so restating the found record's identifier does implicitly convey the account name, though the answer does not phrase it as an explicit attribute statement."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-03",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "OS question for lap128 not addressed; evidence DEVICE record has no OS field; non-responsive echo."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-10",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 0.75,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Question asks a yes/no privilege question about okta-group-15; the answer instead enumerates the group's 14 user members. Members are grounded in evidence, but privileges are never addressed, so the answer substitutes a different fact for the one asked."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-04",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 0.55,
+    "groundedness": 0.8,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Question asks who can generically write to the OU; answer lists the OU's associated groups without confirming any write-permission semantics, conflating generic association with the specific right asked about. Also an internal count mismatch (9 vs 8, from a duplicated id in the evidence)."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-06",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 0.55,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Question asks who added key credentials to vpetrov500; answer instead lists the user's 2 GROUP memberships, an unrelated relation type never confirmed to represent credential additions."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-07",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 0.55,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Question asks who can change account restrictions on calvarez520; answer substitutes the user's single GROUP membership, not a confirmed permission edge."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-10",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Full-control question on ytanaka174; evidence related list is empty; answer is a non-responsive echo of the found record."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-17",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 0.55,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "DACL-modification question on wks225; answer substitutes the device's GROUP relation (Service Accounts) without confirming DACL-write semantics."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-24",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 0.6,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Full-control-rights question on a container; answer lists 2 associated groups (Backup Operators, Certificate Managers) which are plausible principals but the 'full control' relationship itself is never confirmed by the evidence, just generic association."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-24",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.6,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.35,
+    "reasons": [
+      "Directory-pull question on a group; answer lists 3 associated domains, which are topically plausible directory objects, but the evidence never confirms the specific replication-pull permission."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-43",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.55,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Directory-replication-target question; answer lists 6 generically related items (domains and containers) without confirming the specific replication-rights relationship."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-06",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 0.5,
+    "groundedness": 0.75,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Question asks which groups can write to App Access 070; answer lists a heterogeneous mix of OUs, containers, GPOs and even a device/workstation as 'related items' without ever confirming a write relationship or that these are groups. Also an internal count mismatch (14 vs 13, from a duplicated id in the evidence)."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-15",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Full-control-over-group question; evidence related list empty; non-responsive echo of the record."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-17",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 0.55,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Extended-rights question on HR Records group; answer lists 6 generically related domains/OUs/groups without confirming the 'extended rights' relationship specifically."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-05",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Full-control-over-groups question; evidence related list empty; non-responsive echo."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-53",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Permission-modification question on Exchange Admins; evidence related list empty; answer is a bare record echo without addressing the relationship."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-55",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 0.6,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Permission-modification question; answer lists 3 associated domains without confirming the specific permission-change relationship asked about."
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-02",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Group-membership question for aws-trust-principal-02; evidence related list is empty (no memberships), but the answer never states this negative finding, just echoes the found record."
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-04",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Group-membership question for entra-licence-01; evidence related list is empty; answer does not state the negative finding, just echoes the record."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-07",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 0.3,
+    "groundedness": 0.6,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Question asks the OS of device dc212; answer instead dumps a 240-record enumeration of unrelated 'Technique'-labeled entities (dc021, srv017, wks019, etc.) that never includes dc212 and never states an OS value.",
+      "The literal ID list is grounded in the evidence dump, but framing it as 'the answer' to an OS question is misleading; no OS field appears anywhere in evidence.",
+      "System should have abstained/reported no match for dc212 rather than dumping irrelevant enumeration; evidence is effectively ignored/misused relative to the actual question."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-16",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 1.0,
+    "reasons": [
+      "Honest abstention: 'None of the live graph sources cover this request' with no claims and no evidence fabricated.",
+      "Per rubric an honest abstention with no evidence is fully sufficient."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-13",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Answer only confirms the entity 'CN-Container-00' exists ('Found 1 record: CN-Container-00'); it never addresses the relational question (which principals can change access controls).",
+      "Evidence record's 'related' field is empty and no verified CLAIMS were produced, so nothing is invented, but the answer fails to state that no relationship data was found rather than leaving the question unanswered.",
+      "Groundedness is good for the bare identifier but the answer carries no formal claim/citation chain for the relational fact requested."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-14",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Answer only confirms the entity 'fpetrov386' exists ('Found 1 record: fpetrov386'); it never addresses the relational question (who owns the account).",
+      "Evidence record's 'related' field is empty and no verified CLAIMS were produced, so nothing is invented, but the answer fails to state that no relationship data was found rather than leaving the question unanswered.",
+      "Groundedness is good for the bare identifier but the answer carries no formal claim/citation chain for the relational fact requested."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-17",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Answer only confirms the entity 'wks225' exists ('Found 1 record: wks225'); it never addresses the relational question (who can modify the DACL).",
+      "Evidence record's 'related' field is empty and no verified CLAIMS were produced, so nothing is invented, but the answer fails to state that no relationship data was found rather than leaving the question unanswered.",
+      "Groundedness is good for the bare identifier but the answer carries no formal claim/citation chain for the relational fact requested."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-04",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Answer only confirms the entity 'GPO-13-baseline' exists ('Found 1 record: GPO-13-baseline'); it never addresses the relational question (which containers is the GPO linked to).",
+      "Evidence record's 'related' field is empty and no verified CLAIMS were produced, so nothing is invented, but the answer fails to state that no relationship data was found rather than leaving the question unanswered.",
+      "Groundedness is good for the bare identifier but the answer carries no formal claim/citation chain for the relational fact requested."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-05",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Answer only confirms the entity 'Service Accounts' exists ('Found 1 record: Service Accounts'); it never addresses the relational question (what can the group link GPOs to).",
+      "Evidence record's 'related' field is empty and no verified CLAIMS were produced, so nothing is invented, but the answer fails to state that no relationship data was found rather than leaving the question unanswered.",
+      "Groundedness is good for the bare identifier but the answer carries no formal claim/citation chain for the relational fact requested."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-45",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Answer only confirms the entity 'Domain Admins' exists ('Found 1 record: Domain Admins'); it never addresses the relational question (what can the group DCSync against).",
+      "Evidence record's 'related' field is empty and no verified CLAIMS were produced, so nothing is invented, but the answer fails to state that no relationship data was found rather than leaving the question unanswered.",
+      "Groundedness is good for the bare identifier but the answer carries no formal claim/citation chain for the relational fact requested."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-48",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Answer only confirms the entity 'App Access 067' exists ('Found 1 record: App Access 067'); it never addresses the relational question (what can the group replicate secrets on).",
+      "Evidence record's 'related' field is empty and no verified CLAIMS were produced, so nothing is invented, but the answer fails to state that no relationship data was found rather than leaving the question unanswered.",
+      "Groundedness is good for the bare identifier but the answer carries no formal claim/citation chain for the relational fact requested."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-51",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Answer only confirms the entity 'App Access 059' exists ('Found 1 record: App Access 059'); it never addresses the relational question (what does the group own).",
+      "Evidence record's 'related' field is empty and no verified CLAIMS were produced, so nothing is invented, but the answer fails to state that no relationship data was found rather than leaving the question unanswered.",
+      "Groundedness is good for the bare identifier but the answer carries no formal claim/citation chain for the relational fact requested."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-05",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 1.0,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Answer only confirms the entity 'App Access 047' exists ('Found 1 record: App Access 047'); it never addresses the relational question (who owns the group).",
+      "Evidence record's 'related' field is empty and no verified CLAIMS were produced, so nothing is invented, but the answer fails to state that no relationship data was found rather than leaving the question unanswered.",
+      "Groundedness is good for the bare identifier but the answer carries no formal claim/citation chain for the relational fact requested."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-06",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 1.0,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Answer only confirms the entity 'App Access 070' exists ('Found 1 record: App Access 070'); it never addresses the relational question (which groups can write to the group).",
+      "Evidence record's 'related' field is empty and no verified CLAIMS were produced, so nothing is invented, but the answer fails to state that no relationship data was found rather than leaving the question unanswered.",
+      "Groundedness is good for the bare identifier but the answer carries no formal claim/citation chain for the relational fact requested."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-11",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 1.0,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Answer only confirms the entity 'App Access 024' exists ('Found 1 record: App Access 024'); it never addresses the relational question (which groups can modify the group).",
+      "Evidence record's 'related' field is empty and no verified CLAIMS were produced, so nothing is invented, but the answer fails to state that no relationship data was found rather than leaving the question unanswered.",
+      "Groundedness is good for the bare identifier but the answer carries no formal claim/citation chain for the relational fact requested."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-19",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 1.0,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Answer only confirms the entity 'App Access 046' exists ('Found 1 record: App Access 046'); it never addresses the relational question (which groups have write access).",
+      "Evidence record's 'related' field is empty and no verified CLAIMS were produced, so nothing is invented, but the answer fails to state that no relationship data was found rather than leaving the question unanswered.",
+      "Groundedness is good for the bare identifier but the answer carries no formal claim/citation chain for the relational fact requested."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-05",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Answer only confirms the entity 'App Access 038' exists ('Found 1 record: App Access 038'); it never addresses the relational question (which groups does it have full control over).",
+      "Evidence record's 'related' field is empty and no verified CLAIMS were produced, so nothing is invented, but the answer fails to state that no relationship data was found rather than leaving the question unanswered.",
+      "Groundedness is good for the bare identifier but the answer carries no formal claim/citation chain for the relational fact requested."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-06",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Answer only confirms the entity 'App Access 032' exists ('Found 1 record: App Access 032'); it never addresses the relational question (which groups can it take ownership of).",
+      "Evidence record's 'related' field is empty and no verified CLAIMS were produced, so nothing is invented, but the answer fails to state that no relationship data was found rather than leaving the question unanswered.",
+      "Groundedness is good for the bare identifier but the answer carries no formal claim/citation chain for the relational fact requested."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-26",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Answer only confirms the entity 'App Access 032' exists ('Found 1 record: App Access 032'); it never addresses the relational question (which groups does it hold extended rights over).",
+      "Evidence record's 'related' field is empty and no verified CLAIMS were produced, so nothing is invented, but the answer fails to state that no relationship data was found rather than leaving the question unanswered.",
+      "Groundedness is good for the bare identifier but the answer carries no formal claim/citation chain for the relational fact requested."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-40",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Answer only confirms the entity 'App Access 044' exists ('Found 1 record: App Access 044'); it never addresses the relational question (which objects can it modify access controls on).",
+      "Evidence record's 'related' field is empty and no verified CLAIMS were produced, so nothing is invented, but the answer fails to state that no relationship data was found rather than leaving the question unanswered.",
+      "Groundedness is good for the bare identifier but the answer carries no formal claim/citation chain for the relational fact requested."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-52",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Answer only confirms the entity 'Exchange Admins' exists ('Found 1 record: Exchange Admins'); it never addresses the relational question (what does it hold extended rights over).",
+      "Evidence record's 'related' field is empty and no verified CLAIMS were produced, so nothing is invented, but the answer fails to state that no relationship data was found rather than leaving the question unanswered.",
+      "Groundedness is good for the bare identifier but the answer carries no formal claim/citation chain for the relational fact requested."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-55",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Answer only confirms the entity 'App Access 056' exists ('Found 1 record: App Access 056'); it never addresses the relational question (which groups can it change permissions on).",
+      "Evidence record's 'related' field is empty and no verified CLAIMS were produced, so nothing is invented, but the answer fails to state that no relationship data was found rather than leaving the question unanswered.",
+      "Groundedness is good for the bare identifier but the answer carries no formal claim/citation chain for the relational fact requested."
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-07",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 1.0,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.5,
+    "reasons": [
+      "Question ('which groups is entra-application-03 a member of') is a category mismatch; answer only confirms the entity exists without fabricating group membership.",
+      "No group membership is invented, which is the correct non-committal behavior for this question type, though the answer is not phrased as an explicit abstention."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-01",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 1.0,
+    "reasons": [
+      "Question asks for the name of okta-group-11; answer 'Found 1 record: okta-group-11' directly and correctly supplies the name, matching the evidence record's name field.",
+      "primary_id in evidence is an empty string but the name identifier is fully grounded."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-02",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 1.0,
+    "reasons": [
+      "Directly answers the account-name question with ugupta175, matching the cited USER evidence record and formal claim/citation."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-08",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 0.85,
+    "groundedness": 0.75,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Question is yes/no ('does okta-group-05 grant any privileges?'); answer never addresses privileges, instead enumerating the group's 14 members.",
+      "Answer labels the 14 related entities as 'USERs', a type not explicitly present in the evidence record's related list (only id/name pairs given), so this is a minor unverified typing claim beyond the literal evidence shown.",
+      "IDs/names of the 14 members are otherwise correctly grounded in the evidence record's related field."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-02",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Question asks which principals have full control over CN-Container-07; answer only confirms the container exists and never addresses control principals.",
+      "Evidence's related field is empty, so nothing is fabricated, but the answer does not clearly state that no controlling principals were found."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-09",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.9,
+    "reasons": [
+      "Directly reports the one related GROUP (App Access 045) for ymoreau24, matching the evidence record's related entry and the formal claim/citation.",
+      "Reasonably responsive to 'who owns the account' given the retrieved relation is a group membership."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-21",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.85,
+    "reasons": [
+      "Directly reports the one related GROUP (App Access 018) for device wks112, matching evidence and claims exactly."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-15",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.9,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.75,
+    "reasons": [
+      "Lists the 10 related entities for HR Records group verbatim from evidence with matching ids; claim/citation chain present.",
+      "Answer phrasing is generic ('10 related item(s)') rather than restating the specific facet (write account restrictions), losing some precision about what the relation represents, though nothing is invented."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-16",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.9,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.75,
+    "reasons": [
+      "Lists the 5 related entities owned by App Access 064, matching evidence ids/names and the formal claims.",
+      "Generic 'related item(s)' phrasing does not restate the specific 'own' facet, a minor precision gap rather than a faithfulness error."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-34",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.9,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.8,
+    "reasons": [
+      "Correctly enumerates the 3 related domains for App Access 056 and labels them 'DOMAINs', consistent with the domain-like names in evidence (sub2.corp.example, etc.).",
+      "The 'DOMAIN' type label is not itself an explicit field in the evidence dump shown to the judge, a small ungrounded typing addition even though the names support it."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-51",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.9,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.75,
+    "reasons": [
+      "Lists the 4 related entities owned by App Access 059, matching evidence exactly; generic phrasing again omits restating the specific 'own' facet."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-03",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 0.9,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.75,
+    "reasons": [
+      "Lists the 11 related entities for App Access 027 matching evidence ids/names and claims; generic 'related item(s)' phrasing doesn't restate the 'take ownership of' facet specifically."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-07",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 0.9,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.75,
+    "reasons": [
+      "Lists the 3 related entities for App Access 061 matching evidence; generic phrasing doesn't restate the 'extended rights' facet specifically."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-12",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 0.9,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.8,
+    "reasons": [
+      "Lists the 2 related entities (OU-tier0-00, Domain Admins) for App Access 067 ownership question, matching evidence and claims closely."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-18",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 0.85,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.7,
+    "reasons": [
+      "Question asks 'which groups can take ownership of App Access 064'; the 8 related entities returned include plainly non-group items (e.g. usernames knovak219, fpetrov386) alongside groups, but the answer never explicitly claims they are all groups so it is not strictly false.",
+      "IDs/names match the evidence record's related field and the formal claims exactly; the mismatch is one of relevance/filtering, not invention.",
+      "Note: this evidence 'related' list is identical to the one used for ID-FACETOUT-16 ('what does App Access 064 own'), suggesting a possible direction-conflation in retrieval, but the judge has no direction metadata in the evidence to confirm this beyond what is shown."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-51",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Question asks which groups App Access 037 has full control over; answer only confirms the group exists and evidence's related field is empty, so the relational question goes unaddressed rather than explicitly stated as 'none found'."
+    ]
+  },
+  {
+    "question_id": "ID-MULTIHOP-01",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "multihop",
+    "faithfulness": 0.4,
+    "groundedness": 0.8,
+    "evidence_sufficiency": 0.15,
+    "reasons": [
+      "Question requires two hops: what Account Operators owns, then what those owned entities in turn have full control over. Evidence only contains the first-hop 'related' data (Security Engineering, lap176) for Account Operators itself; no second-hop evidence for either of those entities is present.",
+      "The answer presents only the first-hop result as if it were responsive to the full two-hop question, without flagging that the second hop was never retrieved or resolved, which is misleading in context even though each individual sentence is literally grounded in the (incomplete) evidence.",
+      "Evidence sufficiency is low because the retrieval never performed the second hop the question actually asked for."
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-06",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.6,
+    "reasons": [
+      "Question ('which groups is AWS policy statement aws-statement-00 a member of') is a category mismatch; answer only confirms the entity exists and evidence's related field is empty, so no group membership is fabricated.",
+      "Not phrased as an explicit abstention, but the non-committal response is honest given the empty evidence."
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-08",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.6,
+    "reasons": [
+      "Same pattern as aws-statement-00: AWS role aws-role-01 group-membership question has empty related evidence; answer avoids fabricating any group, though it doesn't explicitly state that none was found."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-15",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 1.0,
+    "reasons": [
+      "Explicit honest abstention with no evidence retrieved; matches rubric's fully-sufficient case."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-01",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Answer only confirms the device record exists; evidence has no related data so nothing is fabricated, but the who-has-write-access question is left unaddressed without an explicit statement that no access data was found."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-09",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Same id-only pattern; ownership question unanswered, evidence's related list is empty so no facts invented, but no explicit non-answer statement either."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-10",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Id-only confirmation; full-control question left unanswered though nothing invented."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-12",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Id-only confirmation; write-access question left unanswered, evidence had no related records."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-15",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Id-only confirmation; principals question left unanswered, no fabrication."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-18",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Id-only confirmation; permission-rewrite question left unanswered, no fabrication."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-07",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Id-only confirmation; replication-source question left unanswered, evidence had no related records."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-09",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Id-only confirmation; ownership-target question left unanswered."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-41",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Id-only confirmation; ownership question left unanswered, no fabrication."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-02",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Id-only confirmation; owner-group question left unanswered."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-03",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Id-only confirmation; ownership question left unanswered."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-07",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Id-only confirmation; extended-rights question left unanswered."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-17",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Id-only confirmation; extended-rights question left unanswered."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-17",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Id-only confirmation; write-target question left unanswered."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-70",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Id-only confirmation; ownership question left unanswered."
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-01",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Id-only confirmation for a designed-unanswerable membership question; not an explicit abstention, but does not fabricate group membership either."
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-06",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Id-only confirmation for a designed-unanswerable membership question; avoids fabricating membership, though not phrased as an explicit abstention."
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-12",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Id-only confirmation for a designed-unanswerable membership question; avoids fabricating membership."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-06",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 0.9,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.5,
+    "reasons": [
+      "Enumerates the user's two related items (a group and an app-access group) but neither claims nor identifies which, if any, represents 'department'; department attribute is not present in evidence."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-09",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 0.1,
+    "groundedness": 0.4,
+    "evidence_sufficiency": 0.05,
+    "reasons": [
+      "Question asks about device lap191's OS; the retrieved 240 'Technique'-labeled records never include lap191 and carry no OS data at all, yet the answer frames them as 'All 200 result(s) for this question', which is a false relevance claim even though each individual id is a real evidence record."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-12",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Id-only confirmation; privileged-flag yes/no question left unanswered, evidence had no related data."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-14",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 0.6,
+    "groundedness": 0.75,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Question asks who owns the account; answer instead reports 1 group membership, implying it addresses the ownership facet when it actually describes a different relation.",
+      "Claim labels the related entity 'GROUP' though the cited evidence record's related-item entry carries no type/label field, so that label is not directly grounded in what was shown."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-04",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Id-only confirmation; linked-container question left unanswered, evidence had no related records."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-09",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.85,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.55,
+    "reasons": [
+      "Enumerates all 11 related items with correct ids/names from evidence, hedged as generic 'related item(s)' rather than asserting they are specifically ownership targets, so it avoids overclaiming while still not confirming the specific relation type asked about."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-11",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Id-only confirmation; modify-permissions question left unanswered, evidence had no related records."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-14",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.85,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.55,
+    "reasons": [
+      "Enumerates all 5 related items correctly and matches evidence ids/names, hedged generically without asserting the specific ACL-rewrite relation."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-01",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 0.7,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.35,
+    "reasons": [
+      "Claim labels the sole related item 'GROUP' though the cited evidence record's related entry carries no type field, so the label is asserted rather than shown; answer does correctly surface the one related entity for the extended-rights question."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-05",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 0.85,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.55,
+    "reasons": [
+      "Enumerates all 4 related items (Domain Admins and three containers) matching evidence exactly, hedged as generic 'related item(s)' without asserting they specifically represent ownership."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-13",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Id-only confirmation; full-control question left unanswered, evidence had no related records."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-19",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 0.65,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.45,
+    "reasons": [
+      "First claim states 'Found 15 item(s)' but the enumeration claim only lists and counts 14 (a duplicated id/name pair in the evidence's related list is deduplicated inconsistently), an internal count mismatch.",
+      "Enumerated related items include users, domains and hosts alongside groups even though the question asks specifically 'which groups have write access,' though the hedged 'related item(s)' phrasing avoids explicitly mislabeling them as groups."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-03",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 0.85,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.55,
+    "reasons": [
+      "Enumerates all 9 related items matching evidence ids/names exactly, hedged generically without asserting the specific 'rewrite permissions' relation for each."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-06",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 0.8,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.5,
+    "reasons": [
+      "Enumerates 3 related items matching evidence, but one (lap007) is a workstation rather than a group even though the question asks specifically which groups can be owned; the generic 'related item(s)' phrasing avoids an explicit false group claim."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-17",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 0.85,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.6,
+    "reasons": [
+      "Enumerates all 4 related items matching evidence exactly (one GPO, three app-access groups), reasonably consistent with a 'which groups can write to' question though not explicitly confirmed as the write relation."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-40",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Id-only confirmation; modify-access-controls question left unanswered, evidence had no related records."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-49",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 0.8,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.5,
+    "reasons": [
+      "Enumerates all 8 related items matching evidence, but several (domains, servers, containers) are not groups even though the question asks specifically which groups can be owned; hedged generic phrasing avoids an explicit false claim."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-52",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 0.7,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.35,
+    "reasons": [
+      "Claim labels the sole related item 'GROUP' though the cited evidence record's related entry carries no type field, so the label is asserted rather than shown directly."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-79",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Id-only confirmation; modify-target question left unanswered, evidence had no related records."
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-11",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Id-only confirmation for a designed-unanswerable membership question about a certificate authority; avoids fabricating membership though not phrased as an explicit abstention."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-13",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the base entity; evidence shows zero related items so no relation/attribute exists to report, but the answer never states this explicitly (no clear abstention), leaving the analyst's question unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-02",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the base entity; evidence shows zero related items so no relation/attribute exists to report, but the answer never states this explicitly (no clear abstention), leaving the analyst's question unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-06",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the base entity; evidence shows zero related items so no relation/attribute exists to report, but the answer never states this explicitly (no clear abstention), leaving the analyst's question unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-11",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the base entity; evidence shows zero related items so no relation/attribute exists to report, but the answer never states this explicitly (no clear abstention), leaving the analyst's question unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-16",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the base entity; evidence shows zero related items so no relation/attribute exists to report, but the answer never states this explicitly (no clear abstention), leaving the analyst's question unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-19",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the base entity; evidence shows zero related items so no relation/attribute exists to report, but the answer never states this explicitly (no clear abstention), leaving the analyst's question unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-06",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the base entity; evidence shows zero related items so no relation/attribute exists to report, but the answer never states this explicitly (no clear abstention), leaving the analyst's question unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-11",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the base entity; evidence shows zero related items so no relation/attribute exists to report, but the answer never states this explicitly (no clear abstention), leaving the analyst's question unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-16",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the base entity; evidence shows zero related items so no relation/attribute exists to report, but the answer never states this explicitly (no clear abstention), leaving the analyst's question unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-49",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the base entity; evidence shows zero related items so no relation/attribute exists to report, but the answer never states this explicitly (no clear abstention), leaving the analyst's question unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-04",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the base entity; evidence shows zero related items so no relation/attribute exists to report, but the answer never states this explicitly (no clear abstention), leaving the analyst's question unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-09",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the base entity; evidence shows zero related items so no relation/attribute exists to report, but the answer never states this explicitly (no clear abstention), leaving the analyst's question unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-10",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the base entity; evidence shows zero related items so no relation/attribute exists to report, but the answer never states this explicitly (no clear abstention), leaving the analyst's question unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-14",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the base entity; evidence shows zero related items so no relation/attribute exists to report, but the answer never states this explicitly (no clear abstention), leaving the analyst's question unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-18",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the base entity; evidence shows zero related items so no relation/attribute exists to report, but the answer never states this explicitly (no clear abstention), leaving the analyst's question unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-21",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the base entity; evidence shows zero related items so no relation/attribute exists to report, but the answer never states this explicitly (no clear abstention), leaving the analyst's question unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-03",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the base entity; evidence shows zero related items so no relation/attribute exists to report, but the answer never states this explicitly (no clear abstention), leaving the analyst's question unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-11",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the base entity; evidence shows zero related items so no relation/attribute exists to report, but the answer never states this explicitly (no clear abstention), leaving the analyst's question unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-05",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 0.5,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.35,
+    "reasons": [
+      "Question asks whether the group carries privileges; evidence has no privilege/permission edges, only group membership (USERs). Answer presents the 10 members as the substantive finding without any privilege-type evidence, conflating membership with the asked-about privileges; IDs/names it cites are accurate to evidence."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-07",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 0.2,
+    "groundedness": 0.5,
+    "evidence_sufficiency": 0.05,
+    "reasons": [
+      "Question asks for device dc212's OS. The entity 'dc212' never appears among the 240 retrieved records (all are unrelated device placeholders with no OS field), yet the answer frames the dump as 'All 200 result(s) for this question', implying relevance that the evidence does not support. Cited IDs are individually real, but their connection to the actual question is fabricated."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-14",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.9,
+    "reasons": [
+      "Question asks for the account name of sgupta524; the retrieved record's own name field directly and correctly answers it with no extraneous claims."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-15",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 1.0,
+    "reasons": [
+      "No evidence exists for the workstation OS question; the system honestly declines rather than inventing an OS, a fully sufficient abstention per the rubric."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-01",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 0.55,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Question asks who can write account restrictions on wks203; evidence only contains the device's group memberships (Service Accounts, App Access 038), not an ACL/permission edge. Answer presents these groups as the finding without acknowledging the mismatch between 'member of' and 'able to write restrictions'; the entities cited are accurately drawn from evidence."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-03",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 0.2,
+    "groundedness": 0.5,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Question asks about principals with full control over lap191; lap191 never appears anywhere in the retrieved evidence, which instead lists 5 unrelated 'aws-trust-principal' placeholder records with no link back to lap191. The answer offers these as if relevant, which the evidence does not support."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-13",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding CN-Container-00; evidence shows zero related items, so no principals-with-control answer is given or clearly denied."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-19",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding OU-tier1-01; evidence shows zero related items, so the full-control question is left unaddressed rather than clearly answered or abstained on."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-23",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding OU-tier1-01 (no claims emitted); evidence shows zero related items, so the permissions-edit question is left unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-45",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the Domain Admins group; evidence shows zero related items, so the DCSync-target question is left unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-47",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.55,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Question asks what App Access 037 holds extended rights over; evidence only labels the 7 linked entities generically as 'related item(s)' without an extended-rights edge type. The answer avoids over-specifying the relation but still presents the dump as if it answers the specific rights question."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-10",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 0.55,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Question asks which groups hold extended rights over App Access 045; evidence again only has generic 'related' entities (mix of OUs, groups, a device) with no extended-rights edge type, and several are not even groups. The answer enumerates them as if relevant without addressing the type mismatch."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-14",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 0.5,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.35,
+    "reasons": [
+      "Question asks which groups hold extended rights over App Access 048; the answer specifically labels the 3 related entities as 'GROUPs' (membership), not the extended-rights relation the question asks about, overstating relevance while the identifiers themselves are accurate."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-20",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 0.55,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Question asks who can modify the ACL on App Access 038; evidence has only generic 'related' entities (other groups, GPOs, a domain), no ACL-modification edge type. Answer presents them as the finding without noting the mismatch."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-21",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 0.55,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Question asks what App Access 066 has generic-write access to; evidence again only has generic 'related' entities with no write-access edge type. Answer enumerates 15 items as if they answer the specific-access question."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-22",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 0.5,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.35,
+    "reasons": [
+      "Question asks which groups App Access 060 owns; the single related entity is labeled 'GROUP' (structural relation) which the answer presents as ownership, though evidence never establishes an ownership edge specifically."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-47",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 0.5,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.35,
+    "reasons": [
+      "Question asks which groups App Access 069 owns; the answer labels the 4 related entities as 'GROUPs' and presents them as owned, but evidence contains no ownership-type edge, only an unspecified relation."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-70",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 0.55,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Question asks which groups Account Operators owns; evidence's 2 related items include a device (lap176), not just groups, and carries no ownership edge type, yet the answer presents them as the ownership answer."
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-01",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the federated credential entity; evidence shows zero related items, so the group-membership question is left unaddressed rather than clearly answered or denied."
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-05",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the log sink entity; evidence shows zero related items, so the group-membership question is left unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-09",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only reports finding the SAML provider entity; evidence shows zero related items, so the group-membership question is left unaddressed."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-02",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 0.6,
+    "groundedness": 0.6,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Answer only names the record without answering the account-name question",
+      "Evidence record is labeled AWS_EC2_SECURITY_GROUP, not a user/account entity, so its relevance to 'account name for user ugupta175' is unsupported beyond a name match"
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-03",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 0.85,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Entity type (DEVICE) correctly matches the queried device lap128",
+      "But the answer never addresses the OS question and evidence has no OS field; a bare 'found' statement is not a proper abstention nor an answer"
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-08",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 0.6,
+    "groundedness": 0.6,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Record labeled AWS_EC2_SECURITY_GROUP, not an Okta group; presenting it as answering an Okta-group question is unsupported",
+      "No privilege information is stated or grounded"
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-10",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 0.6,
+    "groundedness": 0.6,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Same pattern as okta-group-05: AWS_EC2_SECURITY_GROUP record presented for an Okta-group question",
+      "No privilege claim made or supportable"
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-23",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 0.85,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "ENTRA_ADMINISTRATIVE_UNIT plausibly matches the queried OU-tier1-01",
+      "No edit-permission facet data exists in evidence and the answer does not address the question, only confirms existence"
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-10",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.1,
+    "groundedness": 0.2,
+    "evidence_sufficiency": 0.05,
+    "reasons": [
+      "The string 'dc234' never appears anywhere in the evidence records",
+      "All 240 retrieved records are 'Technique' entities named after unrelated device hostnames; the answer dumps this irrelevant list as if it were 'results for this question' about dc234's identity, which the evidence does not support"
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-22",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.8,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "AWS_EC2_SECURITY_GROUP named 'Tier2 Support' is a plausible match for the queried group",
+      "related=[] means no write-target facet data exists; answer does not state this or address the question, just confirms existence"
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-30",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.6,
+    "groundedness": 0.6,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Record labeled AWS_EC2_SECURITY_GROUP, not a GCP group, for a question specifically about a GCP group's roles/policies",
+      "No role/policy binding information is present or claimed"
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-01",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 0.8,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Group-like name ('App Access 049') plausibly matches the queried entity",
+      "No extended-rights facet data exists (related=[]); answer neither answers the question nor states the absence explicitly"
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-08",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 0.8,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Same pattern: bare existence confirmation for App Access 060, no permission facet in evidence",
+      "No overclaiming, but also no honest 'not found' statement"
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-12",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 0.8,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Bare existence confirmation for App Access 067, no ownership facet data in evidence"
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-13",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 0.8,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Bare existence confirmation for App Access 019, no 'full control' principal data in evidence"
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-22",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 0.8,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Bare existence confirmation for App Access 060, no ownership-target data in evidence to answer 'which groups does it own'"
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-37",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 0.8,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Bare existence confirmation for App Access 071, no extended-rights-target data in evidence"
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-51",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 0.8,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Bare existence confirmation for App Access 037, no full-control-target data in evidence"
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-65",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 0.8,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Bare existence confirmation for App Access 068, no modify-target data in evidence"
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-04",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 0.5,
+    "groundedness": 0.5,
+    "evidence_sufficiency": 0.15,
+    "reasons": [
+      "Record labeled AWS_EC2_SECURITY_GROUP, not a license entity, for a question about a licence's group memberships",
+      "Question is meant to be unanswerable; presenting a type-mismatched record as 'found' without qualification is misleading rather than an honest abstention"
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-05",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 0.5,
+    "groundedness": 0.5,
+    "evidence_sufficiency": 0.15,
+    "reasons": [
+      "Record labeled AWS_EC2_SECURITY_GROUP, not a log-sink entity, for an unanswerable question about group membership of a log sink",
+      "No honest abstention given despite the type mismatch"
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-09",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 0.5,
+    "groundedness": 0.5,
+    "evidence_sufficiency": 0.15,
+    "reasons": [
+      "Record labeled AWS_ACTION, not a SAML provider, for an unanswerable question about a SAML provider's group memberships",
+      "No honest abstention given despite the type mismatch"
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-04",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 0.85,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "USER-labeled record correctly matches chaddad21 and the claim's citation is accurate",
+      "No city field exists in evidence; the answer doesn't address the question or explicitly state the absence, just confirms existence"
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-13",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 0.8,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "AWS_SSO_USER record plausibly matches the queried user wito379, though no formal verified claim is attached to trace it",
+      "No department field exists in evidence; answer is a bare non-answer rather than an explicit 'not found'"
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-16",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 1.0,
+    "reasons": [
+      "Honest abstention: system states no live graph source covers the request and invents nothing",
+      "No evidence records exist to be misused"
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-11",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 0.85,
+    "groundedness": 0.95,
+    "evidence_sufficiency": 0.6,
+    "reasons": [
+      "The single related group (App Access 019) is accurately grounded in the evidence record for qbrennan325",
+      "Answer only states group membership generically as 'has 1 GROUP' without evidence establishing this specific relation equals ownership rights, so the tie to 'who can take ownership' is implicit rather than directly supported"
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-12",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 0.9,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.8,
+    "reasons": [
+      "Correctly deduplicates the 16 raw related entries (2 duplicates) down to 14 unique GROUPs in the enumeration, matching evidence exactly",
+      "Labeling the related entities as 'GROUP' is not explicitly present per-item in evidence but is consistent with the entity naming pattern seen elsewhere (App Access N, Helpdesk, etc.)"
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-15",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 0.85,
+    "groundedness": 0.95,
+    "evidence_sufficiency": 0.6,
+    "reasons": [
+      "Single related group (App Access 059) accurately grounded to vhaddad169's evidence record",
+      "As with FACETIN-11, the tie between generic group membership and the specific 'modify account restrictions' facet asked about is implicit, not directly evidenced"
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-22",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.9,
+    "groundedness": 0.95,
+    "evidence_sufficiency": 0.75,
+    "reasons": [
+      "Correctly deduplicates the 9 raw related entries (1 duplicate of sub1.corp.example) to 8 unique items in the enumeration, matching evidence",
+      "Answer stays generic ('related item(s)') rather than asserting these are specifically write targets, which is faithful but under-specific relative to the question"
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-23",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.9,
+    "groundedness": 0.95,
+    "evidence_sufficiency": 0.75,
+    "reasons": [
+      "The two related entities (gnovak243, lap184) are accurately grounded to App Access 060's evidence record",
+      "Answer does not explicitly tie the relation to 'add key credentials to', staying generic"
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-30",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.9,
+    "groundedness": 0.95,
+    "evidence_sufficiency": 0.8,
+    "reasons": [
+      "The single related GCP_BINDING (gcp-binding-17) is accurately grounded and the relation type (GCP_BINDING) directly matches the question about roles/policies"
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-38",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.1,
+    "groundedness": 0.25,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "The string 'dc087' never appears in the evidence; all 5 retrieved records are unrelated 'Technique' entities named 'ad-cert-template-00..04'",
+      "Presenting these as an answer to 'what identity does dc087 run as' is unsupported by any evidence linking them to dc087"
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-41",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.9,
+    "groundedness": 0.95,
+    "evidence_sufficiency": 0.75,
+    "reasons": [
+      "All 4 related items accurately match the Workstation Admins evidence record",
+      "Answer stays generic about the relation ('related item(s)') rather than asserting ownership explicitly, though the question was specifically about ownership"
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-49",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.85,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "GROUP-labeled record correctly matches App Access 061 with an accurate citation",
+      "related=[] means no full-control-target data exists; the answer does not state this explicitly, only confirms existence"
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-02",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 0.9,
+    "groundedness": 0.95,
+    "evidence_sufficiency": 0.75,
+    "reasons": [
+      "All 3 related entities accurately grounded to App Access 071's evidence record",
+      "Relation is described generically rather than specifically as 'ownership', though the question asked about owners"
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-08",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 0.85,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "GROUP-labeled record correctly matches App Access 060 with accurate citation",
+      "related=[] means no data exists on which other groups can rewrite its permissions; the answer does not state this, only confirms existence"
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-09",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 0.9,
+    "groundedness": 0.95,
+    "evidence_sufficiency": 0.75,
+    "reasons": [
+      "All 5 related entities (2 OUs, another group, a workstation, a container) accurately match App Access 019's evidence record",
+      "Answer describes them generically as 'related item(s)' rather than specifically as DACL modifiers"
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-26",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 0.9,
+    "groundedness": 0.95,
+    "evidence_sufficiency": 0.75,
+    "reasons": [
+      "All 8 related entities accurately match App Access 032's evidence record",
+      "Relation described generically rather than specifically as 'extended rights over'"
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-65",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 0.85,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "GROUP-labeled record correctly matches App Access 068 with accurate citation",
+      "related=[] means no modify-target data exists; answer does not state this explicitly"
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-76",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 0.9,
+    "groundedness": 0.95,
+    "evidence_sufficiency": 0.75,
+    "reasons": [
+      "All 11 related entities accurately match App Access 048's evidence record",
+      "Relation described generically rather than specifically as 'generic write access'"
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-07",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 0.7,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "ENTRA_APPLICATION record plausibly matches the queried entra-application-03 with an accurate citation",
+      "related=[] means no group-membership data exists; question is meant to be unanswerable but the answer does not explicitly abstain, just confirms existence"
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-10",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 0.7,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "AWS_EC2_SUBNET record correctly matches the queried subnet aws-ec2-subnet-00 with an accurate citation",
+      "related=[] means no group-membership data exists; question is meant to be unanswerable but the answer does not explicitly abstain, just confirms existence"
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-01",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.7,
+    "reasons": [
+      "Answer only restates the found record's identifier; the record's own name field is the requested value so it is implicitly answered, but the answer never states this explicitly as an attribute."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-05",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Question asks about privileges; evidence has no privilege data and answer never addresses privileges or signals an abstention, just restates the record found."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-03",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 0.7,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "All 5 cited IDs/names exactly match evidence records, but the records are labeled generic 'Technique' with no relation data linking them to lap191 or 'full control'; framing them as the answer to a full-control question is not evidenced."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-05",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Only the device record itself was retrieved with no related-principal data; answer restates the record without addressing who can rewrite permissions or abstaining explicitly."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-07",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Same pattern: single self-record with no relational evidence; answer is a non-answer template rather than an explicit abstention."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-20",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Only the OU's own record was retrieved with no related-principal data; answer restates record name without addressing ownership question."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-21",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Device record only, no related data; answer does not address who can change restrictions nor abstains explicitly."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-14",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Group's own record only, no related objects in evidence; answer restates the record instead of addressing the ACL question."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-15",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Same non-answer pattern with a single self-record and no relational evidence."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-23",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Single self-record, no related data on key-credential targets; answer is a generic non-answer."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-24",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Single self-record, no directory-pull relation data; answer restates record without addressing the question."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-47",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Single self-record, no extended-rights relation data; answer is a generic non-answer."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-16",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Single self-record, no incoming-rights relation data; answer restates record without addressing the question."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-49",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Single self-record, no ownership-target relation data; answer is a generic non-answer."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-53",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Single self-record, no permission-target relation data; answer restates record without addressing the question."
+    ]
+  },
+  {
+    "question_id": "ID-MULTIHOP-01",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "multihop",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Two-hop question but only the base group's self-record was retrieved with no relation data at all; answer neither attempts the hop nor abstains explicitly."
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-02",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Evidence is a mislabeled 'AWS_ACTION' self-record with no membership data; answer is a bare non-answer rather than an explicit abstention, though it invents nothing."
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-08",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Self-record only, no group-membership data; answer is a generic non-answer, not an explicit abstention, but adds nothing false."
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-10",
+    "arm": "deterministic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Self-record only, no group-membership data; answer restates record instead of an explicit abstention."
+    ]
+  },
+  {
+    "question_id": "ID-DESCRIBE-11",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 1.0,
+    "reasons": [
+      "Explicit, honest abstention stating no graph source covers the request; no evidence was retrieved and none is fabricated."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-05",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Device self-record only, no related-principal data; answer is a generic non-answer rather than an explicit abstention."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-08",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Container self-record only, no full-control relation data; answer restates record without addressing the question."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-16",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 0.65,
+    "groundedness": 0.7,
+    "evidence_sufficiency": 0.7,
+    "reasons": [
+      "Answer/claims enumerate 26 users, but the evidence record's related array shown only lists 20 users with no truncation marker; 6 of the cited identifiers cannot be traced to the given evidence."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-18",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Container self-record only, no account-permission relation data; answer restates the identified record without addressing who can rewrite permissions."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-20",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 0.9,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.8,
+    "reasons": [
+      "All 4 cited group IDs/names exactly match the OU's related array; answer reports the relation generically without asserting the specific 'take ownership' semantic, which the underlying data does not encode."
+    ]
+  },
+  {
+    "question_id": "ID-FACETIN-22",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-in",
+    "faithfulness": 0.9,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.8,
+    "reasons": [
+      "Evidence has 9 related entries with one duplicate; the enumeration claim correctly dedupes to 8 groups, all traceable. Specific 'write ACL' relation type is not confirmed by the underlying data, but nothing is invented."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-05",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.9,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.8,
+    "reasons": [
+      "Both cited OU IDs/names exactly match the group's related array; the specific 'link group policy' relation type is not encoded in evidence but nothing false is asserted."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-06",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.9,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.8,
+    "reasons": [
+      "Single cited OU matches the group's related array exactly; relation type not confirmed as specifically 'modify' but nothing invented."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-07",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.9,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.8,
+    "reasons": [
+      "Evidence related array has 4 entries with a duplicated pair; answer's 'Found 4 item(s)' matches raw count and the enumeration correctly dedupes to 2 domains, all traceable."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-42",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.9,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.8,
+    "reasons": [
+      "Single cited OU matches the group's related array exactly; specific 'modify permissions' relation type not encoded but nothing invented."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-48",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.8,
+    "reasons": [
+      "All 10 cited IDs exactly match the group's related array; answer uses neutral 'related item(s)' phrasing rather than asserting the specific 'replicate secrets' semantic, which is not in the data."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-04",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Group self-record only, no incoming-rights relation data; answer restates the record without addressing who can rewrite permissions."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-11",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Group self-record only, no modifying-group relation data; answer restates the record without addressing the question."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOIN-16",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.8,
+    "reasons": [
+      "All 3 cited related IDs/names exactly match evidence; answer uses neutral 'related item(s)' phrasing rather than asserting the specific 'extended rights' semantic, which is not encoded in the data."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-37",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.8,
+    "reasons": [
+      "All 6 cited related IDs exactly match evidence; specific 'extended rights' semantic not confirmed by the underlying data, but nothing is invented."
+    ]
+  },
+  {
+    "question_id": "ID-HOMOOUT-56",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Group self-record only, no full-control-target relation data; answer restates the record without addressing the question."
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-03",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Self-record only, no membership data; answer is a non-answer template rather than an explicit abstention, but invents nothing."
+    ]
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-12",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "unanswerable",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Self-record only, no membership data; answer restates record rather than giving an explicit abstention."
+    ]
+  },
+  {
+    "question_id": "ID-FACETOUT-10",
+    "arm": "generic",
+    "bank": "bank3",
+    "kind": "facet-out",
+    "faithfulness": 0.15,
+    "groundedness": 0.6,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Question asks what identity device dc234 runs as; the retrieved records are 240 generic device-name nodes labeled 'Technique' with empty related fields, none of which is dc234 itself or bears any identity/run-as relation.",
+      "The answer frames this irrelevant dump as 'All 200 result(s) for this question,' materially overstating relevance the evidence does not support; an honest abstention would have been the appropriate response."
+    ]
+  }
+]

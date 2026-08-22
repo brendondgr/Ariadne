@@ -503,3 +503,85 @@ overstates quality wherever precision is poor**, and A-8's per-kind retrieval
 figures for the homogeneous kinds should be read with that caveat rather than as
 evidence those kinds are solved. Twelve judges converged on this independently
 before the mechanism was located.
+
+## A-10 (2026-08-22) — after both fixes, and why faithfulness alone is the wrong headline
+
+234 answers over bank 3, six independent Sonnet judges, rubric verbatim, zero
+errored verdicts. Measured after **both** the I-9 summariser fix and the I-11
+resolver fix.
+
+**Faithfulness of the schema-derived arm across the three measurements:**
+
+| | faithfulness |
+|---|---|
+| bank 2, before either fix | 0.5500 |
+| bank 3, after I-9 | 0.7009 |
+| **bank 3, after I-9 and I-11** | **0.8175** |
+
+Its evidence sufficiency rose with it, 0.3691 → **0.4731**, and its per-kind
+faithfulness flattened: the homogeneous kinds were 0.458 and 0.547 after I-9 and
+are **0.802 and 0.818** now, level with every other relationship kind. That is
+the I-11 fix removing the 54-node dump, and it is the clearest single confirmation
+that the defect the judges found was real.
+
+### The full picture, and the trap in reading it
+
+| | `generic` | `deterministic` |
+|---|---|---|
+| Faithfulness | 0.8175 | **0.9282** |
+| Groundedness | 0.9256 | 0.9274 |
+| Evidence sufficiency | **0.4731** | 0.2957 |
+| Retrieval recall | **0.6923** | 0.1140 |
+| Retrieval precision | **0.1357** | 0.0572 |
+| Records per answer | 22.7 | 15.8 |
+
+**The template arm now scores *higher* on faithfulness, and this must not be
+read as the template arm being better.** It retrieves almost nothing (0.1140
+recall against 0.6923) and its answers are, in the judges' repeated words, bare
+"Found 1 record: X" confirmations that never address the question. An answer
+that asserts almost nothing cannot be unfaithful.
+
+**Faithfulness rewards silence.** It is a necessary property and a useless
+headline on its own, which is precisely why this experiment reports it beside
+recall and sufficiency rather than alone. The arm that answers is the one with
+0.69 recall and 0.47 sufficiency; the arm that scores 0.93 faithful is the one
+that mostly declines to say anything.
+
+### The precision/recall trade the I-11 fix made
+
+Measured on the same 105 answerable questions, before and after the resolver fix:
+
+| arm | | recall | precision | records per answer |
+|---|---|---|---|---|
+| `generic` | before | 0.7635 | 0.0783 | 135.1 |
+| `generic` | **after** | 0.6571 | **0.1357** | **22.7** |
+| `deterministic` | before | 0.3540 | 0.0561 | 40.2 |
+| `deterministic` | **after** | 0.1270 | 0.0572 | 15.8 |
+
+Recall fell and that is the *correct* direction: the earlier figure was inflated
+by answers dumping 135 records so that gold was present by accident. Precision
+rose 73% on the schema-derived arm while answers shrank to a sixth of their
+size, and judged faithfulness rose 0.117 over the same change.
+
+The template arm lost recall with **no** precision gain (0.0561 → 0.0572),
+confirming that its earlier 0.3177 was almost entirely incidental — it was
+scoring by dumping, not by retrieving.
+
+**A-8's retrieval figures are therefore superseded for the homogeneous kinds.**
+Quote A-10's numbers, which were taken with precision measured alongside.
+
+### What is still wrong
+
+`multihop` judges at 0.400 faithfulness on its single question — the judges note
+only first-hop evidence is retrieved but presented as answering a two-hop
+question. **n=1, not a rate** (I-8), and the chain-planting limit still blocks
+scaling it.
+
+Several answers still return a bare record confirmation instead of an explicit
+"no such relationship in the evidence". The judges scored these faithful but
+insufficient, which is exactly right, and it is the largest remaining
+sufficiency cost on both arms.
+
+Two retrieval mismatches recur where the queried device (`dc234`, `lap191`,
+`dc212`) never appears in its own evidence at all — a `DEVICE`-anchor failure
+distinct from I-11 and not yet diagnosed.
