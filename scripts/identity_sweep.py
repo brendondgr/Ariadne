@@ -47,6 +47,19 @@ load_env()
 IDENTITY_DATA_DIR = "data-identity"
 IDENTITY_NEO4J_URI = "bolt://localhost:5459"
 
+# The tri-source condition: the SAME bank and the SAME gold, run against a card
+# directory holding ATT&CK, CAPEC and the identity graph at once instead of the
+# identity graph alone. Nothing about the questions or the expected answers
+# changes, so the difference between the two runs is the cost of having three
+# live sources rather than one -- which is measurable without supplying any
+# knowledge, and is the honest floor beneath any cross-source correlation.
+TRI_DATA_DIR = "data-tri"
+TRI_ENV: dict[str, str] = {
+    "ARIADNE_ENDPOINT_ATTACK": "bolt://localhost:5456",
+    "ARIADNE_ENDPOINT_CAPEC": "ws://localhost:6455/gremlin",
+    "ARIADNE_ENDPOINT_IDENTITY": IDENTITY_NEO4J_URI,
+}
+
 # Every LLM seam off, explicitly, on both arms. Stated as data rather than
 # assumed from .env, because .env is the operator's and this must not depend on
 # what it happens to say today.
@@ -114,9 +127,11 @@ def _record_ids(evidence: Any) -> set[str]:
     return found
 
 
-def run_one(question: str) -> dict[str, Any]:
+def run_one(question: str, data_dir: str | None = None) -> dict[str, Any]:
     """Run one question through the real pipeline and capture what it retrieved."""
     from utils.orchestration.main import PipelineRun, iter_pipeline
+
+    data_dir = data_dir or os.environ.get("ARIADNE_DATA_DIR") or IDENTITY_DATA_DIR
 
     run = PipelineRun(question=question, mode="query")
     plan_sources: list[str] = []
@@ -127,7 +142,7 @@ def run_one(question: str) -> dict[str, Any]:
     queries: list[str] = []
 
     for event, payload in iter_pipeline(
-        question, mode="query", use_llm=False, data_dir=IDENTITY_DATA_DIR, run=run
+        question, mode="query", use_llm=False, data_dir=data_dir, run=run
     ):
         if event == "plan":
             plan = payload.get("plan")
@@ -377,7 +392,20 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--judge-attempts", type=int, default=4)
     parser.add_argument("--judge-backoff", type=float, default=20.0)
     parser.add_argument("--judge-workers", type=int, default=0)
+    parser.add_argument(
+        "--tri", action="store_true",
+        help="run against data-tri (ATT&CK + CAPEC + identity live at once) "
+             "instead of the identity graph alone; same bank, same gold",
+    )
     args = parser.parse_args(argv)
+
+    if args.tri:
+        # Mutating the module's BASE_ENV rather than threading a parameter: every
+        # arm overlay is applied on top of it, and the condition must reach all
+        # of them identically or the comparison is not one thing changed.
+        BASE_ENV["ARIADNE_DATA_DIR"] = TRI_DATA_DIR
+        BASE_ENV.update(TRI_ENV)
+        print(f"[tri] three sources live; data_dir={TRI_DATA_DIR}")
 
     out = Path(args.out)
     if args.stage == "judge":

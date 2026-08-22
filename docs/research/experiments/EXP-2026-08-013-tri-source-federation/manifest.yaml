@@ -1,0 +1,133 @@
+# Filled by scripts/new_experiment.py, then completed by hand.
+id: EXP-2026-08-013
+slug: tri-source-federation
+title: What does it cost to have three graph sources live at once?
+status: complete         # phase 1 (routing floor) complete; phase 2 not started
+date_started: 2026-08-22
+date_completed: 2026-08-22
+authors: ["brendondgr"]
+
+purpose: >
+  Every result this project has recorded was measured with one relevant source
+  live at a time. ATT&CK and CAPEC are federated but sit on different backends
+  and answer disjoint questions, so the two per-backend URIs could never
+  collide and no request ever had to choose between two sources of the same
+  kind. The claim a customer cares about -- point this at our graph ALONGSIDE
+  the threat catalogues and ask one question -- had never been run. Phase 1
+  asks the narrowest honest version and supplies no knowledge of its own: with
+  the bank, the gold and the code held identical, what does adding two
+  irrelevant sources cost? It bears on C-010 (the machinery is card-driven and
+  transfers) and C-015 (federation across engines).
+
+hypothesis: >
+  Exploratory on the magnitude, directional on the sign: adding sources was
+  expected to cost precision rather than recall, because the deterministic
+  router selects sources by keyword overlap and the identity card exposes 72
+  labels and 779 property names of ordinary IT English -- a vocabulary that
+  overlaps the catalogues by accident. No prediction was registered about which
+  question kinds would absorb the cost.
+
+# --- Reproducibility block ---
+code:
+  commit: 544f978b56593a198bc5f9ccf9878d4e748d857e
+  branch: main
+  entrypoint: "uv run python scripts/tri_compose.py && uv run python scripts/identity_sweep.py --tri --out docs/evaluation/identity-bank3-tri-2026-08-22"
+  dirty: false
+config:
+  path: data-tri/tri_manifest.json
+  hash: null
+data:
+  name: bank 3 (identity, Fable-authored, blind) run under two source configurations
+  version: "bank 3 committed 2026-08-22; tenant seed 20260821"
+  split: blind — the same 117 questions and the same gold in both conditions
+  n_examples: 117
+  dvc_path: null
+  hash: null
+seeds: [20260821]
+n_runs: 1
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: "ariadne-neo4j (5456), ariadne-gremlin (6455), ariadne-neo4j-identity (5459)"
+compute:
+  hardware: "unknown — recorded at run time"
+  wall_clock_hours: 0.6
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block ---
+# No model anywhere. Both conditions plan, query and compose deterministically
+# and the metric is set comparison against gold, so the whole reading is
+# byte-reproducible. The bank was authored by a model on 2026-08-22 and is
+# fixed and committed; nothing re-authored it here.
+llm:
+  model: "none — no model in the answer path in either condition"
+  temperature: null
+  top_p: null
+  max_tokens: null
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    None reachable. No model is in the answer path in either condition.
+
+# --- Results block ---
+# Every kind that HAS an answer is identical between the two conditions, on both
+# arms. Every question that moved was an abstention. Read the two overall figures
+# only beside the per-kind rows and the evidence volume, or the drop reads as a
+# retrieval failure, which it is not.
+metrics:
+  primary: gold_in_evidence_retrieval
+  values:
+    retrieval_generic_one_source: {mean: 0.7094, std: null, n: 117}
+    retrieval_generic_one_source_facet_out: {mean: 0.75, std: null, n: 24}
+    retrieval_generic_one_source_facet_in: {mean: 0.5833, std: null, n: 24}
+    retrieval_generic_one_source_homo_out: {mean: 0.55, std: null, n: 20}
+    retrieval_generic_one_source_homo_in: {mean: 0.7, std: null, n: 20}
+    retrieval_generic_one_source_describe: {mean: 0.8125, std: null, n: 16}
+    retrieval_generic_one_source_multihop: {mean: 1.0, std: null, n: 1}
+    retrieval_generic_one_source_unanswerable: {mean: 1.0, std: null, n: 12}
+    retrieval_generic_tri_source: {mean: 0.6239, std: null, n: 117}
+    retrieval_generic_tri_source_facet_out: {mean: 0.75, std: null, n: 24}
+    retrieval_generic_tri_source_facet_in: {mean: 0.5833, std: null, n: 24}
+    retrieval_generic_tri_source_homo_out: {mean: 0.55, std: null, n: 20}
+    retrieval_generic_tri_source_homo_in: {mean: 0.7, std: null, n: 20}
+    retrieval_generic_tri_source_describe: {mean: 0.8125, std: null, n: 16}
+    retrieval_generic_tri_source_multihop: {mean: 1.0, std: null, n: 1}
+    retrieval_generic_tri_source_unanswerable: {mean: 0.1667, std: null, n: 12}
+    ids_per_question_generic_one_source: {mean: 8.24, std: null, n: 117}
+    ids_per_question_generic_tri_source: {mean: 180.36, std: null, n: 117}
+    max_ids_generic_one_source: {mean: 54, std: null, n: 117}
+    max_ids_generic_tri_source: {mean: 2234, std: null, n: 117}
+    routed_beyond_identity_generic: {mean: 0.6838, std: null, n: 117}
+    retrieval_deterministic_one_source: {mean: 0.2194, std: null, n: 117}
+    retrieval_deterministic_one_source_facet_out: {mean: 0.0, std: null, n: 24}
+    retrieval_deterministic_one_source_facet_in: {mean: 0.0, std: null, n: 24}
+    retrieval_deterministic_one_source_homo_out: {mean: 0.0, std: null, n: 20}
+    retrieval_deterministic_one_source_homo_in: {mean: 0.0, std: null, n: 20}
+    retrieval_deterministic_one_source_describe: {mean: 0.8125, std: null, n: 16}
+    retrieval_deterministic_one_source_multihop: {mean: 0.6667, std: null, n: 1}
+    retrieval_deterministic_one_source_unanswerable: {mean: 1.0, std: null, n: 12}
+    retrieval_deterministic_tri_source: {mean: 0.1254, std: null, n: 117}
+    retrieval_deterministic_tri_source_facet_out: {mean: 0.0, std: null, n: 24}
+    retrieval_deterministic_tri_source_facet_in: {mean: 0.0, std: null, n: 24}
+    retrieval_deterministic_tri_source_homo_out: {mean: 0.0, std: null, n: 20}
+    retrieval_deterministic_tri_source_homo_in: {mean: 0.0, std: null, n: 20}
+    retrieval_deterministic_tri_source_describe: {mean: 0.8125, std: null, n: 16}
+    retrieval_deterministic_tri_source_multihop: {mean: 0.6667, std: null, n: 1}
+    retrieval_deterministic_tri_source_unanswerable: {mean: 0.0833, std: null, n: 12}
+    ids_per_question_deterministic_one_source: {mean: 1.95, std: null, n: 117}
+    ids_per_question_deterministic_tri_source: {mean: 391.47, std: null, n: 117}
+    max_ids_deterministic_one_source: {mean: 2, std: null, n: 117}
+    max_ids_deterministic_tri_source: {mean: 2608, std: null, n: 117}
+    routed_beyond_identity_deterministic: {mean: 0.6838, std: null, n: 117}
+baselines_compared: ["EXP-2026-08-011"]
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: ["C-010", "C-015"]
+figures: []
+supersedes: null
+superseded_by: null
+related: ["EXP-2026-08-009", "EXP-2026-08-011"]

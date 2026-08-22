@@ -74,6 +74,49 @@ def _is_name_lookup(query: str) -> bool:
     return False
 
 
+# The datasets whose entities carry an analyst-facing identifier worth quoting.
+# Naming an id format is only helpful when the source actually has one: an
+# identity graph keys on opaque GUIDs, so telling an analyst to "give its id
+# (e.g. T1566)" is advice that cannot be followed, attached to a source that
+# does not work that way.
+_ID_BEARING_SOURCES = frozenset({"attack", "capec", "merged"})
+
+
+def _routed_sources(evidence: FederatedEvidence) -> tuple[str, ...]:
+    """The sources this request was actually routed to, in order, deduplicated."""
+    seen: dict[str, None] = {}
+    for result in evidence.results:
+        source = str(getattr(result.task, "source", "") or "").strip()
+        if source:
+            seen.setdefault(source, None)
+    return tuple(seen)
+
+
+def _sources_phrase(evidence: FederatedEvidence) -> str:
+    """How to name the searched sources in an abstention.
+
+    Hardcoded as "the live ATT&CK/CAPEC graphs" until 2026-08-22, which was true
+    of every deployment that existed and false the moment a third source joined:
+    a question routed to the identity graph was told, in the answer, that ATT&CK
+    and CAPEC had been searched. Same species as I-9 -- a dataset name welded
+    into text that is asserted as fact -- and it surfaced the same way, by
+    running against a source the sentence was not written for.
+    """
+    routed = _routed_sources(evidence)
+    if not routed:
+        return "the live graph sources"
+    if len(routed) == 1:
+        return f"the live {routed[0]} graph"
+    return "the live " + ", ".join(routed[:-1]) + f" and {routed[-1]} graphs"
+
+
+def _id_hint(evidence: FederatedEvidence) -> str:
+    """`" or tell me its id (…)"`-style clause, only where ids mean something."""
+    if any(s in _ID_BEARING_SOURCES for s in _routed_sources(evidence)):
+        return f" ({_ID_EXAMPLES})"
+    return ""
+
+
 def _name_lookup_terms(evidence: FederatedEvidence) -> tuple[str, ...]:
     """Distinct entity names searched by the name-lookup results in ``evidence``."""
     names: list[str] = []
@@ -137,12 +180,21 @@ def _dependency_producer(result: SpecialistResult) -> str:
 
 
 def _name_miss_statement(source: str, names: tuple[str, ...]) -> str:
-    """A specific, actionable abstention for a name lookup that matched nothing."""
+    """A specific, actionable abstention for a name lookup that matched nothing.
+
+    The id advice is conditional on the source having ids an analyst can quote.
+    It read "give its ATT&CK/CAPEC id (e.g. T1566, M1017, or CAPEC-98)" for
+    every source, which on an identity graph keyed by opaque GUIDs is an
+    instruction that cannot be followed, attached to a catalogue that was not
+    consulted.
+    """
     quoted = " or ".join(f"'{n}'" for n in names)
-    return (
-        f"No entity named {quoted} was found in the {source} source. Check the "
-        f"name, or give its ATT&CK/CAPEC id ({_ID_EXAMPLES})."
-    )
+    if source in _ID_BEARING_SOURCES:
+        return (
+            f"No entity named {quoted} was found in the {source} source. Check the "
+            f"name, or give its id ({_ID_EXAMPLES})."
+        )
+    return f"No entity named {quoted} was found in the {source} source. Check the name."
 
 
 def abstention_for(result: SpecialistResult) -> Abstention:
@@ -756,8 +808,8 @@ def _unsupported_note(part: dict[str, str], request: str) -> str:
         return f"Unsupported by the available sources: {desc or request} ({reason})"
     return (
         f"The available graph sources could not be matched to this request: "
-        f"'{request}'. If you meant a specific ATT&CK or CAPEC entity, name it "
-        f"or give its id ({_ID_EXAMPLES})."
+        f"'{request}'. If you meant a specific entity, name it or give its id "
+        f"({_ID_EXAMPLES})."
     )
 
 
@@ -779,20 +831,22 @@ def _clarification_narrative(
         if is_definitional_request(evidence.request)
         else ()
     )
+    where = _sources_phrase(evidence)
+    hint = _id_hint(evidence)
     if names:
         quoted = " or ".join(f"'{n}'" for n in names)
-        return (
-            f"I couldn't find {quoted} in the live ATT&CK/CAPEC graphs. Check the "
-            f"name, or tell me the entity's id ({_ID_EXAMPLES}) and I'll look it up."
-        )
+        tail = f", or tell me the entity's id{hint} and I'll look it up" if hint else ""
+        return f"I couldn't find {quoted} in {where}. Check the name{tail}."
     if abstentions:
+        tail = f" or give its id{hint}" if hint else ""
         return (
-            "The routed sources returned no matching records for this question. "
-            f"If you're after a specific entity, name it or give its id ({_ID_EXAMPLES})."
+            f"The routed sources returned no matching records for this question. "
+            f"If you're after a specific entity, name it{tail}."
         )
+    tail = f" or give its id{hint}" if hint else ""
     return (
-        "None of the live graph sources cover this request. If you meant a "
-        f"specific ATT&CK or CAPEC entity, name it or give its id ({_ID_EXAMPLES})."
+        f"None of the live graph sources cover this request. If you meant a "
+        f"specific entity, name it{tail}."
     )
 
 

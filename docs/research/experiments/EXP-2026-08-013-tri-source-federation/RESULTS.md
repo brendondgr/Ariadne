@@ -1,0 +1,113 @@
+# EXP-2026-08-013 — Three sources at once: the routing floor
+
+**Status:** phase 1 complete (routing floor). Phase 2 (cross-source correlation)
+not started.
+
+## The question
+
+Every result this project has ever recorded was measured with **one relevant
+source live at a time**. ATT&CK and CAPEC have been federated, but they sit on
+different backends and answer disjoint questions. The claim that a customer
+could point this at their own graph *alongside* the threat catalogues, and ask
+one question that touches both, had never been run.
+
+Phase 1 asks the narrowest honest version of it, and supplies no knowledge of
+its own: **what does adding two irrelevant sources cost?** The bank, the gold
+and the code are identical between the two conditions. Only the number of live
+sources changes.
+
+## Two defects had to be fixed before the question could be asked at all
+
+**A URI was resolved by backend, not by source.** `endpoint_for(backend)` returns
+one address per backend, so two Neo4j-backed sources in a process share it. The
+planner reported
+
+    [DOWN] identity (neo4j) — backend up with 4369 nodes but none of the
+           expected labels present
+
+and 4369 is *ATT&CK's* node count: `identity` had probed ATT&CK's store. This
+was invisible for the life of the project because the stack held exactly one
+Neo4j source and one Gremlin source, so the two variables could never collide,
+and the merged-graph counterfactual sidestepped it by putting both catalogues in
+a single store. Fixed with an explicit per-source override,
+`ARIADNE_ENDPOINT_<DATASET>`, unset for every dataset today so no existing runner
+moves.
+
+**A source is not its card.** The first composed directory held the three cards
+and nothing else, and every schema-driven primitive silently reverted to a
+hardcoded MITRE fallback: a question routed *correctly* to `identity` was
+answered with a query over `n:Technique OR n:SubTechnique OR …`. The schema
+registry is built from `graphs/<dataset>/canonical/`, and `discover_datasets`
+finds a dataset only when that tree exists, so an absent registry is
+indistinguishable from a MITRE-shaped one at the call site. **The first run of
+this experiment was therefore invalid and its numbers are discarded** — they
+showed `describe` collapsing 0.812 → 0.438 and read exactly like a routing
+defect. `scripts/tri_compose.py` now copies the canonical tree and `--check`
+refuses a composition without one.
+
+Recording that mistake matters more than the number it produced: a missing
+artifact and a routing failure are indistinguishable from the answer alone.
+
+## Result
+
+Three sources live in one process — attack 4369 (Neo4j), capec 4769 (Gremlin),
+identity 1339 (Neo4j) — against bank 3's 117 questions, both arms, same gold.
+
+| kind | n | generic 1 src | generic 3 src | template 1 src | template 3 src |
+|---|---|---|---|---|---|
+| describe | 16 | 0.812 | **0.812** | 0.812 | **0.812** |
+| facet-in | 24 | 0.583 | **0.583** | 0.000 | **0.000** |
+| facet-out | 24 | 0.750 | **0.750** | 0.000 | **0.000** |
+| homo-in | 20 | 0.700 | **0.700** | 0.000 | **0.000** |
+| homo-out | 20 | 0.550 | **0.550** | 0.000 | **0.000** |
+| multihop | 1 | 1.000 | **1.000** | 0.667 | **0.667** |
+| unanswerable | 12 | 1.000 | **0.167** | 1.000 | **0.083** |
+| **overall** | 117 | 0.7094 | **0.6239** | 0.2194 | **0.1254** |
+
+**Every kind that has an answer is unchanged. Exactly.** Not close — identical,
+on both arms, across six kinds and 105 questions. Adding two catalogues costs
+nothing at all on the questions the system can answer.
+
+**Every question that moved was an abstention.** 10 of 12 on the generic arm and
+11 of 12 on the template arm, and none moved the other way. Where the correct
+behaviour is to say "there is no such relationship", the system now returns
+catalogue records instead.
+
+**The mechanism is routing, not retrieval.** 80 of 117 identity questions were
+routed beyond identity, and evidence volume rose accordingly:
+
+| | generic | template |
+|---|---|---|
+| ids per question | 8.24 → **180.36** | 1.95 → **391.47** |
+| worst question | 54 → **2234** | 2 → **2608** |
+
+A 22× and 200× increase in evidence for zero additional correct retrieval. One
+abstention question returned 558 CAPEC records beside the single identity record
+that was the whole honest answer.
+
+## What this says
+
+The capability is real and the discipline is not. The system **can** hold three
+databases across two query languages and still retrieve exactly what it
+retrieved with one. What it cannot do is stay quiet about the two that are
+irrelevant — and because the keyword router matches a request against 72 identity
+labels and 779 property names of ordinary IT English, "irrelevant" is the common
+case, not the edge case.
+
+That is a precise prerequisite for phase 2. Correlating a customer finding with
+ATT&CK is not worth building on top of a router that pulls in ATT&CK for 68% of
+questions that have nothing to do with it, because a correct correlation would be
+indistinguishable from the noise already arriving.
+
+## Limits
+
+- The identity records are synthetic. The schema is the customer's; the
+  instances are generated, so this measures navigation, not operational utility.
+- One bank, drawn against the identity schema. There are no questions here that
+  *should* route to three sources, by design: phase 1 measures the cost of
+  irrelevant sources, not the benefit of relevant ones.
+- Retrieval only. The two conditions were not judged, so nothing is claimed about
+  answer quality beyond what retrieval and evidence volume show.
+- The baseline condition was run before the abstention-wording fix and the
+  tri-source condition after it. That fix changes narrative text only; retrieval
+  is computed from evidence records, so the comparison is unaffected.
