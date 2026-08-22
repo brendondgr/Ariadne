@@ -308,3 +308,49 @@ confirms it altered prose and not what was found. 999 tests pass.
 **Still latent:** the Gremlin normalizer carries the same hard-coded "CAPEC"
 phrasing. It is not wrong today because CAPEC is the only Gremlin source, but it
 is the identical trap waiting for the next one.
+
+---
+
+## I-11 — A name anchor loses its trailing number and matches 54 nodes
+
+**Status:** open, located, introduced by this project's own anchor fix.
+**Bears on:** A-9's homogeneous-kind figures and A-8's retrieval metric.
+
+`_extract_name_terms` takes the anchor `App Access 070` from a question and
+returns **`App Access`** — the Title-Case run stops at the digit. `_describe` and
+`_generic_neighbors` then match with `toLower(n.name) CONTAINS $term`, so the
+query resolves to every sibling group:
+
+```
+CONTAINS 'app access'      -> 54 nodes
+CONTAINS 'app access 070'  ->  1 node
+```
+
+Verified directly against the store. The tenant names 54 groups `App Access
+NNN`, so any question anchored on one of them retrieves all of them.
+
+**This is a defect in the fix of commit `74d027e`, not a pre-existing one.**
+I-8's structured-token pass was added precisely so `corp.corp.example` and
+`OU-tier2-11` survive whole — but it matches on internal dots and hyphens, and
+`App Access 070` has neither. The Title-Case arm that does catch it truncates at
+the number.
+
+**Why it evaded the retrieval metric entirely.** Gold-in-evidence asks whether
+the expected records are present, and they are — alongside 53 that are not
+wanted. So the homogeneous kinds read 0.975 and 0.833 on retrieval while judging
+at 0.458 and 0.547 faithfulness. **The metric cannot see a precision failure**,
+which is a limitation of the metric as much as a defect in the resolver, and both
+should be recorded that way.
+
+Twelve independent judges described this pattern before it was located — "dumps
+54 App Access groups instead of answering", "the queried entity never appears
+outside the question restatement".
+
+**The fix is not merely a wider regex.** Extending Title-Case runs over trailing
+digits would catch this case, but the general problem is that `CONTAINS` is an
+unanchored substring match over a name space this project does not control. A
+source whose names are prefixes of each other will defeat any extraction rule.
+The durable fix is to prefer an exact name match and fall back to `CONTAINS`
+only when exact returns nothing — which is a behaviour change to the resolver
+and belongs in its own experiment with a re-run and a re-judge, not an
+amendment.

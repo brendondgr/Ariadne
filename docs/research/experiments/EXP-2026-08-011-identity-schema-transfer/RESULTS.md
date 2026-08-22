@@ -446,3 +446,60 @@ The template arm rises from 0.1964 to 0.3177 but is still zero on every
 relationship kind — its `facet-in`, `facet-out` and `unanswerable` are all
 0.000, and what it scores comes almost entirely from `describe` (0.812, the one
 kind needing no traversal) and the homogeneous kinds.
+
+## A-9 (2026-08-22) — judged after the fix, and the faithfulness arm gap disappears
+
+233 answers over bank 3 (117 questions × 2 arms, one lost to a slice edge),
+graded by **twelve independent Sonnet judges**, rubric verbatim, after the I-9
+summariser fix. Zero errored verdicts, zero duplicate `(arm, question_id)` — the
+bank attribution defect of A-7 does not recur, because the agents were asked for
+the bank field this time.
+
+| | Before fix (bank 2) | **After fix (bank 3)** |
+|---|---|---|
+| `generic` faithfulness | 0.5500 | **0.7009** |
+| `deterministic` faithfulness | 0.3500 | **0.7094** |
+| Faithfulness arm gap | +0.2000 | **−0.0085** |
+
+**The fix is worth roughly +0.15 to the schema-derived arm and +0.36 to the
+template arm.** Both rise, which is expected: the false "ATT&CK record"
+statement was being asserted as a claim on every answer from both.
+
+**And the faithfulness arm gap collapses to nothing.** A-7 reported the
+schema-derived path ahead by +0.20 on faithfulness. That gap was substantially
+an artifact of the defect hitting the two arms unequally; with it removed the
+arms are level (−0.0085, well inside judge spread). **A-7's faithfulness
+comparison should not be quoted as an arm difference.** What A-7 got right was
+the absolute level being far below the local judge's reading — that survives.
+
+**What still separates the arms is not faithfulness.** It is retrieval (0.7877
+against 0.3177) and evidence sufficiency (0.3691 against 0.2248). The honest
+statement is now: *the template arm finds very little on a foreign schema, and
+what it does say about that little is no less faithful than the schema-derived
+arm's* — it simply says less. Faithfulness alone cannot separate a system that
+answers well from one that barely answers.
+
+### Per-kind, and a defect this exposes
+
+| Kind | n | faithfulness | sufficiency | *retrieval* (A-8) |
+|---|---|---|---|---|
+| `describe` | 16 | 0.841 | 0.484 | 0.812 |
+| `facet-in` | 24 | 0.815 | 0.487 | 0.583 |
+| `facet-out` | 23 | 0.704 | 0.389 | 0.667 |
+| `homo-in` | 20 | **0.458** | **0.149** | **0.975** |
+| `homo-out` | 20 | **0.547** | **0.216** | **0.833** |
+| `unanswerable` | 12 | 0.925 | 0.525 | 1.000 |
+
+**The homogeneous kinds inverted.** They score highest on retrieval (0.975,
+0.833) and lowest on faithfulness and sufficiency (0.458, 0.149). That is not a
+contradiction — it is the retrieval metric being satisfied in a way the judges
+correctly refuse to credit, and it is diagnosed in ISSUES I-11: the anchor name
+`App Access 070` is extracted as `App Access`, and a `CONTAINS` match on that
+returns **54 nodes instead of 1** (verified directly against the store).
+
+Gold-in-evidence asks only whether the expected records are *present*. They are
+— buried among 53 irrelevant siblings. So **this experiment's primary metric
+overstates quality wherever precision is poor**, and A-8's per-kind retrieval
+figures for the homogeneous kinds should be read with that caveat rather than as
+evidence those kinds are solved. Twelve judges converged on this independently
+before the mechanism was located.
