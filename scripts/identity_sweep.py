@@ -223,7 +223,56 @@ def score(entry: dict[str, Any], result: dict[str, Any]) -> dict[str, Any]:
 
 
 
-def judge(out: Path, arms: list[str], limit: int = 0) -> int:
+class _RetryingJudge:
+    """The LLM judge with bounded retries, falling back only once exhausted.
+
+    The shared judge raises ``JudgeUnavailable`` on any failure and the hybrid
+    wrapper drops straight to the deterministic proxy. On an idle relay that is
+    fine; on a contended one it silently converts a correctness measurement into
+    a proxy measurement, which is how the first development-bank pass ended up
+    with 0 of 27 answers actually judged (ISSUES I-7).
+
+    Retrying here rather than inside ``utils/evaluation/llm_judge`` is
+    deliberate: that module is the instrument several recorded experiments were
+    measured with, and changing its failure behaviour would change what their
+    numbers mean.
+    """
+
+    name = "llm"
+
+    def __init__(self, inner: Any, proxy: Any, attempts: int, backoff_s: float) -> None:
+        self._inner = inner
+        self._proxy = proxy
+        self._attempts = attempts
+        self._backoff = backoff_s
+        self.retried = 0
+        self.exhausted: list[str] = []
+
+    def judge(self, question_id: str, answer: Any, evidence: Any) -> Any:
+        last: Exception | None = None
+        for attempt in range(1, self._attempts + 1):
+            try:
+                verdict = self._inner.judge(question_id, answer, evidence)
+                if attempt > 1:
+                    self.retried += 1
+                return verdict
+            except Exception as exc:  # JudgeUnavailable and transport errors
+                last = exc
+                if attempt < self._attempts:
+                    time.sleep(self._backoff * attempt)
+        self.exhausted.append(question_id)
+        print(f"    judge exhausted {self._attempts} attempts on {question_id}: {last}")
+        return self._proxy.judge(question_id, answer, evidence)
+
+
+def judge(
+    out: Path,
+    arms: list[str],
+    limit: int = 0,
+    attempts: int = 4,
+    backoff: float = 20.0,
+    workers: int | None = None,
+) -> int:
     """Grade the persisted answers for correctness, not just retrieval.
 
     The answers are rebuilt by re-running the pipeline rather than read back
@@ -237,7 +286,9 @@ def judge(out: Path, arms: list[str], limit: int = 0) -> int:
     input has been re-consumed by a later pass in this repository before.
     """
     from utils.evaluation.llm_judge.config import EvalConfig
+    from utils.evaluation.llm_judge.deterministic_judge import DeterministicJudge
     from utils.evaluation.llm_judge.factory import judge_run
+    from utils.evaluation.llm_judge.llm_judge import OpenAICompatibleJudge
 
     bank = json.loads((out / "bank.json").read_text(encoding="utf-8"))
     questions = bank["questions"]
@@ -249,6 +300,12 @@ def judge(out: Path, arms: list[str], limit: int = 0) -> int:
     needed = len(order) * len(arms)
     if config.sample_size < needed:
         config = replace(config, sample_size=needed)
+    if workers:
+        # Fewer concurrent posts on a contended relay. Eight simultaneous
+        # requests against a saturated server is what produced the timeouts;
+        # throughput is bounded by the server either way, so lowering this
+        # costs wall time and buys coverage.
+        config = replace(config, judge_workers=workers)
     print(
         f"judge: llm_enabled={config.llm_enabled} model={config.llm_model} "
         f"max_tokens={config.llm_max_tokens} workers={config.judge_workers} "
@@ -284,7 +341,15 @@ def judge(out: Path, arms: list[str], limit: int = 0) -> int:
             print(f"[{arm}] rebuilt {index}/{len(order)} {qid}")
 
         print(f"[{arm}] judging {len(items)} answers …")
-        report = judge_run(items, config)
+        retrying = _RetryingJudge(
+            OpenAICompatibleJudge(config), DeterministicJudge(), attempts, backoff
+        )
+        report = judge_run(items, config, judge=retrying)
+        if retrying.retried or retrying.exhausted:
+            print(
+                f"[{arm}] retries that succeeded: {retrying.retried}; "
+                f"exhausted (fell to proxy): {len(retrying.exhausted)}"
+            )
         summary = report.to_dict()
         payload["verdicts"][arm] = summary
         print(
@@ -309,12 +374,21 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--stage", choices=["run", "judge"], default="run")
+    parser.add_argument("--judge-attempts", type=int, default=4)
+    parser.add_argument("--judge-backoff", type=float, default=20.0)
+    parser.add_argument("--judge-workers", type=int, default=0)
     args = parser.parse_args(argv)
 
     out = Path(args.out)
     if args.stage == "judge":
-        return judge(out, [a.strip() for a in args.arms.split(",") if a.strip()],
-                     args.limit)
+        return judge(
+            out,
+            [a.strip() for a in args.arms.split(",") if a.strip()],
+            args.limit,
+            attempts=args.judge_attempts,
+            backoff=args.judge_backoff,
+            workers=args.judge_workers,
+        )
     bank = json.loads((out / "bank.json").read_text(encoding="utf-8"))
     questions = bank["questions"]
     state_path = out / "sweep_state.json"

@@ -189,3 +189,39 @@ all and is unaffected.
 **To retry:** re-run `--stage judge --out docs/evaluation/identity-2026-08-21`
 when the relay is idle, and check `source` is `llm` for **both** arms before
 reporting anything from it.
+
+---
+
+## I-8 — Bank 3 drawn at 117 questions; `multihop` cannot be scaled
+
+**Status:** open, awaiting authoring. **Bears on:** every per-kind figure.
+
+A-5 and A-6 both rest on kinds of two to six questions, and A-5 records that the
+development set's 1.0s on `homo-*` and `multihop` were partly small-sample luck
+— five questions cannot distinguish 1.0 from 0.7. Bank 3 exists to fix that.
+
+117 questions drawn at seed 20260823, excluding every anchor used by banks 1 and
+2 (49 of them), **verified at zero overlap**, across 86 distinct anchors. Gold is
+computed and committed; only authoring remains, and that needs the relay.
+
+| Kind | Bank 1 | Bank 2 | **Bank 3** |
+|---|---|---|---|
+| `facet-out` | 6 | 6 | **24** |
+| `facet-in` | 5 | 6 | **24** |
+| `homo-out` | 5 | 3 | **20** |
+| `homo-in` | 5 | 5 | **20** |
+| `describe` | 3 | 4 | **16** |
+| `unanswerable` | 2 | 2 | **12** |
+| `multihop` | 1 | 2 | **1** |
+
+**`multihop` is the exception and cannot be fixed without invalidating the other
+two banks.** The generator plants exactly five attack chains, and banks 1 and 2
+consumed four of them; only one anchor remains. Planting more chains means
+regenerating the tenant, which changes node ids and therefore every gold answer
+in banks 1 and 2 — so the three banks would no longer be measuring the same
+graph and could not be compared.
+
+The multi-hop figure therefore stays at n=1 for now and **must not be quoted as
+a rate**. Raising it properly means a fresh tenant with more planted chains and
+a re-run of all three banks against it, which is a new experiment rather than an
+amendment.

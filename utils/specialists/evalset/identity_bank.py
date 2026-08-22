@@ -468,7 +468,20 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--exclude-bank",
         default=None,
-        help="a prior bank.json whose anchors must not be drawn again",
+        help=(
+            "comma-separated prior bank.json paths whose anchors must not be "
+            "drawn again, so successive banks stay disjoint"
+        ),
+    )
+    parser.add_argument(
+        "--shape",
+        default=None,
+        help=(
+            "per-kind counts as kind=n,kind=n. Defaults to BANK_SHAPE. Scaling "
+            "up is what makes a per-kind figure mean anything: at five "
+            "questions a kind, 1.0 and 0.7 are indistinguishable, and this "
+            "experiment was already misled once by exactly that"
+        ),
     )
     parser.add_argument(
         "--dry-run",
@@ -479,15 +492,27 @@ def main(argv: list[str] | None = None) -> int:
 
     spec = TenantSpec.read(args.spec)
     exclude: set[str] = set()
-    if args.exclude_bank:
-        prior = json.loads(Path(args.exclude_bank).read_text(encoding="utf-8"))
-        exclude = {
+    for raw in (args.exclude_bank or "").split(","):
+        raw = raw.strip()
+        if not raw:
+            continue
+        prior = json.loads(Path(raw).read_text(encoding="utf-8"))
+        found = {
             q["anchor_id"]
             for q in prior["questions"].values()
             if q.get("anchor_id")
         }
-        print(f"excluding {len(exclude)} anchors used by {args.exclude_bank}")
-    entries, discards = draw(spec, seed=args.seed, exclude=exclude)
+        exclude |= found
+        print(f"excluding {len(found)} anchors used by {raw}")
+
+    shape: dict[str, int] | None = None
+    if args.shape:
+        shape = {}
+        for part in args.shape.split(","):
+            kind, _, count = part.strip().partition("=")
+            shape[kind.strip()] = int(count)
+
+    entries, discards = draw(spec, seed=args.seed, exclude=exclude, shape=shape)
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
 
