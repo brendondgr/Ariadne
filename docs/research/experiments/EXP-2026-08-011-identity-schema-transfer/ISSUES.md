@@ -155,3 +155,37 @@ finished writing and was not affected.
 
 The correct command is `docker compose stop <service>` or `down` naming the
 service explicitly. Never `down -v` on a shared project.
+
+---
+
+## I-7 — The development-bank judging run is unusable (server contention)
+
+**Status:** failed, recorded not deleted. **Bears on:** nothing — no figure from
+it is reported.
+
+After the blind bank was judged successfully (A-6), the same pass was run over
+the 27-question development bank so correctness could be compared
+development-vs-blind the way retrieval already had been. It failed.
+
+The LLM judge reached **12 of 27** generic answers and **0 of 27** deterministic
+answers. The deterministic arm was therefore graded entirely by the fallback
+proxy, and the two arms were scored by different instruments — which is exactly
+the confound A-6 refused to introduce by substituting a second grading session.
+
+Its numbers (generic faithfulness 0.9519, deterministic 0.1111) are **not a
+correctness comparison** and must not be quoted or aggregated. The file is kept
+and flagged `UNUSABLE` in its own metadata rather than deleted.
+
+**Cause is environmental, not a defect.** The shared relay stopped answering: a
+one-line completion that returned in about two seconds earlier in the session
+did not return within 90 seconds when checked immediately afterward. Nothing in
+the judge stage changed between the successful blind run and this one.
+
+**What it does not affect.** The blind judged result (A-6) was taken in a single
+earlier session with 25/28 and 28/28 coverage and stands. The
+development-vs-blind *retrieval* comparison (A-5) involves no language model at
+all and is unaffected.
+
+**To retry:** re-run `--stage judge --out docs/evaluation/identity-2026-08-21`
+when the relay is idle, and check `source` is `llm` for **both** arms before
+reporting anything from it.

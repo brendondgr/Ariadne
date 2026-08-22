@@ -1,0 +1,695 @@
+{
+  "meta": {
+    "arms": [
+      "generic",
+      "deterministic"
+    ],
+    "n_questions": 27,
+    "UNUSABLE": true,
+    "unusable_reason": "Server contention: the LLM judge covered only 12 of 27 generic answers and 0 of 27 deterministic answers, so the deterministic arm is graded ENTIRELY by the deterministic proxy and the two arms were scored by different instruments. The faithfulness figures in this file (generic 0.9519, deterministic 0.1111) are NOT a correctness comparison and must not be quoted or aggregated. Recorded rather than deleted, per the research-record rule on failed runs. The usable judged result is the blind bank (identity-bank2-2026-08-22)."
+  },
+  "verdicts": {
+    "generic": {
+      "source": "mixed",
+      "llm_covered": 12,
+      "answers_scored": 27,
+      "mean_faithfulness": 0.9519,
+      "mean_groundedness": 0.9963,
+      "mean_evidence_sufficiency": 0.9407,
+      "mean_unsupported_claim_rate": 0.0741,
+      "total_conflicts": 0,
+      "answers_with_conflicts": 0,
+      "verdicts": [
+        {
+          "question_id": "ID-FACETOUT-01",
+          "source": "deterministic",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-FACETOUT-02",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.5,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a faithful and grounded summary of the provided evidence (the claims), but it fails to directly answer the user's question ('What can Database Admins generically write?') because the retrieved evidence only contains a list of related entities rather than specific capabilities or objects they can write. The answer is essentially a retrieval summary rather than a natural language response to the semantic question."
+          ]
+        },
+        {
+          "question_id": "ID-FACETOUT-03",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.7,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a highly precise summary of the evidence, correctly distinguishing between the total count (14) and the unique count (12) of related items, which is impressive given the duplicate IDs in the source record.",
+            "The answer is slightly insufficient because it provides a list of 'related' items rather than directly answering the specific question of what the entity can 'write DACLs to', though it stays faithful to the evidence by not over-claiming a DACL relationship that isn't explicitly stated.",
+            "The mention of 'MITRE ATT&CK' is not explicitly in the provided evidence record, though it is likely the context of the system."
+          ]
+        },
+        {
+          "question_id": "ID-FACETOUT-05",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a valid fallback/abstention response because no evidence was found to answer the specific question. It is faithful to the lack of data and provides a helpful way for the user to refine the query."
+          ]
+        },
+        {
+          "question_id": "ID-FACETOUT-07",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.5,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a meta-statement about finding a record rather than a direct answer to the user's question about assigned applications.",
+            "While the answer is grounded in the existence of the record, it fails to provide any information regarding assignments, which was the core of the question.",
+            "The evidence provided was insufficient to answer the question (it only contained the identity of the application, not its assignments), but the answer did not attempt to clarify this or state that no assignments were found."
+          ]
+        },
+        {
+          "question_id": "ID-FACETOUT-08",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a correct abstention/clarification request given that no evidence was found for the entity in the question."
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-02",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is entirely faithful to the provided claims and is grounded in the evidence record. Although the answer provides a summary of the entity's current state (the groups it belongs to) rather than a narrative description of 'changes', it is the most accurate and sufficient response possible given the provided evidence, which lacks temporal/historical data."
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-03",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer accurately reflects the relationship found in the identity record between the device srv063 and the group ID provided. While the answer mentions 'MITRE ATT&CK' and the evidence record source is 'identity', the core factual claim about the existence of the relationship is fully supported by the provided evidence."
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-04",
+          "source": "llm",
+          "faithfulness": 0.8,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.9,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer claims the items are 'in MITRE ATT&CK', but the evidence record provided is from 'source=identity', making the MITRE classification an unverified claim. However, all IDs and the OU name are perfectly grounded in the evidence. The answer is a bit robotic as it lists IDs instead of names, but it is sufficient for a graph-based query."
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-05",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 0.9,
+          "evidence_sufficiency": 0.8,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is faithful to the provided evidence. It is grounded, though it incorrectly attributes the source to 'MITRE ATT&CK' when the evidence source is 'identity'. It is not perfectly sufficient because it doesn't explicitly address the 'write access' constraint of the question (as the evidence doesn't specify access levels), but it provides the most relevant information available by listing the groups associated with the OU."
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-06",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer accurately reflects the information in the evidence record, correctly mapping the ID to the name 'OU-tier2-05' and listing the associated group IDs. While the source 'MITRE ATT&CK' is not explicitly in the evidence record (which says 'identity'), the content itself is perfectly grounded."
+          ]
+        },
+        {
+          "question_id": "ID-HOMOOUT-02",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer accurately reflects the relationship found in the evidence record, mapping the ID to the name correctly. Although the phrasing 'has 1 DOMAIN' is slightly awkward for a relationship, it is faithful to the graph structure provided.",
+            "All IDs and names are directly traceable to the evidence record.",
+            "The evidence provided was sufficient to answer the question regarding the related domain."
+          ]
+        },
+        {
+          "question_id": "ID-HOMOOUT-03",
+          "source": "llm",
+          "faithfulness": 0.9,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer mentions 'MITRE ATT&CK', which is not explicitly mentioned in the provided evidence (the source is 'identity'), though it may be contextually correct.",
+            "The answer provides subdomains instead of 'forest trusts', which is a reasonable interpretation of the 'related' relationship in the provided graph data.",
+            "All entity IDs and names are perfectly grounded in the evidence records."
+          ]
+        },
+        {
+          "question_id": "ID-HOMOOUT-06",
+          "source": "deterministic",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-HOMOOUT-12",
+          "source": "deterministic",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-HOMOOUT-13",
+          "source": "deterministic",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-HOMOIN-01",
+          "source": "deterministic",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-HOMOIN-02",
+          "source": "deterministic",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-HOMOIN-03",
+          "source": "deterministic",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-HOMOIN-04",
+          "source": "deterministic",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-HOMOIN-05",
+          "source": "deterministic",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-DESCRIBE-02",
+          "source": "deterministic",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-DESCRIBE-03",
+          "source": "deterministic",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-DESCRIBE-04",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-MULTIHOP-01",
+          "source": "deterministic",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-UNANSWERABLE-01",
+          "source": "deterministic",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-UNANSWERABLE-02",
+          "source": "deterministic",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        }
+      ]
+    },
+    "deterministic": {
+      "source": "deterministic",
+      "llm_covered": 0,
+      "answers_scored": 27,
+      "mean_faithfulness": 0.1111,
+      "mean_groundedness": 1.0,
+      "mean_evidence_sufficiency": 1.0,
+      "mean_unsupported_claim_rate": 0.8889,
+      "total_conflicts": 0,
+      "answers_with_conflicts": 0,
+      "verdicts": [
+        {
+          "question_id": "ID-FACETOUT-01",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-FACETOUT-02",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-FACETOUT-03",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-FACETOUT-05",
+          "source": "deterministic",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-FACETOUT-07",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-FACETOUT-08",
+          "source": "deterministic",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-02",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-03",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-04",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-05",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-06",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-HOMOOUT-02",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-HOMOOUT-03",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-HOMOOUT-06",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-HOMOOUT-12",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-HOMOOUT-13",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-HOMOIN-01",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-HOMOIN-02",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-HOMOIN-03",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-HOMOIN-04",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-HOMOIN-05",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-DESCRIBE-02",
+          "source": "deterministic",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-DESCRIBE-03",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-DESCRIBE-04",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-MULTIHOP-01",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-UNANSWERABLE-01",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-UNANSWERABLE-02",
+          "source": "deterministic",
+          "faithfulness": 0.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        }
+      ]
+    }
+  }
+}
