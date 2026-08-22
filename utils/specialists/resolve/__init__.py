@@ -177,10 +177,25 @@ def _schema_word_set(card: Any) -> set[str]:
     return words
 
 
-def _acceptable_name(candidate: str, schema_words: set[str]) -> bool:
-    """A candidate is a plausible entity name (not scaffolding or a schema word)."""
+def _acceptable_name(
+    candidate: str, schema_words: set[str], catalogue_ids: bool = True
+) -> bool:
+    """A candidate is a plausible entity name (not scaffolding or a schema word).
+
+    ``catalogue_ids`` says whether ATT&CK/CAPEC identifier shapes are ids *on
+    this source*. On ATT&CK they are, and `T1055` must never be read as a name.
+    On anything else they are not, and rejecting them silently destroys the only
+    anchor the question offers: `dc212` -- the standard name for a domain
+    controller, and the single most common host-naming convention in identity
+    data -- matched the ATT&CK DataComponent shape ``DC[0-9]{3,}`` and was dropped,
+    so the query fell through to a scan of the whole DEVICE label and returned
+    240 unrelated hosts. The gate mirrors ``anchor_dataset``, which already
+    decides whose id rules apply; the name path simply was not asking.
+    """
     cand = candidate.strip()
-    if not cand or _ANY_ID_RE.search(cand):
+    if not cand:
+        return False
+    if catalogue_ids and _ANY_ID_RE.search(cand):
         return False
     lowers = [w.lower() for w in cand.split()]
     if not lowers:
@@ -204,8 +219,22 @@ _STRUCTURED_TOKEN_RE = re.compile(
     r"\b[A-Za-z0-9]+(?:[.\-][A-Za-z0-9]+)+\b"
 )
 
+# An *instance* name: a letter run followed by digits, with no internal
+# punctuation to give it away -- `dc212`, `wks225`, `srv161`, `lap191`,
+# `app070`. Infrastructure names this by convention: a role prefix and an
+# ordinal. It is the same argument the structured-token pass already makes,
+# applied to the case where the structure is a digit boundary rather than a dot.
+#
+# Two letters minimum, so a catalogue id shaped `T1055` is not swept up here on
+# its way to being rejected; ids that DO clear that bar (`TA0006`, `DET0103`)
+# are rejected by ``_acceptable_name``'s id guard, which is why that guard is
+# now gated on the catalogue rather than removed.
+_INSTANCE_TOKEN_RE = re.compile(r"\b[A-Za-z]{2,}\d+[A-Za-z0-9]*\b")
 
-def _extract_name_terms(text: str, schema_words: set[str]) -> tuple[str, ...]:
+
+def _extract_name_terms(
+    text: str, schema_words: set[str], catalogue_ids: bool = True
+) -> tuple[str, ...]:
     """Deterministic name anchors from ``text`` (see module note above)."""
     if not text:
         return ()
@@ -215,7 +244,9 @@ def _extract_name_terms(text: str, schema_words: set[str]) -> tuple[str, ...]:
     def add(candidate: str) -> None:
         cand = candidate.strip().strip(".,;:?!()[]{}")
         low = cand.lower()
-        if not cand or low in seen or not _acceptable_name(cand, schema_words):
+        if not cand or low in seen:
+            return
+        if not _acceptable_name(cand, schema_words, catalogue_ids):
             return
         seen.add(low)
         terms.append(cand)
@@ -236,6 +267,30 @@ def _extract_name_terms(text: str, schema_words: set[str]) -> tuple[str, ...]:
     # should not be crowded out by the word cap.
     for m in _STRUCTURED_TOKEN_RE.finditer(text):
         add(m.group(0))
+    # Instance names, for the same reason and on the same unconditional footing.
+    #
+    # Unconditional is the point. Gating this behind ``if not terms`` -- the way
+    # the bare-word fallback below is gated -- lets any single acceptable
+    # Title-Case word suppress the real anchor entirely: "Who can modify the
+    # DACL on the device wks225?" yielded ("DACL",) and never saw `wks225`,
+    # because `DACL` is a legitimate Title-Case run and satisfied the gate.
+    #
+    # Running it here also removes the bare-word pass's collateral damage
+    # without touching that pass: once an instance token is found, ``terms`` is
+    # non-empty, so the fallback no longer fires and no longer spends the
+    # four-term budget on "identity", "operating" and "system" before reaching
+    # the host name. Those junk terms were not merely wasted slots -- every one
+    # of them goes into the ``CONTAINS`` predicate and pulls in records that
+    # have nothing to do with what was asked.
+    for m in _INSTANCE_TOKEN_RE.finditer(text):
+        token = m.group(0)
+        # Never re-anchor on a fragment of a name already taken. `srv063` is a
+        # strict substring of the structured token `srv063.corp.example`, and
+        # adding it as a second term only widens the CONTAINS predicate back out
+        # to everything the fuller name was there to narrow.
+        if any(token.lower() in existing.lower() for existing in terms):
+            continue
+        add(token)
     if not terms:
         for w in re.findall(r"[A-Za-z][A-Za-z0-9]+", text):
             add(w)
@@ -338,5 +393,7 @@ def resolve(task: SpecialistTask, card: Any) -> ResolvedTask:
         join_endpoint=join_endpoint,
         stix_types=card_stix_types(card),
         concept_terms=concept_terms(text),
-        name_terms=_extract_name_terms(text, _schema_word_set(card)),
+        name_terms=_extract_name_terms(
+            text, _schema_word_set(card), catalogue_ids=anchors_as in ("attack", "capec")
+        ),
     )

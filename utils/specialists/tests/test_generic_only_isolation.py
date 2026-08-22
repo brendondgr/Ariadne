@@ -24,11 +24,26 @@ are now two expectations and they answer different questions:
 * generation 1 (``frozen_default_queries.json``) still holds for the eight
   templates the outer join did not touch. Their continuity back to
   ``freeze/holdout-v1`` is the comparability the 2026-07-26 arm figures rest on.
-* generation 2 (``frozen_default_queries_v2.json``) is the operative
-  expectation for all ten. Its eight unchanged cases are copied verbatim from
-  generation 1; its two rewritten cases were **hand-authored** from the
-  outer-join semantics proven on the generic branch in ``EXP-2026-08-004``, not
-  captured from the tree under test, so the assertion still bites.
+* generation 2 (``frozen_default_queries_v2.json``) held for all ten until
+  2026-08-22. Its eight unchanged cases are copied verbatim from generation 1;
+  its two rewritten cases were **hand-authored** from the outer-join semantics
+  proven on the generic branch in ``EXP-2026-08-004``, not captured from the
+  tree under test, so the assertion still bites.
+* generation 3 (``frozen_default_queries_v3.json``) is the operative
+  expectation. It differs from generation 2 in exactly one case -- the Cypher
+  ``describe`` -- whose id column widened from ``n.attack_id`` to
+  ``coalesce(n.attack_id, n.id)`` when EXP-2026-08-011 fixed the device-anchor
+  bug and describe began firing on a source that has no ``attack_id``. Also
+  hand-authored: two exact substitutions applied to generation 2's string, with
+  every other byte carried across.
+
+  The widening is a no-op *on ATT&CK* and that was measured, not assumed: on the
+  live store no node has a null ``attack_id`` beside a non-null ``id``, so the
+  coalesce returns ``attack_id`` for all 4369 of them. It is **not** a no-op on
+  the merged store, where 3686 CAPEC-origin nodes have no ``attack_id`` and
+  previously returned a null id that the normalizer dropped. That is a
+  behavioural change to the merged-graph counterfactual and is recorded as such
+  (ISSUES I-13) rather than absorbed silently here.
 """
 
 from __future__ import annotations
@@ -45,11 +60,23 @@ from utils.specialists.resolve import resolve
 from utils.specialists.tests._fixtures import FIXTURES_DIR, fixture_card
 
 FROZEN_V1 = json.loads((FIXTURES_DIR / "frozen_default_queries.json").read_text())
-FROZEN = json.loads((FIXTURES_DIR / "frozen_default_queries_v2.json").read_text())
+FROZEN = json.loads((FIXTURES_DIR / "frozen_default_queries_v3.json").read_text())
 
-# The only templates licensed to differ from generation 1, and the tag at which
-# they were allowed to. Anything else diverging is a leak.
-SUPERSEDED = {"capec_maps_to", "cwe_chain"}
+
+def _key(case: dict) -> tuple[str, str]:
+    """A case's identity. Keyed by ``(source, template)``, not template alone --
+    ``describe`` names both a Cypher and a Gremlin case, and only the Cypher one
+    is licensed to move."""
+    return (case["source"], case["template"])
+
+
+# The only cases licensed to differ from generation 1, and what licensed each.
+# Anything else diverging is a leak.
+SUPERSEDED = {
+    ("capec", "capec_maps_to"),      # outer join, freeze/arm-baseline-2
+    ("capec", "cwe_chain"),          # outer join, freeze/arm-baseline-2
+    ("attack", "describe"),          # coalesce id column, EXP-2026-08-011
+}
 
 ARM_H_TEMPLATES = {
     "generic_bridge",
@@ -94,8 +121,8 @@ def test_default_query_is_identical_to_the_frozen_tree(case: dict) -> None:
 
 
 @pytest.mark.parametrize(
-    "case", [c for c in FROZEN_V1 if c["template"] not in SUPERSEDED],
-    ids=[c["template"] for c in FROZEN_V1 if c["template"] not in SUPERSEDED],
+    "case", [c for c in FROZEN_V1 if _key(c) not in SUPERSEDED],
+    ids=[f"{c['source']}-{c['template']}" for c in FROZEN_V1 if _key(c) not in SUPERSEDED],
 )
 def test_untouched_templates_still_match_generation_one(case: dict) -> None:
     """Continuity back to ``freeze/holdout-v1`` for everything not superseded.
@@ -110,21 +137,41 @@ def test_untouched_templates_still_match_generation_one(case: dict) -> None:
     assert draft.params == case["params"]
 
 
+# Every licence granted, and what it permitted. A case may only carry a
+# ``superseded_at`` marker that appears here, and the marker's clause is what
+# bounds the edit -- so a later rewrite cannot ride along under cover of an
+# earlier licence.
+LICENCES: dict[tuple[str, str], str] = {
+    ("capec", "capec_maps_to"): "freeze/arm-baseline-2",
+    ("capec", "cwe_chain"): "freeze/arm-baseline-2",
+    ("attack", "describe"): "EXP-2026-08-011",
+}
+
+
 def test_exactly_the_expected_templates_are_superseded() -> None:
     """The fixture's own bookkeeping must match the licence granted."""
-    marked = {c["template"] for c in FROZEN if c.get("superseded_at")}
+    marked = {_key(c) for c in FROZEN if c.get("superseded_at")}
 
     assert marked == SUPERSEDED
+    assert LICENCES.keys() == SUPERSEDED
     assert all(
-        c["superseded_at"] == "freeze/arm-baseline-2"
+        c["superseded_at"] == LICENCES[_key(c)]
         for c in FROZEN
         if c.get("superseded_at")
     )
-    # And the rewrite is a join-semantics change, not a rewrite of the anchor.
     for case in FROZEN:
-        if case["template"] in SUPERSEDED:
+        key = _key(case)
+        if LICENCES.get(key) == "freeze/arm-baseline-2":
+            # A join-semantics change, not a rewrite of the anchor.
             assert ".fold()" in case["query"]
             assert ".project(" in case["query"]
+        elif LICENCES.get(key) == "EXP-2026-08-011":
+            # An id-column widening, and nothing else: the anchor still binds
+            # the same parameter and the coalesce still prefers ``attack_id``,
+            # so ATT&CK reads exactly as it did.
+            assert "coalesce(n.attack_id, n.id)" in case["query"]
+            assert "IN $ids" in case["query"]
+            assert "n.attack_id AS id" not in case["query"]
 
 
 def test_no_arm_h_primitive_is_reachable_with_templates_enabled() -> None:

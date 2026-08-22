@@ -637,6 +637,14 @@ class CypherQueryBuilder:
         "UNWIND (CASE WHEN size(exact) > 0 THEN exact ELSE cand END) AS n "
     )
 
+    # The id column is ``coalesce(n.attack_id, n.id)`` for the reason ``_label_scan``
+    # already records: ``attack_id`` does not exist outside ATT&CK, and a null id
+    # is dropped by the normalizer, so describe returned nothing on a source that
+    # keys its nodes any other way. Byte-identical on ATT&CK, where ``attack_id``
+    # is never null on a describable label. This one survived EXP-2026-08-011's
+    # first pass only because the anchor bug kept describe from firing at all --
+    # every device question fell through to a label scan, which had already been
+    # generalised, so the defect underneath had nothing to reveal it.
     _FACET_AGGREGATION = (
         "OPTIONAL MATCH (n)-[r]-(m) "
         "WITH n, "
@@ -647,7 +655,7 @@ class CypherQueryBuilder:
         "WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE "
         "{rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw "
         "WITH n, [f IN raw WHERE f IS NOT NULL] AS facets "
-        "RETURN n.attack_id AS id, n.name AS name, "
+        "RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, "
         "n.properties_json AS properties_json, facets AS facets"
     )
 
@@ -661,13 +669,33 @@ class CypherQueryBuilder:
         """
         if resolved.seed_ids:
             label = _describe_label(resolved)
-            match = f"MATCH (n:{label}) WHERE n.attack_id IN $ids "
+            match = f"MATCH (n:{label}) WHERE coalesce(n.attack_id, n.id) IN $ids "
             return QueryDraft(
                 query=match + self._FACET_AGGREGATION,
                 params={"ids": list(resolved.seed_ids)},
                 template="describe",
                 expected_nonempty=True,
-                meta={"label": label, "seed_ids": list(resolved.seed_ids)},
+                meta={
+                    "label": label,
+                    "seed_ids": list(resolved.seed_ids),
+                    # Declared, not parsed. ``coalesce(n.attack_id, n.id)`` is
+                    # invisible to the binding parser's ``alias.prop IN $param``
+                    # shape, so widening the id column silently emptied the
+                    # binding audit for every describe draft -- 202 of them went
+                    # from checked to "unchecked", which is the audit's own name
+                    # for a query that filters on values nothing verified.
+                    # ``extract_bindings`` prefers a declaration precisely so a
+                    # builder can express a filter its parsers cannot read.
+                    #
+                    # Two entries, one parameter: the coalesce IS a disjunction,
+                    # and ``unsatisfiable_bindings`` groups by parameter, so the
+                    # filter is judged satisfiable when *either* property admits
+                    # the seeds -- which is what the query means.
+                    "bindings": [
+                        {"label": label, "property": "attack_id", "param": "ids"},
+                        {"label": label, "property": "id", "param": "ids"},
+                    ],
+                },
             )
         names = [term.lower() for term in resolved.name_terms]
         label_guard = " OR ".join(

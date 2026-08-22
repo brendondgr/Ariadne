@@ -188,7 +188,7 @@ class CypherNormalizer:
         if rows and "facets" in rows[0]:
             return self._normalize_describe(rows, resolved, query, card, id_scheme)
         # node_lookup / label_scan
-        return self._normalize_flat(rows, query, card, id_scheme)
+        return self._normalize_flat(rows, resolved, query, card, id_scheme)
 
     def _normalize_technique_mitigations(
         self,
@@ -743,11 +743,22 @@ class CypherNormalizer:
     def _normalize_flat(
         self,
         rows: list[dict[str, Any]],
+        resolved: ResolvedTask,
         query: str,
         card: Any,
         id_scheme: str,
     ) -> list[EvidenceRecord]:
-        """One record per row for node_lookup / label_scan."""
+        """One record per row for node_lookup / label_scan.
+
+        The label comes from ``_label_for`` -- the resolved label first, then the
+        id prefix -- rather than the constant ``"Technique"`` this emitted for
+        every row of every source. That constant was not cosmetic: the label is
+        carried into the evidence record and read back out by synthesis, so a
+        DEVICE named ``srv000`` was being asserted to the judge as an ATT&CK
+        Technique. Same species as the hardcoded "ATT&CK record(s)" wording in
+        the composer, and found the same way -- by running the template against
+        a graph it was not written for.
+        """
         records: list[EvidenceRecord] = []
         for row in rows:
             # Support both column names: "id" (node_lookup) and "attack_id"
@@ -763,7 +774,7 @@ class CypherNormalizer:
                     record_id=record_id if record_id else aid,
                     primary_id=aid,
                     id_scheme=id_scheme,
-                    label="Technique",
+                    label=_label_for(aid, resolved),
                     name=name,
                     join_values=join_values,
                 )
