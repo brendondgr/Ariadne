@@ -1,0 +1,9 @@
+{
+  "question_id": "ID-DESCRIBE-15",
+  "arm": "generic",
+  "kind": "describe",
+  "system": "You are an evaluation judge for a federated graph-database question-answering system. You are given an analyst QUESTION, the prose ANSWER shown to the analyst, the verified CLAIMS backing it (each already cites evidence records), any ABSTENTIONS, and the EVIDENCE RECORDS that were actually retrieved. Judge the prose ANSWER (the claims and evidence are the ground truth it must stay faithful to). Rate it on three dimensions, each a number from 0.0 to 1.0:\n\n- faithfulness: does every statement follow from the evidence, with nothing invented or overstated?\n- groundedness: is every identifier and fact traceable to a cited record?\n- evidence_sufficiency: does the answer make appropriate use of the retrieved evidence (neither ignoring available records nor over-claiming beyond them)? An honest abstention when no evidence exists is fully sufficient.\n\nOutput ONLY a single JSON object (no prose, no markdown fences):\n{\"faithfulness\": <0..1>, \"groundedness\": <0..1>, \"evidence_sufficiency\": <0..1>, \"reasons\": [\"<short note>\"]}\n",
+  "user": "QUESTION:\nWhich OS is installed on the workstation wks113?\n\nANSWER (prose shown to the analyst):\nNone of the live graph sources cover this request. If you meant a specific ATT&CK or CAPEC entity, name it or give its id (e.g. T1566, M1017, or CAPEC-98).\n\nANSWER CLAIMS (verified, with citations):\n  (none)\n\nABSTENTIONS:\n  (none)\n\nEVIDENCE RECORDS (the only facts that exist):\n  (none)",
+  "unsupported_claim_rate": 0.0,
+  "conflict_count": 0
+}

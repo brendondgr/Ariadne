@@ -398,3 +398,51 @@ corrected one.
 sight of the other slices, the other arm's aggregate, or any expected answer.
 Slices were balanced by payload size, not by arm or kind, so no judge saw only
 one arm.
+
+## A-8 (2026-08-22) — bank 3 replicates at n=117, and corrects two per-kind figures
+
+117 questions, zero anchor overlap with banks 1 or 2, authored by Claude Fable
+(the relay having produced nothing — see I-10). Retrieval, no language model in
+the answer path:
+
+| Arm | Bank 2 (n=28) | **Bank 3 (n=117)** |
+|---|---|---|
+| `generic` | 0.7857 | **0.7877** |
+| `deterministic` | 0.1964 | **0.3177** |
+| Arm gap | +0.5893 | **+0.4700** |
+
+**The headline replicates almost exactly** — 0.7877 against 0.7857, on four
+times the sample and a different author model. The schema-derived arm's transfer
+figure is now the most solidly evidenced number in this experiment.
+
+**And the bigger bank corrects the per-kind picture in both directions**, which
+is precisely why it was drawn (I-8):
+
+| Kind | Bank 2 | n | **Bank 3** | n |
+|---|---|---|---|---|
+| `homo-in` | 0.600 | 5 | **0.975** | 20 |
+| `homo-out` | 0.667 | 3 | **0.833** | 20 |
+| `facet-in` | 1.000 | 6 | **0.583** | 24 |
+| `facet-out` | 0.833 | 6 | **0.667** | 24 |
+| `describe` | 0.750 | 4 | **0.812** | 16 |
+| `unanswerable` | 1.000 | 2 | **1.000** | 12 |
+
+A-5 warned that bank 1's 1.0s were "partly small-sample luck". That was right,
+and it cut both ways: the homogeneous kinds were **better** than five questions
+suggested (0.975 and 0.833, not 0.6 and 0.667), while the facet kinds are
+**worse** (0.583 and 0.667, not 1.0 and 0.833). Neither correction was
+predictable from the small banks, and either bank alone would have pointed at
+the wrong weakness.
+
+**The remaining weakness is therefore `facet-in`/`facet-out`, not the
+same-label case.** H3's predicted direction defect is now firmly not reproduced:
+homogeneous triples are the *strongest* relationship kind at n=20 apiece.
+Abstention holds at 1.000 across 12 questions.
+
+**`multihop` remains n=1 and is not a rate.** Unchanged from I-8: only five
+chains are planted and the earlier banks consumed four.
+
+The template arm rises from 0.1964 to 0.3177 but is still zero on every
+relationship kind — its `facet-in`, `facet-out` and `unanswerable` are all
+0.000, and what it scores comes almost entirely from `describe` (0.812, the one
+kind needing no traversal) and the homogeneous kinds.
