@@ -50,7 +50,7 @@ def build_cypher_specialist(card: Any, config: SpecialistConfig) -> QuerySpecial
             else CypherQueryBuilder()
         ),
         validator=CypherValidator(),
-        connector=CypherConnector(config),
+        connector=CypherConnector(config, getattr(card, "dataset", None)),
         normalizer=CypherNormalizer(),
         max_retries=config.max_retries,
     )

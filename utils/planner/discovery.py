@@ -115,15 +115,20 @@ def _default_store_factory(card: SourceCardView, config: PlannerConfig) -> Probe
     from utils.graph_loader.stores.neo4j import Neo4jGraphStore
 
     backend = card.runtime_backend
+    # By dataset, not just by backend: two Neo4j-backed sources in one process
+    # otherwise probe the same store, and the second reports the first's node
+    # count and none of its own labels.
     if backend == "neo4j":
         return Neo4jGraphStore(
-            uri=config.neo4j_uri,
+            uri=config.endpoint_for("neo4j", card.dataset),
             user=config.neo4j_user,
             password=config.neo4j_password,
             export_files={},
         )
     if backend == "gremlin":
-        return GremlinGraphStore(uri=config.gremlin_uri, export_files={})
+        return GremlinGraphStore(
+            uri=config.endpoint_for("gremlin", card.dataset), export_files={}
+        )
     raise ValueError(f"Unknown runtime backend {backend!r} for {card.dataset!r}")
 
 

@@ -28,7 +28,7 @@ def build_gremlin_specialist(card: Any, config: SpecialistConfig) -> QuerySpecia
     Gremlin URI and operational limits; the card's ``connection.uri`` is
     intentionally ignored per project convention.
     """
-    gremlin_uri = config.endpoint_for("gremlin")
+    gremlin_uri = config.endpoint_for("gremlin", getattr(card, "dataset", None))
     return QuerySpecialist(
         card=card,
         # The reserved LLM query-builder seam, finally consumed. When

@@ -14,7 +14,7 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-from utils.config import env_int, env_str
+from utils.config import endpoint_overrides, env_int, env_str
 
 # Mirror the planner/loader connection defaults (the live Docker stack).
 DEFAULT_NEO4J_URI = "bolt://localhost:5456"
@@ -72,7 +72,17 @@ class SpecialistConfig:
     def source_cards_dir(self) -> Path:
         return self.data_dir / "source_cards"
 
-    def endpoint_for(self, backend: str) -> str:
+    def endpoint_for(self, backend: str, dataset: str | None = None) -> str:
+        """The URI for ``backend``, or for ``dataset`` when it names its own.
+
+        ``dataset`` is what makes two sources on one backend addressable. Absent
+        an ``ARIADNE_ENDPOINT_<DATASET>`` override this returns the backend-wide
+        URI exactly as before, so every existing caller is unaffected.
+        """
+        if dataset:
+            override = endpoint_overrides().get(str(dataset).lower())
+            if override:
+                return override
         if backend == "neo4j":
             return self.neo4j_uri
         if backend == "gremlin":

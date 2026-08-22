@@ -92,6 +92,40 @@ def env_bool(name: str, default: bool) -> bool:
     return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
+# -- per-source graph endpoints ----------------------------------------------
+# A backend-wide URI cannot address two sources that share a backend. That stayed
+# invisible while the stack held exactly one Neo4j source and one Gremlin source:
+# ``NEO4J_URI`` and ``GREMLIN_URI`` never collided. Point the planner at three
+# sources, two of them Neo4j, and the second silently probes the first one's
+# store -- which is exactly what ``identity`` did when loaded beside ``attack``,
+# reporting ATT&CK's 4369 nodes and "none of the expected labels present".
+#
+# The card's own ``connection.uri`` is deliberately NOT the fix. Two of the four
+# committed cards carry container-internal URIs -- attack declares ``:7687`` and
+# capec ``:8182``, because that is what the build saw from inside the compose
+# network -- so the field is not host-reachable, and the convention of ignoring
+# it (documented in ``build_gremlin_specialist``) is load-bearing. Making it
+# authoritative would break ATT&CK and CAPEC on the first query.
+#
+# So the override is explicit and per-source. Unset for every dataset today, so
+# every existing runner resolves exactly as it did; setting it is the only way
+# to express "these two sources share a backend at different addresses".
+_ENDPOINT_PREFIX = "ARIADNE_ENDPOINT_"
+
+
+def endpoint_overrides() -> dict[str, str]:
+    """``{dataset: uri}`` read from ``ARIADNE_ENDPOINT_<DATASET>`` variables."""
+    found: dict[str, str] = {}
+    for key, value in os.environ.items():
+        if not key.startswith(_ENDPOINT_PREFIX):
+            continue
+        dataset = key[len(_ENDPOINT_PREFIX) :].strip().lower()
+        uri = (value or "").strip()
+        if dataset and uri:
+            found[dataset] = uri
+    return found
+
+
 def data_dir() -> str:
     """Resolve the project data directory (``ARIADNE_DATA_DIR``, default ``data``)."""
     return env_str("ARIADNE_DATA_DIR", "data")

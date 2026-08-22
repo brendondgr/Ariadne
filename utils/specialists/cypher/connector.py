@@ -35,8 +35,12 @@ class CypherConnector:
     retry loop, so one physical connection can serve multiple query attempts.
     """
 
-    def __init__(self, config: SpecialistConfig) -> None:
+    def __init__(self, config: SpecialistConfig, dataset: str | None = None) -> None:
         self._config = config
+        # Which source this connector serves. Without it every Neo4j-backed
+        # source in the process shares one URI, so a second such source queries
+        # the first one's store.
+        self._dataset = dataset
         self._driver: neo4j.Driver | None = None
 
     # -- Connector protocol ----------------------------------------------------
@@ -45,7 +49,7 @@ class CypherConnector:
         """Create the Neo4j driver (does not open a session yet)."""
         try:
             self._driver = GraphDatabase.driver(
-                self._config.neo4j_uri,
+                self._config.endpoint_for("neo4j", self._dataset),
                 auth=(self._config.neo4j_user, self._config.neo4j_password),
             )
         except Exception as exc:
