@@ -1,0 +1,44 @@
+{
+  "id": "AQA-relationships_software_for_group-G0076",
+  "benchmark": "attackqa",
+  "family": "relationships_software_for_group",
+  "anchor": "G0076",
+  "question": "What software are used by attack group 'G0076: Thrip'?",
+  "gold": [
+    "S0002",
+    "S0029",
+    "S0261"
+  ],
+  "arm": "llm",
+  "condition": "plan-free",
+  "answer_text": "Gathered 1 record(s) from 1 source(s).\nG0076 (Thrip) has 3 related items in MITRE ATT&CK. These items are S0029 (PsExec), S0002 (Mimikatz), and S0261 (Catchamas).\nFound 3 item(s) related to G0076 (e.g. S0029, S0002, S0261) in MITRE ATT&CK.\nG0076 (Thrip) has 3 related item(s): S0029, S0002, S0261.",
+  "retrieved_ids": [
+    "G0076",
+    "S0002",
+    "S0029",
+    "S0261"
+  ],
+  "composer": "deterministic",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "What software is used by group 'G0076: Thrip'?",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 30.066
+  },
+  "evidence_records": 1
+}

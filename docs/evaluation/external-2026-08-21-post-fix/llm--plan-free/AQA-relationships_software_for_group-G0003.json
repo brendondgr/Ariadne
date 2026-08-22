@@ -1,0 +1,46 @@
+{
+  "id": "AQA-relationships_software_for_group-G0003",
+  "benchmark": "attackqa",
+  "family": "relationships_software_for_group",
+  "anchor": "G0003",
+  "question": "What software are used by attack group 'G0003: Cleaver'?",
+  "gold": [
+    "S0002",
+    "S0004",
+    "S0029",
+    "S0056"
+  ],
+  "arm": "llm",
+  "condition": "plan-free",
+  "answer_text": "Gathered 1 record(s) from 1 source(s).\nThe attack group G0003 (Cleaver) has 4 related items in MITRE ATT&CK: S0029 (PsExec), S0002 (Mimikatz), S0056 (Net Crawler), and S0004 (TinyZBot).\nFound 4 item(s) related to G0003 (e.g. S0029, S0002, S0056) in MITRE ATT&CK.\nG0003 (Cleaver) has 4 related item(s): S0029, S0002, S0056, S0004.",
+  "retrieved_ids": [
+    "G0003",
+    "S0002",
+    "S0004",
+    "S0029",
+    "S0056"
+  ],
+  "composer": "deterministic",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "What software is used by attack group 'G0003: Cleaver'?",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 13.568
+  },
+  "evidence_records": 1
+}

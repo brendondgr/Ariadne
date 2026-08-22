@@ -1,0 +1,50 @@
+{
+  "id": "AQA-relationships_software_for_group-G0053",
+  "benchmark": "attackqa",
+  "family": "relationships_software_for_group",
+  "anchor": "G0053",
+  "question": "What software are used by attack group 'G0053: FIN5'?",
+  "gold": [
+    "S0005",
+    "S0006",
+    "S0029",
+    "S0169",
+    "S0173",
+    "S0195"
+  ],
+  "arm": "llm",
+  "condition": "plan-free",
+  "answer_text": "Gathered 1 record(s) from 1 source(s).\nThe attack group FIN5 (G0053) has 6 related software items: PsExec (S0029), SDelete (S0195), pwdump (S0006), Windows Credential Editor (S0005), RawPOS (S0169), and FLIPSIDE (S0173).\nFound 6 item(s) related to G0053 (e.g. S0029, S0195, S0006) in MITRE ATT&CK.\nG0053 (FIN5) has 6 related item(s): S0029, S0195, S0006, S0005, S0169, S0173.",
+  "retrieved_ids": [
+    "G0053",
+    "S0005",
+    "S0006",
+    "S0029",
+    "S0169",
+    "S0173",
+    "S0195"
+  ],
+  "composer": "deterministic",
+  "run_meta": {
+    "planner": "llm",
+    "synthesis": "llm",
+    "observed_plan": [
+      {
+        "sub_question_id": "q1",
+        "source": "attack",
+        "text": "What software is used by group 'G0053: FIN5'?",
+        "seed_ids": [],
+        "depends_on": null,
+        "limits": {
+          "max_traversal_depth": 3,
+          "max_result_rows": 1000,
+          "query_timeout_ms": 5000
+        }
+      }
+    ],
+    "exit_code": 0,
+    "status": "answered",
+    "wall_s": 13.162
+  },
+  "evidence_records": 1
+}
