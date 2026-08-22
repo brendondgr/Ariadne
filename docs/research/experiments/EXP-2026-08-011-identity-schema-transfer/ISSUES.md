@@ -456,8 +456,18 @@ pair of ids (`T1027`, `T1055`) in opposite directions between `A-SCN-01` and
 `F-FAN-03` — a pattern that suggests concurrency rather than the edit. A
 concurrency-1 repeat is running to settle it and is **not yet resolved**.
 
-Two consequences worth recording. The committed `answers.jsonl` is stale with
-respect to `main` and should not be read as a baseline. And the standing
-instruction to "re-run deterministic over both banks and diff excluding clock
-keys" needs narrowing: diff the deterministic fields, because the narrative
-cannot support the comparison.
+**Resolved.** Two concurrency-1 runs of identical code differ on `produced_ids`
+for **1 of 120** questions (`A-CMP-02`), and `A-SCN-01` and `F-FAN-03` — the two
+that traded `T1027`/`T1055` at concurrency 16 — are byte-identical to each other
+across both runs. So that trade was a concurrency artifact, not a consequence of
+the I-12 changes, and `produced_ids` is *nearly* but not perfectly reproducible:
+one question in 120 still moves.
+
+Three consequences worth recording. The committed `answers.jsonl` is stale with
+respect to `main` and should not be read as a baseline. The standing instruction
+to "re-run deterministic over both banks and diff excluding clock keys" needs
+narrowing: diff the deterministic fields, because the narrative cannot support
+the comparison. And a recorded-answer diff must be run at **concurrency 1**, or
+roughly 2 in 120 questions will differ for reasons that have nothing to do with
+the change under test — which is exactly how this investigation nearly recorded
+a false attribution.
