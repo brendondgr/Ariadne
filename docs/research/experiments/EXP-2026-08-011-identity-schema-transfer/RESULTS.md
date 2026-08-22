@@ -277,3 +277,60 @@ across both.
 under one real schema, so this measures transfer to *this* schema, not to
 schemas in general. The instances remain generated. And nothing here is judged
 for correctness — it is retrieval only.
+
+## A-6 (2026-08-22) — judged: the answers are faithful, and the templates fabricate
+
+§5 recorded that judging was skipped because retrieval was 0.0000 and a grader
+could only confirm a foregone number. With retrieval now at 0.7857 blind, that
+reasoning no longer applies, so the blind bank's answers were graded.
+
+Both arms, **one judging session, same grader instance**, on the 28 blind
+questions:
+
+| | `generic` | `deterministic` |
+|---|---|---|
+| Faithfulness | **0.9821** | 0.8893 |
+| Groundedness | **0.9893** | 0.8500 |
+| Evidence sufficiency | 0.6786 | 0.3036 |
+| **Unsupported-claim rate** | **0.1071** | **0.8214** |
+| Cross-source conflicts | 0 | 0 |
+
+**The unsupported-claim rate is the finding.** The template cascade asserts
+something its evidence does not support in **82%** of blind answers; the
+schema-derived path does so in 11%. Retrieval already showed the templates
+finding almost nothing on a foreign schema (0.1964) — this shows what the
+composer then does with nothing, which is to keep asserting. Retrieving badly
+and answering anyway is a worse failure than retrieving badly and abstaining,
+and only the judged pass could distinguish them.
+
+By question kind, the generic arm's unsupported claims are confined to two
+places: `describe` at 0.50 and `homo-in` at 0.20. Every other kind is **0.000**,
+including the abstention cases. The template arm is above 0.5 on every kind and
+at 1.0 on `facet-in` and on `unanswerable` — it fabricates most reliably exactly
+where it should decline.
+
+**Evidence sufficiency of 0.6786 is the known composer ceiling, not a retrieval
+gap.** The deterministic composer renders a claim as an id-line, so a judge
+scoring "is there enough here to answer" marks attribute and compound questions
+down however complete the retrieval was. That ceiling is a property of the
+composer this project already has on record; it is not evidence about this
+schema.
+
+### Caveats that travel with these numbers
+
+**The generic arm's grader is `mixed`: 25 of 28 answers got the real judge and 3
+fell back to the deterministic proxy**, so its mean blends two graders while the
+template arm's does not. That asymmetry favours neither side predictably and it
+is not repaired by re-running — a second session recovered only 1 of the 3.
+
+**Judge variance is measured, not assumed.** The same generic answers graded in a
+second session returned faithfulness 0.9786 against 0.9821 — a spread of
+**0.0035**, with the unsupported rate identical at 0.1071. The arm difference of
+0.71 in unsupported-claim rate is two orders of magnitude larger than the
+grader's own spread, so it is not grader noise.
+
+**The reported figures come from the single session covering both arms.** A
+second session graded the generic arm slightly better-covered (26/28), and it was
+deliberately *not* substituted in: comparing arms graded in different sessions
+folds grader variance into the arm difference, which is the confound
+EXP-2026-08-009's protocol exists to avoid.

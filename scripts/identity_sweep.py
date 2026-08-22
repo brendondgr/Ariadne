@@ -33,6 +33,7 @@ import json
 import os
 import sys
 import time
+from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
@@ -121,6 +122,7 @@ def run_one(question: str) -> dict[str, Any]:
     plan_sources: list[str] = []
     evidence_payload: Any = None
     answer_text = ""
+    answer_obj: Any = None
     abstained = False
     queries: list[str] = []
 
@@ -137,6 +139,7 @@ def run_one(question: str) -> dict[str, Any]:
             if payload.get("evidence") is not None:
                 evidence_payload = payload["evidence"]
             answer = payload.get("synthesized")
+            answer_obj = answer
             answer_text = getattr(answer, "narrative", "") or str(answer or "")
             abstained = bool(getattr(answer, "abstained", False))
 
@@ -172,6 +175,11 @@ def run_one(question: str) -> dict[str, Any]:
         "queries": queries[:6],
         "answer": answer_text[:4000],
         "abstained": abstained,
+        # The live objects, for the judge stage. Not serialised into the state
+        # file -- they are rebuilt by re-running, which is free of a language
+        # model and byte-reproducible on this path.
+        "_answer_obj": answer_obj,
+        "_evidence_obj": evidence_payload,
     }
 
 
@@ -214,15 +222,99 @@ def score(entry: dict[str, Any], result: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+
+def judge(out: Path, arms: list[str], limit: int = 0) -> int:
+    """Grade the persisted answers for correctness, not just retrieval.
+
+    The answers are rebuilt by re-running the pipeline rather than read back
+    from the state file. That is not wasteful: this path has no language model
+    in it and is byte-reproducible, so the rebuild is exact, and the judge needs
+    the structured answer and evidence objects rather than the prose the state
+    file keeps.
+
+    Judgments go to ``judgments.json`` -- a distinct filename, not a suffixed
+    sidecar beside the bank, because a suffixed variant sitting next to its
+    input has been re-consumed by a later pass in this repository before.
+    """
+    from utils.evaluation.llm_judge.config import EvalConfig
+    from utils.evaluation.llm_judge.factory import judge_run
+
+    bank = json.loads((out / "bank.json").read_text(encoding="utf-8"))
+    questions = bank["questions"]
+    order = list(questions)[: limit or None]
+
+    config = EvalConfig.from_env()
+    # Every answer must reach the LLM judge, not the first `sample_size` of
+    # them -- a partial pass would silently mix two graders in one mean.
+    needed = len(order) * len(arms)
+    if config.sample_size < needed:
+        config = replace(config, sample_size=needed)
+    print(
+        f"judge: llm_enabled={config.llm_enabled} model={config.llm_model} "
+        f"max_tokens={config.llm_max_tokens} workers={config.judge_workers} "
+        f"sample_size={config.sample_size}"
+    )
+    if not config.llm_enabled:
+        print("  WARNING: EVAL_LLM_ENABLED is not set — this would grade with the "
+              "deterministic proxy only, which is not a correctness measurement.")
+
+    payload: dict[str, Any] = {"meta": {"arms": arms, "n_questions": len(order)},
+                               "verdicts": {}}
+    path = out / "judgments.json"
+
+    for arm in arms:
+        overlay = {**BASE_ENV, **ARMS[arm]}
+        apply_env(overlay)
+        from utils.specialists.schema.build import get_registry
+
+        get_registry.cache_clear()
+
+        items: list[tuple[str, Any, Any]] = []
+        for index, qid in enumerate(order, 1):
+            try:
+                result = run_one(questions[qid]["question"])
+            except Exception as exc:
+                print(f"[{arm}] {qid}: rebuild failed — {type(exc).__name__}: {exc}")
+                continue
+            answer_obj, evidence_obj = result["_answer_obj"], result["_evidence_obj"]
+            if answer_obj is None or evidence_obj is None:
+                print(f"[{arm}] {qid}: no answer object to judge")
+                continue
+            items.append((qid, answer_obj, evidence_obj))
+            print(f"[{arm}] rebuilt {index}/{len(order)} {qid}")
+
+        print(f"[{arm}] judging {len(items)} answers …")
+        report = judge_run(items, config)
+        summary = report.to_dict()
+        payload["verdicts"][arm] = summary
+        print(
+            f"[{arm}] source={summary['source']} "
+            f"llm_covered={summary['llm_covered']}/{summary['answers_scored']} "
+            f"faithfulness={summary['mean_faithfulness']} "
+            f"groundedness={summary['mean_groundedness']} "
+            f"sufficiency={summary['mean_evidence_sufficiency']} "
+            f"unsupported={summary['mean_unsupported_claim_rate']}"
+        )
+        path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+        print(f"[{arm}] wrote {path}")
+        clear_env(ARMS[arm])
+
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--out", default="docs/evaluation/identity-2026-08-21")
     parser.add_argument("--arms", default="generic,deterministic")
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--stage", choices=["run", "judge"], default="run")
     args = parser.parse_args(argv)
 
     out = Path(args.out)
+    if args.stage == "judge":
+        return judge(out, [a.strip() for a in args.arms.split(",") if a.strip()],
+                     args.limit)
     bank = json.loads((out / "bank.json").read_text(encoding="utf-8"))
     questions = bank["questions"]
     state_path = out / "sweep_state.json"
@@ -267,6 +359,7 @@ def main(argv: list[str] | None = None) -> int:
                 }
                 error = f"{type(exc).__name__}: {exc}"
             scored = score(entry, result)
+            result = {k: v for k, v in result.items() if not k.startswith("_")}
             state["results"][key] = {
                 "arm": arm,
                 "question_id": qid,

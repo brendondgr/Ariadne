@@ -1,0 +1,734 @@
+{
+  "meta": {
+    "arms": [
+      "generic",
+      "deterministic"
+    ],
+    "n_questions": 28,
+    "stability_retry": {
+      "generic_faithfulness": 0.9786,
+      "generic_llm_covered": 26,
+      "note": "Second judging session over the same generic answers. Kept as a stability reading only; the reported figures come from the single session that covered BOTH arms, because comparing arms graded in different sessions mixes grader variance into the arm difference."
+    }
+  },
+  "verdicts": {
+    "generic": {
+      "source": "mixed",
+      "llm_covered": 25,
+      "answers_scored": 28,
+      "mean_faithfulness": 0.9821,
+      "mean_groundedness": 0.9893,
+      "mean_evidence_sufficiency": 0.6786,
+      "mean_unsupported_claim_rate": 0.1071,
+      "total_conflicts": 0,
+      "answers_with_conflicts": 0,
+      "verdicts": [
+        {
+          "question_id": "ID-FACETOUT-04",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.7,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a dump of all search results rather than a direct, synthesized answer to the specific question about 'App Access 028'. While it contains the correct information for the requested entity, it includes a large amount of irrelevant information for other entities and fails to interpret the 'related items' as 'rights' in a human-readable way (it only lists the UUIDs instead of the names)."
+          ]
+        },
+        {
+          "question_id": "ID-FACETOUT-05",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.5,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a verbatim dump of the retrieved evidence rather than a synthesized answer to the specific question. While it is faithful and grounded, it is not sufficient because it includes many irrelevant entities and fails to provide the names of the related items for 'App Access 026', making it difficult to determine what it can actually 'write to' without manually looking up every ID."
+          ]
+        },
+        {
+          "question_id": "ID-FACETOUT-07",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.7,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is faithful and grounded in the provided evidence. However, it is not fully sufficient because it provides the UUIDs of the related entities instead of their names (e.g., 'tsilva159', 'dc160'), which would have more directly and usefully answered the user's question 'What key credentials...'."
+          ]
+        },
+        {
+          "question_id": "ID-FACETOUT-08",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a valid abstention/error message because no evidence was found to answer the question. It correctly informs the user of the failure and suggests how to improve the query, making it a sufficient response given the empty evidence set."
+          ]
+        },
+        {
+          "question_id": "ID-FACETOUT-09",
+          "source": "deterministic",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-FACETOUT-11",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a summary of search results rather than a direct answer to the specific question asked.",
+            "The retrieved evidence only contains group membership information and does not contain any information regarding DACL permissions, making it insufficient to answer the question."
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-01",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.7,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is faithful to the evidence and all claims are fully grounded in the provided records. However, it fails to directly answer the specific question 'Who is the write owner?' because the retrieved evidence does not contain an 'owner' field; instead, the system provides a list of related groups, which is a helpful but indirect response."
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-02",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.8,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is factually accurate and follows the evidence, but it provides a list of UUIDs instead of the human-readable names (e.g., 'Backup Operators') provided in the evidence, which makes the answer less useful for a human analyst."
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-03",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.8,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is faithful to the provided claims and evidence. While the answer is somewhat robotic and doesn't explicitly explain the 'restrictions' (it just lists the group the user belongs to), it is the most accurate way to present the information found in the evidence record. The mention of MITRE ATT&CK in the answer/claims is not explicitly in the evidence record provided, but it is treated as a verified claim, so it is considered grounded."
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-04",
+          "source": "llm",
+          "faithfulness": 0.9,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is mostly faithful and grounded. The claim that 25 items were found is not explicitly supported by the provided evidence (which contains 23 related items), although the subsequent list of 23 groups is perfectly accurate to the evidence."
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-05",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is extremely precise, correctly identifying that while 13 items were found in the source, only 12 unique groups exist (handling the duplicate ID in the evidence).",
+            "It is fully grounded in the provided evidence IDs.",
+            "It is sufficient as it provides all available information related to the entity, even though the evidence does not explicitly define the 'write access' permission type."
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-06",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer correctly identifies the user and the associated group ID based on the provided evidence. While it omits the group name ('App Access 068') which would have made the answer more human-readable, it remains entirely faithful to the data and the provided claims."
+          ]
+        },
+        {
+          "question_id": "ID-HOMOOUT-04",
+          "source": "llm",
+          "faithfulness": 0.9,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer includes a reference to 'MITRE ATT&CK' which is not explicitly mentioned in the provided evidence record (the source is 'identity'), though it is a minor point. The IDs and names are perfectly grounded in the evidence. The answer attempts to address the question 'Who trusts...' by interpreting the relationship in the evidence, even though the phrasing 'has 1 DOMAIN' is slightly awkward given the relationship direction."
+          ]
+        },
+        {
+          "question_id": "ID-HOMOOUT-23",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.5,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a list of search results for various 'App Access' entities rather than a direct answer to the specific question about 'App Access 053'. While the information provided is accurate and grounded in the evidence, it fails to synthesize the specific information requested from the available records (the evidence for App Access 053 was present but not used to answer the question)."
+          ]
+        },
+        {
+          "question_id": "ID-HOMOOUT-24",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.5,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a summary of the retrieved records (listing IDs) rather than a direct prose answer to the question. While it is faithful and grounded, it fails to use the 'name' field in the evidence to provide a human-readable answer to 'What does Contractors own?'."
+          ]
+        },
+        {
+          "question_id": "ID-HOMOIN-01",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.3,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a meta-description of the retrieval process ('Found ATT&CK record...') rather than a direct answer to the user's question ('Who can modify...').",
+            "While the answer is faithful to the fact that a record was found, it fails to extract or synthesize any meaningful information from the evidence to answer the specific query.",
+            "The evidence provided is insufficient to answer the question, and the system failed to communicate this or attempt to derive an answer from the available data."
+          ]
+        },
+        {
+          "question_id": "ID-HOMOIN-02",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.8,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a dump of all search results rather than a direct, concise prose answer to the specific question about 'App Access 050'. While it is factually correct and contains the relevant information for the requested entity, it includes many irrelevant records and provides only the UUIDs for the related items instead of their names, which limits its utility to a human analyst."
+          ]
+        },
+        {
+          "question_id": "ID-HOMOIN-03",
+          "source": "deterministic",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-HOMOIN-04",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.5,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a dump of all search results rather than a direct answer to the specific question. It includes many irrelevant entities and fails to use the names of the related items provided in the evidence, providing only UUIDs."
+          ]
+        },
+        {
+          "question_id": "ID-HOMOIN-05",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a summary of retrieved records (listing IDs) but fails to actually answer the user's question ('Who owns the Helpdesk group?'). It provides metadata about the search results rather than extracting the requested information."
+          ]
+        },
+        {
+          "question_id": "ID-DESCRIBE-01",
+          "source": "llm",
+          "faithfulness": 0.7,
+          "groundedness": 0.7,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer correctly identifies the name from the evidence, but incorrectly labels the entity as an 'ATT&CK record' when the evidence explicitly labels it as an 'AWS_EC2_SECURITY_GROUP'."
+          ]
+        },
+        {
+          "question_id": "ID-DESCRIBE-02",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is non-responsive to the specific question asked ('What is the operating system'). While it is faithful to the fact that a record was found, it fails to extract any useful information or state that the operating system is missing from the retrieved evidence, making it useless to the user."
+          ]
+        },
+        {
+          "question_id": "ID-DESCRIBE-03",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer correctly identifies that no information is available in the provided evidence and provides a helpful suggestion for clarification."
+          ]
+        },
+        {
+          "question_id": "ID-DESCRIBE-04",
+          "source": "deterministic",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "deterministic proxy: mechanical checks against evidence"
+          ]
+        },
+        {
+          "question_id": "ID-MULTIHOP-01",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a list of IDs that fails to answer the specific question asked ('Does cmoreau109 have write access to DC_SYNC?'). While the answer is faithful and grounded in the provided evidence, the evidence itself is insufficient to answer the question, and the answer fails to synthesize the information into a direct response."
+          ]
+        },
+        {
+          "question_id": "ID-MULTIHOP-02",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer accurately reflects the relationship between the group and the user ID found in the evidence record. While the prose is formatted as a search result rather than a natural language response and mentions 'MITRE ATT&CK' (which is not explicitly in the evidence record but likely part of the system context), it remains faithful and grounded to the provided facts."
+          ]
+        },
+        {
+          "question_id": "ID-UNANSWERABLE-01",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.5,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer identifies the object mentioned in the question but fails to answer the specific question ('Which group does okta-resource-set-01 belong to?'). Additionally, the retrieved evidence does not contain information about a group, making the answer unhelpful despite being factually correct regarding the record's existence."
+          ]
+        },
+        {
+          "question_id": "ID-UNANSWERABLE-02",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.7,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is faithful and grounded to the provided evidence record. However, it fails to actually answer the specific question 'What is it a member of?' because the retrieved evidence record contains no membership information (join_values and related are empty). The answer acts more like a search result than a direct answer."
+          ]
+        }
+      ]
+    },
+    "deterministic": {
+      "source": "llm",
+      "llm_covered": 28,
+      "answers_scored": 28,
+      "mean_faithfulness": 0.8893,
+      "mean_groundedness": 0.85,
+      "mean_evidence_sufficiency": 0.3036,
+      "mean_unsupported_claim_rate": 0.8214,
+      "total_conflicts": 0,
+      "answers_with_conflicts": 0,
+      "verdicts": [
+        {
+          "question_id": "ID-FACETOUT-04",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 0.0,
+          "evidence_sufficiency": 0.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a generic search summary that fails to answer the specific question about the 'extended rights' of 'App Access 028'.",
+            "The answer is not grounded in the provided evidence, as the evidence does not mention '54 ATT&CK record(s)'.",
+            "The evidence provided is insufficient to answer the question because it only contains entity names and lacks the specific 'rights' or properties requested by the user."
+          ]
+        },
+        {
+          "question_id": "ID-FACETOUT-05",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 0.5,
+          "evidence_sufficiency": 0.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a generic search summary that fails to answer the specific question ('What can App Access 026 write to?').",
+            "The answer refers to the records as 'ATT&CK record(s)', but the evidence provided labels them as 'ENTRA_APP_ROLE_ASSIGNMENT', making the classification ungrounded.",
+            "The answer provides a count of results rather than extracting the specific information requested by the user."
+          ]
+        },
+        {
+          "question_id": "ID-FACETOUT-07",
+          "source": "llm",
+          "faithfulness": 0.9,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.5,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer fails to address the specific question (what credentials were added) and instead provides a status message about finding a record.",
+            "The answer identifies the entity as an 'ATT&CK record', which is not explicitly stated in the provided evidence record (source is 'identity').",
+            "The retrieved evidence was insufficient to answer the question, and the answer does not attempt to explain the lack of information or provide a helpful response to the user's query."
+          ]
+        },
+        {
+          "question_id": "ID-FACETOUT-08",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a clear abstention due to a lack of evidence, which is appropriate given the empty evidence records. It provides helpful guidance for the user to refine the query using IDs, which is a standard and sufficient way to handle a 'not found' scenario in this context."
+          ]
+        },
+        {
+          "question_id": "ID-FACETOUT-09",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.2,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a summary of the search results (a count of records) rather than a direct answer to the specific question 'What changes were made by App Access 031?'. It fails to extract or synthesize any information regarding the 'changes' from the retrieved evidence, providing a meta-description of the search instead of a factual response."
+          ]
+        },
+        {
+          "question_id": "ID-FACETOUT-11",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a generic search result summary rather than a direct answer to the user's question. The provided evidence is a list of entities but does not contain the specific information needed to answer what 'App Access 057' can write DACLs for, making the answer insufficient to satisfy the query."
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-01",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer fails to address the specific question (the owner) and instead provides a generic statement that a record was found. Furthermore, the retrieved evidence does not contain the owner information, so the answer should have reflected that the information was unavailable rather than just stating the record was found."
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-02",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.5,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a meta-description of the search result rather than a direct answer to the user's question. It fails to provide the requested information about 'extended rights', although the provided evidence also lacks that specific detail."
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-03",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.5,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer identifies the entity mentioned in the question but fails to provide the specific information requested (write account restrictions). While the answer is technically accurate based on the existence of the record, the retrieved evidence does not contain the specific attribute requested, and the answer does not state that the information is missing."
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-04",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.5,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer identifies the entity mentioned in the question but fails to address the 'changes' aspect requested by the user. The evidence provided does not contain information about changes, so the answer is as sufficient as the evidence allows, but it is still a very minimal response that functions more like a retrieval status than a direct answer."
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-05",
+          "source": "llm",
+          "faithfulness": 0.5,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer fails to address the 'who' in the question, providing only a statement that a record was found. Additionally, it mischaracterizes the record type as an 'ATT&CK record' when the evidence explicitly labels it as an 'ENTRA_CONDITIONAL_ACCESS_POLICY'."
+          ]
+        },
+        {
+          "question_id": "ID-FACETIN-06",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.3,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a meta-statement about the search result rather than a direct answer to the user's question about 'extended rights'. While it is faithful to the fact that a record was found, it fails to provide the requested information because the retrieved evidence does not contain details regarding rights, and the system did not attempt to state that the information was missing."
+          ]
+        },
+        {
+          "question_id": "ID-HOMOOUT-04",
+          "source": "llm",
+          "faithfulness": 0.5,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.5,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a placeholder that fails to answer the specific question ('Who trusts...') and misidentifies the record type (the evidence shows an 'AWS_ACTION' while the answer claims it is an 'ATT&CK record').",
+            "The evidence provided is insufficient to answer the question, as it only identifies the entity itself and contains no relationship information regarding 'trust'."
+          ]
+        },
+        {
+          "question_id": "ID-HOMOOUT-23",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a meta-summary of the search results (stating how many records were found) rather than a direct answer to the specific question about the 'extended rights' of 'App Access 053'.",
+            "It fails to extract or synthesize any information from the provided evidence to address the user's query."
+          ]
+        },
+        {
+          "question_id": "ID-HOMOOUT-24",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.7,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is faithful and grounded to the evidence, but it is a poor answer to the question because it provides a summary of the search results (listing IDs) rather than a semantic answer (listing the names of the techniques), making it less useful for a human analyst."
+          ]
+        },
+        {
+          "question_id": "ID-HOMOIN-01",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.3,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a meta-statement about finding a record rather than a direct answer to the question 'Who can modify...'. While it is faithful to the fact that a record was found, it fails to provide any substantive information. Furthermore, the retrieved evidence does not contain the identity of who can modify the permission, meaning the system failed to recognize the insufficiency of the evidence to answer the specific question."
+          ]
+        },
+        {
+          "question_id": "ID-HOMOIN-02",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 0.0,
+          "evidence_sufficiency": 0.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a generic search summary/status message rather than a direct answer to the specific question about 'extended rights'.",
+            "The answer fails to provide any information about the rights of 'App Access 050'.",
+            "The count of '54 ATT&CK record(s)' is not explicitly stated or traceable within the provided evidence records."
+          ]
+        },
+        {
+          "question_id": "ID-HOMOIN-03",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.3,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a summary of the search results (the number of records found) rather than a direct answer to the specific question 'Who'. While the count of 54 records is grounded in the provided evidence, the answer fails to extract the identity requested, making it insufficient for the user."
+          ]
+        },
+        {
+          "question_id": "ID-HOMOIN-04",
+          "source": "llm",
+          "faithfulness": 0.5,
+          "groundedness": 0.0,
+          "evidence_sufficiency": 0.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a generic search summary ('Found 54 ATT&CK record(s)...') rather than a direct answer to the specific question about the 'extended rights' of 'App Access 020'.",
+            "The answer is not grounded as it contains no citations to the provided evidence records.",
+            "The answer is not sufficient because it fails to extract any meaningful information from the evidence to address the user's query.",
+            "The answer is unfaithful to the evidence type, referring to 'ATT&CK records' when the evidence contains 'ENTRA_APP_ROLE_ASSIGNMENT' records."
+          ]
+        },
+        {
+          "question_id": "ID-HOMOIN-05",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a summary of the retrieved evidence (listing record IDs) rather than a direct answer to the specific question 'Who owns the Helpdesk group?'. It fails to synthesize the information or state that the owner is not found in the provided evidence."
+          ]
+        },
+        {
+          "question_id": "ID-DESCRIBE-01",
+          "source": "llm",
+          "faithfulness": 0.5,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.5,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer misidentifies the entity as an 'ATT&CK record' when the evidence labels it as an 'AWS_EC2_SECURITY_GROUP'. Additionally, the answer is phrased as a search result rather than directly answering the question 'What is the name of gcp-group-02?'"
+          ]
+        },
+        {
+          "question_id": "ID-DESCRIBE-02",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.5,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is grounded in the fact that a record for 'wks049' was retrieved, but it fails to answer the user's specific question about the operating system. The retrieved evidence does not contain the operating system, so the answer is a 'non-answer' that describes the retrieval process rather than providing the requested information."
+          ]
+        },
+        {
+          "question_id": "ID-DESCRIBE-03",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 1.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a correct fallback response given that no evidence was retrieved to answer the specific question."
+          ]
+        },
+        {
+          "question_id": "ID-DESCRIBE-04",
+          "source": "llm",
+          "faithfulness": 0.5,
+          "groundedness": 0.5,
+          "evidence_sufficiency": 0.5,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer fails to answer the user's question about privileges, instead providing a meta-commentary that a record was found. Additionally, it misidentifies the entity as an 'ATT&CK record' when the evidence explicitly labels it as an 'AWS_EC2_SECURITY_GROUP'. The evidence provided was insufficient to determine privileges, and the answer did not communicate this insufficiency."
+          ]
+        },
+        {
+          "question_id": "ID-MULTIHOP-01",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.0,
+          "unsupported_claim_rate": 0.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a summary of the retrieved evidence (listing record IDs) rather than a direct answer to the user's question about whether a specific user has access to a specific resource. It fails to synthesize the information or state that the evidence is insufficient to answer the question."
+          ]
+        },
+        {
+          "question_id": "ID-MULTIHOP-02",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.0,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a meta-statement about finding a record rather than a substantive answer to the question. It fails to extract the relevant information from the evidence (the label/type) to answer the user's question."
+          ]
+        },
+        {
+          "question_id": "ID-UNANSWERABLE-01",
+          "source": "llm",
+          "faithfulness": 0.5,
+          "groundedness": 0.8,
+          "evidence_sufficiency": 0.2,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a status message rather than a direct answer to the question 'Which group does okta-resource-set-01 belong to?'.",
+            "The answer identifies the entity as an 'ATT&CK record', which is not explicitly stated in the evidence (the evidence labels it as an AWS_EC2_SECURITY_GROUP).",
+            "The answer fails to use the retrieved evidence to provide the specific information requested by the user."
+          ]
+        },
+        {
+          "question_id": "ID-UNANSWERABLE-02",
+          "source": "llm",
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "evidence_sufficiency": 0.5,
+          "unsupported_claim_rate": 1.0,
+          "conflict_count": 0,
+          "reasons": [
+            "The answer is a status message rather than a direct answer to the question. While it is faithful to the existence of the record, it fails to provide the membership information requested, even though the evidence provided was insufficient to answer the question (the 'related' field was empty)."
+          ]
+        }
+      ]
+    }
+  }
+}
