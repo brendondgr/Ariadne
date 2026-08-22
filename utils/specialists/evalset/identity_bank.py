@@ -115,7 +115,10 @@ def _heterogeneous_edges(spec: TenantSpec) -> list[tuple[str, str, str]]:
 
 
 def _anchors_with_edge(
-    spec: TenantSpec, triple: tuple[str, str, str], direction: str
+    spec: TenantSpec,
+    triple: tuple[str, str, str],
+    direction: str,
+    banned: frozenset[str] = frozenset(),
 ) -> list[str]:
     """Nodes that actually have this edge in the stated direction.
 
@@ -129,6 +132,8 @@ def _anchors_with_edge(
     for node_id, node in spec.nodes.items():
         if node["label"] != want_label:
             continue
+        if banned and node_id in banned:
+            continue
         if spec.neighbours(node_id, edge=edge, direction=direction):
             out.append(node_id)
     return sorted(out)
@@ -139,14 +144,23 @@ def draw(
     *,
     seed: int = IDENTITY_SEED,
     shape: dict[str, int] | None = None,
+    exclude: set[str] | frozenset[str] | None = None,
 ) -> tuple[list[GoldEntry], list[dict[str, Any]]]:
     """The seeded draw. Same seed, same anchors, same gold.
 
     Returns ``(entries, discards)``. Gold is computed here, from the blueprint,
     *before* any question text exists — so no question can have been shaped by
     knowing what its answer would be.
+
+    ``exclude`` removes anchor ids from every population before drawing, which
+    is what makes a successive bank genuinely disjoint rather than merely
+    differently seeded. ``holdout_protocol`` records why the distinction is not
+    marginal: over 59 reseeds against its v1 draw, 30 of them (51%) still shared
+    at least one anchor. A second bank that reuses anchors from the first cannot
+    answer whether a fix generalised, because it is partly the same test.
     """
     rng = random.Random(seed)
+    banned = frozenset(exclude or ())
     plan = dict(BANK_SHAPE)
     if shape:
         plan.update(shape)
@@ -175,7 +189,7 @@ def draw(
         while made < wanted and attempts < wanted * 40:
             attempts += 1
             triple = rng.choice(candidates)
-            anchors = _anchors_with_edge(spec, triple, direction)
+            anchors = _anchors_with_edge(spec, triple, direction, banned)
             if not anchors:
                 continue
             anchor = rng.choice(anchors)
@@ -223,7 +237,9 @@ def draw(
         attempts += 1
         prop = rng.choice(_DESCRIBE_PROPS)
         candidates = [
-            n for n, v in spec.nodes.items() if prop in v["properties"]
+            n
+            for n, v in spec.nodes.items()
+            if prop in v["properties"] and n not in banned
         ]
         if not candidates:
             continue
@@ -235,7 +251,9 @@ def draw(
         made += 1
 
     # multihop: planted chains, sampled without replacement.
-    names = sorted(p.name for p in spec.planted_paths)
+    names = sorted(
+        p.name for p in spec.planted_paths if p.start not in banned
+    )
     rng.shuffle(names)
     for name in names[: plan[MULTIHOP]]:
         entries.append(multihop_gold(spec, name, qid(MULTIHOP)))
@@ -248,7 +266,7 @@ def draw(
         {
             n
             for n, v in spec.nodes.items()
-            if n not in reachable
+            if n not in reachable and n not in banned
         }
     )
     for _ in range(plan[UNANSWERABLE]):
@@ -448,6 +466,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--max-tokens", type=int, default=4096)
     parser.add_argument("--timeout", type=float, default=300.0)
     parser.add_argument(
+        "--exclude-bank",
+        default=None,
+        help="a prior bank.json whose anchors must not be drawn again",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="draw and write gold, but do not author (no model needed)",
@@ -455,7 +478,16 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     spec = TenantSpec.read(args.spec)
-    entries, discards = draw(spec, seed=args.seed)
+    exclude: set[str] = set()
+    if args.exclude_bank:
+        prior = json.loads(Path(args.exclude_bank).read_text(encoding="utf-8"))
+        exclude = {
+            q["anchor_id"]
+            for q in prior["questions"].values()
+            if q.get("anchor_id")
+        }
+        print(f"excluding {len(exclude)} anchors used by {args.exclude_bank}")
+    entries, discards = draw(spec, seed=args.seed, exclude=exclude)
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
 

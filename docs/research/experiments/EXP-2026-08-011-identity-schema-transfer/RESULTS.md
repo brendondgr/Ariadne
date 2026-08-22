@@ -153,3 +153,83 @@ binds a named entity before matching schema words — the card already declares
 `name` on every label, and 26 of 27 questions name their anchor in plain text.
 That is a change to the system under test, so it belongs in a new experiment
 with a freshly drawn bank; this one's bank has now seen the arms and is burned.
+
+---
+
+# AMENDMENTS
+
+## A-1 (2026-08-22) — the failure was five fixable defects, not a wall
+
+Everything above is the **pre-fix** measurement and stands as recorded: pointed
+at a foreign schema with no changes, both arms retrieved nothing. What §7 called
+"what would make this measurable" was then done, and the answer changed.
+
+Five structural fixes (commit `74d027e`), none of which names a label, a group,
+or a question. Against the **same 27 questions, now used as a development set**:
+
+| Arm | Pre-fix | Post-fix |
+|---|---|---|
+| `generic` (schema-derived primitives) | 0.0000 | **0.8519** (23 of 27 perfect) |
+| `deterministic` (25-template cascade) | 0.0000 | **0.2778** |
+| Arm gap | 0.0000 | **+0.5741** |
+
+By question kind, generic arm: reverse-direction `facet-in` **0.0 → 1.0**,
+same-label-both-ends `homo-in`/`homo-out` **0.0 → 1.0**, `multihop` **0.0 → 1.0**,
+abstention **0.0 → 1.0**. `facet-out` reaches 0.5 and `describe` 0.667; four
+questions still fail.
+
+**What the fixes were, and why each is structural rather than local:**
+
+1. The name-lookup guard was eight hard-coded ATT&CK labels, so on any other
+   source it matched nothing however well the name had been extracted. Now
+   derived from labels that declare `name`.
+2. Deriving that required the schema registry to record `name` at all. It never
+   had — on any dataset — because it scanned each node's `properties` dict and
+   `name` is a top-level column.
+3. A name-resolved anchor could not be traversed from: walking a relationship
+   was gated on having an id, so a source with no analyst-facing identifier
+   could never traverse anything and every relationship question collapsed to
+   facet counts.
+4. The only route onto the name path was a "what is X" phrasing, so a question
+   that names its subject but asks something else fell to a bare label scan.
+5. The resolver shredded dotted identifiers (`corp.corp.example` → `corp` +
+   `example`), and the validator's relationship regex could not parse
+   alternation — so `[r:A|B]` had **no** type checked against the card, a
+   validator silently declining to validate.
+
+1,250 tests pass, identical to the pre-change baseline: MITRE is unmoved.
+
+## A-2 — status of the hypotheses, restated
+
+**H1 is still falsified as pre-registered** (it predicted ≥0.90 with no changes)
+and that is the honest reading of the pre-fix run. What the post-fix number
+shows is different and narrower: the schema-agnostic path *can* reach a foreign
+schema, but not as it stood — it needed five defects removed first, four of
+which were invisible to a code reading.
+
+**H2 becomes evaluable for the first time.** The arms have separated: 0.8519
+against 0.2778. On a schema nobody wrote templates for, the schema-derived
+primitives are worth **+0.5741** over the template cascade. That is the
+measurement H2 asked for and the pre-fix run could not supply, because an arm
+gap of zero between two floored arms measures nothing.
+
+**H3 is now testable and did not reproduce.** Homogeneous triples score 1.0,
+level with heterogeneous. The predicted direction defect did not appear once
+anchors resolved — the `PlausibleFacet` reasoning that motivated it was sound
+about the data model but the direction was recoverable anyway.
+
+## A-3 — this is a development-set number, not a blind one
+
+The 27 questions have now been iterated against. **0.8519 must never be quoted
+as a blind result.** A second bank was drawn with a different seed and an
+explicit anchor exclusion (zero overlap with bank 1, verified), authored by the
+same blind protocol, and it is the honest test of whether these fixes
+generalised. Its result is recorded separately.
+
+## A-4 — C-010
+
+The downgrade to `partial` stands, and the reasoning in §6 is unchanged: the
+audit measured question shapes and could not see coupling that lives in emitted
+column expressions or in schema scale. The post-fix number does not restore the
+claim, it prices it — the schema-agnostic machinery transfers *after* five
+defects that only a run could find.
