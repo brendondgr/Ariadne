@@ -334,3 +334,67 @@ second session graded the generic arm slightly better-covered (26/28), and it wa
 deliberately *not* substituted in: comparing arms graded in different sessions
 folds grader variance into the arm difference, which is the confound
 EXP-2026-08-009's protocol exists to avoid.
+
+## A-7 (2026-08-22) — cross-model judging: the local judge overstates by 0.43
+
+A-6's figures came from the local `skynet` relay. C-009 already established that
+self-judged evaluation materially overstates quality and that the primary
+evaluation must be cross-model. The same answers were therefore graded again by
+**ten independent Claude Sonnet judges**, using the existing rubric **verbatim**
+— `build_messages` composed the payloads, so only the *model* differs between
+the two gradings and nothing about the prompt does.
+
+**Blind bank, the same 28 answers, two judges:**
+
+| | skynet | **Sonnet** | Overstatement |
+|---|---|---|---|
+| `generic` faithfulness | 0.9821 | **0.5500** | **0.4321** |
+| `deterministic` faithfulness | 0.8893 | **0.3500** | **0.5393** |
+
+The local judge overstates faithfulness by **0.43 on the schema-derived arm and
+0.54 on the template arm**. For scale, C-009's original cross-model gap on the
+MITRE pipeline was 0.1054. This is four to five times that.
+
+**What survives, and it is the conclusion rather than the level.** The arm
+ordering is preserved under both judges — the schema-derived path beats the
+template cascade either way, by +0.20 faithfulness under Sonnet and +0.09 under
+skynet. So *"schema-derived primitives transfer to a foreign schema better than
+hand-written templates"* stands. What does not stand is any claim that the
+answers are near-ceiling faithful: under an independent judge they are middling.
+
+Development bank, same treatment: `generic` 0.6135, `deterministic` 0.3140.
+Both banks agree that skynet's near-ceiling figures do not reproduce.
+
+**Quote the Sonnet figures, not A-6's**, wherever a correctness number is
+reported for this source. A-6 is kept because the disagreement between the two
+is itself the measurement.
+
+### What the independent judges found that the local one did not
+
+Multiple judges, independently and without seeing each other's slices,
+identified the same concrete defect — see [ISSUES.md](ISSUES.md) I-9. Answers
+over an identity graph are rendered as *"Found N **ATT&CK record(s)** …"*
+regardless of what the records actually are (`GROUP`, `GPO`,
+`AWS_EC2_SECURITY_GROUP`, `ENTRA_APP_ROLE_ASSIGNMENT`, `DOMAIN`). The local judge
+scored straight past it. One judge also flagged a genuine hallucination: five
+enumerated group ids in `generic__ID-FACETIN-04` appear nowhere in the evidence,
+with no truncation disclosure.
+
+### Caveats
+
+**Six of 108 verdicts could not be attributed to a bank and are excluded from
+the per-bank split** (they are included in the pooled figures). The cause is an
+instruction defect of mine: the agents were not asked to record which bank a
+payload came from, and question ids repeat across banks, so six cases where the
+same `(arm, question_id)` occurred twice inside one slice are ambiguous. The
+remaining 102 were recovered by joining each slice's results back to its input.
+
+**The two judges are not calibrated against each other.** EXP-2026-08-007
+calibrated its grader at r = 0.9275 against Sonnet judgments; no such calibration
+was run here, so the 0.43 is a raw difference between two instruments, not a
+corrected one.
+
+**Ten agents, one rubric, no cross-talk.** Each judged its own slice with no
+sight of the other slices, the other arm's aggregate, or any expected answer.
+Slices were balanced by payload size, not by arm or kind, so no judge saw only
+one arm.

@@ -1,0 +1,1384 @@
+[
+  {
+    "question_id": "ID-DESCRIBE-01",
+    "arm": "generic",
+    "kind": "describe",
+    "faithfulness": 0.3,
+    "groundedness": 0.35,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Answer correctly echoes the queried name 'gcp-group-02' from evidence q1, but mislabels it as an 'ATT&CK record' when the evidence explicitly gives source=identity, label=AWS_EC2_SECURITY_GROUP -- that categorization is invented, not grounded in the record.",
+      "No verified claims back the statement at all (claims list is empty), so the assertion is technically unsupported despite the name itself matching evidence.",
+      "The single available fact (the name) is used, but nothing else is said even though that's because 'related' is empty in evidence, so under-use is minor; the wrong record-type label is the main defect."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-DESCRIBE-03",
+    "arm": "generic",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 1.0,
+    "reasons": [
+      "No evidence records were retrieved for 'zito392', and the answer honestly abstains rather than inventing a city.",
+      "Nothing is asserted that requires grounding; the abstention itself is the correct, appropriately-hedged response.",
+      "Per rubric, an honest abstention when no evidence exists is fully sufficient."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-HOMOIN-03",
+    "arm": "generic",
+    "kind": "homo-in",
+    "faithfulness": 0.1,
+    "groundedness": 0.15,
+    "evidence_sufficiency": 0.05,
+    "reasons": [
+      "Question asks who has generic write access to App Access 055 specifically; the evidence set does contain a record for App Access 055 (primary_id a9439922-...) with its own related entities, but the answer never mentions App Access 055 at all -- it dumps a generic enumeration of 25 unrelated App Access groups (018 through 042) instead, ignoring the one record that could answer the question.",
+      "The answer and its lead claim mislabel every one of these identity/GROUP records as 'ATT&CK record(s)' (evidence shows source=identity, label=GROUP for each), which is an invented categorization not supported by the cited records.",
+      "The answer never states any relationship type (e.g. 'generic write' / GenericWrite edge) -- it only reports generic 'related item(s)' counts, so it fails to actually address what the question asked, and the enumeration citations do trace to real records even though the overall response is off-target and non-responsive to the query, hence very low evidence_sufficiency and low faithfulness/groundedness for the ATT&CK mislabeling and complete omission of the actually relevant record."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-DESCRIBE-02",
+    "arm": "deterministic",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 1.0,
+    "reasons": [
+      "No evidence records exist for the queried entity; the answer honestly abstains and points to how to retry, matching the rubric's full-credit case for honest abstention."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-DESCRIBE-04",
+    "arm": "deterministic",
+    "kind": "describe",
+    "faithfulness": 0.05,
+    "groundedness": 0.1,
+    "evidence_sufficiency": 0.05,
+    "reasons": [
+      "Evidence records are labeled AWS_EC2_SECURITY_GROUP from source=identity, but the answer calls them 'ATT&CK record(s)', an unsupported/incorrect source label.",
+      "The answer says 'including unknown and more' \u2014 no evidence record has the name 'unknown'; this phrase is invented and not traceable to any cited record.",
+      "The question asked for the name of user bbrennan553; the answer never states it, despite that exact name appearing in evidence \u2014 a clear failure to use the one directly relevant record."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-FACETOUT-02",
+    "arm": "deterministic",
+    "kind": "facet-out",
+    "faithfulness": 0.1,
+    "groundedness": 0.2,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Evidence record is source=identity, label=GCP_SQL_INSTANCE, but the answer calls it an 'ATT&CK record' \u2014 an unsupported source/type claim.",
+      "The question asks what Database Admins can generically write; evidence contains no write/permission data at all, and the answer neither surfaces any such fact nor abstains honestly \u2014 it produces a non-responsive filler line."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-FACETOUT-08",
+    "arm": "deterministic",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 1.0,
+    "reasons": [
+      "No evidence records exist; the answer and the recorded abstention both honestly state nothing was found for the queried terms, matching the rubric's full-credit case for honest abstention."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-FACETIN-01",
+    "arm": "deterministic",
+    "kind": "facet-in",
+    "faithfulness": 0.1,
+    "groundedness": 0.2,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Evidence record is source=identity, label=GPO, but the answer calls it an 'ATT&CK record' \u2014 an unsupported source/type claim.",
+      "The question asks who is the write owner of GPO-05-baseline; evidence has no owner/permission data, and the answer is a non-responsive filler line rather than an honest abstention or a grounded answer."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-MULTIHOP-01",
+    "arm": "deterministic",
+    "kind": "multihop",
+    "faithfulness": 0.15,
+    "groundedness": 0.55,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "The five cited entity_ids do match primary_ids present in the evidence records, so the raw identifiers are traceable.",
+      "However, evidence records are source=identity, label=Technique, name='entra-conditional-access-policy-0X' \u2014 the answer's framing as 'ATT&CK record(s)' is an unsupported source claim, and none of this content pertains to cmoreau109, write access, or DC_SYNC.",
+      "The question (a yes/no about write access to DC_SYNC) goes entirely unanswered; the response is a generic record-count filler dressed up as relevant findings rather than an honest abstention, which materially overstates the evidence's relevance."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETOUT-07",
+    "arm": "generic",
+    "kind": "facet-out",
+    "faithfulness": 0.3,
+    "groundedness": 0.65,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "The enumerated ids/names (tsilva159, dc160, wks224) exactly match the 'related' list on the Enterprise Admins GROUP record, so that portion is grounded.",
+      "Evidence is source=identity, label=GROUP; the answer's repeated claim that these items are 'in MITRE ATT&CK' is an unsupported source label not present in the evidence.",
+      "The question asks specifically about 'key credentials added'; evidence contains only generic related-entity links with no credential-type/attribute data, so presenting the raw related list as the answer to a credentials question overstates what the evidence supports rather than clarifying the mismatch or abstaining on the credentials-specific part."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETOUT-11",
+    "arm": "generic",
+    "kind": "facet-out",
+    "faithfulness": 0.15,
+    "groundedness": 0.5,
+    "evidence_sufficiency": 0.05,
+    "reasons": [
+      "The question asks what App Access 057 can write DACLs for. Evidence DOES contain a record for App Access 057 (primary_id 39fa3d68-c4a1-dcb9-4430-92db5300464b) with related OUs/GPOs (OU-tier0-09, OU-tier0-00, GPO-06-baseline, GPO-13-baseline, GPO-01-baseline, etc.) that would directly answer the question.",
+      "The answer and its claims never mention App Access 057 or its primary_id at all; instead they dump 54 records' worth of unrelated App Access group entities (018, 019, 020, 021, ...) and their unrelated related-item lists, none of which pertain to the entity asked about.",
+      "The cited entity_ids for the other App Access groups do appear to trace to real evidence records (so raw identifiers aren't fabricated), but labeling this pile as 'ATT&CK record(s)' is an unsupported source claim (evidence is source=identity), and presenting an irrelevant 54-record dump as though it answers a question about a specific, evidenced entity is a severe misuse/ignoring of the one directly relevant record."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-HOMOIN-01",
+    "arm": "generic",
+    "kind": "homo-in",
+    "faithfulness": 0.1,
+    "groundedness": 0.2,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Evidence record is source=identity, label=ENTRA_PERMISSION, but the answer calls it an 'ATT&CK record' \u2014 an unsupported source/type claim.",
+      "The question asks who can modify permissions for Certificate Managers; evidence has no modifier/actor data, and the answer is a non-responsive filler line rather than an honest abstention or a grounded answer."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-DESCRIBE-03",
+    "arm": "deterministic",
+    "kind": "describe",
+    "faithfulness": 0.3,
+    "groundedness": 0.3,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Answer is boilerplate 'Found ATT&CK record : okta-group-10' but the evidence record's source is identity, not ATT&CK, so the label is not grounded in the record.",
+      "No claims and no abstention are given; the question (does it have privileges?) is never actually addressed even though it isn't honestly declared unanswerable.",
+      "unsupported_claim_rate=1.0 in the payload corroborates that the prose is not backed by verified claims."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-FACETOUT-05",
+    "arm": "deterministic",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 1.0,
+    "reasons": [
+      "No evidence records exist for this query; the answer honestly abstains and asks the analyst to check the name or supply an id rather than inventing anything.",
+      "Matches the rubric's explicit rule that an honest abstention when no evidence exists is fully sufficient."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-MULTIHOP-01",
+    "arm": "generic",
+    "kind": "multihop",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.55,
+    "reasons": [
+      "Every id, name, and count in the two claims matches the single retrieved evidence record (Network Ops -> corp.corp.example DOMAIN) exactly; nothing invented.",
+      "Question asked about 'changes' Network Ops made, but the evidence and answer only describe a DOMAIN relation with no notion of 'changes'; the answer does not flag this gap, so it is a plausible but not clearly on-point use of the available evidence."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-DESCRIBE-02",
+    "arm": "deterministic",
+    "kind": "describe",
+    "faithfulness": 0.3,
+    "groundedness": 0.3,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Boilerplate 'Found ATT&CK record : wks049' mislabels an identity-source (AD_CERT_TEMPLATE) record as an ATT&CK record.",
+      "The actual question (operating system of wks049) is never addressed; no claims and no honest abstention are offered despite the evidence containing no OS field."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETIN-05",
+    "arm": "deterministic",
+    "kind": "facet-in",
+    "faithfulness": 0.3,
+    "groundedness": 0.3,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Same boilerplate pattern: 'Found ATT&CK record : OU-tier0-03' mislabels an identity-source (ENTRA_CONDITIONAL_ACCESS_POLICY) record.",
+      "Question (who has generic write access) is not addressed at all; no claims, no abstention, and the evidence's empty related[] is never surfaced or explained."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-02",
+    "arm": "deterministic",
+    "kind": "unanswerable",
+    "faithfulness": 0.3,
+    "groundedness": 0.3,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Boilerplate 'Found ATT&CK record : okta-resource-set-00' again mislabels an identity-source (OKTA_API_SERVICE_INTEGRATION) record as ATT&CK.",
+      "This is a designed-unanswerable case (no membership data in evidence) where an honest abstention would score 1.0, but instead a non-responsive existence statement is given with no claims and no abstention."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETIN-01",
+    "arm": "generic",
+    "kind": "facet-in",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.6,
+    "reasons": [
+      "Both claims reproduce the single evidence record for GPO-05-baseline exactly: same 5 related ids/names, same count.",
+      "Question asked for the 'write owner' specifically, but evidence only carries generic GROUP relations with no relation-type/ownership semantics; the answer presents all 5 as undifferentiated 'GROUPs' without flagging that ownership can't be distinguished from the data."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETOUT-05",
+    "arm": "generic",
+    "kind": "facet-out",
+    "faithfulness": 0.85,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.35,
+    "reasons": [
+      "Spot-checked several claims (including the one for the actually-asked-about App Access 026, whose 9 related ids match the evidence record's related[] list exactly) and all matched the evidence with no invented ids.",
+      "The answer dumps full relation lists for all 54 retrieved GROUP records (a wide neighborhood expansion), not just App Access 026, so the answer to 'what can App Access 026 write to' is buried inside a large, largely irrelevant multi-entity dump rather than scoped to the asked-about entity.",
+      "Evidence has no relation-type field, so nothing in the record actually distinguishes 'write' access from generic 'related'; the answer inherits and amplifies this by treating all 54 groups' neighbors as equally relevant, which is over-broad rather than an appropriate, focused use of evidence."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-HOMOOUT-04",
+    "arm": "generic",
+    "kind": "homo-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.55,
+    "reasons": [
+      "Claims reproduce the single evidence record for sub2.corp.example exactly (1 DOMAIN relation to corp.corp.example, matching id and name).",
+      "Question asked 'who trusts' sub2.corp.example (implying an incoming trust/direction), but evidence only has an undifferentiated DOMAIN relation with no trust-direction semantics; answer presents it as-is without acknowledging the mismatch."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETIN-05",
+    "arm": "deterministic",
+    "kind": "facet-in",
+    "faithfulness": 0.1,
+    "groundedness": 0.2,
+    "evidence_sufficiency": 0.05,
+    "reasons": [
+      "Question asks who has DACL write access; answer never addresses permissions at all.",
+      "Answer mislabels the single retrieved identity record as an 'ATT&CK record' when its actual label is ENTRA_CONDITIONAL_ACCESS_POLICY and source=identity.",
+      "No claims or abstention were emitted to support the statement; unsupported_claim_rate=1.0 confirms."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-FACETOUT-01",
+    "arm": "deterministic",
+    "kind": "facet-out",
+    "faithfulness": 0.05,
+    "groundedness": 0.1,
+    "evidence_sufficiency": 0.0,
+    "reasons": [
+      "Question asks about credentials added by 'App Access 063'; retrieved/quoted records are App Access 018-057 (and 14 more omitted) -- App Access 063 is not visibly among them, so the answer is not clearly about the queried entity.",
+      "Records are ENTRA_APP_ROLE_ASSIGNMENT from source=identity, but the answer calls them 'ATT&CK record(s)'.",
+      "No credential information is given anywhere despite the question asking specifically about 'key credentials'; no claims or abstention support the prose."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-FACETOUT-02",
+    "arm": "generic",
+    "kind": "facet-out",
+    "faithfulness": 0.45,
+    "groundedness": 0.75,
+    "evidence_sufficiency": 0.6,
+    "reasons": [
+      "The 13-14 enumerated related entity IDs for 'Database Admins' all trace to the record's 'related' array (one ID, ec820bd2, appears twice in evidence, causing an internal 14-vs-13 count inconsistency between the two answer sentences).",
+      "Answer wrongly frames the identity-sourced GROUP relation as being 'in MITRE ATT&CK'; source is actually identity, not ATT&CK -- an invented categorization.",
+      "Entities are only listed as raw UUIDs (never resolved to their names from evidence, e.g. OU-tier0-06, App Access 070), so the answer never actually explains what Database Admins can 'write' semantically, though it does not overclaim beyond the related-item list."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-HOMOIN-04",
+    "arm": "generic",
+    "kind": "homo-in",
+    "faithfulness": 0.55,
+    "groundedness": 0.7,
+    "evidence_sufficiency": 0.8,
+    "reasons": [
+      "The one related domain (corp.corp.example, id 8951d621...) is correctly grounded in the DOMAIN record's 'related' field for sub1.corp.example.",
+      "Answer wrongly frames this identity-sourced relation as being 'in MITRE ATT&CK' (source is identity).",
+      "Claim asserts the related item 'has 1 DOMAIN' (i.e., typed the related entity as DOMAIN), but the evidence's related entry carries no explicit label field to confirm that type -- a mild unverified inference.",
+      "Otherwise the answer stays scoped to the single retrieved record and does not overclaim."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-HOMOOUT-13",
+    "arm": "generic",
+    "kind": "homo-out",
+    "faithfulness": 0.4,
+    "groundedness": 0.8,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Question asks only what App Access 030 owns; the answer instead dumps relation lists for ~40 unrelated App Access groups (018, 019, 021-057+...), with App Access 030's own 6 related items buried in the middle.",
+      "Each individual per-record claim (ids, names, related items) does trace exactly to a matching evidence record, so the granular facts are grounded.",
+      "The blanket framing 'Found 54 ATT&CK record(s)' is wrong -- records are GROUP-labeled, source=identity, not ATT&CK.",
+      "Evidence is used indiscriminately rather than scoped to the question, which buries rather than answers the actual query about App Access 030."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-01",
+    "arm": "generic",
+    "kind": "unanswerable",
+    "faithfulness": 0.35,
+    "groundedness": 0.4,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "Question asks what organization aws-organization-01 is a member of; the single evidence record has an empty 'related' array, i.e. no membership data exists.",
+      "Answer restates the entity's own id/name (grounded) but mislabels it as an 'ATT&CK record' when its actual label is AWS_ORGANIZATION, source=identity.",
+      "Answer neither fabricates a parent organization nor issues an honest, clear abstention acknowledging no membership evidence was found -- it just restates existence, which is not the fully-sufficient honest-abstention case the rubric rewards."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-DESCRIBE-03",
+    "arm": "deterministic",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 1.0,
+    "reasons": [
+      "No evidence records were retrieved and the answer makes no factual claims about zito392's city -- it explicitly states no live graph source covers the request.",
+      "This is an honest abstention with nothing invented, which the rubric treats as fully sufficient."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-DESCRIBE-04",
+    "arm": "deterministic",
+    "kind": "describe",
+    "faithfulness": 0.1,
+    "groundedness": 0.2,
+    "evidence_sufficiency": 0.05,
+    "reasons": [
+      "Question asks whether okta-group-14 has any privileges; the single evidence record's related array is empty and the answer says nothing about privileges.",
+      "Record's actual label is AWS_EC2_SECURITY_GROUP (source=identity), but the answer calls it an 'ATT&CK record'.",
+      "No claims or abstention support the statement (unsupported_claim_rate=1.0)."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETIN-06",
+    "arm": "deterministic",
+    "kind": "facet-in",
+    "faithfulness": 0.1,
+    "groundedness": 0.15,
+    "evidence_sufficiency": 0.05,
+    "reasons": [
+      "Question asks what extended rights hbrennan320 has; the answer says nothing about rights at all.",
+      "Evidence record's label is 'Technique' (source=identity) with an empty related array, yet the answer calls it an 'ATT&CK record' -- and a person-looking username being labeled 'Technique' is itself an unexplained mismatch the answer does not address.",
+      "No claims or abstention back the prose (unsupported_claim_rate=1.0)."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-HOMOIN-01",
+    "arm": "deterministic",
+    "kind": "homo-in",
+    "faithfulness": 0.15,
+    "groundedness": 0.1,
+    "evidence_sufficiency": 0.05,
+    "reasons": [
+      "Answer is generic boilerplate ('...including unknown and more') that never names App Access 023 or identifies who has full control over it.",
+      "The token 'unknown' does not trace to any evidence record (all records have empty primary_id).",
+      "No claims were verified despite dozens of retrieved ENTRA_APP_ROLE_ASSIGNMENT records; the answer mislabels identity data as 'ATT&CK record(s)' though every record's source is 'identity'."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-HOMOOUT-06",
+    "arm": "deterministic",
+    "kind": "homo-out",
+    "faithfulness": 0.15,
+    "groundedness": 0.1,
+    "evidence_sufficiency": 0.05,
+    "reasons": [
+      "Identical broken boilerplate template as ID-HOMOIN-01; does not address the extended rights of App Access 034 at all.",
+      "The 'unknown' token is ungrounded (no record has a resolvable primary_id/name matching it).",
+      "No claims verified; source is identity but is labeled 'ATT&CK record(s)'."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-DESCRIBE-03",
+    "arm": "generic",
+    "kind": "describe",
+    "faithfulness": 0.65,
+    "groundedness": 0.75,
+    "evidence_sufficiency": 0.85,
+    "reasons": [
+      "20 of the 21 claimed USER ids exactly match the okta-group-10 evidence record's related list.",
+      "The trailing id 87ad2bf5-d7f7-0ec0-8c34-f43043e99bec has no corresponding entry anywhere in the shown evidence, so that portion of the enumeration is ungrounded.",
+      "Answer mislabels identity/Okta data as being 'in MITRE ATT&CK', which the evidence's source field (identity) does not support."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-02",
+    "arm": "generic",
+    "kind": "unanswerable",
+    "faithfulness": 0.75,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.9,
+    "reasons": [
+      "Evidence record for ad-issuance-policy-04 has an empty related list, and the answer correctly does not invent a group membership, functioning like an honest non-answer.",
+      "Primary_id and name in the single claim exactly match the evidence record.",
+      "Minor issue: labels the identity record as an 'ATT&CK record' though its source is identity."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-FACETIN-03",
+    "arm": "deterministic",
+    "kind": "facet-in",
+    "faithfulness": 0.35,
+    "groundedness": 0.2,
+    "evidence_sufficiency": 0.5,
+    "reasons": [
+      "Empty primary_id produces an ungrounded citation ('Found ATT&CK record : xhaddad479'); no claims were verified.",
+      "The evidence's related list is empty, so no write-account-restriction data exists; the answer does not fabricate restrictions, but also fails to state clearly that none were found.",
+      "Record label 'Technique' being called an 'ATT&CK record' for what is clearly a username is a data-resolution artifact reflected faithfully from the evidence, not an invention."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETOUT-04",
+    "arm": "deterministic",
+    "kind": "facet-out",
+    "faithfulness": 0.15,
+    "groundedness": 0.1,
+    "evidence_sufficiency": 0.05,
+    "reasons": [
+      "Same broken 'unknown and more' boilerplate seen in the bank1 deterministic answers; never addresses App Access 028's extended rights.",
+      "No claims verified; 'unknown' does not trace to any record (all have empty primary_id).",
+      "Mislabels identity ENTRA_APP_ROLE_ASSIGNMENT records as 'ATT&CK record(s)'."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETOUT-07",
+    "arm": "deterministic",
+    "kind": "facet-out",
+    "faithfulness": 0.35,
+    "groundedness": 0.2,
+    "evidence_sufficiency": 0.5,
+    "reasons": [
+      "Empty primary_id yields an ungrounded citation for Enterprise Admins; no claims verified.",
+      "Evidence's related list is empty, so no key-credential data exists; answer avoids fabricating credentials but does not state that clearly.",
+      "Labels an AD_ENTERPRISE_CA-type identity record as an 'ATT&CK record'."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-HOMOOUT-04",
+    "arm": "deterministic",
+    "kind": "homo-out",
+    "faithfulness": 0.35,
+    "groundedness": 0.2,
+    "evidence_sufficiency": 0.5,
+    "reasons": [
+      "Empty primary_id yields an ungrounded citation for sub2.corp.example; no claims verified.",
+      "Evidence's related list is empty, so no trust-relationship data exists; the answer avoids naming a fabricated trusting entity but is otherwise uninformative.",
+      "Record labeled AWS_ACTION for what is clearly a domain name, faithfully reflected but oddly typed by the underlying evidence."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-01",
+    "arm": "deterministic",
+    "kind": "unanswerable",
+    "faithfulness": 0.4,
+    "groundedness": 0.2,
+    "evidence_sufficiency": 0.6,
+    "reasons": [
+      "Empty primary_id and no verified claims, but the evidence's related list is empty, so correctly avoids inventing a group membership.",
+      "This is the unanswerable kind and no group-membership evidence exists, so the non-answer is directionally appropriate even though the citation itself is ungrounded (blank id)."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETOUT-04",
+    "arm": "generic",
+    "kind": "facet-out",
+    "faithfulness": 0.8,
+    "groundedness": 0.8,
+    "evidence_sufficiency": 0.5,
+    "reasons": [
+      "Spot-checked roughly 20 sub-claims (App Access 018, 019, 020, 021, 022, 026, 027, 028, 040, 043, 044, 048, 049, 050, 051, etc.) and every one exactly matches the corresponding GROUP record's related list in the evidence.",
+      "Sub-claims for App Access 029-034 are not visible within the displayed evidence excerpt, but the payload explicitly notes '...14 more omitted' at the end of a 54-record evidence set, which is consistent with truncation for display rather than fabrication.",
+      "The question asks about 'extended rights' but the evidence/answer only describes generic relatedness (containers, OUs, devices, users, domains), so the facet label itself is not substantiated by anything specific to extended rights; also mislabels identity data as MITRE ATT&CK."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-HOMOOUT-24",
+    "arm": "generic",
+    "kind": "homo-out",
+    "faithfulness": 0.7,
+    "groundedness": 0.95,
+    "evidence_sufficiency": 0.5,
+    "reasons": [
+      "All 5 cited record ids exactly match the 5 Technique-labeled ad-cert-template evidence records.",
+      "Neither the evidence nor the claim text establishes an explicit ownership link between 'Contractors' and these records, so the question's 'own' relationship is not substantiated even though the enumerated records themselves are accurate."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-01",
+    "arm": "generic",
+    "kind": "unanswerable",
+    "faithfulness": 0.85,
+    "groundedness": 0.95,
+    "evidence_sufficiency": 0.9,
+    "reasons": [
+      "Primary_id and name in the single claim exactly match the OKTA_RESOURCE_SET evidence record.",
+      "Evidence's related list is empty, and the answer correctly avoids fabricating group membership, similar in spirit to a valid non-answer for an unanswerable question."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETIN-06",
+    "arm": "deterministic",
+    "kind": "facet-in",
+    "faithfulness": 0.6,
+    "groundedness": 0.7,
+    "evidence_sufficiency": 0.15,
+    "reasons": [
+      "Non-informative template answer ('Found ATT&CK record : OU-tier2-05') makes no ownership claim, so nothing is fabricated",
+      "Evidence's related field is empty, meaning no ownership data exists, but the answer never states this \u2014 it neither answers nor abstains, leaving the analyst with nothing usable",
+      "Identifier is grounded to the evidence record, though 'ATT&CK record' echoes the evidence's own mislabeled 'Technique' field for what appears to be an AD OU entity"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-DESCRIBE-04",
+    "arm": "generic",
+    "kind": "describe",
+    "faithfulness": 0.35,
+    "groundedness": 0.25,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Answer reads 'Found 6 ATT&CK record(s) including unknown and more' \u2014 the word 'unknown' is an unresolved placeholder not traceable to any specific evidence field",
+      "The literal answer to the question (name='bbrennan553') is present verbatim in the first evidence record but is never surfaced by the prose",
+      "No claims were emitted despite six retrieved records, so the question goes effectively unanswered"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-FACETIN-05",
+    "arm": "generic",
+    "kind": "facet-in",
+    "faithfulness": 0.8,
+    "groundedness": 0.95,
+    "evidence_sufficiency": 0.5,
+    "reasons": [
+      "All 10 enumerated GROUP ids and the item count (11, including one duplicate) match the evidence record's related list exactly",
+      "The answer never explicitly asserts 'write access' semantics, so it avoids overclaiming, but the evidence's generic 'related' field carries no relationship-type information, so the specific DACL-write-access question is not actually resolved, just a generic relatedness list",
+      "Answer mislabels identity data as being 'in MITRE ATT&CK', which the evidence's own source tag (source=identity) does not support"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-FACETIN-06",
+    "arm": "generic",
+    "kind": "facet-in",
+    "faithfulness": 0.8,
+    "groundedness": 0.95,
+    "evidence_sufficiency": 0.45,
+    "reasons": [
+      "All 3 enumerated GROUP ids and the count exactly match the evidence record's related list",
+      "The evidence's related field carries no directional/ownership semantics, so listing 'has 3 GROUPs' does not actually establish 'ownership' as asked, though it does not falsely assert direction either",
+      "Mislabels identity data as being 'in MITRE ATT&CK'"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-FACETOUT-07",
+    "arm": "generic",
+    "kind": "facet-out",
+    "faithfulness": 0.6,
+    "groundedness": 0.7,
+    "evidence_sufficiency": 0.15,
+    "reasons": [
+      "Non-informative template answer ('Found ATT&CK record : knovak339') makes no assignment claim, so nothing is fabricated",
+      "Evidence's related field is empty (no application-assignment data), but the answer neither states this nor abstains",
+      "Identifier is grounded to the single evidence record retrieved"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-FACETOUT-08",
+    "arm": "generic",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 1.0,
+    "reasons": [
+      "Honest abstention: no evidence records were retrieved and the answer invents nothing, correctly reporting that no matching entity was found"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-HOMOIN-05",
+    "arm": "generic",
+    "kind": "homo-in",
+    "faithfulness": 0.75,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.25,
+    "reasons": [
+      "All 54 cited entity ids are grounded: 40 appear directly as evidence records and the remaining 14 are explicitly marked '... 14 more omitted' in the evidence text, matching the answer's own stated total",
+      "However every listed evidence record is a bare GROUP entity with an empty related field \u2014 there is no data at all establishing a 'full control' relationship, so presenting the full 54-item list as an answer to that specific question is not an appropriate use of the evidence",
+      "Mislabels identity records as being 'in MITRE ATT&CK'"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-HOMOOUT-06",
+    "arm": "generic",
+    "kind": "homo-out",
+    "faithfulness": 0.75,
+    "groundedness": 0.9,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Every entity id in the claims (58 unique, including sub-entities like CONTAINERs/USERs/OUs) traces to either a top-level evidence record or an 'id' inside its related array; no fabricated identifiers found",
+      "The answer dumps relational detail for roughly 54 different 'App Access' groups rather than resolving the question specifically for App Access 034, so it is an unfocused rather than appropriately scoped use of the evidence",
+      "Mislabels identity records as being 'in MITRE ATT&CK'"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-FACETIN-02",
+    "arm": "deterministic",
+    "kind": "facet-in",
+    "faithfulness": 0.6,
+    "groundedness": 0.7,
+    "evidence_sufficiency": 0.15,
+    "reasons": [
+      "Non-informative template answer ('Found ATT&CK record : CN-Container-05') asserts nothing about extended rights, so nothing is fabricated",
+      "Evidence's related field is empty, but the answer neither states this nor abstains, leaving the question unaddressed"
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETIN-04",
+    "arm": "deterministic",
+    "kind": "facet-in",
+    "faithfulness": 0.6,
+    "groundedness": 0.7,
+    "evidence_sufficiency": 0.15,
+    "reasons": [
+      "Non-informative template answer ('Found ATT&CK record : sub2.corp.example') asserts nothing about filtered-set changes, so nothing is fabricated",
+      "Evidence's related field is empty and the label (AWS_ACTION) is odd for a domain-name entity, but this mislabeling comes from the evidence itself, not an invented claim",
+      "Answer does not abstain or explain the lack of relevant data"
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETOUT-11",
+    "arm": "deterministic",
+    "kind": "facet-out",
+    "faithfulness": 0.3,
+    "groundedness": 0.2,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Answer 'Found 54 ATT&CK record(s) including unknown and more' uses an unresolved 'unknown' placeholder rather than any of the 54 retrieved (and partially shown) entity names",
+      "No claims were emitted despite substantial retrieved evidence, so the question about what App Access 057 can write DACLs for is entirely unaddressed",
+      "The word 'unknown' is not traceable to any specific evidence field"
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETIN-04",
+    "arm": "generic",
+    "kind": "facet-in",
+    "faithfulness": 0.25,
+    "groundedness": 0.3,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "5 of the 23 enumerated GROUP entity ids (7d54b484-..., 078198bd-..., ca3c05ff-..., 0f128b3f-..., d9dfb32f-...) do not appear anywhere in the evidence records shown, and there is no truncation/omission marker in this payload (unlike other large payloads that explicitly disclose '... N more omitted')",
+      "Claimed totals ('25 item(s)', '23 GROUPs') exceed what the shown evidence actually supports (its related list has only 20 raw entries / 18 unique ids after removing duplicates)",
+      "The other 18 of 23 cited ids do match the evidence's related list exactly, so the answer is a mix of grounded and fabricated content"
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-HOMOOUT-02",
+    "arm": "deterministic",
+    "kind": "homo-out",
+    "faithfulness": 0.3,
+    "groundedness": 0.5,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Answer only names the entity and mislabels an identity-source record (label AWS_ACTION) as 'ATT&CK record'",
+      "Question asks which domains trust sub1.corp.example but the answer never addresses trust relationships",
+      "Evidence's related list is empty; the answer neither states that nor abstains, just a vacuous template line"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-HOMOOUT-03",
+    "arm": "deterministic",
+    "kind": "homo-out",
+    "faithfulness": 0.3,
+    "groundedness": 0.5,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Same vacuous 'Found ATT&CK record : X' template; mislabels identity-source AWS_ACTION record as ATT&CK",
+      "Question asks about same-forest trusts for corp.corp.example; answer never addresses that",
+      "Related list in evidence is empty; no abstention or acknowledgement of missing trust data"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-MULTIHOP-01",
+    "arm": "deterministic",
+    "kind": "multihop",
+    "faithfulness": 0.35,
+    "groundedness": 0.5,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Entity is found (name matches evidence) but source is declared 'identity' while text claims an 'ATT&CK record'",
+      "Question asks what changes Network Ops made; answer gives no information about changes",
+      "Evidence related list is empty; answer neither reports that nor abstains"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-02",
+    "arm": "deterministic",
+    "kind": "unanswerable",
+    "faithfulness": 0.3,
+    "groundedness": 0.5,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Vacuous 'Found ATT&CK record' template mislabels an identity-source AD_ISSUANCE_POLICY record",
+      "Question asks what group ad-issuance-policy-04 belongs to; answer gives no membership info",
+      "Kind is 'unanswerable' and evidence related list is empty, so an honest abstention was warranted instead of this non-answer"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-FACETOUT-01",
+    "arm": "generic",
+    "kind": "facet-out",
+    "faithfulness": 0.5,
+    "groundedness": 0.75,
+    "evidence_sufficiency": 0.35,
+    "reasons": [
+      "Individual per-entity statements (e.g. App Access 063 has 3 DEVICEs ...) are directly traceable to the cited evidence records",
+      "Answer mislabels identity-source GROUP records as 'ATT&CK record(s)'",
+      "Question asks about 'key credentials' App Access 063 added, but evidence only has generic DEVICE relations with no credential semantics, and the target entity's data is buried in a long irrelevant dump of ~14 other groups"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-FACETOUT-03",
+    "arm": "generic",
+    "kind": "facet-out",
+    "faithfulness": 0.55,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.55,
+    "reasons": [
+      "Counts (14 total related mentions vs 12 unique ids) and enumerated ids match the evidence record's related list exactly",
+      "Mislabels an identity-source GROUP record as being found 'in MITRE ATT&CK'",
+      "Question asks specifically what Finance Readers can write DACLs to, but evidence only has generic undifferentiated 'related' edges, so the answer cannot and does not establish DACL-write semantics, just lists related entities"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-FACETOUT-05",
+    "arm": "deterministic",
+    "kind": "facet-out",
+    "faithfulness": 0.15,
+    "groundedness": 0.15,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Answer text includes the literal placeholder word 'unknown' as if it were a found record, which is not traceable to any evidence entity",
+      "Mislabels identity-source ENTRA_APP_ROLE_ASSIGNMENT records as 'ATT&CK record(s)'",
+      "Question asks what App Access 026 can write to; all evidence related-lists are empty (no write-target data), yet the system neither reports that nor abstains"
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-HOMOIN-02",
+    "arm": "deterministic",
+    "kind": "homo-in",
+    "faithfulness": 0.15,
+    "groundedness": 0.15,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Same 'including unknown and more' template artifact; 'unknown' is not grounded in any evidence record",
+      "Mislabels identity-source ENTRA_APP_ROLE_ASSIGNMENT records as 'ATT&CK record(s)'",
+      "Question asks what extended rights App Access 050 has; evidence has no related/rights data for it and the answer neither states that nor abstains"
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETIN-03",
+    "arm": "generic",
+    "kind": "facet-in",
+    "faithfulness": 0.5,
+    "groundedness": 0.6,
+    "evidence_sufficiency": 0.5,
+    "reasons": [
+      "The related entity id/name (92565cec.../App Access 020) is correctly grounded to the USER record's related list",
+      "The answer's categorical label 'GROUP' for that related item is not present in this payload's evidence (only id/name given), and the record is again mischaracterized as found 'in MITRE ATT&CK' despite source=identity",
+      "Question asks about write account restrictions specifically, but evidence only offers a generic relation with no restriction semantics"
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETOUT-08",
+    "arm": "generic",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 1.0,
+    "reasons": [
+      "Honest abstention: no entity matching the query terms was found in the identity source, and no evidence records exist",
+      "Answer invents nothing and correctly attributes the abstention to the identity source"
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-HOMOIN-05",
+    "arm": "generic",
+    "kind": "homo-in",
+    "faithfulness": 0.25,
+    "groundedness": 0.6,
+    "evidence_sufficiency": 0.05,
+    "reasons": [
+      "Question asks who owns the Helpdesk group, but the answer lists five unrelated AWS EC2 security-group Technique records with no connection to 'Helpdesk' or ownership",
+      "Cited ids/names do match the evidence records verbatim, but the records themselves mislabeled as 'ATT&CK record(s)' and are irrelevant to the question, implying a relevance that isn't supported",
+      "No ownership information is present anywhere in the evidence, and the answer does not abstain despite this being a complete mismatch"
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-HOMOOUT-23",
+    "arm": "generic",
+    "kind": "homo-out",
+    "faithfulness": 0.45,
+    "groundedness": 0.8,
+    "evidence_sufficiency": 0.05,
+    "reasons": [
+      "Every per-entity relation stated (e.g. App Access 018 has 3 CONTAINERs ...) matches its cited evidence record exactly",
+      "Mislabels identity-source GROUP records as 'ATT&CK record(s)'",
+      "The question asks about App Access 053 specifically; its evidence record (99627133-...) exists with relevant related items (OU-tier0-06, HR Records, Helpdesk) but is never mentioned anywhere in the answer, which instead dumps ~25 unrelated groups' data"
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETIN-04",
+    "arm": "deterministic",
+    "kind": "facet-in",
+    "faithfulness": 0.3,
+    "groundedness": 0.5,
+    "evidence_sufficiency": 0.15,
+    "reasons": [
+      "Mislabels an identity-source record as an 'ATT&CK record'.",
+      "Does not address the actual question (who can write GPO links); evidence has no related data, but the answer neither surfaces that nor abstains honestly."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-DESCRIBE-02",
+    "arm": "generic",
+    "kind": "describe",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 1.0,
+    "reasons": [
+      "Honest abstention: no evidence records exist and the answer says so without inventing anything."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-FACETIN-03",
+    "arm": "generic",
+    "kind": "facet-in",
+    "faithfulness": 0.55,
+    "groundedness": 0.7,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Asserts the related entity is a 'GROUP' though the cited evidence record carries no type label for it, only id/name.",
+      "Answer describes generic relatedness/membership rather than 'extended rights' as the question asks; ids/names themselves are correct."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-FACETOUT-05",
+    "arm": "generic",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 1.0,
+    "reasons": [
+      "Honest abstention matching the empty evidence set; nothing invented."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-HOMOOUT-03",
+    "arm": "generic",
+    "kind": "homo-out",
+    "faithfulness": 0.55,
+    "groundedness": 0.7,
+    "evidence_sufficiency": 0.55,
+    "reasons": [
+      "Labels the two related sub-entities as 'DOMAINs' though the evidence record itself only provides a label for the primary entity, not its related items.",
+      "Ids/names/counts otherwise match the evidence exactly and reasonably approximate the 'forest trust' framing of the question via sub-domains."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-DESCRIBE-01",
+    "arm": "deterministic",
+    "kind": "describe",
+    "faithfulness": 0.4,
+    "groundedness": 0.6,
+    "evidence_sufficiency": 0.4,
+    "reasons": [
+      "Mislabels an identity-source AWS_EC2_SECURITY_GROUP record as an 'ATT&CK record'.",
+      "Answer is a bare template confirmation, not a substantive response to 'what is the name of X'."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-HOMOIN-01",
+    "arm": "deterministic",
+    "kind": "homo-in",
+    "faithfulness": 0.3,
+    "groundedness": 0.5,
+    "evidence_sufficiency": 0.15,
+    "reasons": [
+      "Mislabels the identity record as an 'ATT&CK record'.",
+      "Evidence has zero related data on who can modify permissions, yet the answer gives a non-answer instead of abstaining."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-HOMOIN-04",
+    "arm": "deterministic",
+    "kind": "homo-in",
+    "faithfulness": 0.2,
+    "groundedness": 0.15,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Degenerate template output 'Found 54 ATT&CK record(s) including unknown and more' \u2014 'unknown' is not traceable to any cited record.",
+      "Does not isolate or address App Access 020 (the entity actually asked about) despite it being present in the evidence."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-DESCRIBE-04",
+    "arm": "generic",
+    "kind": "describe",
+    "faithfulness": 0.65,
+    "groundedness": 0.8,
+    "evidence_sufficiency": 0.5,
+    "reasons": [
+      "All 21 enumerated user ids/names match the evidence record exactly; 'USER' typing is a reasonable inference from username-like names though not an explicit evidence field.",
+      "Answer enumerates group membership rather than addressing 'privileges' as literally asked."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETIN-05",
+    "arm": "generic",
+    "kind": "facet-in",
+    "faithfulness": 0.55,
+    "groundedness": 0.7,
+    "evidence_sufficiency": 0.45,
+    "reasons": [
+      "Minor internal count inconsistency: 'Found 13 item(s)' vs 'has 12 GROUPs' (evidence's related list contains a duplicated entry, App Access 037, reconciling the discrepancy but not stated).",
+      "'GROUP' typing again inferred from naming rather than an explicit evidence field; answer doesn't specifically address 'write access' semantics."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-HOMOIN-01",
+    "arm": "generic",
+    "kind": "homo-in",
+    "faithfulness": 0.3,
+    "groundedness": 0.8,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Frames 54 homogeneously-named ('App Access NNN') but otherwise relation-empty entities as 'results for this question' about who has full control over App Access 023, though the evidence shows zero relationship data connecting them.",
+      "Ids listed are individually grounded in the evidence, but the framing overclaims their relevance to the specific question asked."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-HOMOIN-02",
+    "arm": "generic",
+    "kind": "homo-in",
+    "faithfulness": 0.75,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "Every per-entity relation claim (CONTAINERs/USERs/GROUPs/OUs/etc.) is accurately grounded in the corresponding evidence record.",
+      "However the question asks only about App Access 050's extended rights, and that entity's 4 related items are buried inside a dump of 54 unrelated homogeneous-name matches, greatly over-scoping the evidence used."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETOUT-03",
+    "arm": "deterministic",
+    "kind": "facet-out",
+    "faithfulness": 0.3,
+    "groundedness": 0.3,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Answer only says 'Found ATT&CK record : Finance Readers' and never addresses the DACL-write question.",
+      "No claims section backs the statement (claims list is empty) despite the prose asserting a fact.",
+      "Evidence shows related=[] (no write-DACL targets); the answer neither reports that nor abstains, so the retrieved evidence is not put to any use."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-HOMOIN-04",
+    "arm": "deterministic",
+    "kind": "homo-in",
+    "faithfulness": 0.3,
+    "groundedness": 0.3,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Answer 'Found ATT&CK record : sub1.corp.example.' does not address the same-forest-trust question asked.",
+      "No verified claims support the prose; only the bare entity name matches evidence.",
+      "Evidence related=[] should prompt either an explicit 'no trusts found' statement or an abstention; neither happens."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-HOMOOUT-12",
+    "arm": "deterministic",
+    "kind": "homo-out",
+    "faithfulness": 0.3,
+    "groundedness": 0.3,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Answer 'Found ATT&CK record : Server Operators.' never states what (if anything) is write-owned.",
+      "No claims list backs the assertion; only the entity's own name is grounded.",
+      "Evidence related=[] is not surfaced as 'nothing found', and no abstention is issued."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-HOMOOUT-13",
+    "arm": "deterministic",
+    "kind": "homo-out",
+    "faithfulness": 0.2,
+    "groundedness": 0.15,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Answer says 'Found 54 ATT&CK record(s) including unknown and more' \u2014 'unknown' is not any name or id present in the evidence.",
+      "All cited primary_id fields are empty strings, so nothing in the prose is actually traceable to a specific evidence record.",
+      "The question asks what App Access 030 owns; the 54 evidence records are just a flat list of same-typed sibling entities with no relational/ownership data, and the answer neither engages the question nor abstains."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-FACETIN-04",
+    "arm": "generic",
+    "kind": "facet-in",
+    "faithfulness": 0.95,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 0.9,
+    "reasons": [
+      "Both claims are verified with citations to the single retrieved record.",
+      "The enumerated 7 related ids/names exactly match the evidence's related array for OU-tier2-11, with no additions or omissions.",
+      "Directly and completely answers the 'who can write group policy links' question using exactly what was retrieved."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-HOMOIN-02",
+    "arm": "generic",
+    "kind": "homo-in",
+    "faithfulness": 0.35,
+    "groundedness": 0.85,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "Question asks who has full control over App Access 063; the answer instead dumps 54 unrelated GROUP entity ids with no relational data connecting any of them to 'full control' over App Access 063.",
+      "Each cited id does correspond to an actual retrieved record (ids are correct), but the shown evidence records carry no related/ownership data at all, so the framing implies a relevance that the evidence does not support.",
+      "Evidence is not meaningfully used to answer the specific relationship asked \u2014 it's a raw entity listing, not a control-relationship answer."
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-FACETOUT-08",
+    "arm": "deterministic",
+    "kind": "facet-out",
+    "faithfulness": 1.0,
+    "groundedness": 1.0,
+    "evidence_sufficiency": 1.0,
+    "reasons": [
+      "Honest abstention: no entity matching the query terms was found in the identity source, and no evidence records exist.",
+      "Nothing is invented; the abstention message accurately reflects the empty evidence set.",
+      "Per rubric, an honest abstention with no evidence is fully sufficient."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETOUT-09",
+    "arm": "deterministic",
+    "kind": "facet-out",
+    "faithfulness": 0.2,
+    "groundedness": 0.15,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Answer 'Found 54 ATT&CK record(s) including unknown and more' uses the placeholder 'unknown' rather than any real id/name from evidence.",
+      "All cited primary_id fields are empty, so no identifier in the prose is traceable to a specific record.",
+      "The question asks what changes App Access 031 made; the evidence is just a flat sibling-entity list with no change/action data, and the answer neither addresses this nor abstains."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-HOMOOUT-24",
+    "arm": "deterministic",
+    "kind": "homo-out",
+    "faithfulness": 0.8,
+    "groundedness": 0.95,
+    "evidence_sufficiency": 0.8,
+    "reasons": [
+      "All 5 cited entity ids exactly match the 5 retrieved Technique records with proper citations.",
+      "The claim is a faithful restatement of the retrieval count and sample ids, nothing invented or omitted.",
+      "Answer stays terse (ids only, not human-readable names) but fully accounts for all 5 retrieved records without ignoring or overclaiming."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-DESCRIBE-02",
+    "arm": "generic",
+    "kind": "describe",
+    "faithfulness": 0.3,
+    "groundedness": 0.3,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Answer 'Found ATT&CK record : wks049.' never addresses the operating-system question asked.",
+      "No claims section backs the statement; only the bare entity name matches evidence.",
+      "Evidence has no OS field and related=[]; the answer should state that no OS data was found or abstain, but does neither."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETIN-06",
+    "arm": "generic",
+    "kind": "facet-in",
+    "faithfulness": 0.75,
+    "groundedness": 0.75,
+    "evidence_sufficiency": 0.85,
+    "reasons": [
+      "The count (1) and the related id/name (8cf95619.../App Access 068) exactly match the single evidence record's related array.",
+      "The answer labels the related item as a 'GROUP', but the evidence record for that related entity carries no type/label field in this payload, so that type assertion is not directly grounded in the given evidence.",
+      "Otherwise makes full, non-ignoring use of the one retrieved record to answer the extended-rights question."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-HOMOIN-04",
+    "arm": "generic",
+    "kind": "homo-in",
+    "faithfulness": 0.7,
+    "groundedness": 0.95,
+    "evidence_sufficiency": 0.5,
+    "reasons": [
+      "The question asks specifically about App Access 020's extended rights; the answer correctly includes App Access 020's 6 related items exactly as retrieved, but also dumps relational data for ~20 other, unrelated App Access entities.",
+      "Every individual relation stated (entity, count, related ids) matches the corresponding evidence record's related array exactly, so nothing is fabricated.",
+      "Sufficiency is hurt by scope: the response buries the one relevant entity's answer inside a large unfocused enumeration of sibling entities never asked about, diluting rather than directly answering the question."
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-FACETIN-02",
+    "arm": "deterministic",
+    "kind": "facet-in",
+    "faithfulness": 0.1,
+    "groundedness": 0.2,
+    "evidence_sufficiency": 0.05,
+    "reasons": [
+      "Answer labels the record 'ATT&CK record' but evidence label is AWS_ACTION, not ATT&CK -- invented categorization",
+      "Question asks about changes made to corp.corp.example; evidence has no change data and the answer does not address the question or abstain"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-FACETIN-03",
+    "arm": "deterministic",
+    "kind": "facet-in",
+    "faithfulness": 0.3,
+    "groundedness": 0.4,
+    "evidence_sufficiency": 0.05,
+    "reasons": [
+      "Evidence label is 'Technique', so calling it an 'ATT&CK record' is at least plausible, but the identifier itself (srv063) is only named, not shown to have any ATT&CK provenance",
+      "Question asks about extended rights of srv063; evidence has no rights data and the answer neither answers the question nor abstains"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-FACETOUT-07",
+    "arm": "deterministic",
+    "kind": "facet-out",
+    "faithfulness": 0.1,
+    "groundedness": 0.2,
+    "evidence_sufficiency": 0.05,
+    "reasons": [
+      "Evidence label is ENTRA_APPLICATION, not ATT&CK -- the 'ATT&CK record' framing is unsupported",
+      "Question asks what applications knovak339 is assigned to; the answer just echoes the entity name and never lists applications or abstains"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-HOMOIN-02",
+    "arm": "deterministic",
+    "kind": "homo-in",
+    "faithfulness": 0.1,
+    "groundedness": 0.2,
+    "evidence_sufficiency": 0.05,
+    "reasons": [
+      "Evidence label is ENTRA_APP_ROLE_ASSIGNMENT, not ATT&CK -- mislabeled record type",
+      "Question asks who has full control over App Access 063; the 54 retrieved records are named App Access 018-057+ (App Access 063 not clearly among the shown ones) and no person/identity is ever named as having control; 'including unknown and more' is a non-answer"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-01",
+    "arm": "deterministic",
+    "kind": "unanswerable",
+    "faithfulness": 0.1,
+    "groundedness": 0.2,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "Evidence label is AWS_ACTION, not ATT&CK -- mislabeled record type",
+      "Question asks what organization aws-organization-01 is a member of; evidence contains no membership data, and rather than honestly abstaining the system presents a hollow 'found record' statement, which is worse than a clean abstention"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-HOMOIN-03",
+    "arm": "generic",
+    "kind": "homo-in",
+    "faithfulness": 0.2,
+    "groundedness": 0.5,
+    "evidence_sufficiency": 0.1,
+    "reasons": [
+      "All 54 cited entity IDs and the count match evidence records exactly (label GROUP, names App Access 018 etc.), so the enumeration itself is grounded",
+      "Answer calls them 'ATT&CK record(s)' though the evidence label is GROUP, and none of the underlying GROUP records has any 'related' data (all empty), so nothing in evidence answers who can modify permissions for App Access 065 -- the system dumps an unrelated entity list instead of answering or abstaining"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-HOMOOUT-02",
+    "arm": "generic",
+    "kind": "homo-out",
+    "faithfulness": 0.5,
+    "groundedness": 0.7,
+    "evidence_sufficiency": 0.6,
+    "reasons": [
+      "The DOMAIN relation and count (1 domain, id 8951d621...) exactly match the evidence record's 'related' field, correctly answering which domain trusts sub1.corp.example",
+      "'in MITRE ATT&CK' is an unsupported framing -- evidence source is 'identity' and label is DOMAIN, not ATT&CK -- and the trusting domain is only given as a raw UUID rather than resolved to its name (corp.corp.example) despite that name being present in evidence"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-HOMOOUT-12",
+    "arm": "generic",
+    "kind": "homo-out",
+    "faithfulness": 0.3,
+    "groundedness": 0.6,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "The 17 (of 18 counted) related entity IDs and names all match the GROUP record's 'related' list verbatim, so the enumeration is grounded",
+      "The question asks specifically about 'write ownership'; the evidence's generic 'related' edges carry no relationship-type/semantics, so asserting these are what Server Operators has write ownership of is an overstatement not supported by the evidence, compounded by the false 'in MITRE ATT&CK' framing (label is GROUP)"
+    ],
+    "bank": "bank1"
+  },
+  {
+    "question_id": "ID-HOMOOUT-23",
+    "arm": "deterministic",
+    "kind": "homo-out",
+    "faithfulness": 0.1,
+    "groundedness": 0.2,
+    "evidence_sufficiency": 0.05,
+    "reasons": [
+      "Evidence label is ENTRA_APP_ROLE_ASSIGNMENT, not ATT&CK -- mislabeled record type",
+      "Question asks what extended rights App Access 053 has; the answer never states any rights, just a vague count ('including unknown and more') with no reference to App Access 053 specifically"
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-MULTIHOP-01",
+    "arm": "generic",
+    "kind": "multihop",
+    "faithfulness": 0.3,
+    "groundedness": 0.5,
+    "evidence_sufficiency": 0.05,
+    "reasons": [
+      "The 5 cited IDs and their 'Technique' names (entra-conditional-access-policy-00..04) do match the retrieved evidence records exactly, so nothing is fabricated at the identifier level",
+      "The question is a yes/no about whether cmoreau109 has write access to DC_SYNC; the evidence contains neither a cmoreau109 entity nor a DC_SYNC entity, so the retrieved records are irrelevant to the question, and the answer neither answers yes/no nor honestly abstains -- it just reports an unrelated count"
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-MULTIHOP-02",
+    "arm": "generic",
+    "kind": "multihop",
+    "faithfulness": 0.35,
+    "groundedness": 0.6,
+    "evidence_sufficiency": 0.3,
+    "reasons": [
+      "The count (1 related item) and identifier c2bd9e0d... match the GROUP record's 'related' field exactly",
+      "Question asks which 'key credentials' Certificate Managers adds; evidence only shows a generic USER relation with no key-credential semantics, so framing this USER link as an answer to a key-credentials question overstates what the evidence supports, and 'in MITRE ATT&CK' is an unsupported label (evidence label is GROUP)"
+    ],
+    "bank": "bank2"
+  },
+  {
+    "question_id": "ID-UNANSWERABLE-02",
+    "arm": "generic",
+    "kind": "unanswerable",
+    "faithfulness": 0.35,
+    "groundedness": 0.5,
+    "evidence_sufficiency": 0.2,
+    "reasons": [
+      "No membership fact is invented -- evidence shows an empty 'related' list for okta-resource-set-00, and the answer does not claim any membership, so it does not over-claim",
+      "Answer mislabels the record as 'ATT&CK record' though evidence label is OKTA_RESOURCE_SET, and it never explicitly states that no membership evidence exists or abstains -- an honest 'no membership found' statement would have been fully sufficient but this is just a hollow restatement of the entity"
+    ],
+    "bank": "bank2"
+  }
+]

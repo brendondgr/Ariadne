@@ -225,3 +225,43 @@ The multi-hop figure therefore stays at n=1 for now and **must not be quoted as
 a rate**. Raising it properly means a fresh tenant with more planted chains and
 a re-run of all three banks against it, which is a new experiment rather than an
 amendment.
+
+---
+
+## I-9 — Every answer is labelled an "ATT&CK record", whatever the source
+
+**Status:** open, located, **deliberately not fixed yet**. **Bears on:** A-7 and
+every faithfulness figure for this source.
+
+`utils/specialists/cypher/normalizer.py:885,888` hardcodes the source name into
+the evidence summary:
+
+```python
+return f"Found ATT&CK record {rec.primary_id}: {rec.name}."
+f"Found {total} ATT&CK record(s) including {id_text}"
+```
+
+There is no card lookup and no dataset branch. Every answer from every source is
+described as an ATT&CK record, so an identity graph returns *"Found 54 ATT&CK
+record(s)"* about `GROUP`, `GPO`, `DOMAIN`, `AWS_EC2_SECURITY_GROUP` and
+`ENTRA_APP_ROLE_ASSIGNMENT` objects that have nothing to do with MITRE.
+
+**How it was found is the point.** Several of the ten independent Sonnet judges
+flagged it without seeing each other's work, and it is a substantial part of why
+they scored faithfulness 0.43 below the local judge — an answer that misstates
+what its records *are* is unfaithful even when every identifier in it is
+correct. The local judge scored past it entirely.
+
+This is the third member of the same family as I-1 (`n.attack_id` emitted
+against a schema without it) and the `Technique` label scanned against a graph
+that has none: MITRE vocabulary baked into code that presents itself as
+source-agnostic, invisible to a code reading because there is no schema
+dependency to spot — only a string.
+
+**Why not fixed now.** The answers currently under measurement were produced by
+the present code. Fixing the summariser mid-flight would leave the judged
+figures describing a system that no longer exists. The fix is a one-line
+card lookup, and it belongs with a re-run and a fresh judging pass.
+
+**When fixed, re-judge rather than re-quote.** A-7's numbers are a measurement of
+this defect as much as of the retrieval path, so they do not carry over.

@@ -179,5 +179,52 @@
       "generic_llm_covered": 26,
       "note": "Second judging session over the same generic answers. Kept as a stability reading only; the reported figures come from the single session that covered BOTH arms, because comparing arms graded in different sessions mixes grader variance into the arm difference."
     }
+  },
+  "cross_model_judging": {
+    "judge": "claude-sonnet (10 independent agents, one shared rubric)",
+    "rubric": "verbatim from utils/evaluation/llm_judge/llm_judge.py::_SYSTEM_PROMPT",
+    "verdicts_total": 102,
+    "unattributable_excluded": 6,
+    "banks": {
+      "bank1_development": {
+        "generic": {
+          "faithfulness": 0.6135,
+          "n": 26,
+          "groundedness": 0.7808,
+          "evidence_sufficiency": 0.5038
+        },
+        "deterministic": {
+          "faithfulness": 0.314,
+          "n": 25,
+          "groundedness": 0.382,
+          "evidence_sufficiency": 0.192
+        },
+        "arm_gap_faithfulness": 0.2995
+      },
+      "bank2_blind": {
+        "generic": {
+          "faithfulness": 0.55,
+          "n": 26,
+          "groundedness": 0.6808,
+          "evidence_sufficiency": 0.4019
+        },
+        "deterministic": {
+          "faithfulness": 0.35,
+          "n": 25,
+          "groundedness": 0.374,
+          "evidence_sufficiency": 0.278
+        },
+        "arm_gap_faithfulness": 0.2
+      }
+    },
+    "head_to_head_blind": {
+      "skynet_generic_faithfulness": 0.9821,
+      "sonnet_generic_faithfulness": 0.55,
+      "skynet_deterministic_faithfulness": 0.8893,
+      "sonnet_deterministic_faithfulness": 0.35,
+      "overstatement_generic": 0.4321,
+      "overstatement_deterministic": 0.5393,
+      "arm_ordering_preserved": true
+    }
   }
 }
