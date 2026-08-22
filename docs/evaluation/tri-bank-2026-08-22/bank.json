@@ -1,0 +1,2081 @@
+{
+  "meta": {
+    "dataset": "identity+attack",
+    "seed": 20260822,
+    "author_model": "claude-fable",
+    "split": "tri-blind",
+    "protocol": "Sampler, author and compiler are separate. The author saw five fields of one anchor -- name, kind, the relationship it holds, the direction, and whether the question should ask for a technique, a mitigation, or nothing of the sort -- and NEVER the expected answer, the declared correspondence, the schema, or another question. Gold was computed from the generator blueprint and the declared edge->technique map before any question text existed, with the ATT&CK side read from the canonical export rather than the live store. Audited: 0 of 73 questions contain any gold identifier, 73 of 73 name their anchor, 0 use SCREAMING_CASE relationship names, and 0 identity-control questions mention ATT&CK.",
+    "limit": "The edge->technique mapping is authored by us. A score against this bank measures whether the system USES the declared bridge correctly, not whether the mapping is right.",
+    "n": 64,
+    "note_partial_control": "A `bridge-partial` control -- an anchor holding ONE half of the DCSync right pair -- is NOT in this bank. It is not drawable from this tenant: every anchor holding GET_CHANGES is also touched by another mapped right, usually ALL_EXTENDED_RIGHTS, which the declaration maps to T1003.006 in its own right on the customer's wording that it includes 'on a domain, the replication rights'. A T1003.006 in the evidence therefore cannot be attributed to the half-right rather than the whole one, so the control cannot distinguish the behaviour it exists to test. Testing it needs a tenant generated with an isolated replication right, which is a separate experiment.",
+    "note_negative_anchors": "Negative-control anchors are clean in BOTH directions. The first draw indexed outgoing edges only, and the runtime walk is direction-agnostic, so `dc202` was selected as a refusal control on its lone outgoing RUNS_AS and then correctly produced T1098 from a WRITE_ACCOUNT_RESTRICTIONS edge held OVER it. Scored naively that reads as the bridge inventing a technique. The declaration was right, the system was right, and the gold was wrong."
+  },
+  "questions": {
+    "TRI-TECH-01": {
+      "question_id": "TRI-TECH-01",
+      "kind": "bridge-technique",
+      "anchor_id": "d3b7b592-1655-82d1-798f-98132ecee5e1",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 040",
+      "edge": "ADD_KEY_CREDENTIAL_LINK",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1649"
+      ],
+      "expected_names": [
+        "Steal or Forge Authentication Certificates"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: ADD_KEY_CREDENTIAL_LINK -> T1649; basis catalog: 'allowing a certificate to be attached and the target impersonated' \u2014 forging authentication certificates",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 040",
+        "relationship": "ADD_KEY_CREDENTIAL_LINK",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "The group \"App Access 040\" can attach key credentials to another object in the directory. Which MITRE ATT&CK technique does that capability map to?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-02": {
+      "question_id": "TRI-TECH-02",
+      "kind": "bridge-technique",
+      "anchor_id": "7ac534e5-1fad-5670-877c-8c85fc53d57b",
+      "anchor_label": "GROUP",
+      "anchor_name": "Service Accounts",
+      "edge": "WRITE_DACL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Windows Permissions"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_DACL -> T1222.001, T1098; basis catalog: 'may rewrite the target's access control list, and can therefore grant itself any other right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "Service Accounts",
+        "relationship": "WRITE_DACL",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "Which ATT&CK technique lines up with the \"Service Accounts\" group being able to rewrite the access control list on something?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-03": {
+      "question_id": "TRI-TECH-03",
+      "kind": "bridge-technique",
+      "anchor_id": "3d4572b5-cd8c-c511-15fe-870405663555",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 062",
+      "edge": "OWNS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Windows Permissions"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: OWNS -> T1222.001, T1098; basis catalog: 'owns the target object and can therefore rewrite its ACL at will. Ownership is equivalent to full control'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 062",
+        "relationship": "OWNS",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "\"App Access 062\" owns another object in the directory. If an attacker abused that ownership, what MITRE ATT&CK technique would they be using?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-04": {
+      "question_id": "TRI-TECH-04",
+      "kind": "bridge-technique",
+      "anchor_id": "414215d0-b257-f1ed-0796-bfcab6ed4c5a",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 030",
+      "edge": "WRITE_DACL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Windows Permissions"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_DACL -> T1222.001, T1098; basis catalog: 'may rewrite the target's access control list, and can therefore grant itself any other right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 030",
+        "relationship": "WRITE_DACL",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "If someone took advantage of the fact that \"App Access 030\" can rewrite the access control list, which ATT&CK technique would that be?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-05": {
+      "question_id": "TRI-TECH-05",
+      "kind": "bridge-technique",
+      "anchor_id": "3d4572b5-cd8c-c511-15fe-870405663555",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 062",
+      "edge": "GENERIC_ALL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_ALL -> T1098; basis catalog: 'Full control over the target object. Subsumes every other ACL right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 062",
+        "relationship": "GENERIC_ALL",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "The \"App Access 062\" group has full control over another object. Which MITRE ATT&CK technique corresponds to that?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-06": {
+      "question_id": "TRI-TECH-06",
+      "kind": "bridge-technique",
+      "anchor_id": "376ba8e6-521a-0882-345f-66a44f195989",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 070",
+      "edge": "WRITE_DACL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Windows Permissions"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_DACL -> T1222.001, T1098; basis catalog: 'may rewrite the target's access control list, and can therefore grant itself any other right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 070",
+        "relationship": "WRITE_DACL",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "What ATT&CK technique matches \"App Access 070\" having the ability to rewrite the access control list on a target?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-07": {
+      "question_id": "TRI-TECH-07",
+      "kind": "bridge-technique",
+      "anchor_id": "0f128b3f-2281-2595-4951-85bf9532ec41",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 028",
+      "edge": "ALL_EXTENDED_RIGHTS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1003.006",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "DCSync"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: ALL_EXTENDED_RIGHTS -> T1098, T1003.006; basis catalog: 'every extended right on the target, including password reset and, on a domain, the replication rights' \u2014 account manipulation, and DCSync when the target is a domain",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 028",
+        "relationship": "ALL_EXTENDED_RIGHTS",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "\"App Access 028\" holds every extended right over another object. Which MITRE ATT&CK technique is that?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-08": {
+      "question_id": "TRI-TECH-08",
+      "kind": "bridge-technique",
+      "anchor_id": "1657d307-5262-f07c-e851-2a52306a105d",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 032",
+      "edge": "WRITE_GP_LINK",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1484.001"
+      ],
+      "expected_names": [
+        "Group Policy Modification"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_GP_LINK -> T1484.001; basis catalog: 'may change which Group Policy Objects are linked to the OU, and so what code runs on everything beneath it'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 032",
+        "relationship": "WRITE_GP_LINK",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "Which ATT&CK technique corresponds to the \"App Access 032\" group being able to change which group policies are linked?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-09": {
+      "question_id": "TRI-TECH-09",
+      "kind": "bridge-technique",
+      "anchor_id": "59b1ae10-2903-3b40-1bf8-445bc64517be",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 046",
+      "edge": "WRITE_DACL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Windows Permissions"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_DACL -> T1222.001, T1098; basis catalog: 'may rewrite the target's access control list, and can therefore grant itself any other right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 046",
+        "relationship": "WRITE_DACL",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "Can you tell me which MITRE ATT&CK technique it is when \"App Access 046\" can rewrite the access control list on another object?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-10": {
+      "question_id": "TRI-TECH-10",
+      "kind": "bridge-technique",
+      "anchor_id": "13e87ef2-b7df-4972-4fc1-0e23def02b50",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 019",
+      "edge": "ALL_EXTENDED_RIGHTS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1003.006",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "DCSync"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: ALL_EXTENDED_RIGHTS -> T1098, T1003.006; basis catalog: 'every extended right on the target, including password reset and, on a domain, the replication rights' \u2014 account manipulation, and DCSync when the target is a domain",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 019",
+        "relationship": "ALL_EXTENDED_RIGHTS",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "The group \"App Access 019\" holds every extended right over something. What ATT&CK technique does that represent?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-11": {
+      "question_id": "TRI-TECH-11",
+      "kind": "bridge-technique",
+      "anchor_id": "ca3c05ff-4a60-1bac-34bc-8483b3ecab38",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 050",
+      "edge": "GENERIC_WRITE",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_WRITE -> T1098; basis catalog: 'may write any non-protected attribute of the target, which usually suffices for takeover'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 050",
+        "relationship": "GENERIC_WRITE",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "\"App Access 050\" can write attributes on another object. Which MITRE ATT&CK technique would that fall under?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-12": {
+      "question_id": "TRI-TECH-12",
+      "kind": "bridge-technique",
+      "anchor_id": "4e8dbfdd-ef76-5799-614d-277ae96bc5ed",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 044",
+      "edge": "GENERIC_WRITE",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_WRITE -> T1098; basis catalog: 'may write any non-protected attribute of the target, which usually suffices for takeover'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 044",
+        "relationship": "GENERIC_WRITE",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "Which ATT&CK technique maps to \"App Access 044\" being able to write attributes on a target object?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-13": {
+      "question_id": "TRI-TECH-13",
+      "kind": "bridge-technique",
+      "anchor_id": "e51712ef-0e44-1bfd-b631-f221aebe8dd4",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 056",
+      "edge": "ALL_EXTENDED_RIGHTS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1003.006",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "DCSync"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: ALL_EXTENDED_RIGHTS -> T1098, T1003.006; basis catalog: 'every extended right on the target, including password reset and, on a domain, the replication rights' \u2014 account manipulation, and DCSync when the target is a domain",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 056",
+        "relationship": "ALL_EXTENDED_RIGHTS",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "When \"App Access 056\" holds every extended right over another object, what MITRE ATT&CK technique is being exercised?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-14": {
+      "question_id": "TRI-TECH-14",
+      "kind": "bridge-technique",
+      "anchor_id": "185cc378-ac7e-b652-fce2-f863ca1cb1aa",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 047",
+      "edge": "WRITE_OWNER",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Windows Permissions"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_OWNER -> T1222.001, T1098; basis catalog: 'may take ownership of the target, and an owner may rewrite the ACL'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 047",
+        "relationship": "WRITE_OWNER",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "\"App Access 047\" can take ownership of another object. Which ATT&CK technique does that correspond to?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-15": {
+      "question_id": "TRI-TECH-15",
+      "kind": "bridge-technique",
+      "anchor_id": "e78e3f4b-e2f4-c76f-8532-c99fe10a0714",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 037",
+      "edge": "GENERIC_ALL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_ALL -> T1098; basis catalog: 'Full control over the target object. Subsumes every other ACL right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 037",
+        "relationship": "GENERIC_ALL",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "What MITRE ATT&CK technique lines up with the \"App Access 037\" group having full control over another object?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-16": {
+      "question_id": "TRI-TECH-16",
+      "kind": "bridge-technique",
+      "anchor_id": "e51b84a5-faed-ae9e-e7ba-aa3fd22cd4c6",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 052",
+      "edge": "GENERIC_WRITE",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_WRITE -> T1098; basis catalog: 'may write any non-protected attribute of the target, which usually suffices for takeover'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 052",
+        "relationship": "GENERIC_WRITE",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "The group App Access 052 can write attributes on another object in the directory. Which MITRE ATT&CK technique does that capability line up with?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-17": {
+      "question_id": "TRI-TECH-17",
+      "kind": "bridge-technique",
+      "anchor_id": "e776a777-bfa1-0e3e-5e3a-097b50518e61",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 018",
+      "edge": "OWNS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Windows Permissions"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: OWNS -> T1222.001, T1098; basis catalog: 'owns the target object and can therefore rewrite its ACL at will. Ownership is equivalent to full control'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 018",
+        "relationship": "OWNS",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "App Access 018 owns another object in our directory. What ATT&CK technique would an attacker be using if they abused that ownership?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-18": {
+      "question_id": "TRI-TECH-18",
+      "kind": "bridge-technique",
+      "anchor_id": "8224038d-1dc0-c009-ad0b-cc7ab207111f",
+      "anchor_label": "GROUP",
+      "anchor_name": "Tier1 Support",
+      "edge": "GENERIC_WRITE",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_WRITE -> T1098; basis catalog: 'may write any non-protected attribute of the target, which usually suffices for takeover'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "Tier1 Support",
+        "relationship": "GENERIC_WRITE",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "If someone took over the Tier1 Support group, which can write attributes on another object, what MITRE ATT&CK technique would that map to?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-19": {
+      "question_id": "TRI-TECH-19",
+      "kind": "bridge-technique",
+      "anchor_id": "1b162f1a-864c-e3c9-1bcd-78129c5f670c",
+      "anchor_label": "GROUP",
+      "anchor_name": "Tier2 Support",
+      "edge": "GENERIC_WRITE",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_WRITE -> T1098; basis catalog: 'may write any non-protected attribute of the target, which usually suffices for takeover'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "Tier2 Support",
+        "relationship": "GENERIC_WRITE",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "The Tier2 Support group can write attributes on another principal. Which ATT&CK technique does that correspond to?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-20": {
+      "question_id": "TRI-TECH-20",
+      "kind": "bridge-technique",
+      "anchor_id": "790446d2-2864-f70e-3e7a-0c8492292562",
+      "anchor_label": "GROUP",
+      "anchor_name": "HR Records",
+      "edge": "GENERIC_WRITE",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_WRITE -> T1098; basis catalog: 'may write any non-protected attribute of the target, which usually suffices for takeover'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "HR Records",
+        "relationship": "GENERIC_WRITE",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "HR Records is able to write attributes on another object. What MITRE ATT&CK technique is that?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-21": {
+      "question_id": "TRI-TECH-21",
+      "kind": "bridge-technique",
+      "anchor_id": "cb473eff-4227-1391-2133-a679ab735d8f",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 065",
+      "edge": "WRITE_OWNER",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Windows Permissions"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_OWNER -> T1222.001, T1098; basis catalog: 'may take ownership of the target, and an owner may rewrite the ACL'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 065",
+        "relationship": "WRITE_OWNER",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "The group App Access 065 can take ownership of another object. Which MITRE ATT&CK technique matches that?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-22": {
+      "question_id": "TRI-TECH-22",
+      "kind": "bridge-technique",
+      "anchor_id": "13e87ef2-b7df-4972-4fc1-0e23def02b50",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 019",
+      "edge": "GENERIC_ALL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_ALL -> T1098; basis catalog: 'Full control over the target object. Subsumes every other ACL right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 019",
+        "relationship": "GENERIC_ALL",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "App Access 019 has full control over another object in the directory. What ATT&CK technique would that fall under?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-23": {
+      "question_id": "TRI-TECH-23",
+      "kind": "bridge-technique",
+      "anchor_id": "e776a777-bfa1-0e3e-5e3a-097b50518e61",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 018",
+      "edge": "GENERIC_WRITE",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_WRITE -> T1098; basis catalog: 'may write any non-protected attribute of the target, which usually suffices for takeover'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 018",
+        "relationship": "GENERIC_WRITE",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "App Access 018 can write attributes on another object. Which MITRE ATT&CK technique does that capability represent?",
+      "split": "tri-blind"
+    },
+    "TRI-TECH-24": {
+      "question_id": "TRI-TECH-24",
+      "kind": "bridge-technique",
+      "anchor_id": "ef9ed048-8257-3187-292c-6871750a3516",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 036",
+      "edge": "OWNS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Windows Permissions"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: OWNS -> T1222.001, T1098; basis catalog: 'owns the target object and can therefore rewrite its ACL at will. Ownership is equivalent to full control'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 036",
+        "relationship": "OWNS",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "The App Access 036 group owns another directory object. Which MITRE ATT&CK technique would abusing that ownership correspond to?",
+      "split": "tri-blind"
+    },
+    "TRI-MIT-01": {
+      "question_id": "TRI-MIT-01",
+      "kind": "bridge-mitigation",
+      "anchor_id": "a9439922-1c16-9279-0b7a-3e4741a55955",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 055",
+      "edge": "ADD_KEY_CREDENTIAL_LINK",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1015",
+        "M1041",
+        "M1042",
+        "M1047",
+        "T1649"
+      ],
+      "expected_names": [
+        "Active Directory Configuration",
+        "Audit",
+        "Disable or Remove Feature or Program",
+        "Encrypt Sensitive Information",
+        "Steal or Forge Authentication Certificates"
+      ],
+      "expected_count": 5,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: ADD_KEY_CREDENTIAL_LINK -> T1649; basis catalog: 'allowing a certificate to be attached and the target impersonated' \u2014 forging authentication certificates",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 055",
+        "relationship": "ADD_KEY_CREDENTIAL_LINK",
+        "direction": "out",
+        "wants": "mitigation"
+      },
+      "question": "The group App Access 055 can attach key credentials to another account. Which MITRE ATT&CK technique does that map to, and how do we mitigate it?",
+      "split": "tri-blind"
+    },
+    "TRI-MIT-02": {
+      "question_id": "TRI-MIT-02",
+      "kind": "bridge-mitigation",
+      "anchor_id": "fe400504-ee68-cb2e-6ab4-03833b303819",
+      "anchor_label": "GROUP",
+      "anchor_name": "Helpdesk",
+      "edge": "WRITE_GP_LINK",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1047",
+        "T1484.001"
+      ],
+      "expected_names": [
+        "Audit",
+        "Group Policy Modification",
+        "User Account Management"
+      ],
+      "expected_count": 3,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_GP_LINK -> T1484.001; basis catalog: 'may change which Group Policy Objects are linked to the OU, and so what code runs on everything beneath it'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "Helpdesk",
+        "relationship": "WRITE_GP_LINK",
+        "direction": "out",
+        "wants": "mitigation"
+      },
+      "question": "Helpdesk can change which group policies are linked to an object. What ATT&CK technique is that, and how would you defend against it?",
+      "split": "tri-blind"
+    },
+    "TRI-MIT-03": {
+      "question_id": "TRI-MIT-03",
+      "kind": "bridge-mitigation",
+      "anchor_id": "3d4572b5-cd8c-c511-15fe-870405663555",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 062",
+      "edge": "WRITE_ACCOUNT_RESTRICTIONS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management"
+      ],
+      "expected_count": 8,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_ACCOUNT_RESTRICTIONS -> T1098; basis catalog: 'may write account restriction attributes, enabling delegation-based escalation'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 062",
+        "relationship": "WRITE_ACCOUNT_RESTRICTIONS",
+        "direction": "out",
+        "wants": "mitigation"
+      },
+      "question": "App Access 062 can write account restrictions on another account. Which MITRE ATT&CK technique does this correspond to, and what's the recommended mitigation?",
+      "split": "tri-blind"
+    },
+    "TRI-MIT-04": {
+      "question_id": "TRI-MIT-04",
+      "kind": "bridge-mitigation",
+      "anchor_id": "46027e1d-f81d-80d0-a972-09b975e10f21",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 042",
+      "edge": "WRITE_GP_LINK",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1047",
+        "T1484.001"
+      ],
+      "expected_names": [
+        "Audit",
+        "Group Policy Modification",
+        "User Account Management"
+      ],
+      "expected_count": 3,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_GP_LINK -> T1484.001; basis catalog: 'may change which Group Policy Objects are linked to the OU, and so what code runs on everything beneath it'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 042",
+        "relationship": "WRITE_GP_LINK",
+        "direction": "out",
+        "wants": "mitigation"
+      },
+      "question": "The group App Access 042 is able to change which group policies are linked. What MITRE ATT&CK technique does that align with, and how can it be mitigated?",
+      "split": "tri-blind"
+    },
+    "TRI-MIT-05": {
+      "question_id": "TRI-MIT-05",
+      "kind": "bridge-mitigation",
+      "anchor_id": "078198bd-9262-7af4-1290-87c94f4e0de7",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 054",
+      "edge": "WRITE_OWNER",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management",
+        "Windows Permissions"
+      ],
+      "expected_count": 9,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_OWNER -> T1222.001, T1098; basis catalog: 'may take ownership of the target, and an owner may rewrite the ACL'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 054",
+        "relationship": "WRITE_OWNER",
+        "direction": "out",
+        "wants": "mitigation"
+      },
+      "question": "App Access 054 can take ownership of another object. Which ATT&CK technique does that capability correspond to, and how do we mitigate it?",
+      "split": "tri-blind"
+    },
+    "TRI-MIT-06": {
+      "question_id": "TRI-MIT-06",
+      "kind": "bridge-mitigation",
+      "anchor_id": "cb473eff-4227-1391-2133-a679ab735d8f",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 065",
+      "edge": "ALL_EXTENDED_RIGHTS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1015",
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1027",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1003.006",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Active Directory Configuration",
+        "DCSync",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Password Policies",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management"
+      ],
+      "expected_count": 11,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: ALL_EXTENDED_RIGHTS -> T1098, T1003.006; basis catalog: 'every extended right on the target, including password reset and, on a domain, the replication rights' \u2014 account manipulation, and DCSync when the target is a domain",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 065",
+        "relationship": "ALL_EXTENDED_RIGHTS",
+        "direction": "out",
+        "wants": "mitigation"
+      },
+      "question": "The App Access 065 group holds every extended right over another object. What MITRE ATT&CK technique is that, and what mitigation applies?",
+      "split": "tri-blind"
+    },
+    "TRI-MIT-07": {
+      "question_id": "TRI-MIT-07",
+      "kind": "bridge-mitigation",
+      "anchor_id": "376ba8e6-521a-0882-345f-66a44f195989",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 070",
+      "edge": "WRITE_OWNER",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management",
+        "Windows Permissions"
+      ],
+      "expected_count": 9,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_OWNER -> T1222.001, T1098; basis catalog: 'may take ownership of the target, and an owner may rewrite the ACL'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 070",
+        "relationship": "WRITE_OWNER",
+        "direction": "out",
+        "wants": "mitigation"
+      },
+      "question": "The App Access 070 group can take ownership of another object in the directory. Which MITRE ATT&CK technique does that map to, and how would we mitigate it?",
+      "split": "tri-blind"
+    },
+    "TRI-MIT-08": {
+      "question_id": "TRI-MIT-08",
+      "kind": "bridge-mitigation",
+      "anchor_id": "4e8dbfdd-ef76-5799-614d-277ae96bc5ed",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 044",
+      "edge": "ALL_EXTENDED_RIGHTS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1015",
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1027",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1003.006",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Active Directory Configuration",
+        "DCSync",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Password Policies",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management"
+      ],
+      "expected_count": 11,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: ALL_EXTENDED_RIGHTS -> T1098, T1003.006; basis catalog: 'every extended right on the target, including password reset and, on a domain, the replication rights' \u2014 account manipulation, and DCSync when the target is a domain",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 044",
+        "relationship": "ALL_EXTENDED_RIGHTS",
+        "direction": "out",
+        "wants": "mitigation"
+      },
+      "question": "App Access 044 holds every extended right over another object. What ATT&CK technique does that correspond to, and what's the recommended mitigation?",
+      "split": "tri-blind"
+    },
+    "TRI-MIT-09": {
+      "question_id": "TRI-MIT-09",
+      "kind": "bridge-mitigation",
+      "anchor_id": "b3b57f68-97ba-ed09-7a31-9781b7b320ba",
+      "anchor_label": "GROUP",
+      "anchor_name": "Network Ops",
+      "edge": "WRITE_DACL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management",
+        "Windows Permissions"
+      ],
+      "expected_count": 9,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_DACL -> T1222.001, T1098; basis catalog: 'may rewrite the target's access control list, and can therefore grant itself any other right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "Network Ops",
+        "relationship": "WRITE_DACL",
+        "direction": "out",
+        "wants": "mitigation"
+      },
+      "question": "Network Ops can rewrite the access control list on something else. Which ATT&CK technique is that, and how do we defend against it?",
+      "split": "tri-blind"
+    },
+    "TRI-MIT-10": {
+      "question_id": "TRI-MIT-10",
+      "kind": "bridge-mitigation",
+      "anchor_id": "764e7b3a-3887-9506-4b42-b21ad43945f5",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 051",
+      "edge": "GENERIC_ALL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management"
+      ],
+      "expected_count": 8,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_ALL -> T1098; basis catalog: 'Full control over the target object. Subsumes every other ACL right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 051",
+        "relationship": "GENERIC_ALL",
+        "direction": "out",
+        "wants": "mitigation"
+      },
+      "question": "App Access 051 has full control over another object. What MITRE ATT&CK technique does that represent, and how is it mitigated?",
+      "split": "tri-blind"
+    },
+    "TRI-MIT-11": {
+      "question_id": "TRI-MIT-11",
+      "kind": "bridge-mitigation",
+      "anchor_id": "2ac34a3e-b90a-7235-e317-a2405ef01f6c",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 027",
+      "edge": "GENERIC_WRITE",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management"
+      ],
+      "expected_count": 8,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_WRITE -> T1098; basis catalog: 'may write any non-protected attribute of the target, which usually suffices for takeover'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 027",
+        "relationship": "GENERIC_WRITE",
+        "direction": "out",
+        "wants": "mitigation"
+      },
+      "question": "The App Access 027 group can write attributes on another object. Which ATT&CK technique does this line up with, and how would you mitigate it?",
+      "split": "tri-blind"
+    },
+    "TRI-MIT-12": {
+      "question_id": "TRI-MIT-12",
+      "kind": "bridge-mitigation",
+      "anchor_id": "6db6a22e-6787-3ce3-7265-5a473932cc82",
+      "anchor_label": "GROUP",
+      "anchor_name": "Enterprise Admins",
+      "edge": "GENERIC_ALL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management"
+      ],
+      "expected_count": 8,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_ALL -> T1098; basis catalog: 'Full control over the target object. Subsumes every other ACL right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "Enterprise Admins",
+        "relationship": "GENERIC_ALL",
+        "direction": "out",
+        "wants": "mitigation"
+      },
+      "question": "Enterprise Admins has full control over another object. What MITRE ATT&CK technique does that map to, and how do we mitigate it?",
+      "split": "tri-blind"
+    },
+    "TRI-MIT-13": {
+      "question_id": "TRI-MIT-13",
+      "kind": "bridge-mitigation",
+      "anchor_id": "2ac34a3e-b90a-7235-e317-a2405ef01f6c",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 027",
+      "edge": "ALL_EXTENDED_RIGHTS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1015",
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1027",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1003.006",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Active Directory Configuration",
+        "DCSync",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Password Policies",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management"
+      ],
+      "expected_count": 11,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: ALL_EXTENDED_RIGHTS -> T1098, T1003.006; basis catalog: 'every extended right on the target, including password reset and, on a domain, the replication rights' \u2014 account manipulation, and DCSync when the target is a domain",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 027",
+        "relationship": "ALL_EXTENDED_RIGHTS",
+        "direction": "out",
+        "wants": "mitigation"
+      },
+      "question": "App Access 027 holds every extended right over another object. Which ATT&CK technique does that correspond to, and what mitigations apply?",
+      "split": "tri-blind"
+    },
+    "TRI-MIT-14": {
+      "question_id": "TRI-MIT-14",
+      "kind": "bridge-mitigation",
+      "anchor_id": "6db6a22e-6787-3ce3-7265-5a473932cc82",
+      "anchor_label": "GROUP",
+      "anchor_name": "Enterprise Admins",
+      "edge": "WRITE_OWNER",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management",
+        "Windows Permissions"
+      ],
+      "expected_count": 9,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_OWNER -> T1222.001, T1098; basis catalog: 'may take ownership of the target, and an owner may rewrite the ACL'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "Enterprise Admins",
+        "relationship": "WRITE_OWNER",
+        "direction": "out",
+        "wants": "mitigation"
+      },
+      "question": "Enterprise Admins can take ownership of another object. What technique in ATT&CK does that match, and how would we shut that down?",
+      "split": "tri-blind"
+    },
+    "TRI-MIT-15": {
+      "question_id": "TRI-MIT-15",
+      "kind": "bridge-mitigation",
+      "anchor_id": "e2cdf88f-4584-b55f-fa0e-5966219d8308",
+      "anchor_label": "GROUP",
+      "anchor_name": "Server Operators",
+      "edge": "GENERIC_ALL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management"
+      ],
+      "expected_count": 8,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_ALL -> T1098; basis catalog: 'Full control over the target object. Subsumes every other ACL right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "Server Operators",
+        "relationship": "GENERIC_ALL",
+        "direction": "out",
+        "wants": "mitigation"
+      },
+      "question": "Server Operators has full control over something in the directory. Which MITRE ATT&CK technique is that, and how is it mitigated?",
+      "split": "tri-blind"
+    },
+    "TRI-MIT-16": {
+      "question_id": "TRI-MIT-16",
+      "kind": "bridge-mitigation",
+      "anchor_id": "3120973f-6500-75e4-f131-8b1c0082502a",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 025",
+      "edge": "OWNS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management",
+        "Windows Permissions"
+      ],
+      "expected_count": 9,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: OWNS -> T1222.001, T1098; basis catalog: 'owns the target object and can therefore rewrite its ACL at will. Ownership is equivalent to full control'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 025",
+        "relationship": "OWNS",
+        "direction": "out",
+        "wants": "mitigation"
+      },
+      "question": "The App Access 025 group owns another object. What ATT&CK technique does that map to, and how would we mitigate it?",
+      "split": "tri-blind"
+    },
+    "TRI-REF-01": {
+      "question_id": "TRI-REF-01",
+      "kind": "bridge-refusal",
+      "anchor_id": "df996620-b3b3-ebce-b307-0c17d5bb7bdb",
+      "anchor_label": "USER",
+      "anchor_name": "lmoreau125",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "APP_ASSIGNMENT is declared not-a-technique: a user is entitled to an application. Ordinary provisioning; the adversary technique would be granting the assignment, not holding it.",
+      "author_view": {
+        "label": "USER",
+        "name": "lmoreau125",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "lmoreau125 is assigned an application \u2014 which MITRE ATT&CK technique does that kind of app assignment correspond to?",
+      "split": "tri-blind"
+    },
+    "TRI-REF-02": {
+      "question_id": "TRI-REF-02",
+      "kind": "bridge-refusal",
+      "anchor_id": "c982b9e0-14c2-28d9-756c-04d62e30db7c",
+      "anchor_label": "USER",
+      "anchor_name": "walvarez510",
+      "edge": "MEMBER_OF",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "MEMBER_OF is declared not-a-technique: group membership. Adding a member is T1098.007; being a member is how every directory in the world works, and mapping it would report Account Manipulation for every user in the tenant.",
+      "author_view": {
+        "label": "USER",
+        "name": "walvarez510",
+        "relationship": "MEMBER_OF",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "Which MITRE ATT&CK technique maps to walvarez510's group membership?",
+      "split": "tri-blind"
+    },
+    "TRI-REF-03": {
+      "question_id": "TRI-REF-03",
+      "kind": "bridge-refusal",
+      "anchor_id": "21295b60-b7ba-1da1-2e1c-2b81cefd1681",
+      "anchor_label": "USER",
+      "anchor_name": "ihaddad324",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "APP_ASSIGNMENT is declared not-a-technique: a user is entitled to an application. Ordinary provisioning; the adversary technique would be granting the assignment, not holding it.",
+      "author_view": {
+        "label": "USER",
+        "name": "ihaddad324",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "If an attacker took over ihaddad324 and used their application assignments, what MITRE ATT&CK technique would that be?",
+      "split": "tri-blind"
+    },
+    "TRI-REF-04": {
+      "question_id": "TRI-REF-04",
+      "kind": "bridge-refusal",
+      "anchor_id": "a1fa00fd-76dc-0a14-417b-2e36abb860d2",
+      "anchor_label": "USER",
+      "anchor_name": "ztanaka45",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "APP_ASSIGNMENT is declared not-a-technique: a user is entitled to an application. Ordinary provisioning; the adversary technique would be granting the assignment, not holding it.",
+      "author_view": {
+        "label": "USER",
+        "name": "ztanaka45",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "What MITRE ATT&CK technique corresponds to ztanaka45 being assigned applications?",
+      "split": "tri-blind"
+    },
+    "TRI-REF-05": {
+      "question_id": "TRI-REF-05",
+      "kind": "bridge-refusal",
+      "anchor_id": "c38e9229-b22e-0eee-44c1-215902f14f5a",
+      "anchor_label": "USER",
+      "anchor_name": "cduarte363",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "APP_ASSIGNMENT is declared not-a-technique: a user is entitled to an application. Ordinary provisioning; the adversary technique would be granting the assignment, not holding it.",
+      "author_view": {
+        "label": "USER",
+        "name": "cduarte363",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "cduarte363 has app assignments \u2014 under which MITRE ATT&CK technique does abusing those fall?",
+      "split": "tri-blind"
+    },
+    "TRI-REF-06": {
+      "question_id": "TRI-REF-06",
+      "kind": "bridge-refusal",
+      "anchor_id": "647323b8-f626-4817-8b63-a257a49bc07b",
+      "anchor_label": "USER",
+      "anchor_name": "blindqvist206",
+      "edge": "MEMBER_OF",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "MEMBER_OF is declared not-a-technique: group membership. Adding a member is T1098.007; being a member is how every directory in the world works, and mapping it would report Account Manipulation for every user in the tenant.",
+      "author_view": {
+        "label": "USER",
+        "name": "blindqvist206",
+        "relationship": "MEMBER_OF",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "blindqvist206 is a member of at least one group; which MITRE ATT&CK technique does that membership line up with?",
+      "split": "tri-blind"
+    },
+    "TRI-REF-07": {
+      "question_id": "TRI-REF-07",
+      "kind": "bridge-refusal",
+      "anchor_id": "1ae7681d-7a10-8ae3-d1da-3b731b2c2ace",
+      "anchor_label": "USER",
+      "anchor_name": "lcho296",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "APP_ASSIGNMENT is declared not-a-technique: a user is entitled to an application. Ordinary provisioning; the adversary technique would be granting the assignment, not holding it.",
+      "author_view": {
+        "label": "USER",
+        "name": "lcho296",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "When lcho296's assigned applications get abused, which MITRE ATT&CK technique are we talking about?",
+      "split": "tri-blind"
+    },
+    "TRI-REF-08": {
+      "question_id": "TRI-REF-08",
+      "kind": "bridge-refusal",
+      "anchor_id": "36c8c337-8c45-ed54-c391-d9684da03532",
+      "anchor_label": "DEVICE",
+      "anchor_name": "wks066",
+      "edge": "RUNS_AS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "RUNS_AS is declared not-a-technique: a host executes under an account. A lateral-movement precondition -- the catalog says 'compromise of the host yields that account' -- but the edge records the configuration, not a compromise.",
+      "author_view": {
+        "label": "DEVICE",
+        "name": "wks066",
+        "relationship": "RUNS_AS",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "The machine wks066 runs as an account \u2014 which MITRE ATT&CK technique corresponds to that runs-as relationship?",
+      "split": "tri-blind"
+    },
+    "TRI-REF-09": {
+      "question_id": "TRI-REF-09",
+      "kind": "bridge-refusal",
+      "anchor_id": "b38e1aee-6bd3-c773-b0b5-368db9c9f87a",
+      "anchor_label": "USER",
+      "anchor_name": "lgupta495",
+      "edge": "MEMBER_OF",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "MEMBER_OF is declared not-a-technique: group membership. Adding a member is T1098.007; being a member is how every directory in the world works, and mapping it would report Account Manipulation for every user in the tenant.",
+      "author_view": {
+        "label": "USER",
+        "name": "lgupta495",
+        "relationship": "MEMBER_OF",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "Which MITRE ATT&CK technique matches the fact that lgupta495 belongs to a group?",
+      "split": "tri-blind"
+    },
+    "TRI-REF-10": {
+      "question_id": "TRI-REF-10",
+      "kind": "bridge-refusal",
+      "anchor_id": "c8e802d7-09be-7e3a-9bb6-b8d950cf91f9",
+      "anchor_label": "USER",
+      "anchor_name": "wjensen8",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "APP_ASSIGNMENT is declared not-a-technique: a user is entitled to an application. Ordinary provisioning; the adversary technique would be granting the assignment, not holding it.",
+      "author_view": {
+        "label": "USER",
+        "name": "wjensen8",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "For wjensen8's application assignment, what is the corresponding MITRE ATT&CK technique?",
+      "split": "tri-blind"
+    },
+    "TRI-REF-11": {
+      "question_id": "TRI-REF-11",
+      "kind": "bridge-refusal",
+      "anchor_id": "72c99e3d-2f13-585d-07ff-413a56770436",
+      "anchor_label": "GCP_BINDING",
+      "anchor_name": "gcp-binding-07",
+      "edge": "BOUND_BY",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "BOUND_BY is declared not-a-technique: a GCP IAM binding grants a role. The binding is the grant, not its abuse.",
+      "author_view": {
+        "label": "GCP_BINDING",
+        "name": "gcp-binding-07",
+        "relationship": "BOUND_BY",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "The GCP binding gcp-binding-07 binds out to something else \u2014 which MITRE ATT&CK technique does that binding relationship map to?",
+      "split": "tri-blind"
+    },
+    "TRI-REF-12": {
+      "question_id": "TRI-REF-12",
+      "kind": "bridge-refusal",
+      "anchor_id": "054de65e-9919-405d-3ac2-b9a931f91f0f",
+      "anchor_label": "USER",
+      "anchor_name": "phaddad312",
+      "edge": "MEMBER_OF",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "MEMBER_OF is declared not-a-technique: group membership. Adding a member is T1098.007; being a member is how every directory in the world works, and mapping it would report Account Manipulation for every user in the tenant.",
+      "author_view": {
+        "label": "USER",
+        "name": "phaddad312",
+        "relationship": "MEMBER_OF",
+        "direction": "out",
+        "wants": "technique"
+      },
+      "question": "What MITRE ATT&CK technique would cover an attacker leveraging phaddad312's group memberships?",
+      "split": "tri-blind"
+    },
+    "TRI-CTL-01": {
+      "question_id": "TRI-CTL-01",
+      "kind": "identity-control",
+      "anchor_id": "05108eb9-0130-da2f-4e66-4a93e6771822",
+      "anchor_label": "GCP_GROUP",
+      "anchor_name": "gcp-group-01",
+      "edge": "MEMBER_OF",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "GCP_GROUP",
+        "name": "gcp-group-01",
+        "relationship": "MEMBER_OF",
+        "direction": "out",
+        "wants": "plain"
+      },
+      "question": "Is gcp-group-01 nested inside any other groups \u2014 what is it a member of?",
+      "split": "tri-blind"
+    },
+    "TRI-CTL-02": {
+      "question_id": "TRI-CTL-02",
+      "kind": "identity-control",
+      "anchor_id": "b8f0f6d5-3e28-e3ba-8871-a5b8fde421aa",
+      "anchor_label": "USER",
+      "anchor_name": "oquiroga264",
+      "edge": "MEMBER_OF",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "bc62e035-e93c-ced8-44da-39e56976c607",
+        "e51b84a5-faed-ae9e-e7ba-aa3fd22cd4c6"
+      ],
+      "expected_names": [
+        "App Access 052",
+        "okta-group-09"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "USER",
+        "name": "oquiroga264",
+        "relationship": "MEMBER_OF",
+        "direction": "out",
+        "wants": "plain"
+      },
+      "question": "What groups does oquiroga264 belong to?",
+      "split": "tri-blind"
+    },
+    "TRI-CTL-03": {
+      "question_id": "TRI-CTL-03",
+      "kind": "identity-control",
+      "anchor_id": "69965029-0655-c050-f5c5-0552d2bf5b27",
+      "anchor_label": "USER",
+      "anchor_name": "yhaddad368",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "44a64288-8649-67dd-19f1-3f825b185b52",
+        "451a3978-1ba0-22af-b716-46fb99ad38b5"
+      ],
+      "expected_names": [
+        "okta-app-15",
+        "okta-app-21"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "USER",
+        "name": "yhaddad368",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "plain"
+      },
+      "question": "Which applications is yhaddad368 assigned?",
+      "split": "tri-blind"
+    },
+    "TRI-CTL-04": {
+      "question_id": "TRI-CTL-04",
+      "kind": "identity-control",
+      "anchor_id": "a4a1b39b-d565-aa28-763e-07086a456c63",
+      "anchor_label": "USER",
+      "anchor_name": "csilva267",
+      "edge": "BOUND_BY",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "8011a5a4-0770-68af-1bf5-ce0756007c9d"
+      ],
+      "expected_names": [
+        "gcp-binding-13"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "USER",
+        "name": "csilva267",
+        "relationship": "BOUND_BY",
+        "direction": "out",
+        "wants": "plain"
+      },
+      "question": "Which IAM bindings is csilva267 bound to?",
+      "split": "tri-blind"
+    },
+    "TRI-CTL-05": {
+      "question_id": "TRI-CTL-05",
+      "kind": "identity-control",
+      "anchor_id": "e07cf2b8-87af-420b-dbfa-d7b66a169d12",
+      "anchor_label": "USER",
+      "anchor_name": "dmoreau44",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "e05fb514-477a-d8f2-cca0-48335b3e6b77",
+        "f400b9e2-b305-4797-75ec-68fb0f09a20a"
+      ],
+      "expected_names": [
+        "okta-app-00",
+        "okta-app-05"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "USER",
+        "name": "dmoreau44",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "plain"
+      },
+      "question": "Can you list the apps that have been assigned to dmoreau44?",
+      "split": "tri-blind"
+    },
+    "TRI-CTL-06": {
+      "question_id": "TRI-CTL-06",
+      "kind": "identity-control",
+      "anchor_id": "79825607-4c72-ee37-075d-f7b5b2429734",
+      "anchor_label": "USER",
+      "anchor_name": "aeriksen63",
+      "edge": "MEMBER_OF",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "3823cc11-eb82-fec2-72cd-5036f4981837",
+        "90abc6dd-d4b7-bc9f-da48-58feb27d1178",
+        "c81e76fe-c8be-ff34-acf6-5aa5c2a8bd90"
+      ],
+      "expected_names": [
+        "App Access 061",
+        "gcp-group-07",
+        "okta-group-01"
+      ],
+      "expected_count": 3,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "USER",
+        "name": "aeriksen63",
+        "relationship": "MEMBER_OF",
+        "direction": "out",
+        "wants": "plain"
+      },
+      "question": "I'm reviewing aeriksen63's access \u2014 which groups is that account a member of?",
+      "split": "tri-blind"
+    },
+    "TRI-CTL-07": {
+      "question_id": "TRI-CTL-07",
+      "kind": "identity-control",
+      "anchor_id": "43d94b59-4bd3-6384-1cb7-084e974e6a1b",
+      "anchor_label": "USER",
+      "anchor_name": "skowalski178",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "64ba179d-3f1b-46ae-f686-4a7616c26910"
+      ],
+      "expected_names": [
+        "okta-app-13"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "USER",
+        "name": "skowalski178",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "plain"
+      },
+      "question": "What application assignments does skowalski178 have?",
+      "split": "tri-blind"
+    },
+    "TRI-CTL-08": {
+      "question_id": "TRI-CTL-08",
+      "kind": "identity-control",
+      "anchor_id": "55fa066a-1e50-1343-71f6-3c1b85549217",
+      "anchor_label": "DEVICE",
+      "anchor_name": "dc233",
+      "edge": "RUNS_AS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "0ab99104-43cd-cb6e-1015-e6170c6ab609"
+      ],
+      "expected_names": [
+        "qnovak231"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "DEVICE",
+        "name": "dc233",
+        "relationship": "RUNS_AS",
+        "direction": "out",
+        "wants": "plain"
+      },
+      "question": "Which account does the machine dc233 run as?",
+      "split": "tri-blind"
+    },
+    "TRI-CTL-09": {
+      "question_id": "TRI-CTL-09",
+      "kind": "identity-control",
+      "anchor_id": "0bc26cda-78c8-fd3a-afea-1ffb043609f6",
+      "anchor_label": "USER",
+      "anchor_name": "qito293",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "673a7cab-ebd6-7a13-7d25-3c00ec633d11"
+      ],
+      "expected_names": [
+        "okta-app-16"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "USER",
+        "name": "qito293",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "plain"
+      },
+      "question": "Which applications does qito293 reach through app assignments?",
+      "split": "tri-blind"
+    },
+    "TRI-CTL-10": {
+      "question_id": "TRI-CTL-10",
+      "kind": "identity-control",
+      "anchor_id": "44a64288-8649-67dd-19f1-3f825b185b52",
+      "anchor_label": "OKTA_APPLICATION",
+      "anchor_name": "okta-app-21",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "OKTA_APPLICATION",
+        "name": "okta-app-21",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "plain"
+      },
+      "question": "What does the Okta application okta-app-21 connect to through its app assignments?",
+      "split": "tri-blind"
+    },
+    "TRI-CTL-11": {
+      "question_id": "TRI-CTL-11",
+      "kind": "identity-control",
+      "anchor_id": "52b3e3ef-21f4-911c-2c9f-cee8a8e44eb5",
+      "anchor_label": "USER",
+      "anchor_name": "wduarte113",
+      "edge": "MEMBER_OF",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "23126de2-c88f-fb9f-0992-37850de5e740",
+        "764e7b3a-3887-9506-4b42-b21ad43945f5",
+        "c48623ba-acf3-2615-e1cb-9958407a6fd8",
+        "c81e76fe-c8be-ff34-acf6-5aa5c2a8bd90"
+      ],
+      "expected_names": [
+        "App Access 033",
+        "App Access 051",
+        "gcp-group-07",
+        "okta-group-13"
+      ],
+      "expected_count": 4,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "USER",
+        "name": "wduarte113",
+        "relationship": "MEMBER_OF",
+        "direction": "out",
+        "wants": "plain"
+      },
+      "question": "Where does wduarte113 hold group memberships?",
+      "split": "tri-blind"
+    },
+    "TRI-CTL-12": {
+      "question_id": "TRI-CTL-12",
+      "kind": "identity-control",
+      "anchor_id": "506feb96-f860-fb23-1960-f40c61bd75b6",
+      "anchor_label": "USER",
+      "anchor_name": "umoreau202",
+      "edge": "BOUND_BY",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "8011a5a4-0770-68af-1bf5-ce0756007c9d"
+      ],
+      "expected_names": [
+        "gcp-binding-13"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "USER",
+        "name": "umoreau202",
+        "relationship": "BOUND_BY",
+        "direction": "out",
+        "wants": "plain"
+      },
+      "question": "What IAM bindings is umoreau202 tied to?",
+      "split": "tri-blind"
+    }
+  }
+}

@@ -279,14 +279,103 @@ The bridge is **inert for questions that do not invoke it** and fires for those
 that do. That is the property that matters: a declared correspondence that
 leaked into unrelated questions would be worse than no bridge at all.
 
+---
+
+# Phase 2 measured — the tri-source bank
+
+64 questions, blind, authored by Fable from a five-field view of one anchor and
+nothing else. Gold comes from the generator blueprint and the declared
+correspondence, with the ATT&CK side read from the canonical export rather than
+the live store. Audited before any run: **0 of 64 questions contain a gold
+identifier**, 64 of 64 name their anchor, 0 use SCREAMING_CASE relationship
+names, and 0 identity-control questions mention ATT&CK.
+
+Half the bank is negative on purpose. A run that scored well on the positives
+while failing the negatives would have learned to attach ATT&CK to everything,
+which is the failure a recall-only metric cannot see.
+
+| kind | n | schema-derived | templates |
+|---|---|---|---|
+| bridge-technique | 24 | **0.8333** | 0.0000 |
+| bridge-mitigation | 16 | 0.3398 | 0.2081 |
+| bridge-refusal | 12 | **1.0000** | 0.4167 |
+| identity-control | 12 | **1.0000** | 1.0000 |
+| **overall** | 64 | **0.7724** | 0.3176 |
+
+**The bridge works and it does not lie.** The schema-derived arm names the right
+technique on 20 of 24, and on the twelve anchors that no mapped edge touches it
+names **no technique at all** — 12 of 12, zero false claims. The template arm
+scores **zero** on the same technique questions and falsely names a technique on
+7 of those 12 negatives, which is the shape this project has seen throughout: a
+cascade with no template for the question does not abstain, it answers with
+whatever a keyword reached.
+
+**identity-control is 1.0000 with 0 of 12 reaching ATT&CK at all.** The bridge
+is inert unless invoked. That property matters more than the positive score: a
+declared correspondence that leaked into unrelated questions would be worse than
+no bridge.
+
+**The mitigation hop is the weak kind and it is not the bridge's fault.** The
+technique itself arrives on 11 of 16; the mitigations arrive on 4. Once ATT&CK is
+seeded, whether it then walks `MITIGATES` depends on the planner resolving
+"Mitigation" from the question's wording — an existing limitation of the second
+hop, unchanged by anything here, and visible now only because the first hop
+started working.
+
+## The multi-join defect this found
+
+Three sources mean a consumer can sit at the end of two declared joins at once.
+ATT&CK is the consuming end of both `attack-technique-id` (CAPEC produces) and
+`identity-edge-technique` (identity produces), and a plan routing to all three
+declares both. `dependency_map` returned `dict[str, str]` and assigned by
+last-write-wins, so whichever join came second silently replaced the first:
+identity produced `T1649` **correctly**, ATT&CK was assigned to CAPEC instead,
+CAPEC yielded no join values, and ATT&CK ran unseeded and returned nothing.
+
+The bridge worked and the wiring discarded it. A consumer is now seeded from the
+union of its producers. `bridge-technique` went 0.3333 → 0.8333 on that fix
+alone.
+
+## Two gold defects, caught before they were reported
+
+Both would have read as the system inventing techniques, which is the most
+damaging thing this bank could get wrong.
+
+**The negative anchors were dirty.** The sampler indexed *outgoing* edges only,
+while the runtime walk is direction-agnostic. `dc202` was selected as a refusal
+control on its lone outgoing `RUNS_AS`, then correctly produced T1098 from a
+`WRITE_ACCOUNT_RESTRICTIONS` edge held **over** it by something else. The
+declaration was right, the system was right, the gold was wrong. Negative
+anchors are now clean in both directions, and `bridge-refusal` went 0.8333 →
+1.0000 — the difference was entirely the gold.
+
+**The partial-right control is not drawable from this tenant and has been
+removed rather than reported.** Every anchor holding `GET_CHANGES` is also
+touched by another mapped right, usually `ALL_EXTENDED_RIGHTS`, which the
+declaration maps to T1003.006 in its own right on the customer's wording that it
+includes "on a domain, the replication rights". A T1003.006 in the evidence
+cannot be attributed to the half-right rather than the whole one, so the control
+cannot distinguish the behaviour it exists to test. Its first draw scored 0.8889
+and that number is discarded. Testing the partial discipline needs a tenant
+generated with an isolated replication right — a separate experiment.
+
 ## What is not claimed
 
-- **Not measured.** Two demonstrated questions are not a result. There is no
-  blind tri-source bank, so nothing here is a score and nothing should be quoted
-  as one.
-- **The mapping is ours.** Any figure whose gold derives from this table measures
-  whether the system *uses* the declared bridge correctly, not whether the bridge
-  is right. Those are different claims and only the first would be tested.
+- **The mapping is ours.** This measures whether the system *uses* the declared
+  bridge correctly — routes to both sources, walks the right edge, produces the
+  right technique ids, seeds ATT&CK with them, and stays silent where the
+  declaration says there is nothing to assert. It does **not** measure whether
+  the mapping is right. Nothing here can, and a figure quoted without that
+  sentence is quoted wrongly.
+- **Retrieval, not correctness.** These are set comparisons against gold. The
+  answers were not judged, so nothing is claimed about how well they read.
+- **The identity records are synthetic.** The schema is the customer's; the
+  instances are generated.
+- **Scoping is not measured.** Gold is scoped to the edge the question names,
+  but the runtime walks every edge its planner resolves, so an anchor holding
+  several mapped rights yields several techniques. That inflates nothing in
+  recall and is invisible here; it would show up in a precision-weighted or
+  judged reading.
 - **One direction only.** Identity produces technique ids and ATT&CK consumes
   them. The reverse — "which of our groups could perform T1003.006" — needs the
   inverse lookup and is not built.

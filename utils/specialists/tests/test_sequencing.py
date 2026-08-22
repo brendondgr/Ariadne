@@ -82,7 +82,7 @@ def _joined_plan() -> Plan:
 def test_dependency_derived_from_canonical_key_endpoints() -> None:
     plan = _joined_plan()
     # CAPEC reaches the key via MAPS_TO (producer); ATT&CK carries it natively.
-    assert dependency_map(plan) == {"q-attack": "q-capec"}
+    assert dependency_map(plan) == {"q-attack": ("q-capec",)}
     assert [sq.id for sq in execution_order(plan)] == ["q-capec", "q-attack"]
 
 

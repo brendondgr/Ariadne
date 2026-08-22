@@ -89,18 +89,30 @@ def build_nodes(
             return delta
 
         seed_ids: tuple[str, ...] = ()
-        producer_id = deps.get(sq.id)
-        if producer_id:
-            producer = (state.get("by_id") or {}).get(producer_id)
+        producer_ids = deps.get(sq.id) or ()
+        producer_id = ", ".join(producer_ids)
+        if producer_ids:
+            by_id_state = state.get("by_id") or {}
+            found = [by_id_state.get(pid) for pid in producer_ids]
+            # Every producer that actually ran and succeeded. A consumer at the
+            # end of two joins is seeded from the union; one producer failing is
+            # not a reason to discard what the other found.
+            usable = [p for p in found if p is not None and p.ok]
             reason: str | None = None
             truncated = False
-            if producer is None or not producer.ok:
-                reason = (
-                    "it was not run" if producer is None
-                    else f"it failed ({producer.error or 'no valid evidence'})"
-                )
+            if not usable:
+                failed = [p for p in found if p is not None and not p.ok]
+                if failed:
+                    # Keep the producer's own words. "no valid evidence" is
+                    # a summary of the summary and loses what actually went
+                    # wrong, which is the only useful part of an abstention.
+                    reason = "it failed (" + "; ".join(
+                        p.error or "no valid evidence" for p in failed
+                    ) + ")"
+                else:
+                    reason = "it was not run"
             else:
-                seed_ids, truncated = harvest_seed_ids(producer, cap=sq.limits.max_result_rows)
+                seed_ids, truncated = harvest_seed_ids(usable, cap=sq.limits.max_result_rows)
                 if not seed_ids:
                     reason = "it returned no join values"
             if reason is not None:

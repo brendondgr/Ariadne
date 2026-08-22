@@ -2,7 +2,7 @@
 id: EXP-2026-08-013
 slug: tri-source-federation
 title: Three graph sources at once, and a declared bridge from the customer graph to ATT&CK
-status: complete         # phase 1 + its fix, and phase 2's bridge built and demonstrated (not yet measured on a bank)
+status: complete         # phase 1 + its fix; phase 2 bridge built and MEASURED on a 64-question blind bank
 date_started: 2026-08-22
 date_completed: 2026-08-22
 authors: ["brendondgr"]
@@ -31,7 +31,7 @@ hypothesis: >
 code:
   commit: 544f978b56593a198bc5f9ccf9878d4e748d857e
   branch: main
-  entrypoint: "uv run python scripts/tri_compose.py && uv run python scripts/identity_sweep.py --tri --out docs/evaluation/identity-bank3-routing-tri-2026-08-22"
+  entrypoint: "uv run python scripts/tri_compose.py && uv run python scripts/tri_sweep.py --out docs/evaluation/tri-bank-2026-08-22"
   dirty: false
 config:
   path: data-tri/tri_manifest.json
@@ -60,7 +60,7 @@ compute:
 # byte-reproducible. The bank was authored by a model on 2026-08-22 and is
 # fixed and committed; nothing re-authored it here.
 llm:
-  model: "none — no model in the answer path in either condition"
+  model: "claude-fable (question authoring only); none in the answer path"
   temperature: null
   top_p: null
   max_tokens: null

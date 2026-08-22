@@ -16,7 +16,7 @@ synthesis agent's job, kept deliberately out of scope here.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Sequence
 
 from utils.planner.cards import SourceCardView, load_source_cards
 from utils.planner.join_keys import get_join_key
@@ -101,10 +101,25 @@ class FederatedEvidence:
 # construction. Independent sub-questions keep the existing order unchanged.
 
 
-def dependency_map(plan: Plan) -> dict[str, str]:
-    """Map consumer sub-question id -> producer sub-question id, per declared join."""
+def dependency_map(plan: Plan) -> dict[str, tuple[str, ...]]:
+    """Map consumer sub-question id -> **every** producer it depends on.
+
+    A tuple rather than a single id, because with three sources a consumer can
+    sit at the end of two declared joins at once. ATT&CK is the consuming end of
+    both ``attack-technique-id`` (CAPEC produces) and ``identity-edge-technique``
+    (identity produces), and a plan that routes to all three declares both. This
+    returned ``dict[str, str]`` and assigned by last-write-wins, so whichever
+    join happened to be second silently replaced the first: identity produced
+    ``T1649`` correctly, ATT&CK was assigned to CAPEC instead, CAPEC yielded no
+    join values, and ATT&CK ran unseeded and returned nothing. The bridge worked
+    and the wiring discarded it.
+
+    Order within the tuple is the plan's join order, so seeding is
+    deterministic. Still acyclic: producers and consumers are decided by the
+    key's endpoints, not by the plan.
+    """
     by_source: dict[str, SubQuestion] = {sq.source: sq for sq in plan.sub_questions}
-    deps: dict[str, str] = {}
+    deps: dict[str, list[str]] = {}
     for join in plan.joins:
         key = get_join_key(join.key)
         if key is None:
@@ -122,8 +137,10 @@ def dependency_map(plan: Plan) -> dict[str, str]:
         producer = by_source.get(producer_ds or "")
         consumer = by_source.get(consumer_ds or "")
         if producer is not None and consumer is not None and producer.id != consumer.id:
-            deps[consumer.id] = producer.id
-    return deps
+            found = deps.setdefault(consumer.id, [])
+            if producer.id not in found:
+                found.append(producer.id)
+    return {consumer: tuple(producers) for consumer, producers in deps.items()}
 
 
 def execution_order(plan: Plan) -> list[SubQuestion]:
@@ -136,11 +153,11 @@ def execution_order(plan: Plan) -> list[SubQuestion]:
     def place(sq: SubQuestion) -> None:
         if sq.id in placed:
             return
-        producer_id = deps.get(sq.id)
-        if producer_id and producer_id in by_id:
-            place(by_id[producer_id])
+        placed.add(sq.id)  # guards the recursion before descending
+        for producer_id in deps.get(sq.id, ()):
+            if producer_id in by_id:
+                place(by_id[producer_id])
         ordered.append(sq)
-        placed.add(sq.id)
 
     for sq in plan.sub_questions:
         place(sq)
@@ -148,15 +165,20 @@ def execution_order(plan: Plan) -> list[SubQuestion]:
 
 
 def harvest_seed_ids(
-    producer: SpecialistResult, *, cap: int
+    producer: SpecialistResult | Sequence[SpecialistResult], *, cap: int
 ) -> tuple[tuple[str, ...], bool]:
-    """The producer's join values as consumer seeds, deterministic and bounded.
+    """The producers' join values as consumer seeds, deterministic and bounded.
+
+    Accepts one producer or several: a consumer at the end of two declared joins
+    is seeded from the union, because dropping either half would answer a
+    narrower question than the plan asked.
 
     Returns ``(seed_ids, truncated)``. Truncation is honest — it is recorded in
     the sequencing audit trail, never silent — and keeps the consumer's query
     inside its own ``max_result_rows`` bound.
     """
-    values = sorted({v for r in producer.records for v in r.join_values})
+    producers = [producer] if isinstance(producer, SpecialistResult) else list(producer)
+    values = sorted({v for p in producers for r in p.records for v in r.join_values})
     if cap and len(values) > cap:
         return tuple(values[:cap]), True
     return tuple(values), False
@@ -299,15 +321,26 @@ class SpecialistRouter:
                 continue
 
             seed_ids: tuple[str, ...] = ()
-            producer_id = deps.get(sq.id)
-            if producer_id:
-                producer = by_id.get(producer_id)
+            producer_ids = deps.get(sq.id) or ()
+            producer_id = ", ".join(producer_ids)
+            if producer_ids:
+                found = [by_id.get(pid) for pid in producer_ids]
+                # Union across producers: a consumer at the end of two declared
+                # joins takes both, and one producer failing is not a reason to
+                # discard what the other found.
+                usable = [p for p in found if p is not None and p.ok]
                 task = SpecialistTask.from_sub_question(sq)
-                if producer is None or not producer.ok:
-                    reason = (
-                        "it was not run" if producer is None
-                        else f"it failed ({producer.error or 'no valid evidence'})"
-                    )
+                if not usable:
+                    failed = [p for p in found if p is not None and not p.ok]
+                    if failed:
+                        # Keep the producer's own words. "no valid evidence" is
+                        # a summary of the summary and loses what actually went
+                        # wrong, which is the only useful part of an abstention.
+                        reason = "it failed (" + "; ".join(
+                            p.error or "no valid evidence" for p in failed
+                        ) + ")"
+                    else:
+                        reason = "it was not run"
                     result = dependency_skip_result(task, producer_id=producer_id, reason=reason)
                     results.append(result)
                     by_id[sq.id] = result
@@ -316,7 +349,7 @@ class SpecialistRouter:
                          "seed_count": 0, "truncated": False, "skipped": reason}
                     )
                     continue
-                seed_ids, truncated = harvest_seed_ids(producer, cap=sq.limits.max_result_rows)
+                seed_ids, truncated = harvest_seed_ids(usable, cap=sq.limits.max_result_rows)
                 if not seed_ids:
                     reason = "it returned no join values"
                     result = dependency_skip_result(task, producer_id=producer_id, reason=reason)

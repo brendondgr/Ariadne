@@ -1,0 +1,1946 @@
+{
+  "meta": {
+    "seed": 20260822,
+    "n": 64
+  },
+  "entries": [
+    {
+      "question_id": "TRI-TECH-01",
+      "kind": "bridge-technique",
+      "anchor_id": "d3b7b592-1655-82d1-798f-98132ecee5e1",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 040",
+      "edge": "ADD_KEY_CREDENTIAL_LINK",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1649"
+      ],
+      "expected_names": [
+        "Steal or Forge Authentication Certificates"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: ADD_KEY_CREDENTIAL_LINK -> T1649; basis catalog: 'allowing a certificate to be attached and the target impersonated' \u2014 forging authentication certificates",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 040",
+        "relationship": "ADD_KEY_CREDENTIAL_LINK",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-02",
+      "kind": "bridge-technique",
+      "anchor_id": "7ac534e5-1fad-5670-877c-8c85fc53d57b",
+      "anchor_label": "GROUP",
+      "anchor_name": "Service Accounts",
+      "edge": "WRITE_DACL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Windows Permissions"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_DACL -> T1222.001, T1098; basis catalog: 'may rewrite the target's access control list, and can therefore grant itself any other right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "Service Accounts",
+        "relationship": "WRITE_DACL",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-03",
+      "kind": "bridge-technique",
+      "anchor_id": "3d4572b5-cd8c-c511-15fe-870405663555",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 062",
+      "edge": "OWNS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Windows Permissions"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: OWNS -> T1222.001, T1098; basis catalog: 'owns the target object and can therefore rewrite its ACL at will. Ownership is equivalent to full control'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 062",
+        "relationship": "OWNS",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-04",
+      "kind": "bridge-technique",
+      "anchor_id": "414215d0-b257-f1ed-0796-bfcab6ed4c5a",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 030",
+      "edge": "WRITE_DACL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Windows Permissions"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_DACL -> T1222.001, T1098; basis catalog: 'may rewrite the target's access control list, and can therefore grant itself any other right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 030",
+        "relationship": "WRITE_DACL",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-05",
+      "kind": "bridge-technique",
+      "anchor_id": "3d4572b5-cd8c-c511-15fe-870405663555",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 062",
+      "edge": "GENERIC_ALL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_ALL -> T1098; basis catalog: 'Full control over the target object. Subsumes every other ACL right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 062",
+        "relationship": "GENERIC_ALL",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-06",
+      "kind": "bridge-technique",
+      "anchor_id": "376ba8e6-521a-0882-345f-66a44f195989",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 070",
+      "edge": "WRITE_DACL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Windows Permissions"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_DACL -> T1222.001, T1098; basis catalog: 'may rewrite the target's access control list, and can therefore grant itself any other right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 070",
+        "relationship": "WRITE_DACL",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-07",
+      "kind": "bridge-technique",
+      "anchor_id": "0f128b3f-2281-2595-4951-85bf9532ec41",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 028",
+      "edge": "ALL_EXTENDED_RIGHTS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1003.006",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "DCSync"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: ALL_EXTENDED_RIGHTS -> T1098, T1003.006; basis catalog: 'every extended right on the target, including password reset and, on a domain, the replication rights' \u2014 account manipulation, and DCSync when the target is a domain",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 028",
+        "relationship": "ALL_EXTENDED_RIGHTS",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-08",
+      "kind": "bridge-technique",
+      "anchor_id": "1657d307-5262-f07c-e851-2a52306a105d",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 032",
+      "edge": "WRITE_GP_LINK",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1484.001"
+      ],
+      "expected_names": [
+        "Group Policy Modification"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_GP_LINK -> T1484.001; basis catalog: 'may change which Group Policy Objects are linked to the OU, and so what code runs on everything beneath it'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 032",
+        "relationship": "WRITE_GP_LINK",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-09",
+      "kind": "bridge-technique",
+      "anchor_id": "59b1ae10-2903-3b40-1bf8-445bc64517be",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 046",
+      "edge": "WRITE_DACL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Windows Permissions"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_DACL -> T1222.001, T1098; basis catalog: 'may rewrite the target's access control list, and can therefore grant itself any other right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 046",
+        "relationship": "WRITE_DACL",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-10",
+      "kind": "bridge-technique",
+      "anchor_id": "13e87ef2-b7df-4972-4fc1-0e23def02b50",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 019",
+      "edge": "ALL_EXTENDED_RIGHTS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1003.006",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "DCSync"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: ALL_EXTENDED_RIGHTS -> T1098, T1003.006; basis catalog: 'every extended right on the target, including password reset and, on a domain, the replication rights' \u2014 account manipulation, and DCSync when the target is a domain",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 019",
+        "relationship": "ALL_EXTENDED_RIGHTS",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-11",
+      "kind": "bridge-technique",
+      "anchor_id": "ca3c05ff-4a60-1bac-34bc-8483b3ecab38",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 050",
+      "edge": "GENERIC_WRITE",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_WRITE -> T1098; basis catalog: 'may write any non-protected attribute of the target, which usually suffices for takeover'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 050",
+        "relationship": "GENERIC_WRITE",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-12",
+      "kind": "bridge-technique",
+      "anchor_id": "4e8dbfdd-ef76-5799-614d-277ae96bc5ed",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 044",
+      "edge": "GENERIC_WRITE",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_WRITE -> T1098; basis catalog: 'may write any non-protected attribute of the target, which usually suffices for takeover'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 044",
+        "relationship": "GENERIC_WRITE",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-13",
+      "kind": "bridge-technique",
+      "anchor_id": "e51712ef-0e44-1bfd-b631-f221aebe8dd4",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 056",
+      "edge": "ALL_EXTENDED_RIGHTS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1003.006",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "DCSync"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: ALL_EXTENDED_RIGHTS -> T1098, T1003.006; basis catalog: 'every extended right on the target, including password reset and, on a domain, the replication rights' \u2014 account manipulation, and DCSync when the target is a domain",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 056",
+        "relationship": "ALL_EXTENDED_RIGHTS",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-14",
+      "kind": "bridge-technique",
+      "anchor_id": "185cc378-ac7e-b652-fce2-f863ca1cb1aa",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 047",
+      "edge": "WRITE_OWNER",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Windows Permissions"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_OWNER -> T1222.001, T1098; basis catalog: 'may take ownership of the target, and an owner may rewrite the ACL'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 047",
+        "relationship": "WRITE_OWNER",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-15",
+      "kind": "bridge-technique",
+      "anchor_id": "e78e3f4b-e2f4-c76f-8532-c99fe10a0714",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 037",
+      "edge": "GENERIC_ALL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_ALL -> T1098; basis catalog: 'Full control over the target object. Subsumes every other ACL right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 037",
+        "relationship": "GENERIC_ALL",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-16",
+      "kind": "bridge-technique",
+      "anchor_id": "e51b84a5-faed-ae9e-e7ba-aa3fd22cd4c6",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 052",
+      "edge": "GENERIC_WRITE",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_WRITE -> T1098; basis catalog: 'may write any non-protected attribute of the target, which usually suffices for takeover'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 052",
+        "relationship": "GENERIC_WRITE",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-17",
+      "kind": "bridge-technique",
+      "anchor_id": "e776a777-bfa1-0e3e-5e3a-097b50518e61",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 018",
+      "edge": "OWNS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Windows Permissions"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: OWNS -> T1222.001, T1098; basis catalog: 'owns the target object and can therefore rewrite its ACL at will. Ownership is equivalent to full control'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 018",
+        "relationship": "OWNS",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-18",
+      "kind": "bridge-technique",
+      "anchor_id": "8224038d-1dc0-c009-ad0b-cc7ab207111f",
+      "anchor_label": "GROUP",
+      "anchor_name": "Tier1 Support",
+      "edge": "GENERIC_WRITE",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_WRITE -> T1098; basis catalog: 'may write any non-protected attribute of the target, which usually suffices for takeover'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "Tier1 Support",
+        "relationship": "GENERIC_WRITE",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-19",
+      "kind": "bridge-technique",
+      "anchor_id": "1b162f1a-864c-e3c9-1bcd-78129c5f670c",
+      "anchor_label": "GROUP",
+      "anchor_name": "Tier2 Support",
+      "edge": "GENERIC_WRITE",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_WRITE -> T1098; basis catalog: 'may write any non-protected attribute of the target, which usually suffices for takeover'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "Tier2 Support",
+        "relationship": "GENERIC_WRITE",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-20",
+      "kind": "bridge-technique",
+      "anchor_id": "790446d2-2864-f70e-3e7a-0c8492292562",
+      "anchor_label": "GROUP",
+      "anchor_name": "HR Records",
+      "edge": "GENERIC_WRITE",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_WRITE -> T1098; basis catalog: 'may write any non-protected attribute of the target, which usually suffices for takeover'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "HR Records",
+        "relationship": "GENERIC_WRITE",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-21",
+      "kind": "bridge-technique",
+      "anchor_id": "cb473eff-4227-1391-2133-a679ab735d8f",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 065",
+      "edge": "WRITE_OWNER",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Windows Permissions"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_OWNER -> T1222.001, T1098; basis catalog: 'may take ownership of the target, and an owner may rewrite the ACL'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 065",
+        "relationship": "WRITE_OWNER",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-22",
+      "kind": "bridge-technique",
+      "anchor_id": "13e87ef2-b7df-4972-4fc1-0e23def02b50",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 019",
+      "edge": "GENERIC_ALL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_ALL -> T1098; basis catalog: 'Full control over the target object. Subsumes every other ACL right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 019",
+        "relationship": "GENERIC_ALL",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-23",
+      "kind": "bridge-technique",
+      "anchor_id": "e776a777-bfa1-0e3e-5e3a-097b50518e61",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 018",
+      "edge": "GENERIC_WRITE",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_WRITE -> T1098; basis catalog: 'may write any non-protected attribute of the target, which usually suffices for takeover'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 018",
+        "relationship": "GENERIC_WRITE",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-TECH-24",
+      "kind": "bridge-technique",
+      "anchor_id": "ef9ed048-8257-3187-292c-6871750a3516",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 036",
+      "edge": "OWNS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Windows Permissions"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: OWNS -> T1222.001, T1098; basis catalog: 'owns the target object and can therefore rewrite its ACL at will. Ownership is equivalent to full control'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 036",
+        "relationship": "OWNS",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-MIT-01",
+      "kind": "bridge-mitigation",
+      "anchor_id": "a9439922-1c16-9279-0b7a-3e4741a55955",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 055",
+      "edge": "ADD_KEY_CREDENTIAL_LINK",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1015",
+        "M1041",
+        "M1042",
+        "M1047",
+        "T1649"
+      ],
+      "expected_names": [
+        "Active Directory Configuration",
+        "Audit",
+        "Disable or Remove Feature or Program",
+        "Encrypt Sensitive Information",
+        "Steal or Forge Authentication Certificates"
+      ],
+      "expected_count": 5,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: ADD_KEY_CREDENTIAL_LINK -> T1649; basis catalog: 'allowing a certificate to be attached and the target impersonated' \u2014 forging authentication certificates",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 055",
+        "relationship": "ADD_KEY_CREDENTIAL_LINK",
+        "direction": "out",
+        "wants": "mitigation"
+      }
+    },
+    {
+      "question_id": "TRI-MIT-02",
+      "kind": "bridge-mitigation",
+      "anchor_id": "fe400504-ee68-cb2e-6ab4-03833b303819",
+      "anchor_label": "GROUP",
+      "anchor_name": "Helpdesk",
+      "edge": "WRITE_GP_LINK",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1047",
+        "T1484.001"
+      ],
+      "expected_names": [
+        "Audit",
+        "Group Policy Modification",
+        "User Account Management"
+      ],
+      "expected_count": 3,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_GP_LINK -> T1484.001; basis catalog: 'may change which Group Policy Objects are linked to the OU, and so what code runs on everything beneath it'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "Helpdesk",
+        "relationship": "WRITE_GP_LINK",
+        "direction": "out",
+        "wants": "mitigation"
+      }
+    },
+    {
+      "question_id": "TRI-MIT-03",
+      "kind": "bridge-mitigation",
+      "anchor_id": "3d4572b5-cd8c-c511-15fe-870405663555",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 062",
+      "edge": "WRITE_ACCOUNT_RESTRICTIONS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management"
+      ],
+      "expected_count": 8,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_ACCOUNT_RESTRICTIONS -> T1098; basis catalog: 'may write account restriction attributes, enabling delegation-based escalation'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 062",
+        "relationship": "WRITE_ACCOUNT_RESTRICTIONS",
+        "direction": "out",
+        "wants": "mitigation"
+      }
+    },
+    {
+      "question_id": "TRI-MIT-04",
+      "kind": "bridge-mitigation",
+      "anchor_id": "46027e1d-f81d-80d0-a972-09b975e10f21",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 042",
+      "edge": "WRITE_GP_LINK",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1047",
+        "T1484.001"
+      ],
+      "expected_names": [
+        "Audit",
+        "Group Policy Modification",
+        "User Account Management"
+      ],
+      "expected_count": 3,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_GP_LINK -> T1484.001; basis catalog: 'may change which Group Policy Objects are linked to the OU, and so what code runs on everything beneath it'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 042",
+        "relationship": "WRITE_GP_LINK",
+        "direction": "out",
+        "wants": "mitigation"
+      }
+    },
+    {
+      "question_id": "TRI-MIT-05",
+      "kind": "bridge-mitigation",
+      "anchor_id": "078198bd-9262-7af4-1290-87c94f4e0de7",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 054",
+      "edge": "WRITE_OWNER",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management",
+        "Windows Permissions"
+      ],
+      "expected_count": 9,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_OWNER -> T1222.001, T1098; basis catalog: 'may take ownership of the target, and an owner may rewrite the ACL'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 054",
+        "relationship": "WRITE_OWNER",
+        "direction": "out",
+        "wants": "mitigation"
+      }
+    },
+    {
+      "question_id": "TRI-MIT-06",
+      "kind": "bridge-mitigation",
+      "anchor_id": "cb473eff-4227-1391-2133-a679ab735d8f",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 065",
+      "edge": "ALL_EXTENDED_RIGHTS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1015",
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1027",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1003.006",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Active Directory Configuration",
+        "DCSync",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Password Policies",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management"
+      ],
+      "expected_count": 11,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: ALL_EXTENDED_RIGHTS -> T1098, T1003.006; basis catalog: 'every extended right on the target, including password reset and, on a domain, the replication rights' \u2014 account manipulation, and DCSync when the target is a domain",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 065",
+        "relationship": "ALL_EXTENDED_RIGHTS",
+        "direction": "out",
+        "wants": "mitigation"
+      }
+    },
+    {
+      "question_id": "TRI-MIT-07",
+      "kind": "bridge-mitigation",
+      "anchor_id": "376ba8e6-521a-0882-345f-66a44f195989",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 070",
+      "edge": "WRITE_OWNER",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management",
+        "Windows Permissions"
+      ],
+      "expected_count": 9,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_OWNER -> T1222.001, T1098; basis catalog: 'may take ownership of the target, and an owner may rewrite the ACL'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 070",
+        "relationship": "WRITE_OWNER",
+        "direction": "out",
+        "wants": "mitigation"
+      }
+    },
+    {
+      "question_id": "TRI-MIT-08",
+      "kind": "bridge-mitigation",
+      "anchor_id": "4e8dbfdd-ef76-5799-614d-277ae96bc5ed",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 044",
+      "edge": "ALL_EXTENDED_RIGHTS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1015",
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1027",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1003.006",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Active Directory Configuration",
+        "DCSync",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Password Policies",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management"
+      ],
+      "expected_count": 11,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: ALL_EXTENDED_RIGHTS -> T1098, T1003.006; basis catalog: 'every extended right on the target, including password reset and, on a domain, the replication rights' \u2014 account manipulation, and DCSync when the target is a domain",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 044",
+        "relationship": "ALL_EXTENDED_RIGHTS",
+        "direction": "out",
+        "wants": "mitigation"
+      }
+    },
+    {
+      "question_id": "TRI-MIT-09",
+      "kind": "bridge-mitigation",
+      "anchor_id": "b3b57f68-97ba-ed09-7a31-9781b7b320ba",
+      "anchor_label": "GROUP",
+      "anchor_name": "Network Ops",
+      "edge": "WRITE_DACL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management",
+        "Windows Permissions"
+      ],
+      "expected_count": 9,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_DACL -> T1222.001, T1098; basis catalog: 'may rewrite the target's access control list, and can therefore grant itself any other right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "Network Ops",
+        "relationship": "WRITE_DACL",
+        "direction": "out",
+        "wants": "mitigation"
+      }
+    },
+    {
+      "question_id": "TRI-MIT-10",
+      "kind": "bridge-mitigation",
+      "anchor_id": "764e7b3a-3887-9506-4b42-b21ad43945f5",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 051",
+      "edge": "GENERIC_ALL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management"
+      ],
+      "expected_count": 8,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_ALL -> T1098; basis catalog: 'Full control over the target object. Subsumes every other ACL right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 051",
+        "relationship": "GENERIC_ALL",
+        "direction": "out",
+        "wants": "mitigation"
+      }
+    },
+    {
+      "question_id": "TRI-MIT-11",
+      "kind": "bridge-mitigation",
+      "anchor_id": "2ac34a3e-b90a-7235-e317-a2405ef01f6c",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 027",
+      "edge": "GENERIC_WRITE",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management"
+      ],
+      "expected_count": 8,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_WRITE -> T1098; basis catalog: 'may write any non-protected attribute of the target, which usually suffices for takeover'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 027",
+        "relationship": "GENERIC_WRITE",
+        "direction": "out",
+        "wants": "mitigation"
+      }
+    },
+    {
+      "question_id": "TRI-MIT-12",
+      "kind": "bridge-mitigation",
+      "anchor_id": "6db6a22e-6787-3ce3-7265-5a473932cc82",
+      "anchor_label": "GROUP",
+      "anchor_name": "Enterprise Admins",
+      "edge": "GENERIC_ALL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management"
+      ],
+      "expected_count": 8,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_ALL -> T1098; basis catalog: 'Full control over the target object. Subsumes every other ACL right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "Enterprise Admins",
+        "relationship": "GENERIC_ALL",
+        "direction": "out",
+        "wants": "mitigation"
+      }
+    },
+    {
+      "question_id": "TRI-MIT-13",
+      "kind": "bridge-mitigation",
+      "anchor_id": "2ac34a3e-b90a-7235-e317-a2405ef01f6c",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 027",
+      "edge": "ALL_EXTENDED_RIGHTS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1015",
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1027",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1003.006",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Active Directory Configuration",
+        "DCSync",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Password Policies",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management"
+      ],
+      "expected_count": 11,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: ALL_EXTENDED_RIGHTS -> T1098, T1003.006; basis catalog: 'every extended right on the target, including password reset and, on a domain, the replication rights' \u2014 account manipulation, and DCSync when the target is a domain",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 027",
+        "relationship": "ALL_EXTENDED_RIGHTS",
+        "direction": "out",
+        "wants": "mitigation"
+      }
+    },
+    {
+      "question_id": "TRI-MIT-14",
+      "kind": "bridge-mitigation",
+      "anchor_id": "6db6a22e-6787-3ce3-7265-5a473932cc82",
+      "anchor_label": "GROUP",
+      "anchor_name": "Enterprise Admins",
+      "edge": "WRITE_OWNER",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management",
+        "Windows Permissions"
+      ],
+      "expected_count": 9,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: WRITE_OWNER -> T1222.001, T1098; basis catalog: 'may take ownership of the target, and an owner may rewrite the ACL'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "Enterprise Admins",
+        "relationship": "WRITE_OWNER",
+        "direction": "out",
+        "wants": "mitigation"
+      }
+    },
+    {
+      "question_id": "TRI-MIT-15",
+      "kind": "bridge-mitigation",
+      "anchor_id": "e2cdf88f-4584-b55f-fa0e-5966219d8308",
+      "anchor_label": "GROUP",
+      "anchor_name": "Server Operators",
+      "edge": "GENERIC_ALL",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1098"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management"
+      ],
+      "expected_count": 8,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: GENERIC_ALL -> T1098; basis catalog: 'Full control over the target object. Subsumes every other ACL right'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "Server Operators",
+        "relationship": "GENERIC_ALL",
+        "direction": "out",
+        "wants": "mitigation"
+      }
+    },
+    {
+      "question_id": "TRI-MIT-16",
+      "kind": "bridge-mitigation",
+      "anchor_id": "3120973f-6500-75e4-f131-8b1c0082502a",
+      "anchor_label": "GROUP",
+      "anchor_name": "App Access 025",
+      "edge": "OWNS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "M1018",
+        "M1022",
+        "M1026",
+        "M1028",
+        "M1030",
+        "M1032",
+        "M1042",
+        "T1098",
+        "T1222.001"
+      ],
+      "expected_names": [
+        "Account Manipulation",
+        "Disable or Remove Feature or Program",
+        "Multi-factor Authentication",
+        "Network Segmentation",
+        "Operating System Configuration",
+        "Privileged Account Management",
+        "Restrict File and Directory Permissions",
+        "User Account Management",
+        "Windows Permissions"
+      ],
+      "expected_count": 9,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "declared correspondence: OWNS -> T1222.001, T1098; basis catalog: 'owns the target object and can therefore rewrite its ACL at will. Ownership is equivalent to full control'",
+      "author_view": {
+        "label": "GROUP",
+        "name": "App Access 025",
+        "relationship": "OWNS",
+        "direction": "out",
+        "wants": "mitigation"
+      }
+    },
+    {
+      "question_id": "TRI-REF-01",
+      "kind": "bridge-refusal",
+      "anchor_id": "df996620-b3b3-ebce-b307-0c17d5bb7bdb",
+      "anchor_label": "USER",
+      "anchor_name": "lmoreau125",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "APP_ASSIGNMENT is declared not-a-technique: a user is entitled to an application. Ordinary provisioning; the adversary technique would be granting the assignment, not holding it.",
+      "author_view": {
+        "label": "USER",
+        "name": "lmoreau125",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-REF-02",
+      "kind": "bridge-refusal",
+      "anchor_id": "c982b9e0-14c2-28d9-756c-04d62e30db7c",
+      "anchor_label": "USER",
+      "anchor_name": "walvarez510",
+      "edge": "MEMBER_OF",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "MEMBER_OF is declared not-a-technique: group membership. Adding a member is T1098.007; being a member is how every directory in the world works, and mapping it would report Account Manipulation for every user in the tenant.",
+      "author_view": {
+        "label": "USER",
+        "name": "walvarez510",
+        "relationship": "MEMBER_OF",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-REF-03",
+      "kind": "bridge-refusal",
+      "anchor_id": "21295b60-b7ba-1da1-2e1c-2b81cefd1681",
+      "anchor_label": "USER",
+      "anchor_name": "ihaddad324",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "APP_ASSIGNMENT is declared not-a-technique: a user is entitled to an application. Ordinary provisioning; the adversary technique would be granting the assignment, not holding it.",
+      "author_view": {
+        "label": "USER",
+        "name": "ihaddad324",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-REF-04",
+      "kind": "bridge-refusal",
+      "anchor_id": "a1fa00fd-76dc-0a14-417b-2e36abb860d2",
+      "anchor_label": "USER",
+      "anchor_name": "ztanaka45",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "APP_ASSIGNMENT is declared not-a-technique: a user is entitled to an application. Ordinary provisioning; the adversary technique would be granting the assignment, not holding it.",
+      "author_view": {
+        "label": "USER",
+        "name": "ztanaka45",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-REF-05",
+      "kind": "bridge-refusal",
+      "anchor_id": "c38e9229-b22e-0eee-44c1-215902f14f5a",
+      "anchor_label": "USER",
+      "anchor_name": "cduarte363",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "APP_ASSIGNMENT is declared not-a-technique: a user is entitled to an application. Ordinary provisioning; the adversary technique would be granting the assignment, not holding it.",
+      "author_view": {
+        "label": "USER",
+        "name": "cduarte363",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-REF-06",
+      "kind": "bridge-refusal",
+      "anchor_id": "647323b8-f626-4817-8b63-a257a49bc07b",
+      "anchor_label": "USER",
+      "anchor_name": "blindqvist206",
+      "edge": "MEMBER_OF",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "MEMBER_OF is declared not-a-technique: group membership. Adding a member is T1098.007; being a member is how every directory in the world works, and mapping it would report Account Manipulation for every user in the tenant.",
+      "author_view": {
+        "label": "USER",
+        "name": "blindqvist206",
+        "relationship": "MEMBER_OF",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-REF-07",
+      "kind": "bridge-refusal",
+      "anchor_id": "1ae7681d-7a10-8ae3-d1da-3b731b2c2ace",
+      "anchor_label": "USER",
+      "anchor_name": "lcho296",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "APP_ASSIGNMENT is declared not-a-technique: a user is entitled to an application. Ordinary provisioning; the adversary technique would be granting the assignment, not holding it.",
+      "author_view": {
+        "label": "USER",
+        "name": "lcho296",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-REF-08",
+      "kind": "bridge-refusal",
+      "anchor_id": "36c8c337-8c45-ed54-c391-d9684da03532",
+      "anchor_label": "DEVICE",
+      "anchor_name": "wks066",
+      "edge": "RUNS_AS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "RUNS_AS is declared not-a-technique: a host executes under an account. A lateral-movement precondition -- the catalog says 'compromise of the host yields that account' -- but the edge records the configuration, not a compromise.",
+      "author_view": {
+        "label": "DEVICE",
+        "name": "wks066",
+        "relationship": "RUNS_AS",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-REF-09",
+      "kind": "bridge-refusal",
+      "anchor_id": "b38e1aee-6bd3-c773-b0b5-368db9c9f87a",
+      "anchor_label": "USER",
+      "anchor_name": "lgupta495",
+      "edge": "MEMBER_OF",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "MEMBER_OF is declared not-a-technique: group membership. Adding a member is T1098.007; being a member is how every directory in the world works, and mapping it would report Account Manipulation for every user in the tenant.",
+      "author_view": {
+        "label": "USER",
+        "name": "lgupta495",
+        "relationship": "MEMBER_OF",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-REF-10",
+      "kind": "bridge-refusal",
+      "anchor_id": "c8e802d7-09be-7e3a-9bb6-b8d950cf91f9",
+      "anchor_label": "USER",
+      "anchor_name": "wjensen8",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "APP_ASSIGNMENT is declared not-a-technique: a user is entitled to an application. Ordinary provisioning; the adversary technique would be granting the assignment, not holding it.",
+      "author_view": {
+        "label": "USER",
+        "name": "wjensen8",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-REF-11",
+      "kind": "bridge-refusal",
+      "anchor_id": "72c99e3d-2f13-585d-07ff-413a56770436",
+      "anchor_label": "GCP_BINDING",
+      "anchor_name": "gcp-binding-07",
+      "edge": "BOUND_BY",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "BOUND_BY is declared not-a-technique: a GCP IAM binding grants a role. The binding is the grant, not its abuse.",
+      "author_view": {
+        "label": "GCP_BINDING",
+        "name": "gcp-binding-07",
+        "relationship": "BOUND_BY",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-REF-12",
+      "kind": "bridge-refusal",
+      "anchor_id": "054de65e-9919-405d-3ac2-b9a931f91f0f",
+      "anchor_label": "USER",
+      "anchor_name": "phaddad312",
+      "edge": "MEMBER_OF",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "MEMBER_OF is declared not-a-technique: group membership. Adding a member is T1098.007; being a member is how every directory in the world works, and mapping it would report Account Manipulation for every user in the tenant.",
+      "author_view": {
+        "label": "USER",
+        "name": "phaddad312",
+        "relationship": "MEMBER_OF",
+        "direction": "out",
+        "wants": "technique"
+      }
+    },
+    {
+      "question_id": "TRI-CTL-01",
+      "kind": "identity-control",
+      "anchor_id": "05108eb9-0130-da2f-4e66-4a93e6771822",
+      "anchor_label": "GCP_GROUP",
+      "anchor_name": "gcp-group-01",
+      "edge": "MEMBER_OF",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "GCP_GROUP",
+        "name": "gcp-group-01",
+        "relationship": "MEMBER_OF",
+        "direction": "out",
+        "wants": "plain"
+      }
+    },
+    {
+      "question_id": "TRI-CTL-02",
+      "kind": "identity-control",
+      "anchor_id": "b8f0f6d5-3e28-e3ba-8871-a5b8fde421aa",
+      "anchor_label": "USER",
+      "anchor_name": "oquiroga264",
+      "edge": "MEMBER_OF",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "bc62e035-e93c-ced8-44da-39e56976c607",
+        "e51b84a5-faed-ae9e-e7ba-aa3fd22cd4c6"
+      ],
+      "expected_names": [
+        "App Access 052",
+        "okta-group-09"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "USER",
+        "name": "oquiroga264",
+        "relationship": "MEMBER_OF",
+        "direction": "out",
+        "wants": "plain"
+      }
+    },
+    {
+      "question_id": "TRI-CTL-03",
+      "kind": "identity-control",
+      "anchor_id": "69965029-0655-c050-f5c5-0552d2bf5b27",
+      "anchor_label": "USER",
+      "anchor_name": "yhaddad368",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "44a64288-8649-67dd-19f1-3f825b185b52",
+        "451a3978-1ba0-22af-b716-46fb99ad38b5"
+      ],
+      "expected_names": [
+        "okta-app-15",
+        "okta-app-21"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "USER",
+        "name": "yhaddad368",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "plain"
+      }
+    },
+    {
+      "question_id": "TRI-CTL-04",
+      "kind": "identity-control",
+      "anchor_id": "a4a1b39b-d565-aa28-763e-07086a456c63",
+      "anchor_label": "USER",
+      "anchor_name": "csilva267",
+      "edge": "BOUND_BY",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "8011a5a4-0770-68af-1bf5-ce0756007c9d"
+      ],
+      "expected_names": [
+        "gcp-binding-13"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "USER",
+        "name": "csilva267",
+        "relationship": "BOUND_BY",
+        "direction": "out",
+        "wants": "plain"
+      }
+    },
+    {
+      "question_id": "TRI-CTL-05",
+      "kind": "identity-control",
+      "anchor_id": "e07cf2b8-87af-420b-dbfa-d7b66a169d12",
+      "anchor_label": "USER",
+      "anchor_name": "dmoreau44",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "e05fb514-477a-d8f2-cca0-48335b3e6b77",
+        "f400b9e2-b305-4797-75ec-68fb0f09a20a"
+      ],
+      "expected_names": [
+        "okta-app-00",
+        "okta-app-05"
+      ],
+      "expected_count": 2,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "USER",
+        "name": "dmoreau44",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "plain"
+      }
+    },
+    {
+      "question_id": "TRI-CTL-06",
+      "kind": "identity-control",
+      "anchor_id": "79825607-4c72-ee37-075d-f7b5b2429734",
+      "anchor_label": "USER",
+      "anchor_name": "aeriksen63",
+      "edge": "MEMBER_OF",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "3823cc11-eb82-fec2-72cd-5036f4981837",
+        "90abc6dd-d4b7-bc9f-da48-58feb27d1178",
+        "c81e76fe-c8be-ff34-acf6-5aa5c2a8bd90"
+      ],
+      "expected_names": [
+        "App Access 061",
+        "gcp-group-07",
+        "okta-group-01"
+      ],
+      "expected_count": 3,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "USER",
+        "name": "aeriksen63",
+        "relationship": "MEMBER_OF",
+        "direction": "out",
+        "wants": "plain"
+      }
+    },
+    {
+      "question_id": "TRI-CTL-07",
+      "kind": "identity-control",
+      "anchor_id": "43d94b59-4bd3-6384-1cb7-084e974e6a1b",
+      "anchor_label": "USER",
+      "anchor_name": "skowalski178",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "64ba179d-3f1b-46ae-f686-4a7616c26910"
+      ],
+      "expected_names": [
+        "okta-app-13"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "USER",
+        "name": "skowalski178",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "plain"
+      }
+    },
+    {
+      "question_id": "TRI-CTL-08",
+      "kind": "identity-control",
+      "anchor_id": "55fa066a-1e50-1343-71f6-3c1b85549217",
+      "anchor_label": "DEVICE",
+      "anchor_name": "dc233",
+      "edge": "RUNS_AS",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "0ab99104-43cd-cb6e-1015-e6170c6ab609"
+      ],
+      "expected_names": [
+        "qnovak231"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "DEVICE",
+        "name": "dc233",
+        "relationship": "RUNS_AS",
+        "direction": "out",
+        "wants": "plain"
+      }
+    },
+    {
+      "question_id": "TRI-CTL-09",
+      "kind": "identity-control",
+      "anchor_id": "0bc26cda-78c8-fd3a-afea-1ffb043609f6",
+      "anchor_label": "USER",
+      "anchor_name": "qito293",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "673a7cab-ebd6-7a13-7d25-3c00ec633d11"
+      ],
+      "expected_names": [
+        "okta-app-16"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "USER",
+        "name": "qito293",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "plain"
+      }
+    },
+    {
+      "question_id": "TRI-CTL-10",
+      "kind": "identity-control",
+      "anchor_id": "44a64288-8649-67dd-19f1-3f825b185b52",
+      "anchor_label": "OKTA_APPLICATION",
+      "anchor_name": "okta-app-21",
+      "edge": "APP_ASSIGNMENT",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [],
+      "expected_names": [],
+      "expected_count": 0,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "OKTA_APPLICATION",
+        "name": "okta-app-21",
+        "relationship": "APP_ASSIGNMENT",
+        "direction": "out",
+        "wants": "plain"
+      }
+    },
+    {
+      "question_id": "TRI-CTL-11",
+      "kind": "identity-control",
+      "anchor_id": "52b3e3ef-21f4-911c-2c9f-cee8a8e44eb5",
+      "anchor_label": "USER",
+      "anchor_name": "wduarte113",
+      "edge": "MEMBER_OF",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "23126de2-c88f-fb9f-0992-37850de5e740",
+        "764e7b3a-3887-9506-4b42-b21ad43945f5",
+        "c48623ba-acf3-2615-e1cb-9958407a6fd8",
+        "c81e76fe-c8be-ff34-acf6-5aa5c2a8bd90"
+      ],
+      "expected_names": [
+        "App Access 033",
+        "App Access 051",
+        "gcp-group-07",
+        "okta-group-13"
+      ],
+      "expected_count": 4,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "USER",
+        "name": "wduarte113",
+        "relationship": "MEMBER_OF",
+        "direction": "out",
+        "wants": "plain"
+      }
+    },
+    {
+      "question_id": "TRI-CTL-12",
+      "kind": "identity-control",
+      "anchor_id": "506feb96-f860-fb23-1960-f40c61bd75b6",
+      "anchor_label": "USER",
+      "anchor_name": "umoreau202",
+      "edge": "BOUND_BY",
+      "direction": "out",
+      "neighbour_label": null,
+      "expected_ids": [
+        "8011a5a4-0770-68af-1bf5-ce0756007c9d"
+      ],
+      "expected_names": [
+        "gcp-binding-13"
+      ],
+      "expected_count": 1,
+      "uses_inferred": false,
+      "homogeneous": false,
+      "note": "identity-only; no ATT&CK technique may appear in the evidence",
+      "author_view": {
+        "label": "USER",
+        "name": "umoreau202",
+        "relationship": "BOUND_BY",
+        "direction": "out",
+        "wants": "plain"
+      }
+    }
+  ]
+}
