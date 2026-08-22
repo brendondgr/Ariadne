@@ -115,3 +115,30 @@ paper that evaluated only on `cti-ate` would report a flawless system.
   small difference between them.
 - **The plan derivation was corrected mid-experiment** (ISSUES.md I9). The first
   run's numbers are superseded and appear nowhere.
+
+---
+
+## Superseding note, 2026-08-21 (appended, nothing above edited)
+
+Two of the defects measured above have since been acted on. The figures in this
+document stand as the measurement of the system **as it was when measured**.
+
+**Fixed — EXP-2026-08-012.** The four families scoring 0.000 (`groups_for_software`,
+`software_for_group`, `campaigns_for_software`, `software_for_campaign`) now
+score **1.000**, matching the ceiling. Overall external recall for
+`deterministic` moved 0.6836 → **0.7633**, and families at the ceiling 8 → 12 of
+14. The internal banks were unaffected: 60 of 60 answers byte-identical, no
+query string moved.
+
+**Fixed — D-024.** The composer defect visible in §6 — naming a Group or a piece
+of software a "used technique" — is closed, along with two grammar bugs found
+beside it. External scores are unchanged by it to four decimals (recall 0.7633,
+exact 0.6593), because it altered prose and not one identifier.
+
+**Not fixed, and deliberately so — D-023 / EXP-2026-08-012 ISSUES I1.** The two
+partial families (`techniques_for_group` 0.295, `techniques_for_campaign` 0.326)
+remain. Widening the pinned `(t:Technique)` target would take overall recall to
+**0.9825**, but `evalset/questions.py::_top_level` filters the gold to parent
+techniques for exactly those templates on purpose, and the two external
+benchmarks disagree with each other about which reading is right. A tested patch
+is kept at EXP-2026-08-012 `data/proposed-fix1-widen-target.patch`.
