@@ -233,3 +233,47 @@ audit measured question shapes and could not see coupling that lives in emitted
 column expressions or in schema scale. The post-fix number does not restore the
 claim, it prices it — the schema-agnostic machinery transfers *after* five
 defects that only a run could find.
+
+## A-5 (2026-08-22) — the fixes generalised: 0.7857 on a bank they never saw
+
+Bank 2: 28 questions, drawn at seed 20260822 with all 24 bank-1 anchors
+excluded, **verified at zero anchor overlap**, authored by the same blind
+protocol (four fields of one anchor, never the expected answer), gold computed
+from the blueprint before any question text existed. No code changed between the
+two runs.
+
+| | Development bank (n=27) | **Blind bank (n=28)** | Drop |
+|---|---|---|---|
+| `generic` | 0.8519 | **0.7857** | 0.0662 |
+| `deterministic` | 0.2778 | **0.1964** | 0.0814 |
+| **Arm gap** | +0.5741 | **+0.5893** | — |
+
+**The fixes hold.** A development-to-blind drop of 0.0662 is close to the
+project's own measured co-authorship bias (0.0483, C-021) and nowhere near the
+collapse that would indicate the five changes had been fitted to 27 particular
+sentences. Nothing in them names a label, a group, a relationship or a question;
+the blind number is the evidence that this was not merely an intention.
+
+**The arm gap widened rather than narrowed** — +0.5893 blind against +0.5741 on
+the development set. If the schema-derived primitives' advantage were an artifact
+of tuning against bank 1, the gap would shrink when the questions changed. It did
+not. On a schema nobody wrote templates for, the primitives are worth roughly
++0.59 retrieval over the template cascade, and that figure is now blind.
+
+**Where it is weaker, and it is not where the development set suggested.**
+`facet-out` *improved* on the blind bank (0.5 → 0.8333) while the homogeneous
+kinds fell (1.0 → 0.6 and 0.667) and `multihop` fell (1.0 → 0.5). The 1.0s on the
+development set were partly small-sample luck rather than solved problems; five
+questions per homogeneous kind cannot distinguish 1.0 from 0.7. The honest
+reading of both banks together is that the homogeneous and multi-hop cases sit
+somewhere around 0.6–0.8 and are the remaining weakness — which is a different
+conclusion from either bank alone, and the reason two banks were run.
+
+`facet-in` holds at 1.0 across both, so the reverse-direction failure that
+motivated H3 is genuinely fixed rather than sampled away. Abstention holds at 1.0
+across both.
+
+**What this does not establish.** Both banks are drawn from one synthetic tenant
+under one real schema, so this measures transfer to *this* schema, not to
+schemas in general. The instances remain generated. And nothing here is judged
+for correctness — it is retrieval only.
