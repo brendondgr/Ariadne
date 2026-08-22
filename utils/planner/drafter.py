@@ -118,33 +118,145 @@ def _concept_indexes(card: SourceCardView) -> tuple[dict[str, set[str]], dict[st
     return id_index, gloss_index
 
 
-def _match_card(request_tokens: set[str], card: SourceCardView) -> tuple[int, list[str]]:
-    """Return (id_hits, gloss_hits, matched_entities) for a card.
+def _source_name_tokens(dataset: str, card: SourceCardView) -> set[str]:
+    """Tokens that *name* this source: its dataset key and its source_name words.
+
+    A source's own name is the strongest routing signal a request can carry, and
+    it must not count for anybody else. "What mitigations does ATT&CK list for
+    T1047?" contributes ``att`` (the ampersand splits the token), which no label
+    in either catalogue contains — so before this the word ATT&CK was worth
+    nothing to ATT&CK, the question scored 1 to CAPEC's 2, and a purely ATT&CK
+    question pulled in CAPEC.
+    """
+    words = {dataset.lower()}
+    name = str((card.provenance or {}).get("source_name") or "")
+    for word in _split_identifier(name.replace("&", " ")):
+        if len(word) >= 3:
+            words.add(word)
+    return words
+
+
+def _distinctive_name_tokens(
+    cards: dict[str, SourceCardView],
+) -> dict[str, set[str]]:
+    """Per-source name tokens, minus any that another live card uses as a label.
+
+    ``attack`` is the dataset key for ATT&CK *and* a word inside CAPEC's
+    ``AttackPattern`` label, so it names neither: "attack patterns and their
+    weaknesses" is CAPEC vocabulary and must not be read as a reference to
+    ATT&CK. ``att`` and ``capec`` appear in no label anywhere and do name their
+    sources. The test is structural -- does another live card use this word in
+    an identifier -- rather than a list of words to distrust.
+    """
+    indexes = {ds: _concept_indexes(card)[0] for ds, card in cards.items()}
+    out: dict[str, set[str]] = {}
+    for ds, card in cards.items():
+        elsewhere: set[str] = set()
+        for other, index in indexes.items():
+            if other != ds:
+                elsewhere |= set(index)
+        out[ds] = {
+            w for w in _source_name_tokens(ds, card) - elsewhere
+            if w not in _STOPWORDS
+        }
+    return out
+
+
+def _match_card(
+    request_tokens: set[str],
+    card: SourceCardView,
+    *,
+    claimed: dict[str, set[str]] | None = None,
+    dataset: str | None = None,
+) -> tuple[int, int, list[str], set[str]]:
+    """Return (id_hits, gloss_hits, matched_entities, matched_tokens) for a card.
 
     ``id_hits`` counts request tokens that match an actual node-label or
     relationship-type **name**; ``gloss_hits`` counts tokens that only match a
-    human description (and map to a small, specific entity set). A source is
-    selected only when it has at least one identifier hit — a lone gloss match
-    is too weak to pull in a whole source and a spurious cross-source join
-    (curbing over-selection, briefing §3.1/§3.2).
+    human description (and map to a small, specific entity set).
+
+    ``claimed`` maps each live dataset to the tokens that name it. A token
+    naming some *other* live source is discarded here rather than counted: it is
+    that source's evidence, not this one's.
+
+    ``matched_tokens`` is returned so the caller can compare sources by *which*
+    tokens they matched and not merely how many, which is what
+    :func:`_select_sources` needs.
     """
     id_index, gloss_index = _concept_indexes(card)
     matched: set[str] = set()
+    tokens: set[str] = set()
+
+    def belongs_elsewhere(tok: str) -> bool:
+        if not claimed:
+            return False
+        owners = {ds for ds, words in claimed.items() if tok in words}
+        return bool(owners) and dataset not in owners
+
     id_hits = 0
     for tok in request_tokens:
+        if belongs_elsewhere(tok):
+            continue
         entities = id_index.get(tok)
         if entities:
             id_hits += 1
+            tokens.add(tok)
             matched.update(entities)
     gloss_hits = 0
     for tok in request_tokens:
-        if tok in id_index:
+        if tok in id_index or belongs_elsewhere(tok):
             continue
         entities = gloss_index.get(tok)
         if entities and len(entities) <= _MAX_GLOSS_FANOUT:
             gloss_hits += 1
+            tokens.add(tok)
             matched.update(entities)
-    return id_hits, gloss_hits, sorted(matched)
+    # Naming the source is itself an identifier-strength hit, even when no label
+    # happens to contain the word.
+    if claimed and dataset:
+        for tok in request_tokens & claimed.get(dataset, set()):
+            if tok not in tokens:
+                id_hits += 1
+                tokens.add(tok)
+    return id_hits, gloss_hits, sorted(matched), tokens
+
+
+def _select_sources(scored: dict[str, tuple[int, int, list[str], set[str]]]) -> set[str]:
+    """Which sources a request is actually about.
+
+    The rule until 2026-08-22 was ``id_hits > 0`` for every card independently:
+    an absolute threshold with no comparison between sources. With one Neo4j
+    source and one Gremlin source that was adequate, because their vocabularies
+    barely overlap. Add a customer graph -- 72 labels and 779 property names of
+    ordinary IT English -- and a single shared, generic word drags in an entire
+    catalogue: **80 of 117 identity questions routed to ATT&CK, almost always on
+    the word "group"** matching ATT&CK's ``Group`` label. The catalogue then
+    contributed nothing but volume, and turned abstentions into false answers
+    (EXP-2026-08-013: unanswerable 1.000 -> 0.167, one question returning 558
+    CAPEC records beside the single identity record that was the whole answer).
+
+    So a secondary source must bring evidence the leader does not already have.
+    The leader is whichever source matched the most request tokens; any other
+    source is selected only if it matched a token the leader did not. A source
+    whose entire case is a word the leader also matches has said nothing to
+    distinguish itself and is not selected.
+
+    This is strictly better on the two-catalogue configuration too: it drops
+    CAPEC from the eight "What mitigations does ATT&CK list for T1047?"
+    questions and from ``A-CMP-ATT-02``, which are ATT&CK questions that were
+    pulling in CAPEC on the shared word "mitigation". Across the 120 golden
+    entries no question loses the source it is about.
+    """
+    live = {ds: tokens for ds, (id_hits, _g, _e, tokens) in scored.items() if id_hits > 0}
+    if not live:
+        return set()
+    # Ties broken by name so the selection is deterministic, never by dict order.
+    leader = max(live, key=lambda ds: (len(live[ds]), ds))
+    keep = {leader}
+    for ds, tokens in live.items():
+        if ds != leader and (tokens - live[leader]):
+            keep.add(ds)
+    return keep
 
 
 class DeterministicDrafter:
@@ -165,16 +277,29 @@ class DeterministicDrafter:
         if intent is not None:
             rationale_parts.append(f"intent={intent.label}")
 
-        # Score every source. Select only sources with at least one identifier
-        # (label/relationship-name) match; a lone gloss match is too weak.
-        scored = {ds: _match_card(request_tokens, card) for ds, card in cards.items()}
+        # Score every source, then select comparatively. A lone gloss match is
+        # still too weak on its own; on top of that, a source must now bring a
+        # token the best-matching source did not (see `_select_sources`).
+        claimed = _distinctive_name_tokens(cards)
+        scored = {
+            ds: _match_card(request_tokens, card, claimed=claimed, dataset=ds)
+            for ds, card in cards.items()
+        }
+        selected = _select_sources(scored)
         relevant = sorted(
-            (ds for ds, (id_hits, _gl, _ents) in scored.items() if id_hits > 0),
-            key=lambda ds: (-scored[ds][0], -scored[ds][1], ds),
+            selected, key=lambda ds: (-scored[ds][0], -scored[ds][1], ds)
         )
+        shed = sorted(
+            ds for ds, (id_hits, _g, _e, _t) in scored.items()
+            if id_hits > 0 and ds not in selected
+        )
+        if shed:
+            rationale_parts.append(
+                "not selected (no evidence beyond the leading source): " + ", ".join(shed)
+            )
 
         for ds in relevant:
-            id_hits, gloss_hits, entities = scored[ds]
+            id_hits, gloss_hits, entities, _tokens_matched = scored[ds]
             score = id_hits + gloss_hits
             card = cards[ds]
             # Keep only entities truly present in the card (defensive).

@@ -1,6 +1,7 @@
 # EXP-2026-08-013 — Three sources at once: the routing floor
 
-**Status:** phase 1 complete (routing floor). Phase 2 (cross-source correlation)
+**Status:** phase 1 complete, and the defect it found is fixed. Three live
+sources now retrieve **identically** to one. Phase 2 (cross-source correlation)
 not started.
 
 ## The question
@@ -85,6 +86,52 @@ A 22× and 200× increase in evidence for zero additional correct retrieval. One
 abstention question returned 558 CAPEC records beside the single identity record
 that was the whole honest answer.
 
+## The fix
+
+The selection rule was `id_hits > 0`, evaluated for each card independently — an
+absolute threshold with no comparison between sources. With one Neo4j source and
+one Gremlin source that was adequate, because their vocabularies barely overlap.
+Add a customer graph and a single shared, generic word drags in a whole
+catalogue.
+
+The replacement is comparative: **a secondary source must bring evidence the
+leader does not already have.** The leader is whichever source matched the most
+request tokens; any other source is selected only if it matched a token the
+leader did not. A source whose entire case is a word the leader also matches has
+said nothing to distinguish itself.
+
+One refinement was needed. A source's own name is the strongest routing signal a
+request can carry, and it was being counted for the wrong source: "What
+mitigations does ATT&CK list for T1047?" contributes the token `att` (the
+ampersand splits it), which no label in either catalogue contains, so the word
+ATT&CK was worth nothing to ATT&CK — the question scored 1 to CAPEC's 2 and a
+purely ATT&CK question pulled in CAPEC. Source-name tokens now count for their
+own source, *except* where another live card uses the word in an identifier:
+`attack` is also the first word of CAPEC's `AttackPattern`, so it names neither,
+and "attack patterns and their weaknesses" stays CAPEC vocabulary.
+
+### After the fix
+
+| | generic | template |
+|---|---|---|
+| overall, 1 source | 0.7094 | 0.2194 |
+| overall, 3 sources | **0.7094** | **0.2194** |
+| unanswerable, 3 sources | 0.167 → **1.000** | 0.083 → **1.000** |
+| routed beyond identity | 80/117 → **0/117** | 80/117 → **0/117** |
+| ids per question, 3 sources | 180.36 → **8.24** | 391.47 → **1.95** |
+| worst question | 2234 → **54** | 2608 → **2** |
+
+**Zero questions differ between one source and three**, on either arm, in either
+direction. The single-source baseline is unmoved (0.7094 / 0.2194), which is the
+check that the new rule is inert when there is nothing to choose between.
+
+It is also strictly better on the two-catalogue configuration it was not written
+for. Across the 120 golden entries, the number whose *owning* source is not
+routed falls from **14 to 2**, and the two that remain are the `A-AST` boundary
+cases, which ask for an entity type ATT&CK does not have and are supposed to
+refuse. The eight "What mitigations does ATT&CK list for …" questions now route
+to ATT&CK alone instead of dragging in CAPEC on the shared word "mitigation".
+
 ## What this says
 
 The capability is real and the discipline is not. The system **can** hold three
@@ -94,10 +141,17 @@ irrelevant — and because the keyword router matches a request against 72 ident
 labels and 779 property names of ordinary IT English, "irrelevant" is the common
 case, not the edge case.
 
-That is a precise prerequisite for phase 2. Correlating a customer finding with
-ATT&CK is not worth building on top of a router that pulls in ATT&CK for 68% of
-questions that have nothing to do with it, because a correct correlation would be
-indistinguishable from the noise already arriving.
+That was the state before the fix, and it was a precise prerequisite for phase 2:
+correlating a customer finding with ATT&CK is not worth building on top of a
+router that pulls in ATT&CK for 68% of questions that have nothing to do with it,
+because a correct correlation would be indistinguishable from the noise already
+arriving.
+
+With the router fixed, that prerequisite is met. Three live sources across two
+query languages now cost exactly nothing, so phase 2 has a clean floor to be
+measured against: any cross-source retrieval it produces is attributable to the
+bridge rather than to noise, because there is no longer any noise to confuse it
+with.
 
 ## Limits
 
@@ -106,8 +160,13 @@ indistinguishable from the noise already arriving.
 - One bank, drawn against the identity schema. There are no questions here that
   *should* route to three sources, by design: phase 1 measures the cost of
   irrelevant sources, not the benefit of relevant ones.
-- Retrieval only. The two conditions were not judged, so nothing is claimed about
+- Retrieval only. The conditions were not judged, so nothing is claimed about
   answer quality beyond what retrieval and evidence volume show.
+- The identity bank contains no question that *should* route to more than one
+  source, so this measures that irrelevant sources are correctly excluded. It
+  does not measure that relevant ones are correctly included — the golden set's
+  14 → 2 improvement is the only evidence on that side, and it comes from a
+  two-source configuration.
 - The baseline condition was run before the abstention-wording fix and the
   tri-source condition after it. That fix changes narrative text only; retrieval
   is computed from evidence records, so the comparison is unaffected.

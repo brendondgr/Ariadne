@@ -28,9 +28,15 @@ sources. Any that does not is evidence the retrieval path is genuinely
 card-driven, since the same code answered the same questions identically with
 three schemas loaded instead of one.
 
+## Phase 1a — fix the router, re-run both conditions (done)
+
+The defect phase 1 found is fixed and both conditions were re-run at the same
+commit, so the comparison is not confounded by the fix. Pre-registered reading,
+unchanged: any per-kind figure that moves is the cost of extra sources.
+
 ## Phase 2 — cross-source correlation (not started)
 
-Blocked on phase 1's finding, deliberately. Correlating a customer finding with
+Was blocked on phase 1's finding; that block is now lifted. Correlating a customer finding with
 ATT&CK is not worth building while the router pulls in ATT&CK for 68% of
 questions that have nothing to do with it: a correct correlation would be
 indistinguishable from the noise already arriving.

@@ -2,7 +2,7 @@
 id: EXP-2026-08-013
 slug: tri-source-federation
 title: What does it cost to have three graph sources live at once?
-status: complete         # phase 1 (routing floor) complete; phase 2 not started
+status: complete         # phase 1 + the fix it motivated; phase 2 not started
 date_started: 2026-08-22
 date_completed: 2026-08-22
 authors: ["brendondgr"]
@@ -31,7 +31,7 @@ hypothesis: >
 code:
   commit: 544f978b56593a198bc5f9ccf9878d4e748d857e
   branch: main
-  entrypoint: "uv run python scripts/tri_compose.py && uv run python scripts/identity_sweep.py --tri --out docs/evaluation/identity-bank3-tri-2026-08-22"
+  entrypoint: "uv run python scripts/tri_compose.py && uv run python scripts/identity_sweep.py --tri --out docs/evaluation/identity-bank3-routing-tri-2026-08-22"
   dirty: false
 config:
   path: data-tri/tri_manifest.json
@@ -73,10 +73,14 @@ llm:
     None reachable. No model is in the answer path in either condition.
 
 # --- Results block ---
-# Every kind that HAS an answer is identical between the two conditions, on both
-# arms. Every question that moved was an abstention. Read the two overall figures
-# only beside the per-kind rows and the evidence volume, or the drop reads as a
-# retrieval failure, which it is not.
+# Two readings, and the `_prerouting` ones are kept because the difference IS the
+# measurement. Before the router was fixed, every kind that HAS an answer was
+# already identical between one source and three, and every question that moved
+# was an abstention -- so the drop was never a retrieval failure and must not be
+# read as one. After the fix, three sources retrieve IDENTICALLY to one on every
+# kind and both arms, with zero questions differing in either direction, and the
+# single-source baseline is unmoved, which is the check that the new rule is
+# inert when there is nothing to choose between.
 metrics:
   primary: gold_in_evidence_retrieval
   values:
