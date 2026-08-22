@@ -141,8 +141,18 @@ _QUOTED_NAME_RE = re.compile(r"['\"‘’“”]([^'\"‘’“”]{2,})['\"‘�
 # "and"/"or" are deliberately excluded: they separate entities ("User Training
 # and Software Configuration" must split), not join a single name.
 _NAME_CONNECTORS = r"(?:the|of|for|to|in|on|with|a|an|by|from)"
+# A Title-Case run, optionally ending in a numeric token.
+#
+# The trailing-number arm matters more than it looks. Without it the anchor
+# "App Access 070" extracts as "App Access", because every continuation token
+# had to start with a capital and "070" does not -- and the resolver's name
+# match is an unanchored CONTAINS, so "app access" returned all 54 groups named
+# "App Access NNN" instead of the one asked about (ISSUES I-11). Instance names
+# ending in a number are the norm in infrastructure data, not the exception:
+# hosts, OUs, groups and app registrations are all routinely numbered.
 _TITLECASE_RUN_RE = re.compile(
     rf"[A-Z][A-Za-z0-9]*(?:\s+(?:{_NAME_CONNECTORS}\s+)?[A-Z][A-Za-z0-9]*)*"
+    rf"(?:\s+\d+[A-Za-z0-9]*)*"
 )
 _ANY_ID_RE = re.compile(
     r"\b(?:TA|DET|DC|T|M|G|S|C)\d{3,}(?:\.\d+)?\b|\bCAPEC[-\s]?\d+\b|\bCWE[-\s]?\d+\b",

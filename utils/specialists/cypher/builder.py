@@ -621,6 +621,22 @@ class CypherQueryBuilder:
     # — the facet block is a count, never a neighbour list. The untyped ``-[r]-``
     # surfaces every edge kind and sidesteps the gate's relationship-type check;
     # a zero-degree node yields an empty block (the CASE filters the null group).
+    # Prefer an exact name, fall back to substring only when exact finds nothing.
+    #
+    # A bare ``CONTAINS`` is an unanchored substring match over a name space this
+    # project does not control, so any source whose names prefix one another
+    # defeats it: "App Access 070" matched all 54 "App Access NNN" groups
+    # (ISSUES I-11). Widening the extractor alone does not fix that -- it fixes
+    # the one case and leaves the class -- so the predicate itself now ranks.
+    #
+    # Expressed as collect/UNWIND rather than a subquery because the safety gate
+    # validates a flat read-only statement, and this keeps it one.
+    _NAME_EXACT_THEN_CONTAINS = (
+        "WITH collect(n) AS cand "
+        "WITH cand, [x IN cand WHERE any(t IN $names WHERE toLower(x.name) = t)] AS exact "
+        "UNWIND (CASE WHEN size(exact) > 0 THEN exact ELSE cand END) AS n "
+    )
+
     _FACET_AGGREGATION = (
         "OPTIONAL MATCH (n)-[r]-(m) "
         "WITH n, "
@@ -662,7 +678,7 @@ class CypherQueryBuilder:
             "AND any(term IN $names WHERE toLower(n.name) CONTAINS term) "
         )
         return QueryDraft(
-            query=match + self._FACET_AGGREGATION,
+            query=match + self._NAME_EXACT_THEN_CONTAINS + self._FACET_AGGREGATION,
             params={"names": names},
             template="describe_by_name",
             expected_nonempty=False,
@@ -964,6 +980,7 @@ class CypherQueryBuilder:
         return QueryDraft(
             query=(
                 "MATCH (n) WHERE any(term IN $names WHERE toLower(n.name) CONTAINS term) "
+                + self._NAME_EXACT_THEN_CONTAINS
                 + projection
             ),
             params={"names": names},
