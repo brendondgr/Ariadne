@@ -356,13 +356,74 @@ def _plural(noun: str, count: int) -> str:
     return f"{head}{sep}{plural}" if tail else plural
 
 
+#: Nouns from :data:`_REL_NOUNS` that assert what KIND the neighbour is, and the
+#: labels each one is true of.
+#:
+#: ATT&CK's ``USES`` is the reason this exists. It joins Group->Software,
+#: Campaign->Software and Software->Technique alike, so "used technique" is
+#: right for one of those and a false statement about a grounded identifier for
+#: the others — EXP-2026-08-010 caught the composer writing "S0512 (FatDuke) has
+#: 2 used techniques: G0016, C0023", where G0016 is a Group and C0023 a
+#: Campaign. Naming an id and mis-stating what it is has been this project's
+#: only remaining fabrication source in an otherwise deterministic path.
+#:
+#: A noun absent from this map is unconstrained and behaves exactly as before,
+#: so the CAPEC hierarchy roles (ChildOf/CanPrecede/PeerOf, all
+#: AttackPattern->AttackPattern) are untouched.
+_NOUN_EXPECTS: dict[str, frozenset[str]] = {
+    "used technique": frozenset({"Technique", "SubTechnique"}),
+    "mitigated technique": frozenset({"Technique", "SubTechnique"}),
+    "parent technique": frozenset({"Technique"}),
+    "exploited weakness": frozenset({"Weakness"}),
+    "mitigation": frozenset({"Mitigation"}),
+    "consequence": frozenset({"Consequence"}),
+    "execution step": frozenset({"ExecutionStep"}),
+    "required skill": frozenset({"Skill"}),
+    "ATT&CK mapping": frozenset({"TaxonomyEntry"}),
+}
+
+
+#: Readable English for a label used as a noun, as (singular, plural). Without
+#: this the fallback appends an "s" to the label verbatim and writes
+#: "2 Softwares" — a type name with a plural bolted on, which reads as a leaked
+#: internal identifier rather than an answer.
+#:
+#: The plural is spelled out rather than derived because ``_plural`` inflects the
+#: last word of a phrase, which is right for "used technique" and wrong for
+#: "piece of software". Only labels whose bare form is wrong need an entry.
+_LABEL_NOUNS: dict[str, tuple[str, str]] = {
+    "Software": ("piece of software", "pieces of software"),
+    "Group": ("group", "groups"),
+    "Campaign": ("campaign", "campaigns"),
+    "Technique": ("technique", "techniques"),
+    "SubTechnique": ("sub-technique", "sub-techniques"),
+    "Mitigation": ("mitigation", "mitigations"),
+    "Tactic": ("tactic", "tactics"),
+    "AttackPattern": ("attack pattern", "attack patterns"),
+    "Weakness": ("weakness", "weaknesses"),
+    "TaxonomyEntry": ("taxonomy entry", "taxonomy entries"),
+    "DataComponent": ("data component", "data components"),
+    "DetectionStrategy": ("detection strategy", "detection strategies"),
+}
+
+
 def _related_noun(record: EvidenceRecord, count: int = 0) -> str:
     """A readable plural for a record's related set.
 
     Prefers the *relationship* over the neighbour's label: the edge is what the
     question asked about, and a label-only noun ("AttackPatterns") silently drops
     the semantics a hierarchy or mitigation question turns on.
+
+    The preference yields when the relationship's noun would assert a kind the
+    neighbours are not — see :data:`_NOUN_EXPECTS`. A slightly flatter noun is
+    always better than a confident wrong one, because the identifiers beside it
+    are correct and a reader has no way to tell the label is the part that lied.
     """
+    labels = {
+        str(rel.get("label")).strip()
+        for rel in record.related
+        if isinstance(rel, dict) and rel.get("label")
+    }
     rel_types = {
         str(rel.get("type")).strip().upper()
         for rel in record.related
@@ -370,19 +431,20 @@ def _related_noun(record: EvidenceRecord, count: int = 0) -> str:
     }
     if len(rel_types) == 1:
         noun = _REL_NOUNS.get(next(iter(rel_types)))
-        if noun:
+        expected = _NOUN_EXPECTS.get(noun or "")
+        # Unlabelled neighbours cannot contradict the noun, so they keep the old
+        # behaviour rather than being demoted on missing evidence.
+        if noun and (expected is None or not labels or labels <= expected):
             return _plural(noun, count)
     # A per-neighbour role (an abstraction ancestor's "standard"/"meta") is
     # annotated on each id already; fall back to the neighbour label.
-    labels = {
-        str(rel.get("label")).strip()
-        for rel in record.related
-        if isinstance(rel, dict) and rel.get("label")
-    }
     if len(labels) == 1:
         label = next(iter(labels))
         if label:
-            return label if label.lower().endswith("s") else f"{label}s"
+            spelled = _LABEL_NOUNS.get(label)
+            if spelled:
+                return spelled[0] if count == 1 else spelled[1]
+            return _plural(label, count)
     return "related item(s)"
 
 

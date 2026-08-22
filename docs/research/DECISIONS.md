@@ -484,3 +484,45 @@ and restarted; the first run's numbers are superseded and quoted nowhere.
 **The general rule.** A control that gives the external condition less than the
 internal one is not conservative. It is wrong in the direction that flatters the
 conclusion you were hoping to draw.
+
+## D-024 — Fix the composer's false labels, accepting that 21 recorded answers change wording (2026-08-21)
+
+**The defect.** EXP-2026-08-010 caught the composer writing, of a piece of
+software: *"S0512 (FatDuke) has 2 used techniques: G0016, C0023"*. G0016 is a
+Group and C0023 a Campaign. ATT&CK's `USES` joins Group→Software,
+Campaign→Software and Software→Technique alike, while `_REL_NOUNS` maps the
+relationship to one noun. The identifiers were correct and retrieved; only the
+noun was false — the worst shape this failure takes, because a reader has no way
+to tell that the label is the part that lied. It was the last known fabrication
+source in an otherwise deterministic path.
+
+Two further bugs surfaced in the same function. The label fallback was
+**count-blind**, writing "has 1 Skills". And it appended an "s" to the label
+verbatim, writing "1 TaxonomyEntrys" — a type name with a plural bolted on.
+
+**Decision.** All three fixed: a noun that asserts a kind is used only when the
+neighbours are that kind (`_NOUN_EXPECTS`); the label fallback respects count;
+and labels get spelled English forms (`_LABEL_NOUNS`).
+
+**The cost, measured rather than assumed.** Unlike the template fix in
+EXP-2026-08-012, this is not free. Re-running the deterministic arm over both
+committed banks:
+
+| | |
+|---|---:|
+| answers whose prose changed | **21 of 60** |
+| identifiers named in the answer, unchanged | **60 of 60** |
+| claim `entity_ids`, unchanged | **60 of 60** |
+
+Not one identifier moved in any answer. Every text change is an improvement, and
+two are outright grammar errors being corrected.
+
+**Why ship anyway.** Unlike D-023's roll-up question, this has a correct answer:
+the old text contained statements that were false about grounded identifiers.
+Keeping a known falsehood to protect the byte-stability of a figure is the wrong
+trade, and the figures rest on claim correctness rather than prose style.
+
+**What travels with it.** Any judged figure computed over those 21 answers was
+computed on the old wording. The scores are not invalidated — the claims and
+their identifiers are unchanged — but a re-judge is the only way to state a
+post-fix number, and none is claimed here.
