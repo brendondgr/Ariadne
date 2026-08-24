@@ -182,7 +182,7 @@ class GremlinQueryBuilder:
              seeds are present)
           6. capec_scan — fallback: scan by primary label
 
-        ``capec_lookup`` was subsumed by ``describe`` and has no caller;
+        ``capec_lookup`` was subsumed by ``describe`` and is deleted;
         ``capec_dossier_by_name`` was replaced by ``describe_by_name``.
         Under ``SPECIALIST_GENERIC_ONLY`` the cascade is bypassed entirely for
         the generic-primitives branch below.
@@ -255,9 +255,10 @@ class GremlinQueryBuilder:
                 return self._capec_reverse_maps(resolved)
             return self._capec_maps_to(resolved)
         if has_seeds:
-            # describe the anchor: full vertex + bounded facet block. Subsumes the
-            # old lean capec_lookup and the capec_dossier — describe always returns
-            # the full record, so there is no describe-verb intent left to gate on.
+            # describe the anchor: full vertex + bounded facet block. Subsumed the
+            # old lean capec_lookup and the capec_dossier (both since deleted) —
+            # describe always returns the full record, so there is no describe-verb
+            # intent left to gate on.
             return self._describe(resolved)
         # Seedless definitional question that names an entity ("What is
         # Phishing?") → describe by name. The definitional cue keeps a broad
@@ -297,26 +298,6 @@ class GremlinQueryBuilder:
             template="expand",
             expected_nonempty=False,
             meta=request.to_dict(),
-        )
-
-    # Dead: no production caller — `build()` routes every seeded task to
-    # `_describe`, which subsumes this shape. Still referenced by
-    # `utils/specialists/tests/test_gremlin_validator.py:215`, so it is kept
-    # rather than deleted; removing it is a behavioural change, not tidying.
-    def _capec_lookup(self, resolved: ResolvedTask) -> QueryDraft:
-        ids = [_capec_gremlin_id(s) for s in resolved.seed_ids]
-        lim = resolved.task.max_rows()
-        params: dict[str, Any] = {"ids": ids}
-        query = (
-            'g.V().hasLabel("AttackPattern").has("id", within(ids))'
-            f".elementMap().limit({lim})"
-        )
-        return QueryDraft(
-            query=query,
-            params=params,
-            template="capec_lookup",
-            expected_nonempty=bool(ids),
-            meta={"anchor_label": "AttackPattern"},
         )
 
     # The facet-shaped projection shared by both describe forms. Unlike the old

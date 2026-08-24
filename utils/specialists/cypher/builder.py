@@ -233,8 +233,7 @@ class CypherQueryBuilder:
     ``tactic_techniques``, ``datacomponent_analytics``, ``describe``,
     ``describe_by_name``, ``generic_neighbors`` and ``label_scan`` — and cover
     the common ATT&CK query patterns.  ``expand`` is reached only from
-    :meth:`expand`, the separate paging compiler.  ``node_lookup`` has no
-    caller at all.
+    :meth:`expand`, the separate paging compiler.
 
     ``describe``/``describe_by_name`` replaced the former ``node_dossier`` and
     ``node_dossier_by_name`` templates; ``generic_neighbors`` is emitted only
@@ -326,7 +325,7 @@ class CypherQueryBuilder:
             return self._subtechnique_parent(resolved)
 
         # 4b. software_techniques — Software + Technique/SubTechnique entities + S-seeds
-        #     (must NOT capture node_lookup for Software-only or label_scan with no seeds)
+        #     (must NOT capture label_scan with no seeds)
         # Either end may be the anchor: "what does S0154 use" and "what software
         # uses T1047" are the same edge asked from opposite sides, and the
         # second fell through to `describe` while there were no S-seeds.
@@ -356,10 +355,10 @@ class CypherQueryBuilder:
             return self._tactic_techniques(resolved)
 
         # 5. Seed ids present but no compound edge intent → describe the anchor:
-        #    every property + a bounded facet block. describe subsumes the old
-        #    node_lookup and node_dossier — it always returns the full record, so
-        #    there is no cheap "lean lookup" path left to protect and no
-        #    describe-verb intent left to gate on.
+        #    every property + a bounded facet block. describe subsumed the old
+        #    node_lookup and node_dossier (both since deleted) — it always returns
+        #    the full record, so there is no cheap "lean lookup" path left to
+        #    protect and no describe-verb intent left to gate on.
         if resolved.seed_ids:
             return self._describe(resolved)
 
@@ -594,25 +593,6 @@ class CypherQueryBuilder:
             params=params,
             template="tactic_techniques",
             meta={"seed_ids": seed_ids},
-        )
-
-    # Dead: no production caller — `build()` routes every seeded task to
-    # `_describe`, which returns the full record instead of this id/name pair.
-    # Kept rather than deleted; removing it is a behavioural change.
-    def _node_lookup(self, resolved: ResolvedTask) -> QueryDraft:
-        """MATCH (n:<Label>) WHERE n.attack_id IN $ids RETURN id and name."""
-        label = resolved.primary_label() or "Technique"
-        seed_ids = list(resolved.seed_ids)
-        query = (
-            f"MATCH (n:{label}) "
-            f"WHERE n.attack_id IN $ids "
-            f"RETURN n.attack_id AS id, n.name AS name"
-        )
-        return QueryDraft(
-            query=query,
-            params={"ids": seed_ids},
-            template="node_lookup",
-            meta={"label": label, "seed_ids": seed_ids},
         )
 
     # The facet-block aggregation shared by both describe shapes: group every

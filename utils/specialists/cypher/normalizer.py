@@ -8,7 +8,7 @@ context string embedded in the provenance) drives the grouping logic:
 
   * ``technique_mitigations`` — groups rows by technique, collecting mitigations
     as ``related`` items; one record per technique.
-  * All other templates — one record per row (``node_lookup`` / ``label_scan`` /
+  * All other templates — one record per row (``label_scan`` /
     ``group_techniques`` / ``tactic_techniques``).
 """
 
@@ -191,7 +191,7 @@ class CypherNormalizer:
         # describe — full node (properties_json) + bounded facet block
         if rows and "facets" in rows[0]:
             return self._normalize_describe(rows, resolved, query, card, id_scheme)
-        # node_lookup / label_scan
+        # label_scan
         return self._normalize_flat(rows, resolved, query, card, id_scheme)
 
     def _normalize_technique_mitigations(
@@ -773,7 +773,7 @@ class CypherNormalizer:
         card: Any,
         id_scheme: str,
     ) -> list[EvidenceRecord]:
-        """One record per row for node_lookup / label_scan.
+        """One record per row for label_scan.
 
         The label comes from ``_label_for`` -- the resolved label first, then the
         id prefix -- rather than the constant ``"Technique"`` this emitted for
@@ -786,7 +786,7 @@ class CypherNormalizer:
         """
         records: list[EvidenceRecord] = []
         for row in rows:
-            # Support both column names: "id" (node_lookup) and "attack_id"
+            # Support both column names: "id" (legacy lookup shape) and "attack_id"
             aid = str(row.get("id") or row.get("attack_id") or "")
             stix_id = str(row.get("stix_id") or "")
             record_id = stix_id if stix_id else aid

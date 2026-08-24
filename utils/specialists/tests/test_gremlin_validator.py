@@ -212,7 +212,11 @@ class TestLimitInjection:
 # ---------------------------------------------------------------------------
 
 class TestPositiveRoundTrips:
-    def test_capec_lookup_template(self, validator, card, limits):
+    def test_by_id_elementmap_shape(self, validator, card, limits):
+        # The by-id + elementMap shape, which `describe` emits today and the
+        # deleted `capec_lookup` emitted before it. This is a gate test: it
+        # validates raw query text and never calls the builder, so it survived
+        # that template's removal unchanged apart from its name.
         query = (
             'g.V().hasLabel("AttackPattern").has("id", within(ids))'
             '.elementMap().limit(lim)'

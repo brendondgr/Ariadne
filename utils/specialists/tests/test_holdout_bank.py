@@ -32,8 +32,8 @@ _ALL_TEMPLATES = {
     "tactic_techniques", "tactic_technique_mitigations", "campaign_techniques",
     "campaign_attribution", "datacomponent_analytics", "label_scan",
     "capec_maps_to", "capec_reverse_maps", "capec_neighbors",
-    "capec_hierarchy_chain", "capec_scan", "capec_lookup", "capec_facets",
-    "cwe_chain", "describe", "describe_by_name", "expand", "node_lookup",
+    "capec_hierarchy_chain", "capec_scan", "capec_facets",
+    "cwe_chain", "describe", "describe_by_name", "expand",
     "generic_neighbors",
 }
 

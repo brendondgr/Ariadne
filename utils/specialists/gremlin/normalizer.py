@@ -198,7 +198,7 @@ class GremlinNormalizer:
             return self._normalize_describe(rows, resolved, query, card)
         if "ap" in first and "nbr" in first:
             return self._normalize_neighbors(rows, resolved, query, card)
-        # Single flat rows (capec_lookup, capec_scan).
+        # Single flat rows (capec_scan).
         return self._normalize_single(rows, resolved, query, card)
 
     def summarize(
