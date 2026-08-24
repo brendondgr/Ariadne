@@ -420,6 +420,18 @@ Nothing in the study generalises to another model without re-running.
 `build()` or `expand()`. They are dead code and must not be counted as
 capability. **From:** EXP-2026-07-011 ISSUES.md.
 
+**Status: CLOSED (2026-08-23).** Both deleted. Plan 03 §3.3 had deferred this
+behind the holdout freeze and called it a five-minute cleanup once the freeze
+lifted; the freeze was discharged on 2026-08-09.
+
+**Recounting mechanically caught a second error the audit had not.** The census
+was wrong in *both* directions at once: inflated by these two dead templates and
+deflated by four live ones, because the five generic primitives were added and
+the README sentence never followed. It said "25 distinct, 17 Cypher, 11 Gremlin"
+against a tree holding 29. It now reads **27 / 18 / 12**, derived by AST via
+`derive_templates.py` rather than asserted in prose. The "19 exercised by the
+120-question bank" half was correct and is unchanged.
+
 ---
 
 ### Q14 — What do the templates actually hold, if not accuracy?
