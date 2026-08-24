@@ -106,6 +106,30 @@ the unfinished work.
 baseline, tuned in good faith, and run it over the same catalogue.
 **Cost:** weeks, not days. **Blocks:** C-012. **From:** D-004, EXP-2026-07-007 §7.
 
+**Status: ANSWERED, affirmatively (EXP-2026-08-008, 2026-08-19).** The baseline
+above was built and run. On 30 questions no arm had seen, the template cascade
+scored **0.9467** and an arm in which a language model writes the Cypher/Gremlin
+itself scored **0.5000**, with the plan held constant between them so query
+generation is the only variable. It was built to be fair rather than to lose: the
+model receives the real schema, the resolved seed identifiers, the constraints
+the safety gate enforces, the harness's output-column convention, and a repair
+loop that feeds gate rejections back for another attempt. It is denied only the
+templates. Crediting every ambiguous failure to the baseline — 7 questions whose
+correct query our own evidence reader could not parse, 2 empty replies from a
+token budget — it reaches **0.5739**, still barely half the cascade, so the
+conclusion does not rest on the ambiguous cases. C-012 moved to `supported` on
+this evidence.
+
+**What is genuinely left of this question, and it is not what the text above
+says.** Two things, both narrower. (1) *The cost half of C-012 is unmeasured* —
+no cost figure was taken in that run, so "outperforms … in correctness and in
+cost" is half-evidenced. (2) *Scope* — EXP-2026-08-010 showed the comparison was
+run on question shapes the templates serve; on 14 external question types the
+cascade returns nothing at all on 4, so "outperforms" holds inside the template
+library's coverage and is untested outside it. The evidence-reader ambiguity in
+(1)'s first clause is now a decision rather than an open question: see D-019 and
+Q18.
+
 ### Q4 — Where is the coverage cliff?
 
 **Why it matters:** All 120 questions are anchored — every one names an entity or
@@ -145,6 +169,35 @@ one colliding label**. That is the easy case for merging. A pair of sources
 whose ids collide would put the merged design under a strain this experiment
 never applied.
 
+**Narrowed 2026-08-23 — two of the four surviving reasons are ruled out as
+unmeasurable here, and the other two are restated as one structural claim.**
+
+*Ruled out: merge cost and onboarding cost.* Both are functions of **which two
+graphs are chosen**, not of the architecture. ATT&CK and CAPEC merge cheaply
+precisely because they already share edge semantics and a taxonomy crosswalk;
+two sources with unrelated schemas would not. Any wall-clock figure taken over
+this pair is a statement about this pair, and a reviewer would say so. They are
+not open questions — they are questions this study cannot answer without
+confounding them, and that is recorded rather than attempted.
+
+*Restated: the surviving case is non-modification, and it is dataset-independent.*
+Merging **required editing both catalogues at load** — D-017 records exactly what
+`utils/kg_builder/merge.py` had to write that upstream does not ship (CAPEC's
+public identifier, which the federated system derives at read time, and the
+`T`-prefixed form of CAPEC's ATT&CK taxonomy entries). That edit is permanent,
+versioned separately from upstream, and must be redone on every catalogue
+release. Federation ran the same catalogues as shipped, and EXP-2026-08-013
+demonstrated it on a third: a customer identity graph loaded unmodified, with
+three live sources retrieving **identically** to one. Licensing and provenance
+are consequences of that property rather than separate arguments — a graph that
+is never rewritten is one whose provenance and licence survive by construction.
+
+That is the form the follow-up takes: **C-022**, recorded in
+`EXP-2026-08-017-federation-isolation`, with what merging genuinely buys
+(cheaper multi-hop across the seam — consumer sub-questions skipped for want of
+a join value fell from 7 of 30 to 3 of 30) reported beside it rather than
+omitted.
+
 ---
 
 ## Methodological
@@ -155,6 +208,26 @@ Cross-model and evidence-grounded, but still an LLM, and its verdicts are not
 perfectly stable across runs. It occasionally penalised correct answers over
 citation metadata. **What resolves it:** human κ on a 40-answer sample. A
 reviewer will ask. **From:** D-002.
+
+**Status: CLOSED as WILL NOT DO (2026-08-23), and it moves to the known-weakness
+list rather than staying a backlog item.** The operator is the only available
+annotator and does not have the domain background to adjudicate ATT&CK/CAPEC
+answers at a standard worth citing. A κ computed from an under-qualified
+annotator is worse than no κ: it would read as human validation while measuring
+something else. Recording the refusal is the honest move, and the reviewer's
+question gets answered with what *is* measured rather than with a number
+manufactured to have one.
+
+**What stands in its place, and it is not nothing.** Three measurements bound the
+grader without a human in the loop: cross-model agreement at **r = 0.9275**
+between the local grader and Sonnet on the same judgments; the demonstration that
+self-judging overstates quality substantially — four self-judged metrics all read
+1.0 while an independent Sonnet panel scored the same pipeline at 0.8946 with
+hallucinations in 11 of 120 answers (C-009); and the grader's own re-run spread,
+**0.0050** across three passes over one fixed set of deterministic answers
+(sd 0.0021), which is the noise floor every delta in EXP-2026-08-007 is read
+against. The limitation to state in the paper is that all three are
+machine-to-machine.
 
 ### Q7 — Two of the planner's reported metrics are 1.0 by construction
 
@@ -285,13 +358,31 @@ So the position is: external authorship — **available and used**. Human phrasi
 — **does not exist to be had**, and constructing 15–20 questions is now a
 build-or-accept decision rather than a search.
 
-
-§5, §7.
-
 **Known limitation to record with it:** a machine-authored bank is as *blind* as
 v1 (same prompt, author never sees the code) but its phrasing will be less
 varied than a human's. It is a regression and comparison instrument. A published
 headline figure still wants human-authored questions.
+
+**Status: ANSWERED — the machinery shipped and the register did not notice
+(recorded 2026-08-23).** All three gaps named above are closed, and have been
+since before EXP-2026-08-008:
+
+| Gap as written | Where it is closed |
+|---|---|
+| "draws cannot exclude previously-used anchors" | `utils/specialists/evalset/make_bank.py` keeps an exclusion registry in `drawn_anchors.json` and excludes by default; `--no-exclusion` opts out and the help text records why you should not (51% of reseeds collide). |
+| "`compile_bank` has no command-line entry" | `make_bank` *is* the entry: `--seed`, `--scale`, `--out`, `--authored`, `--workers`, `--model`, `--dry-run`. |
+| "nothing runs the author prompt" | `make_bank` runs it, at `--workers` concurrency, against a model the flag forces to differ from the pipeline's. |
+
+It was also exercised in anger rather than merely written:
+`scripts/night2_sweep.py::make_bank2` drew the first *second* bank and asserted
+zero anchor overlap against every prior bank — the check that a fresh seed alone
+would have failed. Bank 3 (117 questions, authored by a non-pipeline model) is
+the largest artifact it has produced.
+
+**The cost line above is therefore wrong and must not be planned against.** A
+30-question bank costs ~8s per question of authoring, so minutes, not a day.
+`EXP-2026-08-015-bank-variance` is the first work to depend on this, drawing ten
+anchor-disjoint banks across two populations.
 
 
 ### Q17 — How much of the blind holdout's `software` failure was the question, not the system?
@@ -399,7 +490,17 @@ These are limitations to disclose, not questions to answer.
 - **Execution accuracy is agreement with a pinned snapshot**, not with ground
   truth. An ingest error present in both is invisible.
 - **The safety probe suite is 17 probes.** A 100% block rate over 17 probes is
-  weak evidence of a strong property. (C-008)
+  weak evidence of a strong property, and the suite itself found the one bypass
+  that was subsequently fixed, so it partly grades against its own answer key.
+  (C-008) **Being addressed** by `EXP-2026-08-016-tenant-isolation`, which
+  generates the suite rather than hand-writing it.
+- **No human ever graded an answer.** Every correctness figure in the study is
+  machine-graded, and judge–human agreement was closed as will-not-do rather
+  than measured (Q6). What bounds the grader instead is cross-model agreement
+  (r = 0.9275), the measured overstatement of self-judging (C-009), and the
+  grader's own 0.0050 re-run spread. State this plainly; it is the study's
+  largest methodological gap and it is not recoverable with the resources
+  available.
 - ~~**There is no LICENSE file and no MITRE attribution notice.**~~ **Closed
   2026-08-18.** The repository is licensed Apache-2.0 (`LICENSE`, copyright
   Florida State University) with attribution in `NOTICE`, and `pyproject.toml`

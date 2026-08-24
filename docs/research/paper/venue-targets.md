@@ -15,6 +15,34 @@ far from top-tier archival (26–40 weeks, not recommended).
 
 ---
 
+## Current position: no venue is being targeted (decided 2026-08-23)
+
+Both near-term deadlines below are **dropped**, by the operator's decision:
+
+| Venue | Deadline | Status |
+|---|---|---|
+| ARTMAN 2026 @ IEEE ACSAC | 31 Aug 2026 | **Dropped.** Eight days out at the time of the decision, and viable only as a write-up of standing results with an experiment freeze. |
+| EACL 2027 System Demonstrations | 22 Sept 2026 | **Dropped.** Was the recommended first move below; the recommendation stands on its merits and is simply not being taken on this cycle. |
+
+**The reasoning is not schedule slippage.** The record has an open backlog that a
+submission would have to be written around rather than through: C-003's plain
+reading is contradicted by three of its own measurements, the verifier's central
+property is asserted rather than ablated, no arm figure carries a confidence
+interval, and the safety claim rests on 17 hand-written probes. Writing to a
+deadline would have frozen all four in their current state. The decision is to
+close them first and select a venue afterwards, from a stronger position.
+
+**What this does not change.** The blocking prerequisites below still bind
+whenever a venue is selected, and one of the three is now closed (LICENSE and
+attribution, 2026-08-18). The remaining release blocker is archival identity — a
+DOI — not licensing. Re-verify every date in this file before planning against
+it; they were read on 3 August 2026 and some are aggregator-sourced.
+
+**When to revisit:** after `EXP-2026-08-017-federation-isolation`, the last step
+of the record-hardening plan (`docs/plans/2026-08-23-record-hardening.md`).
+
+---
+
 ## Blocking prerequisites — do these first
 
 | # | Item | Cost | Blocks |
