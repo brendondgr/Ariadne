@@ -501,6 +501,25 @@ coupling is part of what is being compared.
 **Cost:** ~1 day for the generic reader, or an afternoon for the decision.
 **Blocks:** how C-012 is phrased in the paper. **From:** EXP-2026-08-008 §7.
 
+**Status: DECIDED, and narrowed rather than closed (2026-08-23).** **D-025**
+takes the second reading: the coupling is part of what C-012 compares, because a
+template library's value is not only that the query is correct but that its
+output is consumable by the pipeline that has to read it. EXP-2026-08-008
+reports both numbers permanently — **0.5000** raw and **0.5739** crediting every
+reader failure — and the conclusion holds either way, which is the only reason
+the decision is affordable. If a future result ever turns on which number is
+quoted, D-025 must be revisited rather than leaned on.
+
+The coupling is now enforced rather than asserted:
+`utils/specialists/tests/test_evidence_contract.py` pins, in both directions,
+that the `<entity>_id` columns the Cypher builder emits are exactly those the
+normalizer dispatches on, and pins the branch ordering as well.
+
+**What stays open, in a narrower form:** *what would the free-form arm score
+against a convention-keyed reader?* That is a question about the baseline's
+ceiling, not about whether C-012 holds, and it is worth running — it is deferred
+because changing what the baseline *is* mid-study is worse than not knowing.
+
 
 ### Q19 — Can two graphs be federated on meaning when they share no identifier?
 

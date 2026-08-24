@@ -526,3 +526,62 @@ trade, and the figures rest on claim correctness rather than prose style.
 computed on the old wording. The scores are not invalidated — the claims and
 their identifiers are unchanged — but a re-judge is the only way to state a
 post-fix number, and none is claimed here.
+
+## D-025 — The evidence reader's template coupling is part of the comparison, not an artifact (2026-08-23)
+
+**Context.** The evidence reader dispatches on the column combinations the
+templates produce. A free-form query that returns `group_id` + `group_name` and
+nothing else normalises to nothing however correct the query and however real
+the rows it returned. Seven of the free-form arm's thirty questions failed that
+way in EXP-2026-08-008, which is the single ambiguity in C-012 — the study's
+headline claim. Open question Q18 framed the fork precisely: either the coupling
+is an artifact of our harness and the baseline should be measured without it, or
+guaranteeing that a query's output is consumable is a genuine property templates
+provide and the free-form arm should wear it.
+
+**Options.** (a) Build a generic normaliser keyed on `<entity>_id` /
+`<entity>_name` conventions rather than on template shapes, and report it as a
+secondary arm. (b) Decide that the coupling is part of what is being compared,
+and say so.
+
+**Decision:** (b), with an enforcement test.
+
+**Why.** A template library's value proposition is not only "the query is
+correct" but "the query is *consumable by the pipeline that has to read it*". A
+free-form generator that emits a correct query in a shape nothing downstream can
+parse has not delivered an answer, and crediting it as though it had would
+measure query-writing in isolation from the system the query lives in. That is a
+different and easier problem than the one this project is about.
+
+**What this costs, stated plainly.** It makes the comparison partly a comparison
+of *integration*, not purely of query generation, and a reviewer is entitled to
+say so. EXP-2026-08-008 therefore reports **both** numbers and always will:
+**0.5000** raw, and **0.5739** crediting every reader failure to the baseline.
+The conclusion — templates roughly double the free-form arm — survives either
+reading, which is the only reason this decision is affordable. **If a future
+result depended on which number is quoted, this decision must be revisited
+rather than leaned on.**
+
+**Why not (a).** Not because it is wrong — it is the more generous experiment
+and it would be worth running. It is deferred because it changes what the
+baseline *is* mid-study, and because the conclusion does not turn on it. Q18
+stays open in the narrower form: *what would the free-form arm score against a
+convention-keyed reader?* That is a question about the baseline's ceiling, not
+about whether C-012 holds.
+
+**Enforcement.** A decision recorded only in prose is unenforced, so the
+coupling is now pinned by
+`utils/specialists/tests/test_evidence_contract.py`, which asserts in both
+directions that the set of `<entity>_id` columns the Cypher builder emits equals
+the set the normalizer dispatches on. A template emitting a column no reader
+branch handles fails the suite (it would otherwise fall to `_normalize_flat` and
+emit `unknown` ids — the same failure the free-form arm hit); a reader branch no
+template feeds fails it too (dead dispatch, the inflation class that put two
+unreachable templates in the capability census until 2026-08-23). The routing
+cases additionally pin branch *order*, which is load-bearing: `software_id` +
+`technique_id` must beat the actor-software branch, and both must beat the bare
+`technique_id` branch.
+
+**Consequence.** The coupling is now a declared, tested property of the system
+rather than an accident of implementation, which is the difference between a
+design decision and a limitation.
