@@ -306,6 +306,22 @@ strong enough to carry the section C-003 currently carries.
 **Cost:** ~half a day of analysis, no new runs. **Blocks:** C-003, and the
 framing of the paper's central section. **From:** EXP-2026-08-007 §4, §6.
 
+**Status: ANSWERED (2026-08-23).** C-003 is now marked `refuted` and superseded
+by **C-023**, which states the surviving property: templates hold *precision on
+the schemas they were written for* and *provable abstention*, not correctness,
+and they cost coverage. The ratio was not re-derived against Arm H because there
+is no ratio to derive — Arm H is level on the catalogue, ahead on the fresh
+bank, and 0.278 ahead externally, so the quantity C-003 measured does not exist
+in the direction it assumed.
+
+**And the answer is weaker than Q14 expected on its own preferred ground.**
+Q15's read found that 4 of the abstention cases separating the arms have
+byte-identical abstention objects and were simply graded differently, so the
+95%/55% pair Q14 proposed building the section on is inflated; the real gap is
+~0.30. It is still the most robust of the three properties, and it is the only
+one that holds across both the external benchmark and the foreign schema — but
+the section should be written on **0.810 vs 0.500**, with the mechanism named.
+
 ### Q15 — Why is Arm H's abstention proof rate half the cascade's?
 
 **Why it matters:** honest abstention carrying executed-query proof is the
@@ -321,6 +337,32 @@ different defects with three different fixes.
 
 **Cost:** ~2 hours, no new runs. **Blocks:** C-017 going beyond `partial`, and
 any recommendation of the generic path. **From:** EXP-2026-08-007 §7.
+
+**Status: ANSWERED (2026-08-23), and it was none of the three.** Full working in
+`EXP-2026-08-007/RESULTS.md` §AMENDMENTS A-1. The nine unproved abstentions are
+two mechanisms:
+
+1. **A missing abstention, not a missing proof (6 of 9).** On `F-NEG-01`…`06`
+   the cascade emits two abstentions — the CAPEC side carrying its executed
+   query, and the ATT&CK side correctly carrying none because a dependency skip
+   meant no query ran — while Arm H emits only the second. The source-side
+   abstention is never produced. The cause is `_empty_ok_results` in
+   `utils/synthesis/verifier.py`: the template path's narrow query returns the
+   anchor with an empty fold and reads as "nothing joined", while the generic
+   path returns the anchor *plus its real neighbours* and never reaches the
+   branch. **The over-returning that costs the generic arm precision is the same
+   property that costs it its abstention** — one defect, two prices.
+2. **Grader noise (4 cases).** `F-PART-01`, `F-PART-02`, `A-AST-01` and
+   `A-AST-02` have **byte-identical abstention objects in both arms** and were
+   scored differently anyway, net +2 to the cascade.
+   `abstention_carries_query` is LLM-assigned, not computed.
+
+**Corrected: the gap is ~0.30, not 0.402** — 0.810 vs 0.500 strict, or 1.000 vs
+0.700 lenient. **Stop quoting "95% against 55%."** The defect is real, localised
+to one predicate, and deliberately left unfixed: fixing it moves recorded
+numbers and needs its own experiment. A new threat also falls out of (2) — a
+judged binary field that disagrees with itself on identical input is unbounded
+by the 0.0050 spread in EXP-2026-08-007 §2, which was measured on correctness.
 
 ### Q16 — Can a fairly-drawn question bank be produced on demand?
 
@@ -417,6 +459,23 @@ evidence for the directional-cliff claim at all.
 **Cost:** ~1 hour, no new runs — the questions and judgments are on disk.
 **Blocks:** the `software` half of C-014's supporting evidence.
 **From:** EXP-2026-08-007 follow-up work; found while automating the Author.
+
+**Status: ANSWERED, negatively (2026-08-23).** Working in
+`EXP-2026-08-002/RESULTS.md` §AMENDMENTS A-1. The malformation is confirmed and
+**contributed none of the loss.** `H-SW-01`, the malformed one, scored **0.10**;
+`H-SW-02`, which is well-formed ("Which software has been observed implementing
+T1005?"), scored **0.02**, and Arm F scored it 0.00. Mean 0.06, reproducing the
+recorded figure. The well-formed question scored *five times worse* — its
+170-item gold is simply harder to partially hit than a 4-item one.
+
+Both failed by the same directional mechanism: `describe` returned the anchor
+and a facet **count** for the reverse `USES` edge and never expanded it. The
+grader noted the count was visible in both cases. So the system could see the
+relationship existed and could not follow it.
+
+**`software` stays in C-014's evidence, and the reading is stronger than
+before:** the directional cliff no longer rests on a question a reviewer can
+dismiss as broken. It rests on `H-SW-02`.
 
 
 ### Q18 — Should the evidence reader accept column shapes the templates do not emit?

@@ -191,3 +191,83 @@ separately — see `ISSUES.md` §3:
 uv run python -m utils.evaluation.judge_answers \
   --root docs/evaluation/experiments/<root> --arm <arm> --workers 2 --max-tokens 32768
 ```
+
+---
+
+# AMENDMENTS
+
+## A-1 (2026-08-23) — Q15 answered: the abstention-proof gap is two mechanisms, one of them the grader
+
+**Nothing was re-run.** This reads the committed judgment and answer artifacts
+under `docs/evaluation/experiments/outerjoin-dev/deterministic/answers/` and
+`docs/evaluation/experiments/untruncated-generic-outer/generic/answers/`.
+
+Q15 asked which of three defects explains Arm H carrying the executed query on
+only 11 of 20 catalogue abstentions against the cascade's 20 of 21: was the query
+never executed, executed and lost, or executed and not attached? **It is none of
+the three.** The nine unproved abstentions split into two mechanisms.
+
+### Mechanism 1 — a missing abstention, not a missing proof (6 of 9)
+
+On `F-NEG-01` … `F-NEG-06` the cascade emits **two** abstentions and Arm H emits
+**one**. For `F-NEG-01` the cascade says:
+
+| source | statement | query |
+|---|---|---|
+| `capec` | the executed query ran cleanly and returned CAPEC-116 with no linked records | *present* |
+| `attack` | the sub-question it depends on (q1) produced no seed identifiers, so no query was executed | *empty, correctly* |
+
+Arm H emits only the second. The proof is not lost or unattached — **the
+source-side abstention is never produced at all**, so the answer never declares
+that the ATT&CK mapping is absent with the query that proves it.
+
+The cause is upstream of proof attachment, in `_empty_ok_results`
+(`utils/synthesis/verifier.py`), which selects the results that must carry an
+abstention: *nothing found, or nothing joined*. The template path's narrow
+`capec_maps_to` query returns the anchor with an empty taxonomy fold, which is
+"nothing joined". The generic path returns the anchor **plus its real
+neighbours** — the WASC taxonomy entry on CAPEC-66, for instance — which is
+neither empty nor unjoined at that call site, so the branch is never reached.
+**The over-returning that costs the generic arm precision is the same property
+that costs it its abstention.** That is one defect with two prices, and it is
+the sharpest thing this amendment records.
+
+### Mechanism 2 — grader noise on byte-identical inputs (4 cases)
+
+`F-PART-01`, `F-PART-02`, `A-AST-01` and `A-AST-02` have **byte-identical
+abstention objects in both arms** — same source, same statement, same empty
+query — and the grader assigned different `abstention_carries_query` values
+anyway. Three favour the cascade, one favours Arm H, so the net effect is **+2
+to the cascade** from noise alone. `abstention_carries_query` is an LLM-assigned
+field, not a computed one, which is how identical inputs can diverge.
+
+### Corrected reading
+
+Scoring the four noise cases identically, whichever convention is chosen:
+
+| convention | cascade | Arm H | gap |
+|---|---|---|---|
+| strict (an empty query is not proof) | 17/21 = **0.810** | 10/20 = **0.500** | 0.310 |
+| lenient (explaining why no query ran is proof) | 21/21 = **1.000** | 14/20 = **0.700** | 0.300 |
+| **as originally reported** | 20/21 = 0.952 | 11/20 = 0.550 | 0.402 |
+
+**The gap is real, it is about 0.30 rather than 0.40, and all of it is
+Mechanism 1.** The headline pair "95% against 55%" overstates the separation by
+roughly a quarter and should not be quoted further; quote a convention and its
+pair. One case is neither mechanism: `C-MAP-NEG-01`, where the cascade abstains
+with proof and Arm H does not abstain at all — a coverage difference rather than
+a proof one, and it is excluded from both rows above.
+
+### What this changes
+
+- **C-017** may still claim enforced abstention-with-proof is materially stronger
+  on the default path, but at ~0.30 and with the mechanism named.
+- **C-003** is refuted and superseded by **C-023**; this amendment supplies the
+  corrected abstention figures C-023 quotes. The direction is unharmed and the
+  size is reduced.
+- The defect is **fixable and localised** to one predicate. It is deliberately
+  *not* fixed here: a fix moves recorded numbers and needs its own experiment
+  plus a recorded-answer regression diff.
+- A grader that disagrees with itself on identical input is a threat to validity
+  wherever a judged binary field carries a claim. The 0.0050 correctness spread
+  recorded in §2 does not bound this, because it was measured on correctness.

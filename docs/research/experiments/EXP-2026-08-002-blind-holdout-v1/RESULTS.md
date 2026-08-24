@@ -97,3 +97,54 @@ or C-006 — both were measured on in-distribution questions — but it bounds t
   all nondeterministic; only Arm A would replay byte-identically.
 - Computed gold cannot express "answer the question the analyst asked", which is
   exactly what the `lookup` cases failed at while passing their assertions.
+
+---
+
+# AMENDMENTS
+
+## A-1 (2026-08-23) — Q17 answered, negatively: the malformed question explains none of the `software` loss
+
+**Nothing was re-run.** This reads the two `H-SW-*` entries in
+`utils/specialists/tests/golden/holdout_questions.json` and their committed
+judgments under `docs/evaluation/experiments/holdout-v1/`.
+
+Q17 asked how much of `software`'s **0.06** was a malformed question rather than
+a retrieval failure, and flagged that the category description was written from
+the software's point of view while the anchor is always a Technique. The
+malformation is confirmed. **Its effect on the score is zero, and removing it
+would make the category look worse.**
+
+| id | question | well-formed? | correctness |
+|---|---|---|---|
+| `H-SW-01` | "What techniques does T1555.005 (Password Managers) implement?" | **No** — asks for techniques, names a technique as though it were software, graded against software ids | **0.10** |
+| `H-SW-02` | "Which software has been observed implementing T1005 (Data from Local System)?" | **Yes** — correct direction, technique anchor, software gold | **0.02** |
+
+Mean 0.06, which reproduces the recorded figure exactly. **The well-formed
+question scored five times worse than the malformed one**, and Arm F scored
+`H-SW-02` at 0.00.
+
+Both failed by the *same* mechanism, and it is the directional one:
+
+> "The executed query fetched only the Technique node's own properties and
+> aggregate relationship-type counts (facets), never expanding the 169
+> incoming …" — grader on `H-SW-02`
+
+> "The retrieved facets on T1555.005 clearly show a USES-in relationship from
+> label Software with count=4 …" — grader on `H-SW-01`
+
+In both cases `describe` returned the anchor and a facet **count** for the
+reverse `USES` edge and never expanded it. The system could see that the
+relationship existed and could not follow it. That is exactly the reverse-
+direction cliff, and the malformed phrasing did not cause it — the malformed
+question in fact scored *higher*, because its four-item gold is easier to
+partially hit than a 170-item one.
+
+**Conclusion: `software` stays in C-014's supporting evidence, and the reading
+is stronger than before rather than weaker.** (Feeds C-014; the directional
+mechanism it identifies is also part of what C-023 prices as coverage cost.) The evidence for the directional
+cliff no longer rests on a question anyone can dismiss as broken; it rests on
+`H-SW-02`, which is well-formed and scored 0.02.
+
+**Incidental, and consistent with C-009:** the local grader scored these two
+PARTIAL at 0.25 and 0.35 where Sonnet scored them INCORRECT at 0.10 and 0.02 —
+the same overstatement direction recorded elsewhere in the study.
