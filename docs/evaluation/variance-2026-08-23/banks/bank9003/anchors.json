@@ -1,0 +1,420 @@
+{
+ "seed": 9003,
+ "protocol": "utils/specialists/evalset/holdout_protocol.py",
+ "gold_bank": "utils/specialists/tests/golden/gold_bank.json",
+ "snapshot": {
+  "attack_version": "19.0",
+  "capec_version": "3.9",
+  "checksums": {
+   "attack": {
+    "sha256": "df520ea0775a57db7bff760145b02fed89290802913e056b7ed5970b02f3626a",
+    "size_bytes": 52680865
+   },
+   "capec": {
+    "sha256": "70279a2dff0cb0ad79e546adb07828335a704ad5210e047e09e986172fc9e34d",
+    "size_bytes": 3849998
+   }
+  }
+ },
+ "strata": {
+  "attack": 12,
+  "capec": 8,
+  "federated": 10
+ },
+ "scale": 1,
+ "excluded": {
+  "size": 150,
+  "sha256": "a5f4503601d0ce1e0d215a57f107bed907b10900abadfa6fc208d67b0c793d75"
+ },
+ "federated_targets": {
+  "answerable": 6,
+  "abstention-expected": 4
+ },
+ "populations": {
+  "attack": {
+   "size": 697,
+   "sha256": "9075c1501d0856438c7688c46a9b6bb26baa1c8bb447b9539a0e6f27f6c37564"
+  },
+  "capec": {
+   "size": 558,
+   "sha256": "4125347093ad7d4b7cbe15b94858f7ee5ad262bac83fc1f0a9356c433aa344d3"
+  },
+  "cwe": {
+   "size": 336,
+   "sha256": "cf78638a85b92a2e9e1059b132a48fbf9d88689e40553695d025bab729a3575c"
+  }
+ },
+ "anchors": [
+  {
+   "stratum": "attack",
+   "category": "detection",
+   "anchor": "T1667",
+   "feasible_population": 622,
+   "id": "H-DET-01",
+   "name": "Email Bombing",
+   "entity_type": "Technique",
+   "draw_index": 0
+  },
+  {
+   "stratum": "attack",
+   "category": "groups",
+   "anchor": "T1098.002",
+   "feasible_population": 439,
+   "id": "H-GRP-01",
+   "name": "Additional Email Delegate Permissions",
+   "entity_type": "SubTechnique",
+   "draw_index": 1
+  },
+  {
+   "stratum": "attack",
+   "category": "software",
+   "anchor": "T1547.008",
+   "feasible_population": 437,
+   "id": "H-SW-01",
+   "name": "LSASS Driver",
+   "entity_type": "SubTechnique",
+   "draw_index": 2
+  },
+  {
+   "stratum": "attack",
+   "category": "lookup",
+   "anchor": "T1684.001",
+   "feasible_population": 622,
+   "id": "H-LKP-01",
+   "name": "Impersonation",
+   "entity_type": "SubTechnique",
+   "draw_index": 3
+  },
+  {
+   "stratum": "attack",
+   "category": "mitigations",
+   "anchor": "T1222",
+   "feasible_population": 514,
+   "id": "H-MIT-01",
+   "name": "File and Directory Permissions Modification",
+   "entity_type": "Technique",
+   "draw_index": 4
+  },
+  {
+   "stratum": "attack",
+   "category": "subtechnique",
+   "anchor": "T1553",
+   "feasible_population": 512,
+   "id": "H-SUB-01",
+   "name": "Subvert Trust Controls",
+   "entity_type": "Technique",
+   "draw_index": 5
+  },
+  {
+   "stratum": "attack",
+   "category": "tactics",
+   "anchor": "T1557.003",
+   "feasible_population": 622,
+   "id": "H-TAC-01",
+   "name": "DHCP Spoofing",
+   "entity_type": "SubTechnique",
+   "draw_index": 6
+  },
+  {
+   "stratum": "attack",
+   "category": "detection",
+   "anchor": "T1546.007",
+   "feasible_population": 622,
+   "id": "H-DET-02",
+   "name": "Netsh Helper DLL",
+   "entity_type": "SubTechnique",
+   "draw_index": 7
+  },
+  {
+   "stratum": "attack",
+   "category": "groups",
+   "anchor": "T1505.006",
+   "feasible_population": 439,
+   "id": "H-GRP-02",
+   "name": "vSphere Installation Bundles",
+   "entity_type": "SubTechnique",
+   "draw_index": 8
+  },
+  {
+   "stratum": "attack",
+   "category": "software",
+   "anchor": "T1553.004",
+   "feasible_population": 437,
+   "id": "H-SW-02",
+   "name": "Install Root Certificate",
+   "entity_type": "SubTechnique",
+   "draw_index": 9
+  },
+  {
+   "stratum": "attack",
+   "category": "lookup",
+   "anchor": "T1547.004",
+   "feasible_population": 622,
+   "id": "H-LKP-02",
+   "name": "Winlogon Helper DLL",
+   "entity_type": "SubTechnique",
+   "draw_index": 10
+  },
+  {
+   "stratum": "attack",
+   "category": "mitigations",
+   "anchor": "T1204.004",
+   "feasible_population": 514,
+   "id": "H-MIT-02",
+   "name": "Malicious Copy and Paste",
+   "entity_type": "SubTechnique",
+   "draw_index": 11
+  },
+  {
+   "stratum": "capec",
+   "category": "hierarchy",
+   "anchor": "CAPEC-85",
+   "feasible_population": 444,
+   "id": "H-ABS-01",
+   "name": "AJAX Footprinting",
+   "entity_type": "AttackPattern",
+   "draw_index": 12
+  },
+  {
+   "stratum": "capec",
+   "category": "mapping",
+   "anchor": "CAPEC-550",
+   "feasible_population": 144,
+   "id": "H-MAP-01",
+   "name": "Install New Service",
+   "entity_type": "AttackPattern",
+   "draw_index": 13
+  },
+  {
+   "stratum": "capec",
+   "category": "lookup",
+   "anchor": "CAPEC-477",
+   "feasible_population": 498,
+   "id": "H-LKP-03",
+   "name": "Signature Spoofing by Mixing Signed and Unsigned Content",
+   "entity_type": "AttackPattern",
+   "draw_index": 14
+  },
+  {
+   "stratum": "capec",
+   "category": "weakness",
+   "anchor": "CAPEC-303",
+   "feasible_population": 399,
+   "id": "H-CWE-01",
+   "name": "TCP Xmas Scan",
+   "entity_type": "AttackPattern",
+   "draw_index": 15
+  },
+  {
+   "stratum": "capec",
+   "category": "consequence",
+   "anchor": "CAPEC-508",
+   "feasible_population": 320,
+   "id": "H-CSQ-01",
+   "name": "Shoulder Surfing",
+   "entity_type": "AttackPattern",
+   "draw_index": 16
+  },
+  {
+   "stratum": "capec",
+   "category": "execution",
+   "anchor": "CAPEC-307",
+   "feasible_population": 207,
+   "id": "H-EXE-01",
+   "name": "TCP RPC Scan",
+   "entity_type": "AttackPattern",
+   "draw_index": 17
+  },
+  {
+   "stratum": "capec",
+   "category": "prerequisite",
+   "anchor": "CAPEC-638",
+   "feasible_population": 257,
+   "id": "H-PRE-01",
+   "name": "Altered Component Firmware",
+   "entity_type": "AttackPattern",
+   "draw_index": 18
+  },
+  {
+   "stratum": "capec",
+   "category": "hierarchy",
+   "anchor": "CAPEC-46",
+   "feasible_population": 444,
+   "id": "H-ABS-02",
+   "name": "Overflow Variables and Tags",
+   "entity_type": "AttackPattern",
+   "draw_index": 19
+  },
+  {
+   "stratum": "federated",
+   "category": "pattern-to-mitigation",
+   "anchor": "CAPEC-142",
+   "partition": "answerable",
+   "correlation_size": 1,
+   "feasible_population": 498,
+   "id": "H-CTM-01",
+   "name": "DNS Cache Poisoning",
+   "entity_type": "AttackPattern",
+   "draw_index": 20
+  },
+  {
+   "stratum": "federated",
+   "category": "pattern-to-mitigation",
+   "anchor": "CAPEC-38",
+   "partition": "answerable",
+   "correlation_size": 2,
+   "feasible_population": 498,
+   "id": "H-CTM-02",
+   "name": "Leveraging/Manipulating Configuration File Search Paths",
+   "entity_type": "AttackPattern",
+   "draw_index": 21
+  },
+  {
+   "stratum": "federated",
+   "category": "pattern-to-mitigation",
+   "anchor": "CAPEC-137",
+   "partition": "abstention-expected",
+   "correlation_size": 0,
+   "feasible_population": 498,
+   "id": "H-CTM-03",
+   "name": "Parameter Injection",
+   "entity_type": "AttackPattern",
+   "draw_index": 22
+  },
+  {
+   "stratum": "federated",
+   "category": "pattern-to-mitigation",
+   "anchor": "CAPEC-80",
+   "partition": "abstention-expected",
+   "correlation_size": 0,
+   "feasible_population": 498,
+   "id": "H-CTM-04",
+   "name": "Using UTF-8 Encoding to Bypass Validation Logic",
+   "entity_type": "AttackPattern",
+   "draw_index": 23
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1530",
+   "partition": "answerable",
+   "correlation_size": 1,
+   "feasible_population": 622,
+   "id": "H-REV-01",
+   "name": "Data from Cloud Storage",
+   "entity_type": "Technique",
+   "draw_index": 24
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1650",
+   "partition": "abstention-expected",
+   "correlation_size": 0,
+   "feasible_population": 622,
+   "id": "H-REV-02",
+   "name": "Acquire Access",
+   "entity_type": "Technique",
+   "draw_index": 25
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1127",
+   "partition": "answerable",
+   "correlation_size": 1,
+   "feasible_population": 622,
+   "id": "H-REV-03",
+   "name": "Trusted Developer Utilities Proxy Execution",
+   "entity_type": "Technique",
+   "draw_index": 26
+  },
+  {
+   "stratum": "federated",
+   "category": "cwe-chain",
+   "anchor": "CWE-303",
+   "partition": "abstention-expected",
+   "correlation_size": 0,
+   "feasible_population": 321,
+   "id": "H-CHN-01",
+   "name": "CWE-303",
+   "entity_type": "Weakness",
+   "draw_index": 27
+  },
+  {
+   "stratum": "federated",
+   "category": "cwe-chain",
+   "anchor": "CWE-424",
+   "partition": "answerable",
+   "correlation_size": 1,
+   "feasible_population": 321,
+   "id": "H-CHN-02",
+   "name": "CWE-424",
+   "entity_type": "Weakness",
+   "draw_index": 28
+  },
+  {
+   "stratum": "federated",
+   "category": "cwe-chain",
+   "anchor": "CWE-282",
+   "partition": "answerable",
+   "correlation_size": 5,
+   "feasible_population": 321,
+   "id": "H-CHN-03",
+   "name": "CWE-282",
+   "entity_type": "Weakness",
+   "draw_index": 29
+  }
+ ],
+ "overdraw": [
+  {
+   "stratum": "attack",
+   "category": "detection",
+   "anchor": "T1667",
+   "reason": "already drawn in this stratum"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1557.001",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1218.004",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1546.013",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1666",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1654",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "cwe-chain",
+   "anchor": "CWE-1267",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  }
+ ],
+ "discards": []
+}

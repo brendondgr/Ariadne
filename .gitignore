@@ -171,3 +171,11 @@ docker/neo4j/data/*
 docker/neo4j-merged/
 # Golden-eval harness run artifacts (regenerate via `main.py --golden-eval`)
 docs/evaluation/golden/
+
+# Variance-sweep run output (EXP-2026-08-015): per-question answers and
+# per-arm sweep state, ~9MB across 20 bank-runs. The banks themselves and the
+# computed metrics.json ARE committed — they are the experiment's inputs and
+# its result. The bulky run trees are pinned by hash in the experiment's
+# POINTERS.md, matching how docs/evaluation/experiments is already handled.
+docs/evaluation/variance-2026-08-23/*/runs/
+docs/evaluation/variance-2026-08-23/identity/*/sweep_state.json

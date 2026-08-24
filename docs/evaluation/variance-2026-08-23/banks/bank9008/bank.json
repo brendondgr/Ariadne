@@ -1,0 +1,2125 @@
+{
+ "meta": {
+  "attack_version": "19.0",
+  "capec_version": "3.9",
+  "gold_bank": "gold_bank.json",
+  "generator": "utils/specialists/evalset/holdout_protocol.py",
+  "split": "holdout",
+  "seed": 9008,
+  "author_model": "skynet @ http://localhost:4000/v1",
+  "scale": 1,
+  "excluded_anchors": 299
+ },
+ "questions": [
+  {
+   "id": "H-MIT-01",
+   "tier": "medium",
+   "split": "holdout",
+   "question": "What are the mitigations listed for T1591.004 (Identify Roles)?",
+   "expected_template": "technique_mitigations",
+   "task": {
+    "sub_question_id": "H-MIT-01",
+    "source": "attack",
+    "text": "What are the mitigations listed for T1591.004 (Identify Roles)?",
+    "entities": [
+     "Technique",
+     "Mitigation"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "T1591.004"
+    ],
+    "rationale": "holdout-v1 seeded draw"
+   },
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "T1591.004"
+    ],
+    "must_include_related": [
+     "M1056"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "M1056"
+    ],
+    "scheme": "attack"
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "T1591.004",
+    "anchor_draw_index": 0,
+    "category": "mitigations",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true
+   }
+  },
+  {
+   "id": "H-SW-01",
+   "tier": "medium",
+   "split": "holdout",
+   "question": "What software have been observed implementing T1074.001 (Local Data Staging)?",
+   "expected_template": "software_techniques",
+   "task": {
+    "sub_question_id": "H-SW-01",
+    "source": "attack",
+    "text": "What software have been observed implementing T1074.001 (Local Data Staging)?",
+    "entities": [
+     "Software",
+     "Technique"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "T1074.001"
+    ],
+    "rationale": "holdout-v1 seeded draw"
+   },
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "T1074.001"
+    ],
+    "must_include_related": [
+     "S0012",
+     "S0013",
+     "S0024",
+     "S0035",
+     "S0036",
+     "S0038",
+     "S0045",
+     "S0062",
+     "S0081",
+     "S0084",
+     "S0090",
+     "S0094",
+     "S0113",
+     "S0128",
+     "S0136",
+     "S0147",
+     "S0149",
+     "S0169",
+     "S0170",
+     "S0196",
+     "S0197",
+     "S0198",
+     "S0247",
+     "S0249",
+     "S0251",
+     "S0260",
+     "S0261",
+     "S0264",
+     "S0265",
+     "S0274",
+     "S0335",
+     "S0337",
+     "S0340",
+     "S0343",
+     "S0353",
+     "S0373",
+     "S0386",
+     "S0395",
+     "S0409",
+     "S0438",
+     "S0443",
+     "S0458",
+     "S0503",
+     "S0526",
+     "S0538",
+     "S0567",
+     "S0593",
+     "S0615",
+     "S0622",
+     "S0629",
+     "S0644",
+     "S0647",
+     "S0650",
+     "S0651",
+     "S0652",
+     "S0667",
+     "S0673",
+     "S1012",
+     "S1015",
+     "S1016",
+     "S1029",
+     "S1037",
+     "S1042",
+     "S1043",
+     "S1044",
+     "S1059",
+     "S1060",
+     "S1075",
+     "S1090",
+     "S1101",
+     "S1104",
+     "S1109",
+     "S1110",
+     "S1124",
+     "S1142",
+     "S1149",
+     "S1153",
+     "S1154",
+     "S1168",
+     "S1172",
+     "S1196",
+     "S1210",
+     "S1213",
+     "S1222",
+     "S1233",
+     "S1235",
+     "S1245",
+     "S1246",
+     "S9010",
+     "S9013",
+     "S9020",
+     "S9022",
+     "S9035",
+     "S9036"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "S0012",
+     "S0013",
+     "S0024",
+     "S0035",
+     "S0036",
+     "S0038",
+     "S0045",
+     "S0062",
+     "S0081",
+     "S0084",
+     "S0090",
+     "S0094",
+     "S0113",
+     "S0128",
+     "S0136",
+     "S0147",
+     "S0149",
+     "S0169",
+     "S0170",
+     "S0196",
+     "S0197",
+     "S0198",
+     "S0247",
+     "S0249",
+     "S0251",
+     "S0260",
+     "S0261",
+     "S0264",
+     "S0265",
+     "S0274",
+     "S0335",
+     "S0337",
+     "S0340",
+     "S0343",
+     "S0353",
+     "S0373",
+     "S0386",
+     "S0395",
+     "S0409",
+     "S0438",
+     "S0443",
+     "S0458",
+     "S0503",
+     "S0526",
+     "S0538",
+     "S0567",
+     "S0593",
+     "S0615",
+     "S0622",
+     "S0629",
+     "S0644",
+     "S0647",
+     "S0650",
+     "S0651",
+     "S0652",
+     "S0667",
+     "S0673",
+     "S1012",
+     "S1015",
+     "S1016",
+     "S1029",
+     "S1037",
+     "S1042",
+     "S1043",
+     "S1044",
+     "S1059",
+     "S1060",
+     "S1075",
+     "S1090",
+     "S1101",
+     "S1104",
+     "S1109",
+     "S1110",
+     "S1124",
+     "S1142",
+     "S1149",
+     "S1153",
+     "S1154",
+     "S1168",
+     "S1172",
+     "S1196",
+     "S1210",
+     "S1213",
+     "S1222",
+     "S1233",
+     "S1235",
+     "S1245",
+     "S1246",
+     "S9010",
+     "S9013",
+     "S9020",
+     "S9022",
+     "S9035",
+     "S9036"
+    ],
+    "scheme": "attack"
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "T1074.001",
+    "anchor_draw_index": 1,
+    "category": "software",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true
+   }
+  },
+  {
+   "id": "H-GRP-01",
+   "tier": "medium",
+   "split": "holdout",
+   "question": "Which groups have been reported using T1597 (Search Closed Sources)?",
+   "expected_template": "group_techniques",
+   "task": {
+    "sub_question_id": "H-GRP-01",
+    "source": "attack",
+    "text": "Which groups have been reported using T1597 (Search Closed Sources)?",
+    "entities": [
+     "Group",
+     "Technique"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "T1597"
+    ],
+    "rationale": "holdout-v1 seeded draw"
+   },
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "T1597"
+    ],
+    "must_include_related": [
+     "G1011"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "G1011"
+    ],
+    "scheme": "attack"
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "T1597",
+    "anchor_draw_index": 2,
+    "category": "groups",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true
+   }
+  },
+  {
+   "id": "H-LKP-01",
+   "tier": "easy",
+   "split": "holdout",
+   "question": "Describe T1565.001 (Stored Data Manipulation) in plain terms.",
+   "expected_template": "describe",
+   "task": {
+    "sub_question_id": "H-LKP-01",
+    "source": "attack",
+    "text": "Describe T1565.001 (Stored Data Manipulation) in plain terms.",
+    "entities": [
+     "SubTechnique"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "T1565.001"
+    ],
+    "rationale": "holdout-v1 seeded draw"
+   },
+   "assertions": {
+    "min_records": 1,
+    "max_records": 1,
+    "must_include_ids": [
+     "T1565.001"
+    ],
+    "expect_names": {
+     "T1565.001": "Stored Data Manipulation"
+    }
+   },
+   "ex_gold": {
+    "pool": "node",
+    "expected": [
+     "T1565.001"
+    ],
+    "scheme": "attack"
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "T1565.001",
+    "anchor_draw_index": 3,
+    "category": "lookup",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true
+   }
+  },
+  {
+   "id": "H-SUB-01",
+   "tier": "medium",
+   "split": "holdout",
+   "question": "Which technique is T1110.004 (Credential Stuffing) a sub-technique of?",
+   "expected_template": "subtechnique_parent",
+   "task": {
+    "sub_question_id": "H-SUB-01",
+    "source": "attack",
+    "text": "Which technique is T1110.004 (Credential Stuffing) a sub-technique of?",
+    "entities": [
+     "Technique",
+     "SubTechnique",
+     "HAS_SUBTECHNIQUE"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "T1110.004"
+    ],
+    "rationale": "holdout-v1 seeded draw"
+   },
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "T1110.004"
+    ],
+    "must_include_related": [
+     "T1110"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "T1110"
+    ],
+    "scheme": "attack"
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "T1110.004",
+    "anchor_draw_index": 4,
+    "category": "subtechnique",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true
+   }
+  },
+  {
+   "id": "H-DET-01",
+   "tier": "medium",
+   "split": "holdout",
+   "question": "What data components and analytics does the detection system use to identify System Network Configuration Discovery (T1016)??",
+   "expected_template": "technique_detection",
+   "task": {
+    "sub_question_id": "H-DET-01",
+    "source": "attack",
+    "text": "What data components and analytics does the detection system use to identify System Network Configuration Discovery (T1016)??",
+    "entities": [
+     "Technique",
+     "DetectionStrategy",
+     "Analytic"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "T1016"
+    ],
+    "rationale": "holdout-v1 seeded draw"
+   },
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "T1016"
+    ],
+    "must_include_related": [
+     "DET0195"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "DET0195"
+    ],
+    "scheme": "attack"
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "T1016",
+    "anchor_draw_index": 5,
+    "category": "detection",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true
+   }
+  },
+  {
+   "id": "H-TAC-01",
+   "tier": "medium",
+   "split": "holdout",
+   "question": "What tactics does T1036.006 (Space after Filename) belong to?",
+   "expected_template": "technique_tactics",
+   "task": {
+    "sub_question_id": "H-TAC-01",
+    "source": "attack",
+    "text": "What tactics does T1036.006 (Space after Filename) belong to?",
+    "entities": [
+     "Tactic",
+     "Technique"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "T1036.006"
+    ],
+    "rationale": "holdout-v1 seeded draw"
+   },
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "T1036.006"
+    ],
+    "must_include_related": [
+     "TA0005"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "TA0005"
+    ],
+    "scheme": "attack"
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "T1036.006",
+    "anchor_draw_index": 6,
+    "category": "tactics",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true
+   }
+  },
+  {
+   "id": "H-MIT-02",
+   "tier": "medium",
+   "split": "holdout",
+   "question": "What mitigations are listed for T1008 (Fallback Channels)?",
+   "expected_template": "technique_mitigations",
+   "task": {
+    "sub_question_id": "H-MIT-02",
+    "source": "attack",
+    "text": "What mitigations are listed for T1008 (Fallback Channels)?",
+    "entities": [
+     "Technique",
+     "Mitigation"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "T1008"
+    ],
+    "rationale": "holdout-v1 seeded draw"
+   },
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "T1008"
+    ],
+    "must_include_related": [
+     "M1031"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "M1031"
+    ],
+    "scheme": "attack"
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "T1008",
+    "anchor_draw_index": 7,
+    "category": "mitigations",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true
+   }
+  },
+  {
+   "id": "H-SW-02",
+   "tier": "medium",
+   "split": "holdout",
+   "question": "What software has been observed implementing T1602.002 (Network Device Configuration Dump)?",
+   "expected_template": "software_techniques",
+   "task": {
+    "sub_question_id": "H-SW-02",
+    "source": "attack",
+    "text": "What software has been observed implementing T1602.002 (Network Device Configuration Dump)?",
+    "entities": [
+     "Software",
+     "Technique"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "T1602.002"
+    ],
+    "rationale": "holdout-v1 seeded draw"
+   },
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "T1602.002"
+    ],
+    "must_include_related": [
+     "S9010"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "S9010"
+    ],
+    "scheme": "attack"
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "T1602.002",
+    "anchor_draw_index": 8,
+    "category": "software",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true
+   }
+  },
+  {
+   "id": "H-GRP-02",
+   "tier": "medium",
+   "split": "holdout",
+   "question": "Which known threat actor groups are documented as using T1657 (Financial Theft)?",
+   "expected_template": "group_techniques",
+   "task": {
+    "sub_question_id": "H-GRP-02",
+    "source": "attack",
+    "text": "Which known threat actor groups are documented as using T1657 (Financial Theft)?",
+    "entities": [
+     "Group",
+     "Technique"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "T1657"
+    ],
+    "rationale": "holdout-v1 seeded draw"
+   },
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "T1657"
+    ],
+    "must_include_related": [
+     "G0083",
+     "G0094",
+     "G1015",
+     "G1016",
+     "G1021",
+     "G1024",
+     "G1026",
+     "G1032",
+     "G1040",
+     "G1049",
+     "G1050",
+     "G1051",
+     "G1052",
+     "G1053",
+     "G1055"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "G0083",
+     "G0094",
+     "G1015",
+     "G1016",
+     "G1021",
+     "G1024",
+     "G1026",
+     "G1032",
+     "G1040",
+     "G1049",
+     "G1050",
+     "G1051",
+     "G1052",
+     "G1053",
+     "G1055"
+    ],
+    "scheme": "attack"
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "T1657",
+    "anchor_draw_index": 9,
+    "category": "groups",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true
+   }
+  },
+  {
+   "id": "H-LKP-02",
+   "tier": "easy",
+   "split": "holdout",
+   "question": "Give me a plain description of T1685.005 (Clear Windows Event Logs).",
+   "expected_template": "describe",
+   "task": {
+    "sub_question_id": "H-LKP-02",
+    "source": "attack",
+    "text": "Give me a plain description of T1685.005 (Clear Windows Event Logs).",
+    "entities": [
+     "SubTechnique"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "T1685.005"
+    ],
+    "rationale": "holdout-v1 seeded draw"
+   },
+   "assertions": {
+    "min_records": 1,
+    "max_records": 1,
+    "must_include_ids": [
+     "T1685.005"
+    ],
+    "expect_names": {
+     "T1685.005": "Clear Windows Event Logs"
+    }
+   },
+   "ex_gold": {
+    "pool": "node",
+    "expected": [
+     "T1685.005"
+    ],
+    "scheme": "attack"
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "T1685.005",
+    "anchor_draw_index": 10,
+    "category": "lookup",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true
+   }
+  },
+  {
+   "id": "H-SUB-02",
+   "tier": "medium",
+   "split": "holdout",
+   "question": "What is the parent technique of T1176.001 (Browser Extensions), and are there any child sub-techniques beneath it?",
+   "expected_template": "subtechnique_parent",
+   "task": {
+    "sub_question_id": "H-SUB-02",
+    "source": "attack",
+    "text": "What is the parent technique of T1176.001 (Browser Extensions), and are there any child sub-techniques beneath it?",
+    "entities": [
+     "Technique",
+     "SubTechnique",
+     "HAS_SUBTECHNIQUE"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "T1176.001"
+    ],
+    "rationale": "holdout-v1 seeded draw"
+   },
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "T1176.001"
+    ],
+    "must_include_related": [
+     "T1176"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "T1176"
+    ],
+    "scheme": "attack"
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "T1176.001",
+    "anchor_draw_index": 11,
+    "category": "subtechnique",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true
+   }
+  },
+  {
+   "id": "H-LKP-03",
+   "tier": "easy",
+   "split": "holdout",
+   "question": "What does CAPEC-179 (Calling Micro-Services Directly) describe?",
+   "expected_template": "describe",
+   "task": {
+    "sub_question_id": "H-LKP-03",
+    "source": "capec",
+    "text": "What does CAPEC-179 (Calling Micro-Services Directly) describe?",
+    "entities": [
+     "AttackPattern"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-179"
+    ],
+    "rationale": "holdout-v1 seeded draw"
+   },
+   "assertions": {
+    "min_records": 1,
+    "max_records": 1,
+    "must_include_ids": [
+     "CAPEC-179"
+    ],
+    "expect_names": {
+     "CAPEC-179": "Calling Micro-Services Directly"
+    }
+   },
+   "ex_gold": {
+    "pool": "node",
+    "expected": [
+     "CAPEC-179"
+    ],
+    "scheme": "capec"
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "CAPEC-179",
+    "anchor_draw_index": 12,
+    "category": "lookup",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true
+   }
+  },
+  {
+   "id": "H-MAP-01",
+   "tier": "medium",
+   "split": "holdout",
+   "question": "What ATT&CK techniques does CAPEC-657 (Malicious Automated Software Update via Spoofing) map to?",
+   "expected_template": "capec_maps_to",
+   "task": {
+    "sub_question_id": "H-MAP-01",
+    "source": "capec",
+    "text": "What ATT&CK techniques does CAPEC-657 (Malicious Automated Software Update via Spoofing) map to?",
+    "entities": [
+     "AttackPattern",
+     "TaxonomyEntry"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": "attack-technique-id",
+    "seed_ids": [
+     "CAPEC-657"
+    ],
+    "rationale": "holdout-v1 seeded draw"
+   },
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-657"
+    ],
+    "must_include_related": [
+     "T1072"
+    ]
+   },
+   "ex_gold": {
+    "pool": "join",
+    "expected": [
+     "T1072"
+    ],
+    "scheme": "capec"
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "CAPEC-657",
+    "anchor_draw_index": 13,
+    "category": "mapping",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true
+   }
+  },
+  {
+   "id": "H-CWE-01",
+   "tier": "medium",
+   "split": "holdout",
+   "question": "What CWEs does CAPEC-131 (Resource Leak Exposure) exploit?",
+   "expected_template": "capec_neighbors",
+   "task": {
+    "sub_question_id": "H-CWE-01",
+    "source": "capec",
+    "text": "What CWEs does CAPEC-131 (Resource Leak Exposure) exploit?",
+    "entities": [
+     "AttackPattern",
+     "EXPLOITS_WEAKNESS",
+     "Weakness"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-131"
+    ],
+    "rationale": "holdout-v1 seeded draw"
+   },
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-131"
+    ],
+    "must_include_related": [
+     "CWE-404"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "CWE-404"
+    ],
+    "scheme": "capec"
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "CAPEC-131",
+    "anchor_draw_index": 14,
+    "category": "weakness",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true
+   }
+  },
+  {
+   "id": "H-EXE-01",
+   "tier": "medium",
+   "split": "holdout",
+   "question": "For CAPEC-24 (Filter Failure through Buffer Overflow), what are the execution steps of this attack pattern?",
+   "expected_template": "capec_neighbors",
+   "task": {
+    "sub_question_id": "H-EXE-01",
+    "source": "capec",
+    "text": "For CAPEC-24 (Filter Failure through Buffer Overflow), what are the execution steps of this attack pattern?",
+    "entities": [
+     "AttackPattern",
+     "HAS_EXECUTION_STEP",
+     "ExecutionStep"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-24"
+    ],
+    "rationale": "holdout-v1 seeded draw"
+   },
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-24"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:24:step:1",
+     "capec:attack-pattern:24:step:2",
+     "capec:attack-pattern:24:step:3",
+     "capec:attack-pattern:24:step:4"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "capec:attack-pattern:24:step:1",
+     "capec:attack-pattern:24:step:2",
+     "capec:attack-pattern:24:step:3",
+     "capec:attack-pattern:24:step:4"
+    ],
+    "scheme": "capec"
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "CAPEC-24",
+    "anchor_draw_index": 15,
+    "category": "execution",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true
+   }
+  },
+  {
+   "id": "H-ABS-01",
+   "tier": "medium",
+   "split": "holdout",
+   "question": "What are the Detailed, Standard, and Meta abstractions that describe CAPEC-520 (Counterfeit Hardware Component Inserted During Product Assembly)?",
+   "expected_template": "capec_hierarchy_chain",
+   "task": {
+    "sub_question_id": "H-ABS-01",
+    "source": "capec",
+    "text": "What are the Detailed, Standard, and Meta abstractions that describe CAPEC-520 (Counterfeit Hardware Component Inserted During Product Assembly)?",
+    "entities": [
+     "AttackPattern",
+     "ChildOf",
+     "ChildOf"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-520"
+    ],
+    "rationale": "holdout-v1 seeded draw"
+   },
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-520"
+    ],
+    "must_include_related": [
+     "CAPEC-438",
+     "CAPEC-444"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "CAPEC-438",
+     "CAPEC-444"
+    ],
+    "scheme": "capec"
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "CAPEC-520",
+    "anchor_draw_index": 16,
+    "category": "hierarchy",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true
+   }
+  },
+  {
+   "id": "H-PRE-01",
+   "tier": "medium",
+   "split": "holdout",
+   "question": "What does CAPEC-662 (Adversary in the Browser (AiTB)) require?",
+   "expected_template": "capec_neighbors",
+   "task": {
+    "sub_question_id": "H-PRE-01",
+    "source": "capec",
+    "text": "What does CAPEC-662 (Adversary in the Browser (AiTB)) require?",
+    "entities": [
+     "AttackPattern",
+     "REQUIRES_SKILL",
+     "Skill"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-662"
+    ],
+    "rationale": "holdout-v1 seeded draw"
+   },
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-662"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:662:skill:1"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "capec:attack-pattern:662:skill:1"
+    ],
+    "scheme": "capec"
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "CAPEC-662",
+    "anchor_draw_index": 17,
+    "category": "prerequisite",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true
+   }
+  },
+  {
+   "id": "H-CSQ-01",
+   "tier": "medium",
+   "split": "holdout",
+   "question": "What consequences does CAPEC-221 (Data Serialization External Entities Blowup) carry?",
+   "expected_template": "capec_neighbors",
+   "task": {
+    "sub_question_id": "H-CSQ-01",
+    "source": "capec",
+    "text": "What consequences does CAPEC-221 (Data Serialization External Entities Blowup) carry?",
+    "entities": [
+     "AttackPattern",
+     "HAS_CONSEQUENCE",
+     "Consequence"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-221"
+    ],
+    "rationale": "holdout-v1 seeded draw"
+   },
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-221"
+    ],
+    "must_include_related": [
+     "capec:attack-pattern:221:consequence:1",
+     "capec:attack-pattern:221:consequence:2"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "capec:attack-pattern:221:consequence:1",
+     "capec:attack-pattern:221:consequence:2"
+    ],
+    "scheme": "capec"
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "CAPEC-221",
+    "anchor_draw_index": 18,
+    "category": "consequence",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true
+   }
+  },
+  {
+   "id": "H-LKP-04",
+   "tier": "easy",
+   "split": "holdout",
+   "question": "What is CAPEC-521 (Hardware Design Specifications Are Altered)?",
+   "expected_template": "describe",
+   "task": {
+    "sub_question_id": "H-LKP-04",
+    "source": "capec",
+    "text": "What is CAPEC-521 (Hardware Design Specifications Are Altered)?",
+    "entities": [
+     "AttackPattern"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-521"
+    ],
+    "rationale": "holdout-v1 seeded draw"
+   },
+   "assertions": {
+    "min_records": 1,
+    "max_records": 1,
+    "must_include_ids": [
+     "CAPEC-521"
+    ],
+    "expect_names": {
+     "CAPEC-521": "Hardware Design Specifications Are Altered"
+    }
+   },
+   "ex_gold": {
+    "pool": "node",
+    "expected": [
+     "CAPEC-521"
+    ],
+    "scheme": "capec"
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "CAPEC-521",
+    "anchor_draw_index": 19,
+    "category": "lookup",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true
+   }
+  },
+  {
+   "id": "H-CTM-01",
+   "tier": "hard",
+   "split": "holdout",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "What ATT&CK techniques and mitigations are associated with CAPEC-627 (Counterfeit GPS Signals)?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-627 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "holdout-v1 seeded draw",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "holdout-v1 seeded draw",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [],
+    "expect_no_correlation": true,
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-627"
+     ]
+    },
+    "attack": {
+     "expect_dependency_skip": true
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "CAPEC-627",
+    "anchor_draw_index": 20,
+    "category": "pattern-to-mitigation",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true,
+    "federated_partition": "abstention-expected"
+   }
+  },
+  {
+   "id": "H-CTM-02",
+   "tier": "hard",
+   "split": "holdout",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "What ATT&CK techniques and mitigations are associated with CAPEC-565 (Password Spraying)?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-565 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "holdout-v1 seeded draw",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "holdout-v1 seeded draw",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1110.003"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-565"
+     ],
+     "must_include_related": [
+      "T1110.003"
+     ]
+    },
+    "attack": {
+     "min_records": 1,
+     "must_include_ids": [
+      "T1110.003"
+     ],
+     "must_include_related": [
+      "M1027",
+      "M1032",
+      "M1036"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "CAPEC-565",
+    "anchor_draw_index": 21,
+    "category": "pattern-to-mitigation",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true,
+    "federated_partition": "answerable"
+   }
+  },
+  {
+   "id": "H-CTM-03",
+   "tier": "hard",
+   "split": "holdout",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK techniques are linked to CAPEC-418 (Influence Perception of Reciprocation)?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-418 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "holdout-v1 seeded draw",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "holdout-v1 seeded draw",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [],
+    "expect_no_correlation": true,
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-418"
+     ]
+    },
+    "attack": {
+     "expect_dependency_skip": true
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "CAPEC-418",
+    "anchor_draw_index": 22,
+    "category": "pattern-to-mitigation",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true,
+    "federated_partition": "abstention-expected"
+   }
+  },
+  {
+   "id": "H-CTM-04",
+   "tier": "hard",
+   "split": "holdout",
+   "hops": 2,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "For CAPEC-669 (Alteration of a Software Update), trace from this CAPEC pattern through the ATT&CK techniques it uses to the mitigations associated with those techniques.",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which ATT&CK techniques does CAPEC-669 map to?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "holdout-v1 seeded draw",
+     "expected_template": "capec_maps_to"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "holdout-v1 seeded draw",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1195.002"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-669"
+     ],
+     "must_include_related": [
+      "T1195.002"
+     ]
+    },
+    "attack": {
+     "min_records": 1,
+     "must_include_ids": [
+      "T1195.002"
+     ],
+     "must_include_related": [
+      "M1016",
+      "M1051"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "CAPEC-669",
+    "anchor_draw_index": 23,
+    "category": "pattern-to-mitigation",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true,
+    "federated_partition": "answerable"
+   }
+  },
+  {
+   "id": "H-REV-01",
+   "tier": "hard",
+   "split": "holdout",
+   "hops": 1,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": false,
+   "partial_mode": null,
+   "question": "Which patterns reference T1056 (Input Capture)?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which CAPEC patterns map to ATT&CK technique T1056?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "holdout-v1 seeded draw",
+     "expected_template": "capec_reverse_maps"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What is ATT&CK technique T1056?",
+     "entities": [
+      "Technique"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": null,
+     "rationale": "holdout-v1 seeded draw",
+     "expected_template": "describe"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1056"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-569",
+      "CAPEC-654"
+     ],
+     "must_include_related": [
+      "T1056"
+     ]
+    },
+    "attack": {
+     "min_records": 1,
+     "must_include_ids": [
+      "T1056"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "T1056",
+    "anchor_draw_index": 24,
+    "category": "reverse-mapping",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true,
+    "federated_partition": "answerable"
+   }
+  },
+  {
+   "id": "H-REV-02",
+   "tier": "hard",
+   "split": "holdout",
+   "hops": 1,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": false,
+   "partial_mode": null,
+   "question": "Which patterns reference the ATT&CK subtechnique T1564.014 (Extended Attributes)?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which CAPEC patterns map to ATT&CK technique T1564.014?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "holdout-v1 seeded draw",
+     "expected_template": "capec_reverse_maps"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What is ATT&CK technique T1564.014?",
+     "entities": [
+      "SubTechnique"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": null,
+     "rationale": "holdout-v1 seeded draw",
+     "expected_template": "describe"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [],
+    "expect_no_correlation": true,
+    "capec": {
+     "expect_empty": true
+    },
+    "attack": {
+     "expect_dependency_skip": true
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "T1564.014",
+    "anchor_draw_index": 25,
+    "category": "reverse-mapping",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true,
+    "federated_partition": "abstention-expected"
+   }
+  },
+  {
+   "id": "H-REV-03",
+   "tier": "hard",
+   "split": "holdout",
+   "hops": 1,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": false,
+   "partial_mode": null,
+   "question": "What attack patterns reference T1539 (Steal Web Session Cookie)?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which CAPEC patterns map to ATT&CK technique T1539?",
+     "entities": [
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "holdout-v1 seeded draw",
+     "expected_template": "capec_reverse_maps"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What is ATT&CK technique T1539?",
+     "entities": [
+      "Technique"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": null,
+     "rationale": "holdout-v1 seeded draw",
+     "expected_template": "describe"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1539"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-21",
+      "CAPEC-31"
+     ],
+     "must_include_related": [
+      "T1539"
+     ]
+    },
+    "attack": {
+     "min_records": 1,
+     "must_include_ids": [
+      "T1539"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "T1539",
+    "anchor_draw_index": 26,
+    "category": "reverse-mapping",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true,
+    "federated_partition": "answerable"
+   }
+  },
+  {
+   "id": "H-CHN-01",
+   "tier": "hard",
+   "split": "holdout",
+   "hops": 3,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "For CWE-593 (Software Problem Type), what ATT&CK techniques can be reached by following its patterns?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which attack patterns exploit CWE-593 and which ATT&CK techniques do they map to?",
+     "entities": [
+      "Weakness",
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "holdout-v1 seeded draw",
+     "expected_template": "cwe_chain"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "holdout-v1 seeded draw",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1557"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-94"
+     ],
+     "must_include_related": [
+      "CWE-593"
+     ]
+    },
+    "attack": {
+     "min_records": 1,
+     "must_include_ids": [
+      "T1557"
+     ],
+     "must_include_related": [
+      "M1017",
+      "M1030",
+      "M1031",
+      "M1035",
+      "M1037",
+      "M1041",
+      "M1042"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "CWE-593",
+    "anchor_draw_index": 27,
+    "category": "cwe-chain",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true,
+    "federated_partition": "answerable"
+   }
+  },
+  {
+   "id": "H-CHN-02",
+   "tier": "hard",
+   "split": "holdout",
+   "hops": 3,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "What ATT&CK techniques are associated with CWE-1257 (CWE-1257)?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which attack patterns exploit CWE-1257 and which ATT&CK techniques do they map to?",
+     "entities": [
+      "Weakness",
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "holdout-v1 seeded draw",
+     "expected_template": "cwe_chain"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "holdout-v1 seeded draw",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [],
+    "expect_no_correlation": true,
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-456",
+      "CAPEC-679"
+     ]
+    },
+    "attack": {
+     "expect_dependency_skip": true
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "CWE-1257",
+    "anchor_draw_index": 28,
+    "category": "cwe-chain",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true,
+    "federated_partition": "abstention-expected"
+   }
+  },
+  {
+   "id": "H-CHN-03",
+   "tier": "hard",
+   "split": "holdout",
+   "hops": 3,
+   "sources": [
+    "capec",
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "question": "Which ATT&CK techniques are connected to CWE-327 (CWE-327) through their patterns?",
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "Which attack patterns exploit CWE-327 and which ATT&CK techniques do they map to?",
+     "entities": [
+      "Weakness",
+      "AttackPattern",
+      "TaxonomyEntry"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "holdout-v1 seeded draw",
+     "expected_template": "cwe_chain"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "What mitigations does ATT&CK list for those mapped techniques?",
+     "entities": [
+      "Technique",
+      "Mitigation"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "holdout-v1 seeded draw",
+     "expected_template": "technique_mitigations",
+     "seed_from": "q1"
+    }
+   ],
+   "assertions": {
+    "must_correlate": [
+     "T1036.001",
+     "T1553.002"
+    ],
+    "capec": {
+     "min_records": 1,
+     "must_include_ids": [
+      "CAPEC-20",
+      "CAPEC-97",
+      "CAPEC-459",
+      "CAPEC-473",
+      "CAPEC-475",
+      "CAPEC-608",
+      "CAPEC-614"
+     ],
+     "must_include_related": [
+      "CWE-327"
+     ]
+    },
+    "attack": {
+     "min_records": 1,
+     "must_include_ids": [
+      "T1036.001",
+      "T1553.002"
+     ],
+     "must_include_related": [
+      "M1045"
+     ]
+    }
+   },
+   "gold_provenance": {
+    "attack_version": "19.0",
+    "capec_version": "3.9"
+   },
+   "holdout_meta": {
+    "anchor": "CWE-327",
+    "anchor_draw_index": 29,
+    "category": "cwe-chain",
+    "author_model": "skynet @ http://localhost:4000/v1",
+    "expected_template_is_derived": true,
+    "federated_partition": "answerable"
+   }
+  }
+ ]
+}

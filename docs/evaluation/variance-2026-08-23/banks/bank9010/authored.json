@@ -1,0 +1,44 @@
+{
+ "author_model": "skynet @ http://localhost:4000/v1",
+ "author_temperature": 1.0,
+ "spawns": "one stateless completion per anchor, no shared context, no tool access, no repository access; prompt is holdout_protocol.author_prompt(entry) verbatim",
+ "validation": "each question must name its own anchor and no other MITRE identifier; rejected drafts were re-requested up to 4 times and are recorded under 'retries'",
+ "questions": {
+  "H-ABS-01": "What does the abstraction chain look like for CAPEC-182 (Flash Injection), from Detailed through Standard to Meta?",
+  "H-CHN-01": "What ATT&CK techniques map from CWE-1311 (CWE-1311) through the patterns?",
+  "H-CHN-02": "Starting from CWE-267 (CWE-267), which ATT&CK techniques do you reach by going through patterns?",
+  "H-CHN-03": "What ATT&CK technique do the patterns linked to CWE-122 eventually point to?",
+  "H-CSQ-01": "What are the consequences of an attacker successfully exploiting CAPEC-462 (Cross-Domain Search Timing)?",
+  "H-CTM-01": "How can I find the ATT&CK techniques associated with CAPEC-398 (Magnetic Strip Card Brute Force Attacks) and the mitigations for them?",
+  "H-CTM-02": "What ATT&CK techniques does CAPEC-387 (Navigation Remapping To Propagate Malicious Content) correspond to, and what mitigations are recommended for those techniques?",
+  "H-CTM-03": "CAPEC-473 (Signature Spoofing) — what ATT&CK techniques does this map to, and what mitigations address it?",
+  "H-CTM-04": "What ATT&CK techniques are linked to CAPEC-538 (Open-Source Library Manipulation), and what mitigations cover those techniques?",
+  "H-CWE-01": "What CWEs does CAPEC-161 (Infrastructure Manipulation) exploit?",
+  "H-DET-01": "What data components and analytics are used to detect T1550 (Use Alternate Authentication Material)?",
+  "H-DET-02": "What data components and analytics are needed to detect T1071.003 (Mail Protocols)?",
+  "H-EXE-01": "What are the execution steps for CAPEC-694 (System Location Discovery)?",
+  "H-GRP-01": "Which threat actor groups use T1593.003 (Code Repositories)?",
+  "H-LKP-01": "Can you give me a plain description of what T1608.003 (Install Digital Certificate) is?",
+  "H-LKP-02": "What is a plain description of T1133 (External Remote Services)?",
+  "H-LKP-03": "Provide a plain description of CAPEC-624 (Hardware Fault Injection).",
+  "H-MAP-01": "What ATT&CK techniques does CAPEC-448 (Embed Virus into DLL) map to?",
+  "H-MIT-01": "What are the mitigations listed for T1036.005 (Match Legitimate Resource Name or Location)?",
+  "H-PRE-01": "What does CAPEC-48 (Passing Local Filenames to Functions That Expect a URL) require in order for the attack to succeed?",
+  "H-PRE-02": "What does CAPEC-71 (Using Unicode Encoding to Bypass Validation Logic) require?",
+  "H-REV-01": "What patterns reference the PowerShell subtechnique T1059.001 (PowerShell)?",
+  "H-REV-02": "Which patterns reference T1195.002 (Compromise Software Supply Chain)?",
+  "H-REV-03": "What patterns reference the T1566 (Phishing) technique?",
+  "H-SUB-01": "What is the parent/child relationship around T1608 (Stage Capabilities)?",
+  "H-SUB-02": "What are the parent/child relationships around T1137.003 (Outlook Forms)?",
+  "H-SW-01": "Which software is observed implementing T1614.001 (System Language Discovery)?",
+  "H-SW-02": "What software is observed implementing T1078 (Valid Accounts)?",
+  "H-TAC-01": "What tactic(s) does T1137.004 (Outlook Home Page) belong to?",
+  "H-TAC-02": "What tactics does T1505.002 (Transport Agent) belong to?"
+ },
+ "retries": {
+  "H-CHN-03": [
+   "does not name its anchor CWE-122 :: Which ATT&CK techniques does CWE‑122 (CWE‑122) map to through its patterns?"
+  ]
+ },
+ "failures": {}
+}

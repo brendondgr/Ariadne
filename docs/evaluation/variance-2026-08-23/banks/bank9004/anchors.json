@@ -1,0 +1,407 @@
+{
+ "seed": 9004,
+ "protocol": "utils/specialists/evalset/holdout_protocol.py",
+ "gold_bank": "utils/specialists/tests/golden/gold_bank.json",
+ "snapshot": {
+  "attack_version": "19.0",
+  "capec_version": "3.9",
+  "checksums": {
+   "attack": {
+    "sha256": "df520ea0775a57db7bff760145b02fed89290802913e056b7ed5970b02f3626a",
+    "size_bytes": 52680865
+   },
+   "capec": {
+    "sha256": "70279a2dff0cb0ad79e546adb07828335a704ad5210e047e09e986172fc9e34d",
+    "size_bytes": 3849998
+   }
+  }
+ },
+ "strata": {
+  "attack": 12,
+  "capec": 8,
+  "federated": 10
+ },
+ "scale": 1,
+ "excluded": {
+  "size": 180,
+  "sha256": "1307a917c126f6e11e0d855cba10897ca7e2171689d3ed7438794954a0745c9f"
+ },
+ "federated_targets": {
+  "answerable": 6,
+  "abstention-expected": 4
+ },
+ "populations": {
+  "attack": {
+   "size": 697,
+   "sha256": "9075c1501d0856438c7688c46a9b6bb26baa1c8bb447b9539a0e6f27f6c37564"
+  },
+  "capec": {
+   "size": 558,
+   "sha256": "4125347093ad7d4b7cbe15b94858f7ee5ad262bac83fc1f0a9356c433aa344d3"
+  },
+  "cwe": {
+   "size": 336,
+   "sha256": "cf78638a85b92a2e9e1059b132a48fbf9d88689e40553695d025bab729a3575c"
+  }
+ },
+ "anchors": [
+  {
+   "stratum": "attack",
+   "category": "tactics",
+   "anchor": "T1053.006",
+   "feasible_population": 607,
+   "id": "H-TAC-01",
+   "name": "Systemd Timers",
+   "entity_type": "SubTechnique",
+   "draw_index": 0
+  },
+  {
+   "stratum": "attack",
+   "category": "software",
+   "anchor": "T1003.005",
+   "feasible_population": 427,
+   "id": "H-SW-01",
+   "name": "Cached Domain Credentials",
+   "entity_type": "SubTechnique",
+   "draw_index": 1
+  },
+  {
+   "stratum": "attack",
+   "category": "groups",
+   "anchor": "T1027.002",
+   "feasible_population": 430,
+   "id": "H-GRP-01",
+   "name": "Software Packing",
+   "entity_type": "SubTechnique",
+   "draw_index": 2
+  },
+  {
+   "stratum": "attack",
+   "category": "mitigations",
+   "anchor": "T1590.003",
+   "feasible_population": 500,
+   "id": "H-MIT-01",
+   "name": "Network Trust Dependencies",
+   "entity_type": "SubTechnique",
+   "draw_index": 3
+  },
+  {
+   "stratum": "attack",
+   "category": "subtechnique",
+   "anchor": "T1588",
+   "feasible_population": 500,
+   "id": "H-SUB-01",
+   "name": "Obtain Capabilities",
+   "entity_type": "Technique",
+   "draw_index": 4
+  },
+  {
+   "stratum": "attack",
+   "category": "lookup",
+   "anchor": "T1021",
+   "feasible_population": 607,
+   "id": "H-LKP-01",
+   "name": "Remote Services",
+   "entity_type": "Technique",
+   "draw_index": 5
+  },
+  {
+   "stratum": "attack",
+   "category": "detection",
+   "anchor": "T1070",
+   "feasible_population": 607,
+   "id": "H-DET-01",
+   "name": "Indicator Removal",
+   "entity_type": "Technique",
+   "draw_index": 6
+  },
+  {
+   "stratum": "attack",
+   "category": "tactics",
+   "anchor": "T1497.002",
+   "feasible_population": 607,
+   "id": "H-TAC-02",
+   "name": "User Activity Based Checks",
+   "entity_type": "SubTechnique",
+   "draw_index": 7
+  },
+  {
+   "stratum": "attack",
+   "category": "software",
+   "anchor": "T1132",
+   "feasible_population": 427,
+   "id": "H-SW-02",
+   "name": "Data Encoding",
+   "entity_type": "Technique",
+   "draw_index": 8
+  },
+  {
+   "stratum": "attack",
+   "category": "groups",
+   "anchor": "T1136.001",
+   "feasible_population": 430,
+   "id": "H-GRP-02",
+   "name": "Local Account",
+   "entity_type": "SubTechnique",
+   "draw_index": 9
+  },
+  {
+   "stratum": "attack",
+   "category": "mitigations",
+   "anchor": "T1071.001",
+   "feasible_population": 500,
+   "id": "H-MIT-02",
+   "name": "Web Protocols",
+   "entity_type": "SubTechnique",
+   "draw_index": 10
+  },
+  {
+   "stratum": "attack",
+   "category": "subtechnique",
+   "anchor": "T1218.001",
+   "feasible_population": 500,
+   "id": "H-SUB-02",
+   "name": "Compiled HTML File",
+   "entity_type": "SubTechnique",
+   "draw_index": 11
+  },
+  {
+   "stratum": "capec",
+   "category": "hierarchy",
+   "anchor": "CAPEC-463",
+   "feasible_population": 433,
+   "id": "H-ABS-01",
+   "name": "Padding Oracle Crypto Attack",
+   "entity_type": "AttackPattern",
+   "draw_index": 12
+  },
+  {
+   "stratum": "capec",
+   "category": "prerequisite",
+   "anchor": "CAPEC-425",
+   "feasible_population": 249,
+   "id": "H-PRE-01",
+   "name": "Target Influence via Framing",
+   "entity_type": "AttackPattern",
+   "draw_index": 13
+  },
+  {
+   "stratum": "capec",
+   "category": "consequence",
+   "anchor": "CAPEC-93",
+   "feasible_population": 311,
+   "id": "H-CSQ-01",
+   "name": "Log Injection-Tampering-Forging",
+   "entity_type": "AttackPattern",
+   "draw_index": 14
+  },
+  {
+   "stratum": "capec",
+   "category": "weakness",
+   "anchor": "CAPEC-302",
+   "feasible_population": 388,
+   "id": "H-CWE-01",
+   "name": "TCP FIN Scan",
+   "entity_type": "AttackPattern",
+   "draw_index": 15
+  },
+  {
+   "stratum": "capec",
+   "category": "execution",
+   "anchor": "CAPEC-501",
+   "feasible_population": 200,
+   "id": "H-EXE-01",
+   "name": "Android Activity Hijack",
+   "entity_type": "AttackPattern",
+   "draw_index": 16
+  },
+  {
+   "stratum": "capec",
+   "category": "lookup",
+   "anchor": "CAPEC-456",
+   "feasible_population": 486,
+   "id": "H-LKP-02",
+   "name": "Infected Memory",
+   "entity_type": "AttackPattern",
+   "draw_index": 17
+  },
+  {
+   "stratum": "capec",
+   "category": "mapping",
+   "anchor": "CAPEC-649",
+   "feasible_population": 140,
+   "id": "H-MAP-01",
+   "name": "Adding a Space to a File Extension",
+   "entity_type": "AttackPattern",
+   "draw_index": 18
+  },
+  {
+   "stratum": "capec",
+   "category": "hierarchy",
+   "anchor": "CAPEC-532",
+   "feasible_population": 433,
+   "id": "H-ABS-02",
+   "name": "Altered Installed BIOS",
+   "entity_type": "AttackPattern",
+   "draw_index": 19
+  },
+  {
+   "stratum": "federated",
+   "category": "pattern-to-mitigation",
+   "anchor": "CAPEC-278",
+   "partition": "abstention-expected",
+   "correlation_size": 0,
+   "feasible_population": 486,
+   "id": "H-CTM-01",
+   "name": "Web Services Protocol Manipulation",
+   "entity_type": "AttackPattern",
+   "draw_index": 20
+  },
+  {
+   "stratum": "federated",
+   "category": "pattern-to-mitigation",
+   "anchor": "CAPEC-49",
+   "partition": "answerable",
+   "correlation_size": 1,
+   "feasible_population": 486,
+   "id": "H-CTM-02",
+   "name": "Password Brute Forcing",
+   "entity_type": "AttackPattern",
+   "draw_index": 21
+  },
+  {
+   "stratum": "federated",
+   "category": "pattern-to-mitigation",
+   "anchor": "CAPEC-530",
+   "partition": "abstention-expected",
+   "correlation_size": 0,
+   "feasible_population": 486,
+   "id": "H-CTM-03",
+   "name": "Provide Counterfeit Component",
+   "entity_type": "AttackPattern",
+   "draw_index": 22
+  },
+  {
+   "stratum": "federated",
+   "category": "pattern-to-mitigation",
+   "anchor": "CAPEC-464",
+   "partition": "answerable",
+   "correlation_size": 1,
+   "feasible_population": 486,
+   "id": "H-CTM-04",
+   "name": "Evercookie",
+   "entity_type": "AttackPattern",
+   "draw_index": 23
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1686.003",
+   "partition": "abstention-expected",
+   "correlation_size": 0,
+   "feasible_population": 607,
+   "id": "H-REV-01",
+   "name": "Windows Host Firewall",
+   "entity_type": "SubTechnique",
+   "draw_index": 24
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1557.002",
+   "partition": "answerable",
+   "correlation_size": 1,
+   "feasible_population": 607,
+   "id": "H-REV-02",
+   "name": "ARP Cache Poisoning",
+   "entity_type": "SubTechnique",
+   "draw_index": 25
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1548.004",
+   "partition": "answerable",
+   "correlation_size": 1,
+   "feasible_population": 607,
+   "id": "H-REV-03",
+   "name": "Elevated Execution with Prompt",
+   "entity_type": "SubTechnique",
+   "draw_index": 26
+  },
+  {
+   "stratum": "federated",
+   "category": "cwe-chain",
+   "anchor": "CWE-372",
+   "partition": "abstention-expected",
+   "correlation_size": 0,
+   "feasible_population": 318,
+   "id": "H-CHN-01",
+   "name": "CWE-372",
+   "entity_type": "Weakness",
+   "draw_index": 27
+  },
+  {
+   "stratum": "federated",
+   "category": "cwe-chain",
+   "anchor": "CWE-419",
+   "partition": "answerable",
+   "correlation_size": 1,
+   "feasible_population": 318,
+   "id": "H-CHN-02",
+   "name": "CWE-419",
+   "entity_type": "Weakness",
+   "draw_index": 28
+  },
+  {
+   "stratum": "federated",
+   "category": "cwe-chain",
+   "anchor": "CWE-1320",
+   "partition": "answerable",
+   "correlation_size": 1,
+   "feasible_population": 318,
+   "id": "H-CHN-03",
+   "name": "CWE-1320",
+   "entity_type": "Weakness",
+   "draw_index": 29
+  }
+ ],
+ "overdraw": [
+  {
+   "stratum": "federated",
+   "category": "pattern-to-mitigation",
+   "anchor": "CAPEC-75",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1569.001",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1597.001",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "cwe-chain",
+   "anchor": "CWE-363",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "cwe-chain",
+   "anchor": "CWE-372",
+   "partition": "abstention-expected",
+   "reason": "already drawn"
+  }
+ ],
+ "discards": []
+}

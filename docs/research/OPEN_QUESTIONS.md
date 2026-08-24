@@ -93,6 +93,57 @@ an LLM-in-the-loop arm like F or B would have its own, and it is likely larger
 than the grader's. Any p-value about an *arm* still needs the re-run this
 question originally asked for.
 
+**ANSWERED for the deterministic arms, and the question's premise was wrong
+(EXP-2026-08-015, 2026-08-23).** "Re-run the arms" measures nothing on an
+LLM-free path: both arms are byte-reproducible, so ten runs give ten identical
+numbers. **Pipeline variance there is zero by construction** — a property to
+state, not a quantity to estimate. The variance that exists is in *which anchors
+were drawn*, and it is now measured over ten anchor-disjoint banks per
+population, retrieval only, paired bootstrap (2000 resamples, seed 1729):
+
+| population | templates | generic | difference | 95% CI |
+|---|---|---|---|---|
+| catalogue | 0.9900 (sd 0.0225) | **1.0000 (sd 0.0000)** | **−0.0100** | [−0.0233, **+0.0000**] |
+| identity | 0.2392 (sd 0.0674) | 0.8514 (sd 0.0890) | **−0.6121** | [−0.6720, −0.5530] |
+
+The first non-null `statistical_test` on an *arm comparison* in the record.
+
+**Three things it settles.** (1) A single 30-question draw is a noisy instrument
+on a foreign schema — ±0.07 is ordinary — and **not noisy at all** on the
+catalogue, where the generic arm is 1.0000 on all ten banks. (2) The catalogue
+retrieval metric is **saturated** and cannot price that gap; a judged metric is
+required. (3) Resampling found a live template defect two fixed banks had hidden
+through six experiments (Q22).
+
+**What remains open, and it is now the whole of Q2:** the **LLM-in-the-loop arms**
+(B, E, F, `llm_query`). They have genuine run variance, none has been run twice,
+and nothing here touches them. Every figure quoting those arms is still n=1.
+
+### Q22 — `capec_hierarchy_chain` returns nothing when the parent is already Meta
+
+**Why it matters:** it is a live retrieval defect on the *catalogue*, found by
+EXP-2026-08-015 and missed by every prior experiment.
+
+The template emits a fixed two-hop chain —
+`.out("CHILD_OF").as("parent").out("CHILD_OF").as("grandparent").select("ap","parent","grandparent")`
+— and that `select` is an inner join over three positions. For a **Standard**
+abstraction anchor whose parent is already **Meta**, there is no grandparent, the
+select matches nothing, and the query returns **not even the parent the gold
+asked for**. Three questions across two banks retrieved zero records
+(CAPEC-466 → CAPEC-94, CAPEC-207 → CAPEC-22, CAPEC-182 → CAPEC-137).
+
+**This is the outer-join class fixed in EXP-2026-08-004 and EXP-2026-08-006**, in
+a template those fixes did not reach. holdout-v1's `H-ABS` anchors happened to
+sit at Detailed level, three below Meta, so the chain resolved and the defect
+stayed invisible — a sampling artifact, not a code change.
+
+**What resolves it:** make the chain an outer join, exactly as the earlier fix
+did, so a parent is returned whether or not a grandparent exists. **Cost:** hours
+for the change; the real cost is the recorded-answer regression diff over both
+banks that any builder change requires. **Blocks:** the catalogue half of C-023's
+interval means "one defective template", and that should be a past-tense
+statement. **From:** EXP-2026-08-015 RESULTS.
+
 ### Q3 — Does template routing actually beat free-form LLM query generation?
 
 **Why it matters:** **This is the paper's intended headline claim (C-012) and no

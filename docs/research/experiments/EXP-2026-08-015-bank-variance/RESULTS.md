@@ -1,42 +1,119 @@
-# RESULTS — EXP-2026-08-015 <title>
+# EXP-2026-08-015 — The first interval, and a live defect the fixed banks never reached
 
-## 1. Headline
+**Status:** complete. Twenty bank-runs over two populations, retrieval only.
 
-Two sentences. The number, and whether the hypothesis survived.
+## The headline
 
-## 2. Results table
+| population | templates | generic | templates − generic | 95% CI |
+|---|---|---|---|---|
+| **catalogue** (ATT&CK + CAPEC) | 0.9900 (sd **0.0225**) | **1.0000** (sd **0.0000**) | **−0.0100** | [−0.0233, **+0.0000**] |
+| **identity** (foreign schema) | 0.2392 (sd 0.0674) | 0.8514 (sd 0.0890) | **−0.6121** | [−0.6720, −0.5530] |
 
-Generated from `data/metrics.json`, not typed. Mean ± std across seeds — never a
-single run without saying so. If `n_runs: 1`, state that here rather than
-letting a bare number imply a distribution.
+Ten anchor-disjoint banks per population, **measured disjoint** rather than
+assumed: 0 overlapping pairs out of 45, 0 shared anchors, in both populations
+(see ISSUES I-1 for why that check exists).
 
-## 3. Figures
+**The upper bound of the catalogue CI is exactly +0.0000.** Across 300 fresh
+anchors the template arm never once beat the generic arm on retrieval — not on a
+single bank. That is a stronger statement than the small mean.
 
-Each figure embedded with a one-line caption naming the script that produced it.
+## What the intervals settle
 
-## 4. Interpretation
+**Q2's premise was wrong, and stating that is the first result.** "Re-run each
+arm ten times" would have produced ten byte-identical numbers: both arms are
+LLM-free, so pipeline variance on this path is **zero by construction**. The
+variance that exists is in which anchors you drew, and nothing in the record had
+ever measured it.
 
-What this means for the paper's argument. Which claim in `../../CLAIMS.md` it
-moves, and in which direction.
+**H1 — the catalogue gap is small with an interval touching zero. Held.**
+Consistent with EXP-2026-08-007's judged finding that the arms are
+indistinguishable where the templates were written to serve.
 
-## 5. Threats to validity
+**H2 — the identity gap is large, clear of zero, and noisier. Held.** −0.6121
+with a CI nowhere near zero. It also *confirms* EXP-2026-08-011's +0.5893 point
+estimate from an independent draw, which that experiment could not do for itself.
 
-Confounds, leakage, dataset artifacts, cost asymmetries in the comparison. The
-section reviewers read first. Be specific enough that someone could act on it.
+**H3 — within-arm sd is non-trivial in both populations. Refuted, informatively.**
+The generic arm on the catalogue has sd **exactly 0.0000**: 1.0000 on all ten
+banks, 300 anchors, no exceptions. The variance on the catalogue is *entirely*
+the template arm's, and §"the defect" shows it is not sampling noise at all.
 
-## 6. What surprised us
+So a single 30-question draw is a noisy instrument **on the identity schema**
+(sd 0.067–0.089, meaning ±0.07 is ordinary) and is not noisy at all on the
+catalogue. Blind figures over foreign schemas need intervals; blind retrieval
+figures over the catalogue are stable.
 
-The section that becomes the discussion. If nothing surprised you, the
-experiment was probably not worth running — say that too.
+## The defect this found
 
-## 7. Follow-ups
+The template arm's entire catalogue variance is **three questions in two banks**,
+and they are not noise — they are one template failing on a whole class of
+anchor:
 
-Each becomes an entry in `../../OPEN_QUESTIONS.md`. Link them.
+| bank | case | anchor | abstraction | gold | retrieved |
+|---|---|---|---|---|---|
+| 9006 | H-ABS-01 | CAPEC-466 | Standard | CAPEC-94 | **0 records** |
+| 9006 | H-ABS-02 | CAPEC-207 | Standard | CAPEC-22 | **0 records** |
+| 9010 | H-ABS-01 | CAPEC-182 | Standard | CAPEC-137 | **0 records** |
 
-## 8. Reproduction
+`capec_hierarchy_chain` emits a **fixed two-hop chain**:
 
-The exact command that regenerates everything in this folder.
-
-```bash
-# command here
 ```
+.out("CHILD_OF").as("parent").out("CHILD_OF").as("grandparent")
+.select("ap","parent","grandparent")
+```
+
+That `select` is an inner join over three positions. All three anchors are
+**Standard** abstraction and their parent is already **Meta** — CAPEC-94,
+CAPEC-22 and CAPEC-137 each have zero parents — so there is no grandparent, the
+select matches nothing, and the query returns **not even the parent the gold
+asked for**.
+
+**This is the same class of defect as the outer-join failure fixed in
+EXP-2026-08-004 and EXP-2026-08-006**, in a template those fixes did not reach.
+
+**Why no earlier bank caught it.** holdout-v1's `H-ABS` anchors happened to be
+Detailed-level, three levels below Meta, so the two-hop chain resolved. The
+defect is invisible to any bank whose abstraction anchors sit low enough, and two
+fixed banks are two samples. **Resampling found in ten draws what two banks had
+hidden through six experiments** — which is a better argument for this method
+than the intervals are.
+
+**Deliberately not fixed here.** A builder change moves recorded numbers and
+needs its own experiment plus a recorded-answer regression diff. Filed as Q22.
+
+## An honest reading of the catalogue number
+
+`gold_in_evidence` on the catalogue is **saturated for the generic arm** and
+within 0.01 of saturation for the template arm. A metric at ceiling cannot
+detect improvement, and this experiment's catalogue half should be read as:
+
+* **positive:** retrieval generalises. Ceiling is not an artifact of the two
+  co-authored banks — it holds on 300 anchors no arm had seen, which extends
+  EXP-2026-08-006's "saturated on both banks" from 2 banks to 12.
+* **limiting:** the catalogue gap **cannot be priced by this metric**. The
+  −0.0100 is real but it is a coverage cliff on one template, not a measure of
+  how the arms differ. Pricing the catalogue gap requires a *judged* metric,
+  which is the deferred half.
+
+The identity half has no such problem: 0.2392 against 0.8514 is nowhere near a
+ceiling, and its interval means what it says.
+
+## Threats
+
+* **Retrieval, not correctness.** Retrieval is necessary, not sufficient. The
+  judged half is deferred by decision, not by oversight; `experiment_untruncated`
+  wrote exactly the artifacts a judge pass consumes.
+* **Machine-authored phrasing** (ISSUES I-3). These banks are as *blind* as
+  holdout-v1 but explore a narrower band of phrasing than a human would. The
+  interval is over **anchor draws**, not over ways of asking.
+* **Identity banks are unequal in size** (17–26 questions, ISSUES I-2) because
+  the pool thins as exclusions accumulate. Per-bank n is in `metrics.json`; the
+  identity sd is an upper bound on stability, not a like-for-like of the
+  catalogue's.
+* **The identity figures are not comparable to EXP-2026-08-011's.** Both arms
+  score higher here (0.2392/0.8514 against 0.1140/0.6923) because the bridge and
+  routing fixes landed in between and the bank composition differs. The **gap**
+  replicates; the levels are a different measurement.
+* **Two populations, two scorers.** The catalogue uses `retrieval_coverage`
+  against bank gold; identity uses `identity_sweep`'s own per-question recall
+  against tenant gold. They are reported side by side and **never pooled**.

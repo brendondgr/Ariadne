@@ -4,71 +4,81 @@
 # a gap.
 id: EXP-2026-08-015
 slug: bank-variance
-title: <one line, the question this answers>
-status: planned            # planned | running | complete | failed | superseded
+title: What is the variance on the templates-vs-generic gap, over ten anchor-disjoint banks per population?
+status: complete           # planned | running | complete | failed | superseded
 date_started: 2026-08-24
-date_completed: null       # null until status is complete/failed
-authors: []
+date_completed: 2026-08-23
+authors: ["brendondgr", "Claude Opus 5"]
 
 purpose: >
-  One paragraph. What question does this answer, and which paper claim
-  does it support or refute?
+  Q2, open since July: every arm manifest carries n_runs 1 and a null
+  statistical_test, and the templates-vs-generic gap is a difference of two point
+  estimates. Re-running the arms would measure nothing -- both are LLM-free and
+  byte-reproducible -- so this resamples the *bank*, ten anchor-disjoint draws per
+  population, and gives the gap its first confidence interval. Retrieval only.
 
 hypothesis: >
-  Stated before the run. If exploratory, write "exploratory — no prior hypothesis".
+  H1 catalogue gap small, interval including zero -- HELD (-0.0100, upper bound
+  exactly +0.0000). H2 identity gap large, clear of zero, noisier -- HELD
+  (-0.6121, CI [-0.6720, -0.5530]). H3 within-arm sd non-trivial in both --
+  REFUTED: the generic arm on the catalogue has sd exactly 0.0000 across 300
+  anchors, and the template arm's spread is one defective template, not noise.
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
   commit: 95b8c0034ec36b75c53b8f4e61682de9c5ca850b          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
-  entrypoint: "<exact command>"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  entrypoint: "uv run python scripts/variance_sweep.py --population catalogue --out docs/evaluation/variance-2026-08-23; likewise --population identity"
+  dirty: true             # variance_sweep.py and the make_bank registry fix were uncommitted at run time; committed with this folder (ISSUES I-1)
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
 data:
-  name: <dataset>
-  version: <version>
-  split: <split>
-  n_examples: 0
+  name: 20 machine-authored anchor-disjoint banks (10 catalogue, 10 identity)
+  version: ATT&CK 19.0, CAPEC 3.9, ReliaQuest identity tenant 1339 nodes
+  split: holdout — every anchor excluded from all prior banks and from each other
+  n_examples: 483           # 300 catalogue + 183 identity questions
   dvc_path: null           # this repository does not use DVC; leave null
   hash: null               # md5:... or sha256:... of the dataset artifact
-seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+seeds: [9001, 9002, 9003, 9004, 9005, 9006, 9007, 9008, 9009, 9010, 9101, 9102, 9103, 9104, 9105, 9106, 9107, 9108, 9109, 9110]
 n_runs: 1
 environment:
   python: "3.13"
   lockfile: env/requirements.lock
   container: null
 compute:
-  hardware: "<cpu/gpu, ram>"
-  wall_clock_hours: 0.0
+  hardware: "local workstation, CPU only; Neo4j x2 + Gremlin in Docker"
+  wall_clock_hours: 1.2
   estimated_cost_usd: 0.0
 
-# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+# --- LLM / agentic block: authoring only, never in the answer path ---
 llm:
-  model: "<provider>/<model>@<version-or-date>"
-  temperature: 0.0
-  top_p: 1.0
-  max_tokens: 2048
-  prompt_files: []
-  prompt_hash: null
-  tool_schema_hash: null
-  total_input_tokens: null
-  total_output_tokens: null
+  model: "relay/skynet@2026-08-23"   # bank Author only; both arms run LLM-free
+  temperature: null                  # provider default; the Author is not scored
+  max_tokens: 4096
+  prompt_files: [utils/specialists/evalset/author.py]
   nondeterminism_note: >
-    Provider-side nondeterminism remains even at temperature 0; results
-    are reported as mean ± std over n_runs.
+    The Author is nondeterministic, so the *questions* would differ on a re-draw.
+    The anchors would not: draws are seeded and the registry is committed. Both
+    arms are byte-reproducible given a bank, so all reported spread is anchor
+    variance rather than model variance.
 
 # --- Results block ---
 metrics:
-  primary: <metric name>
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
-baselines_compared: []
-statistical_test: null
+  primary: gold_in_evidence_templates_minus_generic
+  values:
+    catalogue_templates: {mean: 0.99, std: 0.0225, n: 10}
+    catalogue_generic: {mean: 1.0, std: 0.0, n: 10}
+    catalogue_paired_difference: {mean: -0.01, std: 0.0225, n: 10}
+    identity_templates: {mean: 0.2392, std: 0.0674, n: 10}
+    identity_generic: {mean: 0.8514, std: 0.089, n: 10}
+    identity_paired_difference: {mean: -0.6121, std: 0.0981, n: 10}
+baselines_compared: [generic-schema-derived-arm]
+statistical_test: "paired percentile bootstrap, 2000 resamples, seed 1729, over the 10 per-bank differences"
 
 # --- Linkage ---
-supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+supports_claims: [C-023, C-010]  # every ID here must exist in ../../CLAIMS.md
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
 superseded_by: null
-related: []
+related: [EXP-2026-08-006, EXP-2026-08-007, EXP-2026-08-011]

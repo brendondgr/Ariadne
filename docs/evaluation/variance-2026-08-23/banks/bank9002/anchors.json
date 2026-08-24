@@ -1,0 +1,400 @@
+{
+ "seed": 9002,
+ "protocol": "utils/specialists/evalset/holdout_protocol.py",
+ "gold_bank": "utils/specialists/tests/golden/gold_bank.json",
+ "snapshot": {
+  "attack_version": "19.0",
+  "capec_version": "3.9",
+  "checksums": {
+   "attack": {
+    "sha256": "df520ea0775a57db7bff760145b02fed89290802913e056b7ed5970b02f3626a",
+    "size_bytes": 52680865
+   },
+   "capec": {
+    "sha256": "70279a2dff0cb0ad79e546adb07828335a704ad5210e047e09e986172fc9e34d",
+    "size_bytes": 3849998
+   }
+  }
+ },
+ "strata": {
+  "attack": 12,
+  "capec": 8,
+  "federated": 10
+ },
+ "scale": 1,
+ "excluded": {
+  "size": 120,
+  "sha256": "fdf2bac0259fad343802b97778a5bdbad5b4ab26a93be2f15bd88f7d6b3ae8ab"
+ },
+ "federated_targets": {
+  "answerable": 6,
+  "abstention-expected": 4
+ },
+ "populations": {
+  "attack": {
+   "size": 697,
+   "sha256": "9075c1501d0856438c7688c46a9b6bb26baa1c8bb447b9539a0e6f27f6c37564"
+  },
+  "capec": {
+   "size": 558,
+   "sha256": "4125347093ad7d4b7cbe15b94858f7ee5ad262bac83fc1f0a9356c433aa344d3"
+  },
+  "cwe": {
+   "size": 336,
+   "sha256": "cf78638a85b92a2e9e1059b132a48fbf9d88689e40553695d025bab729a3575c"
+  }
+ },
+ "anchors": [
+  {
+   "stratum": "attack",
+   "category": "mitigations",
+   "anchor": "T1505.001",
+   "feasible_population": 527,
+   "id": "H-MIT-01",
+   "name": "SQL Stored Procedures",
+   "entity_type": "SubTechnique",
+   "draw_index": 0
+  },
+  {
+   "stratum": "attack",
+   "category": "tactics",
+   "anchor": "T1037",
+   "feasible_population": 637,
+   "id": "H-TAC-01",
+   "name": "Boot or Logon Initialization Scripts",
+   "entity_type": "Technique",
+   "draw_index": 1
+  },
+  {
+   "stratum": "attack",
+   "category": "detection",
+   "anchor": "T1578.003",
+   "feasible_population": 637,
+   "id": "H-DET-01",
+   "name": "Delete Cloud Instance",
+   "entity_type": "SubTechnique",
+   "draw_index": 2
+  },
+  {
+   "stratum": "attack",
+   "category": "groups",
+   "anchor": "T1018",
+   "feasible_population": 448,
+   "id": "H-GRP-01",
+   "name": "Remote System Discovery",
+   "entity_type": "Technique",
+   "draw_index": 3
+  },
+  {
+   "stratum": "attack",
+   "category": "lookup",
+   "anchor": "T1021.008",
+   "feasible_population": 637,
+   "id": "H-LKP-01",
+   "name": "Direct Cloud VM Connections",
+   "entity_type": "SubTechnique",
+   "draw_index": 4
+  },
+  {
+   "stratum": "attack",
+   "category": "subtechnique",
+   "anchor": "T1036.009",
+   "feasible_population": 525,
+   "id": "H-SUB-01",
+   "name": "Break Process Trees",
+   "entity_type": "SubTechnique",
+   "draw_index": 5
+  },
+  {
+   "stratum": "attack",
+   "category": "software",
+   "anchor": "T1568.002",
+   "feasible_population": 446,
+   "id": "H-SW-01",
+   "name": "Domain Generation Algorithms",
+   "entity_type": "SubTechnique",
+   "draw_index": 6
+  },
+  {
+   "stratum": "attack",
+   "category": "mitigations",
+   "anchor": "T1608.005",
+   "feasible_population": 527,
+   "id": "H-MIT-02",
+   "name": "Link Target",
+   "entity_type": "SubTechnique",
+   "draw_index": 7
+  },
+  {
+   "stratum": "attack",
+   "category": "tactics",
+   "anchor": "T1596.003",
+   "feasible_population": 637,
+   "id": "H-TAC-02",
+   "name": "Digital Certificates",
+   "entity_type": "SubTechnique",
+   "draw_index": 8
+  },
+  {
+   "stratum": "attack",
+   "category": "detection",
+   "anchor": "T1127.003",
+   "feasible_population": 637,
+   "id": "H-DET-02",
+   "name": "JamPlus",
+   "entity_type": "SubTechnique",
+   "draw_index": 9
+  },
+  {
+   "stratum": "attack",
+   "category": "groups",
+   "anchor": "T1036.001",
+   "feasible_population": 448,
+   "id": "H-GRP-02",
+   "name": "Invalid Code Signature",
+   "entity_type": "SubTechnique",
+   "draw_index": 10
+  },
+  {
+   "stratum": "attack",
+   "category": "lookup",
+   "anchor": "T1590.004",
+   "feasible_population": 637,
+   "id": "H-LKP-02",
+   "name": "Network Topology",
+   "entity_type": "SubTechnique",
+   "draw_index": 11
+  },
+  {
+   "stratum": "capec",
+   "category": "prerequisite",
+   "anchor": "CAPEC-112",
+   "feasible_population": 266,
+   "id": "H-PRE-01",
+   "name": "Brute Force",
+   "entity_type": "AttackPattern",
+   "draw_index": 12
+  },
+  {
+   "stratum": "capec",
+   "category": "weakness",
+   "anchor": "CAPEC-217",
+   "feasible_population": 409,
+   "id": "H-CWE-01",
+   "name": "Exploiting Incorrectly Configured SSL/TLS",
+   "entity_type": "AttackPattern",
+   "draw_index": 13
+  },
+  {
+   "stratum": "capec",
+   "category": "execution",
+   "anchor": "CAPEC-699",
+   "feasible_population": 214,
+   "id": "H-EXE-01",
+   "name": "Eavesdropping on a Monitor",
+   "entity_type": "AttackPattern",
+   "draw_index": 14
+  },
+  {
+   "stratum": "capec",
+   "category": "hierarchy",
+   "anchor": "CAPEC-42",
+   "feasible_population": 453,
+   "id": "H-ABS-01",
+   "name": "MIME Conversion",
+   "entity_type": "AttackPattern",
+   "draw_index": 15
+  },
+  {
+   "stratum": "capec",
+   "category": "lookup",
+   "anchor": "CAPEC-569",
+   "feasible_population": 510,
+   "id": "H-LKP-03",
+   "name": "Collect Data as Provided by Users",
+   "entity_type": "AttackPattern",
+   "draw_index": 16
+  },
+  {
+   "stratum": "capec",
+   "category": "consequence",
+   "anchor": "CAPEC-509",
+   "feasible_population": 328,
+   "id": "H-CSQ-01",
+   "name": "Kerberoasting",
+   "entity_type": "AttackPattern",
+   "draw_index": 17
+  },
+  {
+   "stratum": "capec",
+   "category": "mapping",
+   "anchor": "CAPEC-68",
+   "feasible_population": 150,
+   "id": "H-MAP-01",
+   "name": "Subvert Code-signing Facilities",
+   "entity_type": "AttackPattern",
+   "draw_index": 18
+  },
+  {
+   "stratum": "capec",
+   "category": "prerequisite",
+   "anchor": "CAPEC-164",
+   "feasible_population": 266,
+   "id": "H-PRE-02",
+   "name": "Mobile Phishing",
+   "entity_type": "AttackPattern",
+   "draw_index": 19
+  },
+  {
+   "stratum": "federated",
+   "category": "pattern-to-mitigation",
+   "anchor": "CAPEC-219",
+   "partition": "abstention-expected",
+   "correlation_size": 0,
+   "feasible_population": 510,
+   "id": "H-CTM-01",
+   "name": "XML Routing Detour Attacks",
+   "entity_type": "AttackPattern",
+   "draw_index": 20
+  },
+  {
+   "stratum": "federated",
+   "category": "pattern-to-mitigation",
+   "anchor": "CAPEC-114",
+   "partition": "answerable",
+   "correlation_size": 1,
+   "feasible_population": 510,
+   "id": "H-CTM-02",
+   "name": "Authentication Abuse",
+   "entity_type": "AttackPattern",
+   "draw_index": 21
+  },
+  {
+   "stratum": "federated",
+   "category": "pattern-to-mitigation",
+   "anchor": "CAPEC-203",
+   "partition": "answerable",
+   "correlation_size": 2,
+   "feasible_population": 510,
+   "id": "H-CTM-03",
+   "name": "Manipulate Registry Information",
+   "entity_type": "AttackPattern",
+   "draw_index": 22
+  },
+  {
+   "stratum": "federated",
+   "category": "pattern-to-mitigation",
+   "anchor": "CAPEC-410",
+   "partition": "abstention-expected",
+   "correlation_size": 0,
+   "feasible_population": 510,
+   "id": "H-CTM-04",
+   "name": "Information Elicitation",
+   "entity_type": "AttackPattern",
+   "draw_index": 23
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1571",
+   "partition": "abstention-expected",
+   "correlation_size": 0,
+   "feasible_population": 637,
+   "id": "H-REV-01",
+   "name": "Non-Standard Port",
+   "entity_type": "Technique",
+   "draw_index": 24
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1499.004",
+   "partition": "answerable",
+   "correlation_size": 1,
+   "feasible_population": 637,
+   "id": "H-REV-02",
+   "name": "Application or System Exploitation",
+   "entity_type": "SubTechnique",
+   "draw_index": 25
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1574.013",
+   "partition": "answerable",
+   "correlation_size": 1,
+   "feasible_population": 637,
+   "id": "H-REV-03",
+   "name": "KernelCallbackTable",
+   "entity_type": "SubTechnique",
+   "draw_index": 26
+  },
+  {
+   "stratum": "federated",
+   "category": "cwe-chain",
+   "anchor": "CWE-90",
+   "partition": "abstention-expected",
+   "correlation_size": 0,
+   "feasible_population": 324,
+   "id": "H-CHN-01",
+   "name": "CWE-90",
+   "entity_type": "Weakness",
+   "draw_index": 27
+  },
+  {
+   "stratum": "federated",
+   "category": "cwe-chain",
+   "anchor": "CWE-1190",
+   "partition": "answerable",
+   "correlation_size": 1,
+   "feasible_population": 324,
+   "id": "H-CHN-02",
+   "name": "CWE-1190",
+   "entity_type": "Weakness",
+   "draw_index": 28
+  },
+  {
+   "stratum": "federated",
+   "category": "cwe-chain",
+   "anchor": "CWE-294",
+   "partition": "answerable",
+   "correlation_size": 11,
+   "feasible_population": 324,
+   "id": "H-CHN-03",
+   "name": "CWE-294",
+   "entity_type": "Weakness",
+   "draw_index": 29
+  }
+ ],
+ "overdraw": [
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1683.001",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1588.002",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1087.002",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  },
+  {
+   "stratum": "federated",
+   "category": "reverse-mapping",
+   "anchor": "T1008",
+   "partition": "abstention-expected",
+   "reason": "abstention-expected quota already full"
+  }
+ ],
+ "discards": []
+}
