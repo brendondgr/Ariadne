@@ -432,6 +432,42 @@ across all 120 catalogue entries, so it needs an experiment, not a patch.
 **Cost:** ~1 day. **Blocks:** stating the routing fix without a caveat.
 **From:** EXP-2026-08-016 RESULTS.
 
+**Status: FIXED (2026-08-24).** And the diagnosis above was half wrong in a way
+worth recording: it was **not** a weighting problem. Both sources matched exactly
+**one** token — `group` — and `max()` broke the tie **alphabetically**, so
+`identity` beat `attack` on the letter *i*. The identifier `t1059` was in the
+request and counted for nobody, because the concept index is built from label and
+relationship *names* and never from instance identifiers.
+
+The fix is the one this question proposed, implemented schema-agnostically: a
+request token whose **shape** matches a learned identifier scheme of a source
+counts as an id-hit for it. Shapes are learned from each dataset's canonical
+snapshot by `utils/specialists/schema/idscheme.py` (`T1059.001` → `t#.#`), so
+**no MITRE string enters the router**, and a source with no learned schemes
+scores nothing extra rather than wrongly.
+
+| | before | after |
+|---|---|---|
+| *"Which group uses T1059.001?"* | routed `identity` alone, **0 records** | routed **`attack`**, 1 record |
+| leak totals | 1/14 probes, 5 records | **unchanged** |
+| catalogue regression | — | **0 of 300 answers changed** |
+
+Inert where it should be, active only where two sources compete for a generic
+word. **Nothing was traded.**
+
+**What is NOT fixed, and it is a different question.** `attack_tactic` — *"Which
+techniques belong to the credential access tactic?"* — still routes to both and
+pulls 5 identity records. It carries **no identifier**, so there is no
+identifier-strength evidence to weigh; the tenant's 72 labels of ordinary IT
+English match `credential`, `access` and `belong` on their own merits. That is
+C-010's known limit: the planner is card-driven but not schema-*scale*-
+independent.
+
+**A second defect surfaced on the same probe and should not be confused with the
+leak:** ATT&CK *is* routed there and returns **0 records** of its own. So the
+answer is bad twice over, and only one half is a routing property. Filed nowhere
+yet — it needs a look at what that question shape does on the ATT&CK side.
+
 ### Q20 — The LLM claims composer is unreachable. Delete it, or reconnect and measure it?
 
 **Why it matters:** `utils/synthesis/llm_composer.py::OpenAICompatibleComposer`

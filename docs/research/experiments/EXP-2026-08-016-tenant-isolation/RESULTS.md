@@ -113,3 +113,59 @@ honest form now has two clauses:
 * **`sideEffect` is on the card's disallowed list**, so probes placing a write
   inside it were blocked for two reasons at once. Their pass tells us less than
   the count suggests.
+
+---
+
+# AMENDMENTS
+
+## A-1 (2026-08-24) — Q21 fixed: the routing rule no longer loses the source a question is about
+
+The cost this experiment reported is repaired, and the leak figures are unmoved.
+
+**The defect was a tiebreak, not a weighting.** Scoring *"Which group uses
+T1059.001?"* gave ATT&CK **1** matched token and the tenant graph **1** — both on
+the word `group` — and `max()` broke the tie on dataset name, alphabetically. The
+identifier `t1059` was sitting in the request and counted for **nobody**, because
+the concept index is built from label and relationship *names* and never from
+instance identifiers.
+
+**The fix adds identifier-shape evidence, learned rather than written down.**
+A request token whose *shape* matches one of a source's learned identifier
+schemes now counts as an id-hit for that source, and joins its distinctive-token
+set. Shapes come from `utils/specialists/schema/idscheme.py`, which normalises
+digit runs (`T1059.001` → `t#.#`) from each dataset's canonical snapshot. **No
+MITRE string appears in the router.** A source with no learned schemes scores
+nothing extra — the `undetermined` behaviour that module already specifies —
+rather than a wrong answer.
+
+### Result
+
+| probe | before | after |
+|---|---|---|
+| `attack_group` | routed `identity` alone, **0 records** | routed **`attack`**, **1 record** |
+| `attack_technique` (absolute rule) | routed `attack,capec,identity` | routed **`attack`** |
+| leak totals | 1/14 probes, 5 records | **1/14 probes, 5 records** — unchanged |
+
+**The regression is the strongest part.** Re-running all ten catalogue banks,
+deterministic arm: **0 of 300 answers changed.** The fix is inert on the
+two-catalogue configuration — where ATT&CK already won its questions — and active
+only where a second source was competing for a generic word. Strictly better,
+nothing traded.
+
+### The residual, unchanged and now better understood
+
+`attack_tactic` still routes to `attack` **and** `identity` and pulls 5 identity
+records. The fix cannot help: *"Which techniques belong to the credential access
+tactic?"* carries **no identifier at all**, so there is no identifier-strength
+evidence to weigh, and the tenant's 72 labels of ordinary IT English match
+`credential`, `access` and `belong` on their own merits.
+
+**And it exposes something this experiment did not previously separate:** on that
+probe ATT&CK is routed and returns **0 records** while identity returns 5. So the
+answer is bad for two independent reasons — a leak *and* an ATT&CK-side retrieval
+failure on that question shape — and only the first is a routing property. That
+second half is not Q21 and is not fixed here.
+
+This is the C-010 limitation in miniature: the planner is card-driven but not
+schema-*scale*-independent, and generic vocabulary against a large schema remains
+its weakest surface.

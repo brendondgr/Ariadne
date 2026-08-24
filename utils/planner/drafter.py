@@ -220,7 +220,71 @@ def _match_card(
             if tok not in tokens:
                 id_hits += 1
                 tokens.add(tok)
+
+    # A token shaped like one of this source's *identifiers* is the strongest
+    # evidence a request can carry, and until Q21 it counted for nothing.
+    #
+    # "Which group uses T1059.001?" scored 1 to ATT&CK and 1 to the tenant
+    # graph -- both on the word "group" -- and the tie broke alphabetically, so
+    # an ATT&CK question routed to the customer's identity graph and returned
+    # nothing at all. `t1059` was sitting right there in the request and no
+    # source could claim it, because the concept index is built from label and
+    # relationship *names*, never from instance identifiers.
+    #
+    # Schema-agnostic by construction: the shapes are LEARNED from each dataset's
+    # canonical snapshot (`scheme_of` normalises digit runs, so `T1059.001`
+    # becomes `t#.#`), never written down here. A source with no learned schemes
+    # -- an undelivered or opaque catalogue -- simply scores nothing extra,
+    # which is the `undetermined` behaviour the idscheme module documents rather
+    # than a wrong answer.
+    id_hits += _identifier_shape_hits(request_tokens, tokens, card, dataset)
     return id_hits, gloss_hits, sorted(matched), tokens
+
+
+def _identifier_shape_hits(
+    request_tokens: set[str],
+    tokens: set[str],
+    card: SourceCardView,
+    dataset: str | None,
+) -> int:
+    """Count request tokens shaped like a learned identifier of this source.
+
+    Mutates ``tokens`` so a shape hit also counts as a *distinctive* token in
+    :func:`_select_sources` -- which matters more than the score: an identifier
+    is exactly the kind of evidence one source has and another does not.
+    """
+    if not dataset:
+        return 0
+    try:
+        from utils.specialists.schema import scheme_of
+
+        registry = card.schema_registry()
+        schema = registry.dataset(dataset) if hasattr(registry, "dataset") else None
+        schemes = getattr(schema, "label_id_schemes", None) if schema else None
+    except Exception:
+        # The registry is unavailable often and legitimately (no canonical tree
+        # yet, a card-only composition). Routing must still work, so an absent
+        # registry means no extra evidence -- never an exception.
+        return 0
+    if not schemes:
+        return 0
+
+    known: set[str] = set()
+    for props in schemes.values():
+        for prop_schemes in props.values():
+            known.update(getattr(prop_schemes, "schemes", ()) or ())
+    if not known:
+        return 0
+
+    hits = 0
+    for tok in request_tokens:
+        if tok in tokens:
+            continue
+        shape = scheme_of(tok)
+        if shape and shape in known:
+            hits += 1
+            tokens.add(tok)
+    return hits
 
 
 def _select_sources(scored: dict[str, tuple[int, int, list[str], set[str]]]) -> set[str]:
