@@ -282,6 +282,31 @@ could stress the verifier is an LLM-proposed claim, and no shipped path produces
 one. The answerable/unanswerable half of the original question is unaffected and
 still open — 10 negatives remains too few.
 
+### Q21 — The comparative routing rule can lose the source a question is about
+
+**Why it matters:** EXP-2026-08-016 measured what the 2026-08-22 source-selection
+fix bought — cross-tenant leakage from **568 records to 5** — and, because the
+protocol required reporting off-metric regressions, also what it cost.
+
+*"Which group uses T1059.001?"* is an ATT&CK question. Under the comparative rule
+the tenant identity graph is the leader on the token `group`, ATT&CK contributes
+no token identity does not, and ATT&CK is dropped: the question routes to
+`identity` alone and **returns nothing at all**. The leak metric scores this
+*clean*, because the one source consulted returned no foreign records — a rule
+routing everything to a single source would score a perfect zero while answering
+nothing.
+
+So the fix is a trade, and both halves must travel with the claim.
+
+**What resolves it:** the leader rule breaks ties on *token count*, which treats
+a generic word matched by a 72-label tenant schema as equal evidence to an
+identifier matched by a catalogue. A weighting that prefers a source matching a
+**resolved identifier** (`T1059.001`) over one matching only generic vocabulary
+would keep both properties. That is a design change with its own regression risk
+across all 120 catalogue entries, so it needs an experiment, not a patch.
+**Cost:** ~1 day. **Blocks:** stating the routing fix without a caveat.
+**From:** EXP-2026-08-016 RESULTS.
+
 ### Q20 — The LLM claims composer is unreachable. Delete it, or reconnect and measure it?
 
 **Why it matters:** `utils/synthesis/llm_composer.py::OpenAICompatibleComposer`
@@ -614,8 +639,10 @@ These are limitations to disclose, not questions to answer.
 - **The safety probe suite is 17 probes.** A 100% block rate over 17 probes is
   weak evidence of a strong property, and the suite itself found the one bypass
   that was subsequently fixed, so it partly grades against its own answer key.
-  (C-008) **Being addressed** by `EXP-2026-08-016-tenant-isolation`, which
-  generates the suite rather than hand-writing it.
+  (C-008) **ADDRESSED (EXP-2026-08-016):** the suite is now generated, 240
+  probes, and it found **15 live bypasses** the 17 never reached. All closed;
+  240/240 after. State the 15 alongside the clean rate — the defects are the
+  evidence that 17 was too few, and the rate alone teaches the opposite lesson.
 - **No human ever graded an answer.** Every correctness figure in the study is
   machine-graded, and judge–human agreement was closed as will-not-do rather
   than measured (Q6). What bounds the grader instead is cross-model agreement

@@ -1,0 +1,78 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-08-016
+slug: tenant-isolation
+title: How much does the safety gate actually block, and can a tenant's graph leak into a catalogue answer?
+status: complete           # planned | running | complete | failed | superseded
+date_started: 2026-08-24
+date_completed: 2026-08-23
+authors: ["brendondgr", "Claude Opus 5"]
+
+purpose: >
+  C-008 rests on 17 hand-written probes, and the suite that produced them found
+  the only bypass on record, so it partly grades against its own answer key.
+  Phase 1 generates a suite two orders of magnitude larger. Phase 2 measures a
+  property no gate can see -- whether a tenant's identity graph leaks into a
+  catalogue answer -- as a controlled before/after over the source-selection
+  rule.
+
+hypothesis: >
+  H1: a much larger suite finds bypasses the 17 did not. CONFIRMED -- 15.
+  H2: the comparative source-selection rule reduces cross-source leakage
+  relative to the absolute rule it replaced. CONFIRMED -- 568 records to 5.
+  H3 (pre-registered as a falsifier): a routing regression would be invisible to
+  the leak metric. CONFIRMED and reported -- attack_group now routes to identity
+  alone and answers nothing.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 0335d554c5ccadf4462dceda49c53f2137a4296d          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python -m utils.specialists.evalset.score_safety; uv run python scripts/isolation_probes.py --out docs/evaluation/isolation-2026-08-23"
+  dirty: false            # phase 1 fixes committed at 0335d55 before phase 2 ran
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: ATT&CK + CAPEC source cards; tri-source composition (attack + capec + identity)
+  version: ATT&CK 19.0, CAPEC 3.9, ReliaQuest identity tenant 1339 nodes
+  split: n/a — probes are authored, not drawn from a bank
+  n_examples: 254            # 240 gate probes + 14 isolation probes
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: null               # md5:... or sha256:... of the dataset artifact
+seeds: []                  # probe generation is deterministic: no randomness, stable ordering
+n_runs: 1
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "local workstation, CPU only; Neo4j x2 + Gremlin in Docker"
+  wall_clock_hours: 0.2
+  estimated_cost_usd: 0.0
+
+# (No LLM / agentic block: no model is in the loop. Probe generation and
+#  the pipeline runs are deterministic.)
+
+# --- Results block ---
+metrics:
+  primary: leaked_records_by_selection_rule
+  values:
+    leaked_records_absolute_rule: {mean: 568.0, std: 0.0, n: 14}
+    leaked_records_comparative_rule: {mean: 5.0, std: 0.0, n: 14}
+    probes_leaking_absolute_rule: {mean: 3.0, std: 0.0, n: 14}
+    probes_leaking_comparative_rule: {mean: 1.0, std: 0.0, n: 14}
+    gate_probes: {mean: 240.0, std: 0.0, n: 1}
+    gate_block_rate_after_fix: {mean: 1.0, std: 0.0, n: 240}
+    gate_bypasses_found: {mean: 15.0, std: 0.0, n: 240}
+baselines_compared: [absolute-source-selection, hand-written-17-probe-suite]
+statistical_test: null    # counts over an authored probe set, not a sample
+
+# --- Linkage ---
+supports_claims: [C-008]   # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null
+superseded_by: null
+related: [EXP-2026-08-013]

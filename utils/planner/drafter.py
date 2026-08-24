@@ -22,6 +22,8 @@ ambiguity (§3.4).
 
 from __future__ import annotations
 
+import os
+
 import re
 from typing import Protocol
 
@@ -250,6 +252,16 @@ def _select_sources(scored: dict[str, tuple[int, int, list[str], set[str]]]) -> 
     live = {ds: tokens for ds, (id_hits, _g, _e, tokens) in scored.items() if id_hits > 0}
     if not live:
         return set()
+
+    # `ARIADNE_SOURCE_SELECTION=absolute` restores the pre-2026-08-22 rule. It is
+    # not a supported configuration and nothing should run it in anger: it exists
+    # so the fix above can be *measured* rather than asserted, by running the same
+    # questions under both rules (EXP-2026-08-016). A behaviour change with no way
+    # to reproduce the behaviour it replaced cannot be quantified afterwards, and
+    # this project has already had to reconstruct one such change from prose.
+    if os.environ.get("ARIADNE_SOURCE_SELECTION", "").strip().lower() == "absolute":
+        return set(live)
+
     # Ties broken by name so the selection is deterministic, never by dict order.
     leader = max(live, key=lambda ds: (len(live[ds]), ds))
     keep = {leader}

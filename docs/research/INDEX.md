@@ -10,6 +10,7 @@ that a dead end is walked into once rather than twice.
 
 | ID | Date | Title | Status | Primary metric | Claims | Link |
 |---|---|---|---|---|---|---|
+| `EXP-2026-08-015` | 2026-08-24 | <one line, the question this answers> | planned | <metric name> (not recorded) | — | [bank-variance](experiments/EXP-2026-08-015-bank-variance/) |
 | `EXP-2026-07-001` | 2026-07-26 | Arm A — fully deterministic pipeline (planning, extraction, synthesis) | complete | correctness 0.9972 (n=1) | C-001, C-004 | [arm-a-deterministic](experiments/EXP-2026-07-001-arm-a-deterministic/) |
 | `EXP-2026-07-002` | 2026-07-26 | Arm B — LLM planning with deterministic extraction and an LLM writer | complete | correctness 0.8505 (n=1) | C-002, C-003, C-016 | [arm-b-llm-planned](experiments/EXP-2026-07-002-arm-b-llm-planned/) |
 | `EXP-2026-07-003` | 2026-07-26 | Arm C — authored plan with an LLM writer reading raw evidence | complete | correctness 0.9690 (n=1) | C-002, C-005 | [arm-c-llm-writer-evidence](experiments/EXP-2026-07-003-arm-c-llm-writer-evidence/) |
@@ -34,6 +35,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-08-012` | 2026-08-21 | Do the two template defects EXP-2026-08-010 found close, without moving a recorded number? | complete | external_recall_after_fix 0.7633 (n=182) | C-003, C-012 | [template-coverage-fix](experiments/EXP-2026-08-012-template-coverage-fix/) |
 | `EXP-2026-08-013` | 2026-08-22 | Three graph sources at once, and a declared bridge from the customer graph to ATT&CK | complete | gold_in_evidence_retrieval (not recorded) | C-010, C-015 | [tri-source-federation](experiments/EXP-2026-08-013-tri-source-federation/) |
 | `EXP-2026-08-014` | 2026-08-23 | Does the verifier actually cut anything? Each of the four claim gates, ablated | complete | claims_admitted_by_disabling_a_gate 0.0000 ± 0.0000 (n=888) | C-017 | [verifier-ablation](experiments/EXP-2026-08-014-verifier-ablation/) |
+| `EXP-2026-08-016` | 2026-08-23 | How much does the safety gate actually block, and can a tenant's graph leak into a catalogue answer? | complete | leaked_records_by_selection_rule (not recorded) | C-008 | [tenant-isolation](experiments/EXP-2026-08-016-tenant-isolation/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 
-**25 experiment(s) on record.**
+**27 experiment(s) on record.**
