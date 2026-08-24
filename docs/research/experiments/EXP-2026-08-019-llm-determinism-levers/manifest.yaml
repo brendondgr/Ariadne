@@ -4,53 +4,61 @@
 # a gap.
 id: EXP-2026-08-019
 slug: llm-determinism-levers
-title: <one line, the question this answers>
-status: planned            # planned | running | complete | failed | superseded
+title: Does seeding or concurrency change LLM-arm variance, and what does raising workers actually cost?
+status: complete           # planned | running | complete | failed | superseded
 date_started: 2026-08-24
-date_completed: null       # null until status is complete/failed
-authors: []
+date_completed: 2026-08-24
+authors: ["brendondgr", "Claude Opus 5"]
 
 purpose: >
-  One paragraph. What question does this answer, and which paper claim
-  does it support or refute?
+  Q2's surviving half. The deterministic arms carry an interval; the LLM arms are
+  all n=1. The operator asked to minimise the variance rather than merely measure
+  it, and asked directly whether the available 32-way concurrency is safe. This
+  measures the two levers under client control -- a pinned seed, and worker count
+  -- rather than assuming either.
 
 hypothesis: >
-  Stated before the run. If exploratory, write "exploratory — no prior hypothesis".
+  H1 seeding reduces spread at fixed concurrency -- REFUTED (gold sd 0.0212 seeded
+  against 0.0207 unseeded). H2 concurrency 1 is most reproducible -- UNFALSIFIED,
+  condition C deferred on cost. H3 32 workers is less reproducible than 16 --
+  REFUTED on the stated metric but the real cost is elsewhere: latency +61%,
+  timeouts doubled, and measured quality INFLATED because a timeout falls back to
+  the stronger deterministic composer (r = +0.62 fallbacks vs gold).
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
   commit: 174da72450dea2cb121b5838be1ea5629c6a6549          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
-  entrypoint: "<exact command>"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  entrypoint: "uv run python scripts/composer_arm_sweep.py --out docs/evaluation/determinism-2026-08-24 --repeats 3 --arms llm_claims --workers {16,32} --tag seeded-w{16,32}"
+  dirty: false            # sampling change committed at 174da72 before conditions B and D ran
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
 data:
-  name: <dataset>
-  version: <version>
-  split: <split>
-  n_examples: 0
+  name: golden catalogue (attack + capec + federated)
+  version: ATT&CK 19.0, CAPEC 3.9
+  split: all 120 catalogue questions, every condition
+  n_examples: 120
   dvc_path: null           # this repository does not use DVC; leave null
   hash: null               # md5:... or sha256:... of the dataset artifact
-seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+seeds: [1729]              # the pinned LLM_SEED for conditions B and D; condition A ran before it existed
 n_runs: 1
 environment:
   python: "3.13"
   lockfile: env/requirements.lock
   container: null
 compute:
-  hardware: "<cpu/gpu, ram>"
-  wall_clock_hours: 0.0
+  hardware: "local workstation; LLM served by the local relay, 96k context, 16 concurrent at full context"
+  wall_clock_hours: 1.0
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
 llm:
-  model: "<provider>/<model>@<version-or-date>"
-  temperature: 0.0
+  model: "relay/Ornith-1.5-35B-A3B-W4A16-SYM@2026-08-24"   # alias `skynet`; see Q12
+  temperature: 0.0   # already true at every graded call site before this experiment
   top_p: 1.0
-  max_tokens: 2048
-  prompt_files: []
+  max_tokens: 8192   # thinking budget 3072
+  prompt_files: [utils/synthesis/llm_composer.py, utils/llm_sampling.py]
   prompt_hash: null
   tool_schema_hash: null
   total_input_tokens: null
@@ -61,14 +69,22 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: <metric name>
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
-baselines_compared: []
-statistical_test: null
+  primary: gold_in_claims_sd_across_repeats
+  values:
+    gold_sd_unseeded_w16: {mean: 0.0207, std: 0.0, n: 3}
+    gold_sd_seeded_w16: {mean: 0.0212, std: 0.0, n: 3}
+    gold_sd_seeded_w32: {mean: 0.0373, std: 0.0, n: 3}
+    fallbacks_seeded_w16: {mean: 14.0, std: 4.58, n: 3}
+    fallbacks_seeded_w32: {mean: 28.3, std: 4.04, n: 3}
+    per_question_latency_s_w16: {mean: 53.0, std: 6.5, n: 3}
+    per_question_latency_s_w32: {mean: 85.5, std: 0.9, n: 3}
+    pearson_r_fallbacks_vs_gold: {mean: 0.6232, std: 0.0, n: 9}
+baselines_compared: [unseeded-w16 (EXP-2026-08-018)]
+statistical_test: "Pearson r over 9 runs, fallbacks vs gold-in-claims: +0.6232"
 
 # --- Linkage ---
-supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+supports_claims: [C-017]   # every ID here must exist in ../../CLAIMS.md
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
 superseded_by: null
-related: []
+related: [EXP-2026-08-018, EXP-2026-08-015]

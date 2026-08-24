@@ -119,6 +119,42 @@ through six experiments (Q22).
 (B, E, F, `llm_query`). They have genuine run variance, none has been run twice,
 and nothing here touches them. Every figure quoting those arms is still n=1.
 
+**The synthesis seam is now measured, and both levers failed (EXP-2026-08-019,
+2026-08-24).** Three conditions × three repeats × 120 questions:
+
+| condition | gold sd | fallbacks | per-question |
+|---|---:|---:|---:|
+| unseeded, 16 workers | 0.0207 | 21.3 | 65.1 s |
+| **seeded**, 16 workers | 0.0212 | 14.0 | 53.0 s |
+| **seeded**, 32 workers | 0.0373 | 28.3 | 85.5 s |
+
+**H1 refuted: seeding does not reduce spread** (0.0212 against 0.0207). It was
+never going to — temperature was already 0 everywhere graded, so there was no
+sampling to remove, and the variance comes from **timeout and fallback**, which
+is upstream of any sampling parameter. The seed stays because it costs nothing
+and removes a real degree of freedom, but **must never be reported as a variance
+reduction.**
+
+**H3 refuted, and the actual finding is worse than the hypothesis.** Raising
+workers 16 → 32 buys **19% wall clock** and costs a **61% rise in per-request
+latency** and a **doubling of timeouts**. And because a timeout falls back to the
+deterministic composer — which scores **0.8184** against the LLM's ~0.68 —
+**failing more makes the arm score better**: r(fallbacks, gold) = **+0.62** over
+all nine runs.
+
+**At 32 workers roughly a fifth of the "LLM arm" is not the LLM arm.** That
+generalises past concurrency: *any harness with a fallback to a stronger path
+reports improvement when the primary path degrades.* Every LLM-arm figure in this
+record should carry its engagement rate beside it.
+
+**Practical answer to "is 32 safe":** yes for ungraded bulk work, no for a graded
+arm. **And the binding constraint is not the concurrency ceiling — it is the
+120 s read timeout**, which is the knob worth revisiting first.
+
+**Still untouched:** the planner and specialist LLM seams. Q2 closes one of
+three, and condition C (single worker) was deferred on cost, so how much a fully
+serialised run would recover is unmeasured.
+
 ### Q22 — `capec_hierarchy_chain` returns nothing when the parent is already Meta
 
 **Why it matters:** it is a live retrieval defect on the *catalogue*, found by

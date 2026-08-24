@@ -45,16 +45,23 @@ and reproducibility are in tension** and nobody had priced it.
 Four conditions over the same population, LLM claims arm, retrieval held
 deterministic:
 
-| condition | seed | workers |
-|---|---|---|
-| A | off | 16 |
-| B | **on** | 16 |
-| C | **on** | 1 |
-| D | **on** | 32 |
+| condition | seed | workers | status |
+|---|---|---|---|
+| A | off | 16 | **reused** — EXP-2026-08-018's LLM arm, run before the seed landed |
+| B | **on** | 16 | run |
+| C | **on** | 1 | **deferred, and the reason is recorded rather than hidden** |
+| D | **on** | 32 | run |
 
-Three repeats each. Condition A is the pre-lever baseline and already exists: it
-is EXP-2026-08-018's LLM arm, run before the seed landed, and is reused rather
-than re-run.
+Three repeats each, all 120 catalogue questions, so every condition is measured
+over the same population.
+
+**Condition C is deferred on cost, not on interest.** Per-question composition
+averages 56 s, so one repeat at a single worker is ~1.9 hours and three repeats
+is **5.6 hours** — against 7 minutes at 16 workers. It is the condition most
+likely to be reproducible and least likely to be *used*, so it buys the least
+per hour. Its absence bounds the conclusion: B versus D can say whether raising
+concurrency costs stability, and **cannot** say how much stability a fully
+serialised run would recover.
 
 **Measured per condition:** spread across repeats of claim count, unsupported
 count, and gold-in-claims; plus the fraction of questions whose answer is
@@ -64,10 +71,12 @@ question.
 ## 6. Hypotheses
 
 **H1.** Seeding reduces spread at fixed concurrency (B < A).
-**H2.** Concurrency 1 is the most reproducible condition (C < B), because batch
-shape stops varying.
-**H3.** 32 workers is measurably less reproducible than 16 (D > B). If H3 fails,
-higher concurrency is free and the operator's 32 is safe for graded runs.
+**H2.** *(unfalsifiable here — condition C deferred.)* Concurrency 1 would be the
+most reproducible, because batch shape stops varying. Recorded as a stated
+expectation, never as a result.
+**H3.** 32 workers is measurably less reproducible than 16 (D > B). **This is the
+operator's actual question** — 64 concurrency is available and 32 was authorised.
+If H3 fails, higher concurrency is free and 32 is safe for graded runs.
 
 Stated plainly: **if B, C and D are indistinguishable, the tension in §3 is
 theoretical here and graded runs may use whatever concurrency is fastest.** That
