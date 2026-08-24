@@ -260,6 +260,50 @@ ablation — each of the four gates (cited / resolvable / grounded / correlated)
 disabled individually — plus a proper answerable/unanswerable split. The current
 10 negatives are far too few. **Blocks:** C-017.
 
+**Status: ANSWERED (EXP-2026-08-014, 2026-08-23). It does nothing, and that is
+the right answer.** All four gates ablated over 888 claims from 137 answered
+questions across four banks: each cuts **zero**, and the baseline carries zero
+unsupported claims. Not because verification is broken but because
+`factory.synthesize` always composes with `DeterministicComposer`, which builds
+every claim *from* a retrieved record — the citation is that record and the
+entity ids are its own. **An uncited, unresolvable or ungrounded claim cannot be
+constructed on this path.**
+
+So the question was mis-framed, and usefully so: the verifier is a **ceiling by
+construction**, like C-007's safety property, not a filter with a hit rate.
+C-017's first half has been restated accordingly. The evidence that survives is
+the unit proof (13 assertions in
+`utils/synthesis/tests/test_verifier_gates.py`) plus the structural argument —
+never an ablation, which on this pipeline cannot tell a working verifier from a
+disabled one.
+
+**What is left of Q10 is a new question, recorded as Q20:** the only input that
+could stress the verifier is an LLM-proposed claim, and no shipped path produces
+one. The answerable/unanswerable half of the original question is unaffected and
+still open — 10 negatives remains too few.
+
+### Q20 — The LLM claims composer is unreachable. Delete it, or reconnect and measure it?
+
+**Why it matters:** `utils/synthesis/llm_composer.py::OpenAICompatibleComposer`
+builds claims from model JSON (`Claim.from_dict`), and
+`factory.select_composer` would wire it in — but `factory.synthesize` never calls
+`select_composer`; it constructs `DeterministicComposer` directly. The composer
+is described capability with no caller, the same class of inflation as the two
+unreachable query templates deleted on 2026-08-23.
+
+It matters more than those did. It is the **only** thing in the codebase that
+would let a language model propose a claim, so it is the only input against which
+the verifier's four gates are load-bearing (Q10, EXP-2026-08-014). While it stays
+unreachable, C-017 can only ever be a construction argument.
+
+**What resolves it:** a decision. Either delete it and state that no path admits
+model-proposed claims — which simplifies the system description and makes the
+verifier's role honest — or reconnect it as a measured arm and re-run the
+ablation against it, which would finally give C-017 a rate rather than a
+guarantee. **Cost:** an afternoon to delete; ~2 days to reconnect and measure.
+**Blocks:** whether C-017 can ever be more than a design claim.
+**From:** EXP-2026-08-014 RESULTS.
+
 ---
 
 ## Environment and provenance

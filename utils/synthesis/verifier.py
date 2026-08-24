@@ -38,6 +38,7 @@ from utils.specialists.contracts import EvidenceRecord, SpecialistResult
 from utils.specialists.federation import FederatedEvidence
 
 from .composer import abstention_for
+from .config import SynthesisConfig
 from .contracts import (
     Abstention,
     Citation,
@@ -97,20 +98,43 @@ def _verify_claim(
     claim: Claim,
     by_source: dict[str, list[EvidenceRecord]],
     cross_values: set[str],
+    config: SynthesisConfig | None = None,
 ) -> ClaimVerdict:
+    """Rule on one claim through four gates, any of which may be ablated.
+
+    On the default path (every gate on) this is exactly the original cascade and
+    ``waived`` is always empty. When a gate is disabled its objection is routed
+    to ``waived`` instead of ``reasons``, so it no longer makes the claim
+    unsupported but is still counted — which is what makes the ablation a diff
+    rather than a re-derivation (EXP-2026-08-014).
+
+    The short-circuits are preserved exactly. A gate that is *disabled* stops
+    short-circuiting too: with `resolvable` off, an unresolvable citation no
+    longer suppresses the grounding check, so grounding is evaluated against the
+    records that did resolve. That is the honest reading of "this gate is not
+    there" — the downstream gate sees what it would see in a system built
+    without the disabled one.
+    """
+    cfg = config or SynthesisConfig.from_env()
     reasons: list[str] = []
+    waived: list[str] = []
+
+    def object_to(gate_on: bool, reason: str) -> None:
+        (reasons if gate_on else waived).append(reason)
 
     if not claim.citations:
-        return ClaimVerdict(
-            verdict="unsupported",
-            reasons=["uncited claim: no evidence records were cited"],
-        )
+        object_to(cfg.gate_cited, "uncited claim: no evidence records were cited")
+        if cfg.gate_cited:
+            return ClaimVerdict(verdict="unsupported", reasons=reasons)
+        # `cited` ablated: an uncited claim has no records to ground against, so
+        # every later gate would fire spuriously. Waive it wholesale and say so.
+        return ClaimVerdict(verdict="supported", waived=tuple(waived))
 
     cited_records: list[EvidenceRecord] = []
     for citation in claim.citations:
         matched, failure = _resolve_citation(citation, by_source)
         if failure:
-            reasons.append(failure)
+            object_to(cfg.gate_resolvable, failure)
         else:
             cited_records.extend(matched)
 
@@ -118,21 +142,25 @@ def _verify_claim(
         pool = id_pool(cited_records)
         for entity in claim.entity_ids:
             if normalize_id(entity) not in pool:
-                reasons.append(
-                    f"entity {entity} is not grounded in the cited records"
+                object_to(
+                    cfg.gate_grounded,
+                    f"entity {entity} is not grounded in the cited records",
                 )
 
     if claim.kind == "correlation" and not reasons:
         for entity in claim.entity_ids:
             if normalize_id(entity) not in cross_values:
-                reasons.append(
+                object_to(
+                    cfg.gate_correlated,
                     f"correlation on {entity} is not backed by the cross-source "
-                    f"join index"
+                    f"join index",
                 )
 
     if reasons:
-        return ClaimVerdict(verdict="unsupported", reasons=reasons)
-    return ClaimVerdict(verdict="supported")
+        return ClaimVerdict(
+            verdict="unsupported", reasons=reasons, waived=tuple(waived)
+        )
+    return ClaimVerdict(verdict="supported", waived=tuple(waived))
 
 
 def _empty_ok_results(evidence: FederatedEvidence) -> list[SpecialistResult]:
@@ -312,14 +340,21 @@ def _mark_contested(
 
 
 def verify_answer(
-    answer: SynthesizedAnswer, evidence: FederatedEvidence
+    answer: SynthesizedAnswer,
+    evidence: FederatedEvidence,
+    config: SynthesisConfig | None = None,
 ) -> SynthesizedAnswer:
-    """Attach the verification report and the enforced abstentions in place."""
+    """Attach the verification report and the enforced abstentions in place.
+
+    ``config`` is resolved from the environment when not supplied, so every
+    existing caller is unchanged and every gate defaults on.
+    """
+    cfg = config or SynthesisConfig.from_env()
     by_source = _records_by_source(evidence)
     cross_values = {normalize_id(v) for v in evidence.cross_source_join_values()}
 
     verdicts = [
-        _verify_claim(claim, by_source, cross_values) for claim in answer.claims
+        _verify_claim(claim, by_source, cross_values, cfg) for claim in answer.claims
     ]
 
     # Consistency axis: reconcile corroborating records against each other, then

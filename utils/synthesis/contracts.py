@@ -211,6 +211,13 @@ class ClaimVerdict:
     verdict: str                              # "supported" | "unsupported"
     reasons: list[str] = field(default_factory=list)
     contested: tuple[str, ...] = ()
+    # Objections raised by a gate that was ablated for this run
+    # (EXP-2026-08-014). Always empty on the default all-gates-on path, which is
+    # what keeps the serialized form of every recorded answer unchanged. When a
+    # gate is disabled its objection lands here instead of in ``reasons``, so
+    # the ablation can count exactly what that gate would have cut without
+    # having to re-derive it.
+    waived: tuple[str, ...] = ()
 
     @property
     def supported(self) -> bool:
@@ -224,6 +231,8 @@ class ClaimVerdict:
         out: dict[str, Any] = {"verdict": self.verdict, "reasons": list(self.reasons)}
         if self.contested:
             out["contested"] = list(self.contested)
+        if self.waived:
+            out["waived"] = list(self.waived)
         return out
 
 

@@ -33,6 +33,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-08-011` | 2026-08-21 | Does the schema-agnostic path work on a schema it has never seen? | complete | gold_in_evidence_retrieval (not recorded) | C-010, C-014 | [identity-schema-transfer](experiments/EXP-2026-08-011-identity-schema-transfer/) |
 | `EXP-2026-08-012` | 2026-08-21 | Do the two template defects EXP-2026-08-010 found close, without moving a recorded number? | complete | external_recall_after_fix 0.7633 (n=182) | C-003, C-012 | [template-coverage-fix](experiments/EXP-2026-08-012-template-coverage-fix/) |
 | `EXP-2026-08-013` | 2026-08-22 | Three graph sources at once, and a declared bridge from the customer graph to ATT&CK | complete | gold_in_evidence_retrieval (not recorded) | C-010, C-015 | [tri-source-federation](experiments/EXP-2026-08-013-tri-source-federation/) |
+| `EXP-2026-08-014` | 2026-08-23 | Does the verifier actually cut anything? Each of the four claim gates, ablated | complete | claims_admitted_by_disabling_a_gate 0.0000 ± 0.0000 (n=888) | C-017 | [verifier-ablation](experiments/EXP-2026-08-014-verifier-ablation/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 
-**24 experiment(s) on record.**
+**25 experiment(s) on record.**

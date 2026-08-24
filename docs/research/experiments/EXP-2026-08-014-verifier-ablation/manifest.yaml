@@ -1,0 +1,73 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-08-014
+slug: verifier-ablation
+title: Does the verifier actually cut anything? Each of the four claim gates, ablated
+status: complete           # planned | running | complete | failed | superseded
+date_started: 2026-08-24
+date_completed: 2026-08-23
+authors: ["brendondgr", "Claude Opus 5"]
+
+purpose: >
+  Q10. C-017 claims claim-level verification "eliminates unsupported claims",
+  evidenced only by provenance and inspectability reading 1.0 -- self-consistency
+  checks that say the verifier ran, not that it caught anything. This disables
+  each of the four gates in _verify_claim individually and measures what each was
+  holding back, classifying every admitted claim against gold rather than by
+  judge.
+
+hypothesis: >
+  At least one gate cuts a non-trivial number of claims, splitting into warranted
+  cuts (gold_absent) and false positives (gold_backed) with a small ambiguous
+  residual for a later judged pass. REFUTED: every gate cuts zero, because the
+  deterministic composer cannot construct a claim that violates one.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 75f2a29a95481e8dd32b8c07930e1ffff189f2df          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python scripts/ablation_sweep.py --out docs/evaluation/ablation-2026-08-23 --composer deterministic"
+  dirty: true             # gate switches and sweep script uncommitted at run time; committed with this folder
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: golden question banks (attack + capec + federated + holdout)
+  version: ATT&CK 19.0 / CAPEC as pinned by the canonical snapshot
+  split: all four banks, every question
+  n_examples: 150
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: null               # md5:... or sha256:... of the dataset artifact
+seeds: []                  # no sampling: every question in every bank is run, and the path is deterministic
+n_runs: 1
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "local workstation, CPU only; Neo4j + Gremlin in Docker"
+  wall_clock_hours: 0.1
+  estimated_cost_usd: 0.0
+
+# (No LLM / agentic block: no model is in the loop. Claims are composed
+#  deterministically and the run is byte-reproducible.)
+
+# --- Results block ---
+metrics:
+  primary: claims_admitted_by_disabling_a_gate
+  values:
+    claims_admitted_by_disabling_a_gate: {mean: 0.0, std: 0.0, n: 888}
+    unsupported_claims_at_baseline: {mean: 0.0, std: 0.0, n: 888}
+    residual_ambiguous_claims: {mean: 0.0, std: 0.0, n: 888}
+    answers_scored: {mean: 137.0, std: 0.0, n: 1}
+baselines_compared: [baseline-all-gates-on]
+statistical_test: null    # a difference of exactly zero over 888 claims needs no test
+
+# --- Linkage ---
+supports_claims: [C-017]   # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null
+superseded_by: null
+related: [EXP-2026-08-007]
