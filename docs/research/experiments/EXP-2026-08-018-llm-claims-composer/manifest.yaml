@@ -1,0 +1,91 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-08-018
+slug: llm-claims-composer
+title: Reconnect the unreachable LLM claims composer and measure it — do the verifier gates fire when a model proposes claims?
+status: complete           # planned | running | complete | failed | superseded
+date_started: 2026-08-24
+date_completed: 2026-08-24
+authors: ["brendondgr", "Claude Opus 5"]
+
+purpose: >
+  Q20. OpenAICompatibleComposer is the only thing that lets a language model
+  propose a claim, and factory.synthesize never called select_composer, so it had
+  no caller -- which is why EXP-2026-08-014 could only report that all four
+  verifier gates cut zero claims from 888. A gate cannot cut what cannot be
+  constructed. Reconnected behind its own flag and measured over five tests
+  before any decision to delete.
+
+hypothesis: >
+  Pre-registered decision rule rather than a point hypothesis (PROTOCOL 5):
+  delete if the composer cannot run reliably or the gates never fire; keep if the
+  gates fire; keep-but-never-default if they fire and grounding or cost is
+  materially worse. SELECTED: the third. Gates fired 32-36 times per run against
+  zero deterministic, grounding is 0.137 worse and cost is 67x.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 174da72450dea2cb121b5838be1ea5629c6a6549          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python scripts/composer_arm_sweep.py --out docs/evaluation/composer-2026-08-24 --repeats 3 --workers 16"
+  dirty: true             # the reconnection and the sweep script were uncommitted at run time (committed 174da72); the seeded sampling landed AFTER this run, so it is the unseeded baseline
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: golden catalogue (attack + capec + federated)
+  version: ATT&CK 19.0, CAPEC 3.9
+  split: all 120 catalogue questions
+  n_examples: 120
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: null               # md5:... or sha256:... of the dataset artifact
+seeds: []                  # this run predates the pinned LLM seed; it is the UNSEEDED baseline and is reused as condition A of EXP-2026-08-019
+n_runs: 1
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "local workstation; Neo4j + Gremlin in Docker; LLM served by the local relay"
+  wall_clock_hours: 6.5
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "relay/Ornith-1.5-35B-A3B-W4A16-SYM@2026-08-24"   # alias `skynet`; see Q12 -- the alias was Gemma in July
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 8192   # thinking budget 3072; a reasoning model truncates to empty below ~2048
+  prompt_files: [utils/synthesis/llm_composer.py]
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: unsupported_claims_cut_by_the_verifier
+  values:
+    unsupported_claims_llm_arm: {mean: 33.6667, std: 2.0817, n: 3}
+    unsupported_claims_deterministic_arm: {mean: 0.0, std: 0.0, n: 1}
+    gold_in_claims_llm_arm: {mean: 0.6817, std: 0.0207, n: 3}
+    gold_in_claims_deterministic_arm: {mean: 0.8184, std: 0.0, n: 1}
+    claims_llm_arm: {mean: 565.3333, std: 44.1059, n: 3}
+    claims_deterministic_arm: {mean: 730.0, std: 0.0, n: 1}
+    composer_engaged_of_120: {mean: 98.6667, std: 4.6188, n: 3}
+    wall_s_llm_arm: {mean: 7815.8, std: 941.4, n: 3}
+    wall_s_deterministic_arm: {mean: 116.3, std: 0.0, n: 1}
+baselines_compared: [deterministic-composer]
+statistical_test: null    # 3 repeats; sd reported, no interval claimed
+
+# --- Linkage ---
+supports_claims: [C-017]   # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null
+superseded_by: null
+related: [EXP-2026-08-014, EXP-2026-08-019]

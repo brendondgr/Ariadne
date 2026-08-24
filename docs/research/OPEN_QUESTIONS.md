@@ -490,6 +490,34 @@ guarantee. **Cost:** an afternoon to delete; ~2 days to reconnect and measure.
 **Blocks:** whether C-017 can ever be more than a design claim.
 **From:** EXP-2026-08-014 RESULTS.
 
+**Status: RESOLVED — reconnected, measured, KEPT AS AN INSTRUMENT
+(EXP-2026-08-018, 2026-08-24).** The operator's instruction was to measure before
+deleting and to run a series of tests rather than one check. Five ran, and the
+decision rule was written into the protocol **before** any number was seen.
+
+**The finding that justifies keeping it:** with a model proposing claims the
+verifier cuts **32–36 per run** against **0** in every deterministic
+configuration ever measured. `correlated` does almost all the work (92 against
+`grounded` 19, `resolvable` 1, `cited` 0) — the model rarely emits an uncited
+claim but does invent *relationships between* correctly-cited things.
+
+**Why it is never a default:**
+
+| | deterministic | LLM claims |
+|---|---:|---:|
+| gold-in-claims | **0.8184** | 0.6817 (sd 0.0207) |
+| claims | 730 | 565 (−23%) |
+| wall clock | **116 s** | 7,816 s (**67×**) |
+| engaged | 120/120 | 96–104/120, the rest **120 s timeouts** |
+
+`SYNTHESIS_LLM_CLAIMS` stays **default-false**. It is reconnected so that C-017's
+central property is *falsifiable* — deleting it would have made that property
+permanently untestable, which is the trap C-017 has been in since it was written.
+
+**A caveat worth keeping:** the engagement rate is a property of the **timeout**,
+not the model. 87–96% of fallbacks are 120 s read timeouts; a longer timeout
+raises engagement and worsens cost. The two cannot be improved together.
+
 ---
 
 ## Environment and provenance

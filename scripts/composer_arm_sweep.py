@@ -220,6 +220,17 @@ def main() -> int:
     parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--workers", type=int, default=12)
     parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument(
+        "--arms", default=",".join(ARMS),
+        help="comma-separated subset of arms to run",
+    )
+    parser.add_argument(
+        "--no-seed", action="store_true",
+        help="unset LLM_SEED for this run (EXP-2026-08-019 condition A)",
+    )
+    parser.add_argument(
+        "--tag", default="", help="suffix for the metrics filename",
+    )
     args = parser.parse_args()
 
     for key, value in {**BASE_ENV, **LLM_ENV}.items():
@@ -232,7 +243,16 @@ def main() -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     results: list[dict[str, Any]] = []
 
-    for arm in ARMS:
+    if args.no_seed:
+        # There is no "unseeded" value to send, so the switch removes the field
+        # by pinning it to a per-run-varying one. Recorded rather than hidden:
+        # condition A is *not* "seed absent", it is "seed not held fixed", which
+        # is what the pre-2026-08-24 code did in effect.
+        os.environ["LLM_SEED"] = str(abs(hash(args.tag or "unseeded")) % 100000)
+        print(f"== unseeded condition: LLM_SEED={os.environ['LLM_SEED']}")
+
+    selected = [a.strip() for a in args.arms.split(",") if a.strip()]
+    for arm in selected:
         # The deterministic arm is byte-reproducible, so one run is the whole
         # distribution — repeating it would only burn wall clock.
         repeats = 1 if arm == "deterministic" else args.repeats
@@ -240,7 +260,8 @@ def main() -> int:
             print(f"== {arm}, repeat {r}/{repeats}")
             results.append(sweep_arm(arm, r, args.workers, args.limit))
 
-    (out_dir / "metrics.json").write_text(json.dumps(results, indent=2) + "\n")
+    name = f"metrics{'-' + args.tag if args.tag else ''}.json"
+    (out_dir / name).write_text(json.dumps(results, indent=2) + "\n")
 
     print(f"\n{'arm':16s} {'rep':>3s} {'answered':>8s} {'composer':>22s} {'claims':>7s} "
           f"{'unsup':>6s} {'gold':>7s} {'wall_s':>8s}")
