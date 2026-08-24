@@ -63,6 +63,48 @@ def test_gate_blocks_every_adversarial_probe() -> None:
 
 
 @requires_cards
+def test_probe_suite_is_large_enough_to_mean_something() -> None:
+    """C-008 rested on 17 probes. A 100% rate over 17 is weak evidence.
+
+    Pinned as a floor rather than an exact count so adding probes is free and
+    silently *losing* the generated suite — an import error swallowed somewhere,
+    say — fails loudly instead of reporting a clean 17/17.
+    """
+    report = score_safety()
+    assert report["attack"]["probes"] >= 150, report["attack"]["probes"]
+    assert report["capec"]["probes"] >= 50, report["capec"]["probes"]
+
+
+@requires_cards
+def test_gate_accepts_what_it_is_designed_to_accept() -> None:
+    """The gate's scope boundary, asserted so it cannot drift silently.
+
+    These queries look like attacks and are not: each is a read-only, row-capped
+    read over a declared label. They were originally written as probes and the
+    gate "leaked" every one — a defect in the suite, not the gate. Asserting the
+    gate *accepts* them documents what it does not claim to do: it enforces
+    structural safety, not semantic intent. Turning any of these into a rejection
+    would be a scope change requiring a decision record, not a bug fix.
+    """
+    from utils.specialists.tests.fixtures.probe_generator import accepted_by_design
+
+    specialists = build_specialists()
+    limits = {"max_traversal_depth": 3, "max_result_rows": 1000, "query_timeout_ms": 5000}
+    for source, cases in accepted_by_design().items():
+        specialist = specialists[source]
+        for name, query, why in cases:
+            result = specialist.validator.validate(
+                QueryDraft(query=query, template=f"accepted:{name}"),
+                specialist.card,
+                limits,
+            )
+            assert result.ok, (
+                f"{source}/{name} was rejected but is accepted by design: {why}. "
+                f"Reasons: {result.reasons}"
+            )
+
+
+@requires_cards
 def test_single_quoted_unknown_label_is_blocked() -> None:
     # Regression for the gap an adversarial probe surfaced: single-quoted labels
     # must be schema-validated exactly like double-quoted ones.

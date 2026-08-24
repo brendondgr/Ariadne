@@ -23,6 +23,22 @@ from ..validation import BaseValidator, word_present
 # Extracts node labels from patterns like (:Technique) or (n:Technique)
 _NODE_LABEL_RE = re.compile(r"\(\w*\s*:\s*([A-Za-z_][A-Za-z0-9_]*)\s*(?:\{[^}]*\})?\s*\)")
 
+#: Every label in a node pattern, not just the first, and backtick-quoted ones
+#: too. The original regex read one bare identifier per pattern, so
+#: `(n:Technique:Secret)` reported only `Technique` and `(x:`Secret`)` reported
+#: nothing at all — two live scope escapes EXP-2026-08-016 found. This matches
+#: the whole label chain and the escaping form; the per-label split is done by
+#: the caller.
+_NODE_LABEL_CHAIN_RE = re.compile(
+    r"\(\s*\w*\s*:\s*((?:`[^`]+`|[A-Za-z_][A-Za-z0-9_]*)"
+    r"(?:\s*:\s*(?:`[^`]+`|[A-Za-z_][A-Za-z0-9_]*))*)"
+)
+
+#: One relationship hop in a MATCH path. A literal chain of these is a traversal
+#: of the same depth as a variable-length path and must be capped the same way;
+#: only the `*` form was checked before.
+_HOP_RE = re.compile(r"-\s*\[[^\]]*\]\s*->|<-\s*\[[^\]]*\]\s*-|-\s*\[[^\]]*\]\s*-")
+
 # Extracts relationship types from patterns like [:MITIGATES], -[r:USES]-> or
 # the alternation form -[r:OWNS|WRITE_DACL]->.
 #
@@ -61,6 +77,10 @@ _EXTRA_WRITE_CLAUSES = [
     "LOAD CSV",
     "FOREACH",
     "CALL {",
+    # `USE <db>` re-targets the whole statement at another database, which puts
+    # it outside the card's schema entirely — the card cannot vouch for a graph
+    # it does not describe. Found live by EXP-2026-08-016.
+    "USE",
 ]
 
 
@@ -100,8 +120,13 @@ class CypherValidator(BaseValidator):
         """Check labels and relationship types against the card; reject id-only filters."""
         reasons: list[str] = []
 
-        # Extract node labels
-        node_labels = _NODE_LABEL_RE.findall(query)
+        # Extract node labels — every label in each pattern, backticks stripped.
+        node_labels = [
+            part.strip().strip("`")
+            for chain in _NODE_LABEL_CHAIN_RE.findall(query)
+            for part in re.split(r"\s*:\s*", chain)
+            if part.strip()
+        ]
         for label in node_labels:
             if not card.has_label(label):
                 reasons.append(
@@ -143,6 +168,22 @@ class CypherValidator(BaseValidator):
         """
         max_depth: int = limits.get("max_traversal_depth", 3) or 3
         reasons: list[str] = []
+
+        # A literal chain of hops is a traversal of the same depth as a
+        # variable-length path and was never counted: only the `*` form below was
+        # checked, so `(a)-[:R]-(b)-[:R]-(c)-[:R]-(d)-[:R]-(e)` walked four hops
+        # past a cap of three. Counted per MATCH-ish segment rather than per
+        # query, so two independent 2-hop patterns are not summed into a false
+        # positive.
+        for segment in re.split(r"\bWITH\b|\bUNION\b|\bRETURN\b", query, flags=re.I):
+            hops = len(_HOP_RE.findall(segment))
+            if hops > max_depth:
+                reasons.append(
+                    f"traversal depth {hops} exceeds max_traversal_depth "
+                    f"{max_depth} (literal hop chain)"
+                )
+                break
+
         for bracket in _REL_BRACKET_RE.findall(query):
             if "*" not in bracket:
                 continue

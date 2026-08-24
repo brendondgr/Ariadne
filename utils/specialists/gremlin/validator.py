@@ -29,6 +29,26 @@ _LIMIT_TRAILING_RE = re.compile(r'\.limit\((\d+)\)\s*$')
 # Count chained traversal steps (out/in/both).
 _TRAVERSAL_STEP_RE = re.compile(r'\.(out|in|both)\(')
 
+#: Mutating steps the gate must reject regardless of what a card happens to
+#: list. The card's ``disallowed_steps`` is data and was written when TinkerPop's
+#: mutating surface was smaller; `mergeV`/`mergeE` were added to the language
+#: later and no card names them. EXP-2026-08-016 found 8 live bypasses through
+#: exactly that gap, so the authoritative list lives in code and the card's list
+#: is additive rather than definitive.
+_EXTRA_WRITE_STEPS = ("mergeV", "mergeE")
+
+#: A Groovy closure in a submitted traversal is arbitrary code execution on the
+#: Gremlin server, not a query. No template emits one — every projection goes
+#: through `project`/`by`/`fold` — so any brace-delimited block is rejected. The
+#: map literal `[:]` is unaffected: it uses brackets, not braces.
+_GROOVY_CLOSURE_RE = re.compile(r"\{[^}]*\}")
+
+#: `repeat(...)` is legitimate — `capec_hierarchy_chain` emits
+#: `repeat(...).times(3).emit()` — but only when it carries a bound. An
+#: unbounded `repeat` walks the graph until it runs out of graph.
+_REPEAT_RE = re.compile(r"\.repeat\(")
+_TIMES_RE = re.compile(r"\.times\((\d+)\)")
+
 
 def _extract_edge_anchors(query: str) -> list[tuple[str, str, str]]:
     """Return [(direction, rel, anchor_label)] for each traversal step.
@@ -65,16 +85,25 @@ class GremlinValidator(BaseValidator):
     kind = "gremlin"
 
     def structural_reasons(self, query: str) -> list[str]:
-        """Query must start with g.V( or g.E(."""
+        """Query must start with g.V( or g.E( and carry no Groovy closure."""
         stripped = query.strip()
+        reasons: list[str] = []
         if not (stripped.startswith("g.V(") or stripped.startswith("g.E(")):
-            return ["Gremlin query must start with 'g.V(' or 'g.E('"]
-        return []
+            reasons.append("Gremlin query must start with 'g.V(' or 'g.E('")
+        if _GROOVY_CLOSURE_RE.search(query):
+            # `g.V().filter{ it.get()... }` is arbitrary Groovy on the server,
+            # and it passed every other check because it is structurally a read.
+            reasons.append(
+                "Gremlin query contains a Groovy closure '{...}': arbitrary "
+                "server-side code is not a query"
+            )
+        return reasons
 
     def violates_read_only(self, query: str, card: Any) -> list[str]:
         """Reject any disallowed step listed in card.safety['disallowed_steps']."""
         reasons: list[str] = []
-        disallowed: list[str] = (card.safety or {}).get("disallowed_steps", [])
+        disallowed: list[str] = list((card.safety or {}).get("disallowed_steps", []))
+        disallowed += [step for step in _EXTRA_WRITE_STEPS if step not in disallowed]
         for step in disallowed:
             pattern = re.compile(r'\.' + re.escape(step) + r'\(')
             if pattern.search(query):
@@ -158,13 +187,30 @@ class GremlinValidator(BaseValidator):
         row ``.limit()`` — it must be rejected outright (briefing §4 point 2).
         """
         max_depth: int = limits.get("max_traversal_depth", 3) or 3
+        reasons: list[str] = []
+
+        # `repeat(...)` collapses an arbitrary walk into one step, so counting
+        # traversal steps cannot see it. It is legitimate only with a bound at
+        # or under the cap — which is what `capec_hierarchy_chain` emits.
+        if _REPEAT_RE.search(query):
+            bounds = [int(n) for n in _TIMES_RE.findall(query)]
+            if not bounds:
+                reasons.append(
+                    "repeat(...) with no times(n) bound is an unbounded traversal"
+                )
+            elif max(bounds) > max_depth:
+                reasons.append(
+                    f"repeat(...).times({max(bounds)}) exceeds "
+                    f"max_traversal_depth {max_depth}"
+                )
+
         depth = len(_TRAVERSAL_STEP_RE.findall(query))
         if depth > max_depth:
-            return [
+            reasons.append(
                 f"traversal depth {depth} exceeds max_traversal_depth {max_depth} "
                 f"(too many chained out/in/both steps)"
-            ]
-        return []
+            )
+        return reasons
 
     def inject_caps(
         self, query: str, limits: dict[str, int], card: Any

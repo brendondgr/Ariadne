@@ -45,6 +45,9 @@ _NEO4J_SAFETY: dict[str, Any] = {
         "LOAD CSV",
         "FOREACH",
         "CALL { ",
+        # `USE <db>` re-targets the statement at another database, which is
+        # outside anything this card describes. Found live by EXP-2026-08-016.
+        "USE",
     ],
 }
 
@@ -57,6 +60,14 @@ _GREMLIN_SAFETY: dict[str, Any] = {
         "property",
         "sideEffect",
         "io",
+        # TinkerPop's merge steps mutate, and no card written before they existed
+        # names them. EXP-2026-08-016 found 8 live bypasses through this gap. The
+        # authoritative list is `_EXTRA_WRITE_STEPS` in the Gremlin validator —
+        # source cards are generated artifacts and a fix that lives only in the
+        # data is lost on the next rebuild — but the two are kept in step so a
+        # card read on its own is not misleading.
+        "mergeV",
+        "mergeE",
     ],
 }
 

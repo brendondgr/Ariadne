@@ -35,4 +35,22 @@ GREMLIN_PROBES = [
     ("not_traversal", "g.addE('x')", "does not start g.V( / g.E("),
 ]
 
-PROBES = {"attack": ATTACK_PROBES, "capec": GREMLIN_PROBES}
+# The 17 hand-written probes above are kept verbatim: they are the historical
+# suite every prior C-008 figure was measured against, and one of them found the
+# only bypass this project has had. The generated suite below multiplies coverage
+# by crossing each rejection category with syntactic mutations the hand-written
+# set never tried — case, comment, subquery and union placement.
+from utils.specialists.tests.fixtures.probe_generator import (  # noqa: E402
+    generated_probes,
+)
+
+HAND_WRITTEN = {"attack": ATTACK_PROBES, "capec": GREMLIN_PROBES}
+
+_GENERATED = generated_probes()
+
+#: Hand-written first so a leak in the historical suite is unmissable, then the
+#: generated ones. Names are unique across both by construction.
+PROBES = {
+    source: list(HAND_WRITTEN[source]) + list(_GENERATED.get(source, []))
+    for source in HAND_WRITTEN
+}

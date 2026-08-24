@@ -186,7 +186,20 @@ def generate(
             f"or pass --no-exclusion to allow overlap with earlier banks."
         ) from exc
 
-    name = out.parent.name if out else f"bank-seed-{seed}"
+    # The registry is keyed by name, and the name comes from the path. Keying on
+    # the parent directory is right for the intended `<dir>/<bank>/bank.json`
+    # layout and catastrophic for a flat `<dir>/bank9001.json` one: every bank
+    # collides on the parent's name, each overwrites the last, and exclusion
+    # silently degrades to "exclude only the previous bank" while still printing
+    # a plausible count. EXP-2026-08-015 lost five banks to exactly that before
+    # a pairwise-overlap check caught it. Fall back to the file stem whenever the
+    # file is not the conventional `bank.json`.
+    if out is None:
+        name = f"bank-seed-{seed}"
+    elif out.name == "bank.json":
+        name = out.parent.name
+    else:
+        name = out.stem
     out = out or (DEFAULT_BANK_DIR / name / "bank.json")
     out.parent.mkdir(parents=True, exist_ok=True)
 
