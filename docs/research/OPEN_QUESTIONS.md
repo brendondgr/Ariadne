@@ -301,11 +301,51 @@ schema adherence 1.0 partly reflect what the corpus omits.
 **What resolves it:** add a lookup intent, then re-score without the exclusion.
 **From:** EXP-2026-07-008 ISSUES.md.
 
+**Status: RESOLVED BY RELABELLING (2026-08-24), not by re-scoring.** The
+operator's call, and it is the right one: these are not performance results that
+happen to be perfect, they are **properties true by construction**, and the
+honest fix is to say so rather than to manufacture a number below 1.0.
+
+Both now carry the treatment C-007 already uses for query validity: **stated as a
+design guarantee, never quoted as a score.** Source recall is 1.0 because the
+planner matches sources against declared card labels and the corpus contains only
+questions it can route; schema adherence is 1.0 because a plan that fails the
+deterministic self-eval gate is not emitted. Neither can fall below 1.0 without a
+*defect*, which makes them **regression detectors, not measurements** — and that
+is genuinely useful, just not as evidence of quality.
+
+**The exclusion is still a real scope limit and stays disclosed:** the corpus
+omits bare id lookups, so neither figure covers them. What changes is that the
+1.0 is no longer offered as though it were earned.
+
 ### Q8 — Three of the four `goals.md` end-to-end metrics are self-consistency checks
 
 Provenance correctness, analyst inspectability, and no-fabrication all measure
 whether the system's outputs cohere with its own retrieved records. A confidently
 wrong pipeline passes all three. **From:** EXP-2026-07-009 §5, D-001.
+
+**Status: RESOLVED BY RELABELLING (2026-08-24)**, the operator's call, and the
+same treatment as Q7 and C-007.
+
+All three are **design guarantees, not performance results**, and reading 1.0 is
+what they are *supposed* to do:
+
+| metric | why it cannot be below 1.0 without a defect |
+|---|---|
+| provenance correctness | every record is emitted through `emit_record`, which requires the executed query and a record id — an unprovenanced record cannot be constructed |
+| analyst inspectability | the executed query, the plan and the per-claim verdicts are attached to every answer unconditionally |
+| no-fabrication | claims are composed *from* retrieved records, so an unsupported claim is unconstructible — proved directly by EXP-2026-08-014, where all four verifier gates cut **zero** claims from 888 |
+
+**The objection this question raised stands and is now the headline rather than a
+footnote: a confidently wrong pipeline passes all three.** They say the answer is
+traceable, not that it is right. Only the fourth metric —
+`cross_source_answer_accuracy`, graded against gold — speaks to correctness, and
+it is the only one of the four that may be quoted as a result.
+
+**What changes:** the three are reported as guarantees with the defect they would
+catch named beside them, and are **never summed or averaged with the fourth**.
+What does not change: they remain genuinely useful as regression detectors, since
+any of them dropping below 1.0 is a real bug.
 
 ### Q9 — Is the failure-terminus classifier general, or shaped by this one pipeline?
 
@@ -405,14 +445,88 @@ verified against the server), and `48000` (a *client request* in `.env`, which
 the server may cap lower). A client-side `num_ctx` request and a served
 `max_model_len` are different numbers, and only the second is the context window.
 **What resolves it:** read `max_model_len` off the model server.
-**Until then:** quote none of the three. Say the window is unrecorded, and note
-that two questions (C-SCN-01, F-CWE-05) overflowed it under the un-truncation
-profile — an observation that does not depend on knowing its size.
+
+**Status: ANSWERED (2026-08-24), by the operator, from the serving side.**
+
+| | |
+|---|---|
+| Served context window | **96,000 tokens** |
+| Served model | **MIRALABS/Ornith-1.5-35B-A3B-W4A16-SYM** |
+| Concurrency at full context | **16** requests |
+| Precision | **W4A16-SYM**, not FP8 (see Q12 — the model changed too) |
+
+**All three earlier figures were wrong**, including the `48000` in `.env` — that
+is a client request, and the server serves twice it. The two questions that
+overflowed under the un-truncation profile (C-SCN-01, F-CWE-05) therefore
+overflowed a 96k window, not a 48k one, which makes them a genuinely large
+retrieval rather than a client misconfiguration.
+
+**Provenance caveat the operator attached, and it matters more than the number:**
+figures from the **test phase are unreliable**, because those runs used differing
+parameters. Only recent runs are consistent. So the window is authoritative *now*
+and must not be back-applied to any earlier recorded run — quote it for work
+dated 2026-08-24 onward, and leave earlier runs recorded as unknown.
+
+**Operational consequence.** 16 concurrent requests is the ceiling *at full
+context*; short prompts (bank authoring, judging) run higher — the operator
+authorised ~32 on 2026-08-24. A job whose prompts approach 96k must stay at or
+under 16 or it will queue rather than parallelise.
 
 ### Q12 — What quantisation is `skynet` serving?
 
 Recorded as **unknown** rather than guessed. The model is Gemma 4 31B via vLLM.
 Nothing in the study generalises to another model without re-running.
+
+**Status: ANSWERED (2026-08-24) — and the answer is not the one this question
+assumed, because the model itself changed.**
+
+The operator's first answer was "FP8", corrected minutes later to the served
+build:
+
+> `MIRALABS/Ornith-1.5-35B-A3B-W4A16-SYM`
+
+| | recorded in July | serving 2026-08-24 |
+|---|---|---|
+| Model | Gemma 4 31B | **Ornith-1.5-35B-A3B** |
+| Quantisation | unknown | **W4A16-SYM** (4-bit weights, 16-bit activations, symmetric) |
+| Architecture | dense | **MoE** (`A3B` ≈ 3B active of 35B) |
+
+**Not FP8.** `W4A16` is 4-bit weight quantisation — substantially more lossy than
+FP8, and a different kind of lossy: it degrades the weights while keeping
+activations at 16-bit.
+
+### The finding this actually produced, which is larger than the question
+
+**The relay alias `skynet` has been repointed at a different model, and nothing
+in the record noticed.** Seven July manifests record
+`model: "vllm/gemma-4-31b@unknown"  # the relay alias 'skynet'`. That alias now
+resolves to a different architecture, a different parameter count and a different
+quantisation scheme.
+
+So **an alias is not a model**, and every figure produced through `skynet` is
+dated evidence about whatever was behind the alias that day:
+
+* **July arm figures (B, C, D, E, F, G) are Gemma 4 31B** and must keep saying so.
+* **Anything run from ~2026-08 onward is Ornith-1.5-35B-A3B-W4A16-SYM**, including
+  every bank authored for EXP-2026-08-015 (`make_bank --model skynet`) and the
+  identity banks.
+* **The two are not comparable**, and no figure may be carried across the boundary
+  without saying which model produced it.
+
+This does not invalidate anything — the Author is never scored, and the arm
+figures were self-consistent within their own runs — but it does mean the study's
+"one model, one day" limitation is **stronger than recorded**: it is now *two*
+models, and the record dated 2026-08-24 is the first place that is written down.
+
+**What to do with it:** state model, quantisation and date together, always.
+Never write `skynet`. And the generalisation warning tightens rather than
+loosens — a 4-bit weight quantisation is a long way from full precision, so a
+result reproduced against the same weights at BF16 could legitimately differ.
+
+**Still unknown, and now worth asking:** which model served the runs between the
+July arms and 2026-08-24. The operator's "test-phase runs used differing
+parameters" caveat (Q11) may in fact be describing a model change rather than a
+parameter change.
 
 ### Q13 — Two query templates are unreachable
 
@@ -695,6 +809,43 @@ are separable.
 **Blocks:** whether the surviving federation case (C-015's remainder — provenance,
 licensing, staleness) can be joined by a *capability* argument as well.
 **From:** EXP-2026-08-011 planning.
+
+**Status: ANSWERED, affirmatively — and the register simply never recorded it
+(noted 2026-08-24).** EXP-2026-08-013 phase 2 built exactly the artifact this
+question specifies: a **declared** identity-edge → ATT&CK-technique correspondence
+(13 edge types carry a technique, 8 explicitly do not), versioned as its own
+declaration rather than inferred, so crosswalk error and federation error stay
+separable — the condition this question set.
+
+Measured on 64 blind questions authored from a five-field view of one anchor,
+audited before the run to contain **0 gold identifiers**, and half negative on
+purpose:
+
+| kind | n | schema-derived | templates |
+|---|---:|---|---|
+| bridge-technique | 24 | **0.8333** | 0.0000 |
+| bridge-refusal | 12 | **1.0000** | 0.4167 |
+| identity-control | 12 | 1.0000 | 1.0000 |
+| bridge-mitigation | 16 | 0.3398 | 0.2081 |
+| **overall** | 64 | **0.7724** | 0.3176 |
+
+**Two graphs with no shared identifier were federated on declared meaning, and
+the join does not over-fire:** on the twelve anchors no mapped edge touches, the
+schema-derived arm names **no technique at all**, 12 of 12. The template cascade
+scores **zero** on the technique questions and falsely names a technique on 7 of
+those 12 negatives — the same "no template, so answer anyway" failure C-023
+prices elsewhere.
+
+**What is genuinely left, and it is narrower than the original question.**
+`bridge-mitigation` at **0.3398** is the weak cell: naming the technique is one
+hop, and carrying that technique across the engine boundary into ATT&CK to fetch
+its mitigations is the second. The first hop works; the second is where two
+thirds of the value is still missing. That is the three-hop case this question
+described, half-answered.
+
+**Also unclaimed:** the bridge is a *capability* argument for federation, and
+C-022 currently rests only on non-modification. Whether the bridge strengthens
+C-022 or deserves a claim of its own has not been decided.
 
 
 ## Known weaknesses to state in the paper, not resolve
