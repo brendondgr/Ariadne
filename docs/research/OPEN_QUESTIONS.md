@@ -198,6 +198,19 @@ That is the form the follow-up takes: **C-022**, recorded in
 a join value fell from 7 of 30 to 3 of 30) reported beside it rather than
 omitted.
 
+**Status: CLOSED (2026-08-23).** The count is in: the merged condition carries
+`attack_id` on **1,083** nodes whose upstream record does not ship it — 22.7% of
+CAPEC — against **0** federated. Merging relocates the reconciliation from code
+into the stored records, and the edit is due again on every catalogue release.
+C-022 states it, and keeps C-015's refutation as its premise rather than
+route around it.
+
+**What stays open is deliberately narrower than this question was.** Licensing
+is a legal constraint and will never be evidence. Merge and onboarding cost are
+**ruled out**, not deferred. And the identifier-collision case named above — two
+sources whose ids collide — remains untested, which is the one gap here that a
+new experiment could still close.
+
 ---
 
 ## Methodological

@@ -1,0 +1,72 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-08-017
+slug: federation-isolation
+title: Did merging require editing the source data, and did federation?
+status: complete           # planned | running | complete | failed | superseded
+date_started: 2026-08-24
+date_completed: 2026-08-23
+authors: ["brendondgr", "Claude Opus 5"]
+
+purpose: >
+  C-015 is refuted -- federation does not beat merging on correctness -- which
+  left the actual federation argument unclaimed. Merge cost and onboarding cost
+  are ruled out as confounded by the choice of graphs. What remains and is
+  measurable is structural: did the merged condition require editing the source
+  data, and did the federated one? Supports the new C-022.
+
+hypothesis: >
+  The merged condition wrote a property onto a substantial fraction of one
+  catalogue's nodes; the federated condition wrote none. Stated before counting:
+  if federation also rewrites, the claim collapses and C-022 is not made.
+  CONFIRMED: 1083 against 0.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: f362d3cddaba20ac1407f2bdbf1fc752ed83e1e7          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python -m utils.kg_builder.merge --check; count attack_id on data-merged vs data/graphs canonical nodes.jsonl"
+  dirty: false            # a count over committed canonical artifacts; no code under test
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: canonical node artifacts, merged and federated conditions
+  version: ATT&CK 19.0, CAPEC 3.9
+  split: all nodes in both conditions
+  n_examples: 9138
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: null               # md5:... or sha256:... of the dataset artifact
+seeds: []                  # a full count, not a sample
+n_runs: 1
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "local workstation, CPU only; no database required"
+  wall_clock_hours: 0.01
+  estimated_cost_usd: 0.0
+
+# (No LLM / agentic block: a count over committed files.)
+
+# --- Results block ---
+metrics:
+  primary: nodes_carrying_a_property_upstream_does_not_ship
+  values:
+    merged_nodes_rewritten: {mean: 1083.0, std: 0.0, n: 9138}
+    federated_nodes_rewritten: {mean: 0.0, std: 0.0, n: 9138}
+    merged_taxonomy_entries_reprefixed: {mean: 189.0, std: 0.0, n: 9138}
+    merged_rewritten_share_of_capec: {mean: 0.2271, std: 0.0, n: 4769}
+    merged_rewritten_share_of_store: {mean: 0.1185, std: 0.0, n: 9138}
+baselines_compared: [federated-two-store]
+statistical_test: null    # a full census of both conditions; nothing to infer
+
+# --- Linkage ---
+supports_claims: [C-022]   # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null
+superseded_by: null
+related: [EXP-2026-08-009, EXP-2026-08-013]
