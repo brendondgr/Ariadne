@@ -53,6 +53,7 @@ from typing import Any
 
 from utils.specialists.resolve import ResolvedTask
 from utils.specialists.validation import QueryDraft
+from utils.llm_sampling import sampling_params
 
 #: This arm's model configuration reuses the `SPECIALIST_LLM_*` block that
 #: `SpecialistConfig` has parsed since the beginning and no builder has ever
@@ -188,8 +189,7 @@ class LLMQueryBuilder:
         payload = {
             "model": self.model,
             "messages": [{"role": "user", "content": prompt}],
-            "temperature": 0,
-            "max_tokens": self.max_tokens,
+            **sampling_params(max_tokens=self.max_tokens),
         }
         try:
             response = requests.post(

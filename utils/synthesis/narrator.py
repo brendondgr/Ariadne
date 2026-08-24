@@ -22,6 +22,7 @@ from utils.specialists.federation import FederatedEvidence
 
 from .config import SynthesisConfig
 from .llm_composer import ComposerUnavailable, build_evidence_context
+from utils.llm_sampling import sampling_params
 
 logger = logging.getLogger("ariadne.synthesis.narrator")
 
@@ -144,8 +145,7 @@ def compose_narrative(
     payload = {
         "model": config.llm_model,
         "messages": build_narrator_messages(evidence, answer),
-        "temperature": 0,
-        "max_tokens": config.llm_max_tokens,
+        **sampling_params(max_tokens=config.llm_max_tokens),
         "thinking_token_budget": config.thinking_budget(),
     }
     try:

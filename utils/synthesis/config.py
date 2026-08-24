@@ -63,6 +63,19 @@ class SynthesisConfig:
     gate_grounded: bool = True       # each entity id must appear in the cited records
     gate_correlated: bool = True     # a correlation must be backed by the join index
 
+    # --- LLM claims composer (Q20) -----------------------------------------
+    # `llm_enabled` has always meant "let a model write the *narrative prose*
+    # over already-verified claims". It must keep meaning exactly that, because
+    # arms `llm` and `gold_llm` set it and every figure C-002, C-005 and C-006
+    # rest on was measured with it true.
+    #
+    # This flag is the separate switch that lets a model *propose the claims
+    # themselves*, via `OpenAICompatibleComposer`. It defaults False, so no
+    # recorded arm moves; EXP-2026-08-018 turns it on to answer Q20 -- whether
+    # the verifier's gates do anything once something can construct a claim that
+    # violates them.
+    llm_claims: bool = False
+
     def thinking_budget(self) -> int:
         """The reasoning-token cap to send, deriving half of max_tokens if unset."""
         return self.llm_thinking_budget or (self.llm_max_tokens // 2)
@@ -88,6 +101,7 @@ class SynthesisConfig:
             gate_resolvable=env_bool("VERIFY_GATE_RESOLVABLE", True),
             gate_grounded=env_bool("VERIFY_GATE_GROUNDED", True),
             gate_correlated=env_bool("VERIFY_GATE_CORRELATED", True),
+            llm_claims=env_bool("SYNTHESIS_LLM_CLAIMS", False),
         )
 
     def gates_all_on(self) -> bool:

@@ -22,6 +22,7 @@ from utils.specialists.federation import FederatedEvidence
 
 from .config import SynthesisConfig
 from .contracts import Abstention, Claim, SynthesizedAnswer
+from utils.llm_sampling import sampling_params
 
 logger = logging.getLogger("ariadne.synthesis.llm")
 
@@ -346,8 +347,7 @@ class OpenAICompatibleComposer:
         payload = {
             "model": self._config.llm_model,
             "messages": messages,
-            "temperature": 0,
-            "max_tokens": self._config.llm_max_tokens,
+            **sampling_params(max_tokens=self._config.llm_max_tokens),
             "thinking_token_budget": self._config.thinking_budget(),
         }
         try:

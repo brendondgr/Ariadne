@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import json
 import logging
+from utils.llm_sampling import sampling_params
 from typing import TYPE_CHECKING
 
 from .cards import SourceCardView
@@ -194,8 +195,7 @@ class OpenAICompatibleDrafter:
         payload = {
             "model": self._config.llm_model,
             "messages": messages,
-            "temperature": 0,
-            "max_tokens": self._config.llm_max_tokens,
+            **sampling_params(max_tokens=self._config.llm_max_tokens),
         }
         try:
             resp = requests.post(

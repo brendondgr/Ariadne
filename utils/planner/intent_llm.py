@@ -24,6 +24,7 @@ from .intent import (
     IntentClassifier,
 )
 from .llm_drafter import DrafterUnavailable, extract_json_object
+from utils.llm_sampling import sampling_params
 
 logger = logging.getLogger("ariadne.planner.intent")
 
@@ -72,8 +73,7 @@ class LLMIntentClassifier:
                 {"role": "system", "content": _SYSTEM_PROMPT},
                 {"role": "user", "content": f"ANALYST REQUEST:\n{request}"},
             ],
-            "temperature": 0,
-            "max_tokens": self._config.llm_max_tokens,
+            **sampling_params(max_tokens=self._config.llm_max_tokens),
         }
         try:
             resp = requests.post(

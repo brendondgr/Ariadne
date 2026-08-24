@@ -59,11 +59,25 @@ class HybridComposer:
 
 
 def select_composer(config: SynthesisConfig) -> AnswerComposer:
-    """Return the configured composer (hybrid LLM when enabled, else deterministic)."""
+    """Return the configured composer.
+
+    Gated on ``llm_claims``, **not** on ``llm_enabled`` (Q20). The two mean
+    different things and conflating them would rewrite history: ``llm_enabled``
+    has always meant "an LLM writes the narrative prose over verified claims",
+    it is what arms ``llm`` and ``gold_llm`` set, and C-002, C-005 and C-006 were
+    all measured with it true. Letting it also switch on the *claims* composer
+    would silently change what those arms do and make their recorded figures
+    unreproducible.
+
+    ``llm_claims`` defaults False, so this returns exactly the composer every
+    recorded run used unless an experiment asks for otherwise.
+    """
     deterministic = DeterministicComposer(config)
-    if config.llm_enabled:
+    if config.llm_claims:
         logger.info(
-            "LLM composer enabled: %s (model=%s)", config.llm_base_url, config.llm_model
+            "LLM claims composer enabled: %s (model=%s)",
+            config.llm_base_url,
+            config.llm_model,
         )
         return HybridComposer(OpenAICompatibleComposer(config), deterministic)
     return deterministic
@@ -87,7 +101,20 @@ def synthesize(
     cheap, where regenerating the full claims JSON over large evidence truncates.
     """
     config = config or SynthesisConfig.from_env()
-    composer = composer or DeterministicComposer(config)
+    # `select_composer` rather than `DeterministicComposer` directly (Q20).
+    # It had no caller: `synthesize` constructed the deterministic composer
+    # unconditionally, so `OpenAICompatibleComposer` -- the only thing in this
+    # codebase that lets a language model *propose a claim* -- was unreachable,
+    # and EXP-2026-08-014 could only ever report that the verifier gates cut
+    # nothing. They cannot cut what cannot be constructed.
+    #
+    # This changes nothing on the default path: `select_composer` returns the
+    # same `DeterministicComposer` whenever `llm_enabled` is false, which is the
+    # default and what every recorded figure was measured under. When it is
+    # true, the LLM composer runs behind `HybridComposer`, which falls back
+    # deterministically and records `fallback_reason` -- so the worst case is
+    # the old behaviour plus an explanation.
+    composer = composer or select_composer(config)
     # The chain runs as a LangGraph subgraph (compose → verify → narrate);
     # imported here because utils.orchestration imports this module.
     from utils.orchestration.agents.synthesis.graph import build_synthesis_graph

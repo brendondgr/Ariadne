@@ -166,13 +166,24 @@ def test_transport_error_raises_unavailable(monkeypatch):
         OpenAICompatibleComposer(SynthesisConfig()).compose(_evidence())
 
 
-def test_happy_path_posts_temperature_zero(monkeypatch):
+def test_happy_path_posts_graded_sampling_params(monkeypatch):
+    """Greedy and seeded, not merely temperature 0.
+
+    Q2: temperature 0 was already sent everywhere it matters, and it is not the
+    same as determinism — a server doing greedy decoding still reduces floating
+    point over whatever batch a request lands in. `seed` removes every remaining
+    source of variation that is under client control; it cannot make batched
+    inference bit-exact, and nothing at the client can.
+    """
     calls = _stub_post(
         monkeypatch, response=_chat_response({"headline": "h", "claims": []})
     )
     answer = OpenAICompatibleComposer(SynthesisConfig()).compose(_evidence())
     assert answer.composer == "llm"
-    assert calls[0]["payload"]["temperature"] == 0
+    payload = calls[0]["payload"]
+    assert payload["temperature"] == 0
+    assert payload["top_p"] == 1
+    assert payload["seed"] == 1729
     assert calls[0]["url"].endswith("/chat/completions")
 
 
@@ -194,9 +205,21 @@ def test_hybrid_falls_back_and_records_reason(monkeypatch):
 
 
 def test_select_composer_respects_flag():
+    """`llm_claims` selects the LLM composer; `llm_enabled` deliberately does not.
+
+    The two flags mean different things (Q20). `llm_enabled` has always meant
+    "an LLM writes the narrative prose over already-verified claims" and is what
+    arms `llm` and `gold_llm` set, so it must NOT also switch on the claims
+    composer — that would change what those arms do and make the figures behind
+    C-002, C-005 and C-006 unreproducible.
+    """
     assert isinstance(select_composer(SynthesisConfig()), DeterministicComposer)
     assert isinstance(
-        select_composer(SynthesisConfig(llm_enabled=True)), HybridComposer
+        select_composer(SynthesisConfig(llm_claims=True)), HybridComposer
+    )
+    # The regression this pins: prose-LLM on, claims-LLM off => deterministic.
+    assert isinstance(
+        select_composer(SynthesisConfig(llm_enabled=True)), DeterministicComposer
     )
 
 
