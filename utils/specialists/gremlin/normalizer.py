@@ -667,6 +667,13 @@ class GremlinNormalizer:
             for position, ancestor_m in (("standard", parent_m), ("meta", gp_m)):
                 anc_gid = _safe_str(ancestor_m.get("id", ""))
                 anc_primary = _primary_id_from_gremlin_id(anc_gid)
+                # The anchor is not its own ancestor. Since Q22 the builder makes
+                # both hops `optional()`, so a vertex with no parent re-labels
+                # itself into the parent/grandparent slots rather than dropping
+                # the row — which is what lets a top-level anchor be returned at
+                # all. Guarding here keeps that from becoming a false claim.
+                if anc_primary == primary_id:
+                    continue
                 if anc_primary and anc_primary not in groups[primary_id]["_related_ids_seen"]:
                     groups[primary_id]["_related_ids_seen"].add(anc_primary)
                     abstraction = _safe_str(ancestor_m.get("Abstraction", ""))

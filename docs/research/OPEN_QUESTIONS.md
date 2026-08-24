@@ -144,6 +144,27 @@ banks that any builder change requires. **Blocks:** the catalogue half of C-023'
 interval means "one defective template", and that should be a past-tense
 statement. **From:** EXP-2026-08-015 RESULTS.
 
+**Status: FIXED (2026-08-24).** Both ancestor hops are now `optional()`, and the
+normalizer skips an "ancestor" equal to the anchor — `optional()` re-labels the
+anchor into the parent slot when there is no parent, and without the guard a
+top-level pattern would have been reported as its own ancestor.
+
+**The regression diff is the part worth keeping.** Re-running all ten banks:
+**15 of 300 answers changed and every one is `H-ABS-*`**, the kind this template
+serves. Three went from empty to correct; the other twelve already scored 1.0000
+and returned **identical ancestors**, differing only in record ordering.
+
+`gold_in_evidence` for the template arm: **0.9900 → 1.0000, sd 0.0225 → 0.0000**.
+The catalogue gap between the arms is now **exactly 0.0000** — it was entirely
+this defect. Recorded in EXP-2026-08-015 §AMENDMENTS A-1.
+
+**One methodological note.** The first diff reported all 300 answers as changed,
+which was the differ, not the fix: `wall_s` and `timing_ms` are clock keys and
+were not in the exclusion set. A regression check that flags everything is
+indistinguishable from one that flags nothing — **strip timings before
+comparing**, and treat a 100% diff as a bug in the comparison until proven
+otherwise.
+
 ### Q3 — Does template routing actually beat free-form LLM query generation?
 
 **Why it matters:** **This is the paper's intended headline claim (C-012) and no

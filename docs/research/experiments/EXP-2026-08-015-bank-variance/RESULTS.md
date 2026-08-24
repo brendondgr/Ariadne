@@ -117,3 +117,56 @@ ceiling, and its interval means what it says.
 * **Two populations, two scorers.** The catalogue uses `retrieval_coverage`
   against bank gold; identity uses `identity_sweep`'s own per-question recall
   against tenant gold. They are reported side by side and **never pooled**.
+
+---
+
+# AMENDMENTS
+
+## A-1 (2026-08-24) — Q22 fixed: the catalogue gap was one template, and closing it takes the gap to exactly zero
+
+The defect this experiment found is repaired. `capec_hierarchy_chain` now makes
+**both** ancestor hops `optional()` instead of requiring parent *and* grandparent
+in one `select`, which is the same outer-join correction EXP-2026-08-004/006
+applied to the bridge templates. The normalizer gained one guard: an "ancestor"
+equal to the anchor is skipped, since `optional()` re-labels the anchor into the
+parent slot when it has no parent.
+
+**Re-run over the same ten banks, deterministic arm, same runner:**
+
+| | before | after |
+|---|---:|---:|
+| mean `gold_in_evidence` | 0.9900 | **1.0000** |
+| sd | 0.0225 | **0.0000** |
+| banks below ceiling | 2 (9006, 9010) | **0** |
+
+**Regression: 15 of 300 answers changed, and all 15 are `H-ABS-*`** — the
+question kind this template serves. Nothing else moved, on any bank, once clock
+keys (`timestamp`, `elapsed_s`, `wall_s`, `timing_ms`, `run_meta`) are excluded.
+
+Of those 15, three were the empty results this experiment reported and now return
+the ancestor gold asks for (`bank9006/H-ABS-01` went from `[]` to
+`['CAPEC-466', 'CAPEC-94']`). The other twelve already scored 1.0000 and still
+do, with **identical retrieved ancestors** — they changed only in record ordering
+and dedup metadata.
+
+### What this changes in the headline
+
+**The catalogue row of §"The headline" is superseded.** With the defect fixed:
+
+| population | templates | generic | difference |
+|---|---|---|---|
+| catalogue | **1.0000 (sd 0.0000)** | 1.0000 (sd 0.0000) | **0.0000** |
+
+The −0.0100 was *entirely* the defect. Both arms are now saturated at exactly
+1.0000 with zero variance across 300 unseen anchors, which strengthens rather
+than weakens the reading in §"An honest reading of the catalogue number": the
+metric is at ceiling for **both** arms and can no longer distinguish them at all.
+Pricing the catalogue gap still requires a judged metric.
+
+**The identity figures are untouched** — that population never routed to this
+template, and its runs were not re-executed.
+
+**What does not change:** this experiment's *method* result stands exactly as
+recorded. Resampling found in ten draws a defect two fixed banks had hidden
+through six experiments, and the fix confirms it was real rather than a scoring
+artifact. That remains the strongest argument here.

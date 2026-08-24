@@ -460,10 +460,27 @@ class GremlinQueryBuilder:
         lim = resolved.task.max_rows()
         params: dict[str, Any] = {"ids": ids}
         child_of_edge = gremlin_edge_label("ChildOf")
+        # Both ancestor hops are OPTIONAL, and that is the whole point of this
+        # shape (Q22). The original required a parent *and* a grandparent in one
+        # `select`, which is an inner join over three positions: for a Standard
+        # anchor whose parent is already Meta there is no grandparent, so the
+        # select matched nothing and the query returned **not even the parent the
+        # question asked for**. Three questions across two banks retrieved zero
+        # records that way (EXP-2026-08-015), and holdout-v1 missed it only
+        # because its abstraction anchors happened to sit three levels down.
+        #
+        # This is the same outer-join correction EXP-2026-08-004/006 applied to
+        # the bridge templates, in the one template those fixes did not reach.
+        #
+        # `optional()` leaves the traverser where it was when the hop finds
+        # nothing, so a missing ancestor re-labels the previous vertex rather
+        # than dropping the row. The normalizer de-duplicates by id and skips an
+        # "ancestor" equal to the anchor, so a chain of length 0, 1 or 2 all
+        # normalise correctly and the anchor is always returned.
         query = (
             'g.V().hasLabel("AttackPattern").has("id", within(ids)).as("ap")'
-            f'.out("{child_of_edge}").hasLabel("AttackPattern").as("parent")'
-            f'.out("{child_of_edge}").hasLabel("AttackPattern").as("grandparent")'
+            f'.optional(__.out("{child_of_edge}").hasLabel("AttackPattern")).as("parent")'
+            f'.optional(__.out("{child_of_edge}").hasLabel("AttackPattern")).as("grandparent")'
             f'.select("ap","parent","grandparent").by(elementMap()).limit({lim})'
         )
         return QueryDraft(
