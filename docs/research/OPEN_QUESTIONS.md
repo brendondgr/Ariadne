@@ -6,6 +6,17 @@ either way.
 
 Ordered by what blocks the most: **Q1 gates the value of everything else.**
 
+**A question can now come from the literature, not just from a run.** Q23–Q26
+were filed on 2026-08-26 from an external adversarial novelty audit
+([`reports/2026-08-26-novelty-audit/`](reports/2026-08-26-novelty-audit/)). They
+behave differently from the rest of this file: **none of them is answered by
+measuring our own system.** Two are answered by reading somebody else's paper
+(Q23, Q25), one by writing a paragraph we have all the materials for (Q24), and
+one by a design decision with a circularity trap in it (Q26). They are here
+rather than in a separate file because they block publication exactly the way a
+missing experiment does — and because the audit's single most damaging finding
+was a citation *we* had never opened.
+
 ---
 
 ## Blocking — these gate publication
@@ -321,6 +332,126 @@ new experiment could still close.
 
 ---
 
+### Q23 — Does the paper that scooped C-008 actually contain the access-control layer?
+
+**Why it matters:** it decides whether C-008 is **narrowed or cut**, and it is
+the cheapest open question in this file — one PDF download.
+
+Szlobodnyik, *Analytics* (MDPI) 5(3):25, DOI 10.3390/analytics5030025,
+**published 28 July 2026**, peer-reviewed, open access, CC-BY. The 2026-08-26
+novelty audit read it in full and reports that it contains, in one paper: a
+six-category text-to-Cypher prompt-injection dataset from sixteen parameterised
+templates; **Unsafe Operation Rate** and **Attack Success Rate**; a validator
+that intercepts unsafe Cypher and recovers a read-only schema-consistent query;
+a jury-of-models faithful/malicious/diverged classifier; five foundation models
+against six training-free defence baselines; **and an identity-provider-driven
+access-control layer limiting execution to the authorised portion of the graph
+schema, both role-based and attribute-based.**
+
+**Independently re-checked on 2026-08-26, and one row did not confirm.**
+
+| element | status |
+|---|---|
+| Citation, date, single author, venue, DOI, CC-BY | **confirmed** (DOI resolution, Semantic Scholar) |
+| Six injection categories | **confirmed verbatim** — instruction override, role confusion, output-format manipulation, misleading prompts, chained instructions, obfuscation |
+| Unsafe Operation Rate + Attack Success Rate | **confirmed** |
+| Validator flagging malicious/unsafe/divergent Cypher with corrective feedback | **confirmed** |
+| GPT-4o, DeepSeek R1, Claude 3.5 Sonnet, Qwen 2.5 Coder 32B | **confirmed** |
+| **Role/attribute-based access control over the schema** | **NOT CONFIRMED — mdpi.com and SSRN both 403 our fetcher** |
+
+The unconfirmed row is the one that matters. It is the mechanism that maps onto
+**our own schema-boundary refusal** — the part of the safety gate that rejects a
+query touching a label the source card does not declare. If it is in the paper,
+C-008's territory is occupied as thoroughly as the audit says and the claim
+drops to a paragraph. If it is not, we have a real surviving mechanism rather
+than four narrow slivers.
+
+**What resolves it:** download the PDF and search it.
+
+```bash
+curl -L -o /tmp/szlobodnyik-2026.pdf "https://www.mdpi.com/2813-2203/5/3/25/pdf"
+```
+
+Then grep for `access control`, `role-based`, `attribute-based`, `authorized`,
+`schema`. Answer three further things while it is open, all of which change the
+size of what survives: **what schema does it evaluate against** (the audit says
+the Neo4j text2cypher corpus with a movie-domain example — if so, no security
+taxonomy, and that delta holds); **is enforcement at the database privilege
+level or only prompt-and-validator level**; and **are the injection probes
+model-authored** (if so, our analyst-authored 240-probe suite is a real delta
+and it dovetails with C-021).
+
+**One more thing to settle:** an SSRN version exists
+(`papers.ssrn.com/sol3/papers.cfm?abstract_id=5669662`) whose **posting date is
+unknown**. If it predates 28 July 2026, the "four weeks before the audit"
+framing is wrong and this work was findable earlier — which matters, because it
+turns "unlucky timing" into "our literature watch was not running".
+
+**Cost:** under an hour. **Blocks:** C-008's novelty status, and the security
+section of any submission. **From:** 2026-08-26 novelty audit, Part 2 Q8.
+
+---
+
+### Q24 — Why does our failure distribution run opposite to the only comparable published one?
+
+**Why it matters:** this is the **highest-value piece of writing left before any
+submission**, and it is writing, not an experiment. C-016 is either the paper's
+best finding or its worst liability, and which one depends entirely on whether
+this paragraph exists.
+
+C-016 says failures concentrate in **planning**, and that faithfulness failures
+are a small minority — 26 of Arm B's 36 failures were planning or retrieval,
+only **2** were faithfulness. The 2026-08-26 audit found the comparable
+published measurement, and it disagrees.
+
+Leung, Belbahri, Sui, Labach, Zhang, Rose & Cresswell, *Classifying and
+Addressing the Diversity of Errors in Retrieval-Augmented Generation Systems*,
+**EACL 2026 Long Papers, pp. 3185–3207, peer-reviewed.** They walk pipeline
+stages in order and stop at the earliest error — the same mechanism — over 832
+and 1,222 erroneous responses, and validate it by intervening on the weak stages
+and re-running.
+
+| stage | DragonBall-EN | CLAPnq |
+|---|---|---|
+| Chunking | 29.7% | — |
+| Retrieval | 31.5% | 21.7% |
+| Reranking | 7.1% | 2.0% |
+| **Generation** | **32.7%** | **76.4%** |
+
+Generation — their faithfulness stage — is the plurality in one setting and the
+overwhelming majority in the other. **Our claim does not merely lack a
+comparison; it contradicts the only one that exists.**
+
+**What resolves it:** a written structural argument, not more data. The
+materials are already in hand and there are at least three distinct threads:
+
+1. **Their pipeline has no planning stage.** A pipeline that cannot fail at
+   planning cannot attribute failures to it, so the comparison is not
+   like-for-like and the two distributions are over different partitions of the
+   same total. State this first and state it precisely — it is the strongest
+   thread and the easiest to get sloppy about.
+2. **Their retrieval is over text chunks; ours is over a structured store with
+   a safety gate and a claim verifier.** A generation stage that receives
+   verified claims rather than retrieved passages has far less room to be
+   unfaithful — which is C-005, already measured, and it predicts exactly the
+   direction of the difference.
+3. **Ours is measured on an arm where a language model plans.** Arm B is the
+   condition; the deterministic path has no planning failures to find. Be
+   explicit about which arm the 26-of-36 comes from, because a reader who
+   assumes it is the shipped system will read the whole claim wrong.
+
+**Do not stop at "different pipelines".** That sentence is what a reviewer
+expects and it concedes the point. The finding is that *adding a planning stage
+moves the failure mass into it*, which is a stronger and more interesting claim
+than the one C-016 currently makes — and it is testable against their own
+numbers rather than merely asserted beside them.
+
+**Cost:** a day of writing, plus re-reading their appendix. **Blocks:** C-016,
+and the framing of D-027's primary contribution. **From:** 2026-08-26 novelty
+audit, Part 2 Q3.
+
+---
+
 ## Methodological
 
 ### Q6 — How well does the LLM judge agree with a human?
@@ -412,6 +543,99 @@ hallucination failures. But it has been applied to exactly one system and its
 class ladder mirrors that system's stage boundaries. **What resolves it:** apply
 it to a GraphRAG pipeline, a text-to-Cypher pipeline, and an agentic traversal
 system; report what fraction falls through to `other`. **Blocks:** C-016.
+
+### Q25 — Close the five coverage gaps the novelty audit disclosed about itself
+
+**Why it matters:** the audit's negative findings are load-bearing — C-022,
+C-024 and half of C-025 rest on "not found". It disclosed exactly where its own
+search was thin, and **the thin spot is the one that already caught us once**.
+
+Five gaps, in descending order of what they could cost:
+
+1. **CEUR-WS workshop volumes were never enumerated directly.** General web
+   search indexes them poorly, and **our closest known competitor is a CEUR
+   workshop paper**. Sweep ESWC 2026 and ISWC 2026 workshop proceedings by hand.
+   **Watch RAGE-KG 2026 specifically** — the Kurniawan/Kiesling/Ekelhart group
+   has now stated in *two consecutive papers* that comprehensive evaluation is
+   future work, which is C-025's artifact, promised publicly, by an active
+   group.
+2. **Four primary template-QA systems were never opened** — QUINT, TeBaQA,
+   QAnswer/WDAqua, and SG-KBQA's results section (EMNLP 2025, currently 📄
+   abstract-only). **TeBaQA claims portability "to a new domain… partially
+   proven by evaluation over different KGs."** If that evaluation contains a
+   precision-versus-coverage table across knowledge graphs, **C-023 narrows
+   further** — and C-023 is one of the four measurements D-027 puts the paper on.
+3. **The arXiv full-text API returned empty bodies throughout**, so no
+   systematic field search (`abs:Gremlin` and similar) was possible. This is the
+   main structural gap under C-024's negative.
+4. **Two circulating statistics could not be traced** to any retrievable
+   document — "planning… 33% of total errors" and "29% planning / 47% reasoning
+   / 10% retrieval". Probable search-engine synthesis. **Recorded so nobody
+   re-finds them and cites them**; same class as the phantom GraphRAG 13.4%
+   number already in `RELATED_WORK.md`.
+5. **Several arXiv PDFs had no machine-readable text.** Workaround that worked:
+   `arxiv.org/html/<id>v1`.
+
+**What resolves it:** items 1 and 2 are manual reading and are the only ones
+that can change a claim. Items 3–5 are tooling notes; record them and move on.
+
+**Cost:** a day for the CEUR sweep, half a day for the four papers.
+**Blocks:** the confidence level on C-022, C-024, C-025; possibly C-023's
+narrowness. **From:** 2026-08-26 novelty audit, Part 8.
+
+---
+
+### Q26 — Should the banks emit the executable gold query?
+
+**Why it matters:** it is the difference between C-025 being a gap we
+*documented* and a gap we *fill* — and D-027 keeps a benchmark-first framing
+live specifically pending this answer.
+
+The audit's recommended novelty sentence claims we contribute *"the first
+question set over MITRE ATT&CK and CAPEC that pairs natural-language questions
+with executable gold queries scored by execution-based correctness."* **We do
+not have gold queries.** A bank entry carries:
+
+```
+question, expected_template (a template NAME), task.seed_ids,
+assertions.must_include_related, ex_gold.expected   # computed ANSWERS
+```
+
+Gold **answers**, computed independently from raw STIX and CAPEC XML rather than
+through the ingest pipeline — which is a genuinely good property and the right
+answer to benchmark rot — but **no executable Cypher or Gremlin string
+anywhere**.
+
+**The gold query is constructible.** Template name plus seed identifiers
+determines the emitted query exactly; that is what makes the deterministic arms
+byte-reproducible in the first place. Emitting it is close to mechanical.
+
+**What resolves it:** decide, then do or don't.
+
+- **In favour:** it converts C-025 from `unsupported` to a fillable claim; it is
+  the cleanest gap the audit found; execution-based scoring against a live store
+  is what every text-to-Cypher benchmark has and no security question set does;
+  and it makes the resource usable by people who do not run our pipeline, which
+  is the difference between a benchmark and an artifact.
+- **Against, and this must be answered honestly rather than waved through:** a
+  gold query emitted *by the system under test* is co-authored gold in exactly
+  the sense C-021 measures. **Publishing our own queries as gold and then
+  scoring ourselves against them would be the most circular thing in the
+  project.** Any gold-query release needs the query validated against the
+  computed answer independently — the query is gold only if executing it
+  reproduces gold that was derived from the raw files, which we can check
+  mechanically and which is the whole defence.
+- **Also against:** it deepens the coupling C-023 says is conditional. A gold
+  query in *our* template's shape is not neutral between the template arm and
+  the schema-derived arm, and a benchmark that quietly favours one of our own
+  arms is worse than no benchmark.
+
+**Cost:** days for the emission; the real cost is the independent validation and
+the framing. **Blocks:** C-025, and whether D-027's alternative framing becomes
+primary. **From:** 2026-08-26 novelty audit Part 4, and
+`reports/2026-08-26-novelty-audit/POINTERS.md`.
+
+---
 
 ### Q10 — Does the verifier actually do anything?
 
