@@ -585,3 +585,113 @@ cases additionally pin branch *order*, which is load-bearing: `software_id` +
 **Consequence.** The coupling is now a declared, tested property of the system
 rather than an accident of implementation, which is the difference between a
 design decision and a limitation.
+
+---
+
+## D-026 — The Sikos citation is withdrawn; the gap is argued from the systems literature instead (2026-08-26)
+
+**Context.** Since the 2026-08-03 audit, C-011's novelty argument rested on one
+sentence: Sikos (2023) §7 *names* cross-KG federation for security and **cites
+nothing for it**, and that silence was read as the shape of a genuine gap. It
+was the load-bearing citation under the whole positioning.
+
+The 2026-08-26 novelty audit retrieved and read the paper in full. It does not
+say what we said it says:
+
+- `federat` appears **once in the entire article**.
+- The worked example attached to it is
+  `SELECT ?cve FROM NAMED MITRE FROM NAMED CISCO FROM NAMED NIST` — a **single
+  triplestore querying named graphs**. `SERVICE`, `endpoint` and `interlink`
+  appear **zero times**. It is not federation in any query-engine sense.
+- The paper has **no** future-work, open-problems or research-challenges
+  section. §8 is a nine-sentence backward-looking conclusion citing nothing.
+
+The paragraph cites nothing because it is an offhand remark about a capability
+the author treats as already available — not because a gap is being flagged.
+
+**Options.** (a) Keep the citation with a hedge. (b) Withdraw it and argue the
+gap from a different evidence base. (c) Drop the gap argument entirely and
+position purely on measurement.
+
+**Decision:** (b). Withdrawn outright, and replaced with the absence pattern
+across the CTI **systems** literature.
+
+**Why.** (a) is not survivable. The paper is open access; a reviewer disproves
+the sentence in ninety seconds by downloading it, and a citation that fails on
+retrieval poisons every other citation in the section — which is the exact
+failure mode `RELATED_WORK.md` was written to prevent, applied to a row this
+project inherited from an abstract-level audit and never re-opened.
+
+(c) gives up something real. The gap **is** there; we were pointing at the wrong
+evidence for it. The replacement is stronger because it is checkable in the
+direction that matters: **the systems that build this architecture decline to
+measure it.** CyKG-RAG (2024) and AgCyRAG (2025) ship three anecdotal questions
+between them, zero gold queries and zero metrics, and *both* state that
+comprehensive evaluation is future work. CTIConnect (KDD 2026) reaches 1,860
+expert-verified pairs with no query language at all. Ozsoy (2026) proposes the
+problem and explicitly builds nothing. An absence demonstrated by what four
+papers do not report beats an absence inferred from one sentence in a survey.
+
+**Consequence.** C-011 is `refuted`; C-024 carries the narrower claim.
+`RELATED_WORK.md` records the withdrawal in place rather than deleting the row,
+because the error pattern — inheriting an abstract-level row and citing it as
+though read — is the transferable lesson. Every citation in that file now
+carries an evidence tag (✅ read / 📄 abstract / ⚠️ snippet / UNVERIFIED).
+
+**Generalisation, and the reason this is a decision rather than a fix.** Four of
+eight prior-art rows were wrong. All four survived casual checking and failed on
+retrieval. **No entry may be cited for what a paper *measured* unless someone
+has opened its results section**, and the tag now makes an unopened entry
+visible instead of invisible.
+
+---
+
+## D-027 — The architecture is the method section; the contribution is the measurements and the resource (2026-08-26)
+
+**Date:** 2026-08-26
+**Context.** The novelty audit's closing judgement is blunt: *"Your architecture
+is your method section, not your contribution."* Every architectural component
+has published prior art — mediator-wrapper federation (25 years), templates
+instead of parsing (a named KBQA family since 2015), constrained generation as
+the stronger modern analogue, AgCyRAG for the two-store two-language security
+loop, Ozsoy for the cross-language problem statement, EICopilot for
+natural-language-to-Gremlin. The hostile-reviewer sentence writes itself:
+*"AgCyRAG with a different second query language and a benchmark attached."*
+
+**Options.** (a) Position on architecture and defend novelty in kind.
+(b) Position on the measurements, treating the architecture as the instrument
+that makes them possible. (c) Position on the resource — the benchmark — and
+demote the system to supporting material.
+
+**Decision:** (b) as the primary framing, with (c) recorded as a live
+alternative that may become primary. Not (a).
+
+**Why.** (a) is unwinnable and the audit says so with citations. What is
+defensible is that **eliminating query generation makes the system a different
+measurement instrument, not merely a different implementation** — with no
+stochastic query-writing step, stage-wise attribution and the
+template-versus-schema-derived comparison are confounded by nothing, which is
+precisely why we can run them and the generation-based literature cannot.
+
+The uncomfortable half is recorded rather than softened: **three of the four
+headline measurements are nulls** — federation is not more accurate than
+merging (C-022), templates are not more accurate than schema-derived
+construction (C-023), and query generation is not where the loss is (C-016).
+Papers built on nulls need unusually clean design and unusually careful claims,
+and **one of our nulls currently contradicts the only comparable published
+distribution** (C-016 against Leung et al., EACL 2026). Explaining that
+structurally is Q24 and it is the highest-value writing left.
+
+(c) is kept live because the audit rates it the cleanest gap found (C-025) and
+because **the group with the closest architecture has now declared comprehensive
+evaluation to be future work in two consecutive papers.** That is an unbuilt
+artifact with a public promise attached and an active group behind it — both an
+opportunity and a clock. It is not primary today for one reason: **we do not
+currently ship gold queries** (Q26). If Q26 closes, this decision should be
+revisited rather than assumed.
+
+**Consequence.** The paper leads with the instrument-and-measurements framing.
+Priority claims on the architecture, the problem statement, natural-language-to-
+Gremlin, and the security of graph-query interfaces are **all conceded and cited
+explicitly** rather than left for a reviewer to raise. Supersedes nothing;
+constrains D-004's positioning guidance with a named alternative.
