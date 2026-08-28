@@ -873,6 +873,73 @@ July arms and 2026-08-24. The operator's "test-phase runs used differing
 parameters" caveat (Q11) may in fact be describing a model change rather than a
 parameter change.
 
+### Q27 — The definitional rescue path declares a liveness-probe label as the record's type
+
+**Why it matters:** it is a live mislabelling defect on the *catalogue*, and it
+fires on exactly the questions C-021 says our banks never contain — the ones
+that do not use the schema's own vocabulary.
+
+**Found 2026-08-28 by asking what happens to a synonym.** Every one of these
+returns an evidence record whose label is **`Analytic`**:
+
+```
+"How do I defend against T1176?"   primary=T1176  LABEL=Analytic
+"Tell me about T1176"              primary=T1176  LABEL=Analytic
+"What is T1176?"                   primary=T1176  LABEL=Analytic
+```
+
+**T1176 is a `Technique`.** Its own returned properties say so
+(`stix_type: attack-pattern`), and the query that fetched it matched
+`(n:Technique)`.
+
+**The chain, all four steps individually reasonable:**
+
+1. No request token matches a label or relationship name, so the keyword router
+   builds nothing (`drafter.py::_match_card`).
+2. The **definitional rescue** fires, because the request mentions an entity id
+   (`drafter.py`, "no schema term matched; routed a name lookup").
+3. It sets the sub-question's entities to `card.expected_probe_labels()[:1]`.
+4. `expected_probe_labels()` is `sorted(self.node_labels)[:2]`
+   (`cards.py:74`) — **a liveness-check helper**, whose docstring says
+   *"a couple of labels the content probe expects to exist when loaded."* For
+   ATT&CK, `sorted(...)[0]` is **`Analytic`**, alphabetically.
+
+That arbitrary label becomes `resolved.primary_label()`, which
+`normalizer.py::_label_for` prefers over **both** the id-prefix table below it
+and the fallback. The id-prefix table would have got this right: `T\d{4}` →
+`Technique` is already in `_DOSSIER_ID_LABELS`.
+
+**It is the same species as I-9**, and `_label_for`'s own docstring is the
+warning: *"the label is carried into the evidence record and read back out by
+synthesis, so a DEVICE named `srv000` was being asserted to the judge as an
+ATT&CK Technique."* The constant was fixed; the rescue path re-introduces the
+defect by a different route.
+
+**What resolves it:** the rescue path is asking "which labels prove this
+database is loaded" when it means "what kind of thing might this be". Options:
+**(a)** pass **no** entities and let `_label_for` fall through to the id-prefix
+table — the smallest change and it makes the right answer reachable; **(b)** have
+the rescue path resolve the label from the learned identifier scheme
+(`idscheme.scheme_of`), which is the schema-agnostic version and works on a
+source with no prefix table; **(c)** leave the label empty rather than guess,
+which is the honest answer and the one consistent with `admits()` returning
+`undetermined`. **(b) then (c) as a fallback** is probably right, but this needs
+a decision rather than a patch — see D-025's reasoning about what a record is
+allowed to assert.
+
+**Cost:** hours for the change; the real cost is the recorded-answer regression
+over both banks that any normalizer change requires
+([[ariadne-recorded-answer-regression]]). **Expect zero diffs**, and that is
+itself the finding — the banks cannot reach this path.
+
+**Blocks:** nothing measured today, which is the uncomfortable part. **It
+strengthens C-021 rather than threatening it:** the defect is unreachable from
+120 catalogue questions and 30 blind ones because all 150 were written by people
+who knew the vocabulary. A question set that avoided the schema's own words
+would have found it immediately. **From:** conversational probe, 2026-08-28.
+
+---
+
 ### Q13 — Two query templates are unreachable
 
 `node_lookup` (Cypher) and `capec_lookup` (Gremlin) are not reachable from
