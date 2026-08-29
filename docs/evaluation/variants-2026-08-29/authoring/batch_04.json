@@ -1,0 +1,402 @@
+[
+  {
+    "case_id": "A-AST-01",
+    "bank": "attack",
+    "question": "What assets does T1047 (Windows Management Instrumentation) target? (ICS-only concept \u2014 must refuse honestly, not invent)",
+    "expected_template": "boundary_refusal",
+    "seed_ids": [
+      "T1047"
+    ],
+    "anchor_names": [
+      {
+        "id": "T1047",
+        "name": "Windows Management Instrumentation",
+        "description": "Adversaries may abuse Windows Management Instrumentation (WMI) to execute malicious commands and payloads. WMI is designed for programmers and is the infrastructure for management data and operations on Windows systems.(Citation: WMI 1-3) WMI is an administration feature that provides a uniform envi",
+        "label": "Technique"
+      }
+    ],
+    "avoid": [
+      "analytic",
+      "attributed",
+      "campaign",
+      "component",
+      "data",
+      "detection",
+      "detects",
+      "group",
+      "has",
+      "matrix",
+      "mitigates",
+      "mitigation",
+      "monitors",
+      "software",
+      "strategy",
+      "sub",
+      "subtechnique",
+      "tactic",
+      "technique",
+      "uses"
+    ],
+    "needs_negative": false
+  },
+  {
+    "case_id": "A-AST-02",
+    "bank": "attack",
+    "question": "What assets does T1490 (Inhibit System Recovery) target? (ICS-only concept \u2014 must refuse honestly, not invent)",
+    "expected_template": "boundary_refusal",
+    "seed_ids": [
+      "T1490"
+    ],
+    "anchor_names": [
+      {
+        "id": "T1490",
+        "name": "Inhibit System Recovery",
+        "description": "Adversaries may delete or remove built-in data and turn off services designed to aid in the recovery of a corrupted system to prevent recovery.(Citation: Talos Olympic Destroyer 2018)(Citation: FireEye WannaCry 2017) This may deny access to available backups and recovery options.\n\nOperating systems ",
+        "label": "Technique"
+      }
+    ],
+    "avoid": [
+      "analytic",
+      "attributed",
+      "campaign",
+      "component",
+      "data",
+      "detection",
+      "detects",
+      "group",
+      "has",
+      "matrix",
+      "mitigates",
+      "mitigation",
+      "monitors",
+      "software",
+      "strategy",
+      "sub",
+      "subtechnique",
+      "tactic",
+      "technique",
+      "uses"
+    ],
+    "needs_negative": false
+  },
+  {
+    "case_id": "A-DET-01",
+    "bank": "attack",
+    "question": "How is T1047 (Windows Management Instrumentation) detected, and via which analytics?",
+    "expected_template": "technique_detection",
+    "seed_ids": [
+      "T1047"
+    ],
+    "anchor_names": [
+      {
+        "id": "T1047",
+        "name": "Windows Management Instrumentation",
+        "description": "Adversaries may abuse Windows Management Instrumentation (WMI) to execute malicious commands and payloads. WMI is designed for programmers and is the infrastructure for management data and operations on Windows systems.(Citation: WMI 1-3) WMI is an administration feature that provides a uniform envi",
+        "label": "Technique"
+      }
+    ],
+    "avoid": [
+      "analytic",
+      "attributed",
+      "campaign",
+      "component",
+      "data",
+      "detection",
+      "detects",
+      "group",
+      "has",
+      "matrix",
+      "mitigates",
+      "mitigation",
+      "monitors",
+      "software",
+      "strategy",
+      "sub",
+      "subtechnique",
+      "tactic",
+      "technique",
+      "uses"
+    ],
+    "needs_negative": true
+  },
+  {
+    "case_id": "A-DET-02",
+    "bank": "attack",
+    "question": "How is T1110 (Brute Force) detected, and via which analytics?",
+    "expected_template": "technique_detection",
+    "seed_ids": [
+      "T1110"
+    ],
+    "anchor_names": [
+      {
+        "id": "T1110",
+        "name": "Brute Force",
+        "description": "Adversaries may use brute force techniques to gain access to accounts when passwords are unknown or when password hashes are obtained.(Citation: TrendMicro Pawn Storm Dec 2020) Without knowledge of the password for an account or set of accounts, an adversary may systematically guess the password usi",
+        "label": "Technique"
+      }
+    ],
+    "avoid": [
+      "analytic",
+      "attributed",
+      "campaign",
+      "component",
+      "data",
+      "detection",
+      "detects",
+      "group",
+      "has",
+      "matrix",
+      "mitigates",
+      "mitigation",
+      "monitors",
+      "software",
+      "strategy",
+      "sub",
+      "subtechnique",
+      "tactic",
+      "technique",
+      "uses"
+    ],
+    "needs_negative": false
+  },
+  {
+    "case_id": "A-DET-03",
+    "bank": "attack",
+    "question": "How is T1566 (Phishing) detected, and via which analytics?",
+    "expected_template": "technique_detection",
+    "seed_ids": [
+      "T1566"
+    ],
+    "anchor_names": [
+      {
+        "id": "T1566",
+        "name": "Phishing",
+        "description": "Adversaries may send phishing messages to gain access to victim systems. All forms of phishing are electronically delivered social engineering. Phishing can be targeted, known as spearphishing. In spearphishing, a specific individual, company, or industry will be targeted by the adversary. More gene",
+        "label": "Technique"
+      }
+    ],
+    "avoid": [
+      "analytic",
+      "attributed",
+      "campaign",
+      "component",
+      "data",
+      "detection",
+      "detects",
+      "group",
+      "has",
+      "matrix",
+      "mitigates",
+      "mitigation",
+      "monitors",
+      "software",
+      "strategy",
+      "sub",
+      "subtechnique",
+      "tactic",
+      "technique",
+      "uses"
+    ],
+    "needs_negative": false
+  },
+  {
+    "case_id": "A-SW-01",
+    "bank": "attack",
+    "question": "Which techniques does software S0002 (Mimikatz) use?",
+    "expected_template": "software_techniques",
+    "seed_ids": [
+      "S0002"
+    ],
+    "anchor_names": [
+      {
+        "id": "S0002",
+        "name": "Mimikatz",
+        "description": "[Mimikatz](https://attack.mitre.org/software/S0002) is a credential dumper capable of obtaining plaintext Windows account logins and passwords, along with many other features that make it useful for testing the security of networks. (Citation: Deply Mimikatz) (Citation: Adsecurity Mimikatz Guide)",
+        "label": "Software"
+      }
+    ],
+    "avoid": [
+      "analytic",
+      "attributed",
+      "campaign",
+      "component",
+      "data",
+      "detection",
+      "detects",
+      "group",
+      "has",
+      "matrix",
+      "mitigates",
+      "mitigation",
+      "monitors",
+      "software",
+      "strategy",
+      "sub",
+      "subtechnique",
+      "tactic",
+      "technique",
+      "uses"
+    ],
+    "needs_negative": false
+  },
+  {
+    "case_id": "A-SW-02",
+    "bank": "attack",
+    "question": "Which techniques does software S0154 (Cobalt Strike) use?",
+    "expected_template": "software_techniques",
+    "seed_ids": [
+      "S0154"
+    ],
+    "anchor_names": [
+      {
+        "id": "S0154",
+        "name": "Cobalt Strike",
+        "description": "[Cobalt Strike](https://attack.mitre.org/software/S0154) is a commercial, full-featured, remote access tool that bills itself as \u201cadversary simulation software designed to execute targeted attacks and emulate the post-exploitation actions of advanced threat actors\u201d. Cobalt Strike\u2019s interactive post-",
+        "label": "Software"
+      }
+    ],
+    "avoid": [
+      "analytic",
+      "attributed",
+      "campaign",
+      "component",
+      "data",
+      "detection",
+      "detects",
+      "group",
+      "has",
+      "matrix",
+      "mitigates",
+      "mitigation",
+      "monitors",
+      "software",
+      "strategy",
+      "sub",
+      "subtechnique",
+      "tactic",
+      "technique",
+      "uses"
+    ],
+    "needs_negative": true
+  },
+  {
+    "case_id": "A-SW-03",
+    "bank": "attack",
+    "question": "Which techniques does software S0266 (TrickBot) use?",
+    "expected_template": "software_techniques",
+    "seed_ids": [
+      "S0266"
+    ],
+    "anchor_names": [
+      {
+        "id": "S0266",
+        "name": "TrickBot",
+        "description": "[TrickBot](https://attack.mitre.org/software/S0266) is a Trojan spyware program written in C++ that first emerged in September 2016 as a possible successor to [Dyre](https://attack.mitre.org/software/S0024). [TrickBot](https://attack.mitre.org/software/S0266) was developed and initially used by [Wiz",
+        "label": "Software"
+      }
+    ],
+    "avoid": [
+      "analytic",
+      "attributed",
+      "campaign",
+      "component",
+      "data",
+      "detection",
+      "detects",
+      "group",
+      "has",
+      "matrix",
+      "mitigates",
+      "mitigation",
+      "monitors",
+      "software",
+      "strategy",
+      "sub",
+      "subtechnique",
+      "tactic",
+      "technique",
+      "uses"
+    ],
+    "needs_negative": false
+  },
+  {
+    "case_id": "A-SUB-01",
+    "bank": "attack",
+    "question": "What are the sub-techniques of T1021?",
+    "expected_template": "subtechnique_parent",
+    "seed_ids": [
+      "T1021"
+    ],
+    "anchor_names": [
+      {
+        "id": "T1021",
+        "name": "Remote Services",
+        "description": "Adversaries may use [Valid Accounts](https://attack.mitre.org/techniques/T1078) to log into a service that accepts remote connections, such as telnet, SSH, and VNC. The adversary may then perform actions as the logged-on user.\n\nIn an enterprise environment, servers and workstations can be organized ",
+        "label": "Technique"
+      }
+    ],
+    "avoid": [
+      "analytic",
+      "attributed",
+      "campaign",
+      "component",
+      "data",
+      "detection",
+      "detects",
+      "group",
+      "has",
+      "matrix",
+      "mitigates",
+      "mitigation",
+      "monitors",
+      "software",
+      "strategy",
+      "sub",
+      "subtechnique",
+      "tactic",
+      "technique",
+      "uses"
+    ],
+    "needs_negative": false
+  },
+  {
+    "case_id": "A-SUB-02",
+    "bank": "attack",
+    "question": "Which technique is T1055.012 a sub-technique of?",
+    "expected_template": "subtechnique_parent",
+    "seed_ids": [
+      "T1055.012"
+    ],
+    "anchor_names": [
+      {
+        "id": "T1055.012",
+        "name": "Process Hollowing",
+        "description": "Adversaries may inject malicious code into suspended and hollowed processes in order to evade process-based defenses. Process hollowing is a method of executing arbitrary code in the address space of a separate live process.  \n\nProcess hollowing is commonly performed by creating a process in a suspe",
+        "label": "SubTechnique"
+      }
+    ],
+    "avoid": [
+      "analytic",
+      "attributed",
+      "campaign",
+      "component",
+      "data",
+      "detection",
+      "detects",
+      "group",
+      "has",
+      "matrix",
+      "mitigates",
+      "mitigation",
+      "monitors",
+      "software",
+      "strategy",
+      "sub",
+      "subtechnique",
+      "tactic",
+      "technique",
+      "uses"
+    ],
+    "needs_negative": false
+  }
+]
