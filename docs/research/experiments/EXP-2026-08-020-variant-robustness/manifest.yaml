@@ -1,0 +1,89 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-08-020
+slug: variant-robustness
+title: "How much of the deterministic router's correctness survives paraphrase, and where does it break?"
+status: running            # planned | running | complete | failed | superseded
+date_started: 2026-08-29
+date_completed: null       # null until status is complete/failed
+authors: ["brendondgr"]
+
+purpose: >
+  The router matches a question's words against each source's declared node
+  labels and relationship types, exactly, with a trailing "s" as its entire
+  morphology. This measures what that costs on paraphrases of the 120 golden
+  questions, tiered from "identifier kept, verb swapped" down to "described
+  without its identifier, its name, or any schema word". Bears on C-001 (a
+  robustness limit on the deterministic path), C-010 (whether the vocabulary
+  machinery is schema-agnostic), C-021 (the first questions here NOT written in
+  the schema's own vocabulary) and Q4 (open-ended questions, unmeasured since
+  the project began).
+
+hypothesis: >
+  H1 record identity falls monotonically T1 to T5, with the identifier-bearing
+  tiers losing less. H2 the dominant failure is silent downgrade to the generic
+  describe primitive rather than abstention -- a confident answer about the
+  right entity carrying the wrong information, which passes every internal
+  check. H3 negative-control questions about nonexistent entities return
+  nothing. See PROTOCOL.md.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: b040e185c97058445f039ae6dab20f1f45aa105f          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python scripts/variant_harness.py compare --out docs/evaluation/variants-2026-08-29"
+  dirty: false            # uncommitted changes at run time? if true, explain in ISSUES.md
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: golden-catalogue-120 + Sonnet-authored tiered variants
+  version: "catalogue frozen; variants authored 2026-08-29"
+  split: all
+  n_examples: 120
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: null               # md5:... or sha256:... of the dataset artifact
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "local workstation; Neo4j + Gremlin in docker"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "anthropic/claude-sonnet@2026-08-29 (variant AUTHORING only; the pipeline under test runs with every LLM seam off)"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: null
+  prompt_files: ["utils/specialists/tests/fixtures/variant_prompt.md"]
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    No model is in the loop of the system under test -- every seam is off and
+    the pipeline is byte-reproducible, verified by capturing the reference
+    twice. A model authored the variants ONCE; that bank is then a frozen
+    artifact and every arm scores the same questions. So arm-to-arm differences
+    carry no model nondeterminism at all.
+
+# --- Results block ---
+metrics:
+  primary: records_exact
+  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+baselines_compared: []
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: ["C-001", "C-010", "C-021"]        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null
+superseded_by: null
+related: []
