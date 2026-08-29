@@ -53,7 +53,7 @@ environment:
   container: null
 compute:
   hardware: "local workstation; Neo4j + Gremlin in docker"
-  wall_clock_hours: 0.15
+  wall_clock_hours: 0.9
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -89,7 +89,13 @@ metrics:
     catalogue_dump_rate: {mean: 0.1359, std: 0.0, n: 699}
     catalogue_dump_T3: {mean: 0.5248, std: 0.0, n: 101}
     t6_answered_of_30: {mean: 4.0, std: 0.0, n: 30}
-baselines_compared: ["arm0-shipped-router"]
+    arm2_catalogue_gold_recall: {mean: 0.9161, std: 0.0, n: 66}
+    arm0_catalogue_gold_recall: {mean: 0.8698, std: 0.0, n: 66}
+    arm2_wrong_entity_T5: {mean: 0.1346, std: 0.0, n: 104}
+    arm1_wrong_entity_T5: {mean: 0.2885, std: 0.0, n: 104}
+    arm2_catalogue_dump_T3: {mean: 0.3267, std: 0.0, n: 101}
+    arm2_t6_abstained: {mean: 0.9333, std: 0.0, n: 30}
+baselines_compared: ["arm0-shipped-router", "arm1-lexicon", "arm2-lexicon-plus-unanchored"]
 statistical_test: null
 
 # --- Linkage ---

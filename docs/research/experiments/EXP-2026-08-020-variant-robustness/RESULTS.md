@@ -119,3 +119,69 @@ arm-to-arm differences carry no authoring variance at all. The two named defects
 to fix first are recorded in [`ISSUES.md`](ISSUES.md): the alphabetical
 source-selection tiebreak (I-2), and the unanchored fall-through to `label_scan`
 that produces every dump above.
+
+---
+
+# Arms 1 and 2 — the deterministic fixes
+
+Both behind one flag, `ARIADNE_LEXICON`, default **off**. With it off the
+reference is **byte-identical** to the committed Arm 0 capture, verified twice.
+
+**Arm 1** — stemming, gloss stems, bounded edit distance in the router
+(`utils/planner/lexicon.py`, wired into `_concept_indexes` / `_match_card`).
+**Arm 2** — Arm 1 plus: an unanchored question runs a real bounded query that
+finds nothing, instead of scanning the whole label.
+
+## On the catalogue, both arms are a clean gain
+
+| | Arm 0 | Arm 1 | Arm 2 |
+|---|---|---|---|
+| gold recall over 66 scorable golden questions | 0.8698 | **0.9161** | **0.9161** |
+| answers changed | — | 14 | 14 |
+| **better / worse / same** | — | **6 / 0 / 2** | **6 / 0 / 2** |
+
+**Zero regressions**, and the gains are large where they land: the three
+detection questions go from 0.3333 / 0.1429 / 0.1250 to **1.0000**, and the
+three mitigation-coverage questions from ~0.78 to **1.0000** while returning
+*fewer* records — a precision and recall win at once. The two `C-PRE` changes
+drop spurious CWE records from a question about patterns and stay at 1.0000.
+
+## On the variants, Arm 1 alone is actively harmful — and that is the finding
+
+| tier | `wrong_entity` A0 → A1 → A2 | `catalogue_dump` A0 → A1 → A2 | abstained A0 → A1 → A2 |
+|---|---|---|---|
+| T1 | 0.1083 → 0.1083 → 0.1083 | 0.0000 → 0.0000 → 0.0000 | 0.1500 → 0.1583 → 0.1667 |
+| T2 | 0.1083 → 0.1083 → 0.1083 | 0.0000 → 0.0000 → 0.0000 | 0.1917 → 0.2000 → 0.2000 |
+| T3 | 0.1485 → 0.1485 → **0.1089** | 0.5248 → 0.5248 → **0.3267** | 0.2079 → 0.2079 → **0.4059** |
+| T4 | 0.1635 → **0.2500** → **0.1154** | 0.1827 → **0.3077** → **0.1635** | 0.7212 → **0.6250** → **0.7788** |
+| T5 | 0.1731 → **0.2885** → **0.1346** | 0.1827 → **0.3173** → **0.1538** | 0.7596 → **0.6058** → **0.7981** |
+| T6 | 0.0333 → 0.0667 → 0.0667 | 0.1333 → 0.1667 → **0.1000** | 0.8667 → 0.8667 → **0.9333** |
+
+**Arm 1 converts abstentions into catalogue dumps.** Wrong-entity rate rises
+**+0.0865** at T4 and **+0.1154** at T5; dumps rise **+0.1250** and **+0.1346**;
+abstention falls by roughly the same amount. Widening word matching means more
+questions find *a* schema word, so more of them route — and with no anchor
+resolved they fall through to the label scan and return everything.
+
+**The lexicon was not the defect; it exposed the defect.** A better matcher
+pointed at a fall-through that answers by dumping makes the dumping worse. The
+two changes are one change, and shipping the first without the second would have
+looked like an improvement on the catalogue while degrading exactly the
+questions the catalogue cannot see.
+
+**Arm 2 beats the baseline on every safety metric.** Wrong entities fall below
+Arm 0 at T3, T4 and T5. Dumps fall at every tier. T6 abstention rises to
+**0.9333** — **28 of 30** negative controls now correctly silent, against 26.
+
+## What Arm 2 does *not* do, stated plainly
+
+`records_exact` is unmoved at T3 (0.0990) and still **0.0000** at T4 and T5.
+T3's pooled recall *falls*, 0.5093 → 0.4058, and its no-dump recall falls
+0.3166 → 0.2235 — **because the denominator changed**: runs that used to be
+scored as high-recall dumps are now abstentions scoring zero.
+
+**Arm 2 does not retrieve more. It stops pretending.** That is the correct fix
+for this stage and it is not a retrieval improvement. Closing the retrieval gap
+is what a candidate index over canonical names and descriptions is for, and
+until that exists the honest summary of T4/T5 is: **the system now mostly knows
+that it does not know.**

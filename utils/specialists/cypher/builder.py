@@ -8,10 +8,14 @@ card labels/edges, parameterised values, an explicit LIMIT placeholder.
 
 from __future__ import annotations
 
+import os
 import re
 from typing import Any
 
-from ...planner.intent import is_definitional_request
+from ...planner.intent import (
+    asks_for_bulk_scan,
+    is_definitional_request,
+)
 from ..primitives.expand import ExpandRequest
 from ..direction import anchor_expression, resolve_anchor
 from ..resolve import ResolvedTask
@@ -201,6 +205,19 @@ def _describe_label(resolved: ResolvedTask) -> str:
     return resolved.primary_label() or "Technique"
 
 
+
+def _unanchored_abstains() -> bool:
+    """Does an unanchored question abstain instead of scanning? Default **off**.
+
+    Shares `ARIADNE_LEXICON`'s lifecycle deliberately: widening word matching
+    without this fix makes the dumps *worse*, because questions that used to
+    abstain now match a schema word and fall through to the scan. Arm 1 measured
+    exactly that — catalogue dumps +0.125 at T4 and +0.135 at T5, with wrong
+    entities up 0.087 and 0.115. The two changes are one change.
+    """
+    return os.environ.get("ARIADNE_LEXICON", "").strip().lower() in {"1", "true", "yes", "on"}
+
+
 def _generic_only() -> bool:
     """True when the MITRE-specific query templates are disabled.
 
@@ -376,7 +393,11 @@ class CypherQueryBuilder:
         ):
             return self._describe(resolved)
 
-        # 7. Fallback: label scan (no anchor at all).
+        # 7. Nothing resolved. Scan the label only if a scan is what was asked
+        #    for; otherwise look for the anchor we do not have, find nothing,
+        #    and let the enforced abstention carry that query as its proof.
+        if _unanchored_abstains() and not asks_for_bulk_scan(resolved.task.text):
+            return self._unanchored(resolved)
         return self._label_scan(resolved)
 
     # -- intent builders -------------------------------------------------------
@@ -1161,6 +1182,34 @@ class CypherQueryBuilder:
             params={"ids": dc_ids},
             template="datacomponent_analytics",
             meta={"seed_ids": dc_ids},
+        )
+
+    def _unanchored(self, resolved: ResolvedTask) -> QueryDraft:
+        """An honest empty result for a question whose anchor never resolved.
+
+        **Not a no-op and not a stub.** It runs a real, safe, bounded query that
+        looks for the anchor against an empty id set, so it legitimately returns
+        zero rows — which makes the result *empty but ok*, which is precisely
+        what `synthesis.composer.abstention_for` turns into an enforced
+        abstention carrying its executed query. The proof that we could not find
+        the entity is a query that looked for it.
+
+        The alternative, `label_scan`, returns the whole label and the composer
+        presents it as "all results for this question". Nothing downstream can
+        catch that: every record is genuine, so the verifier has no claim to
+        reject. Only the framing is false.
+        """
+        label = _preferred_scan_label(resolved)
+        query = (
+            f"MATCH (n:{label}) WHERE coalesce(n.attack_id, n.id) IN $ids "
+            f"RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name"
+        )
+        return QueryDraft(
+            query=query,
+            params={"ids": []},
+            template="unanchored",
+            expected_nonempty=False,
+            meta={"anchor_label": label, "reason": "no anchor resolved"},
         )
 
     def _label_scan(self, resolved: ResolvedTask) -> QueryDraft:

@@ -28,6 +28,7 @@ import re
 from typing import Protocol
 
 from .cards import SourceCardView
+from .lexicon import index_keys, lookup_keys, nearest
 from .discovery import LiveSourceView
 from .intent import Intent, IntentClassification, mentions_entity_id
 from .join_keys import CANONICAL_JOIN_KEYS, resolve_join_key
@@ -38,6 +39,19 @@ from .schema import (
     SubQuestion,
     UnsupportedPart,
 )
+
+def _lexicon_on() -> bool:
+    """Is the widened word handling enabled? Default **off**.
+
+    EXP-2026-08-020 Arm 0 measured what exact matching costs: record identity
+    0.4667 at T1, where the only change is the verb. This flag turns on stems,
+    gloss stems and bounded edit distance so the same bank can be re-scored and
+    the difference attributed. Off by default until that arm reports, because a
+    routing change that has not been through the recorded-answer regression is
+    a regression until proven otherwise.
+    """
+    return os.environ.get("ARIADNE_LEXICON", "").strip().lower() in {"1", "true", "yes", "on"}
+
 
 _STOPWORDS = frozenset(
     """a an and are as at be by for from has have in into is it its of on or that the
@@ -96,12 +110,20 @@ def _concept_indexes(card: SourceCardView) -> tuple[dict[str, set[str]], dict[st
     id_index: dict[str, set[str]] = {}
     gloss_index: dict[str, set[str]] = {}
 
+    lex = _lexicon_on()
+
     def add(index: dict[str, set[str]], token: str, entity: str) -> None:
         if token in _STOPWORDS or len(token) < 3:
             return
         index.setdefault(token, set()).add(entity)
         if token.endswith("s") and len(token) > 3:
             index.setdefault(token[:-1], set()).add(entity)
+        if lex:
+            # The stem is *additional*, never a replacement: the surface form
+            # keeps its own key so exact matching stays bit-for-bit what it was
+            # and the widening can only ever add routes, never move one.
+            for key in index_keys(token):
+                index.setdefault(key, set()).add(entity)
 
     for label in card.node_labels:
         for tok in _split_identifier(label):
@@ -117,6 +139,13 @@ def _concept_indexes(card: SourceCardView) -> tuple[dict[str, set[str]], dict[st
                 continue
             for tok in _tokens(text):
                 add(gloss_index, tok, entity)
+                if lex:
+                    # ATT&CK glosses Mitigation as "A defensive measure that
+                    # reduces technique risk". The word `defensive` is already
+                    # in the card; `defend` misses it only because the index
+                    # stores surface forms. Stemming both sides connects them.
+                    for key in index_keys(tok):
+                        add(gloss_index, key, entity)
     return id_index, gloss_index
 
 
@@ -195,20 +224,37 @@ def _match_card(
         owners = {ds for ds, words in claimed.items() if tok in words}
         return bool(owners) and dataset not in owners
 
+    lex = _lexicon_on()
+
+    def probe(index: dict[str, set[str]], tok: str) -> set[str] | None:
+        """Entities this token reaches: exact, then stem, then one typo."""
+        hit = index.get(tok)
+        if hit or not lex:
+            return hit
+        for key in lookup_keys(tok):
+            hit = index.get(key)
+            if hit:
+                return hit
+        # Typos last, and only against a key nothing else claimed. `nearest`
+        # returns None when two keys are equally close, so an ambiguous typo
+        # routes nowhere rather than routing on dict order.
+        near = nearest(tok, set(index))
+        return index.get(near) if near else None
+
     id_hits = 0
     for tok in request_tokens:
         if belongs_elsewhere(tok):
             continue
-        entities = id_index.get(tok)
+        entities = probe(id_index, tok)
         if entities:
             id_hits += 1
             tokens.add(tok)
             matched.update(entities)
     gloss_hits = 0
     for tok in request_tokens:
-        if tok in id_index or belongs_elsewhere(tok):
+        if belongs_elsewhere(tok) or probe(id_index, tok):
             continue
-        entities = gloss_index.get(tok)
+        entities = probe(gloss_index, tok)
         if entities and len(entities) <= _MAX_GLOSS_FANOUT:
             gloss_hits += 1
             tokens.add(tok)

@@ -9,6 +9,7 @@ after card validation. Every query ends with an injected .limit(lim).
 
 from __future__ import annotations
 
+import os
 import re
 from typing import Any
 
@@ -17,6 +18,7 @@ from utils.planner.intent import is_definitional_request
 from utils.specialists.primitives.expand import ExpandRequest
 from utils.specialists.resolve import ResolvedTask
 from utils.specialists.validation import QueryDraft
+from utils.planner.intent import asks_for_bulk_scan
 
 _SAFE_GREMLIN_IDENT = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
 
@@ -158,6 +160,16 @@ def _has_mapping_intent(resolved: ResolvedTask) -> bool:
     return bool(named & _MAPPING_INTENT)
 
 
+def _unanchored_abstains() -> bool:
+    """Does an unanchored question abstain instead of scanning the label?
+
+    Off by default, and shares `ARIADNE_LEXICON`'s lifecycle: widening word
+    matching without this makes the dumps worse, not better. See the Cypher
+    builder's copy for the measured numbers.
+    """
+    return os.environ.get("ARIADNE_LEXICON", "").strip().lower() in {"1", "true", "yes", "on"}
+
+
 class GremlinQueryBuilder:
     """Deterministic Gremlin query builder (QueryBuilder protocol)."""
 
@@ -223,6 +235,8 @@ class GremlinQueryBuilder:
             # lookup for a node named that, and returns nothing.
             if resolved.name_terms and is_definitional_request(resolved.task.text):
                 return self._describe(resolved)
+            if _unanchored_abstains() and not asks_for_bulk_scan(resolved.task.text):
+                return self._unanchored(resolved)
             return self._capec_scan(resolved)
 
         # NEW: capec_hierarchy_chain — two or more "ChildOf" in raw entities AND seeds.
@@ -265,6 +279,8 @@ class GremlinQueryBuilder:
         # enumeration ("scan attack patterns") on the label-scan path.
         if resolved.name_terms and is_definitional_request(resolved.task.text):
             return self._describe(resolved)
+        if _unanchored_abstains() and not asks_for_bulk_scan(resolved.task.text):
+            return self._unanchored(resolved)
         return self._capec_scan(resolved)
 
     # -- templates ----------------------------------------------------------
@@ -896,6 +912,30 @@ class GremlinQueryBuilder:
             hop = gremlin_edge_label(_safe_gremlin_ident(rel, "relationship type"))
             steps.append(f'{"out" if direction == "out" else "in"}("{hop}")')
         return ".".join(steps), owner
+
+    def _unanchored(self, resolved: ResolvedTask) -> QueryDraft:
+        """Honest empty result for a question whose anchor never resolved.
+
+        Runs a real bounded traversal against an empty id set, so it returns
+        zero rows legitimately and the enforced abstention carries the executed
+        query as its proof. The alternative -- `capec_scan` -- returned 558
+        records, essentially the whole catalogue, for an invented attack pattern
+        and let the composer call it "all results for this question"
+        (EXP-2026-08-020).
+        """
+        label = resolved.primary_label() or "AttackPattern"
+        lim = resolved.task.max_rows()
+        query = (
+            f'g.V().hasLabel("{label}").has("id", within(ids))'
+            f'.elementMap().limit({lim})'
+        )
+        return QueryDraft(
+            query=query,
+            params={"ids": []},
+            template="unanchored",
+            expected_nonempty=False,
+            meta={"anchor_label": label, "reason": "no anchor resolved"},
+        )
 
     def _capec_scan(self, resolved: ResolvedTask) -> QueryDraft:
         label = resolved.primary_label() or "AttackPattern"

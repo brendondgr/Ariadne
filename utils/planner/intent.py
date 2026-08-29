@@ -158,6 +158,29 @@ _DEFINITIONAL_RE = re.compile(
 )
 
 
+#: A **bulk scan** — "give me the contents of this label" — as opposed to an
+#: enumeration of some entity's neighbours. ``_ENUMERATION_RE`` cannot serve
+#: here: it matches bare "which" and "all", so "Which techniques does the threat
+#: group Obsidian Larch rely on?" reads as a scan request and is answered with
+#: the whole Technique label. EXP-2026-08-020 measured that fall-through
+#: returning 158 records for a group that does not exist, and 558 — essentially
+#: all of CAPEC — for an invented attack pattern, each asserted as "all results
+#: for this question".
+#:
+#: So the verb has to carry the request on its own. A bulk scan says *list*,
+#: *scan*, *enumerate*, *show me all*; it does not merely contain "which".
+_BULK_SCAN_RE = re.compile(
+    r"\b(?:list|scan|enumerate|catalogue|catalog)\b|"
+    r"\b(?:show|give|get|return)\s+(?:me\s+)?(?:all|every|the\s+full)\b",
+    re.IGNORECASE,
+)
+
+
+def asks_for_bulk_scan(text: str) -> bool:
+    """True when the request is for a whole label, not for one entity's links."""
+    return bool(_BULK_SCAN_RE.search(text or ""))
+
+
 def is_definitional_request(text: str) -> bool:
     """True when the request reads as 'what is X' / describe / define."""
     return bool(_DEFINITIONAL_RE.search(text or ""))
