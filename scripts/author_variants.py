@@ -47,8 +47,14 @@ BANK_DATASETS: dict[str, tuple[str, ...]] = {
     "federated": ("attack", "capec"),
 }
 
+#: Every identifier family a golden question can anchor on. **CWE belongs here**
+#: even though this system holds no CWE graph: five federated questions anchor
+#: on a CWE id ("Which CAPEC items take advantage of CWE-522?"), and leaving it
+#: out made the gate reject ten honest T1/T2 variants for "not keeping the
+#: identifier" they were in fact keeping.
 _ID_RE = re.compile(r"\b(?:T\d{4}(?:\.\d{3})?|G\d{4}|S\d{4}|M\d{4}|TA\d{4}|C\d{4}|"
-                    r"DC\d{4}|DET\d{4}|AN\d{4}|CAPEC[-\s]?\d+)\b", re.IGNORECASE)
+                    r"DC\d{4}|DET\d{4}|AN\d{4}|CAPEC[-\s]?\d+|CWE[-\s]?\d+)\b",
+                    re.IGNORECASE)
 
 
 def _split_identifier(name: str) -> list[str]:
@@ -183,7 +189,12 @@ def gate_one(v: dict[str, Any], src: dict[str, Any]) -> str | None:
         for word in src.get("avoid") or []:
             if re.search(rf"\b{re.escape(word)}s?\b", low):
                 return f"{tier} uses schema word {word!r}"
-    if tier in ("T1", "T2") and not _ID_RE.search(text):
+    # T1/T2 keep the identifier — but only a question that HAS one can. The
+    # bounded scans ("List ATT&CK software entries") anchor on nothing at all,
+    # and demanding an identifier of their variants rejects the only variants
+    # they can ever have.
+    gold_has_id = bool(_ID_RE.search(src.get("question") or ""))
+    if tier in ("T1", "T2") and gold_has_id and not _ID_RE.search(text):
         return f"{tier} must keep the identifier"
     if tier == "T3":
         exact = [a["name"].lower() for a in src.get("anchor_names") or []]
