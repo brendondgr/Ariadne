@@ -185,3 +185,68 @@ for this stage and it is not a retrieval improvement. Closing the retrieval gap
 is what a candidate index over canonical names and descriptions is for, and
 until that exists the honest summary of T4/T5 is: **the system now mostly knows
 that it does not know.**
+
+---
+
+# Arm 3 — the name index. It works as a component and fails as a router.
+
+`utils/specialists/schema/namesearch.py`: BM25 over the 9,138 canonical
+name+description records, plus an exact-name boost, restricted to the labels the
+router already has in scope. **No new dependency.** Behind its own flag,
+`ARIADNE_NAMESEARCH`, default off; with both flags off the reference is
+byte-identical to Arm 0, verified a third time. Catalogue gold recall is
+unchanged from Arm 2 at **0.9161, 6 better / 0 worse**.
+
+## As a component it resolves what it should
+
+Direct probes, 7 of 9 exact: `SQL Injection`→CAPEC-66 (over *Blind* SQL
+Injection), `Phishing`→CAPEC-98 (over Mobile and Voice Phishing),
+`Software Extensions`→T1176, `Inhibit System Recovery`→T1490. Both misses are
+honest: `browser extension persistence` resolves to **T1176.001 Browser
+Extensions**, a real sub-technique of the gold's parent; and the pure
+description-only probe returns **None** rather than guessing.
+
+The exact-name boost is what makes those work. BM25 alone ranks
+*Blind SQL Injection* above *SQL Injection* for the query "SQL Injection", and
+puts Phishing / Mobile Phishing / Voice Phishing in a three-way numerical tie
+that the margin rule then rejects entirely.
+
+## As a router it answers more than it should
+
+| tier | `records_exact` A2 → A3 | `wrong_entity` A2 → A3 | net |
+|---|---|---|---|
+| T3 | 0.0990 → **0.1287** (+3 questions) | 0.1089 → 0.1188 (**+1**) | +2 |
+| T4 | 0.0000 → 0.0000 (0) | 0.1154 → **0.1635** (**+5**) | −5 |
+| T5 | 0.0000 → 0.0000 (0) | 0.1346 → **0.1731** (**+4**) | −4 |
+| T6 | — | 0.0667 → **0.1000** (**+1**) | −1 |
+
+**Three questions gained, eleven wrong answers bought.** Every one of the eleven
+is a confident answer about the wrong entity, which is the failure mode this
+experiment named as the one nothing downstream catches.
+
+## The recommendation, and the reason it is not "tune the threshold"
+
+**`ARIADNE_NAMESEARCH` stays off.** The obvious next move — raise `MIN_SCORE`
+and `MIN_MARGIN` until the wrong answers stop — is available and is **declined
+on purpose.**
+
+`MIN_SCORE = 4.0` and `MIN_MARGIN = 1.25` were set *a priori*, before any
+variant was scored, and were never fitted. Fitting them against this bank would
+turn the bank into a training set and every number above into a training
+number — which is precisely the co-authorship failure C-021 exists to measure,
+committed deliberately after having spent a week quantifying it.
+
+If the thresholds are to be tuned, they need a held-out split of the variant
+bank that is drawn before any tuning begins, and the reported figure has to come
+from the half that was never seen. That is a real and cheap piece of work, and
+it is **Q28** rather than something to do quietly here.
+
+## Where this leaves the retrieval gap
+
+Open. Arm 2 made the system honest; Arm 3 shows that closing the gap with a
+ranked index is *possible in principle* — the right entity is usually in the top
+one or two — and that converting "is in the top two" into "is what we answer
+with" is where the difficulty actually lives.
+
+**T4 and T5 record identity remains exactly 0.0000 across all four arms.**
+Nothing measured here moved it, and no claim should say otherwise.

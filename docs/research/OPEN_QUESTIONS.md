@@ -875,6 +875,11 @@ parameter change.
 
 ### Q27 — The definitional rescue path declares a liveness-probe label as the record's type
 
+**Status: still open, and now reproduced at scale.** EXP-2026-08-020's variant
+bank reaches this path constantly — it is the same fall-through that produced
+the catalogue dumps — and Arm 2's unanchored-abstention fix changes *what the
+path does* without fixing *the label it declares*. The mislabelling stands.
+
 **Why it matters:** it is a live mislabelling defect on the *catalogue*, and it
 fires on exactly the questions C-021 says our banks never contain — the ones
 that do not use the schema's own vocabulary.
@@ -937,6 +942,40 @@ strengthens C-021 rather than threatening it:** the defect is unreachable from
 120 catalogue questions and 30 blind ones because all 150 were written by people
 who knew the vocabulary. A question set that avoided the schema's own words
 would have found it immediately. **From:** conversational probe, 2026-08-28.
+
+---
+
+### Q28 — The name index's accept thresholds are unfitted, and must be tuned on a held-out split
+
+**Why it matters:** it is the difference between a component that works and a
+router that helps. EXP-2026-08-020 Arm 3 measured the name index resolving **7
+of 9** direct probes correctly — `SQL Injection`→CAPEC-66 over *Blind* SQL
+Injection, `Software Extensions`→T1176 — and then, wired into routing, **gaining
+3 questions at T3 while buying 11 wrong answers** across T3/T4/T5/T6.
+
+`MIN_SCORE = 4.0` and `MIN_MARGIN = 1.25` in
+`utils/specialists/schema/namesearch.py` were chosen **before any variant was
+scored** and have never been fitted to anything.
+
+**What resolves it, and what must not.** The obvious move is to raise both until
+the wrong answers stop. **Doing that against the existing 579-variant bank would
+convert the bank into a training set** and retrospectively turn every figure in
+EXP-2026-08-020 into a training figure — committing, deliberately, the exact
+co-authorship failure C-021 exists to measure, a week after measuring it.
+
+So: **split the bank before touching a threshold.** Draw a tuning half and a
+reporting half by case id with a committed seed, fit on the first, and report
+only from the second. Cheap, and it is the only way a tuned threshold means
+anything.
+
+**Worth checking in the same pass:** whether the accept rule should differ by
+tier of evidence rather than by score — an exact full-name match (which already
+gets a boost) is a categorically different signal from a high BM25 sum, and
+gating them on one scalar may be the actual mistake.
+
+**Cost:** a day. **Blocks:** whether `ARIADNE_NAMESEARCH` can ever default on,
+and therefore whether the T4/T5 retrieval gap is closable deterministically.
+**From:** EXP-2026-08-020 Arm 3.
 
 ---
 

@@ -5,9 +5,9 @@
 id: EXP-2026-08-020
 slug: variant-robustness
 title: "How much of the deterministic router's correctness survives paraphrase, and where does it break?"
-status: running            # planned | running | complete | failed | superseded
+status: complete            # planned | running | complete | failed | superseded
 date_started: 2026-08-29
-date_completed: null       # null until status is complete/failed
+date_completed: 2026-08-29       # null until status is complete/failed
 authors: ["brendondgr"]
 
 purpose: >
@@ -53,7 +53,7 @@ environment:
   container: null
 compute:
   hardware: "local workstation; Neo4j + Gremlin in docker"
-  wall_clock_hours: 0.9
+  wall_clock_hours: 1.6
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -95,7 +95,10 @@ metrics:
     arm1_wrong_entity_T5: {mean: 0.2885, std: 0.0, n: 104}
     arm2_catalogue_dump_T3: {mean: 0.3267, std: 0.0, n: 101}
     arm2_t6_abstained: {mean: 0.9333, std: 0.0, n: 30}
-baselines_compared: ["arm0-shipped-router", "arm1-lexicon", "arm2-lexicon-plus-unanchored"]
+    arm3_records_exact_T3: {mean: 0.1287, std: 0.0, n: 101}
+    arm3_wrong_entity_T4: {mean: 0.1635, std: 0.0, n: 104}
+    arm3_wrong_entity_T5: {mean: 0.1731, std: 0.0, n: 104}
+baselines_compared: ["arm0-shipped-router", "arm1-lexicon", "arm2-lexicon-plus-unanchored", "arm3-plus-namesearch"]
 statistical_test: null
 
 # --- Linkage ---

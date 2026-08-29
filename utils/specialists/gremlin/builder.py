@@ -160,6 +160,23 @@ def _has_mapping_intent(resolved: ResolvedTask) -> bool:
     return bool(named & _MAPPING_INTENT)
 
 
+def _seed_from_name(resolved: ResolvedTask) -> ResolvedTask | None:
+    """Resolve the question's entity by name; see the Cypher builder's copy."""
+    import os
+
+    if os.environ.get("ARIADNE_NAMESEARCH", "").strip().lower() not in {"1", "true", "yes", "on"}:
+        return None
+    if resolved.seed_ids:
+        return None
+    from dataclasses import replace
+
+    from ..schema.namesearch import resolve_in
+
+    labels = tuple(resolved.labels) or tuple(resolved.task.entities or ())
+    hit = resolve_in(resolved.dataset, resolved.task.text, labels=labels)
+    return replace(resolved, seed_ids=(hit.entity_id,)) if hit else None
+
+
 def _unanchored_abstains() -> bool:
     """Does an unanchored question abstain instead of scanning the label?
 
@@ -235,6 +252,9 @@ class GremlinQueryBuilder:
             # lookup for a node named that, and returns nothing.
             if resolved.name_terms and is_definitional_request(resolved.task.text):
                 return self._describe(resolved)
+            seeded = _seed_from_name(resolved)
+            if seeded is not None:
+                return self.build(seeded, feedback)
             if _unanchored_abstains() and not asks_for_bulk_scan(resolved.task.text):
                 return self._unanchored(resolved)
             return self._capec_scan(resolved)
@@ -279,6 +299,9 @@ class GremlinQueryBuilder:
         # enumeration ("scan attack patterns") on the label-scan path.
         if resolved.name_terms and is_definitional_request(resolved.task.text):
             return self._describe(resolved)
+        seeded = _seed_from_name(resolved)
+        if seeded is not None:
+            return self.build(seeded, feedback)
         if _unanchored_abstains() and not asks_for_bulk_scan(resolved.task.text):
             return self._unanchored(resolved)
         return self._capec_scan(resolved)

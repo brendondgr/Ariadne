@@ -1,0 +1,225 @@
+#!/usr/bin/env python3
+"""Rank canonical entities by name and description, for questions with no id.
+
+EXP-2026-08-020 Arm 2 left the router honest and still empty-handed: at T4 and
+T5 — where a question names its entity in ordinary English and never gives the
+identifier — record identity is **0.0000** and non-dumping recall is **0.0000**.
+The router now correctly declines instead of returning the catalogue, but it
+declines to *everything*.
+
+The missing signal is not in the schema card. It is in the data: every canonical
+node carries a ``name`` and almost every one carries a ``description``, and
+T1176's description opens *"Adversaries may abuse software extensions to
+establish persistent access…"*. "browser extension persistence" should reach it.
+
+**BM25 over the canonical snapshot, and nothing else.** No embedding model, no
+vector store, no new dependency — this project has none and this module does not
+add one. The index is built from the same checksummed snapshot the identifier
+schemes are learned from, so it is deterministic, offline, and carries to any
+source whose nodes have names.
+
+## The threshold is the whole design
+
+A ranker always returns a best match. Returning it unconditionally would trade
+Arm 2's honest silence for confident error — which is the trade Arm 1 already
+made once and had to be undone. So a candidate is accepted only when it is both
+**strong** in absolute terms and **clearly ahead** of the runner-up. A question
+that half-matches thirty patterns equally has not identified one, and the right
+answer there is the abstention Arm 2 already produces.
+"""
+
+from __future__ import annotations
+
+import json
+import math
+import re
+from dataclasses import dataclass
+from functools import lru_cache
+from pathlib import Path
+from typing import Iterable
+
+REPO = Path(__file__).resolve().parents[3]
+
+_WORD_RE = re.compile(r"[a-z0-9]+")
+
+#: BM25 term-frequency saturation and length normalisation. Standard values;
+#: nothing here is tuned to this dataset, deliberately — a threshold fitted to
+#: ATT&CK would be one more dataset-specific surface (C-010).
+_K1 = 1.5
+_B = 0.75
+
+#: A name match is worth more than a description match. A description is long
+#: and incidental words are cheap in it; a name is the thing the analyst is
+#: reaching for.
+_NAME_WEIGHT = 3
+
+#: Acceptance. `MIN_SCORE` keeps a weak best-match from being promoted at all;
+#: `MIN_MARGIN` requires the winner to beat the runner-up by that ratio, so an
+#: ambiguous field of near-equal candidates resolves to nothing rather than to
+#: whichever one sorted first.
+MIN_SCORE = 4.0
+MIN_MARGIN = 1.25
+
+#: Multiplier applied when the question contains an entity's complete name.
+#: Large on purpose: it must clear `MIN_MARGIN` against a near-miss whose name
+#: merely *contains* the query ("Blind SQL Injection" for "SQL Injection").
+_EXACT_NAME_BOOST = 2.0
+
+_STOP = frozenset(
+    """a an and are as at be by for from has have how in into is it its of on or
+    that the their to was were what which who whom with you your they them then
+    this these those does do did can could may would should i we me my our all
+    any some more most other such about against during without within""".split()
+)
+
+
+def _tokens(text: str) -> list[str]:
+    return [w for w in _WORD_RE.findall((text or "").lower())
+            if len(w) >= 3 and w not in _STOP]
+
+
+@dataclass(frozen=True)
+class Candidate:
+    """One ranked entity: enough to seed a query, and to explain the choice."""
+
+    entity_id: str
+    label: str
+    name: str
+    score: float
+
+
+class NameIndex:
+    """A BM25 index over one dataset's canonical names and descriptions."""
+
+    def __init__(self, docs: list[tuple[str, str, str, list[str]]]) -> None:
+        #: (entity_id, label, name, tokens)
+        self._docs = docs
+        self._n = len(docs) or 1
+        self._avgdl = (sum(len(d[3]) for d in docs) / self._n) if docs else 1.0
+        postings: dict[str, list[tuple[int, int]]] = {}
+        for i, (_id, _lab, _name, toks) in enumerate(docs):
+            counts: dict[str, int] = {}
+            for tok in toks:
+                counts[tok] = counts.get(tok, 0) + 1
+            for tok, tf in counts.items():
+                postings.setdefault(tok, []).append((i, tf))
+        self._postings = postings
+
+    def search(
+        self, text: str, *, top_k: int = 5, labels: Iterable[str] | None = None
+    ) -> list[Candidate]:
+        """Rank entities against ``text``, optionally restricted to ``labels``.
+
+        **The label filter is not an optimisation, it is the accuracy fix.**
+        Unrestricted, "how do I stop attackers abusing browser extensions"
+        ranks `DET0044 Detecting Malicious Browser Extensions` above the
+        technique it detects, because a detection strategy's *name* repeats the
+        question's words. The router already knows which entity types the
+        question is about; passing them removes a whole class of confident
+        wrong answers rather than trying to out-score it.
+        """
+        keep = {l for l in (labels or ()) if l}
+        query = _tokens(text)
+        if not query:
+            return []
+        scores: dict[int, float] = {}
+        for term in set(query):
+            posting = self._postings.get(term)
+            if not posting:
+                continue
+            # +1 inside the log keeps IDF non-negative for a term in every doc,
+            # which otherwise lets a ubiquitous word push a score down.
+            idf = math.log(1 + (self._n - len(posting) + 0.5) / (len(posting) + 0.5))
+            for i, tf in posting:
+                dl = len(self._docs[i][3]) or 1
+                denom = tf + _K1 * (1 - _B + _B * dl / self._avgdl)
+                scores[i] = scores.get(i, 0.0) + idf * (tf * (_K1 + 1)) / denom
+        if keep:
+            scores = {i: s for i, s in scores.items() if self._docs[i][1] in keep}
+
+        # **An exact name is not term overlap and must not be scored as if it
+        # were.** BM25 ranks `Blind SQL Injection` above `SQL Injection` for the
+        # query "SQL Injection", and puts `Phishing`, `Mobile Phishing` and
+        # `Voice Phishing` in an exact three-way tie — so the margin rule
+        # rejects all of them and T3, the tier that exists to test exact names,
+        # resolves nothing. When the question literally contains an entity's
+        # whole name, that entity is what was asked about.
+        low = " " + " ".join(_WORD_RE.findall((text or "").lower())) + " "
+        for i in list(scores):
+            name_toks = _WORD_RE.findall(self._docs[i][2].lower())
+            if not name_toks:
+                continue
+            if f" {' '.join(name_toks)} " in low:
+                # Longer exact names are stronger evidence: matching all four
+                # words of "Inhibit System Recovery Now" says more than matching
+                # the single word "Phishing".
+                scores[i] *= _EXACT_NAME_BOOST + 0.5 * len(name_toks)
+        ranked = sorted(scores.items(), key=lambda kv: (-kv[1], self._docs[kv[0]][0]))
+        return [
+            Candidate(self._docs[i][0], self._docs[i][1], self._docs[i][2], round(s, 4))
+            for i, s in ranked[:top_k]
+        ]
+
+    def resolve(self, text: str, *, labels: Iterable[str] | None = None) -> Candidate | None:
+        """The single confident match, or ``None``.
+
+        ``None`` is the common and correct answer. See the module note: an
+        unconfident guess here undoes Arm 2's honesty, which cost real work.
+        """
+        hits = self.search(text, top_k=2, labels=labels)
+        if not hits or hits[0].score < MIN_SCORE:
+            return None
+        if len(hits) > 1 and hits[1].score > 0 and hits[0].score / hits[1].score < MIN_MARGIN:
+            return None
+        return hits[0]
+
+
+def _canonical_docs(dataset: str) -> list[tuple[str, str, str, list[str]]]:
+    path = REPO / "data" / "graphs" / dataset / "canonical" / "nodes.jsonl"
+    if not path.exists():
+        return []
+    docs: list[tuple[str, str, str, list[str]]] = []
+    for line in path.read_text().splitlines():
+        if not line.strip():
+            continue
+        node = json.loads(line)
+        props = node.get("properties") or {}
+        name = str(node.get("name") or "")
+        # The analyst-facing id when there is one, else the canonical id. CAPEC's
+        # canonical id is `capec:attack-pattern:66`; every question writes
+        # `CAPEC-66`, so the emitted id is normalised to the spelling a query
+        # will actually filter on.
+        raw_id = str(props.get("attack_id") or node.get("id") or "")
+        m = re.match(r"^capec:[a-z-]+:(\d+)$", raw_id, re.IGNORECASE)
+        entity_id = f"CAPEC-{m.group(1)}" if m else raw_id
+        if not entity_id or not name:
+            continue
+        # A candidate must be something a query can filter on. CAPEC's execution
+        # steps are real nodes with prose descriptions and ids like
+        # `capec:attack-pattern:669:step:2`, and unfiltered they outrank the
+        # patterns they belong to on any descriptive question. Nothing can be
+        # seeded from them, so they are not candidates.
+        if ":" in entity_id:
+            continue
+        toks = _tokens(name) * _NAME_WEIGHT + _tokens(str(props.get("description") or ""))
+        if toks:
+            docs.append((entity_id, str(node.get("label") or ""), name, toks))
+    return docs
+
+
+@lru_cache(maxsize=8)
+def index_for(dataset: str) -> NameIndex:
+    """Process-cached index for one dataset. Built once, read many."""
+    return NameIndex(_canonical_docs(dataset))
+
+
+def resolve_in(
+    dataset: str, text: str, *, labels: Iterable[str] | None = None
+) -> Candidate | None:
+    return index_for(dataset).resolve(text, labels=labels)
+
+
+def search_in(
+    dataset: str, text: str, *, top_k: int = 5, labels: Iterable[str] | None = None
+) -> list[Candidate]:
+    return index_for(dataset).search(text, top_k=top_k, labels=labels)

@@ -218,6 +218,37 @@ def _unanchored_abstains() -> bool:
     return os.environ.get("ARIADNE_LEXICON", "").strip().lower() in {"1", "true", "yes", "on"}
 
 
+def _namesearch_on() -> bool:
+    """Is name-based anchor resolution enabled? Default **off**.
+
+    Separate from `ARIADNE_LEXICON` so its contribution can be attributed. Arm 2
+    made the router honest and still empty-handed — 0.0000 record identity at
+    T4/T5 — because declining is not retrieving. This is the retrieval half.
+    """
+    return os.environ.get("ARIADNE_NAMESEARCH", "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _seed_from_name(resolved: ResolvedTask) -> ResolvedTask | None:
+    """Resolve the question's entity by name and return a re-seeded task.
+
+    Returns ``None`` — the common case — when the index is not confident. That
+    is deliberate and it is the same discipline as `nearest()` in the lexicon:
+    an unconfident guess here would undo the honest abstention Arm 2 bought, and
+    a confidently wrong anchor is worse than none.
+    """
+    if not _namesearch_on() or resolved.seed_ids:
+        return None
+    from dataclasses import replace
+
+    from ..schema.namesearch import resolve_in
+
+    labels = tuple(resolved.labels) or tuple(resolved.task.entities or ())
+    hit = resolve_in(resolved.dataset, resolved.task.text, labels=labels)
+    if hit is None:
+        return None
+    return replace(resolved, seed_ids=(hit.entity_id,))
+
+
 def _generic_only() -> bool:
     """True when the MITRE-specific query templates are disabled.
 
@@ -393,9 +424,19 @@ class CypherQueryBuilder:
         ):
             return self._describe(resolved)
 
-        # 7. Nothing resolved. Scan the label only if a scan is what was asked
-        #    for; otherwise look for the anchor we do not have, find nothing,
-        #    and let the enforced abstention carry that query as its proof.
+        # 7. Nothing resolved by identifier. Before giving up, ask the canonical
+        #    name index whether the question names an entity in ordinary
+        #    English — "the mitigations for Software Extensions", "browser
+        #    extension persistence". If it answers confidently, seed that id and
+        #    re-enter this ladder, so the question reaches the *same* template it
+        #    would have reached had the analyst typed the identifier.
+        seeded = _seed_from_name(resolved)
+        if seeded is not None:
+            return self.build(seeded, feedback)
+
+        #    Otherwise: scan the label only if a scan is what was asked for, and
+        #    otherwise look for the anchor we do not have, find nothing, and let
+        #    the enforced abstention carry that query as its proof.
         if _unanchored_abstains() and not asks_for_bulk_scan(resolved.task.text):
             return self._unanchored(resolved)
         return self._label_scan(resolved)
