@@ -53,7 +53,7 @@ environment:
   container: null
 compute:
   hardware: "local workstation; Neo4j + Gremlin in docker"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 0.15
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -77,8 +77,19 @@ llm:
 # --- Results block ---
 metrics:
   primary: records_exact
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
-baselines_compared: []
+  values:
+    records_exact_T1: {mean: 0.4667, std: 0.0, n: 120}
+    records_exact_T2: {mean: 0.4250, std: 0.0, n: 120}
+    records_exact_T3: {mean: 0.0990, std: 0.0, n: 101}
+    records_exact_T4: {mean: 0.0000, std: 0.0, n: 104}
+    records_exact_T5: {mean: 0.0000, std: 0.0, n: 104}
+    records_exact_T0_control: {mean: 1.0000, std: 0.0, n: 120}
+    records_recall_no_dump_T4: {mean: 0.0013, std: 0.0, n: 85}
+    records_recall_no_dump_T5: {mean: 0.0000, std: 0.0, n: 85}
+    catalogue_dump_rate: {mean: 0.1359, std: 0.0, n: 699}
+    catalogue_dump_T3: {mean: 0.5248, std: 0.0, n: 101}
+    t6_answered_of_30: {mean: 4.0, std: 0.0, n: 30}
+baselines_compared: ["arm0-shipped-router"]
 statistical_test: null
 
 # --- Linkage ---

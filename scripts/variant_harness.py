@@ -223,6 +223,14 @@ def cmd_capture(args: argparse.Namespace) -> int:
 # -- compare ----------------------------------------------------------------
 
 
+#: A result is a dump when it is both large in absolute terms and large relative
+#: to what the gold question returned. Both bounds are needed: 60 records is a
+#: legitimate answer to "list the techniques of a prolific group", and 12
+#: records is a dump when the gold answer was one.
+_DUMP_FLOOR = 50
+_DUMP_RATIO = 10
+
+
 def _jaccard(a: set[str], b: set[str]) -> float:
     if not a and not b:
         return 1.0
@@ -248,7 +256,19 @@ def score(variant: dict[str, Any], gold: dict[str, Any]) -> dict[str, Any]:
     v_c = set(variant.get("claims") or [])
 
     abstained = bool(variant.get("abstentions")) or not v_ids
+
+    # A bulk scan of a whole label, returned as though it answered the question.
+    # This is the failure mode that inflates recall while retrieving nothing:
+    # the anchor did not resolve, the router still matched a schema word, and
+    # the builder fell through to `label_scan`, which returns the label. The
+    # gold answer is then "found" because it is inside a dump of everything.
+    # Same species as the I-11 defect in C-023, on a different axis.
+    g_recs = int(gold.get("record_count") or 0)
+    v_recs = int(variant.get("record_count") or 0)
+    dumped = v_recs >= _DUMP_FLOOR and (g_recs == 0 or v_recs >= _DUMP_RATIO * g_recs)
+
     return {
+        "catalogue_dump": dumped,
         "records_exact": g_ids == v_ids,
         "records_jaccard": round(_jaccard(g_ids, v_ids), 4),
         "records_recall": round(len(g_ids & v_ids) / len(g_ids), 4) if g_ids else None,
@@ -301,28 +321,38 @@ def report(rows: list[dict[str, Any]]) -> dict[str, Any]:
     for r in scored:
         by_tier[str(r.get("tier", "?"))].append(r)
 
-    print(f"\n{'tier':6s} {'n':>4s} {'rec=':>6s} {'recall':>7s} {'query=':>7s} "
-          f"{'claim=':>7s} {'abstain':>8s} {'WRONG':>6s}")
-    print("-" * 62)
+    print(f"\n{'tier':6s} {'n':>4s} {'rec=':>6s} {'recall':>7s} {'r|nodump':>9s} "
+          f"{'query=':>7s} {'abstain':>8s} {'WRONG':>6s} {'DUMP':>6s}")
+    print("-" * 72)
     summary: dict[str, Any] = {}
     for tier in sorted(by_tier):
         g = by_tier[tier]
         n = len(g)
         recalls = [r["records_recall"] for r in g if r.get("records_recall") is not None]
+        # Recall with the dumps removed. **This is the honest recall number.**
+        # Reporting only the pooled figure credits the system for answers it
+        # found by returning everything, which is not retrieval.
+        clean = [r["records_recall"] for r in g
+                 if r.get("records_recall") is not None and not r.get("catalogue_dump")]
         cells = {
             "n": n,
             "records_exact": round(sum(r["records_exact"] for r in g) / n, 4),
             "records_recall": round(sum(recalls) / len(recalls), 4) if recalls else None,
+            "records_recall_no_dump": round(sum(clean) / len(clean), 4) if clean else None,
             "queries_exact": round(sum(r["queries_exact"] for r in g) / n, 4),
             "claims_exact": round(sum(r["claims_exact"] for r in g) / n, 4),
             "abstained": round(sum(r["abstained"] for r in g) / n, 4),
             "wrong_entity": round(sum(r["wrong_entity"] for r in g) / n, 4),
+            "catalogue_dump": round(sum(bool(r.get("catalogue_dump")) for r in g) / n, 4),
         }
         summary[tier] = cells
         rc = f"{cells['records_recall']:.4f}" if cells["records_recall"] is not None else "—"
-        print(f"{tier:6s} {n:>4d} {cells['records_exact']:>6.4f} {rc:>7s} "
-              f"{cells['queries_exact']:>7.4f} {cells['claims_exact']:>7.4f} "
-              f"{cells['abstained']:>8.4f} {cells['wrong_entity']:>6.4f}")
+        rn = (f"{cells['records_recall_no_dump']:.4f}"
+              if cells["records_recall_no_dump"] is not None else "—")
+        print(f"{tier:6s} {n:>4d} {cells['records_exact']:>6.4f} {rc:>7s} {rn:>9s} "
+              f"{cells['queries_exact']:>7.4f} "
+              f"{cells['abstained']:>8.4f} {cells['wrong_entity']:>6.4f} "
+              f"{cells['catalogue_dump']:>6.4f}")
     errs = [r for r in rows if "error" in r]
     if errs:
         print(f"\n   {len(errs)} errored: {Counter(r['error'][:40] for r in errs).most_common(3)}")
