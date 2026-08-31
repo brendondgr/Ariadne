@@ -695,3 +695,59 @@ Priority claims on the architecture, the problem statement, natural-language-to-
 Gremlin, and the security of graph-query interfaces are **all conceded and cited
 explicitly** rather than left for a reviewer to raise. Supersedes nothing;
 constrains D-004's positioning guidance with a named alternative.
+
+---
+
+## D-028 — An alias is not a model: record the served weights, and detect a swap rather than trusting a name (2026-08-31)
+
+**Context.** The relay alias `skynet` has now been repointed **three times** —
+Gemma 4 31B in July, `Ornith-1.5-35B-A3B-W4A16-SYM` by 24 August, and
+`qwen38-27B-v2` on 31 August. The first two swaps were discovered after the fact,
+by asking the operator; the window between them is *still* undetermined, and
+`EXP-2026-08-007`, `-008` and `-009` — carrying **C-012, C-021 and C-022** — fall
+inside it. Seven July manifests record `model: "vllm/gemma-4-31b@unknown"  # the
+relay alias 'skynet'`, which is the shape of the problem: the manifest recorded
+the alias and believed it had recorded a model.
+
+**Decision.** Four rules, binding on every future run.
+
+1. **A result records the served model, its quantisation and the date — never
+   the alias.** The manifest form is `relay/<served-model>@<YYYY-MM-DD>`, as
+   `EXP-2026-08-018` already uses. The string `skynet` must not appear in any
+   recorded figure.
+2. **The served model is *probed*, not asked.** `scripts/model_identity.py`
+   issues a minimal completion and reads the `model` field off the response
+   envelope. `GET /v1/models` is insufficient and is the reason two swaps went
+   unnoticed: the relay answers `skynet` with `upstream_model: "auto"` because it
+   hot-swaps. The script reports advertisement-versus-reality mismatches, which
+   currently exist.
+3. **The run harness records it automatically.** `run_meta` carries the probed
+   served model beside `max_hops` and the rest. A run that cannot identify its
+   model records `unknown` — never a guess, per `D-009`.
+4. **A judged run fails on a mismatch** between the served model and the
+   manifest's declared model, rather than producing a figure nobody can attribute
+   afterwards.
+
+**Alternatives rejected.**
+
+- *Pin the model id in `.env`.* **Not available.** `qwen38-27B-v2` is not
+  separately addressable on the relay — only `auto` and `skynet` are, and both
+  hot-swap. Detection is therefore the only defence, which is why rule 2 does the
+  work rather than a configuration change.
+- *Ask the operator on a schedule.* This is what happened twice and it produced a
+  gap of unknown length both times. A question that can be answered mechanically
+  should not depend on someone remembering to raise it.
+- *Re-run everything on each swap.* Rejected as disproportionate and as
+  actively harmful to the record. Roughly four-fifths of this record's primary
+  metrics take **no model at all**, and re-running frozen banks or the July arm
+  study would destroy comparability rather than restore it. The triage lives in
+  [`../plans/2026-08-31-model-migration-qwen38.md`](../plans/2026-08-31-model-migration-qwen38.md) §3.
+
+**Consequence.** The study's "one model, one day" limitation is now formally
+"three models over three months, boundaries partly unknown, detected by probe
+from 2026-08-31". That is worse than the record used to claim and better than
+what it could have claimed had the third swap also gone unnoticed. It also
+sharpens an existing argument: the Sonnet panels are provider-hosted and were
+untouched by any of the three swaps, so **the cross-model panel is now the
+practical choice for anything quoted externally, not merely the principled one**
+(`D-002`, `C-009`).

@@ -817,6 +817,21 @@ context*; short prompts (bank authoring, judging) run higher — the operator
 authorised ~32 on 2026-08-24. A job whose prompts approach 96k must stay at or
 under 16 or it will queue rather than parallelise.
 
+**REOPENED 2026-08-31 — the model changed again and none of the above transfers.**
+`skynet` now serves **`qwen38-27B-v2`** (see Q12). The 96,000-token window, the
+16-way concurrency and the W4A16 precision were all properties of
+`Ornith-1.5-35B-A3B` and **must not be carried over**. Still needed from the
+serving side, in order of how much they break if wrong:
+
+| | Why it is load-bearing |
+|---|---|
+| `max_model_len` | Two evaluation questions (`C-SCN-01`, `F-CWE-05`) already overflow at 96k. A smaller window silently changes which questions are answerable under the un-truncation profile |
+| Concurrency at full context | Sets the worker ceiling for every judged run |
+| Quantisation and shape (dense / MoE, active params) | Determines per-token latency, which determines whether the standing 120 s read timeout bites — and `EXP-2026-08-019` showed timeouts *inflate* measured quality (r = +0.62) |
+| Is it a reasoning model, and its thinking budget | `.env` sets `SYNTHESIS_LLM_THINKING_BUDGET=4096`; a reasoning model truncates to empty below roughly 2048 and the failure presents as "LLM unavailable" |
+
+Plan: [`../plans/2026-08-31-model-migration-qwen38.md`](../plans/2026-08-31-model-migration-qwen38.md) Step 0.
+
 ### Q12 — What quantisation is `skynet` serving?
 
 Recorded as **unknown** rather than guessed. The model is Gemma 4 31B via vLLM.
@@ -872,6 +887,52 @@ result reproduced against the same weights at BF16 could legitimately differ.
 July arms and 2026-08-24. The operator's "test-phase runs used differing
 parameters" caveat (Q11) may in fact be describing a model change rather than a
 parameter change.
+
+---
+
+## AMENDMENT, 2026-08-31 — a third model, and this time it was detected rather than disclosed
+
+`skynet` now serves **`qwen38-27B-v2`**. It was found by probing rather than by
+being told, which is the difference this amendment is really about.
+
+| Era | Served model | How it was established |
+|---|---|---|
+| July 2026 | Gemma 4 31B | Operator, after the fact |
+| ~August, start **still unknown** | **undetermined** | — |
+| 2026-08-24 | `MIRALABS/Ornith-1.5-35B-A3B-W4A16-SYM` | Operator, after the fact |
+| **2026-08-31** | **`qwen38-27B-v2`** | **`scripts/model_identity.py`**, from the response envelope |
+
+**The question is now answerable without asking**, and that is the durable part:
+
+```bash
+uv run python scripts/model_identity.py
+```
+
+`GET /v1/models` is **not** enough — the relay answers `skynet` with
+`upstream_model: "auto"` because it hot-swaps, and that is exactly how two swaps
+went unnoticed. The only reliable identification is the `model` field on a
+completion *response*, which names the weights that served it. The script also
+reports when the relay's advertisement and its behaviour disagree, which they
+currently do.
+
+**The middle row is still the expensive one and it is now more expensive.**
+`EXP-2026-08-007`, `-008` and `-009` — which carry **C-012, C-021 and C-022** —
+were graded in the undetermined window. Those three claims are graded by a model
+nobody can name. The cheapest repair is Step 2 of the migration plan: re-grade
+the *saved* answers with the now-identified model, which changes one variable
+and costs no pipeline run.
+
+**What does not change:** the July and Sonnet-panel figures. The blind holdout
+(`EXP-2026-08-002`) and the identity panels (`EXP-2026-08-011` A-7/A-9/A-10) were
+graded by provider-hosted Sonnet agents and are untouched by any local swap.
+That is now a practical argument for the cross-model panel, not only a
+methodological one.
+
+**Filed as a discipline change (`D-028`), not just a fact:** record the served
+model automatically in `run_meta`, fail a judged run on a mismatch against the
+manifest, and never write `skynet` in a result. Pinning is unavailable —
+`qwen38-27B-v2` is not separately addressable on the relay — so detection is the
+only defence.
 
 ### Q27 — The definitional rescue path declares a liveness-probe label as the record's type
 

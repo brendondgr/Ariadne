@@ -4,12 +4,21 @@ Ariadne carries several evaluation reports written at different times against
 different configurations. This file says which is which, so no number gets
 quoted out of the run that produced it.
 
-## Current
+> 🛑 **This directory is the raw-artifact store, not the research record.**
+> Since 6 August the record of what was measured and what it means lives in
+> [`../research/`](../research/README.md) — 31 experiments, a claims ledger, a
+> decisions ledger, and two dated external audits. **Several conclusions below
+> have been overturned by experiments recorded there**, in particular the arm
+> ordering: the claim that the hand-written templates hold the system's accuracy
+> is `refuted` in [`../research/CLAIMS.md`](../research/CLAIMS.md). Read the
+> ledger before quoting anything in this directory.
+
+## Historical reports (raw artifacts)
 
 | Report | What it measures | How to regenerate |
 |---|---|---|
-| [`2026-07-26/README.md`](2026-07-26/README.md) | **The standing record.** Seven full runs over the 120-question catalogue, each answer graded by an independent Sonnet 5 agent. Deterministic planning + deterministic synthesis (Arm A) scores 0.9972 / 120 CORRECT / zero hallucinations; LLM planning is the largest single regression. Also lists the eight defects found and fixed, and the limitations. | `utils/evaluation/experiment_untruncated.py` per arm, then the judge workflow — see §6 of that file |
-| [`2026-07-26/portability.md`](2026-07-26/portability.md) | What survives a dataset that isn't MITRE: which layers are schema-agnostic and which of the 25 distinct query templates are MITRE-specific. | Audit, not a run |
+| [`2026-07-26/README.md`](2026-07-26/README.md) | **The July arm study**, superseded as a description of the system and kept as the record of what was measured. Seven full runs over the 120-question catalogue, each answer graded by an independent Sonnet 5 agent. Deterministic planning + deterministic synthesis (Arm A) scores 0.9972 / 120 CORRECT / zero hallucinations; LLM planning is the largest single regression. Also lists the eight defects found and fixed, and the limitations. | `utils/evaluation/experiment_untruncated.py` per arm, then the judge workflow — see §6 of that file |
+| [`2026-07-26/portability.md`](2026-07-26/portability.md) | ⚠️ **Superseded by measurement.** A code-reading audit of which layers are schema-agnostic. It counted 25 distinct template identifiers (the builders now declare 29 literals plus one f-string yielding two more) and it classified the **planner as portable, which `EXP-2026-08-011` showed it is not**. Read that experiment instead. | Audit, not a run |
 | [`component-evaluation.md`](component-evaluation.md) / `.json` | Planner (source selection, sub-question quality, schema adherence) and specialists (query validity, execution accuracy vs snapshot gold, safety adherence, latency). Deterministic; no LLM judge. | `uv run main.py --component-eval` |
 | [`e2e-evaluation.md`](e2e-evaluation.md) / `.json` | The four `goals.md` end-to-end metrics — cross-source answer accuracy, CAPEC→ATT&CK mapping recall, provenance correctness, analyst inspectability — plus the opt-in LLM judge. | `uv run main.py --e2e-eval [--judge]` |
 | [`answers/`](answers/) | The 120 saved end-to-end answers and their judgments backing `e2e-evaluation.md`. | `uv run main.py --e2e-generate` |
@@ -34,20 +43,42 @@ Regenerate it rather than citing a stale copy.
 
 ## The model behind `skynet`
 
-Every report above that says `skynet` means one model, and the repository never
-named it. It is:
+🛑 **`skynet` is a relay alias, not a model, and it has been repointed at a
+different model three times.** A report that says `skynet` is telling you which
+*endpoint* answered, not which weights did. Every figure in this repository is
+dated evidence about whatever was behind the alias on the day it was produced.
 
-| Field | Value | Source |
+| Era | Served model | Notes |
 |---|---|---|
-| Model | **Gemma 4 31B** | Operator, 2026-08-04 |
-| Served by | vLLM, OpenAI-compatible endpoint on the local relay | `.env` (`*_BASE_URL`) |
-| Quantisation | **Unknown** | — |
-| Context window | **Unknown** | — |
+| July 2026 — the seven-arm study | **Gemma 4 31B**, dense, quantisation never recorded | Arms B–G. Operator, 2026-08-04 |
+| ~August 2026, exact start **unknown** | **Undetermined.** See below | ⚠️ `EXP-2026-08-007`, `-008` and `-009` fall in this window — the three experiments carrying C-012, C-015 and C-021 |
+| 2026-08-24 | **`MIRALABS/Ornith-1.5-35B-A3B-W4A16-SYM`** — MoE (~3B active of 35B), 4-bit weights / 16-bit activations, 96,000-token context, 16-way concurrency at full context | `EXP-2026-08-018`, `-019`. Operator, from the serving side |
+| **2026-08-31 — current** | **`qwen38-27B-v2`** | Read from the relay's own response envelope (`response.model`) on 2026-08-31. Quantisation, `max_model_len` and concurrency **not yet confirmed from the serving side** |
 
-The last two are genuinely open and are recorded as unknown rather than guessed.
-They are tracked in
-[`../plans/robustness/_overnight/questions.md`](../plans/robustness/_overnight/questions.md)
-as Q3 and Q4.
+**How to find out what is actually serving, rather than asking:**
+
+```bash
+uv run python scripts/model_identity.py
+```
+
+It reports the upstream model each alias resolves to, by issuing a minimal
+completion and reading the `model` field off the response. `/v1/models` is not
+enough — the relay reports `skynet -> upstream_model: "auto"` because it
+hot-swaps.
+
+**Three consequences, all of which bind:**
+
+1. **Never write `skynet` in a result.** Write model, quantisation and date
+   together. `EXP-2026-08-018`'s manifest is the format to copy:
+   `relay/Ornith-1.5-35B-A3B-W4A16-SYM@2026-08-24`.
+2. **No figure crosses an era boundary.** The July arm table and the August
+   judged comparisons were produced by different weights and are not comparable
+   as levels. Neither is the *grader*, which runs on the same relay.
+3. **The middle row is the expensive one.** Which model graded the
+   19–21 August runs is not determinable from the record. Those runs carry three
+   live claims. See [`../research/OPEN_QUESTIONS.md`](../research/OPEN_QUESTIONS.md)
+   Q12 and the migration plan at
+   [`../plans/2026-08-31-model-migration-qwen38.md`](../plans/2026-08-31-model-migration-qwen38.md).
 
 **On the context window specifically**, the repository has given three different
 answers, none of them authoritative. They are listed here so the history stays

@@ -34,6 +34,32 @@ repeatedly:
 
 ---
 
+## ⚠️ Model provenance — read before quoting any judged figure (2026-08-31)
+
+**The relay alias `skynet` has served three different models**, and a claim
+graded through it is dated evidence about whatever was behind the alias that day
+(`Q12`, `D-028`). Established by probe on 2026-08-31:
+`skynet -> qwen38-27B-v2`, via `uv run python scripts/model_identity.py`.
+
+| Claim | Graded by | Exposure |
+|---|---|---|
+| **C-012**, **C-021**, **C-022** | the local relay in the **19–21 August window**, when the served model is **not determinable** | The three most-cited August results are graded by a model nobody can name. **Highest priority.** Repaired by re-grading the *saved* answers — one variable, no pipeline run |
+| C-001, C-014, C-017, C-023 | same window, in part | Directions are believed robust; levels are not quotable |
+| C-002, C-005, C-006 | **Gemma 4 31B**, July | Historically correct, and describe a model that no longer exists behind the endpoint |
+| C-017 (LLM-composer half) | `Ornith-1.5-35B-A3B-W4A16-SYM@2026-08-24` | Named and dated. The `correlated`-gate dominance is a claim about *one* model until replicated |
+| **C-009**, C-013, C-010, C-023 (identity half) | **provider-hosted Sonnet panels** | **Untouched by any local swap.** This is now the practical argument for the cross-model panel, not only the principled one |
+
+**Nothing here is retracted.** What changes is what may be quoted without a model
+and a date beside it, which is nothing. Triage and sequencing:
+[`../plans/2026-08-31-model-migration-qwen38.md`](../plans/2026-08-31-model-migration-qwen38.md).
+
+**And note what is *not* on this list.** C-007, C-008, C-015's refutation and
+every retrieval, isolation, leakage and node-edit figure take **no model in the
+metric at all** and are unaffected by any swap. That is the payoff of the
+LLM-free design and it should be stated in the paper.
+
+---
+
 ## Supported and partial
 
 | ID | Claim (as it will appear in the paper) | Evidence | Artifact | Status | Notes |
