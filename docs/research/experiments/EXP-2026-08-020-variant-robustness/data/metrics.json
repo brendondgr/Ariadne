@@ -456,5 +456,39 @@
       "wrong_entity": 0.0667,
       "catalogue_dump": 0.1
     }
+  },
+  "step6_threshold_holdout": {
+    "protocol": "split by gold question via sha256(case_id) parity, drawn before any fitting; 63 tune / 57 report; fitted on tune, scored once on report",
+    "population": "T3/T4/T5 variants where exact-name matching did NOT already answer, so this isolates ranked matching's marginal contribution",
+    "separating_signal": "margin (top score / runner-up), not absolute score",
+    "tune_half": {
+      "correct_n": 22,
+      "wrong_n": 64,
+      "margin_median_correct": 1.72,
+      "margin_median_wrong": 1.08,
+      "chosen": {
+        "min_score": 0.0,
+        "min_margin": 1.4
+      },
+      "at_chosen": {
+        "right": 12,
+        "wrong": 0
+      }
+    },
+    "report_half_single_run": {
+      "correct_n": 34,
+      "wrong_n": 53,
+      "margin_median_correct": 1.39,
+      "margin_median_wrong": 1.12,
+      "at_chosen": {
+        "right": 17,
+        "wrong": 8
+      },
+      "at_default_margin_1p25": {
+        "right": 24,
+        "wrong": 12
+      }
+    },
+    "verdict": "the fitted setting did not generalise: 0 wrong on the tuning half became 8 wrong on the frozen half, precision 68%. ARIADNE_NAMESEARCH stays off."
   }
 }

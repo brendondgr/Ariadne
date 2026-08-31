@@ -316,3 +316,68 @@ win hostage to the dirty one, and that is now undone.
 
 **T4 and T5 record identity is still exactly 0.0000 across every arm.** Nothing
 measured here has moved it.
+
+---
+
+# Step 6 — the thresholds, fitted honestly, and the answer is still no
+
+Q28's protocol, executed: the bank was split **by gold question** (so a question
+and all its paraphrases stay together) using `sha256(case_id)` parity — 63 tune,
+57 report — **drawn before any threshold was touched**, and the harness filters
+the frozen half out so a sweep physically cannot reach it.
+
+## The score threshold is not the lever; the margin is
+
+A first grid over score ∈ {4, 8, 12} × margin ∈ {1.25, 1.6, 2.2} moved nothing:
+every configuration returned identical wrong-entity, dump and exact rates except
+that margin 1.25 was worse. The grid was badly chosen — typical winning scores
+are 11–17, so every "threshold" tested sat *below* the scores it was meant to
+filter.
+
+Measuring the distributions directly is faster and more informative than a
+second blind sweep. Over the tuning half, restricted to cases where **exact-name
+matching did not already answer** — so this isolates ranked matching's marginal
+contribution:
+
+| | n | score median | **margin median** |
+|---|---|---|---|
+| resolved **correctly** | 22 | 27.1 | **1.72** |
+| resolved **wrongly** | 64 | 14.8 | **1.08** |
+
+The scores overlap heavily; the margins barely do. **The discriminating signal is
+how far ahead the leader is, not how strong it is** — and the shipped default of
+1.25 sat inside the wrong-answer distribution. On the tuning half, margin ≥ 1.4
+with **no score floor at all** yields **12 right, 0 wrong**.
+
+## And it did not hold on the frozen half
+
+Scored once, as the protocol requires:
+
+| | tune half (fitted) | **frozen half (never seen)** |
+|---|---|---|
+| at margin ≥ 1.4 | **12 right, 0 wrong** | **17 right, 8 wrong** |
+| at the old default 1.25 | — | 24 right, 12 wrong |
+| margin median, correct | 1.72 | 1.39 |
+| margin median, wrong | 1.08 | 1.12 |
+
+**Perfect precision on the half it was fitted to became 68% on the half it had
+not seen**, and the fitted threshold barely beat the unfitted default (68% vs
+67%). The margin distributions that separated so cleanly on the tuning half
+overlap on the frozen half — 1.39 against 1.12.
+
+**This is what the holdout is for**, and it is the clearest demonstration the
+project has that the discipline pays. Had the threshold been fitted against the
+whole bank, as the obvious approach would have, the reported figure would have
+been *12 right, 0 wrong* — and it would have been an artifact.
+
+## Verdict
+
+**`ARIADNE_NAMESEARCH` stays off.** A 68%-precision anchor resolver does not
+belong in a system whose entire value proposition is not being confidently
+wrong, and no threshold on the signals available separates the cases.
+
+**`ARIADNE_EXACTNAME` ships.** It is a lookup, not a guess; it needs no
+threshold; and it delivers the full +3 for +1.
+
+The frozen half has now been spent, once, on the one candidate that warranted
+it. Any future threshold work needs a fresh split.

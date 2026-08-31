@@ -947,6 +947,31 @@ would have found it immediately. **From:** conversational probe, 2026-08-28.
 
 ### Q28 — The name index's accept thresholds are unfitted, and must be tuned on a held-out split
 
+**Status: ANSWERED, negatively (2026-08-31).** The protocol was executed exactly
+as specified below — split by gold question via `sha256(case_id)` parity, drawn
+before any fitting, 63 tune / 57 report, with the harness filtering the frozen
+half out so a sweep cannot reach it.
+
+**The score threshold turned out not to be the lever.** Correct and incorrect
+resolutions overlap heavily on absolute score (medians 27.1 against 14.8, ranges
+crossing) and barely overlap on **margin** — how far the leader is ahead of the
+runner-up — at 1.72 against 1.08. The shipped default of 1.25 sat inside the
+wrong-answer distribution. On the tuning half, margin ≥ 1.4 with **no score
+floor** gave **12 right, 0 wrong**.
+
+**It did not generalise.** Scored once on the frozen half: **17 right, 8 wrong**
+— 68% precision, against 67% for the unfitted default. The margin medians that
+separated cleanly when fitted (1.72 / 1.08) overlap when not (1.39 / 1.12).
+
+So `ARIADNE_NAMESEARCH` stays off, and the reason is now measured rather than
+suspected. **The wider result is the more useful one: had the threshold been
+fitted against the whole bank, the reported figure would have been 12 right and
+0 wrong, and it would have been an artifact.** That is the clearest evidence
+this project has that the held-out discipline earns its cost.
+
+The frozen half is now spent. Further threshold work needs a fresh split.
+See EXP-2026-08-020 RESULTS §Step 6.
+
 **Why it matters:** it is the difference between a component that works and a
 router that helps. EXP-2026-08-020 Arm 3 measured the name index resolving **7
 of 9** direct probes correctly — `SQL Injection`→CAPEC-66 over *Blind* SQL
