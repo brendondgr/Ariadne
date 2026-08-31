@@ -30,6 +30,7 @@ anything.
 | [`paper/`](paper/) | Outline, venue targets and deadlines, artifact appendix, venue checklists. |
 | [`templates/`](templates/) | Copied wholesale by the scaffolder. Do not fill these in place. |
 | [`audit-2026-08-03.md`](audit-2026-08-03.md) | External research audit, 3 August 2026. A dated snapshot — never updated in place. |
+| [`audit-2026-08-31.md`](audit-2026-08-31.md) | External research audit, 31 August 2026. Re-audits the same repository and states, for every 3 August finding, whether it still holds. Also a dated snapshot. |
 
 ## Adding an experiment
 
