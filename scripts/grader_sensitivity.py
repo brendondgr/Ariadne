@@ -115,6 +115,25 @@ def main() -> int:
     ref_order = [c["arm"] for c in sorted(usable, key=lambda c: -c["reference_mean"])]
     cand_order = [c["arm"] for c in sorted(usable, key=lambda c: -c["candidate_mean"])]
 
+    # A tie in the reference is not an ordering to preserve, and reporting one as
+    # "flipped" invents a finding out of a sort's tie-break. Ties are surfaced so
+    # the reader can see that the pair was never ranked in the first place.
+    def _ties(cells_, key):
+        seen, tied = {}, []
+        for c in cells_:
+            seen.setdefault(round(c[key], 6), []).append(c["arm"])
+        for value, arms in seen.items():
+            if len(arms) > 1:
+                tied.append({"value": value, "arms": sorted(arms)})
+        return tied
+
+    ref_ties = _ties(usable, "reference_mean")
+    cand_ties = _ties(usable, "candidate_mean")
+    # Compare only pairs the reference actually ranked.
+    tied_arms = {a for t in ref_ties for a in t["arms"]}
+    strict_ref = [a for a in ref_order if a not in tied_arms]
+    strict_cand = [a for a in cand_order if a not in tied_arms]
+
     result = {
         "root": str(args.root),
         "reference_suffix": args.reference_suffix or "(base)",
@@ -122,7 +141,10 @@ def main() -> int:
         "cells": cells,
         "arm_order_reference": ref_order,
         "arm_order_candidate": cand_order,
-        "arm_order_preserved": ref_order == cand_order,
+        "arm_order_preserved_naive": ref_order == cand_order,
+        "reference_ties": ref_ties,
+        "candidate_ties": cand_ties,
+        "arm_order_preserved_excluding_reference_ties": strict_ref == strict_cand,
     }
 
     if args.out:
@@ -141,9 +163,13 @@ def main() -> int:
             f"{(c['pearson_r'] if c['pearson_r'] is not None else float('nan')):>7.4f} "
             f"{c['verdict_agreement']:>8.4f}  {drop or '-'}"
         )
-    print(f"\n  arm ordering preserved: {result['arm_order_preserved']}")
+    print(f"\n  arm ordering preserved (excluding reference ties): "
+          f"{result['arm_order_preserved_excluding_reference_ties']}")
     print(f"    reference: {' > '.join(ref_order)}")
     print(f"    candidate: {' > '.join(cand_order)}")
+    for t in ref_ties:
+        print(f"    NOTE: reference ties {' == '.join(t['arms'])} at {t['value']:.4f} "
+              f"-- never ranked, so a change in their order is not a flip")
     return 0
 
 

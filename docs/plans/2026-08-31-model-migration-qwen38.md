@@ -231,6 +231,32 @@ claim a better model most plausibly overturns:
 > - **Fails, gap closes or inverts** → C-012 drops to `refuted`, and the primary
 >   result reverts to C-023, which does not depend on any model.
 
+### ⚠️ Step 4 has acquired a second variable, and the plan above no longer isolates the model
+
+**Added 2026-08-31, after `9f02dc6` landed mid-run.** That commit flipped
+`ARIADNE_LEXICON` and `ARIADNE_EXACTNAME` to default **on** and moved name
+resolution to the top of `build()`. It is a good change, properly regressed — and
+it means **the tree that would produce Step 4's answers is no longer the tree
+that produced the answers Step 4 compares against.**
+
+Re-running the arms now varies *model* **and** *builder* at once, which is
+exactly the confound Step 2 was designed to avoid on the grader side. Three ways
+out, and the choice must be made before the run rather than explained after it:
+
+| Option | What it measures | Cost |
+|---|---|---|
+| **A — isolate the model.** Re-run from a worktree pinned at `758813f` (pre-`9f02dc6`) with the new model | The model change alone, comparable to the recorded arms | one extra worktree; `data/` and `.env` symlinked per the usual setup |
+| **B — isolate the builder.** Re-run at `HEAD` with both flags forced `0` | The builder change alone, on the new model | one flag pair, no worktree |
+| **C — measure the current system and say so.** Re-run at `HEAD` with defaults | What a user gets today. **Not** attributable to either change | cheapest, and the least informative about *why* anything moved |
+
+**Recommended: A and B, in that order, then C for free** — B is a flag flip on the
+same run, so A+B costs one extra pass and yields a clean 2×2. Doing C alone would
+produce a number that cannot be attributed, which is the defect `D-028` was
+written about, reappearing on a different axis.
+
+**Step 2 is unaffected.** It grades answers already on disk; a builder change
+cannot reach them. This note bounds Step 4 only.
+
 ### Step 5 — optional, and the most scientifically interesting
 
 Replicate `EXP-2026-08-018` on `qwen38`. The finding worth testing is not the

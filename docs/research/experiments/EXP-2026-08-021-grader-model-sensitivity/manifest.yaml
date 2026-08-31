@@ -4,71 +4,91 @@
 # a gap.
 id: EXP-2026-08-021
 slug: grader-model-sensitivity
-title: <one line, the question this answers>
-status: planned            # planned | running | complete | failed | superseded
+title: Does a judged comparison survive a change of grader model? The alias moved; the answers did not
+status: running            # planned | running | complete | failed | superseded
 date_started: 2026-08-31
 date_completed: null       # null until status is complete/failed
-authors: []
+authors: [brendondgr]
 
 purpose: >
-  One paragraph. What question does this answer, and which paper claim
-  does it support or refute?
+  Every judged figure from 2026-08-19 onward was graded through the relay alias
+  `skynet`, and for EXP-2026-08-007/-008/-009 -- which carry C-012, C-021 and
+  C-022 -- the serving model is not determinable (Q12, D-028). The alias now
+  resolves to qwen38-27B-v2. Because the saved answers do not move, re-grading
+  them changes exactly one variable, which makes grader-model sensitivity
+  measurable for the first time. The recorded 0.0050 grader spread was measured
+  WITHIN one model over three passes and bounds nothing about a model change.
+  What must survive is arm ordering, not level; the level was never quotable.
 
 hypothesis: >
-  Stated before the run. If exploratory, write "exploratory — no prior hypothesis".
+  H1 arm ordering is preserved in every bank. H2 the between-model mean absolute
+  delta exceeds the 0.0050 within-model spread by at least an order of magnitude.
+  H3 C-012's margin survives -- deterministic minus llm_query stays positive and
+  larger than the grader's own spread on both banks. H4 disagreement is larger on
+  the weak arm than on the strong ones, because a grader has little room to
+  disagree about an answer everything scores near 1.0. Recorded in PROTOCOL.md
+  before any candidate judgment existed.
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
   commit: 758813fdd58d4d2e2769f0664d7a77e1da00d1b0          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
-  entrypoint: "<exact command>"
+  entrypoint: "uv run python -m utils.evaluation.judge_answers --root docs/evaluation/experiments/<bank> --arm <arm> --suffix .qwen38 --workers 12; then scripts/grader_sensitivity.py"
   dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
 data:
-  name: <dataset>
-  version: <version>
-  split: <split>
-  n_examples: 0
+  name: saved answers from EXP-2026-08-008 (base pass) and EXP-2026-08-009 (.c015 pass)
+  version: bank20260819 + bank20260820, 6 arms each
+  split: blind (both banks drawn after every repair; no arm had seen them)
+  n_examples: 360
   dvc_path: null           # this repository does not use DVC; leave null
   hash: null               # md5:... or sha256:... of the dataset artifact
 seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
-n_runs: 1
+n_runs: 5   # five complete grading sessions over one frozen answer set
 environment:
   python: "3.13"
   lockfile: env/requirements.lock
   container: null
 compute:
-  hardware: "<cpu/gpu, ram>"
+  hardware: "local vLLM relay, localhost:4000; client-side only on this host"
   wall_clock_hours: 0.0
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
 llm:
-  model: "<provider>/<model>@<version-or-date>"
+  # The reference pass being compared against is relay/UNDETERMINED@2026-08-19..21.
+  # The serving model for that window is not recoverable, and is recorded as
+  # unknown rather than guessed (D-009). It is a comment rather than a field
+  # because the schema permits one model per run and this experiment compares two.
+  model: "relay/qwen38-27B-v2@2026-08-31"   # alias `skynet`; identified by probe (scripts/model_identity.py), never by the alias -- D-028
   temperature: 0.0
   top_p: 1.0
-  max_tokens: 2048
+  max_tokens: 8192          # doubled to 16384 on a parse failure, once, before recording an error
   prompt_files: []
   prompt_hash: null
   tool_schema_hash: null
   total_input_tokens: null
   total_output_tokens: null
   nondeterminism_note: >
-    Provider-side nondeterminism remains even at temperature 0; results
-    are reported as mean ± std over n_runs.
+    Temperature 0 is not determinism: greedy decoding still reduces floating
+    point over whatever batch a request lands in, and the parse-failure path
+    retries at double max_tokens and so grades a different request. Five
+    complete grading sessions are therefore run and the spread is reported.
+    The reference pass it is compared against has n=1 and an unidentified
+    model, which is the defect this experiment exists to measure.
 
 # --- Results block ---
 metrics:
-  primary: <metric name>
+  primary: arm_order_preserved
   values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
 baselines_compared: []
 statistical_test: null
 
 # --- Linkage ---
-supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+supports_claims: [C-009, C-012, C-021, C-022]        # every ID here must exist in ../../CLAIMS.md
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
 superseded_by: null
-related: []
+related: [EXP-2026-08-007, EXP-2026-08-008, EXP-2026-08-009]

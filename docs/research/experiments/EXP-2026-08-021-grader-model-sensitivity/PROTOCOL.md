@@ -119,3 +119,80 @@ uv run python scripts/grader_sensitivity.py \
   --root docs/evaluation/experiments/bank20260819 \
   --arms deterministic generic gold_loop_llm llm_query --candidate-suffix .qwen38
 ```
+
+---
+
+# AMENDMENT A-1 (2026-08-31) — repeats, pre-registered before pass 2 exists
+
+Pass 1 is complete on 10 of 12 cells and **nothing below has been run.** The
+amendment is written now so the repeat hypotheses cannot be fitted to what the
+repeats show.
+
+## Why repeat, precisely
+
+Not "to make sure the results are accurate" — repeats cannot do that. Re-grading
+frozen answers measures the **precision of the instrument**, not the accuracy of
+the arms, and not the stability of the pipeline (`D-010` stays open for the arms;
+only Step 4 can close it). Accuracy against an external reference is what Step 1's
+Sonnet calibration measured.
+
+What repeats *do* settle is a claim pass 1 made and cannot defend:
+
+> Pass 1 measured a candidate-minus-reference offset of **+0.023 to +0.057** on
+> the four base-pass cells and **−0.007 to −0.038** on the `.c015` pair, and
+> `ISSUES.md` I-4 reads that as a directional difference between grading passes.
+> **With n = 1 that reading is indefensible.** If the within-model spread across
+> repeats is of the same order, the offset is noise and I-4's reading must be
+> withdrawn.
+
+## Design
+
+**Five sessions total** (pass 1 plus four repeats), each a *complete* pass over
+all twelve cells, suffixes `.qwen38`, `.qwen38r2` … `.qwen38r5`.
+
+**Sessions, not cells, are the unit of repetition**, following
+`EXP-2026-08-009`'s protocol: every contrast is computed *within* a session so
+session-level drift cancels out of it. Repeating cell-by-cell at different times
+would fold drift into the contrast, which is the confound that protocol exists to
+avoid.
+
+Nothing else changes: same rubric, same prompt builder, same `max_tokens`, same
+12 workers, temperature 0, same answers.
+
+**Temperature 0 is not determinism.** Greedy decoding still reduces floating
+point over whatever batch a request lands in, which is what concurrency perturbs
+(`EXP-2026-08-019`, `utils/llm_sampling.py`). The other variance source is the
+parse-failure path, which retries at double `max_tokens` and so grades a
+different request. Both are expected to produce non-zero spread.
+
+## Pre-registered hypotheses
+
+| | Prediction |
+|---|---|
+| **H5** | Within-model spread on a cell mean is **small relative to the between-model offset** — sd ≤ 0.02, against offsets of 0.023–0.057. *Falsifier: sd of the same order as the offset, which withdraws I-4.* |
+| **H6** | **Spread is larger on `llm_query` than on the near-ceiling arms**, for the same reason H4 gave: an arm bunched at 1.0 has no room to disagree with itself either |
+| **H7** | **The paired contrasts are more stable than their components.** sd of (`deterministic` − `llm_query`) is smaller than the sum of the two arms' sds, because a session-level offset shifts both arms together and cancels |
+| **H8** | **No repeat reverses an ordering.** Falsifier: any session in which `llm_query` ≥ `deterministic`, or in which merged/federated flip beyond the tie already recorded |
+
+## Decision rule, written first
+
+- **H5 holds** → I-4's directional reading stands, with an interval attached.
+- **H5 fails** → **I-4 is withdrawn in the results**, the offset is reported as
+  indistinguishable from noise, and the `RESULTS.md` sentence about the candidate
+  being "more generous on base-pass cells and stricter on `.c015` cells" is cut.
+- **H8 fails on any session** → the affected claim drops to `partial`
+  immediately, whatever the means say.
+
+## Cost, stated because it was underestimated once
+
+Per-cell wall clock in pass 1 was **227–565 s** (mean ≈ 350 s), so a full pass is
+**≈ 70 minutes** and four repeats are **≈ 4.7 hours**. This is an overnight job,
+not a cheap one. It is judged worth it because n = 1 on a grader is the same
+defect this experiment was created to expose in someone else's numbers.
+
+## Reporting
+
+`scripts/grader_sensitivity.py` compares two passes. Aggregation across five
+passes — per-cell mean ± sd, per-session contrasts, and the H5 comparison against
+the between-model offset — is `scripts/grader_repeats.py`, written before the
+repeats finish and reported whatever it shows.

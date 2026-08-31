@@ -207,7 +207,7 @@ def _describe_label(resolved: ResolvedTask) -> str:
 
 
 def _unanchored_abstains() -> bool:
-    """Does an unanchored question abstain instead of scanning? Default **off**.
+    """Does an unanchored question abstain instead of scanning? Default **on** since 9f02dc6.
 
     Shares `ARIADNE_LEXICON`'s lifecycle deliberately: widening word matching
     without this fix makes the dumps *worse*, because questions that used to

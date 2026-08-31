@@ -10,7 +10,7 @@ that a dead end is walked into once rather than twice.
 
 | ID | Date | Title | Status | Primary metric | Claims | Link |
 |---|---|---|---|---|---|---|
-| `EXP-2026-08-021` | 2026-08-31 | <one line, the question this answers> | planned | <metric name> (not recorded) | — | [grader-model-sensitivity](experiments/EXP-2026-08-021-grader-model-sensitivity/) |
+| `EXP-2026-08-021` | 2026-08-31 | Does a judged comparison survive a change of grader model? The alias moved; the answers did not | running | arm_order_preserved (not recorded) | C-009, C-012, C-021, C-022 | [grader-model-sensitivity](experiments/EXP-2026-08-021-grader-model-sensitivity/) |
 | `EXP-2026-07-001` | 2026-07-26 | Arm A — fully deterministic pipeline (planning, extraction, synthesis) | complete | correctness 0.9972 (n=1) | C-001, C-004 | [arm-a-deterministic](experiments/EXP-2026-07-001-arm-a-deterministic/) |
 | `EXP-2026-07-002` | 2026-07-26 | Arm B — LLM planning with deterministic extraction and an LLM writer | complete | correctness 0.8505 (n=1) | C-002, C-003, C-016 | [arm-b-llm-planned](experiments/EXP-2026-07-002-arm-b-llm-planned/) |
 | `EXP-2026-07-003` | 2026-07-26 | Arm C — authored plan with an LLM writer reading raw evidence | complete | correctness 0.9690 (n=1) | C-002, C-005 | [arm-c-llm-writer-evidence](experiments/EXP-2026-07-003-arm-c-llm-writer-evidence/) |
