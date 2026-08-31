@@ -193,10 +193,20 @@ def _seed_from_name(resolved: ResolvedTask):
         if len(exact) == 1:
             return replace(resolved, seed_ids=(exact[0].entity_id,))
         if len(exact) > 1:
-            # Do not pick. "Exact" is not "unique": the question names two
-            # entities and a single-anchor query has to choose one, so the
-            # honest output is the choice itself, handed back to the analyst.
-            return AmbiguousName(tuple((c.entity_id, c.name) for c in exact[:5]))
+            # **Several exact names is a conjunction, not an ambiguity.**
+            # "What exactly is User Training and Software Configuration
+            # respectively?" names two entities and wants both, and the
+            # existing describe-by-name path already serves several names in
+            # one query. Treating that as "which did you mean?" would refuse a
+            # question the system answers correctly today.
+            #
+            # Genuine ambiguity is one phrase that could denote several
+            # entities — and with exact matching plus the subsumption filter
+            # that case does not arise here: a surviving second match means the
+            # question named a second thing, not that the first was unclear.
+            # So this falls through, and the ambiguity surface belongs on the
+            # fuzzy path where a name really can be under-determined.
+            return None
 
     if _namesearch_on_g():
         hit = resolve_in(resolved.dataset, resolved.task.text, labels=labels)
@@ -214,7 +224,7 @@ class AmbiguousName(NamedTuple):
 def _exactname_on_g() -> bool:
     import os
 
-    return os.environ.get("ARIADNE_EXACTNAME", "").strip().lower() in {"1", "true", "yes", "on"}
+    return os.environ.get("ARIADNE_EXACTNAME", "1").strip().lower() not in {"0", "false", "no", "off"}
 
 
 def _namesearch_on_g() -> bool:
@@ -230,7 +240,7 @@ def _unanchored_abstains() -> bool:
     matching without this makes the dumps worse, not better. See the Cypher
     builder's copy for the measured numbers.
     """
-    return os.environ.get("ARIADNE_LEXICON", "").strip().lower() in {"1", "true", "yes", "on"}
+    return os.environ.get("ARIADNE_LEXICON", "1").strip().lower() not in {"0", "false", "no", "off"}
 
 
 class GremlinQueryBuilder:
@@ -262,6 +272,15 @@ class GremlinQueryBuilder:
         Under ``SPECIALIST_GENERIC_ONLY`` the cascade is bypassed entirely for
         the generic-primitives branch below.
         """
+        # Names are resolved before the template ladder — see the Cypher
+        # builder for why. A question that names its entity should reach the
+        # same template as one that gives the identifier.
+        named = _seed_from_name(resolved)
+        if isinstance(named, AmbiguousName):
+            return self._ambiguous(resolved, named)
+        if named is not None:
+            return self.build(named, feedback)
+
         has_seeds = bool(resolved.seed_ids)
         has_join = resolved.has_join or resolved.join_key == "attack-technique-id"
         neighbor_rels = _resolve_neighbor_rels(resolved)
@@ -298,11 +317,6 @@ class GremlinQueryBuilder:
             # lookup for a node named that, and returns nothing.
             if resolved.name_terms and is_definitional_request(resolved.task.text):
                 return self._describe(resolved)
-            seeded = _seed_from_name(resolved)
-            if isinstance(seeded, AmbiguousName):
-                return self._ambiguous(resolved, seeded)
-            if seeded is not None:
-                return self.build(seeded, feedback)
             if _unanchored_abstains() and not asks_for_bulk_scan(resolved.task.text):
                 return self._unanchored(resolved)
             return self._capec_scan(resolved)
@@ -347,11 +361,6 @@ class GremlinQueryBuilder:
         # enumeration ("scan attack patterns") on the label-scan path.
         if resolved.name_terms and is_definitional_request(resolved.task.text):
             return self._describe(resolved)
-        seeded = _seed_from_name(resolved)
-        if isinstance(seeded, AmbiguousName):
-            return self._ambiguous(resolved, seeded)
-        if seeded is not None:
-            return self.build(seeded, feedback)
         if _unanchored_abstains() and not asks_for_bulk_scan(resolved.task.text):
             return self._unanchored(resolved)
         return self._capec_scan(resolved)

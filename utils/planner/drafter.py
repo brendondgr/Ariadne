@@ -50,7 +50,7 @@ def _lexicon_on() -> bool:
     routing change that has not been through the recorded-answer regression is
     a regression until proven otherwise.
     """
-    return os.environ.get("ARIADNE_LEXICON", "").strip().lower() in {"1", "true", "yes", "on"}
+    return os.environ.get("ARIADNE_LEXICON", "1").strip().lower() not in {"0", "false", "no", "off"}
 
 
 _STOPWORDS = frozenset(

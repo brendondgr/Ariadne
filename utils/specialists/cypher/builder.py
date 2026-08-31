@@ -215,7 +215,7 @@ def _unanchored_abstains() -> bool:
     exactly that — catalogue dumps +0.125 at T4 and +0.135 at T5, with wrong
     entities up 0.087 and 0.115. The two changes are one change.
     """
-    return os.environ.get("ARIADNE_LEXICON", "").strip().lower() in {"1", "true", "yes", "on"}
+    return os.environ.get("ARIADNE_LEXICON", "1").strip().lower() not in {"0", "false", "no", "off"}
 
 
 class AmbiguousName(NamedTuple):
@@ -232,7 +232,7 @@ def _exactname_on() -> bool:
     matching is a guess whose thresholds are still unfitted (Q28). One flag for
     both would hold the first hostage to the second.
     """
-    return os.environ.get("ARIADNE_EXACTNAME", "").strip().lower() in {"1", "true", "yes", "on"}
+    return os.environ.get("ARIADNE_EXACTNAME", "1").strip().lower() not in {"0", "false", "no", "off"}
 
 
 def _namesearch_on() -> bool:
@@ -277,10 +277,20 @@ def _seed_from_name(resolved: ResolvedTask):
         if len(exact) == 1:
             return replace(resolved, seed_ids=(exact[0].entity_id,))
         if len(exact) > 1:
-            # Do not pick. "Exact" is not "unique": the question names two
-            # entities and a single-anchor query has to choose one, so the
-            # honest output is the choice itself, handed back to the analyst.
-            return AmbiguousName(tuple((c.entity_id, c.name) for c in exact[:5]))
+            # **Several exact names is a conjunction, not an ambiguity.**
+            # "What exactly is User Training and Software Configuration
+            # respectively?" names two entities and wants both, and the
+            # existing describe-by-name path already serves several names in
+            # one query. Treating that as "which did you mean?" would refuse a
+            # question the system answers correctly today.
+            #
+            # Genuine ambiguity is one phrase that could denote several
+            # entities — and with exact matching plus the subsumption filter
+            # that case does not arise here: a surviving second match means the
+            # question named a second thing, not that the first was unclear.
+            # So this falls through, and the ambiguity surface belongs on the
+            # fuzzy path where a name really can be under-determined.
+            return None
 
     if _namesearch_on():
         hit = resolve_in(resolved.dataset, resolved.task.text, labels=labels)
@@ -338,6 +348,25 @@ class CypherQueryBuilder:
         """Return a ``QueryDraft`` whose query string is valid Cypher."""
         if _generic_only():
             return self._build_generic(resolved)
+
+        # Resolve a named entity **before** the template ladder, not after it.
+        #
+        # This used to sit at step 7, the no-anchor fall-through, which meant it
+        # only ran for questions that matched *no* template at all. "Which
+        # techniques did the Frankenstein campaign use?" matches the campaign
+        # branch on the word "campaign", takes it with no seed, and never
+        # reaches the name resolver at all — so naming an entity only worked
+        # when the rest of the question was also unrecognised.
+        #
+        # Resolving first means a name-anchored question reaches the *same*
+        # template it would have reached had the analyst typed the identifier,
+        # and an ambiguous name is surfaced wherever it occurs rather than only
+        # in the corner where routing had already given up.
+        named = _seed_from_name(resolved)
+        if isinstance(named, AmbiguousName):
+            return self._ambiguous(resolved, named)
+        if named is not None:
+            return self.build(named, feedback)
         # Choose intent deterministically from the resolved task context.
         technique_ids = [aid for aid in resolved.seed_ids if _is_technique_id(aid)]
         has_technique_seeds = bool(technique_ids)
@@ -470,13 +499,9 @@ class CypherQueryBuilder:
         #    extension persistence". If it answers confidently, seed that id and
         #    re-enter this ladder, so the question reaches the *same* template it
         #    would have reached had the analyst typed the identifier.
-        seeded = _seed_from_name(resolved)
-        if isinstance(seeded, AmbiguousName):
-            return self._ambiguous(resolved, seeded)
-        if seeded is not None:
-            return self.build(seeded, feedback)
-
-        #    Otherwise: scan the label only if a scan is what was asked for, and
+        #    Names were already resolved at the top of `build`, so reaching here
+        #    means no identifier and no confident name.
+        #    Scan the label only if a scan is what was asked for, and
         #    otherwise look for the anchor we do not have, find nothing, and let
         #    the enforced abstention carry that query as its proof.
         if _unanchored_abstains() and not asks_for_bulk_scan(resolved.task.text):

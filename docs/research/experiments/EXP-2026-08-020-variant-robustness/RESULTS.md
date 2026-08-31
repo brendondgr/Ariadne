@@ -381,3 +381,72 @@ threshold; and it delivers the full +3 for +1.
 
 The frozen half has now been spent, once, on the one candidate that warranted
 it. Any future threshold work needs a fresh split.
+
+---
+
+# Arm 6 — defaults on, and names resolved before the ladder
+
+Two changes, measured together because they share a regression run.
+
+**Enabled by default.** `ARIADNE_LEXICON` and `ARIADNE_EXACTNAME` now default
+**on**, with the env var still accepting `0`/`false` to restore the prior path
+for reproducing earlier arms. `ARIADNE_NAMESEARCH` remains **off** — Step 6's
+holdout result stands.
+
+**Names resolved first.** Name resolution used to sit at step 7, the no-anchor
+fall-through, so it only ran for questions that matched *no template at all*.
+"Which techniques did the Frankenstein campaign use?" takes the campaign branch
+on the word "campaign", with no seed, and never reached the resolver. Resolving
+first means a name-anchored question reaches the **same template it would have
+reached had the analyst typed the identifier**.
+
+## Against the shipped baseline
+
+| tier | `records_exact` base → A5 → **A6** | `wrong_entity` base → A5 → **A6** | `catalogue_dump` base → **A6** |
+|---|---|---|---|
+| T1 | 0.4667 → 0.5000 → 0.5000 | 0.1083 → 0.1083 → 0.1083 | 0.0000 → 0.0000 |
+| T2 | 0.4250 → 0.4250 → 0.4250 | 0.1083 → 0.1083 → 0.1083 | 0.0000 → 0.0000 |
+| **T3** | 0.0990 → 0.1287 → **0.2376** | 0.1485 → 0.1089 → **0.1089** | 0.5248 → **0.1683** |
+| T4 | 0.0000 → 0.0000 → 0.0000 | 0.1635 → 0.1250 → 0.1346 | 0.1827 → 0.1635 |
+| T5 | 0.0000 → 0.0000 → 0.0000 | 0.1731 → 0.1346 → 0.1442 | 0.1827 → 0.1346 |
+| T6 | — | 0.0333 → 0.0667 → 0.1000 | 0.1333 → **0.0667** |
+
+| | vs baseline |
+|---|---|
+| exact names, resolved late (Arm 5) | **+7** right, **−11** wrong |
+| **exact names, resolved early (Arm 6)** | **+18** right, **−8** wrong |
+
+**Better on both axes.** T3 more than doubles (0.0990 → 0.2376), its
+byte-identical-query rate goes 0.0000 → 0.1584, and its catalogue-dump rate
+falls by two-thirds. Catalogue regression is unchanged: **6 better, 0 worse,
+gold recall 0.8698 → 0.9161.**
+
+## Two design corrections found by tests, not by reasoning
+
+**Several exact names is a conjunction, not an ambiguity.** The rule shipped in
+Arm 5 returned "did you mean?" whenever more than one complete name appeared.
+A test caught it: *"What exactly is User Training and Software Configuration
+respectively?"* names two entities and wants **both**, and the existing
+describe-by-name path already serves several names in one query. Refusing it
+would have broken a question the system answers correctly. Multiple exact names
+now fall through to that path.
+
+That narrows where genuine ambiguity can arise: with exact matching plus the
+subsumption filter, a second surviving match means the question named a second
+*thing*, not that the first was unclear. **The "did you mean?" surface therefore
+belongs on the fuzzy path, which is off — so it is presently near-unreachable,
+and that is recorded rather than glossed.**
+
+**An exactly-resolving name should not take the substring path.** Measured while
+updating a test: `"What is Phishing?"` returns **four** records through
+`describe_by_name` — Phishing, Spear Phishing, Mobile Phishing, Voice Phishing —
+because the pattern matches any name containing the word. Resolving the name
+first returns **one**. Three tests asserted the older routing and were updated
+with that measurement in their docstrings.
+
+## Cost
+
+`exact_name_matches` originally scanned all 9,138 canonical entities per call,
+which was tolerable at step 7 and is not when it runs on every seedless
+question. A first-token prefilter — a name can only appear if its first word
+does — takes it to **0.067 ms per call** with identical results.

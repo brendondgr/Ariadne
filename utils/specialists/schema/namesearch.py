@@ -116,6 +116,17 @@ class NameIndex:
             for tok, tf in counts.items():
                 postings.setdefault(tok, []).append((i, tf))
         self._postings = postings
+        # First token of every entity name -> the docs whose name starts there.
+        # `exact_name_matches` used to scan all 9,138 documents per call, which
+        # was tolerable while it ran only on questions nothing else could route.
+        # It now runs on every seedless question, so the scan has to become a
+        # lookup: a name can only appear in the text if its *first* word does.
+        first: dict[str, list[int]] = {}
+        for i, (_id, _lab, name, _toks) in enumerate(docs):
+            words = _WORD_RE.findall(name.lower())
+            if words:
+                first.setdefault(words[0], []).append(i)
+        self._name_first = first
 
     def search(
         self, text: str, *, top_k: int = 5, labels: Iterable[str] | None = None
@@ -253,9 +264,17 @@ def exact_name_matches(
     """
     index = index_for(dataset)
     keep = {l for l in (labels or ()) if l}
-    low = " " + " ".join(_WORD_RE.findall((text or "").lower())) + " "
+    words = _WORD_RE.findall((text or "").lower())
+    low = " " + " ".join(words) + " "
+    # Only names whose first word occurs in the question can possibly match, so
+    # the candidate set comes from the question's own words rather than from a
+    # full pass over the catalogue.
+    seen_idx: set[int] = set()
+    for w in set(words):
+        seen_idx.update(index._name_first.get(w, ()))  # noqa: SLF001 — same module
     out: list[Candidate] = []
-    for entity_id, label, name, _toks in index._docs:  # noqa: SLF001 — same module
+    for i in seen_idx:
+        entity_id, label, name, _toks = index._docs[i]  # noqa: SLF001 — same module
         if keep and label not in keep:
             continue
         name_toks = _WORD_RE.findall(name.lower())

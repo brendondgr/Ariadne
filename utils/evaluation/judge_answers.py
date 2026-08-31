@@ -109,7 +109,16 @@ class JudgeConfig:
     retries: int = 3
 
 
-def _post(config: JudgeConfig, prompt: str, max_tokens: int | None = None) -> str:
+def _post(config: JudgeConfig, prompt: str, max_tokens: int | None = None) -> tuple[str, str | None]:
+    """Returns ``(content, served_model)``.
+
+    The second element is the `model` field off the *response* envelope, which
+    names the weights that actually served the call. ``config.model`` is a relay
+    *alias* and has resolved to three different models over this project's life
+    (`D-028`, `Q12`); recording it alone records nothing. The relay does not
+    accept the concrete id as a routing target, so detection at response time is
+    the only way to attribute a judgment to a model.
+    """
     body = json.dumps(
         {
             "model": config.model,
@@ -128,7 +137,7 @@ def _post(config: JudgeConfig, prompt: str, max_tokens: int | None = None) -> st
             )
             with urllib.request.urlopen(request, timeout=config.timeout_s) as response:
                 payload = json.load(response)
-            return payload["choices"][0]["message"]["content"] or ""
+            return payload["choices"][0]["message"]["content"] or "", payload.get("model")
         except Exception as exc:  # noqa: BLE001 — the server restarts; that is the point
             last = exc
             if attempt < config.retries:
@@ -163,7 +172,7 @@ def _prompt_for(answer: dict[str, Any]) -> str:
     return f"{RUBRIC}\n\n--- CASE ---\n{json.dumps(body, indent=1)[:24000]}\n"
 
 
-def _normalise(case_id: str, raw: dict[str, Any]) -> dict[str, Any]:
+def _normalise(case_id: str, raw: dict[str, Any], served_model: str | None = None) -> dict[str, Any]:
     """Coerce the model's object into the committed schema, or fail loudly."""
     missing = [field for field in REQUIRED_FIELDS if field not in raw]
     if missing:
@@ -193,7 +202,14 @@ def _normalise(case_id: str, raw: dict[str, Any]) -> dict[str, Any]:
         "fabricated_mapping": bool(raw.get("fabricated_mapping")),
         "hallucinations": [str(h) for h in hallucinations],
         "rationale": str(raw.get("rationale") or ""),
-        "judge": {"model": DEFAULT_MODEL, "runner": "utils/evaluation/judge_answers.py"},
+        "judge": {
+            # `alias` is what was asked for; `served_model` is what answered.
+            # They differ, and the difference is the whole of D-028.
+            "model": DEFAULT_MODEL,
+            "alias": DEFAULT_MODEL,
+            "served_model": served_model,
+            "runner": "utils/evaluation/judge_answers.py",
+        },
     }
 
 
@@ -217,14 +233,16 @@ def judge_one(path: Path, config: JudgeConfig, suffix: str) -> tuple[str, str]:
         answer = json.loads(path.read_text())
         prompt = _prompt_for(answer)
         try:
-            raw = _parse(_post(config, prompt))
+            content, served_model = _post(config, prompt)
+            raw = _parse(content)
         except ValueError:
             # An unparseable or empty reply is usually the token ceiling, not a
             # broken model: give it double and try once more before recording a
             # failure. A case dropped for a budget is a case silently missing
             # from the night's numbers.
-            raw = _parse(_post(config, prompt, max_tokens=config.max_tokens * 2))
-        judgment = _normalise(case_id, raw)
+            content, served_model = _post(config, prompt, max_tokens=config.max_tokens * 2)
+            raw = _parse(content)
+        judgment = _normalise(case_id, raw, served_model=served_model)
         # Written as soon as it exists: a run that dies at case 90 keeps 89.
         out.write_text(json.dumps(judgment, indent=1) + "\n")
         return case_id, "ok"

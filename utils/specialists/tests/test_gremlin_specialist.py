@@ -965,19 +965,41 @@ class TestCapecDossierByName:
     def test_routing_describe_by_name_on_definitional_question(self, card, limits):
         from utils.specialists.resolve import resolve
 
+        # A name matching no catalogue entry, so this still exercises the regex
+        # path the test is about. "Phishing" sat here until 2026-08-31 and now
+        # resolves exactly to CAPEC-98, taking the by-id path — see
+        # test_exact_name_takes_the_id_path below. Note the replacement must
+        # contain no complete entity name at all: "Phishing Variant Alpha" still
+        # resolves, because "Phishing" is itself a complete name inside it.
         task = _make_task(
-            text="What is Phishing?",
+            text="What is Marbled Lattice?",
             entities=(),
             join_key=None,
             seed_ids=(),
         )
         resolved = resolve(task, card)
-        assert resolved.name_terms == ("Phishing",)
         draft = GremlinQueryBuilder().build(resolved)
         assert draft.template == "describe_by_name"
         # Anchors AttackPattern by case-insensitive name, same describe projection.
-        assert 'TextP.regex("(?i).*(Phishing).*")' in draft.query
+        assert 'TextP.regex(' in draft.query
         assert '.project("node","out","in")' in draft.query
+        assert GremlinValidator().validate(draft, card, limits).ok
+
+    def test_exact_name_takes_the_id_path(self, card, limits):
+        """An exactly-resolving name is anchored by id, not by substring.
+
+        Measured 2026-08-31: the regex path returns **four** records for "What
+        is Phishing?" — Phishing, Spear Phishing, Mobile Phishing and Voice
+        Phishing — because the pattern matches any name containing the word.
+        Resolving the name first returns the one entity that was asked about.
+        """
+        from utils.specialists.resolve import resolve
+
+        task = _make_task(text="What is Phishing?", entities=(), join_key=None, seed_ids=())
+        draft = GremlinQueryBuilder().build(resolve(task, card))
+        assert draft.template == "describe"
+        # Gremlin binds the canonical node id, not the analyst-facing spelling.
+        assert "98" in str(draft.params.get("ids", ()))
         assert GremlinValidator().validate(draft, card, limits).ok
 
     def test_multiword_name_pattern_has_no_groovy_breaking_escape(self, card, limits):

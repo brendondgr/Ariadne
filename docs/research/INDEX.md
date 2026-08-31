@@ -10,6 +10,7 @@ that a dead end is walked into once rather than twice.
 
 | ID | Date | Title | Status | Primary metric | Claims | Link |
 |---|---|---|---|---|---|---|
+| `EXP-2026-08-021` | 2026-08-31 | <one line, the question this answers> | planned | <metric name> (not recorded) | — | [grader-model-sensitivity](experiments/EXP-2026-08-021-grader-model-sensitivity/) |
 | `EXP-2026-07-001` | 2026-07-26 | Arm A — fully deterministic pipeline (planning, extraction, synthesis) | complete | correctness 0.9972 (n=1) | C-001, C-004 | [arm-a-deterministic](experiments/EXP-2026-07-001-arm-a-deterministic/) |
 | `EXP-2026-07-002` | 2026-07-26 | Arm B — LLM planning with deterministic extraction and an LLM writer | complete | correctness 0.8505 (n=1) | C-002, C-003, C-016 | [arm-b-llm-planned](experiments/EXP-2026-07-002-arm-b-llm-planned/) |
 | `EXP-2026-07-003` | 2026-07-26 | Arm C — authored plan with an LLM writer reading raw evidence | complete | correctness 0.9690 (n=1) | C-002, C-005 | [arm-c-llm-writer-evidence](experiments/EXP-2026-07-003-arm-c-llm-writer-evidence/) |
@@ -42,4 +43,4 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-08-020` | 2026-08-29 | How much of the deterministic router's correctness survives paraphrase, and where does it break? | complete | records_exact (not recorded) | C-001, C-010, C-021 | [variant-robustness](experiments/EXP-2026-08-020-variant-robustness/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 
-**31 experiment(s) on record.**
+**32 experiment(s) on record.**

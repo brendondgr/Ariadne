@@ -890,12 +890,43 @@ def test_routing_describe_by_name_on_definitional_question(card):
     assert result.ok, result.reasons
 
 
+def test_exact_name_prefers_the_id_path_over_a_substring_match(card):
+    """A name that resolves exactly takes the by-id path, not the CONTAINS one.
+
+    Measured 2026-08-31: "What is Phishing?" returns **four** records through
+    the substring path — Phishing, Spear Phishing, Mobile Phishing and Voice
+    Phishing — because `toLower(n.name) CONTAINS 'phishing'` matches all of
+    them. Resolving the name exactly first returns the **one** entity that was
+    asked about.
+
+    `describe_by_name` is still the right path for a name that does *not*
+    resolve exactly; this only takes precedence when it does.
+    """
+    task = SpecialistTask(
+        sub_question_id="q-name-exact",
+        source="attack",
+        text="What exactly is User Training?",
+        entities=(),
+        limits=_LIMITS,
+        seed_ids=(),
+    )
+    resolved = _resolve(task)
+    draft = CypherQueryBuilder().build(resolved)
+    assert draft.template == "describe"
+    assert "M1017" in str(draft.params.get("ids", ()))
+
+
 def test_describe_by_name_validator_round_trip_is_label_scoped(card):
     """The name query scopes to real card labels and survives the validator."""
     task = SpecialistTask(
         sub_question_id="q-name-2",
         source="attack",
-        text="What is Phishing?",
+        # A name matching no catalogue entry, so this still exercises the
+        # CONTAINS path the test is about. "Phishing" sat here until 2026-08-31
+        # and now resolves exactly. The replacement must contain no complete
+        # entity name: "Credential Stuffing Variant" still resolves, because
+        # "Credential Stuffing" is a complete name inside it.
+        text="What is Marbled Lattice?",
         entities=(),
         limits=_LIMITS,
         seed_ids=(),
@@ -907,8 +938,19 @@ def test_describe_by_name_validator_round_trip_is_label_scoped(card):
     assert _validate(draft).ok
 
 
-def test_definitional_without_name_terms_falls_back_to_label_scan(card):
-    """A definitional question that names no entity does not force a name dossier."""
+def test_definitional_without_name_terms_abstains_rather_than_scanning(card):
+    """A question naming no entity returns nothing, not the whole label.
+
+    This asserted `label_scan` until 2026-08-31. That was the measured defect:
+    "What is the mitigation?" names nothing, and answering it with every
+    Mitigation in the catalogue is the catalogue dump EXP-2026-08-020 found
+    firing on 52% of name-bearing questions — and, in its worst form, returning
+    158 records about a threat group that does not exist under the heading
+    "all results for this question".
+
+    The honest answer runs a real bounded query that finds nothing, so the
+    enforced abstention carries the executed query as its proof.
+    """
     task = SpecialistTask(
         sub_question_id="q-name-3",
         source="attack",
@@ -920,7 +962,8 @@ def test_definitional_without_name_terms_falls_back_to_label_scan(card):
     resolved = _resolve(task)
     assert resolved.name_terms == ()
     draft = CypherQueryBuilder().build(resolved)
-    assert draft.template == "label_scan"
+    assert draft.template == "unanchored"
+    assert draft.expected_nonempty is False
 
 
 def test_seeded_definitional_uses_id_path_not_name_path(card):
