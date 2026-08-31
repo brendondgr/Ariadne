@@ -394,6 +394,38 @@ section of any submission. **From:** 2026-08-26 novelty audit, Part 2 Q8.
 
 ### Q24 — Why does our failure distribution run opposite to the only comparable published one?
 
+**Status: ANSWERED (2026-08-31). It does not run opposite — the comparison was
+invalid, and our own figure did not reproduce.**
+
+Two corrections and two survivors, drafted in
+[`paper/sections/09-failure-localisation.md`](paper/sections/09-failure-localisation.md).
+
+**Correction 1.** Re-running the classifier over EXP-2026-07-002's committed
+artifacts gives **28** non-CORRECT of 120 and **4** unfaithful — not 26-of-36
+and 2. The 28 matches that experiment's own verdict counts; the 36 is most
+likely an earlier judge run, the same species as `C-018`.
+
+**Correction 2, and the real answer.** Our `unfaithful` class was being compared
+against Leung et al.'s entire `Generation` stage — our narrowest category
+against their broadest. Their Generation covers both *stating what you did not
+retrieve* and *failing to state what you did*; we split those into `unfaithful`
+and `projection_gap`. Mapped like-for-like, Arm B's generation share is
+**42.3%**, **between** their DragonBall-EN 32.7% and CLAPnq 76.4%. There is no
+contradiction to explain.
+
+**Survivor 1.** Within the generation stage, under-statement outnumbers
+fabrication **7 to 4**, and the two have **opposite fixes**. Their taxonomy
+cannot draw that line.
+
+**Survivor 2, and it needs no appeal to their pipeline.** Across three arms of
+our own study: Arm A **0** failures, Arm F **10**, Arm B **28** — and **15 of
+the 18 failures added by substituting an LLM planner are retrieval-side**, a
+class empty under an authored plan.
+
+**What is still unrun:** Leung et al. validate attribution by intervening on the
+blamed stage and re-running. We do not. That is the cheapest experiment that
+would raise this from a plausible localisation to a validated one.
+
 **Why it matters:** this is the **highest-value piece of writing left before any
 submission**, and it is writing, not an experiment. C-016 is either the paper's
 best finding or its worst liability, and which one depends entirely on whether

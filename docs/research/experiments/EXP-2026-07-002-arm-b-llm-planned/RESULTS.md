@@ -99,3 +99,38 @@ runs 120 independent Sonnet 5 agents via the Workflow tool. The judgments this
 arm's numbers derive from are committed under
 [`docs/evaluation/experiments/untruncated-fixed/llm/answers/`](../../../evaluation/experiments/untruncated-fixed/llm/answers/),
 hashed in [`data/POINTERS.md`](data/POINTERS.md).
+
+---
+
+## AMENDMENTS
+
+### A-1 (2026-08-31) — the 26-of-36 failure figure does not reproduce
+
+This file states *"only 2 of Arm B's 36 failures were faithfulness, and 26 of 36
+were planning or retrieval."* Re-running `utils/evaluation/failure_terminus.py`
+over the same committed artifact directory
+(`docs/evaluation/experiments/untruncated-fixed/llm`) gives **28** non-CORRECT of
+120, not 36 — which is what this experiment's own `metrics.json` verdict counts
+say (92 CORRECT + 14 PARTIAL + 14 INCORRECT) — distributed as:
+
+| terminus | n |
+|---|---|
+| `incomplete_retrieval` | 11 |
+| `projection_gap` | 7 |
+| `unfaithful` | **4** |
+| `pipeline_timeout` | 4 |
+| `gold_cap_collision` | 2 |
+
+**Quote 4 of 28, not 2 of 36.** The 36 is most likely an earlier judge run, the
+same species as the figure cut in `C-018`. Nothing else in this experiment
+changes: correctness 0.8505, the B−C delta of −0.1185, and the record counts are
+all recomputed from the artifacts and stand.
+
+**The correction strengthens rather than weakens the finding**, because the
+reason the original framing was wrong is more interesting than the arithmetic —
+see [`../../paper/sections/09-failure-localisation.md`](../../paper/sections/09-failure-localisation.md).
+Comparing our `unfaithful` class against Leung et al.'s `Generation` stage
+compares our narrowest category against their broadest. Mapped like-for-like,
+Arm B's generation-stage share is **42.3%**, between their two reported settings
+rather than opposed to them, and what survives is a distinction their taxonomy
+cannot draw: within generation, **under-statement outnumbers fabrication 7 to 4**.
