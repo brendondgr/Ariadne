@@ -37,10 +37,12 @@ def analyse(path: Path) -> dict:
 
     # method -> the template literals it emits, and the self.* methods it calls
     emits: dict[str, list[str]] = {}
+    dynamic: dict[str, list[str]] = {}
     calls: dict[str, set[str]] = {}
     returns_draft: set[str] = set()
     for name, fn in methods.items():
         emits[name] = []
+        dynamic[name] = []
         calls[name] = set()
         for node in ast.walk(fn):
             if isinstance(node, ast.Call):
@@ -49,6 +51,14 @@ def analyse(path: Path) -> dict:
                     for kw in node.keywords:
                         if kw.arg == "template" and isinstance(kw.value, ast.Constant):
                             emits[name].append(kw.value.value)
+                        # A template name built by an f-string is NOT a literal and
+                        # was silently missing from every count this script fed
+                        # until 2026-08-31. Record the expression rather than
+                        # guessing its expansion: an unresolved entry here is a
+                        # prompt to read the callers, which is honest, where a
+                        # missing entry is a wrong number.
+                        elif kw.arg == "template" and isinstance(kw.value, ast.JoinedStr):
+                            dynamic[name].append(ast.unparse(kw.value))
                 if (
                     isinstance(node.func, ast.Attribute)
                     and isinstance(node.func.value, ast.Name)
@@ -84,10 +94,15 @@ def analyse(path: Path) -> dict:
     all_literals = sorted(literal_to_method)
     dead = sorted(t for t, ms in literal_to_method.items() if not any(m in reachable for m in ms))
 
+    dynamic_exprs = sorted({e for es in dynamic.values() for e in es})
     return {
         "file": str(path),
         "template_literals": all_literals,
         "template_literal_count": len(all_literals),
+        "dynamic_template_expressions": dynamic_exprs,
+        "dynamic_template_expression_to_method": {
+            e: sorted(m for m, es in dynamic.items() if e in es) for e in dynamic_exprs
+        },
         "literal_to_method": {t: sorted(ms) for t, ms in sorted(literal_to_method.items())},
         "querydraft_returning_methods": sorted(returns_draft),
         "querydraft_returning_method_count": len(returns_draft),

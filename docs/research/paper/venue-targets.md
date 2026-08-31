@@ -9,9 +9,25 @@ repository so they are checkable rather than remembered.
 > around it.** Dates marked *pattern* are historical patterns, not published
 > calls.
 
+> 🛑 **Superseded as an assessment, stale as a calendar — 2026-08-31.**
+> Every deadline in this file was read on 3 August and several have passed
+> (ARTMAN 31 Aug, IEEE Big Data demo 21 Aug). **Do not plan against a date here
+> without re-reading the call.** A venue report dated 31 August exists outside
+> the repository at `~/Downloads/ariadne-venue-report.md` and has not been
+> imported; it independently assesses the ladder and reaches L3 on a stricter
+> reading of "baseline" (external *systems* only). Import it or replace this
+> file before the next submission cycle.
+
 **Readiness as assessed 2026-08-03:** L3 — near from workshop/demo; blocked by
 positioning; critical path 2–3 weeks. Far from applied conference (10–13 weeks);
 far from top-tier archival (26–40 weeks, not recommended).
+
+**Readiness as assessed 2026-08-31** ([`../audit-2026-08-31.md`](../audit-2026-08-31.md)):
+**L4 — ready for workshop/demo; near from applied conference; blocked by novelty
+defensibility; critical path 3–5 weeks.** Far from top-tier archival (20–30
+weeks, still not recommended). Positioning moved 0 → 3 and baseline coverage
+1 → 3, so the axis that blocked everything in August is no longer the binding
+one.
 
 ---
 
@@ -32,24 +48,45 @@ interval, and the safety claim rests on 17 hand-written probes. Writing to a
 deadline would have frozen all four in their current state. The decision is to
 close them first and select a venue afterwards, from a stronger position.
 
-**What this does not change.** The blocking prerequisites below still bind
-whenever a venue is selected, and one of the three is now closed (LICENSE and
-attribution, 2026-08-18). The remaining release blocker is archival identity — a
-DOI — not licensing. Re-verify every date in this file before planning against
-it; they were read on 3 August 2026 and some are aggregator-sourced.
+> **Update, 2026-08-31: all four are closed, and the reason for dropping the
+> deadlines no longer applies.** C-003 was resolved by refutation
+> (`EXP-2026-08-007`, `-008`, `-011`; superseded by C-023); the verifier was
+> ablated over 888 claims and again against LLM-proposed claims
+> (`EXP-2026-08-014`, `-018`); every judged cell now carries a bootstrap
+> interval; and the safety claim rests on 240 generated probes after 15 live
+> bypasses were found and fixed (`EXP-2026-08-016`). The blocking backlog is now
+> a different and shorter one — `Q24`, a cross-model re-grade, and `Q26` — and
+> it is listed in [`OUTLINE.md`](OUTLINE.md).
 
-**When to revisit:** after `EXP-2026-08-017-federation-isolation`, the last step
-of the record-hardening plan (`docs/plans/2026-08-23-record-hardening.md`).
+**What this does not change.** Re-verify every date in this file before planning
+against it; they were read on 3 August 2026 and some are aggregator-sourced.
+
+**Blocking prerequisites: all three are now closed.** LICENSE and attribution
+shipped 2026-08-18; the blind holdout ran as `EXP-2026-08-002`; the LLM-planning
+delta was recomputed within one judge run at −0.1185 and has since been
+superseded as a headline. The remaining release constraints are **archival
+identity (a DOI)** and **the non-redistributable identity catalog** — see
+[`../datasets/DATASETS.md`](../datasets/DATASETS.md).
+
+**When to revisit:** the trigger has fired. `EXP-2026-08-017` completed on
+2026-08-23 and the record-hardening plan is done; twelve further experiments have
+run since. **This file is overdue for replacement rather than revisit** — see the
+banner at the top.
 
 ---
 
-## Blocking prerequisites — do these first
+## Blocking prerequisites — all three closed
 
-| # | Item | Cost | Blocks |
+| # | Item | Cost | Status |
 |---|---|---|---|
-| 1 | **Add a LICENSE file and a MITRE attribution notice.** `NOTICE` covers third-party data only and says so explicitly; Ariadne's own code has no licence. | ½ day | **Any release at all.** USENIX-family acceptance is conditional on public artifact availability. |
-| 2 | **Run the blind holdout** (open question Q1) — 30 questions authored by someone else against frozen templates. | ~4 days | Whether the headline number means anything. Gates C-001, C-013. |
-| 3 | **Recompute the LLM-planning delta within one judge run.** | hours | C-002. Stops −0.196 reaching a reviewer. |
+| 1 | Add a LICENSE file and a MITRE attribution notice | ½ day | ✅ **Done 2026-08-18.** Apache-2.0 + `NOTICE`. The remaining release constraints are a DOI and the non-redistributable identity catalog |
+| 2 | Run the blind holdout (Q1) — 30 questions authored by someone else against frozen templates | ~4 days | ✅ **Done.** `EXP-2026-08-002`: 0.689 / 0.708 against a development 0.9972. C-013 refuted, C-001 narrowed. The bank has since been burned and three fresh ones drawn |
+| 3 | Recompute the LLM-planning delta within one judge run | hours | ✅ **Done.** −0.1185 within the final table, and the figure has since been superseded as a headline. `−0.196` is retired (C-018, cut) |
+
+**The current blocking set is different and shorter:** `Q24` (one day of
+writing), a cross-model re-grade of the judged comparisons, and `Q26`. They are
+listed in [`OUTLINE.md`](OUTLINE.md) and estimated in
+[`../audit-2026-08-31.md`](../audit-2026-08-31.md) §8.5.
 
 ---
 
@@ -89,7 +126,7 @@ into that community.
 | ACL-family workshops | Workshop | EACL 15 Dec 2026 · COLING 5 Jan 2027 · NAACL 5 Feb 2027 (*tentative*) | — | Watch for a KG+LLM / GraphRAG / agentic-retrieval workshop; historically at least one per cycle. |
 | ACL Rolling Review | Rolling | Oct 2026 cycle: 12 Oct 2026 | 8 pp long / 4 pp short; two-way anonymised; Responsible NLP checklist; mandatory Limitations; **all authors must register as reviewers** | Moderate as a short paper. |
 
-## Tier 2 — target, once baselines exist
+## Tier 2 — target (the baselines this heading waited for now exist: `EXP-2026-08-008`, `-009`)
 
 | Venue | Deadline | Note |
 |---|---|---|
