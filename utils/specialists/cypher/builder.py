@@ -238,6 +238,13 @@ def _seed_from_name(resolved: ResolvedTask) -> ResolvedTask | None:
     """
     if not _namesearch_on() or resolved.seed_ids:
         return None
+    # A bulk request names a *category*, not an entity, so resolving it by name
+    # is a category error with a measured cost: "List ATT&CK software entries"
+    # matched a node literally called `enterprise-attack`, seeded it, and
+    # returned **one** record where the golden answer is 821
+    # (EXP-2026-08-020, A-SCN-01 regressed under Arm 3).
+    if asks_for_bulk_scan(resolved.task.text):
+        return None
     from dataclasses import replace
 
     from ..schema.namesearch import resolve_in

@@ -359,6 +359,38 @@ def report(rows: list[dict[str, Any]]) -> dict[str, Any]:
     return summary
 
 
+def preflight() -> None:
+    """Refuse to run against a hollow graph.
+
+    The Gremlin store is an in-memory TinkerGraph: a container restart empties
+    it, and `--graph health` keeps reporting "reachable" because the socket
+    still answers. This has now silently invalidated a capture **twice** in one
+    session — the first time 22 of 120 golden questions returned nothing and it
+    read like a code regression.
+
+    An unattended run cannot afford that: every number after the store empties
+    is garbage that looks like a result. So the harness verifies counts against
+    the pinned manifest before it measures anything, and **dies** rather than
+    producing a plausible wrong answer.
+    """
+    import subprocess
+
+    for dataset in ("attack", "capec"):
+        proc = subprocess.run(
+            ["uv", "run", "main.py", "--dataset", dataset, "--graph", "verify"],
+            cwd=REPO, capture_output=True, text=True, timeout=600,
+        )
+        if proc.returncode != 0:
+            tail = (proc.stderr or proc.stdout).strip().splitlines()[-1:]
+            raise SystemExit(
+                f"PREFLIGHT FAILED for {dataset}: {' '.join(tail)}\n"
+                f"  Reload it before measuring:  "
+                f"uv run main.py --dataset {dataset} --graph "
+                f"{'neo4j' if dataset == 'attack' else 'gremlin'}"
+            )
+    print("== preflight: attack and capec verify against their pinned manifests")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -382,6 +414,7 @@ def main() -> int:
     args = parser.parse_args()
     for key, value in BASE_ENV.items():
         os.environ[key] = value
+    preflight()
     return args.func(args)
 
 

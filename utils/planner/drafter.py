@@ -333,6 +333,49 @@ def _identifier_shape_hits(
     return hits
 
 
+def _labels_from_identifier_shapes(
+    request_tokens: set[str], card: SourceCardView, dataset: str
+) -> list[str]:
+    """Labels implied by the *shape* of identifiers written in the request.
+
+    `T1176` implies `Technique` because the canonical snapshot only ever shows
+    that shape on that label. Learned from the data, so it carries to a source
+    nobody has written a prefix table for, and it returns nothing rather than
+    guessing when the shape is ambiguous or unlearned.
+
+    This replaces `card.expected_probe_labels()[:1]`, which is a **liveness
+    check** — "a couple of labels the content probe expects to exist when
+    loaded" — and was being read as a declaration of what the question is about.
+    For ATT&CK its first entry is `Analytic`, alphabetically, so every rescued
+    question asserted its entity was an Analytic. T1176, a Technique, was
+    reported as one (Q27).
+    """
+    try:
+        from utils.specialists.schema import scheme_of
+
+        registry = card.schema_registry()
+        schema = registry.dataset(dataset) if hasattr(registry, "dataset") else None
+        schemes = getattr(schema, "label_id_schemes", None) if schema else None
+    except Exception:
+        return []
+    if not schemes:
+        return []
+
+    shapes = {scheme_of(tok) for tok in request_tokens}
+    shapes.discard(None)
+    if not shapes:
+        return []
+
+    hits: set[str] = set()
+    for label, props in schemes.items():
+        for prop_schemes in props.values():
+            if shapes & set(getattr(prop_schemes, "schemes", ()) or ()):
+                hits.add(label)
+    # Ambiguity is answered with silence, as everywhere else in this module: a
+    # shape claimed by several labels has identified none of them.
+    return sorted(hits) if len(hits) == 1 else []
+
+
 def _select_sources(scored: dict[str, tuple[int, int, list[str], set[str]]]) -> set[str]:
     """Which sources a request is actually about.
 
@@ -372,8 +415,26 @@ def _select_sources(scored: dict[str, tuple[int, int, list[str], set[str]]]) -> 
     if os.environ.get("ARIADNE_SOURCE_SELECTION", "").strip().lower() == "absolute":
         return set(live)
 
-    # Ties broken by name so the selection is deterministic, never by dict order.
-    leader = max(live, key=lambda ds: (len(live[ds]), ds))
+    # Ties broken by the **strength** of the evidence before the name.
+    #
+    # `_match_card` already separates an `id_hits` match — the token names a real
+    # node label or relationship type — from a `gloss_hits` match, where it
+    # merely appears in the card's prose description. Counting only tokens threw
+    # that away, and the alphabetical fallback then decided the question.
+    #
+    # Measured (EXP-2026-08-020 I-2): "What are the mitigations for Software
+    # Extensions?" gives attack `id_hits=2` (`mitigation` and `software` are
+    # both real ATT&CK labels) against capec `id_hits=1, gloss_hits=1`
+    # (`software` appears only inside a CAPEC sentence). Two matched tokens
+    # each, so the tie fell to `capec` on the letter C, the question was sent to
+    # a store that does not contain the entity, and it returned nothing.
+    #
+    # Name remains the last resort so selection stays deterministic and never
+    # depends on dict ordering — but it is now reached only when two sources are
+    # genuinely indistinguishable, rather than whenever they happen to match the
+    # same number of words.
+    id_hits_by_ds = {ds: scored[ds][0] for ds in live}
+    leader = max(live, key=lambda ds: (len(live[ds]), id_hits_by_ds[ds], ds))
     keep = {leader}
     for ds, tokens in live.items():
         if ds != leader and (tokens - live[leader]):
@@ -427,6 +488,12 @@ class DeterministicDrafter:
             # Keep only entities truly present in the card (defensive).
             entities = [e for e in entities if card.has_entity(e)]
             if not entities:
+                # A probe label here is legitimate: the gate requires every
+                # sub-question to name an entity, and this one is a routing
+                # placeholder, not a claim about what the answer *is*. The claim
+                # is made downstream, and Q27 was that the record inherited this
+                # placeholder as its type. Fixed there, in
+                # `cypher/normalizer.py::_label_for`, not here.
                 entities = card.expected_probe_labels()[:1]
 
             if not live_view.is_live(ds):

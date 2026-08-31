@@ -166,7 +166,7 @@ def _seed_from_name(resolved: ResolvedTask) -> ResolvedTask | None:
 
     if os.environ.get("ARIADNE_NAMESEARCH", "").strip().lower() not in {"1", "true", "yes", "on"}:
         return None
-    if resolved.seed_ids:
+    if resolved.seed_ids or asks_for_bulk_scan(resolved.task.text):
         return None
     from dataclasses import replace
 

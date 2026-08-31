@@ -51,12 +51,28 @@ def _is_technique_id(value: str) -> bool:
 
 
 def _label_for(aid: str, resolved: ResolvedTask) -> str:
-    """Resolved primary label, else inferred from the id prefix, else Technique."""
-    if resolved.primary_label():
-        return resolved.primary_label()  # type: ignore[return-value]
+    """The record's type: **the identifier's own shape first**, then the task's.
+
+    The precedence used to run the other way, and that was Q27. A question whose
+    words match no schema term is rescued by routing it as a name lookup, and
+    the gate requires every sub-question to name *some* entity — so the drafter
+    supplies `card.expected_probe_labels()[:1]`, a **liveness-check** helper
+    whose docstring reads *"a couple of labels the content probe expects to
+    exist when loaded"*. For ATT&CK that is `Analytic`, alphabetically first.
+    Preferring it meant `T1176` — a Technique — was reported as an Analytic,
+    while carrying properties that said `stix_type: attack-pattern`.
+
+    An identifier's shape is stronger evidence of its type than the labels a
+    question happened to route on: `T1176` can only be a Technique, whatever the
+    plan said. So the shape wins when it resolves, and the task's label is the
+    fallback for anchors with no recognisable shape — a device named `srv000`
+    still gets `Device` from the task, because no pattern here claims it.
+    """
     for pattern, label in _DOSSIER_ID_LABELS:
         if pattern.match(aid or ""):
             return label
+    if resolved.primary_label():
+        return resolved.primary_label()  # type: ignore[return-value]
     return "Technique"
 
 
