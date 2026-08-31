@@ -10,7 +10,6 @@ that a dead end is walked into once rather than twice.
 
 | ID | Date | Title | Status | Primary metric | Claims | Link |
 |---|---|---|---|---|---|---|
-| `EXP-2026-08-021` | 2026-08-31 | Does a judged comparison survive a change of grader model? The alias moved; the answers did not | running | arm_order_preserved (not recorded) | C-009, C-012, C-021, C-022 | [grader-model-sensitivity](experiments/EXP-2026-08-021-grader-model-sensitivity/) |
 | `EXP-2026-07-001` | 2026-07-26 | Arm A — fully deterministic pipeline (planning, extraction, synthesis) | complete | correctness 0.9972 (n=1) | C-001, C-004 | [arm-a-deterministic](experiments/EXP-2026-07-001-arm-a-deterministic/) |
 | `EXP-2026-07-002` | 2026-07-26 | Arm B — LLM planning with deterministic extraction and an LLM writer | complete | correctness 0.8505 (n=1) | C-002, C-003, C-016 | [arm-b-llm-planned](experiments/EXP-2026-07-002-arm-b-llm-planned/) |
 | `EXP-2026-07-003` | 2026-07-26 | Arm C — authored plan with an LLM writer reading raw evidence | complete | correctness 0.9690 (n=1) | C-002, C-005 | [arm-c-llm-writer-evidence](experiments/EXP-2026-07-003-arm-c-llm-writer-evidence/) |
@@ -41,6 +40,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-08-018` | 2026-08-24 | Reconnect the unreachable LLM claims composer and measure it — do the verifier gates fire when a model proposes claims? | complete | unsupported_claims_cut_by_the_verifier (not recorded) | C-017 | [llm-claims-composer](experiments/EXP-2026-08-018-llm-claims-composer/) |
 | `EXP-2026-08-019` | 2026-08-24 | Does seeding or concurrency change LLM-arm variance, and what does raising workers actually cost? | complete | gold_in_claims_sd_across_repeats (not recorded) | C-017 | [llm-determinism-levers](experiments/EXP-2026-08-019-llm-determinism-levers/) |
 | `EXP-2026-08-020` | 2026-08-29 | How much of the deterministic router's correctness survives paraphrase, and where does it break? | complete | records_exact (not recorded) | C-001, C-010, C-021 | [variant-robustness](experiments/EXP-2026-08-020-variant-robustness/) |
+| `EXP-2026-08-021` | 2026-08-31 | Does a judged comparison survive a change of grader model? The alias moved; the answers did not | complete | arm_order_reversals 0.0000 ± 0.0000 (n=60) | C-009, C-012, C-021, C-022 | [grader-model-sensitivity](experiments/EXP-2026-08-021-grader-model-sensitivity/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 
 **32 experiment(s) on record.**

@@ -111,6 +111,49 @@ def contrasts(cells: dict, pairs: list[tuple[str, str]], suffixes: list[str]) ->
     return out
 
 
+def drift_check(cells: dict, suffixes: list[str]) -> dict:
+    """Are the passes exchangeable, or is the grader drifting across the run?
+
+    A spread computed across passes assumes the passes are interchangeable. If
+    quality moves with elapsed time — a server warming, degrading, or queueing
+    differently under a multi-hour load — then the sd is measuring *drift* and
+    calling it noise is the same category error as `EXP-2026-08-019`'s fallback
+    rate masquerading as quality.
+
+    The test is cheap and needs no new data: under exchangeability, the chance
+    that k values land in strictly monotone order is 2/k!. For three passes that
+    is 1/3, for five it is 1/60. Counting monotone cells against that expectation
+    separates drift from scatter without assuming a functional form.
+    """
+    k = len(suffixes)
+    if k < 3:
+        return {"testable": False, "reason": f"needs >= 3 passes, have {k}"}
+    monotone, rows = 0, []
+    for arm, c in cells.items():
+        vals = [c["mean_per_pass"].get(s) for s in suffixes]
+        if any(v is None for v in vals):
+            continue
+        up = all(b > a for a, b in zip(vals, vals[1:]))
+        down = all(b < a for a, b in zip(vals, vals[1:]))
+        monotone += int(up or down)
+        rows.append({"arm": arm, "values": vals,
+                     "monotone": "up" if up else "down" if down else "no"})
+    n = len(rows)
+    import math
+    p_mono = 2 / math.factorial(k)
+    return {
+        "testable": True,
+        "n_cells": n,
+        "monotone_cells": monotone,
+        "expected_under_exchangeability": round(p_mono * n, 2),
+        "p_monotone_per_cell": round(p_mono, 4),
+        "verdict": ("DRIFT SUSPECTED — more monotone cells than chance"
+                    if n and monotone > 2 * p_mono * n + 1
+                    else "consistent with exchangeable passes"),
+        "cells": rows,
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--root", required=True, type=Path)
@@ -153,6 +196,16 @@ def main() -> int:
                   f"range {c['range']}  sign stable: {c['sign_stable']}")
             print(f"      {'':<32} sum of component sds: {c['sum_of_component_sds']} "
                   f"(H7 wants the contrast sd below this)")
+
+    drift = drift_check(cells, args.suffixes)
+    result["drift_check"] = drift
+    if drift.get("testable"):
+        print(f"\n  drift check: {drift['monotone_cells']}/{drift['n_cells']} cells monotone across "
+              f"{len(args.suffixes)} passes (expected ~{drift['expected_under_exchangeability']} by chance)")
+        print(f"    {drift['verdict']}")
+        for r in drift["cells"]:
+            if r["monotone"] != "no":
+                print(f"      {r['arm']:<18} {r['monotone']:>4}  " + " ".join(f"{v:.4f}" for v in r["values"]))
 
     if args.offset is not None:
         print(f"\n  H5: between-model offset at n=1 was {args.offset:+.4f}")

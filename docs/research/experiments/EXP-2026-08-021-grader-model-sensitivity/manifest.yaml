@@ -5,9 +5,9 @@
 id: EXP-2026-08-021
 slug: grader-model-sensitivity
 title: Does a judged comparison survive a change of grader model? The alias moved; the answers did not
-status: running            # planned | running | complete | failed | superseded
+status: complete            # planned | running | complete | failed | superseded
 date_started: 2026-08-31
-date_completed: null       # null until status is complete/failed
+date_completed: 2026-08-31
 authors: [brendondgr]
 
 purpose: >
@@ -81,10 +81,22 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: arm_order_preserved
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
-baselines_compared: []
-statistical_test: null
+  primary: arm_order_reversals
+  values:
+    arm_order_reversals: {mean: 0.0, std: 0.0, n: 60}          # 5 sessions x 12 cells
+    contrast_sign_flips: {mean: 0.0, std: 0.0, n: 20}          # 5 sessions x 4 contrasts
+    c012_margin_bank19: {mean: 0.4260, std: 0.0164, n: 5}
+    c012_margin_bank20: {mean: 0.5303, std: 0.0303, n: 5}
+    c022_margin_bank19: {mean: 0.0625, std: 0.0147, n: 5}
+    c022_margin_bank20: {mean: 0.0567, std: 0.0097, n: 5}
+    grader_sd_min: {mean: 0.0036, std: 0.0, n: 1}
+    grader_sd_max: {mean: 0.0249, std: 0.0, n: 1}
+    calibration_pearson_r_vs_sonnet: {mean: 0.9612, std: 0.0, n: 30}
+    calibration_mean_delta_vs_sonnet: {mean: 0.0210, std: 0.0, n: 30}
+    monotone_cells_at_k5: {mean: 0.0, std: 0.0, n: 12}
+    grading_failures: {mean: 6.0, std: 0.0, n: 1794}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+baselines_compared: ["reference grading pass, n=1, unidentified model (Q12)"]
+statistical_test: "monotone-run count against exchangeability (P=2/k!); offset adjudicated at 2x within-model sd"
 
 # --- Linkage ---
 supports_claims: [C-009, C-012, C-021, C-022]        # every ID here must exist in ../../CLAIMS.md

@@ -53,6 +53,20 @@ graded through it is dated evidence about whatever was behind the alias that day
 and a date beside it, which is nothing. Triage and sequencing:
 [`../plans/2026-08-31-model-migration-qwen38.md`](../plans/2026-08-31-model-migration-qwen38.md).
 
+**RESOLVED for the exposed set, 2026-08-31 — [`EXP-2026-08-021`](experiments/EXP-2026-08-021-grader-model-sensitivity/).**
+The saved answers were re-graded five times by the now-identified model. Across
+**5 sessions × 12 cells: zero arm-ordering reversals and zero contrast sign
+flips.** C-012's margin is **+0.4260 ± 0.0164** and **+0.5303 ± 0.0303**, 14–26×
+the grader's own spread. **The direction of every judged comparison in this
+record survives a change of grader model**; the *levels* move by up to 0.057 and
+remain unquotable, which is what C-009 already said.
+
+⚠️ **Do not read those ± figures as intervals on the arms.** They are *grader*
+variance at fixed questions. Question-sampling variance is a separate and much
+larger component — roughly ±0.06 at n=30 per `EXP-2026-08-009` — so C-022's
++0.0625 ± 0.0147 means the grader is confident, **not** that federated beats
+merged.
+
 **And note what is *not* on this list.** C-007, C-008, C-015's refutation and
 every retrieval, isolation, leakage and node-edit figure take **no model in the
 metric at all** and are unaffected by any swap. That is the payoff of the
