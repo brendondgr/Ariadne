@@ -185,7 +185,11 @@ that replace the loop when it never runs — `"boundary"` (schema-boundary
 refusal: the task names an entity the card does not model; ok, zero records,
 no query executed) and `"dependency"` (federation skipped a consumer whose
 producer yielded no join values;
-`utils/specialists/federation.py` `dependency_skip_result`). The `"gate"`
+`utils/specialists/federation.py` `dependency_skip_result`), and one
+observation trace — `"anchor"` (the question named more than one entity and the
+specialist declined to choose; `detail.ambiguous_candidates` carries the
+`(id, name)` pairs, which `synthesis/composer.py::abstention_for` renders as
+*"did you mean …?"* rather than guessing). The `"gate"`
 trace repeats per retry attempt, carrying the attempt number, template name,
 validated query, and injected caps in `detail`. Per-step timing (`timing_ms`)
 rides `detail` on the gate/execute/assess/normalize traces.

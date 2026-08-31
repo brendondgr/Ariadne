@@ -32,6 +32,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import re
 from dataclasses import dataclass
 from functools import lru_cache
@@ -57,8 +58,19 @@ _NAME_WEIGHT = 3
 #: `MIN_MARGIN` requires the winner to beat the runner-up by that ratio, so an
 #: ambiguous field of near-equal candidates resolves to nothing rather than to
 #: whichever one sorted first.
+#: Read at call time so a sweep can vary them without editing code — and so the
+#: values a run used are recoverable from its environment rather than from a
+#: diff. Defaults are the a-priori values, chosen before any variant was scored.
 MIN_SCORE = 4.0
 MIN_MARGIN = 1.25
+
+
+def _min_score() -> float:
+    return float(os.environ.get("ARIADNE_NS_MIN_SCORE", MIN_SCORE))
+
+
+def _min_margin() -> float:
+    return float(os.environ.get("ARIADNE_NS_MIN_MARGIN", MIN_MARGIN))
 
 #: Multiplier applied when the question contains an entity's complete name.
 #: Large on purpose: it must clear `MIN_MARGIN` against a near-miss whose name
@@ -167,9 +179,9 @@ class NameIndex:
         unconfident guess here undoes Arm 2's honesty, which cost real work.
         """
         hits = self.search(text, top_k=2, labels=labels)
-        if not hits or hits[0].score < MIN_SCORE:
+        if not hits or hits[0].score < _min_score():
             return None
-        if len(hits) > 1 and hits[1].score > 0 and hits[0].score / hits[1].score < MIN_MARGIN:
+        if len(hits) > 1 and hits[1].score > 0 and hits[0].score / hits[1].score < _min_margin():
             return None
         return hits[0]
 

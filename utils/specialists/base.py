@@ -341,6 +341,22 @@ class QuerySpecialist:
                                 "timing_ms": round((time.perf_counter() - normalize_started) * 1000, 3)},
                     )
                 )
+                # An ambiguous anchor is not an empty result with no cause: the
+                # question named several entities and we declined to pick. Carry
+                # the candidates through the trace channel so the abstention can
+                # *ask* rather than merely report nothing found.
+                candidates = (getattr(result, "meta", None) or {}).get(
+                    "ambiguous_candidates"
+                ) or (getattr(draft, "meta", None) or {}).get("ambiguous_candidates")
+                if candidates:
+                    traces.append(
+                        EvaluatorTrace(
+                            "anchor",
+                            ok=False,
+                            reasons=["the question names more than one entity"],
+                            detail={"ambiguous_candidates": list(candidates)},
+                        )
+                    )
                 summary = self.normalizer.summarize(records, resolved)
                 ok = not contract
                 partial = bool(join_problems) or assessment.partial

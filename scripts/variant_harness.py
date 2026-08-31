@@ -286,6 +286,12 @@ def cmd_compare(args: argparse.Namespace) -> int:
     gold_rows = json.loads((out_dir / args.reference).read_text())
     gold_by_id = {r["case_id"]: r for r in gold_rows}
     variants = json.loads((out_dir / args.variants).read_text())
+    if getattr(args, "split", None):
+        # The frozen half must be unreachable while tuning, not merely unused.
+        # Filtering here means a sweep physically cannot score against it.
+        assignment = json.loads((out_dir / "split.json").read_text())["assignment"]
+        variants = [v for v in variants if assignment.get(v["case_id"]) == args.split]
+        print(f"== split '{args.split}': {len(variants)} variants")
     if args.limit:
         variants = variants[: args.limit]
 
@@ -409,6 +415,8 @@ def main() -> int:
     cmp_.add_argument("--name", default="scored.json")
     cmp_.add_argument("--workers", type=int, default=8)
     cmp_.add_argument("--limit", type=int, default=None)
+    cmp_.add_argument("--split", choices=("tune", "report"), default=None,
+                      help="score only one half of the frozen split")
     cmp_.set_defaults(func=cmd_compare)
 
     args = parser.parse_args()

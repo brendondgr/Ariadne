@@ -197,6 +197,17 @@ def _name_miss_statement(source: str, names: tuple[str, ...]) -> str:
     return f"No entity named {quoted} was found in the {source} source. Check the name."
 
 
+def _ambiguous_candidates(result: SpecialistResult) -> list[tuple[str, str]]:
+    """Candidates the specialist declined to choose between, from its traces."""
+    for trace in (result.traces or ()):
+        detail = getattr(trace, "detail", None) or {}
+        found = detail.get("ambiguous_candidates")
+        if found:
+            return [tuple(c) if isinstance(c, (list, tuple)) else (str(c), "")
+                    for c in found]
+    return []
+
+
 def abstention_for(result: SpecialistResult) -> Abstention:
     """The enforced abstention for one empty-but-ok specialist result.
 
@@ -205,6 +216,26 @@ def abstention_for(result: SpecialistResult) -> Abstention:
     of the generic "no matching records" wording — the analyst asked to define
     something by name, so the honest empty answer should say what it looked for.
     """
+    # An ambiguous anchor gets the most useful abstention available: the
+    # choice itself. Guessing here is the failure EXP-2026-08-020 named -- a
+    # confident answer about the wrong entity, grounded in real records, that no
+    # downstream check can reject -- so the honest output is to hand the
+    # decision back rather than to make it silently.
+    candidates = _ambiguous_candidates(result)
+    if candidates:
+        shown = ", ".join(
+            f"{cid} ({cname})" if cname else str(cid) for cid, cname in candidates[:5]
+        )
+        return Abstention(
+            sub_question_id=result.task.sub_question_id,
+            source=result.task.source,
+            statement=(
+                f"The question names more than one entity in {result.task.source}, "
+                f"so it was not answered rather than guessed. Did you mean: {shown}?"
+            ),
+            query=result.query,
+        )
+
     names = definitional_name_terms(result.task.text)
     if _is_name_lookup(result.query) and names:
         statement = _name_miss_statement(result.task.source, names)
