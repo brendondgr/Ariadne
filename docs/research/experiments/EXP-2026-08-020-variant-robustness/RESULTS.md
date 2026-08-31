@@ -250,3 +250,69 @@ with" is where the difficulty actually lives.
 
 **T4 and T5 record identity remains exactly 0.0000 across all four arms.**
 Nothing measured here moved it, and no claim should say otherwise.
+
+---
+
+# Arms 4 and 5 — splitting the two kinds of evidence
+
+An external review of the follow-on design (2026-08-30) argued that the "+3
+right, −11 wrong" of Arm 3 had never been decomposed, and that the recommendation
+to ship exact-name matching alone rested on an unchecked attribution. Both
+points were correct. **The decomposition was recoverable from the saved Arm 2/3
+results without re-running anything:**
+
+- The 3 gains are **all at T3**.
+- The new wrong answers are T0:1, T3:1, T4:5, T5:4, T6:1.
+- **Zero of the 238 variants at T4, T5 and T6 contain an exact name.** So ten of
+  the twelve cannot be exact-name misfires — they are ranked-matching failures.
+
+That is *stronger* than the review assumed, and it made the split worth building.
+
+**The review's other objection was also correct, and it changed the design.**
+"Exact" is not "unique": `Phishing` is a complete CAPEC name and also sits inside
+`Mobile Phishing`; `SQL Injection` sits inside `Blind SQL Injection`. So
+`exact_name_matches` returns a **list**, and more than one surviving match is an
+ambiguity to surface, never a tie to break. A subsumption filter drops names
+nested inside a longer match — `Software Extensions` contains the complete name
+`Software` (T1592.002) — so multi-word entities do not become false ambiguities,
+while two separately-named entities ("how does Phishing relate to Excavation")
+still resolve as two.
+
+## The measured split
+
+Both arms include Steps 1–2 (bulk-scan hijack fixed, Q27 fixed, tie-break fixed).
+Arm 4 adds ranked matching; **Arm 5 adds exact-name matching only.**
+
+| tier | `records_exact` A2 → A5 | `wrong_entity` A2 → ranked → **exact** |
+|---|---|---|
+| T1 | 0.5000 → 0.5000 | 0.1083 → 0.1083 → **0.1083** |
+| T2 | 0.4250 → 0.4250 | 0.1083 → 0.1083 → **0.1083** |
+| T3 | 0.0990 → **0.1287** | 0.1089 → 0.1188 → **0.1089** |
+| T4 | 0.0000 → 0.0000 | 0.1154 → 0.1635 → **0.1250** |
+| T5 | 0.0000 → 0.0000 | 0.1346 → 0.1731 → **0.1346** |
+| T6 | — | 0.0667 → 0.1000 → **0.0667** |
+
+| | answers gained | wrong answers bought |
+|---|---|---|
+| ranked matching | **+3** | **+11** |
+| **exact name only** | **+3** | **+1** |
+
+**The entire T3 gain survives the split; eleven-twelfths of the cost does not.**
+Negative-control abstention returns to **0.9333** (28 of 30) from ranked
+matching's 0.9000, and T3, T5 and T6 wrong-entity rates all return to Arm 2's
+levels. The single residual is one extra wrong answer at T4.
+
+Catalogue regression is unchanged from Arm 2: **6 better, 0 worse, gold recall
+0.8698 → 0.9161.** With every flag off the 120 golden answers are byte-identical
+to the Arm 0 capture.
+
+## What this licenses
+
+`ARIADNE_EXACTNAME` is a **shippable win** and is separated from
+`ARIADNE_NAMESEARCH` precisely so it can ship without it. Exact-name resolution
+is a lookup with no threshold to fit; ranked matching is a guess whose thresholds
+remain unfitted and are Q28's subject. Welding them to one flag held the clean
+win hostage to the dirty one, and that is now undone.
+
+**T4 and T5 record identity is still exactly 0.0000 across every arm.** Nothing
+measured here has moved it.

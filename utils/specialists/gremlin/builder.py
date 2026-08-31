@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import os
 import re
+from typing import NamedTuple
 from typing import Any
 
 from utils.graph_loader.stores.gremlin import gremlin_edge_label
@@ -160,21 +161,66 @@ def _has_mapping_intent(resolved: ResolvedTask) -> bool:
     return bool(named & _MAPPING_INTENT)
 
 
-def _seed_from_name(resolved: ResolvedTask) -> ResolvedTask | None:
-    """Resolve the question's entity by name; see the Cypher builder's copy."""
-    import os
+def _seed_from_name(resolved: ResolvedTask):
+    """Resolve the question's entity by name.
 
-    if os.environ.get("ARIADNE_NAMESEARCH", "").strip().lower() not in {"1", "true", "yes", "on"}:
+    Returns a re-seeded task, an ``AmbiguousName`` when the question names more
+    than one entity, or ``None``.
+
+    **Two tiers, gated separately, because they are different kinds of
+    evidence.** An exact name is a lookup and needs no threshold; a ranked
+    similarity match is a guess and needs one. EXP-2026-08-020 measured them
+    welded together: 3 answers gained, 12 wrong bought — and **ten of the twelve
+    came from tiers where no exact name appears at all**, so the ranked half
+    caused them. Splitting the flags lets the clean win ship without the dirty
+    one.
+    """
+    if resolved.seed_ids:
         return None
-    if resolved.seed_ids or asks_for_bulk_scan(resolved.task.text):
+    # A bulk request names a category, not an entity. "List ATT&CK software
+    # entries" matched a node called `enterprise-attack`, seeded it, and
+    # returned 1 record against a gold of 821 (A-SCN-01, Arm 3).
+    if asks_for_bulk_scan(resolved.task.text):
         return None
     from dataclasses import replace
 
-    from ..schema.namesearch import resolve_in
+    from ..schema.namesearch import exact_name_matches, resolve_in
 
     labels = tuple(resolved.labels) or tuple(resolved.task.entities or ())
-    hit = resolve_in(resolved.dataset, resolved.task.text, labels=labels)
-    return replace(resolved, seed_ids=(hit.entity_id,)) if hit else None
+
+    if _exactname_on_g():
+        exact = exact_name_matches(resolved.dataset, resolved.task.text, labels=labels)
+        if len(exact) == 1:
+            return replace(resolved, seed_ids=(exact[0].entity_id,))
+        if len(exact) > 1:
+            # Do not pick. "Exact" is not "unique": the question names two
+            # entities and a single-anchor query has to choose one, so the
+            # honest output is the choice itself, handed back to the analyst.
+            return AmbiguousName(tuple((c.entity_id, c.name) for c in exact[:5]))
+
+    if _namesearch_on_g():
+        hit = resolve_in(resolved.dataset, resolved.task.text, labels=labels)
+        if hit is not None:
+            return replace(resolved, seed_ids=(hit.entity_id,))
+    return None
+
+
+class AmbiguousName(NamedTuple):
+    """The question names several entities; the analyst picks, not us."""
+
+    candidates: tuple[tuple[str, str], ...]
+
+
+def _exactname_on_g() -> bool:
+    import os
+
+    return os.environ.get("ARIADNE_EXACTNAME", "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _namesearch_on_g() -> bool:
+    import os
+
+    return os.environ.get("ARIADNE_NAMESEARCH", "").strip().lower() in {"1", "true", "yes", "on"}
 
 
 def _unanchored_abstains() -> bool:
@@ -253,6 +299,8 @@ class GremlinQueryBuilder:
             if resolved.name_terms and is_definitional_request(resolved.task.text):
                 return self._describe(resolved)
             seeded = _seed_from_name(resolved)
+            if isinstance(seeded, AmbiguousName):
+                return self._ambiguous(resolved, seeded)
             if seeded is not None:
                 return self.build(seeded, feedback)
             if _unanchored_abstains() and not asks_for_bulk_scan(resolved.task.text):
@@ -300,6 +348,8 @@ class GremlinQueryBuilder:
         if resolved.name_terms and is_definitional_request(resolved.task.text):
             return self._describe(resolved)
         seeded = _seed_from_name(resolved)
+        if isinstance(seeded, AmbiguousName):
+            return self._ambiguous(resolved, seeded)
         if seeded is not None:
             return self.build(seeded, feedback)
         if _unanchored_abstains() and not asks_for_bulk_scan(resolved.task.text):
@@ -935,6 +985,15 @@ class GremlinQueryBuilder:
             hop = gremlin_edge_label(_safe_gremlin_ident(rel, "relationship type"))
             steps.append(f'{"out" if direction == "out" else "in"}("{hop}")')
         return ".".join(steps), owner
+
+    def _ambiguous(self, resolved: ResolvedTask, amb) -> QueryDraft:
+        """Empty result carrying the candidates, so the answer can ask."""
+        draft = self._unanchored(resolved)
+        return QueryDraft(
+            query=draft.query, params=draft.params, template="ambiguous-name",
+            expected_nonempty=False,
+            meta={**draft.meta, "ambiguous_candidates": list(amb.candidates)},
+        )
 
     def _unanchored(self, resolved: ResolvedTask) -> QueryDraft:
         """Honest empty result for a question whose anchor never resolved.

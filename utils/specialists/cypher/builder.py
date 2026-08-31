@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import os
 import re
-from typing import Any
+from typing import Any, NamedTuple
 
 from ...planner.intent import (
     asks_for_bulk_scan,
@@ -218,6 +218,23 @@ def _unanchored_abstains() -> bool:
     return os.environ.get("ARIADNE_LEXICON", "").strip().lower() in {"1", "true", "yes", "on"}
 
 
+class AmbiguousName(NamedTuple):
+    """The question names several entities; the analyst picks, not us."""
+
+    candidates: tuple[tuple[str, str], ...]
+
+
+def _exactname_on() -> bool:
+    """Exact-name anchoring. Its own flag, separate from ranked matching.
+
+    Exact-name resolution is a lookup with no threshold to tune, and the
+    measurement says it is not what caused Arm 3's wrong answers. Ranked
+    matching is a guess whose thresholds are still unfitted (Q28). One flag for
+    both would hold the first hostage to the second.
+    """
+    return os.environ.get("ARIADNE_EXACTNAME", "").strip().lower() in {"1", "true", "yes", "on"}
+
+
 def _namesearch_on() -> bool:
     """Is name-based anchor resolution enabled? Default **off**.
 
@@ -228,32 +245,48 @@ def _namesearch_on() -> bool:
     return os.environ.get("ARIADNE_NAMESEARCH", "").strip().lower() in {"1", "true", "yes", "on"}
 
 
-def _seed_from_name(resolved: ResolvedTask) -> ResolvedTask | None:
-    """Resolve the question's entity by name and return a re-seeded task.
+def _seed_from_name(resolved: ResolvedTask):
+    """Resolve the question's entity by name.
 
-    Returns ``None`` — the common case — when the index is not confident. That
-    is deliberate and it is the same discipline as `nearest()` in the lexicon:
-    an unconfident guess here would undo the honest abstention Arm 2 bought, and
-    a confidently wrong anchor is worse than none.
+    Returns a re-seeded task, an ``AmbiguousName`` when the question names more
+    than one entity, or ``None``.
+
+    **Two tiers, gated separately, because they are different kinds of
+    evidence.** An exact name is a lookup and needs no threshold; a ranked
+    similarity match is a guess and needs one. EXP-2026-08-020 measured them
+    welded together: 3 answers gained, 12 wrong bought — and **ten of the twelve
+    came from tiers where no exact name appears at all**, so the ranked half
+    caused them. Splitting the flags lets the clean win ship without the dirty
+    one.
     """
-    if not _namesearch_on() or resolved.seed_ids:
+    if resolved.seed_ids:
         return None
-    # A bulk request names a *category*, not an entity, so resolving it by name
-    # is a category error with a measured cost: "List ATT&CK software entries"
-    # matched a node literally called `enterprise-attack`, seeded it, and
-    # returned **one** record where the golden answer is 821
-    # (EXP-2026-08-020, A-SCN-01 regressed under Arm 3).
+    # A bulk request names a category, not an entity. "List ATT&CK software
+    # entries" matched a node called `enterprise-attack`, seeded it, and
+    # returned 1 record against a gold of 821 (A-SCN-01, Arm 3).
     if asks_for_bulk_scan(resolved.task.text):
         return None
     from dataclasses import replace
 
-    from ..schema.namesearch import resolve_in
+    from ..schema.namesearch import exact_name_matches, resolve_in
 
     labels = tuple(resolved.labels) or tuple(resolved.task.entities or ())
-    hit = resolve_in(resolved.dataset, resolved.task.text, labels=labels)
-    if hit is None:
-        return None
-    return replace(resolved, seed_ids=(hit.entity_id,))
+
+    if _exactname_on():
+        exact = exact_name_matches(resolved.dataset, resolved.task.text, labels=labels)
+        if len(exact) == 1:
+            return replace(resolved, seed_ids=(exact[0].entity_id,))
+        if len(exact) > 1:
+            # Do not pick. "Exact" is not "unique": the question names two
+            # entities and a single-anchor query has to choose one, so the
+            # honest output is the choice itself, handed back to the analyst.
+            return AmbiguousName(tuple((c.entity_id, c.name) for c in exact[:5]))
+
+    if _namesearch_on():
+        hit = resolve_in(resolved.dataset, resolved.task.text, labels=labels)
+        if hit is not None:
+            return replace(resolved, seed_ids=(hit.entity_id,))
+    return None
 
 
 def _generic_only() -> bool:
@@ -438,6 +471,8 @@ class CypherQueryBuilder:
         #    re-enter this ladder, so the question reaches the *same* template it
         #    would have reached had the analyst typed the identifier.
         seeded = _seed_from_name(resolved)
+        if isinstance(seeded, AmbiguousName):
+            return self._ambiguous(resolved, seeded)
         if seeded is not None:
             return self.build(seeded, feedback)
 
@@ -1230,6 +1265,27 @@ class CypherQueryBuilder:
             params={"ids": dc_ids},
             template="datacomponent_analytics",
             meta={"seed_ids": dc_ids},
+        )
+
+    def _ambiguous(self, resolved: ResolvedTask, amb) -> QueryDraft:
+        """Empty result that carries the candidates, so the answer can ask.
+
+        Same mechanism as `_unanchored` — a real bounded query against an empty
+        id set, returning zero rows honestly — but the candidates ride along in
+        `meta` so the composed answer can say *"did you mean T1176 (Software
+        Extensions) or T1592.002 (Software)?"* instead of silently picking one.
+
+        Guessing here is the single failure this experiment exists to name: a
+        confident answer about the wrong entity, grounded in real records, that
+        nothing downstream can reject.
+        """
+        draft = self._unanchored(resolved)
+        return QueryDraft(
+            query=draft.query,
+            params=draft.params,
+            template="ambiguous-name",
+            expected_nonempty=False,
+            meta={**draft.meta, "ambiguous_candidates": list(amb.candidates)},
         )
 
     def _unanchored(self, resolved: ResolvedTask) -> QueryDraft:

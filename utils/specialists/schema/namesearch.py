@@ -213,6 +213,65 @@ def index_for(dataset: str) -> NameIndex:
     return NameIndex(_canonical_docs(dataset))
 
 
+def exact_name_matches(
+    dataset: str, text: str, *, labels: Iterable[str] | None = None
+) -> list[Candidate]:
+    """Every entity whose **complete name** appears in ``text``.
+
+    Separate from `resolve` on purpose, and the separation is the point.
+
+    An exact name is a categorically different kind of evidence from a high
+    similarity score: it is a lookup, not a guess, and it should not have to
+    clear a score threshold tuned for ranked matching. EXP-2026-08-020 measured
+    the two bundled together — 3 answers gained, 12 wrong bought — and **ten of
+    the twelve wrong came from tiers containing no exact names at all** (0 of
+    238 variants at T4/T5/T6 carry one). So the ranked half caused them, and
+    welding the two to one threshold blocks a clean win behind a dirty one.
+
+    **But "exact" is not "unique", and that is the trap.** `Phishing` is a
+    complete CAPEC name and is also contained in `Mobile Phishing` and
+    `Voice Phishing`; `SQL Injection` sits inside `Blind SQL Injection`. So this
+    returns a **list**, and the caller must treat two matches as an ambiguity to
+    surface rather than a tie to break. Returning the longest, or the first,
+    would reintroduce exactly the confident-and-wrong failure this experiment
+    exists to name.
+
+    Longest-first so a caller that wants the most specific reading has it
+    without re-sorting — but length is never used to *decide*.
+    """
+    index = index_for(dataset)
+    keep = {l for l in (labels or ()) if l}
+    low = " " + " ".join(_WORD_RE.findall((text or "").lower())) + " "
+    out: list[Candidate] = []
+    for entity_id, label, name, _toks in index._docs:  # noqa: SLF001 — same module
+        if keep and label not in keep:
+            continue
+        name_toks = _WORD_RE.findall(name.lower())
+        if not name_toks:
+            continue
+        if f" {' '.join(name_toks)} " in low:
+            out.append(Candidate(entity_id, label, name, float(len(name_toks))))
+    out.sort(key=lambda c: (-c.score, c.entity_id))
+
+    # **Drop names nested inside a longer match.** "Software Extensions" also
+    # contains the complete name "Software" (T1592.002), and "Spear Phishing"
+    # contains "Phishing" — reporting those as competing readings would turn
+    # every multi-word entity into a false ambiguity and abstain on the tier
+    # this function exists to serve.
+    #
+    # Genuine ambiguity is two names the question mentions *separately*
+    # ("how does Phishing relate to Excavation"), and that survives this filter
+    # because neither name sits inside the other.
+    kept: list[Candidate] = []
+    for cand in out:
+        name = " ".join(_WORD_RE.findall(cand.name.lower()))
+        if any(f" {name} " in f" {' '.join(_WORD_RE.findall(k.name.lower()))} "
+               for k in kept):
+            continue
+        kept.append(cand)
+    return kept
+
+
 def resolve_in(
     dataset: str, text: str, *, labels: Iterable[str] | None = None
 ) -> Candidate | None:
