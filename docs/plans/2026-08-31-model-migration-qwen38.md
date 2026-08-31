@@ -254,6 +254,47 @@ same run, so A+B costs one extra pass and yields a clean 2×2. Doing C alone wou
 produce a number that cannot be attributed, which is the defect `D-028` was
 written about, reappearing on a different axis.
 
+#### Measured 2026-08-31, and it narrows the problem considerably
+
+The builder half was isolated exactly, because **the deterministic arm has no
+model in it**: re-running it at `HEAD` over both fresh banks and diffing against
+the committed answers varies the builder and nothing else. It costs 1.2–1.5 s per
+bank.
+
+| of 60 deterministic answers, clock keys excluded | |
+|---|---|
+| byte-identical | **29** |
+| **answer text changed, retrieval identical** | **30** |
+| retrieval changed | **1** |
+
+The one retrieval change is `bank20260820/H-ABS-01`, and it is an **improvement**:
+`records 0 → 1, related 0 → 1`, i.e. an anchor that previously resolved to nothing
+now resolves. Consistent with `9f02dc6`'s reported +18/−8.
+
+**So `9f02dc6` is, on these banks, a rendering change with one retrieval fix**, and
+the confound is far more contained than the three-option table above assumes:
+
+- **Retrieval-metric work can go straight to `HEAD`.** 59 of 60 answers retrieve
+  identically, so `gold_in_evidence`, external recall and the isolation counts are
+  effectively unaffected. **Option A's worktree is not needed for those.**
+- **Judged work still needs the isolation.** 31 of 60 answers carry different
+  text, and text is precisely what a judge scores. Re-running any judged arm at
+  `HEAD` and comparing to the recorded judgments would mix the builder's prose
+  changes into a model comparison.
+
+**⚠️ And this is a gap in `9f02dc6`'s own evidence, recorded without blame.** That
+commit reported *"catalogue regression unchanged at 6 better, 0 worse"* — which is
+the 120-question **catalogue**. It did not report the two fresh banks, and those
+are the banks carrying **C-012, C-021 and C-022**. Half their answers moved. The
+change still looks net-positive; the point is that the banks the live claims rest
+on were not in the regression check, and the standing rule
+(`memory: recorded-answer regression`) says both banks are.
+
+**Revised recommendation:** run **A (worktree at `758813f`) for the judged arms
+only**, skip the worktree for anything scored on retrieval, and keep **C** as the
+"what a user gets today" number, clearly labelled as attributable to neither
+change alone.
+
 **Step 2 is unaffected.** It grades answers already on disk; a builder change
 cannot reach them. This note bounds Step 4 only.
 

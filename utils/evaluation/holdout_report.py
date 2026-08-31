@@ -29,6 +29,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from utils.evaluation.coverage import judgment_coverage
 from utils.evaluation.stats import bootstrap_ci, wilson_interval
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -55,6 +56,13 @@ def _mean(values: list[float]) -> float:
 
 
 def load_judgments(root: Path, arm_dir: str) -> list[dict[str, Any]]:
+    """Judgments for one arm. Pair every call with ``judgment_coverage``.
+
+    The list length is not the answer-set size: a case that failed to grade
+    leaves an ``.error.txt`` and no judgment, and EXP-2026-08-021 showed those
+    failures land on the largest answers rather than at random. ``n`` alone
+    therefore reads as a complete set when it is a biased subset.
+    """
     answers = root / arm_dir / "answers"
     out = []
     for path in sorted(answers.glob("*.judgment.json")):
@@ -139,6 +147,7 @@ def build(root: Path = DEFAULT_ROOT) -> dict[str, Any]:
 
     for letter, (arm_dir, dev_dir) in ARMS.items():
         rows = load_judgments(root, arm_dir)
+        coverage = judgment_coverage(root, arm_dir)
         if not rows:
             continue
         for row in rows:
@@ -167,6 +176,9 @@ def build(root: Path = DEFAULT_ROOT) -> dict[str, Any]:
 
         report["arms"][letter] = {
             "arm_code": arm_dir,
+            # What every `n` below is out of. Ungraded cases skew large
+            # (EXP-2026-08-021), so a mean over a short set reads high.
+            "coverage": coverage,
             "holdout": {
                 "all": _roll(rows),
                 "excluding_malformed": _roll([r for r in rows if r["case_id"] != MALFORMED]),

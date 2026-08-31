@@ -191,8 +191,11 @@ def roll_up(root: Path, arm: str, suffix: str = "") -> dict[str, Any]:
         # belt-and-braces: a doubly-suffixed name is a judgment of a judgment
         if p.name.count(".judgment") == 1
     ]
+    from utils.evaluation.coverage import judgment_coverage
+
+    cov = judgment_coverage(root, arm, suffix)
     if not rows:
-        return {"n": 0}
+        return {"n": 0, "coverage": cov}
     correctness = [float(r["correctness"]) for r in rows]
     point, low, high = bootstrap_ci(correctness, lambda v: mean(v))
     correct = sum(1 for r in rows if r["verdict"] == "CORRECT")
@@ -200,6 +203,9 @@ def roll_up(root: Path, arm: str, suffix: str = "") -> dict[str, Any]:
     abstained = [r for r in rows if r.get("abstained")]
     return {
         "n": len(rows),
+        # What n is out of. A judged mean quoted without its denominator hides a
+        # loss that is not random -- see utils/evaluation/coverage.py.
+        "coverage": cov,
         "correctness": {"mean": round(point, 4), "ci95": [round(low, 4), round(high, 4)]},
         "correct_rate": {
             "correct": correct,

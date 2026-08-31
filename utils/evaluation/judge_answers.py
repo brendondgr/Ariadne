@@ -145,19 +145,60 @@ def _post(config: JudgeConfig, prompt: str, max_tokens: int | None = None) -> tu
     raise RuntimeError(f"judge call failed after {config.retries} attempts: {last}")
 
 
-_JSON_BLOCK = re.compile(r"\{.*\}", re.DOTALL)
+def _json_objects(text: str) -> list[dict[str, Any]]:
+    r"""Every top-level JSON object in ``text``, in order.
+
+    Replaces a greedy ``\{.*\}`` that spanned from the first brace to the last.
+    On a reply carrying two objects — a reasoning model emitting a draft and then
+    a verdict — that match covered both plus the prose between them, and
+    ``json.loads`` raised "Extra data" on a judgment the model had produced
+    perfectly well. EXP-2026-08-021 recorded two such losses (ISSUES I-7, I-8);
+    they were discarded judgments, not missing ones.
+
+    ``raw_decode`` stops at the end of the first complete value, so scanning from
+    each ``{`` collects the objects rather than smearing them together.
+    """
+    decoder = json.JSONDecoder()
+    objects: list[dict[str, Any]] = []
+    index = 0
+    while True:
+        start = text.find("{", index)
+        if start == -1:
+            return objects
+        try:
+            value, end = decoder.raw_decode(text, start)
+        except ValueError:
+            # Not the start of a complete object — a brace inside prose, or a
+            # truncated tail. Step past it and keep looking.
+            index = start + 1
+            continue
+        if isinstance(value, dict):
+            objects.append(value)
+        index = end
 
 
 def _parse(reply: str) -> dict[str, Any]:
-    """Pull the JSON object out of a reply that may carry reasoning around it."""
+    """Pull the judgment object out of a reply that may carry reasoning around it.
+
+    Prefers the first object that actually looks like a judgment. A reply can
+    contain several objects and the *first* is not always the answer: EXP-2026-08-021
+    saw one whose leading object carried only ``verdict``, which parsed cleanly
+    and then failed schema validation as "missing 5 fields". Choosing by content
+    rather than by position fixes that case and the "Extra data" case together.
+    """
     text = reply.strip()
     if text.startswith("```"):
         text = text.split("```")[1]
         text = text[4:] if text.lower().startswith("json") else text
-    match = _JSON_BLOCK.search(text)
-    if not match:
+    objects = _json_objects(text)
+    if not objects:
         raise ValueError(f"no JSON object in reply: {reply[:200]!r}")
-    return json.loads(match.group(0))
+    for candidate in objects:
+        if all(field in candidate for field in REQUIRED_FIELDS):
+            return candidate
+    # None is complete. Return the richest one so `_normalise` can report
+    # precisely which fields are missing, rather than whichever came first.
+    return max(objects, key=lambda o: sum(f in o for f in REQUIRED_FIELDS))
 
 
 def _prompt_for(answer: dict[str, Any]) -> str:
@@ -232,17 +273,33 @@ def judge_one(path: Path, config: JudgeConfig, suffix: str) -> tuple[str, str]:
     try:
         answer = json.loads(path.read_text())
         prompt = _prompt_for(answer)
-        try:
-            content, served_model = _post(config, prompt)
-            raw = _parse(content)
-        except ValueError:
-            # An unparseable or empty reply is usually the token ceiling, not a
-            # broken model: give it double and try once more before recording a
-            # failure. A case dropped for a budget is a case silently missing
-            # from the night's numbers.
-            content, served_model = _post(config, prompt, max_tokens=config.max_tokens * 2)
-            raw = _parse(content)
+        # An unparseable or empty reply is usually the token ceiling, not a broken
+        # model, so the budget escalates before a failure is recorded. A case
+        # dropped for a budget is a case silently missing from the night's
+        # numbers, and EXP-2026-08-021 showed those absences are not random:
+        # all six of its failures were in the top 5% of answers by size, i.e. one
+        # question *type*, so the loss skews a judged mean rather than thinning it.
+        # The third rung is EXP-2026-08-009's 32768, which recovered exactly this
+        # class of oversized case.
+        budgets = [config.max_tokens, config.max_tokens * 2, max(config.max_tokens * 4, 32768)]
+        raw, served_model, used_budget, last_error = None, None, None, None
+        for budget in budgets:
+            try:
+                content, served_model = _post(config, prompt, max_tokens=budget)
+                raw = _parse(content)
+                used_budget = budget
+                break
+            except ValueError as exc:
+                last_error = exc
+        if raw is None:
+            raise last_error or ValueError("no reply")
         judgment = _normalise(case_id, raw, served_model=served_model)
+        # Recorded because a case recovered at a larger budget is not measured
+        # under the same conditions as its neighbours. A spread computed across
+        # passes must be able to exclude these rather than absorb them --
+        # a per-case budget change would inflate the very quantity being measured.
+        judgment["judge"]["max_tokens"] = used_budget
+        judgment["judge"]["escalated"] = used_budget != config.max_tokens
         # Written as soon as it exists: a run that dies at case 90 keeps 89.
         out.write_text(json.dumps(judgment, indent=1) + "\n")
         return case_id, "ok"
