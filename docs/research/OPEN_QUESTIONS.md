@@ -1061,6 +1061,65 @@ would have found it immediately. **From:** conversational probe, 2026-08-28.
 
 ### Q29 — The `groups` category licenses a question in a direction too wide to grade
 
+**Status: ANSWERED, negatively (2026-09-01), the same day it was filed.** The
+worry does not reproduce. **Gold-set width does not predict judged score.**
+
+Measured over **3,479 judgments** joined to the width the committed banks
+declare, across 126 distinct questions and 32 runs:
+
+| contrast | value | sign-stable? |
+|---|---:|---|
+| pooled r(width, correctness) | −0.0272 | — |
+| within-cell r, 38 (run, arm) cells | **−0.0068** (sd 0.208) | negative in 16/38 |
+| wide − narrow at width > 10 | **+0.0020** ± 0.0284 se | negative in 12/31 |
+| wide − narrow at width > 20 | −0.0136 ± 0.0353 se | negative in 8/17 |
+
+Every contrast is a coin flip. By width bin, correctness is flat and slightly
+*rising*: 0.8994 (width 1), 0.8851, 0.8980, 0.9156, 0.9053, and **0.9680** for
+the 21–50 bin — the widest bin but one scores highest of all. The widest ATT&CK
+categories are at or near ceiling: `A-SW` at median width 55 scores 0.9356,
+`A-GRP` at 25.5 scores 0.9820, `A-TAC` at 17 scores 0.9956.
+
+**The one bin that looks like the worry is a different defect.** The 51+ bin
+sits at 0.8417, and all of it is `H-SW-02` (169 gold items) in `holdout-v1` —
+the *pre-fix* blind run. The same question on the current builder
+(`outerjoin-holdout`, `composerfix-holdout`) scores **1.000**. That is the
+binding/direction regression from EXP-2026-08-005, not width.
+
+**Two things follow, and the second matters more.**
+
+1. **No fan-out cap at generation time.** The census's askable threshold
+   (p90 ≤ 50) is not where the score moves, because the score does not move.
+   Capping would remove questions for a reason the data does not support.
+2. **The existing banks cannot settle it, and the reason is the census's own
+   finding.** There are **6 questions above width 20 in the entire corpus, and
+   3 above 50.** The banks are too narrow to test width because nobody ever
+   wrote a wide question. So width becomes a **designed, stratified variable in
+   the new bank** rather than a constraint on it — the new bank should span the
+   width range deliberately, and answer this properly at n where it can.
+
+**The incidental finding is the one to remember.** The obvious way to run this
+analysis is to read `gold_expected` off each judgment, where it sits next to the
+score. That field is a **grader output** — `judge_answers.py` asks the model how
+many gold identifiers the question expected — so correlating it with the same
+model's score from the same call measures the grader, not the question. It is
+also unstable: **140 of 1,679 (run, case) pairs disagree with themselves across
+passes.** The first version of this analysis used it and reported
+r = −0.0352 with a −0.0466 narrow-vs-wide contrast at threshold 10, both of
+which vanish against real gold. `verify_grader_field_unused` now walks the AST
+of any module claiming to compute width, and a test proves the guard fires.
+
+Sixth instance of the project's recurring pattern: a procedural artifact that
+moves a number in a consistent direction and is invisible until something is
+checked against an independent source.
+
+Reproduce: `uv run python scripts/gold_width_effect.py`.
+
+---
+
+<details>
+<summary>Original filing, kept for the record</summary>
+
 **Filed 2026-09-01 from EXP-2026-09-001 (I-2).** The schema census measures
 fan-out in both directions for every edge type. `Group -[uses]-> Technique` has
 a **p90 forward fan-out of 63** — the 90th-percentile group uses 63 or more
@@ -1098,6 +1157,8 @@ amendment with a new protocol version, not an edit.
 
 **Blocks:** the interpretation of every judged arm comparison that used a
 `groups` question. **From:** EXP-2026-09-001 ISSUES I-2.
+
+</details>
 
 ---
 
