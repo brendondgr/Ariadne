@@ -16,6 +16,7 @@ join done wrong produces a plausible non-empty answer rather than an error.
 from __future__ import annotations
 
 import json
+import re
 
 import pytest
 
@@ -214,6 +215,34 @@ def test_the_dangling_split_is_actually_exercised(
     for spec in with_dangling:
         assert set(spec.dangling) <= dangling_keys
         assert not (set(spec.gold) & set(spec.dangling))
+
+
+def test_sub_element_gold_is_prose_not_an_invented_id(specs: list[comp.Spec]) -> None:
+    """`CAPEC-31#HAS_CONSEQUENCE-1` is this pipeline's invention, not an answer.
+
+    Grading "what consequences can CAPEC-31 have" against synthetic ids would
+    score a correct prose answer as entirely wrong. The first render pilot
+    produced exactly that question with exactly that gold, which is how this
+    was found.
+    """
+    derived = [s for s in specs if s.return_label in comp.DERIVED_LABELS and s.gold]
+    assert derived, "expected specs returning CAPEC sub-elements"
+    for spec in derived:
+        assert spec.gold_kind == "text_set", spec.id
+        for answer in spec.gold:
+            # Match the synthetic id shape, not a bare "#": CAPEC example text
+            # legitimately contains URL fragments.
+            assert not re.match(r"^CAPEC-\d+#", answer), (spec.id, answer[:80])
+
+
+def test_gold_kind_matches_what_the_answer_actually_is(specs: list[comp.Spec]) -> None:
+    for spec in specs:
+        if spec.kind == "property":
+            assert spec.gold_kind in {"set", "text"}
+        elif spec.return_label in comp.DERIVED_LABELS:
+            assert spec.gold_kind == "text_set", spec.id
+        else:
+            assert spec.gold_kind == "set", spec.id
 
 
 def test_federated_chain_gold_matches_gold_bank(specs: list[comp.Spec]) -> None:

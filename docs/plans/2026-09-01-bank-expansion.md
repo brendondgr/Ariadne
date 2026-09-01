@@ -61,16 +61,16 @@ Three things follow and all three are mandatory:
 (`raw_graph.py`) that the census now also uses. Run with
 `uv run python scripts/enumerate_compositions.py --per-shape 4`.
 
-**2,372 specs, 165 distinct path shapes, and 100% census coverage — all 33 edge
-types, including all 21 that had never carried a question.**
+**2,368 specs, 161 distinct path shapes, and 100% census coverage — all 34 edge
+types, including all 22 that had never carried a question.**
 
 | tier | specs | | |
 |---|---:|---|---:|
-| D0 unanswerable | 370 | attack | 975 |
-| D1 property | 130 | capec | 1,129 |
-| D2 forward hop | 125 | federated | 268 |
-| D3 reverse hop | 69 | | |
-| D4 two hop | 965 | gold width median | 2 |
+| D0 unanswerable | 370 | attack | 957 |
+| D1 property | 112 | capec | 1,143 |
+| D2 forward hop | 128 | federated | 268 |
+| D3 reverse hop | 73 | | |
+| D4 two hop | 972 | gold width median | 2 |
 | D5 constrained | 459 | gold width p90 | 15 |
 | D6 cross-source | 254 | gold width max | 858 |
 
@@ -136,17 +136,34 @@ above width 20 and 3 above 50**, so it could not have detected a width effect
 if one existed. Stratify the new bank across width bands — including wide ones —
 so this is answered at n rather than assumed.
 
-### Step 4 — Fable 5.1 renders, and only renders
+### Step 4 — The model renders, and only renders — **BUILT 2026-09-01, pending a Fable endpoint**
 
-Spec in, question text out. The model sees entity names and relation semantics
-in domain terms; never a query, a template, or the label vocabulary. Three
-renderings per spec at different registers (analyst-casual, formal, indirect),
-which buys paraphrase robustness as a by-product.
+`utils/specialists/evalset/render.py` + `scripts/render_questions.py`. Spec in,
+question text out. The model never sees the gold, the path, the tier, or
+anything named after the system under test — tests assert each of those.
 
-**Gate:** measure lexical overlap between question text and schema labels, and
-reject renderings that merely echo the label. Our own record says a question set
-avoiding the schema's words would have found the vocabulary problem immediately
-— so enforce it rather than hope for it.
+**The schema's own words never reach the prompt.** Predicates *are* the schema's
+vocabulary (`kill_chain_phase`, `MAPS_TO[ATTACK]`, `x_mitre_analytic_refs`), so
+handing them over would manufacture the leakage we are trying to measure. Each
+predicate, property and constraint has a **gloss** written from source
+semantics, the raw predicate never reaches a prompt, and a missing gloss raises
+rather than falling back to it. The glosses are the one hand-authored artifact
+in the pipeline, and `schema_leakage` hard-rejects any question that contains a
+raw schema token — so a gloss that smuggled one in is caught by the question it
+produced.
+
+**Gate met.** Schema overlap on the first pilot: median 0.059, p90 0.182, max
+0.333. The questions are not label echoes. The three registers differ less than
+hoped (0.064 / 0.087 / 0.060), which is worth recording rather than claiming as
+paraphrase diversity.
+
+**Blocked on one thing: there is no Fable endpoint on this machine.** The relay
+at `localhost:4000` serves `local` (gemma-4-26B), `skynet` (qwen38-27B, which is
+the pipeline model and therefore disqualified as author) and five `opencode/*`
+models; there is no Anthropic key. The pilots ran on
+`opencode/nemotron-3-ultra-free` — a different family from the pipeline model,
+so blindness holds — and the runner takes `--model`, so pointing it at Fable is
+one flag. **This needs an answer before Step 7.**
 
 ### Step 5 — Validation before anything is graded
 

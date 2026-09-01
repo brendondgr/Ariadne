@@ -40,14 +40,14 @@
  "totals": {
   "node_types": 25,
   "nodes": 10170,
-  "edge_types": 33,
-  "edge_instances": 34933,
+  "edge_types": 34,
+  "edge_instances": 34954,
   "cross_source_edge_types": 1,
   "enumerable_properties": 46,
   "facet_properties": 12,
   "date_properties": 2,
-  "forward_askable_edge_types": 31,
-  "reverse_askable_edge_types": 30,
+  "forward_askable_edge_types": 32,
+  "reverse_askable_edge_types": 31,
   "dangling_cross_source_references": 10
  },
  "dangling_cross_source_references": [
@@ -2554,6 +2554,32 @@
   },
   {
    "source": "capec",
+   "subject": "View",
+   "predicate": "HAS_MEMBER",
+   "object": "Category",
+   "count": 21,
+   "distinct_subjects": 3,
+   "distinct_objects": 21,
+   "forward_fanout": {
+    "n": 3,
+    "mean": 7.0,
+    "median": 6.0,
+    "p90": 9,
+    "max": 9
+   },
+   "reverse_fanout": {
+    "n": 21,
+    "mean": 1.0,
+    "median": 1.0,
+    "p90": 1,
+    "max": 1
+   },
+   "origin": "xml-element",
+   "cross_source": false,
+   "triple": "View -[HAS_MEMBER]-> Category"
+  },
+  {
+   "source": "capec",
    "subject": "AttackPattern",
    "predicate": "PeerOf",
    "object": "AttackPattern",
@@ -2659,12 +2685,12 @@
  ],
  "coverage": {
   "authored_categories": 16,
-  "edge_types_total": 33,
+  "edge_types_total": 34,
   "edge_types_reached": 12,
-  "edge_type_coverage": 0.3636,
-  "edge_instances_total": 34933,
+  "edge_type_coverage": 0.3529,
+  "edge_instances_total": 34954,
   "edge_instances_reached": 23294,
-  "edge_instance_coverage": 0.6668,
+  "edge_instance_coverage": 0.6664,
   "labels_reachable": [
    "AttackPattern",
    "Consequence",
@@ -2716,7 +2742,8 @@
    "DetectionStrategy -[x_mitre_analytic_refs]-> Analytic",
    "Group -[uses]-> Software",
    "Matrix -[tactic_refs]-> Tactic",
-   "View -[HAS_MEMBER]-> AttackPattern"
+   "View -[HAS_MEMBER]-> AttackPattern",
+   "View -[HAS_MEMBER]-> Category"
   ],
   "declared_but_absent": []
  }

@@ -181,12 +181,23 @@ node counts toward its label's population only when nothing else in the graph
 defines that label.* CWEs count (no CWE catalogue is loaded). CAPEC-declared
 technique ids do not (ATT&CK defines Techniques). `Technique` stays 697.
 
-### C-2 — 21 edges pointed at excluded nodes
+### C-2 — 21 View members were typed as attack patterns and are categories
 
-`View -[HAS_MEMBER]-> AttackPattern` was **67**; it is **46**. The other 21
-referenced CAPEC patterns that the load policy excludes as Deprecated/Obsolete.
-v1's own policy line said dead endpoints were pruned, and for this one edge type
-they were not. Total edge instances: 34,954 → **34,933**.
+**This entry was first written with the wrong cause and is corrected here.** It
+originally said the 21 edges pointed at patterns the load policy excludes. They
+do not. Counted exactly, the 67 `View` member references are **46 live attack
+patterns and 21 categories**, and **zero** retired patterns. The check that
+produced the wrong explanation tested membership against the live *attack
+pattern* set alone, so every category read as "retired".
+
+The real defect is a typing one, and it was v1's: CAPEC views contain both
+categories and attack patterns — `capec_graph.py:333` says so in as many words —
+and v1 typed all 67 as `View -[HAS_MEMBER]-> AttackPattern`.
+
+`View -[HAS_MEMBER]-> AttackPattern` is therefore **46**, and
+`View -[HAS_MEMBER]-> Category` (**21**) is a new edge type; see C-4 for why it
+took a second pass to appear. Total edge instances: 34,954 → **34,933** →
+**34,954** again, the same total for a different reason.
 
 ### C-3 — Property coverage was too generous: 31.1% → **19.3%**
 
@@ -198,6 +209,31 @@ the execution/consequence/skill categories do surface it.
 
 This is the largest correction in the amendment and it moves in the unflattering
 direction, which is the direction a self-serving bug would not have taken.
+
+### C-4 — Categories and views were given identifiers CAPEC does not use
+
+v2's first pass keyed categories and views as `CATEGORY-118` and `VIEW-1000`.
+Those are inventions. CAPEC allocates attack patterns, categories and views from
+**one number space** — verified here: 615 / 78 / 13 ids with no collision in any
+pair — and addresses all three as `CAPEC-<n>`.
+
+Two things followed from the invented scheme, and the second is the one that
+mattered:
+
+1. The renderer's first pilot rejected 30 of 126 questions because the model
+   would not put `VIEW-703` in a sentence. That was the model behaving
+   correctly and the identifier being wrong.
+2. **A whole edge type was missing.** Views reference their category members by
+   CAPEC id, so with categories keyed as `CATEGORY-118` those references
+   resolved to nothing and the census dropped them silently — which is what
+   produced the mistaken C-2 explanation above.
+
+Fixed by keying both as `CAPEC-<n>`, with an assertion that raises if a future
+snapshot ever collides the number space rather than silently merging a category
+into an attack pattern.
+
+**Census totals after C-4: 34 edge types, 22 of them never asked**, and category
+coverage 36.4% → **35.3%** — the denominator grew, the numerator did not.
 
 ### M-1 — Dangling cross-source references: **10**
 
@@ -224,7 +260,12 @@ can produce; dropping them silently would hide the skew inside a gold set.
 
 ### What did not change
 
-Edge types (33), edge type coverage (36.4%), facets (12), facets used (0),
-cross-source edge types (1), and every population figure the `gold_bank`
-cross-check covers. The 13 tests that hold the census to `gold_bank` all still
-pass unchanged.
+Facets (12), facets used (0), cross-source edge types (1), and every population
+figure the `gold_bank` cross-check covers. The 13 tests that hold the census to
+`gold_bank` all still pass unchanged.
+
+### Headline after all four corrections
+
+**12 of 34 edge types — 35.3%.** The finding is unchanged in substance and
+slightly worse in magnitude than first reported: the categories reach one fewer
+share of a graph that turned out to have one more shape in it.

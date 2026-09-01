@@ -444,12 +444,22 @@ def _parse_capec(root: ET.Element) -> tuple[dict[str, Node], list[Edge], dict[st
                 )
                 edges.append(Edge(cid, predicate, child_id, "capec", "xml-element"))
 
+    # Categories, views and attack patterns are allocated from one CAPEC number
+    # space, so `CAPEC-118` names a category unambiguously and is how CAPEC's
+    # own site addresses it. Inventing `CATEGORY-118` instead gave the renderer
+    # an identifier no question could plausibly contain, and 30 of 42 rejections
+    # in the first render pilot were the model sensibly refusing to use it.
     for container, singular in (("Categories", "Category"), ("Views", "View")):
         holder = root.find(f"c:{container}", CAPEC_NS)
         if holder is None:
             continue
         for element in holder.findall(f"c:{singular}", CAPEC_NS):
-            holder_id = f"{singular.upper()}-{element.get('ID')}"
+            holder_id = f"CAPEC-{element.get('ID')}"
+            if holder_id in nodes:
+                raise ValueError(
+                    f"{singular} {holder_id} collides with an existing node — the CAPEC "
+                    "number space is no longer shared, and ids must be re-scoped"
+                )
             nodes[holder_id] = Node(
                 id=holder_id,
                 source="capec",

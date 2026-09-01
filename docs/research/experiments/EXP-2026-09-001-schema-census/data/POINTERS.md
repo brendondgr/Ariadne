@@ -8,21 +8,25 @@ makes it reproducible without shipping a 52 MB bundle.
 
 | Artifact | Path (repo-relative) | Bytes | SHA-256 | What it is |
 |---|---|---|---:|---|
-| Census (machine) | `docs/evaluation/schema-census/attack-19.0-capec-3.9/census.json` | 61980 | sha256:1dd0d3cdced9e4888182a66786829847c4ec68c3db1b63abf98bad90a6393da0 | node types, properties, typed edges, fan-out, coverage |
-| Census (report) | `docs/evaluation/schema-census/attack-19.0-capec-3.9/CENSUS.md` | 8470 | sha256:e622dcf4cc703354db6e60b2f69f34af2024167d66f6b55ae940c892c5944a78 | rendered tables |
+| Census (machine) | `docs/evaluation/schema-census/attack-19.0-capec-3.9/census.json` | 62502 | sha256:1f1b354a75299fdfa16b66f3a38ac8931c1371f3624190d35028ad3cb0e4877d | node types, properties, typed edges, fan-out, coverage |
+| Census (report) | `docs/evaluation/schema-census/attack-19.0-capec-3.9/CENSUS.md` | 8583 | sha256:fc21e9393a16564aa1a0821548488dee8984232700f6343cae4fd09725dd88d9 | rendered tables |
 | Source: ATT&CK | `data/raw/attack/v19.0/enterprise-attack.json` | 52680865 | sha256:df520ea0775a57db7bff760145b02fed89290802913e056b7ed5970b02f3626a | pinned STIX bundle, v19.0 |
 | Source: CAPEC | `data/raw/capec/v3.9/capec_latest.xml` | 3849998 | sha256:70279a2dff0cb0ad79e546adb07828335a704ad5210e047e09e986172fc9e34d | pinned CAPEC XML, v3.9 |
 | Code | `utils/specialists/evalset/schema_census.py` | 23170 | sha256:91f0aeed9aa6cc0a36e0d4c9613ab59c38383cfae9fb8a160cd91a79e151e174 | the enumeration |
 | Tests | `utils/specialists/evalset/tests/test_schema_census.py` | 7235 | sha256:1a0ea833e5ffeeb0445fdeddb5f0d43f03898931ef86c718cc91084d080932c6 | 13 assertions, incl. agreement with `gold_bank` |
-| Code (v2 parse) | `utils/specialists/evalset/raw_graph.py` | 21656 | sha256:ac6d225f1ad51320439f43eacb8d8b7ad39974797e9b31e3d7172a8cbb816aa5 | added by A-1 / Step 1 |
-| Code (enumerator) | `utils/specialists/evalset/composition.py` | 30866 | sha256:f0064a7be4b0cbb28716e95a8b4f7c9cd4222253a3bebc2ed84d8aa7d430b615 | added by A-1 / Step 1 |
-| Tests (enumerator) | `utils/specialists/evalset/tests/test_composition.py` | 9876 | sha256:feff437cb485063837532dbec43ad9aae4cffa2bf4948555e5cd669177905e34 | added by A-1 / Step 1 |
-| Spec pool | `docs/evaluation/composition/attack-19.0-capec-3.9/specs.json` | 2899782 | sha256:4edfbecd182e211d2d52e5f3d7159a58ebf1652c7fb143d650a070b0824594f0 | added by A-1 / Step 1 |
-| Spec pool report | `docs/evaluation/composition/attack-19.0-capec-3.9/report.json` | 632 | sha256:3c43f5fc7b1010b11f6d29a1a15dd6372295281ce4ad02595f8bd91eca11c104 | added by A-1 / Step 1 |
+| Code (v2 parse) | `utils/specialists/evalset/raw_graph.py` | 22299 | sha256:9cd8cce5d8113af1bc18575faeb205e97b537ddb9ea9e6cc830b0b98f72a43bf | added by A-1 / Step 1 |
+| Code (enumerator) | `utils/specialists/evalset/composition.py` | 33584 | sha256:53654a59a75c159129599ce574ed6564894c8f5b54802bb2dc579fa284a18e48 | added by A-1 / Step 1 |
+| Tests (enumerator) | `utils/specialists/evalset/tests/test_composition.py` | 11162 | sha256:5e6cd808cdc7dd05e56be6a440a3b95d9263182e37580000876a081deff413a6 | added by A-1 / Step 1 |
+| Spec pool | `docs/evaluation/composition/attack-19.0-capec-3.9/specs.json` | 3198426 | sha256:b1bdcbd55754d8e542e764b745214df56ae3198df392631641bd70a4d2ec4726 | added by A-1 / Step 1 |
+| Spec pool report | `docs/evaluation/composition/attack-19.0-capec-3.9/report.json` | 632 | sha256:e952b67d68e6d880c6fcef3659064dc36ec0211e0ae456422e5d8c18e11d47d4 | added by A-1 / Step 1 |
+| Code (renderer) | `utils/specialists/evalset/render.py` | 17899 | sha256:d65b3f2a35ee856fab54e67398fdac9538888329983d636ef282516bdedc7f8c | added by Step 4 |
+| Tests (renderer) | `utils/specialists/evalset/tests/test_render.py` | 7886 | sha256:8ba2d0b6b0e09a53ff37c7b20ae935eb35632bc6876720923a9b6464b8bb6b43 | added by Step 4 |
+| Render pilot | `docs/evaluation/composition/attack-19.0-capec-3.9/rendered.json` | 33938 | sha256:1fbfcb7c401b5f7a78ff304235c6bd774954292776e104f08e7d2f4484c97270 | added by Step 4 |
 
 Regenerate:
 
 ```
 uv run python -m utils.specialists.evalset.schema_census
 uv run python scripts/enumerate_compositions.py --per-shape 4
+uv run python scripts/render_questions.py --limit 42 --max-tokens 8192
 ```

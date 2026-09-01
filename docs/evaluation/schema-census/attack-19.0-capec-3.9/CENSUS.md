@@ -4,9 +4,9 @@ ATT&CK v19.0 + CAPEC v3.9, read from the pinned raw snapshot. Regenerate with `u
 
 ## The number this was built to produce
 
-The banks draw from **16 hand-written question categories**. The sources support **33 distinct edge types** across **25 node types**.
+The banks draw from **16 hand-written question categories**. The sources support **34 distinct edge types** across **25 node types**.
 
-Those categories reach **12 of 33** edge types — **36.4%** of the shapes, covering **66.7%** of the 34,933 edge instances.
+Those categories reach **12 of 34** edge types — **35.3%** of the shapes, covering **66.6%** of the 34,954 edge instances.
 
 On the property side it is narrower still: **16 of 83** node properties (**19.3%**), because only the `lookup` category reads a property at all and it reads the description.
 
@@ -14,13 +14,13 @@ On the property side it is narrower still: **16 of 83** node properties (**19.3%
 |---|---:|
 | node types | 25 |
 | nodes | 10,170 |
-| edge types | 33 |
-| edge instances | 34,933 |
+| edge types | 34 |
+| edge instances | 34,954 |
 | cross source edge types | 1 |
 | enumerable properties | 46 |
 | facet properties | 12 |
-| forward askable edge types | 31 |
-| reverse askable edge types | 30 |
+| forward askable edge types | 32 |
+| reverse askable edge types | 31 |
 | dangling cross source references | 10 |
 
 ## Edge types
@@ -60,6 +60,7 @@ measured judged score against gold width and found no effect.
 | `AttackPattern -[MAPS_TO[WASC]]-> TaxonomyEntry:WASC` | 37 | 1/1 | 1/1 | xml-element | **never** |
 | `AttackPattern -[HAS_ALTERNATE_TERM]-> AlternateTerm` | 27 | 1/3 | 1/1 | xml-element | **never** |
 | `Campaign -[attributed-to]-> Group` | 26 | 1/1 | 1/2 | relationship-object | **never** |
+| `View -[HAS_MEMBER]-> Category` | 21 | 6/9 | 1/1 | xml-element | **never** |
 | `AttackPattern -[PeerOf]-> AttackPattern` | 19 | 1/3 | 1/1 | xml-element | **never** |
 | `Matrix -[tactic_refs]-> Tactic` | 15 | 15/15 | 1/1 | embedded-ref | **never** |
 | `AttackPattern -[CanFollow]-> AttackPattern` | 10 | 1/2 | 1/1 | xml-element | **never** |
@@ -67,7 +68,7 @@ measured judged score against gold width and found no effect.
 
 ## Never asked
 
-21 edge types have never carried a question:
+22 edge types have never carried a question:
 
 - `Analytic -[log_source]-> DataComponent`
 - `AttackPattern -[CanAlsoBe]-> AttackPattern`
@@ -90,6 +91,7 @@ measured judged score against gold width and found no effect.
 - `Group -[uses]-> Software`
 - `Matrix -[tactic_refs]-> Tactic`
 - `View -[HAS_MEMBER]-> AttackPattern`
+- `View -[HAS_MEMBER]-> Category`
 
 ## Facet properties
 

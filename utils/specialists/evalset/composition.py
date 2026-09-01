@@ -57,8 +57,19 @@ from utils.specialists.evalset.raw_graph import RawGraph
 UNASKABLE_PROPERTIES = frozenset({
     "x_mitre_version", "x_mitre_attack_spec_version", "x_mitre_domains",
     "x_mitre_first_seen_citation", "x_mitre_last_seen_citation",
-    "name", "Name", "id", "Status",
+    "name", "Name", "id", "Status", "x_mitre_shortname",
 })
+
+#: Property names that carry an *edge*, not a value. They are already census
+#: edge types, so asking for them as D1 properties would ask the same question
+#: twice in two tiers — once truthfully as a traversal, once as a request for a
+#: list of opaque STIX uuids that no question could name.
+_REF_PROPERTY_SUFFIXES = ("_ref", "_refs", "_references")
+_REF_PROPERTIES = frozenset({"kill_chain_phases"})
+
+
+def _is_reference_property(name: str) -> bool:
+    return name in _REF_PROPERTIES or name.endswith(_REF_PROPERTY_SUFFIXES)
 
 #: Sub-element labels: instances of a parent, with no independent identity.
 DERIVED_LABELS = frozenset({
@@ -163,10 +174,29 @@ def _passes(graph: RawGraph, node_id: str, filters: Sequence[Filter]) -> bool:
     return True
 
 
-def _answer_key(graph: RawGraph, node_id: str) -> str:
-    """What the gold set records: the id a question can be graded against."""
+def _answer_key(graph: RawGraph, node_id: str) -> str | None:
+    """What the gold set records, or `None` when the node is not an answer.
+
+    For an entity, that is its identifier. For a CAPEC sub-element it is the
+    **text**: execution steps, consequences and skills have no identifier in the
+    XML, so the ids this pipeline gives them (`CAPEC-31#HAS_CONSEQUENCE-1`) are
+    its own inventions. Grading "what consequences can CAPEC-31 have" against
+    those would score a correct prose answer as entirely wrong, and the first
+    render pilot produced exactly that question with exactly that gold.
+
+    Two `Skill` elements in CAPEC v3.9 carry no text at all. A sub-element with
+    no content is not an answer, so it is dropped rather than represented by the
+    invented id — which is how it leaked through the first time.
+    """
     node = graph.nodes[node_id]
+    if node.label in DERIVED_LABELS:
+        return node.properties.get("text") or node.name or None
     return node.key or node.id
+
+
+def _gold_kind_for(label: str) -> str:
+    """`text_set` members are prose and cannot be graded by identifier match."""
+    return "text_set" if label in DERIVED_LABELS else "set"
 
 
 def gold_for(
@@ -197,8 +227,14 @@ def gold_and_dangling(
     """
     reached = walk(graph, start, steps)
     kept = [n for n in reached if _passes(graph, n, filters)]
-    live = {_answer_key(graph, n) for n in kept if not graph.is_dangling(n)}
-    dead = {_answer_key(graph, n) for n in kept if graph.is_dangling(n)}
+    live = {
+        key
+        for n in kept
+        if not graph.is_dangling(n) and (key := _answer_key(graph, n)) is not None
+    }
+    dead = {
+        key for n in kept if graph.is_dangling(n) and (key := _answer_key(graph, n)) is not None
+    }
     return tuple(sorted(live)), tuple(sorted(dead))
 
 
@@ -352,6 +388,7 @@ def property_specs(
                 for node in by_label[label]
                 for key, value in node.properties.items()
                 if key not in UNASKABLE_PROPERTIES
+                and not _is_reference_property(key)
                 and value not in (None, [], "")
                 and kinds.get((label, key)) != "structured"
             }
@@ -363,7 +400,15 @@ def property_specs(
             )
             for node in _sample(eligible, limit, seed, f"D1:{label}:{prop}"):
                 value = node.properties[prop]
-                gold = tuple(sorted(str(v) for v in (value if isinstance(value, list) else [value])))
+                values = value if isinstance(value, list) else [value]
+                # The anchor's own name and identifier are never part of the
+                # answer to a question about the anchor — and `aliases` lists
+                # both, so leaving them in would put the answer in the prompt as
+                # the subject line.
+                itself = {node.key, node.name} - {None}
+                gold = tuple(sorted({str(v) for v in values} - itself))  # noqa: E501
+                if not gold:
+                    continue
                 yield _make_spec(
                     graph,
                     spec_id=f"D1-{label}-{prop}-{node.key}",
@@ -410,6 +455,7 @@ def hop_specs(
                 return_label=end_label,
                 return_field="key",
                 gold=gold,
+                gold_kind=_gold_kind_for(end_label),
                 dangling=dead,
                 shapes=(_triple(subject, predicate, obj),),
             )
@@ -464,6 +510,7 @@ def two_hop_specs(
                         return_label=end,
                         return_field="key",
                         gold=gold,
+                        gold_kind=_gold_kind_for(end),
                         shapes=(
                             _triple(s1, p1, o1),
                             _triple(s2, p2, o2),
@@ -519,6 +566,7 @@ def constrained_specs(
                     return_label=obj,
                     return_field="key",
                     gold=gold,
+                    gold_kind=_gold_kind_for(obj),
                     shapes=(_triple(subject, predicate, obj),),
                 )
 
@@ -583,6 +631,11 @@ def negative_specs(
                     return_label=end[0],
                     return_field="key",
                     gold=(),
+                    # Empty either way, but the kind still has to match what the
+                    # answer would have been: a grader picks its metric from it,
+                    # and an abstention scored by the wrong metric is a defect
+                    # that only shows up on the questions that matter most.
+                    gold_kind=_gold_kind_for(end[0]),
                     shapes=(_triple(label, predicate, end[0]),),
                 )
 
@@ -662,6 +715,7 @@ def cross_source_specs(
                 return_label=end,
                 return_field="key",
                 gold=gold,
+                gold_kind=_gold_kind_for(end),
                 shapes=(
                     "AttackPattern -[MAPS_TO[ATTACK]]-> Technique",
                     _triple(end, predicate, "Technique")
