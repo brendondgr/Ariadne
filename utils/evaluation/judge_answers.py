@@ -107,6 +107,13 @@ class JudgeConfig:
     timeout_s: float = DEFAULT_TIMEOUT_S
     temperature: float = 0.0
     retries: int = 3
+    #: Zero-based position of this cell in its grading session, when the caller
+    #: knows it. EXP-2026-08-022 measured a position effect of about 0.01 -- the
+    #: condition graded second scores lower, whichever it is -- which is the size
+    #: of several differences this project reports. Recording it makes a paired
+    #: comparison correctable after the fact; `utils/evaluation/grading_order.py`
+    #: prevents it up front. None means the caller did not say.
+    position: int | None = None
 
 
 def _post(config: JudgeConfig, prompt: str, max_tokens: int | None = None) -> tuple[str, str | None]:
@@ -300,6 +307,7 @@ def judge_one(path: Path, config: JudgeConfig, suffix: str) -> tuple[str, str]:
         # a per-case budget change would inflate the very quantity being measured.
         judgment["judge"]["max_tokens"] = used_budget
         judgment["judge"]["escalated"] = used_budget != config.max_tokens
+        judgment["judge"]["position"] = config.position
         # Written as soon as it exists: a run that dies at case 90 keeps 89.
         out.write_text(json.dumps(judgment, indent=1) + "\n")
         return case_id, "ok"
@@ -415,9 +423,14 @@ def main(argv: Iterable[str] | None = None) -> int:
     parser.add_argument("--calibrate", action="store_true",
                         help="grade answers that already have judgments and compare")
     parser.add_argument("--out", default=None, help="write the run summary here")
+    parser.add_argument(
+        "--position", type=int, default=None,
+        help="zero-based position of this cell in its grading session; recorded on "
+             "every judgment so a paired comparison stays correctable (EXP-2026-08-022)",
+    )
     args = parser.parse_args(list(argv) if argv is not None else None)
 
-    config = JudgeConfig(model=args.model, max_tokens=args.max_tokens)
+    config = JudgeConfig(model=args.model, max_tokens=args.max_tokens, position=args.position)
     root = Path(args.root)
     if args.calibrate:
         summary = calibrate(root, args.arm, config, args.workers)

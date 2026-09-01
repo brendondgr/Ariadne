@@ -148,14 +148,31 @@ class Measurement:
         )
         return {"arm": arm, "bank": str(bank), "root": str(root), "tail": out[-400:]}
 
-    def judge(self, root: Path, arm: str) -> dict[str, Any]:
+    def judge(self, root: Path, arm: str, position: int | None = None) -> dict[str, Any]:
+        """Grade one arm.
+
+        ``position`` is where this arm sits in the session's grading order, and it
+        is recorded on every judgment. EXP-2026-08-022 measured a position effect
+        of about 0.01 -- the condition graded second scores lower whichever it is.
+
+        **This sweep runs over a single bank, so there is no second block to
+        counterbalance against** (contrast `merged_sweep`, which alternates the
+        order per bank). The arms are therefore always graded in `ARMS` order and
+        `llm_query` is always last, which *deflates* it relative to
+        `deterministic` by roughly the position effect. That direction inflates
+        C-012's margin rather than manufacturing it: the margin is 0.43-0.53 and
+        the bias is ~0.01, so the claim is unaffected -- but the figure should be
+        quoted knowing it is, if anything, slightly generous. The clean remedy is
+        a second pass with the order reversed; recording the position is what
+        makes that comparison possible after the fact.
+        """
         from utils.evaluation.judge_answers import JudgeConfig, run
         from scripts.overnight_sweep import roll_up
 
         result = run(root, arm, JudgeConfig(
             base_url=os.environ.get("EVAL_LLM_BASE_URL", "http://localhost:4000/v1"),
             model=os.environ.get("EVAL_LLM_MODEL", "skynet"),
-            max_tokens=8192, timeout_s=600.0,
+            max_tokens=8192, timeout_s=600.0, position=position,
         ), workers=self.workers)
         result["roll"] = roll_up(root, arm)
         return result
@@ -281,8 +298,8 @@ def main(argv: list[str] | None = None) -> int:
             continue
         m.phase(f"B-run-{arm}", f"run {arm} on the fresh bank — {blurb}",
                 lambda a=arm: m.run_arm(a, NEW_BANK, new_root))
-        m.phase(f"B-judge-{arm}", f"grade {arm}",
-                lambda a=arm: m.judge(new_root, a))
+        m.phase(f"B-judge-{arm}", f"grade {arm} (position {ARMS.index((arm, blurb))})",
+                lambda a=arm, p=ARMS.index((arm, blurb)): m.judge(new_root, a, position=p))
 
     # -- Phase C: why the LLM-query arm failed where it did ------------------
     if not args.skip_llm_query:

@@ -151,6 +151,39 @@ def analyse(old: Path, new: Path, arm: str, suffixes: list[str]) -> dict:
     }
 
 
+def order_effect(root: Path, arm_a: str, arm_b: str,
+                 forward: list[str], reversed_: list[str]) -> dict:
+    """The same contrast under two grading orders.
+
+    ``forward`` are passes where ``arm_a`` was graded before ``arm_b``;
+    ``reversed_`` the opposite. EXP-2026-08-022 measured that the condition
+    graded second scores about 0.01 lower whichever it is, so a contrast run in
+    one fixed order carries that bias entirely on one side. Averaging the two
+    orders cancels it; the difference between them estimates it.
+    """
+    def contrast(suffix: str) -> float | None:
+        a, b = _scores(root, arm_a, suffix), _scores(root, arm_b, suffix)
+        common = sorted(set(a) & set(b))
+        if not common:
+            return None
+        return mean(a[c] for c in common) - mean(b[c] for c in common)
+
+    fwd = [v for v in (contrast(s) for s in forward) if v is not None]
+    rev = [v for v in (contrast(s) for s in reversed_) if v is not None]
+    out = {
+        "contrast": f"{arm_a} - {arm_b}",
+        "forward": [round(v, 4) for v in fwd],
+        "reversed": [round(v, 4) for v in rev],
+        "forward_mean": round(mean(fwd), 4) if fwd else None,
+        "reversed_mean": round(mean(rev), 4) if rev else None,
+    }
+    if fwd and rev:
+        out["order_effect"] = round(out["forward_mean"] - out["reversed_mean"], 4)
+        # The estimate that cancels position: the mean of both orders.
+        out["order_corrected"] = round((out["forward_mean"] + out["reversed_mean"]) / 2, 4)
+    return out
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--old", required=True, type=Path)

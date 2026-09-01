@@ -118,3 +118,73 @@ Every threat in `PROTOCOL.md` §"Threats to validity" stands. Added by the run:
 - **`generic_composed` is now a judged arm** and did not exist before. It is the
   missing cell in the arm table — schema primitives with deterministic
   composition — and EXP-2026-08-001 measured only its retrieval.
+
+---
+
+# AMENDMENTS
+
+## A-1 (2026-08-31) — the reported figures are one pass by an unidentified model, and the order was fixed
+
+**Nothing was re-run.** The saved answers were re-graded: six passes in the
+original grading order and two with it reversed.
+
+Two defects in how this experiment's headline was produced, one small and one
+not.
+
+### The small one: grading order, and it does not change anything here
+
+`merged_sweep.py:223` graded `(MERGED_ARM, *FEDERATED_ARMS)` — so **`merged` was
+graded first and `generic_composed`, the federated control, second, on every
+bank in every pass.** `EXP-2026-08-022` then measured what that costs: on
+byte-identical answers the condition graded **second** scores about **0.01
+lower**, whichever condition it is, proved by a sign flip when the order was
+reversed. The bias was therefore loading entirely onto federation, in the one
+direction that would make this experiment's conclusion easier to reach.
+
+Measured on this contrast, it is smaller than that:
+
+| bank | forward (merged first, 6 passes) | reversed (federated first, 2 passes) | order effect |
+|---|---|---|---|
+| 19 | −0.0565 | −0.0608 | **+0.0043** |
+| 20 | −0.0491 | −0.0550 | **+0.0059** |
+
+**≈0.005, consistent in direction, and immaterial to any reading here.** Recorded
+because it was real and undetected, not because it matters. `merged_sweep` now
+counterbalances the order per bank (`utils/evaluation/grading_order.py`) and every
+judgment records its position.
+
+### The one that matters: the grader
+
+The reported **−0.0334 / +0.0000** comes from the `.c015` pass — **one pass, by a
+model that cannot be identified**, run 2026-08-19..21 inside the window `Q12`
+describes. Re-graded by `qwen38-27B-v2`, calibrated at r = 0.9612 against the
+committed Sonnet judgments:
+
+| bank | as reported (`.c015`, n=1) | **order-corrected, 8 passes** |
+|---|---|---|
+| 19 | −0.0334 | **−0.0587** |
+| 20 | **+0.0000** | **−0.0520** |
+
+The `.c015` pass is the **least federation-favouring of all eight**, and it is the
+one this experiment reported. Both passes grade merged first, so **order cannot
+explain the gap — the grader does**, and it is worth roughly 3–10× the order
+effect.
+
+### What changes, and what does not
+
+**The conclusion stands.** `EXP-2026-08-009`'s own limits section says n = 30 per
+set with bootstrap intervals of roughly ±0.06 over questions, and a 0.05–0.06
+contrast sits inside that. Eight grading passes make the *grader* confident and
+add **nothing** to the question sample. **C-015 stays refuted and C-022 stays a
+claim about cost and constraint rather than accuracy.**
+
+**The specific numbers should not be quoted.** *"Merging is not worse in any way
+this study can measure"* rested on `+0.0000` on bank 20, and that exact zero is an
+artifact of one pass by an unnamed model. Under a named, calibrated grader
+federation leads on **both** banks by ~0.05, consistently, in both grading orders
+— still not a demonstrable difference at this n, but not a tie either.
+
+**The honest restatement:** *no difference is demonstrable at n = 30 under any
+grader tested; the point estimate favours federation by about 0.05 and the
+question sample cannot resolve it.* Closing that needs more questions, not more
+grading — the one thing eight passes proved conclusively.

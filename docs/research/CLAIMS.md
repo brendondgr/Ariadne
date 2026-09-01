@@ -61,6 +61,17 @@ the grader's own spread. **The direction of every judged comparison in this
 record survives a change of grader model**; the *levels* move by up to 0.057 and
 remain unquotable, which is what C-009 already said.
 
+**C-022's REPORTED FIGURES ARE SUPERSEDED (2026-08-31, `EXP-2026-08-009` A-1).**
+The −0.0334 / +0.0000 in the record is **one grading pass by an unidentified
+model**, and it is the least federation-favouring of eight. Order-corrected over
+8 passes by the calibrated grader: **−0.0587 and −0.0520** — federation ahead on
+*both* banks rather than one-and-a-tie. **The conclusion is unchanged** (±0.06
+question-sampling at n=30 swallows it, so no difference is demonstrable) but
+*"merging is not worse in any way this study can measure"* must not be quoted:
+that sentence rested on an exact zero which was an artifact. A separate,
+smaller defect is also closed — `merged` was graded before federation in every
+pass, worth ≈0.005 against federation; the sweep now counterbalances.
+
 **AND THE BUILDER CHANGE IS JUDGED-INVISIBLE ON THESE BANKS (2026-08-31,
 [`EXP-2026-08-022`](experiments/EXP-2026-08-022-builder-change-judged/)).**
 `9f02dc6` altered 31 of 60 deterministic answers on the two fresh banks — almost

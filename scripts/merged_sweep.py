@@ -39,6 +39,9 @@ from typing import Any
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 
+from utils.evaluation.grading_order import counterbalanced, position_of  # noqa: E402
+sys.path.insert(0, str(REPO))
+
 from scripts.measure_arms import EXPERIMENTS, Measurement, _run, now  # noqa: E402
 from utils.config import load_env  # noqa: E402
 
@@ -176,7 +179,7 @@ class MergedSweep(Measurement):
 
     # -- M3/M4/M5/M6: one grader over every cell ----------------------------
 
-    def judge(self, bank_name: str, arm: str) -> dict[str, Any]:
+    def judge(self, bank_name: str, arm: str, position: int | None = None) -> dict[str, Any]:
         """Grade one arm on one bank, into a suffixed sidecar.
 
         `force=True` because the point is *this* grader's read of every cell.
@@ -187,8 +190,10 @@ class MergedSweep(Measurement):
         from utils.evaluation.judge_answers import run as judge_run
 
         root = EXPERIMENTS / bank_name
+        config = _judge_config()
+        config.position = position
         result = judge_run(
-            root, arm, _judge_config(), workers=self.workers,
+            root, arm, config, workers=self.workers,
             suffix=JUDGE_SUFFIX, force=True,
         )
         result["roll"] = roll_up(root, arm, suffix=JUDGE_SUFFIX)
@@ -220,13 +225,21 @@ def main(argv: list[str] | None = None) -> int:
             sweep.phase(f"M{step}-run-{arm}-{bank[-4:]}",
                         f"run {arm} on {bank}",
                         lambda a=arm, b=bank: sweep.run_one(a, b))
-    for arm in (MERGED_ARM, *FEDERATED_ARMS):
-        for bank in BANKS:
+    # Counterbalanced, per bank. `merged` used to be graded first on every bank,
+    # and `generic_composed` -- the federated control, i.e. the other half of
+    # C-022's comparison -- always second. EXP-2026-08-022 measured what that
+    # costs: the condition graded second scores about 0.01 lower whichever it is,
+    # against a reported merged-minus-federated difference of 0.033 and 0.000.
+    # The bias was loading entirely onto federation.
+    judge_arms = (MERGED_ARM, *FEDERATED_ARMS)
+    for bank_index, bank in enumerate(BANKS):
+        for arm in counterbalanced(judge_arms, bank_index):
             step += 1
             verb = "grade" if arm in ARMS_TO_RUN else "re-grade the committed"
+            position = position_of(arm, judge_arms, bank_index)
             sweep.phase(f"M{step}-judge-{arm}-{bank[-4:]}",
-                        f"{verb} {arm} answers on {bank}",
-                        lambda a=arm, b=bank: sweep.judge(b, a))
+                        f"{verb} {arm} answers on {bank} (position {position})",
+                        lambda a=arm, b=bank, p=position: sweep.judge(b, a, position=p))
 
     def report() -> dict[str, Any]:
         from scripts.merged_report import write_report
