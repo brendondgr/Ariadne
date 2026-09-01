@@ -42,6 +42,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-08-020` | 2026-08-29 | How much of the deterministic router's correctness survives paraphrase, and where does it break? | complete | records_exact (not recorded) | C-001, C-010, C-021 | [variant-robustness](experiments/EXP-2026-08-020-variant-robustness/) |
 | `EXP-2026-08-021` | 2026-08-31 | Does a judged comparison survive a change of grader model? The alias moved; the answers did not | complete | arm_order_reversals 0.0000 ± 0.0000 (n=60) | C-009, C-012, C-021, C-022 | [grader-model-sensitivity](experiments/EXP-2026-08-021-grader-model-sensitivity/) |
 | `EXP-2026-08-022` | 2026-08-31 | Is the shipped builder change an improvement, judged, on the two banks its own regression check missed? | complete | difference_in_differences (not recorded) | C-012, C-021, C-022 | [builder-change-judged](experiments/EXP-2026-08-022-builder-change-judged/) |
+| `EXP-2026-09-001` | 2026-09-01 | How many of the question shapes the sources support has any bank asked? | complete | edge_type_coverage 0.3636 ± 0.0000 (n=1) | C-025 | [schema-census](experiments/EXP-2026-09-001-schema-census/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 
-**33 experiment(s) on record.**
+**34 experiment(s) on record.**

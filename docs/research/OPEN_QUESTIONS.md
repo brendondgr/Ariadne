@@ -667,6 +667,27 @@ the framing. **Blocks:** C-025, and whether D-027's alternative framing becomes
 primary. **From:** 2026-08-26 novelty audit Part 4, and
 `reports/2026-08-26-novelty-audit/POINTERS.md`.
 
+**Update 2026-09-01 (EXP-2026-09-001).** The schema census removes the "against"
+argument's sharpest edge and adds a new argument in favour.
+
+*Against, weakened.* The objection was that a gold query in **our template's
+shape** is not neutral between the template arm and the schema-derived arm. The
+census supplies an alternative shape that is neither: a
+`(subject, predicate, object)` triple derived from the raw sources, with no
+knowledge that Ariadne has templates at all. A query serialized from a census
+path and validated against gold computed independently from the raw files is
+co-authored by neither arm. The circularity trap is avoidable; it was not
+obvious before that it was.
+
+*In favour, strengthened.* The census shows the resource would cover **33 edge
+types where the current banks reach 12**, plus 12 unused facet properties. A
+released benchmark at 36% shape coverage would have been a thin contribution.
+
+*Still open, and unchanged:* whether we do it. **What the census does NOT
+settle** is whether Ariadne can answer the 21 never-asked shapes — coverage of
+the question space is not coverage of system capability, and conflating them is
+the single easiest mistake to make with this number.
+
 ---
 
 ### Q10 — Does the verifier actually do anything?
@@ -1035,6 +1056,48 @@ strengthens C-021 rather than threatening it:** the defect is unreachable from
 120 catalogue questions and 30 blind ones because all 150 were written by people
 who knew the vocabulary. A question set that avoided the schema's own words
 would have found it immediately. **From:** conversational probe, 2026-08-28.
+
+---
+
+### Q29 — The `groups` category licenses a question in a direction too wide to grade
+
+**Filed 2026-09-01 from EXP-2026-09-001 (I-2).** The schema census measures
+fan-out in both directions for every edge type. `Group -[uses]-> Technique` has
+a **p90 forward fan-out of 63** — the 90th-percentile group uses 63 or more
+techniques.
+
+`ATTACK_CATEGORIES["groups"]` reads *"The techniques a named group uses, **or**
+the groups using a technique"*. It licenses both directions, and the first has
+answers too large for a grader to score meaningfully. `Mitigation -mitigates->
+Technique` (p90 79) is the mirror case and is safe only because the category
+happens to ask it in reverse; `Technique -kill_chain_phase-> Tactic` (reverse
+p90 113) is safe only because the category says "the tactics a technique belongs
+to" and not the reverse.
+
+**Two of the three widest edges in the graph are asked safely by accident.**
+
+**Why it matters — it is an attribution problem, not a scoring problem.** A
+question whose gold set has 63 members will score badly. That badness reads as a
+*system* failure in every arm comparison we have run, when it is a *question*
+defect. We cannot currently say how many such questions are in the committed
+banks, because no bank records the gold-set size distribution against the
+grader's score.
+
+**What resolves it:** cheap, and it should be done before any expansion.
+1. Compute gold-set size for every question in every committed bank; correlate
+   with judged score. If the correlation is flat, this is a non-issue and the
+   question closes. If it is negative, some of what we have called system
+   failure is question width.
+2. Then decide the policy: cap gold-set size at generation time, or grade
+   wide-answer questions with a set-overlap metric instead of a judged one.
+
+**What it does NOT license:** editing the category text in
+`holdout_protocol.py`. Frozen banks were drawn from it; changing it silently
+would break the provenance of every bank that cites it. Any change is an
+amendment with a new protocol version, not an edit.
+
+**Blocks:** the interpretation of every judged arm comparison that used a
+`groups` question. **From:** EXP-2026-09-001 ISSUES I-2.
 
 ---
 

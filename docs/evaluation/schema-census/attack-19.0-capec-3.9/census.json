@@ -1,0 +1,2431 @@
+{
+ "census_version": 1,
+ "sources": {
+  "attack": {
+   "version": "19.0",
+   "path": "data/raw/attack/v19.0/enterprise-attack.json",
+   "sha256": "df520ea0775a57db7bff760145b02fed89290802913e056b7ed5970b02f3626a",
+   "size_bytes": 52680865,
+   "objects_in_bundle": 25844,
+   "nodes_after_exclusions": 4369,
+   "nodes_with_external_id": 4369,
+   "excluded": {
+    "objects": 446,
+    "relationships_dead_endpoint": 159,
+    "relationships_self": 0,
+    "kill_chain_phases_unresolved": 0
+   }
+  },
+  "capec": {
+   "version": "3.9",
+   "path": "data/raw/capec/v3.9/capec_latest.xml",
+   "sha256": "70279a2dff0cb0ad79e546adb07828335a704ad5210e047e09e986172fc9e34d",
+   "size_bytes": 3849998,
+   "patterns_in_file": 615,
+   "patterns_after_exclusions": 558,
+   "excluded": {
+    "patterns_retired": 57,
+    "edges_dead_endpoint": 0
+   }
+  }
+ },
+ "policy": {
+  "derivation": "raw files only; not through utils.kg_builder and not from a live store",
+  "exclusions": "ATT&CK revoked/deprecated; CAPEC Deprecated/Obsolete; dead endpoints pruned",
+  "enumerable_max_distinct": 60,
+  "freetext_mean_chars": 120
+ },
+ "totals": {
+  "node_types": 23,
+  "nodes": 10098,
+  "edge_types": 33,
+  "edge_instances": 34954,
+  "cross_source_edge_types": 1,
+  "enumerable_properties": 43,
+  "facet_properties": 12,
+  "date_properties": 2,
+  "forward_askable_edge_types": 31,
+  "reverse_askable_edge_types": 30
+ },
+ "nodes": [
+  {
+   "source": "attack",
+   "label": "Analytic",
+   "count": 1758,
+   "unmapped": false,
+   "properties": [
+    {
+     "name": "description",
+     "kind": "text",
+     "present": 1758,
+     "coverage": 1.0,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "name",
+     "kind": "scalar",
+     "present": 1758,
+     "coverage": 1.0,
+     "distinct": 1758,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "x_mitre_domains",
+     "kind": "list",
+     "present": 1758,
+     "coverage": 1.0,
+     "distinct": 1,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "enterprise-attack"
+     ]
+    },
+    {
+     "name": "x_mitre_log_source_references",
+     "kind": "structured",
+     "present": 1713,
+     "coverage": 0.9744,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "x_mitre_mutable_elements",
+     "kind": "structured",
+     "present": 1662,
+     "coverage": 0.9454,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "x_mitre_platforms",
+     "kind": "list",
+     "present": 1758,
+     "coverage": 1.0,
+     "distinct": 11,
+     "enumerable": true,
+     "facet": true,
+     "values": [
+      "Containers",
+      "ESXi",
+      "IaaS",
+      "Identity Provider",
+      "Linux",
+      "Network Devices",
+      "Office Suite",
+      "PRE",
+      "SaaS",
+      "Windows",
+      "macOS"
+     ]
+    },
+    {
+     "name": "x_mitre_version",
+     "kind": "scalar",
+     "present": 1758,
+     "coverage": 1.0,
+     "distinct": 2,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "1.0",
+      "1.1"
+     ]
+    }
+   ]
+  },
+  {
+   "source": "attack",
+   "label": "Campaign",
+   "count": 56,
+   "unmapped": false,
+   "properties": [
+    {
+     "name": "aliases",
+     "kind": "list",
+     "present": 56,
+     "coverage": 1.0,
+     "distinct": 60,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "2015 Ukraine Electric Power Attack",
+      "2016 Ukraine Electric Power Attack",
+      "2022 Ukraine Electric Power Attack",
+      "2025 Poland Wiper Attacks",
+      "2025 Poland Wiper Campaign",
+      "3CX Supply Chain Attack",
+      "APT28 Nearest Neighbor Campaign",
+      "APT41 DUST",
+      "AkaiRy\u016b",
+      "Anthropic AI-orchestrated Campaign",
+      "ArcaneDoor",
+      "C0010",
+      "C0011",
+      "C0015",
+      "C0017",
+      "C0018",
+      "C0021",
+      "C0026",
+      "C0027",
+      "C0032",
+      "C0033",
+      "CostaRicto",
+      "Cutting Edge",
+      "FLORAHOX Activity",
+      "Frankenstein",
+      "FrostyGoop Incident",
+      "FunnyDream",
+      "HomeLand Justice",
+      "Indian Critical Infrastructure Intrusions",
+      "J-magic Campaign",
+      "Juicy Mix",
+      "KV Botnet Activity",
+      "Leviathan Australian Intrusions",
+      "Night Dragon",
+      "Operation AkaiRy\u016b",
+      "Operation CuckooBees",
+      "Operation Digital Eye",
+      "Operation Dream Job",
+      "Operation Dust Storm",
+      "Operation Ghost",
+      "Operation Honeybee",
+      "Operation Interception",
+      "Operation MidnightEclipse",
+      "Operation North Star",
+      "Operation Sharpshooter",
+      "Operation Spalax",
+      "Operation Wocao",
+      "Outer Space",
+      "Pikabot Distribution February 2024",
+      "Quad7 Activity",
+      "RedDelta Modified PlugX Infection Chain Operations",
+      "RedPenguin",
+      "SPACEHOP Activity",
+      "Salesforce Data Exfiltration",
+      "ShadowRay",
+      "SharePoint ToolShell Exploitation",
+      "SolarWinds Compromise",
+      "Triton Safety Instrumented System Attack",
+      "Versa Director Zero Day Exploitation",
+      "Water Curupira Pikabot Distribution"
+     ]
+    },
+    {
+     "name": "description",
+     "kind": "text",
+     "present": 56,
+     "coverage": 1.0,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "first_seen",
+     "kind": "date",
+     "present": 56,
+     "coverage": 1.0,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "last_seen",
+     "kind": "date",
+     "present": 56,
+     "coverage": 1.0,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "name",
+     "kind": "scalar",
+     "present": 56,
+     "coverage": 1.0,
+     "distinct": 56,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "2015 Ukraine Electric Power Attack",
+      "2016 Ukraine Electric Power Attack",
+      "2022 Ukraine Electric Power Attack",
+      "2025 Poland Wiper Attacks",
+      "3CX Supply Chain Attack",
+      "APT28 Nearest Neighbor Campaign",
+      "APT41 DUST",
+      "Anthropic AI-orchestrated Campaign",
+      "ArcaneDoor",
+      "C0010",
+      "C0011",
+      "C0015",
+      "C0017",
+      "C0018",
+      "C0021",
+      "C0026",
+      "C0027",
+      "C0032",
+      "C0033",
+      "CostaRicto",
+      "Cutting Edge",
+      "FLORAHOX Activity",
+      "Frankenstein",
+      "FrostyGoop Incident",
+      "FunnyDream",
+      "HomeLand Justice",
+      "Indian Critical Infrastructure Intrusions",
+      "J-magic Campaign",
+      "Juicy Mix",
+      "KV Botnet Activity",
+      "Leviathan Australian Intrusions",
+      "Night Dragon",
+      "Operation AkaiRy\u016b",
+      "Operation CuckooBees",
+      "Operation Digital Eye",
+      "Operation Dream Job",
+      "Operation Dust Storm",
+      "Operation Ghost",
+      "Operation Honeybee",
+      "Operation MidnightEclipse",
+      "Operation Sharpshooter",
+      "Operation Spalax",
+      "Operation Wocao",
+      "Outer Space",
+      "Pikabot Distribution February 2024",
+      "Quad7 Activity",
+      "RedDelta Modified PlugX Infection Chain Operations",
+      "RedPenguin",
+      "SPACEHOP Activity",
+      "Salesforce Data Exfiltration",
+      "ShadowRay",
+      "SharePoint ToolShell Exploitation",
+      "SolarWinds Compromise",
+      "Triton Safety Instrumented System Attack",
+      "Versa Director Zero Day Exploitation",
+      "Water Curupira Pikabot Distribution"
+     ]
+    },
+    {
+     "name": "x_mitre_contributors",
+     "kind": "list",
+     "present": 16,
+     "coverage": 0.2857,
+     "distinct": 20,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "Andrea Serrano Urea, Telef\u00f3nica Tech",
+      "Aung Kyaw Min Naing, @Nolan",
+      "Austin Larsen and the Google Threat Intelligence Group",
+      "Dominik Breitenbacher, ESET",
+      "Dragos Threat Intelligence",
+      "Erik Schamper, @Schamperr, Fox-IT",
+      "Fl\u00e1vio Costa, @Seguran\u00e7a Descomplicada",
+      "Hiroki Nagahama, NEC Corporation",
+      "Inna Danilevich, U.S. Bank",
+      "Jun Hirata, NEC Corporation",
+      "Kyaw Pyiyt Htet, @KyawPyiytHtet",
+      "Maarten van Dantzig, @MaartenVDantzig, Fox-IT",
+      "Manikantan Srinivasan, NEC Corporation India",
+      "Matt Brenton, Zurich Insurance Group",
+      "Michael \u201cBarni\u201d Barnhart, DTEX",
+      "Pooja Natarajan, NEC Corporation India",
+      "Sareena Karapoola, NEC Corporation India",
+      "Shun Miyazaki, NEC Corporation",
+      "Wai Linn Oo, Kernellix Co.,Ltd.",
+      "Yoshihiro Kori, NEC Corporation"
+     ]
+    },
+    {
+     "name": "x_mitre_first_seen_citation",
+     "kind": "scalar",
+     "present": 56,
+     "coverage": 1.0,
+     "distinct": 54,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "(Citation: Anthropic AI Orchestrated Campaign NOV 2025)(Citation: Anthropic Disrupting AI Espionage NOV 2025)",
+      "(Citation: BlackBerry CostaRicto November 2020)",
+      "(Citation: Booz Allen Hamilton)",
+      "(Citation: CERT Polska)(Citation: Dragos ELECTRUM JAN 2026)",
+      "(Citation: CISA Leviathan 2024)",
+      "(Citation: Cisco ArcaneDoor 2024)",
+      "(Citation: Cisco Talos Avos Jun 2022)",
+      "(Citation: Cisco Talos Transparent Tribe Education Campaign July 2022)",
+      "(Citation: Crowdstrike TELCO BPO Campaign December 2022)",
+      "(Citation: Cybereason OperationCuckooBees May 2022)",
+      "(Citation: Cylance Dust Storm)",
+      "(Citation: DFIR Conti Bazar Nov 2021)",
+      "(Citation: Dragos FROSTYGOOP 2024)",
+      "(Citation: ESET Dukes October 2019)",
+      "(Citation: ESET Industroyer)(Citation: Dragos Crashoverride 2018)",
+      "(Citation: ESET Lazarus Jun 2020)",
+      "(Citation: ESET MirrorFace 2025)(Citation: Trend Micro Earth Kasha Anel NOV 2024)",
+      "(Citation: ESET OilRig Campaigns Sep 2023)",
+      "(Citation: ESET Operation Spalax Jan 2021)",
+      "(Citation: Elastic Pikabot 2024)",
+      "(Citation: FBI Salesforce Data Theft SEP 2025)",
+      "(Citation: FireEye APT29 Nov 2018)(Citation: Microsoft Unidentified Dec 2018)",
+      "(Citation: FireEye TRITON 2019)",
+      "(Citation: FoxIT Wocao December 2019)",
+      "(Citation: Google Cloud APT41 2024)",
+      "(Citation: Juniper RedPenguin MAR 2025)(Citation: Mandiant UNC3886 Juniper Routers MAR 2025)",
+      "(Citation: Kaspersky APT Trends Q1 2020)",
+      "(Citation: Lumen J-Magic JAN 2025)",
+      "(Citation: Lumen KVBotnet 2023)",
+      "(Citation: Lumen Versa 2024)",
+      "(Citation: Mandiant 3cx UNC4736 2023)",
+      "(Citation: Mandiant APT41)",
+      "(Citation: Mandiant Cutting Edge January 2024)(Citation: Volexity Ivanti Zero-Day Exploitation January 2024)",
+      "(Citation: Mandiant ROADSWEEP August 2022)(Citation: Microsoft Albanian Government Attacks September 2022)(Citation: CISA Iran Albanian Attacks September 2022)",
+      "(Citation: Mandiant Suspected Turla Campaign February 2023)",
+      "(Citation: Mandiant UNC3890 Aug 2022)",
+      "(Citation: Mandiant-Sandworm-Ukraine-2022)",
+      "(Citation: McAfee Honeybee)",
+      "(Citation: McAfee Night Dragon)",
+      "(Citation: Microsoft SharePoint Exploit JUL 2025)",
+      "(Citation: Microsoft Storm-0940)",
+      "(Citation: Nearest Neighbor Volexity)",
+      "(Citation: ORB Mandiant)",
+      "(Citation: Oligo ShadowRay Campaign MAR 2024)",
+      "(Citation: Recorded Future RedDelta 2025)",
+      "(Citation: RecordedFuture RedEcho 2021)",
+      "(Citation: Talos Frankenstein June 2019)",
+      "(Citation: Threatpost New Op Sharpshooter Data March 2019)",
+      "(Citation: TrendMicro Pikabot 2024)",
+      "(Citation: Triton-EENews-2017)",
+      "(Citation: Unit 42 SolarStorm December 2020)",
+      "(Citation: Volexity UPSTYLE 2024)",
+      "(Citation: securelist_strongpity)",
+      "(Citation: sentinelone operationDigitalEye Dec 2024)"
+     ]
+    },
+    {
+     "name": "x_mitre_last_seen_citation",
+     "kind": "scalar",
+     "present": 56,
+     "coverage": 1.0,
+     "distinct": 54,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "(Citation: 3cx official statement 2023)",
+      "(Citation: Anthropic AI Orchestrated Campaign NOV 2025)(Citation: Anthropic Disrupting AI Espionage NOV 2025)",
+      "(Citation: Bitdefender FunnyDream Campaign November 2020)",
+      "(Citation: BlackBerry CostaRicto November 2020)",
+      "(Citation: Booz Allen Hamilton)",
+      "(Citation: CERT Polska)(Citation: Dragos ELECTRUM JAN 2026)",
+      "(Citation: CISA Iran Albanian Attacks September 2022)",
+      "(Citation: CISA Leviathan 2024)",
+      "(Citation: Cisco ArcaneDoor 2024)",
+      "(Citation: Cisco Talos Avos Jun 2022)",
+      "(Citation: Cisco Talos Transparent Tribe Education Campaign July 2022)",
+      "(Citation: ClearSky Lazarus Aug 2020)",
+      "(Citation: Crowdstrike TELCO BPO Campaign December 2022)",
+      "(Citation: Cybereason OperationCuckooBees May 2022)",
+      "(Citation: Cylance Dust Storm)",
+      "(Citation: DFIR Conti Bazar Nov 2021)",
+      "(Citation: DOJ KVBotnet 2024)",
+      "(Citation: Dragos FROSTYGOOP 2024)",
+      "(Citation: ESET Dukes October 2019)",
+      "(Citation: ESET Industroyer)(Citation: Dragos Crashoverride 2018)",
+      "(Citation: ESET MirrorFace 2025)",
+      "(Citation: ESET OilRig Campaigns Sep 2023)",
+      "(Citation: ESET Operation Spalax Jan 2021)",
+      "(Citation: Elastic Pikabot 2024)",
+      "(Citation: FBI Salesforce Data Theft SEP 2025)",
+      "(Citation: FireEye APT29 Nov 2018)(Citation: Microsoft Unidentified Dec 2018)",
+      "(Citation: FireEye TRITON 2019)",
+      "(Citation: FoxIT Wocao December 2019)",
+      "(Citation: Google Cloud APT41 2024)",
+      "(Citation: Juniper RedPenguin MAR 2025)(Citation: Mandiant UNC3886 Juniper Routers MAR 2025)",
+      "(Citation: Lumen J-Magic JAN 2025)",
+      "(Citation: Lumen Versa 2024)",
+      "(Citation: MSTIC NOBELIUM May 2021)",
+      "(Citation: Mandiant APT41)",
+      "(Citation: Mandiant Cutting Edge Part 3 February 2024)",
+      "(Citation: Mandiant Suspected Turla Campaign February 2023)",
+      "(Citation: Mandiant UNC3890 Aug 2022)",
+      "(Citation: Mandiant-Sandworm-Ukraine-2022)",
+      "(Citation: McAfee Honeybee)",
+      "(Citation: McAfee Night Dragon)",
+      "(Citation: Nearest Neighbor Volexity)",
+      "(Citation: ORB Mandiant)",
+      "(Citation: Oligo ShadowRay Campaign MAR 2024)",
+      "(Citation: Palo Alto SharePoint Vulnerabilities JUL 2025)",
+      "(Citation: Recorded Future RedDelta 2025)",
+      "(Citation: RecordedFuture RedEcho 2022)",
+      "(Citation: TP-Link Quad 7 AUG 2025)",
+      "(Citation: Talos Frankenstein June 2019)",
+      "(Citation: Threatpost New Op Sharpshooter Data March 2019)",
+      "(Citation: TrendMicro Pikabot 2024)",
+      "(Citation: Triton-EENews-2017)",
+      "(Citation: Volexity UPSTYLE 2024)(Citation: Palo Alto MidnightEclipse APR 2024)",
+      "(Citation: sentinelone operationDigitalEye Dec 2024)",
+      "(Citation: welivesec_strongpity)"
+     ]
+    },
+    {
+     "name": "x_mitre_version",
+     "kind": "scalar",
+     "present": 56,
+     "coverage": 1.0,
+     "distinct": 3,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "1.0",
+      "1.1",
+      "1.2"
+     ]
+    }
+   ]
+  },
+  {
+   "source": "attack",
+   "label": "DataComponent",
+   "count": 106,
+   "unmapped": false,
+   "properties": [
+    {
+     "name": "description",
+     "kind": "text",
+     "present": 106,
+     "coverage": 1.0,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "name",
+     "kind": "scalar",
+     "present": 106,
+     "coverage": 1.0,
+     "distinct": 106,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "x_mitre_domains",
+     "kind": "list",
+     "present": 106,
+     "coverage": 1.0,
+     "distinct": 3,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "enterprise-attack",
+      "ics-attack",
+      "mobile-attack"
+     ]
+    },
+    {
+     "name": "x_mitre_log_sources",
+     "kind": "structured",
+     "present": 100,
+     "coverage": 0.9434,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "x_mitre_version",
+     "kind": "scalar",
+     "present": 106,
+     "coverage": 1.0,
+     "distinct": 3,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "2.0",
+      "2.1",
+      "3.0"
+     ]
+    }
+   ]
+  },
+  {
+   "source": "attack",
+   "label": "DetectionStrategy",
+   "count": 697,
+   "unmapped": false,
+   "properties": [
+    {
+     "name": "name",
+     "kind": "scalar",
+     "present": 697,
+     "coverage": 1.0,
+     "distinct": 682,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "x_mitre_analytic_refs",
+     "kind": "list",
+     "present": 697,
+     "coverage": 1.0,
+     "distinct": 1745,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "x_mitre_domains",
+     "kind": "list",
+     "present": 697,
+     "coverage": 1.0,
+     "distinct": 1,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "enterprise-attack"
+     ]
+    },
+    {
+     "name": "x_mitre_version",
+     "kind": "scalar",
+     "present": 697,
+     "coverage": 1.0,
+     "distinct": 2,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "1.0",
+      "1.1"
+     ]
+    }
+   ]
+  },
+  {
+   "source": "attack",
+   "label": "Group",
+   "count": 174,
+   "unmapped": false,
+   "properties": [
+    {
+     "name": "aliases",
+     "kind": "list",
+     "present": 174,
+     "coverage": 1.0,
+     "distinct": 590,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "description",
+     "kind": "text",
+     "present": 174,
+     "coverage": 1.0,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "name",
+     "kind": "scalar",
+     "present": 174,
+     "coverage": 1.0,
+     "distinct": 174,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "x_mitre_contributors",
+     "kind": "list",
+     "present": 99,
+     "coverage": 0.569,
+     "distinct": 106,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "x_mitre_domains",
+     "kind": "list",
+     "present": 174,
+     "coverage": 1.0,
+     "distinct": 3,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "enterprise-attack",
+      "ics-attack",
+      "mobile-attack"
+     ]
+    },
+    {
+     "name": "x_mitre_version",
+     "kind": "scalar",
+     "present": 174,
+     "coverage": 1.0,
+     "distinct": 26,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "1.0",
+      "1.1",
+      "1.2",
+      "1.3",
+      "1.4",
+      "1.5",
+      "1.6",
+      "2.0",
+      "2.1",
+      "2.2",
+      "2.3",
+      "2.4",
+      "3.0",
+      "3.1",
+      "3.2",
+      "3.3",
+      "4.0",
+      "4.1",
+      "4.2",
+      "5.0",
+      "5.1",
+      "5.2",
+      "5.3",
+      "6.1",
+      "6.2",
+      "7.0"
+     ]
+    }
+   ]
+  },
+  {
+   "source": "attack",
+   "label": "Matrix",
+   "count": 1,
+   "unmapped": false,
+   "properties": [
+    {
+     "name": "description",
+     "kind": "text",
+     "present": 1,
+     "coverage": 1.0,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "name",
+     "kind": "scalar",
+     "present": 1,
+     "coverage": 1.0,
+     "distinct": 1,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "Enterprise ATT&CK"
+     ]
+    },
+    {
+     "name": "tactic_refs",
+     "kind": "list",
+     "present": 1,
+     "coverage": 1.0,
+     "distinct": 15,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "x-mitre-tactic--2558fd61-8c75-4730-94c4-11926db2a263",
+      "x-mitre-tactic--43c49635-f2fa-44f2-92b9-0ee980bbf4ef",
+      "x-mitre-tactic--4ca45d45-df4d-4613-8980-bac22d278fa5",
+      "x-mitre-tactic--5569339b-94c2-49ee-afb3-2222936582c8",
+      "x-mitre-tactic--5bc1d813-693e-4823-9961-abf9af4b0e92",
+      "x-mitre-tactic--5e29b093-294e-49e9-a803-dab3d73b77dd",
+      "x-mitre-tactic--7141578b-e50b-4dcc-bfa4-08a8dd689e9e",
+      "x-mitre-tactic--78b23412-0651-46d7-a540-170a1ce8bd5a",
+      "x-mitre-tactic--9a4e74ab-5008-408c-84bf-a10dfbc53462",
+      "x-mitre-tactic--c17c5845-175e-4421-9713-829d0573dbc9",
+      "x-mitre-tactic--d108ce10-2419-4cf9-a774-46161d6c6cfe",
+      "x-mitre-tactic--d679bca2-e57d-4935-8650-8031c87a4400",
+      "x-mitre-tactic--daa4cbb1-b4f4-4723-a824-7f1efd6e0592",
+      "x-mitre-tactic--f72804c5-f15a-449e-a5da-2eecd181f813",
+      "x-mitre-tactic--ffd5bcee-6e16-4dd2-8eca-7b3beedf33ca"
+     ]
+    },
+    {
+     "name": "x_mitre_version",
+     "kind": "scalar",
+     "present": 1,
+     "coverage": 1.0,
+     "distinct": 1,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "2.0"
+     ]
+    }
+   ]
+  },
+  {
+   "source": "attack",
+   "label": "Mitigation",
+   "count": 44,
+   "unmapped": false,
+   "properties": [
+    {
+     "name": "description",
+     "kind": "text",
+     "present": 44,
+     "coverage": 1.0,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "name",
+     "kind": "scalar",
+     "present": 44,
+     "coverage": 1.0,
+     "distinct": 44,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "Account Use Policies",
+      "Active Directory Configuration",
+      "Antivirus/Antimalware",
+      "Application Developer Guidance",
+      "Application Isolation and Sandboxing",
+      "Audit",
+      "Behavior Prevention on Endpoint",
+      "Boot Integrity",
+      "Code Signing",
+      "Credential Access Protection",
+      "Data Backup",
+      "Data Loss Prevention",
+      "Disable or Remove Feature or Program",
+      "Do Not Mitigate",
+      "Encrypt Sensitive Information",
+      "Environment Variable Permissions",
+      "Execution Prevention",
+      "Exploit Protection",
+      "Filter Network Traffic",
+      "Limit Access to Resource Over Network",
+      "Limit Hardware Installation",
+      "Limit Software Installation",
+      "Multi-factor Authentication",
+      "Network Intrusion Prevention",
+      "Network Segmentation",
+      "Operating System Configuration",
+      "Out-of-Band Communications Channel",
+      "Password Policies",
+      "Pre-compromise",
+      "Privileged Account Management",
+      "Privileged Process Integrity",
+      "Remote Data Storage",
+      "Restrict File and Directory Permissions",
+      "Restrict Library Loading",
+      "Restrict Registry Permissions",
+      "Restrict Web-Based Content",
+      "SSL/TLS Inspection",
+      "Software Configuration",
+      "Threat Intelligence Program",
+      "Update Software",
+      "User Account Control",
+      "User Account Management",
+      "User Training",
+      "Vulnerability Scanning"
+     ]
+    },
+    {
+     "name": "x_mitre_domains",
+     "kind": "list",
+     "present": 44,
+     "coverage": 1.0,
+     "distinct": 2,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "enterprise-attack",
+      "mobile-attack"
+     ]
+    },
+    {
+     "name": "x_mitre_version",
+     "kind": "scalar",
+     "present": 44,
+     "coverage": 1.0,
+     "distinct": 4,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "1.0",
+      "1.1",
+      "1.2",
+      "1.3"
+     ]
+    }
+   ]
+  },
+  {
+   "source": "attack",
+   "label": "Software",
+   "count": 821,
+   "unmapped": false,
+   "properties": [
+    {
+     "name": "description",
+     "kind": "text",
+     "present": 821,
+     "coverage": 1.0,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "is_family",
+     "kind": "scalar",
+     "present": 726,
+     "coverage": 0.8843,
+     "distinct": 1,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "True"
+     ]
+    },
+    {
+     "name": "name",
+     "kind": "scalar",
+     "present": 821,
+     "coverage": 1.0,
+     "distinct": 821,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "x_mitre_aliases",
+     "kind": "list",
+     "present": 808,
+     "coverage": 0.9842,
+     "distinct": 1091,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "x_mitre_contributors",
+     "kind": "list",
+     "present": 194,
+     "coverage": 0.2363,
+     "distinct": 135,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "x_mitre_domains",
+     "kind": "list",
+     "present": 821,
+     "coverage": 1.0,
+     "distinct": 3,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "enterprise-attack",
+      "ics-attack",
+      "mobile-attack"
+     ]
+    },
+    {
+     "name": "x_mitre_platforms",
+     "kind": "list",
+     "present": 784,
+     "coverage": 0.9549,
+     "distinct": 14,
+     "enumerable": true,
+     "facet": true,
+     "values": [
+      "Android",
+      "Containers",
+      "ESXi",
+      "Engineering Workstation",
+      "Field Controller/RTU/PLC/IED",
+      "IaaS",
+      "Identity Provider",
+      "Linux",
+      "Network Devices",
+      "Office Suite",
+      "SaaS",
+      "Windows",
+      "iOS",
+      "macOS"
+     ]
+    },
+    {
+     "name": "x_mitre_version",
+     "kind": "scalar",
+     "present": 821,
+     "coverage": 1.0,
+     "distinct": 20,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "1.0",
+      "1.1",
+      "1.11",
+      "1.14",
+      "1.2",
+      "1.3",
+      "1.4",
+      "1.5",
+      "1.6",
+      "1.7",
+      "1.8",
+      "2.0",
+      "2.1",
+      "2.2",
+      "2.3",
+      "2.5",
+      "2.8",
+      "3.0",
+      "3.1",
+      "3.3"
+     ]
+    }
+   ]
+  },
+  {
+   "source": "attack",
+   "label": "Tactic",
+   "count": 15,
+   "unmapped": false,
+   "properties": [
+    {
+     "name": "description",
+     "kind": "text",
+     "present": 15,
+     "coverage": 1.0,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "name",
+     "kind": "scalar",
+     "present": 15,
+     "coverage": 1.0,
+     "distinct": 15,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "Collection",
+      "Command and Control",
+      "Credential Access",
+      "Defense Impairment",
+      "Discovery",
+      "Execution",
+      "Exfiltration",
+      "Impact",
+      "Initial Access",
+      "Lateral Movement",
+      "Persistence",
+      "Privilege Escalation",
+      "Reconnaissance",
+      "Resource Development",
+      "Stealth"
+     ]
+    },
+    {
+     "name": "x_mitre_domains",
+     "kind": "list",
+     "present": 15,
+     "coverage": 1.0,
+     "distinct": 1,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "enterprise-attack"
+     ]
+    },
+    {
+     "name": "x_mitre_shortname",
+     "kind": "scalar",
+     "present": 15,
+     "coverage": 1.0,
+     "distinct": 15,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "collection",
+      "command-and-control",
+      "credential-access",
+      "defense-impairment",
+      "discovery",
+      "execution",
+      "exfiltration",
+      "impact",
+      "initial-access",
+      "lateral-movement",
+      "persistence",
+      "privilege-escalation",
+      "reconnaissance",
+      "resource-development",
+      "stealth"
+     ]
+    },
+    {
+     "name": "x_mitre_version",
+     "kind": "scalar",
+     "present": 15,
+     "coverage": 1.0,
+     "distinct": 2,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "1.0",
+      "1.1"
+     ]
+    }
+   ]
+  },
+  {
+   "source": "attack",
+   "label": "Technique",
+   "count": 697,
+   "unmapped": false,
+   "properties": [
+    {
+     "name": "description",
+     "kind": "text",
+     "present": 697,
+     "coverage": 1.0,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "kill_chain_phases",
+     "kind": "structured",
+     "present": 697,
+     "coverage": 1.0,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "name",
+     "kind": "scalar",
+     "present": 697,
+     "coverage": 1.0,
+     "distinct": 672,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "x_mitre_contributors",
+     "kind": "list",
+     "present": 437,
+     "coverage": 0.627,
+     "distinct": 478,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "x_mitre_domains",
+     "kind": "list",
+     "present": 697,
+     "coverage": 1.0,
+     "distinct": 1,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "enterprise-attack"
+     ]
+    },
+    {
+     "name": "x_mitre_impact_type",
+     "kind": "list",
+     "present": 33,
+     "coverage": 0.0473,
+     "distinct": 2,
+     "enumerable": true,
+     "facet": true,
+     "values": [
+      "Availability",
+      "Integrity"
+     ]
+    },
+    {
+     "name": "x_mitre_is_subtechnique",
+     "kind": "scalar",
+     "present": 697,
+     "coverage": 1.0,
+     "distinct": 2,
+     "enumerable": true,
+     "facet": true,
+     "values": [
+      "False",
+      "True"
+     ]
+    },
+    {
+     "name": "x_mitre_platforms",
+     "kind": "list",
+     "present": 697,
+     "coverage": 1.0,
+     "distinct": 11,
+     "enumerable": true,
+     "facet": true,
+     "values": [
+      "Containers",
+      "ESXi",
+      "IaaS",
+      "Identity Provider",
+      "Linux",
+      "Network Devices",
+      "Office Suite",
+      "PRE",
+      "SaaS",
+      "Windows",
+      "macOS"
+     ]
+    },
+    {
+     "name": "x_mitre_remote_support",
+     "kind": "scalar",
+     "present": 50,
+     "coverage": 0.0717,
+     "distinct": 1,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "False"
+     ]
+    },
+    {
+     "name": "x_mitre_version",
+     "kind": "scalar",
+     "present": 697,
+     "coverage": 1.0,
+     "distinct": 23,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "1.0",
+      "1.1",
+      "1.2",
+      "1.3",
+      "1.4",
+      "1.5",
+      "1.6",
+      "1.7",
+      "1.8",
+      "2.0",
+      "2.1",
+      "2.2",
+      "2.3",
+      "2.4",
+      "2.5",
+      "2.6",
+      "2.7",
+      "2.8",
+      "3.0",
+      "3.2",
+      "3.4",
+      "3.6",
+      "4.0"
+     ]
+    }
+   ]
+  },
+  {
+   "source": "capec",
+   "label": "AttackPattern",
+   "count": 558,
+   "unmapped": false,
+   "properties": [
+    {
+     "name": "Abstraction",
+     "kind": "scalar",
+     "present": 558,
+     "coverage": 1.0,
+     "distinct": 3,
+     "enumerable": true,
+     "facet": true,
+     "values": [
+      "Detailed",
+      "Meta",
+      "Standard"
+     ]
+    },
+    {
+     "name": "Description",
+     "kind": "text",
+     "present": 556,
+     "coverage": 0.9964,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "Extended_Description",
+     "kind": "text",
+     "present": 130,
+     "coverage": 0.233,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "Likelihood_Of_Attack",
+     "kind": "scalar",
+     "present": 344,
+     "coverage": 0.6165,
+     "distinct": 3,
+     "enumerable": true,
+     "facet": true,
+     "values": [
+      "High",
+      "Low",
+      "Medium"
+     ]
+    },
+    {
+     "name": "Name",
+     "kind": "scalar",
+     "present": 558,
+     "coverage": 1.0,
+     "distinct": 558,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "Status",
+     "kind": "scalar",
+     "present": 558,
+     "coverage": 1.0,
+     "distinct": 3,
+     "enumerable": true,
+     "facet": true,
+     "values": [
+      "Draft",
+      "Stable",
+      "Usable"
+     ]
+    },
+    {
+     "name": "Typical_Severity",
+     "kind": "scalar",
+     "present": 488,
+     "coverage": 0.8746,
+     "distinct": 5,
+     "enumerable": true,
+     "facet": true,
+     "values": [
+      "High",
+      "Low",
+      "Medium",
+      "Very High",
+      "Very Low"
+     ]
+    }
+   ]
+  },
+  {
+   "source": "capec",
+   "label": "Category",
+   "count": 78,
+   "unmapped": false,
+   "properties": [
+    {
+     "name": "Name",
+     "kind": "scalar",
+     "present": 78,
+     "coverage": 1.0,
+     "distinct": 78,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    },
+    {
+     "name": "Status",
+     "kind": "scalar",
+     "present": 78,
+     "coverage": 1.0,
+     "distinct": 3,
+     "enumerable": true,
+     "facet": true,
+     "values": [
+      "Deprecated",
+      "Draft",
+      "Stable"
+     ]
+    }
+   ]
+  },
+  {
+   "source": "capec",
+   "label": "View",
+   "count": 13,
+   "unmapped": false,
+   "properties": [
+    {
+     "name": "Name",
+     "kind": "scalar",
+     "present": 13,
+     "coverage": 1.0,
+     "distinct": 13,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "ATT&CK Related Patterns ",
+      "Comprehensive CAPEC Dictionary",
+      "Deprecated Entries",
+      "Detailed Abstractions",
+      "Domains of Attack",
+      "Industrial Control System (ICS) Patterns",
+      "Mechanisms of Attack",
+      "Meta Abstractions",
+      "Mobile Device Patterns",
+      "OWASP Related Patterns",
+      "Standard Abstractions",
+      "Supply Chain Risks",
+      "WASC Threat Classification 2.0"
+     ]
+    },
+    {
+     "name": "Status",
+     "kind": "scalar",
+     "present": 13,
+     "coverage": 1.0,
+     "distinct": 2,
+     "enumerable": true,
+     "facet": true,
+     "values": [
+      "Draft",
+      "Stable"
+     ]
+    },
+    {
+     "name": "Type",
+     "kind": "scalar",
+     "present": 13,
+     "coverage": 1.0,
+     "distinct": 3,
+     "enumerable": true,
+     "facet": true,
+     "values": [
+      "Explicit",
+      "Graph",
+      "Implicit"
+     ]
+    }
+   ]
+  },
+  {
+   "source": "capec",
+   "label": "AlternateTerm",
+   "count": 27,
+   "unmapped": false,
+   "properties": []
+  },
+  {
+   "source": "capec",
+   "label": "CapecMitigation",
+   "count": 1170,
+   "unmapped": false,
+   "properties": []
+  },
+  {
+   "source": "capec",
+   "label": "Consequence",
+   "count": 812,
+   "unmapped": false,
+   "properties": []
+  },
+  {
+   "source": "capec",
+   "label": "Example",
+   "count": 387,
+   "unmapped": false,
+   "properties": []
+  },
+  {
+   "source": "capec",
+   "label": "ExecutionStep",
+   "count": 815,
+   "unmapped": false,
+   "properties": []
+  },
+  {
+   "source": "capec",
+   "label": "Indicator",
+   "count": 96,
+   "unmapped": false,
+   "properties": []
+  },
+  {
+   "source": "capec",
+   "label": "Prerequisite",
+   "count": 746,
+   "unmapped": false,
+   "properties": []
+  },
+  {
+   "source": "capec",
+   "label": "Resource",
+   "count": 289,
+   "unmapped": false,
+   "properties": []
+  },
+  {
+   "source": "capec",
+   "label": "Skill",
+   "count": 402,
+   "unmapped": false,
+   "properties": []
+  },
+  {
+   "source": "capec",
+   "label": "Weakness",
+   "count": 336,
+   "unmapped": false,
+   "properties": []
+  }
+ ],
+ "edges": [
+  {
+   "source": "attack",
+   "subject": "Software",
+   "predicate": "uses",
+   "object": "Technique",
+   "count": 11213,
+   "distinct_subjects": 821,
+   "distinct_objects": 487,
+   "forward_fanout": {
+    "n": 821,
+    "mean": 13.66,
+    "median": 11.0,
+    "p90": 27,
+    "max": 73
+   },
+   "reverse_fanout": {
+    "n": 487,
+    "mean": 23.02,
+    "median": 5.0,
+    "p90": 53,
+    "max": 400
+   },
+   "origin": "relationship-object",
+   "cross_source": false,
+   "triple": "Software -[uses]-> Technique"
+  },
+  {
+   "source": "attack",
+   "subject": "Group",
+   "predicate": "uses",
+   "object": "Technique",
+   "count": 4546,
+   "distinct_subjects": 170,
+   "distinct_objects": 492,
+   "forward_fanout": {
+    "n": 170,
+    "mean": 26.74,
+    "median": 19.0,
+    "p90": 63,
+    "max": 130
+   },
+   "reverse_fanout": {
+    "n": 492,
+    "mean": 9.24,
+    "median": 3.0,
+    "p90": 26,
+    "max": 86
+   },
+   "origin": "relationship-object",
+   "cross_source": false,
+   "triple": "Group -[uses]-> Technique"
+  },
+  {
+   "source": "attack",
+   "subject": "Analytic",
+   "predicate": "log_source",
+   "object": "DataComponent",
+   "count": 4170,
+   "distinct_subjects": 1713,
+   "distinct_objects": 98,
+   "forward_fanout": {
+    "n": 1713,
+    "mean": 2.43,
+    "median": 2.0,
+    "p90": 4,
+    "max": 10
+   },
+   "reverse_fanout": {
+    "n": 98,
+    "mean": 42.55,
+    "median": 7.0,
+    "p90": 109,
+    "max": 858
+   },
+   "origin": "nested-ref",
+   "cross_source": false,
+   "triple": "Analytic -[log_source]-> DataComponent"
+  },
+  {
+   "source": "attack",
+   "subject": "DetectionStrategy",
+   "predicate": "x_mitre_analytic_refs",
+   "object": "Analytic",
+   "count": 1745,
+   "distinct_subjects": 697,
+   "distinct_objects": 1745,
+   "forward_fanout": {
+    "n": 697,
+    "mean": 2.5,
+    "median": 2.0,
+    "p90": 5,
+    "max": 9
+   },
+   "reverse_fanout": {
+    "n": 1745,
+    "mean": 1.0,
+    "median": 1.0,
+    "p90": 1,
+    "max": 1
+   },
+   "origin": "embedded-ref",
+   "cross_source": false,
+   "triple": "DetectionStrategy -[x_mitre_analytic_refs]-> Analytic"
+  },
+  {
+   "source": "attack",
+   "subject": "Mitigation",
+   "predicate": "mitigates",
+   "object": "Technique",
+   "count": 1448,
+   "distinct_subjects": 44,
+   "distinct_objects": 586,
+   "forward_fanout": {
+    "n": 44,
+    "mean": 32.91,
+    "median": 19.5,
+    "p90": 79,
+    "max": 119
+   },
+   "reverse_fanout": {
+    "n": 586,
+    "mean": 2.47,
+    "median": 2.0,
+    "p90": 5,
+    "max": 11
+   },
+   "origin": "relationship-object",
+   "cross_source": false,
+   "triple": "Mitigation -[mitigates]-> Technique"
+  },
+  {
+   "source": "capec",
+   "subject": "AttackPattern",
+   "predicate": "EXPLOITS_WEAKNESS",
+   "object": "Weakness",
+   "count": 1211,
+   "distinct_subjects": 449,
+   "distinct_objects": 336,
+   "forward_fanout": {
+    "n": 449,
+    "mean": 2.7,
+    "median": 1.0,
+    "p90": 7,
+    "max": 16
+   },
+   "reverse_fanout": {
+    "n": 336,
+    "mean": 3.6,
+    "median": 2.0,
+    "p90": 9,
+    "max": 59
+   },
+   "origin": "xml-element",
+   "cross_source": false,
+   "triple": "AttackPattern -[EXPLOITS_WEAKNESS]-> Weakness"
+  },
+  {
+   "source": "capec",
+   "subject": "AttackPattern",
+   "predicate": "HAS_MITIGATION",
+   "object": "CapecMitigation",
+   "count": 1170,
+   "distinct_subjects": 399,
+   "distinct_objects": 1170,
+   "forward_fanout": {
+    "n": 399,
+    "mean": 2.93,
+    "median": 2.0,
+    "p90": 6,
+    "max": 13
+   },
+   "reverse_fanout": {
+    "n": 1170,
+    "mean": 1.0,
+    "median": 1.0,
+    "p90": 1,
+    "max": 1
+   },
+   "origin": "xml-element",
+   "cross_source": false,
+   "triple": "AttackPattern -[HAS_MITIGATION]-> CapecMitigation"
+  },
+  {
+   "source": "attack",
+   "subject": "Campaign",
+   "predicate": "uses",
+   "object": "Technique",
+   "count": 1146,
+   "distinct_subjects": 55,
+   "distinct_objects": 320,
+   "forward_fanout": {
+    "n": 55,
+    "mean": 20.84,
+    "median": 18.0,
+    "p90": 34,
+    "max": 71
+   },
+   "reverse_fanout": {
+    "n": 320,
+    "mean": 3.58,
+    "median": 2.0,
+    "p90": 9,
+    "max": 29
+   },
+   "origin": "relationship-object",
+   "cross_source": false,
+   "triple": "Campaign -[uses]-> Technique"
+  },
+  {
+   "source": "attack",
+   "subject": "Group",
+   "predicate": "uses",
+   "object": "Software",
+   "count": 1144,
+   "distinct_subjects": 159,
+   "distinct_objects": 603,
+   "forward_fanout": {
+    "n": 159,
+    "mean": 7.19,
+    "median": 5.0,
+    "p90": 17,
+    "max": 49
+   },
+   "reverse_fanout": {
+    "n": 603,
+    "mean": 1.9,
+    "median": 1.0,
+    "p90": 3,
+    "max": 51
+   },
+   "origin": "relationship-object",
+   "cross_source": false,
+   "triple": "Group -[uses]-> Software"
+  },
+  {
+   "source": "attack",
+   "subject": "Technique",
+   "predicate": "kill_chain_phase",
+   "object": "Tactic",
+   "count": 872,
+   "distinct_subjects": 697,
+   "distinct_objects": 15,
+   "forward_fanout": {
+    "n": 697,
+    "mean": 1.25,
+    "median": 1.0,
+    "p90": 2,
+    "max": 4
+   },
+   "reverse_fanout": {
+    "n": 15,
+    "mean": 58.13,
+    "median": 49.0,
+    "p90": 113,
+    "max": 148
+   },
+   "origin": "embedded-ref",
+   "cross_source": false,
+   "triple": "Technique -[kill_chain_phase]-> Tactic"
+  },
+  {
+   "source": "capec",
+   "subject": "AttackPattern",
+   "predicate": "HAS_EXECUTION_STEP",
+   "object": "ExecutionStep",
+   "count": 815,
+   "distinct_subjects": 239,
+   "distinct_objects": 815,
+   "forward_fanout": {
+    "n": 239,
+    "mean": 3.41,
+    "median": 3.0,
+    "p90": 4,
+    "max": 8
+   },
+   "reverse_fanout": {
+    "n": 815,
+    "mean": 1.0,
+    "median": 1.0,
+    "p90": 1,
+    "max": 1
+   },
+   "origin": "xml-element",
+   "cross_source": false,
+   "triple": "AttackPattern -[HAS_EXECUTION_STEP]-> ExecutionStep"
+  },
+  {
+   "source": "capec",
+   "subject": "AttackPattern",
+   "predicate": "HAS_CONSEQUENCE",
+   "object": "Consequence",
+   "count": 812,
+   "distinct_subjects": 368,
+   "distinct_objects": 812,
+   "forward_fanout": {
+    "n": 368,
+    "mean": 2.21,
+    "median": 2.0,
+    "p90": 4,
+    "max": 8
+   },
+   "reverse_fanout": {
+    "n": 812,
+    "mean": 1.0,
+    "median": 1.0,
+    "p90": 1,
+    "max": 1
+   },
+   "origin": "xml-element",
+   "cross_source": false,
+   "triple": "AttackPattern -[HAS_CONSEQUENCE]-> Consequence"
+  },
+  {
+   "source": "capec",
+   "subject": "AttackPattern",
+   "predicate": "HAS_PREREQUISITE",
+   "object": "Prerequisite",
+   "count": 746,
+   "distinct_subjects": 489,
+   "distinct_objects": 746,
+   "forward_fanout": {
+    "n": 489,
+    "mean": 1.53,
+    "median": 1.0,
+    "p90": 3,
+    "max": 6
+   },
+   "reverse_fanout": {
+    "n": 746,
+    "mean": 1.0,
+    "median": 1.0,
+    "p90": 1,
+    "max": 1
+   },
+   "origin": "xml-element",
+   "cross_source": false,
+   "triple": "AttackPattern -[HAS_PREREQUISITE]-> Prerequisite"
+  },
+  {
+   "source": "attack",
+   "subject": "DetectionStrategy",
+   "predicate": "detects",
+   "object": "Technique",
+   "count": 697,
+   "distinct_subjects": 697,
+   "distinct_objects": 697,
+   "forward_fanout": {
+    "n": 697,
+    "mean": 1.0,
+    "median": 1.0,
+    "p90": 1,
+    "max": 1
+   },
+   "reverse_fanout": {
+    "n": 697,
+    "mean": 1.0,
+    "median": 1.0,
+    "p90": 1,
+    "max": 1
+   },
+   "origin": "relationship-object",
+   "cross_source": false,
+   "triple": "DetectionStrategy -[detects]-> Technique"
+  },
+  {
+   "source": "capec",
+   "subject": "AttackPattern",
+   "predicate": "ChildOf",
+   "object": "AttackPattern",
+   "count": 532,
+   "distinct_subjects": 498,
+   "distinct_objects": 148,
+   "forward_fanout": {
+    "n": 498,
+    "mean": 1.07,
+    "median": 1.0,
+    "p90": 1,
+    "max": 3
+   },
+   "reverse_fanout": {
+    "n": 148,
+    "mean": 3.59,
+    "median": 3.0,
+    "p90": 7,
+    "max": 16
+   },
+   "origin": "xml-element",
+   "cross_source": false,
+   "triple": "AttackPattern -[ChildOf]-> AttackPattern"
+  },
+  {
+   "source": "attack",
+   "subject": "Technique",
+   "predicate": "subtechnique-of",
+   "object": "Technique",
+   "count": 475,
+   "distinct_subjects": 475,
+   "distinct_objects": 101,
+   "forward_fanout": {
+    "n": 475,
+    "mean": 1.0,
+    "median": 1.0,
+    "p90": 1,
+    "max": 1
+   },
+   "reverse_fanout": {
+    "n": 101,
+    "mean": 4.7,
+    "median": 4.0,
+    "p90": 8,
+    "max": 18
+   },
+   "origin": "relationship-object",
+   "cross_source": false,
+   "triple": "Technique -[subtechnique-of]-> Technique"
+  },
+  {
+   "source": "capec",
+   "subject": "AttackPattern",
+   "predicate": "REQUIRES_SKILL",
+   "object": "Skill",
+   "count": 402,
+   "distinct_subjects": 295,
+   "distinct_objects": 402,
+   "forward_fanout": {
+    "n": 295,
+    "mean": 1.36,
+    "median": 1.0,
+    "p90": 2,
+    "max": 4
+   },
+   "reverse_fanout": {
+    "n": 402,
+    "mean": 1.0,
+    "median": 1.0,
+    "p90": 1,
+    "max": 1
+   },
+   "origin": "xml-element",
+   "cross_source": false,
+   "triple": "AttackPattern -[REQUIRES_SKILL]-> Skill"
+  },
+  {
+   "source": "capec",
+   "subject": "AttackPattern",
+   "predicate": "HAS_EXAMPLE",
+   "object": "Example",
+   "count": 387,
+   "distinct_subjects": 268,
+   "distinct_objects": 387,
+   "forward_fanout": {
+    "n": 268,
+    "mean": 1.44,
+    "median": 1.0,
+    "p90": 2,
+    "max": 4
+   },
+   "reverse_fanout": {
+    "n": 387,
+    "mean": 1.0,
+    "median": 1.0,
+    "p90": 1,
+    "max": 1
+   },
+   "origin": "xml-element",
+   "cross_source": false,
+   "triple": "AttackPattern -[HAS_EXAMPLE]-> Example"
+  },
+  {
+   "source": "capec",
+   "subject": "AttackPattern",
+   "predicate": "REQUIRES_RESOURCE",
+   "object": "Resource",
+   "count": 289,
+   "distinct_subjects": 271,
+   "distinct_objects": 289,
+   "forward_fanout": {
+    "n": 271,
+    "mean": 1.07,
+    "median": 1.0,
+    "p90": 1,
+    "max": 3
+   },
+   "reverse_fanout": {
+    "n": 289,
+    "mean": 1.0,
+    "median": 1.0,
+    "p90": 1,
+    "max": 1
+   },
+   "origin": "xml-element",
+   "cross_source": false,
+   "triple": "AttackPattern -[REQUIRES_RESOURCE]-> Resource"
+  },
+  {
+   "source": "capec",
+   "subject": "AttackPattern",
+   "predicate": "MAPS_TO[ATTACK]",
+   "object": "Technique",
+   "count": 271,
+   "distinct_subjects": 177,
+   "distinct_objects": 189,
+   "forward_fanout": {
+    "n": 177,
+    "mean": 1.53,
+    "median": 1.0,
+    "p90": 3,
+    "max": 7
+   },
+   "reverse_fanout": {
+    "n": 189,
+    "mean": 1.43,
+    "median": 1.0,
+    "p90": 2,
+    "max": 12
+   },
+   "origin": "xml-element/cross-source",
+   "cross_source": true,
+   "triple": "AttackPattern -[MAPS_TO[ATTACK]]-> Technique"
+  },
+  {
+   "source": "capec",
+   "subject": "Category",
+   "predicate": "HAS_MEMBER",
+   "object": "AttackPattern",
+   "count": 190,
+   "distinct_subjects": 23,
+   "distinct_objects": 66,
+   "forward_fanout": {
+    "n": 23,
+    "mean": 8.26,
+    "median": 6.0,
+    "p90": 17,
+    "max": 52
+   },
+   "reverse_fanout": {
+    "n": 66,
+    "mean": 2.88,
+    "median": 3.0,
+    "p90": 4,
+    "max": 6
+   },
+   "origin": "xml-element",
+   "cross_source": false,
+   "triple": "Category -[HAS_MEMBER]-> AttackPattern"
+  },
+  {
+   "source": "attack",
+   "subject": "Campaign",
+   "predicate": "uses",
+   "object": "Software",
+   "count": 172,
+   "distinct_subjects": 50,
+   "distinct_objects": 121,
+   "forward_fanout": {
+    "n": 50,
+    "mean": 3.44,
+    "median": 2.0,
+    "p90": 8,
+    "max": 11
+   },
+   "reverse_fanout": {
+    "n": 121,
+    "mean": 1.42,
+    "median": 1.0,
+    "p90": 2,
+    "max": 9
+   },
+   "origin": "relationship-object",
+   "cross_source": false,
+   "triple": "Campaign -[uses]-> Software"
+  },
+  {
+   "source": "capec",
+   "subject": "AttackPattern",
+   "predicate": "CanPrecede",
+   "object": "AttackPattern",
+   "count": 162,
+   "distinct_subjects": 80,
+   "distinct_objects": 64,
+   "forward_fanout": {
+    "n": 80,
+    "mean": 2.02,
+    "median": 1.0,
+    "p90": 5,
+    "max": 6
+   },
+   "reverse_fanout": {
+    "n": 64,
+    "mean": 2.53,
+    "median": 1.0,
+    "p90": 6,
+    "max": 18
+   },
+   "origin": "xml-element",
+   "cross_source": false,
+   "triple": "AttackPattern -[CanPrecede]-> AttackPattern"
+  },
+  {
+   "source": "capec",
+   "subject": "AttackPattern",
+   "predicate": "HAS_INDICATOR",
+   "object": "Indicator",
+   "count": 96,
+   "distinct_subjects": 56,
+   "distinct_objects": 96,
+   "forward_fanout": {
+    "n": 56,
+    "mean": 1.71,
+    "median": 1.0,
+    "p90": 3,
+    "max": 5
+   },
+   "reverse_fanout": {
+    "n": 96,
+    "mean": 1.0,
+    "median": 1.0,
+    "p90": 1,
+    "max": 1
+   },
+   "origin": "xml-element",
+   "cross_source": false,
+   "triple": "AttackPattern -[HAS_INDICATOR]-> Indicator"
+  },
+  {
+   "source": "capec",
+   "subject": "View",
+   "predicate": "HAS_MEMBER",
+   "object": "AttackPattern",
+   "count": 67,
+   "distinct_subjects": 4,
+   "distinct_objects": 67,
+   "forward_fanout": {
+    "n": 4,
+    "mean": 16.75,
+    "median": 7.5,
+    "p90": 46,
+    "max": 46
+   },
+   "reverse_fanout": {
+    "n": 67,
+    "mean": 1.0,
+    "median": 1.0,
+    "p90": 1,
+    "max": 1
+   },
+   "origin": "xml-element",
+   "cross_source": false,
+   "triple": "View -[HAS_MEMBER]-> AttackPattern"
+  },
+  {
+   "source": "capec",
+   "subject": "AttackPattern",
+   "predicate": "MAPS_TO[OWASP Attacks]",
+   "object": "TaxonomyEntry:OWASP Attacks",
+   "count": 39,
+   "distinct_subjects": 38,
+   "distinct_objects": 39,
+   "forward_fanout": {
+    "n": 38,
+    "mean": 1.03,
+    "median": 1.0,
+    "p90": 1,
+    "max": 2
+   },
+   "reverse_fanout": {
+    "n": 39,
+    "mean": 1.0,
+    "median": 1.0,
+    "p90": 1,
+    "max": 1
+   },
+   "origin": "xml-element",
+   "cross_source": false,
+   "triple": "AttackPattern -[MAPS_TO[OWASP Attacks]]-> TaxonomyEntry:OWASP Attacks"
+  },
+  {
+   "source": "capec",
+   "subject": "AttackPattern",
+   "predicate": "MAPS_TO[WASC]",
+   "object": "TaxonomyEntry:WASC",
+   "count": 37,
+   "distinct_subjects": 36,
+   "distinct_objects": 33,
+   "forward_fanout": {
+    "n": 36,
+    "mean": 1.03,
+    "median": 1.0,
+    "p90": 1,
+    "max": 2
+   },
+   "reverse_fanout": {
+    "n": 33,
+    "mean": 1.12,
+    "median": 1.0,
+    "p90": 1,
+    "max": 4
+   },
+   "origin": "xml-element",
+   "cross_source": false,
+   "triple": "AttackPattern -[MAPS_TO[WASC]]-> TaxonomyEntry:WASC"
+  },
+  {
+   "source": "capec",
+   "subject": "AttackPattern",
+   "predicate": "HAS_ALTERNATE_TERM",
+   "object": "AlternateTerm",
+   "count": 27,
+   "distinct_subjects": 17,
+   "distinct_objects": 27,
+   "forward_fanout": {
+    "n": 17,
+    "mean": 1.59,
+    "median": 1.0,
+    "p90": 3,
+    "max": 5
+   },
+   "reverse_fanout": {
+    "n": 27,
+    "mean": 1.0,
+    "median": 1.0,
+    "p90": 1,
+    "max": 1
+   },
+   "origin": "xml-element",
+   "cross_source": false,
+   "triple": "AttackPattern -[HAS_ALTERNATE_TERM]-> AlternateTerm"
+  },
+  {
+   "source": "attack",
+   "subject": "Campaign",
+   "predicate": "attributed-to",
+   "object": "Group",
+   "count": 26,
+   "distinct_subjects": 25,
+   "distinct_objects": 19,
+   "forward_fanout": {
+    "n": 25,
+    "mean": 1.04,
+    "median": 1.0,
+    "p90": 1,
+    "max": 2
+   },
+   "reverse_fanout": {
+    "n": 19,
+    "mean": 1.37,
+    "median": 1.0,
+    "p90": 2,
+    "max": 3
+   },
+   "origin": "relationship-object",
+   "cross_source": false,
+   "triple": "Campaign -[attributed-to]-> Group"
+  },
+  {
+   "source": "capec",
+   "subject": "AttackPattern",
+   "predicate": "PeerOf",
+   "object": "AttackPattern",
+   "count": 19,
+   "distinct_subjects": 12,
+   "distinct_objects": 18,
+   "forward_fanout": {
+    "n": 12,
+    "mean": 1.58,
+    "median": 1.0,
+    "p90": 3,
+    "max": 3
+   },
+   "reverse_fanout": {
+    "n": 18,
+    "mean": 1.06,
+    "median": 1.0,
+    "p90": 1,
+    "max": 2
+   },
+   "origin": "xml-element",
+   "cross_source": false,
+   "triple": "AttackPattern -[PeerOf]-> AttackPattern"
+  },
+  {
+   "source": "attack",
+   "subject": "Matrix",
+   "predicate": "tactic_refs",
+   "object": "Tactic",
+   "count": 15,
+   "distinct_subjects": 1,
+   "distinct_objects": 15,
+   "forward_fanout": {
+    "n": 1,
+    "mean": 15.0,
+    "median": 15.0,
+    "p90": 15,
+    "max": 15
+   },
+   "reverse_fanout": {
+    "n": 15,
+    "mean": 1.0,
+    "median": 1.0,
+    "p90": 1,
+    "max": 1
+   },
+   "origin": "embedded-ref",
+   "cross_source": false,
+   "triple": "Matrix -[tactic_refs]-> Tactic"
+  },
+  {
+   "source": "capec",
+   "subject": "AttackPattern",
+   "predicate": "CanFollow",
+   "object": "AttackPattern",
+   "count": 10,
+   "distinct_subjects": 7,
+   "distinct_objects": 9,
+   "forward_fanout": {
+    "n": 7,
+    "mean": 1.43,
+    "median": 1.0,
+    "p90": 2,
+    "max": 3
+   },
+   "reverse_fanout": {
+    "n": 9,
+    "mean": 1.11,
+    "median": 1.0,
+    "p90": 1,
+    "max": 2
+   },
+   "origin": "xml-element",
+   "cross_source": false,
+   "triple": "AttackPattern -[CanFollow]-> AttackPattern"
+  },
+  {
+   "source": "capec",
+   "subject": "AttackPattern",
+   "predicate": "CanAlsoBe",
+   "object": "AttackPattern",
+   "count": 3,
+   "distinct_subjects": 3,
+   "distinct_objects": 3,
+   "forward_fanout": {
+    "n": 3,
+    "mean": 1.0,
+    "median": 1.0,
+    "p90": 1,
+    "max": 1
+   },
+   "reverse_fanout": {
+    "n": 3,
+    "mean": 1.0,
+    "median": 1.0,
+    "p90": 1,
+    "max": 1
+   },
+   "origin": "xml-element",
+   "cross_source": false,
+   "triple": "AttackPattern -[CanAlsoBe]-> AttackPattern"
+  }
+ ],
+ "coverage": {
+  "authored_categories": 16,
+  "edge_types_total": 33,
+  "edge_types_reached": 12,
+  "edge_type_coverage": 0.3636,
+  "edge_instances_total": 34954,
+  "edge_instances_reached": 23294,
+  "edge_instance_coverage": 0.6664,
+  "properties_total": 74,
+  "properties_reached": 23,
+  "property_coverage": 0.3108,
+  "reached": [
+   "AttackPattern -[ChildOf]-> AttackPattern",
+   "AttackPattern -[EXPLOITS_WEAKNESS]-> Weakness",
+   "AttackPattern -[HAS_CONSEQUENCE]-> Consequence",
+   "AttackPattern -[HAS_EXECUTION_STEP]-> ExecutionStep",
+   "AttackPattern -[MAPS_TO[ATTACK]]-> Technique",
+   "AttackPattern -[REQUIRES_SKILL]-> Skill",
+   "DetectionStrategy -[detects]-> Technique",
+   "Group -[uses]-> Technique",
+   "Mitigation -[mitigates]-> Technique",
+   "Software -[uses]-> Technique",
+   "Technique -[kill_chain_phase]-> Tactic",
+   "Technique -[subtechnique-of]-> Technique"
+  ],
+  "never_asked": [
+   "Analytic -[log_source]-> DataComponent",
+   "AttackPattern -[CanAlsoBe]-> AttackPattern",
+   "AttackPattern -[CanFollow]-> AttackPattern",
+   "AttackPattern -[CanPrecede]-> AttackPattern",
+   "AttackPattern -[HAS_ALTERNATE_TERM]-> AlternateTerm",
+   "AttackPattern -[HAS_EXAMPLE]-> Example",
+   "AttackPattern -[HAS_INDICATOR]-> Indicator",
+   "AttackPattern -[HAS_MITIGATION]-> CapecMitigation",
+   "AttackPattern -[HAS_PREREQUISITE]-> Prerequisite",
+   "AttackPattern -[MAPS_TO[OWASP Attacks]]-> TaxonomyEntry:OWASP Attacks",
+   "AttackPattern -[MAPS_TO[WASC]]-> TaxonomyEntry:WASC",
+   "AttackPattern -[PeerOf]-> AttackPattern",
+   "AttackPattern -[REQUIRES_RESOURCE]-> Resource",
+   "Campaign -[attributed-to]-> Group",
+   "Campaign -[uses]-> Software",
+   "Campaign -[uses]-> Technique",
+   "Category -[HAS_MEMBER]-> AttackPattern",
+   "DetectionStrategy -[x_mitre_analytic_refs]-> Analytic",
+   "Group -[uses]-> Software",
+   "Matrix -[tactic_refs]-> Tactic",
+   "View -[HAS_MEMBER]-> AttackPattern"
+  ],
+  "declared_but_absent": []
+ }
+}
