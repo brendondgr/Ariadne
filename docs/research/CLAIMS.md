@@ -61,6 +61,16 @@ the grader's own spread. **The direction of every judged comparison in this
 record survives a change of grader model**; the *levels* move by up to 0.057 and
 remain unquotable, which is what C-009 already said.
 
+**AND THE BUILDER CHANGE IS JUDGED-INVISIBLE ON THESE BANKS (2026-08-31,
+[`EXP-2026-08-022`](experiments/EXP-2026-08-022-builder-change-judged/)).**
+`9f02dc6` altered 31 of 60 deterministic answers on the two fresh banks — almost
+all in text, retrieval identical — and its own regression check covered the
+catalogue and the variant bank rather than these. Judged over four sessions
+against an internal null control, the difference-in-differences is **+0.0019 ±
+0.0172** and **−0.0167 ± 0.0170**, sign-unstable on both banks. **So judged
+figures recorded before `9f02dc6` may still be quoted after it**, and C-012,
+C-021 and C-022 need no re-measurement on account of the builder.
+
 ⚠️ **Do not read those ± figures as intervals on the arms.** They are *grader*
 variance at fixed questions. Question-sampling variance is a separate and much
 larger component — roughly ±0.06 at n=30 per `EXP-2026-08-009` — so C-022's

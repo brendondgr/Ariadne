@@ -1,0 +1,90 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-08-022
+slug: builder-change-judged
+title: Is the shipped builder change an improvement, judged, on the two banks its own regression check missed?
+status: complete            # planned | running | complete | failed | superseded
+date_started: 2026-08-31
+date_completed: 2026-08-31
+authors: [brendondgr]
+
+purpose: >
+  9f02dc6 flipped ARIADNE_LEXICON and ARIADNE_EXACTNAME on and moved name
+  resolution to the top of build(). Its regression evidence covers the
+  120-question catalogue and the variant bank, not the two fresh banks -- and
+  those carry C-012, C-021 and C-022. Re-running the deterministic arm at HEAD
+  showed 31 of 60 answers changed, almost all in text with retrieval identical,
+  and rendering is what a judge scores. This asks whether that is better, worse,
+  or invisible.
+
+hypothesis: >
+  H1 the byte-identical answers, used as a null control, show a signed
+  difference of about zero. H2 the new builder is not worse. H3 any movement is
+  confined to the changed answers and exceeds the null floor. H4 among changed
+  answers more improve than regress. Recorded in PROTOCOL.md before any
+  new-builder answer was graded.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: bfac8cc3e933aaf61ca6ced3be81f7534cfcbaa0          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "experiment_untruncated --arm deterministic per bank, then judge_answers over both conditions per session; scripts/builder_change_judged.py"
+  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: deterministic-arm answers under two builder revisions
+  version: old = pre-9f02dc6 (committed); new = HEAD 2026-08-31
+  split: bank-2026-08-19 and bank-2026-08-20, both blind at draw time
+  n_examples: 120
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: null               # md5:... or sha256:... of the dataset artifact
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 4   # three forward grading sessions plus one order-reversed
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "local vLLM relay, localhost:4000; answer generation is CPU-only and LLM-free"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "relay/qwen38-27B-v2@2026-08-31"   # grader only; NO model in either answer path -- both conditions are byte-reproducible
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 8192
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: difference_in_differences
+  values:
+    did_bank19: {mean: 0.0019, std: 0.0172, n: 4}
+    did_bank20: {mean: -0.0167, std: 0.0170, n: 4}
+    null_control_signed_forward: {mean: -0.0088, std: 0.0, n: 6}
+    null_control_signed_reversed: {mean: 0.0119, std: 0.0, n: 2}
+    regression_rate_unchanged_forward: {mean: 0.1724, std: 0.0, n: 87}
+    regression_rate_changed_forward: {mean: 0.1183, std: 0.0, n: 93}
+    changed_answers_at_ceiling: {mean: 29.0, std: 0.0, n: 31}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+baselines_compared: ["byte-identical answers as an internal null control", "order-reversed session as a position-effect test"]
+statistical_test: "difference-in-differences against an internal null control; order reversal to test position bias"
+
+# --- Linkage ---
+supports_claims: [C-012, C-021, C-022]        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null
+superseded_by: null
+related: [EXP-2026-08-020, EXP-2026-08-021, EXP-2026-08-009]
