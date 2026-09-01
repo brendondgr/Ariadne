@@ -55,15 +55,51 @@ Three things follow and all three are mandatory:
 
 ## Steps
 
-### Step 1 — Composition enumerator (deterministic, no model)
+### Step 1 — Composition enumerator (deterministic, no model) — **DONE 2026-09-01**
 
-Walk the census and enumerate answerable compositions: 1-hop, 2-hop, filtered,
-counted, negated, cross-source. Each spec carries a computed gold set, a
-serialized neutral query, and structural metadata (hops, direction, facet
-count, fan-out, source span).
+`utils/specialists/evalset/composition.py`, over a shared raw-graph layer
+(`raw_graph.py`) that the census now also uses. Run with
+`uv run python scripts/enumerate_compositions.py --per-shape 4`.
 
-**Gate:** every spec has non-empty gold, and gold recomputes identically on a
-second run.
+**2,372 specs, 165 distinct path shapes, and 100% census coverage — all 33 edge
+types, including all 21 that had never carried a question.**
+
+| tier | specs | | |
+|---|---:|---|---:|
+| D0 unanswerable | 370 | attack | 975 |
+| D1 property | 130 | capec | 1,129 |
+| D2 forward hop | 125 | federated | 268 |
+| D3 reverse hop | 69 | | |
+| D4 two hop | 965 | gold width median | 2 |
+| D5 constrained | 459 | gold width p90 | 15 |
+| D6 cross-source | 254 | gold width max | 858 |
+
+**Gates met.** Zero specs outside D0 have empty gold. Enumeration is
+deterministic under a seed and draws differently under a different one. The
+published neutral query round-trips to the published gold. Gold agrees exactly
+with `gold_bank` on every single-hop shape it covers and on the federated
+CAPEC → technique → mitigation chain — two derivations, no shared code.
+
+**Four things the build surfaced that were not in the plan:**
+
+1. **The federation join had to be made explicit.** CAPEC-declared technique ids
+   are placeholder nodes carrying no ATT&CK edges, so every cross-source path
+   dead-ended at the bridge — silently, with an empty gold set that looked like
+   a data gap. `RawGraph.aliases` performs the join in the gold computer, which
+   is correct: the gold *is* the joined answer, and the system under test has to
+   reproduce it.
+2. **Gold splits into retrievable and declared-but-dangling.** 10 of CAPEC's
+   189 technique ids have no live ATT&CK object (see EXP-2026-09-001 A-1 M-1).
+   Keeping them would grade federated chains against answers no system can
+   produce; dropping them silently would hide the catalogues' version skew
+   inside a gold set.
+3. **D5 constraints must discriminate.** A filter that removes nothing lets a
+   system that ignores it score full marks. Specs where filtered gold equals
+   unfiltered gold are rejected; 8 of the 12 census facets survive that.
+4. **D0 needs a plausibility rule.** Without one the tier filled with category
+   errors — "which attack patterns can this ATT&CK analytic also be" — where
+   abstaining is not a judgement call. The predicate must be one some label in
+   the same catalogue carries.
 
 ### Step 2 — Difficulty as a structural fact
 
@@ -80,8 +116,14 @@ second run.
 D5 is entirely new — 12 facets available, 0 used. D0 needs real n; abstention
 held 4/4 on a sample too small to mean anything.
 
-**Gate:** tiers must *predict* score. If D4 does not score below D2, the tiers
-are decoration and the plan says so rather than shipping them.
+**Implemented in Step 1**; every spec carries its tier as a structural
+consequence, and tests assert each tier is what it claims (D2 forward, D3
+reverse, D4 two hops with no bridge, D5 has a discriminating filter, D6
+traverses the bridge).
+
+**Gate, still open:** tiers must *predict* score. That cannot be checked until
+Step 8. If D4 does not score below D2, the tiers are decoration and the plan
+says so rather than shipping them.
 
 ### Step 3 — Width as a measured variable ~~cap~~
 

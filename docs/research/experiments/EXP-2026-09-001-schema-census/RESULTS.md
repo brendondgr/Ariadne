@@ -155,3 +155,76 @@ asks fewer shapes than this, never more.
 uv run python -m utils.specialists.evalset.schema_census
 uv run pytest utils/specialists/evalset/tests/test_schema_census.py -q
 ```
+
+---
+
+# AMENDMENTS
+
+## A-1 — Census v2 (2026-09-01): three corrections and one new measure
+
+Step 1 of the expansion plan needed the instances behind the shapes, not just
+the counts, so the parse moved into `utils/specialists/evalset/raw_graph.py` and
+both the census and the enumerator now consume it. The refactor was held to
+reproducing the v1 numbers; where it did not, the difference was a v1 defect.
+All four differences are below. None changes the headline — **12 of 33 edge
+types, 36.4%** — and one changes a supporting figure materially.
+
+### C-1 — Two node types were missing (23 → 25)
+
+v1 created a node type for referenced-but-undefined **CWEs** (`Weakness`, 336)
+but not for referenced-but-undefined **taxonomy entries**. `TaxonomyEntry:WASC`
+(33) and `TaxonomyEntry:OWASP Attacks` (39) had edges pointing at them and no
+row of their own.
+
+v2 states the rule instead of leaving it implicit: *a referenced-but-undefined
+node counts toward its label's population only when nothing else in the graph
+defines that label.* CWEs count (no CWE catalogue is loaded). CAPEC-declared
+technique ids do not (ATT&CK defines Techniques). `Technique` stays 697.
+
+### C-2 — 21 edges pointed at excluded nodes
+
+`View -[HAS_MEMBER]-> AttackPattern` was **67**; it is **46**. The other 21
+referenced CAPEC patterns that the load policy excludes as Deprecated/Obsolete.
+v1's own policy line said dead endpoints were pruned, and for this one edge type
+they were not. Total edge instances: 34,954 → **34,933**.
+
+### C-3 — Property coverage was too generous: 31.1% → **19.3%**
+
+v1 counted a property as reached if *any* category reads a property of that
+name, so `Campaign.description` counted as covered although no category has ever
+reached a Campaign. v2 restricts to labels a category can actually reach — 11 of
+25 — giving **16 of 83**. `text` was also added to the reachable set, because
+the execution/consequence/skill categories do surface it.
+
+This is the largest correction in the amendment and it moves in the unflattering
+direction, which is the direction a self-serving bug would not have taken.
+
+### M-1 — Dangling cross-source references: **10**
+
+New measure, and the sharpest federation finding so far. CAPEC v3.9 declares 189
+distinct ATT&CK technique ids; the pinned Enterprise bundle has a live object
+for **179**. The 10 that fail split into two causes:
+
+- **9 are revoked in ATT&CK v19** — `T1562.001` … `T1562.009` and `T1574.002`,
+  the Impair Defenses and Hijack Execution Flow restructures. CAPEC still maps
+  to the old ids. This is **version skew between independently released
+  catalogues**, and it is the ordinary condition of federating them, not an
+  accident of this snapshot.
+- **1 is out of domain** — `T1513` is a Mobile technique, and we load
+  Enterprise.
+
+5.3% of the join surface is dangling. The single cross-source edge type carries
+271 instances and 10 of its targets do not exist, which needs stating in any
+write-up that describes the system as federated.
+
+The consequence for question generation is recorded in the composition
+enumerator: gold is split into **retrievable** and **declared-but-dangling**.
+Keeping dangling ids in a federated chain would grade against answers no system
+can produce; dropping them silently would hide the skew inside a gold set.
+
+### What did not change
+
+Edge types (33), edge type coverage (36.4%), facets (12), facets used (0),
+cross-source edge types (1), and every population figure the `gold_bank`
+cross-check covers. The 13 tests that hold the census to `gold_bank` all still
+pass unchanged.

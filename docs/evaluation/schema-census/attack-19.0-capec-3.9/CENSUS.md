@@ -4,29 +4,30 @@ ATT&CK v19.0 + CAPEC v3.9, read from the pinned raw snapshot. Regenerate with `u
 
 ## The number this was built to produce
 
-The banks draw from **16 hand-written question categories**. The sources support **33 distinct edge types** across **23 node types**.
+The banks draw from **16 hand-written question categories**. The sources support **33 distinct edge types** across **25 node types**.
 
-Those categories reach **12 of 33** edge types — **36.4%** of the shapes, covering **66.6%** of the 34,954 edge instances.
+Those categories reach **12 of 33** edge types — **36.4%** of the shapes, covering **66.7%** of the 34,933 edge instances.
 
-On the property side it is narrower still: **23 of 74** node properties (**31.1%**), because only the `lookup` category reads a property at all and it reads the description.
+On the property side it is narrower still: **16 of 83** node properties (**19.3%**), because only the `lookup` category reads a property at all and it reads the description.
 
 | | count |
 |---|---:|
-| node types | 23 |
-| nodes | 10,098 |
+| node types | 25 |
+| nodes | 10,170 |
 | edge types | 33 |
-| edge instances | 34,954 |
+| edge instances | 34,933 |
 | cross source edge types | 1 |
-| enumerable properties | 43 |
+| enumerable properties | 46 |
 | facet properties | 12 |
 | forward askable edge types | 31 |
 | reverse askable edge types | 30 |
+| dangling cross source references | 10 |
 
 ## Edge types
 
-`fwd` / `rev` are median and p90 fan-out. An edge is *askable* in a
-direction when p90 answers stay under 50 — larger than that and the
-question has no reasonable answer to grade.
+`fwd` / `rev` are median and p90 fan-out. *Askable* in a direction means
+p90 answers stay under 50. It is reported, never used to exclude: Q29
+measured judged score against gold width and found no effect.
 
 | triple | n | fwd med/p90 | rev med/p90 | origin | asked? |
 |---|---:|---:|---:|---|---|
@@ -54,7 +55,7 @@ question has no reasonable answer to grade.
 | `Campaign -[uses]-> Software` | 172 | 2/8 | 1/2 | relationship-object | **never** |
 | `AttackPattern -[CanPrecede]-> AttackPattern` | 162 | 1/5 | 1/6 | xml-element | **never** |
 | `AttackPattern -[HAS_INDICATOR]-> Indicator` | 96 | 1/3 | 1/1 | xml-element | **never** |
-| `View -[HAS_MEMBER]-> AttackPattern` | 67 | 7.5/46 | 1/1 | xml-element | **never** |
+| `View -[HAS_MEMBER]-> AttackPattern` | 46 | 46/46 | 1/1 | xml-element | **never** |
 | `AttackPattern -[MAPS_TO[OWASP Attacks]]-> TaxonomyEntry:OWASP Attacks` | 39 | 1/1 | 1/1 | xml-element | **never** |
 | `AttackPattern -[MAPS_TO[WASC]]-> TaxonomyEntry:WASC` | 37 | 1/1 | 1/1 | xml-element | **never** |
 | `AttackPattern -[HAS_ALTERNATE_TERM]-> AlternateTerm` | 27 | 1/3 | 1/1 | xml-element | **never** |
@@ -114,30 +115,38 @@ after, because they carry range filters rather than equality filters.
 
 Date properties (range filters): `Campaign.first_seen`, `Campaign.last_seen`
 
+## Dangling cross-source references
+
+CAPEC declares 10 ATT&CK technique ids that the pinned Enterprise bundle has no live object for. They are the cross-source join's failure surface and must not carry a federated question:
+
+> `T1513`, `T1562.001`, `T1562.002`, `T1562.003`, `T1562.004`, `T1562.006`, `T1562.007`, `T1562.008`, `T1562.009`, `T1574.002`
+
 ## Node types
 
-| source | label | count | text properties |
-|---|---|---:|---|
-| attack | Analytic | 1,758 | `description` |
-| attack | Campaign | 56 | `description` |
-| attack | DataComponent | 106 | `description` |
-| attack | DetectionStrategy | 697 | — |
-| attack | Group | 174 | `description` |
-| attack | Matrix | 1 | `description` |
-| attack | Mitigation | 44 | `description` |
-| attack | Software | 821 | `description` |
-| attack | Tactic | 15 | `description` |
-| attack | Technique | 697 | `description` |
-| capec | AttackPattern | 558 | `Description`, `Extended_Description` |
-| capec | Category | 78 | — |
-| capec | View | 13 | — |
-| capec | AlternateTerm | 27 | — |
-| capec | CapecMitigation | 1,170 | — |
-| capec | Consequence | 812 | — |
-| capec | Example | 387 | — |
-| capec | ExecutionStep | 815 | — |
-| capec | Indicator | 96 | — |
-| capec | Prerequisite | 746 | — |
-| capec | Resource | 289 | — |
-| capec | Skill | 402 | — |
-| capec | Weakness | 336 | — |
+| source | label | count | referenced only | text properties |
+|---|---|---:|---|---|
+| attack | Analytic | 1,758 | — | `description` |
+| attack | Campaign | 56 | — | `description` |
+| attack | DataComponent | 106 | — | `description` |
+| attack | DetectionStrategy | 697 | — | — |
+| attack | Group | 174 | — | `description` |
+| attack | Matrix | 1 | — | `description` |
+| attack | Mitigation | 44 | — | `description` |
+| attack | Software | 821 | — | `description` |
+| attack | Tactic | 15 | — | `description` |
+| attack | Technique | 697 | — | `description` |
+| capec | AlternateTerm | 27 | — | — |
+| capec | AttackPattern | 558 | — | `Description`, `Extended_Description` |
+| capec | CapecMitigation | 1,170 | — | `text` |
+| capec | Category | 78 | — | — |
+| capec | Consequence | 812 | — | — |
+| capec | Example | 387 | — | `text` |
+| capec | ExecutionStep | 815 | — | `text` |
+| capec | Indicator | 96 | — | `text` |
+| capec | Prerequisite | 746 | — | `text` |
+| capec | Resource | 289 | — | `text` |
+| capec | Skill | 402 | — | `text` |
+| capec | TaxonomyEntry:OWASP Attacks | 39 | yes | — |
+| capec | TaxonomyEntry:WASC | 33 | yes | — |
+| capec | View | 13 | — | — |
+| capec | Weakness | 336 | yes | — |

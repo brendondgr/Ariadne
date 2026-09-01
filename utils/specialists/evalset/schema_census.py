@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 r"""Enumerate every question shape the pinned raw snapshot actually supports.
 
 The census answers one question that nothing else in the repository answers:
@@ -6,26 +5,24 @@ The census answers one question that nothing else in the repository answers:
 
 `holdout_protocol.ATTACK_CATEGORIES` and friends are a hand-written list of 16
 question shapes. They were written from memory, not derived from the data, and
-every bank we have ever built draws from them. This module walks the raw ATT&CK
-STIX bundle and the raw CAPEC XML and reports the shapes the *sources* support:
-node types, their properties (with the cardinality that decides whether a
-property can carry a filter), and every typed edge with its fan-out in both
-directions.
+every bank we have ever built draws from them. This module reads the graph
+`raw_graph` parses straight out of the pinned files and reports the shapes the
+*sources* support: node types, their properties (with the cardinality that
+decides whether a property can carry a filter), and every typed edge with its
+fan-out in both directions.
 
 Three properties are deliberate and load-bearing:
 
-* **It parses raw files, not the loaded graph and not `utils.kg_builder`.**
-  Same discipline as `gold_bank`: an independent derivation. A census taken
-  through the ingest pipeline could only ever report what the pipeline chose to
-  keep, which is the opposite of what it is for.
-* **It is architecture-blind.** Nothing above `COVERAGE` knows that Ariadne has
+* **Raw files only** — see `raw_graph`. A census taken through the ingest
+  pipeline could only ever report what the pipeline chose to keep, which is the
+  opposite of what it is for.
+* **Architecture-blind.** Nothing above `COVERAGE` knows that Ariadne has
   templates, primitives, or a composer. The one architecture-aware section is
-  the coverage layer at the bottom, isolated on purpose and clearly marked, and
-  it only *reads* the census — it cannot change what the census finds.
-* **It mirrors the load-time exclusion policy** (revoked/deprecated ATT&CK
-  objects, Deprecated/Obsolete CAPEC patterns) so the shapes it reports are
-  shapes a question could actually be answered from. Exclusions are counted and
-  reported rather than silently applied.
+  the coverage layer at the bottom, isolated on purpose, and it only *reads* the
+  census — it cannot change what the census finds.
+* **The load-time exclusion policy is mirrored**, so every shape reported is one
+  a question could actually be answered from. Exclusions are counted, not
+  silently applied.
 
 Fan-out is recorded in both directions because direction is the axis the blind
 holdout failed on. An edge with a median forward fan-out of 5 and a median
@@ -43,58 +40,17 @@ import argparse
 import hashlib
 import json
 import statistics
-import xml.etree.ElementTree as ET
 from collections import defaultdict
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Iterable
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
-DATA_DIR = REPO_ROOT / "data"
+from utils.specialists.evalset import raw_graph as rg
+from utils.specialists.evalset.raw_graph import DATA_DIR, REPO_ROOT, RawGraph
+
 OUT_DIR = REPO_ROOT / "docs" / "evaluation" / "schema-census"
 
-CAPEC_NS = {"c": "http://capec.mitre.org/capec-3"}
-
-CENSUS_VERSION = 1
-
-# STIX object type -> the label the census reports it under. Unlisted types are
-# NOT dropped: they are reported under their raw STIX type and flagged
-# `unmapped`, because a type nobody mapped is exactly the kind of thing this
-# census exists to surface.
-STIX_TYPE_TO_LABEL: dict[str, str] = {
-    "x-mitre-tactic": "Tactic",
-    "attack-pattern": "Technique",
-    "intrusion-set": "Group",
-    "malware": "Software",
-    "tool": "Software",
-    "course-of-action": "Mitigation",
-    "campaign": "Campaign",
-    "x-mitre-data-component": "DataComponent",
-    "x-mitre-data-source": "DataSource",
-    "x-mitre-detection-strategy": "DetectionStrategy",
-    "x-mitre-analytic": "Analytic",
-    "x-mitre-matrix": "Matrix",
-}
-
-#: STIX bookkeeping that describes the *bundle*, never the security domain.
-#: These are not question material and are excluded from the property census.
-STIX_PLUMBING = frozenset({
-    "id", "type", "spec_version", "created", "modified",
-    "created_by_ref", "object_marking_refs", "x_mitre_modified_by_ref",
-    "x_mitre_attack_spec_version", "external_references",
-    "revoked", "x_mitre_deprecated",
-})
-
-#: Ref-bearing properties that carry a real domain edge, and the label they
-#: point at. `created_by_ref` / `object_marking_refs` are plumbing (above).
-STIX_EMBEDDED_REFS: dict[tuple[str, str], str] = {
-    ("x-mitre-detection-strategy", "x_mitre_analytic_refs"): "Analytic",
-    ("x-mitre-matrix", "tactic_refs"): "Tactic",
-}
-
-#: Objects excluded from the census because the loaded graph excludes them.
-#: Mirrors `gold_bank`'s exclude-at-load policy (policy contract, not code).
-CAPEC_RETIRED_STATUSES = frozenset({"Deprecated", "Obsolete"})
+CENSUS_VERSION = 2
 
 #: A property is `enumerable` when its distinct value count is at or under this.
 ENUMERABLE_MAX_DISTINCT = 60
@@ -115,14 +71,14 @@ NON_FACET_PROPERTIES = frozenset({
     "x_mitre_first_seen_citation", "x_mitre_last_seen_citation",
 })
 
-#: ISO-8601-ish leading value; date properties carry range filters, not
-#: equality filters, so they are reported apart from the facets.
+#: ISO-8601-ish leading value; date properties carry range filters, not equality
+#: filters, so they are reported apart from the facets.
 _DATEISH = ("19", "20")
 
-
-# ---------------------------------------------------------------------------
-# record types
-# ---------------------------------------------------------------------------
+#: p90 fan-out at or under this is an answer a grader can score. Recorded as a
+#: reported property of each edge, NOT as a filter — Q29 measured the score
+#: against gold width and found no effect, so nothing is excluded on it.
+ASKABLE_P90 = 50
 
 
 @dataclass
@@ -145,6 +101,7 @@ class NodeType:
     label: str
     count: int
     unmapped: bool = False
+    referenced_only: bool = False
     properties: list[PropertyStat] = field(default_factory=list)
 
 
@@ -170,11 +127,10 @@ class EdgeType:
 
 
 def _fanout(pairs: Iterable[tuple[str, str]], *, reverse: bool = False) -> dict[str, float]:
-    """Distribution of out-degree (or in-degree) over the nodes that have one.
+    """Distribution of out-degree (or in-degree) over nodes that have one.
 
-    Nodes with zero edges are excluded on purpose: the question "how big is the
-    answer when there *is* one" is the one that decides whether a shape is
-    askable.
+    Nodes with zero edges are excluded on purpose: "how big is the answer when
+    there is one" is the question that decides whether a shape is askable.
     """
     grouped: dict[str, set[str]] = defaultdict(set)
     for subj, obj in pairs:
@@ -193,12 +149,12 @@ def _fanout(pairs: Iterable[tuple[str, str]], *, reverse: bool = False) -> dict[
     }
 
 
-def _property_stats(instances: list[dict[str, Any]], skip: frozenset[str]) -> list[PropertyStat]:
+def _property_stats(instances: list[dict[str, Any]]) -> list[PropertyStat]:
     total = len(instances)
     seen: dict[str, list[Any]] = defaultdict(list)
     for inst in instances:
         for key, value in inst.items():
-            if key in skip or value is None or value == [] or value == "":
+            if value is None or value == [] or value == "":
                 continue
             seen[key].append(value)
 
@@ -215,7 +171,7 @@ def _property_stats(instances: list[dict[str, Any]], skip: frozenset[str]) -> li
                         structured = True
                     else:
                         flat.append(str(item))
-            elif isinstance(value, (dict,)):
+            elif isinstance(value, dict):
                 structured = True
             else:
                 flat.append(str(value))
@@ -229,7 +185,7 @@ def _property_stats(instances: list[dict[str, Any]], skip: frozenset[str]) -> li
         else:
             kind = "list" if listy else "scalar"
 
-        distinct_values = sorted(set(flat)) if kind in {"scalar", "list"} else []
+        distinct_values = sorted(set(flat)) if kind in {"scalar", "list", "date"} else []
         distinct = len(distinct_values) if distinct_values else None
         enumerable = (
             kind in {"scalar", "list", "date"}
@@ -241,7 +197,7 @@ def _property_stats(instances: list[dict[str, Any]], skip: frozenset[str]) -> li
             and kind in {"scalar", "list"}
             and name not in NON_FACET_PROPERTIES
             and distinct is not None
-            and distinct >= 2
+            and 2 <= distinct
             and distinct / max(len(values), 1) <= FACET_MAX_DISTINCT_RATIO
         )
         stats.append(
@@ -259,311 +215,62 @@ def _property_stats(instances: list[dict[str, Any]], skip: frozenset[str]) -> li
     return stats
 
 
-def _edges_from_pairs(
-    source: str,
-    grouped: dict[tuple[str, str, str], list[tuple[str, str]]],
-    origin: str,
-    *,
-    source_of: dict[str, str] | None = None,
-) -> list[EdgeType]:
-    edges: list[EdgeType] = []
-    for (subj, pred, obj), pairs in sorted(grouped.items()):
+def census_nodes(graph: RawGraph) -> list[NodeType]:
+    grouped: dict[tuple[str, str], list[rg.Node]] = defaultdict(list)
+    for node in graph.nodes.values():
+        if graph.is_entity(node):
+            grouped[(node.source, node.label)].append(node)
+
+    out: list[NodeType] = []
+    for (source, label), members in sorted(grouped.items()):
+        out.append(
+            NodeType(
+                source=source,
+                label=label,
+                count=len(members),
+                unmapped=any(n.unmapped for n in members),
+                referenced_only=all(n.placeholder for n in members),
+                properties=_property_stats([n.properties for n in members]),
+            )
+        )
+    return out
+
+
+def census_edges(graph: RawGraph) -> list[EdgeType]:
+    grouped: dict[tuple[str, str, str, str, str], list[tuple[str, str]]] = defaultdict(list)
+    for edge in graph.edges:
+        subject, obj = graph.nodes.get(edge.subject), graph.nodes.get(edge.object)
+        if subject is None or obj is None:
+            continue
+        key = (edge.source, subject.label, edge.predicate, obj.label, edge.origin)
+        grouped[key].append((edge.subject, edge.object))
+
+    out: list[EdgeType] = []
+    for (source, subject, predicate, obj, origin), pairs in sorted(grouped.items()):
         uniq = sorted(set(pairs))
-        cross = False
-        if source_of is not None:
-            cross = source_of.get(subj, source) != source_of.get(obj, source)
-        edges.append(
+        subject_source = {graph.nodes[s].source for s, _ in uniq}
+        object_source = {graph.nodes[o].source for _, o in uniq}
+        # Cross-source is a property of the *reference*, not of which file it was
+        # read from: CAPEC declares an ATT&CK id, so the edge spans stores even
+        # though both endpoints were parsed out of the CAPEC XML.
+        cross = obj in {"Technique"} and source == "capec"
+        out.append(
             EdgeType(
                 source=source,
-                subject=subj,
-                predicate=pred,
+                subject=subject,
+                predicate=predicate,
                 object=obj,
                 count=len(uniq),
                 distinct_subjects=len({s for s, _ in uniq}),
                 distinct_objects=len({o for _, o in uniq}),
                 forward_fanout=_fanout(uniq),
                 reverse_fanout=_fanout(uniq, reverse=True),
-                origin=origin,
-                cross_source=cross,
+                origin=f"{origin}/cross-source" if cross else origin,
+                cross_source=cross or (subject_source != object_source),
             )
         )
-    return edges
-
-
-# ---------------------------------------------------------------------------
-# ATT&CK
-# ---------------------------------------------------------------------------
-
-
-def _attack_external_id(obj: dict[str, Any]) -> str | None:
-    for ref in obj.get("external_references", []):
-        if ref.get("source_name") in {"mitre-attack", "mitre-mobile-attack", "mitre-ics-attack"}:
-            return ref.get("external_id")
-    return None
-
-
-def _attack_alive(obj: dict[str, Any]) -> bool:
-    return not (obj.get("revoked") or obj.get("x_mitre_deprecated"))
-
-
-def census_attack(bundle: dict[str, Any]) -> tuple[list[NodeType], list[EdgeType], dict[str, Any]]:
-    """Node types, typed edges and exclusion counts, from the STIX bundle alone."""
-    objects = bundle["objects"]
-    excluded = {"objects": 0, "relationships_dead_endpoint": 0, "relationships_self": 0}
-
-    alive: dict[str, dict[str, Any]] = {}
-    for obj in objects:
-        if obj["type"] in {"relationship", "identity", "marking-definition", "x-mitre-collection"}:
-            continue
-        if not _attack_alive(obj):
-            excluded["objects"] += 1
-            continue
-        alive[obj["id"]] = obj
-
-    label_of = {
-        oid: STIX_TYPE_TO_LABEL.get(obj["type"], obj["type"]) for oid, obj in alive.items()
-    }
-
-    by_label: dict[str, list[dict[str, Any]]] = defaultdict(list)
-    for obj in alive.values():
-        by_label[STIX_TYPE_TO_LABEL.get(obj["type"], obj["type"])].append(obj)
-
-    nodes = [
-        NodeType(
-            source="attack",
-            label=label,
-            count=len(instances),
-            unmapped=label not in STIX_TYPE_TO_LABEL.values(),
-            properties=_property_stats(instances, STIX_PLUMBING),
-        )
-        for label, instances in sorted(by_label.items())
-    ]
-
-    # --- edges carried by `relationship` objects -----------------------------
-    grouped: dict[tuple[str, str, str], list[tuple[str, str]]] = defaultdict(list)
-    for obj in objects:
-        if obj["type"] != "relationship":
-            continue
-        if not _attack_alive(obj):
-            excluded["objects"] += 1
-            continue
-        src, dst = obj.get("source_ref"), obj.get("target_ref")
-        if src not in alive or dst not in alive:
-            excluded["relationships_dead_endpoint"] += 1
-            continue
-        grouped[(label_of[src], obj["relationship_type"], label_of[dst])].append((src, dst))
-    edges = _edges_from_pairs("attack", grouped, "relationship-object")
-
-    # --- edges carried by ref properties on the object itself ----------------
-    embedded: dict[tuple[str, str, str], list[tuple[str, str]]] = defaultdict(list)
-    for obj in alive.values():
-        for (otype, prop), target_label in STIX_EMBEDDED_REFS.items():
-            if obj["type"] != otype:
-                continue
-            for ref in obj.get(prop, []):
-                if ref in alive:
-                    embedded[(label_of[obj["id"]], prop, target_label)].append((obj["id"], ref))
-    edges += _edges_from_pairs("attack", embedded, "embedded-ref")
-
-    # --- kill_chain_phases resolves to Tactic by shortname --------------------
-    shortname_to_tactic = {
-        obj["x_mitre_shortname"]: obj["id"]
-        for obj in alive.values()
-        if obj["type"] == "x-mitre-tactic" and obj.get("x_mitre_shortname")
-    }
-    phases: dict[tuple[str, str, str], list[tuple[str, str]]] = defaultdict(list)
-    unresolved_phases = 0
-    for obj in alive.values():
-        for phase in obj.get("kill_chain_phases", []):
-            tactic = shortname_to_tactic.get(phase.get("phase_name"))
-            if tactic is None:
-                unresolved_phases += 1
-                continue
-            phases[(label_of[obj["id"]], "kill_chain_phase", "Tactic")].append((obj["id"], tactic))
-    edges += _edges_from_pairs("attack", phases, "embedded-ref")
-    excluded["kill_chain_phases_unresolved"] = unresolved_phases
-
-    # --- refs nested one level inside a list of dicts -------------------------
-    nested: dict[tuple[str, str, str], list[tuple[str, str]]] = defaultdict(list)
-    for obj in alive.values():
-        for entry in obj.get("x_mitre_log_source_references", []) or []:
-            ref = entry.get("x_mitre_data_component_ref")
-            if ref in alive:
-                nested[(label_of[obj["id"]], "log_source", "DataComponent")].append((obj["id"], ref))
-    edges += _edges_from_pairs("attack", nested, "nested-ref")
-
-    identified = sum(1 for obj in alive.values() if _attack_external_id(obj))
-    stats = {
-        "objects_in_bundle": len(objects),
-        "nodes_after_exclusions": len(alive),
-        "nodes_with_external_id": identified,
-        "excluded": excluded,
-    }
-    return nodes, edges, stats
-
-
-# ---------------------------------------------------------------------------
-# CAPEC
-# ---------------------------------------------------------------------------
-
-#: CAPEC child element -> (predicate, object label). Sub-elements become nodes
-#: because that is what they are in the loaded graph and what a question about
-#: "the execution steps of CAPEC-66" has to return.
-CAPEC_SUBELEMENTS: dict[str, tuple[str, str, str]] = {
-    "Execution_Flow": ("Attack_Step", "HAS_EXECUTION_STEP", "ExecutionStep"),
-    "Consequences": ("Consequence", "HAS_CONSEQUENCE", "Consequence"),
-    "Skills_Required": ("Skill", "REQUIRES_SKILL", "Skill"),
-    "Mitigations": ("Mitigation", "HAS_MITIGATION", "CapecMitigation"),
-    "Prerequisites": ("Prerequisite", "HAS_PREREQUISITE", "Prerequisite"),
-    "Indicators": ("Indicator", "HAS_INDICATOR", "Indicator"),
-    "Example_Instances": ("Example", "HAS_EXAMPLE", "Example"),
-    "Resources_Required": ("Resource", "REQUIRES_RESOURCE", "Resource"),
-    "Alternate_Terms": ("Alternate_Term", "HAS_ALTERNATE_TERM", "AlternateTerm"),
-}
-
-
-def _text(el: ET.Element | None) -> str:
-    if el is None:
-        return ""
-    return " ".join("".join(el.itertext()).split())
-
-
-def census_capec(root: ET.Element) -> tuple[list[NodeType], list[EdgeType], dict[str, Any]]:
-    """Node types, typed edges and exclusion counts, from the CAPEC XML alone."""
-    patterns_el = root.find("c:Attack_Patterns", CAPEC_NS)
-    all_patterns = patterns_el.findall("c:Attack_Pattern", CAPEC_NS) if patterns_el is not None else []
-
-    live: dict[str, ET.Element] = {}
-    excluded = {"patterns_retired": 0, "edges_dead_endpoint": 0}
-    for pattern in all_patterns:
-        if pattern.get("Status") in CAPEC_RETIRED_STATUSES:
-            excluded["patterns_retired"] += 1
-            continue
-        live[f"CAPEC-{pattern.get('ID')}"] = pattern
-
-    # --- node property census ------------------------------------------------
-    pattern_props: list[dict[str, Any]] = []
-    for cid, pattern in live.items():
-        record: dict[str, Any] = {
-            "Abstraction": pattern.get("Abstraction"),
-            "Status": pattern.get("Status"),
-            "Name": pattern.get("Name"),
-            "Typical_Severity": _text(pattern.find("c:Typical_Severity", CAPEC_NS)) or None,
-            "Likelihood_Of_Attack": _text(pattern.find("c:Likelihood_Of_Attack", CAPEC_NS)) or None,
-            "Description": _text(pattern.find("c:Description", CAPEC_NS)) or None,
-            "Extended_Description": _text(pattern.find("c:Extended_Description", CAPEC_NS)) or None,
-        }
-        pattern_props.append({k: v for k, v in record.items() if v})
-
-    nodes = [
-        NodeType(
-            source="capec",
-            label="AttackPattern",
-            count=len(live),
-            properties=_property_stats(pattern_props, frozenset()),
-        )
-    ]
-
-    grouped: dict[tuple[str, str, str], list[tuple[str, str]]] = defaultdict(list)
-    sub_counts: dict[str, int] = defaultdict(int)
-
-    for cid, pattern in live.items():
-        # pattern -> pattern, one predicate per declared nature
-        rap = pattern.find("c:Related_Attack_Patterns", CAPEC_NS)
-        for rel in (rap.findall("c:Related_Attack_Pattern", CAPEC_NS) if rap is not None else []):
-            target = f"CAPEC-{rel.get('CAPEC_ID')}"
-            if target not in live:
-                excluded["edges_dead_endpoint"] += 1
-                continue
-            grouped[("AttackPattern", rel.get("Nature") or "Related", "AttackPattern")].append(
-                (cid, target)
-            )
-
-        # pattern -> CWE
-        rw = pattern.find("c:Related_Weaknesses", CAPEC_NS)
-        for weakness in (rw.findall("c:Related_Weakness", CAPEC_NS) if rw is not None else []):
-            grouped[("AttackPattern", "EXPLOITS_WEAKNESS", "Weakness")].append(
-                (cid, f"CWE-{weakness.get('CWE_ID')}")
-            )
-
-        # pattern -> taxonomy entry, one predicate per taxonomy
-        tmaps = pattern.find("c:Taxonomy_Mappings", CAPEC_NS)
-        for mapping in (tmaps.findall("c:Taxonomy_Mapping", CAPEC_NS) if tmaps is not None else []):
-            taxonomy = mapping.get("Taxonomy_Name") or "UNKNOWN"
-            # OWASP Attacks entries carry only `Entry_Name`; keying on
-            # `Entry_ID` alone silently drops the whole taxonomy.
-            entry = _text(mapping.find("c:Entry_ID", CAPEC_NS)) or _text(
-                mapping.find("c:Entry_Name", CAPEC_NS)
-            )
-            if not entry:
-                continue
-            label = "Technique" if taxonomy == "ATTACK" else f"TaxonomyEntry:{taxonomy}"
-            grouped[("AttackPattern", f"MAPS_TO[{taxonomy}]", label)].append(
-                (cid, f"T{entry}" if taxonomy == "ATTACK" else f"{taxonomy}:{entry}")
-            )
-
-        # pattern -> its own sub-elements
-        for parent_tag, (child_tag, predicate, label) in CAPEC_SUBELEMENTS.items():
-            parent = pattern.find(f"c:{parent_tag}", CAPEC_NS)
-            if parent is None:
-                continue
-            for index, _child in enumerate(parent.findall(f"c:{child_tag}", CAPEC_NS), start=1):
-                grouped[("AttackPattern", predicate, label)].append((cid, f"{cid}#{predicate}-{index}"))
-                sub_counts[label] += 1
-
-    # --- Categories and Views: real containers, never once asked about --------
-    for container, child_label in (("Categories", "Category"), ("Views", "View")):
-        holder = root.find(f"c:{container}", CAPEC_NS)
-        if holder is None:
-            continue
-        members: list[dict[str, Any]] = []
-        singular = child_label
-        for element in holder.findall(f"c:{singular}", CAPEC_NS):
-            members.append(
-                {k: v for k, v in element.attrib.items() if k in {"Name", "Status", "Type"}}
-            )
-            holder_id = f"{singular.upper()}-{element.get('ID')}"
-            rels = element.find("c:Relationships", CAPEC_NS)
-            if rels is None:
-                rels = element.find("c:Members", CAPEC_NS)
-            for member in list(rels) if rels is not None else []:
-                target = member.get("CAPEC_ID")
-                if target is None:
-                    continue
-                grouped[(singular, "HAS_MEMBER", "AttackPattern")].append(
-                    (holder_id, f"CAPEC-{target}")
-                )
-        nodes.append(
-            NodeType(
-                source="capec",
-                label=singular,
-                count=len(members),
-                properties=_property_stats(members, frozenset()),
-            )
-        )
-
-    edges = _edges_from_pairs("capec", grouped, "xml-element")
-    for edge in edges:
-        if edge.object == "Technique":
-            edge.cross_source = True
-            edge.origin = "xml-element/cross-source"
-
-    for label, count in sorted(sub_counts.items()):
-        nodes.append(NodeType(source="capec", label=label, count=count))
-    nodes.append(
-        NodeType(
-            source="capec",
-            label="Weakness",
-            count=len({o for e in grouped.get(("AttackPattern", "EXPLOITS_WEAKNESS", "Weakness"), []) for o in [e[1]]}),
-        )
-    )
-
-    stats = {
-        "patterns_in_file": len(all_patterns),
-        "patterns_after_exclusions": len(live),
-        "excluded": excluded,
-    }
-    return nodes, edges, stats
+    out.sort(key=lambda e: (-e.count, e.subject, e.predicate, e.object))
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -575,7 +282,6 @@ def census_capec(root: ET.Element) -> tuple[list[NodeType], list[EdgeType], dict
 # `holdout_protocol` onto census triples so we can report how much of the
 # census they reach. It reads the census; it never feeds it.
 
-#: category name -> the census triples that category can produce a question for.
 CATEGORY_TRIPLES: dict[str, tuple[str, ...]] = {
     "mitigations": ("Mitigation -[mitigates]-> Technique",),
     "groups": ("Group -[uses]-> Technique",),
@@ -601,24 +307,40 @@ CATEGORY_TRIPLES: dict[str, tuple[str, ...]] = {
     ),
 }
 
-
 #: The properties any authored category can surface. `lookup` asks for "a plain
-#: description of one entity"; nothing else in the 16 reads a property at all.
-CATEGORY_PROPERTIES: frozenset[str] = frozenset({"description", "Description", "name", "Name"})
+#: description of one entity", and the CAPEC sub-element categories surface the
+#: step/consequence/skill text. Nothing else in the 16 reads a property at all.
+CATEGORY_PROPERTIES: frozenset[str] = frozenset(
+    {"description", "Description", "name", "Name", "text"}
+)
+
+#: Labels a category can name directly, independent of any edge. Property
+#: coverage is restricted to labels a category can actually reach — otherwise
+#: `Campaign.description` counts as covered because *some* category reads a
+#: description, when no category has ever reached a Campaign.
+CATEGORY_ANCHOR_LABELS: frozenset[str] = frozenset({"Technique", "AttackPattern"})
 
 
 def coverage(edges: list[EdgeType], nodes: list[NodeType] | None = None) -> dict[str, Any]:
     """How much of the census the 16 authored categories can reach."""
     present = {edge.triple for edge in edges}
     reached = {t for triples in CATEGORY_TRIPLES.values() for t in triples}
-    unknown = sorted(reached - present)
     hit = sorted(reached & present)
-    missed = sorted(present - reached)
     instances_total = sum(edge.count for edge in edges)
     instances_hit = sum(edge.count for edge in edges if edge.triple in reached)
 
+    reachable = set(CATEGORY_ANCHOR_LABELS)
+    for triple in hit:
+        subject, _, rest = triple.partition(" -[")
+        _, _, obj = rest.partition("]-> ")
+        reachable.update({subject, obj})
+
     props = {(n.label, p.name) for n in (nodes or []) for p in n.properties}
-    props_hit = {pair for pair in props if pair[1] in CATEGORY_PROPERTIES}
+    props_hit = {
+        (label, name)
+        for label, name in props
+        if name in CATEGORY_PROPERTIES and label in reachable
+    }
     return {
         "authored_categories": len(CATEGORY_TRIPLES),
         "edge_types_total": len(present),
@@ -629,17 +351,16 @@ def coverage(edges: list[EdgeType], nodes: list[NodeType] | None = None) -> dict
         "edge_instance_coverage": (
             round(instances_hit / instances_total, 4) if instances_total else 0.0
         ),
+        "labels_reachable": sorted(reachable),
         "properties_total": len(props),
         "properties_reached": len(props_hit),
         "property_coverage": round(len(props_hit) / len(props), 4) if props else 0.0,
         "reached": hit,
-        "never_asked": missed,
-        "declared_but_absent": unknown,
+        "never_asked": sorted(present - reached),
+        "declared_but_absent": sorted(reached - present),
     }
 
 
-# ---------------------------------------------------------------------------
-# assembly
 # ---------------------------------------------------------------------------
 
 
@@ -653,33 +374,33 @@ def _digest(path: Path) -> dict[str, Any]:
 
 
 def build_census(data_dir: Path = DATA_DIR) -> dict[str, Any]:
-    versions = json.loads((data_dir / "versions.json").read_text())
-    attack_version = versions["attack_version"]
-    capec_version = versions["capec_version"]
-    attack_path = data_dir / "raw" / "attack" / f"v{attack_version}" / "enterprise-attack.json"
-    capec_path = data_dir / "raw" / "capec" / f"v{capec_version}" / "capec_latest.xml"
+    graph = rg.build(data_dir)
+    paths = rg.source_paths(data_dir)
+    nodes = census_nodes(graph)
+    edges = census_edges(graph)
 
-    attack_nodes, attack_edges, attack_stats = census_attack(json.loads(attack_path.read_text()))
-    capec_nodes, capec_edges, capec_stats = census_capec(ET.parse(capec_path).getroot())
-
-    nodes = attack_nodes + capec_nodes
-    edges = attack_edges + capec_edges
-    edges.sort(key=lambda e: (-e.count, e.subject, e.predicate, e.object))
-
-    askable = [e for e in edges if e.forward_fanout["median"] and e.forward_fanout["p90"] <= 50]
-    reverse_askable = [e for e in edges if e.reverse_fanout["n"] and e.reverse_fanout["p90"] <= 50]
+    askable = [e for e in edges if e.forward_fanout["n"] and e.forward_fanout["p90"] <= ASKABLE_P90]
+    reverse_askable = [
+        e for e in edges if e.reverse_fanout["n"] and e.reverse_fanout["p90"] <= ASKABLE_P90
+    ]
+    dangling = graph.dangling()
 
     return {
         "census_version": CENSUS_VERSION,
         "sources": {
-            "attack": {"version": attack_version, **_digest(attack_path), **attack_stats},
-            "capec": {"version": capec_version, **_digest(capec_path), **capec_stats},
+            name: {**graph.stats[name], **_digest(paths[name])} for name in ("attack", "capec")
         },
         "policy": {
-            "derivation": "raw files only; not through utils.kg_builder and not from a live store",
-            "exclusions": "ATT&CK revoked/deprecated; CAPEC Deprecated/Obsolete; dead endpoints pruned",
+            "derivation": "raw files only, via raw_graph; not through utils.kg_builder "
+                          "and not from a live store",
+            "exclusions": "ATT&CK revoked/deprecated; CAPEC Deprecated/Obsolete; "
+                          "dead endpoints pruned",
+            "entity_rule": "a referenced-but-undefined node counts toward its label's "
+                           "population only when nothing else defines that label",
             "enumerable_max_distinct": ENUMERABLE_MAX_DISTINCT,
+            "facet_max_distinct_ratio": FACET_MAX_DISTINCT_RATIO,
             "freetext_mean_chars": FREETEXT_MEAN_CHARS,
+            "askable_p90": ASKABLE_P90,
         },
         "totals": {
             "node_types": len(nodes),
@@ -687,25 +408,18 @@ def build_census(data_dir: Path = DATA_DIR) -> dict[str, Any]:
             "edge_types": len(edges),
             "edge_instances": sum(e.count for e in edges),
             "cross_source_edge_types": sum(1 for e in edges if e.cross_source),
-            "enumerable_properties": sum(
-                1 for n in nodes for p in n.properties if p.enumerable
-            ),
+            "enumerable_properties": sum(1 for n in nodes for p in n.properties if p.enumerable),
             "facet_properties": sum(1 for n in nodes for p in n.properties if p.facet),
-            "date_properties": sum(
-                1 for n in nodes for p in n.properties if p.kind == "date"
-            ),
+            "date_properties": sum(1 for n in nodes for p in n.properties if p.kind == "date"),
             "forward_askable_edge_types": len(askable),
             "reverse_askable_edge_types": len(reverse_askable),
+            "dangling_cross_source_references": len(dangling),
         },
+        "dangling_cross_source_references": sorted(n.id for n in dangling),
         "nodes": [asdict(n) for n in nodes],
         "edges": [asdict(e) | {"triple": e.triple} for e in edges],
         "coverage": coverage(edges, nodes),
     }
-
-
-# ---------------------------------------------------------------------------
-# report
-# ---------------------------------------------------------------------------
 
 
 def render_markdown(census: dict[str, Any]) -> str:
@@ -734,7 +448,8 @@ def render_markdown(census: dict[str, Any]) -> str:
     add(
         f"Those categories reach **{cov['edge_types_reached']} of {cov['edge_types_total']}** "
         f"edge types — **{cov['edge_type_coverage']:.1%}** of the shapes, covering "
-        f"**{cov['edge_instance_coverage']:.1%}** of the {cov['edge_instances_total']:,} edge instances."
+        f"**{cov['edge_instance_coverage']:.1%}** of the {cov['edge_instances_total']:,} "
+        "edge instances."
     )
     add("")
     add(
@@ -750,15 +465,16 @@ def render_markdown(census: dict[str, Any]) -> str:
         "node_types", "nodes", "edge_types", "edge_instances",
         "cross_source_edge_types", "enumerable_properties", "facet_properties",
         "forward_askable_edge_types", "reverse_askable_edge_types",
+        "dangling_cross_source_references",
     ):
         add(f"| {key.replace('_', ' ')} | {tot[key]:,} |")
     add("")
 
     add("## Edge types")
     add("")
-    add("`fwd` / `rev` are median and p90 fan-out. An edge is *askable* in a")
-    add("direction when p90 answers stay under 50 — larger than that and the")
-    add("question has no reasonable answer to grade.")
+    add("`fwd` / `rev` are median and p90 fan-out. *Askable* in a direction means")
+    add("p90 answers stay under 50. It is reported, never used to exclude: Q29")
+    add("measured judged score against gold width and found no effect.")
     add("")
     add("| triple | n | fwd med/p90 | rev med/p90 | origin | asked? |")
     add("|---|---:|---:|---:|---|---|")
@@ -813,15 +529,27 @@ def render_markdown(census: dict[str, Any]) -> str:
         add("Date properties (range filters): " + ", ".join(f"`{l}.{p}`" for l, p in dates))
         add("")
 
+    add("## Dangling cross-source references")
+    add("")
+    add(
+        f"CAPEC declares {tot['dangling_cross_source_references']} ATT&CK technique ids "
+        "that the pinned Enterprise bundle has no live object for. They are the "
+        "cross-source join's failure surface and must not carry a federated question:"
+    )
+    add("")
+    add("> " + ", ".join(f"`{i}`" for i in census["dangling_cross_source_references"]))
+    add("")
+
     add("## Node types")
     add("")
-    add("| source | label | count | text properties |")
-    add("|---|---|---:|---|")
+    add("| source | label | count | referenced only | text properties |")
+    add("|---|---|---:|---|---|")
     for node in census["nodes"]:
         text = ", ".join(
             f"`{p['name']}`" for p in node["properties"] if p["kind"] == "text"
         ) or "—"
-        add(f"| {node['source']} | {node['label']} | {node['count']:,} | {text} |")
+        ref = "yes" if node["referenced_only"] else "—"
+        add(f"| {node['source']} | {node['label']} | {node['count']:,} | {ref} | {text} |")
     add("")
     return "\n".join(lines)
 

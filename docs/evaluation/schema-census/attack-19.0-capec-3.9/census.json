@@ -1,58 +1,74 @@
 {
- "census_version": 1,
+ "census_version": 2,
  "sources": {
   "attack": {
    "version": "19.0",
-   "path": "data/raw/attack/v19.0/enterprise-attack.json",
-   "sha256": "df520ea0775a57db7bff760145b02fed89290802913e056b7ed5970b02f3626a",
-   "size_bytes": 52680865,
    "objects_in_bundle": 25844,
    "nodes_after_exclusions": 4369,
    "nodes_with_external_id": 4369,
    "excluded": {
     "objects": 446,
     "relationships_dead_endpoint": 159,
-    "relationships_self": 0,
     "kill_chain_phases_unresolved": 0
-   }
+   },
+   "path": "data/raw/attack/v19.0/enterprise-attack.json",
+   "sha256": "df520ea0775a57db7bff760145b02fed89290802913e056b7ed5970b02f3626a",
+   "size_bytes": 52680865
   },
   "capec": {
    "version": "3.9",
-   "path": "data/raw/capec/v3.9/capec_latest.xml",
-   "sha256": "70279a2dff0cb0ad79e546adb07828335a704ad5210e047e09e986172fc9e34d",
-   "size_bytes": 3849998,
    "patterns_in_file": 615,
    "patterns_after_exclusions": 558,
    "excluded": {
     "patterns_retired": 57,
     "edges_dead_endpoint": 0
-   }
+   },
+   "path": "data/raw/capec/v3.9/capec_latest.xml",
+   "sha256": "70279a2dff0cb0ad79e546adb07828335a704ad5210e047e09e986172fc9e34d",
+   "size_bytes": 3849998
   }
  },
  "policy": {
-  "derivation": "raw files only; not through utils.kg_builder and not from a live store",
+  "derivation": "raw files only, via raw_graph; not through utils.kg_builder and not from a live store",
   "exclusions": "ATT&CK revoked/deprecated; CAPEC Deprecated/Obsolete; dead endpoints pruned",
+  "entity_rule": "a referenced-but-undefined node counts toward its label's population only when nothing else defines that label",
   "enumerable_max_distinct": 60,
-  "freetext_mean_chars": 120
+  "facet_max_distinct_ratio": 0.25,
+  "freetext_mean_chars": 120,
+  "askable_p90": 50
  },
  "totals": {
-  "node_types": 23,
-  "nodes": 10098,
+  "node_types": 25,
+  "nodes": 10170,
   "edge_types": 33,
-  "edge_instances": 34954,
+  "edge_instances": 34933,
   "cross_source_edge_types": 1,
-  "enumerable_properties": 43,
+  "enumerable_properties": 46,
   "facet_properties": 12,
   "date_properties": 2,
   "forward_askable_edge_types": 31,
-  "reverse_askable_edge_types": 30
+  "reverse_askable_edge_types": 30,
+  "dangling_cross_source_references": 10
  },
+ "dangling_cross_source_references": [
+  "T1513",
+  "T1562.001",
+  "T1562.002",
+  "T1562.003",
+  "T1562.004",
+  "T1562.006",
+  "T1562.007",
+  "T1562.008",
+  "T1562.009",
+  "T1574.002"
+ ],
  "nodes": [
   {
    "source": "attack",
    "label": "Analytic",
    "count": 1758,
    "unmapped": false,
+   "referenced_only": false,
    "properties": [
     {
      "name": "description",
@@ -148,6 +164,7 @@
    "label": "Campaign",
    "count": 56,
    "unmapped": false,
+   "referenced_only": false,
    "properties": [
     {
      "name": "aliases",
@@ -235,20 +252,122 @@
      "kind": "date",
      "present": 56,
      "coverage": 1.0,
-     "distinct": null,
-     "enumerable": false,
+     "distinct": 51,
+     "enumerable": true,
      "facet": false,
-     "values": []
+     "values": [
+      "2004-06-01T04:00:00.000Z",
+      "2004-10-01T04:00:00.000Z",
+      "2009-11-01T04:00:00.000Z",
+      "2010-01-01T07:00:00.000Z",
+      "2013-09-01T04:00:00.000Z",
+      "2014-10-01T04:00:00.000Z",
+      "2015-12-01T05:00:00.000Z",
+      "2016-05-01T07:00:00.000Z",
+      "2016-12-01T05:00:00.000Z",
+      "2017-06-01T04:00:00.000Z",
+      "2017-08-01T05:00:00.000Z",
+      "2017-09-01T05:00:00.000Z",
+      "2017-12-01T05:00:00.000Z",
+      "2018-07-01T05:00:00.000Z",
+      "2018-11-01T05:00:00.000Z",
+      "2019-01-01T05:00:00.000Z",
+      "2019-01-01T06:00:00.000Z",
+      "2019-08-01T05:00:00.000Z",
+      "2019-09-01T04:00:00.000Z",
+      "2019-10-01T04:00:00.000Z",
+      "2019-11-01T05:00:00.000Z",
+      "2019-12-01T07:00:00.000Z",
+      "2020-12-01T07:00:00.000Z",
+      "2021-01-01T05:00:00.000Z",
+      "2021-01-01T07:00:00.000Z",
+      "2021-05-01T04:00:00.000Z",
+      "2021-08-01T05:00:00.000Z",
+      "2021-12-01T06:00:00.000Z",
+      "2022-01-01T05:00:00.000Z",
+      "2022-02-01T05:00:00.000Z",
+      "2022-04-01T06:00:00.000Z",
+      "2022-06-01T04:00:00.000Z",
+      "2022-08-01T05:00:00.000Z",
+      "2022-10-01T04:00:00.000Z",
+      "2022-11-01T06:00:00.000Z",
+      "2023-01-01T05:00:00.000Z",
+      "2023-01-31T23:00:00.000Z",
+      "2023-06-01T04:00:00.000Z",
+      "2023-07-01T06:00:00.000Z",
+      "2023-08-01T04:00:00.000Z",
+      "2023-09-01T04:00:00.000Z",
+      "2023-12-01T05:00:00.000Z",
+      "2024-01-01T07:00:00.000Z",
+      "2024-02-01T05:00:00.000Z",
+      "2024-03-01T05:00:00.000Z",
+      "2024-06-01T04:00:00.000Z",
+      "2024-06-01T06:00:00.000Z",
+      "2024-07-01T04:00:00.000Z",
+      "2025-03-01T05:00:00.000Z",
+      "2025-07-01T04:00:00.000Z",
+      "2025-09-01T04:00:00.000Z"
+     ]
     },
     {
      "name": "last_seen",
      "kind": "date",
      "present": 56,
      "coverage": 1.0,
-     "distinct": null,
-     "enumerable": false,
+     "distinct": 49,
+     "enumerable": true,
      "facet": false,
-     "values": []
+     "values": [
+      "2004-09-01T04:00:00.000Z",
+      "2011-02-01T05:00:00.000Z",
+      "2016-01-01T05:00:00.000Z",
+      "2016-02-01T06:00:00.000Z",
+      "2016-12-01T05:00:00.000Z",
+      "2017-01-01T05:00:00.000Z",
+      "2017-08-01T04:00:00.000Z",
+      "2018-02-01T06:00:00.000Z",
+      "2018-11-01T05:00:00.000Z",
+      "2019-03-01T06:00:00.000Z",
+      "2019-04-01T05:00:00.000Z",
+      "2019-10-01T04:00:00.000Z",
+      "2019-12-01T05:00:00.000Z",
+      "2020-08-01T04:00:00.000Z",
+      "2020-11-01T04:00:00.000Z",
+      "2021-01-01T06:00:00.000Z",
+      "2021-08-01T05:00:00.000Z",
+      "2021-12-01T05:00:00.000Z",
+      "2022-02-01T05:00:00.000Z",
+      "2022-03-01T05:00:00.000Z",
+      "2022-04-01T06:00:00.000Z",
+      "2022-05-01T06:00:00.000Z",
+      "2022-07-01T05:00:00.000Z",
+      "2022-08-01T06:00:00.000Z",
+      "2022-09-01T04:00:00.000Z",
+      "2022-09-01T06:00:00.000Z",
+      "2022-10-01T04:00:00.000Z",
+      "2022-12-01T05:00:00.000Z",
+      "2023-01-01T08:00:00.000Z",
+      "2023-03-01T05:00:00.000Z",
+      "2023-12-01T05:00:00.000Z",
+      "2024-01-01T05:00:00.000Z",
+      "2024-01-01T07:00:00.000Z",
+      "2024-02-01T05:00:00.000Z",
+      "2024-03-01T05:00:00.000Z",
+      "2024-04-01T04:00:00.000Z",
+      "2024-04-01T06:00:00.000Z",
+      "2024-05-01T04:00:00.000Z",
+      "2024-06-01T04:00:00.000Z",
+      "2024-06-30T22:00:00.000Z",
+      "2024-07-01T04:00:00.000Z",
+      "2024-08-01T06:00:00.000Z",
+      "2024-11-01T04:00:00.000Z",
+      "2024-12-01T07:00:00.000Z",
+      "2025-03-01T05:00:00.000Z",
+      "2025-07-01T04:00:00.000Z",
+      "2025-08-01T04:00:00.000Z",
+      "2025-09-01T04:00:00.000Z",
+      "2025-12-01T05:00:00.000Z"
+     ]
     },
     {
      "name": "name",
@@ -499,6 +618,7 @@
    "label": "DataComponent",
    "count": 106,
    "unmapped": false,
+   "referenced_only": false,
    "properties": [
     {
      "name": "description",
@@ -565,6 +685,7 @@
    "label": "DetectionStrategy",
    "count": 697,
    "unmapped": false,
+   "referenced_only": false,
    "properties": [
     {
      "name": "name",
@@ -618,6 +739,7 @@
    "label": "Group",
    "count": 174,
    "unmapped": false,
+   "referenced_only": false,
    "properties": [
     {
      "name": "aliases",
@@ -717,6 +839,7 @@
    "label": "Matrix",
    "count": 1,
    "unmapped": false,
+   "referenced_only": false,
    "properties": [
     {
      "name": "description",
@@ -785,6 +908,7 @@
    "label": "Mitigation",
    "count": 44,
    "unmapped": false,
+   "referenced_only": false,
    "properties": [
     {
      "name": "description",
@@ -886,6 +1010,7 @@
    "label": "Software",
    "count": 821,
    "unmapped": false,
+   "referenced_only": false,
    "properties": [
     {
      "name": "description",
@@ -1016,6 +1141,7 @@
    "label": "Tactic",
    "count": 15,
    "unmapped": false,
+   "referenced_only": false,
    "properties": [
     {
      "name": "description",
@@ -1111,6 +1237,7 @@
    "label": "Technique",
    "count": 697,
    "unmapped": false,
+   "referenced_only": false,
    "properties": [
     {
      "name": "description",
@@ -1262,9 +1389,53 @@
   },
   {
    "source": "capec",
+   "label": "AlternateTerm",
+   "count": 27,
+   "unmapped": false,
+   "referenced_only": false,
+   "properties": [
+    {
+     "name": "text",
+     "kind": "scalar",
+     "present": 27,
+     "coverage": 1.0,
+     "distinct": 23,
+     "enumerable": true,
+     "facet": false,
+     "values": [
+      "Billion Laughs Attack",
+      "Boy in the Browser",
+      "Data Spill When information is handled by an information system of a classification/sensitivity for which the system has not been authorized to handle.",
+      "Directory Traversal",
+      "HTTP Desync Modification/manipulation of HTTP message headers, request-line and body parameters to disrupt and interfere in the interpretation and parsing of HTTP message lengths/boundaries for consecutive HTTP messages by HTTP agents in a HTTP chain or network path.",
+      "Homoglyph Attack",
+      "Homophone Attack",
+      "Man in the Browser",
+      "Man in the Mobile",
+      "Man-in-the-Middle / MITM",
+      "MobPhishing",
+      "Monkey-in-the-Middle",
+      "Monster-in-the-Middle",
+      "On-path Attacker",
+      "Person-in-the-Middle / PiTM",
+      "Session Riding",
+      "Side-Channel Attack",
+      "Smishing",
+      "Vishing",
+      "VoIP Phishing",
+      "XML Bomb",
+      "XML Denial of Service (XML DoS)",
+      "XML Entity Expansion (XEE)"
+     ]
+    }
+   ]
+  },
+  {
+   "source": "capec",
    "label": "AttackPattern",
    "count": 558,
    "unmapped": false,
+   "referenced_only": false,
    "properties": [
     {
      "name": "Abstraction",
@@ -1358,9 +1529,29 @@
   },
   {
    "source": "capec",
+   "label": "CapecMitigation",
+   "count": 1170,
+   "unmapped": false,
+   "referenced_only": false,
+   "properties": [
+    {
+     "name": "text",
+     "kind": "text",
+     "present": 1170,
+     "coverage": 1.0,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    }
+   ]
+  },
+  {
+   "source": "capec",
    "label": "Category",
    "count": 78,
    "unmapped": false,
+   "referenced_only": false,
    "properties": [
     {
      "name": "Name",
@@ -1390,9 +1581,159 @@
   },
   {
    "source": "capec",
+   "label": "Consequence",
+   "count": 812,
+   "unmapped": false,
+   "referenced_only": false,
+   "properties": [
+    {
+     "name": "text",
+     "kind": "scalar",
+     "present": 812,
+     "coverage": 1.0,
+     "distinct": 179,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    }
+   ]
+  },
+  {
+   "source": "capec",
+   "label": "Example",
+   "count": 387,
+   "unmapped": false,
+   "referenced_only": false,
+   "properties": [
+    {
+     "name": "text",
+     "kind": "text",
+     "present": 387,
+     "coverage": 1.0,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    }
+   ]
+  },
+  {
+   "source": "capec",
+   "label": "ExecutionStep",
+   "count": 815,
+   "unmapped": false,
+   "referenced_only": false,
+   "properties": [
+    {
+     "name": "text",
+     "kind": "text",
+     "present": 815,
+     "coverage": 1.0,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    }
+   ]
+  },
+  {
+   "source": "capec",
+   "label": "Indicator",
+   "count": 96,
+   "unmapped": false,
+   "referenced_only": false,
+   "properties": [
+    {
+     "name": "text",
+     "kind": "text",
+     "present": 96,
+     "coverage": 1.0,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    }
+   ]
+  },
+  {
+   "source": "capec",
+   "label": "Prerequisite",
+   "count": 746,
+   "unmapped": false,
+   "referenced_only": false,
+   "properties": [
+    {
+     "name": "text",
+     "kind": "text",
+     "present": 746,
+     "coverage": 1.0,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    }
+   ]
+  },
+  {
+   "source": "capec",
+   "label": "Resource",
+   "count": 289,
+   "unmapped": false,
+   "referenced_only": false,
+   "properties": [
+    {
+     "name": "text",
+     "kind": "text",
+     "present": 289,
+     "coverage": 1.0,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    }
+   ]
+  },
+  {
+   "source": "capec",
+   "label": "Skill",
+   "count": 402,
+   "unmapped": false,
+   "referenced_only": false,
+   "properties": [
+    {
+     "name": "text",
+     "kind": "text",
+     "present": 400,
+     "coverage": 0.995,
+     "distinct": null,
+     "enumerable": false,
+     "facet": false,
+     "values": []
+    }
+   ]
+  },
+  {
+   "source": "capec",
+   "label": "TaxonomyEntry:OWASP Attacks",
+   "count": 39,
+   "unmapped": false,
+   "referenced_only": true,
+   "properties": []
+  },
+  {
+   "source": "capec",
+   "label": "TaxonomyEntry:WASC",
+   "count": 33,
+   "unmapped": false,
+   "referenced_only": true,
+   "properties": []
+  },
+  {
+   "source": "capec",
    "label": "View",
    "count": 13,
    "unmapped": false,
+   "referenced_only": false,
    "properties": [
     {
      "name": "Name",
@@ -1449,72 +1790,10 @@
   },
   {
    "source": "capec",
-   "label": "AlternateTerm",
-   "count": 27,
-   "unmapped": false,
-   "properties": []
-  },
-  {
-   "source": "capec",
-   "label": "CapecMitigation",
-   "count": 1170,
-   "unmapped": false,
-   "properties": []
-  },
-  {
-   "source": "capec",
-   "label": "Consequence",
-   "count": 812,
-   "unmapped": false,
-   "properties": []
-  },
-  {
-   "source": "capec",
-   "label": "Example",
-   "count": 387,
-   "unmapped": false,
-   "properties": []
-  },
-  {
-   "source": "capec",
-   "label": "ExecutionStep",
-   "count": 815,
-   "unmapped": false,
-   "properties": []
-  },
-  {
-   "source": "capec",
-   "label": "Indicator",
-   "count": 96,
-   "unmapped": false,
-   "properties": []
-  },
-  {
-   "source": "capec",
-   "label": "Prerequisite",
-   "count": 746,
-   "unmapped": false,
-   "properties": []
-  },
-  {
-   "source": "capec",
-   "label": "Resource",
-   "count": 289,
-   "unmapped": false,
-   "properties": []
-  },
-  {
-   "source": "capec",
-   "label": "Skill",
-   "count": 402,
-   "unmapped": false,
-   "properties": []
-  },
-  {
-   "source": "capec",
    "label": "Weakness",
    "count": 336,
    "unmapped": false,
+   "referenced_only": true,
    "properties": []
   }
  ],
@@ -2148,18 +2427,18 @@
    "subject": "View",
    "predicate": "HAS_MEMBER",
    "object": "AttackPattern",
-   "count": 67,
-   "distinct_subjects": 4,
-   "distinct_objects": 67,
+   "count": 46,
+   "distinct_subjects": 1,
+   "distinct_objects": 46,
    "forward_fanout": {
-    "n": 4,
-    "mean": 16.75,
-    "median": 7.5,
+    "n": 1,
+    "mean": 46.0,
+    "median": 46.0,
     "p90": 46,
     "max": 46
    },
    "reverse_fanout": {
-    "n": 67,
+    "n": 46,
     "mean": 1.0,
     "median": 1.0,
     "p90": 1,
@@ -2383,12 +2662,25 @@
   "edge_types_total": 33,
   "edge_types_reached": 12,
   "edge_type_coverage": 0.3636,
-  "edge_instances_total": 34954,
+  "edge_instances_total": 34933,
   "edge_instances_reached": 23294,
-  "edge_instance_coverage": 0.6664,
-  "properties_total": 74,
-  "properties_reached": 23,
-  "property_coverage": 0.3108,
+  "edge_instance_coverage": 0.6668,
+  "labels_reachable": [
+   "AttackPattern",
+   "Consequence",
+   "DetectionStrategy",
+   "ExecutionStep",
+   "Group",
+   "Mitigation",
+   "Skill",
+   "Software",
+   "Tactic",
+   "Technique",
+   "Weakness"
+  ],
+  "properties_total": 83,
+  "properties_reached": 16,
+  "property_coverage": 0.1928,
   "reached": [
    "AttackPattern -[ChildOf]-> AttackPattern",
    "AttackPattern -[EXPLOITS_WEAKNESS]-> Weakness",
