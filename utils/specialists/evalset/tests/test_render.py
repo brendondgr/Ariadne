@@ -93,17 +93,17 @@ def test_a_D0_brief_is_shaped_like_a_D2_brief(graph: rg.RawGraph, specs: list[co
 
 
 def test_no_relation_gloss_ends_with_a_label() -> None:
-    """The frame appends the label, so a gloss that ends with one doubles it.
+    """The frame prepends the label, so a gloss ending in one doubles it.
 
-    Checked on the *ending* rather than on any mention: "is a step in" names a
-    label and composes correctly ("the CAPEC attack patterns each of those is a
-    step in"), while "corresponds to the ATT&CK technique" does not.
+    Checked on the ending, not on any mention: `HAS_CONSEQUENCE` reversed reads
+    "that {s} is a consequence of", where "consequence" describes the *subject*
+    and composes correctly. The pool-level test below covers what this cannot.
     """
     endings = {w.lower() for pair in rd.LABEL_GLOSS.values() for w in pair}
     for predicate, glosses in rd.RELATION_GLOSS.items():
         for gloss in glosses:
             for ending in endings:
-                assert not gloss.lower().endswith(ending), f"{predicate}: {gloss!r}"
+                assert not gloss.lower().rstrip().endswith(ending), f"{predicate}: {gloss!r}"
 
 
 def test_no_rendered_ask_names_a_label_twice_running(specs: list[comp.Spec]) -> None:
@@ -114,6 +114,41 @@ def test_no_rendered_ask_names_a_label_twice_running(specs: list[comp.Spec]) -> 
         for singular in singulars:
             assert f"{singular} {singular}" not in ask, spec.id
             assert f"{singular}s the {singular}" not in ask, spec.id
+
+
+def test_every_relation_gloss_names_its_own_direction() -> None:
+    """A gloss must not be readable both ways round.
+
+    The frame used to be "the {plural} it {gloss}", which produced "the attack
+    patterns it can happen after" — correct English, and a garden path. Opus 5
+    read it as "patterns that can happen after CAPEC-98", the exact inversion,
+    on the exact axis the blind holdout failed on. A weaker model happened not
+    to invert it, which is no reassurance at all.
+
+    Every gloss must therefore be either subject-first (`{s} uses`) or an
+    unambiguous relative clause about the object (`that use {s}`).
+    """
+    for predicate, glosses in rd.RELATION_GLOSS.items():
+        for gloss in glosses:
+            assert "{s}" in gloss, f"{predicate}: {gloss!r} names no subject"
+            assert gloss.startswith("{s} ") or gloss.startswith("that "), (
+                f"{predicate}: {gloss!r} is neither subject-first nor a relative clause"
+            )
+
+
+def test_symmetric_relations_gloss_identically() -> None:
+    """`PeerOf` reads the same both ways; anything else must not."""
+    for predicate, (forward, reverse) in rd.RELATION_GLOSS.items():
+        if predicate == "PeerOf":
+            assert forward == reverse
+        else:
+            assert forward != reverse, predicate
+
+
+def test_directional_pairs_are_actually_opposites() -> None:
+    """`CanPrecede` forwards must read as `CanFollow` forwards backwards."""
+    assert rd.RELATION_GLOSS["CanPrecede"][0] == rd.RELATION_GLOSS["CanFollow"][1]
+    assert rd.RELATION_GLOSS["CanFollow"][0] == rd.RELATION_GLOSS["CanPrecede"][1]
 
 
 def test_every_spec_the_pool_produces_is_renderable(specs: list[comp.Spec]) -> None:

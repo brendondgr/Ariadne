@@ -46,3 +46,59 @@ The third graph is generated from a blueprint rather than parsed from a
 catalogue, so nothing in this module applies to it. Its census needs a different
 entry point. Any statement of the form "we cover N% of our graphs" must say
 which graphs — this experiment covers two of three.
+
+## I-5 — An ambiguous brief inverted the question's direction, and the stronger model was the one it fooled
+
+**Found 2026-09-01 by switching the Author from a local relay model to Opus 5.**
+
+The renderer's first frame was `the {plural} it {gloss}`, producing briefs like:
+
+> the CAPEC attack patterns it can happen after
+
+That is correct English and a garden path. It means *patterns X such that CAPEC-98
+can happen after X* — i.e. things that come **before** CAPEC-98. Opus 5 read it
+the other way and wrote "which patterns can happen **after** CAPEC-98", on two of
+seven sampled specs (one D5, one D6). The gold was unchanged, so the pairing was
+silently wrong.
+
+**The weaker model did not invert it, and that is not reassurance.** The relay
+model produced near-literal restatements of the brief; the stronger one
+paraphrased, and paraphrasing is where an ambiguity gets resolved — sometimes the
+wrong way. Reading "the weak model got it right" as evidence the brief was fine
+would have shipped the defect.
+
+**Why it matters beyond this pipeline.** Direction is the axis the blind holdout
+collapsed on (EXP-2026-08-005: 0.7688 → 0.8952 after the binding/direction fix).
+A generator that silently inverts direction on some fraction of its questions
+would produce a bank that *looks* harder in exactly the place the system is
+weakest, and the extra difficulty would be an artifact of the question text.
+
+**Fixed.** Every relation gloss now names its own direction and cannot be read
+both ways: each is either subject-first (`{s} uses`) or an unambiguous relative
+clause about the object (`that can precede {s}`). Three tests enforce it — every
+gloss must match one of those two shapes, directional pairs must be exact
+opposites of each other (`CanPrecede` forwards == `CanFollow` backwards), and
+only `PeerOf` may gloss identically in both directions.
+
+After the fix, all 12 sampled D5/D6 questions carry the brief's direction
+exactly, and re-authoring kept 126/126.
+
+**Not retained:** the pre-fix Opus output was overwritten by the re-run, so the
+two inverted questions survive only as the examples quoted above. A future
+author-model comparison should keep both passes.
+
+## I-6 — Some D0 items are plausible by construction and odd to a reader
+
+The Author, unprompted, reported writing D0 items "that read oddly for the
+subject type (e.g. S0614 asked as 'a sub-technique of', T1568 asked as what it
+'detects')".
+
+The plausibility rule requires only that the predicate be one some label in the
+same catalogue carries. That removes category errors across catalogues and does
+not remove them within one. A D0 question a reader can spot as malformed tests
+whether the system parses, not whether it abstains, and the two are different
+properties.
+
+Not fixed. Tightening needs a semantic notion of which labels a predicate could
+sensibly apply to, which is a judgement call worth making deliberately before the
+full bank rather than hastily now.

@@ -78,40 +78,48 @@ def label_words(label: str) -> tuple[str, str]:
     return LABEL_GLOSS.get(label, (label, f"{label}s"))
 
 
-#: Predicate -> (reading it forwards, reading it backwards). Both compose into
-#: the frame "the {plural} it {gloss}", so neither may name a label: the frame
-#: already supplies one, and a gloss that repeats it produces "the ATT&CK
-#: techniques those corresponds to the ATT&CK technique".
+#: Predicate -> (forwards, backwards), each a relative clause describing the
+#: OBJECT, with `{s}` standing for the subject.
+#:
+#: The earlier frame was "the {plural} it {gloss}", which produced
+#: "the attack patterns it can happen after". That is correct English and a
+#: garden path: it means "patterns X such that CAPEC-98 can happen after X", and
+#: Opus 5 read it as "patterns that can happen after CAPEC-98" — the exact
+#: inversion, on the exact axis the blind holdout failed on. The weaker author
+#: model happened not to invert it, which is worse than useless as reassurance.
+#:
+#: So every gloss now names its own direction explicitly. "that can precede {s}"
+#: cannot be read backwards.
 RELATION_GLOSS: dict[str, tuple[str, str]] = {
-    "uses": ("uses", "is used by"),
-    "mitigates": ("mitigates", "is mitigated by"),
-    "detects": ("detects", "is detected by"),
-    "subtechnique-of": ("is a sub-technique of", "has as sub-techniques"),
-    "attributed-to": ("is attributed to", "has attributed to it"),
-    "kill_chain_phase": ("belongs to", "is achieved by"),
-    "x_mitre_analytic_refs": ("is implemented by", "implements"),
-    "tactic_refs": ("covers", "is covered by"),
-    "log_source": ("draws on", "is drawn on by"),
-    "ChildOf": ("is a more specific case of", "has as more specific cases"),
-    "ParentOf": ("is a more general case of", "has as more general cases"),
-    "CanPrecede": ("can happen before", "can happen after"),
-    "CanFollow": ("can happen after", "can happen before"),
-    "CanAlsoBe": ("can also be carried out as", "can also be reached from"),
-    "PeerOf": ("is a peer of", "is a peer of"),
-    "EXPLOITS_WEAKNESS": ("exploits", "is exploited by"),
-    "MAPS_TO[ATTACK]": ("corresponds to", "is described by"),
-    "MAPS_TO[WASC]": ("corresponds to", "is described by"),
-    "MAPS_TO[OWASP Attacks]": ("corresponds to", "is described by"),
-    "HAS_EXECUTION_STEP": ("is carried out through", "is a step in"),
-    "HAS_CONSEQUENCE": ("can have", "is a consequence of"),
-    "REQUIRES_SKILL": ("requires", "is required by"),
-    "HAS_MITIGATION": ("is mitigated by", "mitigates"),
-    "HAS_PREREQUISITE": ("requires as a precondition", "is a precondition for"),
-    "HAS_INDICATOR": ("shows", "indicates"),
-    "HAS_EXAMPLE": ("is illustrated by", "illustrates"),
-    "REQUIRES_RESOURCE": ("requires", "is required by"),
-    "HAS_ALTERNATE_TERM": ("also goes by", "is another name for"),
-    "HAS_MEMBER": ("contains", "belongs to"),
+    "uses": ("{s} uses", "that use {s}"),
+    "mitigates": ("{s} mitigates", "that mitigate {s}"),
+    "detects": ("{s} detects", "that detect {s}"),
+    "subtechnique-of": ("{s} is a sub-technique of", "that are sub-techniques of {s}"),
+    "attributed-to": ("{s} is attributed to", "that {s} is attributed to"),
+    "kill_chain_phase": ("{s} belongs to", "that belong to {s}"),
+    "x_mitre_analytic_refs": ("that implement {s}", "that {s} implements"),
+    "tactic_refs": ("{s} covers", "that cover {s}"),
+    "log_source": ("{s} draws on", "that draw on {s}"),
+    "ChildOf": ("{s} is a more specific case of", "that are more specific cases of {s}"),
+    "ParentOf": ("{s} is a more general case of", "that are more general cases of {s}"),
+    "CanPrecede": ("that can follow {s}", "that can precede {s}"),
+    "CanFollow": ("that can precede {s}", "that can follow {s}"),
+    "CanAlsoBe": ("{s} can also be carried out as", "that can also be carried out as {s}"),
+    "PeerOf": ("that are peers of {s}", "that are peers of {s}"),
+    "EXPLOITS_WEAKNESS": ("{s} exploits", "that exploit {s}"),
+    "MAPS_TO[ATTACK]": ("{s} corresponds to", "that correspond to {s}"),
+    "MAPS_TO[WASC]": ("{s} corresponds to", "that correspond to {s}"),
+    "MAPS_TO[OWASP Attacks]": ("{s} corresponds to", "that correspond to {s}"),
+    "HAS_EXECUTION_STEP": ("{s} is carried out through", "that {s} is a step in"),
+    "HAS_CONSEQUENCE": ("{s} can have", "that {s} is a consequence of"),
+    "REQUIRES_SKILL": ("{s} requires", "that require {s}"),
+    "HAS_MITIGATION": ("that mitigate {s}", "that {s} mitigates"),
+    "HAS_PREREQUISITE": ("{s} requires as a precondition", "that {s} is a precondition for"),
+    "HAS_INDICATOR": ("that indicate {s}", "that {s} indicates"),
+    "HAS_EXAMPLE": ("that illustrate {s}", "that {s} illustrates"),
+    "REQUIRES_RESOURCE": ("{s} requires", "that require {s}"),
+    "HAS_ALTERNATE_TERM": ("{s} also goes by", "that {s} is another name for"),
+    "HAS_MEMBER": ("{s} contains", "that contain {s}"),
 }
 
 #: Property -> how to phrase it as a *restriction*. Distinct from PROPERTY_GLOSS
@@ -236,10 +244,11 @@ def brief_for(spec: Spec) -> Brief:
         for index, step in enumerate(spec.steps):
             plural = label_words(step.label)[1]
             relation = _describe_relation(step.predicate, step.reverse)
-            # "those corresponds to" does not agree; every gloss is written in
-            # the third-person singular, so the later subject must be too.
+            # The subject of a later leg is the set the previous leg produced.
+            # Glosses are third-person singular, so "each of those" keeps
+            # agreement where a bare "those" would not.
             subject = "it" if index == 0 else "each of those"
-            legs.append(f"the {plural} {subject} {relation}")
+            legs.append(f"the {plural} {relation.format(s=subject)}")
         ask = ", and then ".join(legs)
         answer_type = f"a list of {label_words(spec.return_label)[1]}"
 

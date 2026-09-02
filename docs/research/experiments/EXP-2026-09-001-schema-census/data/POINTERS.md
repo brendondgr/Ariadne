@@ -19,14 +19,19 @@ makes it reproducible without shipping a 52 MB bundle.
 | Tests (enumerator) | `utils/specialists/evalset/tests/test_composition.py` | 11162 | sha256:5e6cd808cdc7dd05e56be6a440a3b95d9263182e37580000876a081deff413a6 | added by A-1 / Step 1 |
 | Spec pool | `docs/evaluation/composition/attack-19.0-capec-3.9/specs.json` | 3198426 | sha256:b1bdcbd55754d8e542e764b745214df56ae3198df392631641bd70a4d2ec4726 | added by A-1 / Step 1 |
 | Spec pool report | `docs/evaluation/composition/attack-19.0-capec-3.9/report.json` | 632 | sha256:e952b67d68e6d880c6fcef3659064dc36ec0211e0ae456422e5d8c18e11d47d4 | added by A-1 / Step 1 |
-| Code (renderer) | `utils/specialists/evalset/render.py` | 17899 | sha256:d65b3f2a35ee856fab54e67398fdac9538888329983d636ef282516bdedc7f8c | added by Step 4 |
-| Tests (renderer) | `utils/specialists/evalset/tests/test_render.py` | 7886 | sha256:8ba2d0b6b0e09a53ff37c7b20ae935eb35632bc6876720923a9b6464b8bb6b43 | added by Step 4 |
+| Code (renderer) | `utils/specialists/evalset/render.py` | 18667 | sha256:a0dfb2b83abc639a71db9d7151272a172b44e63dd9269d23efc822a176d28f09 | added by Step 4 |
+| Tests (renderer) | `utils/specialists/evalset/tests/test_render.py` | 9523 | sha256:e0f43ec0f3cd100cb5070be3f93583dc77899e9a37309a970fb0b939d8826a19 | added by Step 4 |
 | Render pilot | `docs/evaluation/composition/attack-19.0-capec-3.9/rendered.json` | 33938 | sha256:1fbfcb7c401b5f7a78ff304235c6bd774954292776e104f08e7d2f4484c97270 | added by Step 4 |
+| Code (brief writer) | `scripts/prepare_briefs.py` | 7709 | sha256:cba8459a3a179acb987e68e55189885131b29b9b6c07475d57ca203329f80446 | Author = Opus 5 subagents |
+| Code (ingest/validate) | `scripts/ingest_authored.py` | 5595 | sha256:0ace2ce426e9085678fcdf4872d405f50189ecae5c2d3c73fb66f29744fb1a91 | Author = Opus 5 subagents |
+| Opus 5 author pilot | `docs/evaluation/composition/authored/ingested.json` | 37581 | sha256:659c1cd5c10a3e91451422abfcb59d7bf21c700a444ab16e917a13beb57fd690 | Author = Opus 5 subagents |
 
 Regenerate:
 
 ```
 uv run python -m utils.specialists.evalset.schema_census
 uv run python scripts/enumerate_compositions.py --per-shape 4
-uv run python scripts/render_questions.py --limit 42 --max-tokens 8192
+uv run python scripts/prepare_briefs.py --limit 42 --batches 2
+# author each briefs/*.json with an Opus 5 subagent -> authored/*.json
+uv run python scripts/ingest_authored.py
 ```

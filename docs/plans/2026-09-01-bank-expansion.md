@@ -152,18 +152,56 @@ in the pipeline, and `schema_leakage` hard-rejects any question that contains a
 raw schema token — so a gloss that smuggled one in is caught by the question it
 produced.
 
-**Gate met.** Schema overlap on the first pilot: median 0.059, p90 0.182, max
-0.333. The questions are not label echoes. The three registers differ less than
-hoped (0.064 / 0.087 / 0.060), which is worth recording rather than claiming as
-paraphrase diversity.
+**Gate met.** Schema overlap: median 0.091, p90 0.167, max 0.25 with Opus 5 as
+Author (0.061 / 0.167 / 0.286 with the relay model). The questions are not label
+echoes either way. The three registers differ less than hoped (0.091 / 0.095 /
+0.078), which is worth recording rather than claiming as paraphrase diversity.
 
-**Blocked on one thing: there is no Fable endpoint on this machine.** The relay
-at `localhost:4000` serves `local` (gemma-4-26B), `skynet` (qwen38-27B, which is
-the pipeline model and therefore disqualified as author) and five `opencode/*`
-models; there is no Anthropic key. The pilots ran on
-`opencode/nemotron-3-ultra-free` — a different family from the pipeline model,
-so blindness holds — and the runner takes `--model`, so pointing it at Fable is
-one flag. **This needs an answer before Step 7.**
+**Author comparison, 126 renderings of the same 42 specs:**
+
+| | relay (`nemotron-3-ultra`) | Opus 5 subagents |
+|---|---:|---:|
+| kept | 96.8% | **100%** |
+| rejections | 52 empty completions | none |
+| overlap median / max | 0.061 / 0.286 | 0.091 / 0.250 |
+| direction inversions (pre-fix) | 0 observed | **2 of 7 sampled** |
+
+The last row is the one that matters, and it does not say the relay model is
+better. It produced near-literal restatements of the brief; Opus paraphrased,
+and paraphrasing is where an ambiguity gets resolved — sometimes wrongly. The
+brief was the defect (I-5), and reading "the weak model got it right" as
+evidence otherwise would have shipped it.
+
+**The Author is Opus 5, run as subagents.** There is no Fable endpoint on this
+machine — the relay at `localhost:4000` serves `local` (gemma-4-26B), `skynet`
+(qwen38-27B, which is the pipeline model and therefore disqualified as Author)
+and five `opencode/*` models, and there is no Anthropic key. Reaching for the
+weakest available local model when a frontier one was one tool call away was the
+wrong call; the relay path stays in `scripts/render_questions.py` as a fallback
+and for author-model sensitivity work, and the subagent path is the default.
+
+**The subagent path costs one enforcement and buys it back with three checks.**
+An API call with no tools *cannot* see the repository. A subagent can, so the
+restriction moves into what it is given:
+
+- `scripts/prepare_briefs.py` writes brief files containing only the subject,
+  what to ask for, and the restriction — no gold, no path, no tier, no
+  predicate. `_assert_no_leakage` fails the build if any of those appear, and it
+  fired twice while being written: once because the item id was the spec id
+  (`D0-Analytic-kill_chain_phase-AN1504` names both the tier and the predicate)
+  and once because one item's anchor was another item's answer inside the same
+  file.
+- Briefs are partitioned so no item's identifier is any other item's gold. A
+  batch is one prompt, so everything in it is visible at once.
+- `scripts/ingest_authored.py` validates every returned question: it must name
+  its anchor, must not name any other identifier, must not name the answer, and
+  must not contain schema vocabulary. Overlap is reported per question so a
+  batch that starts tracking the label vocabulary is visible even when no single
+  question trips a rule.
+
+Nothing here *proves* an agent wrote from the brief alone. It makes the ways
+that would show up fail loudly. That is weaker than the API path and belongs in
+the dataset card, not a footnote.
 
 ### Step 5 — Validation before anything is graded
 

@@ -1,0 +1,22 @@
+{
+ "instructions": "You are writing evaluation questions for a cybersecurity knowledge-base benchmark.\n\nFor each item below, write ONE natural-language question. Return JSON only:\n{\"questions\": [{\"id\": \"<item id>\", \"question\": \"<the question>\"}, ...]}\n\nEach item gives you: a subject (its name, its type, its identifier), what the\nquestion should ask for, and sometimes a restriction to apply.\n\nRules, all of which are checked automatically and will cause a rejection:\n- The question MUST contain the subject's identifier exactly as given.\n- The question MUST NOT contain any other identifier.\n- Do NOT answer the question. Do NOT explain yourself.\n- Do NOT use underscores, camelCase, or database field names. Write it the way a\n  person would say it.\n- Exactly one question mark.\n- Some items have no answer in the data. You cannot tell which, and you should\n  not try: write every item as a straightforward question regardless.\n",
+ "style": "Write it the way someone would ask a colleague who knows the subject \u2014 conversational, and phrased around what they are trying to find out rather than around the data.",
+ "items": [
+  {
+   "id": "qfef39ff6ddb8",
+   "subject_name": "Industrial Control System (ICS) Patterns",
+   "subject_type": "CAPEC view",
+   "identifier": "CAPEC-703",
+   "ask_for": "the CAPEC attack patterns it contains, and then the CAPEC attack patterns that can also be carried out as each of those",
+   "answer_shape": "a list of CAPEC attack patterns"
+  },
+  {
+   "id": "q1fb1a7f1e11d",
+   "subject_name": "Crimson",
+   "subject_type": "piece of malware or tooling",
+   "identifier": "S0115",
+   "ask_for": "the ATT&CK techniques it uses, and then the CAPEC attack patterns that correspond to each of those",
+   "answer_shape": "a list of CAPEC attack patterns"
+  }
+ ]
+}

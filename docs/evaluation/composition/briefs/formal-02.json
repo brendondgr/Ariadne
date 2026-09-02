@@ -1,0 +1,164 @@
+{
+ "instructions": "You are writing evaluation questions for a cybersecurity knowledge-base benchmark.\n\nFor each item below, write ONE natural-language question. Return JSON only:\n{\"questions\": [{\"id\": \"<item id>\", \"question\": \"<the question>\"}, ...]}\n\nEach item gives you: a subject (its name, its type, its identifier), what the\nquestion should ask for, and sometimes a restriction to apply.\n\nRules, all of which are checked automatically and will cause a rejection:\n- The question MUST contain the subject's identifier exactly as given.\n- The question MUST NOT contain any other identifier.\n- Do NOT answer the question. Do NOT explain yourself.\n- Do NOT use underscores, camelCase, or database field names. Write it the way a\n  person would say it.\n- Exactly one question mark.\n- Some items have no answer in the data. You cannot tell which, and you should\n  not try: write every item as a straightforward question regardless.\n",
+ "style": "Write it as a precise written question, the way it would appear in a report or a checklist.",
+ "items": [
+  {
+   "id": "q1f2610138923",
+   "subject_name": "Execution Prevention",
+   "subject_type": "ATT&CK mitigation",
+   "identifier": "M1038",
+   "ask_for": "the ATT&CK techniques it mitigates",
+   "answer_shape": "a list of ATT&CK techniques"
+  },
+  {
+   "id": "q12f275187ebc",
+   "subject_name": "Steal or Forge Kerberos Tickets",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1558",
+   "ask_for": "the ATT&CK techniques that are sub-techniques of it",
+   "answer_shape": "a list of ATT&CK techniques"
+  },
+  {
+   "id": "qbb4a65804de8",
+   "subject_name": "sqlmap",
+   "subject_type": "piece of malware or tooling",
+   "identifier": "S0225",
+   "ask_for": "the campaigns that use it",
+   "answer_shape": "a list of campaigns"
+  },
+  {
+   "id": "qdfe10522d500",
+   "subject_name": "File Content Injection",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-23",
+   "ask_for": "the CAPEC attack patterns it can also be carried out as, and then the CAPEC attack patterns that can precede each of those",
+   "answer_shape": "a list of CAPEC attack patterns"
+  },
+  {
+   "id": "q24c78eeeac2b",
+   "subject_name": "HTTP Response Smuggling",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-273",
+   "ask_for": "the CAPEC attack patterns that are peers of it, and then the alternate names each of those also goes by",
+   "answer_shape": "a list of alternate names"
+  },
+  {
+   "id": "qef9060d5e082",
+   "subject_name": "Using UTF-8 Encoding to Bypass Validation Logic",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-80",
+   "ask_for": "the CAPEC attack patterns that are peers of it, and then the skills each of those requires",
+   "answer_shape": "a list of skills"
+  },
+  {
+   "id": "qd64bf4ea83eb",
+   "subject_name": "Volt Typhoon",
+   "subject_type": "threat group",
+   "identifier": "G1017",
+   "ask_for": "the campaigns that it is attributed to, and then the malware and tools each of those uses",
+   "answer_shape": "a list of malware and tools"
+  },
+  {
+   "id": "qda9bce5a9ec2",
+   "subject_name": "Discovery",
+   "subject_type": "ATT&CK tactic",
+   "identifier": "TA0007",
+   "ask_for": "the ATT&CK techniques that belong to it, and then the ATT&CK techniques each of those is a sub-technique of",
+   "answer_shape": "a list of ATT&CK techniques"
+  },
+  {
+   "id": "q518d8caef199",
+   "subject_name": "Phishing",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-98",
+   "ask_for": "the CAPEC attack patterns that can follow it",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones where the likelihood of attack is Low"
+  },
+  {
+   "id": "qfefe9ee889b9",
+   "subject_name": "Behavior Prevention on Endpoint",
+   "subject_type": "ATT&CK mitigation",
+   "identifier": "M1040",
+   "ask_for": "the ATT&CK techniques it mitigates",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to Containers"
+  },
+  {
+   "id": "qb0016e4ca64c",
+   "subject_name": "Out-of-Band Communications Channel",
+   "subject_type": "ATT&CK mitigation",
+   "identifier": "M1060",
+   "ask_for": "the ATT&CK techniques it mitigates",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to Office Suite"
+  },
+  {
+   "id": "q1cf56227737f",
+   "subject_name": "Quad7 Activity",
+   "subject_type": "campaign",
+   "identifier": "C0055",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to PRE"
+  },
+  {
+   "id": "qbd436b6ba4bb",
+   "subject_name": "INC Ransomware",
+   "subject_type": "piece of malware or tooling",
+   "identifier": "S1139",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to Office Suite"
+  },
+  {
+   "id": "qe0dec4abbf8d",
+   "subject_name": "Multi-Platform Behavioral Detection for Compute Hijacking",
+   "subject_type": "detection strategy",
+   "identifier": "DET0540",
+   "ask_for": "the detection analytics that implement it",
+   "answer_shape": "a list of detection analytics",
+   "restriction": "only the ones that apply to IaaS"
+  },
+  {
+   "id": "qd37a513a955f",
+   "subject_name": "Modification of Registry Run Keys",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-270",
+   "ask_for": "the CAPEC attack patterns that can precede it, and then the ATT&CK techniques each of those corresponds to",
+   "answer_shape": "a list of ATT&CK techniques"
+  },
+  {
+   "id": "q8235580dad2d",
+   "subject_name": "Probe iOS Screenshots",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-498",
+   "ask_for": "the CAPEC attack patterns it is a more specific case of, and then the ATT&CK techniques each of those corresponds to",
+   "answer_shape": "a list of ATT&CK techniques"
+  },
+  {
+   "id": "qcdd2eebba152",
+   "subject_name": "Network Boundary Bridging",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1599",
+   "ask_for": "the CAPEC attack patterns that correspond to it, and then the resources each of those requires",
+   "answer_shape": "a list of resources"
+  },
+  {
+   "id": "q078967edce3f",
+   "subject_name": "Try Common or Default Usernames and Passwords",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-70",
+   "ask_for": "the ATT&CK techniques it corresponds to, and then the ATT&CK techniques each of those is a sub-technique of",
+   "answer_shape": "a list of ATT&CK techniques"
+  },
+  {
+   "id": "q6bdd875593d5",
+   "subject_name": "Execution Prevention",
+   "subject_type": "ATT&CK mitigation",
+   "identifier": "M1038",
+   "ask_for": "the ATT&CK techniques it mitigates, and then the CAPEC attack patterns that correspond to each of those",
+   "answer_shape": "a list of CAPEC attack patterns"
+  }
+ ]
+}
