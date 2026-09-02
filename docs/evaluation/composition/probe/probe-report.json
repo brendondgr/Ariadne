@@ -1,60 +1,157 @@
 {
  "report": {
   "arm": "deterministic",
-  "answers": 78,
-  "scored": 78,
+  "answers": 80,
+  "scored": 80,
   "d0_probes": 0,
-  "recall_all": 0.0706,
-  "recall_new_shapes": 0.0481,
-  "recall_controls": 0.1944,
-  "fully_answered": 2,
-  "nothing_retrieved": 67,
+  "recall_all": 0.4029,
+  "recall_new_shapes": 0.3391,
+  "recall_controls": 0.7037,
+  "fully_answered": 14,
+  "nothing_retrieved": 16,
   "by_tier": {
-   "D2": 0.0,
-   "D3": 0.0,
-   "D4": 0.0469,
-   "D5": 0.172,
-   "D6": 0.0833
+   "D2": 0.5843,
+   "D3": 0.5505,
+   "D4": 0.2549,
+   "D5": 0.6179,
+   "D6": 0.5
+  },
+  "by_shape_and_anchor": {
+   "Analytic -[log_source]-> DataComponent  |  anchored on Analytic": {
+    "n": 1,
+    "recall": 0.25
+   },
+   "AttackPattern -[CanFollow]-> AttackPattern  |  anchored on AttackPattern": {
+    "n": 1,
+    "recall": 0.3333
+   },
+   "AttackPattern -[ChildOf]-> AttackPattern  |  anchored on AttackPattern": {
+    "n": 2,
+    "recall": 0.375
+   },
+   "AttackPattern -[MAPS_TO[ATTACK]]-> Technique  |  anchored on AttackPattern": {
+    "n": 1,
+    "recall": 1.0
+   },
+   "AttackPattern -[MAPS_TO[OWASP Attacks]]-> TaxonomyEntry:OWASP Attacks  |  anchored on AttackPattern": {
+    "n": 1,
+    "recall": 0.5
+   },
+   "AttackPattern -[MAPS_TO[WASC]]-> TaxonomyEntry:WASC  |  anchored on AttackPattern": {
+    "n": 1,
+    "recall": 0.5
+   },
+   "AttackPattern -[PeerOf]-> AttackPattern  |  anchored on AttackPattern": {
+    "n": 1,
+    "recall": 0.5
+   },
+   "AttackPattern -[REQUIRES_RESOURCE]-> Resource  |  anchored on AttackPattern": {
+    "n": 1,
+    "recall": 0.5
+   },
+   "Campaign -[attributed-to]-> Group  |  anchored on Group": {
+    "n": 1,
+    "recall": 1.0
+   },
+   "Campaign -[uses]-> Software  |  anchored on Campaign": {
+    "n": 3,
+    "recall": 1.0
+   },
+   "Campaign -[uses]-> Technique  |  anchored on Campaign": {
+    "n": 2,
+    "recall": 0.2455
+   },
+   "DetectionStrategy -[detects]-> Technique  |  anchored on DetectionStrategy": {
+    "n": 1,
+    "recall": 0.5
+   },
+   "DetectionStrategy -[detects]-> Technique  |  anchored on Technique": {
+    "n": 1,
+    "recall": 1.0
+   },
+   "DetectionStrategy -[x_mitre_analytic_refs]-> Analytic  |  anchored on DetectionStrategy": {
+    "n": 2,
+    "recall": 0.5
+   },
+   "Group -[uses]-> Software  |  anchored on Group": {
+    "n": 2,
+    "recall": 1.0
+   },
+   "Matrix -[tactic_refs]-> Tactic  |  anchored on Tactic": {
+    "n": 1,
+    "recall": 0.0
+   },
+   "Mitigation -[mitigates]-> Technique  |  anchored on Mitigation": {
+    "n": 2,
+    "recall": 0.1729
+   },
+   "Software -[uses]-> Technique  |  anchored on Software": {
+    "n": 1,
+    "recall": 1.0
+   },
+   "Technique -[kill_chain_phase]-> Tactic  |  anchored on Tactic": {
+    "n": 1,
+    "recall": 0.2553
+   },
+   "Technique -[kill_chain_phase]-> Tactic  |  anchored on Technique": {
+    "n": 1,
+    "recall": 1.0
+   },
+   "Technique -[subtechnique-of]-> Technique  |  anchored on Technique": {
+    "n": 4,
+    "recall": 1.0
+   },
+   "View -[HAS_MEMBER]-> AttackPattern  |  anchored on AttackPattern": {
+    "n": 1,
+    "recall": 0.5
+   },
+   "View -[HAS_MEMBER]-> AttackPattern  |  anchored on View": {
+    "n": 1,
+    "recall": 0.0909
+   },
+   "View -[HAS_MEMBER]-> Category  |  anchored on Category": {
+    "n": 1,
+    "recall": 0.0
+   },
+   "View -[HAS_MEMBER]-> Category  |  anchored on View": {
+    "n": 1,
+    "recall": 0.0
+   }
   },
   "by_shape": {
    "Analytic -[log_source]-> DataComponent": {
     "n": 4,
-    "recall": 0.0,
+    "recall": 0.2236,
     "never_asked": true
    },
    "AttackPattern -[CanAlsoBe]-> AttackPattern": {
     "n": 5,
-    "recall": 0.2,
+    "recall": 0.45,
     "never_asked": true
    },
    "AttackPattern -[CanFollow]-> AttackPattern": {
     "n": 4,
-    "recall": 0.0833,
+    "recall": 0.2633,
     "never_asked": true
    },
    "AttackPattern -[CanPrecede]-> AttackPattern": {
     "n": 8,
-    "recall": 0.1562,
+    "recall": 0.3125,
     "never_asked": true
    },
    "AttackPattern -[ChildOf]-> AttackPattern": {
-    "n": 9,
-    "recall": 0.3704,
-    "never_asked": false
-   },
-   "AttackPattern -[EXPLOITS_WEAKNESS]-> Weakness": {
-    "n": 1,
-    "recall": 0.0,
+    "n": 8,
+    "recall": 0.3854,
     "never_asked": false
    },
    "AttackPattern -[HAS_ALTERNATE_TERM]-> AlternateTerm": {
-    "n": 3,
-    "recall": 0.0,
+    "n": 4,
+    "recall": 0.0417,
     "never_asked": true
    },
    "AttackPattern -[HAS_EXAMPLE]-> Example": {
     "n": 3,
-    "recall": 0.0,
+    "recall": 0.4167,
     "never_asked": true
    },
    "AttackPattern -[HAS_EXECUTION_STEP]-> ExecutionStep": {
@@ -64,42 +161,42 @@
    },
    "AttackPattern -[HAS_INDICATOR]-> Indicator": {
     "n": 4,
-    "recall": 0.0,
+    "recall": 0.2917,
     "never_asked": true
    },
    "AttackPattern -[HAS_MITIGATION]-> CapecMitigation": {
     "n": 5,
-    "recall": 0.0,
+    "recall": 0.194,
     "never_asked": true
    },
    "AttackPattern -[HAS_PREREQUISITE]-> Prerequisite": {
     "n": 3,
-    "recall": 0.0,
+    "recall": 0.3611,
     "never_asked": true
    },
    "AttackPattern -[MAPS_TO[ATTACK]]-> Technique": {
-    "n": 4,
-    "recall": 0.0833,
+    "n": 2,
+    "recall": 0.75,
     "never_asked": false
    },
    "AttackPattern -[MAPS_TO[OWASP Attacks]]-> TaxonomyEntry:OWASP Attacks": {
     "n": 3,
-    "recall": 0.0,
+    "recall": 0.5,
     "never_asked": true
    },
    "AttackPattern -[MAPS_TO[WASC]]-> TaxonomyEntry:WASC": {
     "n": 3,
-    "recall": 0.0,
+    "recall": 0.3333,
     "never_asked": true
    },
    "AttackPattern -[PeerOf]-> AttackPattern": {
     "n": 9,
-    "recall": 0.1111,
+    "recall": 0.3796,
     "never_asked": true
    },
    "AttackPattern -[REQUIRES_RESOURCE]-> Resource": {
     "n": 3,
-    "recall": 0.0,
+    "recall": 0.2778,
     "never_asked": true
    },
    "AttackPattern -[REQUIRES_SKILL]-> Skill": {
@@ -109,77 +206,77 @@
    },
    "Campaign -[attributed-to]-> Group": {
     "n": 4,
-    "recall": 0.0,
+    "recall": 0.275,
     "never_asked": true
    },
    "Campaign -[uses]-> Software": {
     "n": 3,
-    "recall": 0.0,
+    "recall": 1.0,
     "never_asked": true
    },
    "Campaign -[uses]-> Technique": {
     "n": 3,
-    "recall": 0.0,
+    "recall": 0.1636,
     "never_asked": true
    },
    "Category -[HAS_MEMBER]-> AttackPattern": {
     "n": 8,
-    "recall": 0.0,
+    "recall": 0.0312,
     "never_asked": true
    },
    "DetectionStrategy -[detects]-> Technique": {
-    "n": 1,
-    "recall": 0.0,
+    "n": 3,
+    "recall": 0.5,
     "never_asked": false
    },
    "DetectionStrategy -[x_mitre_analytic_refs]-> Analytic": {
     "n": 5,
-    "recall": 0.0,
+    "recall": 0.3289,
     "never_asked": true
    },
    "Group -[uses]-> Software": {
     "n": 3,
-    "recall": 0.0,
+    "recall": 0.7,
     "never_asked": true
    },
    "Group -[uses]-> Technique": {
-    "n": 5,
+    "n": 2,
     "recall": 0.0,
     "never_asked": false
    },
    "Matrix -[tactic_refs]-> Tactic": {
     "n": 3,
-    "recall": 0.0,
+    "recall": 0.3333,
     "never_asked": true
    },
    "Mitigation -[mitigates]-> Technique": {
-    "n": 1,
-    "recall": 0.0,
+    "n": 2,
+    "recall": 0.1729,
     "never_asked": false
    },
    "Software -[uses]-> Technique": {
-    "n": 3,
-    "recall": 0.0,
+    "n": 1,
+    "recall": 1.0,
     "never_asked": false
    },
    "Technique -[kill_chain_phase]-> Tactic": {
     "n": 4,
-    "recall": 0.0,
+    "recall": 0.5638,
     "never_asked": false
    },
    "Technique -[subtechnique-of]-> Technique": {
     "n": 4,
-    "recall": 0.0,
+    "recall": 1.0,
     "never_asked": false
    },
    "View -[HAS_MEMBER]-> AttackPattern": {
     "n": 5,
-    "recall": 0.0182,
+    "recall": 0.3182,
     "never_asked": true
    },
    "View -[HAS_MEMBER]-> Category": {
     "n": 3,
-    "recall": 0.0,
+    "recall": 0.0833,
     "never_asked": true
    }
   },
@@ -207,8 +304,26 @@
     "CAPEC-688",
     "CAPEC-689"
    ],
+   "anchor_label": "View",
    "records": 0,
    "related": 0
+  },
+  {
+   "id": "D2-MAPS_TO[ATTACK]-CAPEC-17-a3ab57::analyst",
+   "spec_id": "D2-MAPS_TO[ATTACK]-CAPEC-17-a3ab57",
+   "d_tier": "D2",
+   "shapes": [
+    "AttackPattern -[MAPS_TO[ATTACK]]-> Technique"
+   ],
+   "control": true,
+   "gold_width": 2,
+   "gold": 3,
+   "found": 3,
+   "recall": 1.0,
+   "missing": [],
+   "anchor_label": "AttackPattern",
+   "records": 1,
+   "related": 2
   },
   {
    "id": "D2-MAPS_TO[OWASP Attacks]-CAPEC-101-bb05d6::analyst",
@@ -220,13 +335,13 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.5,
    "missing": [
-    "CAPEC-101",
     "OWASP Attacks:Server-Side Includes (SSI) Injection"
    ],
-   "records": 0,
+   "anchor_label": "AttackPattern",
+   "records": 1,
    "related": 0
   },
   {
@@ -239,13 +354,13 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.5,
    "missing": [
-    "CAPEC-126",
     "WASC:33"
    ],
-   "records": 0,
+   "anchor_label": "AttackPattern",
+   "records": 1,
    "related": 0
   },
   {
@@ -258,14 +373,50 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.5,
    "missing": [
-    "Ability to communicate synchronously or asynchronously with server. Optionally, ability to capture output directly through synchronous communication or other method such as FTP.",
-    "CAPEC-15"
+    "Ability to communicate synchronously or asynchronously with server. Optionally, ability to capture output directly through synchronous communication or other method such as FTP."
    ],
-   "records": 0,
+   "anchor_label": "AttackPattern",
+   "records": 1,
    "related": 0
+  },
+  {
+   "id": "D2-detects-DET0860-eda469::analyst",
+   "spec_id": "D2-detects-DET0860-eda469",
+   "d_tier": "D2",
+   "shapes": [
+    "DetectionStrategy -[detects]-> Technique"
+   ],
+   "control": true,
+   "gold_width": 1,
+   "gold": 2,
+   "found": 1,
+   "recall": 0.5,
+   "missing": [
+    "T1596"
+   ],
+   "anchor_label": "DetectionStrategy",
+   "records": 1,
+   "related": 0
+  },
+  {
+   "id": "D2-kill_chain_phase-T1218.001-721f6b::analyst",
+   "spec_id": "D2-kill_chain_phase-T1218.001-721f6b",
+   "d_tier": "D2",
+   "shapes": [
+    "Technique -[kill_chain_phase]-> Tactic"
+   ],
+   "control": true,
+   "gold_width": 1,
+   "gold": 2,
+   "found": 2,
+   "recall": 1.0,
+   "missing": [],
+   "anchor_label": "Technique",
+   "records": 1,
+   "related": 1
   },
   {
    "id": "D2-log_source-AN0059-f5de6b::analyst",
@@ -277,16 +428,224 @@
    "control": false,
    "gold_width": 3,
    "gold": 4,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.25,
    "missing": [
-    "AN0059",
     "DC0032",
     "DC0061",
     "DC0085"
    ],
-   "records": 0,
+   "anchor_label": "Analytic",
+   "records": 1,
    "related": 0
+  },
+  {
+   "id": "D2-mitigates-M1038-618c49::analyst",
+   "spec_id": "D2-mitigates-M1038-618c49",
+   "d_tier": "D2",
+   "shapes": [
+    "Mitigation -[mitigates]-> Technique"
+   ],
+   "control": true,
+   "gold_width": 79,
+   "gold": 80,
+   "found": 1,
+   "recall": 0.0125,
+   "missing": [
+    "T1036",
+    "T1036.005",
+    "T1036.008",
+    "T1047",
+    "T1059",
+    "T1059.001",
+    "T1059.002",
+    "T1059.003",
+    "T1059.004",
+    "T1059.005",
+    "T1059.006",
+    "T1059.007",
+    "T1059.008",
+    "T1059.009",
+    "T1059.010",
+    "T1059.011",
+    "T1059.013",
+    "T1068",
+    "T1080",
+    "T1106",
+    "T1127",
+    "T1127.001",
+    "T1127.003",
+    "T1129",
+    "T1176",
+    "T1176.001",
+    "T1176.002",
+    "T1204",
+    "T1204.002",
+    "T1204.004",
+    "T1216",
+    "T1216.001",
+    "T1216.002",
+    "T1218",
+    "T1218.001",
+    "T1218.002",
+    "T1218.003",
+    "T1218.004",
+    "T1218.005",
+    "T1218.008",
+    "T1218.009",
+    "T1218.012",
+    "T1218.013",
+    "T1218.014",
+    "T1218.015",
+    "T1219",
+    "T1219.001",
+    "T1219.002",
+    "T1220",
+    "T1490",
+    "T1505.004",
+    "T1546.002",
+    "T1546.006",
+    "T1546.008",
+    "T1546.009",
+    "T1546.010",
+    "T1547.004",
+    "T1547.006",
+    "T1547.009",
+    "T1548",
+    "T1548.004",
+    "T1553",
+    "T1553.001",
+    "T1553.003",
+    "T1553.005",
+    "T1564.003",
+    "T1564.006",
+    "T1574",
+    "T1574.001",
+    "T1574.006",
+    "T1574.007",
+    "T1574.008",
+    "T1574.009",
+    "T1574.012",
+    "T1609",
+    "T1611",
+    "T1674",
+    "T1685",
+    "T1685.003"
+   ],
+   "anchor_label": "Mitigation",
+   "records": 1,
+   "related": 0
+  },
+  {
+   "id": "D2-mitigates-M1039-053510::analyst",
+   "spec_id": "D2-mitigates-M1039-053510",
+   "d_tier": "D2",
+   "shapes": [
+    "Mitigation -[mitigates]-> Technique"
+   ],
+   "control": true,
+   "gold_width": 2,
+   "gold": 3,
+   "found": 1,
+   "recall": 0.3333333333333333,
+   "missing": [
+    "T1070.003",
+    "T1690"
+   ],
+   "anchor_label": "Mitigation",
+   "records": 1,
+   "related": 0
+  },
+  {
+   "id": "D2-subtechnique-of-T1222.002-73481c::analyst",
+   "spec_id": "D2-subtechnique-of-T1222.002-73481c",
+   "d_tier": "D2",
+   "shapes": [
+    "Technique -[subtechnique-of]-> Technique"
+   ],
+   "control": true,
+   "gold_width": 1,
+   "gold": 2,
+   "found": 2,
+   "recall": 1.0,
+   "missing": [],
+   "anchor_label": "Technique",
+   "records": 1,
+   "related": 1
+  },
+  {
+   "id": "D2-subtechnique-of-T1574.008-7cdafc::analyst",
+   "spec_id": "D2-subtechnique-of-T1574.008-7cdafc",
+   "d_tier": "D2",
+   "shapes": [
+    "Technique -[subtechnique-of]-> Technique"
+   ],
+   "control": true,
+   "gold_width": 1,
+   "gold": 2,
+   "found": 2,
+   "recall": 1.0,
+   "missing": [],
+   "anchor_label": "Technique",
+   "records": 1,
+   "related": 1
+  },
+  {
+   "id": "D2-uses-S0058-8e1a31::analyst",
+   "spec_id": "D2-uses-S0058-8e1a31",
+   "d_tier": "D2",
+   "shapes": [
+    "Software -[uses]-> Technique"
+   ],
+   "control": true,
+   "gold_width": 9,
+   "gold": 10,
+   "found": 10,
+   "recall": 1.0,
+   "missing": [],
+   "anchor_label": "Software",
+   "records": 1,
+   "related": 9
+  },
+  {
+   "id": "D3-ChildOf-CAPEC-203-c35f01::analyst",
+   "spec_id": "D3-ChildOf-CAPEC-203-c35f01",
+   "d_tier": "D3",
+   "shapes": [
+    "AttackPattern -[ChildOf]-> AttackPattern"
+   ],
+   "control": true,
+   "gold_width": 3,
+   "gold": 4,
+   "found": 1,
+   "recall": 0.25,
+   "missing": [
+    "CAPEC-270",
+    "CAPEC-478",
+    "CAPEC-51"
+   ],
+   "anchor_label": "AttackPattern",
+   "records": 1,
+   "related": 1
+  },
+  {
+   "id": "D3-ChildOf-CAPEC-528-a0dcb5::analyst",
+   "spec_id": "D3-ChildOf-CAPEC-528-a0dcb5",
+   "d_tier": "D3",
+   "shapes": [
+    "AttackPattern -[ChildOf]-> AttackPattern"
+   ],
+   "control": true,
+   "gold_width": 1,
+   "gold": 2,
+   "found": 1,
+   "recall": 0.5,
+   "missing": [
+    "CAPEC-147"
+   ],
+   "anchor_label": "AttackPattern",
+   "records": 1,
+   "related": 1
   },
   {
    "id": "D3-HAS_MEMBER-CAPEC-292-395fe0::analyst",
@@ -298,13 +657,13 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.5,
    "missing": [
-    "CAPEC-292",
     "CAPEC-703"
    ],
-   "records": 0,
+   "anchor_label": "AttackPattern",
+   "records": 1,
    "related": 0
   },
   {
@@ -323,6 +682,7 @@
     "CAPEC-3000",
     "CAPEC-515"
    ],
+   "anchor_label": "Category",
    "records": 0,
    "related": 0
   },
@@ -336,14 +696,116 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
-   "missing": [
-    "C0051",
-    "G0007"
+   "found": 2,
+   "recall": 1.0,
+   "missing": [],
+   "anchor_label": "Group",
+   "records": 1,
+   "related": 1
+  },
+  {
+   "id": "D3-detects-T1525-2891f5::analyst",
+   "spec_id": "D3-detects-T1525-2891f5",
+   "d_tier": "D3",
+   "shapes": [
+    "DetectionStrategy -[detects]-> Technique"
    ],
-   "records": 0,
+   "control": true,
+   "gold_width": 1,
+   "gold": 2,
+   "found": 2,
+   "recall": 1.0,
+   "missing": [],
+   "anchor_label": "Technique",
+   "records": 1,
+   "related": 3
+  },
+  {
+   "id": "D3-kill_chain_phase-TA0043-4f842b::analyst",
+   "spec_id": "D3-kill_chain_phase-TA0043-4f842b",
+   "d_tier": "D3",
+   "shapes": [
+    "Technique -[kill_chain_phase]-> Tactic"
+   ],
+   "control": true,
+   "gold_width": 46,
+   "gold": 47,
+   "found": 12,
+   "recall": 0.2553191489361702,
+   "missing": [
+    "T1589.001",
+    "T1589.002",
+    "T1589.003",
+    "T1590.001",
+    "T1590.002",
+    "T1590.003",
+    "T1590.004",
+    "T1590.005",
+    "T1590.006",
+    "T1591.001",
+    "T1591.002",
+    "T1591.003",
+    "T1591.004",
+    "T1592.001",
+    "T1592.002",
+    "T1592.003",
+    "T1592.004",
+    "T1593.001",
+    "T1593.002",
+    "T1593.003",
+    "T1595.001",
+    "T1595.002",
+    "T1595.003",
+    "T1596.001",
+    "T1596.002",
+    "T1596.003",
+    "T1596.004",
+    "T1596.005",
+    "T1597.001",
+    "T1597.002",
+    "T1598.001",
+    "T1598.002",
+    "T1598.003",
+    "T1598.004",
+    "TA0043"
+   ],
+   "anchor_label": "Tactic",
+   "records": 12,
    "related": 0
+  },
+  {
+   "id": "D3-subtechnique-of-T1558-d2d77e::analyst",
+   "spec_id": "D3-subtechnique-of-T1558-d2d77e",
+   "d_tier": "D3",
+   "shapes": [
+    "Technique -[subtechnique-of]-> Technique"
+   ],
+   "control": true,
+   "gold_width": 5,
+   "gold": 6,
+   "found": 6,
+   "recall": 1.0,
+   "missing": [],
+   "anchor_label": "Technique",
+   "records": 1,
+   "related": 5
+  },
+  {
+   "id": "D3-subtechnique-of-T1589-3f64fc::analyst",
+   "spec_id": "D3-subtechnique-of-T1589-3f64fc",
+   "d_tier": "D3",
+   "shapes": [
+    "Technique -[subtechnique-of]-> Technique"
+   ],
+   "control": true,
+   "gold_width": 3,
+   "gold": 4,
+   "found": 4,
+   "recall": 1.0,
+   "missing": [],
+   "anchor_label": "Technique",
+   "records": 1,
+   "related": 3
   },
   {
    "id": "D3-tactic_refs-TA0001-47d775::analyst",
@@ -361,7 +823,8 @@
     "TA0001",
     "enterprise-attack"
    ],
-   "records": 0,
+   "anchor_label": "Tactic",
+   "records": 11,
    "related": 0
   },
   {
@@ -375,16 +838,16 @@
    "control": false,
    "gold_width": 3,
    "gold": 4,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.25,
    "missing": [
     "All user-controllable input should be validated and filtered for potentially unwanted characters. Using an allowlist for input is desired, but if use of a denylist approach is necessary, then focusing on command related terms and delimiters is necessary.",
-    "CAPEC-182",
     "Input should be encoded prior to use in commands to make sure command related characters are not treated as part of the command. For example, quotation characters may need to be encoded so that the application does not treat the quotation as a delimiter.",
     "Input should be parameterized, or restricted to data sections of a command, thus removing the chance that the input will be treated as part of the command itself."
    ],
-   "records": 0,
-   "related": 0
+   "anchor_label": "AttackPattern",
+   "records": 1,
+   "related": 5
   },
   {
    "id": "D4-CanAlsoBe-HAS_MITIGATION-CAPEC-460-9b0720::analyst",
@@ -397,14 +860,14 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.5,
    "missing": [
-    "CAPEC-460",
     "User input must be sanitized according to context before reflected back to the user. The JavaScript function 'encodeURI' is not always sufficient for sanitizing input intended for global Flash parameters. Extreme caution should be taken when saving user input in Flash cookies. In such cases the Flash file itself will need to be fixed and recompiled, changing the name of the local shared objects (Flash cookies)."
    ],
-   "records": 0,
-   "related": 0
+   "anchor_label": "AttackPattern",
+   "records": 1,
+   "related": 4
   },
   {
    "id": "D4-CanAlsoBe-MAPS_TO[OWASP Attacks]-CAPEC-174-2cf10b::analyst",
@@ -417,13 +880,13 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.5,
    "missing": [
-    "CAPEC-174",
     "OWASP Attacks:Web Parameter Tampering"
    ],
-   "records": 0,
+   "anchor_label": "AttackPattern",
+   "records": 1,
    "related": 0
   },
   {
@@ -437,13 +900,13 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.5,
    "missing": [
-    "CAPEC-700",
     "CAPEC-703"
    ],
-   "records": 0,
+   "anchor_label": "AttackPattern",
+   "records": 1,
    "related": 0
   },
   {
@@ -457,10 +920,9 @@
    "control": false,
    "gold_width": 6,
    "gold": 7,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.14285714285714285,
    "missing": [
-    "CAPEC-560",
     "Configuration: Change the default configuration for network devices to harden their security profiles. Default configurations are often enabled with insecure features to allow ease of installation and management. However, these configurations can be easily discovered and exploited by adversaries.",
     "Configuration: When possible, configure network boundary devices to use MFA.",
     "Design: Ensure network devices are storing credentials in encrypted stores",
@@ -468,8 +930,9 @@
     "Implementation: Perform integrity checks on audit logs for network device management and review them to identify abnormalities in configurations.",
     "Implementation: Prevent network boundary devices from being physically accessed by unauthorized personnel to prevent tampering."
    ],
-   "records": 0,
-   "related": 0
+   "anchor_label": "AttackPattern",
+   "records": 1,
+   "related": 8
   },
   {
    "id": "D4-CanFollow-HAS_MITIGATION-CAPEC-700-65ec8f::analyst",
@@ -482,10 +945,9 @@
    "control": false,
    "gold_width": 12,
    "gold": 13,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.07692307692307693,
    "missing": [
-    "CAPEC-700",
     "Create a strong password policy and ensure that your system enforces this policy.",
     "Delete all default account credentials that may be put in by the product vendor.",
     "Deny remote use of local admin credentials to log into domain systems.",
@@ -499,8 +961,9 @@
     "Passwords need to be recycled to prevent aging, that is every once in a while a new password must be chosen.",
     "Put together a strong password policy and make sure that all user created passwords comply with it. Alternatively automatically generate strong passwords for users."
    ],
-   "records": 0,
-   "related": 0
+   "anchor_label": "AttackPattern",
+   "records": 1,
+   "related": 6
   },
   {
    "id": "D4-CanPrecede-HAS_ALTERNATE_TERM-CAPEC-148-396919::analyst",
@@ -519,6 +982,7 @@
     "CAPEC-148",
     "HTTP Desync Modification/manipulation of HTTP message headers, request-line and body parameters to disrupt and interfere in the interpretation and parsing of HTTP message lengths/boundaries for consecutive HTTP messages by HTTP agents in a HTTP chain or network path."
    ],
+   "anchor_label": "AttackPattern",
    "records": 0,
    "related": 0
   },
@@ -533,14 +997,14 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.5,
    "missing": [
-    "A very easy to understand example is a cryptanalysis technique called frequency analysis that can be successfully applied to the very basic classic encryption algorithms that performed mono-alphabetic substitution replacing each letter in the plaintext with its predetermined mapping letter from the same alphabet. This was considered an improvement over a more basic technique that would simply shift all of the letters of the plaintext by some constant number of positions and replace the original letters with the new letter with the resultant alphabet position. While mono-alphabetic substitution ciphers are resilient to blind brute force, they can be broken easily with nothing more than a pen and paper. Frequency analysis uses the fact that natural language is not random and mono-alphabetic substitution does not hide the statistical properties of the natural language. So if the letter \"E\" in an English language occurs with a certain known frequency (about 12.7%), whatever \"E\" was substituted with to get to the ciphertext, will occur with the similar frequency. Having this frequency information allows the cryptanalyst to quickly determine the substitutions and decipher the ciphertext. Frequency analysis techniques are not applicable to modern ciphers as they are all resilient to it (unless this is a very bad case of a homegrown encryption algorithm). This example is inapplicable to modern cryptographic ciphers but is here to illustrate a rudimentary example of cryptanalysis.",
-    "CAPEC-20"
+    "A very easy to understand example is a cryptanalysis technique called frequency analysis that can be successfully applied to the very basic classic encryption algorithms that performed mono-alphabetic substitution replacing each letter in the plaintext with its predetermined mapping letter from the same alphabet. This was considered an improvement over a more basic technique that would simply shift all of the letters of the plaintext by some constant number of positions and replace the original letters with the new letter with the resultant alphabet position. While mono-alphabetic substitution ciphers are resilient to blind brute force, they can be broken easily with nothing more than a pen and paper. Frequency analysis uses the fact that natural language is not random and mono-alphabetic substitution does not hide the statistical properties of the natural language. So if the letter \"E\" in an English language occurs with a certain known frequency (about 12.7%), whatever \"E\" was substituted with to get to the ciphertext, will occur with the similar frequency. Having this frequency information allows the cryptanalyst to quickly determine the substitutions and decipher the ciphertext. Frequency analysis techniques are not applicable to modern ciphers as they are all resilient to it (unless this is a very bad case of a homegrown encryption algorithm). This example is inapplicable to modern cryptographic ciphers but is here to illustrate a rudimentary example of cryptanalysis."
    ],
-   "records": 0,
-   "related": 0
+   "anchor_label": "AttackPattern",
+   "records": 1,
+   "related": 1
   },
   {
    "id": "D4-CanPrecede-HAS_EXAMPLE-CAPEC-65-12a543::analyst",
@@ -553,16 +1017,16 @@
    "control": false,
    "gold_width": 3,
    "gold": 4,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.25,
    "missing": [
     "An attacker can also use a decompiler to decompile a downloaded Java applet in order to look for information such as hardcoded IP addresses, file paths, passwords or other such contents.",
     "Attacker uses a tool such as a browser plug-in to pull cookie or other token information that, from a previous user at the same machine (perhaps a kiosk), allows the attacker to log in as the previous user.",
-    "CAPEC-65",
     "Using a tool such as 'strings' or similar to pull out text data, perhaps part of a database table, that extends beyond what a particular user's purview should be."
    ],
-   "records": 0,
-   "related": 0
+   "anchor_label": "AttackPattern",
+   "records": 1,
+   "related": 1
   },
   {
    "id": "D4-CanPrecede-HAS_EXECUTION_STEP-CAPEC-542-72a716::analyst",
@@ -582,6 +1046,7 @@
     "2 Experiment The adversary inserts themself into the communication channel initially acting as a routing proxy between the two targeted components.",
     "3 Exploit The adversary observes, filters, or alters passed data of their choosing to gain access to sensitive information or to manipulate the actions of the two target components for their own purposes."
    ],
+   "anchor_label": "AttackPattern",
    "records": 1,
    "related": 1
   },
@@ -596,14 +1061,14 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.5,
    "missing": [
-    "CAPEC-33",
     "CAPEC-703"
    ],
-   "records": 0,
-   "related": 0
+   "anchor_label": "AttackPattern",
+   "records": 1,
+   "related": 6
   },
   {
    "id": "D4-CanPrecede-PeerOf-CAPEC-616-fa0757::analyst",
@@ -621,6 +1086,7 @@
    "missing": [
     "CAPEC-630"
    ],
+   "anchor_label": "AttackPattern",
    "records": 1,
    "related": 1
   },
@@ -640,6 +1106,7 @@
    "missing": [
     "Spear phishing attacks require specific knowledge of the victims being targeted, such as which bank is being used by the victims, or websites they commonly log into (Google, Facebook, etc)."
    ],
+   "anchor_label": "AttackPattern",
    "records": 1,
    "related": 1
   },
@@ -659,6 +1126,7 @@
    "missing": [
     "CAPEC-248"
    ],
+   "anchor_label": "AttackPattern",
    "records": 1,
    "related": 1
   },
@@ -678,6 +1146,7 @@
    "missing": [
     "CAPEC-165"
    ],
+   "anchor_label": "AttackPattern",
    "records": 1,
    "related": 2
   },
@@ -692,18 +1161,18 @@
    "control": false,
    "gold_width": 5,
    "gold": 6,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.16666666666666666,
    "missing": [
-    "CAPEC-384",
     "Man-in-the-Middle / MITM",
     "Monkey-in-the-Middle",
     "Monster-in-the-Middle",
     "On-path Attacker",
     "Person-in-the-Middle / PiTM"
    ],
-   "records": 0,
-   "related": 0
+   "anchor_label": "AttackPattern",
+   "records": 1,
+   "related": 1
   },
   {
    "id": "D4-ChildOf-HAS_INDICATOR-CAPEC-46-bb981d::analyst",
@@ -716,14 +1185,14 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.5,
    "missing": [
-    "An attack designed to leverage a buffer overflow and redirect execution as per the adversary's bidding is fairly difficult to detect. An attack aimed solely at bringing the system down is usually preceded by a barrage of long inputs that make no sense. In either case, it is likely that the adversary would have resorted to a few hit-or-miss attempts that will be recorded in the system event logs, if they exist.",
-    "CAPEC-46"
+    "An attack designed to leverage a buffer overflow and redirect execution as per the adversary's bidding is fairly difficult to detect. An attack aimed solely at bringing the system down is usually preceded by a barrage of long inputs that make no sense. In either case, it is likely that the adversary would have resorted to a few hit-or-miss attempts that will be recorded in the system event logs, if they exist."
    ],
-   "records": 0,
-   "related": 0
+   "anchor_label": "AttackPattern",
+   "records": 1,
+   "related": 1
   },
   {
    "id": "D4-ChildOf-HAS_INDICATOR-CAPEC-645-b9f651::analyst",
@@ -736,18 +1205,18 @@
    "control": false,
    "gold_width": 5,
    "gold": 6,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.16666666666666666,
    "missing": [
     "Authentication attempts are originating from IP addresses or locations that are inconsistent with an account's normal IP addresses or locations.",
     "Authentication attempts use expired or invalid credentials.",
-    "CAPEC-645",
     "Data is being transferred and/or removed from systems/applications within the network.",
     "Messages from a legitimate user appear to contain suspicious links or communications not consistent with the user's normal behavior.",
     "Suspicious or Malicious software is downloaded/installed on systems within the domain."
    ],
-   "records": 0,
-   "related": 0
+   "anchor_label": "AttackPattern",
+   "records": 1,
+   "related": 1
   },
   {
    "id": "D4-ChildOf-HAS_PREREQUISITE-CAPEC-494-89bc40::analyst",
@@ -760,14 +1229,14 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.5,
    "missing": [
-    "CAPEC-494",
     "The target must accept service requests from the attacker and the adversary must be able to control the resource allocation associated with this request to be in excess of the normal allocation. The latter is usually accomplished through the presence of a bug on the target that allows the adversary to manipulate variables used in the allocation."
    ],
-   "records": 0,
-   "related": 0
+   "anchor_label": "AttackPattern",
+   "records": 1,
+   "related": 1
   },
   {
    "id": "D4-HAS_MEMBER-CanPrecede-CAPEC-703-6ba8fe::analyst",
@@ -803,26 +1272,32 @@
     "CAPEC-703",
     "CAPEC-89"
    ],
+   "anchor_label": "View",
    "records": 0,
    "related": 0
   },
   {
-   "id": "D4-HAS_MEMBER-EXPLOITS_WEAKNESS-CAPEC-686-ebb3e3::analyst",
-   "spec_id": "D4-HAS_MEMBER-EXPLOITS_WEAKNESS-CAPEC-686-ebb3e3",
+   "id": "D4-HAS_MEMBER-HAS_ALTERNATE_TERM-CAPEC-225-d6c179::analyst",
+   "spec_id": "D4-HAS_MEMBER-HAS_ALTERNATE_TERM-CAPEC-225-d6c179",
    "d_tier": "D4",
    "shapes": [
     "Category -[HAS_MEMBER]-> AttackPattern",
-    "AttackPattern -[EXPLOITS_WEAKNESS]-> Weakness"
+    "AttackPattern -[HAS_ALTERNATE_TERM]-> AlternateTerm"
    ],
    "control": false,
-   "gold_width": 1,
-   "gold": 2,
+   "gold_width": 5,
+   "gold": 6,
    "found": 0,
    "recall": 0.0,
    "missing": [
-    "CAPEC-686",
-    "CWE-1269"
+    "CAPEC-225",
+    "Man-in-the-Middle / MITM",
+    "Monkey-in-the-Middle",
+    "Monster-in-the-Middle",
+    "On-path Attacker",
+    "Person-in-the-Middle / PiTM"
    ],
+   "anchor_label": "Category",
    "records": 0,
    "related": 0
   },
@@ -848,46 +1323,65 @@
     "Person-in-the-Middle / PiTM",
     "Side-Channel Attack"
    ],
+   "anchor_label": "Category",
    "records": 0,
    "related": 0
   },
   {
-   "id": "D4-HAS_MEMBER-HAS_EXECUTION_STEP-CAPEC-118-f6ce6c::analyst",
-   "spec_id": "D4-HAS_MEMBER-HAS_EXECUTION_STEP-CAPEC-118-f6ce6c",
+   "id": "D4-HAS_MEMBER-HAS_EXECUTION_STEP-CAPEC-172-799274::analyst",
+   "spec_id": "D4-HAS_MEMBER-HAS_EXECUTION_STEP-CAPEC-172-799274",
    "d_tier": "D4",
    "shapes": [
     "Category -[HAS_MEMBER]-> AttackPattern",
     "AttackPattern -[HAS_EXECUTION_STEP]-> ExecutionStep"
    ],
    "control": false,
-   "gold_width": 1,
-   "gold": 2,
+   "gold_width": 9,
+   "gold": 10,
    "found": 0,
    "recall": 0.0,
    "missing": [
-    "1 Explore [Request Footprinting] The attacker examines the website information and source code of the website and uses automated tools to get as much information as possible about the system and organization. Open Source Footprinting: Examine the website about the organization and skim through the webpage's HTML source to look for comments. Network Enumeration: Perform various queries (Registrar Query, Organizational Query, Domain Query, Network Query, POC Query) on the many whois databases found on the internet to identify domain names and associated networks. DNS Interrogation: Once basic information is gathered the attack could begin to query DNS. Other Techniques: Use ping sweep, TCP scan, UDP scan, OS Identification various techniques to gain more information about the system and network.",
-    "CAPEC-118"
+    "1 Explore Adversary determines the nature of state management employed by the target. This includes determining the location (client-side, server-side or both applications) and possibly the items stored as part of user state.",
+    "1 Explore The adversary explores to gauge what level of access they have.",
+    "1 Explore The adversary initiates an exploratory phase to get familiar with the system.",
+    "2 Experiment The adversary gains access to a resource on the target host. The adversary modifies the targeted resource. The resource's value is used to determine the next normal execution action.",
+    "2 Experiment The adversary now tries to modify the user state contents (possibly indiscriminately if the contents are encrypted or otherwise obfuscated) or cause a state transition and observe the effects of this change on the target.",
+    "2 Explore The adversary triggers a first action (such as holding a resource) and initiates a second action which will wait for the first one to finish.",
+    "3 Exploit Having determined how to manipulate the state, the adversary can perform illegitimate actions.",
+    "3 Exploit The resource is modified/checked concurrently by multiple processes. By using one of the processes, the adversary is able to modify the value just before it is consumed by a different process. A race condition occurs and is exploited by the adversary to abuse the target host.",
+    "3 Explore If the target program has a deadlock condition, the program waits indefinitely resulting in a denial of service.",
+    "CAPEC-172"
    ],
+   "anchor_label": "Category",
    "records": 0,
    "related": 0
   },
   {
-   "id": "D4-HAS_MEMBER-HAS_INDICATOR-CAPEC-372-03f3e8::analyst",
-   "spec_id": "D4-HAS_MEMBER-HAS_INDICATOR-CAPEC-372-03f3e8",
+   "id": "D4-HAS_MEMBER-HAS_INDICATOR-CAPEC-513-a0e6a5::analyst",
+   "spec_id": "D4-HAS_MEMBER-HAS_INDICATOR-CAPEC-513-a0e6a5",
    "d_tier": "D4",
    "shapes": [
     "Category -[HAS_MEMBER]-> AttackPattern",
     "AttackPattern -[HAS_INDICATOR]-> Indicator"
    ],
    "control": false,
-   "gold_width": 1,
-   "gold": 2,
+   "gold_width": 9,
+   "gold": 10,
    "found": 0,
    "recall": 0.0,
    "missing": [
-    "CAPEC-372",
-    "Too many exceptions generated by the application as a result of malformed XPath queries"
+    "A lot of invalid data is fed to the system. Data that cannot have been generated through a legitimate transaction/request. Data is coming into the system within a short period of time and potentially from the same IP.",
+    "Attempts to download files protected by secrets (usually using encryption) may be a precursor to an offline attack to break the file's encryption and read its contents. This is especially significant if the file itself contains other secret values, such as password files.",
+    "Authentication attempts are originating from IP addresses or locations that are inconsistent with the user's normal IP addresses or locations.",
+    "Authentication attempts use credentials that have been used previously by the account in question.",
+    "CAPEC-513",
+    "Data is being transferred and/or removed from systems/applications within the network.",
+    "If the attacker is able to perform the checking offline then there will likely be no indication that an attack is ongoing.",
+    "Messages from a legitimate user appear to contain suspicious links or communications not consistent with the user's normal behavior.",
+    "Repeated submissions of incorrect secret values may indicate a brute force attack. For example, repeated bad passwords when accessing user accounts or repeated queries to databases using non-existent keys.",
+    "Suspicious or Malicious software is downloaded/installed on systems within the domain."
    ],
+   "anchor_label": "Category",
    "records": 0,
    "related": 0
   },
@@ -902,15 +1396,15 @@
    "control": false,
    "gold_width": 3,
    "gold": 4,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.25,
    "missing": [
     "CAPEC-1000",
     "CAPEC-3000",
-    "CAPEC-439",
     "CAPEC-683"
    ],
-   "records": 0,
+   "anchor_label": "AttackPattern",
+   "records": 1,
    "related": 0
   },
   {
@@ -930,49 +1424,97 @@
     "CAPEC-515",
     "WASC:12"
    ],
+   "anchor_label": "Category",
    "records": 0,
    "related": 0
   },
   {
-   "id": "D4-HAS_MEMBER-REQUIRES_RESOURCE-CAPEC-437-e28059::analyst",
-   "spec_id": "D4-HAS_MEMBER-REQUIRES_RESOURCE-CAPEC-437-e28059",
+   "id": "D4-HAS_MEMBER-REQUIRES_RESOURCE-CAPEC-513-aee90a::analyst",
+   "spec_id": "D4-HAS_MEMBER-REQUIRES_RESOURCE-CAPEC-513-aee90a",
    "d_tier": "D4",
    "shapes": [
     "Category -[HAS_MEMBER]-> AttackPattern",
     "AttackPattern -[REQUIRES_RESOURCE]-> Resource"
    ],
    "control": false,
-   "gold_width": 4,
-   "gold": 5,
+   "gold_width": 31,
+   "gold": 32,
    "found": 0,
    "recall": 0.0,
    "missing": [
+    "A client application, command-line access to a binary, or scripting language capable of interacting with the authentication mechanism.",
+    "A client application, such as a web browser, or a scripting language capable of interacting with the target.",
+    "A custom script that leverages the credential list to launch an attack.",
+    "A list of known credentials.",
+    "A script or program capable of generating more requests than the target can handle, or a network or cluster of objects all capable of making simultaneous requests.",
+    "A tool, such as a MITM Proxy, that is capable of generating and injecting custom inputs to be used in the attack.",
     "A tool, such as an Adversary in the Middle (CAPEC-94) Proxy or a fuzzer, that is capable of generating and injecting custom inputs to be used in the attack.",
-    "CAPEC-437",
+    "Ability to communicate synchronously or asynchronously with server",
+    "Ability to communicate synchronously or asynchronously with server.",
+    "Ability to deploy software on network.",
+    "CAPEC-513",
+    "Fuzzing tools.",
+    "If on a network, the adversary needs a tool capable of viewing network communications at the packet level and with header information, like Mitmproxy, Wireshark, or Fiddler.",
+    "If the content is to be modified in transit, the adversary requires a tool capable of intercepting the target's communication and generating/creating custom packets to impact the communications. In some variants, the targeted content is altered so that all or some of it is redirected towards content published by the attacker (for example, images and frames in the target's web site might be modified to be loaded from a source controlled by the attacker). In these cases, the attacker requires the necessary resources to host the replacement content.",
+    "In some variants of this attack the adversary must be able to intercept communications using the protocol. This means they need to be able to receive the communications from one participant and prevent the other participant from receiving these communications.",
     "None: No specialized resources are required to execute this type of attack.",
+    "None: No specialized resources are required to execute this type of attack. In some cases, tools can be used to better control the response of the targeted application to the modified file.",
+    "None: No specialized resources are required to execute this type of attack. The ability to access the target is required.",
+    "None: No specialized resources are required to execute this type of attack. The only requirement is the ability to provide string input to the target.",
+    "None: No specialized resources are required to execute this type of attack. Ultimately, the speed with which an attacker discovers a secret is directly proportional to the computational resources the attacker has at their disposal. This attack method is resource expensive: having large amounts of computational power do not guarantee timely success, but having only minimal resources makes the problem intractable against all but the weakest secret selection procedures.",
+    "None: The attacker does not need any specialized resources to execute this type of attack.",
     "Software Integrity Attacks are usually a late stage focus of attack activity which depends upon the success of a chain of prior events. The resources required to perform the attack vary with respect to the overall attack strategy, existing countermeasures which must be bypassed, and the success of early phase attack vectors.",
-    "The attacker must have the access necessary to affect the files or other environment items the targeted application uses for its operations."
+    "The adversary may need the capability to host code modules if they wish their own code files to be included.",
+    "The adversary must have the necessary technology to intercept information passing between the nodes of a network. For TCP/IP, the capability to run tcpdump, ethereal, etc. can be useful. Depending upon the data being targeted the technological requirements will change.",
+    "The adversary needs a data tampering tool capable of generating and creating custom inputs to aid in the attack, like Fiddler, Wireshark, or a similar in-browser plugin (e.g., Tamper Data for Firefox).",
+    "The adversary requires a variety of tools to collect information about the target. These include port/network scanners and tools to analyze responses from applications to determine version and configuration information. Footprinting a system adequately may also take a few days if the attacker wishes the footprinting attempt to go undetected.",
+    "The attacker must be able to corrupt the infrastructure used by the client. For some variants of this attack, the attacker must be able to stand up their own services that mimic the services the targeted client intends to use.",
+    "The attacker must have the access necessary to affect the files or other environment items the targeted application uses for its operations.",
+    "The means by which the adversary intends to place the malicious code on the system dictates the tools required. For example, suppose the adversary wishes to leverage social engineering and convince a legitimate user to open a malicious file attached to a seemingly legitimate email. In this case, the adversary might require a tool capable of wrapping malicious code into an innocuous filetype (e.g., PDF, .doc, etc.)",
+    "The requirements vary depending upon the nature of the interface. For example, application-layer APIs related to the processing of the HTTP protocol may require one or more of the following: an Adversary-In-The-Middle (CAPEC-94) proxy, a web browser, or a programming/scripting language.",
+    "The technical resources necessary to engage in reverse engineering differ in accordance with the type of object, resource, or system being analyzed.",
+    "To successfully execute this pattern of attack, a script or program is often required that is capable of continually engaging the target and maintaining sustained usage of a specific resource. Depending on the configuration of the target, it may or may not be necessary to involve a network or cluster of objects all capable of making parallel requests."
    ],
+   "anchor_label": "Category",
    "records": 0,
    "related": 0
   },
   {
-   "id": "D4-HAS_MEMBER-REQUIRES_SKILL-CAPEC-156-543388::analyst",
-   "spec_id": "D4-HAS_MEMBER-REQUIRES_SKILL-CAPEC-156-543388",
+   "id": "D4-HAS_MEMBER-REQUIRES_SKILL-CAPEC-513-c26c45::analyst",
+   "spec_id": "D4-HAS_MEMBER-REQUIRES_SKILL-CAPEC-513-c26c45",
    "d_tier": "D4",
    "shapes": [
     "Category -[HAS_MEMBER]-> AttackPattern",
     "AttackPattern -[REQUIRES_SKILL]-> Skill"
    ],
    "control": false,
-   "gold_width": 1,
-   "gold": 2,
+   "gold_width": 19,
+   "gold": 20,
    "found": 0,
    "recall": 0.0,
    "missing": [
     "Ability to spoof a variety of metadata to convince victims the source is trusted",
-    "CAPEC-156"
+    "Adversary can leverage privileged features they already have access to without additional effort or skill. Adversary is only required to have access to an account with improper priveleges.",
+    "Being able to \"run the race\" requires basic knowledge of concurrent processing including synchonization techniques.",
+    "CAPEC-513",
+    "General computer knowledge about how applications are launched, how they interact with input/output, and how they are configured.",
+    "Knowledge of classification levels of systems",
+    "Manual or user-assisted attacks require deceptive mechanisms to trick the user into clicking a link or downloading and installing software. Automated update attacks require the attacker to host a payload and then trigger the installation of the payload code.",
+    "Once an adversary obtains a known credential, leveraging it is trivial.",
+    "Some fingerprinting activity requires very specific knowledge of how different operating systems respond to various TCP/IP requests. Application fingerprinting can be as easy as envoking the application with the correct command line argument, or mouse clicking in the appropriate place on the screen.",
+    "The ability to fake a classified document",
+    "The ability to obtain a classified document or information",
+    "The adversary knows how to send HTTP request, run the scan tool.",
+    "The adversary needs to have knowledge of state management as employed by the target application, and also the ability to manipulate the state in a meaningful way.",
+    "The attack simply requires basic scripting ability to automate the exploration of the search space. More sophisticated attackers may be able to use more advanced methods to reduce the search space and increase the speed with which the secret is located.",
+    "The attacker must have fairly detailed knowledge of the syntax and semantics of client/server communications protocols and grammars",
+    "There is a wide variety of fuzzing tools available.",
+    "This attack can get sophisticated since the attack may use cryptography.",
+    "This type of attack may be sophisticated and require knowledge about the system's resources and APIs.",
+    "To achieve a direct connection with the weak or non-existent server session access control, and pose as an authorized user",
+    "Understanding of low level programming languages or technologies can be very helpful. For example, when reverse engineering a binary file, an understanding of assembly languages can help to determine the purpose and inner-workings of the code. Another example is reverse engineering an application that relies on networking. Here, an understanding networking protocols can provide insight into application details."
    ],
+   "anchor_label": "Category",
    "records": 0,
    "related": 0
   },
@@ -987,13 +1529,13 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.5,
    "missing": [
-    "A web browser with user-privileges executes JavaScript code imbedded within a malicious website. The system does not disable shared buffers for the web browser and there is no restriction or check upon user-process execution of flush or evict instructions. The Javascript code executes vulnerable transient instructions upon system to cause microarchitectural changes that establish covert channel and transfer sensitive/secret data into shared cache from address space of either kernel, web browser or another executing process on the system.",
-    "CAPEC-212"
+    "A web browser with user-privileges executes JavaScript code imbedded within a malicious website. The system does not disable shared buffers for the web browser and there is no restriction or check upon user-process execution of flush or evict instructions. The Javascript code executes vulnerable transient instructions upon system to cause microarchitectural changes that establish covert channel and transfer sensitive/secret data into shared cache from address space of either kernel, web browser or another executing process on the system."
    ],
-   "records": 0,
+   "anchor_label": "AttackPattern",
+   "records": 1,
    "related": 0
   },
   {
@@ -1007,13 +1549,13 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.5,
    "missing": [
-    "CAPEC-124",
     "File Signatures for Malicious Software capable of abusing Transient Instruction Set Execution"
    ],
-   "records": 0,
+   "anchor_label": "AttackPattern",
+   "records": 1,
    "related": 0
   },
   {
@@ -1039,6 +1581,7 @@
     "Implementation: KPTI (Kernel Page-Table Isolation) to completely separate user-space and kernel space page tables",
     "Implementation: Non-inclusive Cache Memories to prevent Flush+Reload Attacks"
    ],
+   "anchor_label": "AttackPattern",
    "records": 0,
    "related": 0
   },
@@ -1053,15 +1596,15 @@
    "control": false,
    "gold_width": 3,
    "gold": 4,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.25,
    "missing": [
-    "CAPEC-12",
     "Identifiers must have long lifetimes and potential for reusability.",
     "Server software must allow concurrent sessions to exist.",
     "Server software must rely on weak identifier proof and/or verification schemes."
    ],
-   "records": 0,
+   "anchor_label": "AttackPattern",
+   "records": 1,
    "related": 0
   },
   {
@@ -1075,14 +1618,14 @@
    "control": false,
    "gold_width": 2,
    "gold": 3,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.3333333333333333,
    "missing": [
-    "CAPEC-64",
     "Input filtering and validating is not done properly leaving the door open to harmful characters for the target host.",
     "The application's UTF-8 decoder accepts and interprets illegal UTF-8 characters or non-shortest format of UTF-8 encoding."
    ],
-   "records": 0,
+   "anchor_label": "AttackPattern",
+   "records": 1,
    "related": 0
   },
   {
@@ -1096,13 +1639,13 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.5,
    "missing": [
-    "CAPEC-105",
     "WASC:25"
    ],
-   "records": 0,
+   "anchor_label": "AttackPattern",
+   "records": 1,
    "related": 0
   },
   {
@@ -1116,14 +1659,14 @@
    "control": false,
    "gold_width": 2,
    "gold": 3,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.3333333333333333,
    "missing": [
     "C2C mechanism or direct access to victim system, capable of dropping malicious program and collecting covert channel attack data.",
-    "CAPEC-124",
     "Malicious program capable of triggering execution of transient instructions or vulnerable instruction sequences of victim program and performing a covert channel attack to gather data from victim process memory space. Ultimately, the speed with which an attacker discovers a secret is directly proportional to the computational resources of the victim machine."
    ],
-   "records": 0,
+   "anchor_label": "AttackPattern",
+   "records": 1,
    "related": 0
   },
   {
@@ -1137,10 +1680,9 @@
    "control": false,
    "gold_width": 9,
    "gold": 10,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.1,
    "missing": [
-    "C0027",
     "S0002",
     "S0183",
     "S0349",
@@ -1151,37 +1693,9 @@
     "S1068",
     "S1148"
    ],
-   "records": 0,
-   "related": 0
-  },
-  {
-   "id": "D4-kill_chain_phase-mitigates-TA0007-254bd8::analyst",
-   "spec_id": "D4-kill_chain_phase-mitigates-TA0007-254bd8",
-   "d_tier": "D4",
-   "shapes": [
-    "Technique -[kill_chain_phase]-> Tactic",
-    "Mitigation -[mitigates]-> Technique"
-   ],
-   "control": true,
-   "gold_width": 10,
-   "gold": 11,
-   "found": 0,
-   "recall": 0.0,
-   "missing": [
-    "M1018",
-    "M1027",
-    "M1028",
-    "M1030",
-    "M1031",
-    "M1032",
-    "M1035",
-    "M1041",
-    "M1042",
-    "M1047",
-    "TA0007"
-   ],
-   "records": 0,
-   "related": 0
+   "anchor_label": "Campaign",
+   "records": 1,
+   "related": 1
   },
   {
    "id": "D4-kill_chain_phase-tactic_refs-T1036.006-285575::analyst",
@@ -1194,14 +1708,14 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.5,
    "missing": [
-    "T1036.006",
     "enterprise-attack"
    ],
-   "records": 0,
-   "related": 0
+   "anchor_label": "Technique",
+   "records": 1,
+   "related": 1
   },
   {
    "id": "D4-kill_chain_phase-tactic_refs-T1578-9370d3::analyst",
@@ -1214,14 +1728,14 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.5,
    "missing": [
-    "T1578",
     "enterprise-attack"
    ],
-   "records": 0,
-   "related": 0
+   "anchor_label": "Technique",
+   "records": 1,
+   "related": 1
   },
   {
    "id": "D4-log_source-x_mitre_analytic_refs-DC0054-957393::analyst",
@@ -1234,10 +1748,9 @@
    "control": false,
    "gold_width": 8,
    "gold": 9,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.1111111111111111,
    "missing": [
-    "DC0054",
     "DET0099",
     "DET0137",
     "DET0150",
@@ -1247,48 +1760,9 @@
     "DET0410",
     "DET0491"
    ],
-   "records": 0,
-   "related": 0
-  },
-  {
-   "id": "D4-subtechnique-of-uses-T1222-93ff54::analyst",
-   "spec_id": "D4-subtechnique-of-uses-T1222-93ff54",
-   "d_tier": "D4",
-   "shapes": [
-    "Technique -[subtechnique-of]-> Technique",
-    "Software -[uses]-> Technique"
-   ],
-   "control": true,
-   "gold_width": 21,
-   "gold": 22,
-   "found": 0,
-   "recall": 0.0,
-   "missing": [
-    "S0201",
-    "S0281",
-    "S0352",
-    "S0366",
-    "S0402",
-    "S0446",
-    "S0482",
-    "S0531",
-    "S0570",
-    "S0587",
-    "S0598",
-    "S0599",
-    "S0612",
-    "S0658",
-    "S0693",
-    "S1068",
-    "S1070",
-    "S1105",
-    "S1180",
-    "S9002",
-    "S9013",
-    "T1222"
-   ],
-   "records": 0,
-   "related": 0
+   "anchor_label": "DataComponent",
+   "records": 1,
+   "related": 10
   },
   {
    "id": "D4-uses-attributed-to-T1053.005-59225c::analyst",
@@ -1317,6 +1791,7 @@
     "C0047",
     "T1053.005"
    ],
+   "anchor_label": "Technique",
    "records": 0,
    "related": 0
   },
@@ -1347,6 +1822,7 @@
     "C0051",
     "T1204.001"
    ],
+   "anchor_label": "Technique",
    "records": 0,
    "related": 0
   },
@@ -1383,67 +1859,8 @@
     "DET0852",
     "DET0892"
    ],
-   "records": 0,
-   "related": 0
-  },
-  {
-   "id": "D4-uses-kill_chain_phase-G0122-c107c9::analyst",
-   "spec_id": "D4-uses-kill_chain_phase-G0122-c107c9",
-   "d_tier": "D4",
-   "shapes": [
-    "Group -[uses]-> Technique",
-    "Technique -[kill_chain_phase]-> Tactic"
-   ],
-   "control": true,
-   "gold_width": 8,
-   "gold": 9,
-   "found": 0,
-   "recall": 0.0,
-   "missing": [
-    "G0122",
-    "TA0001",
-    "TA0003",
-    "TA0004",
-    "TA0005",
-    "TA0006",
-    "TA0009",
-    "TA0042",
-    "TA0043"
-   ],
-   "records": 0,
-   "related": 0
-  },
-  {
-   "id": "D4-uses-subtechnique-of-S1060-51930e::analyst",
-   "spec_id": "D4-uses-subtechnique-of-S1060-51930e",
-   "d_tier": "D4",
-   "shapes": [
-    "Software -[uses]-> Technique",
-    "Technique -[subtechnique-of]-> Technique"
-   ],
-   "control": true,
-   "gold_width": 14,
-   "gold": 15,
-   "found": 0,
-   "recall": 0.0,
-   "missing": [
-    "S1060",
-    "T1003",
-    "T1027",
-    "T1059",
-    "T1071",
-    "T1074",
-    "T1090",
-    "T1132",
-    "T1134",
-    "T1205",
-    "T1518",
-    "T1552",
-    "T1569",
-    "T1573",
-    "T1685"
-   ],
-   "records": 0,
+   "anchor_label": "Campaign",
+   "records": 5,
    "related": 0
   },
   {
@@ -1457,16 +1874,16 @@
    "control": false,
    "gold_width": 4,
    "gold": 5,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.2,
    "missing": [
     "DC0032",
     "DC0034",
     "DC0063",
-    "DC0064",
-    "DET0350"
+    "DC0064"
    ],
-   "records": 0,
+   "anchor_label": "DetectionStrategy",
+   "records": 1,
    "related": 0
   },
   {
@@ -1480,14 +1897,14 @@
    "control": false,
    "gold_width": 2,
    "gold": 3,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.3333333333333333,
    "missing": [
     "DC0038",
-    "DC0039",
-    "DET0355"
+    "DC0039"
    ],
-   "records": 0,
+   "anchor_label": "DetectionStrategy",
+   "records": 1,
    "related": 0
   },
   {
@@ -1506,40 +1923,9 @@
     "CAPEC-100",
     "CAPEC-242"
    ],
+   "anchor_label": "AttackPattern",
    "records": 1,
    "related": 0
-  },
-  {
-   "id": "D5-ChildOf-Abstraction-CAPEC-41-9bdee1::analyst",
-   "spec_id": "D5-ChildOf-Abstraction-CAPEC-41-9bdee1",
-   "d_tier": "D5",
-   "shapes": [
-    "AttackPattern -[ChildOf]-> AttackPattern"
-   ],
-   "control": true,
-   "gold_width": 1,
-   "gold": 2,
-   "found": 2,
-   "recall": 1.0,
-   "missing": [],
-   "records": 1,
-   "related": 2
-  },
-  {
-   "id": "D5-ChildOf-Typical_Severity-CAPEC-680-2ef906::analyst",
-   "spec_id": "D5-ChildOf-Typical_Severity-CAPEC-680-2ef906",
-   "d_tier": "D5",
-   "shapes": [
-    "AttackPattern -[ChildOf]-> AttackPattern"
-   ],
-   "control": true,
-   "gold_width": 1,
-   "gold": 2,
-   "found": 2,
-   "recall": 1.0,
-   "missing": [],
-   "records": 1,
-   "related": 2
   },
   {
    "id": "D5-HAS_MEMBER-Likelihood_Of_Attack-CAPEC-703-1ce9e4::analyst",
@@ -1565,6 +1951,7 @@
     "CAPEC-703",
     "CAPEC-94"
    ],
+   "anchor_label": "View",
    "records": 0,
    "related": 0
   },
@@ -1583,6 +1970,7 @@
    "missing": [
     "CAPEC-71"
    ],
+   "anchor_label": "AttackPattern",
    "records": 1,
    "related": 0
   },
@@ -1596,15 +1984,12 @@
    "control": false,
    "gold_width": 2,
    "gold": 3,
-   "found": 0,
-   "recall": 0.0,
-   "missing": [
-    "C0014",
-    "S0183",
-    "S0357"
-   ],
-   "records": 0,
-   "related": 0
+   "found": 3,
+   "recall": 1.0,
+   "missing": [],
+   "anchor_label": "Campaign",
+   "records": 1,
+   "related": 9
   },
   {
    "id": "D5-uses-x_mitre_platforms-C0017-c200fa::analyst",
@@ -1616,18 +2001,12 @@
    "control": false,
    "gold_width": 5,
    "gold": 6,
-   "found": 0,
-   "recall": 0.0,
-   "missing": [
-    "C0017",
-    "S0002",
-    "S0105",
-    "S0154",
-    "S1051",
-    "S1052"
-   ],
-   "records": 0,
-   "related": 0
+   "found": 6,
+   "recall": 1.0,
+   "missing": [],
+   "anchor_label": "Campaign",
+   "records": 1,
+   "related": 6
   },
   {
    "id": "D5-uses-x_mitre_platforms-C0029-6e5dcb::analyst",
@@ -1639,22 +2018,12 @@
    "control": false,
    "gold_width": 9,
    "gold": 10,
-   "found": 0,
-   "recall": 0.0,
-   "missing": [
-    "C0029",
-    "S1114",
-    "S1115",
-    "S1116",
-    "S1117",
-    "S1118",
-    "S1119",
-    "S1120",
-    "S1121",
-    "S1123"
-   ],
-   "records": 0,
-   "related": 0
+   "found": 10,
+   "recall": 1.0,
+   "missing": [],
+   "anchor_label": "Campaign",
+   "records": 1,
+   "related": 11
   },
   {
    "id": "D5-uses-x_mitre_platforms-C0043-36eeb0::analyst",
@@ -1666,16 +2035,15 @@
    "control": false,
    "gold_width": 4,
    "gold": 5,
-   "found": 0,
-   "recall": 0.0,
+   "found": 2,
+   "recall": 0.4,
    "missing": [
     "C0043",
     "T1071.001",
-    "T1568",
-    "T1571",
     "T1573.002"
    ],
-   "records": 0,
+   "anchor_label": "Campaign",
+   "records": 4,
    "related": 0
   },
   {
@@ -1688,8 +2056,8 @@
    "control": false,
    "gold_width": 10,
    "gold": 11,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.09090909090909091,
    "missing": [
     "C0062",
     "T1584.004",
@@ -1700,63 +2068,10 @@
     "T1592.002",
     "T1592.004",
     "T1595.001",
-    "T1595.002",
-    "T1683"
+    "T1595.002"
    ],
-   "records": 0,
-   "related": 0
-  },
-  {
-   "id": "D5-uses-x_mitre_platforms-G0120-d0bebb::analyst",
-   "spec_id": "D5-uses-x_mitre_platforms-G0120-d0bebb",
-   "d_tier": "D5",
-   "shapes": [
-    "Group -[uses]-> Technique"
-   ],
-   "control": true,
-   "gold_width": 9,
-   "gold": 10,
-   "found": 0,
-   "recall": 0.0,
-   "missing": [
-    "G0120",
-    "T1059.007",
-    "T1070.004",
-    "T1105",
-    "T1204.001",
-    "T1219.002",
-    "T1497.001",
-    "T1539",
-    "T1555",
-    "T1566.002"
-   ],
-   "records": 0,
-   "related": 0
-  },
-  {
-   "id": "D5-uses-x_mitre_platforms-G1033-834436::analyst",
-   "spec_id": "D5-uses-x_mitre_platforms-G1033-834436",
-   "d_tier": "D5",
-   "shapes": [
-    "Group -[uses]-> Technique"
-   ],
-   "control": true,
-   "gold_width": 8,
-   "gold": 9,
-   "found": 0,
-   "recall": 0.0,
-   "missing": [
-    "G1033",
-    "T1059.007",
-    "T1078",
-    "T1114.002",
-    "T1114.003",
-    "T1204.002",
-    "T1539",
-    "T1566.001",
-    "T1684.001"
-   ],
-   "records": 0,
+   "anchor_label": "Campaign",
+   "records": 12,
    "related": 0
   },
   {
@@ -1769,14 +2084,12 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
-   "missing": [
-    "G1050",
-    "S1242"
-   ],
-   "records": 0,
-   "related": 0
+   "found": 2,
+   "recall": 1.0,
+   "missing": [],
+   "anchor_label": "Group",
+   "records": 1,
+   "related": 2
   },
   {
    "id": "D5-uses-x_mitre_platforms-G1053-dacd27::analyst",
@@ -1788,33 +2101,12 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
-   "missing": [
-    "G1053",
-    "S0677"
-   ],
-   "records": 0,
-   "related": 0
-  },
-  {
-   "id": "D5-uses-x_mitre_platforms-S1129-e882e1::analyst",
-   "spec_id": "D5-uses-x_mitre_platforms-S1129-e882e1",
-   "d_tier": "D5",
-   "shapes": [
-    "Software -[uses]-> Technique"
-   ],
-   "control": true,
-   "gold_width": 1,
-   "gold": 2,
-   "found": 0,
-   "recall": 0.0,
-   "missing": [
-    "S1129",
-    "T1490"
-   ],
-   "records": 0,
-   "related": 0
+   "found": 2,
+   "recall": 1.0,
+   "missing": [],
+   "anchor_label": "Group",
+   "records": 1,
+   "related": 8
   },
   {
    "id": "D5-x_mitre_analytic_refs-x_mitre_platforms-DET0189-bfc709::analyst",
@@ -1826,13 +2118,13 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.5,
    "missing": [
-    "AN0540",
-    "DET0189"
+    "AN0540"
    ],
-   "records": 0,
+   "anchor_label": "DetectionStrategy",
+   "records": 1,
    "related": 0
   },
   {
@@ -1845,34 +2137,14 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
-   "missing": [
-    "AN0554",
-    "DET0192"
-   ],
-   "records": 0,
-   "related": 0
-  },
-  {
-   "id": "D6-MAPS_TO[ATTACK]-ChildOf-T1111-192368::analyst",
-   "spec_id": "D6-MAPS_TO[ATTACK]-ChildOf-T1111-192368",
-   "d_tier": "D6",
-   "shapes": [
-    "AttackPattern -[MAPS_TO[ATTACK]]-> Technique",
-    "AttackPattern -[ChildOf]-> AttackPattern"
-   ],
-   "control": true,
-   "gold_width": 2,
-   "gold": 3,
    "found": 1,
-   "recall": 0.3333333333333333,
+   "recall": 0.5,
    "missing": [
-    "CAPEC-117",
-    "CAPEC-157"
+    "AN0554"
    ],
-   "records": 558,
-   "related": 271
+   "anchor_label": "DetectionStrategy",
+   "records": 1,
+   "related": 0
   },
   {
    "id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1505.005-d82694::analyst",
@@ -1885,57 +2157,14 @@
    "control": false,
    "gold_width": 1,
    "gold": 2,
-   "found": 0,
-   "recall": 0.0,
+   "found": 1,
+   "recall": 0.5,
    "missing": [
-    "OWASP Attacks:Binary planting",
-    "T1505.005"
+    "OWASP Attacks:Binary planting"
    ],
-   "records": 0,
-   "related": 0
-  },
-  {
-   "id": "D6-MAPS_TO[ATTACK]-subtechnique-of-CAPEC-94-237673::analyst",
-   "spec_id": "D6-MAPS_TO[ATTACK]-subtechnique-of-CAPEC-94-237673",
-   "d_tier": "D6",
-   "shapes": [
-    "AttackPattern -[MAPS_TO[ATTACK]]-> Technique",
-    "Technique -[subtechnique-of]-> Technique"
-   ],
-   "control": true,
-   "gold_width": 4,
-   "gold": 5,
-   "found": 0,
-   "recall": 0.0,
-   "missing": [
-    "CAPEC-94",
-    "T1557.001",
-    "T1557.002",
-    "T1557.003",
-    "T1557.004"
-   ],
-   "records": 0,
-   "related": 0
-  },
-  {
-   "id": "D6-rev-subtechnique-of-T1069.002-738314::analyst",
-   "spec_id": "D6-rev-subtechnique-of-T1069.002-738314",
-   "d_tier": "D6",
-   "shapes": [
-    "Technique -[subtechnique-of]-> Technique",
-    "AttackPattern -[MAPS_TO[ATTACK]]-> Technique"
-   ],
-   "control": true,
-   "gold_width": 1,
-   "gold": 2,
-   "found": 0,
-   "recall": 0.0,
-   "missing": [
-    "CAPEC-576",
-    "T1069.002"
-   ],
-   "records": 0,
-   "related": 0
+   "anchor_label": "Technique",
+   "records": 558,
+   "related": 271
   }
  ]
 }

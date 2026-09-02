@@ -300,13 +300,17 @@ def parse_capec_xml(xml_path: Path) -> dict[str, Any]:
         num = p.get("ID")
 
         # Execution flow: ordered steps with the derived node ids the loaded
-        # graph exposes (capec:attack-pattern:<n>:step:<step>). Repeated step
-        # numbers collapse onto one node id in the graph, so node ids are
-        # deduplicated while document order is preserved.
+        # graph exposes (capec:attack-pattern:<n>:step:<position>). Keyed by
+        # document position, not by step number: CAPEC restarts numbering in
+        # each phase, and keying on the number collapsed 21 distinct steps onto
+        # 11 node ids in the graph. The old comment here described that collapse
+        # as intended behaviour; it was a defect, and it is fixed on both sides.
         flow = p.find("c:Execution_Flow", CAPEC_NS)
         if flow is not None:
             steps: list[dict[str, Any]] = []
-            for step_el in flow.findall("c:Attack_Step", CAPEC_NS):
+            for position, step_el in enumerate(
+                flow.findall("c:Attack_Step", CAPEC_NS), start=1
+            ):
                 step_no_el = step_el.find("c:Step", CAPEC_NS)
                 phase_el = step_el.find("c:Phase", CAPEC_NS)
                 step_no = (step_no_el.text if step_no_el is not None else None) or "0"
@@ -314,7 +318,10 @@ def parse_capec_xml(xml_path: Path) -> dict[str, Any]:
                     {
                         "step": step_no,
                         "phase": phase_el.text if phase_el is not None else None,
-                        "node_id": f"capec:attack-pattern:{num}:step:{_slug(str(step_no))}",
+                        # Keyed by document position, mirroring
+                        # `capec_ids.execution_step_node_id`. Keying on the step
+                        # number collided: CAPEC restarts numbering per phase.
+                        "node_id": f"capec:attack-pattern:{num}:step:{position}",
                     }
                 )
             if steps:

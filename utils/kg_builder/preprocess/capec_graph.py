@@ -6,13 +6,18 @@ from typing import Any
 
 from utils.kg_builder.models import CapecGraphMetadata, EdgeRecord, NodeRecord, NormalizedGraph
 from utils.kg_builder.preprocess.capec_ids import (
+    alternate_term_node_id,
     attack_pattern_node_id,
     category_node_id,
     consequence_node_id,
+    example_node_id,
     execution_step_node_id,
     external_reference_node_id,
+    indicator_node_id,
     mitigation_node_id,
+    prerequisite_node_id,
     relationship_id,
+    resource_node_id,
     skill_node_id,
     taxonomy_node_id,
     view_node_id,
@@ -215,6 +220,16 @@ def materialize_capec_graph(
                     "skills",
                     "consequences",
                     "mitigations",
+                    # The five added 2026-09-01 are materialized as nodes, so
+                    # they are excluded here for the same reason skills and
+                    # consequences are: carrying them as list properties too
+                    # would give a retrieval path two representations of one
+                    # fact and no rule for which is authoritative.
+                    "prerequisites",
+                    "indicators",
+                    "examples",
+                    "resources",
+                    "alternate_terms",
                     "related_weaknesses",
                     "taxonomy_mappings",
                     "references",
@@ -233,9 +248,9 @@ def materialize_capec_graph(
                 )
 
         previous_step_id: str | None = None
-        for step in attack_pattern.get("execution_steps", []):
+        for position, step in enumerate(attack_pattern.get("execution_steps", []), start=1):
             step_number = step.get("step") or "0"
-            step_id = execution_step_node_id(ap_id, str(step_number))
+            step_id = execution_step_node_id(ap_id, position)
             add_node(
                 NodeRecord(
                     id=step_id,
@@ -246,7 +261,11 @@ def materialize_capec_graph(
                 )
             )
             add_edge("HAS_EXECUTION_STEP", ap_node_id, step_id, step=step_number)
-            if previous_step_id:
+            # Guard the chain link. When two steps collided on an id the
+            # previous version emitted `NEXT_STEP` from a node to itself — 9
+            # self-loops — and, where the collision was non-adjacent, a back
+            # edge that turned the flow into a 2-cycle.
+            if previous_step_id and previous_step_id != step_id:
                 add_edge("NEXT_STEP", previous_step_id, step_id)
             previous_step_id = step_id
 
@@ -286,6 +305,31 @@ def materialize_capec_graph(
             )
             add_edge("HAS_MITIGATION", ap_node_id, mitigation_id)
 
+        # Five sub-element kinds CAPEC declares that the load previously
+        # dropped -- 1,545 instances that no question could reach because the
+        # rows were not there. Materialized the same way as skills and
+        # consequences: one node per instance, keyed by position, with the
+        # pattern owning the edge.
+        for field, id_fn, label, rel_type in (
+            ("prerequisites", prerequisite_node_id, "Prerequisite", "HAS_PREREQUISITE"),
+            ("indicators", indicator_node_id, "Indicator", "HAS_INDICATOR"),
+            ("examples", example_node_id, "Example", "HAS_EXAMPLE"),
+            ("resources", resource_node_id, "Resource", "REQUIRES_RESOURCE"),
+            ("alternate_terms", alternate_term_node_id, "AlternateTerm", "HAS_ALTERNATE_TERM"),
+        ):
+            for index, item in enumerate(attack_pattern.get(field, []), start=1):
+                node_id = id_fn(ap_id, index)
+                add_node(
+                    NodeRecord(
+                        id=node_id,
+                        label=label,
+                        labels=capec_canonical_labels(label),
+                        name=item.get("term") or None,
+                        properties={k: v for k, v in item.items() if v is not None},
+                    )
+                )
+                add_edge(rel_type, ap_node_id, node_id)
+
         for weakness in attack_pattern.get("related_weaknesses", []):
             cwe_id = weakness.get("cwe_id")
             if not cwe_id:
@@ -304,7 +348,11 @@ def materialize_capec_graph(
 
         for mapping in attack_pattern.get("taxonomy_mappings", []):
             taxonomy_name = mapping.get("taxonomy_name")
-            entry_id = mapping.get("entry_id")
+            # OWASP Attacks entries carry only `Entry_Name`. Requiring
+            # `Entry_ID` dropped all 39 of them and the 40 MAPS_TO edges that
+            # would have reached them — the whole taxonomy, silently. Same bug
+            # class as the census hit; see EXP-2026-09-001 I-1 and A-2.
+            entry_id = mapping.get("entry_id") or mapping.get("entry_name")
             if not taxonomy_name or not entry_id:
                 continue
             tax_id = taxonomy_node_id(taxonomy_name, entry_id)

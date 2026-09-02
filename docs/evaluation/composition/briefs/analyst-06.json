@@ -1,0 +1,86 @@
+{
+ "instructions": "You are writing evaluation questions for a cybersecurity knowledge-base benchmark.\n\nFor each item below, write ONE natural-language question. Return JSON only:\n{\"questions\": [{\"id\": \"<item id>\", \"question\": \"<the question>\"}, ...]}\n\nEach item gives you: a subject (its name, its type, its identifier), what the\nquestion should ask for, and sometimes a restriction to apply.\n\nRules, all of which are checked automatically and will cause a rejection:\n- The question MUST contain the subject's identifier exactly as given.\n- The question MUST NOT contain any other identifier.\n- Do NOT answer the question. Do NOT explain yourself.\n- Do NOT use underscores, camelCase, or database field names. Write it the way a\n  person would say it.\n- Exactly one question mark.\n- Some items have no answer in the data. You cannot tell which, and you should\n  not try: write every item as a straightforward question regardless.\n",
+ "style": "Write it the way a security analyst would type it into a search box: direct, unceremonious, no preamble.",
+ "items": [
+  {
+   "id": "q13bc7d0def7c",
+   "subject_name": "Software",
+   "subject_type": "CAPEC category",
+   "identifier": "CAPEC-513",
+   "ask_for": "the CAPEC attack patterns it contains, and then the skills each of those requires",
+   "answer_shape": "a list of skills"
+  },
+  {
+   "id": "q1641f03ac667",
+   "subject_name": "Functionality Misuse",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-212",
+   "ask_for": "the CAPEC attack patterns that are peers of it, and then the example instances that illustrate each of those",
+   "answer_shape": "a list of example instances"
+  },
+  {
+   "id": "q4e730137ddf1",
+   "subject_name": "Shared Resource Manipulation",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-124",
+   "ask_for": "the CAPEC attack patterns that are peers of it, and then the indicators that indicate each of those",
+   "answer_shape": "a list of indicators"
+  },
+  {
+   "id": "q4e76ddc63e45",
+   "subject_name": "Shared Resource Manipulation",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-124",
+   "ask_for": "the CAPEC attack patterns that are peers of it, and then the mitigations that mitigate each of those",
+   "answer_shape": "a list of mitigations"
+  },
+  {
+   "id": "qa800d6eea2df",
+   "subject_name": "Choosing Message Identifier",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-12",
+   "ask_for": "the CAPEC attack patterns that are peers of it, and then the prerequisites each of those requires as a precondition",
+   "answer_shape": "a list of prerequisites"
+  },
+  {
+   "id": "q7184cd2df04e",
+   "subject_name": "Using Slashes and URL Encoding Combined to Bypass Validation Logic",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-64",
+   "ask_for": "the CAPEC attack patterns that are peers of it, and then the prerequisites each of those requires as a precondition",
+   "answer_shape": "a list of prerequisites"
+  },
+  {
+   "id": "q679aeb967e18",
+   "subject_name": "HTTP Request Splitting",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-105",
+   "ask_for": "the CAPEC attack patterns that are peers of it, and then the WASC taxonomy entries each of those corresponds to",
+   "answer_shape": "a list of WASC taxonomy entries"
+  },
+  {
+   "id": "qd8e625d9ba77",
+   "subject_name": "Shared Resource Manipulation",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-124",
+   "ask_for": "the CAPEC attack patterns that are peers of it, and then the resources each of those requires",
+   "answer_shape": "a list of resources"
+  },
+  {
+   "id": "q52cd4dd5e017",
+   "subject_name": "C0027",
+   "subject_type": "campaign",
+   "identifier": "C0027",
+   "ask_for": "the threat groups it is attributed to, and then the malware and tools each of those uses",
+   "answer_shape": "a list of malware and tools"
+  },
+  {
+   "id": "q4d254ad61e20",
+   "subject_name": "Space after Filename",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1036.006",
+   "ask_for": "the ATT&CK tactics it belongs to, and then the ATT&CK matrices that cover each of those",
+   "answer_shape": "a list of ATT&CK matrices"
+  }
+ ]
+}

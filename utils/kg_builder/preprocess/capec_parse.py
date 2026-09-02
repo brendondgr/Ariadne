@@ -84,6 +84,12 @@ def normalize_attack_pattern(
         "skills": [],
         "consequences": [],
         "mitigations": [],
+        # Added 2026-09-01; see EXP-2026-09-001 A-2.
+        "prerequisites": [],
+        "indicators": [],
+        "examples": [],
+        "resources": [],
+        "alternate_terms": [],
         "related_weaknesses": [],
         "taxonomy_mappings": [],
         "references": [],
@@ -135,6 +141,35 @@ def normalize_attack_pattern(
     for mitigation in child_elements(child_elements(element, "Mitigations")[0], "Mitigation") if child_elements(element, "Mitigations") else []:
         record["mitigations"].append({"description": element_text(mitigation)})
 
+    # Five element groups CAPEC declares that the load previously dropped. Each
+    # is plain prose except Alternate_Term, which wraps a <Term> child.
+    for field, parent_tag, child_tag in (
+        ("prerequisites", "Prerequisites", "Prerequisite"),
+        ("indicators", "Indicators", "Indicator"),
+        ("examples", "Example_Instances", "Example"),
+        ("resources", "Resources_Required", "Resource"),
+    ):
+        parents = child_elements(element, parent_tag)
+        for item in child_elements(parents[0], child_tag) if parents else []:
+            text = element_text(item)
+            if not text:
+                continue
+            record[field].append({"description": text})
+
+    alternate_parents = child_elements(element, "Alternate_Terms")
+    for term in (
+        child_elements(alternate_parents[0], "Alternate_Term") if alternate_parents else []
+    ):
+        terms = child_texts(term, "Term")
+        record["alternate_terms"].append(
+            {
+                "term": terms[0] if terms else element_text(term),
+                "description": child_texts(term, "Description")[0]
+                if child_texts(term, "Description")
+                else None,
+            }
+        )
+
     for weakness in child_elements(child_elements(element, "Related_Weaknesses")[0], "Related_Weakness") if child_elements(element, "Related_Weaknesses") else []:
         record["related_weaknesses"].append({"cwe_id": weakness.attrib.get("CWE_ID")})
 
@@ -161,6 +196,14 @@ def normalize_attack_pattern(
         "Skills_Required",
         "Consequences",
         "Mitigations",
+        # Added 2026-09-01. Without these the quarantine count keeps reporting
+        # them as dropped after they started being materialized, which
+        # overstates the loss by 1,545.
+        "Prerequisites",
+        "Indicators",
+        "Example_Instances",
+        "Resources_Required",
+        "Alternate_Terms",
         "Related_Weaknesses",
         "Taxonomy_Mappings",
         "References",

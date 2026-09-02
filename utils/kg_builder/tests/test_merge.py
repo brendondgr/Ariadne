@@ -191,8 +191,14 @@ def test_a_non_attack_taxonomy_entry_is_left_alone() -> None:
 
 
 def test_the_two_catalogues_share_exactly_one_label(built) -> None:
-    """11 ATT&CK labels + 10 CAPEC labels, `Mitigation` in both."""
-    assert built["labels"] == 20
+    """11 ATT&CK labels + 15 CAPEC labels, `Mitigation` in both.
+
+    CAPEC went from 10 to 15 on 2026-09-01, when the five sub-element kinds the
+    sources declare and the load had been dropping were materialized —
+    Prerequisite, Indicator, Example, Resource, AlternateTerm. See
+    EXP-2026-09-001 amendment A-3.
+    """
+    assert built["labels"] == 25
 
 
 def test_colliding_node_ids_are_a_hard_failure(monkeypatch) -> None:

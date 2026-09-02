@@ -70,12 +70,13 @@ PREDICATE_MAP: dict[str, tuple[str, bool] | None] = {
     "MAPS_TO[ATTACK]": ("MAPS_TO", False),
     "MAPS_TO[WASC]": ("MAPS_TO", False),
     "MAPS_TO[OWASP Attacks]": ("MAPS_TO", False),
-    # CAPEC — declared by the source, absent from the load.
-    "HAS_PREREQUISITE": None,
-    "HAS_INDICATOR": None,
-    "HAS_EXAMPLE": None,
-    "REQUIRES_RESOURCE": None,
-    "HAS_ALTERNATE_TERM": None,
+    # CAPEC — declared by the source and absent from the load until 2026-09-01,
+    # when the ingest was changed to materialize all five. 1,545 instances.
+    "HAS_PREREQUISITE": ("HAS_PREREQUISITE", False),
+    "HAS_INDICATOR": ("HAS_INDICATOR", False),
+    "HAS_EXAMPLE": ("HAS_EXAMPLE", False),
+    "REQUIRES_RESOURCE": ("REQUIRES_RESOURCE", False),
+    "HAS_ALTERNATE_TERM": ("HAS_ALTERNATE_TERM", False),
 }
 
 
@@ -89,18 +90,23 @@ LABEL_MAP: dict[str, str | None] = {
     "CapecMitigation": "Mitigation",
     "TaxonomyEntry:WASC": "TaxonomyEntry",
     "TaxonomyEntry:OWASP Attacks": "TaxonomyEntry",
+    # Loaded since 2026-09-01; identity mappings, listed so the change is
+    # visible rather than silent.
+    "Prerequisite": "Prerequisite",
+    "Indicator": "Indicator",
+    "Example": "Example",
+    "Resource": "Resource",
+    "AlternateTerm": "AlternateTerm",
+    # ATT&CK declares 38 x-mitre-data-source objects; the load does not keep
+    # them as nodes. Still absent.
     "DataSource": None,
-    "Prerequisite": None,
-    "Indicator": None,
-    "Example": None,
-    "Resource": None,
-    "AlternateTerm": None,
 }
 
 #: Population differences that are a known modelling choice rather than a gap.
 #: Anything not listed here and not equal is an open discrepancy and is reported
 #: as one — the point of the reconciliation is that nothing explains itself.
 EXPLAINED_COUNTS: dict[str, str] = {
+    "TaxonomyEntry:ATTACK": "one TaxonomyEntry label covers all three taxonomies",
     "Technique": "the graph splits Technique (222) from SubTechnique (475); "
                  "the sum is the census's 697",
     "TaxonomyEntry:WASC": "the graph keeps one TaxonomyEntry label for all three "

@@ -1,10 +1,10 @@
 {
  "census_edge_types": 34,
- "edge_types_loaded": 29,
- "edge_types_absent": 5,
- "edge_instances_absent": 1545,
+ "edge_types_loaded": 34,
+ "edge_types_absent": 0,
+ "edge_instances_absent": 0,
  "census_node_types": 25,
- "node_types_absent": 5,
+ "node_types_absent": 0,
  "collapsed_relationships": {
   "USES": [
    "Software -[uses]-> Technique",
@@ -24,60 +24,8 @@
    "View -[HAS_MEMBER]-> Category"
   ]
  },
- "absent_edge_types": [
-  {
-   "triple": "AttackPattern -[HAS_PREREQUISITE]-> Prerequisite",
-   "instances": 746,
-   "never_asked": true
-  },
-  {
-   "triple": "AttackPattern -[HAS_EXAMPLE]-> Example",
-   "instances": 387,
-   "never_asked": true
-  },
-  {
-   "triple": "AttackPattern -[REQUIRES_RESOURCE]-> Resource",
-   "instances": 289,
-   "never_asked": true
-  },
-  {
-   "triple": "AttackPattern -[HAS_INDICATOR]-> Indicator",
-   "instances": 96,
-   "never_asked": true
-  },
-  {
-   "triple": "AttackPattern -[HAS_ALTERNATE_TERM]-> AlternateTerm",
-   "instances": 27,
-   "never_asked": true
-  }
- ],
- "absent_node_types": [
-  {
-   "label": "AlternateTerm",
-   "instances": 27,
-   "store": "capec"
-  },
-  {
-   "label": "Example",
-   "instances": 387,
-   "store": "capec"
-  },
-  {
-   "label": "Indicator",
-   "instances": 96,
-   "store": "capec"
-  },
-  {
-   "label": "Prerequisite",
-   "instances": 746,
-   "store": "capec"
-  },
-  {
-   "label": "Resource",
-   "instances": 289,
-   "store": "capec"
-  }
- ],
+ "absent_edge_types": [],
+ "absent_node_types": [],
  "renamed_node_types": [
   {
    "label": "CapecMitigation",
@@ -89,13 +37,13 @@
    "label": "TaxonomyEntry:OWASP Attacks",
    "graph_label": "TaxonomyEntry",
    "census_count": 39,
-   "graph_count": 222
+   "graph_count": 261
   },
   {
    "label": "TaxonomyEntry:WASC",
    "graph_label": "TaxonomyEntry",
    "census_count": 33,
-   "graph_count": 222
+   "graph_count": 261
   }
  ],
  "count_mismatches": [
@@ -106,21 +54,15 @@
    "explained": "the graph splits Technique (222) from SubTechnique (475); the sum is the census's 697"
   },
   {
-   "label": "ExecutionStep",
-   "census": 815,
-   "graph": 794,
-   "explained": null
-  },
-  {
    "label": "TaxonomyEntry:OWASP Attacks",
    "census": 39,
-   "graph": 222,
+   "graph": 261,
    "explained": "the graph keeps one TaxonomyEntry label for all three taxonomies; the census splits them"
   },
   {
    "label": "TaxonomyEntry:WASC",
    "census": 33,
-   "graph": 222,
+   "graph": 261,
    "explained": "the graph keeps one TaxonomyEntry label for all three taxonomies; the census splits them"
   }
  ],
@@ -210,7 +152,7 @@
    "census_count": 815,
    "graph_relationship": "HAS_EXECUTION_STEP",
    "stored_reversed": false,
-   "graph_count": 794,
+   "graph_count": 815,
    "loaded": true
   },
   {
@@ -224,10 +166,10 @@
   {
    "triple": "AttackPattern -[HAS_PREREQUISITE]-> Prerequisite",
    "census_count": 746,
-   "graph_relationship": null,
-   "stored_reversed": null,
-   "graph_count": 0,
-   "loaded": false
+   "graph_relationship": "HAS_PREREQUISITE",
+   "stored_reversed": false,
+   "graph_count": 746,
+   "loaded": true
   },
   {
    "triple": "DetectionStrategy -[detects]-> Technique",
@@ -264,25 +206,25 @@
   {
    "triple": "AttackPattern -[HAS_EXAMPLE]-> Example",
    "census_count": 387,
-   "graph_relationship": null,
-   "stored_reversed": null,
-   "graph_count": 0,
-   "loaded": false
+   "graph_relationship": "HAS_EXAMPLE",
+   "stored_reversed": false,
+   "graph_count": 387,
+   "loaded": true
   },
   {
    "triple": "AttackPattern -[REQUIRES_RESOURCE]-> Resource",
    "census_count": 289,
-   "graph_relationship": null,
-   "stored_reversed": null,
-   "graph_count": 0,
-   "loaded": false
+   "graph_relationship": "REQUIRES_RESOURCE",
+   "stored_reversed": false,
+   "graph_count": 289,
+   "loaded": true
   },
   {
    "triple": "AttackPattern -[MAPS_TO[ATTACK]]-> Technique",
    "census_count": 271,
    "graph_relationship": "MAPS_TO",
    "stored_reversed": false,
-   "graph_count": 308,
+   "graph_count": 347,
    "loaded": true
   },
   {
@@ -312,10 +254,10 @@
   {
    "triple": "AttackPattern -[HAS_INDICATOR]-> Indicator",
    "census_count": 96,
-   "graph_relationship": null,
-   "stored_reversed": null,
-   "graph_count": 0,
-   "loaded": false
+   "graph_relationship": "HAS_INDICATOR",
+   "stored_reversed": false,
+   "graph_count": 96,
+   "loaded": true
   },
   {
    "triple": "View -[HAS_MEMBER]-> AttackPattern",
@@ -330,7 +272,7 @@
    "census_count": 39,
    "graph_relationship": "MAPS_TO",
    "stored_reversed": false,
-   "graph_count": 308,
+   "graph_count": 347,
    "loaded": true
   },
   {
@@ -338,16 +280,16 @@
    "census_count": 37,
    "graph_relationship": "MAPS_TO",
    "stored_reversed": false,
-   "graph_count": 308,
+   "graph_count": 347,
    "loaded": true
   },
   {
    "triple": "AttackPattern -[HAS_ALTERNATE_TERM]-> AlternateTerm",
    "census_count": 27,
-   "graph_relationship": null,
-   "stored_reversed": null,
-   "graph_count": 0,
-   "loaded": false
+   "graph_relationship": "HAS_ALTERNATE_TERM",
+   "stored_reversed": false,
+   "graph_count": 27,
+   "loaded": true
   },
   {
    "triple": "Campaign -[attributed-to]-> Group",
@@ -492,11 +434,11 @@
   {
    "label": "AlternateTerm",
    "store": "capec",
-   "graph_label": null,
+   "graph_label": "AlternateTerm",
    "renamed": false,
    "census_count": 27,
-   "graph_count": 0,
-   "loaded": false
+   "graph_count": 27,
+   "loaded": true
   },
   {
    "label": "AttackPattern",
@@ -537,11 +479,11 @@
   {
    "label": "Example",
    "store": "capec",
-   "graph_label": null,
+   "graph_label": "Example",
    "renamed": false,
    "census_count": 387,
-   "graph_count": 0,
-   "loaded": false
+   "graph_count": 387,
+   "loaded": true
   },
   {
    "label": "ExecutionStep",
@@ -549,35 +491,35 @@
    "graph_label": "ExecutionStep",
    "renamed": false,
    "census_count": 815,
-   "graph_count": 794,
+   "graph_count": 815,
    "loaded": true
   },
   {
    "label": "Indicator",
    "store": "capec",
-   "graph_label": null,
+   "graph_label": "Indicator",
    "renamed": false,
    "census_count": 96,
-   "graph_count": 0,
-   "loaded": false
+   "graph_count": 96,
+   "loaded": true
   },
   {
    "label": "Prerequisite",
    "store": "capec",
-   "graph_label": null,
+   "graph_label": "Prerequisite",
    "renamed": false,
    "census_count": 746,
-   "graph_count": 0,
-   "loaded": false
+   "graph_count": 746,
+   "loaded": true
   },
   {
    "label": "Resource",
    "store": "capec",
-   "graph_label": null,
+   "graph_label": "Resource",
    "renamed": false,
    "census_count": 289,
-   "graph_count": 0,
-   "loaded": false
+   "graph_count": 289,
+   "loaded": true
   },
   {
    "label": "Skill",
@@ -594,7 +536,7 @@
    "graph_label": "TaxonomyEntry",
    "renamed": true,
    "census_count": 39,
-   "graph_count": 222,
+   "graph_count": 261,
    "loaded": true
   },
   {
@@ -603,7 +545,7 @@
    "graph_label": "TaxonomyEntry",
    "renamed": true,
    "census_count": 33,
-   "graph_count": 222,
+   "graph_count": 261,
    "loaded": true
   },
   {

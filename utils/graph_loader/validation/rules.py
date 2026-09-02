@@ -74,6 +74,13 @@ CAPEC_EDGE_PATTERNS: frozenset[EdgePattern] = frozenset(
         EdgePattern("AttackPattern", "REQUIRES_SKILL", "Skill"),
         EdgePattern("AttackPattern", "HAS_CONSEQUENCE", "Consequence"),
         EdgePattern("AttackPattern", "HAS_MITIGATION", "Mitigation"),
+        # Added 2026-09-01 with the five sub-element kinds CAPEC declares that
+        # the load previously dropped; see EXP-2026-09-001 A-2.
+        EdgePattern("AttackPattern", "HAS_PREREQUISITE", "Prerequisite"),
+        EdgePattern("AttackPattern", "HAS_INDICATOR", "Indicator"),
+        EdgePattern("AttackPattern", "HAS_EXAMPLE", "Example"),
+        EdgePattern("AttackPattern", "REQUIRES_RESOURCE", "Resource"),
+        EdgePattern("AttackPattern", "HAS_ALTERNATE_TERM", "AlternateTerm"),
         EdgePattern("AttackPattern", "HAS_REFERENCE", "ExternalReference"),
         EdgePattern("Category", "HAS_REFERENCE", "ExternalReference"),
         EdgePattern("View", "HAS_REFERENCE", "ExternalReference"),

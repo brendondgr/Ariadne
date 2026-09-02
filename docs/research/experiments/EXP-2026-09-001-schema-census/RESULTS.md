@@ -351,3 +351,156 @@ the system "fails" on a shape must first check that the shape is loaded.
 edge types that *are* loaded. The probe has to be re-run with the graph's
 vocabulary and with single-hop controls before Step 6's original question has an
 answer.
+
+---
+
+## AMENDMENT A-3 — The gap is closed (2026-09-01)
+
+A-2 reported five edge types the sources declare and the load did not hold.
+They are now loaded, along with two more defects of the same family that the
+reconciliation surfaced on the way.
+
+### What changed in the ingest
+
+| | before | after |
+|---|---:|---:|
+| CAPEC nodes | 4,769 | **6,374** |
+| CAPEC relationships | 6,972 | **8,582** |
+| census edge types loaded | 29 of 34 | **34 of 34** |
+| census node types loaded | 20 of 25 | **25 of 25** |
+
+**1. The five missing sub-element kinds (1,545 instances).** Prerequisites
+(746), examples (387), resources (289), indicators (96) and alternate terms
+(27) are parsed, materialized as nodes, and edged from their pattern. Touching
+four layers — parser, id scheme, schema registry, materializer — plus the
+loader's edge-pattern allow-list, which rejected them until it was told they
+were legal.
+
+**2. Execution steps: 794 loaded where the source declares 815.** Not a
+filtering rule. **CAPEC restarts `<Step>` numbering at 1 in each phase**
+(Explore / Experiment / Exploit), and a few patterns repeat a number inside one
+phase as well, so the number is not unique within a flow. The id scheme keyed on
+it, `add_node` returns early on a duplicate, and **21 steps across 11 patterns
+were silently dropped — systematically biased toward Exploit-phase steps**, the
+terminal and highest-value part of each flow.
+
+Two further corruptions followed from the same root: `previous_step_id` was
+assigned even when the node had been deduped away, producing **9 `NEXT_STEP`
+self-loops** and, where the collision was non-adjacent, **2 back-edges that
+turned a flow chain into a cycle**.
+
+Fixed by keying on **document position**, which is unique by construction and
+stable under re-parse, with step number and phase kept as node properties so a
+question can still ask about them. `gold_bank` mirrors the scheme and was
+changed in lockstep — its comment had described the collapse as intended
+behaviour.
+
+**3. The entire OWASP taxonomy was absent — 39 entries, 40 `MAPS_TO` edges.**
+The materializer required `Entry_ID`; OWASP entries carry only `Entry_Name`.
+`TaxonomyEntry` is now 261 (ATTACK 189, WASC 33, OWASP 39) where it was 222 with
+OWASP at zero.
+
+**This is the third instance of one bug**, and worth naming as a class: *a
+keying field that most of a collection carries and a minority does not.* The
+census hit it (I-1, OWASP dropped), the ingest hit it here, and the execution
+steps are the same shape — a key assumed unique that is not.
+
+### Two accounting fixes
+
+* The five new groups now count as *mapped*, so the quarantine figure stops
+  reporting 1,545 materialized rows as dropped.
+* They are excluded from `AttackPattern` node properties, as skills and
+  consequences already were. Carrying them as list properties *and* as nodes
+  would give a retrieval path two representations of one fact and no rule for
+  which is authoritative.
+
+### Regression check
+
+Both committed banks re-run through the deterministic arm and diffed against the
+recorded answers, clock keys stripped:
+
+* **54 of 60 byte-identical.**
+* **Recall 1.0000 → 1.0000** on both banks.
+* 3 lookup answers gained facet rows for the five new relationship types — the
+  entities genuinely have those neighbours now.
+* 3 chain answers reordered with **identical retrieved id sets**, an artifact of
+  a freshly rebuilt store.
+
+Fixture-QA passes 12/12 for CAPEC and 14/14 for ATT&CK.
+
+### Still absent, and deliberately out of scope
+
+An audit of every child element of `Attack_Pattern`, `Category` and `View`
+found more that neither the census nor the load models: `Content_History`
+(2,706 modification records — every provenance and currency question about the
+catalogue), pattern `Notes` (29), **`View/Filter` (9 of 13 views define
+membership by XPath and have zero members in both representations)**, and
+category/view `References`. None is required for the expansion; all are recorded
+here so the next person does not rediscover them.
+
+---
+
+## AMENDMENT A-4 — Step 6, answered (2026-09-01)
+
+The probe re-run with the graph's vocabulary, single-hop controls, and the
+routing defects fixed. 80 questions, deterministic arm, **no judge** — recall of
+snapshot-derived gold from retrieved evidence.
+
+| | first run (A-2) | corrected |
+|---|---:|---:|
+| recall, all | 0.0706 | **0.4029** |
+| recall, controls | 0.1944 | **0.7037** |
+| recall, never-asked shapes | 0.0481 | **0.3391** |
+| fully answered | 2 / 78 | **14 / 80** |
+
+### The finding is direction, and it is stark
+
+The same edge, asked from each end:
+
+| shape | anchored on | recall |
+|---|---|---:|
+| `Technique -[kill_chain_phase]-> Tactic` | Technique | **1.00** |
+| | Tactic | **0.26** |
+| `DetectionStrategy -[detects]-> Technique` | Technique | **1.00** |
+| | DetectionStrategy | **0.50** |
+| `Mitigation -[mitigates]-> Technique` | Mitigation | **0.17** |
+
+The committed banks ask `Mitigation -mitigates-> Technique` **from the
+Technique** and score 1.0 on it. Nothing has ever asked it from the mitigation.
+This is the same axis the blind holdout collapsed on
+(EXP-2026-08-005), measured now on a shape-by-shape basis rather than as an
+aggregate — and it is the strongest argument the expansion has for existing.
+
+### The newly loaded shapes are reachable
+
+`AttackPattern -[REQUIRES_RESOURCE]-> Resource` retrieves at 0.50, and the
+OWASP and WASC taxonomy mappings at 0.50 each. Before A-3 all three were
+**structurally zero**: the rows were not in the store. The ingest change is
+doing what it was meant to.
+
+### Three harness defects the controls caught, each of which would have been read as a system failure
+
+1. **Census vocabulary in the bank.** The store names edges differently; the
+   probe asked for `kill_chain_phase` where the graph holds `HAS_TECHNIQUE`.
+   `spec_bank` now translates through the reconciliation's map rather than
+   duplicating it.
+2. **A single bridge hop routed as federated.** "Which techniques does CAPEC-66
+   map to" is answered entirely inside CAPEC — CAPEC is what declares the
+   mapping. Routing it as a two-store plan sent it to the store that has never
+   heard of CAPEC-66. Recall on that shape: 0.00 → **1.00**.
+3. **`MAPS_TO` targets are `TaxonomyEntry` nodes, not `Technique` nodes.** The
+   census says CAPEC-66 maps to a Technique, because that is what CAPEC
+   declares; the store materializes the target as a taxonomy entry. A global
+   label map cannot express an edge-specific difference, so the override is
+   keyed on the edge.
+
+### What is still open
+
+`Matrix -[tactic_refs]-> Tactic` from the Tactic end, and
+`View -[HAS_MEMBER]-> Category` from either end, retrieve nothing. Those are
+three of the 34 shapes and they are genuinely unreached, not mis-routed as far
+as this probe can tell. Recorded rather than chased.
+
+The probe carries no D0 items — the selection is shape-first and D0 specs have
+no shape to select on. Abstention behaviour on the new shapes is therefore
+unmeasured and must be covered in the full bank.

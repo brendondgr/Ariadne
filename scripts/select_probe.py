@@ -59,10 +59,24 @@ def main() -> None:
         for spec in rng.sample(pool, min(args.per_shape, len(pool))):
             chosen[spec.id] = spec
 
+    # Controls must match the FORM the committed banks use, not just the shape.
+    # The first probe drew controls with "all shapes already asked" and got 5
+    # D5, 4 D4, 3 D6 and not one single-hop question — so when everything scored
+    # near zero there was nothing to tell a harness fault from a capability
+    # finding. Single hop, one already-asked shape, no filters.
     control_pool = sorted(
-        (s for s in specs if s.shapes and all(sh in asked for sh in s.shapes)),
+        (
+            s
+            for s in specs
+            if s.tier in {"D2", "D3"} and not s.filters and s.shapes
+            and all(sh in asked for sh in s.shapes)
+        ),
         key=lambda s: s.id,
     )
+    if len(control_pool) < args.controls:
+        raise SystemExit(
+            f"only {len(control_pool)} single-hop controls available, need {args.controls}"
+        )
     controls = rng.sample(control_pool, min(args.controls, len(control_pool)))
     for spec in controls:
         chosen.setdefault(spec.id, spec)

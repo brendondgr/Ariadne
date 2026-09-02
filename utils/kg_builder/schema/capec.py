@@ -14,6 +14,14 @@ CAPEC_NODE_LABELS: frozenset[str] = frozenset(
         "Skill",
         "Consequence",
         "Mitigation",
+        # Added 2026-09-01. CAPEC declares all five and the load dropped them,
+        # so 1,545 facts the sources publish were unreachable by any question.
+        # See EXP-2026-09-001 amendment A-2.
+        "Prerequisite",
+        "Indicator",
+        "Example",
+        "Resource",
+        "AlternateTerm",
     }
 )
 
@@ -40,6 +48,11 @@ CAPEC_DERIVED_RELATIONSHIP_TYPES: frozenset[str] = frozenset(
         "HAS_CONSEQUENCE",
         "HAS_MITIGATION",
         "HAS_REFERENCE",
+        "HAS_PREREQUISITE",
+        "HAS_INDICATOR",
+        "HAS_EXAMPLE",
+        "REQUIRES_RESOURCE",
+        "HAS_ALTERNATE_TERM",
     }
 )
 
@@ -56,6 +69,11 @@ CAPEC_REQUIRED_NODE_PROPERTIES: dict[str, tuple[str, ...]] = {
     "Skill": ("id",),
     "Consequence": ("id",),
     "Mitigation": ("id",),
+    "Prerequisite": ("id",),
+    "Indicator": ("id",),
+    "Example": ("id",),
+    "Resource": ("id",),
+    "AlternateTerm": ("id",),
 }
 
 CAPEC_ALLOWED_EDGE_PATTERNS: dict[str, frozenset[tuple[str, str]]] = {

@@ -109,6 +109,7 @@ def score(args: argparse.Namespace) -> None:
                 "found": coverage.get("found"),
                 "recall": coverage.get("coverage"),
                 "missing": coverage.get("missing") or [],
+                "anchor_label": entry["spec"].get("anchor_label", "?"),
                 "records": volume.get("records"),
                 "related": volume.get("related"),
             }
@@ -125,6 +126,15 @@ def score(args: argparse.Namespace) -> None:
         for shape in row["shapes"]:
             per_shape[shape].append(row["recall"])
 
+    # Direction is the axis the blind holdout collapsed on, and the committed
+    # banks only ever ask one side of each shape. Reporting a single recall
+    # number would average the side the system handles with the side it does
+    # not, and hide the only thing this probe can actually see.
+    per_anchor: dict[tuple[str, str], list[float]] = defaultdict(list)
+    for row in scored:
+        if len(row["shapes"]) == 1:
+            per_anchor[(row["shapes"][0], row["anchor_label"])].append(row["recall"])
+
     new_shape_rows = [r for r in scored if not r["control"]]
     control_rows = [r for r in scored if r["control"]]
     report = {
@@ -140,6 +150,10 @@ def score(args: argparse.Namespace) -> None:
         "by_tier": {
             tier: mean([r["recall"] for r in scored if r["d_tier"] == tier])
             for tier in sorted({r["d_tier"] for r in scored})
+        },
+        "by_shape_and_anchor": {
+            f"{shape}  |  anchored on {anchor}": {"n": len(v), "recall": mean(v)}
+            for (shape, anchor), v in sorted(per_anchor.items())
         },
         "by_shape": {
             shape: {
@@ -161,6 +175,9 @@ def score(args: argparse.Namespace) -> None:
     print(f"  fully answered {report['fully_answered']}/{report['scored']}; "
           f"nothing retrieved {report['nothing_retrieved']}")
     print(f"  by tier: {report['by_tier']}")
+    print("\n  single-hop recall by shape AND anchor (direction matters):")
+    for key, value in sorted(report["by_shape_and_anchor"].items(), key=lambda kv: kv[1]["recall"]):
+        print(f"    {value['recall']:.2f}  (n={value['n']})  {key}")
     print("\n  shapes the builder cannot reach (recall 0):")
     dead = [s for s, v in report["by_shape"].items() if v["recall"] == 0.0]
     for shape in dead:
