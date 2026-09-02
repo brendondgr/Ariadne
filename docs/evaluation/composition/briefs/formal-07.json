@@ -1,0 +1,63 @@
+{
+ "instructions": "You are writing evaluation questions for a cybersecurity knowledge-base benchmark.\n\nFor each item below, write ONE natural-language question. Return JSON only:\n{\"questions\": [{\"id\": \"<item id>\", \"question\": \"<the question>\"}, ...]}\n\nEach item gives you: a subject (its name, its type, its identifier), what the\nquestion should ask for, and sometimes a restriction to apply.\n\nRules, all of which are checked automatically and will cause a rejection:\n- The question MUST contain the subject's identifier exactly as given.\n- The question MUST NOT contain any other identifier.\n- Do NOT answer the question. Do NOT explain yourself.\n- Do NOT use underscores, camelCase, or database field names. Write it the way a\n  person would say it.\n- Exactly one question mark.\n- Some items have no answer in the data. You cannot tell which, and you should\n  not try: write every item as a straightforward question regardless.\n",
+ "style": "Write it as a precise written question, the way it would appear in a report or a checklist.",
+ "items": [
+  {
+   "id": "qabda06079155",
+   "subject_name": "InvisibleFerret",
+   "subject_type": "piece of malware or tooling",
+   "identifier": "S1245",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to Windows"
+  },
+  {
+   "id": "q3a36e73fc276",
+   "subject_name": "Default Accounts",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1078.001",
+   "ask_for": "the CAPEC attack patterns that correspond to it, and then the CAPEC attack patterns that can follow each of those",
+   "answer_shape": "a list of CAPEC attack patterns"
+  },
+  {
+   "id": "q36c780d1becf",
+   "subject_name": "Direct Network Flood",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1498.001",
+   "ask_for": "the CAPEC attack patterns that correspond to it, and then the indicators that indicate each of those",
+   "answer_shape": "a list of indicators"
+  },
+  {
+   "id": "q210520231aa6",
+   "subject_name": "Invalid Code Signature",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1036.001",
+   "ask_for": "the CAPEC attack patterns that correspond to it, and then the CAPEC views that contain each of those",
+   "answer_shape": "a list of CAPEC views"
+  },
+  {
+   "id": "q5123f5027f72",
+   "subject_name": "Compromise Software Supply Chain",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1195.002",
+   "ask_for": "the CAPEC attack patterns that correspond to it, and then the mitigations that mitigate each of those",
+   "answer_shape": "a list of mitigations"
+  },
+  {
+   "id": "q3ccf1669e95a",
+   "subject_name": "Application Exhaustion Flood",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1499.003",
+   "ask_for": "the CAPEC attack patterns that correspond to it, and then the WASC taxonomy entries each of those corresponds to",
+   "answer_shape": "a list of WASC taxonomy entries"
+  },
+  {
+   "id": "q67d74755ffa4",
+   "subject_name": "Compromise Software Dependencies and Development Tools",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1195.001",
+   "ask_for": "the CAPEC attack patterns that correspond to it, and then the CAPEC attack patterns that are peers of each of those",
+   "answer_shape": "a list of CAPEC attack patterns"
+  }
+ ]
+}

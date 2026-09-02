@@ -241,7 +241,23 @@ be re-run against the graph's vocabulary with single-hop controls to answer it.
 **This changes Step 7.** The bank must not contain questions about the five
 absent edge types, or it will grade the system on rows nobody loaded.
 
-### Step 7 — Generate at scale, split before fitting
+### Step 7 — Generate at scale, split before fitting — **DONE 2026-09-01**
+
+**572 questions, 492 specs, all 34 census edge types.** 20 Opus 5 subagents,
+98.6% kept. Split `sha256(spec_id)` parity before anything was run: dev 284,
+holdout 288, agreeing to within 0.033.
+
+Scored grader-free: **pooled 0.4522, reweighted 0.5060**. Five results the
+30-question banks could not have produced — D4 is the floor at 0.2594, width
+predicts retrieval recall monotonically, abstention is 60.7% at n=61 where the
+prior evidence was 4 of 4, phrasing register moves it by 0.04, and the weakest
+shapes are containment. See EXP-2026-09-001 A-5.
+
+One tension recorded rather than smoothed: the aggregate says reverse beats
+forward, and Step 6's paired comparison said the opposite. The paired one is
+the trustworthy design; this aggregate is confounded by shape composition.
+
+### Step 7 (original text) — Generate at scale, split before fitting
 
 400–600 questions, stratified across tier, source, shape and width. Dev/blind
 split drawn by hash **before anyone looks at a score**. Banks frozen and hashed

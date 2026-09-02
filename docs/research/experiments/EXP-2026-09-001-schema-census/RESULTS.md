@@ -504,3 +504,95 @@ as this probe can tell. Recorded rather than chased.
 The probe carries no D0 items — the selection is shape-first and D0 specs have
 no shape to select on. Abstention behaviour on the new shapes is therefore
 unmeasured and must be covered in the full bank.
+
+---
+
+## AMENDMENT A-5 — The expansion bank, built and scored (2026-09-01)
+
+**572 questions, 492 distinct specs, all 34 census edge types.** Authored by 20
+Opus 5 subagents from briefs, 98.6% kept. Split dev/holdout by `sha256(spec_id)`
+parity **before anything was run**, 284/288. Scored with **no grader** — recall
+of snapshot-derived gold from retrieved evidence.
+
+### The headline needs two numbers, not one
+
+| | |
+|---|---:|
+| pooled recall | 0.4522 |
+| **reweighted recall** | **0.5060** |
+| dev / holdout | 0.4350 / 0.4683 |
+
+The pooled figure is an artifact of the draw: the bank deliberately
+over-samples the corners of the graph nothing has ever asked about. The
+reweighted figure weights each shape by the instances the census says it has,
+and is the one comparable to a naturally-drawn set. **Neither is comparable to
+the 0.95–1.00 the committed banks score**, which cover 12 shapes in the
+direction they were written for and are graded by a different instrument.
+
+Dev and holdout agree to within 0.033, which is what a blind split should look
+like and is the first evidence that this draw is not fitted to anything.
+
+### Five results the 30-question banks could not have produced
+
+**1. Difficulty tiers partly work, and D4 is the floor.**
+
+| tier | recall |
+|---|---:|
+| D3 one hop, reverse | 0.6013 |
+| D5 constrained | 0.5499 |
+| D2 one hop, forward | 0.5345 |
+| D1 property read | 0.3958 |
+| D6 cross-source | 0.3893 |
+| D4 two hop | 0.2594 |
+
+Two hops is the hardest tier by a wide margin, which the structural hypothesis
+predicted. D1 scoring below both single-hop tiers is **not** predicted and needs
+explaining before the tiers are reported as a difficulty ordering.
+
+**2. Reverse beats forward — 0.5165 against 0.4302 — and this contradicts
+Step 6.** A-4 found the system answering the forward side of an edge and failing
+the reverse. At n=511 the sign is the other way. The two are not measuring the
+same thing: A-4 compared *the same shape* asked from each end, and this compares
+*different shapes* that happen to be forward or reverse. The paired comparison
+is the trustworthy one and this aggregate is confounded by shape composition.
+**Recorded as a tension, not resolved.** A paired forward/reverse contrast over
+this bank is the experiment that settles it.
+
+**3. Gold width does predict retrieval recall**, monotonically: 0.5223 (width 1),
+0.4292 (2–5), 0.3135 (6–20), 0.2858 (21+).
+
+This does **not** overturn Q29, which found width does not predict *judged
+score*. Different metric on a different population: Q29 measured what a grader
+thinks of an answer over a corpus with six questions above width 20, and this
+measures how much of a gold set was retrieved over a bank with 39 questions in
+the top band. Both can be true — a system that retrieves half a wide answer may
+still be judged well on it. Whether they are is now testable.
+
+**4. Abstention is weak, and this is the first time it has been measured at
+n > 4.** On 61 questions whose correct answer is "nothing", the system returned
+nothing **37 times — 60.7%**. It retrieved something for the other 24. Previous
+evidence was 4 of 4.
+
+**5. Phrasing matters slightly, and the indirect register is easiest.** 0.4808
+indirect, 0.4388 formal, 0.4378 analyst, over 40 specs rendered in all three.
+The spread is small; the direction is the opposite of the intuition that
+conversational phrasing is harder.
+
+### The weakest shapes are containment
+
+`Category -[HAS_MEMBER]-> AttackPattern` at 0.04 over 32 questions,
+`View -[HAS_MEMBER]-> Category` at 0.03, `Matrix -[tactic_refs]-> Tactic` at
+0.12. All three are loaded — the reconciliation confirms the rows exist — so
+this is a retrieval gap, not a data gap. They are also all shapes no bank had
+ever asked, which is what the expansion was for.
+
+Five `D1` property reads score 0.00 (`Group.description`, `Tactic.description`,
+`Group.aliases`, `Group.x_mitre_contributors`, `View.Type`). Property reads on
+non-Technique entities look systematically unsupported.
+
+### What this does not license
+
+The bank is one arm (`deterministic`) on one metric (retrieval recall). It says
+nothing yet about the judged comparisons, about the LLM-planned arms, or about
+answer quality. Those are the next runs, and the holdout half stays sealed until
+the dev half has been written up.

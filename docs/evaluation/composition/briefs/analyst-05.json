@@ -3,84 +3,292 @@
  "style": "Write it the way a security analyst would type it into a search box: direct, unceremonious, no preamble.",
  "items": [
   {
-   "id": "q3a0bb0880053",
-   "subject_name": "Use of Captured Tickets (Pass The Ticket)",
-   "subject_type": "CAPEC attack pattern",
-   "identifier": "CAPEC-645",
-   "ask_for": "the CAPEC attack patterns it is a more specific case of, and then the indicators that indicate each of those",
-   "answer_shape": "a list of indicators"
+   "id": "q6e8efdfed958",
+   "subject_name": "Lateral Movement",
+   "subject_type": "ATT&CK tactic",
+   "identifier": "TA0008",
+   "ask_for": "the ATT&CK techniques that belong to it, and then the malware and tools that use each of those",
+   "answer_shape": "a list of malware and tools"
   },
   {
-   "id": "q4cda899bb321",
-   "subject_name": "TCP Fragmentation",
-   "subject_type": "CAPEC attack pattern",
-   "identifier": "CAPEC-494",
-   "ask_for": "the CAPEC attack patterns it is a more specific case of, and then the prerequisites each of those requires as a precondition",
-   "answer_shape": "a list of prerequisites"
+   "id": "q0d61b2cddbde",
+   "subject_name": "Process Modification",
+   "subject_type": "data component",
+   "identifier": "DC0020",
+   "ask_for": "the detection analytics that draw on it, and then the detection strategies that each of those implements",
+   "answer_shape": "a list of detection strategies"
   },
   {
-   "id": "q6c99b2d7bbbb",
+   "id": "q70538f84c806",
+   "subject_name": "Hide Artifacts",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1564",
+   "ask_for": "the ATT&CK techniques that are sub-techniques of it, and then the ATT&CK mitigations that mitigate each of those",
+   "answer_shape": "a list of ATT&CK mitigations"
+  },
+  {
+   "id": "q69020bdfdd6f",
+   "subject_name": "Avenger",
+   "subject_type": "piece of malware or tooling",
+   "identifier": "S0473",
+   "ask_for": "the ATT&CK techniques it uses, and then the ATT&CK tactics each of those belongs to",
+   "answer_shape": "a list of ATT&CK tactics"
+  },
+  {
+   "id": "q6e9d336d224e",
+   "subject_name": "Salt Typhoon",
+   "subject_type": "threat group",
+   "identifier": "G1045",
+   "ask_for": "the ATT&CK techniques it uses, and then the ATT&CK mitigations that mitigate each of those",
+   "answer_shape": "a list of ATT&CK mitigations"
+  },
+  {
+   "id": "q3ff1c2953a33",
+   "subject_name": "J-magic Campaign",
+   "subject_type": "campaign",
+   "identifier": "C0050",
+   "ask_for": "the ATT&CK techniques it uses, and then the ATT&CK techniques each of those is a sub-technique of",
+   "answer_shape": "a list of ATT&CK techniques"
+  },
+  {
+   "id": "q5f8239244c2e",
+   "subject_name": "Outer Space",
+   "subject_type": "campaign",
+   "identifier": "C0042",
+   "ask_for": "the malware and tools it uses, and then the ATT&CK techniques each of those uses",
+   "answer_shape": "a list of ATT&CK techniques"
+  },
+  {
+   "id": "q0d0d4fc7778b",
+   "subject_name": "Process Discovery",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1057",
+   "ask_for": "the malware and tools that use it, and then the campaigns that use each of those",
+   "answer_shape": "a list of campaigns"
+  },
+  {
+   "id": "qbbb877cc1aaf",
+   "subject_name": "Detection Strategy for Email Bombing",
+   "subject_type": "detection strategy",
+   "identifier": "DET0355",
+   "ask_for": "the detection analytics that implement it, and then the data components each of those draws on",
+   "answer_shape": "a list of data components"
+  },
+  {
+   "id": "q12ec49284c8a",
+   "subject_name": "Network Boundary Bridging",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-700",
+   "ask_for": "the CAPEC attack patterns that can precede it",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones where the likelihood of attack is High"
+  },
+  {
+   "id": "q05b60072789c",
+   "subject_name": "Hijacking a privileged process",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-234",
+   "ask_for": "the CAPEC attack patterns that can precede it",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose typical severity is Very High"
+  },
+  {
+   "id": "q81be3f49d651",
+   "subject_name": "Modification of Registry Run Keys",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-270",
+   "ask_for": "the CAPEC attack patterns that can follow it",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose typical severity is High"
+  },
+  {
+   "id": "q09f386abac0e",
+   "subject_name": "Try Common or Default Usernames and Passwords",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-70",
+   "ask_for": "the CAPEC attack patterns that can follow it",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose typical severity is High"
+  },
+  {
+   "id": "qaec0e459b7d3",
+   "subject_name": "Using Meta-characters in E-mail Headers to Inject Malicious Payloads",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-41",
+   "ask_for": "the CAPEC attack patterns it is a more specific case of",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose status is Stable"
+  },
+  {
+   "id": "qf842179bc598",
+   "subject_name": "Probe Audio and Video Peripherals",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-634",
+   "ask_for": "the CAPEC attack patterns it is a more specific case of",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose typical severity is Medium"
+  },
+  {
+   "id": "q72c7e7f1a5d4",
    "subject_name": "Industrial Control System (ICS) Patterns",
    "subject_type": "CAPEC view",
    "identifier": "CAPEC-703",
-   "ask_for": "the CAPEC attack patterns it contains, and then the CAPEC attack patterns that can follow each of those",
-   "answer_shape": "a list of CAPEC attack patterns"
+   "ask_for": "the CAPEC attack patterns it contains",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose abstraction level is Detailed"
   },
   {
-   "id": "q3bfe8af0bace",
-   "subject_name": "Subvert Access Control",
-   "subject_type": "CAPEC category",
-   "identifier": "CAPEC-225",
-   "ask_for": "the CAPEC attack patterns it contains, and then the alternate names each of those also goes by",
-   "answer_shape": "a list of alternate names"
-  },
-  {
-   "id": "qd5b8a8c65aa9",
-   "subject_name": "Communications",
-   "subject_type": "CAPEC category",
-   "identifier": "CAPEC-512",
-   "ask_for": "the CAPEC attack patterns it contains, and then the alternate names each of those also goes by",
-   "answer_shape": "a list of alternate names"
-  },
-  {
-   "id": "q8116a31b5419",
-   "subject_name": "Manipulate Timing and State",
-   "subject_type": "CAPEC category",
-   "identifier": "CAPEC-172",
-   "ask_for": "the CAPEC attack patterns it contains, and then the execution steps each of those is carried out through",
-   "answer_shape": "a list of execution steps"
-  },
-  {
-   "id": "q1746842bfea1",
+   "id": "qe99d496fb822",
    "subject_name": "Software",
    "subject_type": "CAPEC category",
    "identifier": "CAPEC-513",
-   "ask_for": "the CAPEC attack patterns it contains, and then the indicators that indicate each of those",
-   "answer_shape": "a list of indicators"
+   "ask_for": "the CAPEC attack patterns it contains",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose status is Draft"
   },
   {
-   "id": "q98e1b4796af4",
-   "subject_name": "Manipulation During Distribution",
-   "subject_type": "CAPEC attack pattern",
-   "identifier": "CAPEC-439",
-   "ask_for": "the CAPEC categories that contain it, and then the CAPEC views that contain each of those",
-   "answer_shape": "a list of CAPEC views"
-  },
-  {
-   "id": "q924e280f97e6",
+   "id": "qf593607df8ec",
    "subject_name": "Hardware",
    "subject_type": "CAPEC category",
    "identifier": "CAPEC-515",
-   "ask_for": "the CAPEC attack patterns it contains, and then the WASC taxonomy entries each of those corresponds to",
-   "answer_shape": "a list of WASC taxonomy entries"
+   "ask_for": "the CAPEC attack patterns it contains",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose status is Draft"
   },
   {
-   "id": "qabfe05bc4041",
-   "subject_name": "Software",
+   "id": "qf5b2d00eb947",
+   "subject_name": "Collect and Analyze Information",
    "subject_type": "CAPEC category",
-   "identifier": "CAPEC-513",
-   "ask_for": "the CAPEC attack patterns it contains, and then the resources each of those requires",
-   "answer_shape": "a list of resources"
+   "identifier": "CAPEC-118",
+   "ask_for": "the CAPEC attack patterns it contains",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose typical severity is Low"
+  },
+  {
+   "id": "q695fe5fd3327",
+   "subject_name": "Communications",
+   "subject_type": "CAPEC category",
+   "identifier": "CAPEC-512",
+   "ask_for": "the CAPEC attack patterns it contains",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose typical severity is Very High"
+  },
+  {
+   "id": "q509b893d64b1",
+   "subject_name": "Exploitation of Thunderbolt Protection Flaws",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-665",
+   "ask_for": "the CAPEC attack patterns that are peers of it",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones whose abstraction level is Meta"
+  },
+  {
+   "id": "q3288531fe32b",
+   "subject_name": "Using UTF-8 Encoding to Bypass Validation Logic",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-80",
+   "ask_for": "the CAPEC attack patterns that are peers of it",
+   "answer_shape": "a list of CAPEC attack patterns",
+   "restriction": "only the ones where the likelihood of attack is Medium"
+  },
+  {
+   "id": "qcf5abb5dc3d1",
+   "subject_name": "Application Developer Guidance",
+   "subject_type": "ATT&CK mitigation",
+   "identifier": "M1013",
+   "ask_for": "the ATT&CK techniques it mitigates",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones whose impact is on Availability"
+  },
+  {
+   "id": "q49ae23c97817",
+   "subject_name": "Restrict File and Directory Permissions",
+   "subject_type": "ATT&CK mitigation",
+   "identifier": "M1022",
+   "ask_for": "the ATT&CK techniques it mitigates",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to Windows"
+  },
+  {
+   "id": "q574589106880",
+   "subject_name": "Disable or Remove Feature or Program",
+   "subject_type": "ATT&CK mitigation",
+   "identifier": "M1042",
+   "ask_for": "the ATT&CK techniques it mitigates",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to SaaS"
+  },
+  {
+   "id": "q32e39dc6e9ce",
+   "subject_name": "Blue Mockingbird",
+   "subject_type": "threat group",
+   "identifier": "G0108",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones whose impact is on Availability"
+  },
+  {
+   "id": "qc613dace905f",
+   "subject_name": "C0011",
+   "subject_type": "campaign",
+   "identifier": "C0011",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to PRE"
+  },
+  {
+   "id": "q1c1a12638de0",
+   "subject_name": "C0026",
+   "subject_type": "campaign",
+   "identifier": "C0026",
+   "ask_for": "the malware and tools it uses",
+   "answer_shape": "a list of malware and tools",
+   "restriction": "only the ones that apply to Windows"
+  },
+  {
+   "id": "q45fb3eb83ad2",
+   "subject_name": "Cutting Edge",
+   "subject_type": "campaign",
+   "identifier": "C0029",
+   "ask_for": "the malware and tools it uses",
+   "answer_shape": "a list of malware and tools",
+   "restriction": "only the ones that apply to macOS"
+  },
+  {
+   "id": "qe3b1964a4b4a",
+   "subject_name": "Indian Critical Infrastructure Intrusions",
+   "subject_type": "campaign",
+   "identifier": "C0043",
+   "ask_for": "the malware and tools it uses",
+   "answer_shape": "a list of malware and tools",
+   "restriction": "only the ones that apply to Linux"
+  },
+  {
+   "id": "q000e891a7b37",
+   "subject_name": "ArcaneDoor",
+   "subject_type": "campaign",
+   "identifier": "C0046",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to Windows"
+  },
+  {
+   "id": "q03f30fda5aff",
+   "subject_name": "SPACEHOP Activity",
+   "subject_type": "campaign",
+   "identifier": "C0052",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to Network Devices"
+  },
+  {
+   "id": "q0bb231466c3a",
+   "subject_name": "Operation AkaiRy\u016b",
+   "subject_type": "campaign",
+   "identifier": "C0060",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to Identity Provider"
   }
  ]
 }

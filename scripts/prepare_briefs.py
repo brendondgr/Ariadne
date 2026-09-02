@@ -81,36 +81,64 @@ def brief_payload(spec: Spec, register: str) -> dict[str, Any]:
     return item
 
 
+def gold_token(answer: str) -> str:
+    """How the leakage guard looks for an answer in the page text.
+
+    Short answers are padded, because `Windows` as a substring of
+    `Windows Command Shell` is not the answer showing through. Identical rule on
+    both sides so the partition cannot pass something the guard then rejects.
+    """
+    return answer if len(answer) > 8 else f" {answer} "
+
+
+def brief_text(spec: Spec) -> str:
+    """Everything about a spec that reaches the page, as text.
+
+    Rendered rather than approximated. A value-set heuristic missed a case the
+    guard caught — a D1 answer of `Windows` beside a subject named
+    `Windows Command Shell` — because the leak was in prose the heuristic never
+    looked at.
+    """
+    return " " + json.dumps(brief_payload(spec, next(iter(rd.REGISTERS)))) + " "
+
+
 def partition(specs: list[Spec], batches: int) -> list[list[Spec]]:
-    """Split specs into files where no item's anchor is another item's answer.
+    """Split specs into files where nothing on the page gives away an answer.
 
-    A batch is one prompt, so every brief in it is visible at once. Put
-    "what mitigates M1038" (whose gold includes T1204.004) in the same file as
-    an item anchored on T1204.004 and the Author can read one answer off
-    another — not likely, but the whole point of the role is that it *cannot*,
-    not that it probably won't.
+    A batch is one prompt, so every brief in it is visible at once. Three ways
+    that leaks, all caught by the guard rather than by inspection:
 
-    Greedy first-fit, deterministic in the order specs arrive. Batch count is a
-    lower bound: conflicts create more files, never fewer.
+    * one item's anchor is another item's answer;
+    * one item's *restriction* is another item's answer — "only the ones that
+      apply to Windows" beside "which platforms does S1191 run on";
+    * one item's *subject name* contains another item's answer.
+
+    Greedy first-fit, deterministic in the order specs arrive. The batch count
+    is a lower bound: conflicts create more files, never fewer.
     """
     target = max(1, -(-len(specs) // max(1, batches)))
+    texts = {spec.id: brief_text(spec) for spec in specs}
     groups: list[list[Spec]] = []
     golds: list[set[str]] = []
-    anchors: list[set[str]] = []
+    blobs: list[str] = []
     for spec in specs:
+        gold = {gold_token(a) for a in spec.gold}
+        mine = texts[spec.id]
         for index, group in enumerate(groups):
             if len(group) >= target:
                 continue
-            if spec.anchor_key in golds[index] or set(spec.gold) & anchors[index]:
+            if any(token in blobs[index] for token in gold):
+                continue
+            if any(token in mine for token in golds[index]):
                 continue
             group.append(spec)
-            golds[index] |= set(spec.gold)
-            anchors[index].add(spec.anchor_key)
+            golds[index] |= gold
+            blobs[index] += mine
             break
         else:
             groups.append([spec])
-            golds.append(set(spec.gold))
-            anchors.append({spec.anchor_key})
+            golds.append(set(gold))
+            blobs.append(mine)
     return groups
 
 
@@ -156,10 +184,17 @@ def main() -> None:
     args = parser.parse_args()
 
     specs = load_specs(args.specs)
+    per_spec_registers: dict[str, list[str]] | None = None
     if args.select:
-        wanted_ids = set(json.loads(args.select.read_text())["spec_ids"])
+        selection = json.loads(args.select.read_text())
+        wanted_ids = set(selection["spec_ids"])
         specs = [s for s in specs if s.id in wanted_ids]
         args.limit = None
+        # A selection may assign registers per spec — most specs get one, a
+        # paraphrase subset gets all three. Honour that rather than rendering
+        # every spec in every register, which would triple the bank and bury
+        # the paraphrase comparison it exists to enable.
+        per_spec_registers = selection.get("registers")
     if args.tiers:
         wanted = {t.strip() for t in args.tiers.split(",")}
         specs = [s for s in specs if s.tier in wanted]
@@ -171,7 +206,14 @@ def main() -> None:
     args.out.mkdir(parents=True, exist_ok=True)
     written: list[str] = []
     for register in registers:
-        for number, group in enumerate(partition(specs, args.batches), start=1):
+        eligible = [
+            s
+            for s in specs
+            if per_spec_registers is None or register in per_spec_registers.get(s.id, [])
+        ]
+        if not eligible:
+            continue
+        for number, group in enumerate(partition(eligible, args.batches), start=1):
             payload = {
                 "instructions": INSTRUCTIONS,
                 "style": rd.REGISTERS[register],
@@ -189,6 +231,8 @@ def main() -> None:
                 item_id(spec, register): {"spec_id": spec.id, "register": register}
                 for spec in specs
                 for register in registers
+                if per_spec_registers is None
+                or register in per_spec_registers.get(spec.id, [])
             },
             indent=1,
         )

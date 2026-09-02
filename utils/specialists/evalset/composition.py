@@ -72,6 +72,13 @@ _REF_PROPERTIES = frozenset({"kill_chain_phases"})
 def _is_reference_property(name: str) -> bool:
     return name in _REF_PROPERTIES or name.endswith(_REF_PROPERTY_SUFFIXES)
 
+#: Labels whose `key` is not something a question can naturally say. The ATT&CK
+#: Matrix is a singleton whose external id is the literal string
+#: `enterprise-attack`; a person writes "the Enterprise ATT&CK matrix", and the
+#: anchor check then rejects the question for not naming its anchor. Eight of
+#: 580 authored questions were lost that way before this existed.
+UNANCHORABLE_LABELS = frozenset({"Matrix"})
+
 #: Sub-element labels: instances of a parent, with no independent identity.
 DERIVED_LABELS = frozenset({
     "ExecutionStep", "Consequence", "Skill", "CapecMitigation", "Prerequisite",
@@ -360,7 +367,10 @@ def anchors(graph: RawGraph, label: str) -> list[rg.Node]:
         (
             n
             for n in graph.by_label(label)
-            if n.key and n.label not in DERIVED_LABELS and not n.placeholder
+            if n.key
+            and n.label not in DERIVED_LABELS
+            and n.label not in UNANCHORABLE_LABELS
+            and not n.placeholder
         ),
         key=lambda n: n.id,
     )
@@ -414,7 +424,12 @@ def property_specs(
     kinds = property_kinds(census)
     by_label: dict[str, list[rg.Node]] = defaultdict(list)
     for node in graph.nodes.values():
-        if graph.is_entity(node) and node.key and node.label not in DERIVED_LABELS:
+        if (
+            graph.is_entity(node)
+            and node.key
+            and node.label not in DERIVED_LABELS
+            and node.label not in UNANCHORABLE_LABELS
+        ):
             by_label[node.label].append(node)
 
     for label in sorted(by_label):
