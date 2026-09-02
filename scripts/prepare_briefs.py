@@ -28,6 +28,12 @@ from utils.specialists.evalset import render as rd
 from utils.specialists.evalset.composition import Spec
 from scripts.render_questions import DEFAULT_SPECS, _stratified, load_specs
 
+#: Exactly what an item may contain. Anything else is a leak by construction.
+ALLOWED_ITEM_KEYS = frozenset({
+    "id", "subject_name", "subject_type", "identifier", "ask_for",
+    "answer_shape", "restriction",
+})
+
 INSTRUCTIONS = """\
 You are writing evaluation questions for a cybersecurity knowledge-base benchmark.
 
@@ -125,8 +131,14 @@ def _assert_no_leakage(payload: dict[str, Any], specs: list[Spec]) -> None:
     # line — it fires on `kill_chain_phase` and `MAPS_TO`, not on `detects`.
     leaks = rd.schema_leakage(blob)
     assert not leaks, f"schema vocabulary reached the brief file: {leaks}"
-    for forbidden in ("gold", "tier", "shapes", "steps", '"D0"', '"D6"'):
-        assert forbidden not in blob, f"{forbidden!r} reached the brief file"
+
+    # Checked as an exact key set rather than a substring scan. "steps" is a
+    # spec field *and* an ordinary word — "the execution steps it is carried out
+    # through" is a legitimate brief — so scanning for the word rejects good
+    # briefs while an allow-list rejects exactly the wrong ones.
+    for item in payload["items"]:
+        extra = set(item) - ALLOWED_ITEM_KEYS
+        assert not extra, f"unexpected keys reached the brief file: {sorted(extra)}"
 
 
 def main() -> None:
@@ -136,12 +148,18 @@ def main() -> None:
     parser.add_argument("--limit", type=int, default=42)
     parser.add_argument("--seed", type=int, default=20260901)
     parser.add_argument("--tiers", default=None)
+    parser.add_argument("--select", type=Path, default=None,
+                        help="a selection.json listing spec_ids; overrides --limit/--tiers")
     parser.add_argument("--registers", default=",".join(rd.REGISTERS))
     parser.add_argument("--batches", type=int, default=3,
                         help="split each register's briefs into this many files")
     args = parser.parse_args()
 
     specs = load_specs(args.specs)
+    if args.select:
+        wanted_ids = set(json.loads(args.select.read_text())["spec_ids"])
+        specs = [s for s in specs if s.id in wanted_ids]
+        args.limit = None
     if args.tiers:
         wanted = {t.strip() for t in args.tiers.split(",")}
         specs = [s for s in specs if s.tier in wanted]

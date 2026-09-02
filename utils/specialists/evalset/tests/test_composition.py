@@ -50,6 +50,29 @@ def test_only_D0_has_empty_gold(specs: list[comp.Spec]) -> None:
     assert all(not s.gold for s in specs if s.tier == "D0")
 
 
+def test_spec_ids_are_unique(specs: list[comp.Spec]) -> None:
+    """Two questions with different gold must never share an id.
+
+    A readable id alone collides: `D2-uses-C0014` names both
+    `Campaign -uses-> Software` and `Campaign -uses-> Technique`, and a D4 id
+    built from two predicate names says nothing about the direction each was
+    walked. 141 of 2,368 specs shared an id before the structural digest, and
+    downstream that pairs a question with another question's gold.
+    """
+    ids = [s.id for s in specs]
+    assert len(ids) == len(set(ids))
+
+
+def test_ids_distinguish_direction_and_object_label(graph: rg.RawGraph, census: dict) -> None:
+    """The two collision families specifically, over the whole pool."""
+    specs = comp.enumerate_specs(graph, census, per_shape_limit=None, tiers=["D2", "D4"])
+    by_id: dict[str, list[comp.Spec]] = {}
+    for spec in specs:
+        by_id.setdefault(spec.id, []).append(spec)
+    clashes = {k: v for k, v in by_id.items() if len(v) > 1}
+    assert not clashes, sorted(clashes)[:5]
+
+
 def test_enumeration_is_deterministic(graph: rg.RawGraph, census: dict) -> None:
     """Same graph, same seed, same specs — or no result is reproducible."""
     first = comp.enumerate_specs(graph, census, per_shape_limit=2, seed=7)

@@ -211,15 +211,35 @@ ambiguous referents or empty results. Hand-review a stratified sample of ~40.
 **Gate:** the reject rate is reported, not hidden. A 60% reject rate is fine; an
 unreported one is not.
 
-### Step 6 — Capability probe on the never-asked shapes
+### Step 6 — Capability probe — **RUN 2026-09-01; answered a different question**
 
-~60 questions across the 21 never-asked edge types, deterministic arm, no judge.
-Purely: can the builder express these at all?
+78 questions covering all 22 never-asked edge types, authored by Opus 5, run
+through the deterministic arm, scored with no judge. **It failed on its own
+controls** (recall 0.194 on shapes the committed banks answer at 1.0), so it
+measured the harness rather than the system — which is exactly what controls are
+for, and the reason they were included.
 
-Per decision 5 this **reports rather than gates**. If the builder cannot express
-half the new shapes, that is a finding — "the system covers a third of its own
-graph" is a real result — and it goes in the record before the large bank is
-generated, so a later low score has a cause already on file.
+Chasing that produced the finding Step 6 should have been looking for:
+**`scripts/reconcile_graph.py` compares what the sources support against what
+the ingest actually loads, and nothing had ever done that.**
+
+- **Five edge types the sources declare are absent from the load — 1,545
+  instances**: CAPEC prerequisites (746), examples (387), resources (289),
+  indicators (96), alternate terms (27). All five were in the never-asked set,
+  and now the reason is known: no arm can answer them because the rows are not
+  there.
+- **Eleven census edge types collapse into three graph relationships.** `USES`
+  carries five, `MAPS_TO` three, `MEMBER_OF` three.
+- **The census's own exclusion policy was not applied to categories** — 78
+  reported, 21 loaded, 57 `Deprecated`. Fixed.
+- **ExecutionStep 815 vs 794 is unexplained** and is reported as unexplained.
+
+See EXP-2026-09-001 amendment A-2. Step 6's original question — can the builder
+express the 29 edge types that *are* loaded — is still open, and the probe has to
+be re-run against the graph's vocabulary with single-hop controls to answer it.
+
+**This changes Step 7.** The bank must not contain questions about the five
+absent edge types, or it will grade the system on rows nobody loaded.
 
 ### Step 7 — Generate at scale, split before fitting
 

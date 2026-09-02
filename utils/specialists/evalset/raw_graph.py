@@ -454,6 +454,15 @@ def _parse_capec(root: ET.Element) -> tuple[dict[str, Node], list[Edge], dict[st
         if holder is None:
             continue
         for element in holder.findall(f"c:{singular}", CAPEC_NS):
+            # The exclusion policy applies here too. It was written for patterns
+            # and quietly not applied to categories, so the census counted 78
+            # where the load holds 21 — 57 of them Deprecated. The graph/census
+            # reconciliation is what surfaced it.
+            if element.get("Status") in CAPEC_RETIRED_STATUSES:
+                excluded[f"{singular.lower()}s_retired"] = (
+                    excluded.get(f"{singular.lower()}s_retired", 0) + 1
+                )
+                continue
             holder_id = f"CAPEC-{element.get('ID')}"
             if holder_id in nodes:
                 raise ValueError(

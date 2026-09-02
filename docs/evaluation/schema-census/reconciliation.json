@@ -1,0 +1,628 @@
+{
+ "census_edge_types": 34,
+ "edge_types_loaded": 29,
+ "edge_types_absent": 5,
+ "edge_instances_absent": 1545,
+ "census_node_types": 25,
+ "node_types_absent": 5,
+ "collapsed_relationships": {
+  "USES": [
+   "Software -[uses]-> Technique",
+   "Group -[uses]-> Technique",
+   "Campaign -[uses]-> Technique",
+   "Group -[uses]-> Software",
+   "Campaign -[uses]-> Software"
+  ],
+  "MAPS_TO": [
+   "AttackPattern -[MAPS_TO[ATTACK]]-> Technique",
+   "AttackPattern -[MAPS_TO[OWASP Attacks]]-> TaxonomyEntry:OWASP Attacks",
+   "AttackPattern -[MAPS_TO[WASC]]-> TaxonomyEntry:WASC"
+  ],
+  "MEMBER_OF": [
+   "Category -[HAS_MEMBER]-> AttackPattern",
+   "View -[HAS_MEMBER]-> AttackPattern",
+   "View -[HAS_MEMBER]-> Category"
+  ]
+ },
+ "absent_edge_types": [
+  {
+   "triple": "AttackPattern -[HAS_PREREQUISITE]-> Prerequisite",
+   "instances": 746,
+   "never_asked": true
+  },
+  {
+   "triple": "AttackPattern -[HAS_EXAMPLE]-> Example",
+   "instances": 387,
+   "never_asked": true
+  },
+  {
+   "triple": "AttackPattern -[REQUIRES_RESOURCE]-> Resource",
+   "instances": 289,
+   "never_asked": true
+  },
+  {
+   "triple": "AttackPattern -[HAS_INDICATOR]-> Indicator",
+   "instances": 96,
+   "never_asked": true
+  },
+  {
+   "triple": "AttackPattern -[HAS_ALTERNATE_TERM]-> AlternateTerm",
+   "instances": 27,
+   "never_asked": true
+  }
+ ],
+ "absent_node_types": [
+  {
+   "label": "AlternateTerm",
+   "instances": 27,
+   "store": "capec"
+  },
+  {
+   "label": "Example",
+   "instances": 387,
+   "store": "capec"
+  },
+  {
+   "label": "Indicator",
+   "instances": 96,
+   "store": "capec"
+  },
+  {
+   "label": "Prerequisite",
+   "instances": 746,
+   "store": "capec"
+  },
+  {
+   "label": "Resource",
+   "instances": 289,
+   "store": "capec"
+  }
+ ],
+ "renamed_node_types": [
+  {
+   "label": "CapecMitigation",
+   "graph_label": "Mitigation",
+   "census_count": 1170,
+   "graph_count": 1170
+  },
+  {
+   "label": "TaxonomyEntry:OWASP Attacks",
+   "graph_label": "TaxonomyEntry",
+   "census_count": 39,
+   "graph_count": 222
+  },
+  {
+   "label": "TaxonomyEntry:WASC",
+   "graph_label": "TaxonomyEntry",
+   "census_count": 33,
+   "graph_count": 222
+  }
+ ],
+ "count_mismatches": [
+  {
+   "label": "Technique",
+   "census": 697,
+   "graph": 222,
+   "explained": "the graph splits Technique (222) from SubTechnique (475); the sum is the census's 697"
+  },
+  {
+   "label": "ExecutionStep",
+   "census": 815,
+   "graph": 794,
+   "explained": null
+  },
+  {
+   "label": "TaxonomyEntry:OWASP Attacks",
+   "census": 39,
+   "graph": 222,
+   "explained": "the graph keeps one TaxonomyEntry label for all three taxonomies; the census splits them"
+  },
+  {
+   "label": "TaxonomyEntry:WASC",
+   "census": 33,
+   "graph": 222,
+   "explained": "the graph keeps one TaxonomyEntry label for all three taxonomies; the census splits them"
+  }
+ ],
+ "edges": [
+  {
+   "triple": "Software -[uses]-> Technique",
+   "census_count": 11213,
+   "graph_relationship": "USES",
+   "stored_reversed": false,
+   "graph_count": 18221,
+   "loaded": true
+  },
+  {
+   "triple": "Group -[uses]-> Technique",
+   "census_count": 4546,
+   "graph_relationship": "USES",
+   "stored_reversed": false,
+   "graph_count": 18221,
+   "loaded": true
+  },
+  {
+   "triple": "Analytic -[log_source]-> DataComponent",
+   "census_count": 4170,
+   "graph_relationship": "MONITORS",
+   "stored_reversed": true,
+   "graph_count": 4170,
+   "loaded": true
+  },
+  {
+   "triple": "DetectionStrategy -[x_mitre_analytic_refs]-> Analytic",
+   "census_count": 1745,
+   "graph_relationship": "HAS_ANALYTIC",
+   "stored_reversed": false,
+   "graph_count": 1745,
+   "loaded": true
+  },
+  {
+   "triple": "Mitigation -[mitigates]-> Technique",
+   "census_count": 1448,
+   "graph_relationship": "MITIGATES",
+   "stored_reversed": false,
+   "graph_count": 1448,
+   "loaded": true
+  },
+  {
+   "triple": "AttackPattern -[EXPLOITS_WEAKNESS]-> Weakness",
+   "census_count": 1211,
+   "graph_relationship": "EXPLOITS_WEAKNESS",
+   "stored_reversed": false,
+   "graph_count": 1211,
+   "loaded": true
+  },
+  {
+   "triple": "AttackPattern -[HAS_MITIGATION]-> CapecMitigation",
+   "census_count": 1170,
+   "graph_relationship": "HAS_MITIGATION",
+   "stored_reversed": false,
+   "graph_count": 1170,
+   "loaded": true
+  },
+  {
+   "triple": "Campaign -[uses]-> Technique",
+   "census_count": 1146,
+   "graph_relationship": "USES",
+   "stored_reversed": false,
+   "graph_count": 18221,
+   "loaded": true
+  },
+  {
+   "triple": "Group -[uses]-> Software",
+   "census_count": 1144,
+   "graph_relationship": "USES",
+   "stored_reversed": false,
+   "graph_count": 18221,
+   "loaded": true
+  },
+  {
+   "triple": "Technique -[kill_chain_phase]-> Tactic",
+   "census_count": 872,
+   "graph_relationship": "HAS_TECHNIQUE",
+   "stored_reversed": true,
+   "graph_count": 872,
+   "loaded": true
+  },
+  {
+   "triple": "AttackPattern -[HAS_EXECUTION_STEP]-> ExecutionStep",
+   "census_count": 815,
+   "graph_relationship": "HAS_EXECUTION_STEP",
+   "stored_reversed": false,
+   "graph_count": 794,
+   "loaded": true
+  },
+  {
+   "triple": "AttackPattern -[HAS_CONSEQUENCE]-> Consequence",
+   "census_count": 812,
+   "graph_relationship": "HAS_CONSEQUENCE",
+   "stored_reversed": false,
+   "graph_count": 812,
+   "loaded": true
+  },
+  {
+   "triple": "AttackPattern -[HAS_PREREQUISITE]-> Prerequisite",
+   "census_count": 746,
+   "graph_relationship": null,
+   "stored_reversed": null,
+   "graph_count": 0,
+   "loaded": false
+  },
+  {
+   "triple": "DetectionStrategy -[detects]-> Technique",
+   "census_count": 697,
+   "graph_relationship": "DETECTS",
+   "stored_reversed": false,
+   "graph_count": 697,
+   "loaded": true
+  },
+  {
+   "triple": "AttackPattern -[ChildOf]-> AttackPattern",
+   "census_count": 532,
+   "graph_relationship": "ChildOf",
+   "stored_reversed": false,
+   "graph_count": 532,
+   "loaded": true
+  },
+  {
+   "triple": "Technique -[subtechnique-of]-> Technique",
+   "census_count": 475,
+   "graph_relationship": "HAS_SUBTECHNIQUE",
+   "stored_reversed": true,
+   "graph_count": 475,
+   "loaded": true
+  },
+  {
+   "triple": "AttackPattern -[REQUIRES_SKILL]-> Skill",
+   "census_count": 402,
+   "graph_relationship": "REQUIRES_SKILL",
+   "stored_reversed": false,
+   "graph_count": 402,
+   "loaded": true
+  },
+  {
+   "triple": "AttackPattern -[HAS_EXAMPLE]-> Example",
+   "census_count": 387,
+   "graph_relationship": null,
+   "stored_reversed": null,
+   "graph_count": 0,
+   "loaded": false
+  },
+  {
+   "triple": "AttackPattern -[REQUIRES_RESOURCE]-> Resource",
+   "census_count": 289,
+   "graph_relationship": null,
+   "stored_reversed": null,
+   "graph_count": 0,
+   "loaded": false
+  },
+  {
+   "triple": "AttackPattern -[MAPS_TO[ATTACK]]-> Technique",
+   "census_count": 271,
+   "graph_relationship": "MAPS_TO",
+   "stored_reversed": false,
+   "graph_count": 308,
+   "loaded": true
+  },
+  {
+   "triple": "Category -[HAS_MEMBER]-> AttackPattern",
+   "census_count": 188,
+   "graph_relationship": "MEMBER_OF",
+   "stored_reversed": true,
+   "graph_count": 188,
+   "loaded": true
+  },
+  {
+   "triple": "Campaign -[uses]-> Software",
+   "census_count": 172,
+   "graph_relationship": "USES",
+   "stored_reversed": false,
+   "graph_count": 18221,
+   "loaded": true
+  },
+  {
+   "triple": "AttackPattern -[CanPrecede]-> AttackPattern",
+   "census_count": 162,
+   "graph_relationship": "CanPrecede",
+   "stored_reversed": false,
+   "graph_count": 162,
+   "loaded": true
+  },
+  {
+   "triple": "AttackPattern -[HAS_INDICATOR]-> Indicator",
+   "census_count": 96,
+   "graph_relationship": null,
+   "stored_reversed": null,
+   "graph_count": 0,
+   "loaded": false
+  },
+  {
+   "triple": "View -[HAS_MEMBER]-> AttackPattern",
+   "census_count": 46,
+   "graph_relationship": "MEMBER_OF",
+   "stored_reversed": true,
+   "graph_count": 188,
+   "loaded": true
+  },
+  {
+   "triple": "AttackPattern -[MAPS_TO[OWASP Attacks]]-> TaxonomyEntry:OWASP Attacks",
+   "census_count": 39,
+   "graph_relationship": "MAPS_TO",
+   "stored_reversed": false,
+   "graph_count": 308,
+   "loaded": true
+  },
+  {
+   "triple": "AttackPattern -[MAPS_TO[WASC]]-> TaxonomyEntry:WASC",
+   "census_count": 37,
+   "graph_relationship": "MAPS_TO",
+   "stored_reversed": false,
+   "graph_count": 308,
+   "loaded": true
+  },
+  {
+   "triple": "AttackPattern -[HAS_ALTERNATE_TERM]-> AlternateTerm",
+   "census_count": 27,
+   "graph_relationship": null,
+   "stored_reversed": null,
+   "graph_count": 0,
+   "loaded": false
+  },
+  {
+   "triple": "Campaign -[attributed-to]-> Group",
+   "census_count": 26,
+   "graph_relationship": "ATTRIBUTED_TO",
+   "stored_reversed": false,
+   "graph_count": 26,
+   "loaded": true
+  },
+  {
+   "triple": "View -[HAS_MEMBER]-> Category",
+   "census_count": 21,
+   "graph_relationship": "MEMBER_OF",
+   "stored_reversed": true,
+   "graph_count": 188,
+   "loaded": true
+  },
+  {
+   "triple": "AttackPattern -[PeerOf]-> AttackPattern",
+   "census_count": 19,
+   "graph_relationship": "PeerOf",
+   "stored_reversed": false,
+   "graph_count": 19,
+   "loaded": true
+  },
+  {
+   "triple": "Matrix -[tactic_refs]-> Tactic",
+   "census_count": 15,
+   "graph_relationship": "HAS_TACTIC",
+   "stored_reversed": false,
+   "graph_count": 15,
+   "loaded": true
+  },
+  {
+   "triple": "AttackPattern -[CanFollow]-> AttackPattern",
+   "census_count": 10,
+   "graph_relationship": "CanFollow",
+   "stored_reversed": false,
+   "graph_count": 10,
+   "loaded": true
+  },
+  {
+   "triple": "AttackPattern -[CanAlsoBe]-> AttackPattern",
+   "census_count": 3,
+   "graph_relationship": "CanAlsoBe",
+   "stored_reversed": false,
+   "graph_count": 3,
+   "loaded": true
+  }
+ ],
+ "nodes": [
+  {
+   "label": "Analytic",
+   "store": "attack",
+   "graph_label": "Analytic",
+   "renamed": false,
+   "census_count": 1758,
+   "graph_count": 1758,
+   "loaded": true
+  },
+  {
+   "label": "Campaign",
+   "store": "attack",
+   "graph_label": "Campaign",
+   "renamed": false,
+   "census_count": 56,
+   "graph_count": 56,
+   "loaded": true
+  },
+  {
+   "label": "DataComponent",
+   "store": "attack",
+   "graph_label": "DataComponent",
+   "renamed": false,
+   "census_count": 106,
+   "graph_count": 106,
+   "loaded": true
+  },
+  {
+   "label": "DetectionStrategy",
+   "store": "attack",
+   "graph_label": "DetectionStrategy",
+   "renamed": false,
+   "census_count": 697,
+   "graph_count": 697,
+   "loaded": true
+  },
+  {
+   "label": "Group",
+   "store": "attack",
+   "graph_label": "Group",
+   "renamed": false,
+   "census_count": 174,
+   "graph_count": 174,
+   "loaded": true
+  },
+  {
+   "label": "Matrix",
+   "store": "attack",
+   "graph_label": "Matrix",
+   "renamed": false,
+   "census_count": 1,
+   "graph_count": 1,
+   "loaded": true
+  },
+  {
+   "label": "Mitigation",
+   "store": "attack",
+   "graph_label": "Mitigation",
+   "renamed": false,
+   "census_count": 44,
+   "graph_count": 44,
+   "loaded": true
+  },
+  {
+   "label": "Software",
+   "store": "attack",
+   "graph_label": "Software",
+   "renamed": false,
+   "census_count": 821,
+   "graph_count": 821,
+   "loaded": true
+  },
+  {
+   "label": "Tactic",
+   "store": "attack",
+   "graph_label": "Tactic",
+   "renamed": false,
+   "census_count": 15,
+   "graph_count": 15,
+   "loaded": true
+  },
+  {
+   "label": "Technique",
+   "store": "attack",
+   "graph_label": "Technique",
+   "renamed": false,
+   "census_count": 697,
+   "graph_count": 222,
+   "loaded": true
+  },
+  {
+   "label": "AlternateTerm",
+   "store": "capec",
+   "graph_label": null,
+   "renamed": false,
+   "census_count": 27,
+   "graph_count": 0,
+   "loaded": false
+  },
+  {
+   "label": "AttackPattern",
+   "store": "capec",
+   "graph_label": "AttackPattern",
+   "renamed": false,
+   "census_count": 558,
+   "graph_count": 558,
+   "loaded": true
+  },
+  {
+   "label": "CapecMitigation",
+   "store": "capec",
+   "graph_label": "Mitigation",
+   "renamed": true,
+   "census_count": 1170,
+   "graph_count": 1170,
+   "loaded": true
+  },
+  {
+   "label": "Category",
+   "store": "capec",
+   "graph_label": "Category",
+   "renamed": false,
+   "census_count": 21,
+   "graph_count": 21,
+   "loaded": true
+  },
+  {
+   "label": "Consequence",
+   "store": "capec",
+   "graph_label": "Consequence",
+   "renamed": false,
+   "census_count": 812,
+   "graph_count": 812,
+   "loaded": true
+  },
+  {
+   "label": "Example",
+   "store": "capec",
+   "graph_label": null,
+   "renamed": false,
+   "census_count": 387,
+   "graph_count": 0,
+   "loaded": false
+  },
+  {
+   "label": "ExecutionStep",
+   "store": "capec",
+   "graph_label": "ExecutionStep",
+   "renamed": false,
+   "census_count": 815,
+   "graph_count": 794,
+   "loaded": true
+  },
+  {
+   "label": "Indicator",
+   "store": "capec",
+   "graph_label": null,
+   "renamed": false,
+   "census_count": 96,
+   "graph_count": 0,
+   "loaded": false
+  },
+  {
+   "label": "Prerequisite",
+   "store": "capec",
+   "graph_label": null,
+   "renamed": false,
+   "census_count": 746,
+   "graph_count": 0,
+   "loaded": false
+  },
+  {
+   "label": "Resource",
+   "store": "capec",
+   "graph_label": null,
+   "renamed": false,
+   "census_count": 289,
+   "graph_count": 0,
+   "loaded": false
+  },
+  {
+   "label": "Skill",
+   "store": "capec",
+   "graph_label": "Skill",
+   "renamed": false,
+   "census_count": 402,
+   "graph_count": 402,
+   "loaded": true
+  },
+  {
+   "label": "TaxonomyEntry:OWASP Attacks",
+   "store": "capec",
+   "graph_label": "TaxonomyEntry",
+   "renamed": true,
+   "census_count": 39,
+   "graph_count": 222,
+   "loaded": true
+  },
+  {
+   "label": "TaxonomyEntry:WASC",
+   "store": "capec",
+   "graph_label": "TaxonomyEntry",
+   "renamed": true,
+   "census_count": 33,
+   "graph_count": 222,
+   "loaded": true
+  },
+  {
+   "label": "View",
+   "store": "capec",
+   "graph_label": "View",
+   "renamed": false,
+   "census_count": 13,
+   "graph_count": 13,
+   "loaded": true
+  },
+  {
+   "label": "Weakness",
+   "store": "capec",
+   "graph_label": "Weakness",
+   "renamed": false,
+   "census_count": 336,
+   "graph_count": 336,
+   "loaded": true
+  }
+ ]
+}

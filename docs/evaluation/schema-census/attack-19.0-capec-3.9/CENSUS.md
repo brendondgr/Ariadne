@@ -6,18 +6,18 @@ ATT&CK v19.0 + CAPEC v3.9, read from the pinned raw snapshot. Regenerate with `u
 
 The banks draw from **16 hand-written question categories**. The sources support **34 distinct edge types** across **25 node types**.
 
-Those categories reach **12 of 34** edge types — **35.3%** of the shapes, covering **66.6%** of the 34,954 edge instances.
+Those categories reach **12 of 34** edge types — **35.3%** of the shapes, covering **66.6%** of the 34,952 edge instances.
 
 On the property side it is narrower still: **16 of 83** node properties (**19.3%**), because only the `lookup` category reads a property at all and it reads the description.
 
 | | count |
 |---|---:|
 | node types | 25 |
-| nodes | 10,170 |
+| nodes | 10,113 |
 | edge types | 34 |
-| edge instances | 34,954 |
+| edge instances | 34,952 |
 | cross source edge types | 1 |
-| enumerable properties | 46 |
+| enumerable properties | 47 |
 | facet properties | 12 |
 | forward askable edge types | 32 |
 | reverse askable edge types | 31 |
@@ -51,7 +51,7 @@ measured judged score against gold width and found no effect.
 | `AttackPattern -[HAS_EXAMPLE]-> Example` | 387 | 1/2 | 1/1 | xml-element | **never** |
 | `AttackPattern -[REQUIRES_RESOURCE]-> Resource` | 289 | 1/1 | 1/1 | xml-element | **never** |
 | `AttackPattern -[MAPS_TO[ATTACK]]-> Technique` | 271 | 1/3 | 1/2 | xml-element/cross-source | yes |
-| `Category -[HAS_MEMBER]-> AttackPattern` | 190 | 6/17 | 3/4 | xml-element | **never** |
+| `Category -[HAS_MEMBER]-> AttackPattern` | 188 | 7/17 | 3/5 | xml-element | **never** |
 | `Campaign -[uses]-> Software` | 172 | 2/8 | 1/2 | relationship-object | **never** |
 | `AttackPattern -[CanPrecede]-> AttackPattern` | 162 | 1/5 | 1/6 | xml-element | **never** |
 | `AttackPattern -[HAS_INDICATOR]-> Indicator` | 96 | 1/3 | 1/1 | xml-element | **never** |
@@ -111,7 +111,7 @@ after, because they carry range filters rather than equality filters.
 | AttackPattern | `Likelihood_Of_Attack` | 3 | 62% | High, Low, Medium |
 | AttackPattern | `Status` | 3 | 100% | Draft, Stable, Usable |
 | AttackPattern | `Typical_Severity` | 5 | 87% | High, Low, Medium, Very High, Very Low |
-| Category | `Status` | 3 | 100% | Deprecated, Draft, Stable |
+| Category | `Status` | 2 | 100% | Draft, Stable |
 | View | `Status` | 2 | 100% | Draft, Stable |
 | View | `Type` | 3 | 100% | Explicit, Graph, Implicit |
 
@@ -140,7 +140,7 @@ CAPEC declares 10 ATT&CK technique ids that the pinned Enterprise bundle has no 
 | capec | AlternateTerm | 27 | — | — |
 | capec | AttackPattern | 558 | — | `Description`, `Extended_Description` |
 | capec | CapecMitigation | 1,170 | — | `text` |
-| capec | Category | 78 | — | — |
+| capec | Category | 21 | — | — |
 | capec | Consequence | 812 | — | — |
 | capec | Example | 387 | — | `text` |
 | capec | ExecutionStep | 815 | — | `text` |

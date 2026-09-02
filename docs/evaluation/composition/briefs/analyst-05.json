@@ -1,0 +1,128 @@
+{
+ "instructions": "You are writing evaluation questions for a cybersecurity knowledge-base benchmark.\n\nFor each item below, write ONE natural-language question. Return JSON only:\n{\"questions\": [{\"id\": \"<item id>\", \"question\": \"<the question>\"}, ...]}\n\nEach item gives you: a subject (its name, its type, its identifier), what the\nquestion should ask for, and sometimes a restriction to apply.\n\nRules, all of which are checked automatically and will cause a rejection:\n- The question MUST contain the subject's identifier exactly as given.\n- The question MUST NOT contain any other identifier.\n- Do NOT answer the question. Do NOT explain yourself.\n- Do NOT use underscores, camelCase, or database field names. Write it the way a\n  person would say it.\n- Exactly one question mark.\n- Some items have no answer in the data. You cannot tell which, and you should\n  not try: write every item as a straightforward question regardless.\n",
+ "style": "Write it the way a security analyst would type it into a search box: direct, unceremonious, no preamble.",
+ "items": [
+  {
+   "id": "qb6cacb868e47",
+   "subject_name": "C0017",
+   "subject_type": "campaign",
+   "identifier": "C0017",
+   "ask_for": "the malware and tools it uses",
+   "answer_shape": "a list of malware and tools",
+   "restriction": "only the ones that apply to Windows"
+  },
+  {
+   "id": "qd53e91b728ad",
+   "subject_name": "Indian Critical Infrastructure Intrusions",
+   "subject_type": "campaign",
+   "identifier": "C0043",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to Linux"
+  },
+  {
+   "id": "qbd613624a7ec",
+   "subject_name": "Anthropic AI-orchestrated Campaign",
+   "subject_type": "campaign",
+   "identifier": "C0062",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to PRE"
+  },
+  {
+   "id": "qd0df3932b22a",
+   "subject_name": "Evilnum",
+   "subject_type": "threat group",
+   "identifier": "G0120",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to Linux"
+  },
+  {
+   "id": "qb763d3dcacb1",
+   "subject_name": "Star Blizzard",
+   "subject_type": "threat group",
+   "identifier": "G1033",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to Windows"
+  },
+  {
+   "id": "q9e88fd88db30",
+   "subject_name": "Water Galura",
+   "subject_type": "threat group",
+   "identifier": "G1050",
+   "ask_for": "the malware and tools it uses",
+   "answer_shape": "a list of malware and tools",
+   "restriction": "only the ones that apply to ESXi"
+  },
+  {
+   "id": "q46394e31a710",
+   "subject_name": "Storm-0501",
+   "subject_type": "threat group",
+   "identifier": "G1053",
+   "ask_for": "the malware and tools it uses",
+   "answer_shape": "a list of malware and tools",
+   "restriction": "only the ones that apply to Office Suite"
+  },
+  {
+   "id": "qf44244b6471a",
+   "subject_name": "Akira",
+   "subject_type": "piece of malware or tooling",
+   "identifier": "S1129",
+   "ask_for": "the ATT&CK techniques it uses",
+   "answer_shape": "a list of ATT&CK techniques",
+   "restriction": "only the ones that apply to Containers"
+  },
+  {
+   "id": "qa27c9117e8d0",
+   "subject_name": "Detection Strategy for Indicator Removal from Tools - Post-AV Evasion Modification",
+   "subject_type": "detection strategy",
+   "identifier": "DET0189",
+   "ask_for": "the detection analytics that implement it",
+   "answer_shape": "a list of detection analytics",
+   "restriction": "only the ones that apply to Windows"
+  },
+  {
+   "id": "q72cefd2b8f7d",
+   "subject_name": "Detection Strategy for Email Hiding Rules",
+   "subject_type": "detection strategy",
+   "identifier": "DET0192",
+   "ask_for": "the detection analytics that implement it",
+   "answer_shape": "a list of detection analytics",
+   "restriction": "only the ones that apply to Office Suite"
+  },
+  {
+   "id": "qfc0f66f34292",
+   "subject_name": "Multi-Factor Authentication Interception",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1111",
+   "ask_for": "the CAPEC attack patterns that correspond to it, and then the CAPEC attack patterns each of those is a more specific case of",
+   "answer_shape": "a list of CAPEC attack patterns"
+  },
+  {
+   "id": "qc359f1960b22",
+   "subject_name": "Terminal Services DLL",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1505.005",
+   "ask_for": "the CAPEC attack patterns that correspond to it, and then the OWASP taxonomy entries each of those corresponds to",
+   "answer_shape": "a list of OWASP taxonomy entries"
+  },
+  {
+   "id": "q5240a856f36c",
+   "subject_name": "Adversary in the Middle (AiTM)",
+   "subject_type": "CAPEC attack pattern",
+   "identifier": "CAPEC-94",
+   "ask_for": "the ATT&CK techniques it corresponds to, and then the ATT&CK techniques that are sub-techniques of each of those",
+   "answer_shape": "a list of ATT&CK techniques"
+  },
+  {
+   "id": "q1fe743996556",
+   "subject_name": "Domain Groups",
+   "subject_type": "ATT&CK technique",
+   "identifier": "T1069.002",
+   "ask_for": "the ATT&CK techniques it is a sub-technique of, and then the CAPEC attack patterns that correspond to each of those",
+   "answer_shape": "a list of CAPEC attack patterns"
+  }
+ ]
+}

@@ -269,3 +269,85 @@ figure the `gold_bank` cross-check covers. The 13 tests that hold the census to
 **12 of 34 edge types — 35.3%.** The finding is unchanged in substance and
 slightly worse in magnitude than first reported: the categories reach one fewer
 share of a graph that turned out to have one more shape in it.
+
+---
+
+## AMENDMENT A-2 — The load holds less than the sources support (2026-09-01)
+
+Step 6 was designed to ask *can the builder express the shapes no bank has ever
+asked?* It could not answer that, because it failed on its own controls. Chasing
+the failure produced a better question and a firmer answer.
+
+### What the probe did
+
+78 questions covering **all 22 never-asked edge types**, authored by Opus 5
+subagents from briefs, run through the deterministic arm and scored with **no
+judge** — the arm's own answer files carry recall of the snapshot-derived gold.
+
+**Overall recall 0.0706. Controls 0.1944.** The controls are shapes the
+committed banks answer at 1.0, so the probe measured the harness, not the
+system.
+
+Two design faults, both mine:
+
+* **Every control was multi-hop.** The control pool required all of a spec's
+  shapes to be already-asked, and the sampler drew D4/D5/D6 exclusively — 5 D5,
+  4 D4, 3 D6, and not one single-hop control. The committed banks never put a
+  two-hop question in a single `task`.
+* **The bank used the census's edge vocabulary.** Confirmed by running the
+  committed bank 19 through the identical runner: **recall 1.0000**. The harness
+  is sound; the bank was not.
+
+### What that surfaced
+
+The census names an edge the way the *source* declares it. The loaded graph names
+it its own way, sometimes reversed, sometimes collapsing several census edge
+types into one — and sometimes not loading it at all. Nothing had ever compared
+the two. `scripts/reconcile_graph.py` now does, and requires every census
+predicate to be mapped explicitly to a graph relationship or to `None`; an
+unmapped predicate fails the run, because a silent default is how "we cannot ask
+this" becomes "the system got it wrong".
+
+**Five edge types the sources declare are absent from the load — 1,545 instances:**
+
+| triple | instances |
+|---|---:|
+| `AttackPattern -[HAS_PREREQUISITE]-> Prerequisite` | 746 |
+| `AttackPattern -[HAS_EXAMPLE]-> Example` | 387 |
+| `AttackPattern -[REQUIRES_RESOURCE]-> Resource` | 289 |
+| `AttackPattern -[HAS_INDICATOR]-> Indicator` | 96 |
+| `AttackPattern -[HAS_ALTERNATE_TERM]-> AlternateTerm` | 27 |
+
+All five are in the never-asked set, and now the reason is known: **no arm can
+answer them, because the rows are not there.** A question about a CAPEC
+prerequisite is not hard, it is unanswerable — and the census alone would have
+recorded it as a coverage gap in the *question set* rather than in the *ingest*.
+
+**Eleven census edge types collapse into three graph relationships.** `USES`
+carries five (`Software/Group/Campaign -uses-> Technique/Software`), `MAPS_TO`
+carries three, `MEMBER_OF` carries three. A question that distinguishes
+`Group -uses-> Software` from `Group -uses-> Technique` is asking for something
+the stored relationship type does not by itself express.
+
+### Two defects the reconciliation found in the census
+
+* **The exclusion policy was not applied to categories.** The census reported 78
+  CAPEC categories where the load holds 21; **57 are `Deprecated`**. The policy
+  was written for attack patterns and quietly never extended. Fixed; the census
+  now excludes retired categories and views and counts the exclusion.
+* **ExecutionStep: census 815, graph 794.** Not retirement — all 815 belong to
+  live patterns. **Unexplained, and reported as unexplained.** Everything else
+  that differs is a known modelling choice (the graph splits `Technique` from
+  `SubTechnique`; it keeps one `TaxonomyEntry` label where the census splits by
+  taxonomy) and is annotated as such.
+
+### What this licenses
+
+**Does.** It separates three things the census had merged: shapes nobody asked,
+shapes nobody *can* ask, and shapes the graph renames. Any future statement that
+the system "fails" on a shape must first check that the shape is loaded.
+
+**Does not.** It still says nothing about whether the builder can express the 29
+edge types that *are* loaded. The probe has to be re-run with the graph's
+vocabulary and with single-hop controls before Step 6's original question has an
+answer.

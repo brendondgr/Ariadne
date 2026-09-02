@@ -1,0 +1,5818 @@
+{
+ "meta": {
+  "attack_version": "19.0",
+  "capec_version": "3.9",
+  "generator": "utils/specialists/evalset/composition.py + utils/specialists/evalset/spec_bank.py",
+  "gold_source": "raw snapshot via raw_graph; NOT recomputed here",
+  "split": "generated",
+  "seed": 20260901,
+  "author_model": "claude-opus-5",
+  "author_path": "subagent",
+  "expected_template": "absent by design — specs carry no category to derive one from",
+  "built_at": "2026-09-02T00:38:10.091805+00:00",
+  "note": "Step 6 capability probe: every never-asked edge type, plus controls on already-asked shapes so a low score is attributable."
+ },
+ "questions": [
+  {
+   "id": "D2-HAS_MEMBER-CAPEC-683-e2e531::analyst",
+   "spec_id": "D2-HAS_MEMBER-CAPEC-683-e2e531",
+   "register": "analyst",
+   "tier": "medium",
+   "d_tier": "D2",
+   "split": "generated",
+   "question": "Which CAPEC categories are contained in CAPEC-683?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-683"
+    ],
+    "must_include_related": [
+     "CAPEC-684",
+     "CAPEC-685",
+     "CAPEC-686",
+     "CAPEC-687",
+     "CAPEC-688",
+     "CAPEC-689"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "CAPEC-684",
+     "CAPEC-685",
+     "CAPEC-686",
+     "CAPEC-687",
+     "CAPEC-688",
+     "CAPEC-689"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "View -[HAS_MEMBER]-> Category"
+    ],
+    "gold_width": 6,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "HAS_MEMBER",
+      "reverse": false,
+      "label": "Category"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which CAPEC categories are contained in CAPEC-683?",
+    "entities": [
+     "View",
+     "HAS_MEMBER",
+     "Category"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-683"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D2-MAPS_TO[OWASP Attacks]-CAPEC-101-bb05d6::analyst",
+   "spec_id": "D2-MAPS_TO[OWASP Attacks]-CAPEC-101-bb05d6",
+   "register": "analyst",
+   "tier": "medium",
+   "d_tier": "D2",
+   "split": "generated",
+   "question": "Which OWASP taxonomy entries does CAPEC-101 correspond to?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-101"
+    ],
+    "must_include_related": [
+     "OWASP Attacks:Server-Side Includes (SSI) Injection"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "OWASP Attacks:Server-Side Includes (SSI) Injection"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[MAPS_TO[OWASP Attacks]]-> TaxonomyEntry:OWASP Attacks"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "MAPS_TO[OWASP Attacks]",
+      "reverse": false,
+      "label": "TaxonomyEntry:OWASP Attacks"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which OWASP taxonomy entries does CAPEC-101 correspond to?",
+    "entities": [
+     "AttackPattern",
+     "MAPS_TO[OWASP Attacks]",
+     "TaxonomyEntry:OWASP Attacks"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-101"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D2-MAPS_TO[WASC]-CAPEC-126-d48ec7::analyst",
+   "spec_id": "D2-MAPS_TO[WASC]-CAPEC-126-d48ec7",
+   "register": "analyst",
+   "tier": "medium",
+   "d_tier": "D2",
+   "split": "generated",
+   "question": "Which WASC taxonomy entries does CAPEC-126 correspond to?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-126"
+    ],
+    "must_include_related": [
+     "WASC:33"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "WASC:33"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[MAPS_TO[WASC]]-> TaxonomyEntry:WASC"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "MAPS_TO[WASC]",
+      "reverse": false,
+      "label": "TaxonomyEntry:WASC"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which WASC taxonomy entries does CAPEC-126 correspond to?",
+    "entities": [
+     "AttackPattern",
+     "MAPS_TO[WASC]",
+     "TaxonomyEntry:WASC"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-126"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D2-REQUIRES_RESOURCE-CAPEC-15-57bda0::analyst",
+   "spec_id": "D2-REQUIRES_RESOURCE-CAPEC-15-57bda0",
+   "register": "analyst",
+   "tier": "medium",
+   "d_tier": "D2",
+   "split": "generated",
+   "question": "What resources does CAPEC-15 require?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-15"
+    ],
+    "must_include_related": [
+     "Ability to communicate synchronously or asynchronously with server. Optionally, ability to capture output directly through synchronous communication or other method such as FTP."
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "Ability to communicate synchronously or asynchronously with server. Optionally, ability to capture output directly through synchronous communication or other method such as FTP."
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[REQUIRES_RESOURCE]-> Resource"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "REQUIRES_RESOURCE",
+      "reverse": false,
+      "label": "Resource"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "What resources does CAPEC-15 require?",
+    "entities": [
+     "AttackPattern",
+     "REQUIRES_RESOURCE",
+     "Resource"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-15"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D2-log_source-AN0059-f5de6b::analyst",
+   "spec_id": "D2-log_source-AN0059-f5de6b",
+   "register": "analyst",
+   "tier": "medium",
+   "d_tier": "D2",
+   "split": "generated",
+   "question": "Which data components does AN0059 draw on?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "AN0059"
+    ],
+    "must_include_related": [
+     "DC0032",
+     "DC0061",
+     "DC0085"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "DC0032",
+     "DC0061",
+     "DC0085"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Analytic -[log_source]-> DataComponent"
+    ],
+    "gold_width": 3,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "log_source",
+      "reverse": false,
+      "label": "DataComponent"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which data components does AN0059 draw on?",
+    "entities": [
+     "Analytic",
+     "log_source",
+     "DataComponent"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "AN0059"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D3-HAS_MEMBER-CAPEC-292-395fe0::analyst",
+   "spec_id": "D3-HAS_MEMBER-CAPEC-292-395fe0",
+   "register": "analyst",
+   "tier": "medium",
+   "d_tier": "D3",
+   "split": "generated",
+   "question": "Which CAPEC views contain CAPEC-292?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-292"
+    ],
+    "must_include_related": [
+     "CAPEC-703"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "CAPEC-703"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "View -[HAS_MEMBER]-> AttackPattern"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "HAS_MEMBER",
+      "reverse": true,
+      "label": "View"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which CAPEC views contain CAPEC-292?",
+    "entities": [
+     "AttackPattern",
+     "HAS_MEMBER",
+     "View"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-292"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D3-HAS_MEMBER-CAPEC-515-4e6f91::analyst",
+   "spec_id": "D3-HAS_MEMBER-CAPEC-515-4e6f91",
+   "register": "analyst",
+   "tier": "medium",
+   "d_tier": "D3",
+   "split": "generated",
+   "question": "Which CAPEC views contain CAPEC-515?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-515"
+    ],
+    "must_include_related": [
+     "CAPEC-3000"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "CAPEC-3000"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "View -[HAS_MEMBER]-> Category"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "HAS_MEMBER",
+      "reverse": true,
+      "label": "View"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which CAPEC views contain CAPEC-515?",
+    "entities": [
+     "Category",
+     "HAS_MEMBER",
+     "View"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-515"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D3-attributed-to-G0007-014641::analyst",
+   "spec_id": "D3-attributed-to-G0007-014641",
+   "register": "analyst",
+   "tier": "medium",
+   "d_tier": "D3",
+   "split": "generated",
+   "question": "Which campaigns is G0007 attributed to?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "G0007"
+    ],
+    "must_include_related": [
+     "C0051"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "C0051"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Campaign -[attributed-to]-> Group"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "attributed-to",
+      "reverse": true,
+      "label": "Campaign"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which campaigns is G0007 attributed to?",
+    "entities": [
+     "Group",
+     "attributed-to",
+     "Campaign"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "G0007"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D3-tactic_refs-TA0001-47d775::analyst",
+   "spec_id": "D3-tactic_refs-TA0001-47d775",
+   "register": "analyst",
+   "tier": "medium",
+   "d_tier": "D3",
+   "split": "generated",
+   "question": "Which ATT&CK matrices cover TA0001?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "TA0001"
+    ],
+    "must_include_related": [
+     "enterprise-attack"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "enterprise-attack"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Matrix -[tactic_refs]-> Tactic"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "tactic_refs",
+      "reverse": true,
+      "label": "Matrix"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which ATT&CK matrices cover TA0001?",
+    "entities": [
+     "Tactic",
+     "tactic_refs",
+     "Matrix"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "TA0001"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-CanAlsoBe-HAS_MITIGATION-CAPEC-182-845c42::analyst",
+   "spec_id": "D4-CanAlsoBe-HAS_MITIGATION-CAPEC-182-845c42",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which attack patterns can CAPEC-182 also be carried out as, and what mitigations mitigate each of those?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-182"
+    ],
+    "must_include_related": [
+     "All user-controllable input should be validated and filtered for potentially unwanted characters. Using an allowlist for input is desired, but if use of a denylist approach is necessary, then focusing on command related terms and delimiters is necessary.",
+     "Input should be encoded prior to use in commands to make sure command related characters are not treated as part of the command. For example, quotation characters may need to be encoded so that the application does not treat the quotation as a delimiter.",
+     "Input should be parameterized, or restricted to data sections of a command, thus removing the chance that the input will be treated as part of the command itself."
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "All user-controllable input should be validated and filtered for potentially unwanted characters. Using an allowlist for input is desired, but if use of a denylist approach is necessary, then focusing on command related terms and delimiters is necessary.",
+     "Input should be encoded prior to use in commands to make sure command related characters are not treated as part of the command. For example, quotation characters may need to be encoded so that the application does not treat the quotation as a delimiter.",
+     "Input should be parameterized, or restricted to data sections of a command, thus removing the chance that the input will be treated as part of the command itself."
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[CanAlsoBe]-> AttackPattern",
+     "AttackPattern -[HAS_MITIGATION]-> CapecMitigation"
+    ],
+    "gold_width": 3,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "CanAlsoBe",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_MITIGATION",
+      "reverse": false,
+      "label": "CapecMitigation"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which attack patterns can CAPEC-182 also be carried out as, and what mitigations mitigate each of those?",
+    "entities": [
+     "AttackPattern",
+     "CanAlsoBe",
+     "HAS_MITIGATION",
+     "CapecMitigation"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-182"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-CanAlsoBe-HAS_MITIGATION-CAPEC-460-9b0720::analyst",
+   "spec_id": "D4-CanAlsoBe-HAS_MITIGATION-CAPEC-460-9b0720",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which attack patterns can also be carried out as CAPEC-460, and what mitigations mitigate each of those?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-460"
+    ],
+    "must_include_related": [
+     "User input must be sanitized according to context before reflected back to the user. The JavaScript function 'encodeURI' is not always sufficient for sanitizing input intended for global Flash parameters. Extreme caution should be taken when saving user input in Flash cookies. In such cases the Flash file itself will need to be fixed and recompiled, changing the name of the local shared objects (Flash cookies)."
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "User input must be sanitized according to context before reflected back to the user. The JavaScript function 'encodeURI' is not always sufficient for sanitizing input intended for global Flash parameters. Extreme caution should be taken when saving user input in Flash cookies. In such cases the Flash file itself will need to be fixed and recompiled, changing the name of the local shared objects (Flash cookies)."
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[CanAlsoBe]-> AttackPattern",
+     "AttackPattern -[HAS_MITIGATION]-> CapecMitigation"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "CanAlsoBe",
+      "reverse": true,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_MITIGATION",
+      "reverse": false,
+      "label": "CapecMitigation"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which attack patterns can also be carried out as CAPEC-460, and what mitigations mitigate each of those?",
+    "entities": [
+     "AttackPattern",
+     "CanAlsoBe",
+     "HAS_MITIGATION",
+     "CapecMitigation"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-460"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-CanAlsoBe-MAPS_TO[OWASP Attacks]-CAPEC-174-2cf10b::analyst",
+   "spec_id": "D4-CanAlsoBe-MAPS_TO[OWASP Attacks]-CAPEC-174-2cf10b",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which attack patterns can CAPEC-174 also be carried out as, and which OWASP taxonomy entries does each of those correspond to?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-174"
+    ],
+    "must_include_related": [
+     "OWASP Attacks:Web Parameter Tampering"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "OWASP Attacks:Web Parameter Tampering"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[CanAlsoBe]-> AttackPattern",
+     "AttackPattern -[MAPS_TO[OWASP Attacks]]-> TaxonomyEntry:OWASP Attacks"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "CanAlsoBe",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "MAPS_TO[OWASP Attacks]",
+      "reverse": false,
+      "label": "TaxonomyEntry:OWASP Attacks"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which attack patterns can CAPEC-174 also be carried out as, and which OWASP taxonomy entries does each of those correspond to?",
+    "entities": [
+     "AttackPattern",
+     "CanAlsoBe",
+     "MAPS_TO[OWASP Attacks]",
+     "TaxonomyEntry:OWASP Attacks"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-174"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-CanFollow-HAS_MEMBER-CAPEC-700-db51f7::analyst",
+   "spec_id": "D4-CanFollow-HAS_MEMBER-CAPEC-700-db51f7",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which attack patterns can precede CAPEC-700, and which CAPEC views contain each of those?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-700"
+    ],
+    "must_include_related": [
+     "CAPEC-703"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "CAPEC-703"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[CanFollow]-> AttackPattern",
+     "View -[HAS_MEMBER]-> AttackPattern"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "CanFollow",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_MEMBER",
+      "reverse": true,
+      "label": "View"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which attack patterns can precede CAPEC-700, and which CAPEC views contain each of those?",
+    "entities": [
+     "AttackPattern",
+     "CanFollow",
+     "HAS_MEMBER",
+     "View"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-700"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-CanFollow-HAS_MITIGATION-CAPEC-560-e32636::analyst",
+   "spec_id": "D4-CanFollow-HAS_MITIGATION-CAPEC-560-e32636",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which attack patterns can follow CAPEC-560, and what mitigations mitigate each of those?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-560"
+    ],
+    "must_include_related": [
+     "Configuration: Change the default configuration for network devices to harden their security profiles. Default configurations are often enabled with insecure features to allow ease of installation and management. However, these configurations can be easily discovered and exploited by adversaries.",
+     "Configuration: When possible, configure network boundary devices to use MFA.",
+     "Design: Ensure network devices are storing credentials in encrypted stores",
+     "Design: Follow the principle of least privilege and restrict administrative duties to as few accounts as possible. Ensure these privileged accounts are secured with strong credentials which do not overlap with other network devices.",
+     "Implementation: Perform integrity checks on audit logs for network device management and review them to identify abnormalities in configurations.",
+     "Implementation: Prevent network boundary devices from being physically accessed by unauthorized personnel to prevent tampering."
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "Configuration: Change the default configuration for network devices to harden their security profiles. Default configurations are often enabled with insecure features to allow ease of installation and management. However, these configurations can be easily discovered and exploited by adversaries.",
+     "Configuration: When possible, configure network boundary devices to use MFA.",
+     "Design: Ensure network devices are storing credentials in encrypted stores",
+     "Design: Follow the principle of least privilege and restrict administrative duties to as few accounts as possible. Ensure these privileged accounts are secured with strong credentials which do not overlap with other network devices.",
+     "Implementation: Perform integrity checks on audit logs for network device management and review them to identify abnormalities in configurations.",
+     "Implementation: Prevent network boundary devices from being physically accessed by unauthorized personnel to prevent tampering."
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[CanFollow]-> AttackPattern",
+     "AttackPattern -[HAS_MITIGATION]-> CapecMitigation"
+    ],
+    "gold_width": 6,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "CanFollow",
+      "reverse": true,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_MITIGATION",
+      "reverse": false,
+      "label": "CapecMitigation"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which attack patterns can follow CAPEC-560, and what mitigations mitigate each of those?",
+    "entities": [
+     "AttackPattern",
+     "CanFollow",
+     "HAS_MITIGATION",
+     "CapecMitigation"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-560"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-CanFollow-HAS_MITIGATION-CAPEC-700-65ec8f::analyst",
+   "spec_id": "D4-CanFollow-HAS_MITIGATION-CAPEC-700-65ec8f",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which attack patterns can precede CAPEC-700, and what mitigations mitigate each of those?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-700"
+    ],
+    "must_include_related": [
+     "Create a strong password policy and ensure that your system enforces this policy.",
+     "Delete all default account credentials that may be put in by the product vendor.",
+     "Deny remote use of local admin credentials to log into domain systems.",
+     "Do not allow accounts to be a local administrator on more than one system.",
+     "Do not reuse local administrator account credentials across systems.",
+     "Ensure users are not reusing username/password combinations for multiple systems, applications, or services.",
+     "Implement a password throttling mechanism. This mechanism should take into account both the IP address and the log in name of the user.",
+     "Implement an intelligent password throttling mechanism. Care must be taken to assure that these mechanisms do not excessively enable account lockout attacks such as CAPEC-2.",
+     "Leverage multi-factor authentication for all authentication services and prior to granting an entity access to the domain network.",
+     "Monitor system and domain logs for abnormal credential access.",
+     "Passwords need to be recycled to prevent aging, that is every once in a while a new password must be chosen.",
+     "Put together a strong password policy and make sure that all user created passwords comply with it. Alternatively automatically generate strong passwords for users."
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "Create a strong password policy and ensure that your system enforces this policy.",
+     "Delete all default account credentials that may be put in by the product vendor.",
+     "Deny remote use of local admin credentials to log into domain systems.",
+     "Do not allow accounts to be a local administrator on more than one system.",
+     "Do not reuse local administrator account credentials across systems.",
+     "Ensure users are not reusing username/password combinations for multiple systems, applications, or services.",
+     "Implement a password throttling mechanism. This mechanism should take into account both the IP address and the log in name of the user.",
+     "Implement an intelligent password throttling mechanism. Care must be taken to assure that these mechanisms do not excessively enable account lockout attacks such as CAPEC-2.",
+     "Leverage multi-factor authentication for all authentication services and prior to granting an entity access to the domain network.",
+     "Monitor system and domain logs for abnormal credential access.",
+     "Passwords need to be recycled to prevent aging, that is every once in a while a new password must be chosen.",
+     "Put together a strong password policy and make sure that all user created passwords comply with it. Alternatively automatically generate strong passwords for users."
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[CanFollow]-> AttackPattern",
+     "AttackPattern -[HAS_MITIGATION]-> CapecMitigation"
+    ],
+    "gold_width": 12,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "CanFollow",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_MITIGATION",
+      "reverse": false,
+      "label": "CapecMitigation"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which attack patterns can precede CAPEC-700, and what mitigations mitigate each of those?",
+    "entities": [
+     "AttackPattern",
+     "CanFollow",
+     "HAS_MITIGATION",
+     "CapecMitigation"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-700"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-CanPrecede-HAS_ALTERNATE_TERM-CAPEC-148-396919::analyst",
+   "spec_id": "D4-CanPrecede-HAS_ALTERNATE_TERM-CAPEC-148-396919",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which attack patterns can precede CAPEC-148, and what alternate names does each of those also go by?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-148"
+    ],
+    "must_include_related": [
+     "HTTP Desync Modification/manipulation of HTTP message headers, request-line and body parameters to disrupt and interfere in the interpretation and parsing of HTTP message lengths/boundaries for consecutive HTTP messages by HTTP agents in a HTTP chain or network path."
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "HTTP Desync Modification/manipulation of HTTP message headers, request-line and body parameters to disrupt and interfere in the interpretation and parsing of HTTP message lengths/boundaries for consecutive HTTP messages by HTTP agents in a HTTP chain or network path."
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[CanPrecede]-> AttackPattern",
+     "AttackPattern -[HAS_ALTERNATE_TERM]-> AlternateTerm"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "CanPrecede",
+      "reverse": true,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_ALTERNATE_TERM",
+      "reverse": false,
+      "label": "AlternateTerm"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which attack patterns can precede CAPEC-148, and what alternate names does each of those also go by?",
+    "entities": [
+     "AttackPattern",
+     "CanPrecede",
+     "HAS_ALTERNATE_TERM",
+     "AlternateTerm"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-148"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-CanPrecede-HAS_EXAMPLE-CAPEC-20-a0f32c::analyst",
+   "spec_id": "D4-CanPrecede-HAS_EXAMPLE-CAPEC-20-a0f32c",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which CAPEC attack patterns can precede CAPEC-20 (Encryption Brute Forcing), and what example instances illustrate each of those?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-20"
+    ],
+    "must_include_related": [
+     "A very easy to understand example is a cryptanalysis technique called frequency analysis that can be successfully applied to the very basic classic encryption algorithms that performed mono-alphabetic substitution replacing each letter in the plaintext with its predetermined mapping letter from the same alphabet. This was considered an improvement over a more basic technique that would simply shift all of the letters of the plaintext by some constant number of positions and replace the original letters with the new letter with the resultant alphabet position. While mono-alphabetic substitution ciphers are resilient to blind brute force, they can be broken easily with nothing more than a pen and paper. Frequency analysis uses the fact that natural language is not random and mono-alphabetic substitution does not hide the statistical properties of the natural language. So if the letter \"E\" in an English language occurs with a certain known frequency (about 12.7%), whatever \"E\" was substituted with to get to the ciphertext, will occur with the similar frequency. Having this frequency information allows the cryptanalyst to quickly determine the substitutions and decipher the ciphertext. Frequency analysis techniques are not applicable to modern ciphers as they are all resilient to it (unless this is a very bad case of a homegrown encryption algorithm). This example is inapplicable to modern cryptographic ciphers but is here to illustrate a rudimentary example of cryptanalysis."
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "A very easy to understand example is a cryptanalysis technique called frequency analysis that can be successfully applied to the very basic classic encryption algorithms that performed mono-alphabetic substitution replacing each letter in the plaintext with its predetermined mapping letter from the same alphabet. This was considered an improvement over a more basic technique that would simply shift all of the letters of the plaintext by some constant number of positions and replace the original letters with the new letter with the resultant alphabet position. While mono-alphabetic substitution ciphers are resilient to blind brute force, they can be broken easily with nothing more than a pen and paper. Frequency analysis uses the fact that natural language is not random and mono-alphabetic substitution does not hide the statistical properties of the natural language. So if the letter \"E\" in an English language occurs with a certain known frequency (about 12.7%), whatever \"E\" was substituted with to get to the ciphertext, will occur with the similar frequency. Having this frequency information allows the cryptanalyst to quickly determine the substitutions and decipher the ciphertext. Frequency analysis techniques are not applicable to modern ciphers as they are all resilient to it (unless this is a very bad case of a homegrown encryption algorithm). This example is inapplicable to modern cryptographic ciphers but is here to illustrate a rudimentary example of cryptanalysis."
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[CanPrecede]-> AttackPattern",
+     "AttackPattern -[HAS_EXAMPLE]-> Example"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "CanPrecede",
+      "reverse": true,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_EXAMPLE",
+      "reverse": false,
+      "label": "Example"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which CAPEC attack patterns can precede CAPEC-20 (Encryption Brute Forcing), and what example instances illustrate each of those?",
+    "entities": [
+     "AttackPattern",
+     "CanPrecede",
+     "HAS_EXAMPLE",
+     "Example"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-20"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-CanPrecede-HAS_EXAMPLE-CAPEC-65-12a543::analyst",
+   "spec_id": "D4-CanPrecede-HAS_EXAMPLE-CAPEC-65-12a543",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which CAPEC attack patterns can follow CAPEC-65 (Sniff Application Code), and what example instances illustrate each of those?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-65"
+    ],
+    "must_include_related": [
+     "An attacker can also use a decompiler to decompile a downloaded Java applet in order to look for information such as hardcoded IP addresses, file paths, passwords or other such contents.",
+     "Attacker uses a tool such as a browser plug-in to pull cookie or other token information that, from a previous user at the same machine (perhaps a kiosk), allows the attacker to log in as the previous user.",
+     "Using a tool such as 'strings' or similar to pull out text data, perhaps part of a database table, that extends beyond what a particular user's purview should be."
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "An attacker can also use a decompiler to decompile a downloaded Java applet in order to look for information such as hardcoded IP addresses, file paths, passwords or other such contents.",
+     "Attacker uses a tool such as a browser plug-in to pull cookie or other token information that, from a previous user at the same machine (perhaps a kiosk), allows the attacker to log in as the previous user.",
+     "Using a tool such as 'strings' or similar to pull out text data, perhaps part of a database table, that extends beyond what a particular user's purview should be."
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[CanPrecede]-> AttackPattern",
+     "AttackPattern -[HAS_EXAMPLE]-> Example"
+    ],
+    "gold_width": 3,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "CanPrecede",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_EXAMPLE",
+      "reverse": false,
+      "label": "Example"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which CAPEC attack patterns can follow CAPEC-65 (Sniff Application Code), and what example instances illustrate each of those?",
+    "entities": [
+     "AttackPattern",
+     "CanPrecede",
+     "HAS_EXAMPLE",
+     "Example"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-65"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-CanPrecede-HAS_EXECUTION_STEP-CAPEC-542-72a716::analyst",
+   "spec_id": "D4-CanPrecede-HAS_EXECUTION_STEP-CAPEC-542-72a716",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which CAPEC attack patterns can follow CAPEC-542 (Targeted Malware), and what execution steps is each of those carried out through?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-542"
+    ],
+    "must_include_related": [
+     "1 Experiment The adversary tricks the victim into installing the Trojan Horse malware onto their system. Conduct phishing attacks, drive-by malware installations, or masquerade malicious browser extensions as being legitimate.",
+     "2 Experiment The adversary inserts themself into the communication channel initially acting as a routing proxy between the two targeted components.",
+     "3 Exploit The adversary observes, filters, or alters passed data of their choosing to gain access to sensitive information or to manipulate the actions of the two target components for their own purposes."
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "1 Experiment The adversary tricks the victim into installing the Trojan Horse malware onto their system. Conduct phishing attacks, drive-by malware installations, or masquerade malicious browser extensions as being legitimate.",
+     "2 Experiment The adversary inserts themself into the communication channel initially acting as a routing proxy between the two targeted components.",
+     "3 Exploit The adversary observes, filters, or alters passed data of their choosing to gain access to sensitive information or to manipulate the actions of the two target components for their own purposes."
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[CanPrecede]-> AttackPattern",
+     "AttackPattern -[HAS_EXECUTION_STEP]-> ExecutionStep"
+    ],
+    "gold_width": 3,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "CanPrecede",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_EXECUTION_STEP",
+      "reverse": false,
+      "label": "ExecutionStep"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which CAPEC attack patterns can follow CAPEC-542 (Targeted Malware), and what execution steps is each of those carried out through?",
+    "entities": [
+     "AttackPattern",
+     "CanPrecede",
+     "HAS_EXECUTION_STEP",
+     "ExecutionStep"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-542"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-CanPrecede-HAS_MEMBER-CAPEC-33-c33763::analyst",
+   "spec_id": "D4-CanPrecede-HAS_MEMBER-CAPEC-33-c33763",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which CAPEC attack patterns can follow CAPEC-33 (HTTP Request Smuggling), and which CAPEC views contain each of those?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-33"
+    ],
+    "must_include_related": [
+     "CAPEC-703"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "CAPEC-703"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[CanPrecede]-> AttackPattern",
+     "View -[HAS_MEMBER]-> AttackPattern"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "CanPrecede",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_MEMBER",
+      "reverse": true,
+      "label": "View"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which CAPEC attack patterns can follow CAPEC-33 (HTTP Request Smuggling), and which CAPEC views contain each of those?",
+    "entities": [
+     "AttackPattern",
+     "CanPrecede",
+     "HAS_MEMBER",
+     "View"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-33"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-CanPrecede-PeerOf-CAPEC-616-fa0757::analyst",
+   "spec_id": "D4-CanPrecede-PeerOf-CAPEC-616-fa0757",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which CAPEC attack patterns can follow CAPEC-616 (Establish Rogue Location), and which CAPEC attack patterns are peers of each of those?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-616"
+    ],
+    "must_include_related": [
+     "CAPEC-630"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "CAPEC-630"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[CanPrecede]-> AttackPattern",
+     "AttackPattern -[PeerOf]-> AttackPattern"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "CanPrecede",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "PeerOf",
+      "reverse": false,
+      "label": "AttackPattern"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which CAPEC attack patterns can follow CAPEC-616 (Establish Rogue Location), and which CAPEC attack patterns are peers of each of those?",
+    "entities": [
+     "AttackPattern",
+     "CanPrecede",
+     "PeerOf"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-616"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-CanPrecede-REQUIRES_SKILL-CAPEC-116-fc4e0a::analyst",
+   "spec_id": "D4-CanPrecede-REQUIRES_SKILL-CAPEC-116-fc4e0a",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which CAPEC attack patterns can follow CAPEC-116 (Excavation), and what skills does each of those require?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-116"
+    ],
+    "must_include_related": [
+     "Spear phishing attacks require specific knowledge of the victims being targeted, such as which bank is being used by the victims, or websites they commonly log into (Google, Facebook, etc)."
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "Spear phishing attacks require specific knowledge of the victims being targeted, such as which bank is being used by the victims, or websites they commonly log into (Google, Facebook, etc)."
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[CanPrecede]-> AttackPattern",
+     "AttackPattern -[REQUIRES_SKILL]-> Skill"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "CanPrecede",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "REQUIRES_SKILL",
+      "reverse": false,
+      "label": "Skill"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which CAPEC attack patterns can follow CAPEC-116 (Excavation), and what skills does each of those require?",
+    "entities": [
+     "AttackPattern",
+     "CanPrecede",
+     "REQUIRES_SKILL",
+     "Skill"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-116"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-ChildOf-CanAlsoBe-CAPEC-178-054a99::analyst",
+   "spec_id": "D4-ChildOf-CanAlsoBe-CAPEC-178-054a99",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which CAPEC attack patterns is CAPEC-178 (Cross-Site Flashing) a more specific case of, and which CAPEC attack patterns can each of those also be carried out as?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-178"
+    ],
+    "must_include_related": [
+     "CAPEC-248"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "CAPEC-248"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[ChildOf]-> AttackPattern",
+     "AttackPattern -[CanAlsoBe]-> AttackPattern"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "ChildOf",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "CanAlsoBe",
+      "reverse": false,
+      "label": "AttackPattern"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which CAPEC attack patterns is CAPEC-178 (Cross-Site Flashing) a more specific case of, and which CAPEC attack patterns can each of those also be carried out as?",
+    "entities": [
+     "AttackPattern",
+     "ChildOf",
+     "CanAlsoBe"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-178"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-ChildOf-CanAlsoBe-CAPEC-44-9104e0::analyst",
+   "spec_id": "D4-ChildOf-CanAlsoBe-CAPEC-44-9104e0",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which CAPEC attack patterns is CAPEC-44 (Overflow Binary Resource File) a more specific case of, and which CAPEC attack patterns can each of those also be carried out as?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-44"
+    ],
+    "must_include_related": [
+     "CAPEC-165"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "CAPEC-165"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[ChildOf]-> AttackPattern",
+     "AttackPattern -[CanAlsoBe]-> AttackPattern"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "ChildOf",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "CanAlsoBe",
+      "reverse": false,
+      "label": "AttackPattern"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which CAPEC attack patterns is CAPEC-44 (Overflow Binary Resource File) a more specific case of, and which CAPEC attack patterns can each of those also be carried out as?",
+    "entities": [
+     "AttackPattern",
+     "ChildOf",
+     "CanAlsoBe"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-44"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-ChildOf-HAS_ALTERNATE_TERM-CAPEC-384-69413a::analyst",
+   "spec_id": "D4-ChildOf-HAS_ALTERNATE_TERM-CAPEC-384-69413a",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which CAPEC attack patterns is CAPEC-384 (Application API Message Manipulation via Man-in-the-Middle) a more specific case of, and what alternate names does each of those also go by?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-384"
+    ],
+    "must_include_related": [
+     "Man-in-the-Middle / MITM",
+     "Monkey-in-the-Middle",
+     "Monster-in-the-Middle",
+     "On-path Attacker",
+     "Person-in-the-Middle / PiTM"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "Man-in-the-Middle / MITM",
+     "Monkey-in-the-Middle",
+     "Monster-in-the-Middle",
+     "On-path Attacker",
+     "Person-in-the-Middle / PiTM"
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[ChildOf]-> AttackPattern",
+     "AttackPattern -[HAS_ALTERNATE_TERM]-> AlternateTerm"
+    ],
+    "gold_width": 5,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "ChildOf",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_ALTERNATE_TERM",
+      "reverse": false,
+      "label": "AlternateTerm"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which CAPEC attack patterns is CAPEC-384 (Application API Message Manipulation via Man-in-the-Middle) a more specific case of, and what alternate names does each of those also go by?",
+    "entities": [
+     "AttackPattern",
+     "ChildOf",
+     "HAS_ALTERNATE_TERM",
+     "AlternateTerm"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-384"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-ChildOf-HAS_INDICATOR-CAPEC-46-bb981d::analyst",
+   "spec_id": "D4-ChildOf-HAS_INDICATOR-CAPEC-46-bb981d",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which CAPEC attack patterns is CAPEC-46 (Overflow Variables and Tags) a more specific case of, and what indicators indicate each of those?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-46"
+    ],
+    "must_include_related": [
+     "An attack designed to leverage a buffer overflow and redirect execution as per the adversary's bidding is fairly difficult to detect. An attack aimed solely at bringing the system down is usually preceded by a barrage of long inputs that make no sense. In either case, it is likely that the adversary would have resorted to a few hit-or-miss attempts that will be recorded in the system event logs, if they exist."
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "An attack designed to leverage a buffer overflow and redirect execution as per the adversary's bidding is fairly difficult to detect. An attack aimed solely at bringing the system down is usually preceded by a barrage of long inputs that make no sense. In either case, it is likely that the adversary would have resorted to a few hit-or-miss attempts that will be recorded in the system event logs, if they exist."
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[ChildOf]-> AttackPattern",
+     "AttackPattern -[HAS_INDICATOR]-> Indicator"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "ChildOf",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_INDICATOR",
+      "reverse": false,
+      "label": "Indicator"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which CAPEC attack patterns is CAPEC-46 (Overflow Variables and Tags) a more specific case of, and what indicators indicate each of those?",
+    "entities": [
+     "AttackPattern",
+     "ChildOf",
+     "HAS_INDICATOR",
+     "Indicator"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-46"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-ChildOf-HAS_INDICATOR-CAPEC-645-b9f651::analyst",
+   "spec_id": "D4-ChildOf-HAS_INDICATOR-CAPEC-645-b9f651",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which CAPEC attack patterns is CAPEC-645 (Use of Captured Tickets, or Pass The Ticket) a more specific case of, and what indicators indicate each of those?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-645"
+    ],
+    "must_include_related": [
+     "Authentication attempts are originating from IP addresses or locations that are inconsistent with an account's normal IP addresses or locations.",
+     "Authentication attempts use expired or invalid credentials.",
+     "Data is being transferred and/or removed from systems/applications within the network.",
+     "Messages from a legitimate user appear to contain suspicious links or communications not consistent with the user's normal behavior.",
+     "Suspicious or Malicious software is downloaded/installed on systems within the domain."
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "Authentication attempts are originating from IP addresses or locations that are inconsistent with an account's normal IP addresses or locations.",
+     "Authentication attempts use expired or invalid credentials.",
+     "Data is being transferred and/or removed from systems/applications within the network.",
+     "Messages from a legitimate user appear to contain suspicious links or communications not consistent with the user's normal behavior.",
+     "Suspicious or Malicious software is downloaded/installed on systems within the domain."
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[ChildOf]-> AttackPattern",
+     "AttackPattern -[HAS_INDICATOR]-> Indicator"
+    ],
+    "gold_width": 5,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "ChildOf",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_INDICATOR",
+      "reverse": false,
+      "label": "Indicator"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which CAPEC attack patterns is CAPEC-645 (Use of Captured Tickets, or Pass The Ticket) a more specific case of, and what indicators indicate each of those?",
+    "entities": [
+     "AttackPattern",
+     "ChildOf",
+     "HAS_INDICATOR",
+     "Indicator"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-645"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-ChildOf-HAS_PREREQUISITE-CAPEC-494-89bc40::analyst",
+   "spec_id": "D4-ChildOf-HAS_PREREQUISITE-CAPEC-494-89bc40",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which CAPEC attack patterns is CAPEC-494 (TCP Fragmentation) a more specific case of, and what prerequisites does each of those require as a precondition?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-494"
+    ],
+    "must_include_related": [
+     "The target must accept service requests from the attacker and the adversary must be able to control the resource allocation associated with this request to be in excess of the normal allocation. The latter is usually accomplished through the presence of a bug on the target that allows the adversary to manipulate variables used in the allocation."
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "The target must accept service requests from the attacker and the adversary must be able to control the resource allocation associated with this request to be in excess of the normal allocation. The latter is usually accomplished through the presence of a bug on the target that allows the adversary to manipulate variables used in the allocation."
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[ChildOf]-> AttackPattern",
+     "AttackPattern -[HAS_PREREQUISITE]-> Prerequisite"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "ChildOf",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_PREREQUISITE",
+      "reverse": false,
+      "label": "Prerequisite"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which CAPEC attack patterns is CAPEC-494 (TCP Fragmentation) a more specific case of, and what prerequisites does each of those require as a precondition?",
+    "entities": [
+     "AttackPattern",
+     "ChildOf",
+     "HAS_PREREQUISITE",
+     "Prerequisite"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-494"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-HAS_MEMBER-CanPrecede-CAPEC-703-6ba8fe::analyst",
+   "spec_id": "D4-HAS_MEMBER-CanPrecede-CAPEC-703-6ba8fe",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which attack patterns does CAPEC-703 contain, and for each of those, which attack patterns can follow it?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-703"
+    ],
+    "must_include_related": [
+     "CAPEC-151",
+     "CAPEC-17",
+     "CAPEC-184",
+     "CAPEC-37",
+     "CAPEC-444",
+     "CAPEC-529",
+     "CAPEC-543",
+     "CAPEC-560",
+     "CAPEC-561",
+     "CAPEC-600",
+     "CAPEC-611",
+     "CAPEC-630",
+     "CAPEC-631",
+     "CAPEC-632",
+     "CAPEC-653",
+     "CAPEC-664",
+     "CAPEC-668",
+     "CAPEC-89"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "CAPEC-151",
+     "CAPEC-17",
+     "CAPEC-184",
+     "CAPEC-37",
+     "CAPEC-444",
+     "CAPEC-529",
+     "CAPEC-543",
+     "CAPEC-560",
+     "CAPEC-561",
+     "CAPEC-600",
+     "CAPEC-611",
+     "CAPEC-630",
+     "CAPEC-631",
+     "CAPEC-632",
+     "CAPEC-653",
+     "CAPEC-664",
+     "CAPEC-668",
+     "CAPEC-89"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "View -[HAS_MEMBER]-> AttackPattern",
+     "AttackPattern -[CanPrecede]-> AttackPattern"
+    ],
+    "gold_width": 18,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "HAS_MEMBER",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "CanPrecede",
+      "reverse": false,
+      "label": "AttackPattern"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which attack patterns does CAPEC-703 contain, and for each of those, which attack patterns can follow it?",
+    "entities": [
+     "View",
+     "HAS_MEMBER",
+     "AttackPattern",
+     "CanPrecede"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-703"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-HAS_MEMBER-EXPLOITS_WEAKNESS-CAPEC-686-ebb3e3::analyst",
+   "spec_id": "D4-HAS_MEMBER-EXPLOITS_WEAKNESS-CAPEC-686-ebb3e3",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which CAPEC attack patterns does CAPEC-686 (Distribution) contain, and which CWE weaknesses does each of those exploit?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-686"
+    ],
+    "must_include_related": [
+     "CWE-1269"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "CWE-1269"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Category -[HAS_MEMBER]-> AttackPattern",
+     "AttackPattern -[EXPLOITS_WEAKNESS]-> Weakness"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "HAS_MEMBER",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "EXPLOITS_WEAKNESS",
+      "reverse": false,
+      "label": "Weakness"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which CAPEC attack patterns does CAPEC-686 (Distribution) contain, and which CWE weaknesses does each of those exploit?",
+    "entities": [
+     "Category",
+     "HAS_MEMBER",
+     "AttackPattern",
+     "EXPLOITS_WEAKNESS",
+     "Weakness"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-686"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-HAS_MEMBER-HAS_ALTERNATE_TERM-CAPEC-512-16d1c2::analyst",
+   "spec_id": "D4-HAS_MEMBER-HAS_ALTERNATE_TERM-CAPEC-512-16d1c2",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which CAPEC attack patterns does CAPEC-512 (Communications) contain, and what alternate names does each of those also go by?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-512"
+    ],
+    "must_include_related": [
+     "Man-in-the-Middle / MITM",
+     "Monkey-in-the-Middle",
+     "Monster-in-the-Middle",
+     "On-path Attacker",
+     "Person-in-the-Middle / PiTM",
+     "Side-Channel Attack"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "Man-in-the-Middle / MITM",
+     "Monkey-in-the-Middle",
+     "Monster-in-the-Middle",
+     "On-path Attacker",
+     "Person-in-the-Middle / PiTM",
+     "Side-Channel Attack"
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "Category -[HAS_MEMBER]-> AttackPattern",
+     "AttackPattern -[HAS_ALTERNATE_TERM]-> AlternateTerm"
+    ],
+    "gold_width": 6,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "HAS_MEMBER",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_ALTERNATE_TERM",
+      "reverse": false,
+      "label": "AlternateTerm"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which CAPEC attack patterns does CAPEC-512 (Communications) contain, and what alternate names does each of those also go by?",
+    "entities": [
+     "Category",
+     "HAS_MEMBER",
+     "AttackPattern",
+     "HAS_ALTERNATE_TERM",
+     "AlternateTerm"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-512"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-HAS_MEMBER-HAS_EXECUTION_STEP-CAPEC-118-f6ce6c::analyst",
+   "spec_id": "D4-HAS_MEMBER-HAS_EXECUTION_STEP-CAPEC-118-f6ce6c",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which CAPEC attack patterns does CAPEC-118 (Collect and Analyze Information) contain, and what execution steps is each of those carried out through?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-118"
+    ],
+    "must_include_related": [
+     "1 Explore [Request Footprinting] The attacker examines the website information and source code of the website and uses automated tools to get as much information as possible about the system and organization. Open Source Footprinting: Examine the website about the organization and skim through the webpage's HTML source to look for comments. Network Enumeration: Perform various queries (Registrar Query, Organizational Query, Domain Query, Network Query, POC Query) on the many whois databases found on the internet to identify domain names and associated networks. DNS Interrogation: Once basic information is gathered the attack could begin to query DNS. Other Techniques: Use ping sweep, TCP scan, UDP scan, OS Identification various techniques to gain more information about the system and network."
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "1 Explore [Request Footprinting] The attacker examines the website information and source code of the website and uses automated tools to get as much information as possible about the system and organization. Open Source Footprinting: Examine the website about the organization and skim through the webpage's HTML source to look for comments. Network Enumeration: Perform various queries (Registrar Query, Organizational Query, Domain Query, Network Query, POC Query) on the many whois databases found on the internet to identify domain names and associated networks. DNS Interrogation: Once basic information is gathered the attack could begin to query DNS. Other Techniques: Use ping sweep, TCP scan, UDP scan, OS Identification various techniques to gain more information about the system and network."
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "Category -[HAS_MEMBER]-> AttackPattern",
+     "AttackPattern -[HAS_EXECUTION_STEP]-> ExecutionStep"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "HAS_MEMBER",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_EXECUTION_STEP",
+      "reverse": false,
+      "label": "ExecutionStep"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which CAPEC attack patterns does CAPEC-118 (Collect and Analyze Information) contain, and what execution steps is each of those carried out through?",
+    "entities": [
+     "Category",
+     "HAS_MEMBER",
+     "AttackPattern",
+     "HAS_EXECUTION_STEP",
+     "ExecutionStep"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-118"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-HAS_MEMBER-HAS_INDICATOR-CAPEC-372-03f3e8::analyst",
+   "spec_id": "D4-HAS_MEMBER-HAS_INDICATOR-CAPEC-372-03f3e8",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which CAPEC attack patterns does the deprecated category CAPEC-372 contain, and what indicators indicate each of those?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-372"
+    ],
+    "must_include_related": [
+     "Too many exceptions generated by the application as a result of malformed XPath queries"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "Too many exceptions generated by the application as a result of malformed XPath queries"
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "Category -[HAS_MEMBER]-> AttackPattern",
+     "AttackPattern -[HAS_INDICATOR]-> Indicator"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "HAS_MEMBER",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_INDICATOR",
+      "reverse": false,
+      "label": "Indicator"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which CAPEC attack patterns does the deprecated category CAPEC-372 contain, and what indicators indicate each of those?",
+    "entities": [
+     "Category",
+     "HAS_MEMBER",
+     "AttackPattern",
+     "HAS_INDICATOR",
+     "Indicator"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-372"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-HAS_MEMBER-HAS_MEMBER-CAPEC-439-7b1343::analyst",
+   "spec_id": "D4-HAS_MEMBER-HAS_MEMBER-CAPEC-439-7b1343",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which categories contain CAPEC-439, and which views contain each of those categories?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-439"
+    ],
+    "must_include_related": [
+     "CAPEC-1000",
+     "CAPEC-3000",
+     "CAPEC-683"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "CAPEC-1000",
+     "CAPEC-3000",
+     "CAPEC-683"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Category -[HAS_MEMBER]-> AttackPattern",
+     "View -[HAS_MEMBER]-> Category"
+    ],
+    "gold_width": 3,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "HAS_MEMBER",
+      "reverse": true,
+      "label": "Category"
+     },
+     {
+      "predicate": "HAS_MEMBER",
+      "reverse": true,
+      "label": "View"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which categories contain CAPEC-439, and which views contain each of those categories?",
+    "entities": [
+     "AttackPattern",
+     "HAS_MEMBER",
+     "Category",
+     "View"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-439"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-HAS_MEMBER-MAPS_TO[WASC]-CAPEC-515-d35374::analyst",
+   "spec_id": "D4-HAS_MEMBER-MAPS_TO[WASC]-CAPEC-515-d35374",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which attack patterns does CAPEC-515 contain, and which WASC taxonomy entries does each of those correspond to?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-515"
+    ],
+    "must_include_related": [
+     "WASC:12"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "WASC:12"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Category -[HAS_MEMBER]-> AttackPattern",
+     "AttackPattern -[MAPS_TO[WASC]]-> TaxonomyEntry:WASC"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "HAS_MEMBER",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "MAPS_TO[WASC]",
+      "reverse": false,
+      "label": "TaxonomyEntry:WASC"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which attack patterns does CAPEC-515 contain, and which WASC taxonomy entries does each of those correspond to?",
+    "entities": [
+     "Category",
+     "HAS_MEMBER",
+     "AttackPattern",
+     "MAPS_TO[WASC]",
+     "TaxonomyEntry:WASC"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-515"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-HAS_MEMBER-REQUIRES_RESOURCE-CAPEC-437-e28059::analyst",
+   "spec_id": "D4-HAS_MEMBER-REQUIRES_RESOURCE-CAPEC-437-e28059",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which attack patterns does CAPEC-437 contain, and what resources does each of those require?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-437"
+    ],
+    "must_include_related": [
+     "A tool, such as an Adversary in the Middle (CAPEC-94) Proxy or a fuzzer, that is capable of generating and injecting custom inputs to be used in the attack.",
+     "None: No specialized resources are required to execute this type of attack.",
+     "Software Integrity Attacks are usually a late stage focus of attack activity which depends upon the success of a chain of prior events. The resources required to perform the attack vary with respect to the overall attack strategy, existing countermeasures which must be bypassed, and the success of early phase attack vectors.",
+     "The attacker must have the access necessary to affect the files or other environment items the targeted application uses for its operations."
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "A tool, such as an Adversary in the Middle (CAPEC-94) Proxy or a fuzzer, that is capable of generating and injecting custom inputs to be used in the attack.",
+     "None: No specialized resources are required to execute this type of attack.",
+     "Software Integrity Attacks are usually a late stage focus of attack activity which depends upon the success of a chain of prior events. The resources required to perform the attack vary with respect to the overall attack strategy, existing countermeasures which must be bypassed, and the success of early phase attack vectors.",
+     "The attacker must have the access necessary to affect the files or other environment items the targeted application uses for its operations."
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "Category -[HAS_MEMBER]-> AttackPattern",
+     "AttackPattern -[REQUIRES_RESOURCE]-> Resource"
+    ],
+    "gold_width": 4,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "HAS_MEMBER",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "REQUIRES_RESOURCE",
+      "reverse": false,
+      "label": "Resource"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which attack patterns does CAPEC-437 contain, and what resources does each of those require?",
+    "entities": [
+     "Category",
+     "HAS_MEMBER",
+     "AttackPattern",
+     "REQUIRES_RESOURCE",
+     "Resource"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-437"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-HAS_MEMBER-REQUIRES_SKILL-CAPEC-156-543388::analyst",
+   "spec_id": "D4-HAS_MEMBER-REQUIRES_SKILL-CAPEC-156-543388",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which attack patterns does CAPEC-156 contain, and what skills does each of those require?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-156"
+    ],
+    "must_include_related": [
+     "Ability to spoof a variety of metadata to convince victims the source is trusted"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "Ability to spoof a variety of metadata to convince victims the source is trusted"
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "Category -[HAS_MEMBER]-> AttackPattern",
+     "AttackPattern -[REQUIRES_SKILL]-> Skill"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "HAS_MEMBER",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "REQUIRES_SKILL",
+      "reverse": false,
+      "label": "Skill"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which attack patterns does CAPEC-156 contain, and what skills does each of those require?",
+    "entities": [
+     "Category",
+     "HAS_MEMBER",
+     "AttackPattern",
+     "REQUIRES_SKILL",
+     "Skill"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-156"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-PeerOf-HAS_EXAMPLE-CAPEC-212-92e7ef::analyst",
+   "spec_id": "D4-PeerOf-HAS_EXAMPLE-CAPEC-212-92e7ef",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which attack patterns are peers of CAPEC-212, and what example instances illustrate each of those?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-212"
+    ],
+    "must_include_related": [
+     "A web browser with user-privileges executes JavaScript code imbedded within a malicious website. The system does not disable shared buffers for the web browser and there is no restriction or check upon user-process execution of flush or evict instructions. The Javascript code executes vulnerable transient instructions upon system to cause microarchitectural changes that establish covert channel and transfer sensitive/secret data into shared cache from address space of either kernel, web browser or another executing process on the system."
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "A web browser with user-privileges executes JavaScript code imbedded within a malicious website. The system does not disable shared buffers for the web browser and there is no restriction or check upon user-process execution of flush or evict instructions. The Javascript code executes vulnerable transient instructions upon system to cause microarchitectural changes that establish covert channel and transfer sensitive/secret data into shared cache from address space of either kernel, web browser or another executing process on the system."
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[PeerOf]-> AttackPattern",
+     "AttackPattern -[HAS_EXAMPLE]-> Example"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "PeerOf",
+      "reverse": true,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_EXAMPLE",
+      "reverse": false,
+      "label": "Example"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which attack patterns are peers of CAPEC-212, and what example instances illustrate each of those?",
+    "entities": [
+     "AttackPattern",
+     "PeerOf",
+     "HAS_EXAMPLE",
+     "Example"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-212"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-PeerOf-HAS_INDICATOR-CAPEC-124-1c6ba9::analyst",
+   "spec_id": "D4-PeerOf-HAS_INDICATOR-CAPEC-124-1c6ba9",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which attack patterns are peers of CAPEC-124, and what indicators point to each of those?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-124"
+    ],
+    "must_include_related": [
+     "File Signatures for Malicious Software capable of abusing Transient Instruction Set Execution"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "File Signatures for Malicious Software capable of abusing Transient Instruction Set Execution"
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[PeerOf]-> AttackPattern",
+     "AttackPattern -[HAS_INDICATOR]-> Indicator"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "PeerOf",
+      "reverse": true,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_INDICATOR",
+      "reverse": false,
+      "label": "Indicator"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which attack patterns are peers of CAPEC-124, and what indicators point to each of those?",
+    "entities": [
+     "AttackPattern",
+     "PeerOf",
+     "HAS_INDICATOR",
+     "Indicator"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-124"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-PeerOf-HAS_MITIGATION-CAPEC-124-de4599::analyst",
+   "spec_id": "D4-PeerOf-HAS_MITIGATION-CAPEC-124-de4599",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which attack patterns are peers of CAPEC-124, and what mitigations address each of those?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-124"
+    ],
+    "must_include_related": [
+     "Configuration: Architectural Design of Microcode to limit abuse of speculative execution and out-of-order execution",
+     "Configuration: Disable Copy-on-Write between Cloud VMs",
+     "Configuration: Disable SharedArrayBuffer for Web Browsers",
+     "Configuration: Privilege Checks on Cache Flush Instructions",
+     "Implementation: DAWG (Dynamically Allocated Way Guard) - processor cache properly divided between different programs/processes that don't share resources",
+     "Implementation: KPTI (Kernel Page-Table Isolation) to completely separate user-space and kernel space page tables",
+     "Implementation: Non-inclusive Cache Memories to prevent Flush+Reload Attacks"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "Configuration: Architectural Design of Microcode to limit abuse of speculative execution and out-of-order execution",
+     "Configuration: Disable Copy-on-Write between Cloud VMs",
+     "Configuration: Disable SharedArrayBuffer for Web Browsers",
+     "Configuration: Privilege Checks on Cache Flush Instructions",
+     "Implementation: DAWG (Dynamically Allocated Way Guard) - processor cache properly divided between different programs/processes that don't share resources",
+     "Implementation: KPTI (Kernel Page-Table Isolation) to completely separate user-space and kernel space page tables",
+     "Implementation: Non-inclusive Cache Memories to prevent Flush+Reload Attacks"
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[PeerOf]-> AttackPattern",
+     "AttackPattern -[HAS_MITIGATION]-> CapecMitigation"
+    ],
+    "gold_width": 7,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "PeerOf",
+      "reverse": true,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_MITIGATION",
+      "reverse": false,
+      "label": "CapecMitigation"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which attack patterns are peers of CAPEC-124, and what mitigations address each of those?",
+    "entities": [
+     "AttackPattern",
+     "PeerOf",
+     "HAS_MITIGATION",
+     "CapecMitigation"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-124"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-PeerOf-HAS_PREREQUISITE-CAPEC-12-56106d::analyst",
+   "spec_id": "D4-PeerOf-HAS_PREREQUISITE-CAPEC-12-56106d",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which attack patterns are peers of CAPEC-12, and what prerequisites does each of those require as a precondition?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-12"
+    ],
+    "must_include_related": [
+     "Identifiers must have long lifetimes and potential for reusability.",
+     "Server software must allow concurrent sessions to exist.",
+     "Server software must rely on weak identifier proof and/or verification schemes."
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "Identifiers must have long lifetimes and potential for reusability.",
+     "Server software must allow concurrent sessions to exist.",
+     "Server software must rely on weak identifier proof and/or verification schemes."
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[PeerOf]-> AttackPattern",
+     "AttackPattern -[HAS_PREREQUISITE]-> Prerequisite"
+    ],
+    "gold_width": 3,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "PeerOf",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_PREREQUISITE",
+      "reverse": false,
+      "label": "Prerequisite"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which attack patterns are peers of CAPEC-12, and what prerequisites does each of those require as a precondition?",
+    "entities": [
+     "AttackPattern",
+     "PeerOf",
+     "HAS_PREREQUISITE",
+     "Prerequisite"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-12"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-PeerOf-HAS_PREREQUISITE-CAPEC-64-fe6789::analyst",
+   "spec_id": "D4-PeerOf-HAS_PREREQUISITE-CAPEC-64-fe6789",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which attack patterns are peers of CAPEC-64, and what prerequisites does each of those require as a precondition?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-64"
+    ],
+    "must_include_related": [
+     "Input filtering and validating is not done properly leaving the door open to harmful characters for the target host.",
+     "The application's UTF-8 decoder accepts and interprets illegal UTF-8 characters or non-shortest format of UTF-8 encoding."
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "Input filtering and validating is not done properly leaving the door open to harmful characters for the target host.",
+     "The application's UTF-8 decoder accepts and interprets illegal UTF-8 characters or non-shortest format of UTF-8 encoding."
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[PeerOf]-> AttackPattern",
+     "AttackPattern -[HAS_PREREQUISITE]-> Prerequisite"
+    ],
+    "gold_width": 2,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "PeerOf",
+      "reverse": true,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "HAS_PREREQUISITE",
+      "reverse": false,
+      "label": "Prerequisite"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which attack patterns are peers of CAPEC-64, and what prerequisites does each of those require as a precondition?",
+    "entities": [
+     "AttackPattern",
+     "PeerOf",
+     "HAS_PREREQUISITE",
+     "Prerequisite"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-64"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-PeerOf-MAPS_TO[WASC]-CAPEC-105-91f671::analyst",
+   "spec_id": "D4-PeerOf-MAPS_TO[WASC]-CAPEC-105-91f671",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which attack patterns are peers of CAPEC-105, and which WASC taxonomy entries does each of those correspond to?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-105"
+    ],
+    "must_include_related": [
+     "WASC:25"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "WASC:25"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[PeerOf]-> AttackPattern",
+     "AttackPattern -[MAPS_TO[WASC]]-> TaxonomyEntry:WASC"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "PeerOf",
+      "reverse": false,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "MAPS_TO[WASC]",
+      "reverse": false,
+      "label": "TaxonomyEntry:WASC"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which attack patterns are peers of CAPEC-105, and which WASC taxonomy entries does each of those correspond to?",
+    "entities": [
+     "AttackPattern",
+     "PeerOf",
+     "MAPS_TO[WASC]",
+     "TaxonomyEntry:WASC"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-105"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-PeerOf-REQUIRES_RESOURCE-CAPEC-124-40641e::analyst",
+   "spec_id": "D4-PeerOf-REQUIRES_RESOURCE-CAPEC-124-40641e",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which attack patterns are peers of CAPEC-124, and what resources does each of those require?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-124"
+    ],
+    "must_include_related": [
+     "C2C mechanism or direct access to victim system, capable of dropping malicious program and collecting covert channel attack data.",
+     "Malicious program capable of triggering execution of transient instructions or vulnerable instruction sequences of victim program and performing a covert channel attack to gather data from victim process memory space. Ultimately, the speed with which an attacker discovers a secret is directly proportional to the computational resources of the victim machine."
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "C2C mechanism or direct access to victim system, capable of dropping malicious program and collecting covert channel attack data.",
+     "Malicious program capable of triggering execution of transient instructions or vulnerable instruction sequences of victim program and performing a covert channel attack to gather data from victim process memory space. Ultimately, the speed with which an attacker discovers a secret is directly proportional to the computational resources of the victim machine."
+    ],
+    "scheme": "capec",
+    "kind": "text_set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[PeerOf]-> AttackPattern",
+     "AttackPattern -[REQUIRES_RESOURCE]-> Resource"
+    ],
+    "gold_width": 2,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "PeerOf",
+      "reverse": true,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "REQUIRES_RESOURCE",
+      "reverse": false,
+      "label": "Resource"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which attack patterns are peers of CAPEC-124, and what resources does each of those require?",
+    "entities": [
+     "AttackPattern",
+     "PeerOf",
+     "REQUIRES_RESOURCE",
+     "Resource"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-124"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-attributed-to-uses-C0027-4bd64d::analyst",
+   "spec_id": "D4-attributed-to-uses-C0027-4bd64d",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which threat groups is C0027 attributed to, and what malware and tools does each of those groups use?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "C0027"
+    ],
+    "must_include_related": [
+     "S0002",
+     "S0183",
+     "S0349",
+     "S0508",
+     "S0591",
+     "S0670",
+     "S1040",
+     "S1068",
+     "S1148"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "S0002",
+     "S0183",
+     "S0349",
+     "S0508",
+     "S0591",
+     "S0670",
+     "S1040",
+     "S1068",
+     "S1148"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Campaign -[attributed-to]-> Group",
+     "Group -[uses]-> Software"
+    ],
+    "gold_width": 9,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "attributed-to",
+      "reverse": false,
+      "label": "Group"
+     },
+     {
+      "predicate": "uses",
+      "reverse": false,
+      "label": "Software"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which threat groups is C0027 attributed to, and what malware and tools does each of those groups use?",
+    "entities": [
+     "Campaign",
+     "attributed-to",
+     "Group",
+     "uses",
+     "Software"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "C0027"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-kill_chain_phase-mitigates-TA0007-254bd8::analyst",
+   "spec_id": "D4-kill_chain_phase-mitigates-TA0007-254bd8",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which techniques belong to TA0007, and which mitigations address each of those techniques?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "TA0007"
+    ],
+    "must_include_related": [
+     "M1018",
+     "M1027",
+     "M1028",
+     "M1030",
+     "M1031",
+     "M1032",
+     "M1035",
+     "M1041",
+     "M1042",
+     "M1047"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "M1018",
+     "M1027",
+     "M1028",
+     "M1030",
+     "M1031",
+     "M1032",
+     "M1035",
+     "M1041",
+     "M1042",
+     "M1047"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Technique -[kill_chain_phase]-> Tactic",
+     "Mitigation -[mitigates]-> Technique"
+    ],
+    "gold_width": 10,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "kill_chain_phase",
+      "reverse": true,
+      "label": "Technique"
+     },
+     {
+      "predicate": "mitigates",
+      "reverse": true,
+      "label": "Mitigation"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which techniques belong to TA0007, and which mitigations address each of those techniques?",
+    "entities": [
+     "Tactic",
+     "kill_chain_phase",
+     "Technique",
+     "mitigates",
+     "Mitigation"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "TA0007"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-kill_chain_phase-tactic_refs-T1036.006-285575::analyst",
+   "spec_id": "D4-kill_chain_phase-tactic_refs-T1036.006-285575",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which tactics does T1036.006 belong to, and which matrices cover each of those tactics?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "T1036.006"
+    ],
+    "must_include_related": [
+     "enterprise-attack"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "enterprise-attack"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Technique -[kill_chain_phase]-> Tactic",
+     "Matrix -[tactic_refs]-> Tactic"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "kill_chain_phase",
+      "reverse": false,
+      "label": "Tactic"
+     },
+     {
+      "predicate": "tactic_refs",
+      "reverse": true,
+      "label": "Matrix"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which tactics does T1036.006 belong to, and which matrices cover each of those tactics?",
+    "entities": [
+     "Technique",
+     "kill_chain_phase",
+     "Tactic",
+     "tactic_refs",
+     "Matrix"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "T1036.006"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-kill_chain_phase-tactic_refs-T1578-9370d3::analyst",
+   "spec_id": "D4-kill_chain_phase-tactic_refs-T1578-9370d3",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which tactics does T1578 belong to, and which matrices cover each of those tactics?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "T1578"
+    ],
+    "must_include_related": [
+     "enterprise-attack"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "enterprise-attack"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Technique -[kill_chain_phase]-> Tactic",
+     "Matrix -[tactic_refs]-> Tactic"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "kill_chain_phase",
+      "reverse": false,
+      "label": "Tactic"
+     },
+     {
+      "predicate": "tactic_refs",
+      "reverse": true,
+      "label": "Matrix"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which tactics does T1578 belong to, and which matrices cover each of those tactics?",
+    "entities": [
+     "Technique",
+     "kill_chain_phase",
+     "Tactic",
+     "tactic_refs",
+     "Matrix"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "T1578"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-log_source-x_mitre_analytic_refs-DC0054-957393::analyst",
+   "spec_id": "D4-log_source-x_mitre_analytic_refs-DC0054-957393",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which detection analytics draw on the Drive Access data component DC0054, and which detection strategies do those analytics implement?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "DC0054"
+    ],
+    "must_include_related": [
+     "DET0099",
+     "DET0137",
+     "DET0150",
+     "DET0278",
+     "DET0297",
+     "DET0316",
+     "DET0410",
+     "DET0491"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "DET0099",
+     "DET0137",
+     "DET0150",
+     "DET0278",
+     "DET0297",
+     "DET0316",
+     "DET0410",
+     "DET0491"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Analytic -[log_source]-> DataComponent",
+     "DetectionStrategy -[x_mitre_analytic_refs]-> Analytic"
+    ],
+    "gold_width": 8,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "log_source",
+      "reverse": true,
+      "label": "Analytic"
+     },
+     {
+      "predicate": "x_mitre_analytic_refs",
+      "reverse": true,
+      "label": "DetectionStrategy"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which detection analytics draw on the Drive Access data component DC0054, and which detection strategies do those analytics implement?",
+    "entities": [
+     "DataComponent",
+     "log_source",
+     "Analytic",
+     "x_mitre_analytic_refs",
+     "DetectionStrategy"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "DC0054"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-subtechnique-of-uses-T1222-93ff54::analyst",
+   "spec_id": "D4-subtechnique-of-uses-T1222-93ff54",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which malware and tools use the sub-techniques of File and Directory Permissions Modification (T1222)?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "T1222"
+    ],
+    "must_include_related": [
+     "S0201",
+     "S0281",
+     "S0352",
+     "S0366",
+     "S0402",
+     "S0446",
+     "S0482",
+     "S0531",
+     "S0570",
+     "S0587",
+     "S0598",
+     "S0599",
+     "S0612",
+     "S0658",
+     "S0693",
+     "S1068",
+     "S1070",
+     "S1105",
+     "S1180",
+     "S9002",
+     "S9013"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "S0201",
+     "S0281",
+     "S0352",
+     "S0366",
+     "S0402",
+     "S0446",
+     "S0482",
+     "S0531",
+     "S0570",
+     "S0587",
+     "S0598",
+     "S0599",
+     "S0612",
+     "S0658",
+     "S0693",
+     "S1068",
+     "S1070",
+     "S1105",
+     "S1180",
+     "S9002",
+     "S9013"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Technique -[subtechnique-of]-> Technique",
+     "Software -[uses]-> Technique"
+    ],
+    "gold_width": 21,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "subtechnique-of",
+      "reverse": true,
+      "label": "Technique"
+     },
+     {
+      "predicate": "uses",
+      "reverse": true,
+      "label": "Software"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which malware and tools use the sub-techniques of File and Directory Permissions Modification (T1222)?",
+    "entities": [
+     "Technique",
+     "subtechnique-of",
+     "uses",
+     "Software"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "T1222"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-uses-attributed-to-T1053.005-59225c::analyst",
+   "spec_id": "D4-uses-attributed-to-T1053.005-59225c",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which threat groups use Scheduled Task (T1053.005), and which campaigns are those groups attributed to?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "T1053.005"
+    ],
+    "must_include_related": [
+     "C0017",
+     "C0022",
+     "C0023",
+     "C0024",
+     "C0025",
+     "C0028",
+     "C0034",
+     "C0040",
+     "C0042",
+     "C0044",
+     "C0047"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "C0017",
+     "C0022",
+     "C0023",
+     "C0024",
+     "C0025",
+     "C0028",
+     "C0034",
+     "C0040",
+     "C0042",
+     "C0044",
+     "C0047"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Group -[uses]-> Technique",
+     "Campaign -[attributed-to]-> Group"
+    ],
+    "gold_width": 11,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "uses",
+      "reverse": true,
+      "label": "Group"
+     },
+     {
+      "predicate": "attributed-to",
+      "reverse": true,
+      "label": "Campaign"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which threat groups use Scheduled Task (T1053.005), and which campaigns are those groups attributed to?",
+    "entities": [
+     "Technique",
+     "uses",
+     "Group",
+     "attributed-to",
+     "Campaign"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "T1053.005"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-uses-attributed-to-T1204.001-93f526::analyst",
+   "spec_id": "D4-uses-attributed-to-T1204.001-93f526",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which threat groups use Malicious Link (T1204.001), and which campaigns are those groups attributed to?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "T1204.001"
+    ],
+    "must_include_related": [
+     "C0011",
+     "C0023",
+     "C0024",
+     "C0025",
+     "C0028",
+     "C0034",
+     "C0042",
+     "C0044",
+     "C0047",
+     "C0049",
+     "C0051"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "C0011",
+     "C0023",
+     "C0024",
+     "C0025",
+     "C0028",
+     "C0034",
+     "C0042",
+     "C0044",
+     "C0047",
+     "C0049",
+     "C0051"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Group -[uses]-> Technique",
+     "Campaign -[attributed-to]-> Group"
+    ],
+    "gold_width": 11,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "uses",
+      "reverse": true,
+      "label": "Group"
+     },
+     {
+      "predicate": "attributed-to",
+      "reverse": true,
+      "label": "Campaign"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which threat groups use Malicious Link (T1204.001), and which campaigns are those groups attributed to?",
+    "entities": [
+     "Technique",
+     "uses",
+     "Group",
+     "attributed-to",
+     "Campaign"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "T1204.001"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-uses-detects-C0005-d18060::analyst",
+   "spec_id": "D4-uses-detects-C0005-d18060",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which techniques does Operation Spalax (C0005) use, and which detection strategies detect those techniques?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "C0005"
+    ],
+    "must_include_related": [
+     "DET0023",
+     "DET0039",
+     "DET0046",
+     "DET0066",
+     "DET0087",
+     "DET0107",
+     "DET0119",
+     "DET0236",
+     "DET0275",
+     "DET0294",
+     "DET0425",
+     "DET0475",
+     "DET0516",
+     "DET0824",
+     "DET0845",
+     "DET0852",
+     "DET0892"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "DET0023",
+     "DET0039",
+     "DET0046",
+     "DET0066",
+     "DET0087",
+     "DET0107",
+     "DET0119",
+     "DET0236",
+     "DET0275",
+     "DET0294",
+     "DET0425",
+     "DET0475",
+     "DET0516",
+     "DET0824",
+     "DET0845",
+     "DET0852",
+     "DET0892"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Campaign -[uses]-> Technique",
+     "DetectionStrategy -[detects]-> Technique"
+    ],
+    "gold_width": 17,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "uses",
+      "reverse": false,
+      "label": "Technique"
+     },
+     {
+      "predicate": "detects",
+      "reverse": true,
+      "label": "DetectionStrategy"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which techniques does Operation Spalax (C0005) use, and which detection strategies detect those techniques?",
+    "entities": [
+     "Campaign",
+     "uses",
+     "Technique",
+     "detects",
+     "DetectionStrategy"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "C0005"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-uses-kill_chain_phase-G0122-c107c9::analyst",
+   "spec_id": "D4-uses-kill_chain_phase-G0122-c107c9",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which techniques does Silent Librarian (G0122) use, and which tactics do those techniques belong to?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "G0122"
+    ],
+    "must_include_related": [
+     "TA0001",
+     "TA0003",
+     "TA0004",
+     "TA0005",
+     "TA0006",
+     "TA0009",
+     "TA0042",
+     "TA0043"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "TA0001",
+     "TA0003",
+     "TA0004",
+     "TA0005",
+     "TA0006",
+     "TA0009",
+     "TA0042",
+     "TA0043"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Group -[uses]-> Technique",
+     "Technique -[kill_chain_phase]-> Tactic"
+    ],
+    "gold_width": 8,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "uses",
+      "reverse": false,
+      "label": "Technique"
+     },
+     {
+      "predicate": "kill_chain_phase",
+      "reverse": false,
+      "label": "Tactic"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which techniques does Silent Librarian (G0122) use, and which tactics do those techniques belong to?",
+    "entities": [
+     "Group",
+     "uses",
+     "Technique",
+     "kill_chain_phase",
+     "Tactic"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "G0122"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-uses-subtechnique-of-S1060-51930e::analyst",
+   "spec_id": "D4-uses-subtechnique-of-S1060-51930e",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which techniques does Mafalda (S1060) use, and which parent techniques are those a sub-technique of?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "S1060"
+    ],
+    "must_include_related": [
+     "T1003",
+     "T1027",
+     "T1059",
+     "T1071",
+     "T1074",
+     "T1090",
+     "T1132",
+     "T1134",
+     "T1205",
+     "T1518",
+     "T1552",
+     "T1569",
+     "T1573",
+     "T1685"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "T1003",
+     "T1027",
+     "T1059",
+     "T1071",
+     "T1074",
+     "T1090",
+     "T1132",
+     "T1134",
+     "T1205",
+     "T1518",
+     "T1552",
+     "T1569",
+     "T1573",
+     "T1685"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Software -[uses]-> Technique",
+     "Technique -[subtechnique-of]-> Technique"
+    ],
+    "gold_width": 14,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "uses",
+      "reverse": false,
+      "label": "Technique"
+     },
+     {
+      "predicate": "subtechnique-of",
+      "reverse": false,
+      "label": "Technique"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which techniques does Mafalda (S1060) use, and which parent techniques are those a sub-technique of?",
+    "entities": [
+     "Software",
+     "uses",
+     "Technique",
+     "subtechnique-of"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "S1060"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-x_mitre_analytic_refs-log_source-DET0350-d0c2a3::analyst",
+   "spec_id": "D4-x_mitre_analytic_refs-log_source-DET0350-d0c2a3",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which detection analytics implement Detecting Downgrade Attacks (DET0350), and which data components do those analytics draw on?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "DET0350"
+    ],
+    "must_include_related": [
+     "DC0032",
+     "DC0034",
+     "DC0063",
+     "DC0064"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "DC0032",
+     "DC0034",
+     "DC0063",
+     "DC0064"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "DetectionStrategy -[x_mitre_analytic_refs]-> Analytic",
+     "Analytic -[log_source]-> DataComponent"
+    ],
+    "gold_width": 4,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "x_mitre_analytic_refs",
+      "reverse": false,
+      "label": "Analytic"
+     },
+     {
+      "predicate": "log_source",
+      "reverse": false,
+      "label": "DataComponent"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which detection analytics implement Detecting Downgrade Attacks (DET0350), and which data components do those analytics draw on?",
+    "entities": [
+     "DetectionStrategy",
+     "x_mitre_analytic_refs",
+     "Analytic",
+     "log_source",
+     "DataComponent"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "DET0350"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D4-x_mitre_analytic_refs-log_source-DET0355-b68763::analyst",
+   "spec_id": "D4-x_mitre_analytic_refs-log_source-DET0355-b68763",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D4",
+   "split": "generated",
+   "question": "Which detection analytics implement the Detection Strategy for Email Bombing (DET0355), and which data components do those analytics draw on?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "DET0355"
+    ],
+    "must_include_related": [
+     "DC0038",
+     "DC0039"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "DC0038",
+     "DC0039"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "DetectionStrategy -[x_mitre_analytic_refs]-> Analytic",
+     "Analytic -[log_source]-> DataComponent"
+    ],
+    "gold_width": 2,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "x_mitre_analytic_refs",
+      "reverse": false,
+      "label": "Analytic"
+     },
+     {
+      "predicate": "log_source",
+      "reverse": false,
+      "label": "DataComponent"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which detection analytics implement the Detection Strategy for Email Bombing (DET0355), and which data components do those analytics draw on?",
+    "entities": [
+     "DetectionStrategy",
+     "x_mitre_analytic_refs",
+     "Analytic",
+     "log_source",
+     "DataComponent"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "DET0355"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D5-CanFollow-Likelihood_Of_Attack-CAPEC-234-17a923::analyst",
+   "spec_id": "D5-CanFollow-Likelihood_Of_Attack-CAPEC-234-17a923",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D5",
+   "split": "generated",
+   "question": "Which attack patterns can precede Hijacking a privileged process (CAPEC-234), counting only the ones with a High likelihood of attack?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-234"
+    ],
+    "must_include_related": [
+     "CAPEC-100",
+     "CAPEC-242"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "CAPEC-100",
+     "CAPEC-242"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[CanFollow]-> AttackPattern"
+    ],
+    "gold_width": 2,
+    "dangling": [],
+    "filters": [
+     {
+      "label": "AttackPattern",
+      "property": "Likelihood_Of_Attack",
+      "op": "eq",
+      "value": "High"
+     }
+    ],
+    "steps": [
+     {
+      "predicate": "CanFollow",
+      "reverse": false,
+      "label": "AttackPattern"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which attack patterns can precede Hijacking a privileged process (CAPEC-234), counting only the ones with a High likelihood of attack?",
+    "entities": [
+     "AttackPattern",
+     "CanFollow"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-234"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D5-ChildOf-Abstraction-CAPEC-41-9bdee1::analyst",
+   "spec_id": "D5-ChildOf-Abstraction-CAPEC-41-9bdee1",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D5",
+   "split": "generated",
+   "question": "Which Meta-level attack patterns is Using Meta-characters in E-mail Headers to Inject Malicious Payloads (CAPEC-41) a more specific case of?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-41"
+    ],
+    "must_include_related": [
+     "CAPEC-242"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "CAPEC-242"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[ChildOf]-> AttackPattern"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [
+     {
+      "label": "AttackPattern",
+      "property": "Abstraction",
+      "op": "eq",
+      "value": "Meta"
+     }
+    ],
+    "steps": [
+     {
+      "predicate": "ChildOf",
+      "reverse": false,
+      "label": "AttackPattern"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which Meta-level attack patterns is Using Meta-characters in E-mail Headers to Inject Malicious Payloads (CAPEC-41) a more specific case of?",
+    "entities": [
+     "AttackPattern",
+     "ChildOf"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-41"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D5-ChildOf-Typical_Severity-CAPEC-680-2ef906::analyst",
+   "spec_id": "D5-ChildOf-Typical_Severity-CAPEC-680-2ef906",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D5",
+   "split": "generated",
+   "question": "Which attack patterns is Exploitation of Improperly Controlled Registers (CAPEC-680) a more specific case of, counting only the ones with Medium typical severity?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-680"
+    ],
+    "must_include_related": [
+     "CAPEC-180"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "CAPEC-180"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[ChildOf]-> AttackPattern"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [
+     {
+      "label": "AttackPattern",
+      "property": "Typical_Severity",
+      "op": "eq",
+      "value": "Medium"
+     }
+    ],
+    "steps": [
+     {
+      "predicate": "ChildOf",
+      "reverse": false,
+      "label": "AttackPattern"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which attack patterns is Exploitation of Improperly Controlled Registers (CAPEC-680) a more specific case of, counting only the ones with Medium typical severity?",
+    "entities": [
+     "AttackPattern",
+     "ChildOf"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-680"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D5-HAS_MEMBER-Likelihood_Of_Attack-CAPEC-703-1ce9e4::analyst",
+   "spec_id": "D5-HAS_MEMBER-Likelihood_Of_Attack-CAPEC-703-1ce9e4",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D5",
+   "split": "generated",
+   "question": "Which attack patterns in the Industrial Control System (ICS) Patterns view (CAPEC-703) have a High likelihood of attack?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-703"
+    ],
+    "must_include_related": [
+     "CAPEC-1",
+     "CAPEC-125",
+     "CAPEC-141",
+     "CAPEC-163",
+     "CAPEC-169",
+     "CAPEC-180",
+     "CAPEC-313",
+     "CAPEC-560",
+     "CAPEC-94",
+     "CAPEC-98"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "CAPEC-1",
+     "CAPEC-125",
+     "CAPEC-141",
+     "CAPEC-163",
+     "CAPEC-169",
+     "CAPEC-180",
+     "CAPEC-313",
+     "CAPEC-560",
+     "CAPEC-94",
+     "CAPEC-98"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "View -[HAS_MEMBER]-> AttackPattern"
+    ],
+    "gold_width": 10,
+    "dangling": [],
+    "filters": [
+     {
+      "label": "AttackPattern",
+      "property": "Likelihood_Of_Attack",
+      "op": "eq",
+      "value": "High"
+     }
+    ],
+    "steps": [
+     {
+      "predicate": "HAS_MEMBER",
+      "reverse": false,
+      "label": "AttackPattern"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which attack patterns in the Industrial Control System (ICS) Patterns view (CAPEC-703) have a High likelihood of attack?",
+    "entities": [
+     "View",
+     "HAS_MEMBER",
+     "AttackPattern"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-703"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D5-PeerOf-Likelihood_Of_Attack-CAPEC-80-6820ad::analyst",
+   "spec_id": "D5-PeerOf-Likelihood_Of_Attack-CAPEC-80-6820ad",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D5",
+   "split": "generated",
+   "question": "Which peers of Using UTF-8 Encoding to Bypass Validation Logic (CAPEC-80) have a Medium likelihood of attack?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-80"
+    ],
+    "must_include_related": [
+     "CAPEC-71"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "CAPEC-71"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[PeerOf]-> AttackPattern"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [
+     {
+      "label": "AttackPattern",
+      "property": "Likelihood_Of_Attack",
+      "op": "eq",
+      "value": "Medium"
+     }
+    ],
+    "steps": [
+     {
+      "predicate": "PeerOf",
+      "reverse": false,
+      "label": "AttackPattern"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "capec",
+    "text": "Which peers of Using UTF-8 Encoding to Bypass Validation Logic (CAPEC-80) have a Medium likelihood of attack?",
+    "entities": [
+     "AttackPattern",
+     "PeerOf"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "CAPEC-80"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D5-uses-x_mitre_platforms-C0014-ea0f85::analyst",
+   "spec_id": "D5-uses-x_mitre_platforms-C0014-ea0f85",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D5",
+   "split": "generated",
+   "question": "Which of the malware and tools used in Operation Wocao (C0014) apply to Linux?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "C0014"
+    ],
+    "must_include_related": [
+     "S0183",
+     "S0357"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "S0183",
+     "S0357"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Campaign -[uses]-> Software"
+    ],
+    "gold_width": 2,
+    "dangling": [],
+    "filters": [
+     {
+      "label": "Software",
+      "property": "x_mitre_platforms",
+      "op": "eq",
+      "value": "Linux"
+     }
+    ],
+    "steps": [
+     {
+      "predicate": "uses",
+      "reverse": false,
+      "label": "Software"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which of the malware and tools used in Operation Wocao (C0014) apply to Linux?",
+    "entities": [
+     "Campaign",
+     "uses",
+     "Software"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "C0014"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D5-uses-x_mitre_platforms-C0017-c200fa::analyst",
+   "spec_id": "D5-uses-x_mitre_platforms-C0017-c200fa",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D5",
+   "split": "generated",
+   "question": "Which malware and tools used in campaign C0017 run on Windows?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "C0017"
+    ],
+    "must_include_related": [
+     "S0002",
+     "S0105",
+     "S0154",
+     "S1051",
+     "S1052"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "S0002",
+     "S0105",
+     "S0154",
+     "S1051",
+     "S1052"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Campaign -[uses]-> Software"
+    ],
+    "gold_width": 5,
+    "dangling": [],
+    "filters": [
+     {
+      "label": "Software",
+      "property": "x_mitre_platforms",
+      "op": "eq",
+      "value": "Windows"
+     }
+    ],
+    "steps": [
+     {
+      "predicate": "uses",
+      "reverse": false,
+      "label": "Software"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which malware and tools used in campaign C0017 run on Windows?",
+    "entities": [
+     "Campaign",
+     "uses",
+     "Software"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "C0017"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D5-uses-x_mitre_platforms-C0029-6e5dcb::analyst",
+   "spec_id": "D5-uses-x_mitre_platforms-C0029-6e5dcb",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D5",
+   "split": "generated",
+   "question": "Which of the malware and tools used in the Cutting Edge campaign (C0029) apply to network devices?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "C0029"
+    ],
+    "must_include_related": [
+     "S1114",
+     "S1115",
+     "S1116",
+     "S1117",
+     "S1118",
+     "S1119",
+     "S1120",
+     "S1121",
+     "S1123"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "S1114",
+     "S1115",
+     "S1116",
+     "S1117",
+     "S1118",
+     "S1119",
+     "S1120",
+     "S1121",
+     "S1123"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Campaign -[uses]-> Software"
+    ],
+    "gold_width": 9,
+    "dangling": [],
+    "filters": [
+     {
+      "label": "Software",
+      "property": "x_mitre_platforms",
+      "op": "eq",
+      "value": "Network Devices"
+     }
+    ],
+    "steps": [
+     {
+      "predicate": "uses",
+      "reverse": false,
+      "label": "Software"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which of the malware and tools used in the Cutting Edge campaign (C0029) apply to network devices?",
+    "entities": [
+     "Campaign",
+     "uses",
+     "Software"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "C0029"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D5-uses-x_mitre_platforms-C0043-36eeb0::analyst",
+   "spec_id": "D5-uses-x_mitre_platforms-C0043-36eeb0",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D5",
+   "split": "generated",
+   "question": "Which ATT&CK techniques used in the Indian Critical Infrastructure Intrusions campaign C0043 apply to Linux?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "C0043"
+    ],
+    "must_include_related": [
+     "T1071.001",
+     "T1568",
+     "T1571",
+     "T1573.002"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "T1071.001",
+     "T1568",
+     "T1571",
+     "T1573.002"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Campaign -[uses]-> Technique"
+    ],
+    "gold_width": 4,
+    "dangling": [],
+    "filters": [
+     {
+      "label": "Technique",
+      "property": "x_mitre_platforms",
+      "op": "eq",
+      "value": "Linux"
+     }
+    ],
+    "steps": [
+     {
+      "predicate": "uses",
+      "reverse": false,
+      "label": "Technique"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which ATT&CK techniques used in the Indian Critical Infrastructure Intrusions campaign C0043 apply to Linux?",
+    "entities": [
+     "Campaign",
+     "uses",
+     "Technique"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "C0043"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D5-uses-x_mitre_platforms-C0062-a8692a::analyst",
+   "spec_id": "D5-uses-x_mitre_platforms-C0062-a8692a",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D5",
+   "split": "generated",
+   "question": "Which ATT&CK techniques used in the Anthropic AI-orchestrated Campaign C0062 apply to the PRE platform?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "C0062"
+    ],
+    "must_include_related": [
+     "T1584.004",
+     "T1587.004",
+     "T1588.002",
+     "T1588.007",
+     "T1590.004",
+     "T1592.002",
+     "T1592.004",
+     "T1595.001",
+     "T1595.002",
+     "T1683"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "T1584.004",
+     "T1587.004",
+     "T1588.002",
+     "T1588.007",
+     "T1590.004",
+     "T1592.002",
+     "T1592.004",
+     "T1595.001",
+     "T1595.002",
+     "T1683"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Campaign -[uses]-> Technique"
+    ],
+    "gold_width": 10,
+    "dangling": [],
+    "filters": [
+     {
+      "label": "Technique",
+      "property": "x_mitre_platforms",
+      "op": "eq",
+      "value": "PRE"
+     }
+    ],
+    "steps": [
+     {
+      "predicate": "uses",
+      "reverse": false,
+      "label": "Technique"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which ATT&CK techniques used in the Anthropic AI-orchestrated Campaign C0062 apply to the PRE platform?",
+    "entities": [
+     "Campaign",
+     "uses",
+     "Technique"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "C0062"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D5-uses-x_mitre_platforms-G0120-d0bebb::analyst",
+   "spec_id": "D5-uses-x_mitre_platforms-G0120-d0bebb",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D5",
+   "split": "generated",
+   "question": "Which ATT&CK techniques used by Evilnum G0120 apply to Linux?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "G0120"
+    ],
+    "must_include_related": [
+     "T1059.007",
+     "T1070.004",
+     "T1105",
+     "T1204.001",
+     "T1219.002",
+     "T1497.001",
+     "T1539",
+     "T1555",
+     "T1566.002"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "T1059.007",
+     "T1070.004",
+     "T1105",
+     "T1204.001",
+     "T1219.002",
+     "T1497.001",
+     "T1539",
+     "T1555",
+     "T1566.002"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Group -[uses]-> Technique"
+    ],
+    "gold_width": 9,
+    "dangling": [],
+    "filters": [
+     {
+      "label": "Technique",
+      "property": "x_mitre_platforms",
+      "op": "eq",
+      "value": "Linux"
+     }
+    ],
+    "steps": [
+     {
+      "predicate": "uses",
+      "reverse": false,
+      "label": "Technique"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which ATT&CK techniques used by Evilnum G0120 apply to Linux?",
+    "entities": [
+     "Group",
+     "uses",
+     "Technique"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "G0120"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D5-uses-x_mitre_platforms-G1033-834436::analyst",
+   "spec_id": "D5-uses-x_mitre_platforms-G1033-834436",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D5",
+   "split": "generated",
+   "question": "Which ATT&CK techniques used by Star Blizzard G1033 apply to Windows?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "G1033"
+    ],
+    "must_include_related": [
+     "T1059.007",
+     "T1078",
+     "T1114.002",
+     "T1114.003",
+     "T1204.002",
+     "T1539",
+     "T1566.001",
+     "T1684.001"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "T1059.007",
+     "T1078",
+     "T1114.002",
+     "T1114.003",
+     "T1204.002",
+     "T1539",
+     "T1566.001",
+     "T1684.001"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Group -[uses]-> Technique"
+    ],
+    "gold_width": 8,
+    "dangling": [],
+    "filters": [
+     {
+      "label": "Technique",
+      "property": "x_mitre_platforms",
+      "op": "eq",
+      "value": "Windows"
+     }
+    ],
+    "steps": [
+     {
+      "predicate": "uses",
+      "reverse": false,
+      "label": "Technique"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which ATT&CK techniques used by Star Blizzard G1033 apply to Windows?",
+    "entities": [
+     "Group",
+     "uses",
+     "Technique"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "G1033"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D5-uses-x_mitre_platforms-G1050-845725::analyst",
+   "spec_id": "D5-uses-x_mitre_platforms-G1050-845725",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D5",
+   "split": "generated",
+   "question": "Which malware and tools used by Water Galura G1050 run on ESXi?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "G1050"
+    ],
+    "must_include_related": [
+     "S1242"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "S1242"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Group -[uses]-> Software"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [
+     {
+      "label": "Software",
+      "property": "x_mitre_platforms",
+      "op": "eq",
+      "value": "ESXi"
+     }
+    ],
+    "steps": [
+     {
+      "predicate": "uses",
+      "reverse": false,
+      "label": "Software"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which malware and tools used by Water Galura G1050 run on ESXi?",
+    "entities": [
+     "Group",
+     "uses",
+     "Software"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "G1050"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D5-uses-x_mitre_platforms-G1053-dacd27::analyst",
+   "spec_id": "D5-uses-x_mitre_platforms-G1053-dacd27",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D5",
+   "split": "generated",
+   "question": "Which malware and tools used by G1053 apply to Office Suite?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "G1053"
+    ],
+    "must_include_related": [
+     "S0677"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "S0677"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Group -[uses]-> Software"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [
+     {
+      "label": "Software",
+      "property": "x_mitre_platforms",
+      "op": "eq",
+      "value": "Office Suite"
+     }
+    ],
+    "steps": [
+     {
+      "predicate": "uses",
+      "reverse": false,
+      "label": "Software"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which malware and tools used by G1053 apply to Office Suite?",
+    "entities": [
+     "Group",
+     "uses",
+     "Software"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "G1053"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D5-uses-x_mitre_platforms-S1129-e882e1::analyst",
+   "spec_id": "D5-uses-x_mitre_platforms-S1129-e882e1",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D5",
+   "split": "generated",
+   "question": "Which ATT&CK techniques used by the Akira malware S1129 apply to containers?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "S1129"
+    ],
+    "must_include_related": [
+     "T1490"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "T1490"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Software -[uses]-> Technique"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [
+     {
+      "label": "Technique",
+      "property": "x_mitre_platforms",
+      "op": "eq",
+      "value": "Containers"
+     }
+    ],
+    "steps": [
+     {
+      "predicate": "uses",
+      "reverse": false,
+      "label": "Technique"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which ATT&CK techniques used by the Akira malware S1129 apply to containers?",
+    "entities": [
+     "Software",
+     "uses",
+     "Technique"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "S1129"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D5-x_mitre_analytic_refs-x_mitre_platforms-DET0189-bfc709::analyst",
+   "spec_id": "D5-x_mitre_analytic_refs-x_mitre_platforms-DET0189-bfc709",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D5",
+   "split": "generated",
+   "question": "Which detection analytics implement detection strategy DET0189 on Windows?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "DET0189"
+    ],
+    "must_include_related": [
+     "AN0540"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "AN0540"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "DetectionStrategy -[x_mitre_analytic_refs]-> Analytic"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [
+     {
+      "label": "Analytic",
+      "property": "x_mitre_platforms",
+      "op": "eq",
+      "value": "Windows"
+     }
+    ],
+    "steps": [
+     {
+      "predicate": "x_mitre_analytic_refs",
+      "reverse": false,
+      "label": "Analytic"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which detection analytics implement detection strategy DET0189 on Windows?",
+    "entities": [
+     "DetectionStrategy",
+     "x_mitre_analytic_refs",
+     "Analytic"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "DET0189"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D5-x_mitre_analytic_refs-x_mitre_platforms-DET0192-e42241::analyst",
+   "spec_id": "D5-x_mitre_analytic_refs-x_mitre_platforms-DET0192-e42241",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D5",
+   "split": "generated",
+   "question": "Which detection analytics implement the email hiding rules detection strategy DET0192 for Office Suite?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "DET0192"
+    ],
+    "must_include_related": [
+     "AN0554"
+    ]
+   },
+   "ex_gold": {
+    "pool": "neighbors",
+    "expected": [
+     "AN0554"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "DetectionStrategy -[x_mitre_analytic_refs]-> Analytic"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [
+     {
+      "label": "Analytic",
+      "property": "x_mitre_platforms",
+      "op": "eq",
+      "value": "Office Suite"
+     }
+    ],
+    "steps": [
+     {
+      "predicate": "x_mitre_analytic_refs",
+      "reverse": false,
+      "label": "Analytic"
+     }
+    ]
+   },
+   "task": {
+    "sub_question_id": "q1",
+    "source": "attack",
+    "text": "Which detection analytics implement the email hiding rules detection strategy DET0192 for Office Suite?",
+    "entities": [
+     "DetectionStrategy",
+     "x_mitre_analytic_refs",
+     "Analytic"
+    ],
+    "limits": {
+     "max_traversal_depth": 3,
+     "max_result_rows": 300,
+     "query_timeout_ms": 5000
+    },
+    "join_key": null,
+    "seed_ids": [
+     "DET0192"
+    ],
+    "rationale": "generated from the schema census"
+   }
+  },
+  {
+   "id": "D6-MAPS_TO[ATTACK]-ChildOf-T1111-192368::analyst",
+   "spec_id": "D6-MAPS_TO[ATTACK]-ChildOf-T1111-192368",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D6",
+   "split": "generated",
+   "question": "For Multi-Factor Authentication Interception T1111, which CAPEC attack patterns correspond to it, and which broader CAPEC attack patterns is each of those a more specific case of?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "T1111"
+    ],
+    "must_include_related": [
+     "CAPEC-117",
+     "CAPEC-157"
+    ]
+   },
+   "ex_gold": {
+    "pool": "join",
+    "expected": [
+     "CAPEC-117",
+     "CAPEC-157"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[MAPS_TO[ATTACK]]-> Technique",
+     "AttackPattern -[ChildOf]-> AttackPattern"
+    ],
+    "gold_width": 2,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "MAPS_TO[ATTACK]",
+      "reverse": true,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "ChildOf",
+      "reverse": false,
+      "label": "AttackPattern"
+     }
+    ]
+   },
+   "hops": 2,
+   "sources": [
+    "capec"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "For T1111: the CAPEC attack patterns that correspond to it.",
+     "entities": [
+      "Technique",
+      "MAPS_TO[ATTACK]",
+      "AttackPattern"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "generated from the schema census"
+    },
+    {
+     "id": "q2",
+     "source": "capec",
+     "text": "For each of those: the CAPEC attack patterns each of those is a more specific case of.",
+     "entities": [
+      "AttackPattern",
+      "ChildOf",
+      "AttackPattern"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "generated from the schema census"
+    }
+   ]
+  },
+  {
+   "id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1505.005-d82694::analyst",
+   "spec_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1505.005-d82694",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D6",
+   "split": "generated",
+   "question": "For Terminal Services DLL T1505.005, which CAPEC attack patterns correspond to it, and which OWASP taxonomy entries does each of those correspond to?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "T1505.005"
+    ],
+    "must_include_related": [
+     "OWASP Attacks:Binary planting"
+    ]
+   },
+   "ex_gold": {
+    "pool": "join",
+    "expected": [
+     "OWASP Attacks:Binary planting"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[MAPS_TO[ATTACK]]-> Technique",
+     "AttackPattern -[MAPS_TO[OWASP Attacks]]-> TaxonomyEntry:OWASP Attacks"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "MAPS_TO[ATTACK]",
+      "reverse": true,
+      "label": "AttackPattern"
+     },
+     {
+      "predicate": "MAPS_TO[OWASP Attacks]",
+      "reverse": false,
+      "label": "TaxonomyEntry:OWASP Attacks"
+     }
+    ]
+   },
+   "hops": 2,
+   "sources": [
+    "capec"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "capec",
+     "text": "For T1505.005: the CAPEC attack patterns that correspond to it.",
+     "entities": [
+      "Technique",
+      "MAPS_TO[ATTACK]",
+      "AttackPattern"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "generated from the schema census"
+    },
+    {
+     "id": "q2",
+     "source": "capec",
+     "text": "For each of those: the OWASP taxonomy entries each of those corresponds to.",
+     "entities": [
+      "AttackPattern",
+      "MAPS_TO[OWASP Attacks]",
+      "TaxonomyEntry:OWASP Attacks"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "generated from the schema census"
+    }
+   ]
+  },
+  {
+   "id": "D6-MAPS_TO[ATTACK]-subtechnique-of-CAPEC-94-237673::analyst",
+   "spec_id": "D6-MAPS_TO[ATTACK]-subtechnique-of-CAPEC-94-237673",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D6",
+   "split": "generated",
+   "question": "For Adversary in the Middle CAPEC-94, which ATT&CK techniques does it correspond to, and what are the sub-techniques of each of those?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "CAPEC-94"
+    ],
+    "must_include_related": [
+     "T1557.001",
+     "T1557.002",
+     "T1557.003",
+     "T1557.004"
+    ]
+   },
+   "ex_gold": {
+    "pool": "join",
+    "expected": [
+     "T1557.001",
+     "T1557.002",
+     "T1557.003",
+     "T1557.004"
+    ],
+    "scheme": "attack",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "AttackPattern -[MAPS_TO[ATTACK]]-> Technique",
+     "Technique -[subtechnique-of]-> Technique"
+    ],
+    "gold_width": 4,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "MAPS_TO[ATTACK]",
+      "reverse": false,
+      "label": "Technique"
+     },
+     {
+      "predicate": "subtechnique-of",
+      "reverse": true,
+      "label": "Technique"
+     }
+    ]
+   },
+   "hops": 2,
+   "sources": [
+    "attack"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "attack",
+     "text": "For CAPEC-94: the ATT&CK techniques it corresponds to.",
+     "entities": [
+      "AttackPattern",
+      "MAPS_TO[ATTACK]",
+      "Technique"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "generated from the schema census"
+    },
+    {
+     "id": "q2",
+     "source": "attack",
+     "text": "For each of those: the ATT&CK techniques that are sub-techniques of each of those.",
+     "entities": [
+      "Technique",
+      "subtechnique-of",
+      "Technique"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "generated from the schema census"
+    }
+   ]
+  },
+  {
+   "id": "D6-rev-subtechnique-of-T1069.002-738314::analyst",
+   "spec_id": "D6-rev-subtechnique-of-T1069.002-738314",
+   "register": "analyst",
+   "tier": "hard",
+   "d_tier": "D6",
+   "split": "generated",
+   "question": "For Domain Groups T1069.002, which ATT&CK technique is it a sub-technique of, and which CAPEC attack patterns correspond to that parent technique?",
+   "assertions": {
+    "min_records": 1,
+    "must_include_ids": [
+     "T1069.002"
+    ],
+    "must_include_related": [
+     "CAPEC-576"
+    ]
+   },
+   "ex_gold": {
+    "pool": "join",
+    "expected": [
+     "CAPEC-576"
+    ],
+    "scheme": "capec",
+    "kind": "set"
+   },
+   "spec": {
+    "shapes": [
+     "Technique -[subtechnique-of]-> Technique",
+     "AttackPattern -[MAPS_TO[ATTACK]]-> Technique"
+    ],
+    "gold_width": 1,
+    "dangling": [],
+    "filters": [],
+    "steps": [
+     {
+      "predicate": "subtechnique-of",
+      "reverse": false,
+      "label": "Technique"
+     },
+     {
+      "predicate": "MAPS_TO[ATTACK]",
+      "reverse": true,
+      "label": "AttackPattern"
+     }
+    ]
+   },
+   "hops": 2,
+   "sources": [
+    "attack",
+    "capec"
+   ],
+   "sequenced": true,
+   "partial_mode": null,
+   "sub_questions": [
+    {
+     "id": "q1",
+     "source": "attack",
+     "text": "For T1069.002: the ATT&CK techniques it is a sub-technique of.",
+     "entities": [
+      "Technique",
+      "subtechnique-of",
+      "Technique"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "generated from the schema census"
+    },
+    {
+     "id": "q2",
+     "source": "capec",
+     "text": "For each of those: the CAPEC attack patterns that correspond to each of those.",
+     "entities": [
+      "Technique",
+      "MAPS_TO[ATTACK]",
+      "AttackPattern"
+     ],
+     "limits": {
+      "max_traversal_depth": 3,
+      "max_result_rows": 300,
+      "query_timeout_ms": 5000
+     },
+     "join_key": "attack-technique-id",
+     "rationale": "generated from the schema census"
+    }
+   ]
+  }
+ ]
+}

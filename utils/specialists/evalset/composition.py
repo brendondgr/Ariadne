@@ -42,6 +42,7 @@ Two exclusions that matter, both from the census:
 
 from __future__ import annotations
 
+import hashlib
 import json
 import random
 from collections import defaultdict
@@ -258,6 +259,38 @@ def _crosses_stores(graph: RawGraph, start_label: str, steps: Sequence[Step]) ->
     return any(step.predicate == "MAPS_TO[ATTACK]" for step in steps)
 
 
+def _signature(
+    tier: str,
+    kind: str,
+    anchor_id: str,
+    steps: Sequence[Step],
+    filters: Sequence[Filter],
+    return_label: str,
+    return_field: str,
+) -> str:
+    """A short digest of everything that makes a spec a distinct question.
+
+    Readable ids alone collide: `D2-uses-C0014` names both
+    `Campaign -uses-> Software` and `Campaign -uses-> Technique`, and a D4 id
+    built from two predicates says nothing about the direction each was walked.
+    141 of 2,368 specs shared an id before this existed, which downstream would
+    pair a question with another question's gold.
+    """
+    payload = json.dumps(
+        [
+            tier,
+            kind,
+            anchor_id,
+            [[s.predicate, s.reverse, s.label] for s in steps],
+            [[f.label, f.property, f.op, f.value] for f in filters],
+            return_label,
+            return_field,
+        ],
+        sort_keys=True,
+    )
+    return hashlib.sha256(payload.encode()).hexdigest()[:6]
+
+
 def _make_spec(
     graph: RawGraph,
     *,
@@ -277,8 +310,11 @@ def _make_spec(
     # Federated means the path traverses the one cross-source edge type — not
     # that it happens to touch a label the other catalogue also names.
     source = "federated" if _crosses_stores(graph, anchor.label, steps) else anchor.source
+    signature = _signature(
+        tier, kind, anchor.id, steps, filters, return_label, return_field
+    )
     return Spec(
-        id=spec_id,
+        id=f"{spec_id}-{signature}",
         tier=tier,
         kind=kind,
         source=source,
