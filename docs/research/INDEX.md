@@ -43,6 +43,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-08-021` | 2026-08-31 | Does a judged comparison survive a change of grader model? The alias moved; the answers did not | complete | arm_order_reversals 0.0000 ± 0.0000 (n=60) | C-009, C-012, C-021, C-022 | [grader-model-sensitivity](experiments/EXP-2026-08-021-grader-model-sensitivity/) |
 | `EXP-2026-08-022` | 2026-08-31 | Is the shipped builder change an improvement, judged, on the two banks its own regression check missed? | complete | difference_in_differences (not recorded) | C-012, C-021, C-022 | [builder-change-judged](experiments/EXP-2026-08-022-builder-change-judged/) |
 | `EXP-2026-09-001` | 2026-09-01 | How many of the question shapes the sources support has any bank asked? | complete | edge_type_coverage 0.3529 ± 0.0000 (n=1) | C-025 | [schema-census](experiments/EXP-2026-09-001-schema-census/) |
+| `EXP-2026-09-002` | 2026-09-03 | On a bank covering every shape the sources support, do hand-written templates still hold? | complete | judged_gap_generic_minus_deterministic 0.1642 ± 0.0000 (n=284) | C-023, C-012 | [expansion-bank-judged](experiments/EXP-2026-09-002-expansion-bank-judged/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 
-**34 experiment(s) on record.**
+**35 experiment(s) on record.**

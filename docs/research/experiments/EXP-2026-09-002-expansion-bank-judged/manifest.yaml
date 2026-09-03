@@ -1,0 +1,103 @@
+# Filled by scripts/new_experiment.py, then completed by hand from the run's own
+# artifacts. Every number below was read from a file listed in data/POINTERS.md.
+# Nothing here was transcribed from the morning report's prose.
+id: EXP-2026-09-002
+slug: expansion-bank-judged
+title: On a bank covering every shape the sources support, do hand-written templates still hold?
+status: complete
+date_started: 2026-09-02
+date_completed: 2026-09-03
+authors: ["brendondgr"]
+
+purpose: >
+  EXP-2026-09-001 A-5 scored the 572-question expansion bank with no grader and
+  reported retrieval recall only. That leaves the study's primary comparison —
+  C-023, hand-written templates against schema-derived construction — measured
+  on the catalogue at a saturated ceiling (0.0000 gap, EXP-2026-08-015) and on a
+  foreign schema (-0.6121). This experiment supplies the missing middle: the
+  same contrast, judged, on the templates' OWN schema, over a bank that reaches
+  34 edge types instead of 12. It also carries a third arm in which a model
+  writes the query, bearing on C-012.
+
+hypothesis: >
+  Stated in docs/plans/2026-09-02-overnight-expansion-run.md before the run.
+  Templates and the schema-derived generic path were expected to remain close on
+  ATT&CK/CAPEC, as they are on the catalogue, because this is the schema the
+  templates were written for; the coverage cost of templates was expected to
+  appear only off-schema. Falsifiable in both directions: a gap on the home
+  schema would mean the catalogue's 0.0000 was a property of the question set
+  rather than of the schema.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 54dbfe082a3927a7ecf37439ef09a722ca1e30f7
+  branch: main
+  entrypoint: "uv run python scripts/expansion_overnight.py"
+  dirty: true             # tree changed mid-run; see ISSUES.md I-1
+config:
+  path: docs/plans/2026-09-02-overnight-expansion-run.md
+  hash: null              # a prose plan, not a machine-read config; see ISSUES.md I-4
+data:
+  name: Expansion bank (dev half) over ATT&CK Enterprise + CAPEC
+  version: "attack-19.0 / capec-3.9 · bank v1"
+  split: dev              # 284 of 572; the 288-question holdout was untouched
+  n_examples: 284
+  dvc_path: null
+  hash: sha256:ad99afb18934bd7db233c292d235a4350c332114c357ea624123031ff0ab434e
+seeds: []                  # the split is sha256(spec_id) parity, not a sampled draw
+n_runs: 1                  # D-010 still in force; two GRADING passes, one run per arm
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "cpu only, local workstation; models served by a local relay on :9090"
+  wall_clock_hours: 10.9   # 2026-09-02T22:55:52Z -> 2026-09-03T09:49:42Z
+  estimated_cost_usd: 0.0  # locally served
+
+# --- LLM / agentic block ---
+# TWO models were in the loop and they are not the same one. The grader was
+# probed at run time; the arm's builder model was not. See ISSUES.md I-2.
+llm:
+  model: "local-relay/qwen38-27B-v2 (grader, probed at preflight; relay alias 'skynet' advertises 'auto')"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 4096         # the llm_query ARM's builder budget as actually run; .env's 2048 was not read — I-3
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Grading order was counterbalanced per block (utils/evaluation/grading_order.py,
+    EXP-2026-08-022) so the ~0.01 position effect is subtractable. Each answer was
+    graded twice. The deterministic and generic ARMS are byte-reproducible; only
+    the grader and the llm_query arm carry model nondeterminism.
+
+# --- Results block ---
+metrics:
+  primary: judged_gap_generic_minus_deterministic
+  values:
+    judged_gap_generic_minus_deterministic: {mean: 0.1642, std: 0.0, n: 284}
+    judged_correctness_generic: {mean: 0.6576, std: 0.0, n: 284}        # 568 judgments
+    judged_correctness_deterministic: {mean: 0.4934, std: 0.0, n: 284}  # 568 judgments
+    judged_correctness_llm_query: {mean: 0.3712, std: 0.0, n: 283}      # 564 judgments; CONFOUNDED, see I-3
+    direction_paired_mean_delta: {mean: -0.0797, std: 0.4865, n: 20}    # se 0.1088; + means forward easier
+    direction_pairs_forward_higher: {mean: 3, std: 0.0, n: 20}
+    direction_pairs_reverse_higher: {mean: 10, std: 0.0, n: 20}
+    direction_pairs_tied: {mean: 7, std: 0.0, n: 20}
+    property_read_empty_query_rate: {mean: 1.0, std: 0.0, n: 63}        # 63/63 built a query, got no rows
+    containment_empty_query_rate: {mean: 1.0, std: 0.0, n: 68}
+    abstention_rate: {mean: 0.6066, std: 0.0, n: 61}                    # 37/61 returned nothing
+    abstention_anchor_only: {mean: 18, std: 0.0, n: 61}
+    abstention_unrelated: {mean: 6, std: 0.0, n: 61}
+    llm_query_empty_query_count: {mean: 153, std: 0.0, n: 284}          # the confound, measured
+baselines_compared: ["deterministic (template cascade)", "llm_query (model writes the query)"]
+statistical_test: null     # no significance test; D-010 and ISSUES I-5
+
+# --- Linkage ---
+supports_claims: [C-023, C-012]
+figures: []
+supersedes: null
+superseded_by: null
+related: [EXP-2026-09-001, EXP-2026-08-015, EXP-2026-08-011, EXP-2026-08-008, EXP-2026-08-022]
