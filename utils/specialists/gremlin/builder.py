@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import os
 import re
+from collections.abc import Iterable
 from typing import NamedTuple
 from typing import Any
 
@@ -70,13 +71,85 @@ _CWE_NUM_RE = re.compile(r"^CWE-(\d+)$", re.IGNORECASE)
 _ATTACK_ENTRY_RE = re.compile(r"^T(\d{4}(?:\.\d{3})?)$", re.IGNORECASE)
 
 
+#: The vertex-id namespaces a bare ``CAPEC-<n>`` could name. CAPEC numbers one
+#: sequence across all three kinds -- CAPEC-98 is an attack pattern, CAPEC-118 a
+#: category, CAPEC-284 a view -- so the number alone cannot say which.
+#:
+#: ``cwe:`` is deliberately absent and must stay absent. ``cwe:284`` sits in the
+#: same store as ``capec:view:284``, so resolving by number alone would let a
+#: question about CAPEC-284 be answered by an unrelated weakness.
+_CAPEC_ID_NAMESPACES = ("capec:attack-pattern:", "capec:view:", "capec:category:")
+
+#: The vertex kinds a bare CAPEC name can refer to, for the name-anchored
+#: describe. The seeded path needs no such list -- it anchors on the id.
+_CAPEC_DESCRIBE_LABELS = ("AttackPattern", "View", "Category")
+
+
+def _capec_id_bindings(param: str = "ids") -> list[dict[str, str]]:
+    """Declared bindings for a label-free, id-anchored CAPEC query.
+
+    `extract_bindings` prefers a declaration over parsing precisely so a builder
+    can state a filter its parsers cannot read. Dropping ``hasLabel`` from these
+    anchors is invisible to the Gremlin parser's ``hasLabel(...).has(prop, ...)``
+    shape, and without this every affected draft turns "unchecked" -- the audit's
+    own name for a query that filters on values nothing verified. 177 drafts went
+    unchecked here before this was added, the same way 202 did on the Cypher side
+    when ``describe`` widened its id column.
+
+    One entry per candidate label, all on the same parameter: the anchor matches
+    whichever kind holds the id, and `unsatisfiable_bindings` groups by
+    parameter, so the filter is judged satisfiable when *any* of the three admits
+    the seeds -- which is what the query means. Declaring a single label instead
+    would assert something the builder deliberately does not know.
+    """
+    return [
+        {"label": label, "property": "id", "param": param}
+        for label in _CAPEC_DESCRIBE_LABELS
+    ]
+
+
 def _capec_gremlin_id(capec_id: str) -> str:
-    """Convert 'CAPEC-66' -> 'capec:attack-pattern:66'."""
+    """Convert 'CAPEC-66' -> 'capec:attack-pattern:66'.
+
+    Retained for callers that mean an attack pattern specifically. Anything
+    anchoring on a bare CAPEC id should use `_capec_candidate_ids`, because this
+    function's assumption is wrong for roughly one CAPEC id in ten.
+    """
     m = _CAPEC_NUM_RE.fullmatch(capec_id.strip())
     if m:
         return f"capec:attack-pattern:{m.group(1)}"
     # Already in gremlin form or unknown: return as-is.
     return capec_id
+
+
+def _capec_candidate_ids(seeds: Iterable[str]) -> list[str]:
+    """Every vertex id these CAPEC seeds could name, for an ``within(ids)`` anchor.
+
+    ``CAPEC-284`` used to become ``capec:attack-pattern:284``, which no vertex
+    has -- the view is ``capec:view:284`` -- so a question about a view searched
+    for a pattern that did not exist and came back empty. The label filter on the
+    anchor hid the shape of the failure but was not its cause: deleting it alone
+    would have left the lookup missing in exactly the same way.
+
+    Nothing here guesses. Ids are unique across the whole CAPEC store (6,374
+    vertices, 6,374 distinct ids), so offering all three namespaces lets the
+    graph disambiguate; at most one can match. Seeds already in URN form, and
+    seeds in a scheme this does not know, pass through untouched so a wrong seed
+    fails visibly instead of matching something else.
+    """
+    out: list[str] = []
+    seen: set[str] = set()
+    for seed in seeds:
+        raw = str(seed).strip()
+        match = _CAPEC_NUM_RE.fullmatch(raw)
+        candidates = (
+            [f"{ns}{match.group(1)}" for ns in _CAPEC_ID_NAMESPACES] if match else [raw]
+        )
+        for candidate in candidates:
+            if candidate not in seen:
+                seen.add(candidate)
+                out.append(candidate)
+    return out
 
 
 def _gremlin_vertex_id(seed: str) -> str:
@@ -416,19 +489,32 @@ class GremlinQueryBuilder:
         """The universal ``describe`` compiler: full vertex + bounded facet block.
 
         By id when the task carries seeds, else by a case-insensitive name match
-        across ``AttackPattern``. Returns the vertex elementMap (unpacked whole by
-        the normalizer — no allow-list) alongside the folded facet block.
+        across the CAPEC vertex kinds. Returns the vertex elementMap (unpacked
+        whole by the normalizer — no allow-list) alongside the folded facet
+        block.
+
+        The seeded anchor carries **no label filter**. Identity is the id, which
+        is unique across the store, so a label can only ever exclude the right
+        vertex — and it did: this read ``hasLabel("AttackPattern")`` until
+        2026-09-03, so every question about a View or a Category asked the graph
+        for an attack pattern and got nothing.
         """
         lim = resolved.task.max_rows()
         if resolved.seed_ids:
-            ids = [_capec_gremlin_id(s) for s in resolved.seed_ids]
-            anchor = 'g.V().hasLabel("AttackPattern").has("id", within(ids))'
+            ids = _capec_candidate_ids(resolved.seed_ids)
+            anchor = 'g.V().has("id", within(ids))'
             return QueryDraft(
                 query=anchor + self._FACET_PROJECTION + f".limit({lim})",
                 params={"ids": ids},
                 template="describe",
                 expected_nonempty=bool(ids),
-                meta={"anchor_label": "AttackPattern", "seed_ids": list(resolved.seed_ids)},
+                # Declared, not asserted: which kind of vertex the id turns out
+                # to name is the graph's answer, not the builder's assumption.
+                meta={
+                    "anchor_label": None,
+                    "seed_ids": list(resolved.seed_ids),
+                    "bindings": _capec_id_bindings(),
+                },
             )
         # Wildcard-sanitize each term (any run of non-alphanumerics -> a single
         # ``.``) so the embedded regex carries no backslashes: re.escape emits
@@ -438,8 +524,13 @@ class GremlinQueryBuilder:
             p for p in (re.sub(r"[^A-Za-z0-9]+", ".", t).strip(".") for t in resolved.name_terms) if p
         ]
         pattern = "|".join(patterns)
+        # No id here, so the label IS the scope and dropping it would turn a name
+        # regex loose over every vertex in the store. Widened from AttackPattern
+        # alone to the three kinds a CAPEC question can name, so "what is
+        # Detailed Abstractions?" reaches the view it asks about.
+        kinds = ", ".join(f'"{k}"' for k in _CAPEC_DESCRIBE_LABELS)
         anchor = (
-            'g.V().hasLabel("AttackPattern")'
+            f'g.V().hasLabel({kinds})'
             f'.has("name", TextP.regex("(?i).*({pattern}).*"))'
         )
         return QueryDraft(
@@ -447,11 +538,14 @@ class GremlinQueryBuilder:
             params={},
             template="describe_by_name",
             expected_nonempty=False,
-            meta={"anchor_label": "AttackPattern", "name_terms": list(resolved.name_terms)},
+            meta={
+                "anchor_labels": list(_CAPEC_DESCRIBE_LABELS),
+                "name_terms": list(resolved.name_terms),
+            },
         )
 
     def _capec_neighbors(self, resolved: ResolvedTask, rel: str) -> QueryDraft:
-        ids = [_capec_gremlin_id(s) for s in resolved.seed_ids]
+        ids = _capec_candidate_ids(resolved.seed_ids)
         target_label = _REL_TARGET_LABEL.get(rel, "")
         lim = resolved.task.max_rows()
         params: dict[str, Any] = {"ids": ids}
@@ -459,13 +553,13 @@ class GremlinQueryBuilder:
         edge = gremlin_edge_label(rel)  # loaded graphs use SCREAMING_SNAKE labels
         if target_label:
             query = (
-                f'g.V().hasLabel("AttackPattern").has("id", within(ids)).as("ap")'
+                f'g.V().has("id", within(ids)).as("ap")'
                 f'.out("{edge}").hasLabel("{target_label}").as("nbr")'
                 f'.select("ap","nbr").by(elementMap()).limit({lim})'
             )
         else:
             query = (
-                f'g.V().hasLabel("AttackPattern").has("id", within(ids)).as("ap")'
+                f'g.V().has("id", within(ids)).as("ap")'
                 f'.out("{edge}").as("nbr")'
                 f'.select("ap","nbr").by(elementMap()).limit({lim})'
             )
@@ -475,7 +569,8 @@ class GremlinQueryBuilder:
             template="capec_neighbors",
             expected_nonempty=bool(ids),
             meta={
-                "anchor_label": "AttackPattern",
+                "anchor_label": None,
+                "bindings": _capec_id_bindings(),
                 "neighbor_label": target_label or "",
                 "rel": rel,
             },
@@ -489,7 +584,7 @@ class GremlinQueryBuilder:
         ``(anchor, neighbour)`` elementMap pairs the ``capec_neighbors`` normalizer
         already understands — no cross-source bridge, one round-trip.
         """
-        ids = [_capec_gremlin_id(s) for s in resolved.seed_ids]
+        ids = _capec_candidate_ids(resolved.seed_ids)
         lim = resolved.task.max_rows()
         branches: list[str] = []
         for rel in rels:
@@ -499,7 +594,7 @@ class GremlinQueryBuilder:
                 f'out("{edge}").hasLabel("{target}")' if target else f'out("{edge}")'
             )
         query = (
-            'g.V().hasLabel("AttackPattern").has("id", within(ids)).as("ap")'
+            'g.V().has("id", within(ids)).as("ap")'
             f'.union({", ".join(branches)}).as("nbr")'
             f'.select("ap","nbr").by(elementMap()).limit({lim})'
         )
@@ -508,15 +603,19 @@ class GremlinQueryBuilder:
             params={"ids": ids},
             template="capec_facets",
             expected_nonempty=bool(ids),
-            meta={"anchor_label": "AttackPattern", "rels": list(rels)},
+            meta={
+                "anchor_label": None,
+                "rels": list(rels),
+                "bindings": _capec_id_bindings(),
+            },
         )
 
     def _capec_maps_to(self, resolved: ResolvedTask) -> QueryDraft:
         lim = resolved.task.max_rows()
         params: dict[str, Any] = {}
         if resolved.seed_ids:
-            params["ids"] = [_capec_gremlin_id(s) for s in resolved.seed_ids]
-            anchor = 'g.V().hasLabel("AttackPattern").has("id", within(ids))'
+            params["ids"] = _capec_candidate_ids(resolved.seed_ids)
+            anchor = 'g.V().has("id", within(ids))'
         elif resolved.concept_terms:
             # Scope the mapping scan to the concept the question names
             # (committed vocabulary in concepts.py) instead of every pattern.
@@ -547,7 +646,8 @@ class GremlinQueryBuilder:
             template="capec_maps_to",
             expected_nonempty=bool(resolved.seed_ids),
             meta={
-                "anchor_label": "AttackPattern",
+                "anchor_label": None,
+                "bindings": _capec_id_bindings(),
                 "neighbor_label": "TaxonomyEntry",
                 "rel": "MAPS_TO",
             },

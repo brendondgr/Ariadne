@@ -1,0 +1,180 @@
+[
+  {
+    "source": "attack",
+    "text": "Which mitigations apply to T1047?",
+    "entities": [
+      "Technique",
+      "Mitigation"
+    ],
+    "kw": {},
+    "template": "technique_mitigations",
+    "query": "MATCH (t:Technique) WHERE t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name",
+    "params": {
+      "ids": [
+        "T1047"
+      ]
+    }
+  },
+  {
+    "source": "attack",
+    "text": "Which tactics does T1003 belong to?",
+    "entities": [
+      "Technique",
+      "Tactic"
+    ],
+    "kw": {},
+    "template": "technique_tactics",
+    "query": "MATCH (ta:Tactic)-[:HAS_TECHNIQUE]->(t) WHERE (t:Technique OR t:SubTechnique) AND t.attack_id IN $ids RETURN t.attack_id AS technique_id, t.name AS technique_name, ta.attack_id AS in_tactic_id, ta.name AS in_tactic_name",
+    "params": {
+      "ids": [
+        "T1003"
+      ]
+    }
+  },
+  {
+    "source": "attack",
+    "text": "How is T1047 detected?",
+    "entities": [
+      "Technique",
+      "DetectionStrategy"
+    ],
+    "kw": {},
+    "template": "technique_detection",
+    "query": "MATCH (t:Technique) WHERE t.attack_id IN $ids MATCH (t)<-[:DETECTS]-(d:DetectionStrategy) OPTIONAL MATCH (d)-[:HAS_ANALYTIC]->(a:Analytic) RETURN t.attack_id AS technique_id, t.name AS technique_name, d.attack_id AS detection_id, d.name AS detection_name, a.attack_id AS analytic_id, a.name AS analytic_name",
+    "params": {
+      "ids": [
+        "T1047"
+      ]
+    }
+  },
+  {
+    "source": "attack",
+    "text": "Which techniques does G0016 use?",
+    "entities": [
+      "Group",
+      "Technique"
+    ],
+    "kw": {},
+    "template": "group_techniques",
+    "query": "MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN $ids RETURN g.attack_id AS group_id, g.name AS group_name, t.attack_id AS technique_id, t.name AS technique_name",
+    "params": {
+      "ids": [
+        "G0016"
+      ]
+    }
+  },
+  {
+    "source": "attack",
+    "text": "What is T1047?",
+    "entities": [
+      "Technique"
+    ],
+    "kw": {},
+    "template": "describe",
+    "query": "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets",
+    "params": {
+      "ids": [
+        "T1047"
+      ]
+    },
+    "superseded_at": "EXP-2026-08-011"
+  },
+  {
+    "source": "capec",
+    "text": "Which ATT&CK techniques does CAPEC-150 map to?",
+    "entities": [
+      "AttackPattern",
+      "MAPS_TO",
+      "TaxonomyEntry"
+    ],
+    "kw": {
+      "join_key": "attack-technique-id"
+    },
+    "template": "capec_maps_to",
+    "query": "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)",
+    "params": {
+      "ids": [
+        "capec:attack-pattern:150",
+        "capec:view:150",
+        "capec:category:150"
+      ]
+    },
+    "superseded_at": "2026-09-03-capec-anchor-resolution"
+  },
+  {
+    "source": "capec",
+    "text": "Which CAPEC patterns exploit CWE-522?",
+    "entities": [
+      "Weakness",
+      "AttackPattern",
+      "TaxonomyEntry"
+    ],
+    "kw": {
+      "join_key": "attack-technique-id"
+    },
+    "template": "cwe_chain",
+    "query": "g.V().hasLabel(\"Weakness\").has(\"id\", within(cweIds)).as(\"w\").in(\"EXPLOITS_WEAKNESS\").hasLabel(\"AttackPattern\").as(\"ap\").project(\"w\",\"ap\",\"tax\").by(__.select(\"w\").elementMap()).by(__.select(\"ap\").elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)",
+    "params": {
+      "cweIds": [
+        "cwe:522"
+      ]
+    },
+    "superseded_at": "freeze/arm-baseline-2"
+  },
+  {
+    "source": "capec",
+    "text": "Which CAPEC patterns map to T1021?",
+    "entities": [
+      "AttackPattern",
+      "MAPS_TO",
+      "TaxonomyEntry"
+    ],
+    "kw": {
+      "join_key": "attack-technique-id"
+    },
+    "template": "capec_reverse_maps",
+    "query": "g.V().hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").has(\"entry_id\", within(entryIds)).as(\"tax\").in(\"MAPS_TO\").hasLabel(\"AttackPattern\").as(\"ap\").select(\"ap\",\"tax\").by(elementMap()).limit(1000)",
+    "params": {
+      "entryIds": [
+        "1021"
+      ]
+    }
+  },
+  {
+    "source": "capec",
+    "text": "Which mitigations apply to CAPEC-66?",
+    "entities": [
+      "AttackPattern",
+      "Mitigation"
+    ],
+    "kw": {},
+    "template": "capec_neighbors",
+    "query": "g.V().has(\"id\", within(ids)).as(\"ap\").out(\"HAS_MITIGATION\").hasLabel(\"Mitigation\").as(\"nbr\").select(\"ap\",\"nbr\").by(elementMap()).limit(1000)",
+    "params": {
+      "ids": [
+        "capec:attack-pattern:66",
+        "capec:view:66",
+        "capec:category:66"
+      ]
+    },
+    "superseded_at": "2026-09-03-capec-anchor-resolution"
+  },
+  {
+    "source": "capec",
+    "text": "What is CAPEC-66?",
+    "entities": [
+      "AttackPattern"
+    ],
+    "kw": {},
+    "template": "describe",
+    "query": "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)",
+    "params": {
+      "ids": [
+        "capec:attack-pattern:66",
+        "capec:view:66",
+        "capec:category:66"
+      ]
+    },
+    "superseded_at": "2026-09-03-capec-anchor-resolution"
+  }
+]

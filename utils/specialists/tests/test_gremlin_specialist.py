@@ -908,7 +908,16 @@ class TestCapecDossier:
         resolved = resolve(task, card)
         draft = GremlinQueryBuilder().build(resolved)
         assert draft.template == "describe"
-        assert draft.params["ids"] == ["capec:attack-pattern:98"]
+        # A bare CAPEC number does not say which kind it names -- CAPEC-98 is an
+        # attack pattern, CAPEC-118 a category, CAPEC-284 a view -- so the anchor
+        # offers all three namespaces and lets the graph disambiguate. Asserting
+        # the single attack-pattern id here was the contract that made every
+        # View and Category question search for a vertex that does not exist.
+        assert draft.params["ids"] == [
+            "capec:attack-pattern:98",
+            "capec:view:98",
+            "capec:category:98",
+        ]
         assert GremlinValidator().validate(draft, card, limits).ok
 
     def test_bare_seed_id_also_routes_to_describe(self, card):
@@ -1040,3 +1049,110 @@ class TestCapecDossierByName:
         )
         draft = GremlinQueryBuilder().build(resolve(task, card))
         assert draft.template == "capec_scan"
+
+
+class TestCapecAnchorResolution:
+    """CAPEC-284 is a View, and the anchor used to search for an AttackPattern.
+
+    Two defects in one place. The visible one was ``hasLabel("AttackPattern")``
+    on the anchor; the load-bearing one was `_capec_gremlin_id`, which turned
+    ``CAPEC-284`` into ``capec:attack-pattern:284`` while the view is stored as
+    ``capec:view:284``. Removing only the label filter would have left the lookup
+    missing in exactly the same way.
+    """
+
+    def test_a_bare_capec_id_offers_every_namespace_it_could_name(self):
+        from utils.specialists.gremlin.builder import _capec_candidate_ids
+
+        assert _capec_candidate_ids(["CAPEC-284"]) == [
+            "capec:attack-pattern:284",
+            "capec:view:284",
+            "capec:category:284",
+        ]
+
+    def test_a_cwe_id_is_never_a_candidate(self):
+        """cwe:284 sits beside capec:view:284 in the same store.
+
+        Resolving by number alone would let a question about CAPEC-284 be
+        answered by an unrelated weakness that happens to share its number.
+        """
+        from utils.specialists.gremlin.builder import _capec_candidate_ids
+
+        assert not any("cwe:" in c for c in _capec_candidate_ids(["CAPEC-284"]))
+
+    def test_ids_already_in_urn_form_pass_through(self):
+        from utils.specialists.gremlin.builder import _capec_candidate_ids
+
+        assert _capec_candidate_ids(["capec:view:284"]) == ["capec:view:284"]
+
+    def test_duplicate_seeds_do_not_duplicate_candidates(self):
+        from utils.specialists.gremlin.builder import _capec_candidate_ids
+
+        assert len(_capec_candidate_ids(["CAPEC-98", "CAPEC-98"])) == 3
+
+    def test_the_seeded_describe_anchor_carries_no_label_filter(self, card):
+        """Identity is the id, which is unique store-wide.
+
+        A label on this anchor cannot add precision and can only exclude the
+        right vertex.
+        """
+        from utils.specialists.resolve import resolve
+
+        task = _make_task(
+            text="What kind of CAPEC view is CAPEC-284?",
+            entities=("View",),
+            join_key=None,
+            seed_ids=("CAPEC-284",),
+        )
+        draft = GremlinQueryBuilder().build(resolve(task, card))
+        assert draft.template == "describe"
+        assert 'hasLabel("AttackPattern")' not in draft.query
+        assert 'g.V().has("id", within(ids))' in draft.query
+        assert "capec:view:284" in draft.params["ids"]
+
+    def test_the_label_free_anchor_still_declares_what_it_binds(self, card):
+        """Without the declaration the binding audit calls the draft unchecked.
+
+        Dropping hasLabel is invisible to the Gremlin binding parser, and an
+        unchecked draft is one that filters on values nothing verified.
+        """
+        from utils.specialists.binding import extract_bindings
+        from utils.specialists.resolve import resolve
+
+        task = _make_task(
+            text="What kind of CAPEC view is CAPEC-284?",
+            entities=("View",),
+            join_key=None,
+            seed_ids=("CAPEC-284",),
+        )
+        draft = GremlinQueryBuilder().build(resolve(task, card))
+        bindings = extract_bindings(draft)
+        assert bindings, "a label-free anchor must declare its bindings"
+        assert {b.label for b in bindings} == {"AttackPattern", "View", "Category"}
+        assert {b.property for b in bindings} == {"id"}
+
+    def test_the_name_anchored_describe_reaches_views_and_categories(self, card):
+        """With no id the label IS the scope, so it is widened, not dropped."""
+        from utils.specialists.resolve import resolve
+
+        task = _make_task(
+            text='What is "Detailed Abstractions"?',
+            entities=("View",),
+            join_key=None,
+            seed_ids=(),
+        )
+        draft = GremlinQueryBuilder().build(resolve(task, card))
+        if draft.template == "describe_by_name":
+            for kind in ("AttackPattern", "View", "Category"):
+                assert f'"{kind}"' in draft.query
+
+    def test_the_weakness_and_taxonomy_anchors_are_untouched(self, card):
+        """_cwe_chain and _capec_reverse_maps anchor elsewhere on purpose."""
+        import inspect
+
+        from utils.specialists.gremlin import builder as mod
+
+        for fn in (mod.GremlinQueryBuilder._cwe_chain,
+                   mod.GremlinQueryBuilder._capec_reverse_maps):
+            src = inspect.getsource(fn)
+            assert 'hasLabel("Weakness")' in src or 'hasLabel("TaxonomyEntry")' in src

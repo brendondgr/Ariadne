@@ -44,6 +44,27 @@ are now two expectations and they answer different questions:
   previously returned a null id that the normalizer dropped. That is a
   behavioural change to the merged-graph counterfactual and is recorded as such
   (ISSUES I-13) rather than absorbed silently here.
+* generation 4 (``frozen_default_queries_v4.json``) is the operative
+  expectation as of 2026-09-03. It differs from generation 3 in three CAPEC
+  cases -- ``describe``, ``capec_neighbors`` and ``capec_maps_to`` -- which
+  dropped ``hasLabel("AttackPattern")`` from their anchor and widened the bound
+  id from one namespace to three. Hand-authored the same way generation 3 was:
+  two declared substitutions applied to generation 3's own strings, with every
+  other byte carried across and the non-target cases asserted identical.
+
+  **This one is not a no-op, and that is the point.** ``CAPEC-284`` was resolved
+  to ``capec:attack-pattern:284`` while the view is stored at
+  ``capec:view:284``, so every question about a View or a Category searched for
+  a vertex that does not exist and came back empty -- 45 questions in the
+  expansion bank. The label filter made the failure look like a routing problem;
+  the id construction was the cause.
+
+  **Comparability consequence, stated rather than buried.** These three
+  templates had been byte-identical back to ``freeze/holdout-v1``, and that
+  continuity is what let the 2026-07-26 arm figures be compared across
+  generations. It ends here for these three. Any figure that depends on the
+  CAPEC ``describe``, ``capec_neighbors`` or ``capec_maps_to`` strings is
+  pre-fix and post-fix, and the two must not be pooled.
 """
 
 from __future__ import annotations
@@ -60,7 +81,7 @@ from utils.specialists.resolve import resolve
 from utils.specialists.tests._fixtures import FIXTURES_DIR, fixture_card
 
 FROZEN_V1 = json.loads((FIXTURES_DIR / "frozen_default_queries.json").read_text())
-FROZEN = json.loads((FIXTURES_DIR / "frozen_default_queries_v3.json").read_text())
+FROZEN = json.loads((FIXTURES_DIR / "frozen_default_queries_v4.json").read_text())
 
 
 def _key(case: dict) -> tuple[str, str]:
@@ -73,9 +94,11 @@ def _key(case: dict) -> tuple[str, str]:
 # The only cases licensed to differ from generation 1, and what licensed each.
 # Anything else diverging is a leak.
 SUPERSEDED = {
-    ("capec", "capec_maps_to"),      # outer join, freeze/arm-baseline-2
+    ("capec", "capec_maps_to"),      # outer join, then the CAPEC anchor fix
     ("capec", "cwe_chain"),          # outer join, freeze/arm-baseline-2
     ("attack", "describe"),          # coalesce id column, EXP-2026-08-011
+    ("capec", "capec_neighbors"),    # CAPEC anchor fix, 2026-09-03
+    ("capec", "describe"),           # CAPEC anchor fix, 2026-09-03
 }
 
 ARM_H_TEMPLATES = {
@@ -141,10 +164,17 @@ def test_untouched_templates_still_match_generation_one(case: dict) -> None:
 # ``superseded_at`` marker that appears here, and the marker's clause is what
 # bounds the edit -- so a later rewrite cannot ride along under cover of an
 # earlier licence.
+_CAPEC_ANCHOR = "2026-09-03-capec-anchor-resolution"
+
 LICENCES: dict[tuple[str, str], str] = {
-    ("capec", "capec_maps_to"): "freeze/arm-baseline-2",
     ("capec", "cwe_chain"): "freeze/arm-baseline-2",
     ("attack", "describe"): "EXP-2026-08-011",
+    # capec_maps_to was licensed twice: the outer join moved its projection,
+    # and the anchor fix moved its anchor. The later marker is the operative
+    # one and its clause below bounds what it permitted.
+    ("capec", "capec_maps_to"): _CAPEC_ANCHOR,
+    ("capec", "capec_neighbors"): _CAPEC_ANCHOR,
+    ("capec", "describe"): _CAPEC_ANCHOR,
 }
 
 
@@ -165,6 +195,20 @@ def test_exactly_the_expected_templates_are_superseded() -> None:
             # A join-semantics change, not a rewrite of the anchor.
             assert ".fold()" in case["query"]
             assert ".project(" in case["query"]
+        elif LICENCES.get(key) == _CAPEC_ANCHOR:
+            # An anchor change, and nothing else: the label filter is gone
+            # because identity is the id, the parameter is unchanged, and the
+            # bound ids now span the three namespaces a bare CAPEC number can
+            # name. ``cwe:`` must never appear, or a CAPEC question could be
+            # answered by a weakness sharing its number.
+            assert 'hasLabel("AttackPattern").has("id", within(ids))' not in case["query"]
+            assert 'g.V().has("id", within(ids))' in case["query"]
+            ids = case["params"]["ids"]
+            assert len(ids) == 3
+            assert not any(i.startswith("cwe:") for i in ids)
+            # Three namespaces, one number: the anchor widened where it looks,
+            # not what it looks for.
+            assert len({i.rsplit(":", 1)[1] for i in ids}) == 1
         elif LICENCES.get(key) == "EXP-2026-08-011":
             # An id-column widening, and nothing else: the anchor still binds
             # the same parameter and the coalesce still prefers ``attack_id``,
