@@ -32,6 +32,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from utils.evaluation.llm_judge import EvalConfig, JudgeReport, judge_run
+from utils.evaluation.property_gold import is_property_read, score_property_values
 from utils.evaluation.stats import wilson_interval
 from utils.specialists.contracts import EvidenceRecord, SpecialistResult
 from utils.specialists.federation import FederatedEvidence
@@ -159,6 +160,51 @@ def _surfaced_ids(answer: SynthesizedAnswer) -> set[str]:
     return ids
 
 
+def _answer_text(answer: SynthesizedAnswer) -> str:
+    """Everything the analyst reads: the narrative plus the rendered claims.
+
+    Property values are prose, not identifiers, so they are looked for in what
+    the answer *says* rather than in the id pool `_surfaced_ids` builds.
+    """
+    rendered = answer.rendered_claims() if answer.verification is not None else answer.claims
+    parts = [answer.narrative or ""]
+    parts.extend(claim.text or "" for claim in rendered)
+    return " ".join(parts)
+
+
+def _score_property_read(
+    entry: dict, answer: SynthesizedAnswer
+) -> dict[str, Any] | None:
+    """Coverage for a D1 property read.
+
+    The anchor keeps the identifier path; the requested values are matched by
+    containment in the answer text, under the threshold-free rule pre-registered
+    in `utils.evaluation.property_gold`. Before 2026-09-03 the values went
+    through `_surfaced_ids` too, where a description or an alias can never
+    appear, so every property read scored at most the anchor -- exactly
+    ``1/(gold_width + 1)``.
+    """
+    asserts = entry.get("assertions", {}) or {}
+    id_gold = {normalize_id(v) for v in asserts.get("must_include_ids", []) or []}
+    value_gold = [str(v) for v in asserts.get("must_include_related", []) or []]
+    if not id_gold and not value_gold:
+        return None
+
+    surfaced = _surfaced_ids(answer)
+    found_ids = id_gold & surfaced
+    values = score_property_values(_answer_text(answer), value_gold)
+
+    gold_n = len(id_gold) + values["gold"]
+    found_n = len(found_ids) + values["found"]
+    return {
+        "gold": gold_n,
+        "found": found_n,
+        "coverage": found_n / gold_n if gold_n else None,
+        "missing": sorted(id_gold - surfaced) + values["missing"],
+        "property_read": True,
+    }
+
+
 def score_answer_coverage(
     entry: dict, answer: SynthesizedAnswer
 ) -> dict[str, Any] | None:
@@ -169,6 +215,9 @@ def score_answer_coverage(
     the pipeline can retrieve every id (``mapping_recall`` ≈ 1.0) yet surface
     only a sample in the answer, which no other deterministic metric catches.
     """
+    if is_property_read(entry):
+        return _score_property_read(entry, answer)
+
     asserts = entry.get("assertions", {}) or {}
     gold: set[str] = set()
     for key in _COVERAGE_ASSERTION_KEYS:
