@@ -1,42 +1,75 @@
-# RESULTS — EXP-2026-09-004 <title>
+# RESULTS — EXP-2026-09-004
 
-## 1. Headline
+## The short version
 
-Two sentences. The number, and whether the hypothesis survived.
+**14 of 32 questions improved. Mean recall 0.0787 → 0.4059, a 5.2× move.** The
+prediction was 23, so it was wrong again — but wrong in a way worth reading
+carefully, because two of the three reasons are defects in the *scorer*, not in
+the system.
 
-## 2. Results table
+| | value |
+|---|---:|
+| questions re-run (dev half; holdout sealed) | 32 |
+| improved | **14** |
+| genuinely regressed | **0** |
+| mean recall, as scored | 0.0787 → **0.4059** |
+| mean recall, counting the graph's own id form | 0.0787 → **0.5913** |
 
-Generated from `data/metrics.json`, not typed. Mean ± std across seeds — never a
-single run without saying so. If `n_runs: 1`, state that here rather than
-letting a bare number imply a distribution.
+## Scoring the prediction
 
-## 3. Figures
+| group | n | predicted | actual |
+|---|---:|---|---|
+| ATT&CK property reads (Group 2, Tactic 1) | 3 | move | **3 moved** |
+| containment on a Category, forward | 12 | move | 8 moved |
+| containment on a View, forward | 8 | move | 3 moved |
+| containment on a member, reverse | 6 | do not move | **0 moved** |
+| `Technique`-anchored containment | 3 | do not move | **0 moved** |
 
-Each figure embedded with a one-line caption naming the script that produced it.
+**The "will not move" half was exactly right for the second time running: 9 of
+9.** The "will move" half was over-optimistic for the second time running: 14 of
+23. That asymmetry is now a pattern and is recorded as such in ISSUES I-1.
 
-## 4. Interpretation
+## What the fix did
 
-What this means for the paper's argument. Which claim in `../../CLAIMS.md` it
-moves, and in which direction.
+The ATT&CK half worked exactly as intended. `Tactic` went 0.0000 → 1.0000;
+`Group` 0.0000 → 0.2250, limited by how much of a group's record the composer
+states rather than by what was retrieved.
 
-## 5. Threats to validity
+The CAPEC half works, and works further than the score shows. Asked *"Which
+CAPEC categories does the view Mechanisms of Attack (CAPEC-1000) contain?"*, the
+system now retrieves **all nine** and names all nine in its answer. It scores
+**0.0000**, because it writes them as `capec:category:152` while the gold expects
+`CAPEC-152`. See ISSUES I-3.
 
-Confounds, leakage, dataset artifacts, cost asymmetries in the comparison. The
-section reviewers read first. Be specific enough that someone could act on it.
+## Why the other 9 predicted movers did not move
 
-## 6. What surprised us
+Not one cause, three:
 
-The section that becomes the discussion. If nothing surprised you, the
-experiment was probably not worth running — say that too.
+* **7 are compound, two-shape questions** (D4/D6) — "which patterns are peers of
+  CAPEC-12, *and* what categories contain each of those?". The containment guard
+  added during this work deliberately refuses them, because routing a compound
+  question on its second hop answers the wrong one. They need multi-hop
+  execution, which this change does not provide and does not claim to.
+* **2 retrieve correctly and score zero** on the id-format mismatch above.
+* **0 are retrieval failures.** Every query built in this set now runs the right
+  traversal in the right direction.
 
-## 7. Follow-ups
+## The regression that was not one
 
-Each becomes an entry in `../../OPEN_QUESTIONS.md`. Link them.
+One question appeared to fall 0.0196 → 0.0000. It did not regress. Its "before"
+answer was an *abstention* — "the routed sources returned no matching records" —
+whose boilerplate hint reads *"e.g. T1566, M1017, or CAPEC-98"*, and `T1566` is
+in that question's gold. Refusing to answer earned 1/51. The 0.0000 is the honest
+figure and the "after" additionally completes the first hop, returning the view's
+member where it previously returned nothing.
 
-## 8. Reproduction
+Four answers in the run scored credit this way, one of them at 0.1667. ISSUES I-2.
 
-The exact command that regenerates everything in this folder.
+## What a reader should refuse to conclude
 
-```bash
-# command here
-```
+- That 0.4059 measures the fix. It measures the fix *through two scorer defects*,
+  one of which is worth 0.185 on this set.
+- That the CAPEC containment questions are answered. The single-shape ones are;
+  the compound ones are not, and 7 of the 32 are compound.
+- That any of this moves the deterministic arm's 0.4934. This touched 32 dev
+  questions, not the arm. The arm comparison is still to be run.

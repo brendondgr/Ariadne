@@ -4,33 +4,40 @@
 # a gap.
 id: EXP-2026-09-004
 slug: template-routing-repair
-title: <one line, the question this answers>
-status: planned            # planned | running | complete | failed | superseded
+title: Does gating the template ladder on what a question asks, rather than which labels it names, recover the property reads and containment questions?
+status: complete          # planned | running | complete | failed | superseded
 date_started: 2026-09-03
-date_completed: null       # null until status is complete/failed
-authors: []
+date_completed: "2026-09-03"
+authors: ["brendondgr"]
 
 purpose: >
-  One paragraph. What question does this answer, and which paper claim
-  does it support or refute?
+  EXP-2026-09-002 recorded Group and Tactic property reads at exactly 0.0000 and
+  68 containment questions failing; EXP-2026-09-003 showed the CAPEC half was a
+  routing defect hiding behind an anchor defect. This measures what gating the
+  ladder on the question's shape recovers, so the deterministic arm is not
+  re-compared against a baseline carrying a known routing bug. Bears on C-012
+  and C-023 only through that.
 
 hypothesis: >
-  Stated before the run. If exploratory, write "exploratory — no prior hypothesis".
+  Recorded in PROTOCOL.md and committed at 1a6c22b before the run: 23 of 32 move
+  and 9 do not, with the reverse-direction cases predicted to be *correct* and to
+  move nothing because view membership is sparse. The "will not move" half was
+  exactly right (9/9); the "will move" half was over-optimistic (14/23).
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
   commit: 25a5beabeadb7358fd18e03efcca9b5e9e2fc9e8          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
-  entrypoint: "<exact command>"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  entrypoint: "ORCH_MAX_HOPS=5 uv run python -m utils.evaluation.experiment_untruncated --arm deterministic --bank docs/evaluation/composition/bank/bank.json --root docs/evaluation/experiments/template-routing-2026-09-03 --only <32 dev ids> --workers 4"
+  dirty: true             # builder changes uncommitted at run time; committed immediately after
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
 data:
-  name: <dataset>
-  version: <version>
-  split: <split>
-  n_examples: 0
+  name: expansion bank (census-derived), dev half only
+  version: "bank.json @ sha256:ad99afb18934bd7db233c292d235a4350c332114c357ea624123031ff0ab434e"
+  split: dev (holdout untouched)
+  n_examples: 32
   dvc_path: null           # this repository does not use DVC; leave null
   hash: null               # md5:... or sha256:... of the dataset artifact
 seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
@@ -40,35 +47,27 @@ environment:
   lockfile: env/requirements.lock
   container: null
 compute:
-  hardware: "<cpu/gpu, ram>"
-  wall_clock_hours: 0.0
+  hardware: "local workstation; Neo4j + TinkerPop in docker"
+  wall_clock_hours: 0.0004   # 1.4 s for 32 questions at 4 workers
   estimated_cost_usd: 0.0
-
-# --- LLM / agentic block (delete entirely if no model was in the loop) ---
-llm:
-  model: "<provider>/<model>@<version-or-date>"
-  temperature: 0.0
-  top_p: 1.0
-  max_tokens: 2048
-  prompt_files: []
-  prompt_hash: null
-  tool_schema_hash: null
-  total_input_tokens: null
-  total_output_tokens: null
-  nondeterminism_note: >
-    Provider-side nondeterminism remains even at temperature 0; results
-    are reported as mean ± std over n_runs.
 
 # --- Results block ---
 metrics:
-  primary: <metric name>
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  primary: mean_recall_on_affected_questions
+  values:
+    mean_recall_before: {mean: 0.0787, std: null, n: 32}
+    mean_recall_after: {mean: 0.4059, std: null, n: 32}
+    mean_recall_after_counting_graph_id_form: {mean: 0.5913, std: null, n: 32}
+    questions_improved: {mean: 14, std: null, n: 32}
+    questions_regressed: {mean: 0, std: null, n: 32}
+    predicted_to_move_that_moved: {mean: 14, std: null, n: 23}
+    predicted_to_survive_that_survived: {mean: 9, std: null, n: 9}
 baselines_compared: []
 statistical_test: null
 
 # --- Linkage ---
-supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+supports_claims: []        # sizes a defect; supports no claim directly
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
 superseded_by: null
-related: []
+related: ["EXP-2026-09-001", "EXP-2026-09-002", "EXP-2026-09-003"]

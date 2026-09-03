@@ -10,7 +10,6 @@ that a dead end is walked into once rather than twice.
 
 | ID | Date | Title | Status | Primary metric | Claims | Link |
 |---|---|---|---|---|---|---|
-| `EXP-2026-09-004` | 2026-09-03 | <one line, the question this answers> | planned | <metric name> (not recorded) | — | [template-routing-repair](experiments/EXP-2026-09-004-template-routing-repair/) |
 | `EXP-2026-07-001` | 2026-07-26 | Arm A — fully deterministic pipeline (planning, extraction, synthesis) | complete | correctness 0.9972 (n=1) | C-001, C-004 | [arm-a-deterministic](experiments/EXP-2026-07-001-arm-a-deterministic/) |
 | `EXP-2026-07-002` | 2026-07-26 | Arm B — LLM planning with deterministic extraction and an LLM writer | complete | correctness 0.8505 (n=1) | C-002, C-003, C-016 | [arm-b-llm-planned](experiments/EXP-2026-07-002-arm-b-llm-planned/) |
 | `EXP-2026-07-003` | 2026-07-26 | Arm C — authored plan with an LLM writer reading raw evidence | complete | correctness 0.9690 (n=1) | C-002, C-005 | [arm-c-llm-writer-evidence](experiments/EXP-2026-07-003-arm-c-llm-writer-evidence/) |
@@ -46,6 +45,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-09-001` | 2026-09-01 | How many of the question shapes the sources support has any bank asked? | complete | edge_type_coverage 0.3529 ± 0.0000 (n=1) | C-025 | [schema-census](experiments/EXP-2026-09-001-schema-census/) |
 | `EXP-2026-09-002` | 2026-09-03 | On a bank covering every shape the sources support, do hand-written templates still hold? | complete | judged_gap_generic_minus_deterministic 0.1642 ± 0.0000 (n=284) | C-023, C-012 | [expansion-bank-judged](experiments/EXP-2026-09-002-expansion-bank-judged/) |
 | `EXP-2026-09-003` | 2026-09-03 | Does binding CAPEC anchors by identity rather than a guessed label recover the View and Category questions? | complete | mean_recall_on_affected_questions (not recorded) | — | [capec-anchor-resolution](experiments/EXP-2026-09-003-capec-anchor-resolution/) |
+| `EXP-2026-09-004` | 2026-09-03 | Does gating the template ladder on what a question asks, rather than which labels it names, recover the property reads and containment questions? | complete | mean_recall_on_affected_questions (not recorded) | — | [template-routing-repair](experiments/EXP-2026-09-004-template-routing-repair/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 
 **37 experiment(s) on record.**

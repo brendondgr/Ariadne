@@ -434,7 +434,18 @@ class CypherQueryBuilder:
             return self._group_software(resolved)
 
         # 3. Group → techniques
-        if has_group:
+        #
+        # Gated on the question actually reaching for techniques. This fired on
+        # the mere presence of a Group until 2026-09-03, so "What does the threat
+        # group APT38 (G0082) describe?" -- entities ``['Group']``, no edge, no
+        # target -- was answered with APT38's 22 techniques: a valid query, the
+        # right group, and a different question. That is the whole of
+        # EXP-2026-09-002's "Group scores exactly zero", and it is the same
+        # capture the comment above records for Group+Software, fixed there and
+        # not here. An actor→technique task names a Technique, so the frozen
+        # ``group_techniques`` case (``['Group', 'Technique']``) routes exactly
+        # where it did.
+        if has_group and has_technique_entity:
             return self._group_techniques(resolved)
 
         # 4a. subtechnique_parent — HAS_SUBTECHNIQUE relationship in scope + seeds
@@ -468,7 +479,13 @@ class CypherQueryBuilder:
             return self._datacomponent_analytics(dc_seed_ids, resolved)
 
         # 4. Tactic → techniques
-        if has_tactic:
+        #
+        # Same gate, same reason: "What does the Reconnaissance tactic (TA0043)
+        # describe?" carries ``['Tactic']`` alone and was answered with the
+        # tactic's 12 techniques. Branch 4d already claims the reverse rollup
+        # (tactic scope + technique seeds), so this only ever sees the forward
+        # direction.
+        if has_tactic and has_technique_entity:
             return self._tactic_techniques(resolved)
 
         # 5. Seed ids present but no compound edge intent → describe the anchor:

@@ -1156,3 +1156,86 @@ class TestCapecAnchorResolution:
                    mod.GremlinQueryBuilder._capec_reverse_maps):
             src = inspect.getsource(fn)
             assert 'hasLabel("Weakness")' in src or 'hasLabel("TaxonomyEntry")' in src
+
+
+class TestContainmentRouting:
+    """A containment question used to fall through to ``describe``.
+
+    ``_resolve_neighbor_rels`` knew only the seven edges that leave an
+    AttackPattern, so a Category's own membership edge was invisible: asked what
+    CAPEC-156 contains, the system described the category and reported its
+    status. The bank asks in the source's vocabulary (``HAS_MEMBER``, container
+    to member) while the graph stores ``MEMBER_OF`` and ``IN_VIEW`` running
+    member to container -- same edge, opposite convention, and ``HAS_MEMBER``
+    exists nowhere in the graph.
+    """
+
+    def _draft(self, entities, seeds):
+        from pathlib import Path
+
+        from utils.planner.cards import load_source_cards
+        from utils.specialists.resolve import resolve
+
+        card = load_source_cards(Path("data"))["capec"]
+        task = SpecialistTask(sub_question_id="q1", source="capec", text="q",
+                              entities=entities, seed_ids=seeds)
+        return GremlinQueryBuilder().build(resolve(task, card))
+
+    def test_a_category_question_traverses_member_of_inward(self):
+        d = self._draft(("Category", "MEMBER_OF", "AttackPattern"), ("CAPEC-156",))
+        assert d.template == "capec_neighbors"
+        assert (d.meta["rel"], d.meta["direction"]) == ("MEMBER_OF", "in")
+
+    def test_a_view_question_traverses_in_view_inward(self):
+        # The container's kind picks the edge: a View's membership is IN_VIEW.
+        d = self._draft(("View", "MEMBER_OF", "Category"), ("CAPEC-1000",))
+        assert (d.meta["rel"], d.meta["direction"]) == ("IN_VIEW", "in")
+
+    def test_the_same_edge_read_from_the_member_reverses(self):
+        d = self._draft(("AttackPattern", "MEMBER_OF", "View"), ("CAPEC-580",))
+        assert (d.meta["rel"], d.meta["direction"]) == ("IN_VIEW", "out")
+        d = self._draft(("AttackPattern", "MEMBER_OF", "Category"), ("CAPEC-66",))
+        assert (d.meta["rel"], d.meta["direction"]) == ("MEMBER_OF", "out")
+
+    def test_containment_carries_no_target_label(self):
+        """_REL_TARGET_LABEL maps MEMBER_OF to Category.
+
+        Applied when reading the edge from the container's side it filtered the
+        members -- which are AttackPatterns -- down to Categories, and returned
+        nothing. A View's members are both kinds in any case, so no single label
+        is correct here.
+        """
+        d = self._draft(("Category", "MEMBER_OF", "AttackPattern"), ("CAPEC-156",))
+        assert "hasLabel(" not in d.query
+        assert '.in("MEMBER_OF")' in d.query
+
+    def test_a_plain_lookup_still_describes(self):
+        assert self._draft(("AttackPattern",), ("CAPEC-98",)).template == "describe"
+
+    def test_a_compound_question_is_not_captured_by_its_second_hop(self):
+        """"Peers of CAPEC-12, and what categories contain each of those?"
+
+        Names ``('PeerOf', 'MEMBER_OF')``. Routing on the containment hop
+        answers the wrong one, and it measurably did: 0.3333 through describe,
+        0.0000 through the containment traversal, because CAPEC-12 is in no
+        category and the peers were never fetched.
+        """
+        d = self._draft(("AttackPattern", "PeerOf", "MEMBER_OF", "Category"), ("CAPEC-12",))
+        assert d.template == "describe"
+
+    def test_containment_still_routes_when_it_is_the_only_relation(self):
+        d = self._draft(("Category", "MEMBER_OF", "AttackPattern"), ("CAPEC-156",))
+        assert d.template == "capec_neighbors"
+
+    def test_an_undeterminable_direction_falls_through_rather_than_guessing(self):
+        # The membership edge is named but no end identifies a container, so
+        # there is no edge to choose and no direction to read it in. describe is
+        # the honest outcome; a fixed ".out" would have been a guess.
+        d = self._draft(("AttackPattern", "MEMBER_OF"), ("CAPEC-66",))
+        assert d.template == "describe"
+
+    def test_a_named_facet_still_wins_when_containment_is_unresolvable(self):
+        # Weakness maps to EXPLOITS_WEAKNESS, which is a real AttackPattern
+        # facet, so this must keep routing there rather than being swallowed.
+        d = self._draft(("AttackPattern", "MEMBER_OF", "Weakness"), ("CAPEC-66",))
+        assert (d.meta["rel"], d.meta["direction"]) == ("EXPLOITS_WEAKNESS", "out")

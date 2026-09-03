@@ -1059,3 +1059,43 @@ def test_normalizer_dossier_tolerates_bad_properties_json(card):
     rec = CypherNormalizer().normalize(rows, resolved, "FAKE", card)[0]
     assert "description" not in rec.properties
     assert rec.name == "Antivirus/Antimalware"
+
+
+class TestPropertyReadsAreNotAnsweredWithNeighbours:
+    """Branches 3 and 4 fired on a label's presence, not on what was asked.
+
+    "What does the threat group APT38 (G0082) describe?" carries entities
+    ``['Group']`` -- no edge, no target -- and was answered with APT38's 22
+    techniques: a valid query, the right group, a different question. Group and
+    Tactic were the only two labels that did this, which is the whole of
+    EXP-2026-09-002's "Group and Tactic score exactly zero".
+    """
+
+    def _template(self, text: str, entities: tuple[str, ...], seeds: tuple[str, ...]) -> str:
+        from utils.specialists.resolve import resolve
+
+        task = SpecialistTask(sub_question_id="q1", source="attack", text=text,
+                              entities=entities, seed_ids=seeds)
+        return CypherQueryBuilder().build(resolve(task, fixture_card("attack"))).template
+
+    def test_a_group_property_read_reaches_describe(self):
+        assert self._template(
+            "What does the threat group APT38 (G0082) describe?", ("Group",), ("G0082",)
+        ) == "describe"
+
+    def test_a_tactic_property_read_reaches_describe(self):
+        assert self._template(
+            "What does the Reconnaissance tactic (TA0043) describe?", ("Tactic",), ("TA0043",)
+        ) == "describe"
+
+    def test_an_actor_to_technique_question_still_routes_where_it_did(self):
+        # The regression risk. Gating on technique intent must not strand the
+        # route the gate exists to protect.
+        assert self._template(
+            "Which techniques does G0016 use?", ("Group", "Technique"), ("G0016",)
+        ) == "group_techniques"
+
+    def test_a_tactic_to_technique_question_still_routes_where_it_did(self):
+        assert self._template(
+            "Which techniques belong to TA0043?", ("Tactic", "Technique"), ("TA0043",)
+        ) == "tactic_techniques"

@@ -46,6 +46,33 @@ _AP_NEIGHBOR_RELS = frozenset({
     "CanPrecede",
 })
 
+#: Containment, as the graph actually stores it.
+#:
+#: The set above is the seven edges that leave an **AttackPattern**, and its name
+#: says so. That made a View's or a Category's own containment edge invisible:
+#: `_resolve_neighbor_rels` returned nothing for "which patterns does CAPEC-156
+#: contain?", the ladder fell through to ``describe``, and the answer reported the
+#: category's status. 63 questions in the expansion bank ask across this edge.
+#:
+#: **The census-derived bank and the graph name this edge from opposite ends.**
+#: The bank asks in the source's vocabulary -- ``Category -[HAS_MEMBER]->
+#: AttackPattern``, container to member -- while the build stores ``AttackPattern
+#: -[MEMBER_OF]-> Category`` and ``AttackPattern -[IN_VIEW]-> View``, member to
+#: container. ``HAS_MEMBER`` exists nowhere in the graph. Same edge, opposite
+#: convention, and a traversal written in the bank's vocabulary returns nothing.
+#:
+#: So the edge is chosen by the **container's** kind and the direction by which
+#: end the question anchors on. Both are resolved, never assumed; when neither
+#: end identifies a container the question falls through to ``describe`` rather
+#: than being answered with a guess.
+_CONTAINMENT_EDGE_BY_CONTAINER = {"Category": "MEMBER_OF", "View": "IN_VIEW"}
+
+#: Names a planner may reach containment by, in either vocabulary.
+_MEMBERSHIP_ALIASES = frozenset({"HAS_MEMBER", "MEMBER_OF", "IN_VIEW"})
+
+#: The CAPEC kinds that contain other kinds.
+_CONTAINER_LABELS = frozenset(_CONTAINMENT_EDGE_BY_CONTAINER)
+
 # Mapping from relationship name to expected target label (for meta).
 _REL_TARGET_LABEL: dict[str, str] = {
     "EXPLOITS_WEAKNESS": "Weakness",
@@ -219,7 +246,56 @@ def _resolve_neighbor_rels(resolved: ResolvedTask) -> list[str]:
         _add(rel)
     for name in (*resolved.labels, *resolved.task.entities):
         _add(_AP_LABEL_TO_REL.get(name))
+    # The containment edge is not an AttackPattern facet, so it is resolved
+    # separately -- and only when the question's ends actually say which way it
+    # is being read. An undeterminable direction falls through to `describe`
+    # rather than guessing, which is what the old behaviour did anyway, minus
+    # the pretence of having routed.
+    # Containment routes only when it is the *only* relation the question names.
+    # A compound question names another edge first -- "which patterns are peers
+    # of CAPEC-12, and what categories contain each of those?" carries
+    # ``('PeerOf', 'MEMBER_OF')`` -- and routing on its second hop answers the
+    # wrong one. That regression was real and measured: the question scored
+    # 0.3333 through ``describe`` and 0.0000 through the containment traversal,
+    # because CAPEC-12 is in no category and the peers were never fetched.
+    named_rels = set(resolved.relationships)
+    if named_rels and named_rels <= _MEMBERSHIP_ALIASES:
+        plan = _membership_plan(resolved)
+        if plan is not None and plan[0] not in rels:
+            rels.append(plan[0])
     return rels
+
+
+def _membership_plan(resolved: ResolvedTask) -> tuple[str, str] | None:
+    """``(edge, step)`` for a containment question, or ``None`` if unclear.
+
+    The **container's** kind picks the edge, because the graph stores a
+    Category's membership as ``MEMBER_OF`` and a View's as ``IN_VIEW``. The
+    anchor's role picks the direction: the graph runs member to container, so a
+    question anchored on the container reads it ``in`` and one anchored on the
+    member reads it ``out``.
+
+    20 of the bank's 63 membership questions ask from the member's end, so a
+    fixed direction would answer 43 and silently return nothing for the rest --
+    one wrong answer traded for another. ``.both()`` is not the fix either: a
+    Category has members *and* a containing View, so it would over-return on
+    exactly the common case.
+
+    ``labels[0]`` is the anchor -- the order the plan listed the entities in.
+    A label the card does not declare never reaches ``labels``, so a question
+    whose container end is unresolvable returns ``None`` and falls through to
+    ``describe`` rather than being answered by a guess.
+    """
+    labels = [label for label in resolved.labels if label]
+    if not labels:
+        return None
+    anchor, rest = labels[0], labels[1:]
+    if anchor in _CONTAINER_LABELS:
+        return _CONTAINMENT_EDGE_BY_CONTAINER[anchor], "in"
+    for label in rest:
+        if label in _CONTAINER_LABELS:
+            return _CONTAINMENT_EDGE_BY_CONTAINER[label], "out"
+    return None
 
 
 # Names that signal a genuine CAPEC→ATT&CK bridge question ("…and what mitigations
@@ -546,21 +622,40 @@ class GremlinQueryBuilder:
 
     def _capec_neighbors(self, resolved: ResolvedTask, rel: str) -> QueryDraft:
         ids = _capec_candidate_ids(resolved.seed_ids)
-        target_label = _REL_TARGET_LABEL.get(rel, "")
+        # No target label on a containment edge. ``_REL_TARGET_LABEL`` maps
+        # ``MEMBER_OF`` to ``Category``, which is right only when reading the
+        # edge from the member's side; read from the container's side the
+        # neighbours are its members, and the filter removed every one of them.
+        # A View's members are AttackPatterns *and* Categories in any case, so
+        # there is no single correct label here -- filtering to one would
+        # reintroduce the defect the anchor fix removed.
+        containment = rel in _CONTAINMENT_EDGE_BY_CONTAINER.values()
+        target_label = "" if containment else _REL_TARGET_LABEL.get(rel, "")
         lim = resolved.task.max_rows()
         params: dict[str, Any] = {"ids": ids}
 
         edge = gremlin_edge_label(rel)  # loaded graphs use SCREAMING_SNAKE labels
+        # Every AttackPattern facet is read outward from the pattern. The
+        # containment edge is the one that is genuinely asked from both ends, so
+        # its direction is resolved rather than assumed; `_resolve_neighbor_rels`
+        # only offers it when the ends make the direction legible.
+        step = "out"
+        if containment:
+            plan = _membership_plan(resolved)
+            step = plan[1] if plan else "out"
+        # No ``hasLabel`` on the containment edge: ``View -[HAS_MEMBER]->``
+        # legitimately reaches AttackPatterns *and* Categories, so filtering to
+        # one would reintroduce exactly the defect the anchor fix removed.
         if target_label:
             query = (
                 f'g.V().has("id", within(ids)).as("ap")'
-                f'.out("{edge}").hasLabel("{target_label}").as("nbr")'
+                f'.{step}("{edge}").hasLabel("{target_label}").as("nbr")'
                 f'.select("ap","nbr").by(elementMap()).limit({lim})'
             )
         else:
             query = (
                 f'g.V().has("id", within(ids)).as("ap")'
-                f'.out("{edge}").as("nbr")'
+                f'.{step}("{edge}").as("nbr")'
                 f'.select("ap","nbr").by(elementMap()).limit({lim})'
             )
         return QueryDraft(
@@ -573,6 +668,7 @@ class GremlinQueryBuilder:
                 "bindings": _capec_id_bindings(),
                 "neighbor_label": target_label or "",
                 "rel": rel,
+                "direction": step,
             },
         )
 
