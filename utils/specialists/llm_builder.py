@@ -61,6 +61,27 @@ from utils.llm_sampling import sampling_params
 #: this is the thing it was reserved for.
 DEFAULT_MAX_TOKENS = int(os.environ.get("SPECIALIST_LLM_MAX_TOKENS", "4096"))
 
+
+def default_max_tokens() -> int:
+    """The builder's token budget, **read at call time**.
+
+    ``DEFAULT_MAX_TOKENS`` above is bound at import, and until 2026-09-03 that
+    was also the dataclass default -- which made the setting silently
+    ignorable. ``experiment_untruncated`` applies its env profile *after*
+    importing the builder, so the arm ran on whatever the environment held when
+    the module was first loaded, 4096, while the profile it had just applied
+    asked for 16384. Nothing errored; the model simply spent the smaller budget
+    on chain-of-thought and returned an empty ``content``, which is
+    indistinguishable downstream from a model that had nothing to say. 153 of
+    284 questions in EXP-2026-09-002 came back that way, and the arm's 0.3712
+    is a measurement of the budget rather than of the model.
+
+    Same fix, and the same reasoning, as ``generate_e2e._cap``: an env-driven
+    bound that a run needs to change must be read when it is used, not when the
+    module happens to be imported.
+    """
+    return int(os.environ.get("SPECIALIST_LLM_MAX_TOKENS", "4096"))
+
 _CYPHER_RULES = """\
 - Emit exactly ONE Cypher statement. No semicolons, no multiple statements.
 - It MUST contain both MATCH and RETURN. A bare RETURN, a CALL, or a
@@ -128,7 +149,10 @@ class LLMQueryBuilder:
     base_url: str = "http://localhost:4000/v1"
     model: str = "skynet"
     timeout_s: float = 180.0
-    max_tokens: int = DEFAULT_MAX_TOKENS
+    #: ``None`` means "resolve from the environment at call time" -- see
+    #: `default_max_tokens`. An explicit value still wins, so a caller that
+    #: means a specific budget gets it.
+    max_tokens: int | None = None
     #: Recorded per draft so the experiment can separate "the model reasoned
     #: badly" from "the model could not phrase a legal query" — two different
     #: findings that a single correctness number would conflate.
@@ -189,7 +213,11 @@ class LLMQueryBuilder:
         payload = {
             "model": self.model,
             "messages": [{"role": "user", "content": prompt}],
-            **sampling_params(max_tokens=self.max_tokens),
+            **sampling_params(
+                max_tokens=self.max_tokens
+                if self.max_tokens is not None
+                else default_max_tokens()
+            ),
         }
         try:
             response = requests.post(

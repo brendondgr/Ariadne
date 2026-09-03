@@ -257,3 +257,41 @@ def test_no_other_arm_turns_the_query_builder_on() -> None:
         env = untruncated_env(arm=arm, llm_model="m", llm_max_tokens=4096)
         flag = env.get("SPECIALIST_LLM_QUERY_BUILDER")
         assert (flag == "true") == (arm == "llm_query"), f"{arm} set the builder flag to {flag}"
+
+
+class TestTheBudgetIsReadAtCallTime:
+    """An env-driven bound bound at import is a setting that can be ignored.
+
+    `experiment_untruncated` applies its env profile *after* importing the
+    builder, so the arm ran on whatever the environment held at import -- 4096 --
+    while the profile it had just applied asked for 16384. Nothing errored: the
+    model spent the smaller budget on chain-of-thought and returned an empty
+    ``content``, which downstream is indistinguishable from a model with nothing
+    to say. 153 of 284 questions in EXP-2026-09-002 came back that way.
+    """
+
+    def test_setting_the_env_after_import_now_takes_effect(self, monkeypatch):
+        from utils.specialists.llm_builder import default_max_tokens
+
+        monkeypatch.setenv("SPECIALIST_LLM_MAX_TOKENS", "16384")
+        assert default_max_tokens() == 16384
+
+    def test_the_fallback_is_unchanged_when_nothing_is_set(self, monkeypatch):
+        from utils.specialists.llm_builder import default_max_tokens
+
+        monkeypatch.delenv("SPECIALIST_LLM_MAX_TOKENS", raising=False)
+        assert default_max_tokens() == 4096
+
+    def test_an_explicit_budget_still_wins_over_the_environment(self, monkeypatch):
+        from utils.specialists.llm_builder import LLMQueryBuilder
+
+        monkeypatch.setenv("SPECIALIST_LLM_MAX_TOKENS", "16384")
+        builder = LLMQueryBuilder(card=None, language="cypher", max_tokens=2048)
+        assert builder.max_tokens == 2048
+
+    def test_the_default_defers_rather_than_freezing_a_value(self):
+        from utils.specialists.llm_builder import LLMQueryBuilder
+
+        # None is the signal to resolve later; a concrete default here is what
+        # made the setting ignorable.
+        assert LLMQueryBuilder(card=None, language="cypher").max_tokens is None
