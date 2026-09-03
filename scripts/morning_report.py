@@ -43,6 +43,108 @@ def pct(value: float | None) -> str:
     return "—" if value is None else f"{value * 100:.0f}%"
 
 
+
+def _budget_caveat(probe: dict[str, Any] | None) -> str:
+    """The AI-written-query row is not a fair test, and the report must say so.
+
+    Written as a function rather than inline prose because every number in it is
+    read from the probe artifact. If the probe did not run, this says nothing at
+    all rather than guessing.
+    """
+    if not probe:
+        return ""
+    census = probe.get("census") or {}
+    total = census.get("questions")
+    empty = census.get("empty_query")
+    tried = sorted({t.get("budget") for c in probe.get("cases") or []
+                    for t in c.get("trials") or [] if t.get("budget")})
+    worked = sorted({t["budget"] for c in probe.get("cases") or []
+                     for t in c.get("trials") or [] if t.get("produced_query")})
+    lines = [
+        "### Read the AI-written-query row with care",
+        "",
+        "It is not a fair test of that idea, and it should not be reported as one.",
+        "",
+        "The model doing the writing thinks out loud before it answers, and the "
+        "thinking and the answer come back separately. It gets a fixed allowance "
+        "of words per question. On these questions it spent the whole allowance "
+        "on the thinking and never reached the answer, so what came back was "
+        "blank — and a blank is recorded exactly like a wrong answer.",
+        "",
+    ]
+    if total and empty is not None:
+        lines += [f"That happened on **{empty} of {total}** questions in that row.", ""]
+    if tried:
+        trials = [t for c in probe.get("cases") or [] for t in c.get("trials") or []]
+        run_at = probe.get("arm_budget_as_run")
+        at_arm = [t for t in trials if t.get("budget") == run_at]
+        bigger = [t for t in trials if t.get("budget") and t["budget"] > (run_at or 0)]
+        answered = [t for t in bigger if t.get("produced_query")]
+        refused = [t for t in bigger if t.get("error")]
+        lines += [
+            "Afterwards the identical request was put to the same model again, "
+            "word for word.",
+            "",
+        ]
+        if at_arm:
+            blank = sum(1 for t in at_arm if not t.get("produced_query"))
+            lines.append(
+                f"* At the allowance the run actually used, **{blank} of "
+                f"{len(at_arm)}** replies came back blank — the model used every "
+                "word it was given on thinking."
+            )
+        if bigger:
+            biggest = max(t["budget"] for t in bigger)
+            done = len(bigger) - len(refused)
+            if answered:
+                if done == 1 and len(answered) == 1:
+                    phrase = "the single reply that came back at all contained"
+                else:
+                    phrase = (f"{len(answered)} of the {done} replies that came "
+                              "back at all contained")
+                lines.append(
+                    f"* Given **{biggest / (run_at or 1):.0f}x** the allowance, "
+                    f"{phrase} an actual query instead of a blank. Whether that "
+                    "query is *correct* is a separate question this check does not "
+                    "ask — the point is only that something was written at all."
+                )
+            if refused:
+                lines.append(
+                    f"* {len(refused)} of those larger attempts never returned: the "
+                    "service in front of the model gave up waiting. That is a "
+                    "limit of the plumbing, not of the model, and it is recorded "
+                    "as such rather than counted as a failure to answer."
+                )
+        lines.append("")
+        if worked:
+            lines += [
+                "So the row above measures how much room the model was given to "
+                "think, not whether it can write a query.",
+                "",
+            ]
+    pinned = probe.get("dotenv_value_not_used_by_arm")
+    effective = probe.get("arm_budget_as_run")
+    if pinned is not None and effective is not None and str(pinned) != str(effective):
+        lines += [
+            f"There is a second, separate lesson here. The project's settings file "
+            f"asks for an allowance of {int(pinned):,}, but this run never read that "
+            f"file — it used the built-in default of {int(effective):,} instead. "
+            "Neither number was large enough, so it made no difference to the "
+            "result tonight; but a setting that is written down, looks correct, "
+            "and is silently ignored is worth knowing about before it matters.",
+            "",
+        ]
+    lines += [
+        "Fixing it needs either a much larger allowance — which makes every "
+        "question far slower — or a model that answers without a long preamble. "
+        "Either way it needs its own run. **Nothing was changed tonight**; this "
+        "was found by reading the run's own records and asking the model the same "
+        "question again.",
+        "",
+    ]
+    return "\n".join(lines)
+
+
 def build_markdown(state: dict[str, Any] | None, art: dict[str, Any]) -> str:
     L: list[str] = []
     add = L.append
@@ -315,12 +417,24 @@ def build_markdown(state: dict[str, Any] | None, art: dict[str, Any]) -> str:
             "comparing it against the AI-planned alternatives is the next step "
             "and needs a rerun.")
         add("")
+        # The caveat is about how the AI-written-query arm was *run*, so it holds
+        # whether or not the scoring of that arm finished.
+        add(_budget_caveat(art.get("budget_probe")))
     else:
+        gloss = {
+            "deterministic": "Fixed, pre-written database queries, picked by rules. "
+                             "No model decides what to look up.",
+            "generic": "Queries assembled on the spot out of the catalogue's own "
+                       "structure — still nothing written by a model.",
+            "llm_query": "A language model is shown the catalogue's structure and "
+                         "asked to write the database query itself.",
+        }
         add("| strategy | score | what it is |")
         add("|---|---:|---|")
         for arm, value in sorted(judged.items(), key=lambda kv: -(kv[1] or 0)):
-            add(f"| {arm} | {pct(value)} | |")
+            add(f"| {arm} | {pct(value)} | {gloss.get(arm, '')} |")
         add("")
+        add(_budget_caveat(art.get("budget_probe")))
 
     # ---------- what did not run -------------------------------------------
     add("## What did not run")
@@ -477,6 +591,7 @@ def main() -> None:
         "direction": load(args.bank_dir / "direction.json"),
         "anomalies": load(args.bank_dir / "anomalies.json"),
         "judged": load(args.bank_dir / "judged.json"),
+        "budget_probe": load(args.bank_dir / "budget-probe.json"),
     }
     state = load(args.state)
 

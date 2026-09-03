@@ -1,0 +1,70 @@
+{
+  "probe": "builder-budget",
+  "arm_budget_as_run": 4096,
+  "dotenv_value_not_used_by_arm": "2048",
+  "base_url": "http://localhost:9090/v1",
+  "model": "default-model",
+  "census": {
+    "questions": 284,
+    "empty_query": 153,
+    "with_records": 67
+  },
+  "cases": [
+    {
+      "id": "D1-Software-x_mitre_platforms-S1191-c001d8::indirect",
+      "source": "attack",
+      "language": "cypher",
+      "question": "Which platforms does Megazord (S1191) apply to?",
+      "prompt_chars": 2751,
+      "trials": [
+        {
+          "budget": 4096,
+          "finish_reason": "length",
+          "completion_tokens": 4096,
+          "content_chars": 0,
+          "reasoning_chars": 16844,
+          "produced_query": false,
+          "query_head": "",
+          "wall_s": 141.3
+        },
+        {
+          "budget": 32768,
+          "finish_reason": "stop",
+          "completion_tokens": 8269,
+          "content_chars": 410,
+          "reasoning_chars": 33356,
+          "produced_query": true,
+          "query_head": "MATCH (s:Software {attack_id: $id}) WITH s, coalesce(s.platforms, s.platform) AS platform_value WITH s, CASE WHEN list(platform_value) THEN platform_value ELSE ",
+          "wall_s": 263.8
+        }
+      ]
+    },
+    {
+      "id": "D1-Technique-x_mitre_contributors-T1001.003-0a5bef::formal",
+      "source": "attack",
+      "language": "cypher",
+      "question": "Who contributed the ATT&CK technique Protocol or Service Impersonation (T1001.003)?",
+      "prompt_chars": 2791,
+      "trials": [
+        {
+          "budget": 4096,
+          "finish_reason": "length",
+          "completion_tokens": 4096,
+          "content_chars": 0,
+          "reasoning_chars": 16326,
+          "produced_query": false,
+          "query_head": "",
+          "wall_s": 135.1
+        },
+        {
+          "budget": 32768,
+          "error": "KeyError: 'choices'",
+          "wall_s": 603.7,
+          "response_head": "{\"error\":{\"message\":\"upstream error: ReadTimeout: \",\"type\":\"relay_proxy_error\",\"code\":502}}",
+          "status_code": 502
+        }
+      ]
+    }
+  ],
+  "verdict": "a query appeared at budget(s) [32768] \u2014 the arm as run was budget-limited below that"
+}

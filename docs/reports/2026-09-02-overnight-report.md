@@ -1,6 +1,6 @@
 # Overnight results
 
-*Generated 02 September 2026, 22:54 UTC. Every number below was read from a file produced during the run — nothing here is typed in by hand.*
+*Generated 03 September 2026, 04:24 UTC. Every number below was read from a file produced during the run — nothing here is typed in by hand.*
 
 ## What this project is, in one paragraph
 
@@ -114,7 +114,11 @@ Reading single facts fails **completely** for Group, Tactic, View — a score of
 
 ## What did not run
 
-No run record was found, so this report was assembled from whatever artifacts were on disk. Treat any missing section as *did not run* rather than *nothing to report*.
+7 of 8 steps finished.
+
+| step | what happened |
+|---|---|
+| report:early | running: not reached |
 
 **The held-back half of the questions was not touched.** That was deliberate: it is only useful as a test if nothing has been tuned against it.
 

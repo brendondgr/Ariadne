@@ -1,6 +1,103 @@
 {
- "started": "2026-09-02T22:55:27+00:00",
- "phases": [],
- "resumed_from": "2026-09-02T22:54:56+00:00",
- "finished": "2026-09-02T22:55:27+00:00"
+ "started": "2026-09-02T22:55:52+00:00",
+ "phases": [
+  {
+   "name": "preflight",
+   "started": "2026-09-02T22:55:52+00:00",
+   "status": "ok",
+   "result": {
+    "fixture_qa_attack": "pass",
+    "fixture_qa_capec": "pass",
+    "grader_identity": "skynet  ->  qwen38-27B-v2   [relay advertises 'auto']",
+    "bank_sha256": "ad99afb18934bd7db233c292d235a4350c332114c357ea624123031ff0ab434e",
+    "dev_questions": 284,
+    "holdout_questions_sealed": 288
+   },
+   "wall_s": 25.3,
+   "finished": "2026-09-02T22:56:17+00:00"
+  },
+  {
+   "name": "run:deterministic",
+   "started": "2026-09-02T22:56:17+00:00",
+   "status": "ok",
+   "result": {
+    "arm": "deterministic",
+    "tail": "284\n  [deterministic] \u2026 250/284\n  [deterministic] \u2026 260/284\n  [deterministic] \u2026 270/284\n  [deterministic] \u2026 280/284\n  [deterministic] \u2026 284/284\n[deterministic] wrote 284/284 artifacts to /home/bdgr/Agents/Ariadne/docs/evaluation/experiments/expansion-judged-2026-09-01/deterministic/answers/ in 4.2s\n"
+   },
+   "wall_s": 4.5,
+   "finished": "2026-09-02T22:56:22+00:00"
+  },
+  {
+   "name": "run:generic",
+   "started": "2026-09-02T22:56:22+00:00",
+   "status": "ok",
+   "result": {
+    "arm": "generic",
+    "tail": " [generic] \u2026 230/284\n  [generic] \u2026 240/284\n  [generic] \u2026 250/284\n  [generic] \u2026 260/284\n  [generic] \u2026 270/284\n  [generic] \u2026 280/284\n  [generic] \u2026 284/284\n[generic] wrote 284/284 artifacts to /home/bdgr/Agents/Ariadne/docs/evaluation/experiments/expansion-judged-2026-09-01/generic/answers/ in 1835.0s\n"
+   },
+   "wall_s": 1835.3,
+   "finished": "2026-09-02T23:26:57+00:00"
+  },
+  {
+   "name": "run:llm_query",
+   "started": "2026-09-02T23:26:57+00:00",
+   "status": "ok",
+   "result": {
+    "arm": "llm_query",
+    "tail": "284\n  [llm_query] \u2026 240/284\n  [llm_query] \u2026 250/284\n  [llm_query] \u2026 260/284\n  [llm_query] \u2026 270/284\n  [llm_query] \u2026 280/284\n  [llm_query] \u2026 284/284\n[llm_query] wrote 284/284 artifacts to /home/bdgr/Agents/Ariadne/docs/evaluation/experiments/expansion-judged-2026-09-01/llm_query/answers/ in 17830.1s\n"
+   },
+   "wall_s": 17830.3,
+   "finished": "2026-09-03T04:24:07+00:00"
+  },
+  {
+   "name": "score",
+   "started": "2026-09-03T04:24:07+00:00",
+   "status": "ok",
+   "result": {
+    "script": "score_bank.py",
+    "tail": "score -> docs/evaluation/composition/bank/score.json\n  511 answerable + 61 abstention probes\n\n  pooled recall      0.4522   <- draw artifact, do not quote alone\n  reweighted recall  0.506   <- comparable figure\n  dev 0.435 / holdout 0.4683\n\n  by tier:      {'D1': 0.3958, 'D2': 0.5345, 'D3': 0.6013, 'D4': 0.2594, 'D5': 0.5499, 'D6': 0.3893}\n  by direction: {'forward': 0.4302, 'reverse': 0.5165}\n  by register:  {'analyst': 0.4378, 'formal': 0.4388, 'indirect': 0.4808}\n  by width:     {'1': 0.5223, '2-5': 0.4292, '6-20': 0.3135, '21+': 0.2858}\n\n  abstention: returned nothing on 37/61 (60.7%)\n  fully answered 110/511; nothing retrieved 99\n\n  weakest shapes:\n    0.00  (n=2, census None)  Group.aliases\n    0.00  (n=2, census None)  Group.description\n    0.00  (n=2, census None)  Group.x_mitre_contributors\n    0.00  (n=2, census None)  Tactic.description\n    0.00  (n=2, census None)  View.Type\n    0.03  (n=9, census 21)  View -[HAS_MEMBER]-> Category\n    0.04  (n=32, census 188)  Category -[HAS_MEMBER]-> AttackPattern\n    0.12  (n=8, census 15)  Matrix -[tactic_refs]-> Tactic\n"
+   },
+   "wall_s": 0.2,
+   "finished": "2026-09-03T04:24:08+00:00"
+  },
+  {
+   "name": "direction",
+   "started": "2026-09-03T04:24:08+00:00",
+   "status": "ok",
+   "result": {
+    "script": "direction_contrast.py",
+    "tail": "ique\n    -0.583  (fwd n=2, rev n=6)  Analytic -[log_source]-> DataComponent\n    -0.500  (fwd n=2, rev n=4)  DetectionStrategy -[detects]-> Technique\n    -0.468  (fwd n=7, rev n=3)  View -[HAS_MEMBER]-> AttackPattern\n    -0.333  (fwd n=13, rev n=1)  Category -[HAS_MEMBER]-> AttackPattern\n    -0.100  (fwd n=10, rev n=4)  AttackPattern -[PeerOf]-> AttackPattern\n    -0.042  (fwd n=8, rev n=4)  AttackPattern -[CanFollow]-> AttackPattern\n    -0.027  (fwd n=11, rev n=4)  DetectionStrategy -[x_mitre_analytic_refs]-> Analytic\n    +0.000  (fwd n=2, rev n=3)  AttackPattern -[CanAlsoBe]-> AttackPattern\n    +0.000  (fwd n=2, rev n=4)  Campaign -[attributed-to]-> Group\n    +0.000  (fwd n=8, rev n=1)  Campaign -[uses]-> Software\n    +0.000  (fwd n=15, rev n=3)  Group -[uses]-> Software\n    +0.000  (fwd n=8, rev n=6)  Software -[uses]-> Technique\n    +0.000  (fwd n=2, rev n=6)  Technique -[subtechnique-of]-> Technique\n    +0.000  (fwd n=2, rev n=4)  View -[HAS_MEMBER]-> Category\n    +0.703  (fwd n=2, rev n=4)  Technique -[kill_chain_phase]-> Tactic\n    +0.869  (fwd n=10, rev n=8)  AttackPattern -[ChildOf]-> AttackPattern\n    +0.982  (fwd n=10, rev n=6)  AttackPattern -[CanPrecede]-> AttackPattern\n"
+   },
+   "wall_s": 0.1,
+   "finished": "2026-09-03T04:24:08+00:00"
+  },
+  {
+   "name": "anomalies",
+   "started": "2026-09-03T04:24:08+00:00",
+   "status": "ok",
+   "result": {
+    "script": "anomaly_triage.py",
+    "tail": "anomaly triage -> docs/evaluation/composition/bank/anomalies.json\n\n  property reads, recall by the kind of thing asked about:\n    0.00  Group\n    0.00  Tactic\n    0.00  View\n    0.42  Technique\n    0.47  Software\n    0.49  Campaign\n    0.50  Analytic\n    0.50  AttackPattern\n    0.50  DataComponent\n    0.50  Mitigation\n  property read failures by cause: {'query_built_returned_no_rows': 63}\n\n  containment failures by cause: {'query_built_returned_no_rows': 68}\n\n  abstention outcomes: {'correctly_returned_nothing': 37, 'returned_the_anchor_only': 18, 'returned_unrelated_neighbours': 6}\n"
+   },
+   "wall_s": 0.2,
+   "finished": "2026-09-03T04:24:08+00:00"
+  },
+  {
+   "name": "report:early",
+   "started": "2026-09-03T04:24:08+00:00",
+   "status": "ok",
+   "result": {
+    "script": "morning_report.py",
+    "tail": "report (markdown) -> docs/reports/2026-09-02-overnight-report.md\nreport (pdf)      -> docs/reports/2026-09-02-overnight-report.pdf  (11,888 bytes)\n"
+   },
+   "wall_s": 0.1,
+   "finished": "2026-09-03T04:24:08+00:00"
+  },
+  {
+   "name": "judge:deterministic.p1",
+   "started": "2026-09-03T04:24:08+00:00",
+   "status": "running"
+  }
+ ],
+ "resumed_from": "2026-09-02T22:55:27+00:00"
 }
