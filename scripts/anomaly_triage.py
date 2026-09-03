@@ -36,6 +36,44 @@ CONTAINMENT = {
 }
 
 
+#: Trace steps that record a row count, in the order we trust them. ``execute``
+#: is the raw count the driver returned; ``assess`` and ``normalize`` re-record
+#: it downstream and agree with it.
+_ROW_COUNT_STEPS = ("execute", "assess", "normalize")
+
+
+def row_count(result: dict[str, Any]) -> int:
+    """Rows this result's query actually returned.
+
+    The specialists record ``row_count`` inside ``traces[].detail``
+    (`utils/specialists/base.py`), never on the result object itself. Until
+    2026-09-03 this module read ``result["row_count"]``, which exists in no
+    artifact ever written -- so the sum was always 0, ``classify`` returned
+    ``query_built_returned_no_rows`` for every case that built a query, and the
+    three branches below it were unreachable. That produced EXP-2026-09-002's
+    "63 of 63 / 68 of 68" figures, which are the classifier's only reachable
+    output rather than a finding, and are contradicted by the same artifacts:
+    455 of 572 results carry records.
+
+    Falls back to the materialised ``records`` list when no trace recorded a
+    count, so a result that was never executed still classifies honestly.
+    """
+    by_step: dict[str, Any] = {}
+    for trace in result.get("traces") or []:
+        if not isinstance(trace, dict):
+            continue
+        detail = trace.get("detail")
+        if isinstance(detail, dict) and "row_count" in detail:
+            by_step.setdefault(trace.get("step"), detail["row_count"])
+    for step in _ROW_COUNT_STEPS:
+        if step in by_step:
+            return int(by_step[step] or 0)
+    if by_step:
+        return int(next(iter(by_step.values())) or 0)
+    records = result.get("records")
+    return len(records) if isinstance(records, list) else 0
+
+
 def classify(answer: dict[str, Any], entry: dict[str, Any]) -> str:
     """Why this question did not get its answer.
 
@@ -50,7 +88,7 @@ def classify(answer: dict[str, Any], entry: dict[str, Any]) -> str:
 
     if not results:
         return "no_query_built"
-    rows = sum(r.get("row_count") or 0 for r in results if isinstance(r, dict))
+    rows = sum(row_count(r) for r in results if isinstance(r, dict))
     if rows == 0:
         return "query_built_returned_no_rows"
     if records == 0 and related == 0:

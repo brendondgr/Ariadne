@@ -1,0 +1,230 @@
+{
+ "arm": "deterministic",
+ "property_reads": {
+  "failure_causes": {
+   "partial_recall": 53,
+   "evidence_extracted_but_wrong_entities": 8,
+   "query_built_returned_no_rows": 2
+  },
+  "recall_by_anchor_label": {
+   "Analytic": 0.5,
+   "AttackPattern": 0.5,
+   "Campaign": 0.4861,
+   "DataComponent": 0.5,
+   "Group": 0.0,
+   "Mitigation": 0.5,
+   "Software": 0.4688,
+   "Tactic": 0.0,
+   "Technique": 0.4179,
+   "View": 0.0
+  }
+ },
+ "containment": {
+  "failure_causes": {
+   "query_built_returned_no_rows": 45,
+   "partial_recall": 17,
+   "evidence_extracted_but_wrong_entities": 6
+  }
+ },
+ "abstention": {
+  "outcomes": {
+   "correctly_returned_nothing": 37,
+   "returned_the_anchor_only": 18,
+   "returned_unrelated_neighbours": 6
+  },
+  "failures": [
+   {
+    "id": "D0-Analytic-detects-AN1953-21e198::analyst",
+    "predicate": "detects",
+    "anchor_label": "Analytic",
+    "records": 1,
+    "related": 0,
+    "cause": "returned_the_anchor_only"
+   },
+   {
+    "id": "D0-AttackPattern-HAS_MEMBER-CAPEC-136-9dabb8::analyst",
+    "predicate": "HAS_MEMBER",
+    "anchor_label": "AttackPattern",
+    "records": 1,
+    "related": 0,
+    "cause": "returned_the_anchor_only"
+   },
+   {
+    "id": "D0-AttackPattern-HAS_MEMBER-CAPEC-136-9dabb8::formal",
+    "predicate": "HAS_MEMBER",
+    "anchor_label": "AttackPattern",
+    "records": 1,
+    "related": 0,
+    "cause": "returned_the_anchor_only"
+   },
+   {
+    "id": "D0-AttackPattern-HAS_MEMBER-CAPEC-136-9dabb8::indirect",
+    "predicate": "HAS_MEMBER",
+    "anchor_label": "AttackPattern",
+    "records": 1,
+    "related": 0,
+    "cause": "returned_the_anchor_only"
+   },
+   {
+    "id": "D0-Campaign-detects-C0012-ccb2ab::analyst",
+    "predicate": "detects",
+    "anchor_label": "Campaign",
+    "records": 15,
+    "related": 0,
+    "cause": "returned_unrelated_neighbours"
+   },
+   {
+    "id": "D0-Campaign-log_source-C0022-b6bfb1::indirect",
+    "predicate": "log_source",
+    "anchor_label": "Campaign",
+    "records": 1,
+    "related": 0,
+    "cause": "returned_the_anchor_only"
+   },
+   {
+    "id": "D0-Campaign-mitigates-C0046-56b839::analyst",
+    "predicate": "mitigates",
+    "anchor_label": "Campaign",
+    "records": 18,
+    "related": 0,
+    "cause": "returned_unrelated_neighbours"
+   },
+   {
+    "id": "D0-Campaign-x_mitre_analytic_refs-C0034-a648a4::formal",
+    "predicate": "x_mitre_analytic_refs",
+    "anchor_label": "Campaign",
+    "records": 1,
+    "related": 0,
+    "cause": "returned_the_anchor_only"
+   },
+   {
+    "id": "D0-DetectionStrategy-log_source-DET0090-f05be5::analyst",
+    "predicate": "log_source",
+    "anchor_label": "DetectionStrategy",
+    "records": 1,
+    "related": 0,
+    "cause": "returned_the_anchor_only"
+   },
+   {
+    "id": "D0-DetectionStrategy-mitigates-DET0130-5df6ac::formal",
+    "predicate": "mitigates",
+    "anchor_label": "DetectionStrategy",
+    "records": 1,
+    "related": 0,
+    "cause": "returned_the_anchor_only"
+   },
+   {
+    "id": "D0-Group-detects-G1018-44dc9d::formal",
+    "predicate": "detects",
+    "anchor_label": "Group",
+    "records": 6,
+    "related": 0,
+    "cause": "returned_unrelated_neighbours"
+   },
+   {
+    "id": "D0-Group-kill_chain_phase-G0001-df09db::indirect",
+    "predicate": "kill_chain_phase",
+    "anchor_label": "Group",
+    "records": 9,
+    "related": 0,
+    "cause": "returned_unrelated_neighbours"
+   },
+   {
+    "id": "D0-Group-kill_chain_phase-G0063-ffb7ab::analyst",
+    "predicate": "kill_chain_phase",
+    "anchor_label": "Group",
+    "records": 1,
+    "related": 0,
+    "cause": "returned_the_anchor_only"
+   },
+   {
+    "id": "D0-Mitigation-log_source-M1050-4474ef::indirect",
+    "predicate": "log_source",
+    "anchor_label": "Mitigation",
+    "records": 1,
+    "related": 0,
+    "cause": "returned_the_anchor_only"
+   },
+   {
+    "id": "D0-Mitigation-x_mitre_analytic_refs-M1045-637a2a::formal",
+    "predicate": "x_mitre_analytic_refs",
+    "anchor_label": "Mitigation",
+    "records": 1,
+    "related": 0,
+    "cause": "returned_the_anchor_only"
+   },
+   {
+    "id": "D0-Mitigation-x_mitre_analytic_refs-M1049-07af73::indirect",
+    "predicate": "x_mitre_analytic_refs",
+    "anchor_label": "Mitigation",
+    "records": 1,
+    "related": 0,
+    "cause": "returned_the_anchor_only"
+   },
+   {
+    "id": "D0-Software-detects-S0065-976cdd::analyst",
+    "predicate": "detects",
+    "anchor_label": "Software",
+    "records": 1,
+    "related": 6,
+    "cause": "returned_unrelated_neighbours"
+   },
+   {
+    "id": "D0-Software-log_source-S0152-42c2f4::indirect",
+    "predicate": "log_source",
+    "anchor_label": "Software",
+    "records": 1,
+    "related": 0,
+    "cause": "returned_the_anchor_only"
+   },
+   {
+    "id": "D0-Software-x_mitre_analytic_refs-S1154-95dcf6::formal",
+    "predicate": "x_mitre_analytic_refs",
+    "anchor_label": "Software",
+    "records": 1,
+    "related": 0,
+    "cause": "returned_the_anchor_only"
+   },
+   {
+    "id": "D0-Technique-detects-T1555.005-df61d4::indirect",
+    "predicate": "detects",
+    "anchor_label": "Technique",
+    "records": 1,
+    "related": 0,
+    "cause": "returned_the_anchor_only"
+   },
+   {
+    "id": "D0-Technique-log_source-T1566.001-5331f1::analyst",
+    "predicate": "log_source",
+    "anchor_label": "Technique",
+    "records": 1,
+    "related": 0,
+    "cause": "returned_the_anchor_only"
+   },
+   {
+    "id": "D0-Technique-log_source-T1586.002-b071e0::formal",
+    "predicate": "log_source",
+    "anchor_label": "Technique",
+    "records": 1,
+    "related": 0,
+    "cause": "returned_the_anchor_only"
+   },
+   {
+    "id": "D0-Technique-mitigates-T1518.002-8ba062::indirect",
+    "predicate": "mitigates",
+    "anchor_label": "Technique",
+    "records": 1,
+    "related": 0,
+    "cause": "returned_the_anchor_only"
+   },
+   {
+    "id": "D0-Technique-tactic_refs-T1518-ad4ac3::analyst",
+    "predicate": "tactic_refs",
+    "anchor_label": "Technique",
+    "records": 1,
+    "related": 1,
+    "cause": "returned_unrelated_neighbours"
+   }
+  ]
+ }
+}
