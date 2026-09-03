@@ -32,7 +32,11 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from utils.evaluation.llm_judge import EvalConfig, JudgeReport, judge_run
-from utils.evaluation.property_gold import is_property_read, score_property_values
+from utils.evaluation.property_gold import (
+    is_property_read,
+    property_name_of,
+    score_property_values,
+)
 from utils.evaluation.stats import wilson_interval
 from utils.specialists.contracts import EvidenceRecord, SpecialistResult
 from utils.specialists.federation import FederatedEvidence
@@ -192,7 +196,9 @@ def _score_property_read(
 
     surfaced = _surfaced_ids(answer)
     found_ids = id_gold & surfaced
-    values = score_property_values(_answer_text(answer), value_gold)
+    values = score_property_values(
+        _answer_text(answer), value_gold, property_name_of(entry)
+    )
 
     gold_n = len(id_gold) + values["gold"]
     found_n = len(found_ids) + values["found"]

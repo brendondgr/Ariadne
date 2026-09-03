@@ -148,3 +148,43 @@ class TestMarkdownLinks:
 
     def test_the_url_itself_is_not_treated_as_content(self):
         assert "https" not in normalize_tokens("[x](https://example.org/y)")
+
+
+class TestBooleanValuesMustBeQualified:
+    """Rule 4. A bare "False" is satisfied by any boolean the composer prints.
+
+    The real case: "Can T1072 be applied remotely?", gold ``False``. The answer
+    never mentions x_mitre_remote_support, but its trailer carries
+    ``revoked: False`` -- which credited the question before this rule existed.
+    """
+
+    TRAILER = ("T1072 (Software Deployment Tools) has revoked: False; "
+               "stix_type: attack-pattern; x_mitre_is_subtechnique: False.")
+
+    def test_a_different_propertys_boolean_does_not_count(self):
+        got = score_property_values(self.TRAILER, ["False"], "x_mitre_remote_support")
+        assert got["found"] == 0
+
+    def test_the_named_property_does_count(self):
+        got = score_property_values(self.TRAILER, ["False"], "x_mitre_is_subtechnique")
+        assert got["found"] == 1
+
+    def test_multi_token_values_stay_on_plain_containment(self):
+        got = score_property_values(
+            "Also called Spandex Tempest.", ["Spandex Tempest"], "aliases"
+        )
+        assert got["found"] == 1
+
+    def test_a_distinctive_one_token_value_is_not_caught_by_the_rule(self):
+        # The first attempt required qualification of every one-token value and
+        # wrongly rejected this: an alias is not a boolean and the composer
+        # never prints it as another property's value.
+        got = score_property_values(
+            "G0092 is also called CHIMBORAZO.", ["CHIMBORAZO"], "aliases"
+        )
+        assert got["found"] == 1
+
+    def test_property_name_is_read_off_the_shape(self):
+        from utils.evaluation.property_gold import property_name_of
+        assert property_name_of({"spec": {"shapes": ["Technique.x_mitre_platforms"]}}) == "x_mitre_platforms"
+        assert property_name_of({"spec": {"shapes": ["Group -[uses]-> Technique"]}}) is None

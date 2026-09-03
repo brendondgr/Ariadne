@@ -40,7 +40,29 @@ result. Deliberately **threshold-free**: there is no knob here to fit.
    was not given the answer. If truncation turns out to dominate, that is a real
    finding about the composer and belongs in the record, not smoothed away by a
    similarity threshold.
-4. **Anchor identifiers keep the existing id path.** Only ``must_include_related``
+4. **A boolean value must be stated together with its property name.**
+   Added 2026-09-03 after the first re-score caught a false-positive class:
+   asked "Can T1072 be applied remotely?", gold ``False``, the composer never
+   mentions ``x_mitre_remote_support`` at all -- but the deterministic trailer
+   it appends to every record prints ``revoked: False; x_mitre_deprecated:
+   False; x_mitre_is_subtechnique: False``, and a bare ``False`` matched one of
+   those. A boolean is uninformative on its own **by construction here**: the
+   composer emits several of them per record, so the token cannot identify which
+   property it answers. ``true``/``false`` gold is therefore credited only when
+   ``<property> <value>`` appears as a contiguous run.
+
+   The scope is deliberately boolean-only. The first attempt required this of
+   every one-token value and wrongly rejected ``CHIMBORAZO`` as an alias -- a
+   distinctive proper noun that the composer never prints as some other
+   property's value. **Known residual risk:** a short enum drawn from a closed
+   vocabulary (``High``, ``Detailed``, ``Implicit``) could in principle match
+   incidentally the same way. None was observed doing so, and widening the rule
+   to catch a hypothetical costs real matches, so it is recorded as a limitation
+   rather than papered over.
+
+   **This correction lowers the figure** -- 21 questions moved before it, 17
+   after -- which is the opposite direction from fitting a rule to a result.
+5. **Anchor identifiers keep the existing id path.** Only ``must_include_related``
    on a property read is rescored; ``must_include_ids`` is still matched by
    `_surfaced_ids`, and set-valued gold on non-property tiers is untouched.
 
@@ -67,6 +89,11 @@ _CITATION_RE = re.compile(r"\(Citation:[^)]*\)", re.IGNORECASE)
 #: the stated rule did not change and no threshold was introduced. It moved 6 of
 #: 68 unmatched values; the changelog carries the figure on both sides.
 _MARKDOWN_LINK_RE = re.compile(r"\[([^\]]*)\]\([^)]*\)")
+
+#: Rule 4's scope. Booleans are the only values the composer is guaranteed to
+#: print for several properties of the same record, so they alone cannot
+#: identify which property they answer.
+_BOOLEAN_TOKENS = frozenset({("true",), ("false",)})
 
 _TOKEN_SPLIT_RE = re.compile(r"[^0-9a-z]+")
 
@@ -122,15 +149,37 @@ def is_property_read(entry: dict[str, Any]) -> bool:
     )
 
 
+def property_name_of(entry: dict[str, Any]) -> str | None:
+    """The property a D1 shape asks about: ``Technique.x_mitre_platforms`` -> the tail."""
+    spec = entry.get("spec") or {}
+    shapes = spec.get("shapes") or []
+    if not shapes or "." not in str(shapes[0]):
+        return None
+    return str(shapes[0]).split(".", 1)[1]
+
+
 def score_property_values(
-    answer_text: str | None, gold_values: list[str]
+    answer_text: str | None,
+    gold_values: list[str],
+    property_name: str | None = None,
 ) -> dict[str, Any]:
-    """Fraction of the requested property values the answer actually states."""
+    """Fraction of the requested property values the answer actually states.
+
+    A boolean value is only credited when the answer names the property beside
+    it (rule 4): ``False`` on its own is satisfied by any of the several
+    booleans the composer prints per record.
+    """
     haystack = normalize_tokens(answer_text)
+    prop_tokens = normalize_tokens(property_name) if property_name else ()
     found: list[str] = []
     missing: list[str] = []
     for value in gold_values:
-        (found if contains_tokens(haystack, normalize_tokens(value)) else missing).append(value)
+        needle = normalize_tokens(value)
+        if needle in _BOOLEAN_TOKENS and prop_tokens:
+            hit = contains_tokens(haystack, prop_tokens + needle)
+        else:
+            hit = contains_tokens(haystack, needle)
+        (found if hit else missing).append(value)
     return {
         "gold": len(gold_values),
         "found": len(found),
@@ -175,7 +224,9 @@ def rescore_artifact(entry: dict[str, Any], payload: dict[str, Any]) -> dict[str
     missing_before = {str(m) for m in recorded.get("missing") or []}
     found_ids = [i for i in id_gold if normalize_id(i) not in missing_before]
 
-    values = score_property_values(answer_text_from_artifact(payload), value_gold)
+    values = score_property_values(
+        answer_text_from_artifact(payload), value_gold, property_name_of(entry)
+    )
     gold_n = len(id_gold) + values["gold"]
     found_n = len(found_ids) + values["found"]
     return {
