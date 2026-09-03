@@ -59,6 +59,15 @@ from typing import Any
 #: the composer is free to drop it, so remove it from both sides symmetrically.
 _CITATION_RE = re.compile(r"\(Citation:[^)]*\)", re.IGNORECASE)
 
+#: STIX prose carries markdown links, and the composer renders them as their
+#: label. Resolving ``[text](url)`` to ``text`` on both sides is what rule 1
+#: already promises ("markdown ... differences stop mattering"); without it the
+#: url's words land in the middle of the gold token run and break contiguity.
+#: Added 2026-09-03 after the first re-score, as an implementation correction --
+#: the stated rule did not change and no threshold was introduced. It moved 6 of
+#: 68 unmatched values; the changelog carries the figure on both sides.
+_MARKDOWN_LINK_RE = re.compile(r"\[([^\]]*)\]\([^)]*\)")
+
 _TOKEN_SPLIT_RE = re.compile(r"[^0-9a-z]+")
 
 
@@ -70,7 +79,8 @@ def normalize_tokens(text: str | None) -> tuple[str, ...]:
     """
     if not text:
         return ()
-    stripped = _CITATION_RE.sub(" ", str(text)).casefold()
+    stripped = _CITATION_RE.sub(" ", str(text))
+    stripped = _MARKDOWN_LINK_RE.sub(r"\1", stripped).casefold()
     return tuple(t for t in _TOKEN_SPLIT_RE.split(stripped) if t)
 
 
@@ -126,4 +136,54 @@ def score_property_values(
         "found": len(found),
         "coverage": len(found) / len(gold_values) if gold_values else None,
         "missing": sorted(missing),
+    }
+
+
+def answer_text_from_artifact(payload: dict[str, Any]) -> str:
+    """Everything the analyst reads, recovered from a saved answer artifact.
+
+    The JSON-side counterpart of `score_e2e._answer_text`, for re-scoring runs
+    that already happened without re-running them.
+    """
+    answer = payload.get("answer") or {}
+    parts = [answer.get("headline") or "", answer.get("narrative") or ""]
+    for claim in answer.get("claims") or []:
+        if isinstance(claim, dict):
+            parts.append(str(claim.get("text") or ""))
+    return " ".join(parts)
+
+
+def rescore_artifact(entry: dict[str, Any], payload: dict[str, Any]) -> dict[str, Any] | None:
+    """Re-score one saved property-read artifact under the pre-registered rule.
+
+    **The identifier half of the verdict is not recomputed.** It is read back out
+    of the artifact's own ``missing`` list, so the old and the new figure differ
+    in exactly one thing -- how a property *value* is matched -- and no drift in
+    id normalisation or claim rendering can leak into the comparison.
+    """
+    from utils.synthesis.grounding import normalize_id
+
+    if not is_property_read(entry):
+        return None
+    recorded = (payload.get("deterministic_scores") or {}).get("coverage") or {}
+    if not recorded:
+        return None
+
+    asserts = entry.get("assertions", {}) or {}
+    id_gold = [str(v) for v in asserts.get("must_include_ids", []) or []]
+    value_gold = [str(v) for v in asserts.get("must_include_related", []) or []]
+    missing_before = {str(m) for m in recorded.get("missing") or []}
+    found_ids = [i for i in id_gold if normalize_id(i) not in missing_before]
+
+    values = score_property_values(answer_text_from_artifact(payload), value_gold)
+    gold_n = len(id_gold) + values["gold"]
+    found_n = len(found_ids) + values["found"]
+    return {
+        "gold": gold_n,
+        "found": found_n,
+        "coverage": found_n / gold_n if gold_n else None,
+        "coverage_before": recorded.get("coverage"),
+        "values_found": values["found"],
+        "values_gold": values["gold"],
+        "property_read": True,
     }

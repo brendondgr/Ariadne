@@ -30,6 +30,8 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
+from utils.evaluation.property_gold import rescore_artifact
+
 BANK = Path("docs/evaluation/composition/bank/bank.json")
 ROOT = Path("docs/evaluation/experiments/expansion-2026-09-01")
 
@@ -44,6 +46,9 @@ def main() -> None:
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--arm", default="deterministic")
     parser.add_argument("--out", type=Path, default=None)
+    parser.add_argument("--rescore-property-gold", action="store_true",
+                        help="rematch property values by containment in the answer "
+                             "(utils.evaluation.property_gold); records both figures")
     args = parser.parse_args()
 
     bank = json.loads(args.bank.read_text())
@@ -60,6 +65,17 @@ def main() -> None:
             continue
         coverage = (answer.get("deterministic_scores") or {}).get("coverage") or {}
         volume = answer.get("evidence_volume") or {}
+        recall_before = coverage.get("coverage")
+        recall = recall_before
+        # Property reads were scored against a rule nothing could satisfy: the
+        # gold is a value and the matcher only ever held identifiers. Under
+        # --rescore-property-gold the value half is rematched by containment in
+        # the composed answer; the identifier half is taken from the artifact's
+        # own verdict, so exactly one thing differs between the two figures.
+        if args.rescore_property_gold:
+            rescored = rescore_artifact(entry, answer)
+            if rescored is not None:
+                recall = rescored["coverage"]
         rows.append(
             {
                 "id": answer["id"],
@@ -71,7 +87,8 @@ def main() -> None:
                 "anchor_label": entry["spec"].get("anchor_label"),
                 "reverse": bool(entry["spec"]["steps"] and entry["spec"]["steps"][-1]["reverse"]),
                 "gold_width": entry["spec"]["gold_width"],
-                "recall": coverage.get("coverage"),
+                "recall": recall,
+                "recall_before": recall_before,
                 "retrieved_nothing": not (volume.get("records") or volume.get("related")),
             }
         )
@@ -97,6 +114,7 @@ def main() -> None:
 
     report = {
         "arm": args.arm,
+        "property_gold_rescored": bool(args.rescore_property_gold),
         "questions": len(rows),
         "answerable": len(answerable),
         "abstention_probes": len(abstain),

@@ -132,3 +132,19 @@ class TestScoreAnswerCoverage:
 
     def test_an_entry_with_no_gold_still_returns_none(self):
         assert score_answer_coverage({"assertions": {}}, _answer("anything")) is None
+
+
+class TestMarkdownLinks:
+    """STIX prose carries links; the composer renders the label and drops the url.
+
+    Without resolving them the url's words sit inside the gold token run and
+    break contiguity -- which is not what rule 1 says should happen.
+    """
+
+    def test_a_link_matches_its_rendered_label(self):
+        gold = "[Operation Spalax](https://attack.mitre.org/campaigns/C0005) was a campaign"
+        rendered = "C0005 (Operation Spalax): Operation Spalax was a campaign that targeted"
+        assert contains_tokens(normalize_tokens(rendered), normalize_tokens(gold))
+
+    def test_the_url_itself_is_not_treated_as_content(self):
+        assert "https" not in normalize_tokens("[x](https://example.org/y)")
