@@ -429,6 +429,15 @@ def build_markdown(state: dict[str, Any] | None, art: dict[str, Any]) -> str:
             "llm_query": "A language model is shown the catalogue's structure and "
                          "asked to write the database query itself.",
         }
+        add("**These scores are not the headline number above, and the two must "
+            "not be compared.** The headline counts *how much of the right answer "
+            "was found*, over every question, by comparing against answers computed "
+            "from the source files. The table below is a different measure — an AI "
+            "marker reading each written answer and rating it — over the "
+            "development half only, and each answer was marked twice with the "
+            "order swapped. Its use is to rank the three strategies against each "
+            "other, nothing else.")
+        add("")
         add("| strategy | score | what it is |")
         add("|---|---:|---|")
         for arm, value in sorted(judged.items(), key=lambda kv: -(kv[1] or 0)):

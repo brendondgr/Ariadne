@@ -1,6 +1,6 @@
 # Overnight results
 
-*Generated 03 September 2026, 04:24 UTC. Every number below was read from a file produced during the run — nothing here is typed in by hand.*
+*Generated 03 September 2026, 09:51 UTC. Every number below was read from a file produced during the run — nothing here is typed in by hand.*
 
 ## What this project is, in one paragraph
 
@@ -110,15 +110,39 @@ Reading single facts fails **completely** for Group, Tactic, View — a score of
 
 ## Comparing the different ways of answering
 
-**Not available.** The comparison between the system's different answering strategies did not finish. The scores above come from the strategy that uses no AI at all to plan its database queries; comparing it against the AI-planned alternatives is the next step and needs a rerun.
+**These scores are not the headline number above, and the two must not be compared.** The headline counts *how much of the right answer was found*, over every question, by comparing against answers computed from the source files. The table below is a different measure — an AI marker reading each written answer and rating it — over the development half only, and each answer was marked twice with the order swapped. Its use is to rank the three strategies against each other, nothing else.
+
+| strategy | score | what it is |
+|---|---:|---|
+| generic | 66% | Queries assembled on the spot out of the catalogue's own structure — still nothing written by a model. |
+| deterministic | 49% | Fixed, pre-written database queries, picked by rules. No model decides what to look up. |
+| llm_query | 37% | A language model is shown the catalogue's structure and asked to write the database query itself. |
+
+### Read the AI-written-query row with care
+
+It is not a fair test of that idea, and it should not be reported as one.
+
+The model doing the writing thinks out loud before it answers, and the thinking and the answer come back separately. It gets a fixed allowance of words per question. On these questions it spent the whole allowance on the thinking and never reached the answer, so what came back was blank — and a blank is recorded exactly like a wrong answer.
+
+That happened on **153 of 284** questions in that row.
+
+Afterwards the identical request was put to the same model again, word for word.
+
+* At the allowance the run actually used, **2 of 2** replies came back blank — the model used every word it was given on thinking.
+* Given **8x** the allowance, the single reply that came back at all contained an actual query instead of a blank. Whether that query is *correct* is a separate question this check does not ask — the point is only that something was written at all.
+* 1 of those larger attempts never returned: the service in front of the model gave up waiting. That is a limit of the plumbing, not of the model, and it is recorded as such rather than counted as a failure to answer.
+
+So the row above measures how much room the model was given to think, not whether it can write a query.
+
+There is a second, separate lesson here. The project's settings file asks for an allowance of 2,048, but this run never read that file — it used the built-in default of 4,096 instead. Neither number was large enough, so it made no difference to the result tonight; but a setting that is written down, looks correct, and is silently ignored is worth knowing about before it matters.
+
+Fixing it needs either a much larger allowance — which makes every question far slower — or a model that answers without a long preamble. Either way it needs its own run. **Nothing was changed tonight**; this was found by reading the run's own records and asking the model the same question again.
 
 ## What did not run
 
-7 of 8 steps finished.
+16 of 16 steps finished.
 
-| step | what happened |
-|---|---|
-| report:early | running: not reached |
+Every planned step finished.
 
 **The held-back half of the questions was not touched.** That was deliberate: it is only useful as a test if nothing has been tuned against it.
 
