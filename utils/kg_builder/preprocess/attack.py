@@ -34,7 +34,9 @@ STIX_TYPE_TO_LABEL: dict[str, str] = {
     "x-mitre-matrix": "Matrix",
 }
 
-NODE_PROPERTY_KEYS = (
+#: The ten properties the build kept until 2026-09-03, retained only so a
+#: regression test can assert they all still survive the shape rule below.
+LEGACY_NODE_PROPERTY_KEYS = (
     "id",
     "name",
     "description",
@@ -46,6 +48,30 @@ NODE_PROPERTY_KEYS = (
     "x_mitre_shortname",
     "x_mitre_is_subtechnique",
 )
+
+#: STIX bookkeeping, and fields the graph expresses as edges or that carry
+#: nested detail measured in tens of kilobytes. Everything else that is a scalar
+#: or a flat list of scalars is kept -- see `_node_properties`.
+EXCLUDED_PROPERTY_KEYS = frozenset({
+    # Recorded separately as ``stix_type``.
+    "type",
+    # STIX envelope: identifiers of marking definitions and of the identity
+    # objects that authored the record. Neither is an attribute of the thing.
+    "spec_version",
+    "created_by_ref",
+    "object_marking_refs",
+    "x_mitre_modified_by_ref",
+    "x_mitre_attack_spec_version",
+    # Structural: the graph carries these as relationships, so keeping the raw
+    # ref lists on the node would duplicate the edges and let the two disagree.
+    "kill_chain_phases",
+    "x_mitre_analytic_refs",
+    "x_mitre_log_source_references",
+    # Nested detail up to ~36 KB per object; not an attribute anyone asks for by
+    # name, and large enough to distort every prompt the record appears in.
+    "x_mitre_log_sources",
+    "x_mitre_mutable_elements",
+})
 
 
 @dataclass(frozen=True)
@@ -119,11 +145,42 @@ def _should_filter(obj: dict[str, Any], config: BuildConfig) -> str | None:
     return None
 
 
+def _is_flat_value(value: Any) -> bool:
+    """Whether a STIX value is a scalar, or a list of scalars.
+
+    Nested objects are either relationships in this graph or bulk detail; either
+    way they do not belong in a node's attribute map.
+    """
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return True
+    if isinstance(value, list):
+        return all(isinstance(v, (str, int, float, bool)) or v is None for v in value)
+    return False
+
+
 def _node_properties(obj: dict[str, Any]) -> dict[str, Any]:
+    """Every scalar-valued STIX property, minus bookkeeping and structure.
+
+    Until 2026-09-03 this was a hand-maintained allowlist of ten keys, and the
+    other twenty-odd were dropped without trace. That was invisible while the
+    question sets were themselves written from the graph; the census-derived
+    expansion bank reads the raw snapshot instead, and immediately asked 24
+    questions whose answers the build had discarded -- who contributed a
+    campaign, what else a group is called, when a campaign ran. The system
+    retrieved the right node and could not answer, because the fact was never
+    loaded.
+
+    Inverting the policy makes the node track the source: keep what is flat,
+    name what is excluded and why. ``external_references`` stays despite being a
+    list of objects because the id extraction and the citation surface both read
+    it. See `EXCLUDED_PROPERTY_KEYS`.
+    """
     props: dict[str, Any] = {}
-    for key in NODE_PROPERTY_KEYS:
-        if key in obj:
-            props[key] = obj[key]
+    for key, value in (obj or {}).items():
+        if key in EXCLUDED_PROPERTY_KEYS:
+            continue
+        if key == "external_references" or _is_flat_value(value):
+            props[key] = value
     return props
 
 

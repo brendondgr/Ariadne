@@ -47,26 +47,93 @@ def gremlin_edge_label(rel_type: str) -> str:
     return _sanitize_rel_type(rel_type)
 
 
-def vertex_upsert_traversal(node: dict[str, Any]) -> tuple[str, dict[str, Any]]:
-    """Return a Gremlin traversal and bindings for idempotent vertex upsert."""
+#: TinkerPop's stock ``maxParameters``. The loader stays inside it rather than
+#: requiring a customised server, so the published artifact loads against an
+#: unmodified ``tinkerpop/gremlin-server`` image.
+MAX_BINDINGS = 16
+
+
+def vertex_upsert_batches(node: dict[str, Any]) -> list[tuple[str, dict[str, Any]]]:
+    """Idempotent vertex upsert, split so no submission exceeds `MAX_BINDINGS`.
+
+    Until 2026-09-03 this bound one parameter per property inside a single
+    submission, which silently capped a node at fourteen properties. Widening
+    the ATT&CK build's property policy hit it at once::
+
+        499: The [eval] message contains 17 bindings which is more than is
+        allowed by the server 16 configuration
+
+    The ceiling had nothing to do with the data and everything to do with how
+    the write was shaped, so it is removed here rather than by reconfiguring the
+    server -- a reviewer must be able to load this graph against the stock
+    image.
+
+    **Semantic change, made deliberately and not silently.** The properties used
+    to sit inside the ``coalesce``'s ``addV`` branch, so they were written only
+    when the vertex was *created*: re-loading over an existing store kept the old
+    values and the "upsert" only ever inserted. They now apply after the
+    coalesce, to the created or the matched vertex alike, which is what every
+    caller already assumed and what a reload after a build change needs.
+    """
     label = _sanitize_label(node["label"])
-    bindings: dict[str, Any] = {
-        "nodeId": node["id"],
-        "vertexLabel": label,
-        "nodeName": node.get("name"),
-    }
-    traversal = (
-        "g.V().has('id', nodeId).fold().coalesce("
-        "unfold(), addV(vertexLabel).property('id', nodeId)"
-    )
-    for key, value in node.get("properties", {}).items():
-        binding_name = f"prop_{key}".replace("-", "_")
-        bindings[binding_name] = value
-        traversal += f".property('{key}', {binding_name})"
+    props: dict[str, Any] = dict(node.get("properties") or {})
+    # ``id`` is the vertex's identity and comes from the node id. A payload
+    # ``id`` would be written after it and silently redefine the vertex: CAPEC's
+    # ``capec:external-reference:REF-97`` carries ``properties.id == "REF-97"``,
+    # so the vertex landed under the short id, the HAS_REFERENCE edge pointing at
+    # the real one matched no vertex and was dropped without error (8581 edges
+    # against a manifest of 8582), and a reload could not find the vertex again
+    # and created a duplicate. Identity is not overwritable by payload.
+    props.pop("id", None)
     if node.get("name") is not None:
-        traversal += ".property('name', nodeName)"
-    traversal += ")"
-    return traversal, bindings
+        props["name"] = node["name"]
+
+    anchor = (
+        "g.V().has('id', nodeId).fold().coalesce("
+        "unfold(), addV(vertexLabel).property('id', nodeId))"
+    )
+    items = list(props.items())
+    batches: list[tuple[str, dict[str, Any]]] = []
+    first = True
+    index = 0
+    while True:
+        # The head submission also binds vertexLabel; later ones only nodeId.
+        reserved = 2 if first else 1
+        chunk = items[index:index + MAX_BINDINGS - reserved]
+        if not chunk and not first:
+            break
+        bindings: dict[str, Any] = {"nodeId": node["id"]}
+        if first:
+            bindings["vertexLabel"] = label
+        traversal = anchor if first else "g.V().has('id', nodeId)"
+        for offset, (key, value) in enumerate(chunk):
+            # Index the binding name rather than deriving it from the key: two
+            # distinct keys can sanitize to the same identifier, and a silent
+            # collision would drop a property.
+            name = f"p{index + offset}"
+            bindings[name] = value
+            traversal += f".property('{key}', {name})"
+        batches.append((traversal, bindings))
+        index += len(chunk)
+        first = False
+        if index >= len(items):
+            break
+    return batches
+
+
+def vertex_upsert_traversal(node: dict[str, Any]) -> tuple[str, dict[str, Any]]:
+    """The single-submission form, for nodes whose properties fit in one batch.
+
+    Raises when the node needs more than one, so no caller can silently truncate
+    a vertex; `vertex_upsert_batches` is the general path.
+    """
+    batches = vertex_upsert_batches(node)
+    if len(batches) != 1:
+        raise ValueError(
+            f"node {node['id']!r} needs {len(batches)} submissions to stay within "
+            f"{MAX_BINDINGS} bindings; use vertex_upsert_batches"
+        )
+    return batches[0]
 
 
 def edge_upsert_traversal(edge: dict[str, Any]) -> tuple[str, dict[str, Any]]:
@@ -152,8 +219,8 @@ class GremlinGraphStore(GraphStore):
     def upsert_nodes(self, nodes: list[dict[str, Any]]) -> int:
         written = 0
         for node in nodes:
-            traversal, bindings = vertex_upsert_traversal(node)
-            self._submit(traversal, bindings)
+            for traversal, bindings in vertex_upsert_batches(node):
+                self._submit(traversal, bindings)
             written += 1
         return written
 
