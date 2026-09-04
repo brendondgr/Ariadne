@@ -46,6 +46,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-09-002` | 2026-09-03 | On a bank covering every shape the sources support, do hand-written templates still hold? | complete | judged_gap_generic_minus_deterministic 0.1642 ± 0.0000 (n=284) | C-023, C-012 | [expansion-bank-judged](experiments/EXP-2026-09-002-expansion-bank-judged/) |
 | `EXP-2026-09-003` | 2026-09-03 | Does binding CAPEC anchors by identity rather than a guessed label recover the View and Category questions? | complete | mean_recall_on_affected_questions (not recorded) | — | [capec-anchor-resolution](experiments/EXP-2026-09-003-capec-anchor-resolution/) |
 | `EXP-2026-09-004` | 2026-09-03 | Does gating the template ladder on what a question asks, rather than which labels it names, recover the property reads and containment questions? | complete | mean_recall_on_affected_questions (not recorded) | — | [template-routing-repair](experiments/EXP-2026-09-004-template-routing-repair/) |
+| `EXP-2026-09-005` | 2026-09-03 | Does the generic-over-deterministic gap survive repairing the deterministic arm's retrieval defects? | complete | judged_correctness_gap (not recorded) | C-023 | [post-repair-arm-comparison](experiments/EXP-2026-09-005-post-repair-arm-comparison/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 
-**37 experiment(s) on record.**
+**38 experiment(s) on record.**

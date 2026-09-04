@@ -1,0 +1,87 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-09-005
+slug: post-repair-arm-comparison
+title: Does the generic-over-deterministic gap survive repairing the deterministic arm's retrieval defects?
+status: complete          # planned | running | complete | failed | superseded
+date_started: 2026-09-03
+date_completed: "2026-09-03"
+authors: ["brendondgr"]
+
+purpose: >
+  EXP-2026-09-002 measured generic 0.6576 against deterministic 0.4934 while the
+  deterministic arm carried three retrieval defects, so the 0.1642 gap was not
+  quotable: a reviewer could say the baseline was broken. This re-measures both
+  arms after all three repairs. It is the experiment C-023 depends on.
+
+hypothesis: >
+  Stated in the repair plan (21f5384) as an exit criterion that does not presume
+  a direction: "the gap is re-measured", not "the gap survives". It survives, at
+  0.1623 against 0.1642.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: ed1acfae519ae737fa813acca5715a9ddde3ce83          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python -m utils.evaluation.experiment_untruncated --arm {deterministic,generic} --bank docs/evaluation/composition/bank/bank-dev.json --root docs/evaluation/experiments/post-repair-2026-09-03 --workers 16, then judge_answers at position 1 and 2 per arm"
+  dirty: false            # arms and grading ran against the tree at a1e20f6
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: expansion bank (census-derived), dev half
+  version: "bank-dev.json; bank.json @ sha256:ad99afb18934bd7db233c292d235a4350c332114c357ea624123031ff0ab434e"
+  split: dev (288-question holdout sealed and asserted)
+  n_examples: 284
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: null               # md5:... or sha256:... of the dataset artifact
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "local workstation; Neo4j + TinkerPop in docker; local relay at :4000"
+  wall_clock_hours: 3.0     # four grading passes, ~2594 s each, plus the two arm runs
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "relay/qwen38-27B-v2@2026-09-03"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 32768
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: judged_correctness_gap
+  values:
+    deterministic_judged: {mean: 0.4946, std: null, n: 284}
+    generic_judged: {mean: 0.6569, std: null, n: 284}
+    judged_gap: {mean: 0.1623, std: null, n: 284}
+    deterministic_recall_modelfree: {mean: 0.5176, std: null, n: 248}
+    generic_recall_modelfree: {mean: 0.6058, std: null, n: 248}
+    generic_recall_reweighted: {mean: 0.6756, std: null, n: 248}
+    deterministic_recall_reweighted: {mean: 0.5199, std: null, n: 248}
+    deterministic_judged_move_vs_prerepair: {mean: 0.0012, std: null, n: 284}
+    deterministic_recall_move_vs_prerepair: {mean: 0.0684, std: null, n: 248}
+baselines_compared: []
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: ["C-023"]
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: "EXP-2026-09-002"
+superseded_by: null
+related: ["EXP-2026-09-001", "EXP-2026-09-002", "EXP-2026-09-003", "EXP-2026-09-004"]
