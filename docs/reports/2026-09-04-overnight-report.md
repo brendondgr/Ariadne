@@ -8,14 +8,12 @@ Started None. Gemma deadline 08:30.
 | deterministic | gemma | 284 | 568 | 0.4175 |
 | generic | qwen | 284 | 568 | 0.6569 |
 | generic | gemma | 284 | 568 | 0.6659 |
-| llm_query | qwen | 0 | 0 | None |
+| llm_query | qwen | 284 | 519 | 0.3842 |
 | llm_query | gemma | 0 | 0 | None |
 
 ## What did not run
 
-- **A2-llm-query-rerun** — failed: TimeoutExpired: Command '['uv', 'run', 'python', '-m', 'utils.evaluation.experiment_untruncated', '--arm', 'llm_query', '--bank', '/home/bdgr/Agents/Ariadne/docs/evaluation/composition/bank/bank-dev.json', '--root', '/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/llm-query-fair-2026-09-04', '--llm-max-tokens', '16384', '--workers', '8']' timed out after 9000.0 seconds
-- **A3-judge-llm-query** — not_run: prerequisite A2-llm-query-rerun did not complete
-- **A4-gemma-judge-llm-query** — not_run: prerequisite A2-llm-query-rerun did not complete
+- **A4-gemma-judge-llm-query** — not_run: past the 08:30 gemma deadline
 - **F-rollup** — running: 
 
 ## The holdout

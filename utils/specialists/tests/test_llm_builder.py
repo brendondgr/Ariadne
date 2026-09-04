@@ -295,3 +295,28 @@ class TestTheBudgetIsReadAtCallTime:
         # None is the signal to resolve later; a concrete default here is what
         # made the setting ignorable.
         assert LLMQueryBuilder(card=None, language="cypher").max_tokens is None
+
+
+class TestTheArmGetsTimeAsWellAsTokens:
+    """A token budget the clock cuts off is not a budget.
+
+    The 2026-09-04 re-run raised max_tokens and left the 120 s builder timeout
+    alone. The model reasons for 170 s at 8192, so every call was aborted and
+    returned nothing, the gate refused 282 of 284 as empty queries, and the
+    answers record wall_s = 360.3 -- three attempts at 120 s exactly.
+    """
+
+    def test_the_llm_query_arm_sets_a_timeout_above_the_measured_reasoning_time(self):
+        from utils.evaluation.experiment_untruncated import untruncated_env
+
+        env = untruncated_env(arm="llm_query", llm_model="skynet", llm_max_tokens=8192)
+        assert "SPECIALIST_LLM_TIMEOUT_S" in env, "tokens without time is not a budget"
+        # 230 s is the slowest budget the probe measured; the arm must clear it.
+        assert float(env["SPECIALIST_LLM_TIMEOUT_S"]) > 230.0
+
+    def test_the_timeout_scales_with_the_token_budget(self):
+        from utils.evaluation.experiment_untruncated import untruncated_env
+
+        small = untruncated_env(arm="llm_query", llm_model="m", llm_max_tokens=8192)
+        large = untruncated_env(arm="llm_query", llm_model="m", llm_max_tokens=32768)
+        assert float(large["SPECIALIST_LLM_TIMEOUT_S"]) >= float(small["SPECIALIST_LLM_TIMEOUT_S"])

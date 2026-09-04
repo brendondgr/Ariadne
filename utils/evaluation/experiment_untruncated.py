@@ -144,6 +144,18 @@ def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[st
             "SPECIALIST_LLM_ENABLED": "false",
             "SPECIALIST_LLM_MODEL": llm_model,
             "SPECIALIST_LLM_MAX_TOKENS": str(llm_max_tokens),
+            # Raising the token budget without raising the clock does nothing.
+            # The served model reasons for 170 s at 8192 and 230 s at 16384
+            # (budget-cost.json, 2026-09-04), and the builder's timeout is 120 s,
+            # so every call was aborted mid-reasoning and returned nothing --
+            # which the gate then correctly refused as an empty query. The
+            # 2026-09-04 re-run built no query on 282 of 284 questions and its
+            # answers record wall_s = 360.3, exactly three gate attempts at 120 s.
+            # A bound that cuts off a reasoning model is indistinguishable
+            # downstream from a model with nothing to say; this is the third
+            # instance of that shape in this arm, after the import-time budget
+            # freeze and the ignored .env value.
+            "SPECIALIST_LLM_TIMEOUT_S": str(max(900, llm_max_tokens // 8)),
         })
     elif arm == "generic_composed":
         # The control the merged arm actually needed, and the one that did not

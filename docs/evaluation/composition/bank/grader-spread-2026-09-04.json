@@ -1,0 +1,107 @@
+{
+ "position": 1,
+ "sessions": {
+  "qwen": {
+   ".pass1": {
+    "deterministic": 0.4924,
+    "generic": 0.66,
+    "gap": 0.1676
+   },
+   ".pass2": {
+    "deterministic": 0.4967,
+    "generic": 0.6537,
+    "gap": 0.157
+   }
+  },
+  "gemma": {
+   ".gemma": {
+    "deterministic": 0.4221,
+    "generic": 0.6596,
+    "gap": 0.2375
+   },
+   ".gemma_r3": {
+    "deterministic": 0.421,
+    "generic": 0.6709,
+    "gap": 0.2499
+   },
+   ".gemma_r4": {
+    "deterministic": 0.4159,
+    "generic": 0.6805,
+    "gap": 0.2645
+   },
+   ".gemma_r5": {
+    "deterministic": 0.4156,
+    "generic": 0.6599,
+    "gap": 0.2443
+   },
+   ".gemma_r6": {
+    "deterministic": 0.413,
+    "generic": 0.6723,
+    "gap": 0.2593
+   },
+   ".gemma_r7": {
+    "deterministic": 0.421,
+    "generic": 0.663,
+    "gap": 0.242
+   },
+   ".gemma_r8": {
+    "deterministic": 0.4136,
+    "generic": 0.6649,
+    "gap": 0.2513
+   },
+   ".gemma_r9": {
+    "deterministic": 0.4151,
+    "generic": 0.6849,
+    "gap": 0.2697
+   }
+  }
+ },
+ "spread": {
+  "qwen": {
+   "n_sessions": 2,
+   "mean_gap": 0.1623,
+   "sd_gap": 0.0075
+  },
+  "gemma": {
+   "n_sessions": 8,
+   "mean_gap": 0.2523,
+   "sd_gap": 0.0113
+  }
+ },
+ "paired_bootstrap": {
+  "qwen": {
+   "n_paired": 284,
+   "mean_gap": 0.1623,
+   "ci95": [
+    0.1258,
+    0.2001
+   ],
+   "excludes_zero": true
+  },
+  "gemma": {
+   "n_paired": 284,
+   "mean_gap": 0.2523,
+   "ci95": [
+    0.199,
+    0.304
+   ],
+   "excludes_zero": true
+  }
+ },
+ "between_grader": {
+  "qwen_gap": 0.1623,
+  "gemma_gap": 0.2523,
+  "offset": 0.09,
+  "gemma_sd": 0.0113,
+  "verdict": "offset exceeds the within-grader spread"
+ },
+ "repeat_sessions": [
+  ".gemma_r3",
+  ".gemma_r4",
+  ".gemma_r5",
+  ".gemma_r6",
+  ".gemma_r7",
+  ".gemma_r8",
+  ".gemma_r9"
+ ]
+}
