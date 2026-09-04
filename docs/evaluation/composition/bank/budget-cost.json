@@ -1,0 +1,168 @@
+{
+  "probe": "builder-budget",
+  "arm_budget_as_run": 2048,
+  "dotenv_value_not_used_by_arm": "2048",
+  "base_url": "http://localhost:4000/v1",
+  "model": "skynet",
+  "census": {
+    "questions": 848,
+    "empty_query": 153,
+    "with_records": 67
+  },
+  "cases": [
+    {
+      "id": "D1-Software-x_mitre_platforms-S1191-c001d8::indirect",
+      "source": "attack",
+      "language": "cypher",
+      "question": "Which platforms does Megazord (S1191) apply to?",
+      "prompt_chars": 2751,
+      "trials": [
+        {
+          "budget": 8192,
+          "finish_reason": "stop",
+          "completion_tokens": 4134,
+          "content_chars": 245,
+          "reasoning_chars": 16106,
+          "produced_query": true,
+          "query_head": "MATCH (s:Software {attack_id: $software_id}) UNWIND s.platforms AS platform WHERE platform IS NOT NULL RETURN DISTINCT platform AS platform_id, platform AS plat",
+          "wall_s": 170.6
+        },
+        {
+          "budget": 16384,
+          "finish_reason": "stop",
+          "completion_tokens": 4843,
+          "content_chars": 221,
+          "reasoning_chars": 19314,
+          "produced_query": true,
+          "query_head": "MATCH (s:Software {attack_id: $software_id}) UNWIND coalesce(s.platforms, []) AS platform RETURN DISTINCT platform AS platform_id, platform AS platform_name",
+          "wall_s": 230.0
+        },
+        {
+          "budget": 32768,
+          "finish_reason": "stop",
+          "completion_tokens": 10493,
+          "content_chars": 246,
+          "reasoning_chars": 42602,
+          "produced_query": true,
+          "query_head": "MATCH (s:Software {attack_id: $software_id}) UNWIND s.platforms AS platform RETURN DISTINCT s.attack_id AS software_id, s.name AS software_name, platform AS pla",
+          "wall_s": 230.2
+        }
+      ]
+    },
+    {
+      "id": "D1-Technique-x_mitre_contributors-T1001.003-0a5bef::formal",
+      "source": "attack",
+      "language": "cypher",
+      "question": "Who contributed the ATT&CK technique Protocol or Service Impersonation (T1001.003)?",
+      "prompt_chars": 2791,
+      "trials": [
+        {
+          "budget": 8192,
+          "finish_reason": "length",
+          "completion_tokens": 8192,
+          "content_chars": 0,
+          "reasoning_chars": 32360,
+          "produced_query": false,
+          "query_head": "",
+          "wall_s": 153.8
+        },
+        {
+          "budget": 16384,
+          "finish_reason": "length",
+          "completion_tokens": 16384,
+          "content_chars": 0,
+          "reasoning_chars": 63398,
+          "produced_query": false,
+          "query_head": "",
+          "wall_s": 249.7
+        },
+        {
+          "budget": 32768,
+          "error": "KeyError: 'choices'",
+          "wall_s": 600.0,
+          "response_head": "{\"error\":{\"message\":\"upstream error: ReadTimeout: \",\"type\":\"relay_proxy_error\",\"code\":502}}",
+          "status_code": 502
+        }
+      ]
+    },
+    {
+      "id": "D1-Technique-x_mitre_contributors-T1530-347700::analyst",
+      "source": "attack",
+      "language": "cypher",
+      "question": "Who contributed Data from Cloud Storage (T1530)?",
+      "prompt_chars": 2752,
+      "trials": [
+        {
+          "budget": 8192,
+          "finish_reason": "length",
+          "completion_tokens": 8192,
+          "content_chars": 0,
+          "reasoning_chars": 31690,
+          "produced_query": false,
+          "query_head": "",
+          "wall_s": 264.8
+        },
+        {
+          "budget": 16384,
+          "finish_reason": "stop",
+          "completion_tokens": 11007,
+          "content_chars": 178,
+          "reasoning_chars": 42609,
+          "produced_query": true,
+          "query_head": "MATCH (g:Group)-[:USES]-(t:Technique {attack_id: $technique_id}) RETURN DISTINCT g.attack_id AS group_id, g.name AS group_name",
+          "wall_s": 211.7
+        },
+        {
+          "budget": 32768,
+          "finish_reason": "stop",
+          "completion_tokens": 7863,
+          "content_chars": 200,
+          "reasoning_chars": 31191,
+          "produced_query": true,
+          "query_head": "MATCH (g:Group)-[:USES]->(t:Technique) WHERE t.attack_id = $technique_id RETURN DISTINCT g.attack_id AS group_id, g.name AS group_name",
+          "wall_s": 139.0
+        }
+      ]
+    },
+    {
+      "id": "D1-Technique-x_mitre_contributors-T1530-347700::formal",
+      "source": "attack",
+      "language": "cypher",
+      "question": "Who contributed the ATT&CK technique Data from Cloud Storage (T1530)?",
+      "prompt_chars": 2773,
+      "trials": [
+        {
+          "budget": 8192,
+          "finish_reason": "length",
+          "completion_tokens": 8192,
+          "content_chars": 0,
+          "reasoning_chars": 33866,
+          "produced_query": false,
+          "query_head": "",
+          "wall_s": 303.8
+        },
+        {
+          "budget": 16384,
+          "finish_reason": "stop",
+          "completion_tokens": 11998,
+          "content_chars": 178,
+          "reasoning_chars": 47088,
+          "produced_query": true,
+          "query_head": "MATCH (g:Group)-[:USES]-(t:Technique {attack_id: $technique_id}) RETURN DISTINCT g.attack_id AS group_id, g.name AS group_name",
+          "wall_s": 273.3
+        },
+        {
+          "budget": 32768,
+          "finish_reason": "stop",
+          "completion_tokens": 9033,
+          "content_chars": 244,
+          "reasoning_chars": 36593,
+          "produced_query": true,
+          "query_head": "MATCH (g:Group)-[:USES]-(t:Technique {attack_id: $technique_id}) RETURN DISTINCT g.attack_id AS group_id, g.name AS group_name, t.attack_id AS technique_id, t.n",
+          "wall_s": 149.6
+        }
+      ]
+    }
+  ],
+  "verdict": "a query appeared at budget(s) [8192, 16384, 32768] \u2014 the arm as run was budget-limited below that"
+}

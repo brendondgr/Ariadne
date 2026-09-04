@@ -107,6 +107,35 @@ class TestBudgetChoice:
     def test_falls_back_when_the_probe_shape_is_unfamiliar(self):
         assert ot._chosen_budget(_state()) == 16384
 
+    def test_reads_the_probes_real_nested_shape(self):
+        """The regression. builder_budget_probe nests trials under each case.
+
+        Reading detail["trials"] found nothing and fell back to 16384 while the
+        probe had already shown 8192 producing a query -- so the 2026-09-04
+        re-run ran 26% slower than it needed to and hit its cap at 203/284. A
+        fallback that fires without saying so is the same failure mode as the
+        import-time budget freeze it exists to avoid.
+        """
+        state = _state()
+        state["phases"]["A1-budget-cost"] = {"status": "done", "detail": {"cases": [
+            {"id": "c1", "trials": [
+                {"budget": 8192, "produced_query": True, "content_chars": 245},
+                {"budget": 16384, "produced_query": True, "content_chars": 221},
+                {"budget": 32768, "produced_query": True, "content_chars": 246},
+            ]},
+        ]}}
+        assert ot._chosen_budget(state) == 8192
+
+    def test_a_budget_that_produced_nothing_is_not_chosen(self):
+        state = _state()
+        state["phases"]["A1-budget-cost"] = {"status": "done", "detail": {"cases": [
+            {"trials": [
+                {"budget": 8192, "produced_query": False, "content_chars": 0},
+                {"budget": 32768, "produced_query": True, "content_chars": 246},
+            ]},
+        ]}}
+        assert ot._chosen_budget(state) == 32768
+
 
 class TestReport:
     def test_the_report_names_every_phase_that_did_not_run(self, tmp_path, monkeypatch):

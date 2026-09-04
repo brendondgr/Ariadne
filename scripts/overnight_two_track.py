@@ -377,13 +377,21 @@ def _chosen_budget(state: dict[str, Any]) -> int:
     which is the arm's own configured value.
     """
     detail = state["phases"].get("A1-budget-cost", {}).get("detail") or {}
-    trials = detail.get("trials") or detail.get("results") or []
+    # The probe nests trials under each case: {"cases": [{"trials": [...]}]}.
+    # Reading `detail["trials"]` -- as this did on 2026-09-04 -- finds nothing
+    # and silently falls back, which is how the re-run got 16384 when 8192 had
+    # already been shown to work. A fallback that fires without saying so is the
+    # same failure mode as the import-time budget freeze it exists to avoid.
+    trials: list[dict] = []
+    for case in detail.get("cases") or []:
+        if isinstance(case, dict):
+            trials.extend(t for t in (case.get("trials") or []) if isinstance(t, dict))
+    trials.extend(t for t in (detail.get("trials") or []) if isinstance(t, dict))
     ok = []
-    for t in trials if isinstance(trials, list) else []:
-        if not isinstance(t, dict):
-            continue
-        budget = t.get("max_tokens") or t.get("budget")
-        got_query = bool(t.get("query")) or (t.get("content_chars") or 0) > 0
+    for t in trials:
+        budget = t.get("budget") or t.get("max_tokens")
+        got_query = bool(t.get("produced_query")) or bool(t.get("query")) \
+            or (t.get("content_chars") or 0) > 0
         if budget and got_query:
             ok.append(int(budget))
     return min(ok) if ok else 16384
