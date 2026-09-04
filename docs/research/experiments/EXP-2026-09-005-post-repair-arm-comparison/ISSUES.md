@@ -42,3 +42,33 @@ confounded timings. C-012's baseline is therefore still open.
 `qwen38-27B-v2` graded answers produced by a system whose `llm_query` arm uses
 the same served model. That arm is absent from this run, so nothing here is
 self-graded — but the relation is recorded so a reader does not have to infer it.
+
+---
+
+## AMENDMENTS
+
+### A-1 (2026-09-04) — "the holdout is untouched" was too strong
+
+PROTOCOL.md says *"288 questions, untouched"* and RESULTS.md leans on the same
+word. That is not accurate and the correction matters, because the holdout's
+value is exactly the thing being claimed about it.
+
+**What is true:** no holdout question has ever been **judged** — 0 judgments
+across every run in the repository — and neither the `generic` nor the
+`llm_query` arm has ever answered one.
+
+**What is also true, and was not said here:** the **deterministic** arm answered
+all 288 on 2026-09-02, and its model-free recall was **reported** — the published
+`holdout 0.4683` against `dev 0.4350` in EXP-2026-09-002 is that look. It was
+deliberate and its purpose is on the record: the two halves landing within 3.3
+points is the evidence that the bank was not tuned against the system.
+
+**So the holdout has had one model-free look by one arm, pre-repair.** What
+remains genuinely unspent is a *judged* holdout and any holdout answer from the
+other two arms. Every assertion in this experiment that the seal held is correct
+under that definition and overstated under the plain reading of "untouched".
+
+The check that produced this correction is now in
+`scripts/overnight_two_track.py::preflight`, which asserts the precise property
+rather than the loose one and refuses to start if a holdout question has been
+judged.
