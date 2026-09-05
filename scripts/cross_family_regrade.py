@@ -57,7 +57,13 @@ load_env()
 
 EXP = REPO / "docs/research/experiments/EXP-2026-09-006-cross-family-august-regrade"
 RUNS = REPO / "docs/evaluation/experiments"
-STATE = EXP / "data" / "regrade-state.json"
+#: One state file **per track**. The two tracks are separate OS processes, so a
+#: shared file is last-writer-wins: each process holds its own in-memory dict and
+#: overwrites the other's records. That is bookkeeping corruption, not data
+#: corruption -- the judgments are sidecar files on disk and those are
+#: authoritative -- but a run record that silently disagrees with the run is
+#: exactly the class of defect this project keeps finding, so it is not left in.
+STATE_DIR = EXP / "data"
 LOGS = REPO / "logs/cross-family-2026-09-05"
 
 GEMMA_URL = "http://localhost:9090/v1"
@@ -109,16 +115,20 @@ PHASES: dict[str, dict[str, list[tuple[str, str]]]] = {
 _lock = threading.Lock()
 
 
-def load_state() -> dict[str, Any]:
-    if STATE.is_file():
-        return json.loads(STATE.read_text())
+def state_path(tracks: list[str]) -> Path:
+    return STATE_DIR / f"regrade-state-{'-'.join(sorted(tracks))}.json"
+
+
+def load_state(path: Path) -> dict[str, Any]:
+    if path.is_file():
+        return json.loads(path.read_text())
     return {"experiment": "EXP-2026-09-006", "started": None, "cells": {}}
 
 
-def save(state: dict[str, Any]) -> None:
+def save(state: dict[str, Any], path: Path) -> None:
     with _lock:
-        STATE.parent.mkdir(parents=True, exist_ok=True)
-        STATE.write_text(json.dumps(state, indent=1, default=str) + "\n")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(state, indent=1, default=str) + "\n")
 
 
 def answer_paths(root: str, arm: str) -> list[Path]:
@@ -187,7 +197,7 @@ def judge_cell(root: str, arm: str, *, url: str, model: str, workers: int,
 
 
 def run_track(track: str, cells: list[tuple[str, str, str, int]], *, url: str,
-              model: str, workers: int, state: dict[str, Any],
+              model: str, workers: int, state: dict[str, Any], path: Path,
               deadline: datetime | None) -> None:
     for root, arm, suffix, position in cells:
         key = f"{track}:{root}:{arm}:{suffix}"
@@ -198,7 +208,7 @@ def run_track(track: str, cells: list[tuple[str, str, str, int]], *, url: str,
         if deadline is not None and datetime.now() >= deadline:
             state["cells"][key] = {"status": "not_run",
                                    "reason": f"past the {deadline:%H:%M} deadline"}
-            save(state)
+            save(state, path)
             print(f"[{track}] {key}: SKIPPED (past deadline)", flush=True)
             continue
 
@@ -206,7 +216,7 @@ def run_track(track: str, cells: list[tuple[str, str, str, int]], *, url: str,
         print(f"[{track}] {key}: start ({n} answers)", flush=True)
         state["cells"][key] = {"status": "running", "started": datetime.now(),
                                "answers": n}
-        save(state)
+        save(state, path)
         t0 = time.time()
         try:
             detail = judge_cell(root, arm, url=url, model=model, workers=workers,
@@ -217,7 +227,7 @@ def run_track(track: str, cells: list[tuple[str, str, str, int]], *, url: str,
             status = "failed"
         state["cells"][key] = {"status": status, "elapsed_s": round(time.time() - t0, 1),
                                "finished": datetime.now(), "detail": detail}
-        save(state)
+        save(state, path)
         print(f"[{track}] {key}: {status} in {round(time.time() - t0, 1)}s "
               f"{json.dumps(detail)[:200]}", flush=True)
 
@@ -270,7 +280,8 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     LOGS.mkdir(parents=True, exist_ok=True)
-    state = load_state()
+    path = state_path(args.track)
+    state = load_state(path)
     state["started"] = state.get("started") or str(datetime.now())
 
     if not args.skip_probe:
@@ -286,7 +297,7 @@ def main(argv: list[str] | None = None) -> int:
                     f"{track} ({model}) returned empty content "
                     f"({info['reasoning_chars']} reasoning chars, "
                     f"finish_reason={info['finish_reason']}). Not grading with it.")
-        save(state)
+        save(state, path)
 
     print()
     with ThreadPoolExecutor(max_workers=2) as pool:
@@ -295,17 +306,17 @@ def main(argv: list[str] | None = None) -> int:
             futures.append(pool.submit(run_track, "gemma", cells["gemma"],
                                        url=GEMMA_URL, model=GEMMA_MODEL,
                                        workers=GEMMA_WORKERS, state=state,
-                                       deadline=deadline))
+                                       path=path, deadline=deadline))
         if cells["qwen"]:
             futures.append(pool.submit(run_track, "qwen", cells["qwen"],
                                        url=QWEN_URL, model=QWEN_MODEL,
                                        workers=QWEN_WORKERS, state=state,
-                                       deadline=None))
+                                       path=path, deadline=None))
         for f in futures:
             f.result()
 
     done = sum(1 for c in state["cells"].values() if c.get("status") == "done")
-    print(f"\n{done}/{len(state['cells'])} cells complete. State: {STATE}")
+    print(f"\n{done}/{len(state['cells'])} cells complete. State: {path}")
     return 0
 
 
