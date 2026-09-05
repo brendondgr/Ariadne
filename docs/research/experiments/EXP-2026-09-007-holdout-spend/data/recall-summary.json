@@ -69,5 +69,48 @@
    }
   ],
   "census_weighted_total_delta": 0.0017
+ },
+ "generic_arm": {
+  "pooled": {
+   "dev": 0.6058,
+   "holdout": 0.6307,
+   "delta": 0.0249
+  },
+  "reweighted": {
+   "dev": 0.6756,
+   "holdout": 0.757,
+   "delta": 0.0814
+  }
+ },
+ "arm_ordering_model_free": {
+  "dev": {
+   "generic": 0.6756,
+   "deterministic": 0.5199,
+   "metric": "reweighted"
+  },
+  "holdout": {
+   "generic": 0.757,
+   "deterministic": 0.4865,
+   "metric": "reweighted"
+  },
+  "preserved": true
+ },
+ "d6_multihop": {
+  "dev": {
+   "deterministic": 0.3548,
+   "generic": 0.0717,
+   "margin": 0.2831
+  },
+  "holdout": {
+   "deterministic": 0.417,
+   "generic": 0.0826,
+   "margin": 0.3344
+  },
+  "note": "H3 pre-registered that the multi-hop reversal would reproduce on unseen questions if it were real. It does, and wider: the template arm leads the schema-assembled arm by +0.3344 on the holdout against +0.2831 on dev. This is the study's most interesting non-uniformity and it is not a 284-question artifact."
+ },
+ "hypotheses_model_free_half": {
+  "H3_multihop_reversal_reproduces": "HOLDS \u2014 +0.3344 on the holdout against +0.2831 on dev",
+  "H4_recall_within_0.05_below_dev": "HOLDS for both arms, and in the opposite direction to the naive expectation. Generic is ABOVE dev on both metrics (+0.0249 pooled, +0.0814 reweighted). Deterministic is above on pooled (+0.0238) and -0.0334 on reweighted, inside the 0.05 threshold. Nothing here suggests the holdout half is harder, which is what the one prior comparison already indicated.",
+  "arm_ordering": "generic > deterministic on both halves and both metrics"
  }
 }
