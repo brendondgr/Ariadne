@@ -68,7 +68,7 @@ LOGS = REPO / "logs/cross-family-2026-09-05"
 
 GEMMA_URL = "http://localhost:9090/v1"
 GEMMA_MODEL = "default-model-2"
-GEMMA_WORKERS = 24
+GEMMA_WORKERS = 16   # operator: 16 concurrency on the restarted gemma4-31B-mtp
 
 QWEN_URL = "http://localhost:9090/v1"
 QWEN_MODEL = "default-model"

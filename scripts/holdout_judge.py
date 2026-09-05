@@ -41,7 +41,9 @@ JUDGE_TIMEOUT_S = 900.0
 
 GRADERS: dict[str, dict[str, Any]] = {
     "gemma": {"url": "http://localhost:9090/v1", "model": "default-model-2",
-              "workers": 24, "passes": ((".gem", 1), (".gemp2", 2))},
+              # Operator: the restarted gemma4-31B-mtp serves 16 concurrency,
+              # not the 24 the earlier instance did.
+              "workers": 16, "passes": ((".gem", 1), (".gemp2", 2))},
     "qwen": {"url": "http://localhost:9090/v1", "model": "default-model",
              "workers": 16, "passes": ((".qw", 1), (".qwp2", 2))},
 }
@@ -76,6 +78,12 @@ def main() -> int:
 
     from utils.evaluation.judge_answers import JudgeConfig, run as judge_run
 
+    # Measured on this endpoint at 16 workers (armgap, 204 judgments in 1667s).
+    # Used only to decide whether a WHOLE position fits; never to skip work that
+    # would have fitted.
+    rate_s = 8.5
+    observed: list[float] = []
+
     LOGS.mkdir(parents=True, exist_ok=True)
     state_path = EXP / "data" / f"judge-state-{'-'.join(sorted(args.grader))}.json"
     state_path.parent.mkdir(parents=True, exist_ok=True)
@@ -90,6 +98,30 @@ def main() -> int:
         # with position 1 and the ~0.01 order effect uncorrected, which is a
         # usable result with a stated limitation.
         for suffix, position in spec["passes"]:
+            # A position is all-or-nothing across arms. Grading position 2 for
+            # one arm and not the other leaves exactly the two arms being
+            # compared on different instruments, with one carrying the ~0.01
+            # order correction and the other not. Better to have both arms at
+            # position 1 and say the order effect is uncorrected than to have a
+            # silent asymmetry inside the comparison.
+            if deadline:
+                todo = sum(answer_count(a) for a in args.arm
+                           if judged_count(a, suffix) < answer_count(a))
+                need = todo * (sum(observed) / len(observed) if observed else rate_s)
+                left = (deadline - datetime.now()).total_seconds()
+                if todo and need > left:
+                    for a in args.arm:
+                        state["cells"][f"{grader}:{a}{suffix}"] = {
+                            "status": "not_run",
+                            "reason": (f"position {position} needs ~{need/60:.0f} min for "
+                                       f"{todo} judgments, {left/60:.0f} min left before "
+                                       f"{deadline:%H:%M}; skipped for ALL arms so the "
+                                       "comparison stays symmetric"),
+                        }
+                    state_path.write_text(json.dumps(state, indent=1, default=str) + "\n")
+                    print(f"[{grader}] position {position}: SKIPPED for all arms — "
+                          f"needs ~{need/60:.0f} min, {left/60:.0f} min left", flush=True)
+                    continue
             for arm in args.arm:
                 n = answer_count(arm)
                 if n == 0:
@@ -121,8 +153,11 @@ def main() -> int:
                 except Exception as exc:                              # noqa: BLE001
                     detail = {"error": f"{type(exc).__name__}: {exc}"}
                     status = "failed"
+                elapsed = time.time() - t0
+                if status == "done" and n:
+                    observed.append(elapsed / n)
                 state["cells"][key] = {"status": status,
-                                       "elapsed_s": round(time.time() - t0, 1),
+                                       "elapsed_s": round(elapsed, 1),
                                        "detail": detail}
                 state_path.write_text(json.dumps(state, indent=1, default=str) + "\n")
                 print(f"[{grader}] {key}: {status} in {round(time.time() - t0, 1)}s",
