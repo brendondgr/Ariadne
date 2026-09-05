@@ -5,9 +5,9 @@
 id: EXP-2026-09-006
 slug: cross-family-august-regrade
 title: Does the August ordering survive a change of grader family? Two named graders, 510 frozen answers
-status: running            # planned | running | complete | failed | superseded
+status: complete           # planned | running | complete | failed | superseded
 date_started: 2026-09-05
-date_completed: null       # null until status is complete/failed
+date_completed: 2026-09-05       # null until status is complete/failed
 authors: [brendondgr]
 
 purpose: >
@@ -86,14 +86,31 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: <metric name>
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
-baselines_compared: []
-statistical_test: null
+  primary: contrast_sign_flips
+  values:
+    contrast_sign_flips: {mean: 0.0, std: 0.0, n: 4}        # C-012 x2 banks, C-022 x2 banks
+    arm_order_reversals: {mean: 1.0, std: 0.0, n: 23}       # H1 FAILED; 23 comparable pairs
+    pairs_excluded_as_tied: {mean: 7.0, std: 0.0, n: 1}
+    c021_gap_qwen_named: {mean: 0.0322, std: 0.0, n: 150}
+    c021_gap_unidentified_august: {mean: 0.0483, std: 0.0, n: 149}
+    c021_gap_gemma: {mean: 0.0, std: 0.0, n: 150}           # SATURATED — instrument, not effect
+    c012_margin_bank19_qwen: {mean: 0.4260, std: 0.0, n: 30}
+    c012_margin_bank19_gemma: {mean: 0.4000, std: 0.0, n: 30}
+    c012_margin_bank20_qwen: {mean: 0.5298, std: 0.0, n: 30}
+    c012_margin_bank20_gemma: {mean: 0.5500, std: 0.0, n: 30}
+    c022_margin_bank19_qwen: {mean: 0.0608, std: 0.0, n: 30}
+    c022_margin_bank19_gemma: {mean: 0.0500, std: 0.0, n: 30}
+    c022_margin_bank20_qwen: {mean: 0.0581, std: 0.0, n: 30}
+    c022_margin_bank20_gemma: {mean: 0.0400, std: 0.0, n: 30}
+    between_family_mean_abs_offset: {mean: 0.0355, std: 0.0, n: 12}
+    saturated_cells_gemma: {mean: 6.0, std: 0.0, n: 12}
+    grading_failures: {mean: 2.0, std: 0.0, n: 1338}        # both transient 400s; both cleared on retry
+baselines_compared: ["EXP-2026-08-021 five qwen sessions", "the unidentified August pass (retained as history, never as a baseline)"]
+statistical_test: "sign-stability of paired contrasts across grader families; ordering by pairwise rank with ties excluded in either grader"
 
 # --- Linkage ---
-supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+supports_claims: [C-009, C-012, C-021, C-022]        # every ID here must exist in ../../CLAIMS.md
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
 superseded_by: null
-related: []
+related: [EXP-2026-08-007, EXP-2026-08-008, EXP-2026-08-009, EXP-2026-08-021, EXP-2026-08-022, EXP-2026-09-005]
