@@ -104,7 +104,14 @@ def main() -> int:
             # order correction and the other not. Better to have both arms at
             # position 1 and say the order effect is uncorrected than to have a
             # silent asymmetry inside the comparison.
-            if deadline:
+            # ...but ONLY for positions after the first. Position 1 IS the
+            # measurement; every later position is the order correction on top
+            # of it. Declining to measure at all in order to protect the
+            # symmetry of a correction gets the priority exactly backwards, and
+            # at 9.3 s/judgment under relay contention that is a live risk, not
+            # a hypothetical. Position 1 always attempts, and per-cell deadline
+            # checks record whatever could not start.
+            if deadline and position > 1:
                 todo = sum(answer_count(a) for a in args.arm
                            if judged_count(a, suffix) < answer_count(a))
                 need = todo * (sum(observed) / len(observed) if observed else rate_s)
