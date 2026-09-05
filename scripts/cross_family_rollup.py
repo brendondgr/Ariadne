@@ -130,18 +130,27 @@ def paired_delta(a: dict, b: dict) -> dict | None:
     if not common:
         return None
     d = [a["per_case"][c] - b["per_case"][c] for c in common]
+    # Which BOUND a saturated side produces depends on which side it is, and
+    # getting this backwards would misreport the headline. If the high side sits
+    # at the ceiling, the grader cannot see it being worse than 1.0, so it
+    # over-credits that side and the margin is an UPPER bound. If the low side
+    # is at the ceiling, the margin is a lower bound.
     if a["saturated"] and b["saturated"]:
         sensitivity = "none — both sides at ceiling"
+        bound = "none"
     elif a["saturated"]:
-        sensitivity = "one-sided — can only detect b below a"
+        sensitivity = "one-sided — a is at ceiling, so the margin is an UPPER bound"
+        bound = "upper"
     elif b["saturated"]:
-        sensitivity = "one-sided — can only detect a below b"
+        sensitivity = "one-sided — b is at ceiling, so the margin is a LOWER bound"
+        bound = "lower"
     else:
         sensitivity = "two-sided"
+        bound = "two-sided"
     return {"n": len(common), "mean": round(fmean(d), 4),
             "sd": round(pstdev(d), 4) if len(d) > 1 else None,
             "dropped": len(set(a["per_case"]) ^ set(b["per_case"])),
-            "sensitivity": sensitivity}
+            "sensitivity": sensitivity, "bound": bound}
 
 
 def ordering(cells: dict[str, dict]) -> tuple[list[str], list[tuple[str, str]]]:
@@ -231,7 +240,7 @@ def main() -> int:
         for key in ("c012_deterministic_minus_llm_query",
                     "c022_federated_minus_merged"):
             a, b = by_grader.get(ref, {}).get(key), by_grader.get(new, {}).get(key)
-            if (a and b and b.get("sensitivity") == "two-sided"
+            if (a and b and b.get("bound") == "two-sided"
                     and (a["mean"] > 0) != (b["mean"] > 0)):
                 flips.append({"bank": bank, "contrast": key,
                               "reference": a["mean"], "candidate": b["mean"]})
