@@ -70,3 +70,25 @@ reads sidecars only and never consults a state file.
 - **Nothing new about the August question sets.** ±0.06 question-sampling at
   n=30 still dominates every margin below 0.06, C-022's included. A null that
   survives a grader change is still a null over 30 questions.
+
+## I-6 — The judgment sidecar's `model` field records a stale alias
+
+Every judgment written by this experiment carries `judge.model: "skynet"`,
+including the 689 written by gemma, because that field records the environment's
+default alias rather than the alias the call actually used
+(`default-model-2` / `default-model`).
+
+`judge.served_model` is read from the response envelope and is correct:
+
+| suffix | served_model | n |
+|---|---|---|
+| `.g31` / `.g31p2` | `gemma4-31B-mtp` | 689 |
+| `.q38b` | `qwen38-27B-v2` | 149 |
+
+**Consequence.** The two passes are correctly attributed and no fallback
+occurred — which is the thing that had to be checked, since a relay that
+silently answers from the wrong endpoint would make the whole experiment
+meaningless. But **`judge.model` must never be used to identify a grader**, and
+any earlier analysis that keyed on it was keying on the environment rather than
+on the run. This is `D-028` appearing one level down from where it was written:
+the alias is not evidence, and neither is a field that merely copies one.
