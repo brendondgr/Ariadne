@@ -4,60 +4,85 @@
 # a gap.
 id: EXP-2026-09-006
 slug: cross-family-august-regrade
-title: <one line, the question this answers>
-status: planned            # planned | running | complete | failed | superseded
+title: Does the August ordering survive a change of grader family? Two named graders, 510 frozen answers
+status: running            # planned | running | complete | failed | superseded
 date_started: 2026-09-05
 date_completed: null       # null until status is complete/failed
-authors: []
+authors: [brendondgr]
 
 purpose: >
-  One paragraph. What question does this answer, and which paper claim
-  does it support or refute?
+  C-021 and C-022 rest on judgments made in the 19-21 August window, when the
+  model behind the relay alias is not determinable (Q12, D-028). EXP-2026-08-021
+  repaired part of this by re-grading the two blind banks five times under the
+  now-identified qwen38-27B-v2, leaving two gaps. First, everything so far is one
+  family: those answers have survived a change of grading session, never a change
+  of model family. Second, C-021's contrast was never re-graded at all -- its
+  catalogue-versus-blind figure comes from composerfix-dev (120) and
+  composerfix-holdout (30), and each of those 150 answers carries exactly one
+  judgment sidecar written by the unidentified model. Nothing is re-run: the
+  answers on disk are byte-identical to the ones the figures were computed over,
+  so a difference between passes is attributable to the grader alone.
 
 hypothesis: >
-  Stated before the run. If exploratory, write "exploratory — no prior hypothesis".
+  H1 zero arm-ordering reversals on both blind banks under the second family.
+  H2 C-021's catalogue-minus-blind gap stays positive and above 0.02 under both
+  named graders. H3 C-022's margin remains indistinguishable from zero once the
+  +/-0.06 question-sampling component at n=30 is applied. H4 the between-family
+  offset exceeds the within-family spread (0.0036-0.0249) by at least an order of
+  magnitude. H5 disagreement concentrates on the weak arm. All five recorded in
+  PROTOCOL.md at 10:55 EDT, before any candidate judgment existed.
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
   commit: 18dc0249a62856f72621e18871a7a3118a21a2d6          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
-  entrypoint: "<exact command>"
+  entrypoint: "uv run python scripts/cross_family_regrade.py --track {gemma,qwen} --phase c021 c022 c012 rest; then scripts/cross_family_rollup.py"
   dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
 data:
-  name: <dataset>
-  version: <version>
-  split: <split>
-  n_examples: 0
+  name: saved answers from EXP-2026-08-008 (composerfix-dev/-holdout) and the two August blind banks
+  version: composerfix-dev 120 + composerfix-holdout 30 + bank20260819 180 + bank20260820 180
+  split: blind for the banks and composerfix-holdout; catalogue for composerfix-dev
+  n_examples: 510
   dvc_path: null           # this repository does not use DVC; leave null
   hash: null               # md5:... or sha256:... of the dataset artifact
 seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
-n_runs: 1
+n_runs: 2   # two grading positions per grader, swapped
 environment:
   python: "3.13"
   lockfile: env/requirements.lock
   container: null
 compute:
-  hardware: "<cpu/gpu, ram>"
+  hardware: "two local vLLM instances on separate GPUs behind the :9090 relay; client-side only on this host"
   wall_clock_hours: 0.0
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
 llm:
-  model: "<provider>/<model>@<version-or-date>"
+  # Two graders, one manifest field. Both identified by probe from the response
+  # envelope (scripts/model_identity.py), never from the alias -- D-028.
+  #   second family : relay/gemma4-31B-mtp@2026-09-05   (alias default-model-2, 24 workers)
+  #   same family   : relay/qwen38-27B-v2@2026-09-05    (alias default-model,   16 workers)
+  # No model is in the ANSWERING path for any of these 510 answers; the model is
+  # only in the metric.
+  model: "relay/gemma4-31B-mtp@2026-09-05 + relay/qwen38-27B-v2@2026-09-05"
   temperature: 0.0
   top_p: 1.0
-  max_tokens: 2048
+  max_tokens: 32768
   prompt_files: []
   prompt_hash: null
   tool_schema_hash: null
   total_input_tokens: null
   total_output_tokens: null
   nondeterminism_note: >
-    Provider-side nondeterminism remains even at temperature 0; results
-    are reported as mean ± std over n_runs.
+    Temperature 0 is not determinism: greedy decoding still reduces floating
+    point over whatever batch a request lands in. Both grading positions are run
+    and averaged per case before cases are averaged. Both graders run at the same
+    32768 budget deliberately -- EXP-2026-08-021 found 7-8% of the largest
+    answers fail to parse below it, and the failures land on the thorough
+    answers, so a cheaper second pass would confound grader with budget.
 
 # --- Results block ---
 metrics:

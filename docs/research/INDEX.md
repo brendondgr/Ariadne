@@ -10,7 +10,7 @@ that a dead end is walked into once rather than twice.
 
 | ID | Date | Title | Status | Primary metric | Claims | Link |
 |---|---|---|---|---|---|---|
-| `EXP-2026-09-006` | 2026-09-05 | <one line, the question this answers> | planned | <metric name> (not recorded) | — | [cross-family-august-regrade](experiments/EXP-2026-09-006-cross-family-august-regrade/) |
+| `EXP-2026-09-006` | 2026-09-05 | Does the August ordering survive a change of grader family? Two named graders, 510 frozen answers | running | <metric name> (not recorded) | — | [cross-family-august-regrade](experiments/EXP-2026-09-006-cross-family-august-regrade/) |
 | `EXP-2026-09-007` | 2026-09-05 | <one line, the question this answers> | planned | <metric name> (not recorded) | — | [holdout-spend](experiments/EXP-2026-09-007-holdout-spend/) |
 | `EXP-2026-07-001` | 2026-07-26 | Arm A — fully deterministic pipeline (planning, extraction, synthesis) | complete | correctness 0.9972 (n=1) | C-001, C-004 | [arm-a-deterministic](experiments/EXP-2026-07-001-arm-a-deterministic/) |
 | `EXP-2026-07-002` | 2026-07-26 | Arm B — LLM planning with deterministic extraction and an LLM writer | complete | correctness 0.8505 (n=1) | C-002, C-003, C-016 | [arm-b-llm-planned](experiments/EXP-2026-07-002-arm-b-llm-planned/) |
