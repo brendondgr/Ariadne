@@ -242,17 +242,40 @@ def main() -> int:
         a, b = by_grader.get(ref, {}), by_grader.get(new, {})
         if not a.get("order") or not b.get("order"):
             continue
-        tied = {x for pair in a.get("ties", []) for x in pair}
         # Only arms BOTH graders actually scored can reverse. While a pass is
         # still in flight the candidate has fewer arms, and ranking against an
         # arm it has not graded would invent a reversal out of an absence.
-        shared = [m for m in a["order"] if m not in tied and m in b["order"]]
-        report["banks"][bank].setdefault("_comparable_arms", {})[new] = shared
+        shared = [m for m in a["order"] if m in b["order"]]
+        # A pair TIED BY EITHER GRADER cannot reverse, because at least one of
+        # them never ranked it. Excluding only the reference's ties is not
+        # enough and is actively dangerous here: gemma scores four of the six
+        # bank20260819 arms at exactly 1.0000, so its sort order among them is a
+        # tie-break, and comparing that tie-break against qwen's real ranking
+        # manufactured three "reversals" out of a saturated grader's arbitrary
+        # ordering. Reporting those would have failed H1 and reversed this
+        # experiment's conclusion on an artifact.
+        tied_pairs = {frozenset(p) for p in a.get("ties", [])}
+        tied_pairs |= {frozenset(p) for p in b.get("ties", [])}
+        comparable, excluded = [], []
         for x, y in combinations(shared, 2):
+            if frozenset((x, y)) in tied_pairs:
+                excluded.append(sorted((x, y)))
+                continue
+            comparable.append((x, y))
             if b["order"].index(x) > b["order"].index(y):
                 reversals.append({"bank": bank, "pair": [x, y]})
+        report["banks"][bank].setdefault("_pair_accounting", {})[new] = {
+            "comparable_pairs": len(comparable),
+            "excluded_as_tied": excluded,
+        }
     report["verdicts"]["H1_arm_order_reversals"] = len(reversals)
     report["verdicts"]["H1_reversal_detail"] = reversals
+    report["verdicts"]["H1_pairs_compared"] = sum(
+        v.get("_pair_accounting", {}).get(new, {}).get("comparable_pairs", 0)
+        for v in report["banks"].values())
+    report["verdicts"]["H1_pairs_excluded_as_tied"] = sum(
+        len(v.get("_pair_accounting", {}).get(new, {}).get("excluded_as_tied", []))
+        for v in report["banks"].values())
 
     flips = []
     for bank, by_grader in report["banks"].items():
