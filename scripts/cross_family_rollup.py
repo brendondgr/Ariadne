@@ -74,6 +74,7 @@ def cell(root: str, arm: str, suffixes: tuple[str, ...]) -> dict:
     """Per-case mean correctness across a grader's passes."""
     adir = RUNS / root / arm / "answers"
     per_case: dict[str, list[float]] = {}
+    by_suffix: dict[str, set[str]] = {}
     for suffix in suffixes:
         want = f".judgment{suffix}.json"
         for p in adir.glob(f"*{want}"):
@@ -89,6 +90,7 @@ def cell(root: str, arm: str, suffixes: tuple[str, ...]) -> dict:
             if score is None or cid is None:
                 continue
             per_case.setdefault(cid, []).append(float(score))
+            by_suffix.setdefault(suffix, set()).add(cid)
     have = answers(root, arm)
     means = {c: fmean(v) for c, v in per_case.items()}
     missing = sorted(have - set(means))
@@ -113,6 +115,15 @@ def cell(root: str, arm: str, suffixes: tuple[str, ...]) -> dict:
         "frac_at_ceiling": round(at_ceiling / len(flat), 4) if flat else None,
         # No resolution left to detect a difference with.
         "saturated": bool(flat) and at_ceiling == len(flat),
+        # Counterbalancing only holds for cases graded in EVERY position. A case
+        # present in one pass and not the other carries that pass's ~0.01 order
+        # effect uncorrected, and the earlier `missing_cases` check cannot see it
+        # because the case does have a score.
+        "cases_in_all_passes": len(set.intersection(*by_suffix.values()))
+                               if len(by_suffix) == len(suffixes) and by_suffix else 0,
+        "cases_missing_a_position": sorted(
+            set(means) - set.intersection(*by_suffix.values())
+        ) if len(by_suffix) == len(suffixes) and by_suffix else sorted(means),
     }
 
 
@@ -179,6 +190,10 @@ def main() -> int:
                     report["dropout"].append(
                         {"grader": gname, "root": bank, "arm": arm,
                          "missing": c["missing_cases"]})
+                if c["n_cases"] and c["cases_missing_a_position"]:
+                    report.setdefault("uncounterbalanced", []).append(
+                        {"grader": gname, "root": bank, "arm": arm,
+                         "cases": c["cases_missing_a_position"]})
             order, ties = ordering(cells)
             report["banks"][bank][gname] = {
                 "means": {a: c["mean"] for a, c in cells.items()},
@@ -200,6 +215,10 @@ def main() -> int:
                 report["dropout"].append({"grader": gname, "root": root,
                                           "arm": "deterministic",
                                           "missing": c["missing_cases"]})
+            if c["n_cases"] and c["cases_missing_a_position"]:
+                report.setdefault("uncounterbalanced", []).append(
+                    {"grader": gname, "root": root, "arm": "deterministic",
+                     "cases": c["cases_missing_a_position"]})
         report["c021"][gname] = {
             "catalogue_mean": cat["mean"], "catalogue_n": cat["n_cases"],
             "blind_mean": blind["mean"], "blind_n": blind["n_cases"],
@@ -328,6 +347,10 @@ def main() -> int:
         if k.endswith("_detail") or k.endswith("_by_cell"):
             continue
         print(f"  {k:42} {v}")
+    if report.get("uncounterbalanced"):
+        print("\n=== graded in only one position (order effect uncorrected) ===")
+        for d in report["uncounterbalanced"]:
+            print(f"  {d['grader']:34} {d['root']}/{d['arm']}: {d['cases']}")
     if report["dropout"]:
         print("\n=== dropout (excluded from paired stats, reported here) ===")
         for d in report["dropout"]:
