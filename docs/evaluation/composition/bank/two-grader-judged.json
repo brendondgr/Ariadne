@@ -1,38 +1,79 @@
 {
- "deterministic": {
-  "qwen": {
-   "cases": 284,
-   "judgments": 568,
-   "mean_correctness": 0.4946
+ "qwen": {
+  "means": {
+   "deterministic": 0.4946,
+   "generic": 0.6569,
+   "llm_query": 0.3781
   },
-  "gemma": {
-   "cases": 284,
-   "judgments": 568,
-   "mean_correctness": 0.4175
+  "n": {
+   "deterministic": 284,
+   "generic": 284,
+   "llm_query": 283
+  },
+  "contrasts": {
+   "deterministic - llm_query": {
+    "observed": 0.1147,
+    "ci95": [
+     0.0653,
+     0.1645
+    ],
+    "n": 283
+   },
+   "generic - llm_query": {
+    "observed": 0.2776,
+    "ci95": [
+     0.2276,
+     0.3278
+    ],
+    "n": 283
+   },
+   "generic - deterministic": {
+    "observed": 0.1623,
+    "ci95": [
+     0.1258,
+     0.2001
+    ],
+    "n": 284
+   }
   }
  },
- "generic": {
-  "qwen": {
-   "cases": 284,
-   "judgments": 568,
-   "mean_correctness": 0.6569
+ "gemma": {
+  "means": {
+   "deterministic": 0.4175,
+   "generic": 0.6659,
+   "llm_query": 0.3478
   },
-  "gemma": {
-   "cases": 284,
-   "judgments": 568,
-   "mean_correctness": 0.6659
+  "n": {
+   "deterministic": 284,
+   "generic": 284,
+   "llm_query": 284
+  },
+  "contrasts": {
+   "deterministic - llm_query": {
+    "observed": 0.0696,
+    "ci95": [
+     -0.0024,
+     0.145
+    ],
+    "n": 284
+   },
+   "generic - llm_query": {
+    "observed": 0.3181,
+    "ci95": [
+     0.2467,
+     0.3889
+    ],
+    "n": 284
+   },
+   "generic - deterministic": {
+    "observed": 0.2485,
+    "ci95": [
+     0.1916,
+     0.3006
+    ],
+    "n": 284
+   }
   }
  },
- "llm_query": {
-  "qwen": {
-   "cases": 283,
-   "judgments": 565,
-   "mean_correctness": 0.3812
-  },
-  "gemma": {
-   "cases": 0,
-   "judgments": 0,
-   "mean_correctness": null
-  }
- }
+ "note": "Both grading positions averaged per case before averaging across cases. Paired percentile bootstrap, 2000 resamples, seed 1729. gemma is NOT saturated on any of these three arms (32-57% at ceiling), so every margin here is two-sided."
 }

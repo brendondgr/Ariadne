@@ -96,6 +96,31 @@ C-022; **one arm-ordering reversal in 23 pairs**, between `gold_loop_llm` and
 claim uses (`D-029`). Every judged claim in this record now names its grader and
 has been checked under two families.
 
+**C-012 IS THE ONE CONTRAST THAT DOES NOT SURVIVE AT SIGNIFICANCE
+(2026-09-05, `EXP-2026-09-006` armgap phase).** The post-repair three-way had
+**zero** gemma judgments on `llm_query`, so the paper's headline had never been
+checked under a second family at n=284. It has now been, and the result is
+mixed:
+
+| contrast | qwen38-27B-v2 | gemma4-31B-mtp |
+|---|---|---|
+| `generic − llm_query` | +0.2776 [+0.2276, +0.3278] | +0.3181 [+0.2467, +0.3889] |
+| `generic − deterministic` | +0.1623 [+0.1258, +0.2001] | +0.2485 [+0.1916, +0.3006] |
+| **`deterministic − llm_query`** (**C-012**) | +0.1147 [+0.0653, +0.1645] | **+0.0696 [−0.0024, +0.1450]** |
+
+Paired percentile bootstrap, 2,000 resamples, seed 1729, both grading positions
+averaged per case first. gemma is **not** saturated on any of these three arms
+(32–57% at ceiling), so every margin is two-sided.
+
+**The arm ordering is identical under both families** — `generic` 0.6569/0.6659,
+`deterministic` 0.4946/0.4175, `llm_query` 0.3781/0.3478 — and **C-012's sign
+holds under both.** What does not hold is its *significance*: under the second
+family the interval includes zero, by 0.0024. **C-012 must therefore be written
+as "positive under both grader families; significant under one of two", and the
+gemma interval quoted beside it.** The two contrasts involving the
+schema-assembled arm are robust under both families and are the stronger
+claims to lead with.
+
 ⚠️ **A SECOND GRADER IS NOT AUTOMATICALLY A CHECK.** `gemma4-31B-mtp` returned
 **exactly 1.0 on all 150 `composerfix` answers** and is saturated in **6 of 12**
 bank cells. On any comparison whose arms sit near 1.0 it has *no resolution*, and
