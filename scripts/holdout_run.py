@@ -53,14 +53,14 @@ GREMLIN_EXPECT = {"vertices": 6374, "edges": 8582}
 
 
 def assert_stores() -> dict:
-    from utils.config import settings
     from neo4j import GraphDatabase
-    from gremlin_python.driver.client import Client
-    from gremlin_python.driver.serializer import GraphSONSerializersV3d0
+    from gremlin_python.driver import client as gclient
+    from gremlin_python.driver import serializer
 
     out: dict = {}
-    drv = GraphDatabase.driver(settings.neo4j_uri,
-                               auth=(settings.neo4j_user, settings.neo4j_password))
+    drv = GraphDatabase.driver(
+        os.environ["NEO4J_URI"],
+        auth=(os.environ.get("NEO4J_USER", "neo4j"), os.environ["NEO4J_PASSWORD"]))
     try:
         with drv.session() as s:
             out["neo4j"] = {
@@ -68,8 +68,8 @@ def assert_stores() -> dict:
                 "edges": s.run("MATCH ()-[r]->() RETURN count(r) AS c").single()["c"]}
     finally:
         drv.close()
-    gc = Client(settings.gremlin_url, "g",
-                message_serializer=GraphSONSerializersV3d0())
+    gc = gclient.Client(os.environ.get("GREMLIN_URL", "ws://localhost:6455/gremlin"),
+                        "g", message_serializer=serializer.GraphSONSerializersV3d0())
     try:
         out["gremlin"] = {"vertices": gc.submit("g.V().count()").all().result()[0],
                           "edges": gc.submit("g.E().count()").all().result()[0]}
