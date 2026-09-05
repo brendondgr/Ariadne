@@ -751,3 +751,57 @@ sharpens an existing argument: the Sonnet panels are provider-hosted and were
 untouched by any of the three swaps, so **the cross-model panel is now the
 practical choice for anything quoted externally, not merely the principled one**
 (`D-002`, `C-009`).
+
+---
+
+## D-029 — Spend the holdout despite a failed pre-registered gate, and say so
+
+**2026-09-05. Operator decision, taken explicitly rather than absorbed.**
+
+[`EXP-2026-09-007`](experiments/EXP-2026-09-007-holdout-spend/PROTOCOL.md)'s stop
+condition reads: *any arm-ordering reversal in `EXP-2026-09-006` → hold,
+investigate, and write that up first.* The complete cross-family pass produced
+**one reversal in 23 pairs**, so H1 failed as written. The holdout was judged
+anyway, on the operator's explicit call, with the failure recorded and travelling
+with the result.
+
+**Why this is not a quiet reinterpretation.**
+
+1. **The hypothesis stays failed.** H1 is recorded as failed in
+   [`ISSUES.md` I-7](experiments/EXP-2026-09-006-cross-family-august-regrade/ISSUES.md).
+   No noise threshold was introduced after seeing the result. The obvious repair
+   — declare a pair "unranked" when the margin is inside the grader's own spread
+   — would make H1 pass and is precisely the post-hoc adjustment that voids a
+   pre-registration. It was not made.
+2. **The reversal is disjoint from what the holdout measures.** It is
+   `gold_loop_llm` against `generic_composed` on `bank20260820`. Neither arm
+   appears in the paper's three-way comparison (`deterministic`, `generic`,
+   `llm_query`) and neither carries a claim.
+3. **Neither grader resolves the pair.** gemma separates them by **0.0033**,
+   inside its own within-family spread (0.0036–0.0249) and an order of magnitude
+   inside the pair's paired sd of 0.0287; qwen's **+0.0276** is well inside its
+   0.0854. One weak disagreement about two arms neither instrument can tell
+   apart.
+4. **Everything claim-bearing is unmoved.** `contrast_sign_flips = 0` across
+   C-012, C-021 and C-022, on 510 frozen answers under two named families.
+5. **The resource was expiring.** `gemma4-31B-mtp` was available until 16:00 and
+   does not return today. Holding would have cost the only second-family
+   grading window for the holdout, indefinitely.
+
+**Alternatives rejected.**
+
+- *Hold the holdout entirely.* The literal reading. Rejected because the reversal
+  is disjoint from the holdout's arms and inside both graders' noise, so holding
+  would have paid a permanent cost for a defect that cannot touch the result.
+- *Judge under qwen only.* Would have produced a clean single-family holdout and
+  deferred the cross-family half. Rejected for the same reason as above plus the
+  expiry: a single-family holdout is exactly the gap `EXP-2026-09-006` exists to
+  close everywhere else.
+- *Weaken the tie rule so H1 passes.* Rejected on principle. See point 1.
+
+**Consequence.** The holdout result must be quoted with the sentence *"the
+cross-family gate recorded one arm-ordering reversal in 23 pairs, on a pair
+neither grader resolves and neither claim uses"* attached. A reader who wants to
+discount the holdout on that basis has the number to do it with. That is the
+trade this decision makes: the gate was not met, the spend happened anyway, and
+the record says so in both places rather than in neither.
