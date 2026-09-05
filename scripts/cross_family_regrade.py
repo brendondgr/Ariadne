@@ -88,7 +88,7 @@ QWEN_PASSES = ((".q38b", 1), (".q38bp2", 2))
 
 #: Priority order. C-021 first: its 150 answers carry exactly one judgment each,
 #: written by a model nobody can name, and EXP-2026-08-021 did not touch them.
-PHASES: dict[str, dict[str, list[tuple[str, str]]]] = {
+PHASES: dict[str, dict[str, Any]] = {
     "c021": {
         "gemma": [("composerfix-dev", "deterministic"),
                   ("composerfix-holdout", "deterministic")],
@@ -109,6 +109,18 @@ PHASES: dict[str, dict[str, list[tuple[str, str]]]] = {
         "gemma": [("bank20260819", "generic"), ("bank20260819", "gold_loop_llm"),
                   ("bank20260820", "generic"), ("bank20260820", "gold_loop_llm")],
         "qwen": [],
+    },
+    # Not an August set, and not in the original Step 4 scope. It is here because
+    # the check found the gap: EXP-2026-09-005's cross-family pass covers
+    # `deterministic` and `generic` and has **zero** gemma judgments on
+    # `llm_query` (two-grader-judged.json). So the paper's headline three-way --
+    # the one C-012 rests on -- has never been confirmed under a second family
+    # at the settled n=284. Same suffixes as the other two arms so the existing
+    # roll-up reads it without special-casing.
+    "armgap": {
+        "gemma": [("llm-query-split-2026-09-05", "llm_query")],
+        "qwen": [],
+        "gemma_passes": ((".gemma", 1), (".gemma2", 2)),
     },
 }
 
@@ -237,7 +249,7 @@ def plan_cells(phases: list[str]) -> dict[str, list[tuple[str, str, str, int]]]:
     for phase in phases:
         spec = PHASES[phase]
         for root, arm in spec["gemma"]:
-            for suffix, position in GEMMA_PASSES:
+            for suffix, position in spec.get("gemma_passes", GEMMA_PASSES):
                 out["gemma"].append((root, arm, suffix, position))
         for root, arm in spec["qwen"]:
             for suffix, position in QWEN_PASSES:
