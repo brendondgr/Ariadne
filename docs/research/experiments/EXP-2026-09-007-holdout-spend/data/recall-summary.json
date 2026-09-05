@@ -25,8 +25,49 @@
  },
  "published_prerepair_holdout_old_scorer": 0.4683,
  "readings": [
-  "The repairs carry to unseen questions. The pooled gain on the holdout is +0.0503 against +0.0684 on dev -- about three quarters of it, on 288 questions no repair was allowed to see. H2's premise that the fixes were schema-level rather than question-level survives its first test.",
-  "But the reweighted gain is near zero on BOTH halves: +0.0029 dev, +0.0017 holdout. The pooled improvement lands on shapes the bank deliberately over-samples. Weighted by how many instances the census says each shape actually has, six system repairs moved retrieval by three thousandths. That is the honest figure for what the repairs buy on a natural distribution, and it must be reported beside the pooled one.",
-  "The published 0.4683 used the pre-fix property scorer. Re-scored with the current one the same answers read 0.4911, so +0.0228 of any pre/post comparison against the published number is the scorer, not the system."
- ]
+  "The repairs carry to unseen questions. Pooled recall on the holdout gains +0.0503 against +0.0684 on dev -- about three quarters of it, on 288 questions no repair was allowed to see. H2's premise, that the fixes were schema-level rather than fitted to the dev items, survives its first test.",
+  "The decomposition is sharper than the aggregate and says something better than 'the gain is small'. Exactly THREE of 34 census-carrying shapes moved at all, and they are precisely the three the CAPEC anchor and containment repairs targeted: Category-[HAS_MEMBER]->AttackPattern 0.05->0.29, View-[HAS_MEMBER]->AttackPattern 0.27->0.52, Matrix-[tactic_refs]->Tactic 0.25->0.50. Gains of +0.24 to +0.26 on the intended targets, reproduced on unseen questions, and zero movement on the 31 shapes nothing touched. That is a clean, surgical result, not a diffuse one.",
+  "Those three shapes are 0.7% of the graph by instance count, so the census-weighted gain is +0.0017. Both numbers are true and they answer different questions: the repairs do what they were built to do, and what they were built to do is rare. The pooled +0.05 is the bank's deliberate over-sampling of under-represented corners working as designed -- bank.json's own meta note says pooled accuracy is not a natural-distribution estimate. Quote both, and never the pooled figure alone.",
+  "The published pre-repair holdout of 0.4683 used the pre-fix property scorer. The same answers re-scored with the current one read 0.4911, so +0.0228 of any comparison against the published number is the scorer rather than the system."
+ ],
+ "shape_decomposition_holdout": {
+  "shapes_with_census": 34,
+  "shapes_without_census": 18,
+  "total_census_instances": 34952,
+  "shapes_that_moved": 3,
+  "moved_share_of_census": 0.007,
+  "moved": [
+   {
+    "shape": "Category -[HAS_MEMBER]-> AttackPattern",
+    "n": 18,
+    "census": 188,
+    "recall": [
+     0.05,
+     0.29
+    ],
+    "delta": 0.241
+   },
+   {
+    "shape": "View -[HAS_MEMBER]-> AttackPattern",
+    "n": 12,
+    "census": 46,
+    "recall": [
+     0.27,
+     0.52
+    ],
+    "delta": 0.255
+   },
+   {
+    "shape": "Matrix -[tactic_refs]-> Tactic",
+    "n": 2,
+    "census": 15,
+    "recall": [
+     0.25,
+     0.5
+    ],
+    "delta": 0.25
+   }
+  ],
+  "census_weighted_total_delta": 0.0017
+ }
 }
