@@ -197,7 +197,12 @@ def main() -> int:
         if not a.get("order") or not b.get("order"):
             continue
         tied = {x for pair in a.get("ties", []) for x in pair}
-        for x, y in combinations([m for m in a["order"] if m not in tied], 2):
+        # Only arms BOTH graders actually scored can reverse. While a pass is
+        # still in flight the candidate has fewer arms, and ranking against an
+        # arm it has not graded would invent a reversal out of an absence.
+        shared = [m for m in a["order"] if m not in tied and m in b["order"]]
+        report["banks"][bank].setdefault("_comparable_arms", {})[new] = shared
+        for x, y in combinations(shared, 2):
             if b["order"].index(x) > b["order"].index(y):
                 reversals.append({"bank": bank, "pair": [x, y]})
     report["verdicts"]["H1_arm_order_reversals"] = len(reversals)
