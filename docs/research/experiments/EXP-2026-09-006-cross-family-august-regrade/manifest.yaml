@@ -1,0 +1,74 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-09-006
+slug: cross-family-august-regrade
+title: <one line, the question this answers>
+status: planned            # planned | running | complete | failed | superseded
+date_started: 2026-09-05
+date_completed: null       # null until status is complete/failed
+authors: []
+
+purpose: >
+  One paragraph. What question does this answer, and which paper claim
+  does it support or refute?
+
+hypothesis: >
+  Stated before the run. If exploratory, write "exploratory — no prior hypothesis".
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 18dc0249a62856f72621e18871a7a3118a21a2d6          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "<exact command>"
+  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: <dataset>
+  version: <version>
+  split: <split>
+  n_examples: 0
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: null               # md5:... or sha256:... of the dataset artifact
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "<cpu/gpu, ram>"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "<provider>/<model>@<version-or-date>"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 2048
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results
+    are reported as mean ± std over n_runs.
+
+# --- Results block ---
+metrics:
+  primary: <metric name>
+  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+baselines_compared: []
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null
+superseded_by: null
+related: []
