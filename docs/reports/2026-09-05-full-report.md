@@ -1,6 +1,6 @@
 # What happened, in plain language
 
-Covering 3–5 September 2026. Written 2026-09-05 01:36.
+Covering 3–5 September 2026. Written 2026-09-05 10:31.
 
 ## The short version
 
@@ -14,7 +14,7 @@ Two days ago the hand-written library looked far worse than the assembled one. T
 |---|---:|---:|
 | hand-written library | 0.4946 | 0.4166 |
 | assembled from the catalogue | 0.6569 | 0.6697 |
-| model writes the query | **not finished** | not graded |
+| model writes the query | 0.3781 | not graded |
 
 The gap between the two is **0.1623** under the first grader and **0.2531** under the second. Different graders, same winner.
 
@@ -56,6 +56,7 @@ Letting the model write the query kept producing a number that turned out to mea
 - **Second**: the allowance was raised, but it was being read once when the program started rather than when it was used, so the new value never applied.
 - **Third**: with the allowance genuinely raised, a separate **two-minute cut-off** stopped the model mid-thought. 282 of 284 produced nothing. That run was deleted rather than reported.
 - **Fourth**: cut-off raised to 68 minutes and allowance to its maximum. 140 of 284 produced a query.
+- **Fifth**, split across two dedicated machines: **235 of 284** produced a query.
 
 A check on the hard questions before the fifth run: **9 of 10** produced an answer, so the remaining failures are no longer the equipment.
 
@@ -77,6 +78,4 @@ Recorded because the record is the point, and because each one cost hours.
 - **The held-back half.** 288 questions, never graded. They are the honest test of whether these fixes generalise, and they can only be used once. Best spent when all three ways of answering are ready, not two.
 - **Two known scoring faults remain**, both of which make the current numbers *too low* rather than too high. Left alone deliberately: fixing them raises our own scores, so the rule has to be written down and agreed before it is applied.
 - **An outside grader.** Everything so far is graded by models running on this hardware. The strongest check would be a grader from a different provider entirely.
-
-- **The third way is still being graded** as this was written; its figure is not in the table above.
 

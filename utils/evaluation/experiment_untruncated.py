@@ -156,6 +156,11 @@ def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[st
             # instance of that shape in this arm, after the import-time budget
             # freeze and the ignored .env value.
             "SPECIALIST_LLM_TIMEOUT_S": str(max(900, llm_max_tokens // 8)),
+            # Operator directive 2026-09-05: cap deliberation, floor the clock.
+            # This model over-thinks a task that does not need it -- see
+            # llm_sampling.sampling_params -- and the cap is what makes the arm
+            # affordable enough to be worth re-running at all.
+            "LLM_THINKING_BUDGET": os.environ.get("LLM_THINKING_BUDGET", "512"),
         })
     elif arm == "generic_composed":
         # The control the merged arm actually needed, and the one that did not

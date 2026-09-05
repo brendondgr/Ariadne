@@ -43,9 +43,26 @@ def sampling_params(*, max_tokens: int, seed: int | None = None) -> dict[str, ob
     fields, so a change to the project's determinism posture happens in one
     place instead of five.
     """
-    return {
+    params: dict[str, object] = {
         "temperature": 0,
         "top_p": 1,
         "seed": env_int("LLM_SEED", DEFAULT_SEED) if seed is None else seed,
         "max_tokens": max_tokens,
     }
+    # Cap the chain of thought when the served model is a reasoning model.
+    #
+    # The whole llm_query saga was a reasoning model spending its allowance on
+    # thinking and emitting nothing: 4,134 tokens of answer behind 16,106
+    # characters of preamble on an easy question, and 42,602 characters when
+    # given room. That is not deliberation this task needs -- the builder is
+    # writing one bounded query against a schema it was handed -- and it is what
+    # made the arm cost roughly forty thousand times the template path.
+    #
+    # Sent through the two channels vLLM accepts, since which one applies
+    # depends on the served model's chat template; an endpoint that understands
+    # neither ignores both rather than failing, so this is safe to send always.
+    budget = env_int("LLM_THINKING_BUDGET", 0)
+    if budget > 0:
+        params["chat_template_kwargs"] = {"thinking_budget": budget}
+        params["extra_body"] = {"thinking_budget": budget}
+    return params

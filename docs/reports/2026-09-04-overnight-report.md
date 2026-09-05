@@ -8,13 +8,12 @@ Started None. Gemma deadline 08:30.
 | deterministic | gemma | 284 | 568 | 0.4175 |
 | generic | qwen | 284 | 568 | 0.6569 |
 | generic | gemma | 284 | 568 | 0.6659 |
-| llm_query | qwen | 284 | 519 | 0.3842 |
+| llm_query | qwen | 283 | 565 | 0.3812 |
 | llm_query | gemma | 0 | 0 | None |
 
 ## What did not run
 
 - **A4-gemma-judge-llm-query** — not_run: past the 08:30 gemma deadline
-- **F-rollup** — running: 
 
 ## The holdout
 
