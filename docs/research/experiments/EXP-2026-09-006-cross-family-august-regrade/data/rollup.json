@@ -1,0 +1,806 @@
+{
+ "graders": {
+  "gemma4-31B-mtp": [
+   ".g31",
+   ".g31p2"
+  ],
+  "qwen38-27B-v2 (new, composerfix)": [
+   ".q38b",
+   ".q38bp2"
+  ],
+  "qwen38-27B-v2 (EXP-2026-08-021)": [
+   ".qwen38",
+   ".qwen38r2",
+   ".qwen38r3",
+   ".qwen38r4",
+   ".qwen38r5"
+  ],
+  "UNIDENTIFIED (August)": [
+   ""
+  ],
+  "UNIDENTIFIED (August, .c015)": [
+   ".c015"
+  ]
+ },
+ "banks": {
+  "bank20260819": {
+   "gemma4-31B-mtp": {
+    "means": {
+     "deterministic": 1.0,
+     "generic": 1.0,
+     "generic_composed": 1.0,
+     "gold_loop_llm": 1.0,
+     "llm_query": 0.6,
+     "merged": 0.95
+    },
+    "n_cases": {
+     "deterministic": 30,
+     "generic": 30,
+     "generic_composed": 30,
+     "gold_loop_llm": 30,
+     "llm_query": 30,
+     "merged": 30
+    },
+    "order": [
+     "deterministic",
+     "generic",
+     "generic_composed",
+     "gold_loop_llm",
+     "merged",
+     "llm_query"
+    ],
+    "ties": [
+     [
+      "deterministic",
+      "generic"
+     ],
+     [
+      "deterministic",
+      "generic_composed"
+     ],
+     [
+      "deterministic",
+      "gold_loop_llm"
+     ],
+     [
+      "generic",
+      "generic_composed"
+     ],
+     [
+      "generic",
+      "gold_loop_llm"
+     ],
+     [
+      "generic_composed",
+      "gold_loop_llm"
+     ]
+    ],
+    "c012_deterministic_minus_llm_query": {
+     "n": 30,
+     "mean": 0.4,
+     "sd": 0.4726,
+     "dropped": 0,
+     "sensitivity": "one-sided \u2014 a is at ceiling, so the margin is an UPPER bound",
+     "bound": "upper"
+    },
+    "c022_federated_minus_merged": {
+     "n": 30,
+     "mean": 0.05,
+     "sd": 0.1979,
+     "dropped": 0,
+     "sensitivity": "one-sided \u2014 a is at ceiling, so the margin is an UPPER bound",
+     "bound": "upper"
+    }
+   },
+   "qwen38-27B-v2 (new, composerfix)": {
+    "means": {
+     "deterministic": null,
+     "generic": null,
+     "generic_composed": null,
+     "gold_loop_llm": null,
+     "llm_query": null,
+     "merged": null
+    },
+    "n_cases": {
+     "deterministic": 0,
+     "generic": 0,
+     "generic_composed": 0,
+     "gold_loop_llm": 0,
+     "llm_query": 0,
+     "merged": 0
+    },
+    "order": [],
+    "ties": [],
+    "c012_deterministic_minus_llm_query": null,
+    "c022_federated_minus_merged": null
+   },
+   "qwen38-27B-v2 (EXP-2026-08-021)": {
+    "means": {
+     "deterministic": 0.9733,
+     "generic": 0.972,
+     "generic_composed": 0.9522,
+     "gold_loop_llm": 0.9807,
+     "llm_query": 0.5473,
+     "merged": 0.8914
+    },
+    "n_cases": {
+     "deterministic": 30,
+     "generic": 30,
+     "generic_composed": 30,
+     "gold_loop_llm": 30,
+     "llm_query": 30,
+     "merged": 30
+    },
+    "order": [
+     "gold_loop_llm",
+     "deterministic",
+     "generic",
+     "generic_composed",
+     "merged",
+     "llm_query"
+    ],
+    "ties": [],
+    "c012_deterministic_minus_llm_query": {
+     "n": 30,
+     "mean": 0.426,
+     "sd": 0.3106,
+     "dropped": 0,
+     "sensitivity": "two-sided",
+     "bound": "two-sided"
+    },
+    "c022_federated_minus_merged": {
+     "n": 30,
+     "mean": 0.0608,
+     "sd": 0.1599,
+     "dropped": 0,
+     "sensitivity": "two-sided",
+     "bound": "two-sided"
+    }
+   },
+   "UNIDENTIFIED (August)": {
+    "means": {
+     "deterministic": 0.9467,
+     "generic": 0.97,
+     "generic_composed": null,
+     "gold_loop_llm": 0.9773,
+     "llm_query": 0.5,
+     "merged": null
+    },
+    "n_cases": {
+     "deterministic": 30,
+     "generic": 30,
+     "generic_composed": 0,
+     "gold_loop_llm": 30,
+     "llm_query": 30,
+     "merged": 0
+    },
+    "order": [
+     "gold_loop_llm",
+     "generic",
+     "deterministic",
+     "llm_query"
+    ],
+    "ties": [],
+    "c012_deterministic_minus_llm_query": {
+     "n": 30,
+     "mean": 0.4467,
+     "sd": 0.276,
+     "dropped": 0,
+     "sensitivity": "two-sided",
+     "bound": "two-sided"
+    },
+    "c022_federated_minus_merged": null
+   },
+   "UNIDENTIFIED (August, .c015)": {
+    "means": {
+     "deterministic": 0.9667,
+     "generic": 0.9833,
+     "generic_composed": 0.9567,
+     "gold_loop_llm": null,
+     "llm_query": null,
+     "merged": 0.9233
+    },
+    "n_cases": {
+     "deterministic": 30,
+     "generic": 30,
+     "generic_composed": 30,
+     "gold_loop_llm": 0,
+     "llm_query": 0,
+     "merged": 30
+    },
+    "order": [
+     "generic",
+     "deterministic",
+     "generic_composed",
+     "merged"
+    ],
+    "ties": [],
+    "c012_deterministic_minus_llm_query": null,
+    "c022_federated_minus_merged": {
+     "n": 30,
+     "mean": 0.0333,
+     "sd": 0.185,
+     "dropped": 0,
+     "sensitivity": "two-sided",
+     "bound": "two-sided"
+    }
+   },
+   "_pair_accounting": {
+    "gemma4-31B-mtp": {
+     "comparable_pairs": 9,
+     "excluded_as_tied": [
+      [
+       "deterministic",
+       "gold_loop_llm"
+      ],
+      [
+       "generic",
+       "gold_loop_llm"
+      ],
+      [
+       "generic_composed",
+       "gold_loop_llm"
+      ],
+      [
+       "deterministic",
+       "generic"
+      ],
+      [
+       "deterministic",
+       "generic_composed"
+      ],
+      [
+       "generic",
+       "generic_composed"
+      ]
+     ]
+    }
+   }
+  },
+  "bank20260820": {
+   "gemma4-31B-mtp": {
+    "means": {
+     "deterministic": 1.0,
+     "generic": 1.0,
+     "generic_composed": 0.9983,
+     "gold_loop_llm": 0.995,
+     "llm_query": 0.45,
+     "merged": 0.9583
+    },
+    "n_cases": {
+     "deterministic": 30,
+     "generic": 30,
+     "generic_composed": 30,
+     "gold_loop_llm": 30,
+     "llm_query": 30,
+     "merged": 30
+    },
+    "order": [
+     "deterministic",
+     "generic",
+     "generic_composed",
+     "gold_loop_llm",
+     "merged",
+     "llm_query"
+    ],
+    "ties": [
+     [
+      "deterministic",
+      "generic"
+     ]
+    ],
+    "c012_deterministic_minus_llm_query": {
+     "n": 30,
+     "mean": 0.55,
+     "sd": 0.4537,
+     "dropped": 0,
+     "sensitivity": "one-sided \u2014 a is at ceiling, so the margin is an UPPER bound",
+     "bound": "upper"
+    },
+    "c022_federated_minus_merged": {
+     "n": 30,
+     "mean": 0.04,
+     "sd": 0.1841,
+     "dropped": 0,
+     "sensitivity": "two-sided",
+     "bound": "two-sided"
+    }
+   },
+   "qwen38-27B-v2 (new, composerfix)": {
+    "means": {
+     "deterministic": null,
+     "generic": null,
+     "generic_composed": null,
+     "gold_loop_llm": null,
+     "llm_query": null,
+     "merged": null
+    },
+    "n_cases": {
+     "deterministic": 0,
+     "generic": 0,
+     "generic_composed": 0,
+     "gold_loop_llm": 0,
+     "llm_query": 0,
+     "merged": 0
+    },
+    "order": [],
+    "ties": [],
+    "c012_deterministic_minus_llm_query": null,
+    "c022_federated_minus_merged": null
+   },
+   "qwen38-27B-v2 (EXP-2026-08-021)": {
+    "means": {
+     "deterministic": 0.9791,
+     "generic": 0.983,
+     "generic_composed": 0.9424,
+     "gold_loop_llm": 0.9701,
+     "llm_query": 0.4493,
+     "merged": 0.8843
+    },
+    "n_cases": {
+     "deterministic": 30,
+     "generic": 30,
+     "generic_composed": 30,
+     "gold_loop_llm": 30,
+     "llm_query": 30,
+     "merged": 30
+    },
+    "order": [
+     "generic",
+     "deterministic",
+     "gold_loop_llm",
+     "generic_composed",
+     "merged",
+     "llm_query"
+    ],
+    "ties": [],
+    "c012_deterministic_minus_llm_query": {
+     "n": 30,
+     "mean": 0.5298,
+     "sd": 0.338,
+     "dropped": 0,
+     "sensitivity": "two-sided",
+     "bound": "two-sided"
+    },
+    "c022_federated_minus_merged": {
+     "n": 30,
+     "mean": 0.0581,
+     "sd": 0.1542,
+     "dropped": 0,
+     "sensitivity": "two-sided",
+     "bound": "two-sided"
+    }
+   },
+   "UNIDENTIFIED (August)": {
+    "means": {
+     "deterministic": 0.9417,
+     "generic": 0.975,
+     "generic_composed": null,
+     "gold_loop_llm": 0.9645,
+     "llm_query": 0.4183,
+     "merged": null
+    },
+    "n_cases": {
+     "deterministic": 30,
+     "generic": 30,
+     "generic_composed": 0,
+     "gold_loop_llm": 29,
+     "llm_query": 30,
+     "merged": 0
+    },
+    "order": [
+     "generic",
+     "gold_loop_llm",
+     "deterministic",
+     "llm_query"
+    ],
+    "ties": [],
+    "c012_deterministic_minus_llm_query": {
+     "n": 30,
+     "mean": 0.5233,
+     "sd": 0.3167,
+     "dropped": 0,
+     "sensitivity": "two-sided",
+     "bound": "two-sided"
+    },
+    "c022_federated_minus_merged": null
+   },
+   "UNIDENTIFIED (August, .c015)": {
+    "means": {
+     "deterministic": 0.9667,
+     "generic": 1.0,
+     "generic_composed": 0.9367,
+     "gold_loop_llm": null,
+     "llm_query": null,
+     "merged": 0.9367
+    },
+    "n_cases": {
+     "deterministic": 30,
+     "generic": 30,
+     "generic_composed": 30,
+     "gold_loop_llm": 0,
+     "llm_query": 0,
+     "merged": 30
+    },
+    "order": [
+     "generic",
+     "deterministic",
+     "generic_composed",
+     "merged"
+    ],
+    "ties": [
+     [
+      "generic_composed",
+      "merged"
+     ]
+    ],
+    "c012_deterministic_minus_llm_query": null,
+    "c022_federated_minus_merged": {
+     "n": 30,
+     "mean": 0.0,
+     "sd": 0.2236,
+     "dropped": 0,
+     "sensitivity": "two-sided",
+     "bound": "two-sided"
+    }
+   },
+   "_pair_accounting": {
+    "gemma4-31B-mtp": {
+     "comparable_pairs": 14,
+     "excluded_as_tied": [
+      [
+       "deterministic",
+       "generic"
+      ]
+     ]
+    }
+   }
+  }
+ },
+ "c021": {
+  "gemma4-31B-mtp": {
+   "catalogue_mean": 1.0,
+   "catalogue_n": 120,
+   "blind_mean": 1.0,
+   "blind_n": 30,
+   "catalogue_sd": 0.0,
+   "blind_sd": 0.0,
+   "catalogue_frac_at_ceiling": 1.0,
+   "blind_frac_at_ceiling": 1.0,
+   "can_measure_the_gap": false,
+   "gap": 0.0
+  },
+  "qwen38-27B-v2 (new, composerfix)": {
+   "catalogue_mean": 0.9905,
+   "catalogue_n": 120,
+   "blind_mean": 0.9583,
+   "blind_n": 30,
+   "catalogue_sd": 0.0383,
+   "blind_sd": 0.0941,
+   "catalogue_frac_at_ceiling": 0.8958,
+   "blind_frac_at_ceiling": 0.6667,
+   "can_measure_the_gap": true,
+   "gap": 0.0322
+  },
+  "qwen38-27B-v2 (EXP-2026-08-021)": {
+   "catalogue_mean": null,
+   "catalogue_n": 0,
+   "blind_mean": null,
+   "blind_n": 0,
+   "catalogue_sd": null,
+   "blind_sd": null,
+   "catalogue_frac_at_ceiling": null,
+   "blind_frac_at_ceiling": null,
+   "can_measure_the_gap": true,
+   "gap": null
+  },
+  "UNIDENTIFIED (August)": {
+   "catalogue_mean": 0.9833,
+   "catalogue_n": 119,
+   "blind_mean": 0.935,
+   "blind_n": 30,
+   "catalogue_sd": 0.0347,
+   "blind_sd": 0.1156,
+   "catalogue_frac_at_ceiling": 0.7731,
+   "blind_frac_at_ceiling": 0.6,
+   "can_measure_the_gap": true,
+   "gap": 0.0483
+  },
+  "UNIDENTIFIED (August, .c015)": {
+   "catalogue_mean": null,
+   "catalogue_n": 0,
+   "blind_mean": null,
+   "blind_n": 0,
+   "catalogue_sd": null,
+   "blind_sd": null,
+   "catalogue_frac_at_ceiling": null,
+   "blind_frac_at_ceiling": null,
+   "can_measure_the_gap": true,
+   "gap": null
+  }
+ },
+ "dropout": [
+  {
+   "grader": "UNIDENTIFIED (August)",
+   "root": "bank20260820",
+   "arm": "gold_loop_llm",
+   "missing": [
+    "H-CTM-01"
+   ]
+  },
+  {
+   "grader": "UNIDENTIFIED (August)",
+   "root": "composerfix-dev",
+   "arm": "deterministic",
+   "missing": [
+    "C-SCN-01"
+   ]
+  }
+ ],
+ "verdicts": {
+  "H1_arm_order_reversals": 1,
+  "H1_reversal_detail": [
+   {
+    "bank": "bank20260820",
+    "pair": [
+     "gold_loop_llm",
+     "generic_composed"
+    ]
+   }
+  ],
+  "H1_pairs_compared": 23,
+  "H1_pairs_excluded_as_tied": 7,
+  "H2_gemma_can_measure_c021": false,
+  "H2_c021_gap_qwen": 0.0322,
+  "H2_c021_gap_gemma": 0.0,
+  "contrast_sign_flips": 0,
+  "flip_detail": [],
+  "H4_between_family_mean_abs_offset": 0.0355,
+  "H4_within_family_sd_reference": "0.0036-0.0249 (EXP-2026-08-021)",
+  "H5_saturation_by_cell": [
+   {
+    "bank": "bank20260819",
+    "arm": "deterministic",
+    "grader": "qwen38-27B-v2 (EXP-2026-08-021)",
+    "sd": 0.0709,
+    "frac_at_ceiling": 0.8133,
+    "saturated": false
+   },
+   {
+    "bank": "bank20260819",
+    "arm": "deterministic",
+    "grader": "gemma4-31B-mtp",
+    "sd": 0.0,
+    "frac_at_ceiling": 1.0,
+    "saturated": true
+   },
+   {
+    "bank": "bank20260819",
+    "arm": "generic",
+    "grader": "qwen38-27B-v2 (EXP-2026-08-021)",
+    "sd": 0.0708,
+    "frac_at_ceiling": 0.8133,
+    "saturated": false
+   },
+   {
+    "bank": "bank20260819",
+    "arm": "generic",
+    "grader": "gemma4-31B-mtp",
+    "sd": 0.0,
+    "frac_at_ceiling": 1.0,
+    "saturated": true
+   },
+   {
+    "bank": "bank20260819",
+    "arm": "generic_composed",
+    "grader": "qwen38-27B-v2 (EXP-2026-08-021)",
+    "sd": 0.0875,
+    "frac_at_ceiling": 0.7114,
+    "saturated": false
+   },
+   {
+    "bank": "bank20260819",
+    "arm": "generic_composed",
+    "grader": "gemma4-31B-mtp",
+    "sd": 0.0,
+    "frac_at_ceiling": 1.0,
+    "saturated": true
+   },
+   {
+    "bank": "bank20260819",
+    "arm": "gold_loop_llm",
+    "grader": "qwen38-27B-v2 (EXP-2026-08-021)",
+    "sd": 0.0759,
+    "frac_at_ceiling": 0.9,
+    "saturated": false
+   },
+   {
+    "bank": "bank20260819",
+    "arm": "gold_loop_llm",
+    "grader": "gemma4-31B-mtp",
+    "sd": 0.0,
+    "frac_at_ceiling": 1.0,
+    "saturated": true
+   },
+   {
+    "bank": "bank20260819",
+    "arm": "llm_query",
+    "grader": "qwen38-27B-v2 (EXP-2026-08-021)",
+    "sd": 0.316,
+    "frac_at_ceiling": 0.14,
+    "saturated": false
+   },
+   {
+    "bank": "bank20260819",
+    "arm": "llm_query",
+    "grader": "gemma4-31B-mtp",
+    "sd": 0.4813,
+    "frac_at_ceiling": 0.5833,
+    "saturated": false
+   },
+   {
+    "bank": "bank20260819",
+    "arm": "merged",
+    "grader": "qwen38-27B-v2 (EXP-2026-08-021)",
+    "sd": 0.1744,
+    "frac_at_ceiling": 0.4564,
+    "saturated": false
+   },
+   {
+    "bank": "bank20260819",
+    "arm": "merged",
+    "grader": "gemma4-31B-mtp",
+    "sd": 0.1979,
+    "frac_at_ceiling": 0.9333,
+    "saturated": false
+   },
+   {
+    "bank": "bank20260820",
+    "arm": "deterministic",
+    "grader": "qwen38-27B-v2 (EXP-2026-08-021)",
+    "sd": 0.0582,
+    "frac_at_ceiling": 0.8322,
+    "saturated": false
+   },
+   {
+    "bank": "bank20260820",
+    "arm": "deterministic",
+    "grader": "gemma4-31B-mtp",
+    "sd": 0.0,
+    "frac_at_ceiling": 1.0,
+    "saturated": true
+   },
+   {
+    "bank": "bank20260820",
+    "arm": "generic",
+    "grader": "qwen38-27B-v2 (EXP-2026-08-021)",
+    "sd": 0.0395,
+    "frac_at_ceiling": 0.7933,
+    "saturated": false
+   },
+   {
+    "bank": "bank20260820",
+    "arm": "generic",
+    "grader": "gemma4-31B-mtp",
+    "sd": 0.0,
+    "frac_at_ceiling": 1.0,
+    "saturated": true
+   },
+   {
+    "bank": "bank20260820",
+    "arm": "generic_composed",
+    "grader": "qwen38-27B-v2 (EXP-2026-08-021)",
+    "sd": 0.0992,
+    "frac_at_ceiling": 0.6554,
+    "saturated": false
+   },
+   {
+    "bank": "bank20260820",
+    "arm": "generic_composed",
+    "grader": "gemma4-31B-mtp",
+    "sd": 0.0128,
+    "frac_at_ceiling": 0.9833,
+    "saturated": false
+   },
+   {
+    "bank": "bank20260820",
+    "arm": "gold_loop_llm",
+    "grader": "qwen38-27B-v2 (EXP-2026-08-021)",
+    "sd": 0.0739,
+    "frac_at_ceiling": 0.7785,
+    "saturated": false
+   },
+   {
+    "bank": "bank20260820",
+    "arm": "gold_loop_llm",
+    "grader": "gemma4-31B-mtp",
+    "sd": 0.0384,
+    "frac_at_ceiling": 0.9833,
+    "saturated": false
+   },
+   {
+    "bank": "bank20260820",
+    "arm": "llm_query",
+    "grader": "qwen38-27B-v2 (EXP-2026-08-021)",
+    "sd": 0.3465,
+    "frac_at_ceiling": 0.14,
+    "saturated": false
+   },
+   {
+    "bank": "bank20260820",
+    "arm": "llm_query",
+    "grader": "gemma4-31B-mtp",
+    "sd": 0.4717,
+    "frac_at_ceiling": 0.4,
+    "saturated": false
+   },
+   {
+    "bank": "bank20260820",
+    "arm": "merged",
+    "grader": "qwen38-27B-v2 (EXP-2026-08-021)",
+    "sd": 0.1712,
+    "frac_at_ceiling": 0.44,
+    "saturated": false
+   },
+   {
+    "bank": "bank20260820",
+    "arm": "merged",
+    "grader": "gemma4-31B-mtp",
+    "sd": 0.1891,
+    "frac_at_ceiling": 0.95,
+    "saturated": false
+   }
+  ],
+  "H5_saturated_cells": 6
+ },
+ "uncounterbalanced": [
+  {
+   "grader": "qwen38-27B-v2 (EXP-2026-08-021)",
+   "root": "bank20260819",
+   "arm": "generic_composed",
+   "cases": [
+    "H-CHN-03"
+   ]
+  },
+  {
+   "grader": "qwen38-27B-v2 (EXP-2026-08-021)",
+   "root": "bank20260819",
+   "arm": "merged",
+   "cases": [
+    "H-CHN-03"
+   ]
+  },
+  {
+   "grader": "qwen38-27B-v2 (EXP-2026-08-021)",
+   "root": "bank20260820",
+   "arm": "deterministic",
+   "cases": [
+    "H-CHN-01"
+   ]
+  },
+  {
+   "grader": "qwen38-27B-v2 (EXP-2026-08-021)",
+   "root": "bank20260820",
+   "arm": "generic_composed",
+   "cases": [
+    "H-CHN-01"
+   ]
+  },
+  {
+   "grader": "qwen38-27B-v2 (EXP-2026-08-021)",
+   "root": "bank20260820",
+   "arm": "gold_loop_llm",
+   "cases": [
+    "H-CHN-01"
+   ]
+  },
+  {
+   "grader": "gemma4-31B-mtp",
+   "root": "composerfix-dev",
+   "arm": "deterministic",
+   "cases": [
+    "F-FAN-02"
+   ]
+  }
+ ]
+}

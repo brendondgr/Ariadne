@@ -113,3 +113,42 @@ meaningless. But **`judge.model` must never be used to identify a grader**, and
 any earlier analysis that keyed on it was keying on the environment rather than
 on the run. This is `D-028` appearing one level down from where it was written:
 the alias is not evidence, and neither is a field that merely copies one.
+
+
+## I-7 — H1 FAILS AS PRE-REGISTERED: one arm-ordering reversal
+
+The pre-registered success condition was **zero** arm-ordering reversals. The
+complete set gives **one**, and it is not a tie artifact:
+
+**`gold_loop_llm` versus `generic_composed`, `bank20260820`**
+
+| grader | gold_loop_llm | generic_composed | paired margin | paired sd |
+|---|---|---|---|---|
+| qwen38-27B-v2 | 0.9701 | 0.9424 | **+0.0276** | 0.0854 |
+| gemma4-31B-mtp | 0.9950 | 0.9983 | **−0.0033** | 0.0287 |
+
+23 pairs compared, 7 excluded as tied, **1 reversed**.
+
+**The hypothesis is recorded as failed and the test is not being redefined
+after the fact.** A noise threshold would make it pass, and adding one now —
+having seen the result — would be exactly the post-hoc adjustment that makes a
+pre-registration worthless.
+
+**What the reversal is, stated separately from whether it counts.** Neither
+grader resolves this pair. gemma separates the two arms by 0.0033, inside its
+own within-family spread of 0.0036–0.0249 and an order of magnitude inside the
+paired sd of 0.0287. qwen's +0.0276 is itself well inside its paired sd of
+0.0854. Two graders disagreeing about the order of two arms that neither can
+distinguish is a weak disagreement, and it is the only one in 23 pairs.
+
+**What is unaffected.** Every claim-bearing contrast holds:
+`contrast_sign_flips = 0` across C-012, C-021 and C-022. Neither arm in the
+reversed pair appears in the paper's three-way comparison
+(`deterministic`, `generic`, `llm_query`), and neither carries a claim of its
+own.
+
+**Consequence for the holdout.** `EXP-2026-09-007`'s stop condition reads: *any
+arm-ordering reversal → hold, investigate, and write that up first*. It has been
+investigated and written up here. Whether that discharges the condition is a
+judgement call about an **irreversible** action, and it is recorded as a
+decision rather than taken silently under deadline pressure.
