@@ -1,0 +1,32 @@
+{
+ "note": "Model-free retrieval recall only. No grader is in this metric, so the holdout is NOT spent by it -- the property being kept is a JUDGED holdout. All four cells are scored by the SAME current scorer, including --rescore-property-gold, so the pre/post comparison isolates the six system repairs from the scorer repair.",
+ "arm": "deterministic",
+ "scorer": "scripts/score_bank.py --rescore-property-gold @ 96a72d4",
+ "pre_repair_root": "docs/evaluation/experiments/expansion-2026-09-01",
+ "post_repair_roots": {
+  "dev": "docs/evaluation/experiments/post-repair-2026-09-03",
+  "holdout": "docs/evaluation/experiments/holdout-spend-2026-09-05"
+ },
+ "pooled": {
+  "dev_pre": 0.4492,
+  "dev_post": 0.5176,
+  "dev_delta": 0.0684,
+  "holdout_pre": 0.4911,
+  "holdout_post": 0.5414,
+  "holdout_delta": 0.0503
+ },
+ "reweighted": {
+  "dev_pre": 0.517,
+  "dev_post": 0.5199,
+  "dev_delta": 0.0029,
+  "holdout_pre": 0.4848,
+  "holdout_post": 0.4865,
+  "holdout_delta": 0.0017
+ },
+ "published_prerepair_holdout_old_scorer": 0.4683,
+ "readings": [
+  "The repairs carry to unseen questions. The pooled gain on the holdout is +0.0503 against +0.0684 on dev -- about three quarters of it, on 288 questions no repair was allowed to see. H2's premise that the fixes were schema-level rather than question-level survives its first test.",
+  "But the reweighted gain is near zero on BOTH halves: +0.0029 dev, +0.0017 holdout. The pooled improvement lands on shapes the bank deliberately over-samples. Weighted by how many instances the census says each shape actually has, six system repairs moved retrieval by three thousandths. That is the honest figure for what the repairs buy on a natural distribution, and it must be reported beside the pooled one.",
+  "The published 0.4683 used the pre-fix property scorer. Re-scored with the current one the same answers read 0.4911, so +0.0228 of any pre/post comparison against the published number is the scorer, not the system."
+ ]
+}
