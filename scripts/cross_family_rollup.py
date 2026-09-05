@@ -117,13 +117,31 @@ def cell(root: str, arm: str, suffixes: tuple[str, ...]) -> dict:
 
 
 def paired_delta(a: dict, b: dict) -> dict | None:
+    """Paired difference a - b, with the contrast's sensitivity stated.
+
+    Saturation is not all-or-nothing for a *contrast*. If one side sits at the
+    ceiling and the other does not, the grader can still detect the unsaturated
+    side falling below -- but cannot detect it rising above, because there is no
+    headroom on the saturated side. That is **one-sided sensitivity**, and a
+    margin measured through it is a lower bound in one direction only. Reporting
+    it as a symmetric estimate would overstate what the instrument can see.
+    """
     common = sorted(set(a["per_case"]) & set(b["per_case"]))
     if not common:
         return None
     d = [a["per_case"][c] - b["per_case"][c] for c in common]
+    if a["saturated"] and b["saturated"]:
+        sensitivity = "none — both sides at ceiling"
+    elif a["saturated"]:
+        sensitivity = "one-sided — can only detect b below a"
+    elif b["saturated"]:
+        sensitivity = "one-sided — can only detect a below b"
+    else:
+        sensitivity = "two-sided"
     return {"n": len(common), "mean": round(fmean(d), 4),
             "sd": round(pstdev(d), 4) if len(d) > 1 else None,
-            "dropped": len(set(a["per_case"]) ^ set(b["per_case"]))}
+            "dropped": len(set(a["per_case"]) ^ set(b["per_case"])),
+            "sensitivity": sensitivity}
 
 
 def ordering(cells: dict[str, dict]) -> tuple[list[str], list[tuple[str, str]]]:
@@ -213,7 +231,8 @@ def main() -> int:
         for key in ("c012_deterministic_minus_llm_query",
                     "c022_federated_minus_merged"):
             a, b = by_grader.get(ref, {}).get(key), by_grader.get(new, {}).get(key)
-            if a and b and (a["mean"] > 0) != (b["mean"] > 0):
+            if (a and b and b.get("sensitivity") == "two-sided"
+                    and (a["mean"] > 0) != (b["mean"] > 0)):
                 flips.append({"bank": bank, "contrast": key,
                               "reference": a["mean"], "candidate": b["mean"]})
     c021_ref = report["c021"].get("qwen38-27B-v2 (new, composerfix)", {}).get("gap")
