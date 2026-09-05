@@ -92,6 +92,13 @@ def cell(root: str, arm: str, suffixes: tuple[str, ...]) -> dict:
     have = answers(root, arm)
     means = {c: fmean(v) for c, v in per_case.items()}
     missing = sorted(have - set(means))
+    # A grader with no spread cannot measure a contrast: it returns 0 by
+    # construction, whatever is true. gemma4-31B-mtp scores 119/119 of the
+    # catalogue answers at exactly 1.0, so its C-021 gap of 0.0000 is a
+    # statement about the grader's resolution near the ceiling, not about
+    # co-authorship bias. This is computed rather than spotted by eye.
+    flat = [v for vs in per_case.values() for v in vs]
+    at_ceiling = sum(1 for v in flat if v >= 1.0)
     return {
         "n_answers": len(have),
         "n_cases": len(means),
@@ -100,6 +107,12 @@ def cell(root: str, arm: str, suffixes: tuple[str, ...]) -> dict:
         "mean": round(fmean(means.values()), 4) if means else None,
         "per_case": means,
         "passes": len(suffixes),
+        "sd": round(pstdev(flat), 4) if len(flat) > 1 else None,
+        "at_ceiling": at_ceiling,
+        "n_judgments": len(flat),
+        "frac_at_ceiling": round(at_ceiling / len(flat), 4) if flat else None,
+        # No resolution left to detect a difference with.
+        "saturated": bool(flat) and at_ceiling == len(flat),
     }
 
 
@@ -163,6 +176,13 @@ def main() -> int:
         report["c021"][gname] = {
             "catalogue_mean": cat["mean"], "catalogue_n": cat["n_cases"],
             "blind_mean": blind["mean"], "blind_n": blind["n_cases"],
+            "catalogue_sd": cat["sd"], "blind_sd": blind["sd"],
+            "catalogue_frac_at_ceiling": cat["frac_at_ceiling"],
+            "blind_frac_at_ceiling": blind["frac_at_ceiling"],
+            # A saturated grader reports gap 0.0000 whatever is true. Reporting
+            # that as evidence the gap is zero would be the single most
+            # misleading sentence available from this experiment.
+            "can_measure_the_gap": not (cat["saturated"] and blind["saturated"]),
             # Unpaired by construction: different questions. That IS the claim.
             "gap": (round(cat["mean"] - blind["mean"], 4)
                     if cat["mean"] is not None and blind["mean"] is not None else None),
@@ -193,9 +213,15 @@ def main() -> int:
                               "reference": a["mean"], "candidate": b["mean"]})
     c021_ref = report["c021"].get("qwen38-27B-v2 (new, composerfix)", {}).get("gap")
     c021_new = report["c021"].get(new, {}).get("gap")
-    if c021_ref is not None and c021_new is not None and (c021_ref > 0) != (c021_new > 0):
+    # A saturated grader cannot flip a sign, because it never had one. Counting
+    # its 0.0000 as a sign flip would manufacture the experiment's headline out
+    # of an instrument with no resolution left.
+    gemma_can_measure = report["c021"].get(new, {}).get("can_measure_the_gap", True)
+    if (c021_ref is not None and c021_new is not None and gemma_can_measure
+            and (c021_ref > 0) != (c021_new > 0)):
         flips.append({"contrast": "c021_catalogue_minus_blind",
                       "reference": c021_ref, "candidate": c021_new})
+    report["verdicts"]["H2_gemma_can_measure_c021"] = gemma_can_measure
     report["verdicts"]["H2_c021_gap_qwen"] = c021_ref
     report["verdicts"]["H2_c021_gap_gemma"] = c021_new
     report["verdicts"]["contrast_sign_flips"] = len(flips)
@@ -212,6 +238,20 @@ def main() -> int:
     report["verdicts"]["H4_between_family_mean_abs_offset"] = (
         round(fmean(offs), 4) if offs else None)
     report["verdicts"]["H4_within_family_sd_reference"] = "0.0036-0.0249 (EXP-2026-08-021)"
+
+    # H5 was predicted as "disagreement concentrates on the weak arm". Report the
+    # per-cell spread that claim rests on, so it is adjudicated on numbers.
+    sat = []
+    for bank in BANKS:
+        for arm in BANK_ARMS:
+            for gname in (ref, new):
+                c = cell(bank, arm, GRADERS[gname])
+                if c["n_judgments"]:
+                    sat.append({"bank": bank, "arm": arm, "grader": gname,
+                                "sd": c["sd"], "frac_at_ceiling": c["frac_at_ceiling"],
+                                "saturated": c["saturated"]})
+    report["verdicts"]["H5_saturation_by_cell"] = sat
+    report["verdicts"]["H5_saturated_cells"] = sum(1 for x in sat if x["saturated"])
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     slim = json.loads(json.dumps(report))
@@ -246,11 +286,13 @@ def main() -> int:
               f"  blind {bl} (n={v['blind_n']})  gap {gap}   [incomplete]"
               if v["gap"] is None else
               f"  {gname:34} catalogue {cat} (n={v['catalogue_n']})"
-              f"  blind {bl} (n={v['blind_n']})  gap {gap}")
+              f"  blind {bl} (n={v['blind_n']})  gap {gap}"
+              + ("" if v.get("can_measure_the_gap", True)
+                 else "   *** SATURATED — cannot measure this gap ***"))
 
     print("\n=== verdicts ===")
     for k, v in report["verdicts"].items():
-        if k.endswith("_detail"):
+        if k.endswith("_detail") or k.endswith("_by_cell"):
             continue
         print(f"  {k:42} {v}")
     if report["dropout"]:
