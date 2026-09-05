@@ -43,9 +43,19 @@ GRADERS: dict[str, dict[str, Any]] = {
     "gemma": {"url": "http://localhost:9090/v1", "model": "default-model-2",
               # Operator: the restarted gemma4-31B-mtp serves 16 concurrency,
               # not the 24 the earlier instance did.
-              "workers": 16, "passes": ((".gem", 1), (".gemp2", 2))},
+              "workers": 16, "passes": ((".gem", 1), (".gemp2", 2)),
+              "expect": "gemma"},
     "qwen": {"url": "http://localhost:9090/v1", "model": "default-model",
-             "workers": 16, "passes": ((".qw", 1), (".qwp2", 2))},
+             "workers": 16, "passes": ((".qw", 1), (".qwp2", 2)),
+             "expect": "qwen"},
+    # A SECOND instance of the same weights on its own GPU, verified by probe:
+    # :9090/default-model-2 -> qwen38-27B-v2, identical to `qwen` above. Because
+    # the served model is the same, its judgments are interchangeable and it
+    # shares the same suffixes -- this is extra concurrency, not a third grader,
+    # and it must never be reported as one.
+    "qwen2": {"url": "http://localhost:9090/v1", "model": "default-model-2",
+              "workers": 16, "passes": ((".qw", 1), (".qwp2", 2)),
+              "expect": "qwen"},
 }
 
 
@@ -69,6 +79,12 @@ def main() -> int:
     ap.add_argument("--arm", nargs="+",
                     default=["deterministic", "generic", "llm_query"])
     ap.add_argument("--deadline", default=None, help="HH:MM; no cell starts after")
+    # Two processes must never write the same cell: interleaved writes to one
+    # judgment file can leave truncated JSON. Restricting each process to a
+    # disjoint (arm, position) set is the whole safety argument for running a
+    # second endpoint alongside the first.
+    ap.add_argument("--positions", nargs="*", type=int, default=None,
+                    help="restrict to these grading positions, e.g. 2")
     args = ap.parse_args()
 
     deadline = None
@@ -91,6 +107,24 @@ def main() -> int:
 
     for grader in args.grader:
         spec = GRADERS[grader]
+        # `default-model-2` served gemma4-31B-mtp this afternoon and serves
+        # qwen38-27B-v2 this evening. Grading through it under the `gemma` name
+        # would write .gem-suffixed judgments produced by qwen -- an alias
+        # mislabelling weights, which is D-028 exactly. Probe the envelope and
+        # refuse rather than trust the name.
+        import urllib.request
+        req = urllib.request.Request(
+            f"{spec['url'].rstrip('/')}/chat/completions",
+            data=json.dumps({"model": spec["model"], "max_tokens": 64,
+                             "temperature": 0.0,
+                             "messages": [{"role": "user", "content": "ready"}]}).encode(),
+            headers={"Content-Type": "application/json"})
+        served = json.loads(urllib.request.urlopen(req, timeout=180).read())["model"]
+        if spec["expect"] not in str(served).lower():
+            raise SystemExit(f"grader '{grader}' expects {spec['expect']} but "
+                             f"{spec['model']} serves {served} — refusing to write "
+                             f"{spec['passes'][0][0]}-suffixed judgments")
+        print(f"[{grader}] {spec['model']} serves {served} — ok", flush=True)
         # POSITION-MAJOR, deliberately. Arm-major would spend the whole budget
         # giving one arm both grading positions before the second arm has any,
         # so a deadline hit would leave one arm graded and one arm absent --
@@ -98,6 +132,8 @@ def main() -> int:
         # with position 1 and the ~0.01 order effect uncorrected, which is a
         # usable result with a stated limitation.
         for suffix, position in spec["passes"]:
+            if args.positions and position not in args.positions:
+                continue
             # A position is all-or-nothing across arms. Grading position 2 for
             # one arm and not the other leaves exactly the two arms being
             # compared on different instruments, with one carrying the ~0.01
