@@ -34,13 +34,34 @@ usable second family exactly where H1 is decided. Checked separately: it is
 partial credit. That one fact explains gemma's higher spread on mixed banks,
 its all-1.0 on a near-ceiling bank, and its wider arm gap on identical answers.
 
-## I-2 — One transient grading failure, since resolved
+## I-2 — Two transient grading failures, one on each endpoint
 
-`F-FAN-02` (`composerfix-dev`) returned HTTP 400 after three attempts in gemma's
-first pass. qwen graded the same answer without incident, and gemma graded it
-successfully in its own second pass, so it was **endpoint load, not a rejection
-of the content**. It is not the largest answer in the set; five larger ones
-passed. Recorded because a dropped case must never be silently absorbed — an
+Both returned `HTTP Error 400: Bad Request` after three attempts:
+
+| case | pass | prompt | outcome |
+|---|---|---|---|
+| `F-FAN-02` (`composerfix-dev`) | gemma `.g31` | 26,248 chars (~6.6k tok) | **cleared** on gemma's own `.g31p2` |
+| `H-SUB-01` (`composerfix-holdout`) | qwen `.q38b` | 7,600 chars (~1.9k tok) | outstanding; retry queued |
+
+**It is not the content.** Both prompts are clean — zero control characters,
+zero surrogates, zero non-ASCII — and both are small; `H-SUB-01` is among the
+smallest in its set at ~1.9k tokens, while five answers several times larger
+graded without incident. `F-FAN-02` failed on gemma and graded fine on qwen,
+then graded fine on gemma's second pass.
+
+**Most likely cause, stated as a hypothesis rather than a finding:** admission
+failure under concurrency. Both endpoints were running 16 and 24 workers with
+`max_tokens=32768` at the time, and the operator's own warning about this host
+is that the KV cache holds 310,144 tokens total, so a long context and high
+concurrency cannot both be maxed at once. A request the scheduler cannot admit
+surfaces as a 400, which is indistinguishable downstream from a rejected prompt.
+Consistent with every observation: load-dependent, content-independent, and it
+cleared on a retry at lower load. **Not established** — the response body was
+not captured, and reproducing it required an idle endpoint we did not have.
+
+**Handling.** Both cells are re-run at the end of the window, when the endpoints
+are quiet; re-running a cell grades only what is missing. Anything still absent
+is reported as dropout and excluded from paired statistics, never absorbed — an
 earlier `.cross` pass dropped exactly the three lowest-scoring `llm_query`
 answers and read 0.24 high as a result.
 
