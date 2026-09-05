@@ -72,6 +72,14 @@ def scan(splits: dict[str, str]) -> dict:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--write-bank", action="store_true")
+    # Step 7 SPENDS the holdout, so "only deterministic has answered" stops being
+    # true the moment the sanctioned run starts. That is not a breach and the
+    # guard must not block the very run it was written for. What stays absolute
+    # is the property the holdout is actually kept for: ZERO judgments.
+    ap.add_argument("--sanctioned-arms", nargs="*", default=["deterministic"],
+                    help="arms EXP-2026-09-007 permits to have answered the holdout")
+    ap.add_argument("--allow-judged", action="store_true",
+                    help="only after judging has deliberately begun; never by default")
     args = ap.parse_args()
 
     digest = hashlib.sha256(BANK.read_bytes()).hexdigest()
@@ -93,9 +101,17 @@ def main() -> int:
         "holdout_questions_sha256": holdout_digest,
         **scan(splits),
     }
+    sanctioned = set(args.sanctioned_arms)
+    report["sanctioned_arms"] = sorted(sanctioned)
+    report["unsanctioned_answers"] = sorted(set(report["answered_by_arm"]) - sanctioned)
+    # Two separate properties, deliberately not conflated:
+    #   unjudged  -- the one the holdout exists to protect
+    #   pristine  -- nothing but `deterministic` has ever answered it
+    report["unjudged"] = not report["judged_by_run"]
+    report["pristine"] = not (set(report["answered_by_arm"]) - {"deterministic"})
     report["sealed"] = (
-        not report["judged_by_run"]
-        and not (set(report["answered_by_arm"]) - {"deterministic"})
+        report["unjudged"]
+        and not report["unsanctioned_answers"]
         and report["bank_is_the_split_set"]
     )
     print(json.dumps(report, indent=1))
@@ -108,11 +124,12 @@ def main() -> int:
     if report["dev_judgments_seen"] == 0:
         raise SystemExit("scan found zero dev judgments — the scan is broken, "
                          "not the holdout clean")
-    if report["judged_by_run"]:
+    if report["judged_by_run"] and not args.allow_judged:
         raise SystemExit(f"HOLDOUT ALREADY JUDGED: {report['judged_by_run']}")
-    leaked = set(report["answered_by_arm"]) - {"deterministic"}
-    if leaked:
-        raise SystemExit(f"arms {sorted(leaked)} have answered holdout questions")
+    if report["unsanctioned_answers"]:
+        raise SystemExit(f"arms {report['unsanctioned_answers']} have answered "
+                         "holdout questions and are not sanctioned by "
+                         "EXP-2026-09-007")
 
     if args.write_bank:
         out = {"meta": {**bank["meta"],

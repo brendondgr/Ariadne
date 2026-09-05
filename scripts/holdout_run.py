@@ -82,8 +82,14 @@ def assert_stores() -> dict:
     return out
 
 
+#: The arms EXP-2026-09-007 sanctions to answer the holdout. Anything outside
+#: this list answering it is a leak; these three answering it is the experiment.
+SANCTIONED_ARMS = ("deterministic", "generic", "llm_query")
+
+
 def assert_sealed() -> None:
-    r = subprocess.run([sys.executable, str(REPO / "scripts/holdout_seal.py")],
+    r = subprocess.run([sys.executable, str(REPO / "scripts/holdout_seal.py"),
+                        "--sanctioned-arms", *SANCTIONED_ARMS],
                        cwd=REPO, capture_output=True, text=True)
     if r.returncode != 0 or "SEALED" not in r.stdout:
         raise SystemExit(f"seal check failed:\n{r.stdout[-800:]}\n{r.stderr[-400:]}")
