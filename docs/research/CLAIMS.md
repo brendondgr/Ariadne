@@ -72,6 +72,19 @@ that sentence rested on an exact zero which was an artifact. A separate,
 smaller defect is also closed — `merged` was graded before federation in every
 pass, worth ≈0.005 against federation; the sweep now counterbalances.
 
+**AND THE NULL SURVIVES A CHANGE OF GRADER FAMILY (2026-09-05,
+[`EXP-2026-09-006`](experiments/EXP-2026-09-006-cross-family-august-regrade/)).**
+Six readings now exist across two banks and three graders — qwen
+**+0.0608 / +0.0581**, gemma **+0.0500 / +0.0400**, the historical `.c015` pass
+**+0.0333 / +0.0000** — **all at or above zero, none exceeding the ±0.06
+question-sampling floor at n=30, and no sign flip.** Federation is nominally
+ahead everywhere and demonstrably ahead nowhere, which is exactly what this
+claim says. The **exact +0.0000** on `bank20260820` that the note above calls an
+artifact is confirmed as one: both named graders read +0.0400 and +0.0581 on
+those same answers. One caution on the gemma column — on `bank20260819` its
+federated side is saturated, so that **+0.0500 is an upper bound**, not an
+estimate.
+
 **CLOSED FOR THE EXPOSED SET, 2026-09-05 — [`EXP-2026-09-006`](experiments/EXP-2026-09-006-cross-family-august-regrade/).**
 The exposure above is discharged. 510 frozen answers were re-graded under a
 **second model family** (`gemma4-31B-mtp`, probed from the response envelope)
