@@ -931,6 +931,15 @@ figures were self-consistent within their own runs — but it does mean the stud
 "one model, one day" limitation is **stronger than recorded**: it is now *two*
 models, and the record dated 2026-08-24 is the first place that is written down.
 
+**ITS CONSEQUENCE IS NOW DISCHARGED (2026-09-05, `EXP-2026-09-006`).** The
+damage this question did was not the quantisation itself — it was that
+C-012, C-021 and C-022 rested on judgments from a model nobody could name.
+Those 510 answers have now been re-graded under **two named families**,
+`qwen38-27B-v2` and `gemma4-31B-mtp`, both identified by probe: zero contrast
+sign flips, one arm-ordering reversal in 23 pairs on a pair neither grader
+resolves. The rule below is unchanged and still binding; what changes is that
+no current claim depends on breaking it.
+
 **What to do with it:** state model, quantisation and date together, always.
 Never write `skynet`. And the generalisation warning tightens rather than
 loosens — a 4-bit weight quantisation is a long way from full precision, so a
