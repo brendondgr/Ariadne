@@ -40,6 +40,46 @@ no bank regeneration** — except Phase D, which is explicitly flagged.
 - **How much grader variance does the holdout carry?** One session per position.
   *Assumption*: repeat sessions bound it; low value unless a margin is close.
 
+## 2b. What each phase actually requires
+
+**Only Phase B needs `gemma4-31B-mtp`.** Everything else runs on what is already
+up. Probed 2026-09-05 evening:
+
+| endpoint | alias | served | note |
+|---|---|---|---|
+| `:9090` | `default-model` | `qwen38-27B-v2` | healthy |
+| `:9090` | `default-model-2` / `-3` | `qwen38-27B-v2` | **failed**; `-2` served `gemma4-31B-mtp` this afternoon |
+| `:4000` | `skynet` | `qwen38-27B-v2` | healthy |
+| `:4000` | `local` | **`gemma-4-26B-it`** | healthy — a *different* Gemma 4 from the 31B |
+| `:4000` | `opencode/*` (×6) | remote hosted | **not local; see below** |
+
+| phase | requires | runnable tonight? |
+|---|---|---|
+| A — calibration | any set of aliases | **yes** |
+| B — gemma on `llm_query` holdout | **`gemma4-31B-mtp` specifically** | **no — needs the 31B back** |
+| C — C-021 third opinion | *any* model unsaturated near 1.0 | **yes**, if A clears `gemma-4-26B-it` |
+| D — thinking-cap probe | qwen (the builder model) | **yes** |
+| E — grader variance | qwen | **yes** |
+
+**Why B is pinned to the 31B.** The holdout's other two arms were graded by
+`gemma4-31B-mtp` under suffix `.gem`. Grading `llm_query` with a different model
+would not *complete* that picture — it would introduce a third family and leave
+the three arms no longer sharing an instrument. There is no substitute.
+
+**Why C is not pinned to anything.** C-021 needs a grader with resolution near
+1.0, which is precisely what `gemma4-31B-mtp` lacks. `gemma-4-26B-it` on
+`:4000/local` is a distinct model from both qwen38-27B-v2 and the 31B, and it is
+up now. If Phase A finds it unsaturated, C-021 gets its first genuine second
+opinion without any server restart.
+
+⚠️ **The `opencode/*` aliases are remote hosted models, not local.** Grading with
+them sends answer text to an external service. The content is public MITRE
+ATT&CK and CAPEC data so the exposure is low, but it is an operator decision and
+not a default. **Phases A and C use local models only unless explicitly
+authorised**, and any figure produced through a remote model must record that
+fact beside it — a hosted model is also a *third* provenance class alongside the
+two local families (`D-028`).
+
 ## 3. Phases, in priority order
 
 Each phase is independently useful and independently skippable. A phase that
