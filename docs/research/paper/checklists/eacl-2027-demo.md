@@ -1,10 +1,22 @@
 # Checklist — EACL 2027 System Demonstrations
 
-**Deadline:** 22 September 2026 (opens 18 Aug; notification 18 Dec)
-**Conference:** 9–14 March 2027, Athens
-⚠️ Read 2026-08-03. **Re-verify against the official CFP before submitting.**
+# 🛑 DROPPED — 2026-09-05, operator decision
 
-Treat this as a live to-do, not a document.
+**The demo track is not being pursued.** The target is a **full conference paper
+or JMLR**. Kept for the record, not as a live to-do; nothing in it should be
+worked on.
+
+Why it was dropped: a demo track accepts a co-authored benchmark with no holdout
+and rewards the artifact over the measurement. Since 2026-09-05 the project has
+a **judged 288-question holdout under two grader families**, a **cross-family
+re-grade of every judged claim**, and a **measured grader-calibration method** —
+which is a measurement contribution the demo format cannot carry.
+
+Live checklist: [`conference-full-paper.md`](conference-full-paper.md).
+
+---
+
+*Everything below is the original demo checklist, frozen.*
 
 ## Hard requirements — missing either is a desk reject
 

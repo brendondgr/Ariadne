@@ -37,16 +37,17 @@ languages — plus the question-set resource, conditional on `Q26`.
 | § | Section | Claims | Status |
 |---|---|---|---|
 | 1 | Introduction — cross-language federation as a measurement instrument, not as a system claim | C-024 | ✅ Framing decided (`D-027`). Prose unwritten |
-| 2 | Related work — federation, text-to-graph-query, template families, error attribution, benchmark authorship | C-024 | 🟡 [`../RELATED_WORK.md`](../RELATED_WORK.md) + [`../reports/2026-08-26-novelty-audit/`](../reports/2026-08-26-novelty-audit/) hold the material; **no prose exists** and `Q25` lists five coverage gaps |
+| 2 | Related work — federation, text-to-graph-query, template families, error attribution, benchmark authorship | C-024 | 🟢 **Unblocked 2026-09-06: `Q25` is closed.** CEUR-WS enumerated (12,764 rows), all four template systems opened in full, arXiv field sweep with a validated control, ten nearest neighbours in [`../RELATED_WORK.md`](../RELATED_WORK.md). **Still no prose — this is now the first thing to write.** Must cite Emonet et al. ourselves and carry a defensive sentence separating federated *learning* from federated query execution |
 | 3 | System — plan → route → retrieve → verify → compose, and where the LLM seams are | C-007 | ✅ Documented. Say plainly that the shipped system is deterministic |
 | 4 | Experimental design — the arm matrix, nine question populations, the grading protocol and its limits | C-009, C-021 | ✅ One `PROTOCOL.md` per experiment |
 | 5 | **Templates versus schema-derived construction, across schemas** — the primary result | **C-023**, C-010 | ✅ `EXP-2026-08-007`, `-008`, `-011`, `-015` |
-| 6 | **Templates versus an LLM writing the queries** — the one positive result | **C-012** | ✅ `EXP-2026-08-008`. ⚠️ Single run, single model; see §"What blocks each venue tier" |
-| 7 | **Federated versus merged** — the architectural null, and the structural cost that survives it | **C-022**, C-015 (refuted) | ✅ `EXP-2026-08-009`, `-017` |
+| 6 | **Templates versus an LLM writing the queries** | **C-012** | 🟡 **Evidence complete and the claim is now the weakest of the three.** Four measurements: dev/qwen **+0.1147** [+0.0653,+0.1645], dev/gemma **+0.0696** [−0.0024,+0.1450], holdout/qwen **+0.0822** [+0.0362,+0.1308], holdout/gemma **+0.0643** [−0.0080,+0.1333]. **Positive under both grader families on both halves; statistically solid under one of two.** Write it that way, and do **not** lead the paper with it |
+| 7 | **Federated versus merged** — the architectural null, and the structural cost that survives it | **C-022** (rewritten `D-030`), C-015 (refuted) | 🟡 **Claim rewritten 2026-09-06 — its null was false.** SPLIT-RAG and FedV-KGQA both build merged and split conditions and report accuracy, and disagree about the sign. The strict reading (heterogeneous live stores, separate engines) survives. **This section must answer why our result is neutral when SPLIT-RAG's is 17.6 Hit points** |
 | 8 | **Co-authored benchmarks overstate their systems** — priced, and localised | **C-021** | ✅ `EXP-2026-08-007`, `-008`, `-010`, `-020` |
 | 9 | Failure localisation | C-016 | 🟡 **Mechanism scooped; finding contradicts the only comparable distribution.** Blocked on `Q24`, which is one day of writing and has been open since 2026-08-26 |
 | 10 | The coverage cliff — what the design costs off its own vocabulary | C-014, C-001 | ✅ `EXP-2026-08-002`, `-020`. Record identity falls to **0.0000** on 104 paraphrased questions |
 | 11 | Limitations | — | ✅ [`../OPEN_QUESTIONS.md`](../OPEN_QUESTIONS.md) |
+| **12?** | **Grader calibration — measuring the instrument before trusting it** | new | 🆕 **Has no home yet, and needs one.** `EXP-2026-09-008`: two of three local models cannot express a 0.03 difference near the ceiling, and one *inverts* the mid/low ordering. Three claim-level near-misses trace to it, including a tie-break one commit from publication as four arm-order reversals. **Decide: own section, subsection of §4, or separate short paper** |
 
 ## The argument, in order
 
