@@ -611,6 +611,62 @@ Five gaps, in descending order of what they could cost:
 **What resolves it:** items 1 and 2 are manual reading and are the only ones
 that can change a claim. Items 3–5 are tooling notes; record them and move on.
 
+**Status: ANSWERED (2026-09-06, overnight positioning sweep).** All five gaps
+closed or declared. **Nothing killed a claim outright, and one claim had to be
+rewritten anyway.**
+
+1. **CEUR-WS enumerated directly** — the full master index loaded and scanned
+   client-side, **12,764 rows**. Highest published volume Vol-4255 (3 Sep 2026).
+   Only RAGE-KG volumes present are **Vol-3950** (2024) and **Vol-4079** (2025).
+   ESWC 2026's seven workshop volumes contain no security-KGQA venue; ISWC 2026
+   has **zero** volumes because the conference is still future.
+2. **All four systems opened in full.** The TeBaQA cross-KG table we feared
+   **does not exist** — one row and two sentences of prose. C-023 does not narrow.
+3. **arXiv field sweep completed**, with quoting validated against a control so
+   the zeros are real. `federation AND Cypher AND SPARQL` = **0**.
+4. **Both circulating statistics resolved** — see below and `RELATED_WORK.md`.
+5. Tooling notes recorded. The `arxiv.org/html/<id>v1` workaround held.
+
+**What changed as a result:** C-022's loose reading is **dead** (`D-030`), C-024
+narrows to foreground the two-query-language axis and must cite Emonet et al.
+itself, C-025 gains a named near-miss and a **dated re-check**, and two
+inherited citation errors are corrected.
+
+**Where the negative is still thin, declared:** ACM DL and ResearchGate served
+bot walls (WDAqua-core1 and TKDD 10.1145/3789506 unread); DBLP throttled after
+~6 calls; IEEE Xplore and ScienceDirect paywalls not opened; no non-English
+venues; industry systems (metaphactory, Stardog, Neptune tooling) could not be
+checked from primary sources and **no claim is made about them**. One CEUR
+series is flagged for a later pass: **Vol-4175, STIDS 2024** — the one venue
+where a security-KGQA benchmark would plausibly land.
+
+---
+
+### Q27 — Re-check RAGE-KG 2026 in November, before camera-ready
+
+**Why it matters:** this is the single dated, named, live risk to **C-025**, and
+the sweep found it rather than closed it.
+
+RAGE-KG 2026 runs **25-26 October 2026** at ISWC Bari. Notification was
+21 August 2026 and camera-ready 1 September 2026, so **the acceptance decisions
+already exist and the proceedings volume does not**. The accepted-paper list is
+not public. The Kurniawan/Kiesling/Ekelhart group has now written in **two
+consecutive papers** that comprehensive evaluation is future work — that is
+C-025's artifact, promised publicly, by an active group, with a plausible third
+instalment sitting in an invisible accepted set.
+
+⚠️ **A trap to avoid when re-checking.** The RAGE-KG 2026 site already shows a
+"Programme" for 25 Oct 2026 with 14 talks and `Paper` links — **every link points
+at `ceur-ws.org/Vol-4079/`, the 2025 proceedings**, and diffing against that ToC
+shows it is the 2025 paper set verbatim. **Stale carry-over. Do not read it as
+2026 content.**
+
+**What resolves it:** load the CEUR master index again once the volume appears
+(historical lag: 2024 workshop -> published Apr 2025; 2025 workshop -> published
+Oct 2025) and diff the ToC against Vol-4079.
+**Cost:** ten minutes. **Blocks:** whether C-025 can be claimed at all.
+**From:** 2026-09-06 positioning sweep, §2.
+
 **Cost:** a day for the CEUR sweep, half a day for the four papers.
 **Blocks:** the confidence level on C-022, C-024, C-025; possibly C-023's
 narrowness. **From:** 2026-08-26 novelty audit, Part 8.

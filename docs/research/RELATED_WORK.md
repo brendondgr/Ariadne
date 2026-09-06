@@ -309,13 +309,36 @@ and more checkable argument than one sentence in a survey.
 | `[F-WHICH]` | Zhang et al., *Which Agent Causes Task Failures and When?*, ICML 2025 Spotlight ⚠️ | Model-judge step attribution is unreliable (**14.2%** step-level accuracy) — an argument **for** mechanical localisation, not a scoop of it |
 | `[R-LOGR]` | *LogRouter*, arXiv:2605.18015, authors UNVERIFIED ✅ | **Contradicts** the routing sub-claim: "the relationship between routing accuracy and answer quality is direct." Soften that sentence and cite the Routing Plateau's oracle gap instead |
 
-> ⚠️ **Two statistics circulating in search results — "planning… 33% of total
-> errors" and "29% incorrect planning / 47% reasoning / 10% retrieval" — could
-> not be traced to any retrievable document** across five logged queries. The
-> second was attributed by a search engine to ACM TKDD DOI 10.1145/3789506,
-> whose page returns an empty body. **Treat both as probable search-engine
-> synthesis and never cite them.** Same failure class as the phantom GraphRAG
-> 13.4% number recorded below.
+> ⚠️ **BOTH CIRCULATING STATISTICS ARE NOW RESOLVED (2026-09-06 sweep). Neither
+> may be cited.**
+>
+> **"planning… 33% of total errors" — CONFIRMED PHANTOM.** No document reached
+> states it. The likeliest origin is *Beyond Browsing: API-Based Web Agents*
+> (arXiv:2410.16464), where **33%** is the share of tasks *solvable with API
+> calls only* — an entirely different denominator — or a rounding of
+> Robotouille's 32.1% transition-failure share, welded onto the word "planning"
+> from a third taxonomy. Real figures in the neighbourhood, read in full:
+> MAST (arXiv:2503.13657v2) FC1 41.77% / FC2 36.94% / FC3 21.30%, **none of
+> which is "planning"**; TRAIL (arXiv:2505.08638v3) formatting plus
+> instruction non-compliance = 353/841 (~42%), **no planning share anywhere**.
+>
+> 🚨 **"29% planning / 47% reasoning / 10% retrieval" — UNVERIFIABLE, AND THIS
+> ONE IS DANGEROUS.** Two independent searches returned, verbatim and
+> confidently, an attribution to a **real, verified paper**: Huang, Yang, Yang &
+> Xu, *Retrieval-Augmented Generation for Multi-Hop Question Answering Based on
+> Structured Planning*, **ACM TKDD 20(3), Art. 44, 6 Mar 2026, DOI
+> 10.1145/3789506**, DBLP `journals/tkdd/HuangYYX26`. **The bibliographic record
+> verifies** (Semantic Scholar corpus ID 285971817). **The statistic does not.**
+> The paper has no open-access PDF and both dl.acm.org and ResearchGate served
+> bot walls, so **the search layer could not have been quoting it** — identical
+> phrasing regenerated across calls is the signature of synthesis, not
+> retrieval. The verified abstract mentions no error analysis.
+>
+> **This is the worst failure mode available: the citation checks out and the
+> number does not.** Anyone re-verifying will confirm the paper exists, assume
+> the statistic is sound, and cite it. Same class as the phantom GraphRAG 13.4%
+> below, but far harder to catch. **Resolution path:** one look at DOI
+> 10.1145/3789506 through institutional ACM access settles it.
 
 ## Abstention and provenance — added 2026-08-26
 
@@ -459,3 +482,30 @@ CTIBench `cti-ate` is **four ATT&CK releases stale**. A direct read of ATT&CK
 benchmark lists 283. Any `cti-ate` precision figure reported against 1.0
 overstates its own headroom, ours included had we not measured the ceiling
 (D-018).
+
+---
+
+## Nearest neighbours — added 2026-09-06 (positioning sweep)
+
+The papers a reviewer will ask *"how is this different from X?"* about. Ordered
+by how hard the question is to answer.
+
+| Key | Work | The differentiator, in one sentence |
+|---|---|---|
+| `[N-AGCY]` | **AgCyRAG** — Kurniawan, Ardian, Kiesling, Ekelhart, RAGE-KG 2025, CEUR Vol-4079 pp. 132–144 ✅ | Same domain, **both query languages named**, agentic — but retrieval is hand-written *predefined* SPARQL/Cypher functions over sources treated as one logical store, evaluated by three qualitative use cases with no metrics |
+| `[N-TITAN]` | **TITAN** — Simoni, Fontana, Saracino, Mori, arXiv:2510.14670 ✅ | The only large ATT&CK NL→executable dataset (**88,209** pairs), but a bespoke relation-chain DSL scored by **exact string match on the path**, not a standard graph query language scored by execution |
+| `[N-EMONET]` | **Emonet, Bolleman, Duvaud, Mendes de Farias, Sima** — arXiv:2410.06062v4 ✅ | NL → **federated** SPARQL over live, independently-governed endpoints **with accuracy reported** — everything C-024 claims **except the second query language**. Cite this ourselves |
+| `[N-SPLIT]` | **SPLIT-RAG** — Yang, Xue, Razzak, Hacid, Salim, arXiv:2505.13994v1 ✅ | The split-against-merged accuracy comparison C-022 said was missing — over **one partitioned KG**, and its ablation confounds merging with removing multi-agent retrieval. **17.6 Hit points** |
+| `[N-FEDV]` | **FedV-KGQA** — Bappy & Seneviratne, arXiv:2608.24846v1, ISWC 2026 Research Track ✅ | Federated against a merged-KG upper bound with MRR reported — but the "federation" is **training-time embedding fusion** with no runtime inter-silo communication |
+| `[N-SGKBQA]` | **SG-KBQA** — Gao, Lau & Qi, EMNLP 2025 pp. 8753–8772, DOI 10.18653/v1/2025.emnlp-main.442 ✅ | Closest same-graph ablation to C-023 (`w/o SC`: −7.2 F1 compositional, −14.0 zero-shot) — but schema-guided against schema-**blind**, with no template arm, no coverage axis and no abstention |
+| `[N-QANS]` | **QAnswer / WDAqua** — Diefenbach, Both, Singh & Maret, *Semantic Web* 11(3):421–439, DOI 10.3233/SW-190343 ✅ | Superficially the strongest multi-KG counterexample; **actually a single merged HDT index**, one language, and **one KB chosen per question** (53 DBpedia / 39 Wikidata / 8 other). It never joins across KBs |
+| `[N-SM3]` | **SM3-Text-to-Query** — Sivasubramaniam et al., arXiv:2411.05521v2, NeurIPS 2024 D&B ✅ | Four query languages with execution accuracy each — but as **parallel benchmark tracks** over the same Synthea data replicated into four stores, not one federated dispatch |
+| `[N-T2GQL]` | **Text2GQL-Bench** — Lyu et al., arXiv:2602.11745 ✅ | The only multi-GQL benchmark found (Cypher, ISO-GQL, Gremlin, SPARQL): 178,184 pairs, 34 DBs, 13 domains — **grepped for security terms, zero hits**, and per-language rather than federated |
+| `[N-GREML]` | **Gremlinator / sparql-gremlin** — Thakkar et al., GRADES-NDA@SIGMOD 2018 DOI 10.1145/3210259.3210271; ICSC 2020 DOI 10.1109/ICSC.2020.00080 ✅ | SPARQL→Gremlin **at query time** — the canonical cross-language work, but one store, no NL QA, and **execution time is the only metric** |
+
+**Two corrections to citations we were carrying.** **QUINT** is Abujabal, Yahya,
+Riedewald & Weikum, **WWW 2017** (not 2016), DOI 10.1145/3038912.3052583 — and
+**Riedewald is not an author on the EMNLP 2017 demo**. **TeBaQA's** substantive
+paper is *Knowledge Graph Question Answering using Graph-Pattern Isomorphism*,
+**SEMANTiCS 2021**, DOI 10.3233/SSW210038 — **not** the ESWC 2021 demo abstract
+whose title we had been using.

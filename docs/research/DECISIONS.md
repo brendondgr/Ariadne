@@ -805,3 +805,55 @@ neither grader resolves and neither claim uses"* attached. A reader who wants to
 discount the holdout on that basis has the number to do it with. That is the
 trade this decision makes: the gate was not met, the spend happened anyway, and
 the record says so in both places rather than in neither.
+
+---
+
+## D-030 — C-022 is rewritten: the loose reading is dead, the strict one survives
+
+**2026-09-06, from the overnight positioning sweep.**
+
+C-022 rested on a null — *"no paper builds both a federated and a merged version
+of the same KGQA system and reports a head-to-head answer-accuracy comparison"*
+— recorded on 2026-08-26 with verdict `clear`, confidence medium. **That null is
+false.** Two papers do exactly that:
+
+- **SPLIT-RAG** (arXiv:2505.13994v1): ablation B is the merged condition
+  verbatim. WebQSP Hit **87.7 split against 70.1 merged** — a 17.6-point gap.
+- **FedV-KGQA** (arXiv:2608.24846v1, ISWC 2026 Research Track): federated against
+  "a centralized upper bound that trains on the merged KG". Federated trails by
+  **0.04 / 0.03 MRR**.
+
+**And they disagree with each other about the sign.**
+
+**What was changed.** The claim now reads *"we are not aware of a head-to-head
+answer-accuracy comparison between federated execution across **heterogeneous
+live stores** and materialised merging"*, with the within-system neutrality
+reported as our own measurement rather than as a gap in the field.
+
+**Why not simply retract it.** Neither paper crosses an engine boundary.
+FedV-KGQA vertically partitions **one** benchmark KG and its "federation" is
+federated *learning* of embeddings with no runtime inter-silo communication;
+SPLIT-RAG partitions **one** Freebase-derived KG inside one system, and its
+ablation removes the multi-agent retriever at the same time as it merges, so the
+17.6 points cannot be attributed to topology alone. The strict reading — two
+live stores, two engines, two query languages — is untouched.
+
+**Alternatives rejected.**
+
+- *Keep the claim as written.* Rejected outright. It was the only claim in the
+  record a reviewer could falsify with a two-minute search, and the sweep did.
+- *Retract C-022 entirely.* Rejected: the strict comparison genuinely is
+  unoccupied, and the structural half — merging relocates reconciliation from
+  code into the stored records, 1,083 nodes given identifiers their upstream
+  record does not ship — is our own measurement and is unaffected.
+- *Report the neutrality without the field claim.* Close to what was done, but it
+  discards a real and defensible null. The rewrite keeps it, narrowed to the
+  boundary the evidence actually supports.
+
+**Consequence, and it is a burden not a relief.** SPLIT-RAG's 17.6 points is
+evidence that integration architecture **can** move accuracy a great deal. Our
+own federated-against-merged result is neutral. **A reviewer will ask why ours is
+neutral when theirs is not, and the paper must answer it** — most plausibly that
+their ablation changes agent count as well as store topology, so the two are not
+measuring the same variable. That sentence belongs in the paper, not in this
+ledger.
