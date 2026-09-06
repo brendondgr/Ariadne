@@ -1,6 +1,49 @@
 {
  "A-calibration": {
-  "status": "running",
-  "started": "2026-09-05 23:57:12.047298"
+  "status": "done",
+  "elapsed_s": 12484.8,
+  "finished": "2026-09-06 03:25:16.809613",
+  "detail": {
+   "served_model": "gemma-4-26B-it",
+   "by_band": {
+    "ceiling": {
+     "n": 20,
+     "mean": 0.975,
+     "sd": 0.109,
+     "at_ceiling": 19,
+     "distinct_values": 2
+    },
+    "mid": {
+     "n": 18,
+     "mean": 0.6239,
+     "sd": 0.4091,
+     "at_ceiling": 9,
+     "distinct_values": 5
+    },
+    "low": {
+     "n": 20,
+     "mean": 0.6435,
+     "sd": 0.4501,
+     "at_ceiling": 12,
+     "distinct_values": 5
+    }
+   },
+   "overall_sd": 0.3901,
+   "overall_distinct": 7,
+   "ceiling_band_saturated": false,
+   "ceiling_band_fraction_at_1": 0.95,
+   "usable_near_ceiling": false,
+   "ok": true
+  }
+ },
+ "C-c021-third-opinion": {
+  "status": "not_run",
+  "reason": "saturated on the ceiling band (0.95 at 1.0) \u2014 cannot adjudicate a near-ceiling contrast. This IS the result."
+ },
+ "C2-holdout-third-family": {
+  "status": "not_run",
+  "stopped_at": "2026-09-06 03:30",
+  "reason": "STOPPED ON CALIBRATION EVIDENCE. Phase A found gemma-4-26B-it INVERTS the mid/low ordering: it scores the low band 0.6435 against the mid band 0.6239, when the true ordering is mid > low (0.4946 vs 0.3781 under the reference grader). All three holdout arms sit at 0.40-0.65, exactly that range. A grader that reverses the ordering of the two bands cannot produce a usable three-arm comparison, and at ~4-5 min/judgment the phase would have run ~32 hours to deliver one.",
+  "note": "The pre-registered gate only checked usable_near_ceiling, which this model also fails. The mid/low inversion is a SECOND and independent disqualification that the gate did not anticipate. Recorded rather than silently absorbed: the gate needs an ordering check as well as a resolution check."
  }
 }
