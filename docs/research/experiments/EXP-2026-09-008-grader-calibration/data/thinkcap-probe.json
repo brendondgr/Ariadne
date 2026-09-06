@@ -1,0 +1,22 @@
+{
+ "question": "Does LLM_THINKING_BUDGET=512 change the llm_query arm? Wired for days, never tested live.",
+ "design": "30 questions, paired on identical case ids against the settled uncapped run.",
+ "paired_n": 30,
+ "capped_512": {
+  "records_gt_0": 0,
+  "gate_rejected": 28
+ },
+ "uncapped": {
+  "records_gt_0": 3,
+  "gate_rejected": 4
+ },
+ "verdict": "DO NOT USE. The cap raises gate rejections 4 -> 28 (7x) and eliminates retrieval entirely (3 -> 0). Zero questions retrieved under the cap that did not retrieve uncapped.",
+ "mechanism": "The builder is a reasoning model. At 512 thinking tokens it emits queries malformed enough for the pre-run gate to reject them -- the same failure shape that defeated this arm four times before, where too small a bound is downstream indistinguishable from a model with nothing to say.",
+ "limits": [
+  "n=30, one cap value, one model",
+  "the 30 are a hard slice: uncapped retrieved on only 3 of them against 31% bank-wide, so the ABSOLUTE rates are not representative -- the PAIRED direction is",
+  "not a judged comparison; retrieval and gate rejection only"
+ ],
+ "does_not_replace": "the published llm_query figures (dev 0.3781, holdout 0.4031), which ran uncapped",
+ "measurement_bug_found": "the orchestrator's own with_evidence counter read `records or results` and results counts sub-question slots including failures, so it reported 30/30 with evidence when the true figure was 0/30. Corrected before any conclusion was drawn."
+}
