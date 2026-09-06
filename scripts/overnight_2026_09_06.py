@@ -64,11 +64,16 @@ ENDPOINTS = {
                 "workers": 24, "expect": "gemma4-31b"},
     "qwen":    {"url": "http://localhost:9090/v1", "model": "default-model",
                 "workers": 8,  "expect": "qwen38"},
+    # llama.cpp, not vLLM. It does not handle concurrency well, and the operator
+    # says there is no rush for it -- that model can stay up as long as needed.
+    # So it runs at 2 workers and is exempt from the 07:00 deadline entirely.
     "gemma26": {"url": "http://localhost:4000/v1", "model": "local",
-                "workers": 8,  "expect": "gemma-4-26b"},
+                "workers": 2,  "expect": "gemma-4-26b"},
 }
 JUDGE_MAX_TOKENS = 32768
 DEADLINE = None          # set in main()
+#: Per-track override. gemma26 maps to None: no cutoff, it is not borrowed.
+TRACK_DEADLINE: dict = {}
 BANDS = ("ceiling", "mid", "low")
 
 _lock = threading.Lock()
@@ -131,8 +136,11 @@ def run_phase(track: str, name: str, fn: Callable[[], dict], needs_by: datetime 
     st = _state.setdefault(track, {})
     if st.get(name, {}).get("status") == "done":
         print(f"[{track}] {name}: already done", flush=True); return True
-    if DEADLINE and datetime.now() >= DEADLINE:
-        st[name] = {"status": "not_run", "reason": f"past {DEADLINE:%H:%M}"}; save(track)
+    deadline = TRACK_DEADLINE.get(track, DEADLINE)
+    if deadline is None:
+        needs_by = None
+    if deadline and datetime.now() >= deadline:
+        st[name] = {"status": "not_run", "reason": f"past {deadline:%H:%M}"}; save(track)
         print(f"[{track}] {name}: SKIPPED (past deadline)", flush=True); return False
     if needs_by and datetime.now() >= needs_by:
         st[name] = {"status": "not_run", "reason": f"needed to start by {needs_by:%H:%M}"}
@@ -264,8 +272,7 @@ def track_l() -> None:
         return
     cal = _state["gemma26"]["A-calibration"]["detail"]
     if cal.get("usable_near_ceiling"):
-        run_phase("gemma26", "C-c021-third-opinion", phase_c,
-                  needs_by=DEADLINE - timedelta(minutes=120) if DEADLINE else None)
+        run_phase("gemma26", "C-c021-third-opinion", phase_c)
     else:
         _state["gemma26"]["C-c021-third-opinion"] = {
             "status": "not_run",
@@ -274,8 +281,7 @@ def track_l() -> None:
                        "adjudicate a near-ceiling contrast. This IS the result.")}
         save("gemma26")
         print("[gemma26] C: skipped — saturated near the ceiling (recorded as the result)", flush=True)
-    run_phase("gemma26", "C2-holdout-third-family", phase_c2,
-              needs_by=DEADLINE - timedelta(minutes=200) if DEADLINE else None)
+    run_phase("gemma26", "C2-holdout-third-family", phase_c2)
 
 
 def track_q() -> None:
@@ -294,6 +300,7 @@ def main() -> int:
     hh, mm = (int(x) for x in args.until.split(":"))
     d = datetime.now().replace(hour=hh, minute=mm, second=0, microsecond=0)
     DEADLINE = d + timedelta(days=1) if d <= datetime.now() else d
+    TRACK_DEADLINE["gemma26"] = None     # llama.cpp; stays up; no morning cutoff
     LOGS.mkdir(parents=True, exist_ok=True)
 
     print(f"deadline {DEADLINE:%Y-%m-%d %H:%M}\n")
