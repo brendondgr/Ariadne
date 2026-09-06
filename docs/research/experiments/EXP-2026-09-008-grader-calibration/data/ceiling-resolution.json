@@ -1,0 +1,45 @@
+{
+ "question": "Which locally available models can resolve differences near the ceiling?",
+ "why": "C-021's gap is 0.0322. A grader that cannot represent a 0.03 difference cannot adjudicate it, and will report 0.0000 -- which reads as a refutation rather than as an instrument limit.",
+ "models": {
+  "gemma4-31B-mtp": {
+   "ceiling_n": 20,
+   "ceiling_mean": 1.0,
+   "ceiling_sd": 0.0,
+   "fraction_at_1": 1.0,
+   "distinct_values": 1,
+   "values_emitted": [
+    1.0
+   ],
+   "usable_near_ceiling": false
+  },
+  "qwen38-27B-v2": {
+   "ceiling_n": 20,
+   "ceiling_mean": 0.98,
+   "ceiling_sd": 0.051,
+   "fraction_at_1": 0.85,
+   "distinct_values": 3,
+   "values_emitted": [
+    0.8,
+    0.9,
+    1.0
+   ],
+   "usable_near_ceiling": true
+  },
+  "gemma-4-26B-it": {
+   "ceiling_n": 20,
+   "ceiling_mean": 0.975,
+   "ceiling_sd": 0.109,
+   "fraction_at_1": 0.95,
+   "distinct_values": 2,
+   "values_emitted": [
+    0.5,
+    1.0
+   ],
+   "usable_near_ceiling": false
+  }
+ },
+ "verdict": "NO locally available model except qwen38-27B-v2 can adjudicate a near-ceiling contrast. gemma4-31B-mtp emits ONE value there; gemma-4-26B-it emits TWO ({0.5, 1.0}). Neither can represent C-021's 0.0322 gap at all. This is why the claim rests on a single named grader, and it is a measurement rather than an apology.",
+ "incomplete": "gemma-4-26B-it completed the ceiling band (20/20) and stalled on the mid band at 11/20. The :4000 llama.cpp endpoint stopped answering even a 16-token request for >400s. The ceiling band is the band the C-021 verdict depends on, so the verdict stands; the mid/low bands would have added context about its general behaviour and are recorded as not measured.",
+ "criterion_preregistered": "fraction_at_1 < 0.95 AND distinct_values > 2, written in PROTOCOL.md before any judgment existed"
+}
