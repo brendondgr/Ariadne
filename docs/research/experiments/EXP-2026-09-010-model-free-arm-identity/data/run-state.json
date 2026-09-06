@@ -1,0 +1,162 @@
+{
+ "preflight": {
+  "bank_questions": 284,
+  "bank_sha256": "a4ca6702029cae7784574b0307b9f76d4718a039f3254f2c0ff708a2fa1a4119",
+  "stores": {
+   "neo4j": {
+    "nodes": 4369,
+    "edges": 27669
+   },
+   "gremlin": {
+    "vertices": 6374,
+    "edges": 8582
+   }
+  }
+ },
+ "runs": {
+  "deterministic-a": {
+   "arm": "deterministic",
+   "tag": "a",
+   "rc": 0,
+   "elapsed_s": 6.5,
+   "answers_written": 284,
+   "status": "done",
+   "finished": "2026-09-06T19:08:00"
+  },
+  "deterministic-b": {
+   "arm": "deterministic",
+   "tag": "b",
+   "rc": 0,
+   "elapsed_s": 4.4,
+   "answers_written": 284,
+   "status": "done",
+   "finished": "2026-09-06T19:08:04"
+  },
+  "generic-a": {
+   "arm": "generic",
+   "tag": "a",
+   "rc": 0,
+   "elapsed_s": 725.6,
+   "answers_written": 284,
+   "status": "done",
+   "finished": "2026-09-06T19:20:10"
+  },
+  "generic-b": {
+   "arm": "generic",
+   "tag": "b",
+   "rc": 0,
+   "elapsed_s": 844.7,
+   "answers_written": 284,
+   "status": "done",
+   "finished": "2026-09-06T19:34:15"
+  }
+ },
+ "comparisons": {
+  "deterministic": {
+   "arm": "deterministic",
+   "run_a_answers": 284,
+   "run_b_answers": 284,
+   "compared": 284,
+   "only_in_a": [],
+   "only_in_b": [],
+   "identical": 2,
+   "differing": 282,
+   "identity_rate": 0.007,
+   "differing_paths": {
+    "run_meta.wall_s": 282
+   },
+   "paths_in_scored_fields": [],
+   "h3_holds": true,
+   "examples": [
+    {
+     "answer": "D0-Analytic-kill_chain_phase-AN0662-9c5459::formal.json",
+     "paths": [
+      "run_meta.wall_s"
+     ]
+    },
+    {
+     "answer": "D0-Analytic-kill_chain_phase-AN1955-53c2dd::indirect.json",
+     "paths": [
+      "run_meta.wall_s"
+     ]
+    },
+    {
+     "answer": "D0-Analytic-subtechnique-of-AN0749-d741a1::analyst.json",
+     "paths": [
+      "run_meta.wall_s"
+     ]
+    },
+    {
+     "answer": "D0-Analytic-subtechnique-of-AN1112-b87d8e::formal.json",
+     "paths": [
+      "run_meta.wall_s"
+     ]
+    },
+    {
+     "answer": "D0-AttackPattern-HAS_MEMBER-CAPEC-136-9dabb8::analyst.json",
+     "paths": [
+      "run_meta.wall_s"
+     ]
+    }
+   ]
+  },
+  "generic": {
+   "arm": "generic",
+   "run_a_answers": 284,
+   "run_b_answers": 284,
+   "compared": 284,
+   "only_in_a": [],
+   "only_in_b": [],
+   "identical": 0,
+   "differing": 284,
+   "identity_rate": 0.0,
+   "differing_paths": {
+    "run_meta.wall_s": 284,
+    "answer.fallback_reason": 60,
+    "answer.narrative": 58,
+    "deterministic_scores.coverage.coverage": 4,
+    "deterministic_scores.coverage.found": 4,
+    "deterministic_scores.coverage.missing.[]<len 0!=3>": 2,
+    "deterministic_scores.coverage.missing.[]<len 0!=1>": 1,
+    "deterministic_scores.coverage.missing.[]<len 0!=4>": 1
+   },
+   "paths_in_scored_fields": [
+    "answer.fallback_reason",
+    "answer.narrative"
+   ],
+   "h3_holds": false,
+   "examples": [
+    {
+     "answer": "D0-Analytic-kill_chain_phase-AN0662-9c5459::formal.json",
+     "paths": [
+      "run_meta.wall_s"
+     ]
+    },
+    {
+     "answer": "D0-Analytic-kill_chain_phase-AN1955-53c2dd::indirect.json",
+     "paths": [
+      "run_meta.wall_s"
+     ]
+    },
+    {
+     "answer": "D0-Analytic-subtechnique-of-AN0749-d741a1::analyst.json",
+     "paths": [
+      "run_meta.wall_s"
+     ]
+    },
+    {
+     "answer": "D0-Analytic-subtechnique-of-AN1112-b87d8e::formal.json",
+     "paths": [
+      "run_meta.wall_s"
+     ]
+    },
+    {
+     "answer": "D0-AttackPattern-HAS_MEMBER-CAPEC-136-9dabb8::analyst.json",
+     "paths": [
+      "run_meta.wall_s"
+     ]
+    }
+   ]
+  }
+ }
+}

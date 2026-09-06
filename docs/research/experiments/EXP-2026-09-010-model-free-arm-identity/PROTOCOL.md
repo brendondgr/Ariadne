@@ -163,3 +163,86 @@ figure (284/284) together, in that order.
 **Consequence for the record, unchanged by the above:** the assumption that lets
 `deterministic` run once — that it is deterministic in everything the scorer
 reads — is now measured rather than asserted, and it holds.
+
+## A-2 (2026-09-06, after the `generic` pair — the premise was false)
+
+**`generic` is not a model-free arm, and this protocol should never have said it
+was.** The run is **invalid for `generic`** and must be repeated. What follows is
+why, because the reason is worth more than the run.
+
+### What the numbers said, and what they actually meant
+
+`generic` returned **0/284** identical under the pre-registered exclusions and
+**224/284** once both clock keys are removed. The 60 differing answers break down
+as `answer.fallback_reason` (60), `answer.narrative` (58), and
+`deterministic_scores.coverage.{coverage,found,missing}` (4).
+
+The coverage differences looked like the expensive outcome — retrieval varying
+run to run on the arm that carries the paper's primary result. They are not.
+**All 4 coverage-differing answers are inside the 60 narrator-failed answers**,
+and the differing `fallback_reason` values name the cause directly:
+
+```
+LLM narrator unavailable (request failed: HTTPConnectionPool(
+    host='localhost', port=4000): Read timed out …)
+```
+
+Run B lost the narrator endpoint on 60 of 284 answers. Where the narrator
+failed, a fallback text was composed that lists fewer values of a multi-valued
+property, and the coverage scorer — which reads the composed answer — scored it
+lower. Every difference in this arm is downstream of one external failure.
+
+### The premise failure
+
+The artifacts state the configuration plainly, and disagree with this protocol:
+
+| arm | `run_meta.synthesis` |
+|---|---|
+| `deterministic` | `deterministic` |
+| `generic` | **`llm (claim-grounded)`** |
+
+`utils/evaluation/experiment_untruncated.py` sets `SYNTHESIS_LLM_ENABLED=true`
+for `generic`; only the *query path* is model-free. This protocol asserted both
+arms were model-free and never checked, when a single artifact would have said
+otherwise.
+
+### The consequence, which is larger than this experiment
+
+`scripts/holdout_run.py` drives the same harness with the same arm. **The
+holdout's `generic` figure — 0.6546, and the +0.1684 gap that is the paper's
+primary result — was produced by answers a language model composed.**
+
+- The paper's claim that **no language model writes a query** is untouched. It
+  remains true, and the artifacts show it.
+- But `generic` is **not** deterministic by construction, so the justification
+  for running it once does **not** transfer from `deterministic` to it. Its
+  published figures carry a run-to-run variance that has never been measured.
+- The paper's §3 sentence "the shipped default composes deterministically" is
+  true of the shipped default and **misleading about the evaluated
+  configuration**. It must be corrected.
+- Limitation 5 (`n_runs: 1`) must name `generic` explicitly, as the arm carrying
+  the primary result.
+
+### Guard defects this exposes
+
+1. **Pre-flight probed the wrong endpoint.** It asserted three aliases on
+   `:9090` and never touched `:4000`, which is where `generic` narrates. The
+   arm's own dependency was unguarded.
+2. **There is no in-run liveness check.** A dependency that dies mid-run
+   produces a complete, well-formed, silently degraded capture. Nothing failed
+   loudly; `rc` was 0 and 284 answers were written.
+3. **`fallback_reason` is the tell and nothing reads it.** A run whose
+   `fallback_reason` is non-null on 21% of answers is not a clean run, and the
+   harness should refuse to record it as one.
+
+### What happens next
+
+- `deterministic`'s result **stands** — it is genuinely narrator-free
+  (`synthesis: deterministic`) and is 284/284 content-identical.
+- `generic` is recorded **`not_run`**, not "differs". Reporting an infrastructure
+  failure as arm non-determinism would have been a false alarm on the paper's
+  primary result, and it was one inspection away from being written down.
+- The repeat must (a) probe and pin `:4000` in pre-flight, (b) abort if
+  `fallback_reason` is non-null anywhere, and (c) report `generic`'s **real**
+  narration variance, which is now a genuine open question rather than an
+  assumption.
