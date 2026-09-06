@@ -110,3 +110,56 @@ before the data exists, that we will report it.
   weakest form of the claim and the one actually relied on.
 - It says nothing about whether the answers are *correct* — only whether they are
   *the same*.
+
+---
+
+# AMENDMENTS
+
+## A-1 (2026-09-06, after the `deterministic` pair, before `generic` finished)
+
+**A second volatile key exists, and the run found it by failing — as designed.**
+
+`deterministic` came back **2/284 identical** under the pre-registered exclusion
+list. The sole differing key path across all 282 non-identical answers is:
+
+```
+run_meta.wall_s
+```
+
+It is wall-clock seconds for the run (e.g. `3.737` vs `1.720`). The two fields
+beside it in the same object, `planner: "gold-replay"` and
+`synthesis: "deterministic"`, are identical on every answer, and no other path in
+the artifact differs anywhere.
+
+**What this means, stated in the order it should be read:**
+
+1. **H1 as literally worded is falsified.** Identity under the pre-registered
+   exclusion list is 0.0070, not 1.0.
+2. **H1's intent holds.** After excluding both clock-derived keys, identity is
+   **284/284**. No content field varies.
+3. **H3 holds.** `run_meta.wall_s` is not a scored field; the scorer never reads
+   it.
+
+**The defect is in the method, not in the arm.** The pre-registered exclusion
+list was built by walking the key paths of **one** artifact — and an `llm_query`
+artifact at that, from a different experiment — and regex-matching names against
+`time|elapsed|_ms|stamp|duration|latency|seconds`. `wall_s` matches none of those
+patterns, and `run_meta` does not appear in the `llm_query` artifact shape that
+was sampled. Two independent mistakes, either of which alone would have caused
+the miss.
+
+**The correct method is the one this run performed**: do not predict which keys
+are volatile, run twice and observe which ones move. The empirical diff is the
+instrument; the name-matching pass should have been used only to *label* what the
+diff found, never to decide what to exclude in advance.
+
+**What is deliberately not done.** `run_meta.wall_s` is **not** being added to
+`VOLATILE` and the run is **not** being repeated to obtain a clean pass. The
+protocol says a second volatile key must be discovered by failing and reported
+rather than absorbed, and that is what this amendment is. `RESULTS.md` will
+report the raw figure (2/284), the sole differing path, and the content-identity
+figure (284/284) together, in that order.
+
+**Consequence for the record, unchanged by the above:** the assumption that lets
+`deterministic` run once — that it is deterministic in everything the scorer
+reads — is now measured rather than asserted, and it holds.
