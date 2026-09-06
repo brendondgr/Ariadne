@@ -1,0 +1,591 @@
+% =====================================================================
+% Ariadne -- TMLR submission, draft 1, 2026-09-06
+%
+% BUILD
+%   The TMLR style file is NOT vendored here. Fetch it before building:
+%     git clone https://github.com/JmlrOrg/tmlr-style-file
+%     cp tmlr-style-file/tmlr.sty tmlr-style-file/fancyhdr.sty .
+%   then:  pdflatex ariadne-tmlr && bibtex ariadne-tmlr && pdflatex ariadne-tmlr
+%
+% VENUE FACTS ASSERTED BELOW -- RE-VERIFY AGAINST THE CURRENT AUTHOR GUIDE.
+% This project has been burned by stale venue facts before (see
+% ../venue-targets.md, stale by its own banner). The following are asserted
+% from memory and MUST be checked at https://jmlr.org/tmlr/ before submission:
+%   * \usepackage{tmlr} for anonymous submission; \usepackage[accepted]{tmlr}
+%     for camera-ready; \usepackage[preprint]{tmlr} for arXiv.
+%   * A "Broader Impact Statement" section is REQUIRED (included below).
+%   * No hard page limit; ~12 pages of main body is the stated norm.
+%   * Acceptance criteria are (i) claims supported by evidence and
+%     (ii) some segment of the audience would be interested. Novelty and
+%     state-of-the-art results are explicitly NOT required.
+%   * Review is double-blind on OpenReview; reviews are public.
+%
+% TRACEABILITY
+% Per OUTLINE.md's standing rule -- "every number in the paper cites an EXP- id,
+% no orphan numbers" -- every figure below carries \expref{}. Appendix B is the
+% full map. Set \tracefalse to hide the tags for a clean reading copy.
+% =====================================================================
+
+\documentclass{article}
+\usepackage{tmlr}
+% \usepackage[accepted]{tmlr}   % camera-ready
+% \usepackage[preprint]{tmlr}   % arXiv
+
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{etoolbox}
+
+% ---- traceability tags -------------------------------------------------
+\newtoggle{trace}
+\toggletrue{trace}   % \togglefalse{trace} for a clean reading copy
+\newcommand{\expref}[1]{\iftoggle{trace}{\,{\scriptsize\textcolor{gray}{\texttt{[#1]}}}}{}}
+\newcommand{\claimref}[1]{\iftoggle{trace}{\,{\scriptsize\textcolor{gray}{\texttt{<#1>}}}}{}}
+
+\title{Removing the Model from the Query Path:\\
+A Deterministic Graph-QA System as a Measurement Instrument,\\
+and What It Reveals About LLM Graders}
+
+\author{\name Anonymous \email anon@example.org \\
+        \addr Withheld for review}
+
+\def\month{09}
+\def\year{2026}
+\def\openreviewID{XXXXXXXXX}
+
+\begin{document}
+\maketitle
+
+% =====================================================================
+\begin{abstract}
+Almost every question-answering system over knowledge graphs places a language
+model between the question and the database: the model writes a query, the query
+runs, and an answer is composed from the result. That design makes a class of
+controlled comparisons ill-posed, because a stochastic query-writing step sits
+between every manipulation and every score.
+
+We describe a system that removes it. Ariadne answers natural-language security
+questions over two live knowledge graphs that are never merged and that speak
+different query languages -- MITRE ATT\&CK in Neo4j (Cypher) and MITRE CAPEC in
+Apache TinkerPop (Gremlin) -- and on every shipped path \emph{no language model
+writes a database query}. We use the resulting determinism as an instrument.
+
+Our primary methodological finding concerns the instrument used to score such
+systems at all. Grading models have a \emph{resolution floor}, and near the
+ceiling most cannot represent the effect sizes this literature reports. Of three
+local graders scored on answers of known quality, one emitted a single distinct
+value in the near-ceiling band, one emitted two, and one of those two
+\emph{inverted} the ordering of mediocre and good answers in exactly the score
+range where our systems sit. Correlation against human labels -- the statistic
+the field reports -- cannot detect this.
+
+We then run four controlled comparisons the architecture makes possible, three of
+which are null or negative. Hand-written query templates do not hold the system's
+accuracy: a schema-derived, template-free path matches them on the schema they
+were written for and exceeds them by $+0.1684$ judged correctness on $288$
+held-out questions. Templates nevertheless beat a model writing the queries
+($+0.0831$), a result that is positive under both grader families and
+statistically solid under only one -- and we can say \emph{which} one only
+because the instrument was characterised first. Federating across two engines
+buys no accuracy over merging ($-0.0334$ and $+0.0000$), though building the
+merged store required rewriting $1{,}083$ of $9{,}138$ nodes while federation
+rewrote none. Finally, benchmarks co-authored with the system under test
+overstate it.
+
+We report what the design costs: exact-record identity falls from $1.0000$ to
+$0.0000$ across five paraphrase tiers. We release the full experimental record,
+including six experiments retained because an earlier measurement of ours was
+wrong.
+\end{abstract}
+
+% =====================================================================
+\section{Introduction}
+\label{sec:intro}
+
+The architecture in this paper is not the contribution, and saying so early is
+what makes the rest defensible. Mediator--wrapper federation is twenty-five years
+old. Templates rather than free generation is a named family in knowledge-base
+question answering. Attributing a failure to its earliest failing stage is
+published prior art, as is read-only enforcement on generated graph
+queries.\claimref{D-027} A reviewer who suspects we claim any of these is right
+to reject.
+
+What is unoccupied is the \emph{measurement}. Consider the question: do
+hand-written query templates carry a graph-QA system's accuracy? Answering it
+requires two systems identical everywhere except in how the query is produced. In
+an architecture where a model writes the query you cannot build the second: the
+stochastic step remains between the manipulation and the score. The comparison is
+not difficult, it is ill-posed. A system that generates no query with a model is
+therefore a different \emph{instrument}, not merely a different implementation.
+
+Using that instrument taught us something we did not set out to find, and which
+we now believe is the more portable result. Every judged number in this
+literature, ours included, is produced by a language model scoring another
+model's output. The field validates those graders by correlation against human
+labels. Correlation is the wrong statistic. A grader can correlate well overall
+and still be unable to represent a $0.03$ difference in the band where a paper's
+headline sits; worse, it can \emph{reverse} the ordering inside a band while
+leaving the global correlation intact. We measured both failures in local graders
+we had been using, and we found them only because a near-miss forced the check.
+
+\paragraph{Contributions.}
+\begin{enumerate}
+\item A calibration procedure for LLM graders that reports \emph{resolution} and
+      \emph{inversion} rather than correlation, and the finding that two of three
+      local graders cannot adjudicate the effect sizes we intended to publish
+      (\S\ref{sec:grader}).\expref{EXP-2026-09-008}
+\item A federated graph-QA system dispatching native queries in two graph query
+      languages to two live, independently governed stores, with no model-written
+      query on any shipped path (\S\ref{sec:system}).\claimref{C-007}
+\item Four controlled comparisons that architecture makes possible, three of them
+      null or negative (\S\ref{sec:templates}--\S\ref{sec:coauthor}).
+\item An accounting of what the design costs off its own vocabulary
+      (\S\ref{sec:cliff}), and of two scoring faults we deliberately did not fix
+      (\S\ref{sec:limitations}).
+\end{enumerate}
+
+We claim priority on implementing and measuring. Nothing more.
+
+\paragraph{Relation to TMLR's criteria.} This submission contains no
+state-of-the-art result and does not claim architectural novelty. Three of its
+four system-level findings are null or negative. We submit it because its claims
+are, we believe, supported by the evidence presented, and because the grader
+result in \S\ref{sec:grader} bears on how anyone in this audience validates an
+LLM-judged number.
+
+% =====================================================================
+\section{Related work}
+\label{sec:related}
+
+\emph{[DRAFT NOTE -- BLOCKED ON PROSE, NOT ON READING. The literature sweep
+closed 2026-09-06: CEUR-WS enumerated at 12{,}764 rows, four primary template
+systems read in full rather than by abstract, and an arXiv field sweep run with a
+validated control. Ten nearest neighbours are tabulated in the repository's
+\texttt{RELATED\_WORK.md}. This section must discharge six specific obligations,
+each recorded with its reason:}
+
+\begin{enumerate}
+\item Cite \citet{emonet2024} ourselves as the single-language federated
+      predecessor, before a reviewer finds it. Our federation claim rests
+      \emph{entirely} on the two-query-language axis and does not survive being
+      stated more broadly.\claimref{C-024}
+\item Carry the TITAN acknowledgement inline. We must never write that no ATT\&CK
+      question resource exists.\claimref{C-025}
+\item Cite QAnswer's unswept abstention threshold -- the nearest case of the field
+      holding the relevant knob and never turning it.
+\item Correct two citation errors inherited from secondary sources: QUINT is WWW
+      2017, and TeBaQA's substantive paper is SEMANTiCS 2021.
+\item A defensive sentence separating \emph{federated learning} from federated
+      query execution. The homonym floods this literature.
+\item Engage \citet{deceptive2026} and PhantomBench directly: both validate the
+      fabrication mechanism of \S\ref{sec:cliff} without occupying the graph-QA
+      setting.
+\end{enumerate}
+
+% =====================================================================
+\section{System}
+\label{sec:system}
+
+Five stages: \textbf{plan $\rightarrow$ route $\rightarrow$ retrieve
+$\rightarrow$ verify $\rightarrow$ compose}. A planner decomposes a question into
+sub-questions and assigns each to a source. Per-source specialists emit a native
+query in that source's own language -- Cypher against Neo4j for ATT\&CK, Gremlin
+against TinkerPop for CAPEC. Results are joined on shared identifiers over a
+declared bridge. A verifier admits or rejects each candidate claim against
+retrieved records. A composer writes the answer.
+
+\paragraph{Where the model seams are.} A language model may plan; it may grade,
+in evaluation only; and it may compose prose, though the shipped default composes
+deterministically. \textbf{A language model never writes a query that reaches a
+store.}\claimref{C-007} The \texttt{llm\_query} arm of \S\ref{sec:generation}
+exists solely as a comparator and is not a shipped path.
+
+\paragraph{The verifier, ablated.} Each of the verifier's four claim gates was
+disabled individually over $888$ candidate claims. Disabling any single gate
+admitted \emph{zero} additional unsupported claims.\expref{EXP-2026-08-014} We
+report this as a weaker result than it sounds: on this population the gates are
+mutually redundant, not individually load-bearing.\claimref{C-017}
+
+\paragraph{Stores.} The CAPEC side loads $6{,}374$ vertices and $8{,}582$ edges
+across $25$ node types and $34$ edge types.\expref{EXP-2026-09-001}
+
+% =====================================================================
+\section{Experimental design}
+\label{sec:design}
+
+\paragraph{Arms.} Three, differing only in query production.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+Arm & Query produced by \\
+\midrule
+\texttt{deterministic} & Hand-written parameterised templates \\
+\texttt{generic}       & Assembly from the graph schema at runtime; no templates \\
+\texttt{llm\_query}    & A language model, given schema, resolved seeds, gate constraints, repair loop \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Question populations.} Nine, of which four carry weight here: a
+development catalogue; an expansion bank built from a schema census so coverage
+is structural rather than convenient ($572$
+questions)\expref{EXP-2026-09-001}; a $288$-question holdout split off and sealed
+by SHA-256 before any repair was written\expref{EXP-2026-09-007}; and $182$
+questions taken verbatim from two published external question sets, neither
+authored with sight of this code.\expref{EXP-2026-08-010}
+
+\paragraph{Grading.} Every judged figure was produced under \emph{two named
+grader families}, each identified by exact model id, quantisation and date --
+never by relay alias. This is not fastidiousness. One alias in this project
+served three different models over its lifetime, and a figure attributed to an
+alias is not attributable at all.\claimref{D-028}
+
+\paragraph{Statistics.} Paired percentile bootstrap, $2{,}000$ resamples, seed
+$1729$, $95\%$ intervals throughout.
+
+\paragraph{Two scoring faults we did not fix.} Abstention boilerplate credits a
+refusal, and the scorer recognises the source's identifier vocabulary rather than
+the graph's ($0.185$ on the subset where it was quantified). \textbf{Both inflate
+scores.} Fixing either partway through a comparison would have invalidated the
+comparison, so both are priced into every figure below and restated in
+\S\ref{sec:limitations}.
+
+% =====================================================================
+\section{Grading models have a resolution floor}
+\label{sec:grader}
+
+\paragraph{Why correlation is the wrong statistic.} A grader is an instrument. An
+instrument is characterised by what it can \emph{resolve}, not by how well it
+agrees on average. We therefore ask a narrower question than agreement: holding
+prompt and protocol fixed, on answers whose true quality band is known by
+construction, \emph{how many distinct values does this grader emit in that band,
+and can it therefore represent the effect we intend to publish?}
+
+The acceptance criterion was pre-registered before any judgment existed: a grader
+is usable near the ceiling iff $\text{fraction at }1.0 < 0.95$ and
+$\text{distinct values} > 2$.\expref{EXP-2026-09-008}
+
+\begin{table}[h]
+\centering
+\caption{Near-ceiling resolution, $n=20$ answers per grader.\expref{EXP-2026-09-008}}
+\begin{tabular}{lrrlc}
+\toprule
+Grader & Mean & Distinct & Values emitted & Usable \\
+\midrule
+\texttt{gemma4-31B-mtp} & 1.0000 & \textbf{1} & $\{1.0\}$ & no \\
+\texttt{gemma-4-26B-it} & 0.9750 & \textbf{2} & $\{0.5, 1.0\}$ & no \\
+\texttt{qwen38-27B-v2}  & 0.9800 & 3 & $\{0.8, 0.9, 1.0\}$ & \textbf{yes} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+A grader emitting one value in a band reports a contrast of exactly zero in that
+band \emph{whatever is true}. This is not sampling noise; more samples do not
+help. It is a floor, and it rises as answers approach the ceiling.
+
+\paragraph{Inversion, which is worse.} \texttt{gemma-4-26B-it} does not merely
+lose resolution. Scored across constructed bands it places the \emph{low} band at
+$0.6435$ above the \emph{mid} band at $0.6239$, when the constructed ordering is
+mid above low.\expref{EXP-2026-09-008} That is precisely the $0.40$--$0.65$ range
+in which all three of our arms sit on the holdout. A grader that adds noise is
+survivable. A grader that reverses an ordering is a different failure, and it is
+\emph{invisible to the correlation statistics the field reports}. We halted a
+planned third-family grading pass on this evidence, with zero judgments written.
+
+\paragraph{What this cost us, reported as a limitation.} Our co-authorship-bias
+effect is $0.0322$ under the one grader that can resolve it and $0.0000$ under a
+grader that cannot.\expref{EXP-2026-09-006}\claimref{C-021} The second number
+reads as a refutation and is an instrument limit. Six of twelve cells in our
+cross-family re-grade are saturated under the second family. Separately, a
+tie-handling defect in our roll-up -- excluding pairs tied by the reference
+grader but not pairs tied by the candidate -- was one revision away from
+publishing \emph{four arm-order reversals that do not exist}. The correct count
+is zero.\expref{EXP-2026-09-006}
+
+\paragraph{What it bought us.} Because the instrument was characterised, we can
+state which of the two grader families in \S\ref{sec:generation} to believe,
+rather than averaging them. That is the entire argument for doing this.
+
+% =====================================================================
+\section{Templates versus schema-derived construction}
+\label{sec:templates}
+
+This result replaces a claim our own experiments refuted: we previously held that
+the hand-written templates were where the accuracy lived.\claimref{C-003}
+
+On the catalogue the templates were written for, the two paths are
+indistinguishable. Across ten anchor-disjoint banks, templates score
+$0.99 \pm 0.0225$ and the schema-derived path $1.00 \pm 0.0000$; paired
+difference $-0.01 \pm 0.0225$.\expref{EXP-2026-08-015} Templates do not hold the
+accuracy; on home ground they merely match it.
+
+On a schema nobody wrote templates for, the ordering does not narrow -- it
+inverts. Over the same ten banks on an identity schema: templates
+$0.2392 \pm 0.0674$, schema-derived $0.8514 \pm 0.0890$, paired difference
+$-0.6121 \pm 0.0981$.\expref{EXP-2026-08-015} On a blind set over that schema,
+retrieval is $0.1964$ for templates against $0.7857$
+derived.\expref{EXP-2026-08-011}
+
+\paragraph{The failure mode matters more than the gap.} On the foreign schema the
+template arm did not decline. It asserted: unsupported-claim rate $0.8214$
+against the derived path's $0.1071$.\expref{EXP-2026-08-011} A template that does
+not fit the schema still fires, still retrieves, and still answers
+confidently.\claimref{C-023}
+
+\begin{table}[h]
+\centering
+\caption{Judged correctness, schema-derived minus templates, on unseen questions.}
+\begin{tabular}{llrr}
+\toprule
+Population & $n$ & Gap & Source \\
+\midrule
+Expansion bank                     & 284 & $+0.1642$ & \expref{EXP-2026-09-002} \\
+Expansion bank, post-repair        & 284 & $+0.1623$ & \expref{EXP-2026-09-005} \\
+Sealed holdout                     & 288 & $+0.1684$ & \expref{EXP-2026-09-007} \\
+Sealed holdout, second grader family & 288 & $+0.2053$ & \expref{EXP-2026-09-007} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{The sharpest single piece of evidence in the paper.} We diagnosed and
+repaired two retrieval defects in the template arm. Template retrieval rose by
+$+0.0684$. Template judged correctness moved
+$+0.0012$.\expref{EXP-2026-09-005} Retrieving the right records did not make the
+answers right. Whatever the templates cost, it was not recall.
+
+\paragraph{A weighting caveat we insist on.} The census-weighted repair gain is
+$+0.0017$, against $+0.0503$ pooled.\expref{EXP-2026-09-007} The pooled figure is
+an artifact of a bank that deliberately over-samples rare question shapes. Both
+must be quoted, in that order.
+
+% =====================================================================
+\section{Templates versus a model writing the queries}
+\label{sec:generation}
+
+This is the weakest of our three system comparisons and we do not lead with it.
+
+Given the real schema, resolved seed entities, the gate's constraints and a
+repair loop, a model writing the queries scores $0.4031$ judged correctness on
+the holdout, against templates at $0.4862$ and the schema-derived path at
+$0.6546$.\expref{EXP-2026-09-007} On a fresh bank it scored $0.5000$ against
+templates at $0.9467$,\expref{EXP-2026-08-008} and it emitted an empty query on
+$153$ of $284$ expansion-bank questions.\expref{EXP-2026-09-002}\claimref{C-012}
+
+\begin{table}[h]
+\centering
+\caption{Templates minus model-written queries, judged correctness, $95\%$
+paired bootstrap intervals, under two grader families.\expref{EXP-2026-09-006}\expref{EXP-2026-09-007}}
+\begin{tabular}{lll}
+\toprule
+Half & Grader family 1 (\texttt{qwen38-27B-v2}) & Grader family 2 (\texttt{gemma4-31B-mtp}) \\
+\midrule
+Development & $+0.1147$ $[+0.0653, +0.1645]$ & $+0.0696$ $[-0.0024, +0.1450]$ \\
+Holdout     & $+0.0822$ $[+0.0362, +0.1308]$ & $+0.0643$ $[-0.0080, +0.1333]$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Four measurements, four positive point estimates, two intervals excluding zero
+and two not. We report this as \emph{positive under both grader families and
+statistically solid under one}. \S\ref{sec:grader} is what lets us name which
+family that is, instead of averaging two instruments of unequal resolution and
+reporting the mean as though it meant something.
+
+% =====================================================================
+\section{Federated versus merged execution}
+\label{sec:federation}
+
+We built both conditions, changed one variable, and used no model in either arm.
+Merged minus federated judged correctness: $-0.0334$ on one blind bank,
+$+0.0000$ on a second; mean $-0.0167$.\expref{EXP-2026-08-009} Federating bought
+no accuracy. We state that as a result rather than working around
+it.\claimref{C-015}
+
+What survives the null is structural and countable. Constructing the merged store
+required rewriting $1{,}083$ of $9{,}138$ nodes -- $22.71\%$ of the CAPEC side,
+$11.85\%$ of the whole store -- including re-prefixing $189$ taxonomy entries.
+Federation rewrote zero.\expref{EXP-2026-08-017} Merging is not free; it is a
+data-editing cost paid once per source and again on every refresh.\claimref{C-022}
+
+\paragraph{A claim we deliberately do not make.} A third graph was loaded
+unmodified beside both catalogues. It is tempting to say it could not legally
+have been copied into a merged store. Our own record forbids that claim: the
+contractual argument is a motivation, the identity records are synthetic, and
+what was demonstrated is narrower -- keeping the sources separate asked that
+graph for nothing.
+
+\paragraph{An apparent contradiction we owe the reader.} SPLIT-RAG reports a
+$17.6$ Hit-point gap between split and merged conditions where ours is neutral.
+The most likely reconciliation is that their ablation varies agent count
+alongside store topology, making it a different variable. We state this
+ourselves rather than leaving it for a reviewer.
+
+% =====================================================================
+\section{Co-authored benchmarks overstate their systems}
+\label{sec:coauthor}
+
+Evaluating a system on questions written alongside the code that answers them
+inflates the result. Measured on the same system, same grader, same session: the
+gap is $0.1472$ before a composer fix\expref{EXP-2026-08-007} and $0.0483$
+after,\expref{EXP-2026-08-008} and $0.0322$ under the named, resolution-checked
+grader.\expref{EXP-2026-09-006}\claimref{C-021}
+
+The bias's dominant form is not a wrong answer. It is a question the bank does
+not contain. This is why \S\ref{sec:related}'s external question sets matter more
+than their size suggests.
+
+% =====================================================================
+\section{Failure localisation}
+\label{sec:failure}
+
+\emph{[DRAFT NOTE -- BLOCKED. Open as \texttt{Q24} since 2026-08-26: our failure
+distribution runs opposite to the only comparable published distribution, and we
+do not yet have a written account of why. This is a day of analysis, not an
+experiment, and it is the longest-standing item on our critical path.]}
+
+The material this section already has: on $182$ externally-authored questions, an
+oracle plan reaches $0.9863$ micro-recall while the template arm reaches $0.6836$
+and a plan-free model reaches $0.6132$.\expref{EXP-2026-08-010} Eight of fourteen
+question families match the ceiling; \emph{four return nothing at all}. The
+schema-derived path on the $60$-question subset reaches $0.9953$, essentially the
+oracle. The failure is concentrated and localisable rather than diffuse -- which
+is what makes the contradiction worth explaining rather than
+waving at.\claimref{C-016}
+
+% =====================================================================
+\section{The coverage cliff}
+\label{sec:cliff}
+
+\begin{table}[h]
+\centering
+\caption{Exact-record identity across five paraphrase tiers of the same
+questions.\expref{EXP-2026-08-020}}
+\begin{tabular}{lrrrrrr}
+\toprule
+ & T0 (control) & T1 & T2 & T3 & T4 & T5 \\
+\midrule
+Records exact & $\mathbf{1.0000}$ & $0.4667$ & $0.4250$ & $0.0990$ & $\mathbf{0.0000}$ & $\mathbf{0.0000}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The control confirms the harness: on unmodified questions the system is exact.
+Two tiers of paraphrase halve it. By T4 it is zero, and excluding catalogue dumps
+the recall at T4 is $0.0013$. At T3 the system responds to $52.48\%$ of questions
+with a catalogue dump -- retrieving broadly rather than
+answering.\claimref{C-014}
+
+\paragraph{It answers about entities that do not exist.} On $30$ questions naming
+entities with no referent, the deterministic arm answered $4$, with up to $558$
+genuinely retrieved and genuinely cited records behind
+them.\expref{EXP-2026-08-020} One arm abstained on $93.33\%$ of them, which is
+the existence proof that the behaviour is fixable rather than intrinsic.
+
+Reporting this trade, rather than a victory, is what inoculates the paper against
+its own honest finding.
+
+% =====================================================================
+\section{Limitations}
+\label{sec:limitations}
+
+Every item here is measured. Stating them is cheaper than being caught.
+
+\begin{enumerate}
+\item \textbf{The templates-over-generation result is grader-dependent}
+      (\S\ref{sec:generation}): solid under one family on both halves, not solid
+      under the other on either.
+\item \textbf{No external system baseline.} Every comparison is between arms of
+      this system. We have $182$ externally-authored \emph{questions} -- an
+      outside anchor on the inputs, not on the systems. This is the single
+      largest gap and we do not minimise it.
+\item \textbf{No human evaluation.} Every correctness number is a model grading a
+      model. \S\ref{sec:grader} characterises that instrument; it does not
+      substitute for a human anchor.
+\item \textbf{The holdout is a random split of a bank we authored.} It controls
+      for tuning to particular questions. It does \emph{not} control for the
+      co-authorship bias we ourselves measure in \S\ref{sec:coauthor}.
+\item \textbf{Several experiments were run once}, with seeds unrecorded. The
+      model-written-query arm in particular has not been run three times with
+      recorded seeds; until it has, \S\ref{sec:generation}'s sign rests on one
+      draw.
+\item \textbf{Two scoring faults left unfixed by design} (\S\ref{sec:design}).
+      Both inflate scores.
+\item \textbf{Weighting matters}: the census-weighted repair gain is $+0.0017$
+      against $+0.0503$ pooled.
+\item \textbf{One domain, two schemas, two query languages.} Nothing here is a
+      law about query construction until it replicates where we wrote no
+      templates.
+\item \textbf{Source coverage is partial}: $12$ of $34$ edge types reached, and
+      $0$ of $12$ facet properties used at census
+      time.\expref{EXP-2026-09-001}
+\item \textbf{A reserved-word Gremlin binding} costs the model-written-query arm
+      evidence on some questions. Pre-existing and priced into the figures, but
+      whether it originates with us or with the model is undiagnosed.
+\end{enumerate}
+
+% =====================================================================
+\section*{Broader Impact Statement}
+
+The system answers questions over public cybersecurity taxonomies. Two impacts
+are worth stating.
+
+First, \S\ref{sec:cliff} shows a retrieval-grounded, citation-producing system
+answering confidently about entities that do not exist, with hundreds of
+genuinely retrieved and genuinely cited records behind the answer. Citations are
+routinely read as evidence of grounding. In a security setting, a fluent, cited
+answer about a technique that was never published is a plausible route to a bad
+operational decision. We report the failure rather than tuning it out of the
+evaluation, and we regard the ability to decline with a machine-checkable proof
+as the more important property of the design.
+
+Second, \S\ref{sec:grader} implies that some published differences between
+LLM-judged systems may be below the resolution of the judge that measured them.
+We make no claim about any specific published result. We note only that
+resolution is not currently reported, that correlation does not reveal it, and
+that we found two graders in our own pipeline that could not adjudicate the
+effect we intended to publish.
+
+% =====================================================================
+\bibliography{ariadne}
+\bibliographystyle{tmlr}
+
+\appendix
+
+% =====================================================================
+\section{Record defects outstanding at submission}
+
+Found by an independent readiness audit on 2026-09-06 and not yet closed. Each is
+checkable by a reviewer; we list them rather than wait to be asked.
+
+\begin{enumerate}
+\item There is no continuous integration. An earlier internal claim that
+      automated checks trace every number to an experiment is false; the
+      structural checker that exists never opens the paper. Either the check gets
+      built or the claim gets deleted.
+\item The grader-calibration experiment underpinning \S\ref{sec:grader} was still
+      marked \emph{planned} with an unwritten results file at the time of this
+      draft, though its data is on disk.
+\item The holdout's two-family figures disagree between the experiment manifest
+      and the roll-up sidecar in the fourth decimal
+      ($0.0831$ vs.\ $0.0822$; $0.4031$ vs.\ $0.4039$). No conclusion changes, but
+      the record currently disagrees with itself.
+\item One experiment is marked superseded, not six. Any statement about retaining
+      our mistakes must say one.
+\item Withdrawn figures remain in repository prose and must be retracted in place.
+\item Seeds are unrecorded on several runs; three seeded repeats of the
+      model-written-query arm are owed.
+\end{enumerate}
+
+% =====================================================================
+\section{Traceability}
+
+Per our internal standing rule, no number appears in this paper without an
+experiment identifier. The \texttt{[EXP-\dots]} tags throughout are those
+identifiers; \texttt{<C-\dots>} and \texttt{<D-\dots>} tags reference the
+project's claim and decision ledgers, which are released with the artifact. Set
+\texttt{\textbackslash togglefalse\{trace\}} in the preamble to typeset a clean
+reading copy.
+
+\end{document}
