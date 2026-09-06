@@ -1,0 +1,87 @@
+{
+ "grader_primary": "relay/qwen38-27B-v2@2026-09-05 (both positions, n=288)",
+ "grader_second": "relay/gemma4-31B-mtp@2026-09-05 (position 1 only, deterministic+generic)",
+ "arms": {
+  "generic": {
+   "holdout": 0.6546,
+   "ci95": [
+    0.6218,
+    0.6875
+   ],
+   "n": 288,
+   "dev": 0.6569,
+   "holdout_minus_dev": -0.0023
+  },
+  "deterministic": {
+   "holdout": 0.4862,
+   "ci95": [
+    0.4529,
+    0.5201
+   ],
+   "n": 288,
+   "dev": 0.4946,
+   "holdout_minus_dev": -0.0084
+  },
+  "llm_query": {
+   "holdout": 0.4031,
+   "ci95": [
+    0.3723,
+    0.4353
+   ],
+   "n": 288,
+   "dev": 0.3781,
+   "holdout_minus_dev": 0.025
+  }
+ },
+ "contrasts": {
+  "generic - deterministic": {
+   "holdout": 0.1684,
+   "ci95": [
+    0.134,
+    0.2049
+   ],
+   "n": 288,
+   "dev": 0.1623
+  },
+  "deterministic - llm_query": {
+   "holdout": 0.0831,
+   "ci95": [
+    0.0366,
+    0.132
+   ],
+   "n": 288,
+   "dev": 0.1147
+  },
+  "generic - llm_query": {
+   "holdout": 0.2515,
+   "ci95": [
+    0.2039,
+    0.3006
+   ],
+   "n": 288,
+   "dev": 0.2776
+  }
+ },
+ "second_family": {
+  "deterministic": {
+   "holdout_p1": 0.4349,
+   "n": 288
+  },
+  "generic": {
+   "holdout_p1": 0.6402,
+   "n": 288
+  },
+  "generic - deterministic": {
+   "holdout": 0.2053,
+   "ci95": [
+    0.1482,
+    0.2648
+   ],
+   "n": 288
+  }
+ },
+ "not_measured": [
+  "gemma on llm_query holdout answers",
+  "gemma position 2 on any arm"
+ ]
+}

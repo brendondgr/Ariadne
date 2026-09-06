@@ -4,43 +4,52 @@
 # a gap.
 id: EXP-2026-09-007
 slug: holdout-spend
-title: <one line, the question this answers>
-status: planned            # planned | running | complete | failed | superseded
+title: "Spending the 288-question holdout: does the arm comparison hold on questions no repair had seen?"
+status: complete           # planned | running | complete | failed | superseded
 date_started: 2026-09-05
-date_completed: null       # null until status is complete/failed
-authors: []
+date_completed: 2026-09-05       # null until status is complete/failed
+authors: [brendondgr]
 
 purpose: >
-  One paragraph. What question does this answer, and which paper claim
-  does it support or refute?
+  Six system defects and three measurement defects were found and fixed using the
+  DEV half of bank.json. Every headline in the paper is measured on the 284
+  questions that were used to find them. This spends the 288 held-back questions,
+  once, to ask whether those figures are a property of the system or of the
+  questions. Supports C-012 and the arm comparison; deliberately does NOT
+  strengthen C-021, because both halves share an author.
 
 hypothesis: >
-  Stated before the run. If exploratory, write "exploratory — no prior hypothesis".
+  H1 ordering preserved, generic > deterministic > llm_query, every gap above the
+  grader spread. H2 each arm within 0.08 of its dev value and deterministic within
+  0.05. H3 the D6 multi-hop reversal reproduces. H4 model-free recall no more than
+  0.05 below dev. H5 zero fabricated mappings on the model-free arms. Recorded in
+  PROTOCOL.md at 11:00 EDT, before any generic or llm_query holdout answer existed
+  and before any holdout judgment of any kind existed.
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
   commit: 514ddda8fcdb53d6fad9306c70e92a32dc3e5476          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
-  entrypoint: "<exact command>"
+  entrypoint: "scripts/holdout_seal.py --write-bank; scripts/holdout_run.py --arm deterministic generic llm_query; scripts/holdout_judge.py --grader qwen"
   dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
 data:
-  name: <dataset>
-  version: <version>
-  split: <split>
-  n_examples: 0
+  name: bank-holdout.json, cut from bank.json and hashed at seal time
+  version: "holdout_questions_sha256: 812ab787aaaed69addfd65f2c4bf9cc8d2f5f3c6a25c9ee3e2728dc3c812f6ed"
+  split: holdout (288 of 572; the complement of the 284-question dev half)
+  n_examples: 288
   dvc_path: null           # this repository does not use DVC; leave null
   hash: null               # md5:... or sha256:... of the dataset artifact
 seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
-n_runs: 1
+n_runs: 2   # two grading positions, swapped
 environment:
   python: "3.13"
   lockfile: env/requirements.lock
   container: null
 compute:
-  hardware: "<cpu/gpu, ram>"
+  hardware: "local vLLM: qwen38-27B-v2 on two GPUs behind :9090; gemma4-31B-mtp until 16:00"
   wall_clock_hours: 0.0
   estimated_cost_usd: 0.0
 
@@ -61,14 +70,30 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: <metric name>
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
-baselines_compared: []
-statistical_test: null
+  primary: generic_minus_deterministic_holdout
+  values:
+    generic_holdout: {mean: 0.6546, std: 0.0, n: 288}
+    deterministic_holdout: {mean: 0.4862, std: 0.0, n: 288}
+    llm_query_holdout: {mean: 0.4031, std: 0.0, n: 288}
+    generic_minus_deterministic_holdout: {mean: 0.1684, std: 0.0, n: 288}
+    generic_minus_llm_query_holdout: {mean: 0.2515, std: 0.0, n: 288}
+    deterministic_minus_llm_query_holdout: {mean: 0.0831, std: 0.0, n: 288}
+    max_arm_deviation_from_dev: {mean: 0.0250, std: 0.0, n: 3}
+    deterministic_deviation_from_dev: {mean: 0.0084, std: 0.0, n: 1}
+    recall_pooled_deterministic_holdout: {mean: 0.5414, std: 0.0, n: 263}
+    recall_reweighted_deterministic_holdout: {mean: 0.4865, std: 0.0, n: 263}
+    recall_pooled_generic_holdout: {mean: 0.6307, std: 0.0, n: 263}
+    recall_reweighted_generic_holdout: {mean: 0.7570, std: 0.0, n: 263}
+    census_weighted_repair_gain_holdout: {mean: 0.0017, std: 0.0, n: 34}
+    shapes_moved_of_34: {mean: 3.0, std: 0.0, n: 34}
+    d6_template_lead_holdout: {mean: 0.3344, std: 0.0, n: 1}
+    second_family_generic_minus_deterministic: {mean: 0.2053, std: 0.0, n: 288}
+baselines_compared: ["EXP-2026-09-005 dev half, same grader, same protocol"]
+statistical_test: "paired percentile bootstrap, 2000 resamples, seed 1729, utils/evaluation/stats.py::bootstrap_ci"
 
 # --- Linkage ---
-supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+supports_claims: [C-012, C-023]        # every ID here must exist in ../../CLAIMS.md
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
 superseded_by: null
-related: []
+related: [EXP-2026-09-003, EXP-2026-09-004, EXP-2026-09-005, EXP-2026-09-006]
