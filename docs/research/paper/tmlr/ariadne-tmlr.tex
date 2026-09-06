@@ -195,10 +195,36 @@ declared bridge. A verifier admits or rejects each candidate claim against
 retrieved records. A composer writes the answer.
 
 \paragraph{Where the model seams are.} A language model may plan; it may grade,
-in evaluation only; and it may compose prose, though the shipped default composes
-deterministically. \textbf{A language model never writes a query that reaches a
-store.}\claimref{C-007} The \texttt{llm\_query} arm of \S\ref{sec:generation}
-exists solely as a comparator and is not a shipped path.
+in evaluation only; and it may compose prose. \textbf{A language model never
+writes a query that reaches a store.}\claimref{C-007} The \texttt{llm\_query} arm
+of \S\ref{sec:generation} exists solely as a comparator and is not a shipped
+path.
+
+\paragraph{Which arms narrate, stated precisely.} The composition seam is where
+the arms differ, and the distinction is load-bearing for
+\S\ref{sec:limitations}. Each answer artifact records its own configuration:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+Arm & Query path & Composition (\texttt{run\_meta.synthesis}) \\
+\midrule
+\texttt{deterministic} & model-free & \texttt{deterministic} — model-free \\
+\texttt{generic}       & model-free & \texttt{llm (claim-grounded)} — \textbf{a model composes} \\
+\texttt{llm\_query}    & a model writes the query & \texttt{llm (claim-grounded)} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+So ``no model writes a query'' is exact, and ``the system is deterministic'' is
+not: \texttt{generic} — the arm carrying the primary result of
+\S\ref{sec:templates} — composes its prose with a language model, and its judged
+figures therefore carry a run-to-run variance we report as unmeasured in
+\S\ref{sec:limitations}. Only \texttt{deterministic} is model-free end to end,
+and that is verified rather than asserted: two full runs over the 284-question
+population are byte-identical in every field the scorer reads, differing only in
+wall-clock duration.\expref{EXP-2026-09-010}
 
 \paragraph{The verifier, ablated.} Each of the verifier's four claim gates was
 disabled individually over $888$ candidate claims. Disabling any single gate
@@ -506,10 +532,16 @@ Every item here is measured. Stating them is cheaper than being caught.
 \item \textbf{The holdout is a random split of a bank we authored.} It controls
       for tuning to particular questions. It does \emph{not} control for the
       co-authorship bias we ourselves measure in \S\ref{sec:coauthor}.
-\item \textbf{Several experiments were run once}, with seeds unrecorded. The
-      model-written-query arm in particular has not been run three times with
-      recorded seeds; until it has, \S\ref{sec:generation}'s sign rests on one
-      draw.
+\item \textbf{Several experiments were run once}, with seeds unrecorded, and this
+      applies to the arm carrying the primary result. \texttt{deterministic} is
+      exempt by measurement: it is byte-identical across two full runs in every
+      scored field, so a single run of it is sufficient by
+      construction.\expref{EXP-2026-09-010} \textbf{\texttt{generic} is not
+      exempt} — it composes with a language model
+      (\S\ref{sec:system}), so its figures in \S\ref{sec:templates} are single
+      draws of a stochastic process whose spread we have not yet measured. The
+      same holds for \texttt{llm\_query} in \S\ref{sec:generation}, which has a
+      model in the query path as well.
 \item \textbf{Two scoring faults left unfixed by design} (\S\ref{sec:design}).
       Both inflate scores.
 \item \textbf{Weighting matters}: the census-weighted repair gain is $+0.0017$
@@ -576,6 +608,13 @@ checkable by a reviewer; we list them rather than wait to be asked.
 \item Withdrawn figures remain in repository prose and must be retracted in place.
 \item Seeds are unrecorded on several runs; three seeded repeats of the
       model-written-query arm are owed.
+\item An internal protocol asserted that both the \texttt{deterministic} and
+      \texttt{generic} arms were model-free and could therefore be run once. The
+      artifacts contradict that for \texttt{generic}, whose composition seam
+      calls a language model. The assertion was never checked against a single
+      artifact before it was relied on, and the run-to-run spread of the arm
+      carrying the primary result is consequently still
+      unmeasured.\expref{EXP-2026-09-010}
 \end{enumerate}
 
 % =====================================================================
