@@ -11,6 +11,7 @@ that a dead end is walked into once rather than twice.
 | ID | Date | Title | Status | Primary metric | Claims | Link |
 |---|---|---|---|---|---|---|
 | `EXP-2026-09-008` | 2026-09-05 | <one line, the question this answers> | planned | <metric name> (not recorded) | — | [grader-calibration](experiments/EXP-2026-09-008-grader-calibration/) |
+| `EXP-2026-09-009` | 2026-09-06 | <one line, the question this answers> | planned | <metric name> (not recorded) | — | [llm-query-seeded-repeats](experiments/EXP-2026-09-009-llm-query-seeded-repeats/) |
 | `EXP-2026-07-001` | 2026-07-26 | Arm A — fully deterministic pipeline (planning, extraction, synthesis) | complete | correctness 0.9972 (n=1) | C-001, C-004 | [arm-a-deterministic](experiments/EXP-2026-07-001-arm-a-deterministic/) |
 | `EXP-2026-07-002` | 2026-07-26 | Arm B — LLM planning with deterministic extraction and an LLM writer | complete | correctness 0.8505 (n=1) | C-002, C-003, C-016 | [arm-b-llm-planned](experiments/EXP-2026-07-002-arm-b-llm-planned/) |
 | `EXP-2026-07-003` | 2026-07-26 | Arm C — authored plan with an LLM writer reading raw evidence | complete | correctness 0.9690 (n=1) | C-002, C-005 | [arm-c-llm-writer-evidence](experiments/EXP-2026-07-003-arm-c-llm-writer-evidence/) |
@@ -52,4 +53,4 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-09-007` | 2026-09-05 | Spending the 288-question holdout: does the arm comparison hold on questions no repair had seen? | complete | generic_minus_deterministic_holdout 0.1684 ± 0.0000 (n=288) | C-012, C-023 | [holdout-spend](experiments/EXP-2026-09-007-holdout-spend/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 
-**41 experiment(s) on record.**
+**42 experiment(s) on record.**
