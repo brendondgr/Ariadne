@@ -207,6 +207,47 @@ def test_total_pipeline_deadline_skips_late_specialists() -> None:
     assert (run.status, run.exit_code) == ("partial", 1)
 
 
+def test_expired_deadline_composes_deterministically_and_says_so() -> None:
+    """The budget binds at synthesis too, not only in the specialist loop.
+
+    A slow planner alone can spend the whole allowance; adding another full LLM
+    timeout on top to write prose for a run nobody is waiting on is the failure
+    this guards. The deterministic composer is instant and always available, so
+    an over-budget run uses it and announces the swap.
+    """
+    events = list(
+        iter_pipeline(
+            QUESTION,
+            agent=_agent(),
+            specialists=_specialists(),
+            synthesis_config=SynthesisConfig(llm_enabled=True),
+            timeout_s=-1.0,  # already expired
+        )
+    )
+    messages = [
+        p["message"] for e, p in events if e == "status" and "message" in p
+    ]
+    assert any("Total pipeline timeout exceeded" in m for m in messages), (
+        "an over-budget run must say why it stopped calling the model"
+    )
+    assert [e for e, _ in events][-1] == "done", "it still finishes with an answer"
+
+
+def test_within_budget_synthesis_is_left_alone() -> None:
+    """The check must not fire on a normal run."""
+    events = list(
+        iter_pipeline(
+            QUESTION,
+            agent=_agent(),
+            specialists=_specialists(),
+            synthesis_config=SYNTH,
+            timeout_s=600.0,
+        )
+    )
+    messages = [p["message"] for e, p in events if e == "status" and "message" in p]
+    assert not any("Total pipeline timeout exceeded" in m for m in messages)
+
+
 # -- determinism ----------------------------------------------------------------
 
 

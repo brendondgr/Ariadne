@@ -151,8 +151,12 @@ def test_dependency_skip_still_emits_start_then_result():
 def test_timeout_skips_emit_skipped_events():
     events = _events(timeout_s=-1.0)
     names = [e for e, _ in events]
+    # The second trailing `status` is the over-budget synthesis notice: past the
+    # deadline the composer drops to deterministic and says so rather than
+    # spending another whole LLM timeout on prose nobody is waiting for.
     assert names == ["status", "probe", "status", "status", "plan", "status",
-                     "skipped", "skipped", "evidence", "status", "assess", "answer", "done"]
+                     "skipped", "skipped", "evidence", "status", "assess",
+                     "status", "answer", "done"]
     for _, payload in [ev for ev in events if ev[0] == "skipped"]:
         assert set(payload) == {"sub_question", "source", "reason"}
         assert "timeout" in payload["reason"]

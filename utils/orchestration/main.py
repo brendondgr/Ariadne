@@ -181,8 +181,24 @@ def build_pipeline_graph(
     def synthesize_node(state: PipelineState) -> dict[str, Any]:
         run, plan, evidence = state["run"], state["plan"], state["evidence"]
         writer = get_stream_writer()
+        # The total-pipeline deadline binds here too, not only in the specialist
+        # loop. A run whose budget is already gone -- a slow planner alone can
+        # spend it -- must not then add another whole LLM timeout to write prose
+        # nobody is still waiting for. The deterministic composer is always
+        # available and instant, so the honest move is to use it and say so
+        # rather than to fail or to run on past the budget in silence.
+        config = synthesis_config
+        if time.monotonic() > state["deadline"]:
+            config = dataclasses.replace(synthesis_config, llm_enabled=False)
+            writer(("status", {
+                "phase": "answering",
+                "message": (
+                    "Total pipeline timeout exceeded; composing the answer "
+                    "deterministically instead of calling the model"
+                ),
+            }))
         t0 = time.monotonic()
-        answer = synthesize(evidence, synthesis_config)
+        answer = synthesize(evidence, config)
         synthesis_ms = round((time.monotonic() - t0) * 1000, 3)
         run.timings["synthesis_ms"] = synthesis_ms
         run.answer = answer
