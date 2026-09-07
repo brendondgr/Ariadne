@@ -101,6 +101,13 @@ def strip_clock(obj):
 TRANSIENT = ("Read timed out", "ConnectError", "Connection refused",
              "HTTPConnectionPool", "Max retries")
 
+#: How many transient/unknown failures a capture may carry and still be used.
+#: Those answers are EXCLUDED from the comparison rather than the whole capture
+#: being thrown away. Above this the capture is genuinely degraded (A-2 saw 60)
+#: and is discarded and retried.
+MAX_CORRUPT = 14          # 5% of 284
+
+
 #: Failures that are a reproducible property of the question and the model, and
 #: so appear IDENTICALLY in both captures. A context-length overflow at a fixed
 #: prompt is arithmetic, not weather. Discarding captures for these would mean
@@ -136,9 +143,16 @@ def degraded(root: Path) -> dict:
     # "unknown" counts as corrupting: an unclassified failure is not something
     # to assume is reproducible.
     blocking = kinds["transient"] + kinds["unknown"]
+    # A capture is USABLE if corruption is rare enough to exclude case-by-case.
+    # Demanding zero was wrong: at the observed ~0.7% per-answer transient rate,
+    # P(a capture has none) is 0.13, so requiring two perfect captures inside
+    # three attempts each succeeds about 12% of the time. The comparison does
+    # not need perfect captures -- it needs to know WHICH answers to exclude.
     return {"answers": len(files), "fallback_non_null": sum(kinds.values()),
             "by_kind": kinds, "reasons": reasons,
-            "clean": blocking == 0 and len(files) >= N_EXPECT}
+            "corrupt_rate": round(blocking / max(len(files), 1), 4),
+            "clean": blocking == 0 and len(files) >= N_EXPECT,
+            "usable": blocking <= MAX_CORRUPT and len(files) >= N_EXPECT}
 
 
 def run_once(tag: str, attempt: int, workers: int) -> dict:
@@ -180,6 +194,11 @@ def capture(tag: str, attempts: int, workers: int, st: dict) -> Path | None:
               f"{r['fallback_non_null']} {r['by_kind']}, "
               f"clean={r['clean']}", flush=True)
         if r["clean"]:
+            return Path(r["root"])
+        if r["usable"]:
+            print(f"   usable with exclusions: {r['by_kind']['transient']} "
+                  f"transient + {r['by_kind']['unknown']} unknown answers will be "
+                  f"dropped from the comparison", flush=True)
             return Path(r["root"])
         print(f"   DEGRADED, discarding: {json.dumps(r['reasons'])[:200]}",
               flush=True)
@@ -229,10 +248,18 @@ def main() -> int:
 
     names = sorted({p.name for p in (a / ARM / "answers").glob("*.json")}
                    & {p.name for p in (b / ARM / "answers").glob("*.json")})
-    same, paths = 0, {}
+    same, paths, excluded = 0, {}, []
     for n in names:
-        x = strip_clock(json.loads((a / ARM / "answers" / n).read_text()))
-        y = strip_clock(json.loads((b / ARM / "answers" / n).read_text()))
+        ja = json.loads((a / ARM / "answers" / n).read_text())
+        jb = json.loads((b / ARM / "answers" / n).read_text())
+        # An answer whose narration failed transiently in EITHER capture cannot
+        # speak to whether the arm is deterministic; it speaks to the endpoint.
+        ra = str((ja.get("answer") or {}).get("fallback_reason") or "")
+        rb = str((jb.get("answer") or {}).get("fallback_reason") or "")
+        if any(r and classify(r) in ("transient", "unknown") for r in (ra, rb)):
+            excluded.append(n)
+            continue
+        x, y = strip_clock(ja), strip_clock(jb)
         if x == y:
             same += 1
         else:
@@ -241,20 +268,25 @@ def main() -> int:
 
     scored = sorted(p for p in paths
                     if any(m in p.lower() for m in SCORED_MARKERS))
+    compared = len(names) - len(excluded)
     st["comparison"] = {
-        "compared": len(names), "identical": same,
-        "identity_rate": round(same / len(names), 4) if names else None,
+        "answers_seen": len(names),
+        "excluded_transient": len(excluded),
+        "excluded_cases": excluded[:20],
+        "compared": compared, "identical": same,
+        "identity_rate": round(same / compared, 4) if compared else None,
         "differing_paths": dict(sorted(paths.items(), key=lambda kv: -kv[1])[:25]),
         "paths_in_scored_fields": scored,
         "h3_holds": not scored,
-        "verdict": ("content-identical" if same == len(names)
+        "verdict": ("content-identical" if same == compared
                     else ("non-scored jitter" if not scored
                           else "DIFFERS IN A SCORED FIELD")),
     }
     STATE.write_text(json.dumps(st, indent=1) + "\n")
     c = st["comparison"]
-    print(f"\ngeneric (clean captures): {c['identical']}/{c['compared']} "
-          f"identical, verdict {c['verdict']}", flush=True)
+    print(f"\ngeneric: {c['identical']}/{c['compared']} identical "
+          f"({c['excluded_transient']} excluded for transient narration failure), "
+          f"verdict {c['verdict']}", flush=True)
     if paths:
         print("differing paths:", json.dumps(c["differing_paths"], indent=1),
               flush=True)
