@@ -13,6 +13,8 @@ import os
 from dataclasses import dataclass
 
 from utils.config import env_bool, env_int, env_str
+from utils.llm.config import LLMSettings, settings_from_legacy
+from utils.llm.config import resolve as resolve_llm
 
 DEFAULT_LLM_BASE_URL = "http://localhost:9090/v1"
 DEFAULT_LLM_MODEL = "default-model"
@@ -77,25 +79,40 @@ class SynthesisConfig:
     llm_claims: bool = False
 
     def thinking_budget(self) -> int:
-        """The reasoning-token cap to send, deriving half of max_tokens if unset."""
-        return self.llm_thinking_budget or (self.llm_max_tokens // 2)
+        """The reasoning-token cap to send. 0 means "send no cap".
+
+        This used to return ``llm_max_tokens // 2`` when unset, which made the
+        budget move whenever the token cap moved and gave the project a third
+        source of truth for one number (the others being the global
+        ``LLM_THINKING_BUDGET`` and this field). A default that changes in
+        response to an unrelated field is not a default, so the derivation is
+        gone: the value is whatever ``ARIADNE_LLM_THINKING_BUDGET`` or
+        ``SYNTHESIS_LLM_THINKING_BUDGET`` says, and 0 -- which is what every run
+        predating the cap sent -- means no cap at all.
+
+        BEHAVIOUR CHANGE: a deployment that set ``SYNTHESIS_LLM_MAX_TOKENS`` and
+        left the budget unset previously got half of it implicitly and now gets
+        no cap. Set the budget explicitly to keep one.
+        """
+        return self.llm_thinking_budget
 
     @classmethod
     def from_env(cls) -> "SynthesisConfig":
         """Build a config from the environment with documented fallbacks."""
-        llm_enabled = os.environ.get("SYNTHESIS_LLM_ENABLED", "").strip().lower() in {
-            "1",
-            "true",
-            "yes",
-            "on",
-        }
+        llm = resolve_llm(
+            "synthesis",
+            defaults=LLMSettings(
+                base_url=DEFAULT_LLM_BASE_URL, model=DEFAULT_LLM_MODEL,
+                timeout_s=30.0, max_tokens=4096,
+            ),
+        )
         return cls(
-            llm_enabled=llm_enabled,
-            llm_base_url=env_str("SYNTHESIS_LLM_BASE_URL", DEFAULT_LLM_BASE_URL),
-            llm_model=env_str("SYNTHESIS_LLM_MODEL", DEFAULT_LLM_MODEL),
-            llm_timeout_s=_env_float("SYNTHESIS_LLM_TIMEOUT_S", 30.0),
-            llm_max_tokens=env_int("SYNTHESIS_LLM_MAX_TOKENS", 4096),
-            llm_thinking_budget=env_int("SYNTHESIS_LLM_THINKING_BUDGET", 0),
+            llm_enabled=llm.enabled,
+            llm_base_url=llm.base_url,
+            llm_model=llm.model,
+            llm_timeout_s=llm.timeout_s,
+            llm_max_tokens=llm.max_tokens,
+            llm_thinking_budget=llm.thinking_budget,
             max_citations=env_int("SYNTHESIS_MAX_CITATIONS", 8),
             gate_cited=env_bool("VERIFY_GATE_CITED", True),
             gate_resolvable=env_bool("VERIFY_GATE_RESOLVABLE", True),
@@ -103,6 +120,10 @@ class SynthesisConfig:
             gate_correlated=env_bool("VERIFY_GATE_CORRELATED", True),
             llm_claims=env_bool("SYNTHESIS_LLM_CLAIMS", False),
         )
+
+    def llm_settings(self) -> LLMSettings:
+        """Transport settings for this config (adds provider + credentials)."""
+        return settings_from_legacy(self, "synthesis")
 
     def gates_all_on(self) -> bool:
         """True when no gate is ablated — the condition every figure assumes."""

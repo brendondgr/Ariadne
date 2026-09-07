@@ -320,12 +320,29 @@ class LLMSettings:
 # --------------------------------------------------------------------------- #
 
 
+#: Pre-existing global names that mean the same thing as an ``ARIADNE_LLM_*``
+#: field. They are read at the primary scope only, *after* the canonical name, so
+#: an .env or a script that sets the old spelling keeps working unchanged.
+#: ``LLM_THINKING_BUDGET`` matters most: five recorded runs under ``scripts/`` set
+#: it, and ``holdout_run.py`` deliberately pops it, so silently ignoring it would
+#: change what those arms did without changing what they claim to have done.
+LEGACY_ALIASES: dict[str, tuple[str, ...]] = {
+    "thinking_budget": ("LLM_THINKING_BUDGET",),
+    "api_key": ("ARIADNE_LLM_API_KEY", "OPENAI_API_KEY"),
+}
+
+
 def _raw(field_name: str, stage: str | None) -> str | None:
     """The raw env value at one scope, or ``None`` when unset/empty."""
     value = os.environ.get(env_key(field_name, stage))
-    if value is None or value.strip() == "":
-        return None
-    return value
+    if value is not None and value.strip() != "":
+        return value
+    if stage is None:
+        for alias in LEGACY_ALIASES.get(field_name, ()):
+            legacy = os.environ.get(alias)
+            if legacy is not None and legacy.strip() != "":
+                return legacy
+    return None
 
 
 def _stage_overrides(stage: str) -> set[str]:
@@ -443,3 +460,51 @@ def resolve_all(*, clamp: bool = True) -> dict[str, LLMSettings]:
     for stage in STAGES:
         resolved[stage] = resolve(stage, clamp=clamp)
     return resolved
+
+
+# --------------------------------------------------------------------------- #
+# Bridge to the pre-existing per-agent config dataclasses
+# --------------------------------------------------------------------------- #
+#
+# ``PlannerConfig``, ``SpecialistConfig``, ``SynthesisConfig``, ``EvalConfig`` and
+# ``ConversationLLMConfig`` each carry their own ``llm_base_url`` / ``llm_model``
+# / ``llm_timeout_s`` / ``llm_max_tokens`` fields, and dozens of tests construct
+# them directly with explicit values. Those fields stay: rewriting every
+# construction site would be a large diff across the graded path for no
+# behavioural gain, and the recorded arms depend on that path not moving.
+#
+# So the two representations are bridged rather than merged. ``from_env`` fills
+# the legacy fields *through* :func:`resolve`, which is what gives every stage
+# inheritance from ``ARIADNE_LLM_*``; and :func:`settings_from_legacy` rebuilds
+# an :class:`LLMSettings` from those fields when a transport needs the provider
+# and credentials the legacy shape has no room for. A test that hand-builds a
+# config with an explicit base_url therefore still drives the transport to that
+# URL, which is what keeps the existing suite meaningful.
+
+
+def settings_from_legacy(config: object, stage: str) -> LLMSettings:
+    """Build transport settings from a legacy config's ``llm_*`` attributes.
+
+    Endpoint, model, timeout and budgets come from the config object, so an
+    explicitly-constructed config (as in tests, and as in the experiment scripts
+    that pin a stage's timeout) wins. Provider, credentials and the connect
+    timeout have no legacy field to read, so they resolve from the environment.
+    """
+    resolved = resolve(stage, clamp=False)
+
+    max_tokens = int(getattr(config, "llm_max_tokens", resolved.max_tokens))
+    budget = int(getattr(config, "llm_thinking_budget", resolved.thinking_budget))
+
+    return LLMSettings(
+        enabled=bool(getattr(config, "llm_enabled", resolved.enabled)),
+        provider=resolved.provider,
+        base_url=str(getattr(config, "llm_base_url", resolved.base_url)),
+        model=str(getattr(config, "llm_model", resolved.model)),
+        api_key=resolved.api_key,
+        timeout_s=float(getattr(config, "llm_timeout_s", resolved.timeout_s)),
+        max_tokens=max_tokens,
+        thinking_budget=budget,
+        connect_timeout_s=resolved.connect_timeout_s,
+        stage=stage,
+        inherited=resolved.inherited,
+    ).clamped()

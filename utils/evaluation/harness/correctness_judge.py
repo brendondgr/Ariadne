@@ -30,6 +30,8 @@ import logging
 from typing import Protocol
 
 from utils.evaluation.harness.contracts import LABELS, AnswerRecord, CorrectnessVerdict
+from utils.llm import LLMUnavailable
+from utils.llm import chat as llm_chat
 from utils.evaluation.harness.ids import canonical_set
 from utils.evaluation.llm_judge.config import EvalConfig
 from utils.evaluation.llm_judge.llm_judge import extract_json_object
@@ -244,29 +246,20 @@ class LocalLLMCorrectness:
         return self._config.llm_base_url.rstrip("/") + "/chat/completions"
 
     def _post(self, messages: list[dict[str, str]]) -> str:
-        import requests
-
-        payload = {
-            "model": self._config.llm_model,
-            "messages": messages,
-            "temperature": 0,
-            "max_tokens": self._config.llm_max_tokens,
-        }
+        """One completion, or ``CorrectnessUnavailable`` for the caller to record."""
+        settings = self._config.llm_settings()
         try:
-            resp = requests.post(
-                self.endpoint, json=payload, timeout=self._config.llm_timeout_s
+            result = llm_chat(
+                settings, messages, max_tokens=settings.max_tokens, temperature=0
             )
-        except requests.RequestException as exc:
-            raise CorrectnessUnavailable(f"request failed: {exc}") from exc
-        if resp.status_code != 200:
-            raise CorrectnessUnavailable(f"HTTP {resp.status_code}: {resp.text[:200]}")
-        try:
-            content = resp.json()["choices"][0]["message"]["content"]
-        except (ValueError, KeyError, IndexError, TypeError) as exc:
-            raise CorrectnessUnavailable(f"unexpected response shape: {exc}") from exc
-        if not content:
-            raise CorrectnessUnavailable("model returned no content (raise max_tokens?)")
-        return content
+        except LLMUnavailable as exc:
+            raise CorrectnessUnavailable(str(exc)) from exc
+        if not result.content:
+            raise CorrectnessUnavailable(
+                "model returned no content"
+                + (" — it was cut off at its output budget" if result.truncated else "")
+            )
+        return result.content
 
     def judge(self, record: AnswerRecord) -> CorrectnessVerdict:
         messages = build_correctness_messages(record)

@@ -53,6 +53,9 @@ from typing import Any
 
 from utils.specialists.resolve import ResolvedTask
 from utils.specialists.validation import QueryDraft
+from utils.llm import LLMSettings, LLMUnavailable
+from utils.llm import chat as llm_chat
+from utils.llm.config import resolve as resolve_llm
 from utils.llm_sampling import sampling_params
 
 #: This arm's model configuration reuses the `SPECIALIST_LLM_*` block that
@@ -208,36 +211,40 @@ class LLMQueryBuilder:
     # -- transport ---------------------------------------------------------
 
     def _post(self, prompt: str) -> str:
-        import requests
+        """One completion through the shared transport.
 
-        payload = {
-            "model": self.model,
-            "messages": [{"role": "user", "content": prompt}],
-            **sampling_params(
-                max_tokens=self.max_tokens
-                if self.max_tokens is not None
-                else default_max_tokens()
-            ),
-        }
+        This builder is an experimental arm and carries its own endpoint
+        defaults (``:4000``, a 180 s clock), so it keeps its own fields rather
+        than resolving a stage — but it picks up provider support and
+        credentials by going through ``utils.llm`` like everything else.
+        """
+        budget = self.max_tokens if self.max_tokens is not None else default_max_tokens()
+        settings = LLMSettings(
+            provider=resolve_llm("specialist", clamp=False).provider,
+            base_url=self.base_url,
+            model=self.model,
+            api_key=resolve_llm("specialist", clamp=False).api_key,
+            timeout_s=self.timeout_s,
+            max_tokens=budget,
+            stage="specialist",
+        )
         try:
-            response = requests.post(
-                f"{self.base_url.rstrip('/')}/chat/completions",
-                json=payload,
-                timeout=self.timeout_s,
+            result = llm_chat(
+                settings,
+                [{"role": "user", "content": prompt}],
+                max_tokens=budget,
+                sampling=sampling_params(max_tokens=budget),
             )
-        except requests.RequestException as exc:
-            raise LLMBuilderUnavailable(f"request failed: {exc}") from exc
-        if response.status_code != 200:
-            raise LLMBuilderUnavailable(f"HTTP {response.status_code}: {response.text[:200]}")
-        try:
-            content = response.json()["choices"][0]["message"]["content"]
-        except (ValueError, KeyError, IndexError, TypeError) as exc:
-            raise LLMBuilderUnavailable(f"unexpected response shape: {exc}") from exc
-        if not content:
+        except LLMUnavailable as exc:
+            raise LLMBuilderUnavailable(str(exc)) from exc
+        if not result.content:
             # The local reasoning models spend their budget before emitting and
             # return an empty string, which reads exactly like a dead endpoint.
-            raise LLMBuilderUnavailable("model returned no content (raise max_tokens?)")
-        return content
+            raise LLMBuilderUnavailable(
+                "model returned no content"
+                + (" — it was cut off at its output budget" if result.truncated else "")
+            )
+        return result.content
 
     # -- the protocol ------------------------------------------------------
 

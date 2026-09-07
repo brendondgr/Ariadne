@@ -17,6 +17,8 @@ from __future__ import annotations
 
 import json
 import logging
+from utils.llm import LLMUnavailable
+from utils.llm import chat as llm_chat
 from utils.llm_sampling import sampling_params
 from typing import TYPE_CHECKING
 
@@ -190,29 +192,32 @@ class OpenAICompatibleDrafter:
         return self._config.llm_base_url.rstrip("/") + "/chat/completions"
 
     def _post(self, messages: list[dict[str, str]]) -> str:
-        import requests
+        """One completion, or ``DrafterUnavailable`` so the caller falls back.
 
-        payload = {
-            "model": self._config.llm_model,
-            "messages": messages,
-            **sampling_params(max_tokens=self._config.llm_max_tokens),
-        }
+        Transport goes through ``utils.llm`` rather than a local ``requests.post``
+        so this path gains provider support and credentials without the prompt or
+        the parsing moving. For an unauthenticated OpenAI-compatible endpoint the
+        request on the wire is unchanged.
+        """
+        settings = self._config.llm_settings()
         try:
-            resp = requests.post(
-                self.endpoint, json=payload, timeout=self._config.llm_timeout_s
+            result = llm_chat(
+                settings,
+                messages,
+                max_tokens=settings.max_tokens,
+                sampling=sampling_params(
+                    max_tokens=settings.max_tokens,
+                    thinking_budget=settings.thinking_budget,
+                ),
             )
-        except requests.RequestException as exc:
-            raise DrafterUnavailable(f"request failed: {exc}") from exc
-        if resp.status_code != 200:
-            raise DrafterUnavailable(f"HTTP {resp.status_code}: {resp.text[:200]}")
-        try:
-            body = resp.json()
-            content = body["choices"][0]["message"]["content"]
-        except (ValueError, KeyError, IndexError, TypeError) as exc:
-            raise DrafterUnavailable(f"unexpected response shape: {exc}") from exc
-        if not content:
-            raise DrafterUnavailable("model returned no content (raise max_tokens?)")
-        return content
+        except LLMUnavailable as exc:
+            raise DrafterUnavailable(str(exc)) from exc
+        if not result.content:
+            raise DrafterUnavailable(
+                "model returned no content"
+                + (" — it was cut off at its output budget" if result.truncated else "")
+            )
+        return result.content
 
     def draft(
         self,

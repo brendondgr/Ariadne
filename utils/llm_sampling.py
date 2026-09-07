@@ -36,7 +36,9 @@ from utils.config import env_int
 DEFAULT_SEED = 1729
 
 
-def sampling_params(*, max_tokens: int, seed: int | None = None) -> dict[str, object]:
+def sampling_params(
+    *, max_tokens: int, seed: int | None = None, thinking_budget: int | None = None
+) -> dict[str, object]:
     """The graded-call sampling block: greedy, seeded, bounded.
 
     Callers spread this into their request payload rather than restating the
@@ -61,7 +63,20 @@ def sampling_params(*, max_tokens: int, seed: int | None = None) -> dict[str, ob
     # Sent through the two channels vLLM accepts, since which one applies
     # depends on the served model's chat template; an endpoint that understands
     # neither ignores both rather than failing, so this is safe to send always.
-    budget = env_int("LLM_THINKING_BUDGET", 0)
+    # The budget is resolved by utils.llm.config, which is now the single source
+    # for it -- there used to be three (this env read, SYNTHESIS_LLM_THINKING_
+    # BUDGET, and an implicit max_tokens // 2 inside SynthesisConfig). Callers
+    # that hold resolved settings pass the value; the env read stays as the
+    # fallback for the scripts that set LLM_THINKING_BUDGET directly, and
+    # utils.llm.config honours that same name as a legacy alias so both paths
+    # agree.
+    budget = env_int("LLM_THINKING_BUDGET", 0) if thinking_budget is None else thinking_budget
+    if budget > 0:
+        # A budget at or above the output cap leaves nothing for the answer and
+        # the model returns empty content -- which reaches a caller as a silent
+        # "LLM unavailable" rather than an error. Refuse to send that.
+        if budget >= max_tokens:
+            budget = max(0, max_tokens - 1)
     if budget > 0:
         params["chat_template_kwargs"] = {"thinking_budget": budget}
         params["extra_body"] = {"thinking_budget": budget}

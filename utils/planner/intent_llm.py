@@ -24,6 +24,8 @@ from .intent import (
     IntentClassifier,
 )
 from .llm_drafter import DrafterUnavailable, extract_json_object
+from utils.llm import LLMUnavailable
+from utils.llm import chat as llm_chat
 from utils.llm_sampling import sampling_params
 
 logger = logging.getLogger("ariadne.planner.intent")
@@ -65,31 +67,30 @@ class LLMIntentClassifier:
         return self._config.llm_base_url.rstrip("/") + "/chat/completions"
 
     def _post(self, request: str) -> str:
-        import requests
-
-        payload = {
-            "model": self._config.llm_model,
-            "messages": [
-                {"role": "system", "content": _SYSTEM_PROMPT},
-                {"role": "user", "content": f"ANALYST REQUEST:\n{request}"},
-            ],
-            **sampling_params(max_tokens=self._config.llm_max_tokens),
-        }
+        """One completion, or ``ClassifierUnavailable`` so the caller falls back."""
+        settings = self._config.llm_settings()
+        messages = [
+            {"role": "system", "content": _SYSTEM_PROMPT},
+            {"role": "user", "content": f"ANALYST REQUEST:\n{request}"},
+        ]
         try:
-            resp = requests.post(
-                self.endpoint, json=payload, timeout=self._config.llm_timeout_s
+            result = llm_chat(
+                settings,
+                messages,
+                max_tokens=settings.max_tokens,
+                sampling=sampling_params(
+                    max_tokens=settings.max_tokens,
+                    thinking_budget=settings.thinking_budget,
+                ),
             )
-        except requests.RequestException as exc:
-            raise ClassifierUnavailable(f"request failed: {exc}") from exc
-        if resp.status_code != 200:
-            raise ClassifierUnavailable(f"HTTP {resp.status_code}: {resp.text[:200]}")
-        try:
-            content = resp.json()["choices"][0]["message"]["content"]
-        except (ValueError, KeyError, IndexError, TypeError) as exc:
-            raise ClassifierUnavailable(f"unexpected response shape: {exc}") from exc
-        if not content:
-            raise ClassifierUnavailable("model returned no content (raise max_tokens?)")
-        return content
+        except LLMUnavailable as exc:
+            raise ClassifierUnavailable(str(exc)) from exc
+        if not result.content:
+            raise ClassifierUnavailable(
+                "model returned no content"
+                + (" — it was cut off at its output budget" if result.truncated else "")
+            )
+        return result.content
 
     def classify(self, request: str, cards=None) -> IntentClassification:
         content = self._post(request or "")

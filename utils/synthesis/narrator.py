@@ -22,6 +22,8 @@ from utils.specialists.federation import FederatedEvidence
 
 from .config import SynthesisConfig
 from .llm_composer import ComposerUnavailable, build_evidence_context
+from utils.llm import LLMUnavailable
+from utils.llm import chat as llm_chat
 from utils.llm_sampling import sampling_params
 
 logger = logging.getLogger("ariadne.synthesis.narrator")
@@ -139,27 +141,26 @@ def compose_narrative(
     evidence: FederatedEvidence, config: SynthesisConfig, answer: Any | None = None
 ) -> str:
     """Return a short prose answer from the LLM, or raise ``ComposerUnavailable``."""
-    import requests
-
-    endpoint = config.llm_base_url.rstrip("/") + "/chat/completions"
-    payload = {
-        "model": config.llm_model,
-        "messages": build_narrator_messages(evidence, answer),
-        **sampling_params(max_tokens=config.llm_max_tokens),
-        "thinking_token_budget": config.thinking_budget(),
-    }
+    settings = config.llm_settings()
+    sampling = sampling_params(
+        max_tokens=settings.max_tokens, thinking_budget=settings.thinking_budget
+    )
+    if settings.thinking_budget:
+        sampling["thinking_token_budget"] = settings.thinking_budget
     try:
-        resp = requests.post(endpoint, json=payload, timeout=config.llm_timeout_s)
-    except requests.RequestException as exc:
-        raise ComposerUnavailable(f"request failed: {exc}") from exc
-    if resp.status_code != 200:
-        raise ComposerUnavailable(f"HTTP {resp.status_code}: {resp.text[:200]}")
-    try:
-        content = resp.json()["choices"][0]["message"]["content"]
-    except (ValueError, KeyError, IndexError, TypeError) as exc:
-        raise ComposerUnavailable(f"unexpected response shape: {exc}") from exc
-    text = (content or "").strip()
+        result = llm_chat(
+            settings,
+            build_narrator_messages(evidence, answer),
+            max_tokens=settings.max_tokens,
+            sampling=sampling,
+        )
+    except LLMUnavailable as exc:
+        raise ComposerUnavailable(str(exc)) from exc
+    text = result.content.strip()
     if not text:
-        raise ComposerUnavailable("model returned no content (raise max_tokens?)")
+        raise ComposerUnavailable(
+            "model returned no content"
+            + (" — it was cut off at its output budget" if result.truncated else "")
+        )
     logger.info("LLM narrated a %d-char answer", len(text))
     return text

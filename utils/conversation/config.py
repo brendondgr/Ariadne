@@ -15,6 +15,8 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 
 from utils.config import data_dir, env_bool, env_int, env_str
+from utils.llm.config import LLMSettings, settings_from_legacy
+from utils.llm.config import resolve as resolve_llm
 
 # Default database file, relative to the resolved data directory.
 DEFAULT_DB_NAME = "conversations.sqlite3"
@@ -61,6 +63,37 @@ class ConversationLLMConfig:
     model: str = DEFAULT_LLM_MODEL
     timeout_s: float = 30.0
     max_tokens: int = 1024
+    #: Reasoning-token cap. 0 means "send no cap"; a positive value must stay
+    #: below ``max_tokens`` or the model spends its whole allowance thinking and
+    #: returns empty content.
+    thinking_budget: int = 0
+
+    # The bridge in utils.llm.config reads the ``llm_*`` spelling every other
+    # stage's config uses. This group predates that convention and names its
+    # fields bare, so the aliases below let one helper serve all five.
+    @property
+    def llm_enabled(self) -> bool:
+        return self.enabled
+
+    @property
+    def llm_base_url(self) -> str:
+        return self.base_url
+
+    @property
+    def llm_model(self) -> str:
+        return self.model
+
+    @property
+    def llm_timeout_s(self) -> float:
+        return self.timeout_s
+
+    @property
+    def llm_max_tokens(self) -> int:
+        return self.max_tokens
+
+    @property
+    def llm_thinking_budget(self) -> int:
+        return self.thinking_budget
 
     @property
     def endpoint(self) -> str:
@@ -68,35 +101,48 @@ class ConversationLLMConfig:
 
     @classmethod
     def from_env(cls) -> "ConversationLLMConfig":
-        # Inherit the endpoint/model the operator already configured for the
-        # pipeline (the synthesis LLM group) so the conversation layer uses the
-        # same single LLM without a second round of setup. ``CONVERSATION_LLM_*``
-        # still overrides when an operator wants a distinct endpoint.
+        # This group used to chain CONVERSATION_LLM_* -> SYNTHESIS_LLM_* by hand,
+        # which is how the chat pane ended up configured by a field labelled
+        # "synthesis" in a settings modal that did not list the conversation
+        # layer at all. The chain now goes through utils.llm like every other
+        # stage: CONVERSATION_LLM_* -> ARIADNE_LLM_* -> the built-in default.
+        #
+        # SYNTHESIS_LLM_* survives as the *default* rather than as a link in the
+        # lookup chain, which is the compatibility case that matters: an existing
+        # .env that sets only the synthesis group resolves exactly as it did.
+        # Once ARIADNE_LLM_* is set it wins over synthesis here, and that is
+        # deliberate -- conversation is its own stage, and following another
+        # stage's override was the hack that made the chat pane configurable
+        # only through a field labelled "synthesis". An operator who genuinely
+        # wants the two on one endpoint sets the primary group, and the modal
+        # shows synthesis as "custom" so the override is visible rather than
+        # inferred.
+        synthesis = resolve_llm(
+            "synthesis",
+            defaults=LLMSettings(
+                base_url=DEFAULT_LLM_BASE_URL, model=DEFAULT_LLM_MODEL,
+                timeout_s=30.0, max_tokens=1024,
+            ),
+        )
+        llm = resolve_llm("conversation", defaults=synthesis)
         return cls(
             enabled=env_bool("CONVERSATION_LLM_ENABLED", False),
-            base_url=env_str(
-                "CONVERSATION_LLM_BASE_URL",
-                env_str("SYNTHESIS_LLM_BASE_URL", DEFAULT_LLM_BASE_URL),
-            ),
-            model=env_str(
-                "CONVERSATION_LLM_MODEL",
-                env_str("SYNTHESIS_LLM_MODEL", DEFAULT_LLM_MODEL),
-            ),
-            timeout_s=_env_float(
-                "CONVERSATION_LLM_TIMEOUT_S",
-                _env_float("SYNTHESIS_LLM_TIMEOUT_S", 30.0),
-            ),
+            base_url=llm.base_url,
+            model=llm.model,
+            timeout_s=llm.timeout_s,
             # Inherit the synthesis output budget (like base_url/model/timeout)
             # so the answer agent honors the single max-tokens knob the operator
             # already raised. Without this fallback the visible answer stays
             # pinned at 1024 no matter what SYNTHESIS_LLM_MAX_TOKENS is set to,
             # and long replies get chopped mid-sentence. CONVERSATION_LLM_MAX_TOKENS
             # still overrides when an operator wants a distinct answer budget.
-            max_tokens=env_int(
-                "CONVERSATION_LLM_MAX_TOKENS",
-                env_int("SYNTHESIS_LLM_MAX_TOKENS", 1024),
-            ),
+            max_tokens=llm.max_tokens,
+            thinking_budget=llm.thinking_budget,
         )
+
+    def llm_settings(self) -> LLMSettings:
+        """Transport settings for this config (adds provider + credentials)."""
+        return settings_from_legacy(self, "conversation")
 
 
 @dataclass(frozen=True)

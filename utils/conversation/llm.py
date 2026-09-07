@@ -25,6 +25,8 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from utils.conversation.config import ConversationLLMConfig
+from utils.llm import LLMUnavailable as TransportUnavailable
+from utils.llm import chat as llm_chat
 
 logger = logging.getLogger("ariadne.conversation.llm")
 
@@ -85,41 +87,33 @@ class ConversationLLM:
         if not self._config.enabled:
             raise LLMUnavailable("conversation LLM disabled")
 
-        import requests
-
-        budget = max_tokens or self._config.max_tokens
-        payload = {
-            "model": self._config.model,
-            "messages": messages,
-            "temperature": temperature,
-            "max_tokens": budget,
-        }
+        settings = self._config.llm_settings()
+        budget = max_tokens or settings.max_tokens
         try:
-            resp = requests.post(
-                self._config.endpoint, json=payload, timeout=self._config.timeout_s
+            completion = llm_chat(
+                settings, messages, max_tokens=budget, temperature=temperature
             )
-        except requests.RequestException as exc:  # pragma: no cover - network
-            raise LLMUnavailable(f"request failed: {exc}") from exc
-        if resp.status_code != 200:
-            raise LLMUnavailable(f"HTTP {resp.status_code}: {resp.text[:200]}")
-        try:
-            body = resp.json()
-            choice = body["choices"][0]
-            # ``content`` is null (not just absent) on some servers' length stops.
-            content = choice["message"].get("content")
-            finish_reason = str(choice.get("finish_reason") or "")
-        except (ValueError, KeyError, IndexError, TypeError) as exc:
-            raise LLMUnavailable(f"unexpected response shape: {exc}") from exc
+        except TransportUnavailable as exc:
+            # Re-raised as this module's own LLMUnavailable so every caller's
+            # existing `except LLMUnavailable` keeps working unchanged.
+            raise LLMUnavailable(str(exc)) from exc
 
-        usage = body.get("usage") or {}
+        usage = {
+            "prompt_tokens": completion.usage.prompt_tokens,
+            "completion_tokens": completion.usage.completion_tokens,
+            "total_tokens": completion.usage.total_tokens,
+        } if completion.usage.reported else {}
         result = CompletionResult(
-            content=content or "", finish_reason=finish_reason, usage=usage
+            content=completion.content,
+            finish_reason=completion.finish_reason,
+            usage=usage,
         )
         if result.truncated:
             logger.warning(
                 "conversation LLM output truncated (finish_reason=length): "
                 "prompt_tokens=%s completion_tokens=%s max_tokens=%s — raise "
-                "CONVERSATION_LLM_MAX_TOKENS or the model's context window",
+                "ARIADNE_LLM_MAX_TOKENS (or this stage's override) or the "
+                "model's context window",
                 usage.get("prompt_tokens"),
                 usage.get("completion_tokens"),
                 budget,

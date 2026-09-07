@@ -40,7 +40,11 @@ def _text_response(text: str) -> object:
 def _stub_post(monkeypatch, response=None, exc=None):
     calls: list[dict] = []
 
-    def fake_post(url, json=None, timeout=None):  # noqa: A002 - requests API shape
+    # **kwargs because the shared transport in utils.llm.client sends `headers`
+    # (an Authorization only materializes when a key is configured) and a
+    # (connect, read) timeout tuple. The stand-in must accept what the real
+    # requests.post accepts, or a signature mismatch reads as a transport bug.
+    def fake_post(url, json=None, timeout=None, **kwargs):  # noqa: A002 - requests API shape
         calls.append({"url": url, "payload": json})
         if exc is not None:
             raise exc

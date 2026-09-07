@@ -15,6 +15,8 @@ import os
 from dataclasses import dataclass
 
 from utils.config import env_int, env_str
+from utils.llm.config import LLMSettings, settings_from_legacy
+from utils.llm.config import resolve as resolve_llm
 
 DEFAULT_LLM_BASE_URL = "http://localhost:9090/v1"
 DEFAULT_LLM_MODEL = "default-model"
@@ -54,18 +56,23 @@ class EvalConfig:
     @classmethod
     def from_env(cls) -> "EvalConfig":
         """Build a config from the environment with documented fallbacks."""
-        llm_enabled = os.environ.get("EVAL_LLM_ENABLED", "").strip().lower() in {
-            "1",
-            "true",
-            "yes",
-            "on",
-        }
+        llm = resolve_llm(
+            "eval",
+            defaults=LLMSettings(
+                base_url=DEFAULT_LLM_BASE_URL, model=DEFAULT_LLM_MODEL,
+                timeout_s=30.0, max_tokens=1024,
+            ),
+        )
         return cls(
-            llm_enabled=llm_enabled,
-            llm_base_url=env_str("EVAL_LLM_BASE_URL", DEFAULT_LLM_BASE_URL),
-            llm_model=env_str("EVAL_LLM_MODEL", DEFAULT_LLM_MODEL),
-            llm_timeout_s=_env_float("EVAL_LLM_TIMEOUT_S", 30.0),
-            llm_max_tokens=env_int("EVAL_LLM_MAX_TOKENS", 1024),
+            llm_enabled=llm.enabled,
+            llm_base_url=llm.base_url,
+            llm_model=llm.model,
+            llm_timeout_s=llm.timeout_s,
+            llm_max_tokens=llm.max_tokens,
             sample_size=env_int("EVAL_LLM_SAMPLE_SIZE", 20),
             judge_workers=env_int("EVAL_LLM_JUDGE_WORKERS", 8),
         )
+
+    def llm_settings(self) -> LLMSettings:
+        """Transport settings for this config (adds provider + credentials)."""
+        return settings_from_legacy(self, "eval")

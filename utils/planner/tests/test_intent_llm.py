@@ -44,7 +44,11 @@ def _completion(content: str) -> dict:
 def _patch_post(monkeypatch, response) -> None:
     import requests
 
-    def fake_post(url, json=None, timeout=None):  # noqa: A002 - mirror requests API
+    # **kwargs because the shared transport in utils.llm.client sends `headers`
+    # (an Authorization only materializes when a key is configured) and a
+    # (connect, read) timeout tuple. The stand-in must accept what the real
+    # requests.post accepts, or a signature mismatch reads as a transport bug.
+    def fake_post(url, json=None, timeout=None, **kwargs):  # noqa: A002 - mirror requests API
         if isinstance(response, Exception):
             raise response
         return response

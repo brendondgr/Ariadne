@@ -13,6 +13,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from utils.config import endpoint_overrides, env_int, env_str
+from utils.llm.config import LLMSettings, settings_from_legacy
+from utils.llm.config import resolve as resolve_llm
 
 # Discovery / connection defaults mirror utils.graph_loader.config so the
 # planner probes the same endpoints the loader writes to.
@@ -93,12 +95,19 @@ class PlannerConfig:
         """Build a config from the environment with documented fallbacks."""
         if data_dir is None:
             data_dir = env_str("ARIADNE_DATA_DIR", "data")
-        # PLANNER_LLM_ENABLED controls whether the LLM drafter is even tried;
-        # we treat the common truthy spellings as enabled.
         _truthy = {"1", "true", "yes", "on"}
-        llm_enabled = os.environ.get("PLANNER_LLM_ENABLED", "").strip().lower() in _truthy
         intent_llm_enabled = (
             os.environ.get("PLANNER_INTENT_LLM_ENABLED", "").strip().lower() in _truthy
+        )
+        # The LLM group resolves through utils.llm: PLANNER_LLM_* still wins when
+        # set, but falls back to ARIADNE_LLM_* so one endpoint configures every
+        # stage. With neither set this is exactly the previous default.
+        llm = resolve_llm(
+            "planner",
+            defaults=LLMSettings(
+                base_url=DEFAULT_LLM_BASE_URL, model=DEFAULT_LLM_MODEL,
+                timeout_s=30.0, max_tokens=4096,
+            ),
         )
         return cls(
             data_dir=Path(data_dir),
@@ -110,10 +119,14 @@ class PlannerConfig:
             cache_ttl_s=_env_float("PLANNER_CACHE_TTL_S", 5.0),
             min_live_nodes=env_int("PLANNER_MIN_LIVE_NODES", 1),
             max_iterations=env_int("PLANNER_MAX_ITERATIONS", 3),
-            llm_enabled=llm_enabled,
+            llm_enabled=llm.enabled,
             intent_llm_enabled=intent_llm_enabled,
-            llm_base_url=env_str("PLANNER_LLM_BASE_URL", DEFAULT_LLM_BASE_URL),
-            llm_model=env_str("PLANNER_LLM_MODEL", DEFAULT_LLM_MODEL),
-            llm_timeout_s=_env_float("PLANNER_LLM_TIMEOUT_S", 30.0),
-            llm_max_tokens=env_int("PLANNER_LLM_MAX_TOKENS", 4096),
+            llm_base_url=llm.base_url,
+            llm_model=llm.model,
+            llm_timeout_s=llm.timeout_s,
+            llm_max_tokens=llm.max_tokens,
         )
+
+    def llm_settings(self) -> LLMSettings:
+        """Transport settings for this config (adds provider + credentials)."""
+        return settings_from_legacy(self, "planner")

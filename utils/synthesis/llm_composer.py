@@ -22,6 +22,8 @@ from utils.specialists.federation import FederatedEvidence
 
 from .config import SynthesisConfig
 from .contracts import Abstention, Claim, SynthesizedAnswer
+from utils.llm import LLMUnavailable
+from utils.llm import chat as llm_chat
 from utils.llm_sampling import sampling_params
 
 logger = logging.getLogger("ariadne.synthesis.llm")
@@ -342,30 +344,29 @@ class OpenAICompatibleComposer:
         return self._config.llm_base_url.rstrip("/") + "/chat/completions"
 
     def _post(self, messages: list[dict[str, str]]) -> str:
-        import requests
-
-        payload = {
-            "model": self._config.llm_model,
-            "messages": messages,
-            **sampling_params(max_tokens=self._config.llm_max_tokens),
-            "thinking_token_budget": self._config.thinking_budget(),
-        }
+        """One completion, or ``ComposerUnavailable`` so the caller falls back."""
+        settings = self._config.llm_settings()
+        sampling = sampling_params(
+            max_tokens=settings.max_tokens, thinking_budget=settings.thinking_budget
+        )
+        # The server-side spelling this endpoint has always been sent, kept
+        # alongside the two channels sampling_params emits: which one a served
+        # model honours depends on its chat template, and a server that
+        # understands none of them ignores all three rather than failing.
+        if settings.thinking_budget:
+            sampling["thinking_token_budget"] = settings.thinking_budget
         try:
-            resp = requests.post(
-                self.endpoint, json=payload, timeout=self._config.llm_timeout_s
+            result = llm_chat(
+                settings, messages, max_tokens=settings.max_tokens, sampling=sampling
             )
-        except requests.RequestException as exc:
-            raise ComposerUnavailable(f"request failed: {exc}") from exc
-        if resp.status_code != 200:
-            raise ComposerUnavailable(f"HTTP {resp.status_code}: {resp.text[:200]}")
-        try:
-            body = resp.json()
-            content = body["choices"][0]["message"]["content"]
-        except (ValueError, KeyError, IndexError, TypeError) as exc:
-            raise ComposerUnavailable(f"unexpected response shape: {exc}") from exc
-        if not content:
-            raise ComposerUnavailable("model returned no content (raise max_tokens?)")
-        return content
+        except LLMUnavailable as exc:
+            raise ComposerUnavailable(str(exc)) from exc
+        if not result.content:
+            raise ComposerUnavailable(
+                "model returned no content"
+                + (" — it was cut off at its output budget" if result.truncated else "")
+            )
+        return result.content
 
     def compose(self, evidence: FederatedEvidence) -> SynthesizedAnswer:
         messages = build_messages(evidence)

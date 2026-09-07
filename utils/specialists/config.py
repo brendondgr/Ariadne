@@ -15,6 +15,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from utils.config import endpoint_overrides, env_int, env_str
+from utils.llm.config import LLMSettings, settings_from_legacy
+from utils.llm.config import resolve as resolve_llm
 
 # Mirror the planner/loader connection defaults (the live Docker stack).
 DEFAULT_NEO4J_URI = "bolt://localhost:5456"
@@ -93,12 +95,13 @@ class SpecialistConfig:
     def from_env(cls, data_dir: str | Path | None = None) -> "SpecialistConfig":
         if data_dir is None:
             data_dir = env_str("ARIADNE_DATA_DIR", "data")
-        llm_enabled = os.environ.get("SPECIALIST_LLM_ENABLED", "").strip().lower() in {
-            "1",
-            "true",
-            "yes",
-            "on",
-        }
+        llm = resolve_llm(
+            "specialist",
+            defaults=LLMSettings(
+                base_url=DEFAULT_LLM_BASE_URL, model=DEFAULT_LLM_MODEL,
+                timeout_s=30.0, max_tokens=2048,
+            ),
+        )
         return cls(
             data_dir=Path(data_dir),
             neo4j_uri=env_str("NEO4J_URI", DEFAULT_NEO4J_URI),
@@ -109,12 +112,16 @@ class SpecialistConfig:
             query_timeout_ms=env_int("SPECIALIST_QUERY_TIMEOUT_MS", 5000),
             max_retries=env_int("SPECIALIST_MAX_RETRIES", 2),
             expand_page_size=env_int("SPECIALIST_EXPAND_PAGE_SIZE", 50),
-            llm_enabled=llm_enabled,
+            llm_enabled=llm.enabled,
             llm_query_builder=os.environ.get(
                 "SPECIALIST_LLM_QUERY_BUILDER", ""
             ).strip().lower() in {"1", "true", "yes", "on"},
-            llm_base_url=env_str("SPECIALIST_LLM_BASE_URL", DEFAULT_LLM_BASE_URL),
-            llm_model=env_str("SPECIALIST_LLM_MODEL", DEFAULT_LLM_MODEL),
-            llm_timeout_s=_env_float("SPECIALIST_LLM_TIMEOUT_S", 30.0),
-            llm_max_tokens=env_int("SPECIALIST_LLM_MAX_TOKENS", 2048),
+            llm_base_url=llm.base_url,
+            llm_model=llm.model,
+            llm_timeout_s=llm.timeout_s,
+            llm_max_tokens=llm.max_tokens,
         )
+
+    def llm_settings(self) -> LLMSettings:
+        """Transport settings for this config (adds provider + credentials)."""
+        return settings_from_legacy(self, "specialist")

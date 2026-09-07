@@ -41,7 +41,11 @@ def _response(content, *, finish_reason="stop", usage=None, status=200):
 def _stub_post(monkeypatch, response=None, exc=None):
     calls: list[dict] = []
 
-    def fake_post(url, json=None, timeout=None):  # noqa: A002 - requests API shape
+    # **kwargs because the shared transport in utils.llm.client sends `headers`
+    # (an Authorization only materializes when a key is configured) and a
+    # (connect, read) timeout tuple. The stand-in must accept what the real
+    # requests.post accepts, or a signature mismatch reads as a transport bug.
+    def fake_post(url, json=None, timeout=None, **kwargs):  # noqa: A002 - requests API shape
         calls.append({"url": url, "payload": json})
         if exc is not None:
             raise exc
@@ -122,5 +126,7 @@ def test_request_exception_raises(monkeypatch):
     import requests
 
     _stub_post(monkeypatch, exc=requests.ConnectionError("refused"))
-    with pytest.raises(LLMUnavailable, match="request failed"):
+    # The shared transport names the provider and the unreachable host instead
+    # of "request failed", and carries the cause verbatim. Assert the cause.
+    with pytest.raises(LLMUnavailable, match="refused"):
         ConversationLLM(_cfg()).complete_verbose([{"role": "user", "content": "x"}])

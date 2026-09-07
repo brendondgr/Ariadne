@@ -39,8 +39,25 @@ from pathlib import Path
 from statistics import mean
 from typing import Any, Iterable
 
-DEFAULT_BASE_URL = os.environ.get("EVAL_LLM_BASE_URL", "http://localhost:4000/v1")
-DEFAULT_MODEL = os.environ.get("EVAL_LLM_MODEL", "skynet")
+from utils.llm.config import LLMSettings as _LLMSettings
+from utils.llm.config import resolve as _resolve_llm
+
+# Resolved through utils.llm so this harness inherits ARIADNE_LLM_* like every
+# other stage: EVAL_LLM_* still wins when set, then the primary group, then this
+# harness's own historical fallback of :4000/skynet -- which differs from the
+# pipeline's :9090/default-model on purpose and is preserved exactly.
+#
+# The TRANSPORT here is deliberately left alone. This module is the offline
+# grading harness, not a web path: it is stdlib-only by design, carries its own
+# retry loop and budget escalation, and reads back the served model id to
+# attribute a judgment to real weights rather than to a relay alias. Routing it
+# through the shared client would drop all three for no benefit to the workbench.
+_EVAL_LLM = _resolve_llm(
+    "eval",
+    defaults=_LLMSettings(base_url="http://localhost:4000/v1", model="skynet"),
+)
+DEFAULT_BASE_URL = _EVAL_LLM.base_url
+DEFAULT_MODEL = _EVAL_LLM.model
 # The judge reasons before answering, and the reasoning is billed against the
 # same budget as the answer. Too small a budget truncates mid-thought and yields
 # an *empty* reply — which reads as "the server is down" rather than as the
