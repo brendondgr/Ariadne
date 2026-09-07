@@ -50,6 +50,16 @@ from .services.query import stream_query_events
 # Load the central .env once, mirroring main.py's entry-point behaviour.
 load_env()
 
+# --- TEMPORARY DIAGNOSTIC (investigating SSE stalls) ---------------------------
+# `kill -USR1 <api-pid>` dumps every thread's traceback to the file below.
+import faulthandler as _fh  # noqa: E402
+import signal as _sig  # noqa: E402
+import os as _os  # noqa: E402
+_fh_path = _os.environ.get("ARIADNE_FAULT_LOG", "/tmp/ariadne-faulthandler.log")
+_fh_file = open(_fh_path, "a", buffering=1)
+_fh.register(_sig.SIGUSR1, file=_fh_file, all_threads=True, chain=False)
+# -------------------------------------------------------------------------------
+
 app = FastAPI(
     title="Ariadne Workbench API",
     version="0.1.0",

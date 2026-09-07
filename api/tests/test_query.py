@@ -9,6 +9,7 @@ plus the plan-only, no-cards, partial, and empty-question paths.
 from __future__ import annotations
 
 import json
+import time
 from typing import Iterator
 
 from fastapi.testclient import TestClient
@@ -99,14 +100,22 @@ def _live_view(live=("attack", "capec")):
 
 
 def _collect(gen: Iterator[str]) -> list[tuple[str, dict]]:
+    """Parse the SSE frames, dropping keep-alive comments the way a browser does."""
     events = []
     for frame in gen:
         assert frame.endswith("\n\n")
+        if frame.startswith(":"):  # keep-alive comment: bytes, not an event
+            continue
         head, _, body = frame.partition("\n")
         event = head.removeprefix("event: ")
         data = json.loads(body.removeprefix("data: ").strip())
         events.append((event, data))
     return events
+
+
+def _raw(gen: Iterator[str]) -> list[str]:
+    """Every frame as written to the socket, keep-alives included."""
+    return list(gen)
 
 
 # --------------------------------------------------------------------------- #
@@ -300,3 +309,58 @@ def test_endpoint_streams_event_stream(monkeypatch) -> None:
     assert resp.status_code == 200
     assert resp.headers["content-type"].startswith("text/event-stream")
     assert "event: done" in resp.text
+
+
+# --------------------------------------------------------------------------- #
+# Keep-alive (the SSE stall fix)
+# --------------------------------------------------------------------------- #
+
+
+def test_a_silent_stage_emits_keepalive_frames(monkeypatch) -> None:
+    """A stage that takes longer than the interval must still put bytes on the wire.
+
+    This is the whole bug: the browser cancels a stream idle past SSE_STALL_MS,
+    and a planner call routinely outlasts it while emitting nothing.
+    """
+    from api.services import heartbeat
+
+    monkeypatch.setenv(heartbeat.INTERVAL_ENV_VAR, "0.05")
+
+    class _SlowAgent(_StubAgent):
+        def plan(self, request):  # noqa: D102 - stands in for a slow LLM draft
+            time.sleep(0.3)
+            return super().plan(request)
+
+    agent = _SlowAgent(
+        cards={"attack": object(), "capec": object()},
+        live_view=_live_view(),
+        plan=_two_source_plan(),
+    )
+    specialists = {
+        "attack": _StubSpecialist(_result("attack", "T1047", "T1047", "neo4j")),
+        "capec": _StubSpecialist(_result("capec", "CAPEC-549", "T1047", "gremlin")),
+    }
+    frames = _raw(
+        query_service.stream_query_events("q", mode="query", agent=agent, specialists=specialists)
+    )
+
+    keepalives = [f for f in frames if f.startswith(":")]
+    assert keepalives, "a slow planner must not leave the socket silent"
+    assert all(f == ": keepalive\n\n" for f in keepalives)
+
+    # ... and the event contract is untouched by them.
+    events = [f for f in frames if not f.startswith(":")]
+    types = [f.partition("\n")[0].removeprefix("event: ") for f in events]
+    assert types[0] == "status" and types[-1] == "done"
+    assert "plan" in types and "answer" in types
+
+
+def test_keepalives_are_dropped_by_the_browser_parser() -> None:
+    """`parseSseFrame` ignores a comment frame — asserted here in Python terms.
+
+    A comment carries no `data:` line, so the front end's parser returns null and
+    the frame never reaches the run machine. Nothing downstream needs to know the
+    keep-alive exists; it only has to reset the inactivity timer.
+    """
+    frame = ": keepalive\n\n"
+    assert not any(line.startswith("data:") for line in frame.split("\n"))

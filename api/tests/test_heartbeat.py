@@ -51,3 +51,19 @@ def test_producer_exception_reaches_the_consumer() -> None:
 
 def test_empty_producer_terminates() -> None:
     assert list(with_heartbeat(iter([]), interval_s=5.0)) == []
+
+
+def test_interval_comes_from_the_environment(monkeypatch: pytest.MonkeyPatch) -> None:
+    from api.services import heartbeat
+
+    monkeypatch.setenv(heartbeat.INTERVAL_ENV_VAR, "0.05")
+    out = list(with_heartbeat(_slow(["a"], 0.25)))
+    assert out.count(HEARTBEAT) >= 2
+
+
+def test_unusable_interval_falls_back_to_the_default(monkeypatch: pytest.MonkeyPatch) -> None:
+    from api.services import heartbeat
+
+    for bad in ("", "nonsense", "0", "-3"):
+        monkeypatch.setenv(heartbeat.INTERVAL_ENV_VAR, bad)
+        assert heartbeat.heartbeat_interval_s() == heartbeat.DEFAULT_INTERVAL_S

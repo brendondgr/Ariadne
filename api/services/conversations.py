@@ -30,7 +30,8 @@ from utils.conversation.persistence import (
 )
 from utils.conversation.store import ConversationNotFound, ConversationStore
 from utils.orchestration.main import PipelineRun
-from api.services.query import render_pipeline_event
+from api.services.heartbeat import HEARTBEAT, with_heartbeat
+from api.services.query import _keepalive, render_pipeline_event
 
 logger = logging.getLogger("ariadne.api.conversations")
 
@@ -172,17 +173,26 @@ def stream_conversation_events(
             "events": [],
         }
 
-        for event, payload in iter_conversation(
-            question,
-            conversation_id=conversation_id,
-            history=history,
-            anchor=anchor,
-            mode=mode,
-            use_llm=use_llm,
-            config=config,
-            run=run,
-            **build_kwargs,
+        # Same reason as the query stream: the chat pane watches a socket that
+        # goes quiet for the whole of every LLM stage, and its watchdog cannot
+        # tell that from a dead backend.
+        for item in with_heartbeat(
+            iter_conversation(
+                question,
+                conversation_id=conversation_id,
+                history=history,
+                anchor=anchor,
+                mode=mode,
+                use_llm=use_llm,
+                config=config,
+                run=run,
+                **build_kwargs,
+            )
         ):
+            if item is HEARTBEAT:
+                yield _keepalive()
+                continue
+            event, payload = item
             # Snapshot the raw synthesis object (facts) and federated evidence
             # (entity dossiers) before they are rendered. Both ride the `answer`
             # event; the earlier `evidence` event is a fallback source.

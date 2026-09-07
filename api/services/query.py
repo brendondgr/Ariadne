@@ -25,6 +25,7 @@ import json
 import logging
 from typing import Any, Iterator
 
+from .heartbeat import HEARTBEAT, with_heartbeat
 from utils.orchestration.main import PipelineRun, iter_pipeline
 from utils.planner.agent import PlanningAgent
 from utils.specialists.config import SpecialistConfig
@@ -43,6 +44,16 @@ _MAX_CITATIONS = 8
 def _sse(event: str, data: dict[str, Any]) -> str:
     """Format one Server-Sent Event frame."""
     return f"event: {event}\ndata: {json.dumps(data)}\n\n"
+
+
+def _keepalive() -> str:
+    """One SSE comment frame — bytes on the wire that carry no event.
+
+    The browser's inactivity watchdog measures silence, not meaning, so this is
+    all it takes to keep a working run alive; ``parseSseFrame`` drops it because
+    it has no ``data:`` line, so nothing downstream has to know it exists.
+    """
+    return ": keepalive\n\n"
 
 
 def _live_sources_payload(live_view: Any) -> list[dict[str, Any]]:
@@ -233,16 +244,24 @@ def stream_query_events(
             return
 
         run = PipelineRun(question=question, mode=mode)
-        for event, payload in iter_pipeline(
-            question,
-            mode=mode,
-            use_llm=use_llm,
-            data_dir=data_dir,
-            agent=agent,
-            specialists=specialists,
-            specialist_config=specialist_config,
-            run=run,
+        # Wrapped so the socket stays warm through the planner, specialist and
+        # synthesis calls, which emit nothing for as long as the model takes.
+        for item in with_heartbeat(
+            iter_pipeline(
+                question,
+                mode=mode,
+                use_llm=use_llm,
+                data_dir=data_dir,
+                agent=agent,
+                specialists=specialists,
+                specialist_config=specialist_config,
+                run=run,
+            )
         ):
+            if item is HEARTBEAT:
+                yield _keepalive()
+                continue
+            event, payload = item
             rendered = render_pipeline_event(event, payload, run)
             if rendered is not None:
                 yield _sse(*rendered)

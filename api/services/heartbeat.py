@@ -32,11 +32,26 @@ import queue
 import threading
 from typing import Any, Iterable, Iterator
 
+from utils.config import env_str
+
 logger = logging.getLogger("ariadne.api.heartbeat")
 
 #: Comfortably inside the client's 90 s budget and inside ``SSE_SLOW_MS`` (25 s),
 #: so a lowered client threshold does not immediately start failing runs.
 DEFAULT_INTERVAL_S = 10.0
+
+#: Operator override, read per call rather than at import so a value can be
+#: changed (or a test can shorten it) without reloading the module.
+INTERVAL_ENV_VAR = "SSE_HEARTBEAT_INTERVAL_S"
+
+
+def heartbeat_interval_s() -> float:
+    """The keep-alive period, from the environment with the default as fallback."""
+    try:
+        value = float(env_str(INTERVAL_ENV_VAR, ""))
+    except ValueError:
+        return DEFAULT_INTERVAL_S
+    return value if value > 0 else DEFAULT_INTERVAL_S
 
 #: Yielded in place of a real item when the producer has been quiet. The caller
 #: turns it into whatever its own wire format wants.
@@ -46,7 +61,7 @@ HEARTBEAT = object()
 def with_heartbeat(
     source: Iterable[Any],
     *,
-    interval_s: float = DEFAULT_INTERVAL_S,
+    interval_s: float | None = None,
 ) -> Iterator[Any]:
     """Yield everything ``source`` yields, plus :data:`HEARTBEAT` while it is quiet.
 
@@ -60,6 +75,7 @@ def with_heartbeat(
     holding up interpreter shutdown, which is the same trade
     ``utils/planner/discovery.py`` makes for its probes.
     """
+    period = heartbeat_interval_s() if interval_s is None else interval_s
     items: queue.Queue[tuple[str, Any]] = queue.Queue()
 
     def produce() -> None:
@@ -76,7 +92,7 @@ def with_heartbeat(
 
     while True:
         try:
-            kind, payload = items.get(timeout=interval_s)
+            kind, payload = items.get(timeout=period)
         except queue.Empty:
             yield HEARTBEAT
             continue

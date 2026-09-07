@@ -101,3 +101,29 @@ describe("postSseStream inactivity watchdog", () => {
     expect(seen[1]).toEqual({ type: "done", data: { status: "answered", exit_code: 0 } });
   });
 });
+
+describe("server keep-alive frames", () => {
+  it("resets the watchdog without reaching the consumer", async () => {
+    vi.useFakeTimers();
+    const events: QueryEvent[] = [];
+    // A keep-alive arrives at 60s, the real event at 120s. Without the
+    // keep-alive the 90s budget would have killed a run that was working fine.
+    const reader = fakeReader([
+      { value: encode(": keepalive\n\n"), done: false },
+      { value: encode(frame("done", { status: "answered", exit_code: 0, timings: {} })), done: false },
+      { value: undefined as unknown as Uint8Array, done: true },
+    ]);
+    stubFetch(reader);
+
+    const p = streamConversation(BODY, (e) => events.push(e as QueryEvent));
+    await vi.advanceTimersByTimeAsync(SSE_STALL_MS * 2);
+    await expect(p).resolves.toBeUndefined();
+
+    expect(events.map((e) => e.type)).toEqual(["done"]);
+  });
+
+  it("is dropped by parseSseFrame because it carries no data line", async () => {
+    const { parseSseFrame } = await import("../api");
+    expect(parseSseFrame(": keepalive")).toBeNull();
+  });
+});
