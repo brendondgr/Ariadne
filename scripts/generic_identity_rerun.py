@@ -10,10 +10,14 @@ Three guards exist here that did not exist there:
 1. **The narrator endpoint is probed in pre-flight.** The first attempt asserted
    three aliases on ``:9090`` and never touched the endpoint the arm actually
    narrates through.
-2. **``fallback_reason`` is read.** A capture with a non-null ``fallback_reason``
-   anywhere is degraded by definition -- the arm told us it could not narrate --
-   and is discarded rather than compared.
-3. **A degraded capture is retried**, up to ``--attempts`` times, and every
+2. **``fallback_reason`` is read, and classified.** A *transient* failure
+   (timeout, refused connection) differs between runs and corrupts the
+   comparison, so the capture is discarded. A *deterministic* one -- a
+   context-length overflow at a fixed prompt is arithmetic, not weather --
+   appears identically in both captures and is kept. The first version of this
+   guard did not draw that line and would have failed all three attempts on one
+   question that is over the context limit by a single token.
+3. **A corrupted capture is retried**, up to ``--attempts`` times, and every
    attempt is recorded. A run that never produces a clean capture is ``not_run``.
 
     uv run python scripts/generic_identity_rerun.py --dry-run
@@ -92,21 +96,49 @@ def strip_clock(obj):
     return obj
 
 
+#: Failures that differ between runs and therefore CORRUPT an identity
+#: comparison. A capture containing any of these is discarded and retried.
+TRANSIENT = ("Read timed out", "ConnectError", "Connection refused",
+             "HTTPConnectionPool", "Max retries")
+
+#: Failures that are a reproducible property of the question and the model, and
+#: so appear IDENTICALLY in both captures. A context-length overflow at a fixed
+#: prompt is arithmetic, not weather. Discarding captures for these would mean
+#: never obtaining one: observed 2026-09-06, one question at 67,617 input +
+#: 16,384 output against an 84,000 limit -- over by a single token, every time.
+#: They are tolerated here and must MATCH across captures; if one appears in
+#: only one capture, the comparison catches it as a difference, which is
+#: exactly right.
+DETERMINISTIC = ("maximum context length",)
+
+
+def classify(reason: str) -> str:
+    if any(t in reason for t in TRANSIENT):
+        return "transient"
+    if any(d in reason for d in DETERMINISTIC):
+        return "deterministic"
+    return "unknown"
+
+
 def degraded(root: Path) -> dict:
-    """A capture the arm itself reports it could not narrate."""
+    """A capture corrupted by TRANSIENT failure. Deterministic ones are kept."""
     d = root / ARM / "answers"
     files = sorted(d.glob("*.json"))
-    reasons, n = {}, 0
+    reasons, kinds = {}, {"transient": 0, "deterministic": 0, "unknown": 0}
     for p in files:
         try:
             r = (json.loads(p.read_text()).get("answer") or {}).get("fallback_reason")
         except Exception:
             r = "<unparseable artifact>"
         if r:
-            n += 1
             reasons[str(r)[:70]] = reasons.get(str(r)[:70], 0) + 1
-    return {"answers": len(files), "fallback_non_null": n,
-            "reasons": reasons, "clean": n == 0 and len(files) >= N_EXPECT}
+            kinds[classify(str(r))] += 1
+    # "unknown" counts as corrupting: an unclassified failure is not something
+    # to assume is reproducible.
+    blocking = kinds["transient"] + kinds["unknown"]
+    return {"answers": len(files), "fallback_non_null": sum(kinds.values()),
+            "by_kind": kinds, "reasons": reasons,
+            "clean": blocking == 0 and len(files) >= N_EXPECT}
 
 
 def run_once(tag: str, attempt: int, workers: int) -> dict:
@@ -123,7 +155,7 @@ def run_once(tag: str, attempt: int, workers: int) -> dict:
         "SYNTHESIS_LLM_MODEL": NARRATOR["model"],
         # The failures were read timeouts at the default 120 s. Doubling it
         # removes the cheapest cause without changing what the arm computes.
-        "SYNTHESIS_LLM_TIMEOUT_S": "300.0",
+        "SYNTHESIS_LLM_TIMEOUT_S": "600.0",
     }
     cmd = ["uv", "run", "python", "-m", "utils.evaluation.experiment_untruncated",
            "--arm", ARM, "--bank", str(BANK), "--root", str(root),
@@ -145,7 +177,8 @@ def capture(tag: str, attempts: int, workers: int, st: dict) -> Path | None:
         st.setdefault("attempts", []).append(r)
         STATE.write_text(json.dumps(st, indent=1) + "\n")
         print(f"   answers {r['answers']}, fallback_non_null "
-              f"{r['fallback_non_null']}, clean={r['clean']}", flush=True)
+              f"{r['fallback_non_null']} {r['by_kind']}, "
+              f"clean={r['clean']}", flush=True)
         if r["clean"]:
             return Path(r["root"])
         print(f"   DEGRADED, discarding: {json.dumps(r['reasons'])[:200]}",
@@ -155,7 +188,9 @@ def capture(tag: str, attempts: int, workers: int, st: dict) -> Path | None:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--workers", type=int, default=32)
+    ap.add_argument("--workers", type=int, default=12,
+                    help="32 gave 25 read timeouts against a reasoning "
+                         "narrator on 2026-09-06")
     ap.add_argument("--attempts", type=int, default=3)
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
