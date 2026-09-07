@@ -60,7 +60,12 @@ ARM = "llm_query"
 N_EXPECT = 284
 BASE = "http://localhost:9090/v1"
 
-SEEDS = ("1729", "20260906", "424242")
+#: EXP-2026-09-011's pre-registered three, plus the extension seeds added under
+#: A-1. --seeds picks which set to grade; grading all six in one session would
+#: change the counterbalancing block structure the first three were graded under.
+SEEDS_PREREGISTERED = ("1729", "20260906", "424242")
+SEEDS_EXTENSION = ("31337", "8675309", "271828")
+SEEDS = SEEDS_PREREGISTERED
 
 #: Each family is one grading block. ``served`` is asserted per pass, not
 #: trusted from the alias -- the endpoint reported "gemma4-31B" for
@@ -142,7 +147,11 @@ def answers_present() -> dict[str, int]:
     out = {}
     for s in SEEDS:
         d = ROOT / f"seed-{s}" / ARM / "answers"
-        out[s] = len(list(d.glob("*.json"))) if d.is_dir() else 0
+        # Count ANSWERS, not sidecars. Globbing "*.json" counted judgments too,
+        # so a fully graded seed read as 852 of an expected 284 and the
+        # short-seed guard could never fire.
+        out[s] = (len([q for q in d.glob("*.json") if ".judgment" not in q.name])
+                  if d.is_dir() else 0)
     return out
 
 
@@ -173,14 +182,20 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--workers", type=int, default=32)
     ap.add_argument("--arm", default="generic", choices=sorted(ARM_CONFIG))
+    ap.add_argument("--seeds", default="preregistered",
+                    choices=("preregistered", "extension"))
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
-    global EXP, ROOT, STATE, ARM
+    global EXP, ROOT, STATE, ARM, SEEDS
+    SEEDS = (SEEDS_EXTENSION if args.seeds == "extension"
+             else SEEDS_PREREGISTERED)
     ARM = args.arm
     EXP = ARM_CONFIG[ARM]["exp"]
     ROOT = ARM_CONFIG[ARM]["root"]
-    STATE = EXP / "data" / "judge-state.json"
+    STATE = EXP / "data" / ("judge-state.json" if args.seeds == "preregistered"
+                            else "judge-state-extension.json")
+    print(f"seeds={args.seeds} {SEEDS}", flush=True)
     print(f"arm={ARM}  root={ROOT}  state={STATE}", flush=True)
 
     present = answers_present()
