@@ -33,6 +33,16 @@ load_env()
 EXP = REPO / "docs/research/experiments/EXP-2026-09-009-llm-query-seeded-repeats"
 BANK = REPO / "docs/evaluation/composition/bank/bank-dev.json"
 ROOT = REPO / "docs/evaluation/experiments/seeded-repeats-2026-09-06"
+#: EXP-2026-09-009 ran this with the default. Passing --arm changes the
+#: output root so a second arm cannot land on top of a recorded run.
+DEFAULT_ARM = "llm_query"
+
+#: Which experiment owns each arm's seeded repeats. Writing a generic run
+#: into EXP-2026-09-009 would silently overwrite a recorded result.
+ARM_EXPERIMENT = {
+    "llm_query": EXP,
+    "generic": REPO / "docs/research/experiments/EXP-2026-09-011-generic-seeded-repeats",
+}
 LOGS = REPO / "logs/seeded-repeats-2026-09-06"
 STATE = EXP / "data" / "run-state.json"
 
@@ -128,8 +138,9 @@ def write_state(st: dict) -> None:
 
 
 # ---------------------------------------------------------------- run
-def run_seed(seed: int, workers: int) -> dict:
-    root = ROOT / f"seed-{seed}"
+def run_seed(seed: int, workers: int, arm: str = DEFAULT_ARM,
+             root_base: Path | None = None) -> dict:
+    root = (root_base or ROOT) / f"seed-{seed}"
     root.mkdir(parents=True, exist_ok=True)
     LOGS.mkdir(parents=True, exist_ok=True)
     log = LOGS / f"run-seed-{seed}.log"
@@ -142,7 +153,7 @@ def run_seed(seed: int, workers: int) -> dict:
     }
     cmd = [
         "uv", "run", "python", "-m", "utils.evaluation.experiment_untruncated",
-        "--arm", "llm_query", "--bank", str(BANK), "--root", str(root),
+        "--arm", arm, "--bank", str(BANK), "--root", str(root),
         "--workers", str(workers),
         "--llm-model", GEN_MODEL["alias"],
         "--llm-max-tokens", "32768",
@@ -153,6 +164,7 @@ def run_seed(seed: int, workers: int) -> dict:
     written = len(list(root.rglob("*.json")))
     return {
         "seed": seed,
+        "arm": arm,
         "rc": rc,
         "elapsed_s": round(time.time() - t0, 1),
         "answers_written": written,
@@ -166,6 +178,10 @@ def run_seed(seed: int, workers: int) -> dict:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--workers", type=int, default=32)
+    ap.add_argument("--arm", default=DEFAULT_ARM,
+                    choices=["llm_query", "generic", "deterministic"])
+    ap.add_argument("--root", default=None,
+                    help="output root; defaults to the arm's own directory")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
@@ -176,7 +192,17 @@ def main() -> int:
         print("dry run: guards pass, nothing launched")
         return 0
 
+    root_base = Path(args.root) if args.root else (
+        ROOT if args.arm == DEFAULT_ARM else ROOT.with_name(
+            f"seeded-repeats-{args.arm}-2026-09-06"))
+    # A non-default arm must not write into EXP-2026-09-009's data dir.
+    global STATE
+    if args.arm != DEFAULT_ARM:
+        # Each arm writes into its OWN experiment's data dir.
+        STATE = ARM_EXPERIMENT[args.arm] / "data" / "run-state.json"
     st = read_state()
+    st["arm"] = args.arm
+    st["root"] = str(root_base)
     st["preflight"] = checks
     write_state(st)
 
@@ -186,7 +212,7 @@ def main() -> int:
             print(f"seed {seed}: already done, skipping", flush=True)
             continue
         print(f"== seed {seed} ==", flush=True)
-        st["runs"][key] = run_seed(seed, args.workers)
+        st["runs"][key] = run_seed(seed, args.workers, args.arm, root_base)
         write_state(st)
         print(json.dumps(st["runs"][key], indent=1), flush=True)
 
