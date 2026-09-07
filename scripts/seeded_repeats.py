@@ -120,8 +120,17 @@ def preflight() -> dict:
         "served": {},
     }
     checks["served"]["generation"] = probe(GEN_MODEL["alias"], GEN_MODEL["expect"])
+    # Graders are NOT probed here. This script only generates; grading is
+    # scripts/seeded_repeats_judge.py, which probes its own. Probing them here
+    # made a generation run depend on endpoints it never calls -- on 2026-09-07
+    # it aborted generation because default-model-2 had been freed and fell
+    # through to qwen, which is correct behaviour from the alias guard applied
+    # to a model this step does not use.
     for key, cfg in GRADERS.items():
-        checks["served"][key] = probe(cfg["alias"], cfg["expect"])
+        try:
+            checks["served"][key] = probe(cfg["alias"], cfg["expect"])
+        except Exception as exc:
+            checks["served"][key] = f"not probed ({type(exc).__name__}) — unused by this step"
     return checks
 
 

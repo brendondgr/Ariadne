@@ -1,0 +1,94 @@
+{
+ "preflight": {
+  "bank_questions": 284,
+  "bank_sha256": "a4ca6702029cae7784574b0307b9f76d4718a039f3254f2c0ff708a2fa1a4119",
+  "stores": {
+   "neo4j": {
+    "nodes": 4369,
+    "edges": 27669
+   },
+   "gremlin": {
+    "vertices": 6374,
+    "edges": 8582
+   }
+  },
+  "narrator": "qwen38-27B-v2",
+  "env_narrator_route": "qwen38-27B-v2"
+ },
+ "narrator": {
+  "base_url": "http://localhost:9090/v1",
+  "model": "default-model",
+  "expect": "qwen38-27B-v2"
+ },
+ "attempts": [
+  {
+   "tag": "a",
+   "attempt": 1,
+   "rc": 0,
+   "root": "/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/arm-identity-rerun-2026-09-06/a-try1",
+   "elapsed_s": 1195.1,
+   "answers": 284,
+   "fallback_non_null": 6,
+   "by_kind": {
+    "transient": 5,
+    "deterministic": 1,
+    "unknown": 0
+   },
+   "reasons": {
+    "LLM narrator unavailable (HTTP 400: {\"error\":{\"message\":\"This model's ": 1,
+    "LLM narrator unavailable (request failed: HTTPConnectionPool(host='loc": 5
+   },
+   "corrupt_rate": 0.0176,
+   "clean": false,
+   "usable": true,
+   "finished": "2026-09-06T23:41:26"
+  },
+  {
+   "tag": "b",
+   "attempt": 1,
+   "rc": 0,
+   "root": "/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/arm-identity-rerun-2026-09-06/b-try1",
+   "elapsed_s": 1119.4,
+   "answers": 284,
+   "fallback_non_null": 6,
+   "by_kind": {
+    "transient": 5,
+    "deterministic": 1,
+    "unknown": 0
+   },
+   "reasons": {
+    "LLM narrator unavailable (HTTP 400: {\"error\":{\"message\":\"This model's ": 1,
+    "LLM narrator unavailable (request failed: HTTPConnectionPool(host='loc": 5
+   },
+   "corrupt_rate": 0.0176,
+   "clean": false,
+   "usable": true,
+   "finished": "2026-09-07T00:00:05"
+  }
+ ],
+ "comparison": {
+  "answers_seen": 284,
+  "excluded_transient": 8,
+  "excluded_cases": [
+   "D4-uses-kill_chain_phase-C0063-80f876::indirect.json",
+   "D5-mitigates-x_mitre_platforms-M1022-4689f4::indirect.json",
+   "D5-uses-x_mitre_platforms-C0026-552e24::analyst.json",
+   "D5-uses-x_mitre_platforms-C0029-6e5dcb::indirect.json",
+   "D5-uses-x_mitre_platforms-C0046-803292::analyst.json",
+   "D5-uses-x_mitre_platforms-C0046-803292::indirect.json",
+   "D5-uses-x_mitre_platforms-G0006-0eed87::analyst.json",
+   "D5-uses-x_mitre_platforms-G0006-0eed87::indirect.json"
+  ],
+  "compared": 276,
+  "identical": 133,
+  "identity_rate": 0.4819,
+  "differing_paths": {
+   "answer.narrative": 143
+  },
+  "paths_in_scored_fields": [
+   "answer.narrative"
+  ],
+  "h3_holds": false,
+  "verdict": "DIFFERS IN A SCORED FIELD"
+ }
+}

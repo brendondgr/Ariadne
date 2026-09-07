@@ -80,6 +80,9 @@ FAMILIES = [
     {"key": "qwen1", "alias": "default-model", "expect": "qwen38-27B-v2", "suffix": ".q1"},
     {"key": "qwen2", "alias": "default-model", "expect": "qwen38-27B-v2", "suffix": ".q2"},
 ]
+# Both blocks address default-model deliberately. default-model-2 was freed on
+# 2026-09-07 and now falls through to qwen; addressing it would silently grade
+# under a different alias than the one recorded.
 
 def probe(alias: str, expect: str) -> str:
     import urllib.request

@@ -4,8 +4,8 @@
 # a gap.
 id: EXP-2026-09-010
 slug: model-free-arm-identity
-title: <one line, the question this answers>
-status: planned            # planned | running | complete | failed | superseded
+title: "Do the model-free arms actually repeat across runs?"
+status: complete            # planned | running | complete | failed | superseded
 date_started: 2026-09-06
 date_completed: null       # null until status is complete/failed
 authors: []
@@ -34,7 +34,7 @@ data:
   dvc_path: null           # this repository does not use DVC; leave null
   hash: null               # md5:... or sha256:... of the dataset artifact
 seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
-n_runs: 1
+n_runs: 2
 environment:
   python: "3.13"
   lockfile: env/requirements.lock
@@ -61,8 +61,18 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: <metric name>
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  primary: identity_rate_content
+  values:
+    identity_rate_deterministic: {mean: 1.0, std: 0.0, n: 284}
+    identity_rate_generic: {mean: 0.4819, std: 0.0, n: 276}
+    deterministic_identical: {mean: 284.0, std: 0.0, n: 284}
+    generic_identical: {mean: 133.0, std: 0.0, n: 276}
+    generic_differing_narrative: {mean: 143.0, std: 0.0, n: 276}
+    generic_differing_retrieval: {mean: 0.0, std: 0.0, n: 276}
+    generic_excluded_transient: {mean: 8.0, std: 0.0, n: 284}
+    transient_failure_rate_per_answer: {mean: 0.0176, std: 0.0, n: 284}
+    deterministic_clock_keys_only: {mean: 2.0, std: 0.0, n: 2}
+    context_overflow_questions: {mean: 1.0, std: 0.0, n: 284}
 baselines_compared: []
 statistical_test: null
 
