@@ -324,7 +324,16 @@ def run(
     suffix: str = "",
     force: bool = False,
     limit: int | None = None,
+    shard: tuple[int, int] | None = None,
 ) -> dict[str, Any]:
+    """``shard=(i, n)`` grades every nth case starting at i.
+
+    Added so one grading pass can be split across several endpoints without
+    changing its ORDER. The pass sequence stays counterbalanced; only which
+    endpoint answers a given case changes. Sharding by stride rather than by
+    block keeps each shard a uniform sample of the bank, so a shard that dies
+    does not remove a contiguous region of question shapes.
+    """
     paths = answer_files(root, arm)
     if not force:
         paths = [
@@ -332,6 +341,9 @@ def run(
             for p in paths
             if not p.with_name(f"{p.stem}.judgment{suffix}.json").is_file()
         ]
+    if shard is not None:
+        i, n = shard
+        paths = [p for k, p in enumerate(paths) if k % n == i]
     if limit:
         paths = paths[:limit]
     started = time.time()

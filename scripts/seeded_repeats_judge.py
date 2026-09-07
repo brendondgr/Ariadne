@@ -26,6 +26,7 @@ import json
 import os
 import statistics
 import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 from datetime import datetime
 from pathlib import Path
@@ -77,6 +78,12 @@ SEEDS = ("1729", "20260906", "424242")
 #: This costs a second full pass (1,704 judgments rather than 852) and buys
 #: something the two-family design could not: the same seed graded twice by the
 #: same grader, which is a within-grader repeatability estimate.
+#: All four aliases serve qwen38-27B-v2 across three GPUs (verified by probe,
+#: 2026-09-07). Each gets its own shard of every pass at full concurrency, so a
+#: pass runs at roughly 4x. Each is probed before any grading starts; an alias
+#: that does not serve the recorded model is dropped rather than trusted.
+ENDPOINTS = ["default-model", "default-model-2", "default-model-3", "default-model-4"]
+
 FAMILIES = [
     {"key": "qwen1", "alias": "default-model", "expect": "qwen38-27B-v2", "suffix": ".q1"},
     {"key": "qwen2", "alias": "default-model", "expect": "qwen38-27B-v2", "suffix": ".q2"},
@@ -175,8 +182,19 @@ def main() -> int:
     if short:
         raise SystemExit(f"refusing to grade: seeds short of {N_EXPECT}: {short}")
 
-    served = {f["key"]: probe(f["alias"], f["expect"]) for f in FAMILIES}
-    print("served:", json.dumps(served), flush=True)
+    global ENDPOINTS
+    served, live = {}, []
+    for alias in ENDPOINTS:
+        try:
+            served[alias] = probe(alias, "qwen38-27B-v2")
+            live.append(alias)
+        except Exception as exc:
+            served[alias] = f"DROPPED: {type(exc).__name__}: {exc}"[:120]
+    if not live:
+        raise SystemExit("no endpoint serves the recorded model; refusing to grade")
+    ENDPOINTS = live
+    print("served:", json.dumps(served, indent=1), flush=True)
+    print(f"grading across {len(ENDPOINTS)} endpoint(s)", flush=True)
 
     plan = []
     for block, fam in enumerate(FAMILIES):
@@ -203,20 +221,40 @@ def main() -> int:
     for row in plan:
         fam = next(f for f in FAMILIES if f["key"] == row["family"])
         key = f"{row['family']}-{row['seed']}"
-        workers = args.workers
-        print(f"\n== {key} (position {row['position']}, {workers} workers) ==",
+        print(f"\n== {key} (position {row['position']}, "
+              f"{len(ENDPOINTS)} endpoints x {args.workers} workers) ==",
               flush=True)
-        summary = run(
-            ROOT / f"seed-{row['seed']}", ARM,
-            JudgeConfig(
-                base_url=BASE, model=fam["alias"],
-                # EXP-2026-08-021: ~7-8% of the largest answers fail to grade at
-                # smaller budgets, and the failures land on the thorough answers.
-                max_tokens=32768, timeout_s=900.0,
-                position=row["position"],
-            ),
-            workers=workers, suffix=fam["suffix"],
-        )
+
+        # One shard per endpoint, run concurrently. The PASS order stays
+        # counterbalanced -- passes still run one after another -- so the
+        # position semantics the design depends on are untouched. What is
+        # parallel is which endpoint answers a given case within a pass.
+        def grade_shard(idx: int, alias: str):
+            return run(
+                ROOT / f"seed-{row['seed']}", ARM,
+                JudgeConfig(
+                    base_url=BASE, model=alias,
+                    # EXP-2026-08-021: ~7-8% of the largest answers fail to
+                    # grade at smaller budgets, and the failures land on the
+                    # thorough answers.
+                    max_tokens=32768, timeout_s=900.0,
+                    position=row["position"],
+                ),
+                workers=args.workers, suffix=fam["suffix"],
+                shard=(idx, len(ENDPOINTS)),
+            )
+
+        with ThreadPoolExecutor(max_workers=len(ENDPOINTS)) as pool:
+            futs = {pool.submit(grade_shard, i, a): a
+                    for i, a in enumerate(ENDPOINTS)}
+            shard_results = []
+            for f in as_completed(futs):
+                try:
+                    shard_results.append(str(f.result())[:200])
+                except Exception as exc:
+                    shard_results.append(f"SHARD FAILED on {futs[f]}: "
+                                         f"{type(exc).__name__}: {exc}")
+        summary = shard_results
         st["passes"][key] = {"summary": str(summary)[:400],
                              "finished": datetime.now().isoformat(timespec="seconds")}
         st["scores"][key] = score(row["seed"], fam["suffix"])
