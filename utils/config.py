@@ -19,6 +19,7 @@ Design rules (intentional):
 from __future__ import annotations
 
 import os
+from collections.abc import Iterable
 from pathlib import Path
 
 # Project root = two levels up from this file (utils/config.py -> utils -> root).
@@ -177,5 +178,63 @@ def set_env_values(
 
     for key, value in updates.items():
         os.environ[key] = value
+
+    return path
+
+
+#: Marker prefixed to an assignment that :func:`unset_env_values` disables, so a
+#: key that has been cleared stays readable in the file (and can be re-enabled by
+#: hand) instead of vanishing.
+_UNSET_MARKER = "# unset by Ariadne: "
+
+
+def unset_env_values(
+    keys: "Iterable[str]", env_file: str | Path | None = None
+) -> Path:
+    """Clear ``keys`` from the central ``.env`` and from ``os.environ``.
+
+    This is the inverse of :func:`set_env_values` and exists because "inherit the
+    default" cannot be expressed by *writing* a value. Rewriting a per-stage LLM
+    override with whatever the primary group currently holds would pin a moving
+    target: the stage would keep the old number the next time the primary
+    changed, and nothing in the file would say it was ever meant to follow.
+
+    The assignment is commented out in place rather than deleted, so the line and
+    any documentation above it survive and the previous value is still legible.
+    Re-setting the key later rewrites that same commented line (``set_env_values``
+    skips comments, so it appends a fresh assignment; the disabled line remains as
+    history).
+
+    ``os.environ`` is updated too, so a long-running process stops seeing the
+    value without a restart — the same in-process mirroring ``set_env_values``
+    does.
+
+    Args:
+        keys: Env var names to clear. Names not present are ignored.
+        env_file: Optional explicit path. Defaults to ``<project root>/.env``.
+
+    Returns:
+        The path that was written.
+    """
+    path = Path(env_file) if env_file is not None else ENV_FILE
+    wanted = {k for k in keys if k}
+
+    if path.exists():
+        lines = path.read_text(encoding="utf-8").splitlines()
+        changed = False
+        for index, line in enumerate(lines):
+            stripped = line.lstrip()
+            if not stripped or stripped.startswith("#") or "=" not in stripped:
+                continue
+            key = stripped.split("=", 1)[0].strip()
+            if key in wanted:
+                indent = line[: len(line) - len(stripped)]
+                lines[index] = f"{indent}{_UNSET_MARKER}{stripped}"
+                changed = True
+        if changed:
+            path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+    for key in wanted:
+        os.environ.pop(key, None)
 
     return path

@@ -86,3 +86,59 @@ def test_data_dir_default(monkeypatch):
 
     monkeypatch.setenv("ARIADNE_DATA_DIR", "/tmp/ariadne-data")
     assert config.data_dir() == "/tmp/ariadne-data"
+
+
+# --------------------------------------------------------------------------- #
+# unset_env_values — the inverse of set_env_values
+# --------------------------------------------------------------------------- #
+
+
+def test_unset_env_values_comments_the_assignment_and_clears_the_process(
+    tmp_path, monkeypatch
+):
+    """Clearing keeps the old value legible instead of deleting the line.
+
+    Deleting would lose both the value and the documentation comment above it;
+    rewriting it with some other value would pin a moving target. Commenting is
+    the only option that leaves the file self-explanatory.
+    """
+    env_file = tmp_path / ".env"
+    env_file.write_text(
+        "# Judge endpoint, second GPU.\nEVAL_LLM_MODEL=judge-model\nKEEP=me\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("EVAL_LLM_MODEL", "judge-model")
+
+    config.unset_env_values(["EVAL_LLM_MODEL"], env_file=env_file)
+
+    body = env_file.read_text(encoding="utf-8")
+    assert "# Judge endpoint, second GPU." in body, "documentation survives"
+    assert "# unset by Ariadne: EVAL_LLM_MODEL=judge-model" in body
+    assert "KEEP=me" in body, "unrelated keys are untouched"
+    assert "EVAL_LLM_MODEL" not in os.environ
+
+
+def test_unset_env_values_preserves_indentation(tmp_path):
+    env_file = tmp_path / ".env"
+    env_file.write_text("    INDENTED=1\n", encoding="utf-8")
+    config.unset_env_values(["INDENTED"], env_file=env_file)
+    assert env_file.read_text(encoding="utf-8").startswith("    # unset by Ariadne: ")
+
+
+def test_unset_env_values_tolerates_a_missing_file(tmp_path, monkeypatch):
+    """An operator who has never written a .env must not hit an exception."""
+    monkeypatch.setenv("SOME_KEY", "value")
+    config.unset_env_values(["SOME_KEY"], env_file=tmp_path / "absent.env")
+    assert "SOME_KEY" not in os.environ
+
+
+def test_set_then_unset_then_set_again(tmp_path):
+    env_file = tmp_path / ".env"
+    env_file.write_text("A=1\n", encoding="utf-8")
+    config.set_env_values({"A": "2"}, env_file=env_file)
+    assert os.environ["A"] == "2"
+    config.unset_env_values(["A"], env_file=env_file)
+    assert "A" not in os.environ
+    config.set_env_values({"A": "3"}, env_file=env_file)
+    assert os.environ["A"] == "3"
+    assert "A=3" in env_file.read_text(encoding="utf-8")
