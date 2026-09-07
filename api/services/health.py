@@ -24,7 +24,7 @@ from dataclasses import dataclass
 from urllib.parse import urlparse
 
 from utils.graph_loader.config import LoaderConfig
-from utils.synthesis.config import SynthesisConfig
+from utils.llm import LLMSettings, resolve
 
 logger = logging.getLogger("ariadne.api.health")
 
@@ -50,7 +50,7 @@ class SourceHealth:
 
 @dataclass(frozen=True)
 class LlmHealth:
-    """Reachability verdict for the synthesis LLM endpoint (the drafter LLM).
+    """Reachability verdict for the configured LLM endpoint.
 
     ``status`` is ``live`` when the configured OpenAI-compatible endpoint's
     host:port accepts a TCP connection, ``down`` otherwise — the same fast,
@@ -78,37 +78,42 @@ def _http_host_port(url: str) -> tuple[str, int] | None:
     return parsed.hostname, port
 
 
-def llm_health(config: SynthesisConfig | None = None) -> LlmHealth:
-    """Probe the synthesis LLM endpoint's reachability. Never raises.
+def llm_health(config: LLMSettings | None = None) -> LlmHealth:
+    """Probe the configured LLM endpoint's reachability. Never raises.
 
-    A live endpoint means an analyst who selects the LLM drafter will actually
-    reach a model; a down endpoint means the pipeline would fall back to the
-    deterministic composer. Reachability is a fast TCP probe of the base URL's
-    host:port (mirrors the graph health check).
+    Reads the single ``ARIADNE_LLM_*`` group rather than the synthesis one. That
+    used to be the same thing by accident — the chat pane inherited synthesis —
+    and the header pill was therefore reporting a field the operator had no
+    reliable way to connect to the answer they got.
+
+    Reachability is a fast TCP probe of the base URL's host:port, mirroring the
+    graph health check. It is deliberately weaker than the settings modal's Test
+    button: this runs on a 5-second UI poll, so it may not cost a completion.
+    A "live" pill therefore means the port is open, not that the model answers.
     """
-    config = config or SynthesisConfig.from_env()
-    hostport = _http_host_port(config.llm_base_url)
+    settings = config or resolve(None)
+    hostport = _http_host_port(settings.base_url)
     if hostport is None:
         return LlmHealth(
             status="down",
-            base_url=config.llm_base_url,
-            model=config.llm_model,
-            enabled=config.llm_enabled,
-            reason=f"unparseable LLM base_url: {config.llm_base_url!r}",
+            base_url=settings.base_url,
+            model=settings.model,
+            enabled=settings.enabled,
+            reason=f"unparseable LLM base_url: {settings.base_url!r}",
         )
     host, port = hostport
     if _tcp_reachable(host, port):
         return LlmHealth(
             status="live",
-            base_url=config.llm_base_url,
-            model=config.llm_model,
-            enabled=config.llm_enabled,
+            base_url=settings.base_url,
+            model=settings.model,
+            enabled=settings.enabled,
         )
     return LlmHealth(
         status="down",
-        base_url=config.llm_base_url,
-        model=config.llm_model,
-        enabled=config.llm_enabled,
+        base_url=settings.base_url,
+        model=settings.model,
+        enabled=settings.enabled,
         reason=f"no TCP connection to {host}:{port}",
     )
 

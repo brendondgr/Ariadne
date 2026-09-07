@@ -84,18 +84,21 @@ def test_http_host_port_parses_and_defaults() -> None:
 
 
 def test_llm_health_reports_live_when_reachable(monkeypatch) -> None:
-    from utils.synthesis.config import SynthesisConfig
+    # Reads the unified ARIADNE_LLM_* group now, not the synthesis one -- those
+    # used to be the same thing by accident, which is why the header pill could
+    # not be connected to the answer an analyst actually got.
+    from utils.llm import LLMSettings
 
-    cfg = SynthesisConfig(llm_enabled=True, llm_base_url="http://localhost:9090/v1", llm_model="m")
+    cfg = LLMSettings(enabled=True, base_url="http://localhost:9090/v1", model="m")
     monkeypatch.setattr(health, "_tcp_reachable", lambda host, port, timeout=2.0: True)
     verdict = health.llm_health(cfg)
     assert verdict.status == "live" and verdict.enabled is True and verdict.model == "m"
 
 
 def test_llm_health_reports_down_when_unreachable(monkeypatch) -> None:
-    from utils.synthesis.config import SynthesisConfig
+    from utils.llm import LLMSettings
 
-    cfg = SynthesisConfig(llm_base_url="http://localhost:9090/v1")
+    cfg = LLMSettings(base_url="http://localhost:9090/v1")
     monkeypatch.setattr(health, "_tcp_reachable", lambda host, port, timeout=2.0: False)
     verdict = health.llm_health(cfg)
     assert verdict.status == "down" and verdict.reason

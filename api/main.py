@@ -32,11 +32,15 @@ from .models import (
     GraphPayloadResponse,
     HealthResponse,
     LiveSourceModel,
+    LLMEndpointProbe,
+    LLMModelsResponse,
+    LLMProbeResponse,
     LlmHealthModel,
     QueryRequest,
 )
 from .services import conversations as conversations_service
-from .services.config import apply_update, read_config
+from .services.config import apply_update, read_config, validate_update
+from .services.llm_models import list_models, test_endpoint
 from .services.evaluation import read_evaluation_report, stream_eval_run
 from .services.graph import load_canonical_graph
 from .services.health import docker_state, live_sources, llm_health
@@ -90,8 +94,40 @@ def get_config() -> ConfigResponse:
 
 @app.put("/api/config", response_model=ConfigResponse)
 def put_config(request: ConfigUpdateRequest) -> ConfigResponse:
-    """Persist a partial settings update to ``.env`` and return the new config."""
+    """Persist a partial settings update to ``.env`` and return the new config.
+
+    Rejected with a 422 naming the field when the update would leave the settings
+    incoherent — most importantly a thinking budget at or above ``max_tokens``,
+    which makes the model spend its whole allowance reasoning and return empty
+    content. Refusing beats clamping: a value the server quietly rewrites is
+    indistinguishable downstream from a value the operator chose.
+    """
+    errors = validate_update(request)
+    if errors:
+        raise HTTPException(status_code=422, detail=errors)
     return apply_update(request)
+
+
+@app.post("/api/llm/models", response_model=LLMModelsResponse)
+def post_llm_models(request: LLMEndpointProbe | None = None) -> LLMModelsResponse:
+    """List what the configured (or supplied) endpoint actually serves.
+
+    POST rather than GET because the body may carry an unsaved endpoint and an
+    API key, and a secret has no business in a query string. Always 200: an
+    unreachable endpoint is reported in the body, since someone's GPU box being
+    off is not a fault of this service.
+    """
+    return list_models(request.scope if request else None, request)
+
+
+@app.post("/api/llm/test", response_model=LLMProbeResponse)
+def post_llm_test(request: LLMEndpointProbe | None = None) -> LLMProbeResponse:
+    """Prove the endpoint answers, by sending a real completion.
+
+    Always 200; the verdict is in the body. A failing test is information, not a
+    server error.
+    """
+    return test_endpoint(request.scope if request else None, request)
 
 
 @app.post("/api/query")

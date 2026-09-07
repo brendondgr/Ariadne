@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 SourceStatus = Literal["live", "down", "starting"]
 
@@ -52,20 +52,41 @@ class HealthResponse(BaseModel):
 
 
 class LLMGroup(BaseModel):
-    """Resolved LLM settings for one agent (planner or specialist)."""
+    """One resolved LLM endpoint — the primary group, or one stage's.
+
+    ``inherited`` names the fields this stage took from the primary group rather
+    than setting for itself, which is what lets the settings modal render a stage
+    row as "inherit" versus "custom" without guessing. For the primary group it
+    is always empty.
+
+    The API key is write-only, exactly like ``neo4j_password``: ``api_key_set``
+    says whether one is configured and the value is never returned.
+    """
 
     enabled: bool
+    provider: str
     base_url: str
     model: str
+    api_key_set: bool = False
     timeout_s: float
     max_tokens: int
+    thinking_budget: int = 0
+    inherited: list[str] = Field(default_factory=list)
 
 
 class LLMConfig(BaseModel):
-    planner: LLMGroup
-    specialist: LLMGroup
-    synthesis: LLMGroup
-    eval: LLMGroup
+    """The single LLM group, plus each stage's optional deltas.
+
+    This replaces the previous four sibling groups (planner/specialist/synthesis/
+    eval). Those were confusing rather than flexible: the chat pane actually ran
+    on a fifth group the modal never showed (``CONVERSATION_LLM_*``, which
+    silently inherited synthesis), and two of the four it did show were inert for
+    a chat turn. Now there is one endpoint everything follows, and ``stages``
+    carries the overrides for an operator who genuinely wants a second model.
+    """
+
+    default: LLMGroup
+    stages: dict[str, LLMGroup] = Field(default_factory=dict)
 
 
 class ConnectionConfig(BaseModel):
@@ -98,15 +119,56 @@ def _validate_http_url(value: str | None) -> str | None:
 
 
 class LLMGroupUpdate(BaseModel):
-    """Partial update for one agent's LLM settings; every field is optional."""
+    """Partial update for one LLM group; every field is optional.
+
+    ``inherit`` is what makes "follow the default again" expressible. A field
+    simply *omitted* from a partial update means "leave it alone"; a field named
+    in ``inherit`` means "clear it, so this stage follows the primary group".
+    Collapsing those two into one null value would make it impossible to tell
+    them apart on the wire, and the service would have to guess.
+    """
 
     enabled: bool | None = None
+    provider: str | None = None
     base_url: str | None = None
     model: str | None = None
+    #: Write-only. Accepted here, never returned; "" is ignored rather than
+    #: treated as "clear the key", mirroring how neo4j_password behaves.
+    api_key: str | None = None
     timeout_s: float | None = Field(default=None, gt=0)
     max_tokens: int | None = Field(default=None, ge=1)
+    thinking_budget: int | None = Field(default=None, ge=0)
+    #: Field names to unset for this stage so it inherits the primary group.
+    inherit: list[str] = Field(default_factory=list)
 
     _check_url = field_validator("base_url")(_validate_http_url)
+
+    @model_validator(mode="after")
+    def _budget_below_max_tokens(self) -> "LLMGroupUpdate":
+        """Refuse a thinking budget that leaves nothing for the answer.
+
+        A budget at or above ``max_tokens`` makes the model spend its whole
+        allowance reasoning and return empty content, which reaches a caller as a
+        silent "LLM unavailable" rather than an error. Rejected with a named
+        field rather than quietly clamped, so the modal can say why and the
+        operator keeps the number they chose.
+
+        Only checked when the update carries both halves; the pair moves together
+        (see COUPLED_FIELDS in utils.llm.config), so a partial update that sets
+        one and not the other is validated against the resolved value in the
+        service layer.
+        """
+        if (
+            self.thinking_budget is not None
+            and self.max_tokens is not None
+            and self.thinking_budget
+            and self.thinking_budget >= self.max_tokens
+        ):
+            raise ValueError(
+                f"thinking_budget ({self.thinking_budget}) must be less than "
+                f"max_tokens ({self.max_tokens}); use 0 to send no cap"
+            )
+        return self
 
 
 class ConnectionUpdate(BaseModel):
@@ -138,11 +200,72 @@ class OrchestrationUpdate(BaseModel):
     pipeline_timeout_s: float | None = Field(default=None, gt=0)
 
 
+class LLMEndpointProbe(BaseModel):
+    """Unsaved endpoint values from the settings modal.
+
+    Every field is optional and falls back to what is stored, so the modal can
+    Refresh a URL the operator has typed without first saving it — and without
+    re-sending an API key the server already holds.
+    """
+
+    provider: str | None = None
+    base_url: str | None = None
+    model: str | None = None
+    api_key: str | None = None
+    #: "default" (or omitted) for the primary group, else a stage name.
+    scope: str | None = None
+
+    _check_url = field_validator("base_url")(_validate_http_url)
+
+
+class ModelEntry(BaseModel):
+    """One model a server says it serves. Everything but ``id`` may be absent."""
+
+    id: str
+    label: str
+    context_window: int | None = None
+    max_output_tokens: int | None = None
+
+
+class LLMModelsResponse(BaseModel):
+    """A discovery result. Always HTTP 200 — see ``ok``.
+
+    An unreachable local server is a normal operating state, not a fault of this
+    service, so it is reported in the body rather than as a 5xx. ``state`` is one
+    of "unreachable", "empty", "no-listing", or "" when models came back; they
+    need three different fixes and conflating them frustrates people.
+    """
+
+    ok: bool
+    state: str = ""
+    reason: str = ""
+    base_url: str = ""
+    provider: str = ""
+    models: list[ModelEntry] = Field(default_factory=list)
+
+
+class LLMProbeResponse(BaseModel):
+    """The verdict of the settings modal's Test button. Always HTTP 200."""
+
+    ok: bool
+    latency_ms: int = 0
+    model: str = ""
+    reason: str = ""
+    summary: str = ""
+    base_url: str = ""
+    provider: str = ""
+
+
 class ConfigUpdateRequest(BaseModel):
-    planner: LLMGroupUpdate | None = None
-    specialist: LLMGroupUpdate | None = None
-    synthesis: LLMGroupUpdate | None = None
-    eval: LLMGroupUpdate | None = None
+    """A partial settings update. Every section is optional.
+
+    ``llm`` edits the one group everything follows; ``llm_stages`` carries
+    per-stage overrides keyed by stage name (planner, specialist, synthesis,
+    conversation, eval).
+    """
+
+    llm: LLMGroupUpdate | None = None
+    llm_stages: dict[str, LLMGroupUpdate] = Field(default_factory=dict)
     connection: ConnectionUpdate | None = None
     orchestration: OrchestrationUpdate | None = None
 
