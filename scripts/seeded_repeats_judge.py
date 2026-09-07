@@ -83,15 +83,14 @@ SEEDS = SEEDS_PREREGISTERED
 #: This costs a second full pass (1,704 judgments rather than 852) and buys
 #: something the two-family design could not: the same seed graded twice by the
 #: same grader, which is a within-grader repeatability estimate.
-#: **default-model is deliberately excluded.** The operator reserved it for
-#: another project on 2026-09-07; this run must not contend for it. Do not add
-#: it back without checking -- an endpoint list is a claim about whose GPU you
-#: are allowed to use, not just a performance knob.
+#: **Endpoint permission changed 2026-09-07 and this list tracks it.**
+#: default-model was reserved by the operator at 01:15 for another project and
+#: released ~10:35. default-model-2 is available for a five-hour window from
+#: then. -3 and -4 are down and were dropped by their own probes.
 #:
-#: The remaining three each get their own stride shard of every pass at full
-#: concurrency. Each is probed before any grading starts; an alias that does not
-#: serve the recorded model is dropped rather than trusted.
-ENDPOINTS = ["default-model-2", "default-model-3", "default-model-4"]
+#: An endpoint list is a claim about whose GPU you may use, not a performance
+#: knob. Do not add an alias here without being told it is free.
+ENDPOINTS = ["default-model", "default-model-2"]
 
 # The alias here is only a label for the block; grading routes through
 # ENDPOINTS. It is set to a permitted endpoint so that nothing in this file
