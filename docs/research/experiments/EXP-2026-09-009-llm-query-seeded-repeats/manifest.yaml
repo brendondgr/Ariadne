@@ -4,8 +4,8 @@
 # a gap.
 id: EXP-2026-09-009
 slug: llm-query-seeded-repeats
-title: <one line, the question this answers>
-status: planned            # planned | running | complete | failed | superseded
+title: "Does the query-writing arm hold its sign across three seeded runs?"
+status: complete            # planned | running | complete | failed | superseded
 date_started: 2026-09-06
 date_completed: null       # null until status is complete/failed
 authors: []
@@ -61,8 +61,23 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: <metric name>
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  primary: across_seed_sd_balanced
+  values:
+    across_seed_sd_balanced: {mean: 0.0089, std: 0.0, n: 3}
+    across_seed_sd_qwen: {mean: 0.0084, std: 0.0, n: 3}
+    across_seed_sd_gemma31: {mean: 0.0142, std: 0.0, n: 3}
+    llm_query_qwen_mean: {mean: 0.3912, std: 0.0084, n: 3}
+    llm_query_gemma31_mean: {mean: 0.7054, std: 0.0142, n: 3}
+    deterministic_minus_llm_query_qwen: {mean: 0.1012, std: 0.0, n: 284}
+    deterministic_minus_llm_query_gemma31: {mean: -0.2885, std: 0.0, n: 284}
+    gemma31_distinct_values_this_population: {mean: 2.0, std: 0.0, n: 852}
+    qwen_distinct_values_this_population: {mean: 15.0, std: 0.0, n: 851}
+    abstention_rate: {mean: 0.982, std: 0.0, n: 283}
+    gemma31_mean_on_abstentions: {mean: 0.7014, std: 0.0, n: 278}
+    qwen_mean_on_abstentions: {mean: 0.4023, std: 0.0, n: 278}
+    gemma31_repeat_sd_deterministic: {mean: 0.0033, std: 0.0, n: 10}
+    gemma31_repeat_sd_generic: {mean: 0.0084, std: 0.0, n: 9}
+    grading_failures: {mean: 1.0, std: 0.0, n: 1704}
 baselines_compared: []
 statistical_test: null
 

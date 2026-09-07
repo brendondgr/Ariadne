@@ -10,7 +10,6 @@ that a dead end is walked into once rather than twice.
 
 | ID | Date | Title | Status | Primary metric | Claims | Link |
 |---|---|---|---|---|---|---|
-| `EXP-2026-09-009` | 2026-09-06 | <one line, the question this answers> | planned | <metric name> (not recorded) | — | [llm-query-seeded-repeats](experiments/EXP-2026-09-009-llm-query-seeded-repeats/) |
 | `EXP-2026-09-010` | 2026-09-06 | <one line, the question this answers> | planned | <metric name> (not recorded) | — | [model-free-arm-identity](experiments/EXP-2026-09-010-model-free-arm-identity/) |
 | `EXP-2026-09-011` | 2026-09-06 | <one line, the question this answers> | planned | <metric name> (not recorded) | — | [generic-seeded-repeats](experiments/EXP-2026-09-011-generic-seeded-repeats/) |
 | `EXP-2026-07-001` | 2026-07-26 | Arm A — fully deterministic pipeline (planning, extraction, synthesis) | complete | correctness 0.9972 (n=1) | C-001, C-004 | [arm-a-deterministic](experiments/EXP-2026-07-001-arm-a-deterministic/) |
@@ -53,6 +52,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-09-006` | 2026-09-05 | Does the August ordering survive a change of grader family? Two named graders, 510 frozen answers | complete | contrast_sign_flips 0.0000 ± 0.0000 (n=4) | C-009, C-012, C-021, C-022 | [cross-family-august-regrade](experiments/EXP-2026-09-006-cross-family-august-regrade/) |
 | `EXP-2026-09-007` | 2026-09-05 | Spending the 288-question holdout: does the arm comparison hold on questions no repair had seen? | complete | generic_minus_deterministic_holdout 0.1684 ± 0.0000 (n=288) | C-012, C-023 | [holdout-spend](experiments/EXP-2026-09-007-holdout-spend/) |
 | `EXP-2026-09-008` | 2026-09-05 | Which locally available models can resolve differences near the ceiling? | complete | ceiling_band_fraction_at_1 (not recorded) | — | [grader-calibration](experiments/EXP-2026-09-008-grader-calibration/) |
+| `EXP-2026-09-009` | 2026-09-06 | Does the query-writing arm hold its sign across three seeded runs? | complete | across_seed_sd_balanced 0.0089 ± 0.0000 (n=3) | — | [llm-query-seeded-repeats](experiments/EXP-2026-09-009-llm-query-seeded-repeats/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 
 **44 experiment(s) on record.**

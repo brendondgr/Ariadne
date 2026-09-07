@@ -50,9 +50,19 @@ SEEDS = ("1729", "20260906", "424242")
 #: Each family is one grading block. ``served`` is asserted per pass, not
 #: trusted from the alias -- the endpoint reported "gemma4-31B" for
 #: "gemma4-31B-mtp" during a startup window on 2026-09-06.
+#: **gemma grades first, deliberately.** It is ~14x faster (measured
+#: 2026-09-06: 284 judgments in 3-4 min against qwen's ~54) and the operator
+#: needs its vLLM slot back. Front-loading it releases the GPU after ~12 min
+#: instead of at hour three.
+#:
+#: This does NOT weaken the counterbalancing. `counterbalanced()` keys on the
+#: block index, so swapping which family is block 0 swaps the position
+#: assignment with it: every seed still occupies position sum 2 across the two
+#: families, and the ~0.01 position effect still cancels in the balanced
+#: estimate. Only the labels move.
 FAMILIES = [
-    {"key": "qwen",    "alias": "default-model",   "expect": "qwen38-27B-v2",  "suffix": ".q"},
     {"key": "gemma31", "alias": "default-model-2", "expect": "gemma4-31B-mtp", "suffix": ".g31"},
+    {"key": "qwen",    "alias": "default-model",   "expect": "qwen38-27B-v2",  "suffix": ".q"},
 ]
 
 

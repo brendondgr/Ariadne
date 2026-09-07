@@ -1,0 +1,140 @@
+{
+ "served": {
+  "qwen": "qwen38-27B-v2",
+  "gemma31": "gemma4-31B-mtp"
+ },
+ "plan": [
+  {
+   "family": "qwen",
+   "seed": "1729",
+   "position": 0,
+   "suffix": ".q"
+  },
+  {
+   "family": "qwen",
+   "seed": "20260906",
+   "position": 1,
+   "suffix": ".q"
+  },
+  {
+   "family": "qwen",
+   "seed": "424242",
+   "position": 2,
+   "suffix": ".q"
+  },
+  {
+   "family": "gemma31",
+   "seed": "424242",
+   "position": 0,
+   "suffix": ".g31"
+  },
+  {
+   "family": "gemma31",
+   "seed": "20260906",
+   "position": 1,
+   "suffix": ".g31"
+  },
+  {
+   "family": "gemma31",
+   "seed": "1729",
+   "position": 2,
+   "suffix": ".g31"
+  }
+ ],
+ "passes": {
+  "qwen-1729": {
+   "summary": "{'root': '/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/seeded-repeats-2026-09-06/seed-1729', 'arm': 'llm_query', 'suffix': '.q', 'attempted': 284, 'failed': [], 'wall_s': 3587.0}",
+   "finished": "2026-09-06T20:34:14"
+  },
+  "qwen-20260906": {
+   "summary": "{'root': '/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/seeded-repeats-2026-09-06/seed-20260906', 'arm': 'llm_query', 'suffix': '.q', 'attempted': 284, 'failed': [], 'wall_s': 2779.5}",
+   "finished": "2026-09-06T21:20:34"
+  },
+  "qwen-424242": {
+   "summary": "{'root': '/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/seeded-repeats-2026-09-06/seed-424242', 'arm': 'llm_query', 'suffix': '.q', 'attempted': 284, 'failed': [{'case': 'D3-subtechnique-of-T1589-3f64fc::formal', 'status': \"FAILED ValueError: D3-subtechnique-of-T1589-3f64fc::formal: judgment missing ['verdict', 'correctness', 'faithfulness', 'groundedness', 'completeness', 'rationale']\"}],",
+   "finished": "2026-09-06T22:07:13"
+  },
+  "gemma31-424242": {
+   "summary": "{'root': '/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/seeded-repeats-2026-09-06/seed-424242', 'arm': 'llm_query', 'suffix': '.g31', 'attempted': 284, 'failed': [], 'wall_s': 206.4}",
+   "finished": "2026-09-06T22:10:39"
+  },
+  "gemma31-20260906": {
+   "summary": "{'root': '/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/seeded-repeats-2026-09-06/seed-20260906', 'arm': 'llm_query', 'suffix': '.g31', 'attempted': 284, 'failed': [], 'wall_s': 288.9}",
+   "finished": "2026-09-06T22:15:28"
+  },
+  "gemma31-1729": {
+   "summary": "{'root': '/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/seeded-repeats-2026-09-06/seed-1729', 'arm': 'llm_query', 'suffix': '.g31', 'attempted': 284, 'failed': [], 'wall_s': 419.7}",
+   "finished": "2026-09-06T22:22:28"
+  }
+ },
+ "scores": {
+  "qwen-1729": {
+   "n": 284,
+   "mean": 0.3805,
+   "unparsed": 0,
+   "errors": 0
+  },
+  "qwen-20260906": {
+   "n": 284,
+   "mean": 0.3923,
+   "unparsed": 0,
+   "errors": 0
+  },
+  "qwen-424242": {
+   "n": 283,
+   "mean": 0.4009,
+   "unparsed": 0,
+   "errors": 1
+  },
+  "gemma31-424242": {
+   "n": 284,
+   "mean": 0.6972,
+   "unparsed": 0,
+   "errors": 0
+  },
+  "gemma31-20260906": {
+   "n": 284,
+   "mean": 0.7254,
+   "unparsed": 0,
+   "errors": 0
+  },
+  "gemma31-1729": {
+   "n": 284,
+   "mean": 0.6937,
+   "unparsed": 0,
+   "errors": 0
+  }
+ },
+ "spread": {
+  "qwen": {
+   "means": [
+    0.3805,
+    0.3923,
+    0.4009
+   ],
+   "sd": 0.0084,
+   "h2_holds": true,
+   "caveat": "within one family, position is confounded with seed; use the balanced estimate below for H2"
+  },
+  "gemma31": {
+   "means": [
+    0.6937,
+    0.7254,
+    0.6972
+   ],
+   "sd": 0.0142,
+   "h2_holds": true,
+   "caveat": "within one family, position is confounded with seed; use the balanced estimate below for H2"
+  },
+  "balanced": {
+   "means": [
+    0.5371,
+    0.5589,
+    0.5491
+   ],
+   "sd": 0.0089,
+   "h2_holds": true,
+   "method": "per-seed mean of the two families; counterbalancing gives every seed position sum 2, so the position effect cancels"
+  }
+ }
+}
