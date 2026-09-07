@@ -1640,3 +1640,159 @@ These are limitations to disclose, not questions to answer.
   Florida State University) with attribution in `NOTICE`, and `pyproject.toml`
   declares both. The remaining release blocker is archival identity (a DOI),
   not licensing.
+
+---
+
+## AMENDMENT, 2026-09-06 — five record defects surfaced by the venue readiness scoring
+
+Filed from [`paper/venue-readiness-2026-09.md`](paper/venue-readiness-2026-09.md),
+which scored the record against the tier checklists in
+[`paper/venue-report-2026-09.md`](paper/venue-report-2026-09.md). **None of these
+needs a run.** All five are record-integrity defects: the measurements exist and
+the record misstates them. They are filed here rather than fixed silently because
+three of them were quoted into an external brief before anyone noticed.
+
+`make validate-research` is green through all five, which is itself the finding of
+Q32.
+
+### Q30 — `EXP-2026-09-008` is `planned` and holds a finished result
+
+**Why it matters:** Its manifest still carries the scaffold title `<one line, the
+question this answers>`, `status: planned`, empty `metrics.values`,
+`supports_claims: []`, and a template `RESULTS.md`. `INDEX.md` renders it as a
+placeholder row. Meanwhile `data/ceiling-resolution.json` carries the
+pre-registered verdict — `gemma4-31B-mtp` emits **one** distinct value on the
+ceiling band, `gemma-4-26B-it` emits **two** (`{0.5, 1.0}`) and additionally
+**inverts** the mid/low ordering (0.6435 low against 0.6239 mid), `qwen38-27B-v2`
+is the only usable one. `OUTLINE.md` §12 already depends on this and says it "has
+no home yet". The most transferable finding in the project is, to anyone reading
+the record properly, invisible.
+
+**What resolves it:** Fill the manifest from `data/`, write `RESULTS.md`, hash the
+`data/POINTERS.md` rows, link `supports_claims`, regenerate `INDEX.md`.
+**Blocks:** `OUTLINE.md` §12; the journal-tier item J7. **From:** venue readiness
+scoring, journal tier. **Cost:** one day.
+
+### Q31 — ~~`EXP-2026-09-007`'s manifest and RESULTS are stale against their own `data/`~~ **ANSWERED 2026-09-07**
+
+**Why it matters:** The manifest records `llm_query_holdout: 0.4031`,
+`generic_minus_llm_query_holdout: 0.2515`,
+`deterministic_minus_llm_query_holdout: 0.0831`, and `RESULTS.md` §4 states
+"gemma never graded `llm_query`'s holdout answers". `data/judged-two-family-final.json`,
+written 2026-09-06 03:27 under `EXP-2026-09-008`'s phases B/B2/B3, completes the
+instrument: **3 arms × 288 questions × 2 grading positions × 2 grader families =
+3,456 judgments**, with qwen at 0.6546 / 0.4862 / **0.4039** and gemma at 0.6464 /
+0.4320 / 0.3678. Two files in the same folder disagree about whether the second
+family graded a third of the experiment.
+
+**ANSWERED 2026-09-07, and the answer was larger than the question.** Adjudicated
+by recomputing from all **3,456 raw judgment sidecars** rather than by choosing
+between two summary files. The recomputation reproduces
+`judged-two-family-final.json` exactly, so **four** manifest metrics were wrong,
+not three: `llm_query_holdout` 0.4031→**0.4039**,
+`deterministic_minus_llm_query_holdout` 0.0831→**0.0822**,
+`generic_minus_llm_query_holdout` 0.2515→**0.2507**, and — unlisted in this
+question — `second_family_generic_minus_deterministic` 0.2053→**0.2143**, a
+third-decimal error of 0.009.
+
+**Ownership resolved against the guess above.** The figures belong to
+`EXP-2026-09-007`, not `-008`: they are that experiment's own holdout instrument
+and `judged-final.json` carries the dev half in a field named `dev`. Corrected in
+place with `AMENDMENT A-1`; `-008` is untouched.
+
+**Cause, which the question did not anticipate.** The manifest was populated from
+`judged-final.json`, whose own fields declare it incomplete —
+`grader_second: "position 1 only, deterministic+generic"` and
+`not_measured: ["gemma on llm_query holdout answers", …]`. **Every wrong value lay
+inside what that file said it had not measured.** The error was disclosed when it
+was made and survived anyway, which puts the defect in the reading rather than
+the writing.
+
+**Two further defects surfaced while resolving it**, both recorded as amendments:
+the entire dev-half row of the paper's §6 table lived outside the research record
+in `docs/evaluation/composition/bank/two-grader-judged.json` (A-2), and contrasts
+must be computed from unrounded means rather than by subtracting published
+four-decimal figures (A-3).
+
+**No conclusion moved.** Every corrected value keeps its sign and significance
+verdict. **Cost:** four hours, not one day.
+
+### Q32 — "enforced by CI" is false, in four places
+
+**Why it matters:** `AGENT_INSTRUCTIONS.md` principle 3, `OUTLINE.md:121`,
+`paper/checklists/conference-full-paper.md:169` and
+`paper/checklists/eacl-2027-demo.md:59` all assert that every number in the paper
+traces to an `EXP-` ID. `.github/` **does not exist**;
+`utils/research_record/validate.py` checks eight structural conditions, opens no
+paper prose, and contains no numeric scan. `install_hooks.sh` calls CI "the real
+gate" and CI was never built; the hook is opt-in and `--no-verify`-bypassable.
+The live violation is `OUTLINE.md:44` — `+0.0822` and `+0.0643` carry no `EXP-`
+ID and match no manifest's `metrics.values` (see Q31). `EXP-2026-09-002`'s
+`ISSUES.md` already records one uncaught instance of the same failure.
+
+**What resolves it:** Either build the check (paper-prose float scan against the
+union of `metrics.values`, plus a `.github` workflow), or delete the claim from
+all four files. **Deleting it is honest; leaving it is not.**
+**Blocks:** journal item J4; the reproducibility statement at every tier.
+**From:** venue readiness scoring. **Cost:** half a day either way.
+
+
+**PARTLY ANSWERED 2026-09-07.** `scripts/verify_paper_numbers.py` now exists and
+does what the four assertions claimed was already happening: it extracts every
+numeric literal from the paper and checks each against the metric values in every
+`manifest.yaml`. On first run it reported **17 untraced numbers**; after tracing
+them it reports **0 across 86 figures**.
+
+It is **not** CI and the assertions are still false as written. It runs on
+demand, not on push, and it is deliberately a **review list rather than a gate** —
+a number it cannot trace is a question, not a verdict, because years, counts in
+prose and figures quoted from other papers legitimately do not trace.
+
+**What it found, which is the argument for keeping it:** four wrong recorded
+metrics (`Q31`), an entire table row living outside the research record, and a
+rounding-convention error introduced while fixing those. None changed a
+conclusion; all were findable by a reviewer.
+
+**What remains for this question to close:** either build the CI that the four
+places assert, or edit all four to describe the check that actually exists. The
+second is honest and costs an hour; the first costs a day and is worth more.
+**Also unaddressed:** the checker reads only `docs/research/experiments/*/manifest.yaml`.
+Numbers living under `docs/evaluation/` are invisible to it, which is exactly how
+the dev-half row went unnoticed — see `EXP-2026-09-007` A-2.
+
+### Q33 — retracted federation figures are still in circulation
+
+**Why it matters:** `EXP-2026-08-009` `RESULTS.md` amendment A-1 (2026-08-31)
+withdraws `−0.0334` and `+0.0000` — "the specific numbers should not be quoted",
+the exact zero being an artifact of one pass by an unidentifiable model — and
+replaces them with `−0.0587` (bank 19) and `−0.0520` (bank 20) over eight named
+`qwen38-27B-v2` passes. The withdrawn pair was nonetheless the pair quoted into
+the Part A venue brief on 2026-09-06 and it appears in the resulting report's
+reasoning.
+
+**What resolves it:** A single sentence in `CLAIMS.md` under C-022 and in
+`OUTLINE.md` §7 naming the re-graded pair as the quotable one, so the next
+person copying a number copies the right one.
+**Blocks:** `OUTLINE.md` §7. **From:** venue readiness scoring. **Cost:** half a day.
+
+### Q34 — `n_runs` undercounts on two manifests, and the field means two things
+
+**Why it matters:** `EXP-2026-08-018` and `EXP-2026-08-019` both ran
+`--repeats 3` and report metrics at `n: 3` with non-zero sd; both manifests
+record `n_runs: 1`. Separately, every manifest with `n_runs ≥ 2` —
+`EXP-2026-08-021` (5), `EXP-2026-08-022` (4), `EXP-2026-09-006` (2),
+`EXP-2026-09-007` (2) — is counting **grading** sessions or positions, not system
+runs. A reviewer auditing the field will conclude that **no experiment in the
+record runs the system three times with seeds recorded**, and on the field's
+current definition they are right. The defensible half is that the model-free
+arms are byte-reproducible (`EXP-2026-08-015`: re-running "would have produced
+ten byte-identical numbers"). The undefended half is `llm_query`, the one arm
+with real variance and the one arm never repeated.
+
+**What resolves it:** (a) correct the two manifests and note why in their
+`ISSUES.md`; (b) state in the schema docs whether `n_runs` counts system runs or
+grading passes, and add a separate field if it must count both; (c) three seeded
+`llm_query` runs, which is the only *experiment* on this list.
+**Blocks:** A-tier item A5; B-tier item B4 — the single thing separating the
+project from a B-tier full paper. **From:** venue readiness scoring.
+**Cost:** (a) and (b) one day; (c) days of machine time.
