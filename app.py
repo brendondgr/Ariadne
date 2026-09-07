@@ -64,6 +64,12 @@ WEB_DIR = ROOT / "web"
 DEFAULT_PORT = 16500
 DEFAULT_API_PORT = 16501
 
+#: The environment as it was before .env was loaded, handed to the API child so
+#: its own load_env() reads the current file rather than a launch-time snapshot.
+#: Set in main(); None means "inherit", which is the right answer for a caller
+#: that reached run_server() without going through main().
+_PRISTINE_ENV: dict | None = None
+
 # Dev-server lines worth showing without --verbose (readiness; errors always show).
 _QUIET_ALLOW = ("ready", "started", "compiled", "listening", "local:", "network:")
 
@@ -143,7 +149,8 @@ def run_server(args: argparse.Namespace, checks, *, color: bool) -> int:
     try:
         # API first, gated on its health endpoint answering.
         _say("api", f"$ {' '.join(api_cmd)}", color=color)
-        api = _spawn("api", api_cmd, cwd=ROOT, env=None, color=color, verbose=args.verbose)
+        api = _spawn("api", api_cmd, cwd=ROOT, env=_PRISTINE_ENV,
+                     color=color, verbose=args.verbose)
         children.append(api)
         ready, reason = wait_ready(
             api, lambda: api_health_ready(args.api_port), what="the API")
@@ -281,9 +288,23 @@ def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     color = use_color()
 
-    # Load .env before preflight: the graph/LLM probes need the live creds
-    # the API itself will run with. Tolerate a bare env (no uv, no deps) —
-    # preflight will name what is missing.
+    # Snapshot the environment BEFORE .env is loaded, and hand that copy to the
+    # API child.
+    #
+    # Preflight needs the live creds in *this* process, so .env is loaded here.
+    # But the child inherits whatever this process holds, and `load_env` does not
+    # override real environment variables — by design, so a shell or CI value
+    # wins. The result was that the API could never see a later edit to .env: the
+    # workbench's own Settings modal writes that file, and on the next --reload
+    # restart the fresh worker silently went back to the endpoint the launcher
+    # had booted with. Observed 2026-09-07 — a model changed in Settings reverted
+    # on reload with nothing on screen saying so.
+    #
+    # Giving the child the pre-load environment lets its own load_env() read the
+    # current file, while a genuinely exported shell variable still wins because
+    # it is already in the snapshot.
+    global _PRISTINE_ENV
+    _PRISTINE_ENV = dict(os.environ)
     try:
         from utils.config import load_env
 
