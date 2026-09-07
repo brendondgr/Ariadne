@@ -12,13 +12,15 @@ Live to-do. Tick things off; do not rewrite history.
 
 | | |
 |---|---|
-| **Measurement** | ✅ **Closed.** No experiment remains on the critical path |
+| **Measurement** | ✅ Closed again, 2026-09-07. It was called closed on 09-06 and was not — see §1 |
 | **Positioning — reading** | ✅ **Closed** 2026-09-06 (`Q25`) |
 | **Positioning — writing** | ⬜ Not started |
 | **Paper prose** | ⬜ **1 of 11 sections** |
 | **Artifact / DOI** | 🟡 `LICENSE` ✅, `NOTICE` ✅, appendix draft, **no DOI** |
 
-**41 experiments in the record; `make validate-research` green.**
+**44 experiments in the record; `make validate-research` green.**
+**Every number in the paper traces to a manifest** — 0 untraced of 86,
+`make verify-paper-numbers`, first run 2026-09-07.
 
 ---
 
@@ -37,8 +39,29 @@ Live to-do. Tick things off; do not rewrite history.
       correctness, and the holdout shows that is not the binding constraint
       (retrieval +0.0503 while judged correctness moved −0.0084)
 
-**Optional, ~40 min, only if a gemma window reappears:** nothing. The holdout is
-complete under both families. *(Closed 2026-09-06 — was the last open item.)*
+### Reopened and re-closed, 2026-09-07
+
+This section said "nothing remains" on 2026-09-06. Three things did, and each was
+found by doing the previous one rather than by planning.
+
+- [x] **`EXP-2026-09-009`** — the query-writing arm across three seeded runs.
+      `C-012` rested on one draw; the concern was that run-to-run spread might be
+      the size of the margin. It is not: **0.0089 against a 0.0831 margin**. But
+      the same runs give **opposite orderings** under the two graders, because
+      the second emitted **two distinct values** across 852 judgments.
+- [x] **`EXP-2026-09-010`** — do the model-free arms repeat?
+      `deterministic` is **284/284 byte-identical** in every scored field, so a
+      single run of it is sufficient *by construction*. `generic` is **not**: it
+      composes with a language model, and words **143 of 276** answers
+      differently on a rerun at the same seed. **The assumption that let the
+      primary arm run once was false**, not merely unverified.
+- [ ] **`EXP-2026-09-011`** — running. Whether that wording variation moves the
+      judged score. First block: **SD 0.0088**. Second block completing.
+
+**The lesson is worth more than the three results.** "Measurement closed" was
+asserted, not checked. The assumption underneath it — that the model-free arms
+were model-free — was contradicted by a field in every answer artifact
+(`run_meta.synthesis`), which nothing had read.
 
 ---
 
