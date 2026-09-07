@@ -1717,7 +1717,7 @@ four-decimal figures (A-3).
 **No conclusion moved.** Every corrected value keeps its sign and significance
 verdict. **Cost:** four hours, not one day.
 
-### Q32 — "enforced by CI" is false, in four places
+### Q32 — ~~"enforced by CI" is false, in four places~~ **ANSWERED 2026-09-07**
 
 **Why it matters:** `AGENT_INSTRUCTIONS.md` principle 3, `OUTLINE.md:121`,
 `paper/checklists/conference-full-paper.md:169` and
@@ -1753,9 +1753,18 @@ metrics (`Q31`), an entire table row living outside the research record, and a
 rounding-convention error introduced while fixing those. None changed a
 conclusion; all were findable by a reviewer.
 
-**What remains for this question to close:** either build the CI that the four
-places assert, or edit all four to describe the check that actually exists. The
-second is honest and costs an hour; the first costs a day and is worth more.
+**CLOSED 2026-09-07 by taking the honest option.** All four assertions now
+describe the check that exists rather than one that does not:
+`OUTLINE.md:121`, `AGENT_INSTRUCTIONS.md` principle 3,
+`checklists/eacl-2027-demo.md:59` and `checklists/conference-full-paper.md`
+(both places, one struck through with the correction beside it). A
+`make verify-paper-numbers` target was added so the check is discoverable rather
+than folklore.
+
+**The stronger option was not taken and is not pretended to be.** There is still
+no CI. Building it costs a day and is worth more than the hour this took;
+`AGENT_INSTRUCTIONS.md:384` still carries the unticked box for it. What changed
+is that the repository no longer claims to have it.
 **Also unaddressed:** the checker reads only `docs/research/experiments/*/manifest.yaml`.
 Numbers living under `docs/evaluation/` are invisible to it, which is exactly how
 the dev-half row went unnoticed — see `EXP-2026-09-007` A-2.

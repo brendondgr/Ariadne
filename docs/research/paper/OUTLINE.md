@@ -119,6 +119,10 @@ gold in exactly the sense `C-021` measures.
 ## Rules for this outline
 
 - Every number in the paper cites an `EXP-` ID. No orphan numbers.
+  **Checked by `scripts/verify_paper_numbers.py`, on demand — not by CI.**
+  It reported 0 untraced of 86 figures on 2026-09-07. It reads only
+  `docs/research/experiments/*/manifest.yaml`, so a number living under
+  `docs/evaluation/` is invisible to it (see `EXP-2026-09-007` A-2).
 - Every claim appears in [`../CLAIMS.md`](../CLAIMS.md) with its status. A claim
   that is `unsupported` at writing time either gets an experiment or gets cut.
   **A claim that is `refuted` does not get argued around.**

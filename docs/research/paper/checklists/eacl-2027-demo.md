@@ -57,3 +57,4 @@ One of: user study, benchmark, case study, or usage statistics.
       text-to-query baseline (D-004)
 - [ ] Verify the CAPEC fixture is non-empty before recording the screencast
 - [ ] Every number in the paper traces to an `EXP-` ID
+      *(checkable since 2026-09-07: `make verify-paper-numbers`)*

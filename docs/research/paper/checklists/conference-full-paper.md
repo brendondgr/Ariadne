@@ -158,6 +158,79 @@ are the *interesting* content — and they are exactly what gets cut at 9 pages.
 - [ ] Re-verify any deadline before planning against it — `venue-targets.md` is
       **stale** and says so
 
+### Outcome of the 2026-09-06 venue selection
+
+Run under [`../../../prompts/2026-09-06-venue-selection.md`](../../../prompts/2026-09-06-venue-selection.md).
+Nothing above is rewritten; this is the appended result.
+
+- Part A — an isolated web-connected agent produced
+  [`../venue-report-2026-09.md`](../venue-report-2026-09.md): 15 venue entries
+  verified against official calls, 11 `UNVERIFIED` (EDBT 2027 among them — its
+  dates came from a mailing-list republication, not the conference site).
+  **Supersedes [`../venue-targets.md`](../venue-targets.md)** as the calendar.
+- Part C — scored against that report's four tier checklists in
+  [`../venue-readiness-2026-09.md`](../venue-readiness-2026-09.md) (+ PDF).
+  `make validate-research` green: 41 experiments — though the `make` target itself
+  needs network access to fetch its interpreter; `scripts/validate_research.py` was
+  run directly.
+- **Renderer deviation, recorded rather than absorbed:** the prompt specified
+  `scripts/morning_report.py::render_pdf`. It returned `True`, but it emits one
+  paragraph per *source line*, prints `---` literally and auto-sizes table columns,
+  which is unreadable at this length. `scripts/render_readiness_pdf.py` was added
+  for documents meant to be sat down with; `morning_report.py` is untouched.
+
+- [ ] **DECISION RECOMMENDED, NOT YET TAKEN: journal, Semantic Web Journal**
+      (rolling, no page limit, no deadline). Answers the `conference or JMLR`
+      box above in the JMLR column. Estimated 2–3 months to submission.
+- [ ] **Do not spend the unpublished status on NORA @ AACL 2026** (2026-09-14,
+      ACL Anthology archival, off-theme). The evidence clears a workshop bar
+      today; nothing worth submitting to is open.
+- [ ] **B-tier stays live as the alternative** — reachable on the same writing
+      plus one bounded re-run (three seeded `llm_query` runs). ECIR 2027 short
+      (2026-10-12) is the near-term option if that route is taken.
+- [ ] **A-tier not attempted this cycle.** `A8` (human anchor / grader-vs-human
+      agreement) is blocked by `Q6`, closed as WILL NOT DO — a resourcing
+      question, not a writing one.
+
+**Five record defects the scoring surfaced** (each is `PAPERWORK`, each is now an
+open question — see `../../OPEN_QUESTIONS.md` Q30–Q34):
+
+1. `EXP-2026-09-008` is `status: planned` with a template manifest and RESULTS,
+   `supports_claims: []`, placeholder title in `INDEX.md` — while its `data/`
+   holds the calibration verdict the paper's §12 depends on.
+2. `EXP-2026-09-007`'s manifest metrics and `RESULTS.md` §4 are stale against
+   `data/judged-two-family-final.json` in the same folder: RESULTS says gemma
+   never graded `llm_query`'s holdout answers; the data file completes all
+   **3,456** judgments (3 arms × 288 × 2 positions × 2 families).
+3. ~~"Every number in the paper traces to an `EXP-` ID — **enforced by CI**"~~
+   **Corrected 2026-09-07.** There is no CI. There is now a check —
+   `make verify-paper-numbers` — that you run yourself. It found four wrong
+   recorded metrics and a table row living outside the record on its first
+   night, and reports 0 untraced of 86 figures.
+   (§7 below, and `AGENT_INSTRUCTIONS.md` principle 3) is **false**: `.github/`
+   does not exist and `utils/research_record/validate.py` reads no paper prose
+   and extracts no numbers. `OUTLINE.md:44`'s +0.0822/+0.0643 are the live
+   example — no `EXP-` ID, matching no manifest.
+4. `EXP-2026-08-009`'s −0.0334 / +0.0000 are retracted by its own amendment A-1
+   and were nonetheless quoted into the Part A brief. Re-graded: −0.0587 /
+   −0.0520.
+5. `EXP-2026-08-018` and `EXP-2026-08-019` ran `--repeats 3` and report metrics
+   at `n: 3`, but both manifests record `n_runs: 1`.
+
+**One correction in the project's favour:** `EXP-2026-08-010` used **182
+externally authored questions** (CTIBench `cti-ate`, 60 rows, plus an AttackQA
+enumerative subset; questions used verbatim;
+`data.split: "external — neither benchmark was authored with sight of this
+codebase"`). That satisfies the A-tier item A4 outright and half of B9. It is
+invisible in `OUTLINE.md` and in §4's limitations list, and it should not be.
+
+**Where the readiness assessment disagrees with the venue report:** the report's
+lead argument for SWJ leans on the third graph being one that "could not legally
+be copied". `EXP-2026-08-017` RESULTS explicitly refuses that claim — the
+contractual case is motivation, the identity records are synthetic, and what was
+measured is only that federation asked that graph for nothing. Venue choice
+stands; that sentence cannot be written.
+
 ---
 
 ## 7. Artifact and DOI — half a day, no risk
@@ -166,7 +239,9 @@ are the *interesting* content — and they are exactly what gets cut at 9 pages.
 - [ ] MITRE attribution visible in the artifact itself, not only in `NOTICE`
 - [ ] `ARTIFACT_APPENDIX.md` off draft — its blockers section is the to-do
 - [ ] **Mint the DOI** (Zenodo). Not started; no dependency on anything above
-- [ ] Every number in the paper traces to an `EXP-` ID — enforced by CI, verify
+- [x] Every number in the paper traces to an `EXP-` ID — **0 untraced of 86**
+      as of 2026-09-07, by `make verify-paper-numbers`. **Not** CI; re-run it
+      at camera-ready and after any number changes. Verify
       once more at camera-ready
 - [ ] `data/POINTERS.md` hashes re-verified for the artifacts that live outside
       the cloneable record

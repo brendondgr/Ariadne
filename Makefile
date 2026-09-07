@@ -33,3 +33,6 @@ figures:
 
 test-research:
 	@$(UV) run pytest utils/research_record/tests -q
+
+verify-paper-numbers:  ## check every number in the paper traces to a manifest
+	@uv run python scripts/verify_paper_numbers.py
