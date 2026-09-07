@@ -170,16 +170,22 @@ export function CloseIcon({ size = 16, ...props }: IconProps) {
   );
 }
 
+/** Settings — a toothed cog.
+ *
+ *  The outer path is a real gear outline (8 teeth, generated as alternating
+ *  tip/root vertices about a 12,12 centre), NOT a circle with radiating rays:
+ *  the previous drawing was eight spokes around a hub, which reads as a sun or
+ *  a brightness/light-bulb control rather than settings. */
 export function GearIcon({ size = 16, ...props }: IconProps) {
   return (
     <svg {...base({ size, ...props })} aria-hidden>
-      <circle cx="12" cy="12" r="3.2" stroke="currentColor" strokeWidth="1.5" />
       <path
-        d="M12 2.5v3M12 18.5v3M21.5 12h-3M5.5 12h-3M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1M18.7 18.7l-2.1-2.1M7.4 7.4 5.3 5.3"
+        d="M10.44 2.12L13.56 2.12L13.64 4.58L16.08 5.59L17.88 3.91L20.09 6.12L18.41 7.92L19.42 10.36L21.88 10.44L21.88 13.56L19.42 13.64L18.41 16.08L20.09 17.88L17.88 20.09L16.08 18.41L13.64 19.42L13.56 21.88L10.44 21.88L10.36 19.42L7.92 18.41L6.12 20.09L3.91 17.88L5.59 16.08L4.58 13.64L2.12 13.56L2.12 10.44L4.58 10.36L5.59 7.92L3.91 6.12L6.12 3.91L7.92 5.59L10.36 4.58Z"
         stroke="currentColor"
         strokeWidth="1.5"
-        strokeLinecap="round"
+        strokeLinejoin="round"
       />
+      <circle cx="12" cy="12" r="3.2" stroke="currentColor" strokeWidth="1.5" />
     </svg>
   );
 }
