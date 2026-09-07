@@ -10,7 +10,7 @@ are positive with intervals excluding zero.
 |---|---|---|---|---|
 | schema-assembled (`generic`) | **0.6546** | [0.6218, 0.6875] | 0.6569 | **−0.0023** |
 | templates (`deterministic`) | **0.4862** | [0.4529, 0.5201] | 0.4946 | **−0.0084** |
-| model writes the query (`llm_query`) | **0.4031** | [0.3723, 0.4353] | 0.3781 | **+0.0250** |
+| model writes the query (`llm_query`) | **0.4039** | [0.3723, 0.4353] | 0.3781 | **+0.0258** |
 
 | contrast | holdout | 95% CI | dev |
 |---|---|---|---|
@@ -215,3 +215,25 @@ them is the estimator.
 This surfaced because `scripts/verify_paper_numbers.py` refused to match the
 paper's 0.0643 against a manifest carrying 0.0642 — the last untraced number in
 the paper, and the check was correct to flag it.
+
+# AMENDMENT A-4 (2026-09-07) — the body of this file was stale against its own A-1
+
+`AMENDMENT A-1` corrected four manifest metrics. **It did not correct this file's
+own results table**, which went on quoting `llm_query` at **0.4031** — one of the
+four values A-1 had just declared wrong — with the delta derived from it
+(`+0.0250`). Both are corrected: **0.4039** and **+0.0258**.
+
+**The same defect, one level up.** A-1's finding was that a number was copied out
+of a file that declared itself incomplete and nothing re-read the source. This is
+a number left in place after the source was corrected, in the very document
+announcing the correction.
+
+**How it was found**, and this is the useful part: `verify_paper_numbers.py` was
+written to check the *paper* against the manifests. Pointing it at this
+`RESULTS.md` instead took one flag. **Any document in the record can be checked
+this way and none of them are**, which is a larger gap than the number it caught.
+
+The per-arm confidence intervals in the table above ([0.6218, 0.6875] and the
+rest) remain unrecorded as manifest metrics. They are noted rather than fixed
+here: only the *contrast* intervals are quoted in the paper, and those were
+recorded under A-1.

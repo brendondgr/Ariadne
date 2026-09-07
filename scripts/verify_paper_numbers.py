@@ -86,6 +86,8 @@ def main() -> int:
     args = ap.parse_args()
 
     paper = Path(args.paper)
+    if not paper.is_absolute():
+        paper = (REPO / paper).resolve()
     if not paper.exists():
         print(f"paper not found: {paper}")
         return 2
@@ -122,7 +124,11 @@ def main() -> int:
             else:
                 orphan.append(row)
 
-    print(f"paper            : {paper.relative_to(REPO)}")
+    try:
+        shown = paper.relative_to(REPO)
+    except ValueError:
+        shown = paper
+    print(f"document         : {shown}")
     print(f"manifest values  : {len(index)} distinct numeric forms")
     print(f"traced           : {len(traced)}")
     print(f"quoted from others: {len(foreign)}  (not expected to trace)")
