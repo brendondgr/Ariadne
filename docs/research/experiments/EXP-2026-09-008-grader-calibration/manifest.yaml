@@ -4,8 +4,8 @@
 # a gap.
 id: EXP-2026-09-008
 slug: grader-calibration
-title: <one line, the question this answers>
-status: planned            # planned | running | complete | failed | superseded
+title: "Which locally available models can resolve differences near the ceiling?"
+status: complete            # planned | running | complete | failed | superseded
 date_started: 2026-09-05
 date_completed: null       # null until status is complete/failed
 authors: []
@@ -61,8 +61,29 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: <metric name>
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  primary: ceiling_band_fraction_at_1
+  values:
+    ceiling_fraction_at_1_gemma31: {mean: 1.0, std: 0.0, n: 20}
+    ceiling_fraction_at_1_gemma26: {mean: 0.95, std: 0.0, n: 20}
+    ceiling_fraction_at_1_qwen: {mean: 0.85, std: 0.0, n: 20}
+    ceiling_distinct_values_gemma31: {mean: 1.0, std: 0.0, n: 20}
+    ceiling_distinct_values_gemma26: {mean: 2.0, std: 0.0, n: 20}
+    ceiling_distinct_values_qwen: {mean: 3.0, std: 0.0, n: 20}
+    ceiling_mean_gemma31: {mean: 1.0, std: 0.0, n: 20}
+    ceiling_mean_gemma26: {mean: 0.975, std: 0.109, n: 20}
+    ceiling_mean_qwen: {mean: 0.98, std: 0.051, n: 20}
+    gemma26_mid_band_mean: {mean: 0.6239, std: 0.4091, n: 18}
+    gemma26_low_band_mean: {mean: 0.6435, std: 0.4501, n: 20}
+    gemma26_inversion_margin: {mean: 0.0196, std: 0.0, n: 1}
+    low_band_sd_qwen: {mean: 0.2629, std: 0.0, n: 20}
+    low_band_sd_gemma31: {mean: 0.3991, std: 0.0, n: 20}
+    low_band_sd_gemma26: {mean: 0.4501, std: 0.0, n: 20}
+    models_usable_near_ceiling: {mean: 1.0, std: 0.0, n: 3}
+    thinkcap512_records_retrieved: {mean: 0.0, std: 0.0, n: 30}
+    uncapped_records_retrieved: {mean: 3.0, std: 0.0, n: 30}
+    thinkcap512_gate_rejected: {mean: 28.0, std: 0.0, n: 30}
+    uncapped_gate_rejected: {mean: 4.0, std: 0.0, n: 30}
+    #  {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
 baselines_compared: []
 statistical_test: null
 

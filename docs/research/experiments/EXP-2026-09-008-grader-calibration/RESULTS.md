@@ -1,42 +1,156 @@
-# RESULTS — EXP-2026-09-008 <title>
+# RESULTS — EXP-2026-09-008 — which local models can grade near the ceiling?
 
-## 1. Headline
+**Run 2026-09-06.** Protocol and the `usable_near_ceiling` criterion were written
+before any calibration judgment existed.
 
-Two sentences. The number, and whether the hypothesis survived.
+---
 
-## 2. Results table
+## Headline
 
-Generated from `data/metrics.json`, not typed. Mean ± std across seeds — never a
-single run without saying so. If `n_runs: 1`, state that here rather than
-letting a bare number imply a distribution.
+**Of three locally available graders, one can adjudicate a near-ceiling contrast
+and two cannot.** One of the two does not merely lose resolution — it *reverses*
+the ordering of mediocre and good answers in exactly the score range where every
+arm of this project sits.
 
-## 3. Figures
+Saturation is a **ceiling effect, not a general inability**: all three models
+separate the low band with sd > 0.26. A grader that looks fine on a spread-out
+population can still be blind on a tight one, and correlation against a reference
+will not show it.
 
-Each figure embedded with a one-line caption naming the script that produced it.
+---
 
-## 4. Interpretation
+## The decisive table
 
-What this means for the paper's argument. Which claim in `../../CLAIMS.md` it
-moves, and in which direction.
+Ceiling band, n=20 per model, identical answers, identical prompt, identical
+32,768-token budget. `usable_near_ceiling` ⇔ `fraction_at_1 < 0.95` **and**
+`distinct_values > 2`, pre-registered.
 
-## 5. Threats to validity
+| Grader (`served_model`) | mean | sd | at 1.0 | distinct | values emitted | usable |
+|---|---|---|---|---|---|---|
+| `gemma4-31B-mtp` | 1.0000 | 0.000 | **20/20** | **1** | `{1.0}` | ❌ |
+| `gemma-4-26B-it` | 0.9750 | 0.109 | **19/20** | **2** | `{0.5, 1.0}` | ❌ |
+| `qwen38-27B-v2` | 0.9800 | 0.051 | 17/20 | 3 | `{0.8, 0.9, 1.0}` | ✅ |
 
-Confounds, leakage, dataset artifacts, cost asymmetries in the comparison. The
-section reviewers read first. Be specific enough that someone could act on it.
+Every model is named by the string its own response envelope returned, never by
+the relay alias (`D-028`). This matters here more than anywhere: `default-model-2`
+served two different families within six hours on 2026-09-05.
 
-## 6. What surprised us
+## All three bands
 
-The section that becomes the discussion. If nothing surprised you, the
-experiment was probably not worth running — say that too.
+| Grader | ceiling mean (distinct) | mid mean (distinct) | low mean (distinct) | overall sd |
+|---|---|---|---|---|
+| `qwen38-27B-v2` | 0.9800 (3) | 0.5125 (9) | 0.3785 (11) | 0.356 |
+| `gemma4-31B-mtp` | 1.0000 (1) | 0.4250 (3) | 0.2385 (4) | 0.477 |
+| `gemma-4-26B-it` | 0.9750 (2) | **0.6239** (5) | **0.6435** (5) | 0.390 |
 
-## 7. Follow-ups
+---
 
-Each becomes an entry in `../../OPEN_QUESTIONS.md`. Link them.
+## Hypotheses
 
-## 8. Reproduction
+| | Prediction | Outcome |
+|---|---|---|
+| **H1** | `gemma4-31B-mtp` ≥95% at 1.0 on the ceiling band | ✅ **Confirmed**, and at the limit: **100%**, one distinct value. A replication on a different answer set of the 2026-09-05 accident. |
+| **H2** | `qwen38-27B-v2` emits ≥3 distinct values on the ceiling band | ✅ **Confirmed.** Exactly 3, 85% at 1.0. |
+| **H3** | `gemma-4-26B-it` genuinely uncertain — the only unpredictable cell | ✅ **Resolved: unusable.** It fails *both* halves of the criterion, 0.95 at 1.0 (not < 0.95) and 2 distinct values (not > 2). It shares the Gemma near-binary behaviour. |
+| **H4** | Every model separates the low band with sd > 0.20 | ✅ **Confirmed** for all three: 0.263, 0.399, 0.450. Saturation is a ceiling effect. |
 
-The exact command that regenerates everything in this folder.
+All four hold. H3 was the cell that decided whether `C-021` could get a second
+opinion, and the answer is that it cannot from any local model but one.
 
-```bash
-# command here
-```
+---
+
+## The finding nobody predicted
+
+`gemma-4-26B-it` **inverts the mid/low ordering.** It scores the *low* band at
+**0.6435** against the *mid* band at **0.6239**, when the constructed ordering is
+mid above low.
+
+- The inversion sits in the **0.40–0.65** range. Every arm of this project scores
+  inside it on the holdout (`generic` 0.6546, `deterministic` 0.4862,
+  `llm_query` 0.4031 — `EXP-2026-09-007`).
+- A grader that adds noise is survivable. A grader that reverses an ordering is a
+  different failure, and it is **invisible to the correlation statistics this
+  field reports.**
+- The margin is small (0.0196) and n is 18 vs 20. We do not claim a calibrated
+  effect size. We claim the ordering came out backwards on a set constructed so
+  that it could not, and that is sufficient to disqualify the grader.
+
+**Consequence, taken immediately.** The planned third-family holdout pass
+(`C2-holdout-third-family`) was **stopped on this evidence with zero judgments
+written**. Grading 288 × 3 answers with an instrument that inverts inside the
+measured range would have produced a number that looked like a result.
+
+---
+
+## What this cost the record
+
+- **`C-021`'s co-authorship gap is 0.0322 under `qwen38-27B-v2` and 0.0000 under
+  `gemma4-31B-mtp`** (`EXP-2026-09-006`). The second number reads as a
+  refutation. It is an instrument limit: a grader emitting one value in that band
+  reports a contrast of exactly zero whatever is true.
+- **Six of twelve cells** of the August cross-family re-grade are saturated under
+  the second family.
+- **`C-021` rests on one named grader because it has to.** That is a measurement,
+  not an apology, and the paper should say so in those words.
+
+---
+
+## Incidental: the thinking cap, tested and closed
+
+`LLM_THINKING_BUDGET=512` had been wired for days and never exercised against a
+live endpoint. Paired on identical case ids against the settled uncapped run,
+n=30:
+
+| | records retrieved | gate-rejected |
+|---|---|---|
+| capped at 512 | **0** | **28** |
+| uncapped | 3 | 4 |
+
+**Verdict: do not use.** The cap eliminates retrieval entirely and raises gate
+rejections sevenfold. No question retrieved under the cap that did not retrieve
+uncapped.
+
+*Mechanism.* The builder is a reasoning model. At 512 thinking tokens it emits
+queries malformed enough for the pre-run gate to reject — the same failure shape
+that defeated this arm four times before, in which **too small a bound is
+downstream indistinguishable from a model with nothing to say.**
+
+*Limits.* n=30, one cap value, one model, and the 30 are a hard slice — uncapped
+retrieved on only 3 of them against ~31% bank-wide. **The absolute rates are not
+representative; the paired direction is.** Not a judged comparison. This does not
+replace the published `llm_query` figures, which ran uncapped.
+
+**A measurement bug was found and fixed before any conclusion was drawn.** The
+orchestrator's `with_evidence` counter read `records or results`, and `results`
+counts sub-question slots including failures — so it reported **30/30 with
+evidence when the truth was 0/30**. Caught by reading the answers rather than
+trusting the metric.
+
+---
+
+## Limits of this experiment
+
+- **n=20 per band per model.** Enough to establish that a grader emits one or two
+  distinct values; not enough to estimate a resolution threshold.
+- **Three models, all local.** No hosted frontier grader was tested. Whether the
+  ceiling effect is a property of open-weight models at this scale, of these two
+  families, or of LLM graders generally is **unknown and not claimed.**
+- **One prompt, one budget, one temperature.** A different rubric might resolve
+  where this one saturates. The result is about this instrument as this project
+  uses it.
+- **`gemma-4-26B-it`'s mid band is n=18, not 20.** Its llama.cpp endpoint stopped
+  answering even a 16-token request for over 400 s. The ceiling band — the band
+  the usability verdict depends on — completed at 20/20, so the verdict stands;
+  the inversion finding rests on the short band and is reported with that caveat
+  attached.
+- **The bands are constructed from this project's own arms**, so "true ordering"
+  means the ordering those arms produce under the reference grader, not a human
+  label. `Q6` closed human grading as unavailable.
+
+## Where this goes in the paper
+
+It has no home in the outline yet and needs one. The draft
+(`docs/research/paper/tmlr/ariadne-tmlr.tex`) currently gives it §5, leading,
+on the grounds that TMLR's scope makes an evaluation-methodology result the part
+that fits and that it needs no external system to be interesting. That placement
+is still an open editorial decision.
