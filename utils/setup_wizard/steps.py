@@ -18,7 +18,10 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
-from utils.config import env_str, load_env, set_env_values
+import os
+
+from utils.config import env_str, load_env, set_env_values, unset_env_values
+from utils.llm.config import resolve as resolve_llm
 from utils.launcher.preflight import CheckResult, FAIL, PASS, check_npm
 from utils.yolo import (
     StepResult,
@@ -229,8 +232,10 @@ class EnvStep(WizardStep):
 
 # ── 3. local inference server (OpenAI-compatible LLM endpoint) ───────────────
 
-#: The five ``*_LLM_*`` config groups that share one inference endpoint.
-LLM_GROUPS = ("PLANNER", "SPECIALIST", "SYNTHESIS", "CONVERSATION", "EVAL")
+#: The five per-stage groups the wizard USED to fan one endpoint out across.
+#: Kept only so a wizard run can clear stale per-stage overrides left by an
+#: earlier version of itself — it no longer writes them.
+LEGACY_LLM_GROUPS = ("PLANNER", "SPECIALIST", "SYNTHESIS", "CONVERSATION", "EVAL")
 
 DEFAULT_LLM_BASE_URL = "http://localhost:9090/v1"
 DEFAULT_LLM_MODEL = "default-model"
@@ -303,10 +308,21 @@ class InferenceServerStep(WizardStep):
         self.env_file = root / ".env"
 
     def _enabled(self) -> bool:
-        return env_str("PLANNER_LLM_ENABLED", "false").strip().lower() == "true"
+        """Whether the LLM is already on, per the unified group.
+
+        Read through the resolver rather than off PLANNER_LLM_ENABLED: the
+        planner's flag was never the same question as "is the LLM on", and using
+        it as a proxy is how the wizard and the workbench came to disagree about
+        what was configured.
+        """
+        return resolve_llm(None, clamp=False).enabled
 
     def _base_url(self) -> str:
-        return env_str("PLANNER_LLM_BASE_URL", DEFAULT_LLM_BASE_URL)
+        """The endpoint to offer as the default. Resolves like the app does."""
+        return resolve_llm(None, clamp=False).base_url
+
+    def _model(self) -> str:
+        return resolve_llm(None, clamp=False).model
 
     def describe(self) -> str:
         return ("Configuring and syncing the local inference server "
@@ -334,15 +350,38 @@ class InferenceServerStep(WizardStep):
                 return r
 
             base_url = ui.prompt_text("Inference base URL", self._base_url())
-            model = ui.prompt_text("Model name",
-                                   env_str("PLANNER_LLM_MODEL", DEFAULT_LLM_MODEL))
-            updates: dict[str, str] = {}
-            for group in LLM_GROUPS:
-                updates[f"{group}_LLM_ENABLED"] = "true"
-                updates[f"{group}_LLM_BASE_URL"] = base_url
-                updates[f"{group}_LLM_MODEL"] = model
-            set_env_values(updates, env_file=self.env_file)
-            ui.say(f"Enabled LLM for {', '.join(g.lower() for g in LLM_GROUPS)}.")
+            model = ui.prompt_text("Model name", self._model())
+
+            # One group. The wizard used to write the same three values into five
+            # per-stage prefixes, which is the CLI half of the problem the
+            # workbench had: fifteen lines expressing one decision, and no way to
+            # tell afterwards which of them a given answer came from.
+            set_env_values(
+                {
+                    "ARIADNE_LLM_ENABLED": "true",
+                    "ARIADNE_LLM_BASE_URL": base_url,
+                    "ARIADNE_LLM_MODEL": model,
+                },
+                env_file=self.env_file,
+            )
+
+            # Clear per-stage overrides an older wizard run left behind. Without
+            # this they would silently outrank the group just chosen, and the
+            # operator would watch their new endpoint be ignored.
+            stale = [
+                f"{group}_LLM_{field}"
+                for group in LEGACY_LLM_GROUPS
+                for field in ("ENABLED", "BASE_URL", "MODEL")
+                if os.environ.get(f"{group}_LLM_{field}")
+            ]
+            if stale:
+                unset_env_values(stale, env_file=self.env_file)
+                ui.say(
+                    f"Cleared {len(stale)} per-stage override(s) from an earlier "
+                    "setup so every stage follows the endpoint above. Re-add one "
+                    "in Settings → Per-stage endpoints if you want a second model."
+                )
+            ui.say("Enabled the LLM for every stage.")
 
             up, detail = probe_inference(base_url)
             r.status = "ok"  # never a hard failure — pipeline degrades gracefully

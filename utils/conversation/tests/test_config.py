@@ -5,11 +5,32 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from utils.conversation.config import (
     ConversationConfig,
     ConversationLLMConfig,
     conversation_db_path,
 )
+from utils.llm.config import FIELD_SUFFIX, STAGES, env_key
+
+
+@pytest.fixture(autouse=True)
+def _clean_llm_env(monkeypatch):
+    """Clear every LLM variable before each test.
+
+    These tests assert what config resolves to from a KNOWN environment, and
+    ``api/main.py`` calls ``load_env()`` at import time -- so collecting api/ in
+    the same pytest run drops the developer's real .env into os.environ before a
+    single test executes. Without this fixture the assertions silently start
+    measuring that file instead of the values the test set up, and the failure
+    looks like a resolution bug rather than a leak.
+    """
+    for key in [env_key(f) for f in FIELD_SUFFIX] + [
+        env_key(f, stage) for stage in STAGES for f in FIELD_SUFFIX
+    ]:
+        monkeypatch.delenv(key, raising=False)
+    monkeypatch.delenv("LLM_THINKING_BUDGET", raising=False)
 
 
 def test_defaults_are_llm_off_and_bounded(monkeypatch):

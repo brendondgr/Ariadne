@@ -70,7 +70,7 @@ stale-state (backup + rebuild), transient (retry with backoff), or needs-human
 | `uv run main.py --query "…"` | Plan, then run the specialists over the live graphs and print normalized evidence |
 | `uv run main.py --query "…" --query-llm` | Same, with the LLM drafter for the planning stage |
 
-Without `--plan-llm` / `--query-llm`, and with `PLANNER_LLM_ENABLED` unset, the
+Without `--plan-llm` / `--query-llm`, and with `ARIADNE_LLM_ENABLED` unset, the
 whole path is deterministic. The specialists are deterministic either way — they
 compile hand-written query templates and never call an LLM.
 

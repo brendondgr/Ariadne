@@ -126,7 +126,12 @@ class ConversationLLMConfig:
         )
         llm = resolve_llm("conversation", defaults=synthesis)
         return cls(
-            enabled=env_bool("CONVERSATION_LLM_ENABLED", False),
+            # Resolved through the group like every other field. Reading
+            # CONVERSATION_LLM_ENABLED on its own meant the layer ignored
+            # ARIADNE_LLM_ENABLED entirely: an operator could turn the LLM on in
+            # one place and have the chat pane stay deterministic, with nothing
+            # on screen explaining why.
+            enabled=llm.enabled,
             base_url=llm.base_url,
             model=llm.model,
             timeout_s=llm.timeout_s,

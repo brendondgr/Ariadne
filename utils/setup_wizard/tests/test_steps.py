@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+
 import importlib.util
 import json
 from pathlib import Path
@@ -15,7 +17,7 @@ from utils.setup_wizard.steps import (
     DataStep,
     EnvStep,
     InferenceServerStep,
-    LLM_GROUPS,
+    LEGACY_LLM_GROUPS,
     PrerequisitesStep,
     WebDepsStep,
     WizardStep,
@@ -225,16 +227,29 @@ def test_list_models_returns_none_on_unreachable():
     assert _list_models("http://localhost:9/v1", timeout=0.2) is None
 
 
-def test_inference_step_detect_off_when_llm_disabled(monkeypatch):
-    monkeypatch.setattr("utils.setup_wizard.steps.env_str",
-                        lambda name, default="": "false" if name == "PLANNER_LLM_ENABLED" else default)
+#: Every LLM env var the wizard reads. Cleared per-test so a developer's real
+#: .env -- which a golden test elsewhere in the suite may have loaded into the
+#: process -- cannot decide what the wizard thinks is configured.
+_LLM_ENV = [
+    f"{prefix}_LLM_{field}"
+    for prefix in ("ARIADNE", "PLANNER", "SPECIALIST", "SYNTHESIS", "CONVERSATION", "EVAL")
+    for field in ("ENABLED", "BASE_URL", "MODEL", "TIMEOUT_S", "MAX_TOKENS", "THINKING_BUDGET")
+]
+
+
+@pytest.fixture(autouse=True)
+def _clean_llm_env(monkeypatch):
+    for key in _LLM_ENV:
+        monkeypatch.delenv(key, raising=False)
+
+
+def test_inference_step_detect_off_when_llm_disabled():
     assert InferenceServerStep().detect() == (False, "")
 
 
 def test_inference_step_detect_reprobes_when_enabled(monkeypatch):
-    values = {"PLANNER_LLM_ENABLED": "true", "PLANNER_LLM_BASE_URL": "http://localhost:9090/v1"}
-    monkeypatch.setattr("utils.setup_wizard.steps.env_str",
-                        lambda name, default="": values.get(name, default))
+    monkeypatch.setenv("ARIADNE_LLM_ENABLED", "true")
+    monkeypatch.setenv("ARIADNE_LLM_BASE_URL", "http://localhost:9090/v1")
     monkeypatch.setattr("utils.setup_wizard.steps.probe_inference",
                         lambda url: (True, "localhost:9090 up — 1 model(s): m"))
     done, detail = InferenceServerStep().detect()
@@ -249,7 +264,8 @@ def test_inference_step_run_disable_keeps_deterministic(tmp_path):
     assert "deterministic" in result.detail
 
 
-def test_inference_step_run_enable_writes_all_groups_and_probes(tmp_path, monkeypatch):
+def test_inference_step_run_enable_writes_one_group_and_probes(tmp_path, monkeypatch):
+    """One group, not fifteen lines expressing one decision."""
     env = tmp_path / ".env"
     env.write_text("PLANNER_LLM_ENABLED=false\n")
     monkeypatch.setattr("utils.setup_wizard.steps.probe_inference",
@@ -261,11 +277,36 @@ def test_inference_step_run_enable_writes_all_groups_and_probes(tmp_path, monkey
 
     assert result.status == "ok"
     content = env.read_text()
-    for group in LLM_GROUPS:
-        assert f"{group}_LLM_ENABLED=true" in content
-        assert f"{group}_LLM_BASE_URL=" in content
-        assert f"{group}_LLM_MODEL=" in content
+    assert "ARIADNE_LLM_ENABLED=true" in content
+    assert "ARIADNE_LLM_BASE_URL=" in content
+    assert "ARIADNE_LLM_MODEL=" in content
+    for group in LEGACY_LLM_GROUPS:
+        assert f"{group}_LLM_BASE_URL=" not in content, (
+            f"{group} must inherit, not be written again"
+        )
     assert "1 model" in result.detail
+
+
+def test_inference_step_clears_stale_per_stage_overrides(tmp_path, monkeypatch):
+    """An older wizard run's overrides would silently outrank the new choice.
+
+    Without clearing them the operator picks an endpoint, the wizard reports
+    success, and every stage keeps calling the old one.
+    """
+    env = tmp_path / ".env"
+    env.write_text("SYNTHESIS_LLM_BASE_URL=http://stale:1111/v1\n")
+    monkeypatch.setenv("SYNTHESIS_LLM_BASE_URL", "http://stale:1111/v1")
+    monkeypatch.setattr("utils.setup_wizard.steps.probe_inference",
+                        lambda url: (True, f"{url} up — 1 model(s): m"))
+    step = InferenceServerStep(root=tmp_path)
+    ui = scripted_ui(monkeypatch, ["y", "http://new:9090/v1", "new-model"])
+
+    step.run(ui)
+
+    content = env.read_text()
+    assert "ARIADNE_LLM_BASE_URL=http://new:9090/v1" in content
+    assert "# unset by Ariadne: SYNTHESIS_LLM_BASE_URL=http://stale:1111/v1" in content
+    assert "SYNTHESIS_LLM_BASE_URL" not in os.environ
 
 
 def test_inference_step_run_enable_offline_is_not_a_failure(tmp_path, monkeypatch):
