@@ -60,8 +60,17 @@ def build() -> str:
     A("")
     A(f"Driver started **{st.get('started', '?')}**, deadline "
       f"**{st.get('deadline', '?')}**.")
-    A(f"Endpoint: `{st.get('served_model', 'not probed')}` "
-      "— `:9090/default-model` only, as instructed.")
+    A(f"Endpoint: `{st.get('served_model', 'not probed')}` on "
+      "`:9090`, sharded across **default-model-2 / -3 / -4** at 32 workers "
+      "each. **`default-model` was reserved by the operator at 01:15 and is "
+      "untouched from that point.**")
+    waits = st.get("endpoint_waits") or []
+    if waits:
+        A("")
+        A(f"The endpoint was unreachable for **{len(waits)} five-minute "
+          f"poll(s)** before work began (first {waits[0]['at'][11:16]}, "
+          f"last {waits[-1]['at'][11:16]}); the driver waited rather than "
+          "reporting an empty night.")
     A("")
 
     # --- what ran -------------------------------------------------------
@@ -104,8 +113,20 @@ def build() -> str:
           f"(means {[round(b, 4) for b in balanced]}).")
         A("")
         A(f"- **H2** (SD < 0.03): **{'holds' if sd < 0.03 else 'FALSIFIED'}**")
-        A(f"- **H3** (the +0.1684 gap exceeds 3×SD = {3*sd:.4f}): "
+        # H3 as pre-registered names the HOLDOUT gap (0.1684) while the SD is
+        # measured on the DEV half. Both are reported: the same-population
+        # comparison (dev gap 0.1623, EXP-2026-09-005) is the cleaner test, and
+        # the pre-registered one is shown because it is what was written down.
+        A(f"- **H3, as pre-registered** (holdout gap 0.1684 > 3xSD = {3*sd:.4f}): "
           f"**{'holds' if 0.1684 > 3*sd else 'FALSIFIED'}**")
+        A(f"- **H3, same population** (dev gap 0.1623 > 3xSD = {3*sd:.4f}): "
+          f"**{'holds' if 0.1623 > 3*sd else 'FALSIFIED'}**")
+        A("")
+        A("The pre-registered form of H3 compares a holdout gap against a "
+          "spread measured on the dev half. That mismatch is in the protocol as "
+          "written, so it is reported as written *and* alongside the "
+          "same-population comparison, which is the one that actually tests "
+          "what H3 means.")
         A("")
         A("Counterbalancing note: both blocks are the **same grader**, so this "
           "is position-balanced repeatability, not cross-grader agreement. "
