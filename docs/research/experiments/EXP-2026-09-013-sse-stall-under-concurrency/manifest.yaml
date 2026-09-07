@@ -1,0 +1,91 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-09-013
+slug: sse-stall-under-concurrency
+title: How often does the workbench's SSE stream go silent long enough for the browser to cancel a run that is working?
+status: complete
+date_started: 2026-09-07
+date_completed: 2026-09-07
+authors: [brendondgr]
+
+purpose: >
+  An engineering measurement, not a paper result. The workbench's activity
+  ticker stops on "planning and routing the question" roughly half the time
+  with the llm drafter, and the operator's report was that the run never
+  finishes. This measures the actual quantity involved — the longest the SSE
+  socket goes quiet — because server-side success and analyst-visible success
+  turned out to be different numbers, and no test in the suite can see the
+  difference. It supports no CLAIMS.md entry; it exists so the fix has a
+  before/after that is not a chat log.
+
+hypothesis: >
+  The pipeline emits nothing during its LLM stages, so the browser's 90 s
+  inactivity watchdog (SSE_STALL_MS in web/lib/streamConfig.ts) cancels healthy
+  runs. Predicted before measuring: the longest silences follow status(planning)
+  and status(answering), and the affected fraction is near the "half the time"
+  the operator reported.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 84936c3570ad9267a1ce79e0bd3219eb3ec345ce
+  branch: main
+  entrypoint: "uv run python utils/tests/sse_gap_probe.py --n 12 --api http://127.0.0.1:16601/api/query"
+  dirty: true             # the probe itself was uncommitted at run time; see ISSUES.md
+config:
+  path: null
+  hash: null
+data:
+  name: ad-hoc analyst questions (12 fixed strings in the probe)
+  version: "sse_gap_probe.py @ 84936c3"
+  split: n/a
+  n_examples: 12
+  dvc_path: null
+  hash: null
+seeds: []                  # the pipeline pins LLM_SEED=1729; concurrency is the uncontrolled variable, see ISSUES.md
+n_runs: 1                  # per condition; the "after" condition was run twice, see RESULTS.md
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "32-core x86_64, 121 GB RAM; local Neo4j + Gremlin in Docker; model served off-box via the :9090 relay"
+  wall_clock_hours: 0.6
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  model: "openai-compatible/default-model@relay-9090 (upstream qwen38-27B-v2)"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 32000
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Latency, not answer quality, is the measured quantity, and latency under a
+    shared relay is not reproducible run to run. The reported figures are one
+    "before" run and two "after" runs at the same concurrency; they should be
+    read as order-of-magnitude, not as means with error bars.
+
+# --- Results block ---
+metrics:
+  primary: runs_exceeding_client_stall_budget
+  values:
+    runs_exceeding_client_stall_budget_before: {mean: 5.0, std: 0.0, n: 1}
+    runs_exceeding_client_stall_budget_after: {mean: 0.0, std: 0.0, n: 2}
+    worst_socket_silence_s_before: {mean: 429.0, std: 0.0, n: 1}
+    worst_socket_silence_s_after: {mean: 10.0, std: 0.0, n: 2}
+    runs_completing_server_side_before: {mean: 12.0, std: 0.0, n: 1}
+baselines_compared: []
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: []
+figures: []
+supersedes: null
+superseded_by: null
+related: []

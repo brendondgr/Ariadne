@@ -54,6 +54,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-09-010` | 2026-09-06 | Do the model-free arms actually repeat across runs? | complete | identity_rate_content (not recorded) | — | [model-free-arm-identity](experiments/EXP-2026-09-010-model-free-arm-identity/) |
 | `EXP-2026-09-011` | 2026-09-06 | How much does the primary result move across seeds? | complete | balanced_across_seed_sd 0.0039 ± 0.0000 (n=3) | — | [generic-seeded-repeats](experiments/EXP-2026-09-011-generic-seeded-repeats/) |
 | `EXP-2026-09-012` | 2026-09-07 | How much does re-grading the same answers move the reported mean? | complete | grader_repeatability_sd_median 0.0066 ± 0.0000 (n=22) | — | [grader-repeatability-retrospective](experiments/EXP-2026-09-012-grader-repeatability-retrospective/) |
+| `EXP-2026-09-013` | 2026-09-07 | How often does the workbench's SSE stream go silent long enough for the browser to cancel a run that is working? | complete | runs_exceeding_client_stall_budget (not recorded) | — | [sse-stall-under-concurrency](experiments/EXP-2026-09-013-sse-stall-under-concurrency/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 
-**45 experiment(s) on record.**
+**46 experiment(s) on record.**
