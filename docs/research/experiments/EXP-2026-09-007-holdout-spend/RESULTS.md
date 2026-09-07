@@ -194,3 +194,24 @@ not scanned by anything. Two of tonight's three findings — the four wrong
 holdout metrics (A-1) and this — are both cases of a number that mattered living
 somewhere nothing looks. A rule that says "every number cites an EXP id" is only
 as good as the set of places the checker reads.
+
+# AMENDMENT A-3 (2026-09-07) — a rounding convention, stated because it bit
+
+`second_family_deterministic_minus_llm_query` was briefly recorded as **0.0642**
+and is **0.0643**. The unrounded difference is `0.0642734…`, which rounds to
+0.0643; subtracting the two already-rounded arm means (0.4320 − 0.3678) gives
+0.0642.
+
+The value is trivial. The convention is not, and it is now stated:
+
+> **Contrasts are computed from unrounded means and rounded once, at the end.**
+> They are never derived by subtracting published four-decimal figures.
+
+A reader who recomputes a contrast from this paper's arm means will land one
+ten-thousandth away from the contrast the paper reports, and will be right to
+ask which is wrong. Neither is: they are different operations, and only one of
+them is the estimator.
+
+This surfaced because `scripts/verify_paper_numbers.py` refused to match the
+paper's 0.0643 against a manifest carrying 0.0642 — the last untraced number in
+the paper, and the check was correct to flag it.
