@@ -1,4 +1,4 @@
-<svg viewBox="0 0 1080 470" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" role="img" aria-label="Ariadne federated agentic query flow: an analyst question is planned, routed to Cypher and Gremlin specialists over Neo4j and Gremlin, then synthesized into a provenance-linked answer.">
+<svg viewBox="0 0 1080 552" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" role="img" aria-label="Ariadne federated query flow: an analyst question is planned into source-assigned sub-questions and graded by a deterministic gate, retrieved by per-source Cypher and Gremlin specialists over Neo4j and TinkerPop in an assess-and-re-plan loop, joined on shared identifiers, then composed, verified, and narrated into an answer or an abstention. No model writes a query; source cards ground the planner and the specialists.">
   <defs>
     <marker id="arrow" markerWidth="9" markerHeight="9" refX="7.5" refY="3" orient="auto" markerUnits="userSpaceOnUse">
       <path d="M0,0 L7.5,3 L0,6 Z" fill="#94a3b8"/>
@@ -6,86 +6,122 @@
   </defs>
 
   <!-- panel -->
-  <rect x="1" y="1" width="1078" height="468" rx="16" fill="#fbfcfe" stroke="#e4e8ef" stroke-width="1.5"/>
+  <rect x="1" y="1" width="1078" height="550" rx="16" fill="#fbfcfe" stroke="#e4e8ef" stroke-width="1.5"/>
 
   <!-- title -->
   <text x="40" y="46" font-size="25" font-weight="700" fill="#1e293b">Ariadne</text>
-  <text x="40" y="72" font-size="13.5" fill="#64748b">Federated agentic querying across cybersecurity knowledge graphs — one plan, two engines, one grounded answer.</text>
+  <text x="40" y="72" font-size="13.5" fill="#64748b">Live, read-only federated querying across cybersecurity knowledge graphs that don&#8217;t share a query language.</text>
   <line x1="40" y1="88" x2="1040" y2="88" stroke="#eef1f6" stroke-width="1.5"/>
 
+  <!-- ===== iterative-retrieval enclosure ===== -->
+  <rect x="168" y="118" width="436" height="298" rx="14" fill="none" stroke="#cbd5e1" stroke-width="1.4" stroke-dasharray="6 5"/>
+  <text x="180" y="138" font-size="10.5" font-style="italic" fill="#94a3b8">iterative retrieval &#183; ORCH_MAX_HOPS (.env ships 1 &#8594; single pass)</text>
+
   <!-- ===== boxes ===== -->
-  <!-- Analyst Question -->
+  <!-- Analyst question -->
   <g>
-    <rect x="24" y="184" width="150" height="74" rx="11" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
-    <text x="99" y="216" text-anchor="middle" font-size="14.5" font-weight="700" fill="#334155">Analyst</text>
-    <text x="99" y="234" text-anchor="middle" font-size="14.5" font-weight="700" fill="#334155">Question</text>
-    <text x="99" y="252" text-anchor="middle" font-size="10.5" fill="#64748b">natural language</text>
+    <rect x="26" y="210" width="132" height="80" rx="11" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="92" y="240" text-anchor="middle" font-size="14.5" font-weight="700" fill="#334155">Analyst</text>
+    <text x="92" y="258" text-anchor="middle" font-size="14.5" font-weight="700" fill="#334155">question</text>
+    <text x="92" y="276" text-anchor="middle" font-size="10.5" fill="#64748b">natural language</text>
   </g>
 
-  <!-- Planning Agent -->
+  <!-- Planner -->
   <g>
-    <rect x="214" y="184" width="180" height="74" rx="11" fill="#eef2ff" stroke="#6366f1" stroke-width="1.5"/>
-    <text x="304" y="214" text-anchor="middle" font-size="14.5" font-weight="700" fill="#4338ca">Planning Agent</text>
-    <text x="304" y="233" text-anchor="middle" font-size="10.5" fill="#5b6478">reads source cards,</text>
-    <text x="304" y="247" text-anchor="middle" font-size="10.5" fill="#5b6478">emits machine-readable plan</text>
+    <rect x="182" y="197" width="184" height="106" rx="11" fill="#eef2ff" stroke="#6366f1" stroke-width="1.5"/>
+    <text x="274" y="221" text-anchor="middle" font-size="14.5" font-weight="700" fill="#4338ca">Planner</text>
+    <text x="274" y="240" text-anchor="middle" font-size="10.5" fill="#5b6478">sub-questions, each</text>
+    <text x="274" y="254" text-anchor="middle" font-size="10.5" fill="#5b6478">assigned to a source</text>
+    <text x="274" y="268" text-anchor="middle" font-size="10.5" fill="#5b6478">deterministic gate grades it</text>
+    <rect x="194" y="276" width="160" height="18" rx="9" fill="#e0e7ff"/>
+    <text x="274" y="289" text-anchor="middle" font-size="10" fill="#4338ca">LLM-optional drafter</text>
   </g>
 
-  <!-- Cypher Specialist (top) -->
+  <!-- Cypher specialist -->
   <g>
-    <rect x="452" y="104" width="198" height="74" rx="11" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
-    <text x="551" y="134" text-anchor="middle" font-size="14.5" font-weight="700" fill="#1d4ed8">Cypher Specialist</text>
-    <text x="551" y="153" text-anchor="middle" font-size="10.5" fill="#5b6478">bounded, validated queries</text>
-    <text x="551" y="168" text-anchor="middle" font-size="10.5" font-weight="600" fill="#1d4ed8">Neo4j · ATT&#38;CK</text>
+    <rect x="400" y="150" width="190" height="84" rx="11" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="495" y="177" text-anchor="middle" font-size="14.5" font-weight="700" fill="#1d4ed8">Cypher specialist</text>
+    <text x="495" y="195" text-anchor="middle" font-size="10.5" fill="#5b6478">resolve &#8594; build &#8594; gate &#8594; run</text>
+    <text x="495" y="212" text-anchor="middle" font-size="10.5" font-weight="600" fill="#1d4ed8">Neo4j &#183; ATT&#38;CK</text>
   </g>
 
-  <!-- Gremlin Specialist (bottom) -->
+  <!-- no-model-writes-a-query annotation -->
   <g>
-    <rect x="452" y="264" width="198" height="74" rx="11" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
-    <text x="551" y="294" text-anchor="middle" font-size="14.5" font-weight="700" fill="#047857">Gremlin Specialist</text>
-    <text x="551" y="313" text-anchor="middle" font-size="10.5" fill="#5b6478">bounded, validated traversals</text>
-    <text x="551" y="328" text-anchor="middle" font-size="10.5" font-weight="600" fill="#047857">Gremlin · CAPEC</text>
+    <rect x="410" y="240" width="170" height="20" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.2"/>
+    <text x="495" y="254" text-anchor="middle" font-size="10.5" fill="#475569">no model writes a query</text>
   </g>
 
-  <!-- Synthesis Agent -->
+  <!-- Gremlin specialist -->
   <g>
-    <rect x="708" y="184" width="180" height="74" rx="11" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
-    <text x="798" y="214" text-anchor="middle" font-size="14.5" font-weight="700" fill="#b45309">Synthesis Agent</text>
-    <text x="798" y="233" text-anchor="middle" font-size="10.5" fill="#5b6478">joins on shared IDs,</text>
-    <text x="798" y="247" text-anchor="middle" font-size="10.5" fill="#5b6478">reconciles evidence</text>
+    <rect x="400" y="266" width="190" height="84" rx="11" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+    <text x="495" y="293" text-anchor="middle" font-size="14.5" font-weight="700" fill="#047857">Gremlin specialist</text>
+    <text x="495" y="311" text-anchor="middle" font-size="10.5" fill="#5b6478">same loop, native traversal</text>
+    <text x="495" y="328" text-anchor="middle" font-size="10.5" font-weight="600" fill="#047857">TinkerPop &#183; CAPEC</text>
   </g>
 
-  <!-- Answer -->
+  <!-- Synthesis -->
   <g>
-    <rect x="926" y="184" width="128" height="74" rx="11" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
-    <text x="990" y="216" text-anchor="middle" font-size="14.5" font-weight="700" fill="#334155">Answer</text>
-    <text x="990" y="234" text-anchor="middle" font-size="10.5" fill="#64748b">provenance-</text>
-    <text x="990" y="248" text-anchor="middle" font-size="10.5" fill="#64748b">linked</text>
+    <rect x="682" y="150" width="196" height="200" rx="11" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+    <text x="780" y="175" text-anchor="middle" font-size="14.5" font-weight="700" fill="#b45309">Synthesis</text>
+
+    <rect x="694" y="184" width="172" height="44" rx="8" fill="#ffffff" stroke="#f0d9a8" stroke-width="1.2"/>
+    <text x="780" y="202" text-anchor="middle" font-size="11.5" font-weight="700" fill="#92400e">Compose claims</text>
+    <text x="780" y="218" text-anchor="middle" font-size="9.5" fill="#5b6478">deterministic by default</text>
+
+    <line x1="780" y1="228" x2="780" y2="240" stroke="#e7c98f" stroke-width="1.4"/>
+
+    <rect x="694" y="240" width="172" height="44" rx="8" fill="#ffffff" stroke="#f0d9a8" stroke-width="1.2"/>
+    <text x="780" y="258" text-anchor="middle" font-size="11.5" font-weight="700" fill="#92400e">Verify</text>
+    <text x="780" y="274" text-anchor="middle" font-size="9.5" fill="#5b6478">always on &#183; cuts uncited claims</text>
+
+    <line x1="780" y1="284" x2="780" y2="296" stroke="#e7c98f" stroke-width="1.4"/>
+
+    <rect x="694" y="296" width="172" height="44" rx="8" fill="#ffffff" stroke="#f0d9a8" stroke-width="1.2"/>
+    <text x="780" y="314" text-anchor="middle" font-size="11.5" font-weight="700" fill="#92400e">Narrate</text>
+    <text x="780" y="330" text-anchor="middle" font-size="9.5" fill="#5b6478">LLM-optional &#183; adds no claim</text>
   </g>
 
-  <!-- Data & schema layer -->
+  <!-- Answer / abstention -->
   <g>
-    <rect x="214" y="382" width="180" height="56" rx="11" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4"/>
-    <text x="304" y="408" text-anchor="middle" font-size="12.5" font-weight="700" fill="#475569">Data &#38; schema layer</text>
-    <text x="304" y="425" text-anchor="middle" font-size="10.5" fill="#64748b">fixtures · sha256-pinned</text>
+    <rect x="900" y="183" width="154" height="134" rx="11" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="977" y="211" text-anchor="middle" font-size="14.5" font-weight="700" fill="#334155">Answer</text>
+    <text x="977" y="230" text-anchor="middle" font-size="10.5" fill="#64748b">every claim cites</text>
+    <text x="977" y="244" text-anchor="middle" font-size="10.5" fill="#64748b">a record and the</text>
+    <text x="977" y="258" text-anchor="middle" font-size="10.5" fill="#64748b">query that ran</text>
+    <line x1="916" y1="270" x2="1038" y2="270" stroke="#dbe2ea" stroke-width="1.2"/>
+    <text x="977" y="290" text-anchor="middle" font-size="11.5" font-weight="700" fill="#475569">&#8230; or abstention</text>
+    <text x="977" y="306" text-anchor="middle" font-size="10.5" fill="#64748b">with the query as proof</text>
+  </g>
+
+  <!-- Grounding layer -->
+  <g>
+    <rect x="168" y="430" width="436" height="64" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4"/>
+    <text x="386" y="452" text-anchor="middle" font-size="12.5" font-weight="700" fill="#475569">Source cards</text>
+    <text x="386" y="469" text-anchor="middle" font-size="10.5" fill="#64748b">labels, properties, id scheme, join keys, read-only limits</text>
+    <text x="386" y="484" text-anchor="middle" font-size="10.5" fill="#64748b">sha256-pinned snapshots &#183; liveness re-probed per request</text>
   </g>
 
   <!-- ===== arrows ===== -->
-  <!-- Q -> Planner -->
-  <path d="M174,221 L206,221" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#arrow)"/>
-  <!-- Planner -> Cypher -->
-  <path d="M394,205 C 424,205 424,141 448,141" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#arrow)"/>
-  <!-- Planner -> Gremlin -->
-  <path d="M394,237 C 424,237 424,301 448,301" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#arrow)"/>
-  <!-- Cypher -> Synthesis -->
-  <path d="M650,141 C 680,141 680,205 704,205" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#arrow)"/>
-  <!-- Gremlin -> Synthesis -->
-  <path d="M650,301 C 680,301 680,237 704,237" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#arrow)"/>
-  <!-- Synthesis -> Answer -->
-  <path d="M888,221 L922,221" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#arrow)"/>
-  <!-- Data -> Planner (grounding) -->
-  <path d="M304,382 L304,262" fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
-  <text x="316" y="326" font-size="10.5" font-style="italic" fill="#94a3b8">grounding</text>
+  <!-- question -> planner -->
+  <path d="M158,250 L176,250" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <!-- planner -> specialists -->
+  <path d="M366,228 C 384,228 384,192 396,192" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <path d="M366,272 C 384,272 384,308 396,308" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <!-- specialists -> synthesis (joined on shared ids) -->
+  <path d="M590,192 C 630,192 646,215 676,215" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <path d="M590,308 C 630,308 646,285 676,285" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <text x="636" y="252" text-anchor="middle" font-size="10.5" font-style="italic" fill="#64748b">shared-id join</text>
+  <!-- synthesis -> answer -->
+  <path d="M878,250 L896,250" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <!-- retrieval loop: specialists -> assess -> re-plan -->
+  <path d="M495,350 L495,372 Q495,382 485,382 L284,382 Q274,382 274,372 L274,307" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <text x="384" y="374" text-anchor="middle" font-size="10.5" font-style="italic" fill="#94a3b8">assess: insufficient &#8594; re-plan</text>
+  <!-- grounding -->
+  <path d="M214,430 L214,309" fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+  <text x="222" y="402" font-size="10.5" font-style="italic" fill="#94a3b8">grounding</text>
+  <path d="M545,430 L545,356" fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+  <text x="537" y="402" text-anchor="end" font-size="10.5" font-style="italic" fill="#94a3b8">grounding</text>
 
   <!-- footnote -->
-  <text x="40" y="458" font-size="10.5" fill="#94a3b8">Grounding comes from schema, metadata, and executed queries — no vector index or embedding store is built from the graph data.</text>
+  <text x="40" y="524" font-size="10.5" fill="#94a3b8">Grounding comes from schema, source metadata, and executed queries &#8212; no vector index or embedding store is built from the graph data.</text>
 </svg>

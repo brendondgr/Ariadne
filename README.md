@@ -33,12 +33,12 @@ is recorded anywhere else. Before running an experiment, read
 [`docs/research/AGENT_INSTRUCTIONS.md`](docs/research/AGENT_INSTRUCTIONS.md).
 
 <p align="center">
-  <img src="docs/assets/architecture.svg" alt="Ariadne federated query flow: an analyst question is planned, routed to Cypher and Gremlin specialists over Neo4j and Gremlin, then synthesized into a provenance-linked answer" width="100%">
+  <img src="docs/assets/architecture.svg" alt="Ariadne federated query flow: an analyst question is planned into source-assigned sub-questions and graded by a deterministic gate, retrieved by per-source Cypher and Gremlin specialists over Neo4j and TinkerPop in an assess-and-re-plan loop, joined on shared identifiers, then composed, verified, and narrated into an answer or an abstention" width="100%">
 </p>
 
 ## What actually runs
 
-Ariadne is **deterministic by default, with LLM seams that are opt-in and individually backstopped**. This is a design decision the project's own evaluation supports (see [Results](#results)), and it is worth stating plainly because the architecture diagram alone does not show it:
+Ariadne is **deterministic by default, with LLM seams that are opt-in and individually backstopped**. This is a design decision the project's own evaluation supports (see [Results](#results)), and the table below names each seam and its default in the detail the diagram above only labels:
 
 | Stage | Default behavior | LLM seam |
 |---|---|---|
