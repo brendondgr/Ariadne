@@ -61,6 +61,10 @@
   "qwen2-8675309": {
    "summary": "[\"{'root': '/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/seeded-repeats-generic-2026-09-06/seed-8675309', 'arm': 'generic', 'suffix': '.q2', 'attempted': 142, 'failed': [], 'wall_s': 1263.3}\", \"{'root': '/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/seeded-repeats-generic-2026-09-06/seed-8675309', 'arm': 'generic', 'suffix': '.q2', 'attempted': 142, 'failed': [], 'wall_s': 1326.5}",
    "finished": "2026-09-07T12:36:43"
+  },
+  "qwen2-31337": {
+   "summary": "[\"{'root': '/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/seeded-repeats-generic-2026-09-06/seed-31337', 'arm': 'generic', 'suffix': '.q2', 'attempted': 142, 'failed': [], 'wall_s': 1388.1}\", \"{'root': '/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/seeded-repeats-generic-2026-09-06/seed-31337', 'arm': 'generic', 'suffix': '.q2', 'attempted': 142, 'failed': [], 'wall_s': 1395.7}\"]",
+   "finished": "2026-09-07T12:59:59"
   }
  },
  "scores": {
@@ -93,6 +97,44 @@
    "mean": 0.6343,
    "unparsed": 0,
    "errors": 0
+  },
+  "qwen2-31337": {
+   "n": 284,
+   "mean": 0.6616,
+   "unparsed": 0,
+   "errors": 0
+  }
+ },
+ "spread": {
+  "qwen1": {
+   "means": [
+    0.6556,
+    0.6382,
+    0.6444
+   ],
+   "sd": 0.0072,
+   "h2_holds": true,
+   "caveat": "within one family, position is confounded with seed; use the balanced estimate below for H2"
+  },
+  "qwen2": {
+   "means": [
+    0.6616,
+    0.6343,
+    0.637
+   ],
+   "sd": 0.0123,
+   "h2_holds": true,
+   "caveat": "within one family, position is confounded with seed; use the balanced estimate below for H2"
+  },
+  "balanced": {
+   "means": [
+    0.6586,
+    0.6362,
+    0.6407
+   ],
+   "sd": 0.0097,
+   "h2_holds": true,
+   "method": "per-seed mean of the two qwen blocks; counterbalancing gives every seed position sum 2, so the position effect cancels. Both blocks are the SAME grader: this is position-balanced repeatability, not cross-grader agreement."
   }
  }
 }

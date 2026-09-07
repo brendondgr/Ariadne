@@ -534,11 +534,18 @@ seeded runs, the across-seed spread of \texttt{llm\_query} is $0.0089$, an order
 of magnitude below the $0.0822$ margin of
 \S\ref{sec:generation}.\expref{EXP-2026-09-009}
 
-\paragraph{But the wording variation does not reach the score.} Across three
-seeded runs of \texttt{generic}, the balanced across-seed standard deviation of
-judged correctness is $\mathbf{0.0039}$, against the $0.1623$ gap it
-supports on the same population --- a ratio of $41$ to
+\paragraph{But the wording variation does not reach the score.} Across
+\textbf{six} seeded runs of \texttt{generic}, the balanced across-seed standard
+deviation of judged correctness is $\mathbf{0.0074}$, against the $0.1623$ gap it
+supports on the same population --- a ratio of $7.3$ to
 $1$.\expref{EXP-2026-09-011}
+
+We report six because three were not enough to say how small the spread is. The
+first three seeds gave $0.0039$; three further seeds, pre-committed before they
+were graded, gave $0.0097$, and the pooled figure is $0.0074$ ---
+\textbf{nearly double the three-seed estimate}. The means of the two sets differ
+by $0.0014$, so this is dispersion being sampled better rather than two
+populations. \textbf{Quote $0.0074$.}
 
 \begin{table}[h]
 \centering
@@ -549,6 +556,9 @@ Seed & block 1 & block 2 & balanced \\
 1729     & 0.6646 & 0.6394 & 0.6520 \\
 20260906 & 0.6451 & 0.6444 & 0.6448 \\
 424242   & 0.6468 & 0.6394 & 0.6431 \\
+31337    & 0.6556 & 0.6616 & 0.6586 \\
+8675309  & 0.6382 & 0.6343 & 0.6363 \\
+271828   & 0.6444 & 0.6370 & 0.6407 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -572,7 +582,10 @@ because of it: ungraded in balanced order, that block effect alone is nearly
 three times the entire across-seed signal, and would be reported as seed
 variance.
 
-\paragraph{What is not claimed.} Three seeds give a spread, not a distribution.
+\paragraph{What is not claimed.} Six seeds give a better-sampled spread, not a
+distribution, and the correction from three to six moved it in the direction of
+\emph{more} variance rather than less. The two sets were graded in separate
+sessions, so a session effect cannot be separated from seed variance here.
 Both blocks are the same grader, so this is position-balanced \emph{repeatability},
 not cross-grader agreement --- and \S\ref{sec:grader} shows the other family can
 invert an ordering on a population like this one, so cross-grader stability
@@ -613,8 +626,8 @@ Every item here is measured. Stating them is cheaper than being caught.
       confined to \emph{one field}: every retrieval, coverage, claim and evidence
       field is byte-identical across runs, so what varies is the prose and not
       what the system found. Second, and decisively, \textbf{the variation does
-      not reach the score}: the balanced across-seed standard deviation is
-      $0.0039$ against a $0.1623$ effect.\expref{EXP-2026-09-011} The figures in
+      not reach the score}: the balanced across-seed standard deviation over six
+      seeds is $0.0074$ against a $0.1623$ effect.\expref{EXP-2026-09-011} The figures in
       \S\ref{sec:templates} may therefore be read as point estimates. The
       wording instability remains reported, because it is true and because a
       reader who reruns the system will see it.

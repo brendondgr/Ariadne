@@ -111,3 +111,74 @@ wrong conclusion.
    52% of answers are re-worded and that the score moves 0.004.
 4. **The grading-order caveat gets a third citation**, which makes it a property
    of the instrument rather than an anecdote about one experiment.
+
+---
+
+# A-1 RESULTS (2026-09-07) — six seeds
+
+Grading completed 13:01 across `default-model` and `default-model-2`, both
+probed as `qwen38-27B-v2`. Same bank, same two counterbalanced blocks.
+
+| seed | set | q1 | q2 | balanced |
+|---|---|---|---|---|
+| 1729 | pre-registered | 0.6646 | 0.6394 | 0.6520 |
+| 20260906 | pre-registered | 0.6451 | 0.6444 | 0.6448 |
+| 424242 | pre-registered | 0.6468 | 0.6394 | 0.6431 |
+| 31337 | extension | 0.6556 | 0.6616 | **0.6586** |
+| 8675309 | extension | 0.6382 | 0.6343 | **0.6363** |
+| 271828 | extension | 0.6444 | 0.6370 | 0.6407 |
+
+| set | n | mean | SD |
+|---|---|---|---|
+| pre-registered | 3 | 0.6466 | **0.0039** |
+| extension | 3 | 0.6452 | **0.0097** |
+| **all six** | 6 | **0.6459** | **0.0074** |
+
+Range across six: **0.0224**.
+
+## The finding the amendment pre-committed to reporting
+
+**Three seeds understated the spread by roughly half.** A-1 recorded, before this
+data existed, that if the six-seed SD came out materially larger it would be
+reported as a finding with both figures quoted. It is 0.0074 against 0.0039 —
+**1.9×** — so both are quoted, and **0.0074 is the number to use.**
+
+The extension trio alone gives 0.0097, higher than either. The means agree
+closely (0.6466 and 0.6452, a difference of 0.0014), so this is dispersion being
+better sampled rather than the two sets measuring different things.
+
+**This is what "a spread, not a distribution" meant.** Three points is enough to
+show a quantity is small and not enough to say how small. The original limits
+section said so; the extension is what turning that caution into a number looks
+like.
+
+## Hypotheses, re-evaluated on six
+
+| | on 3 seeds | on 6 seeds |
+|---|---|---|
+| **H1** ordering holds | ✅ | ✅ lowest 0.6363 against 0.4946 |
+| **H2** SD < 0.03 | ✅ 0.0039 | ✅ **0.0074** |
+| **H3** gap > 3×SD | ✅ 41:1 | ✅ **0.1623 against 0.0222, 7.3:1** |
+
+All three still hold. **H3's margin narrows from 41:1 to 7.3:1** — comfortable,
+and no longer the extravagant ratio three seeds implied.
+
+## Limits
+
+- **The two sets were graded in separate sessions**, hours apart, on different
+  endpoint pools (three aliases, then two). A session effect cannot be
+  separated from seed variance here, and the extension trio's higher internal SD
+  is consistent with either. Six seeds in one session would settle it and were
+  not run.
+- Still one arm, one bank, one grader family.
+- Six points remain a small sample. The direction of the correction — spread
+  larger than three seeds showed — is the kind of movement that continues with
+  more seeds more often than it reverses.
+
+## Consequence
+
+**The paper should quote 0.0074, not 0.0039.** The conclusion is unchanged: the
+wording variation `EXP-2026-09-010` measured does not reach the judged score, and
+the effect is an order of magnitude above its own noise. What changes is that the
+claim is made on six draws rather than three, at a less flattering and more
+defensible number.

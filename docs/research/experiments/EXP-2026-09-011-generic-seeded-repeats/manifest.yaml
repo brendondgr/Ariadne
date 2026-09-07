@@ -33,8 +33,8 @@ data:
   n_examples: 0
   dvc_path: null           # this repository does not use DVC; leave null
   hash: null               # md5:... or sha256:... of the dataset artifact
-seeds: [1729, 20260906, 424242]                  # [] means seeds were not recorded — say so in ISSUES.md
-n_runs: 3
+seeds: [1729, 20260906, 424242, 31337, 8675309, 271828]                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 6
 environment:
   python: "3.13"
   lockfile: env/requirements.lock
@@ -63,6 +63,22 @@ llm:
 metrics:
   primary: balanced_across_seed_sd
   values:
+    preregistered_minus_extension_mean: {mean: 0.0014, std: 0.0, n: 6}
+    six_seed_balanced_sd: {mean: 0.0074, std: 0.0, n: 6}
+    six_seed_balanced_mean: {mean: 0.6459, std: 0.0, n: 6}
+    six_seed_balanced_range: {mean: 0.0224, std: 0.0, n: 6}
+    extension_three_seed_sd: {mean: 0.0097, std: 0.0, n: 3}
+    extension_three_seed_mean: {mean: 0.6452, std: 0.0, n: 3}
+    balanced_seed_31337: {mean: 0.6586, std: 0.0, n: 284}
+    balanced_seed_8675309: {mean: 0.6363, std: 0.0, n: 284}
+    balanced_seed_271828: {mean: 0.6407, std: 0.0, n: 284}
+    q1_seed_31337: {mean: 0.6556, std: 0.0, n: 284}
+    q1_seed_8675309: {mean: 0.6382, std: 0.0, n: 284}
+    q1_seed_271828: {mean: 0.6444, std: 0.0, n: 284}
+    q2_seed_31337: {mean: 0.6616, std: 0.0, n: 284}
+    q2_seed_8675309: {mean: 0.6343, std: 0.0, n: 284}
+    q2_seed_271828: {mean: 0.6370, std: 0.0, n: 284}
+    gap_over_3sd_ratio_six_seed: {mean: 7.31, std: 0.0, n: 6}
     q1_seed_1729: {mean: 0.6646, std: 0.0, n: 284}
     q1_seed_20260906: {mean: 0.6451, std: 0.0, n: 284}
     q1_seed_424242: {mean: 0.6468, std: 0.0, n: 284}
