@@ -1,24 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { ApiConfig, ApiConfigUpdate, ApiLLMGroup } from "@/lib/types";
+import type { ApiConfig, ApiConfigUpdate, LLMStage } from "@/lib/types";
+import { LLM_STAGES } from "@/lib/types";
 import { getConfig, putConfig } from "@/lib/api";
+import {
+  LLM_FIELDS,
+  budgetError,
+  draftToUpdate,
+  endpointSummary,
+  stagesToUpdate,
+} from "@/lib/llmSettings";
 import { SHADOW } from "@/lib/ui";
 import { CloseIcon } from "@/components/ui/icons";
 import { useWorkbench } from "@/components/workbench/WorkbenchContext";
+import { EndpointFields, Field, groupToDraft, type EndpointDraft } from "./EndpointFields";
+import { StageOverrides, type StageDraft } from "./StageOverrides";
 import { InfraActions } from "./InfraActions";
-
-type Agent = "planner" | "specialist" | "synthesis" | "eval";
-
-const AGENTS: Agent[] = ["planner", "specialist", "synthesis", "eval"];
-
-interface GroupForm {
-  enabled: boolean;
-  base_url: string;
-  model: string;
-  timeout_s: string;
-  max_tokens: string;
-}
 
 interface OrchForm {
   checkpointer: boolean;
@@ -27,27 +25,26 @@ interface OrchForm {
 }
 
 interface Form {
-  planner: GroupForm;
-  specialist: GroupForm;
-  synthesis: GroupForm;
-  eval: GroupForm;
+  llm: EndpointDraft;
+  stages: Record<LLMStage, StageDraft>;
   connection: { neo4j_uri: string; neo4j_user: string; neo4j_password: string; gremlin_uri: string };
   orchestration: OrchForm;
 }
 
 function toForm(c: ApiConfig): Form {
-  const group = (g: ApiLLMGroup): GroupForm => ({
-    enabled: g.enabled,
-    base_url: g.base_url,
-    model: g.model,
-    timeout_s: String(g.timeout_s),
-    max_tokens: String(g.max_tokens),
-  });
+  const stages = {} as Record<LLMStage, StageDraft>;
+  for (const stage of LLM_STAGES) {
+    const group = c.llm.stages[stage];
+    stages[stage] = {
+      // A stage counts as custom when it overrides ANY field. `inherited` comes
+      // from the server, so this is read rather than inferred.
+      custom: (group?.inherited.length ?? LLM_FIELDS.length) < LLM_FIELDS.length,
+      fields: groupToDraft(group ?? c.llm.default),
+    };
+  }
   return {
-    planner: group(c.llm.planner),
-    specialist: group(c.llm.specialist),
-    synthesis: group(c.llm.synthesis),
-    eval: group(c.llm.eval),
+    llm: groupToDraft(c.llm.default),
+    stages,
     connection: {
       neo4j_uri: c.connection.neo4j_uri,
       neo4j_user: c.connection.neo4j_user,
@@ -62,89 +59,27 @@ function toForm(c: ApiConfig): Form {
   };
 }
 
-/** Human labels for the LLM sections (eval = the LLM-as-judge). */
-const AGENT_LABEL: Record<Agent, string> = {
-  planner: "planner",
-  specialist: "specialist",
-  synthesis: "synthesis",
-  eval: "evaluator (judge)",
-};
-
-const LABEL = "mb-1 block font-mono text-[10px] uppercase tracking-[0.08em] text-text-muted";
-const INPUT =
-  "w-full rounded-md bg-bg px-2.5 py-1.5 text-[13px] text-text outline-none shadow-border focus:shadow-[rgba(78,158,150,0.6)_0_0_0_1px]";
-
-function Field({
-  label,
-  value,
-  onChange,
-  placeholder,
-  type = "text",
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
-  type?: string;
-}) {
-  return (
-    <label className="block">
-      <span className={LABEL}>{label}</span>
-      <input
-        type={type}
-        value={value}
-        placeholder={placeholder}
-        onChange={(e) => onChange(e.target.value)}
-        className={INPUT}
-      />
-    </label>
-  );
-}
-
-function LLMSection({
-  agent,
-  form,
-  onChange,
-}: {
-  agent: Agent;
-  form: GroupForm;
-  onChange: (patch: Partial<GroupForm>) => void;
-}) {
-  return (
-    <fieldset className="m-0 rounded-lg border-0 p-3.5" style={{ boxShadow: SHADOW.border }}>
-      <legend className="flex items-center gap-2 px-1 font-mono text-[11px] uppercase tracking-[0.08em] text-text-soft">
-        {AGENT_LABEL[agent]} LLM
-        <button
-          type="button"
-          role="switch"
-          aria-checked={form.enabled}
-          onClick={() => onChange({ enabled: !form.enabled })}
-          className="rounded-full px-2 py-0.5 text-[10px] transition-colors"
-          style={{
-            background: form.enabled ? "rgba(78,158,150,0.18)" : "rgba(138,158,152,0.12)",
-            color: form.enabled ? "var(--color-primary)" : "var(--color-text-muted)",
-            boxShadow: SHADOW.border,
-          }}
-        >
-          {form.enabled ? "enabled" : "disabled"}
-        </button>
-      </legend>
-      <div className="mt-2 flex flex-col gap-2.5">
-        <Field label="Base URL" value={form.base_url} onChange={(v) => onChange({ base_url: v })} placeholder="http://localhost:9090/v1" />
-        <Field label="Model" value={form.model} onChange={(v) => onChange({ model: v })} placeholder="default-model" />
-        <div className="grid grid-cols-2 gap-2.5">
-          <Field label="Timeout (s)" value={form.timeout_s} onChange={(v) => onChange({ timeout_s: v })} type="number" />
-          <Field label="Max tokens" value={form.max_tokens} onChange={(v) => onChange({ max_tokens: v })} type="number" />
-        </div>
-      </div>
-    </fieldset>
-  );
-}
-
-/** Modal for viewing/editing the env-backed LLM and connection settings. */
+/**
+ * Modal for viewing and editing the LLM and connection settings.
+ *
+ * There is ONE language-model section. It used to be four — planner,
+ * specialist, synthesis, evaluator — which read as flexibility and behaved as
+ * confusion: the chat pane actually ran on a fifth group this modal never
+ * showed, and two of the four on screen did nothing to a chat turn. An operator
+ * could fill in an endpoint, flip toggles, and have no way to tell which one
+ * made the model answer.
+ *
+ * Stage-level endpoints did not go away; they moved into a collapsed disclosure
+ * that defaults to "inherit", so the common case is one section and the second
+ * GPU is still two clicks away.
+ */
 export function SettingsPanel() {
   const { settingsOpen, setSettingsOpen } = useWorkbench();
   const [form, setForm] = useState<Form | null>(null);
+  // The server's own view, kept alongside the editable draft. `inherited` and
+  // `api_key_set` are facts only the server has, and inferring them from the
+  // draft would be guessing.
+  const [config, setConfig] = useState<ApiConfig | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
@@ -159,6 +94,7 @@ export function SettingsPanel() {
     getConfig(controller.signal)
       .then((cfg) => {
         if (!active) return;
+        setConfig(cfg);
         setForm(toForm(cfg));
         setPasswordSet(cfg.connection.neo4j_password_set);
         setError(null);
@@ -187,31 +123,69 @@ export function SettingsPanel() {
 
   const loading = form === null && error === null;
 
-  const patchGroup = (agent: Agent, patch: Partial<GroupForm>) =>
-    setForm((f) => (f ? { ...f, [agent]: { ...f[agent], ...patch } } : f));
+  const patchLlm = (patch: Partial<EndpointDraft>) =>
+    setForm((f) => (f ? { ...f, llm: { ...f.llm, ...patch } } : f));
+
+  const patchStage = (stage: LLMStage, patch: Partial<EndpointDraft>) =>
+    setForm((f) =>
+      f
+        ? {
+            ...f,
+            stages: {
+              ...f.stages,
+              [stage]: { ...f.stages[stage], fields: { ...f.stages[stage].fields, ...patch } },
+            },
+          }
+        : f,
+    );
+
+  const toggleStage = (stage: LLMStage, custom: boolean) =>
+    setForm((f) =>
+      f
+        ? {
+            ...f,
+            stages: {
+              ...f.stages,
+              [stage]: {
+                custom,
+                // Switching to custom seeds the row from the primary endpoint, so
+                // the operator edits from a working configuration instead of a
+                // blank form. Switching back to inherit keeps the old values in
+                // local state only — Save sends a CLEAR, never these numbers.
+                fields: custom ? { ...f.llm } : f.stages[stage].fields,
+              },
+            },
+          }
+        : f,
+    );
   const patchConn = (patch: Partial<Form["connection"]>) =>
     setForm((f) => (f ? { ...f, connection: { ...f.connection, ...patch } } : f));
   const patchOrch = (patch: Partial<OrchForm>) =>
     setForm((f) => (f ? { ...f, orchestration: { ...f.orchestration, ...patch } } : f));
 
-  const groupUpdate = (g: GroupForm) => ({
-    enabled: g.enabled,
-    base_url: g.base_url,
-    model: g.model,
-    timeout_s: Number(g.timeout_s),
-    max_tokens: Number(g.max_tokens),
-  });
+  // A thinking budget at or above max tokens makes the model spend its whole
+  // allowance reasoning and return empty content, which surfaces downstream as a
+  // silent "LLM unavailable". The server rejects it with a 422; catching it here
+  // means Save is disabled with the reason on screen rather than after a round
+  // trip. Checked across the primary group and every custom stage.
+  const validationError = form
+    ? budgetError(form.llm.max_tokens, form.llm.thinking_budget) ??
+      LLM_STAGES.map((stage) =>
+        form.stages[stage]?.custom
+          ? budgetError(form.stages[stage].fields.max_tokens, form.stages[stage].fields.thinking_budget)
+          : null,
+      ).find(Boolean) ??
+      null
+    : null;
 
   const save = async () => {
-    if (!form) return;
+    if (!form || !config || validationError) return;
     setSaving(true);
     setError(null);
     setSaved(false);
     const update: ApiConfigUpdate = {
-      planner: groupUpdate(form.planner),
-      specialist: groupUpdate(form.specialist),
-      synthesis: groupUpdate(form.synthesis),
-      eval: groupUpdate(form.eval),
+      llm: draftToUpdate(form.llm),
+      llm_stages: stagesToUpdate(form.stages, config.llm.stages),
       connection: {
         neo4j_uri: form.connection.neo4j_uri,
         neo4j_user: form.connection.neo4j_user,
@@ -226,6 +200,7 @@ export function SettingsPanel() {
     };
     try {
       const cfg = await putConfig(update);
+      setConfig(cfg);
       setForm(toForm(cfg));
       setPasswordSet(cfg.connection.neo4j_password_set);
       setSaved(true);
@@ -267,14 +242,33 @@ export function SettingsPanel() {
         <div className="flex flex-col gap-4 px-5 py-4">
           {form ? (
             <>
-              {AGENTS.map((agent) => (
-                <LLMSection
-                  key={agent}
-                  agent={agent}
-                  form={form[agent]}
-                  onChange={(p) => patchGroup(agent, p)}
+              <fieldset
+                className="m-0 rounded-lg border-0 p-3.5"
+                style={{ boxShadow: SHADOW.border }}
+              >
+                <legend className="px-1 font-mono text-[11px] uppercase tracking-[0.08em] text-text-soft">
+                  Language model
+                </legend>
+                <p className="mt-1 mb-2.5 font-mono text-[10.5px] text-text-muted">
+                  Every stage uses this unless it is overridden below.
+                </p>
+                <EndpointFields
+                  draft={form.llm}
+                  onChange={patchLlm}
+                  scope="default"
+                  apiKeySet={config?.llm.default.api_key_set ?? false}
                 />
-              ))}
+              </fieldset>
+
+              {config && (
+                <StageOverrides
+                  stages={config.llm.stages}
+                  drafts={form.stages}
+                  onToggle={toggleStage}
+                  onChange={patchStage}
+                  defaultSummary={endpointSummary(form.llm)}
+                />
+              )}
 
               <fieldset className="m-0 rounded-lg border-0 p-3.5" style={{ boxShadow: SHADOW.border }}>
                 <legend className="px-1 font-mono text-[11px] uppercase tracking-[0.08em] text-text-soft">
@@ -344,7 +338,12 @@ export function SettingsPanel() {
         </div>
 
         <div className="flex items-center justify-end gap-3 px-5 py-3.5" style={{ boxShadow: SHADOW.insetTop }}>
-          {saved && <span className="font-mono text-[11px] text-primary">Saved · applies to the next query</span>}
+          {validationError && (
+            <span className="mr-auto font-mono text-[11px] text-secondary">{validationError}</span>
+          )}
+          {saved && !validationError && (
+            <span className="font-mono text-[11px] text-primary">Saved · applies to the next query</span>
+          )}
           <button
             type="button"
             onClick={() => setSettingsOpen(false)}
@@ -355,7 +354,7 @@ export function SettingsPanel() {
           <button
             type="button"
             onClick={save}
-            disabled={saving || !form}
+            disabled={saving || !form || !!validationError}
             className="rounded-lg border-0 bg-primary px-4 py-2 font-mono text-xs font-semibold text-bg transition-colors hover:bg-[#5bb0a7] disabled:opacity-50"
           >
             {saving ? "Saving…" : "Save changes"}

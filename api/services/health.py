@@ -91,7 +91,13 @@ def llm_health(config: LLMSettings | None = None) -> LlmHealth:
     button: this runs on a 5-second UI poll, so it may not cost a completion.
     A "live" pill therefore means the port is open, not that the model answers.
     """
-    settings = config or resolve(None)
+    # The CONVERSATION stage, not the primary group. The pill answers "will the
+    # analyst reach a model?", and the chat pane runs on the conversation stage.
+    # Those are the same endpoint whenever nothing is overridden -- the normal
+    # case -- but an .env that predates the unified group has every stage
+    # overridden and the primary unset, and reporting the primary there would
+    # show an idle default while every real call went somewhere else.
+    settings = config or resolve("conversation")
     hostport = _http_host_port(settings.base_url)
     if hostport is None:
         return LlmHealth(

@@ -12,6 +12,9 @@ import type {
   ApiConfig,
   ApiConfigUpdate,
   ApiHealth,
+  ApiLlmEndpointProbe,
+  ApiLlmTestResult,
+  ApiModelList,
   EvaluationReport,
   EvalRunEvent,
   GraphDataset,
@@ -66,6 +69,44 @@ export function getGraph(dataset: GraphDataset, signal?: AbortSignal): Promise<G
 
 export function getEvaluation(signal?: AbortSignal): Promise<EvaluationReport> {
   return getJson<EvaluationReport>("/api/evaluation", { signal });
+}
+
+/**
+ * Ask an endpoint what models it serves.
+ *
+ * POST, not GET: the body may carry an unsaved endpoint and an API key, and a
+ * secret has no business in a query string. Never rejects on an unreachable
+ * server — that comes back as `ok: false` with a reason, because someone's GPU
+ * box being off is a normal state rather than an error to shout about.
+ */
+export function getLlmModels(
+  probe: ApiLlmEndpointProbe,
+  signal?: AbortSignal,
+): Promise<ApiModelList> {
+  return getJson<ApiModelList>("/api/llm/models", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(probe),
+    signal,
+  });
+}
+
+/**
+ * Prove an endpoint answers, by having the server send a real completion.
+ *
+ * Deliberately stronger than reachability: a TCP check and a model listing both
+ * pass against a server that cannot complete anything.
+ */
+export function testLlm(
+  probe: ApiLlmEndpointProbe,
+  signal?: AbortSignal,
+): Promise<ApiLlmTestResult> {
+  return getJson<ApiLlmTestResult>("/api/llm/test", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(probe),
+    signal,
+  });
 }
 
 export function putConfig(update: ApiConfigUpdate, signal?: AbortSignal): Promise<ApiConfig> {

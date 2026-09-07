@@ -594,12 +594,46 @@ export interface ApiHealth {
 }
 
 /** Resolved LLM settings for one agent in `GET /api/config`. */
+/** The five pipeline stages, in the order the settings modal lists them. */
+export const LLM_STAGES = [
+  "planner",
+  "specialist",
+  "synthesis",
+  "conversation",
+  "eval",
+] as const;
+
+export type LLMStage = (typeof LLM_STAGES)[number];
+
+/** Every configurable field on an LLM endpoint. */
+export type LLMField =
+  | "enabled"
+  | "provider"
+  | "base_url"
+  | "model"
+  | "api_key"
+  | "timeout_s"
+  | "max_tokens"
+  | "thinking_budget";
+
+/**
+ * One resolved LLM endpoint — the primary group, or one stage's.
+ *
+ * `inherited` names the fields this stage takes from the primary group rather
+ * than setting for itself, which is what lets a stage row render as "inherit"
+ * versus "custom" without guessing. The API key is never returned; `api_key_set`
+ * says only whether one is configured.
+ */
 export interface ApiLLMGroup {
   enabled: boolean;
+  provider: string;
   base_url: string;
   model: string;
+  api_key_set: boolean;
   timeout_s: number;
   max_tokens: number;
+  thinking_budget: number;
+  inherited: LLMField[];
 }
 
 /** Resolved LangGraph orchestration settings in `GET /api/config`. */
@@ -610,11 +644,10 @@ export interface ApiOrchestrationGroup {
 }
 
 export interface ApiConfig {
+  /** One group everything follows, plus each stage's optional deltas. */
   llm: {
-    planner: ApiLLMGroup;
-    specialist: ApiLLMGroup;
-    synthesis: ApiLLMGroup;
-    eval: ApiLLMGroup;
+    default: ApiLLMGroup;
+    stages: Record<LLMStage, ApiLLMGroup>;
   };
   connection: {
     neo4j_uri: string;
@@ -625,12 +658,31 @@ export interface ApiConfig {
   orchestration: ApiOrchestrationGroup;
 }
 
+/**
+ * Partial update for one LLM group.
+ *
+ * `inherit` is what makes "follow the default again" expressible: an omitted
+ * field means "leave it alone", while a field named in `inherit` means "clear
+ * it". Sending the default's current values instead would pin the stage to a
+ * snapshot that stops tracking the default the moment it changes.
+ */
+export interface ApiLLMGroupUpdate {
+  enabled?: boolean;
+  provider?: string;
+  base_url?: string;
+  model?: string;
+  /** Write-only. "" is ignored rather than treated as "clear the key". */
+  api_key?: string;
+  timeout_s?: number;
+  max_tokens?: number;
+  thinking_budget?: number;
+  inherit?: LLMField[];
+}
+
 /** Partial update body for `PUT /api/config`. */
 export interface ApiConfigUpdate {
-  planner?: Partial<Omit<ApiLLMGroup, never>>;
-  specialist?: Partial<Omit<ApiLLMGroup, never>>;
-  synthesis?: Partial<Omit<ApiLLMGroup, never>>;
-  eval?: Partial<Omit<ApiLLMGroup, never>>;
+  llm?: ApiLLMGroupUpdate;
+  llm_stages?: Partial<Record<LLMStage, ApiLLMGroupUpdate>>;
   connection?: {
     neo4j_uri?: string;
     neo4j_user?: string;
@@ -638,6 +690,53 @@ export interface ApiConfigUpdate {
     gremlin_uri?: string;
   };
   orchestration?: Partial<ApiOrchestrationGroup>;
+}
+
+/** One model a server says it serves. Everything but `id` may be absent. */
+export interface ApiModelEntry {
+  id: string;
+  label: string;
+  context_window: number | null;
+  max_output_tokens: number | null;
+}
+
+/**
+ * A discovery result. Always HTTP 200 — check `ok`.
+ *
+ * `state` distinguishes the three empty states, which need three different
+ * fixes: "unreachable" (wrong port, or a server that is off), "empty"
+ * (connected, nothing installed), "no-listing" (a gateway that proxies
+ * completions but not the model list). Conflating them is what makes a settings
+ * page frustrating.
+ */
+export interface ApiModelList {
+  ok: boolean;
+  state: "" | "unreachable" | "empty" | "no-listing";
+  reason: string;
+  base_url: string;
+  provider: string;
+  models: ApiModelEntry[];
+}
+
+/** The verdict of the Test button. Always HTTP 200; the result is in the body. */
+export interface ApiLlmTestResult {
+  ok: boolean;
+  latency_ms: number;
+  model: string;
+  reason: string;
+  summary: string;
+  base_url: string;
+  provider: string;
+}
+
+/** Unsaved endpoint values, so Refresh and Test work before Save. */
+export interface ApiLlmEndpointProbe {
+  provider?: string;
+  base_url?: string;
+  model?: string;
+  api_key?: string;
+  /** "default" (or omitted) for the primary group, else a stage name. */
+  scope?: string;
 }
 
 /* -------------------------------------------------------------------------- */
