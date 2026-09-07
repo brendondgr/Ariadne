@@ -49,6 +49,10 @@ STATE = EXP / "data" / "run-state.json"
 N_EXPECT = 284
 BANK_SHA = "a4ca6702029cae77"          # 16-char prefix; full value recorded at run
 SEEDS = (1729, 20260906, 424242)        # pre-registered, chosen before any run
+#: Extension seeds, added 2026-09-07 under EXP-2026-09-011 A-1. Three seeds
+#: give a spread, not a distribution; the experiment's own limits say so.
+#: Chosen before the extension ran, as the first three were.
+EXTRA_SEEDS = (31337, 8675309, 271828)
 BASE = "http://localhost:9090/v1"
 
 # served_model strings the record contains. A pass that reports anything else is
@@ -193,6 +197,8 @@ def main() -> int:
                     choices=["llm_query", "generic", "deterministic"])
     ap.add_argument("--root", default=None,
                     help="output root; defaults to the arm's own directory")
+    ap.add_argument("--extra-seeds", action="store_true",
+                    help="run EXTRA_SEEDS instead of the pre-registered three")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
@@ -217,7 +223,8 @@ def main() -> int:
     st["preflight"] = checks
     write_state(st)
 
-    for seed in SEEDS:
+    seeds = EXTRA_SEEDS if args.extra_seeds else SEEDS
+    for seed in seeds:
         key = str(seed)
         if st["runs"].get(key, {}).get("status") == "done":
             print(f"seed {seed}: already done, skipping", flush=True)
@@ -228,8 +235,8 @@ def main() -> int:
         print(json.dumps(st["runs"][key], indent=1), flush=True)
 
     done = sum(1 for v in st["runs"].values() if v.get("status") == "done")
-    print(f"\ngeneration complete: {done}/{len(SEEDS)} runs", flush=True)
-    return 0 if done == len(SEEDS) else 1
+    print(f"\ngeneration complete: {done}/{len(seeds)} runs", flush=True)
+    return 0 if done >= len(seeds) else 1
 
 
 if __name__ == "__main__":

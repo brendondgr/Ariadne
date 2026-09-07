@@ -53,6 +53,7 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-09-009` | 2026-09-06 | Does the query-writing arm hold its sign across three seeded runs? | complete | across_seed_sd_balanced 0.0089 ± 0.0000 (n=3) | — | [llm-query-seeded-repeats](experiments/EXP-2026-09-009-llm-query-seeded-repeats/) |
 | `EXP-2026-09-010` | 2026-09-06 | Do the model-free arms actually repeat across runs? | complete | identity_rate_content (not recorded) | — | [model-free-arm-identity](experiments/EXP-2026-09-010-model-free-arm-identity/) |
 | `EXP-2026-09-011` | 2026-09-06 | How much does the primary result move across seeds? | complete | balanced_across_seed_sd 0.0039 ± 0.0000 (n=3) | — | [generic-seeded-repeats](experiments/EXP-2026-09-011-generic-seeded-repeats/) |
+| `EXP-2026-09-012` | 2026-09-07 | How much does re-grading the same answers move the reported mean? | complete | grader_repeatability_sd_median 0.0066 ± 0.0000 (n=22) | — | [grader-repeatability-retrospective](experiments/EXP-2026-09-012-grader-repeatability-retrospective/) |
 | `EXP-2026-07-010` | 2026-07-20 | First independent cross-model grading pass (the pre-fix committed baseline) | superseded → EXP-2026-07-001 | correctness 0.8946 (n=1) | C-009 | [independent-eval-baseline](experiments/EXP-2026-07-010-independent-eval-baseline/) |
 
-**44 experiment(s) on record.**
+**45 experiment(s) on record.**
