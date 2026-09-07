@@ -61,7 +61,7 @@ ARM = "generic"
 #: deliberate deviation from the recorded runs' route and is recorded as one:
 #: an identity check measures whether the arm varies, not a published figure.
 NARRATOR = {"base_url": "http://localhost:9090/v1",
-            "model": "default-model", "expect": "qwen38-27B-v2"}
+            "model": "default-model-2", "expect": "qwen38-27B-v2"}
 
 #: Both clock keys: the pre-registered one and the one amendment A-1 found by
 #: failing. Nothing enters this tuple that was not OBSERVED to move.

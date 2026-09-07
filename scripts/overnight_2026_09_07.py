@@ -35,7 +35,9 @@ OUT = REPO / "docs/reports/2026-09-07-overnight"
 STATE = OUT.with_suffix(".state.json")
 LOGS = REPO / "logs/overnight-2026-09-07"
 BASE = "http://localhost:9090/v1"
-MODEL = {"alias": "default-model", "expect": "qwen38-27B-v2"}
+# default-model is reserved by the operator for another project as of
+# 2026-09-07. Every endpoint named in this repo points elsewhere.
+MODEL = {"alias": "default-model-2", "expect": "qwen38-27B-v2"}
 
 
 def now() -> datetime:

@@ -78,15 +78,22 @@ SEEDS = ("1729", "20260906", "424242")
 #: This costs a second full pass (1,704 judgments rather than 852) and buys
 #: something the two-family design could not: the same seed graded twice by the
 #: same grader, which is a within-grader repeatability estimate.
-#: All four aliases serve qwen38-27B-v2 across three GPUs (verified by probe,
-#: 2026-09-07). Each gets its own shard of every pass at full concurrency, so a
-#: pass runs at roughly 4x. Each is probed before any grading starts; an alias
-#: that does not serve the recorded model is dropped rather than trusted.
-ENDPOINTS = ["default-model", "default-model-2", "default-model-3", "default-model-4"]
+#: **default-model is deliberately excluded.** The operator reserved it for
+#: another project on 2026-09-07; this run must not contend for it. Do not add
+#: it back without checking -- an endpoint list is a claim about whose GPU you
+#: are allowed to use, not just a performance knob.
+#:
+#: The remaining three each get their own stride shard of every pass at full
+#: concurrency. Each is probed before any grading starts; an alias that does not
+#: serve the recorded model is dropped rather than trusted.
+ENDPOINTS = ["default-model-2", "default-model-3", "default-model-4"]
 
+# The alias here is only a label for the block; grading routes through
+# ENDPOINTS. It is set to a permitted endpoint so that nothing in this file
+# names default-model.
 FAMILIES = [
-    {"key": "qwen1", "alias": "default-model", "expect": "qwen38-27B-v2", "suffix": ".q1"},
-    {"key": "qwen2", "alias": "default-model", "expect": "qwen38-27B-v2", "suffix": ".q2"},
+    {"key": "qwen1", "alias": "default-model-2", "expect": "qwen38-27B-v2", "suffix": ".q1"},
+    {"key": "qwen2", "alias": "default-model-2", "expect": "qwen38-27B-v2", "suffix": ".q2"},
 ]
 # Both blocks address default-model deliberately. default-model-2 was freed on
 # 2026-09-07 and now falls through to qwen; addressing it would silently grade

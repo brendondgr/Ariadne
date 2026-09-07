@@ -55,10 +55,12 @@ BASE = "http://localhost:9090/v1"
 # discarded rather than reconciled -- the endpoint briefly reported "gemma4-31B"
 # for "gemma4-31B-mtp" during a startup window on 2026-09-06.
 GRADERS = {
-    "qwen": {"alias": "default-model", "expect": "qwen38-27B-v2"},
+    "qwen": {"alias": "default-model-2", "expect": "qwen38-27B-v2"},
     "gemma31": {"alias": "default-model-2", "expect": "gemma4-31B-mtp"},
 }
-GEN_MODEL = {"alias": "default-model", "expect": "qwen38-27B-v2"}
+# default-model is reserved by the operator for another project as of
+# 2026-09-07. Every endpoint named in this repo points elsewhere.
+GEN_MODEL = {"alias": "default-model-2", "expect": "qwen38-27B-v2"}
 
 NEO4J_EXPECT = {"nodes": 4369, "edges": 27669}
 GREMLIN_EXPECT = {"vertices": 6374, "edges": 8582}
