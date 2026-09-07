@@ -24,6 +24,10 @@ OUT = REPO / "docs/reports/2026-09-07-overnight.md"
 STATE = REPO / "docs/reports/2026-09-07-overnight.state.json"
 GEN_ROOT = REPO / "docs/evaluation/experiments/seeded-repeats-generic-2026-09-06"
 SEEDS = ("1729", "20260906", "424242")
+#: Added 2026-09-07 under EXP-2026-09-011 A-1. Generated but not yet
+#: graded at the time of the 08:00 report; shown so the gap is visible
+#: rather than absent.
+EXTRA_SEEDS = ("31337", "8675309", "271828")
 BLOCKS = (("q1", 0), ("q2", 1))
 
 
@@ -64,6 +68,10 @@ def build() -> str:
       "`:9090`, sharded across **default-model-2 / -3 / -4** at 32 workers "
       "each. **`default-model` was reserved by the operator at 01:15 and is "
       "untouched from that point.**")
+    note = st.get("driver_note")
+    if note:
+        A("")
+        A(f"> **What did not happen.** {note}")
     waits = st.get("endpoint_waits") or []
     if waits:
         A("")
@@ -104,6 +112,31 @@ def build() -> str:
                 per_seed.setdefault(s, []).append(m)
         A("".join(row) + "|")
     A("")
+
+    # Extension seeds: report their state explicitly. An extension that
+    # generated but did not grade is easy to omit and reads as if it never
+    # started.
+    extra_rows = []
+    for s in EXTRA_SEEDS:
+        gen = len(list((GEN_ROOT / f"seed-{s}" / "generic" / "answers").glob("*.json"))) \
+            if (GEN_ROOT / f"seed-{s}" / "generic" / "answers").is_dir() else 0
+        j = sum(scores(s, suf)[1] for suf, _ in BLOCKS)
+        extra_rows.append((s, gen, j))
+    if any(g for _, g, _ in extra_rows):
+        A("### Extension seeds (EXP-2026-09-011 A-1)")
+        A("")
+        A("| seed | answers generated | judgments |")
+        A("|---|---|---|")
+        for s, g, j in extra_rows:
+            A(f"| {s} | {g} | {j} |")
+        A("")
+        if all(j == 0 for _, _, j in extra_rows):
+            A("**Generated but ungraded.** Three further seeds were generated to "
+              "turn a three-point spread into something closer to a "
+              "distribution, and grading was not queued behind the generation. "
+              "The answers are frozen on disk and can be graded at any time; "
+              "nothing is lost but the elapsed hours.")
+        A("")
 
     complete = [s for s in SEEDS if len(per_seed.get(s, [])) == len(BLOCKS)]
     if len(complete) == len(SEEDS):
