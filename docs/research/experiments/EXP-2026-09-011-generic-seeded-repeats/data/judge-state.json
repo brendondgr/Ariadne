@@ -58,6 +58,14 @@
   "qwen2-424242": {
    "summary": "[\"{'root': '/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/seeded-repeats-generic-2026-09-06/seed-424242', 'arm': 'generic', 'suffix': '.q2', 'attempted': 95, 'failed': [], 'wall_s': 821.6}\", \"{'root': '/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/seeded-repeats-generic-2026-09-06/seed-424242', 'arm': 'generic', 'suffix': '.q2', 'attempted': 94, 'failed': [], 'wall_s': 892.7}\", \"{'",
    "finished": "2026-09-07T02:16:29"
+  },
+  "qwen2-20260906": {
+   "summary": "[\"{'root': '/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/seeded-repeats-generic-2026-09-06/seed-20260906', 'arm': 'generic', 'suffix': '.q2', 'attempted': 95, 'failed': [], 'wall_s': 834.9}\", \"{'root': '/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/seeded-repeats-generic-2026-09-06/seed-20260906', 'arm': 'generic', 'suffix': '.q2', 'attempted': 95, 'failed': [], 'wall_s': 873.1}\",",
+   "finished": "2026-09-07T02:31:33"
+  },
+  "qwen2-1729": {
+   "summary": "[\"{'root': '/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/seeded-repeats-generic-2026-09-06/seed-1729', 'arm': 'generic', 'suffix': '.q2', 'attempted': 95, 'failed': [], 'wall_s': 811.0}\", \"{'root': '/home/bdgr/Agents/Ariadne/docs/evaluation/experiments/seeded-repeats-generic-2026-09-06/seed-1729', 'arm': 'generic', 'suffix': '.q2', 'attempted': 94, 'failed': [], 'wall_s': 859.3}\", \"{'root",
+   "finished": "2026-09-07T02:47:21"
   }
  },
  "scores": {
@@ -84,6 +92,50 @@
    "mean": 0.6394,
    "unparsed": 0,
    "errors": 0
+  },
+  "qwen2-20260906": {
+   "n": 284,
+   "mean": 0.6444,
+   "unparsed": 0,
+   "errors": 0
+  },
+  "qwen2-1729": {
+   "n": 284,
+   "mean": 0.6394,
+   "unparsed": 0,
+   "errors": 0
+  }
+ },
+ "spread": {
+  "qwen1": {
+   "means": [
+    0.6646,
+    0.6451,
+    0.6468
+   ],
+   "sd": 0.0088,
+   "h2_holds": true,
+   "caveat": "within one family, position is confounded with seed; use the balanced estimate below for H2"
+  },
+  "qwen2": {
+   "means": [
+    0.6394,
+    0.6444,
+    0.6394
+   ],
+   "sd": 0.0024,
+   "h2_holds": true,
+   "caveat": "within one family, position is confounded with seed; use the balanced estimate below for H2"
+  },
+  "balanced": {
+   "means": [
+    0.652,
+    0.6447,
+    0.6431
+   ],
+   "sd": 0.0039,
+   "h2_holds": true,
+   "method": "per-seed mean of the two qwen blocks; counterbalancing gives every seed position sum 2, so the position effect cancels. Both blocks are the SAME grader: this is position-balanced repeatability, not cross-grader agreement."
   }
  }
 }
