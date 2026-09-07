@@ -90,3 +90,75 @@ significant in three of four.**
   have destroyed the comparison this experiment exists to make.
 - `llm_query` ran the settled configuration; the 512-token thinking cap is wired,
   **never verified against a live endpoint, and deliberately unused**.
+
+---
+
+# AMENDMENT A-1 (2026-09-07) — four manifest values were taken from a superseded file
+
+**Four of this experiment's recorded metrics were wrong.** They have been
+corrected in `manifest.yaml`; this amendment records what they were, how it was
+adjudicated, and why the error was systematic rather than random.
+
+| metric | was | is | source of the correction |
+|---|---|---|---|
+| `llm_query_holdout` | 0.4031 | **0.4039** | recomputed from sidecars |
+| `deterministic_minus_llm_query_holdout` | 0.0831 | **0.0822** | recomputed |
+| `generic_minus_llm_query_holdout` | 0.2515 | **0.2507** | recomputed |
+| `second_family_generic_minus_deterministic` | 0.2053 | **0.2143** | recomputed |
+
+Three metrics were already correct and are unchanged: `generic_holdout`
+(0.6546), `deterministic_holdout` (0.4862), `generic_minus_deterministic_holdout`
+(0.1684).
+
+## How it was adjudicated
+
+Not by preferring one file over another. All **3,456 judgment sidecars** were
+re-read from
+`docs/evaluation/experiments/holdout-spend-2026-09-05/**/answers/*.judgment.{qw,qwp2,gem,gemp2}.json`
+and the figures recomputed under the documented aggregation — **positions
+averaged per case, then averaged across cases**. The recomputation reproduces
+`data/judged-two-family-final.json` exactly and disagrees with the manifest in
+the four cells above.
+
+## Why it happened, which is the part worth keeping
+
+The manifest was populated from **`data/judged-final.json`**, an intermediate
+roll-up, and never updated when the complete two-family roll-up landed. That file
+**documents its own incompleteness in its own fields**:
+
+```
+grader_second : "relay/gemma4-31B-mtp@2026-09-05 (position 1 only, deterministic+generic)"
+not_measured  : ["gemma on llm_query holdout answers", "gemma position 2 on any arm"]
+```
+
+**Every one of the four wrong values lies inside what that file declares it did
+not measure.** `0.2053` is the second family's *position-1-only* figure for
+generic − deterministic; the position-averaged value is `0.2143`. The others are
+the same shape.
+
+So this is not a transcription slip. A number was copied out of a file that said,
+in a field named `not_measured`, that the number was not final — and nothing read
+that field. **The error was disclosed at the moment it was made and still
+survived for two days**, which says the defect is in the reading, not the writing.
+
+## What changes, and what does not
+
+- **No conclusion moves.** Every corrected value keeps its sign and its
+  significance verdict. `deterministic − llm_query` remains positive under both
+  families and interval-significant under one.
+- **The paper's own characterisation was wrong** and is corrected with it. Its
+  appendix described this as a disagreement "in the fourth decimal (0.0831 vs
+  0.0822; 0.4031 vs 0.4039)". Two of the four errors are larger than that, and
+  `0.2053` vs `0.2143` is a third-decimal difference of 0.009.
+- **The twelve confidence-interval bounds quoted in the paper now exist as
+  manifest metrics.** They were previously quoted from a sidecar with no
+  manifest provenance — which is precisely what `scripts/verify_paper_numbers.py`
+  flagged when it was written the same night, on its first run.
+
+## The check that found it
+
+`scripts/verify_paper_numbers.py` did not find the wrong values directly. It
+found that **twelve numbers in the paper's most contested table had no manifest
+source at all**, and tracing them to their origin is what surfaced the four
+errors sitting beside them. A traceability check earns its keep by making
+provenance visible, not by validating arithmetic.

@@ -84,7 +84,7 @@ which are null or negative. Hand-written query templates do not hold the system'
 accuracy: a schema-derived, template-free path matches them on the schema they
 were written for and exceeds them by $+0.1684$ judged correctness on $288$
 held-out questions. Templates nevertheless beat a model writing the queries
-($+0.0831$), a result that is positive under both grader families and
+($+0.0822$), a result that is positive under both grader families and
 statistically solid under only one -- and we can say \emph{which} one only
 because the instrument was characterised first. Federating across two engines
 buys no accuracy over merging ($-0.0334$ and $+0.0000$), though building the
@@ -370,7 +370,7 @@ Population & $n$ & Gap & Source \\
 Expansion bank                     & 284 & $+0.1642$ & \expref{EXP-2026-09-002} \\
 Expansion bank, post-repair        & 284 & $+0.1623$ & \expref{EXP-2026-09-005} \\
 Sealed holdout                     & 288 & $+0.1684$ & \expref{EXP-2026-09-007} \\
-Sealed holdout, second grader family & 288 & $+0.2053$ & \expref{EXP-2026-09-007} \\
+Sealed holdout, second grader family & 288 & $+0.2143$ & \expref{EXP-2026-09-007} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -393,7 +393,7 @@ must be quoted, in that order.
 This is the weakest of our three system comparisons and we do not lead with it.
 
 Given the real schema, resolved seed entities, the gate's constraints and a
-repair loop, a model writing the queries scores $0.4031$ judged correctness on
+repair loop, a model writing the queries scores $0.4039$ judged correctness on
 the holdout, against templates at $0.4862$ and the schema-derived path at
 $0.6546$.\expref{EXP-2026-09-007} On a fresh bank it scored $0.5000$ against
 templates at $0.9467$,\expref{EXP-2026-08-008} and it emitted an empty query on
@@ -531,7 +531,7 @@ composes without a model, is identical on all 284.
 
 \paragraph{Seed choice barely matters for the query-writing arm.} Across three
 seeded runs, the across-seed spread of \texttt{llm\_query} is $0.0089$, an order
-of magnitude below the $0.0831$ margin of
+of magnitude below the $0.0822$ margin of
 \S\ref{sec:generation}.\expref{EXP-2026-09-009}
 
 \emph{[DRAFT NOTE — the remaining cell is running: how far \texttt{generic}'s
@@ -581,7 +581,7 @@ Every item here is measured. Stating them is cheaper than being caught.
 
 \item \textbf{The query-writing arm is stable across seeds, so its result is not
       a single-draw artifact}: three seeded runs give an across-seed spread of
-      $0.0089$ against a margin of $0.0831$.\expref{EXP-2026-09-009} We record
+      $0.0089$ against a margin of $0.0822$.\expref{EXP-2026-09-009} We record
       this because the natural objection to \S\ref{sec:generation} — that one
       draw established nothing — is one we tested and can answer.
 \item \textbf{Two scoring faults left unfixed by design} (\S\ref{sec:design}).
@@ -634,18 +634,26 @@ Found by an independent readiness audit on 2026-09-06 and not yet closed. Each i
 checkable by a reviewer; we list them rather than wait to be asked.
 
 \begin{enumerate}
-\item There is no continuous integration. An earlier internal claim that
-      automated checks trace every number to an experiment is false; the
-      structural checker that exists never opens the paper. Either the check gets
-      built or the claim gets deleted.
+\item[\textbf{partly closed}] There was no check that numbers in this paper
+      trace to an experiment, despite an internal claim that one existed. One was
+      written 2026-09-07 and reports $17$ untraced numbers, of which twelve were
+      the confidence intervals in Table~2 --- now recorded as manifest metrics.
+      It is a review list, not a gate, and it does not run in CI.
 \item[\textbf{closed}] The grader-calibration experiment underpinning
       \S\ref{sec:grader} was marked \emph{planned} with an unwritten results file
       while this draft rested a section on it. Written up and marked complete
       2026-09-06; all four of its pre-registered hypotheses hold.\expref{EXP-2026-09-008}
-\item The holdout's two-family figures disagree between the experiment manifest
-      and the roll-up sidecar in the fourth decimal
-      ($0.0831$ vs.\ $0.0822$; $0.4031$ vs.\ $0.4039$). No conclusion changes, but
-      the record currently disagrees with itself.
+\item[\textbf{closed}] Four of the holdout experiment's recorded metrics were
+      taken from an intermediate roll-up and were wrong --- including one
+      third-decimal error of $0.009$, larger than an earlier draft of this
+      appendix described. All four were adjudicated by recomputing from the
+      $3{,}456$ raw judgment sidecars and corrected 2026-09-07. No conclusion
+      moves: every value keeps its sign and its significance
+      verdict.\expref{EXP-2026-09-007} The intermediate file declared its own
+      incompleteness in a field named \texttt{not\_measured}, and every wrong
+      value lay inside what that field named --- so the error was disclosed when
+      it was made and survived anyway, which locates the defect in the reading
+      rather than the writing.
 \item One experiment is marked superseded, not six. Any statement about retaining
       our mistakes must say one.
 \item Withdrawn figures remain in repository prose and must be retracted in place.

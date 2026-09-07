@@ -72,12 +72,28 @@ llm:
 metrics:
   primary: generic_minus_deterministic_holdout
   values:
+    ci95_generic_minus_deterministic_qwen_lo: {mean: 0.1340, std: 0.0, n: 288}
+    ci95_generic_minus_deterministic_qwen_hi: {mean: 0.2049, std: 0.0, n: 288}
+    ci95_generic_minus_llm_query_qwen_lo: {mean: 0.2025, std: 0.0, n: 288}
+    ci95_generic_minus_llm_query_qwen_hi: {mean: 0.2998, std: 0.0, n: 288}
+    ci95_deterministic_minus_llm_query_qwen_lo: {mean: 0.0362, std: 0.0, n: 288}
+    ci95_deterministic_minus_llm_query_qwen_hi: {mean: 0.1308, std: 0.0, n: 288}
+    ci95_generic_minus_deterministic_gemma_lo: {mean: 0.1637, std: 0.0, n: 288}
+    ci95_generic_minus_deterministic_gemma_hi: {mean: 0.2659, std: 0.0, n: 288}
+    ci95_generic_minus_llm_query_gemma_lo: {mean: 0.2113, std: 0.0, n: 288}
+    ci95_generic_minus_llm_query_gemma_hi: {mean: 0.3445, std: 0.0, n: 288}
+    ci95_deterministic_minus_llm_query_gemma_lo: {mean: -0.0080, std: 0.0, n: 288}
+    ci95_deterministic_minus_llm_query_gemma_hi: {mean: 0.1333, std: 0.0, n: 288}
+    second_family_generic_holdout: {mean: 0.6464, std: 0.0, n: 288}
+    second_family_deterministic_holdout: {mean: 0.4320, std: 0.0, n: 288}
+    second_family_llm_query_holdout: {mean: 0.3678, std: 0.0, n: 288}
+    second_family_deterministic_minus_llm_query: {mean: 0.0642, std: 0.0, n: 288}
     generic_holdout: {mean: 0.6546, std: 0.0, n: 288}
     deterministic_holdout: {mean: 0.4862, std: 0.0, n: 288}
-    llm_query_holdout: {mean: 0.4031, std: 0.0, n: 288}
+    llm_query_holdout: {mean: 0.4039, std: 0.0, n: 288}
     generic_minus_deterministic_holdout: {mean: 0.1684, std: 0.0, n: 288}
-    generic_minus_llm_query_holdout: {mean: 0.2515, std: 0.0, n: 288}
-    deterministic_minus_llm_query_holdout: {mean: 0.0831, std: 0.0, n: 288}
+    generic_minus_llm_query_holdout: {mean: 0.2507, std: 0.0, n: 288}
+    deterministic_minus_llm_query_holdout: {mean: 0.0822, std: 0.0, n: 288}
     max_arm_deviation_from_dev: {mean: 0.0250, std: 0.0, n: 3}
     deterministic_deviation_from_dev: {mean: 0.0084, std: 0.0, n: 1}
     recall_pooled_deterministic_holdout: {mean: 0.5414, std: 0.0, n: 263}
@@ -87,7 +103,7 @@ metrics:
     census_weighted_repair_gain_holdout: {mean: 0.0017, std: 0.0, n: 34}
     shapes_moved_of_34: {mean: 3.0, std: 0.0, n: 34}
     d6_template_lead_holdout: {mean: 0.3344, std: 0.0, n: 1}
-    second_family_generic_minus_deterministic: {mean: 0.2053, std: 0.0, n: 288}
+    second_family_generic_minus_deterministic: {mean: 0.2143, std: 0.0, n: 288}
 baselines_compared: ["EXP-2026-09-005 dev half, same grader, same protocol"]
 statistical_test: "paired percentile bootstrap, 2000 resamples, seed 1729, utils/evaluation/stats.py::bootstrap_ci"
 
