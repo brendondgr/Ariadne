@@ -158,11 +158,23 @@ def main() -> int:
     U = ["uv", "run", "python"]
 
     # --- GPU work, sequential -------------------------------------------
-    # If the inherited chain did not finish judging, resume it. The judge
-    # skips cases that already have a sidecar, so this is idempotent.
-    run("judge_generic_resume",
-        U + ["scripts/seeded_repeats_judge.py", "--arm", "generic",
-             "--workers", "32"], gpu_deadline, st)
+    # If the inherited chain did not finish judging, resume it. The judge skips
+    # cases that already have a sidecar, so this is idempotent and a crashed
+    # pass loses only the case in flight.
+    #
+    # Retried up to 3 times because that is exactly how this step died at 00:37:
+    # one pre-flight probe timed out against a busy endpoint and took a
+    # 1,704-judgment pass with it, before a single answer was graded. A single
+    # attempt at a step this long is a single point of failure for the night.
+    for attempt in range(1, 4):
+        rec = run(f"judge_generic_resume_{attempt}",
+                  U + ["scripts/seeded_repeats_judge.py", "--arm", "generic",
+                       "--workers", "32"], gpu_deadline, st)
+        if rec.get("status") in ("ok", "skipped", "stopped_at_deadline"):
+            break
+        print(f"[{now():%H:%M}] judging attempt {attempt} ended "
+              f"{rec.get('status')}; retrying", flush=True)
+        time.sleep(60)
 
     # --- CPU-only work, after the GPU is released ------------------------
     run("validate_research", ["make", "validate-research"], deadline, st, False)

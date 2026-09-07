@@ -26,6 +26,7 @@ import json
 import os
 import statistics
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -94,8 +95,23 @@ def probe(alias: str, expect: str) -> str:
     }).encode()
     req = urllib.request.Request(f"{BASE}/chat/completions", data=body,
                                  headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=300) as fh:
-        payload = json.load(fh)
+    # Retry the PROBE. A busy endpoint timing out once is not evidence about
+    # which model it serves, and on 2026-09-07 a single 300 s probe timeout --
+    # taken right after a generation run released the GPU -- killed an entire
+    # 1,704-judgment pass before it graded anything. The identity assertion
+    # below is unchanged; only reaching the endpoint is retried.
+    payload = None
+    for attempt in range(1, 4):
+        try:
+            with urllib.request.urlopen(req, timeout=300) as fh:
+                payload = json.load(fh)
+            break
+        except Exception as exc:
+            if attempt == 3:
+                raise RuntimeError(
+                    f"probe of {alias} failed 3x, last: {type(exc).__name__}: {exc}"
+                ) from exc
+            time.sleep(30 * attempt)
     if "error" in payload:
         raise RuntimeError(f"{alias}: {payload['error']}")
     served = payload.get("model")
