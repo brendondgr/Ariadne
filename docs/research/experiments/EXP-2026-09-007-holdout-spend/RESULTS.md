@@ -162,3 +162,35 @@ found that **twelve numbers in the paper's most contested table had no manifest
 source at all**, and tracing them to their origin is what surfaced the four
 errors sitting beside them. A traceability check earns its keep by making
 provenance visible, not by validating arithmetic.
+
+# AMENDMENT A-2 (2026-09-07) — the dev-half comparison figures were outside the record
+
+The paper's templates-versus-generation table has two rows. The **holdout** row
+traced to this manifest (after A-1). The **development** row traced to nothing:
+its six figures lived in
+`docs/evaluation/composition/bank/two-grader-judged.json`, an evaluation
+artifact outside every experiment's `data/` directory, and were therefore
+invisible to the record and to any check over it.
+
+They are the reference half of this experiment's own comparison — `judged-final.json`
+carries them in a field literally named `dev` — so they belong here, and are now
+recorded as `dev_*` metrics.
+
+| | qwen38-27B-v2 | gemma4-31B-mtp |
+|---|---|---|
+| `deterministic` | 0.4946 | 0.4175 |
+| `generic` | 0.6569 | 0.6659 |
+| `llm_query` | 0.3781 | 0.3478 |
+| `deterministic − llm_query` | **0.1147** [0.0653, 0.1645] | **0.0696** [−0.0024, 0.1450] |
+
+**Nothing here is a new measurement.** The numbers are unchanged; only their
+provenance is. That is the whole point: a figure quoted in a paper from a file
+no check can see is indistinguishable, to a reader, from one that was never
+computed.
+
+**The general defect, which is not fixed by this amendment.** Evaluation
+artifacts under `docs/evaluation/` are not part of the research record and are
+not scanned by anything. Two of tonight's three findings — the four wrong
+holdout metrics (A-1) and this — are both cases of a number that mattered living
+somewhere nothing looks. A rule that says "every number cites an EXP id" is only
+as good as the set of places the checker reads.
