@@ -188,9 +188,10 @@ def capture(tag: str, attempts: int, workers: int, st: dict) -> Path | None:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--workers", type=int, default=12,
-                    help="32 gave 25 read timeouts against a reasoning "
-                         "narrator on 2026-09-06")
+    ap.add_argument("--workers", type=int, default=32,
+                    help="operator-set. 32 previously gave 25 read timeouts "
+                         "at a 300 s narrator timeout; that timeout is now "
+                         "600 s, which addresses the measured failure.")
     ap.add_argument("--attempts", type=int, default=3)
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()

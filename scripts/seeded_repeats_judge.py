@@ -38,8 +38,21 @@ load_env()
 
 from utils.evaluation.grading_order import counterbalanced, position_of  # noqa: E402
 
-EXP = REPO / "docs/research/experiments/EXP-2026-09-009-llm-query-seeded-repeats"
-ROOT = REPO / "docs/evaluation/experiments/seeded-repeats-2026-09-06"
+#: Which experiment and answer root each arm's seeded repeats live in. Without
+#: this the judge would re-grade EXP-2026-09-009's llm_query answers under new
+#: suffixes while believing it had graded generic.
+ARM_CONFIG = {
+    "llm_query": {
+        "exp": REPO / "docs/research/experiments/EXP-2026-09-009-llm-query-seeded-repeats",
+        "root": REPO / "docs/evaluation/experiments/seeded-repeats-2026-09-06",
+    },
+    "generic": {
+        "exp": REPO / "docs/research/experiments/EXP-2026-09-011-generic-seeded-repeats",
+        "root": REPO / "docs/evaluation/experiments/seeded-repeats-generic-2026-09-06",
+    },
+}
+EXP = ARM_CONFIG["llm_query"]["exp"]      # rebound in main() from --arm
+ROOT = ARM_CONFIG["llm_query"]["root"]
 STATE = EXP / "data" / "judge-state.json"
 ARM = "llm_query"
 N_EXPECT = 284
@@ -50,21 +63,23 @@ SEEDS = ("1729", "20260906", "424242")
 #: Each family is one grading block. ``served`` is asserted per pass, not
 #: trusted from the alias -- the endpoint reported "gemma4-31B" for
 #: "gemma4-31B-mtp" during a startup window on 2026-09-06.
-#: **gemma grades first, deliberately.** It is ~14x faster (measured
-#: 2026-09-06: 284 judgments in 3-4 min against qwen's ~54) and the operator
-#: needs its vLLM slot back. Front-loading it releases the GPU after ~12 min
-#: instead of at hour three.
+#: **Two blocks, both qwen.** The operator has restricted this run to
+#: :9090/default-model only, so the second grader family is unavailable.
 #:
-#: This does NOT weaken the counterbalancing. `counterbalanced()` keys on the
-#: block index, so swapping which family is block 0 swaps the position
-#: assignment with it: every seed still occupies position sum 2 across the two
-#: families, and the ~0.01 position effect still cancels in the balanced
-#: estimate. Only the labels move.
+#: Dropping to a single block would re-confound position with seed -- with three
+#: seeds and one block each seed occupies exactly one position, and
+#: EXP-2026-08-022's ~0.01 position effect is a third of H2's 0.03 threshold.
+#: So the counterbalancing is preserved *within* one family: two blocks, the
+#: second in reversed order, giving every seed position sum 2 exactly as the
+#: two-family design did.
+#:
+#: This costs a second full pass (1,704 judgments rather than 852) and buys
+#: something the two-family design could not: the same seed graded twice by the
+#: same grader, which is a within-grader repeatability estimate.
 FAMILIES = [
-    {"key": "gemma31", "alias": "default-model-2", "expect": "gemma4-31B-mtp", "suffix": ".g31"},
-    {"key": "qwen",    "alias": "default-model",   "expect": "qwen38-27B-v2",  "suffix": ".q"},
+    {"key": "qwen1", "alias": "default-model", "expect": "qwen38-27B-v2", "suffix": ".q1"},
+    {"key": "qwen2", "alias": "default-model", "expect": "qwen38-27B-v2", "suffix": ".q2"},
 ]
-
 
 def probe(alias: str, expect: str) -> str:
     import urllib.request
@@ -123,11 +138,17 @@ def score(seed: str, suffix: str) -> dict:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--workers", type=int, default=8,
-                    help="operator cap for the qwen endpoint on this task")
-    ap.add_argument("--gemma-workers", type=int, default=24)
+    ap.add_argument("--workers", type=int, default=32)
+    ap.add_argument("--arm", default="generic", choices=sorted(ARM_CONFIG))
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
+
+    global EXP, ROOT, STATE, ARM
+    ARM = args.arm
+    EXP = ARM_CONFIG[ARM]["exp"]
+    ROOT = ARM_CONFIG[ARM]["root"]
+    STATE = EXP / "data" / "judge-state.json"
+    print(f"arm={ARM}  root={ROOT}  state={STATE}", flush=True)
 
     present = answers_present()
     print("answers per seed:", present, flush=True)
@@ -163,7 +184,7 @@ def main() -> int:
     for row in plan:
         fam = next(f for f in FAMILIES if f["key"] == row["family"])
         key = f"{row['family']}-{row['seed']}"
-        workers = args.workers if fam["key"] == "qwen" else args.gemma_workers
+        workers = args.workers
         print(f"\n== {key} (position {row['position']}, {workers} workers) ==",
               flush=True)
         summary = run(
@@ -211,8 +232,11 @@ def main() -> int:
             "means": [round(m, 4) for m in balanced],
             "sd": round(sd, 4),
             "h2_holds": sd < 0.03,
-            "method": "per-seed mean of the two families; counterbalancing gives "
-                      "every seed position sum 2, so the position effect cancels",
+            "method": "per-seed mean of the two qwen blocks; counterbalancing "
+                      "gives every seed position sum 2, so the position "
+                      "effect cancels. Both blocks are the SAME grader: "
+                      "this is position-balanced repeatability, not "
+                      "cross-grader agreement.",
         }
         print(f"\n  balanced {[round(m, 4) for m in balanced]}  SD {sd:.4f}  "
               f"H2 {'holds' if sd < 0.03 else 'FALSIFIED'}", flush=True)
