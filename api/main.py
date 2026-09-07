@@ -50,15 +50,23 @@ from .services.query import stream_query_events
 # Load the central .env once, mirroring main.py's entry-point behaviour.
 load_env()
 
-# --- TEMPORARY DIAGNOSTIC (investigating SSE stalls) ---------------------------
-# `kill -USR1 <api-pid>` dumps every thread's traceback to the file below.
-import faulthandler as _fh  # noqa: E402
-import signal as _sig  # noqa: E402
-import os as _os  # noqa: E402
-_fh_path = _os.environ.get("ARIADNE_FAULT_LOG", "/tmp/ariadne-faulthandler.log")
-_fh_file = open(_fh_path, "a", buffering=1)
-_fh.register(_sig.SIGUSR1, file=_fh_file, all_threads=True, chain=False)
-# -------------------------------------------------------------------------------
+# Import both specialist backends now, on the import thread, so no request ever
+# takes a module import lock.
+#
+# ``build_specialist`` imports its backend subpackage lazily, which is right for
+# the CLI -- a caller that only wants ATT&CK should not pay for the Gremlin
+# driver. In the service it is a hazard: the import runs on a LangGraph worker
+# thread, and a request that stalls partway through it holds the lock for
+# ``utils.specialists.cypher.specialist`` forever. This was observed live on
+# 2026-09-07 -- one wedged request, then every later query blocked in
+# ``_lock_unlock_module`` inside ``build_specialist``, and eventually /api/health
+# stopped answering too. Only a restart cleared it.
+#
+# The service needs both backends anyway, so paying for them once at startup
+# costs nothing and removes the whole failure class. ``build_specialist`` is
+# unchanged; these imports simply mean its lazy ones are always already resolved.
+from utils.specialists.cypher import specialist as _warm_cypher  # noqa: E402,F401
+from utils.specialists.gremlin import specialist as _warm_gremlin  # noqa: E402,F401
 
 app = FastAPI(
     title="Ariadne Workbench API",
