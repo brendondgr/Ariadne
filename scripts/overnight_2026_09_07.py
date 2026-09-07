@@ -144,12 +144,30 @@ def main() -> int:
     print(f"[{now():%H:%M}] overnight driver, deadline {deadline:%H:%M} "
           f"(GPU work stops {gpu_deadline:%H:%M})", flush=True)
 
-    try:
-        st["served_model"] = probe()
-        print(f"[{now():%H:%M}] endpoint OK: {st['served_model']}", flush=True)
-    except Exception as exc:
-        st["served_model"] = f"PROBE FAILED: {exc}"
-        print(f"[{now():%H:%M}] endpoint probe failed: {exc}", flush=True)
+    # Wait for the endpoint rather than giving up on it. On 2026-09-07 the
+    # relay at :9090 -- an SSH tunnel -- kept answering /v1/models instantly
+    # while chat completions hung past 240 s: control plane alive, data plane
+    # dead. The first driver read that as a failed step, ran its CPU work and
+    # produced a report at 00:44 for a night that had seven hours left in it.
+    #
+    # So: poll until it answers, and keep polling. If the operator restarts the
+    # backend at 03:00 the night is still usable; if it never comes back the
+    # report says so, which is the same outcome as giving up but without
+    # discarding the hours in between.
+    st["endpoint_waits"] = []
+    while now() < gpu_deadline:
+        try:
+            st["served_model"] = probe()
+            print(f"[{now():%H:%M}] endpoint OK: {st['served_model']}", flush=True)
+            break
+        except Exception as exc:
+            st["endpoint_waits"].append({"at": str(now()),
+                                         "error": f"{type(exc).__name__}: {exc}"[:160]})
+            st["served_model"] = f"WAITING: {type(exc).__name__}"
+            save(st)
+            print(f"[{now():%H:%M}] endpoint not answering "
+                  f"({type(exc).__name__}); retrying in 5 min", flush=True)
+            time.sleep(300)
     save(st)
 
     if args.wait_pid:
