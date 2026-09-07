@@ -246,3 +246,43 @@ primary result — was produced by answers a language model composed.**
   `fallback_reason` is non-null anywhere, and (c) report `generic`'s **real**
   narration variance, which is now a genuine open question rather than an
   assumption.
+
+## A-3 (2026-09-06, from the guarded re-run's first attempt)
+
+**One question in the dev bank cannot be narrated at all**, and it is a hard
+failure rather than a low score.
+
+`D4-mitigates-uses-M1047-b63672::indirect` overflows the narrator's context
+window every time:
+
+```
+maximum context length is 84000 tokens; requested 16384 output tokens and the
+prompt contains at least 67617 input tokens, for a total of at least 84001
+```
+
+**Over the limit by one token.** It is arithmetic on a fixed prompt, so it
+recurs identically on every run — which is what makes it a property of the
+system rather than an incident.
+
+**Why it matters beyond this experiment.** The `generic` arm scores this question
+on a fallback text, not on narrated output, in **every recorded run on this
+bank** — `EXP-2026-09-002`, `-005` and the seeded repeats included. It is one of
+284, so the effect on any published mean is at most ~0.0035 and no figure moves
+materially. But it is a silent hard failure that no metric surfaces: the arm
+returns a well-formed answer with a `fallback_reason` nobody reads.
+
+**Two things follow.**
+
+1. The re-run's guard now classifies this as `deterministic` and keeps the
+   capture, rather than discarding it. A first version of the guard treated any
+   `fallback_reason` as corrupting and would have failed all three attempts on
+   this single question, recording `not_run` for a run that was actually fine.
+2. **`fallback_reason` deserves to be a reported metric, not a debug field.** The
+   record has now been bitten by it twice in one evening: once as 60 transient
+   narrator deaths that silently degraded a whole capture (A-2), and once as a
+   permanent per-question failure nobody had noticed (here). Both were invisible
+   to every existing metric.
+
+**Not fixed here.** Raising the limit or trimming the prompt changes what the arm
+computes, and doing that mid-comparison is exactly the mistake `EXP-2026-09-005`
+was careful to avoid. It is recorded, not repaired.
