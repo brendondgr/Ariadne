@@ -118,3 +118,56 @@ Every guard from `EXP-2026-09-009`, plus the two whose absence invalidated
   arm moves, a follow-up must localise where. `EXP-2026-09-010`'s re-run is the
   start of that: at fixed seed, retrieval should not move at all.
 - Three runs gives a spread, not a distribution. `RESULTS.md` must say so.
+
+---
+
+# AMENDMENTS
+
+## A-1 (2026-09-07) — three further seeds
+
+**Extension, not a correction.** The completed experiment's own limits say
+"three seeds gives a spread, not a distribution." This adds three more:
+`LLM_SEED` ∈ **{31337, 8675309, 271828}**, chosen before the extension ran, as
+the first three were.
+
+**Everything else is held.** Same arm, same 284-question bank at sha256
+`a4ca6702029cae77…`, same `ORCH_MAX_HOPS=5`, same 32,768-token budget, same
+narrator pinned to a probed `qwen38-27B-v2`, same two counterbalanced grading
+blocks giving every seed position sum 2.
+
+### What it can and cannot change
+
+- It **cannot** revise the reported figures. The pre-registered three-seed
+  result — balanced SD **0.0039** — is what H1–H3 were adjudicated against, and
+  it stands as reported whatever six seeds show.
+- It **can** show that spread was optimistic. If the six-seed SD is materially
+  larger, that is reported as a finding and the paper quotes the six-seed
+  figure with the three-seed one beside it. **Recorded before the data exists.**
+- Grading uses a **separate state file** (`judge-state-extension.json`) so the
+  extension cannot overwrite the record of the pre-registered run.
+
+### Status
+
+Generation completed 2026-09-07 ~03:30 — 284 answers per seed, all three.
+**Grading did not follow.** It was not queued behind generation, and the
+endpoints were down when it was finally started at 09:57. The answers are frozen
+on disk; grading is queued against `default-model-2`.
+
+**This is recorded because the gap is the interesting part.** An extension whose
+answers exist and whose judgments do not is indistinguishable, in a manifest,
+from one that never ran. `n_runs` stays at **3** and the manifest carries the
+pre-registered result alone until the extension is graded and written up.
+
+### Two defects this amendment exposed
+
+1. `scripts/seeded_repeats_judge.py` hardcoded the pre-registered seed list, so
+   a run launched to grade the extension examined the original seeds, found
+   every sidecar present, and would have **exited reporting success having done
+   nothing**. Fixed with `--seeds preregistered|extension`.
+2. `answers_present()` globbed `*.json`, counting judgment sidecars as answers —
+   a fully graded seed read as **852** against an expected 284, so the guard
+   that refuses to grade a short seed could never fire. Fixed to count answer
+   files only.
+
+Both were visible in a single line of the run's own output and neither raised an
+error.
