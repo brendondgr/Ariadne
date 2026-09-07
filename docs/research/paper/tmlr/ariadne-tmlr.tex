@@ -534,11 +534,49 @@ seeded runs, the across-seed spread of \texttt{llm\_query} is $0.0089$, an order
 of magnitude below the $0.0822$ margin of
 \S\ref{sec:generation}.\expref{EXP-2026-09-009}
 
-\emph{[DRAFT NOTE — the remaining cell is running: how far \texttt{generic}'s
-judged score moves across seeds. Until it reports, \S\ref{sec:templates}'s
-figures are quoted as point estimates with the caveat in
-\S\ref{sec:limitations}, and this section states the bound rather than the
-value.]}
+\paragraph{But the wording variation does not reach the score.} Across three
+seeded runs of \texttt{generic}, the balanced across-seed standard deviation of
+judged correctness is $\mathbf{0.0039}$, against the $0.1623$ gap it
+supports on the same population --- a ratio of $41$ to
+$1$.\expref{EXP-2026-09-011}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+Seed & block 1 & block 2 & balanced \\
+\midrule
+1729     & 0.6646 & 0.6394 & 0.6520 \\
+20260906 & 0.6451 & 0.6444 & 0.6448 \\
+424242   & 0.6468 & 0.6394 & 0.6431 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Both facts hold at once and the reconciliation is the architecture. Retrieval,
+coverage, claims and evidence are byte-identical across runs; the verifier
+admits claims against those fixed records; so what the narrator is free to vary
+is \emph{phrasing}, not \emph{content}. A grader scoring what was asserted sees
+the same assertions in different words.
+
+This is a stronger result than determinism would have been. A system whose prose
+is fixed says nothing about whether its scores are robust to prose. This one
+re-words the majority of its answers and moves $0.004$.
+
+\paragraph{An instrument property, measured three times.} The two grading blocks
+are the same grader over the same answers, differing only in when they ran:
+block 1 means $0.6522$, block 2 means $0.6411$ --- $-0.0111$ for being graded
+second.\expref{EXP-2026-09-011} Two earlier measurements agree in size and
+direction.\expref{EXP-2026-08-022}\expref{EXP-2026-09-009} We counterbalance
+because of it: ungraded in balanced order, that block effect alone is nearly
+three times the entire across-seed signal, and would be reported as seed
+variance.
+
+\paragraph{What is not claimed.} Three seeds give a spread, not a distribution.
+Both blocks are the same grader, so this is position-balanced \emph{repeatability},
+not cross-grader agreement --- and \S\ref{sec:grader} shows the other family can
+invert an ordering on a population like this one, so cross-grader stability
+must not be inferred from it.
 
 % =====================================================================
 \section{Limitations}
@@ -571,13 +609,15 @@ Every item here is measured. Stating them is cheaper than being caught.
       \S\ref{sec:templates} are therefore one wording of that arm, not a point
       estimate of it.
 
-      Two things bound how bad this is. First, the variation is confined to
-      \emph{one field}: every retrieval, coverage, claim and evidence field is
-      byte-identical across runs, so what varies is the prose and not what the
-      system found. Second, a different wording need not be a different score,
-      and how much of this reaches the judged number is a separate measurement
-      we report in \S\ref{sec:variance}. We state the unbounded version here
-      because it is the honest one until that measurement is quoted.
+      Two things bound it, and both are now measured. First, the variation is
+      confined to \emph{one field}: every retrieval, coverage, claim and evidence
+      field is byte-identical across runs, so what varies is the prose and not
+      what the system found. Second, and decisively, \textbf{the variation does
+      not reach the score}: the balanced across-seed standard deviation is
+      $0.0039$ against a $0.1623$ effect.\expref{EXP-2026-09-011} The figures in
+      \S\ref{sec:templates} may therefore be read as point estimates. The
+      wording instability remains reported, because it is true and because a
+      reader who reruns the system will see it.
 
 \item \textbf{The query-writing arm is stable across seeds, so its result is not
       a single-draw artifact}: three seeded runs give an across-seed spread of
