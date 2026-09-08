@@ -651,6 +651,18 @@ def main() -> int:
                       help="served alias for the model fill (records the WEIGHTS "
                            "that answered, not this name)")
     cmp_.add_argument("--llm-base-url", default=None)
+    cmp_.add_argument("--llm-timeout-s", type=float, default=None,
+                      help="read timeout for one model call. At 32-way "
+                           "concurrency per instance the served model exceeds "
+                           "the 240s default on about a third of calls, and a "
+                           "timed-out call abstains -- indistinguishable "
+                           "downstream from a model with nothing to say.")
+    cmp_.add_argument("--pipeline-timeout-s", type=float, default=None,
+                      help="total budget for one question. The rewrite's model "
+                           "call is charged against the SAME budget retrieval "
+                           "needs, so at the shipped 120s a slow rewrite starves "
+                           "the query and the question returns nothing -- which "
+                           "reads as a method failure and is a clock failure.")
     cmp_.add_argument("--cache-dir", default=None,
                       help="rewrite cache root; clear it between runs to measure "
                            "model variance rather than cache variance")
@@ -674,6 +686,11 @@ def main() -> int:
     if getattr(args, "llm_base_url", None):
         os.environ["ARIADNE_LLM_BASE_URL"] = args.llm_base_url
         os.environ["PLANNER_LLM_BASE_URL"] = args.llm_base_url
+    if getattr(args, "pipeline_timeout_s", None):
+        os.environ["PIPELINE_TIMEOUT_S"] = str(args.pipeline_timeout_s)
+    if getattr(args, "llm_timeout_s", None):
+        os.environ["ARIADNE_LLM_TIMEOUT_S"] = str(args.llm_timeout_s)
+        os.environ["PLANNER_LLM_TIMEOUT_S"] = str(args.llm_timeout_s)
     if getattr(args, "cache_dir", None):
         os.environ["ARIADNE_REWRITE_CACHE_DIR"] = args.cache_dir
     preflight()

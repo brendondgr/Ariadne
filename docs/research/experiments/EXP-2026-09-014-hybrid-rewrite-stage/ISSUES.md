@@ -299,3 +299,62 @@ falsify this".
 **Paper implication:** "canonicalise into the vocabulary the engine answers best"
 is not free. The rewrite is only safe where the form captures everything the
 question carried, and the per-tier numbers are what say where that holds.
+
+## 2026-09-08 — a third of every model call in the first R2/R3 attempt timed out and abstained
+**Impact:** the first attempt at arms R2 and R3 is **superseded**. Its figures
+(T4 0.0755, T5 0.1509 on R2 run 1) measure the method *plus* a 31–38% call
+failure rate and understate the stage by an unknown amount. They are kept as
+`scored_R{2,3}_tune.timeout240.run1.json` and `data/pilot-timeout240/`, not
+deleted, because they are the evidence for why the arms were re-run.
+**Cause:** `ARIADNE_LLM_TIMEOUT_S=240.0` in `.env`. At 32 workers per instance
+(64 in flight across the two GPUs, per the operator's direction) the served
+model exceeds 240 s on a large minority of requests, and every one comes back as
+
+    model unavailable: could not reach localhost:9090: Read timed out. (read timeout=240.0)
+
+Per run: 61 of ~195 attempted calls in R2 run 1, 74 in run 2. A timed-out call
+sets `rung: abstain` with an empty `served_model`, which downstream is
+indistinguishable from a model that declined — so the arm looked like a method
+result and was partly a bound.
+**Resolution:** re-run at `--llm-timeout-s 900`, a new flag so the arm's timeout
+is recorded in its command rather than inherited from the operator's `.env`.
+Concurrency is unchanged at 64: the fix belongs in the bound, not the
+parallelism.
+**Paper implication:** this is the **third** recorded instance in this project of
+a bound cutting off a reasoning model and the result being indistinguishable from
+a model with nothing to say (after the import-time budget freeze and the ignored
+`.env` value in the `llm_query` arm). It is a pattern, not three incidents, and
+the run-to-run spread it produced — R3 T4 0.0755 → 0.0377 between two runs — is
+timeout luck masquerading as model variance. Any LLM-arm variance figure must
+report its call-failure rate beside it or it is not interpretable.
+
+## 2026-09-08 — the rewrite's latency is charged against the budget retrieval needs, and it starves the query
+**Impact:** the first complete R2/R3 arms are **superseded**. Kept as
+`scored_R{2,3}_tune.deadline120.*` and `data/deadline120/`, because they are the
+measurement of what the stage does under the SHIPPED budget — which is a real
+result, just not the one the protocol's question asks.
+**Cause:** `PIPELINE_TIMEOUT_S=120.0` is the total budget for one question, and
+the rewrite's model call spends it before retrieval starts. The evidence is
+exact: **0 of 106 deterministic-rung rows differ across the three runs** — the
+pipeline is reproducible — while **20 model-rung rows with a byte-identical
+canonical question return different records**. For example
+
+    A-MIT-02 T5  "In ATT&CK, give the mitigations that mitigates sub technique T1021.001."
+      run1: 0 records   run2: 9 records   run3: 9 records   cached replay: 9 records
+
+Same question, same rung, same cache state for the rewrite; the difference is how
+much of the 120 s was left when the query ran. This is the EXP-2026-09-013
+deadline mechanism ("the total-pipeline deadline binds at synthesis too")
+arriving at a new seam.
+**Resolution:** re-run at `--pipeline-timeout-s 900`, a new flag, so the arm
+measures the method rather than the budget. Both figures are reported: the 900 s
+arms answer "does the rewrite recover record identity", the 120 s arms answer
+"can it ship at the current deadline".
+**Paper implication:** two things, and the second is the more important.
+1. Any figure for a stage that adds latency inside a bounded pipeline is a joint
+   measurement of the stage and the bound, and must say which budget it ran
+   under.
+2. Under the shipped 120 s budget the model rewrite **loses records it would
+   otherwise retrieve**. The cached replay — where the rewrite is nearly free —
+   recovers T1 to 0.4921, exactly the no-rewrite baseline, so the T1 "regression"
+   attributed to the rewrite in the first analysis was the clock, not the method.
