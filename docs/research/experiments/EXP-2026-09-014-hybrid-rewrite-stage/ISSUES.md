@@ -199,3 +199,36 @@ legitimately IS CAPEC's business, through its TaxonomyEntry seeds — still rend
 both sentences.
 **Paper implication:** none, but it is a clean example of why `records_exact`
 alone cannot be the only reported metric.
+
+## 2026-09-08 — the anchor was bound only from the *leading* source, so questions naming their anchor in plain text came back unbound
+**Impact:** found and fixed inside Step 3; it moved the T0/T1/T2 anchor ceiling
+from 0.9683/0.7460/0.7619 to **1.0000/1.0000/1.0000** on the tune half.
+**Cause:** `deterministic_fill` asked only `datasets[0]` for identifiers. "Which
+ATT&CK techniques correspond to CAPEC-555?" routes to ATT&CK first — the word
+ATT&CK is right there — and ATT&CK's identifier ladder does not read
+`CAPEC-555`, so a question that names its anchor in plain text was reported as
+having no anchor. Every `C-MAP`, `F-CTM`, `F-NEG` and `F-CWE` variant at T1 and
+T2 was affected.
+**Resolution:** every selected source is asked, in router order, and the source
+whose ladder claims the identifier becomes the form's leading dataset — which is
+also where the first hop starts.
+**Paper implication:** none, but it is worth saying that the anchor's source and
+the question's leading source are different things.
+
+## 2026-09-08 — candidate lists were empty exactly where they were needed most
+**Impact:** found and fixed inside Step 3. Before: T4 recall@5 0.0417, T5 0.0962.
+After: **T4 0.5106, T5 0.5882**.
+**Cause:** two independent bugs, both of which silently returned a *shorter*
+list rather than an error.
+1. The ranked search was scoped to every label the form had bound, targets
+   included. At T3 the form binds `Mitigation` as the target and the anchor it
+   is missing is a `Technique`, so the filter guaranteed the gold anchor could
+   not appear. Only the *anchor* labels may scope it.
+2. When routing left the source unbound — more than half the bank at T4 — the
+   lists were keyed on a dataset the form did not have, and came back empty. So
+   the questions with the least deterministic footing were handed nothing to
+   choose from. `candidate_lists_all` now offers every live source's list when
+   the form names none, which lets the chooser pick the source by picking the
+   entity.
+**Paper implication:** report recall@k as the ceiling it is, and say it is
+measured over the questions the deterministic pass left unbound, not over all.

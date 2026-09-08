@@ -231,6 +231,47 @@ def _canonical_docs(dataset: str) -> list[tuple[str, str, str, list[str]]]:
 
 
 @lru_cache(maxsize=8)
+def descriptions_for(dataset: str) -> dict[str, str]:
+    """``entity_id -> first sentence of the canonical description``.
+
+    A ranked candidate is only useful to a *chooser* if the chooser can tell the
+    candidates apart, and two CAPEC patterns can have near-identical names. The
+    opening sentence is what distinguishes them, and it is already in the
+    snapshot this module reads. Kept here rather than rebuilt by the caller so
+    the analyst-facing id normalisation (``capec:attack-pattern:66`` ->
+    ``CAPEC-66``) has exactly one implementation.
+
+    First sentence only: the full descriptions run to thousands of characters
+    and a prompt built from them would be mostly prose.
+    """
+    path = REPO / "data" / "graphs" / dataset / "canonical" / "nodes.jsonl"
+    if not path.exists():
+        return {}
+    out: dict[str, str] = {}
+    for line in path.read_text().splitlines():
+        if not line.strip():
+            continue
+        node = json.loads(line)
+        props = node.get("properties") or {}
+        raw_id = str(props.get("attack_id") or node.get("id") or "")
+        m = re.match(r"^capec:[a-z-]+:(\d+)$", raw_id, re.IGNORECASE)
+        entity_id = f"CAPEC-{m.group(1)}" if m else raw_id
+        if not entity_id or ":" in entity_id:
+            continue
+        text = " ".join(str(props.get("description") or "").split())
+        if not text:
+            continue
+        head = re.split(r"(?<=[.!?])\s", text, maxsplit=1)[0]
+        out[entity_id] = head
+    return out
+
+
+def description_of(dataset: str, entity_id: str) -> str:
+    """The first sentence of ``entity_id``'s description, or ``""``."""
+    return descriptions_for(dataset).get(entity_id, "")
+
+
+@lru_cache(maxsize=8)
 def index_for(dataset: str) -> NameIndex:
     """Process-cached index for one dataset. Built once, read many."""
     return NameIndex(_canonical_docs(dataset))

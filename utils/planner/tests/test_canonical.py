@@ -447,11 +447,27 @@ def test_a_synonym_verb_still_binds_the_relation_through_the_lexicon(live_cards)
 
 
 @needs_snapshot
-def test_an_exact_name_binds_the_anchor_as_a_title(live_cards) -> None:
+def test_an_exact_name_binds_the_anchor_to_its_identifier(live_cards) -> None:
+    """The analyst gave a name; the canonical form cites the id it resolves to.
+
+    That is the point of rewriting into tier-0 form — the resolver's
+    highest-authority rung wants an identifier, and a complete-name match is a
+    lookup that supplies one. The name is kept for provenance only.
+    """
     form = deterministic_fill("What is Phishing?", live_cards)
-    assert form.anchors == ()
+    assert form.anchors and form.anchors[0].startswith("CAPEC-")
     assert form.anchor_titles == ("Phishing",)
     assert form.sources["anchors"] == "exact-name"
+
+
+@needs_snapshot
+def test_the_anchor_is_bound_by_whichever_source_owns_the_identifier(live_cards) -> None:
+    """The question leads with ATT&CK; the anchor it names is CAPEC's."""
+    form = deterministic_fill(
+        "Which ATT&CK techniques correspond to CAPEC-555?", live_cards
+    )
+    assert form.anchors == ("CAPEC-555",)
+    assert form.datasets[0] == "capec"
 
 
 @needs_snapshot
@@ -528,3 +544,78 @@ def test_the_flags_read_the_environment() -> None:
     finally:
         os.environ.pop("ARIADNE_REWRITE", None)
         os.environ.pop("ARIADNE_REWRITE_MODEL", None)
+
+
+# -- candidate lists --------------------------------------------------------
+
+
+def test_relation_and_label_candidates_are_the_whole_card_with_its_glosses() -> None:
+    from utils.planner.canonical import candidate_lists
+
+    form = IntentForm(datasets=("attack",)).with_unbound(SLOT_RELATION)
+    lists = candidate_lists("anything", form, CARDS, dataset="attack")
+    assert [c.value for c in lists.relations] == sorted(ATTACK.relationship_types)
+    assert [c.value for c in lists.labels] == sorted(ATTACK.node_labels)
+    assert [c.index for c in lists.relations] == list(range(len(lists.relations)))
+    assert any(c.gloss for c in lists.relations)
+
+
+def test_an_index_out_of_range_or_of_the_wrong_type_is_not_a_choice() -> None:
+    """A model that returns a *name* has not chosen from the list."""
+    from utils.planner.canonical import candidate_lists
+
+    form = IntentForm(datasets=("attack",)).with_unbound(SLOT_RELATION)
+    lists = candidate_lists("anything", form, CARDS, dataset="attack")
+    assert lists.relation_at(0) is not None
+    assert lists.relation_at(len(lists.relations)) is None
+    assert lists.relation_at(-1) is None
+    assert lists.relation_at("MITIGATES") is None
+    assert lists.relation_at(True) is None
+    assert lists.relation_at(None) is None
+
+
+def test_no_anchor_candidates_are_produced_when_the_anchor_is_already_bound() -> None:
+    from utils.planner.canonical import candidate_lists
+
+    form = IntentForm(anchors=("T1047",), datasets=("attack",))
+    assert candidate_lists("T1047", form, CARDS, dataset="attack").anchors == ()
+
+
+def test_candidate_lists_for_an_unrouted_form_cover_every_live_source() -> None:
+    from utils.planner.canonical import candidate_lists_all
+
+    form = IntentForm().with_unbound(SLOT_ANCHORS, "datasets")
+    assert sorted(candidate_lists_all("anything", form, CARDS)) == ["attack", "capec"]
+
+
+def test_candidate_lists_for_a_routed_form_cover_only_its_sources() -> None:
+    from utils.planner.canonical import candidate_lists_all
+
+    form = IntentForm(datasets=("attack",)).with_unbound(SLOT_ANCHORS)
+    assert sorted(candidate_lists_all("anything", form, CARDS)) == ["attack"]
+
+
+@needs_snapshot
+def test_anchor_candidates_are_scoped_by_the_anchor_label_not_the_target(live_cards) -> None:
+    """Scoping by the target guaranteed the gold anchor could never appear."""
+    from utils.planner.canonical import candidate_lists
+
+    form = IntentForm(
+        target_labels=("Mitigation",), datasets=("attack",), mode=MODE_ENUMERATE
+    ).with_unbound(SLOT_ANCHORS)
+    lists = candidate_lists("browser extension persistence", form, live_cards)
+    assert lists.anchors
+    assert {c.label for c in lists.anchors} != {"Mitigation"}
+
+
+@needs_snapshot
+def test_an_anchor_candidate_carries_enough_to_tell_it_apart(live_cards) -> None:
+    from utils.planner.canonical import candidate_lists
+
+    form = IntentForm(datasets=("attack",)).with_unbound(SLOT_ANCHORS)
+    lists = candidate_lists(
+        "abuse of Windows management instrumentation", form, live_cards
+    )
+    top = lists.anchors[0]
+    assert top.value and top.name and top.label
+    assert top.gloss and top.gloss.endswith((".", "!", "?"))

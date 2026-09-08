@@ -662,13 +662,27 @@ def deterministic_fill(
             SLOT_RELATION, SLOT_DIRECTION,
         )
 
-    primary = datasets[0]
-    card = cards[primary]
     sources: dict[str, str] = {SLOT_MODE: "intent", SLOT_DATASETS: "router"}
 
     # -- anchors: ids first (the resolver's highest-authority tier), then a
     #    complete name, then nothing.
-    anchors = _ids_in(question, primary)
+    #
+    # Asked of **every** selected source, not just the leading one, because the
+    # anchor's dataset is whichever one's ladder recognises the identifier and
+    # that need not be the source the question leads with. "Which ATT&CK
+    # techniques correspond to CAPEC-555?" routes to ATT&CK first — the word
+    # ATT&CK is right there — and ATT&CK's ladder does not read `CAPEC-555`, so
+    # asking only the leader left the anchor unbound on a question that names
+    # its anchor in plain text. The source that owns the anchor then leads the
+    # dataset order, because that is where the first hop starts.
+    anchors: tuple[str, ...] = ()
+    primary = datasets[0]
+    for candidate_ds in datasets:
+        found = _ids_in(question, candidate_ds)
+        if found:
+            anchors, primary = found, candidate_ds
+            break
+    card = cards[primary]
     anchor_titles: tuple[str, ...] = ()
     anchor_labels: tuple[str, ...] = ()
     if anchors:
@@ -687,13 +701,25 @@ def deterministic_fill(
         # name extraction filters schema words for the same reason.
         from utils.specialists.resolve import _schema_word_set
 
-        schema_words = _schema_word_set(card)
-        exact = [
-            c
-            for c in exact_name_matches(primary, question)
-            if c.name.strip().lower() not in schema_words
-        ]
+        exact = []
+        for candidate_ds in datasets:
+            schema_words = _schema_word_set(cards[candidate_ds])
+            hits = [
+                c
+                for c in exact_name_matches(candidate_ds, question)
+                if c.name.strip().lower() not in schema_words
+            ]
+            if hits:
+                exact, primary, card = hits, candidate_ds, cards[candidate_ds]
+                break
         if len(exact) == 1:
+            # Cite the **identifier**, keeping the name for provenance. This is
+            # the whole point of rewriting into tier-0 form: the analyst gave a
+            # name, the resolver's highest-authority tier wants an id, and the
+            # complete-name match is a lookup that supplies one. Leaving the
+            # anchor as a title instead put the canonical question back on the
+            # resolver's fuzzy rung for no reason.
+            anchors = (exact[0].entity_id,) if exact[0].entity_id else ()
             anchor_titles = (exact[0].name,)
             anchor_labels = (exact[0].label,) if exact[0].label else ()
             sources[SLOT_ANCHORS] = "exact-name"
@@ -736,7 +762,7 @@ def deterministic_fill(
         relation=relation,
         direction=direction,
         mode=mode,
-        datasets=datasets,
+        datasets=(primary,) + tuple(d for d in datasets if d != primary),
         anchor_titles=anchor_titles,
         sources=sources,
     )
@@ -763,6 +789,176 @@ def deterministic_fill(
         # `form_from_slot_gold` for what emitting it anyway cost.
         missing.append(SLOT_RELATION)
     return form.with_unbound(*missing) if missing else form
+
+
+# -- candidate lists --------------------------------------------------------
+
+#: How many ranked entities a list carries. Five, because a list is read by a
+#: chooser and a longer one buys recall the chooser cannot use: EXP-2026-08-020
+#: found the right entity in the top one or two whenever it was there at all.
+DEFAULT_TOP_K = 5
+
+
+@dataclass(frozen=True)
+class Choice:
+    """One option a chooser may pick, with everything needed to tell it apart."""
+
+    index: int
+    value: str
+    label: str = ""
+    name: str = ""
+    gloss: str = ""
+
+    def to_dict(self) -> dict[str, Any]:
+        out: dict[str, Any] = {"index": self.index, "value": self.value}
+        for key in ("label", "name", "gloss"):
+            if getattr(self, key):
+                out[key] = getattr(self, key)
+        return out
+
+
+@dataclass(frozen=True)
+class CandidateLists:
+    """The closed world a model is allowed to choose from, per dataset.
+
+    Nothing outside these lists can enter a form. That is what makes "closed
+    choice" a property of the system rather than an instruction in a prompt: the
+    gate in Step 4 checks membership, and a pick that is not an index into one of
+    these lists is rejected before it reaches the renderer.
+    """
+
+    dataset: str
+    anchors: tuple[Choice, ...] = ()
+    relations: tuple[Choice, ...] = ()
+    labels: tuple[Choice, ...] = ()
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "dataset": self.dataset,
+            "anchors": [c.to_dict() for c in self.anchors],
+            "relations": [c.to_dict() for c in self.relations],
+            "labels": [c.to_dict() for c in self.labels],
+        }
+
+    def anchor_at(self, index: Any) -> Choice | None:
+        return _at(self.anchors, index)
+
+    def relation_at(self, index: Any) -> Choice | None:
+        return _at(self.relations, index)
+
+    def label_at(self, index: Any) -> Choice | None:
+        return _at(self.labels, index)
+
+
+def _at(choices: tuple[Choice, ...], index: Any) -> Choice | None:
+    """``choices[index]`` when ``index`` is a valid one, else ``None``.
+
+    Deliberately strict about the *type*: a model that returns ``"MITIGATES"``
+    where an index was asked for has not chosen from the list, it has written a
+    name that happens to be on it, and accepting that would make the closed
+    world advisory. It is rejected here and the reason is recorded.
+    """
+    if isinstance(index, bool) or not isinstance(index, int):
+        return None
+    return choices[index] if 0 <= index < len(choices) else None
+
+
+def _in_scope_labels(form: IntentForm, card: SourceCardView) -> tuple[str, ...]:
+    """Labels the ranked search should be restricted to, or ``()`` for all.
+
+    The label filter is not an optimisation, it is the accuracy fix (see
+    `namesearch.NameIndex.search`): unrestricted, "how do I stop attackers
+    abusing browser extensions" ranks the *detection strategy* above the
+    technique it detects, because a strategy's name repeats the question's
+    words. Whatever the form already bound about the *anchor's* type is exactly
+    that filter.
+
+    Only the **anchor** labels scope it. Including the target labels was worth
+    measuring and was wrong: at T3 the form binds `Mitigation` as the target and
+    the anchor it is missing is a `Technique`, so restricting the search to the
+    targets guaranteed the gold anchor could never appear. Recall@5 was 0.0385.
+    """
+    scoped = {l for l in form.anchor_labels if card.has_label(l)}
+    return tuple(sorted(scoped))
+
+
+def candidate_lists(
+    question: str,
+    form: IntentForm,
+    cards: dict[str, SourceCardView],
+    *,
+    top_k: int = DEFAULT_TOP_K,
+    dataset: str | None = None,
+) -> CandidateLists:
+    """Build the closed choice set for the slots ``form`` left unbound.
+
+    Entities come from the shipped BM25 name index, used **only as a list
+    producer**: no accept decision, no threshold, nothing here can be
+    over-fitted. That distinction is the finding EXP-2026-08-020 paid for — the
+    index "works as a component and fails as a router", so it is used as a
+    component. Relations and labels come from the card, which is a closed set by
+    construction.
+    """
+    from utils.specialists.schema.namesearch import description_of, search_in
+
+    chosen = dataset or (form.datasets[0] if form.datasets else "")
+    card = cards.get(chosen)
+    if card is None:
+        return CandidateLists(dataset=chosen)
+
+    anchors: tuple[Choice, ...] = ()
+    if SLOT_ANCHORS in form.unbound or not (form.anchors or form.anchor_titles):
+        hits = search_in(
+            chosen, question, top_k=top_k, labels=_in_scope_labels(form, card) or None
+        )
+        anchors = tuple(
+            Choice(
+                index=i,
+                value=hit.entity_id,
+                label=hit.label,
+                name=hit.name,
+                gloss=description_of(chosen, hit.entity_id),
+            )
+            for i, hit in enumerate(hits)
+        )
+
+    rel_glosses = (card.entity_descriptions or {}).get("relationships") or {}
+    relations = tuple(
+        Choice(index=i, value=rel, gloss=str(rel_glosses.get(rel) or ""))
+        for i, rel in enumerate(sorted(card.relationship_types))
+    )
+    node_glosses = (card.entity_descriptions or {}).get("nodes") or {}
+    labels = tuple(
+        Choice(index=i, value=label, gloss=str(node_glosses.get(label) or ""))
+        for i, label in enumerate(sorted(card.node_labels))
+    )
+    return CandidateLists(
+        dataset=chosen, anchors=anchors, relations=relations, labels=labels
+    )
+
+
+def candidate_lists_all(
+    question: str,
+    form: IntentForm,
+    cards: dict[str, SourceCardView],
+    *,
+    top_k: int = DEFAULT_TOP_K,
+) -> dict[str, CandidateLists]:
+    """Candidate lists for every dataset still in play.
+
+    The form's datasets when routing bound them, and **every live card** when it
+    did not. That case is not an edge case: at T4 the router leaves the source
+    unbound on more than half the bank, and a per-dataset list keyed on a
+    dataset the form does not have is an empty list — so the questions with the
+    least deterministic footing were being handed nothing to choose from at all.
+    Offering both sources' lists lets the chooser pick the source by picking the
+    entity, which is the same closed decision and needs no extra rung.
+    """
+    datasets = tuple(d for d in form.datasets if d in cards) or tuple(sorted(cards))
+    return {
+        ds: candidate_lists(question, form, cards, top_k=top_k, dataset=ds)
+        for ds in datasets
+    }
 
 
 # -- the understanding-gold -------------------------------------------------
