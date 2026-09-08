@@ -153,3 +153,49 @@ keeps the one misread least; the gloss is no longer appended. 61 -> 89.
 **Paper implication:** "canonical form in the source's vocabulary" is not
 sufficient on its own. The sentence must also *read* to the router as the
 intent it encodes, and that is a separable, checkable property.
+
+## 2026-09-08 — `USES` is unreachable from the word "use", because `uses` is a router stopword
+**Impact:** the deterministic fill binds the relation slot on only **43/120**
+gold questions (T0). A large share of the misses are the single most common
+ATT&CK question shape — "which techniques does group G0016 **use**?" — where the
+edge that answers it is literally named `USES`.
+**Cause:** `utils/planner/drafter.py::_STOPWORDS` contains `use`, `used` and
+`uses`, so the token never reaches the concept index and `USES` is never a
+matched entity. The words are reasonable stopwords in general and are exactly
+the relationship's name in this catalogue.
+**Resolution:** Not changed. Removing them from the stopword list is a routing
+change to the shipped drafter and would have to go through the recorded-answer
+regression on both banks before it could ship — out of scope for a plan whose
+premise is that nothing behind the rewrite stage changes. Recorded so the number
+is not read as a defect of the fill.
+**Paper implication:** the deterministic bind rate is a property of the shipped
+router's vocabulary, not a ceiling on what deterministic filling could do.
+
+## 2026-09-08 — the deterministic fill reports ambiguity where two edges both fit, and this is most of the residue
+**Impact:** context for the T0 bind rate, not a defect.
+**Cause:** "How is T1047 detected, and via which analytics?" matches both
+`DETECTS` and `HAS_ANALYTIC`; "which analytics monitor data component DC0084"
+matches both `MONITORS` and `HAS_ANALYTIC`. The contract is that an unbound slot
+is reported rather than filled with the best available match, so two candidates
+means the slot is reported unbound with the reason recorded in `form.sources`.
+**Resolution:** By design. This is precisely the slot the gated model fill exists
+to close, and the recorded reason is what its prompt is built from.
+**Paper implication:** report the deterministic bind rate per slot, not only per
+question. "Anchor bound, relation ambiguous" and "nothing bound at all" are
+different states and only the second is a failure to understand.
+
+## 2026-09-08 — F-PART-04 stopped round-tripping when a nonsense sentence was removed
+**Impact:** gold-form round-trip 89 -> 88 between Step 1 and Step 2. The change
+is an improvement recorded as a regression.
+**Cause:** Step 1's renderer emitted a sentence per dataset unconditionally, so a
+CAPEC-anchored federated form produced "In ATT&CK, summarise CAPEC-555" — not a
+question about anything. For F-PART-04 that stray sentence happened to drag the
+right records in through the join. Step 2 requires a card to *recognise*
+something in the form before it gets a sentence, and the accident goes with it.
+**Resolution:** Kept. A right answer reached by asking a meaningless question is
+not a result. The footing test asks the resolver's own per-dataset identifier
+ladder, which is why the six reverse-direction federated cases — where a `T`-id
+legitimately IS CAPEC's business, through its TaxonomyEntry seeds — still render
+both sentences.
+**Paper implication:** none, but it is a clean example of why `records_exact`
+alone cannot be the only reported metric.

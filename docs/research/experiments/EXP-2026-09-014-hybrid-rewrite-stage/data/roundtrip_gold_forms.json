@@ -2072,7 +2072,7 @@
     "gold_question": "List ATT&CK software entries (bounded scan).",
     "question": null,
     "records_exact": null,
-    "skip_reason": "cannot render a form with neither an anchor nor a target label"
+    "skip_reason": "no live card for datasets ['attack']"
   },
   {
     "abstentions": [
@@ -4968,7 +4968,7 @@
     "gold_question": "Scan CAPEC attack patterns (bounded).",
     "question": null,
     "records_exact": null,
-    "skip_reason": "cannot render a form with neither an anchor nor a target label"
+    "skip_reason": "no live card for datasets ['capec']"
   },
   {
     "abstentions": [],
@@ -5818,56 +5818,16 @@
     "bank": "federated",
     "case_id": "F-CTM-01",
     "claims": [
-      "CAPEC-150 (Collect Data from Common Resource Locations) has 6 taxonomy entries: capec:taxonomy:ATTACK:1602, capec:taxonomy:ATTACK:1003, capec:taxonomy:ATTACK:1119, capec:taxonomy:ATTACK:1213, capec:taxonomy:ATTACK:1530, capec:taxonomy:ATTACK:1555.",
       "CAPEC-150 (Collect Data from Common Resource Locations) has Abstraction: Standard; Status: Draft.",
       "CAPEC-150 (Collect Data from Common Resource Locations): An adversary exploits well-known locations for resources for the purposes of undermining the security of the target. In many, if not most systems, files and resources are organized in a default tree structure. This can be useful for adversaries because they often know where to look for resources or files that are necessary for attacks. Even when the precise location of a targeted resource may not be known, naming conventions may indicate a small area of the target machine's file tree where the resources are typically located. For example, configuration files are normally stored in the /etc director on Unix systems. Adversaries can take advantage of this to commit other types of attacks.",
-      "Found 1 CAPEC record(s) for CAPEC-150; ATT&CK mappings: T1003, T1119, T1213, T1530, T1555.",
-      "Found 6 record(s) in MITRE ATT&CK including T1003, T1602, T1119 and more.",
-      "T1003 (OS Credential Dumping) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.2.",
-      "T1119 (Automated Collection) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.4.",
-      "T1213 (Data from Information Repositories) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 3.4.",
-      "T1530 (Data from Cloud Storage) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.2.",
-      "T1555 (Credentials from Password Stores) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.2.",
-      "T1602 (Data from Configuration Repository) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.1.",
-      "The identifier T1003 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1119 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1213 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1530 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1555 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1602 is corroborated across attack and capec (2 record(s) share it)."
+      "Found 1 CAPEC record(s): CAPEC-150."
     ],
     "entity_ids": [
-      "CAPEC-150",
-      "T1003",
-      "T1119",
-      "T1213",
-      "T1530",
-      "T1555",
-      "T1602",
-      "capec:taxonomy:ATTACK:1003",
-      "capec:taxonomy:ATTACK:1119",
-      "capec:taxonomy:ATTACK:1213",
-      "capec:taxonomy:ATTACK:1530",
-      "capec:taxonomy:ATTACK:1555",
-      "capec:taxonomy:ATTACK:1602"
+      "CAPEC-150"
     ],
     "entity_ids_by_source": {
-      "attack": [
-        "T1003",
-        "T1119",
-        "T1213",
-        "T1530",
-        "T1555",
-        "T1602"
-      ],
       "capec": [
-        "CAPEC-150",
-        "capec:taxonomy:ATTACK:1003",
-        "capec:taxonomy:ATTACK:1119",
-        "capec:taxonomy:ATTACK:1213",
-        "capec:taxonomy:ATTACK:1530",
-        "capec:taxonomy:ATTACK:1555",
-        "capec:taxonomy:ATTACK:1602"
+        "CAPEC-150"
       ]
     },
     "extra": [],
@@ -5919,19 +5879,29 @@
       "M1047",
       "M1051",
       "M1054",
-      "M1060"
+      "M1060",
+      "T1003",
+      "T1119",
+      "T1213",
+      "T1530",
+      "T1555",
+      "T1602",
+      "capec:taxonomy:ATTACK:1003",
+      "capec:taxonomy:ATTACK:1119",
+      "capec:taxonomy:ATTACK:1213",
+      "capec:taxonomy:ATTACK:1530",
+      "capec:taxonomy:ATTACK:1555",
+      "capec:taxonomy:ATTACK:1602"
     ],
     "queries": [
-      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
     "queries_exact": false,
-    "question": "In CAPEC, summarise attack pattern CAPEC-150. In ATT&CK, summarise CAPEC-150.",
-    "record_count": 7,
+    "question": "In CAPEC, summarise attack pattern CAPEC-150.",
+    "record_count": 1,
     "records_exact": false,
-    "records_recall": 0.3939393939393939,
+    "records_recall": 0.030303030303030304,
     "sources": [
-      "attack",
       "capec"
     ],
     "unsupported": 0
@@ -5941,34 +5911,16 @@
     "bank": "federated",
     "case_id": "F-CTM-02",
     "claims": [
-      "CAPEC-555 (Remote Services with Stolen Credentials) has 3 taxonomy entries: capec:taxonomy:ATTACK:1021, capec:taxonomy:ATTACK:1114.002, capec:taxonomy:ATTACK:1133.",
       "CAPEC-555 (Remote Services with Stolen Credentials) has Abstraction: Standard; Status: Stable.",
       "CAPEC-555 (Remote Services with Stolen Credentials): This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
-      "Found 1 CAPEC record(s) for CAPEC-555; ATT&CK mappings: T1021, T1114.002, T1133.",
-      "Found 2 record(s) in MITRE ATT&CK including T1133, T1021.",
-      "T1021 (Remote Services) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.6.",
-      "T1133 (External Remote Services) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.5.",
-      "The identifier T1021 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1133 is corroborated across attack and capec (2 record(s) share it)."
+      "Found 1 CAPEC record(s): CAPEC-555."
     ],
     "entity_ids": [
-      "CAPEC-555",
-      "T1021",
-      "T1133",
-      "capec:taxonomy:ATTACK:1021",
-      "capec:taxonomy:ATTACK:1114.002",
-      "capec:taxonomy:ATTACK:1133"
+      "CAPEC-555"
     ],
     "entity_ids_by_source": {
-      "attack": [
-        "T1021",
-        "T1133"
-      ],
       "capec": [
-        "CAPEC-555",
-        "capec:taxonomy:ATTACK:1021",
-        "capec:taxonomy:ATTACK:1114.002",
-        "capec:taxonomy:ATTACK:1133"
+        "CAPEC-555"
       ]
     },
     "extra": [],
@@ -6011,19 +5963,22 @@
       "M1042",
       "M1047",
       "M1060",
-      "T1114.002"
+      "T1021",
+      "T1114.002",
+      "T1133",
+      "capec:taxonomy:ATTACK:1021",
+      "capec:taxonomy:ATTACK:1114.002",
+      "capec:taxonomy:ATTACK:1133"
     ],
     "queries": [
-      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
     "queries_exact": false,
-    "question": "In CAPEC, summarise attack pattern CAPEC-555. In ATT&CK, summarise CAPEC-555.",
-    "record_count": 3,
+    "question": "In CAPEC, summarise attack pattern CAPEC-555.",
+    "record_count": 1,
     "records_exact": false,
-    "records_recall": 0.35294117647058826,
+    "records_recall": 0.058823529411764705,
     "sources": [
-      "attack",
       "capec"
     ],
     "unsupported": 0
@@ -6033,34 +5988,16 @@
     "bank": "federated",
     "case_id": "F-CTM-03",
     "claims": [
-      "CAPEC-593 (Session Hijacking) has 3 taxonomy entries: capec:taxonomy:ATTACK:1185, capec:taxonomy:ATTACK:1550.001, capec:taxonomy:ATTACK:1563.",
       "CAPEC-593 (Session Hijacking) has Abstraction: Standard; Status: Stable.",
       "CAPEC-593 (Session Hijacking): This type of attack involves an adversary that exploits weaknesses in an application's use of sessions in performing authentication. The adversary is able to steal or manipulate an active session and use it to gain unathorized access to the application.",
-      "Found 1 CAPEC record(s) for CAPEC-593; ATT&CK mappings: T1185, T1550.001, T1563.",
-      "Found 2 record(s) in MITRE ATT&CK including T1185, T1563.",
-      "T1185 (Browser Session Hijacking) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.1.",
-      "T1563 (Remote Service Session Hijacking) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.1.",
-      "The identifier T1185 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1563 is corroborated across attack and capec (2 record(s) share it)."
+      "Found 1 CAPEC record(s): CAPEC-593."
     ],
     "entity_ids": [
-      "CAPEC-593",
-      "T1185",
-      "T1563",
-      "capec:taxonomy:ATTACK:1185",
-      "capec:taxonomy:ATTACK:1550.001",
-      "capec:taxonomy:ATTACK:1563"
+      "CAPEC-593"
     ],
     "entity_ids_by_source": {
-      "attack": [
-        "T1185",
-        "T1563"
-      ],
       "capec": [
-        "CAPEC-593",
-        "capec:taxonomy:ATTACK:1185",
-        "capec:taxonomy:ATTACK:1550.001",
-        "capec:taxonomy:ATTACK:1563"
+        "CAPEC-593"
       ]
     },
     "extra": [],
@@ -6104,19 +6041,22 @@
       "M1041",
       "M1042",
       "M1047",
-      "T1550.001"
+      "T1185",
+      "T1550.001",
+      "T1563",
+      "capec:taxonomy:ATTACK:1185",
+      "capec:taxonomy:ATTACK:1550.001",
+      "capec:taxonomy:ATTACK:1563"
     ],
     "queries": [
-      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
     "queries_exact": false,
-    "question": "In CAPEC, summarise attack pattern CAPEC-593. In ATT&CK, summarise CAPEC-593.",
-    "record_count": 3,
+    "question": "In CAPEC, summarise attack pattern CAPEC-593.",
+    "record_count": 1,
     "records_exact": false,
-    "records_recall": 0.3333333333333333,
+    "records_recall": 0.05555555555555555,
     "sources": [
-      "attack",
       "capec"
     ],
     "unsupported": 0
@@ -6126,35 +6066,16 @@
     "bank": "federated",
     "case_id": "F-CTM-04",
     "claims": [
-      "CAPEC-639 (Probe System Files) has 5 taxonomy entries: capec:taxonomy:ATTACK:1552.003, capec:taxonomy:ATTACK:1552.004, capec:taxonomy:ATTACK:1552.006, capec:taxonomy:ATTACK:1039, capec:taxonomy:ATTACK:1552.001.",
       "CAPEC-639 (Probe System Files) has Abstraction: Detailed; Status: Stable.",
       "CAPEC-639 (Probe System Files): An adversary obtains unauthorized information due to improperly protected files. If an application stores sensitive information in a file that is not protected by proper access control, then an adversary can access the file and search for sensitive information.",
-      "Found 1 CAPEC record(s) for CAPEC-639; ATT&CK mappings: T1039, T1552.001, T1552.003, T1552.004, T1552.006.",
-      "Found 1 record in MITRE ATT&CK: Data from Network Shared Drive (T1039).",
-      "T1039 (Data from Network Shared Drive) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.5.",
-      "T1039 (Data from Network Shared Drive): Adversaries may search network shares on computers they have compromised to find files of interest. Sensitive data can be collected from remote systems via shared network drives (host shared directory, network file server, etc.) that are accessible from the current system prior to Exfiltration. Interactive command shells may be in use, and common functionality within cmd may be used to gather information.",
-      "The identifier T1039 is corroborated across attack and capec (2 record(s) share it)."
+      "Found 1 CAPEC record(s): CAPEC-639."
     ],
     "entity_ids": [
-      "CAPEC-639",
-      "T1039",
-      "capec:taxonomy:ATTACK:1039",
-      "capec:taxonomy:ATTACK:1552.001",
-      "capec:taxonomy:ATTACK:1552.003",
-      "capec:taxonomy:ATTACK:1552.004",
-      "capec:taxonomy:ATTACK:1552.006"
+      "CAPEC-639"
     ],
     "entity_ids_by_source": {
-      "attack": [
-        "T1039"
-      ],
       "capec": [
-        "CAPEC-639",
-        "capec:taxonomy:ATTACK:1039",
-        "capec:taxonomy:ATTACK:1552.001",
-        "capec:taxonomy:ATTACK:1552.003",
-        "capec:taxonomy:ATTACK:1552.004",
-        "capec:taxonomy:ATTACK:1552.006"
+        "CAPEC-639"
       ]
     },
     "extra": [],
@@ -6195,22 +6116,26 @@
       "M1041",
       "M1047",
       "M1051",
+      "T1039",
       "T1552.001",
       "T1552.003",
       "T1552.004",
-      "T1552.006"
+      "T1552.006",
+      "capec:taxonomy:ATTACK:1039",
+      "capec:taxonomy:ATTACK:1552.001",
+      "capec:taxonomy:ATTACK:1552.003",
+      "capec:taxonomy:ATTACK:1552.004",
+      "capec:taxonomy:ATTACK:1552.006"
     ],
     "queries": [
-      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
     "queries_exact": false,
-    "question": "In CAPEC, summarise attack pattern CAPEC-639. In ATT&CK, summarise CAPEC-639.",
-    "record_count": 2,
+    "question": "In CAPEC, summarise attack pattern CAPEC-639.",
+    "record_count": 1,
     "records_exact": false,
-    "records_recall": 0.3684210526315789,
+    "records_recall": 0.05263157894736842,
     "sources": [
-      "attack",
       "capec"
     ],
     "unsupported": 0
@@ -6220,38 +6145,16 @@
     "bank": "federated",
     "case_id": "F-CTM-05",
     "claims": [
-      "CAPEC-21 (Exploitation of Trusted Identifiers) has 3 taxonomy entries: capec:taxonomy:ATTACK:1134, capec:taxonomy:ATTACK:1528, capec:taxonomy:ATTACK:1539.",
       "CAPEC-21 (Exploitation of Trusted Identifiers) has Abstraction: Meta; Status: Stable.",
       "CAPEC-21 (Exploitation of Trusted Identifiers): An adversary guesses, obtains, or \"rides\" a trusted identifier (e.g. session ID, resource ID, cookie, etc.) to perform authorized actions under the guise of an authenticated user or service.",
-      "Found 1 CAPEC record(s) for CAPEC-21; ATT&CK mappings: T1134, T1528, T1539.",
-      "Found 3 record(s) in MITRE ATT&CK including T1539, T1528, T1134.",
-      "T1134 (Access Token Manipulation) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 3.0.",
-      "T1528 (Steal Application Access Token) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.5.",
-      "T1539 (Steal Web Session Cookie) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.5.",
-      "The identifier T1134 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1528 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1539 is corroborated across attack and capec (2 record(s) share it)."
+      "Found 1 CAPEC record(s): CAPEC-21."
     ],
     "entity_ids": [
-      "CAPEC-21",
-      "T1134",
-      "T1528",
-      "T1539",
-      "capec:taxonomy:ATTACK:1134",
-      "capec:taxonomy:ATTACK:1528",
-      "capec:taxonomy:ATTACK:1539"
+      "CAPEC-21"
     ],
     "entity_ids_by_source": {
-      "attack": [
-        "T1134",
-        "T1528",
-        "T1539"
-      ],
       "capec": [
-        "CAPEC-21",
-        "capec:taxonomy:ATTACK:1134",
-        "capec:taxonomy:ATTACK:1528",
-        "capec:taxonomy:ATTACK:1539"
+        "CAPEC-21"
       ]
     },
     "extra": [],
@@ -6291,19 +6194,23 @@
       "M1032",
       "M1047",
       "M1051",
-      "M1054"
+      "M1054",
+      "T1134",
+      "T1528",
+      "T1539",
+      "capec:taxonomy:ATTACK:1134",
+      "capec:taxonomy:ATTACK:1528",
+      "capec:taxonomy:ATTACK:1539"
     ],
     "queries": [
-      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
     "queries_exact": false,
-    "question": "In CAPEC, summarise attack pattern CAPEC-21. In ATT&CK, summarise CAPEC-21.",
-    "record_count": 4,
+    "question": "In CAPEC, summarise attack pattern CAPEC-21.",
+    "record_count": 1,
     "records_exact": false,
-    "records_recall": 0.4666666666666667,
+    "records_recall": 0.06666666666666667,
     "sources": [
-      "attack",
       "capec"
     ],
     "unsupported": 0
@@ -6313,34 +6220,16 @@
     "bank": "federated",
     "case_id": "F-CTM-06",
     "claims": [
-      "CAPEC-665 (Exploitation of Thunderbolt Protection Flaws) has 3 taxonomy entries: capec:taxonomy:ATTACK:1211, capec:taxonomy:ATTACK:1542.002, capec:taxonomy:ATTACK:1556.",
       "CAPEC-665 (Exploitation of Thunderbolt Protection Flaws) has Abstraction: Detailed; Status: Stable.",
       "CAPEC-665 (Exploitation of Thunderbolt Protection Flaws): An adversary leverages a firmware weakness within the Thunderbolt protocol, on a computing device to manipulate Thunderbolt controller firmware in order to exploit vulnerabilities in the implementation of authorization and verification schemes within Thunderbolt protection mechanisms. Upon gaining physical access to a target device, the adversary conducts high-level firmware manipulation of the victim Thunderbolt controller SPI (Serial Peripheral Interface) flash, through the use of a SPI Programing device and an external Thunderbolt device, typically as the target device is booting up.",
-      "Found 1 CAPEC record(s) for CAPEC-665; ATT&CK mappings: T1211, T1542.002, T1556.",
-      "Found 2 record(s) in MITRE ATT&CK including T1556, T1211.",
-      "T1211 (Exploitation for Stealth) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.0.",
-      "T1556 (Modify Authentication Process) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 3.0.",
-      "The identifier T1211 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1556 is corroborated across attack and capec (2 record(s) share it)."
+      "Found 1 CAPEC record(s): CAPEC-665."
     ],
     "entity_ids": [
-      "CAPEC-665",
-      "T1211",
-      "T1556",
-      "capec:taxonomy:ATTACK:1211",
-      "capec:taxonomy:ATTACK:1542.002",
-      "capec:taxonomy:ATTACK:1556"
+      "CAPEC-665"
     ],
     "entity_ids_by_source": {
-      "attack": [
-        "T1211",
-        "T1556"
-      ],
       "capec": [
-        "CAPEC-665",
-        "capec:taxonomy:ATTACK:1211",
-        "capec:taxonomy:ATTACK:1542.002",
-        "capec:taxonomy:ATTACK:1556"
+        "CAPEC-665"
       ]
     },
     "extra": [],
@@ -6386,19 +6275,22 @@
       "M1048",
       "M1050",
       "M1051",
-      "T1542.002"
+      "T1211",
+      "T1542.002",
+      "T1556",
+      "capec:taxonomy:ATTACK:1211",
+      "capec:taxonomy:ATTACK:1542.002",
+      "capec:taxonomy:ATTACK:1556"
     ],
     "queries": [
-      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
     "queries_exact": false,
-    "question": "In CAPEC, summarise attack pattern CAPEC-665. In ATT&CK, summarise CAPEC-665.",
-    "record_count": 3,
+    "question": "In CAPEC, summarise attack pattern CAPEC-665.",
+    "record_count": 1,
     "records_exact": false,
-    "records_recall": 0.3,
+    "records_recall": 0.05,
     "sources": [
-      "attack",
       "capec"
     ],
     "unsupported": 0
@@ -6408,27 +6300,16 @@
     "bank": "federated",
     "case_id": "F-CTM-07",
     "claims": [
-      "CAPEC-600 (Credential Stuffing) has 1 taxonomy entry: capec:taxonomy:ATTACK:1110.004.",
       "CAPEC-600 (Credential Stuffing) has Abstraction: Standard; Status: Stable.",
       "CAPEC-600 (Credential Stuffing): An adversary tries known username/password combinations against different systems, applications, or services to gain additional authenticated access. Credential Stuffing attacks rely upon the fact that many users leverage the same username/password combination for multiple systems, applications, and services.",
-      "Found 1 CAPEC record(s) for CAPEC-600; ATT&CK mappings: T1110.004.",
-      "Found 1 record in MITRE ATT&CK: Credential Stuffing (T1110.004).",
-      "T1110.004 (Credential Stuffing) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 1.7.",
-      "T1110.004 (Credential Stuffing): Adversaries may use credentials obtained from breach dumps of unrelated accounts to gain access to target accounts through credential overlap. Occasionally, large numbers of username and password pairs are dumped online when a website or service is compromised and the user account credentials accessed. The information may be useful to an adversary attempting to compromise accounts by taking advantage of the tendency for users to use the same passwords across personal and business accounts.\n\nCredential stuffing is a risky option because it could cause numerous authentication failures and account lockouts, depending on the organization's login failure policies.",
-      "The identifier T1110.004 is corroborated across attack and capec (2 record(s) share it)."
+      "Found 1 CAPEC record(s): CAPEC-600."
     ],
     "entity_ids": [
-      "CAPEC-600",
-      "T1110.004",
-      "capec:taxonomy:ATTACK:1110.004"
+      "CAPEC-600"
     ],
     "entity_ids_by_source": {
-      "attack": [
-        "T1110.004"
-      ],
       "capec": [
-        "CAPEC-600",
-        "capec:taxonomy:ATTACK:1110.004"
+        "CAPEC-600"
       ]
     },
     "extra": [],
@@ -6464,19 +6345,19 @@
       "M1018",
       "M1027",
       "M1032",
-      "M1036"
+      "M1036",
+      "T1110.004",
+      "capec:taxonomy:ATTACK:1110.004"
     ],
     "queries": [
-      "MATCH (n:SubTechnique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
     "queries_exact": false,
-    "question": "In CAPEC, summarise attack pattern CAPEC-600. In ATT&CK, summarise CAPEC-600.",
-    "record_count": 2,
+    "question": "In CAPEC, summarise attack pattern CAPEC-600.",
+    "record_count": 1,
     "records_exact": false,
-    "records_recall": 0.42857142857142855,
+    "records_recall": 0.14285714285714285,
     "sources": [
-      "attack",
       "capec"
     ],
     "unsupported": 0
@@ -6486,27 +6367,16 @@
     "bank": "federated",
     "case_id": "F-CTM-08",
     "claims": [
-      "CAPEC-644 (Use of Captured Hashes (Pass The Hash)) has 1 taxonomy entry: capec:taxonomy:ATTACK:1550.002.",
       "CAPEC-644 (Use of Captured Hashes (Pass The Hash)) has Abstraction: Detailed; Status: Stable.",
       "CAPEC-644 (Use of Captured Hashes (Pass The Hash)): An adversary obtains (i.e. steals or purchases) legitimate Windows domain credential hash values to access systems within the domain that leverage the Lan Man (LM) and/or NT Lan Man (NTLM) authentication protocols.",
-      "Found 1 CAPEC record(s) for CAPEC-644; ATT&CK mappings: T1550.002.",
-      "Found 1 record in MITRE ATT&CK: Pass the Hash (T1550.002).",
-      "T1550.002 (Pass the Hash) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 2.0.",
-      "T1550.002 (Pass the Hash): Adversaries may \u201cpass the hash\u201d using stolen password hashes to move laterally within an environment, bypassing normal system access controls. Pass the hash (PtH) is a method of authenticating as a user without having access to the user's cleartext password. This method bypasses standard authentication steps that require a cleartext password, moving directly into the portion of the authentication that uses the password hash.\n\nWhen performing PtH, valid password hashes for the account being used are captured using a Credential Access technique. Captured hashes are used with PtH to authenticate as that user. Once authenticated, PtH may be used to perform actions on local or remote systems.",
-      "The identifier T1550.002 is corroborated across attack and capec (2 record(s) share it)."
+      "Found 1 CAPEC record(s): CAPEC-644."
     ],
     "entity_ids": [
-      "CAPEC-644",
-      "T1550.002",
-      "capec:taxonomy:ATTACK:1550.002"
+      "CAPEC-644"
     ],
     "entity_ids_by_source": {
-      "attack": [
-        "T1550.002"
-      ],
       "capec": [
-        "CAPEC-644",
-        "capec:taxonomy:ATTACK:1550.002"
+        "CAPEC-644"
       ]
     },
     "extra": [],
@@ -6542,19 +6412,19 @@
       "M1018",
       "M1026",
       "M1051",
-      "M1052"
+      "M1052",
+      "T1550.002",
+      "capec:taxonomy:ATTACK:1550.002"
     ],
     "queries": [
-      "MATCH (n:SubTechnique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
     "queries_exact": false,
-    "question": "In CAPEC, summarise attack pattern CAPEC-644. In ATT&CK, summarise CAPEC-644.",
-    "record_count": 2,
+    "question": "In CAPEC, summarise attack pattern CAPEC-644.",
+    "record_count": 1,
     "records_exact": false,
-    "records_recall": 0.42857142857142855,
+    "records_recall": 0.14285714285714285,
     "sources": [
-      "attack",
       "capec"
     ],
     "unsupported": 0
@@ -6564,27 +6434,16 @@
     "bank": "federated",
     "case_id": "F-CTM-09",
     "claims": [
-      "CAPEC-645 (Use of Captured Tickets (Pass The Ticket)) has 1 taxonomy entry: capec:taxonomy:ATTACK:1550.003.",
       "CAPEC-645 (Use of Captured Tickets (Pass The Ticket)) has Abstraction: Detailed; Status: Stable.",
       "CAPEC-645 (Use of Captured Tickets (Pass The Ticket)): An adversary uses stolen Kerberos tickets to access systems/resources that leverage the Kerberos authentication protocol. The Kerberos authentication protocol centers around a ticketing system which is used to request/grant access to services and to then access the requested services. An adversary can obtain any one of these tickets (e.g. Service Ticket, Ticket Granting Ticket, Silver Ticket, or Golden Ticket) to authenticate to a system/resource without needing the account's credentials. Depending on the ticket obtained, the adversary may be able to access a particular resource or generate TGTs for any account within an Active Directory Domain.",
-      "Found 1 CAPEC record(s) for CAPEC-645; ATT&CK mappings: T1550.003.",
-      "Found 1 record in MITRE ATT&CK: Pass the Ticket (T1550.003).",
-      "T1550.003 (Pass the Ticket) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 2.0.",
-      "T1550.003 (Pass the Ticket): Adversaries may \u201cpass the ticket\u201d using stolen Kerberos tickets to move laterally within an environment, bypassing normal system access controls. Pass the ticket (PtT) is a method of authenticating to a system using Kerberos tickets without having access to an account's password. Kerberos authentication can be used as the first step to lateral movement to a remote system.\n\nWhen preforming PtT, valid Kerberos tickets for Valid Accounts are captured by OS Credential Dumping. A user's service tickets or ticket granting ticket (TGT) may be obtained, depending on the level of access.",
-      "The identifier T1550.003 is corroborated across attack and capec (2 record(s) share it)."
+      "Found 1 CAPEC record(s): CAPEC-645."
     ],
     "entity_ids": [
-      "CAPEC-645",
-      "T1550.003",
-      "capec:taxonomy:ATTACK:1550.003"
+      "CAPEC-645"
     ],
     "entity_ids_by_source": {
-      "attack": [
-        "T1550.003"
-      ],
       "capec": [
-        "CAPEC-645",
-        "capec:taxonomy:ATTACK:1550.003"
+        "CAPEC-645"
       ]
     },
     "extra": [],
@@ -6620,19 +6479,19 @@
       "M1015",
       "M1018",
       "M1026",
-      "M1027"
+      "M1027",
+      "T1550.003",
+      "capec:taxonomy:ATTACK:1550.003"
     ],
     "queries": [
-      "MATCH (n:SubTechnique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
     "queries_exact": false,
-    "question": "In CAPEC, summarise attack pattern CAPEC-645. In ATT&CK, summarise CAPEC-645.",
-    "record_count": 2,
+    "question": "In CAPEC, summarise attack pattern CAPEC-645.",
+    "record_count": 1,
     "records_exact": false,
-    "records_recall": 0.42857142857142855,
+    "records_recall": 0.14285714285714285,
     "sources": [
-      "attack",
       "capec"
     ],
     "unsupported": 0
@@ -6642,27 +6501,16 @@
     "bank": "federated",
     "case_id": "F-CTM-10",
     "claims": [
-      "CAPEC-652 (Use of Known Kerberos Credentials) has 1 taxonomy entry: capec:taxonomy:ATTACK:1558.",
       "CAPEC-652 (Use of Known Kerberos Credentials) has Abstraction: Standard; Status: Draft.",
       "CAPEC-652 (Use of Known Kerberos Credentials): An adversary obtains (i.e. steals or purchases) legitimate Kerberos credentials (e.g. Kerberos service account userID/password or Kerberos Tickets) with the goal of achieving authenticated access to additional systems, applications, or services within the domain.",
-      "Found 1 CAPEC record(s) for CAPEC-652; ATT&CK mappings: T1558.",
-      "Found 1 record in MITRE ATT&CK: Steal or Forge Kerberos Tickets (T1558).",
-      "T1558 (Steal or Forge Kerberos Tickets) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.7.",
-      "T1558 (Steal or Forge Kerberos Tickets): Adversaries may attempt to subvert Kerberos authentication by stealing or forging Kerberos tickets to enable Pass the Ticket. Kerberos is an authentication protocol widely used in modern Windows domain environments. In Kerberos environments, referred to as \u201crealms\u201d, there are three basic participants: client, service, and Key Distribution Center (KDC).(Citation: ADSecurity Kerberos Ring Decoder) Clients request access to a service and through the exchange of Kerberos tickets, originating from KDC, they are granted access after having successfully authenticated. The KDC is responsible for both authentication and ticket granting.",
-      "The identifier T1558 is corroborated across attack and capec (2 record(s) share it)."
+      "Found 1 CAPEC record(s): CAPEC-652."
     ],
     "entity_ids": [
-      "CAPEC-652",
-      "T1558",
-      "capec:taxonomy:ATTACK:1558"
+      "CAPEC-652"
     ],
     "entity_ids_by_source": {
-      "attack": [
-        "T1558"
-      ],
       "capec": [
-        "CAPEC-652",
-        "capec:taxonomy:ATTACK:1558"
+        "CAPEC-652"
       ]
     },
     "extra": [],
@@ -6700,19 +6548,19 @@
       "M1027",
       "M1041",
       "M1043",
-      "M1047"
+      "M1047",
+      "T1558",
+      "capec:taxonomy:ATTACK:1558"
     ],
     "queries": [
-      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
     "queries_exact": false,
-    "question": "In CAPEC, summarise attack pattern CAPEC-652. In ATT&CK, summarise CAPEC-652.",
-    "record_count": 2,
+    "question": "In CAPEC, summarise attack pattern CAPEC-652.",
+    "record_count": 1,
     "records_exact": false,
-    "records_recall": 0.3333333333333333,
+    "records_recall": 0.1111111111111111,
     "sources": [
-      "attack",
       "capec"
     ],
     "unsupported": 0
@@ -6722,32 +6570,16 @@
     "bank": "federated",
     "case_id": "F-CTT-01",
     "claims": [
-      "CAPEC-98 (Phishing) has 2 taxonomy entries: capec:taxonomy:ATTACK:1566, capec:taxonomy:ATTACK:1598.",
       "CAPEC-98 (Phishing) has Abstraction: Standard; Status: Draft.",
       "CAPEC-98 (Phishing): Phishing is a social engineering technique where an attacker masquerades as a legitimate entity with which the victim might do business in order to prompt the user to reveal some confidential information (very frequently authentication credentials) that can later be used by an attacker. Phishing is essentially a form of information gathering or \"fishing\" for information.",
-      "Found 1 CAPEC record(s) for CAPEC-98; ATT&CK mappings: T1566, T1598.",
-      "Found 2 record(s) in MITRE ATT&CK including T1566, T1598.",
-      "T1566 (Phishing) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.7.",
-      "T1598 (Phishing for Information) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.4.",
-      "The identifier T1566 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1598 is corroborated across attack and capec (2 record(s) share it)."
+      "Found 1 CAPEC record(s): CAPEC-98."
     ],
     "entity_ids": [
-      "CAPEC-98",
-      "T1566",
-      "T1598",
-      "capec:taxonomy:ATTACK:1566",
-      "capec:taxonomy:ATTACK:1598"
+      "CAPEC-98"
     ],
     "entity_ids_by_source": {
-      "attack": [
-        "T1566",
-        "T1598"
-      ],
       "capec": [
-        "CAPEC-98",
-        "capec:taxonomy:ATTACK:1566",
-        "capec:taxonomy:ATTACK:1598"
+        "CAPEC-98"
       ]
     },
     "extra": [],
@@ -6780,20 +6612,22 @@
     },
     "gold_question": "Which ATT&CK tactics do the techniques mapped from CAPEC-98 (Phishing) belong to?",
     "missing": [
+      "T1566",
+      "T1598",
       "TA0001",
-      "TA0043"
+      "TA0043",
+      "capec:taxonomy:ATTACK:1566",
+      "capec:taxonomy:ATTACK:1598"
     ],
     "queries": [
-      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
     "queries_exact": false,
-    "question": "In CAPEC, summarise attack pattern CAPEC-98. In ATT&CK, summarise CAPEC-98.",
-    "record_count": 3,
+    "question": "In CAPEC, summarise attack pattern CAPEC-98.",
+    "record_count": 1,
     "records_exact": false,
-    "records_recall": 0.7142857142857143,
+    "records_recall": 0.14285714285714285,
     "sources": [
-      "attack",
       "capec"
     ],
     "unsupported": 0
@@ -6803,27 +6637,16 @@
     "bank": "federated",
     "case_id": "F-CTT-02",
     "claims": [
-      "CAPEC-49 (Password Brute Forcing) has 1 taxonomy entry: capec:taxonomy:ATTACK:1110.001.",
       "CAPEC-49 (Password Brute Forcing) has Abstraction: Standard; Status: Draft.",
       "CAPEC-49 (Password Brute Forcing): An adversary tries every possible value for a password until they succeed. A brute force attack, if feasible computationally, will always be successful because it will essentially go through all possible passwords given the alphabet used (lower case letters, upper case letters, numbers, symbols, etc.) and the maximum length of the password.",
-      "Found 1 CAPEC record(s) for CAPEC-49; ATT&CK mappings: T1110.001.",
-      "Found 1 record in MITRE ATT&CK: Password Guessing (T1110.001).",
-      "T1110.001 (Password Guessing) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 1.7.",
-      "T1110.001 (Password Guessing): Adversaries with no prior knowledge of legitimate credentials within the system or environment may guess passwords to attempt access to accounts. Without knowledge of the password for an account, an adversary may opt to systematically guess the password using a repetitive or iterative mechanism. An adversary may guess login credentials without prior knowledge of system or environment passwords during an operation by using a list of common passwords. Password guessing may or may not take into account the target's policies on password complexity or use policies that may lock accounts out after a number of failed attempts.",
-      "The identifier T1110.001 is corroborated across attack and capec (2 record(s) share it)."
+      "Found 1 CAPEC record(s): CAPEC-49."
     ],
     "entity_ids": [
-      "CAPEC-49",
-      "T1110.001",
-      "capec:taxonomy:ATTACK:1110.001"
+      "CAPEC-49"
     ],
     "entity_ids_by_source": {
-      "attack": [
-        "T1110.001"
-      ],
       "capec": [
-        "CAPEC-49",
-        "capec:taxonomy:ATTACK:1110.001"
+        "CAPEC-49"
       ]
     },
     "extra": [],
@@ -6856,19 +6679,19 @@
     },
     "gold_question": "Which ATT&CK tactics do the techniques mapped from CAPEC-49 (Password Brute Forcing) belong to?",
     "missing": [
-      "TA0006"
+      "T1110.001",
+      "TA0006",
+      "capec:taxonomy:ATTACK:1110.001"
     ],
     "queries": [
-      "MATCH (n:SubTechnique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
     "queries_exact": false,
-    "question": "In CAPEC, summarise attack pattern CAPEC-49. In ATT&CK, summarise CAPEC-49.",
-    "record_count": 2,
+    "question": "In CAPEC, summarise attack pattern CAPEC-49.",
+    "record_count": 1,
     "records_exact": false,
-    "records_recall": 0.75,
+    "records_recall": 0.25,
     "sources": [
-      "attack",
       "capec"
     ],
     "unsupported": 0
@@ -6878,27 +6701,16 @@
     "bank": "federated",
     "case_id": "F-CTT-03",
     "claims": [
-      "CAPEC-565 (Password Spraying) has 1 taxonomy entry: capec:taxonomy:ATTACK:1110.003.",
       "CAPEC-565 (Password Spraying) has Abstraction: Detailed; Status: Draft.",
       "CAPEC-565 (Password Spraying): In a Password Spraying attack, an adversary tries a small list (e.g. 3-5) of common or expected passwords, often matching the target's complexity policy, against a known list of user accounts to gain valid credentials. The adversary tries a particular password for each user account, before moving onto the next password in the list. This approach assists the adversary in remaining undetected by avoiding rapid or frequent account lockouts. The adversary may then reattempt the process with additional passwords, once enough time has passed to prevent inducing a lockout.",
-      "Found 1 CAPEC record(s) for CAPEC-565; ATT&CK mappings: T1110.003.",
-      "Found 1 record in MITRE ATT&CK: Password Spraying (T1110.003).",
-      "T1110.003 (Password Spraying) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 1.8.",
-      "T1110.003 (Password Spraying): Adversaries may use a single or small list of commonly used passwords against many different accounts to attempt to acquire valid account credentials. Password spraying uses one password (e.g. 'Password01'), or a small list of commonly used passwords, that may match the complexity policy of the domain. Logins are attempted with that password against many different accounts on a network to avoid account lockouts that would normally occur when brute forcing a single account with many passwords. (Citation: BlackHillsInfosec Password Spraying)\n\nTypically, management services over commonly used ports are used when password spraying.",
-      "The identifier T1110.003 is corroborated across attack and capec (2 record(s) share it)."
+      "Found 1 CAPEC record(s): CAPEC-565."
     ],
     "entity_ids": [
-      "CAPEC-565",
-      "T1110.003",
-      "capec:taxonomy:ATTACK:1110.003"
+      "CAPEC-565"
     ],
     "entity_ids_by_source": {
-      "attack": [
-        "T1110.003"
-      ],
       "capec": [
-        "CAPEC-565",
-        "capec:taxonomy:ATTACK:1110.003"
+        "CAPEC-565"
       ]
     },
     "extra": [],
@@ -6931,19 +6743,19 @@
     },
     "gold_question": "Which ATT&CK tactics do the techniques mapped from CAPEC-565 (Password Spraying) belong to?",
     "missing": [
-      "TA0006"
+      "T1110.003",
+      "TA0006",
+      "capec:taxonomy:ATTACK:1110.003"
     ],
     "queries": [
-      "MATCH (n:SubTechnique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
     "queries_exact": false,
-    "question": "In CAPEC, summarise attack pattern CAPEC-565. In ATT&CK, summarise CAPEC-565.",
-    "record_count": 2,
+    "question": "In CAPEC, summarise attack pattern CAPEC-565.",
+    "record_count": 1,
     "records_exact": false,
-    "records_recall": 0.75,
+    "records_recall": 0.25,
     "sources": [
-      "attack",
       "capec"
     ],
     "unsupported": 0
@@ -6953,27 +6765,16 @@
     "bank": "federated",
     "case_id": "F-CTT-04",
     "claims": [
-      "CAPEC-633 (Token Impersonation) has 1 taxonomy entry: capec:taxonomy:ATTACK:1134.",
       "CAPEC-633 (Token Impersonation) has Abstraction: Detailed; Status: Stable.",
       "CAPEC-633 (Token Impersonation): An adversary exploits a weakness in authentication to create an access token (or equivalent) that impersonates a different entity, and then associates a process/thread to that that impersonated token. This action causes a downstream user to make a decision or take action that is based on the assumed identity, and not the response that blocks the adversary.",
-      "Found 1 CAPEC record(s) for CAPEC-633; ATT&CK mappings: T1134.",
-      "Found 1 record in MITRE ATT&CK: Access Token Manipulation (T1134).",
-      "T1134 (Access Token Manipulation) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 3.0.",
-      "T1134 (Access Token Manipulation): Adversaries may modify access tokens to operate under a different user or system security context to perform actions and bypass access controls. Windows uses access tokens to determine the ownership of a running process. A user can manipulate access tokens to make a running process appear as though it is the child of a different process or belongs to someone other than the user that started the process. When this occurs, the process also takes on the security context associated with the new token.\n\nAn adversary can use built-in Windows API functions to copy access tokens from existing processes; this is known as token stealing. These token can then be applied to an existing process (i.e.",
-      "The identifier T1134 is corroborated across attack and capec (2 record(s) share it)."
+      "Found 1 CAPEC record(s): CAPEC-633."
     ],
     "entity_ids": [
-      "CAPEC-633",
-      "T1134",
-      "capec:taxonomy:ATTACK:1134"
+      "CAPEC-633"
     ],
     "entity_ids_by_source": {
-      "attack": [
-        "T1134"
-      ],
       "capec": [
-        "CAPEC-633",
-        "capec:taxonomy:ATTACK:1134"
+        "CAPEC-633"
       ]
     },
     "extra": [],
@@ -7006,20 +6807,20 @@
     },
     "gold_question": "Which ATT&CK tactics do the techniques mapped from CAPEC-633 (Token Impersonation) belong to?",
     "missing": [
+      "T1134",
       "TA0004",
-      "TA0005"
+      "TA0005",
+      "capec:taxonomy:ATTACK:1134"
     ],
     "queries": [
-      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
     "queries_exact": false,
-    "question": "In CAPEC, summarise attack pattern CAPEC-633. In ATT&CK, summarise CAPEC-633.",
-    "record_count": 2,
+    "question": "In CAPEC, summarise attack pattern CAPEC-633.",
+    "record_count": 1,
     "records_exact": false,
-    "records_recall": 0.6,
+    "records_recall": 0.2,
     "sources": [
-      "attack",
       "capec"
     ],
     "unsupported": 0
@@ -7029,34 +6830,16 @@
     "bank": "federated",
     "case_id": "F-CTT-05",
     "claims": [
-      "CAPEC-13 (Subverting Environment Variable Values) has 3 taxonomy entries: capec:taxonomy:ATTACK:1562.003, capec:taxonomy:ATTACK:1574.006, capec:taxonomy:ATTACK:1574.007.",
       "CAPEC-13 (Subverting Environment Variable Values) has Abstraction: Detailed; Status: Stable.",
       "CAPEC-13 (Subverting Environment Variable Values): The adversary directly or indirectly modifies environment variables used by or controlling the target software. The adversary's goal is to cause the target software to deviate from its expected operation in a manner that benefits the adversary.",
-      "Found 1 CAPEC record(s) for CAPEC-13; ATT&CK mappings: T1562.003, T1574.006, T1574.007.",
-      "Found 2 record(s) in MITRE ATT&CK including T1574.007, T1574.006.",
-      "T1574.006 (Dynamic Linker Hijacking) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_remote_support: False; x_mitre_version: 3.0.",
-      "T1574.007 (Path Interception by PATH Environment Variable) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_remote_support: False; x_mitre_version: 2.0.",
-      "The identifier T1574.006 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1574.007 is corroborated across attack and capec (2 record(s) share it)."
+      "Found 1 CAPEC record(s): CAPEC-13."
     ],
     "entity_ids": [
-      "CAPEC-13",
-      "T1574.006",
-      "T1574.007",
-      "capec:taxonomy:ATTACK:1562.003",
-      "capec:taxonomy:ATTACK:1574.006",
-      "capec:taxonomy:ATTACK:1574.007"
+      "CAPEC-13"
     ],
     "entity_ids_by_source": {
-      "attack": [
-        "T1574.006",
-        "T1574.007"
-      ],
       "capec": [
-        "CAPEC-13",
-        "capec:taxonomy:ATTACK:1562.003",
-        "capec:taxonomy:ATTACK:1574.006",
-        "capec:taxonomy:ATTACK:1574.007"
+        "CAPEC-13"
       ]
     },
     "extra": [],
@@ -7089,20 +6872,23 @@
     },
     "gold_question": "Which ATT&CK tactics do the techniques mapped from CAPEC-13 (Subverting Environment Variable Values) belong to?",
     "missing": [
+      "T1574.006",
+      "T1574.007",
       "TA0002",
-      "TA0005"
+      "TA0005",
+      "capec:taxonomy:ATTACK:1562.003",
+      "capec:taxonomy:ATTACK:1574.006",
+      "capec:taxonomy:ATTACK:1574.007"
     ],
     "queries": [
-      "MATCH (n:SubTechnique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
     "queries_exact": false,
-    "question": "In CAPEC, summarise attack pattern CAPEC-13. In ATT&CK, summarise CAPEC-13.",
-    "record_count": 3,
+    "question": "In CAPEC, summarise attack pattern CAPEC-13.",
+    "record_count": 1,
     "records_exact": false,
-    "records_recall": 0.75,
+    "records_recall": 0.125,
     "sources": [
-      "attack",
       "capec"
     ],
     "unsupported": 0
@@ -7112,29 +6898,16 @@
     "bank": "federated",
     "case_id": "F-CTT-06",
     "claims": [
-      "CAPEC-37 (Retrieve Embedded Sensitive Data) has 2 taxonomy entries: capec:taxonomy:ATTACK:1005, capec:taxonomy:ATTACK:1552.004.",
       "CAPEC-37 (Retrieve Embedded Sensitive Data) has Abstraction: Detailed; Status: Draft.",
       "CAPEC-37 (Retrieve Embedded Sensitive Data): An attacker examines a target system to find sensitive data that has been embedded within it. This information can reveal confidential contents, such as account numbers or individual keys/credentials that can be used as an intermediate step in a larger attack.",
-      "Found 1 CAPEC record(s) for CAPEC-37; ATT&CK mappings: T1005, T1552.004.",
-      "Found 1 record in MITRE ATT&CK: Data from Local System (T1005).",
-      "T1005 (Data from Local System) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.8.",
-      "T1005 (Data from Local System): Adversaries may search local system sources, such as file systems, configuration files, local databases, virtual machine files, or process memory, to find files of interest and sensitive data prior to Exfiltration.\n\nAdversaries may do this using a Command and Scripting Interpreter, such as cmd as well as a Network Device CLI, which have functionality to interact with the file system to gather information.(Citation: show_run_config_cmd_cisco) Adversaries may also use Automated Collection on the local system.",
-      "The identifier T1005 is corroborated across attack and capec (2 record(s) share it)."
+      "Found 1 CAPEC record(s): CAPEC-37."
     ],
     "entity_ids": [
-      "CAPEC-37",
-      "T1005",
-      "capec:taxonomy:ATTACK:1005",
-      "capec:taxonomy:ATTACK:1552.004"
+      "CAPEC-37"
     ],
     "entity_ids_by_source": {
-      "attack": [
-        "T1005"
-      ],
       "capec": [
-        "CAPEC-37",
-        "capec:taxonomy:ATTACK:1005",
-        "capec:taxonomy:ATTACK:1552.004"
+        "CAPEC-37"
       ]
     },
     "extra": [],
@@ -7167,21 +6940,22 @@
     },
     "gold_question": "Which ATT&CK tactics do the techniques mapped from CAPEC-37 (Retrieve Embedded Sensitive Data) belong to?",
     "missing": [
+      "T1005",
       "T1552.004",
       "TA0006",
-      "TA0009"
+      "TA0009",
+      "capec:taxonomy:ATTACK:1005",
+      "capec:taxonomy:ATTACK:1552.004"
     ],
     "queries": [
-      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
     "queries_exact": false,
-    "question": "In CAPEC, summarise attack pattern CAPEC-37. In ATT&CK, summarise CAPEC-37.",
-    "record_count": 2,
+    "question": "In CAPEC, summarise attack pattern CAPEC-37.",
+    "record_count": 1,
     "records_exact": false,
-    "records_recall": 0.5714285714285714,
+    "records_recall": 0.14285714285714285,
     "sources": [
-      "attack",
       "capec"
     ],
     "unsupported": 0
@@ -7635,102 +7409,10 @@
     "abstentions": [],
     "bank": "federated",
     "case_id": "F-CWE-01",
-    "claims": [
-      "CAPEC-102 (Session Sidejacking) has 1 related item(s): CWE-522.",
-      "CAPEC-474 (Signature Spoofing by Key Theft) has 2 taxonomy entries: CWE-522, capec:taxonomy:ATTACK:1552.004.",
-      "CAPEC-50 (Password Recovery Exploitation) has 1 related item(s): CWE-522.",
-      "CAPEC-509 (Kerberoasting) has 2 taxonomy entries: CWE-522, capec:taxonomy:ATTACK:1558.003.",
-      "CAPEC-551 (Modify Existing Service) has 2 taxonomy entries: CWE-522, capec:taxonomy:ATTACK:1543.",
-      "CAPEC-555 (Remote Services with Stolen Credentials) has 4 taxonomy entries: CWE-522, capec:taxonomy:ATTACK:1021, capec:taxonomy:ATTACK:1114.002, capec:taxonomy:ATTACK:1133.",
-      "CAPEC-560 (Use of Known Domain Credentials) has 2 taxonomy entries: CWE-522, capec:taxonomy:ATTACK:1078.",
-      "CAPEC-561 (Windows Admin Shares with Stolen Credentials) has 2 taxonomy entries: CWE-522, capec:taxonomy:ATTACK:1021.002.",
-      "CAPEC-600 (Credential Stuffing) has 2 taxonomy entries: CWE-522, capec:taxonomy:ATTACK:1110.004.",
-      "CAPEC-644 (Use of Captured Hashes (Pass The Hash)) has 2 taxonomy entries: CWE-522, capec:taxonomy:ATTACK:1550.002.",
-      "CAPEC-645 (Use of Captured Tickets (Pass The Ticket)) has 2 taxonomy entries: CWE-522, capec:taxonomy:ATTACK:1550.003.",
-      "CAPEC-652 (Use of Known Kerberos Credentials) has 2 taxonomy entries: CWE-522, capec:taxonomy:ATTACK:1558.",
-      "CAPEC-653 (Use of Known Operating System Credentials) has 1 related item(s): CWE-522.",
-      "Found 13 CAPEC record(s) for CAPEC-102, CAPEC-474, CAPEC-50, CAPEC-509, CAPEC-551 \u2026 (+8 more); ATT&CK mappings: T1021, T1021.002, T1078, T1110.004, T1114.002.",
-      "Found 5 record(s) in MITRE ATT&CK including T1543, T1133, T1558 and more.",
-      "T1021 (Remote Services) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.6.",
-      "T1078 (Valid Accounts) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 3.0.",
-      "T1133 (External Remote Services) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.5.",
-      "T1543 (Create or Modify System Process) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.2.",
-      "T1558 (Steal or Forge Kerberos Tickets) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.7.",
-      "The identifier T1021 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1078 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1133 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1543 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1558 is corroborated across attack and capec (2 record(s) share it)."
-    ],
-    "entity_ids": [
-      "CAPEC-102",
-      "CAPEC-474",
-      "CAPEC-50",
-      "CAPEC-509",
-      "CAPEC-551",
-      "CAPEC-555",
-      "CAPEC-560",
-      "CAPEC-561",
-      "CAPEC-600",
-      "CAPEC-644",
-      "CAPEC-645",
-      "CAPEC-652",
-      "CAPEC-653",
-      "CWE-522",
-      "T1021",
-      "T1078",
-      "T1133",
-      "T1543",
-      "T1558",
-      "capec:taxonomy:ATTACK:1021",
-      "capec:taxonomy:ATTACK:1021.002",
-      "capec:taxonomy:ATTACK:1078",
-      "capec:taxonomy:ATTACK:1110.004",
-      "capec:taxonomy:ATTACK:1114.002",
-      "capec:taxonomy:ATTACK:1133",
-      "capec:taxonomy:ATTACK:1543",
-      "capec:taxonomy:ATTACK:1550.002",
-      "capec:taxonomy:ATTACK:1550.003",
-      "capec:taxonomy:ATTACK:1552.004",
-      "capec:taxonomy:ATTACK:1558",
-      "capec:taxonomy:ATTACK:1558.003"
-    ],
+    "claims": [],
+    "entity_ids": [],
     "entity_ids_by_source": {
-      "attack": [
-        "T1021",
-        "T1078",
-        "T1133",
-        "T1543",
-        "T1558"
-      ],
-      "capec": [
-        "CAPEC-102",
-        "CAPEC-474",
-        "CAPEC-50",
-        "CAPEC-509",
-        "CAPEC-551",
-        "CAPEC-555",
-        "CAPEC-560",
-        "CAPEC-561",
-        "CAPEC-600",
-        "CAPEC-644",
-        "CAPEC-645",
-        "CAPEC-652",
-        "CAPEC-653",
-        "CWE-522",
-        "capec:taxonomy:ATTACK:1021",
-        "capec:taxonomy:ATTACK:1021.002",
-        "capec:taxonomy:ATTACK:1078",
-        "capec:taxonomy:ATTACK:1110.004",
-        "capec:taxonomy:ATTACK:1114.002",
-        "capec:taxonomy:ATTACK:1133",
-        "capec:taxonomy:ATTACK:1543",
-        "capec:taxonomy:ATTACK:1550.002",
-        "capec:taxonomy:ATTACK:1550.003",
-        "capec:taxonomy:ATTACK:1552.004",
-        "capec:taxonomy:ATTACK:1558",
-        "capec:taxonomy:ATTACK:1558.003"
-      ]
+      "capec": []
     },
     "extra": [],
     "form": {
@@ -7762,6 +7444,20 @@
     },
     "gold_question": "Which CAPEC patterns exploit weakness CWE-522, which ATT&CK techniques do they map to, and what mitigations apply?",
     "missing": [
+      "CAPEC-102",
+      "CAPEC-474",
+      "CAPEC-50",
+      "CAPEC-509",
+      "CAPEC-551",
+      "CAPEC-555",
+      "CAPEC-560",
+      "CAPEC-561",
+      "CAPEC-600",
+      "CAPEC-644",
+      "CAPEC-645",
+      "CAPEC-652",
+      "CAPEC-653",
+      "CWE-522",
       "M1013",
       "M1015",
       "M1017",
@@ -7787,126 +7483,48 @@
       "M1052",
       "M1054",
       "M1060",
+      "T1021",
       "T1021.002",
+      "T1078",
       "T1110.004",
       "T1114.002",
+      "T1133",
+      "T1543",
       "T1550.002",
       "T1550.003",
       "T1552.004",
-      "T1558.003"
+      "T1558",
+      "T1558.003",
+      "capec:taxonomy:ATTACK:1021",
+      "capec:taxonomy:ATTACK:1021.002",
+      "capec:taxonomy:ATTACK:1078",
+      "capec:taxonomy:ATTACK:1110.004",
+      "capec:taxonomy:ATTACK:1114.002",
+      "capec:taxonomy:ATTACK:1133",
+      "capec:taxonomy:ATTACK:1543",
+      "capec:taxonomy:ATTACK:1550.002",
+      "capec:taxonomy:ATTACK:1550.003",
+      "capec:taxonomy:ATTACK:1552.004",
+      "capec:taxonomy:ATTACK:1558",
+      "capec:taxonomy:ATTACK:1558.003"
     ],
-    "queries": [
-      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().hasLabel(\"Weakness\").has(\"id\", within(cweIds)).as(\"w\").in(\"EXPLOITS_WEAKNESS\").hasLabel(\"AttackPattern\").as(\"ap\").project(\"w\",\"ap\",\"tax\").by(__.select(\"w\").elementMap()).by(__.select(\"ap\").elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
-    ],
+    "queries": [],
     "queries_exact": false,
-    "question": "In CAPEC, summarise weakness CWE-522. In ATT&CK, summarise CWE-522.",
-    "record_count": 18,
+    "question": "In CAPEC, summarise weakness CWE-522.",
+    "record_count": 0,
     "records_exact": false,
-    "records_recall": 0.49206349206349204,
-    "sources": [
-      "attack",
-      "capec"
-    ],
+    "records_recall": 0.0,
+    "sources": [],
     "unsupported": 0
   },
   {
     "abstentions": [],
     "bank": "federated",
     "case_id": "F-CWE-02",
-    "claims": [
-      "CAPEC-114 (Authentication Abuse) has 2 taxonomy entries: CWE-287, capec:taxonomy:ATTACK:1548.",
-      "CAPEC-114 (Authentication Abuse) has Abstraction: Meta; Status: Draft.",
-      "CAPEC-115 (Authentication Bypass) has 2 taxonomy entries: CWE-287, capec:taxonomy:ATTACK:1548.",
-      "CAPEC-115 (Authentication Bypass) has Abstraction: Meta; Status: Draft.",
-      "CAPEC-151 (Identity Spoofing) has 1 related item(s): CWE-287.",
-      "CAPEC-151 (Identity Spoofing) has Abstraction: Meta; Status: Stable.",
-      "CAPEC-194 (Fake the Source of Data) has 1 related item(s): CWE-287.",
-      "CAPEC-194 (Fake the Source of Data) has Abstraction: Standard; Status: Stable.",
-      "CAPEC-22 (Exploiting Trust in Client) has 1 related item(s): CWE-287.",
-      "CAPEC-22 (Exploiting Trust in Client) has Abstraction: Meta; Status: Draft.",
-      "CAPEC-57 (Utilizing REST's Trust in the System Resource to Obtain Sensitive Data) has 2 taxonomy entries: CWE-287, capec:taxonomy:ATTACK:1040.",
-      "CAPEC-57 (Utilizing REST's Trust in the System Resource to Obtain Sensitive Data) has Abstraction: Detailed; Status: Draft.",
-      "CAPEC-593 (Session Hijacking) has 4 taxonomy entries: CWE-287, capec:taxonomy:ATTACK:1185, capec:taxonomy:ATTACK:1550.001, capec:taxonomy:ATTACK:1563.",
-      "CAPEC-593 (Session Hijacking) has Abstraction: Standard; Status: Stable.",
-      "CAPEC-633 (Token Impersonation) has 2 taxonomy entries: CWE-287, capec:taxonomy:ATTACK:1134.",
-      "CAPEC-633 (Token Impersonation) has Abstraction: Detailed; Status: Stable.",
-      "CAPEC-650 (Upload a Web Shell to a Web Server) has 2 taxonomy entries: CWE-287, capec:taxonomy:ATTACK:1505.003.",
-      "CAPEC-650 (Upload a Web Shell to a Web Server) has Abstraction: Detailed; Status: Draft.",
-      "CAPEC-94 (Adversary in the Middle (AiTM)) has 2 taxonomy entries: CWE-287, capec:taxonomy:ATTACK:1557.",
-      "CAPEC-94 (Adversary in the Middle (AiTM)) has Abstraction: Meta; Status: Stable.",
-      "Found 10 CAPEC record(s) for CAPEC-114, CAPEC-115, CAPEC-151, CAPEC-194, CAPEC-22 \u2026 (+5 more); ATT&CK mappings: T1040, T1134, T1185, T1505.003, T1548.",
-      "Found 6 record(s) in MITRE ATT&CK including T1557, T1040, T1185 and more.",
-      "T1040 (Network Sniffing) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.7.",
-      "T1134 (Access Token Manipulation) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 3.0.",
-      "T1185 (Browser Session Hijacking) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.1.",
-      "T1548 (Abuse Elevation Control Mechanism) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.0.",
-      "T1557 (Adversary-in-the-Middle) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.5.",
-      "T1563 (Remote Service Session Hijacking) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.1.",
-      "The identifier T1040 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1134 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1185 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1548 is corroborated across attack and capec (3 record(s) share it).",
-      "The identifier T1557 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1563 is corroborated across attack and capec (2 record(s) share it)."
-    ],
-    "entity_ids": [
-      "CAPEC-114",
-      "CAPEC-115",
-      "CAPEC-151",
-      "CAPEC-194",
-      "CAPEC-22",
-      "CAPEC-57",
-      "CAPEC-593",
-      "CAPEC-633",
-      "CAPEC-650",
-      "CAPEC-94",
-      "CWE-287",
-      "T1040",
-      "T1134",
-      "T1185",
-      "T1548",
-      "T1557",
-      "T1563",
-      "capec:taxonomy:ATTACK:1040",
-      "capec:taxonomy:ATTACK:1134",
-      "capec:taxonomy:ATTACK:1185",
-      "capec:taxonomy:ATTACK:1505.003",
-      "capec:taxonomy:ATTACK:1548",
-      "capec:taxonomy:ATTACK:1550.001",
-      "capec:taxonomy:ATTACK:1557",
-      "capec:taxonomy:ATTACK:1563"
-    ],
+    "claims": [],
+    "entity_ids": [],
     "entity_ids_by_source": {
-      "attack": [
-        "T1040",
-        "T1134",
-        "T1185",
-        "T1548",
-        "T1557",
-        "T1563"
-      ],
-      "capec": [
-        "CAPEC-114",
-        "CAPEC-115",
-        "CAPEC-151",
-        "CAPEC-194",
-        "CAPEC-22",
-        "CAPEC-57",
-        "CAPEC-593",
-        "CAPEC-633",
-        "CAPEC-650",
-        "CAPEC-94",
-        "CWE-287",
-        "capec:taxonomy:ATTACK:1040",
-        "capec:taxonomy:ATTACK:1134",
-        "capec:taxonomy:ATTACK:1185",
-        "capec:taxonomy:ATTACK:1505.003",
-        "capec:taxonomy:ATTACK:1548",
-        "capec:taxonomy:ATTACK:1550.001",
-        "capec:taxonomy:ATTACK:1557",
-        "capec:taxonomy:ATTACK:1563"
-      ]
+      "capec": []
     },
     "extra": [],
     "form": {
@@ -7938,6 +7556,17 @@
     },
     "gold_question": "Which CAPEC patterns exploit weakness CWE-287, which ATT&CK techniques do they map to, and what mitigations apply?",
     "missing": [
+      "CAPEC-114",
+      "CAPEC-115",
+      "CAPEC-151",
+      "CAPEC-194",
+      "CAPEC-22",
+      "CAPEC-57",
+      "CAPEC-593",
+      "CAPEC-633",
+      "CAPEC-650",
+      "CAPEC-94",
+      "CWE-287",
       "M1013",
       "M1017",
       "M1018",
@@ -7958,119 +7587,40 @@
       "M1047",
       "M1051",
       "M1052",
+      "T1040",
+      "T1134",
+      "T1185",
       "T1505.003",
-      "T1550.001"
+      "T1548",
+      "T1550.001",
+      "T1557",
+      "T1563",
+      "capec:taxonomy:ATTACK:1040",
+      "capec:taxonomy:ATTACK:1134",
+      "capec:taxonomy:ATTACK:1185",
+      "capec:taxonomy:ATTACK:1505.003",
+      "capec:taxonomy:ATTACK:1548",
+      "capec:taxonomy:ATTACK:1550.001",
+      "capec:taxonomy:ATTACK:1557",
+      "capec:taxonomy:ATTACK:1563"
     ],
-    "queries": [
-      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().hasLabel(\"Weakness\").has(\"id\", within(cweIds)).as(\"w\").in(\"EXPLOITS_WEAKNESS\").hasLabel(\"AttackPattern\").as(\"ap\").project(\"w\",\"ap\",\"tax\").by(__.select(\"w\").elementMap()).by(__.select(\"ap\").elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
-    ],
+    "queries": [],
     "queries_exact": false,
-    "question": "In CAPEC, summarise weakness CWE-287. In ATT&CK, summarise CWE-287.",
-    "record_count": 16,
+    "question": "In CAPEC, summarise weakness CWE-287.",
+    "record_count": 0,
     "records_exact": false,
-    "records_recall": 0.5319148936170213,
-    "sources": [
-      "attack",
-      "capec"
-    ],
+    "records_recall": 0.0,
+    "sources": [],
     "unsupported": 0
   },
   {
     "abstentions": [],
     "bank": "federated",
     "case_id": "F-CWE-03",
-    "claims": [
-      "CAPEC-102 (Session Sidejacking) has 1 related item(s): CWE-294.",
-      "CAPEC-102 (Session Sidejacking) has Abstraction: Detailed; Status: Draft.",
-      "CAPEC-509 (Kerberoasting) has 2 taxonomy entries: CWE-294, capec:taxonomy:ATTACK:1558.003.",
-      "CAPEC-509 (Kerberoasting) has Abstraction: Detailed; Status: Stable.",
-      "CAPEC-555 (Remote Services with Stolen Credentials) has 4 taxonomy entries: CWE-294, capec:taxonomy:ATTACK:1021, capec:taxonomy:ATTACK:1114.002, capec:taxonomy:ATTACK:1133.",
-      "CAPEC-555 (Remote Services with Stolen Credentials) has Abstraction: Standard; Status: Stable.",
-      "CAPEC-561 (Windows Admin Shares with Stolen Credentials) has 2 taxonomy entries: CWE-294, capec:taxonomy:ATTACK:1021.002.",
-      "CAPEC-561 (Windows Admin Shares with Stolen Credentials) has Abstraction: Detailed; Status: Draft.",
-      "CAPEC-60 (Reusing Session IDs (aka Session Replay)) has 3 taxonomy entries: CWE-294, capec:taxonomy:ATTACK:1134.001, capec:taxonomy:ATTACK:1550.004.",
-      "CAPEC-60 (Reusing Session IDs (aka Session Replay)) has Abstraction: Detailed; Status: Draft.",
-      "CAPEC-644 (Use of Captured Hashes (Pass The Hash)) has 2 taxonomy entries: CWE-294, capec:taxonomy:ATTACK:1550.002.",
-      "CAPEC-644 (Use of Captured Hashes (Pass The Hash)) has Abstraction: Detailed; Status: Stable.",
-      "CAPEC-645 (Use of Captured Tickets (Pass The Ticket)) has 2 taxonomy entries: CWE-294, capec:taxonomy:ATTACK:1550.003.",
-      "CAPEC-645 (Use of Captured Tickets (Pass The Ticket)) has Abstraction: Detailed; Status: Stable.",
-      "CAPEC-652 (Use of Known Kerberos Credentials) has 2 taxonomy entries: CWE-294, capec:taxonomy:ATTACK:1558.",
-      "CAPEC-652 (Use of Known Kerberos Credentials) has Abstraction: Standard; Status: Draft.",
-      "CAPEC-701 (Browser in the Middle (BiTM)) has 1 related item(s): CWE-294.",
-      "CAPEC-701 (Browser in the Middle (BiTM)) has Abstraction: Standard; Status: Draft.",
-      "CAPEC-94 (Adversary in the Middle (AiTM)) has 2 taxonomy entries: CWE-294, capec:taxonomy:ATTACK:1557.",
-      "CAPEC-94 (Adversary in the Middle (AiTM)) has Abstraction: Meta; Status: Stable.",
-      "Found 10 CAPEC record(s) for CAPEC-102, CAPEC-509, CAPEC-555, CAPEC-561, CAPEC-60 \u2026 (+5 more); ATT&CK mappings: T1021, T1021.002, T1114.002, T1133, T1134.001.",
-      "Found 4 record(s) in MITRE ATT&CK including T1557, T1133, T1558 and more.",
-      "T1021 (Remote Services) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.6.",
-      "T1133 (External Remote Services) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.5.",
-      "T1557 (Adversary-in-the-Middle) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.5.",
-      "T1558 (Steal or Forge Kerberos Tickets) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.7.",
-      "The identifier T1021 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1133 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1557 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1558 is corroborated across attack and capec (2 record(s) share it)."
-    ],
-    "entity_ids": [
-      "CAPEC-102",
-      "CAPEC-509",
-      "CAPEC-555",
-      "CAPEC-561",
-      "CAPEC-60",
-      "CAPEC-644",
-      "CAPEC-645",
-      "CAPEC-652",
-      "CAPEC-701",
-      "CAPEC-94",
-      "CWE-294",
-      "T1021",
-      "T1133",
-      "T1557",
-      "T1558",
-      "capec:taxonomy:ATTACK:1021",
-      "capec:taxonomy:ATTACK:1021.002",
-      "capec:taxonomy:ATTACK:1114.002",
-      "capec:taxonomy:ATTACK:1133",
-      "capec:taxonomy:ATTACK:1134.001",
-      "capec:taxonomy:ATTACK:1550.002",
-      "capec:taxonomy:ATTACK:1550.003",
-      "capec:taxonomy:ATTACK:1550.004",
-      "capec:taxonomy:ATTACK:1557",
-      "capec:taxonomy:ATTACK:1558",
-      "capec:taxonomy:ATTACK:1558.003"
-    ],
+    "claims": [],
+    "entity_ids": [],
     "entity_ids_by_source": {
-      "attack": [
-        "T1021",
-        "T1133",
-        "T1557",
-        "T1558"
-      ],
-      "capec": [
-        "CAPEC-102",
-        "CAPEC-509",
-        "CAPEC-555",
-        "CAPEC-561",
-        "CAPEC-60",
-        "CAPEC-644",
-        "CAPEC-645",
-        "CAPEC-652",
-        "CAPEC-701",
-        "CAPEC-94",
-        "CWE-294",
-        "capec:taxonomy:ATTACK:1021",
-        "capec:taxonomy:ATTACK:1021.002",
-        "capec:taxonomy:ATTACK:1114.002",
-        "capec:taxonomy:ATTACK:1133",
-        "capec:taxonomy:ATTACK:1134.001",
-        "capec:taxonomy:ATTACK:1550.002",
-        "capec:taxonomy:ATTACK:1550.003",
-        "capec:taxonomy:ATTACK:1550.004",
-        "capec:taxonomy:ATTACK:1557",
-        "capec:taxonomy:ATTACK:1558",
-        "capec:taxonomy:ATTACK:1558.003"
-      ]
+      "capec": []
     },
     "extra": [],
     "form": {
@@ -8102,6 +7652,17 @@
     },
     "gold_question": "Which CAPEC patterns exploit weakness CWE-294, which ATT&CK techniques do they map to, and what mitigations apply?",
     "missing": [
+      "CAPEC-102",
+      "CAPEC-509",
+      "CAPEC-555",
+      "CAPEC-561",
+      "CAPEC-60",
+      "CAPEC-644",
+      "CAPEC-645",
+      "CAPEC-652",
+      "CAPEC-701",
+      "CAPEC-94",
+      "CWE-294",
       "M1015",
       "M1017",
       "M1018",
@@ -8121,132 +7682,46 @@
       "M1052",
       "M1054",
       "M1060",
+      "T1021",
       "T1021.002",
       "T1114.002",
+      "T1133",
       "T1134.001",
       "T1550.002",
       "T1550.003",
       "T1550.004",
-      "T1558.003"
+      "T1557",
+      "T1558",
+      "T1558.003",
+      "capec:taxonomy:ATTACK:1021",
+      "capec:taxonomy:ATTACK:1021.002",
+      "capec:taxonomy:ATTACK:1114.002",
+      "capec:taxonomy:ATTACK:1133",
+      "capec:taxonomy:ATTACK:1134.001",
+      "capec:taxonomy:ATTACK:1550.002",
+      "capec:taxonomy:ATTACK:1550.003",
+      "capec:taxonomy:ATTACK:1550.004",
+      "capec:taxonomy:ATTACK:1557",
+      "capec:taxonomy:ATTACK:1558",
+      "capec:taxonomy:ATTACK:1558.003"
     ],
-    "queries": [
-      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().hasLabel(\"Weakness\").has(\"id\", within(cweIds)).as(\"w\").in(\"EXPLOITS_WEAKNESS\").hasLabel(\"AttackPattern\").as(\"ap\").project(\"w\",\"ap\",\"tax\").by(__.select(\"w\").elementMap()).by(__.select(\"ap\").elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
-    ],
+    "queries": [],
     "queries_exact": false,
-    "question": "In CAPEC, summarise weakness CWE-294. In ATT&CK, summarise CWE-294.",
-    "record_count": 14,
+    "question": "In CAPEC, summarise weakness CWE-294.",
+    "record_count": 0,
     "records_exact": false,
-    "records_recall": 0.5,
-    "sources": [
-      "attack",
-      "capec"
-    ],
+    "records_recall": 0.0,
+    "sources": [],
     "unsupported": 0
   },
   {
     "abstentions": [],
     "bank": "federated",
     "case_id": "F-CWE-04",
-    "claims": [
-      "CAPEC-16 (Dictionary-based Password Attack) has 1 related item(s): CWE-308.",
-      "CAPEC-49 (Password Brute Forcing) has 2 taxonomy entries: CWE-308, capec:taxonomy:ATTACK:1110.001.",
-      "CAPEC-509 (Kerberoasting) has 2 taxonomy entries: CWE-308, capec:taxonomy:ATTACK:1558.003.",
-      "CAPEC-55 (Rainbow Table Password Cracking) has 2 taxonomy entries: CWE-308, capec:taxonomy:ATTACK:1110.002.",
-      "CAPEC-555 (Remote Services with Stolen Credentials) has 4 taxonomy entries: CWE-308, capec:taxonomy:ATTACK:1021, capec:taxonomy:ATTACK:1114.002, capec:taxonomy:ATTACK:1133.",
-      "CAPEC-560 (Use of Known Domain Credentials) has 2 taxonomy entries: CWE-308, capec:taxonomy:ATTACK:1078.",
-      "CAPEC-561 (Windows Admin Shares with Stolen Credentials) has 2 taxonomy entries: CWE-308, capec:taxonomy:ATTACK:1021.002.",
-      "CAPEC-565 (Password Spraying) has 2 taxonomy entries: CWE-308, capec:taxonomy:ATTACK:1110.003.",
-      "CAPEC-600 (Credential Stuffing) has 2 taxonomy entries: CWE-308, capec:taxonomy:ATTACK:1110.004.",
-      "CAPEC-644 (Use of Captured Hashes (Pass The Hash)) has 2 taxonomy entries: CWE-308, capec:taxonomy:ATTACK:1550.002.",
-      "CAPEC-645 (Use of Captured Tickets (Pass The Ticket)) has 2 taxonomy entries: CWE-308, capec:taxonomy:ATTACK:1550.003.",
-      "CAPEC-652 (Use of Known Kerberos Credentials) has 2 taxonomy entries: CWE-308, capec:taxonomy:ATTACK:1558.",
-      "CAPEC-653 (Use of Known Operating System Credentials) has 1 related item(s): CWE-308.",
-      "CAPEC-70 (Try Common or Default Usernames and Passwords) has 2 taxonomy entries: CWE-308, capec:taxonomy:ATTACK:1078.001.",
-      "Found 14 CAPEC record(s) for CAPEC-16, CAPEC-49, CAPEC-509, CAPEC-55, CAPEC-555 \u2026 (+9 more); ATT&CK mappings: T1021, T1021.002, T1078, T1078.001, T1110.001.",
-      "Found 4 record(s) in MITRE ATT&CK including T1133, T1558, T1021 and more.",
-      "T1021 (Remote Services) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.6.",
-      "T1078 (Valid Accounts) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 3.0.",
-      "T1133 (External Remote Services) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.5.",
-      "T1558 (Steal or Forge Kerberos Tickets) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.7.",
-      "The identifier T1021 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1078 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1133 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1558 is corroborated across attack and capec (2 record(s) share it)."
-    ],
-    "entity_ids": [
-      "CAPEC-16",
-      "CAPEC-49",
-      "CAPEC-509",
-      "CAPEC-55",
-      "CAPEC-555",
-      "CAPEC-560",
-      "CAPEC-561",
-      "CAPEC-565",
-      "CAPEC-600",
-      "CAPEC-644",
-      "CAPEC-645",
-      "CAPEC-652",
-      "CAPEC-653",
-      "CAPEC-70",
-      "CWE-308",
-      "T1021",
-      "T1078",
-      "T1133",
-      "T1558",
-      "capec:taxonomy:ATTACK:1021",
-      "capec:taxonomy:ATTACK:1021.002",
-      "capec:taxonomy:ATTACK:1078",
-      "capec:taxonomy:ATTACK:1078.001",
-      "capec:taxonomy:ATTACK:1110.001",
-      "capec:taxonomy:ATTACK:1110.002",
-      "capec:taxonomy:ATTACK:1110.003",
-      "capec:taxonomy:ATTACK:1110.004",
-      "capec:taxonomy:ATTACK:1114.002",
-      "capec:taxonomy:ATTACK:1133",
-      "capec:taxonomy:ATTACK:1550.002",
-      "capec:taxonomy:ATTACK:1550.003",
-      "capec:taxonomy:ATTACK:1558",
-      "capec:taxonomy:ATTACK:1558.003"
-    ],
+    "claims": [],
+    "entity_ids": [],
     "entity_ids_by_source": {
-      "attack": [
-        "T1021",
-        "T1078",
-        "T1133",
-        "T1558"
-      ],
-      "capec": [
-        "CAPEC-16",
-        "CAPEC-49",
-        "CAPEC-509",
-        "CAPEC-55",
-        "CAPEC-555",
-        "CAPEC-560",
-        "CAPEC-561",
-        "CAPEC-565",
-        "CAPEC-600",
-        "CAPEC-644",
-        "CAPEC-645",
-        "CAPEC-652",
-        "CAPEC-653",
-        "CAPEC-70",
-        "CWE-308",
-        "capec:taxonomy:ATTACK:1021",
-        "capec:taxonomy:ATTACK:1021.002",
-        "capec:taxonomy:ATTACK:1078",
-        "capec:taxonomy:ATTACK:1078.001",
-        "capec:taxonomy:ATTACK:1110.001",
-        "capec:taxonomy:ATTACK:1110.002",
-        "capec:taxonomy:ATTACK:1110.003",
-        "capec:taxonomy:ATTACK:1110.004",
-        "capec:taxonomy:ATTACK:1114.002",
-        "capec:taxonomy:ATTACK:1133",
-        "capec:taxonomy:ATTACK:1550.002",
-        "capec:taxonomy:ATTACK:1550.003",
-        "capec:taxonomy:ATTACK:1558",
-        "capec:taxonomy:ATTACK:1558.003"
-      ]
+      "capec": []
     },
     "extra": [],
     "form": {
@@ -8278,6 +7753,21 @@
     },
     "gold_question": "Which CAPEC patterns exploit weakness CWE-308, which ATT&CK techniques do they map to, and what mitigations apply?",
     "missing": [
+      "CAPEC-16",
+      "CAPEC-49",
+      "CAPEC-509",
+      "CAPEC-55",
+      "CAPEC-555",
+      "CAPEC-560",
+      "CAPEC-561",
+      "CAPEC-565",
+      "CAPEC-600",
+      "CAPEC-644",
+      "CAPEC-645",
+      "CAPEC-652",
+      "CAPEC-653",
+      "CAPEC-70",
+      "CWE-308",
       "M1013",
       "M1015",
       "M1017",
@@ -8297,117 +7787,52 @@
       "M1051",
       "M1052",
       "M1060",
+      "T1021",
       "T1021.002",
+      "T1078",
       "T1078.001",
       "T1110.001",
       "T1110.002",
       "T1110.003",
       "T1110.004",
       "T1114.002",
+      "T1133",
       "T1550.002",
       "T1550.003",
-      "T1558.003"
+      "T1558",
+      "T1558.003",
+      "capec:taxonomy:ATTACK:1021",
+      "capec:taxonomy:ATTACK:1021.002",
+      "capec:taxonomy:ATTACK:1078",
+      "capec:taxonomy:ATTACK:1078.001",
+      "capec:taxonomy:ATTACK:1110.001",
+      "capec:taxonomy:ATTACK:1110.002",
+      "capec:taxonomy:ATTACK:1110.003",
+      "capec:taxonomy:ATTACK:1110.004",
+      "capec:taxonomy:ATTACK:1114.002",
+      "capec:taxonomy:ATTACK:1133",
+      "capec:taxonomy:ATTACK:1550.002",
+      "capec:taxonomy:ATTACK:1550.003",
+      "capec:taxonomy:ATTACK:1558",
+      "capec:taxonomy:ATTACK:1558.003"
     ],
-    "queries": [
-      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().hasLabel(\"Weakness\").has(\"id\", within(cweIds)).as(\"w\").in(\"EXPLOITS_WEAKNESS\").hasLabel(\"AttackPattern\").as(\"ap\").project(\"w\",\"ap\",\"tax\").by(__.select(\"w\").elementMap()).by(__.select(\"ap\").elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
-    ],
+    "queries": [],
     "queries_exact": false,
-    "question": "In CAPEC, summarise weakness CWE-308. In ATT&CK, summarise CWE-308.",
-    "record_count": 18,
+    "question": "In CAPEC, summarise weakness CWE-308.",
+    "record_count": 0,
     "records_exact": false,
-    "records_recall": 0.532258064516129,
-    "sources": [
-      "attack",
-      "capec"
-    ],
+    "records_recall": 0.0,
+    "sources": [],
     "unsupported": 0
   },
   {
     "abstentions": [],
     "bank": "federated",
     "case_id": "F-CWE-05",
-    "claims": [
-      "CAPEC-112 (Brute Force) has 2 taxonomy entries: CWE-521, capec:taxonomy:ATTACK:1110.",
-      "CAPEC-112 (Brute Force) has Abstraction: Meta; Status: Draft.",
-      "CAPEC-16 (Dictionary-based Password Attack) has 1 related item(s): CWE-521.",
-      "CAPEC-16 (Dictionary-based Password Attack) has Abstraction: Detailed; Status: Draft.",
-      "CAPEC-49 (Password Brute Forcing) has 2 taxonomy entries: CWE-521, capec:taxonomy:ATTACK:1110.001.",
-      "CAPEC-49 (Password Brute Forcing) has Abstraction: Standard; Status: Draft.",
-      "CAPEC-509 (Kerberoasting) has 2 taxonomy entries: CWE-521, capec:taxonomy:ATTACK:1558.003.",
-      "CAPEC-509 (Kerberoasting) has Abstraction: Detailed; Status: Stable.",
-      "CAPEC-55 (Rainbow Table Password Cracking) has 2 taxonomy entries: CWE-521, capec:taxonomy:ATTACK:1110.002.",
-      "CAPEC-55 (Rainbow Table Password Cracking) has Abstraction: Detailed; Status: Draft.",
-      "CAPEC-555 (Remote Services with Stolen Credentials) has 4 taxonomy entries: CWE-521, capec:taxonomy:ATTACK:1021, capec:taxonomy:ATTACK:1114.002, capec:taxonomy:ATTACK:1133.",
-      "CAPEC-555 (Remote Services with Stolen Credentials) has Abstraction: Standard; Status: Stable.",
-      "CAPEC-561 (Windows Admin Shares with Stolen Credentials) has 2 taxonomy entries: CWE-521, capec:taxonomy:ATTACK:1021.002.",
-      "CAPEC-561 (Windows Admin Shares with Stolen Credentials) has Abstraction: Detailed; Status: Draft.",
-      "CAPEC-565 (Password Spraying) has 2 taxonomy entries: CWE-521, capec:taxonomy:ATTACK:1110.003.",
-      "CAPEC-565 (Password Spraying) has Abstraction: Detailed; Status: Draft.",
-      "CAPEC-70 (Try Common or Default Usernames and Passwords) has 2 taxonomy entries: CWE-521, capec:taxonomy:ATTACK:1078.001.",
-      "CAPEC-70 (Try Common or Default Usernames and Passwords) has Abstraction: Detailed; Status: Draft.",
-      "Found 3 record(s) in MITRE ATT&CK including T1133, T1021, T1110.",
-      "Found 9 CAPEC record(s) for CAPEC-112, CAPEC-16, CAPEC-49, CAPEC-509, CAPEC-55 \u2026 (+4 more); ATT&CK mappings: T1021, T1021.002, T1078.001, T1110, T1110.001.",
-      "T1021 (Remote Services) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.6.",
-      "T1110 (Brute Force) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.8.",
-      "T1133 (External Remote Services) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.5.",
-      "The identifier T1021 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1110 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1133 is corroborated across attack and capec (2 record(s) share it)."
-    ],
-    "entity_ids": [
-      "CAPEC-112",
-      "CAPEC-16",
-      "CAPEC-49",
-      "CAPEC-509",
-      "CAPEC-55",
-      "CAPEC-555",
-      "CAPEC-561",
-      "CAPEC-565",
-      "CAPEC-70",
-      "CWE-521",
-      "T1021",
-      "T1110",
-      "T1133",
-      "capec:taxonomy:ATTACK:1021",
-      "capec:taxonomy:ATTACK:1021.002",
-      "capec:taxonomy:ATTACK:1078.001",
-      "capec:taxonomy:ATTACK:1110",
-      "capec:taxonomy:ATTACK:1110.001",
-      "capec:taxonomy:ATTACK:1110.002",
-      "capec:taxonomy:ATTACK:1110.003",
-      "capec:taxonomy:ATTACK:1114.002",
-      "capec:taxonomy:ATTACK:1133",
-      "capec:taxonomy:ATTACK:1558.003"
-    ],
+    "claims": [],
+    "entity_ids": [],
     "entity_ids_by_source": {
-      "attack": [
-        "T1021",
-        "T1110",
-        "T1133"
-      ],
-      "capec": [
-        "CAPEC-112",
-        "CAPEC-16",
-        "CAPEC-49",
-        "CAPEC-509",
-        "CAPEC-55",
-        "CAPEC-555",
-        "CAPEC-561",
-        "CAPEC-565",
-        "CAPEC-70",
-        "CWE-521",
-        "capec:taxonomy:ATTACK:1021",
-        "capec:taxonomy:ATTACK:1021.002",
-        "capec:taxonomy:ATTACK:1078.001",
-        "capec:taxonomy:ATTACK:1110",
-        "capec:taxonomy:ATTACK:1110.001",
-        "capec:taxonomy:ATTACK:1110.002",
-        "capec:taxonomy:ATTACK:1110.003",
-        "capec:taxonomy:ATTACK:1114.002",
-        "capec:taxonomy:ATTACK:1133",
-        "capec:taxonomy:ATTACK:1558.003"
-      ]
+      "capec": []
     },
     "extra": [],
     "form": {
@@ -8439,6 +7864,16 @@
     },
     "gold_question": "Which CAPEC patterns exploit weakness CWE-521, which ATT&CK techniques do they map to, and what mitigations apply?",
     "missing": [
+      "CAPEC-112",
+      "CAPEC-16",
+      "CAPEC-49",
+      "CAPEC-509",
+      "CAPEC-55",
+      "CAPEC-555",
+      "CAPEC-561",
+      "CAPEC-565",
+      "CAPEC-70",
+      "CWE-521",
       "M1018",
       "M1021",
       "M1026",
@@ -8453,34 +7888,38 @@
       "M1047",
       "M1051",
       "M1060",
+      "T1021",
       "T1021.002",
       "T1078.001",
+      "T1110",
       "T1110.001",
       "T1110.002",
       "T1110.003",
       "T1114.002",
-      "T1558.003"
+      "T1133",
+      "T1558.003",
+      "capec:taxonomy:ATTACK:1021",
+      "capec:taxonomy:ATTACK:1021.002",
+      "capec:taxonomy:ATTACK:1078.001",
+      "capec:taxonomy:ATTACK:1110",
+      "capec:taxonomy:ATTACK:1110.001",
+      "capec:taxonomy:ATTACK:1110.002",
+      "capec:taxonomy:ATTACK:1110.003",
+      "capec:taxonomy:ATTACK:1114.002",
+      "capec:taxonomy:ATTACK:1133",
+      "capec:taxonomy:ATTACK:1558.003"
     ],
-    "queries": [
-      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().hasLabel(\"Weakness\").has(\"id\", within(cweIds)).as(\"w\").in(\"EXPLOITS_WEAKNESS\").hasLabel(\"AttackPattern\").as(\"ap\").project(\"w\",\"ap\",\"tax\").by(__.select(\"w\").elementMap()).by(__.select(\"ap\").elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
-    ],
+    "queries": [],
     "queries_exact": false,
-    "question": "In CAPEC, summarise weakness CWE-521. In ATT&CK, summarise CWE-521.",
-    "record_count": 12,
+    "question": "In CAPEC, summarise weakness CWE-521.",
+    "record_count": 0,
     "records_exact": false,
-    "records_recall": 0.5227272727272727,
-    "sources": [
-      "attack",
-      "capec"
-    ],
+    "records_recall": 0.0,
+    "sources": [],
     "unsupported": 0
   },
   {
-    "abstentions": [
-      "Abstention(sub_question_id='q1', source='capec', statement=\"The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-116 with no linked records for: In capec, identify AttackPattern relevant to: In CAPEC, summarise attack pattern CAPEC-116. In ATT&CK, summarise CAPEC-116.\", query='g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)')",
-      "Abstention(sub_question_id='q2', source='attack', statement=\"The attack source doesn't establish this \u2014 the sub-question it depends on (q1) produced no seed identifiers, so no query was executed for: In attack, identify Technique, SubTechnique relevant to: In CAPEC, summarise attack pattern CAPEC-116. In ATT&CK, summarise CAPEC-116.\", query='')"
-    ],
+    "abstentions": [],
     "bank": "federated",
     "case_id": "F-NEG-01",
     "claims": [
@@ -8492,7 +7931,6 @@
       "CAPEC-116"
     ],
     "entity_ids_by_source": {
-      "attack": [],
       "capec": [
         "CAPEC-116"
       ]
@@ -8528,10 +7966,10 @@
     "gold_question": "Which ATT&CK techniques does CAPEC-116 (Excavation) map to, and what mitigations apply? (verified: NO mapping \u2014 the join must be an honest empty, never a fabricated correlation)",
     "missing": [],
     "queries": [
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
-    "queries_exact": true,
-    "question": "In CAPEC, summarise attack pattern CAPEC-116. In ATT&CK, summarise CAPEC-116.",
+    "queries_exact": false,
+    "question": "In CAPEC, summarise attack pattern CAPEC-116.",
     "record_count": 1,
     "records_exact": true,
     "records_recall": 1.0,
@@ -8541,10 +7979,7 @@
     "unsupported": 0
   },
   {
-    "abstentions": [
-      "Abstention(sub_question_id='q1', source='capec', statement=\"The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-66 with no linked records for: In capec, identify AttackPattern relevant to: In CAPEC, summarise attack pattern CAPEC-66. In ATT&CK, summarise CAPEC-66.\", query='g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)')",
-      "Abstention(sub_question_id='q2', source='attack', statement=\"The attack source doesn't establish this \u2014 the sub-question it depends on (q1) produced no seed identifiers, so no query was executed for: In attack, identify Technique, SubTechnique relevant to: In CAPEC, summarise attack pattern CAPEC-66. In ATT&CK, summarise CAPEC-66.\", query='')"
-    ],
+    "abstentions": [],
     "bank": "federated",
     "case_id": "F-NEG-02",
     "claims": [
@@ -8556,7 +7991,6 @@
       "CAPEC-66"
     ],
     "entity_ids_by_source": {
-      "attack": [],
       "capec": [
         "CAPEC-66"
       ]
@@ -8592,10 +8026,10 @@
     "gold_question": "Which ATT&CK techniques does CAPEC-66 (SQL Injection) map to, and what mitigations apply? (verified: NO mapping \u2014 the join must be an honest empty, never a fabricated correlation)",
     "missing": [],
     "queries": [
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
-    "queries_exact": true,
-    "question": "In CAPEC, summarise attack pattern CAPEC-66. In ATT&CK, summarise CAPEC-66.",
+    "queries_exact": false,
+    "question": "In CAPEC, summarise attack pattern CAPEC-66.",
     "record_count": 1,
     "records_exact": true,
     "records_recall": 1.0,
@@ -8605,10 +8039,7 @@
     "unsupported": 0
   },
   {
-    "abstentions": [
-      "Abstention(sub_question_id='q1', source='capec', statement=\"The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-3 with no linked records for: In capec, identify AttackPattern relevant to: In CAPEC, summarise attack pattern CAPEC-3. In ATT&CK, summarise CAPEC-3.\", query='g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)')",
-      "Abstention(sub_question_id='q2', source='attack', statement=\"The attack source doesn't establish this \u2014 the sub-question it depends on (q1) produced no seed identifiers, so no query was executed for: In attack, identify Technique, SubTechnique relevant to: In CAPEC, summarise attack pattern CAPEC-3. In ATT&CK, summarise CAPEC-3.\", query='')"
-    ],
+    "abstentions": [],
     "bank": "federated",
     "case_id": "F-NEG-03",
     "claims": [
@@ -8620,7 +8051,6 @@
       "CAPEC-3"
     ],
     "entity_ids_by_source": {
-      "attack": [],
       "capec": [
         "CAPEC-3"
       ]
@@ -8656,10 +8086,10 @@
     "gold_question": "Which ATT&CK techniques does CAPEC-3 (Using Leading 'Ghost' Character Sequences to Bypass Input Filters) map to, and what mitigations apply? (verified: NO mapping \u2014 the join must be an honest empty, never a fabricated correlation)",
     "missing": [],
     "queries": [
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
-    "queries_exact": true,
-    "question": "In CAPEC, summarise attack pattern CAPEC-3. In ATT&CK, summarise CAPEC-3.",
+    "queries_exact": false,
+    "question": "In CAPEC, summarise attack pattern CAPEC-3.",
     "record_count": 1,
     "records_exact": true,
     "records_recall": 1.0,
@@ -8669,10 +8099,7 @@
     "unsupported": 0
   },
   {
-    "abstentions": [
-      "Abstention(sub_question_id='q1', source='capec', statement=\"The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-7 with no linked records for: In capec, identify AttackPattern relevant to: In CAPEC, summarise attack pattern CAPEC-7. In ATT&CK, summarise CAPEC-7.\", query='g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)')",
-      "Abstention(sub_question_id='q2', source='attack', statement=\"The attack source doesn't establish this \u2014 the sub-question it depends on (q1) produced no seed identifiers, so no query was executed for: In attack, identify Technique, SubTechnique relevant to: In CAPEC, summarise attack pattern CAPEC-7. In ATT&CK, summarise CAPEC-7.\", query='')"
-    ],
+    "abstentions": [],
     "bank": "federated",
     "case_id": "F-NEG-04",
     "claims": [
@@ -8684,7 +8111,6 @@
       "CAPEC-7"
     ],
     "entity_ids_by_source": {
-      "attack": [],
       "capec": [
         "CAPEC-7"
       ]
@@ -8720,10 +8146,10 @@
     "gold_question": "Which ATT&CK techniques does CAPEC-7 (Blind SQL Injection) map to, and what mitigations apply? (verified: NO mapping \u2014 the join must be an honest empty, never a fabricated correlation)",
     "missing": [],
     "queries": [
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
-    "queries_exact": true,
-    "question": "In CAPEC, summarise attack pattern CAPEC-7. In ATT&CK, summarise CAPEC-7.",
+    "queries_exact": false,
+    "question": "In CAPEC, summarise attack pattern CAPEC-7.",
     "record_count": 1,
     "records_exact": true,
     "records_recall": 1.0,
@@ -8733,10 +8159,7 @@
     "unsupported": 0
   },
   {
-    "abstentions": [
-      "Abstention(sub_question_id='q1', source='capec', statement=\"The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-16 with no linked records for: In capec, identify AttackPattern relevant to: In CAPEC, summarise attack pattern CAPEC-16. In ATT&CK, summarise CAPEC-16.\", query='g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)')",
-      "Abstention(sub_question_id='q2', source='attack', statement=\"The attack source doesn't establish this \u2014 the sub-question it depends on (q1) produced no seed identifiers, so no query was executed for: In attack, identify Technique, SubTechnique relevant to: In CAPEC, summarise attack pattern CAPEC-16. In ATT&CK, summarise CAPEC-16.\", query='')"
-    ],
+    "abstentions": [],
     "bank": "federated",
     "case_id": "F-NEG-05",
     "claims": [
@@ -8748,7 +8171,6 @@
       "CAPEC-16"
     ],
     "entity_ids_by_source": {
-      "attack": [],
       "capec": [
         "CAPEC-16"
       ]
@@ -8784,10 +8206,10 @@
     "gold_question": "Which ATT&CK techniques does CAPEC-16 (Dictionary-based Password Attack) map to, and what mitigations apply? (verified: NO mapping \u2014 the join must be an honest empty, never a fabricated correlation)",
     "missing": [],
     "queries": [
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
-    "queries_exact": true,
-    "question": "In CAPEC, summarise attack pattern CAPEC-16. In ATT&CK, summarise CAPEC-16.",
+    "queries_exact": false,
+    "question": "In CAPEC, summarise attack pattern CAPEC-16.",
     "record_count": 1,
     "records_exact": true,
     "records_recall": 1.0,
@@ -8797,10 +8219,7 @@
     "unsupported": 0
   },
   {
-    "abstentions": [
-      "Abstention(sub_question_id='q1', source='capec', statement=\"The capec source doesn't establish this \u2014 the executed query ran cleanly and returned CAPEC-18 with no linked records for: In capec, identify AttackPattern relevant to: In CAPEC, summarise attack pattern CAPEC-18. In ATT&CK, summarise CAPEC-18.\", query='g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)')",
-      "Abstention(sub_question_id='q2', source='attack', statement=\"The attack source doesn't establish this \u2014 the sub-question it depends on (q1) produced no seed identifiers, so no query was executed for: In attack, identify Technique, SubTechnique relevant to: In CAPEC, summarise attack pattern CAPEC-18. In ATT&CK, summarise CAPEC-18.\", query='')"
-    ],
+    "abstentions": [],
     "bank": "federated",
     "case_id": "F-NEG-06",
     "claims": [
@@ -8812,7 +8231,6 @@
       "CAPEC-18"
     ],
     "entity_ids_by_source": {
-      "attack": [],
       "capec": [
         "CAPEC-18"
       ]
@@ -8848,10 +8266,10 @@
     "gold_question": "Which ATT&CK techniques does CAPEC-18 (XSS Targeting Non-Script Elements) map to, and what mitigations apply? (verified: NO mapping \u2014 the join must be an honest empty, never a fabricated correlation)",
     "missing": [],
     "queries": [
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
-    "queries_exact": true,
-    "question": "In CAPEC, summarise attack pattern CAPEC-18. In ATT&CK, summarise CAPEC-18.",
+    "queries_exact": false,
+    "question": "In CAPEC, summarise attack pattern CAPEC-18.",
     "record_count": 1,
     "records_exact": true,
     "records_recall": 1.0,
@@ -9011,34 +8429,16 @@
     "bank": "federated",
     "case_id": "F-PART-03",
     "claims": [
-      "CAPEC-555 (Remote Services with Stolen Credentials) has 3 taxonomy entries: capec:taxonomy:ATTACK:1021, capec:taxonomy:ATTACK:1114.002, capec:taxonomy:ATTACK:1133.",
       "CAPEC-555 (Remote Services with Stolen Credentials) has Abstraction: Standard; Status: Stable.",
       "CAPEC-555 (Remote Services with Stolen Credentials): This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
-      "Found 1 CAPEC record(s) for CAPEC-555; ATT&CK mappings: T1021, T1114.002, T1133.",
-      "Found 2 record(s) in MITRE ATT&CK including T1133, T1021.",
-      "T1021 (Remote Services) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.6.",
-      "T1133 (External Remote Services) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.5.",
-      "The identifier T1021 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1133 is corroborated across attack and capec (2 record(s) share it)."
+      "Found 1 CAPEC record(s): CAPEC-555."
     ],
     "entity_ids": [
-      "CAPEC-555",
-      "T1021",
-      "T1133",
-      "capec:taxonomy:ATTACK:1021",
-      "capec:taxonomy:ATTACK:1114.002",
-      "capec:taxonomy:ATTACK:1133"
+      "CAPEC-555"
     ],
     "entity_ids_by_source": {
-      "attack": [
-        "T1021",
-        "T1133"
-      ],
       "capec": [
-        "CAPEC-555",
-        "capec:taxonomy:ATTACK:1021",
-        "capec:taxonomy:ATTACK:1114.002",
-        "capec:taxonomy:ATTACK:1133"
+        "CAPEC-555"
       ]
     },
     "extra": [],
@@ -9081,19 +8481,22 @@
       "M1042",
       "M1047",
       "M1060",
-      "T1114.002"
+      "T1021",
+      "T1114.002",
+      "T1133",
+      "capec:taxonomy:ATTACK:1021",
+      "capec:taxonomy:ATTACK:1114.002",
+      "capec:taxonomy:ATTACK:1133"
     ],
     "queries": [
-      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
     "queries_exact": false,
-    "question": "In CAPEC, summarise attack pattern CAPEC-555. In ATT&CK, summarise CAPEC-555.",
-    "record_count": 3,
+    "question": "In CAPEC, summarise attack pattern CAPEC-555.",
+    "record_count": 1,
     "records_exact": false,
-    "records_recall": 0.35294117647058826,
+    "records_recall": 0.058823529411764705,
     "sources": [
-      "attack",
       "capec"
     ],
     "unsupported": 0
@@ -9103,34 +8506,16 @@
     "bank": "federated",
     "case_id": "F-PART-04",
     "claims": [
-      "CAPEC-555 (Remote Services with Stolen Credentials) has 3 taxonomy entries: capec:taxonomy:ATTACK:1021, capec:taxonomy:ATTACK:1114.002, capec:taxonomy:ATTACK:1133.",
       "CAPEC-555 (Remote Services with Stolen Credentials) has Abstraction: Standard; Status: Stable.",
       "CAPEC-555 (Remote Services with Stolen Credentials): This pattern of attack involves an adversary that uses stolen credentials to leverage remote services such as RDP, telnet, SSH, and VNC to log into a system. Once access is gained, any number of malicious activities could be performed.",
-      "Found 1 CAPEC record(s) for CAPEC-555; ATT&CK mappings: T1021, T1114.002, T1133.",
-      "Found 2 record(s) in MITRE ATT&CK including T1133, T1021.",
-      "T1021 (Remote Services) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.6.",
-      "T1133 (External Remote Services) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.5.",
-      "The identifier T1021 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1133 is corroborated across attack and capec (2 record(s) share it)."
+      "Found 1 CAPEC record(s): CAPEC-555."
     ],
     "entity_ids": [
-      "CAPEC-555",
-      "T1021",
-      "T1133",
-      "capec:taxonomy:ATTACK:1021",
-      "capec:taxonomy:ATTACK:1114.002",
-      "capec:taxonomy:ATTACK:1133"
+      "CAPEC-555"
     ],
     "entity_ids_by_source": {
-      "attack": [
-        "T1021",
-        "T1133"
-      ],
       "capec": [
-        "CAPEC-555",
-        "capec:taxonomy:ATTACK:1021",
-        "capec:taxonomy:ATTACK:1114.002",
-        "capec:taxonomy:ATTACK:1133"
+        "CAPEC-555"
       ]
     },
     "extra": [],
@@ -9162,18 +8547,22 @@
       "unbound": []
     },
     "gold_question": "With the CAPEC source down: the CAPEC-555 producer never runs, so the seeded ATT&CK side must degrade to a dependency abstention \u2014 no broad unseeded query.",
-    "missing": [],
-    "queries": [
-      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+    "missing": [
+      "T1021",
+      "T1133",
+      "capec:taxonomy:ATTACK:1021",
+      "capec:taxonomy:ATTACK:1114.002",
+      "capec:taxonomy:ATTACK:1133"
     ],
-    "queries_exact": true,
-    "question": "In CAPEC, summarise attack pattern CAPEC-555. In ATT&CK, summarise CAPEC-555.",
-    "record_count": 3,
-    "records_exact": true,
-    "records_recall": 1.0,
+    "queries": [
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
+    ],
+    "queries_exact": false,
+    "question": "In CAPEC, summarise attack pattern CAPEC-555.",
+    "record_count": 1,
+    "records_exact": false,
+    "records_recall": 0.16666666666666666,
     "sources": [
-      "attack",
       "capec"
     ],
     "unsupported": 0
@@ -9183,57 +8572,21 @@
     "bank": "federated",
     "case_id": "F-FAN-01",
     "claims": [
-      "CAPEC-19 (Embedding Scripts within Scripts) has 3 taxonomy entries: capec:taxonomy:ATTACK:1027.009, capec:taxonomy:ATTACK:1546.004, capec:taxonomy:ATTACK:1546.016.",
       "CAPEC-19 (Embedding Scripts within Scripts) has Abstraction: Standard; Status: Stable.",
-      "CAPEC-35 (Leverage Executable Code in Non-Executable Files) has 3 taxonomy entries: capec:taxonomy:ATTACK:1027.006, capec:taxonomy:ATTACK:1027.009, capec:taxonomy:ATTACK:1564.009.",
       "CAPEC-35 (Leverage Executable Code in Non-Executable Files) has Abstraction: Detailed; Status: Draft.",
-      "CAPEC-448 (Embed Virus into DLL) has 1 taxonomy entry: capec:taxonomy:ATTACK:1027.009.",
       "CAPEC-448 (Embed Virus into DLL) has Abstraction: Detailed; Status: Stable.",
-      "Found 3 CAPEC record(s) for CAPEC-19, CAPEC-35, CAPEC-448; ATT&CK mappings: T1027.006, T1027.009, T1546.004, T1546.016, T1564.009.",
-      "Found 5 record(s) in MITRE ATT&CK including T1027.009, T1564.009, T1546.004 and more.",
-      "T1027.006 (HTML Smuggling) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 2.0.",
-      "T1027.009 (Embedded Payloads) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 2.0.",
-      "T1546.004 (Unix Shell Configuration Modification) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 2.2.",
-      "T1546.016 (Installer Packages) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 1.2.",
-      "T1564.009 (Resource Forking) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 2.0.",
-      "The identifier T1027.006 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1027.009 is corroborated across attack and capec (4 record(s) share it).",
-      "The identifier T1546.004 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1546.016 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1564.009 is corroborated across attack and capec (2 record(s) share it)."
+      "Found 3 CAPEC record(s): CAPEC-19, CAPEC-35, CAPEC-448."
     ],
     "entity_ids": [
       "CAPEC-19",
       "CAPEC-35",
-      "CAPEC-448",
-      "T1027.006",
-      "T1027.009",
-      "T1546.004",
-      "T1546.016",
-      "T1564.009",
-      "capec:taxonomy:ATTACK:1027.006",
-      "capec:taxonomy:ATTACK:1027.009",
-      "capec:taxonomy:ATTACK:1546.004",
-      "capec:taxonomy:ATTACK:1546.016",
-      "capec:taxonomy:ATTACK:1564.009"
+      "CAPEC-448"
     ],
     "entity_ids_by_source": {
-      "attack": [
-        "T1027.006",
-        "T1027.009",
-        "T1546.004",
-        "T1546.016",
-        "T1564.009"
-      ],
       "capec": [
         "CAPEC-19",
         "CAPEC-35",
-        "CAPEC-448",
-        "capec:taxonomy:ATTACK:1027.006",
-        "capec:taxonomy:ATTACK:1027.009",
-        "capec:taxonomy:ATTACK:1546.004",
-        "capec:taxonomy:ATTACK:1546.016",
-        "capec:taxonomy:ATTACK:1564.009"
+        "CAPEC-448"
       ]
     },
     "extra": [],
@@ -9272,19 +8625,27 @@
       "M1022",
       "M1040",
       "M1048",
-      "M1049"
+      "M1049",
+      "T1027.006",
+      "T1027.009",
+      "T1546.004",
+      "T1546.016",
+      "T1564.009",
+      "capec:taxonomy:ATTACK:1027.006",
+      "capec:taxonomy:ATTACK:1027.009",
+      "capec:taxonomy:ATTACK:1546.004",
+      "capec:taxonomy:ATTACK:1546.016",
+      "capec:taxonomy:ATTACK:1564.009"
     ],
     "queries": [
-      "MATCH (n:SubTechnique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
     "queries_exact": false,
-    "question": "In CAPEC, summarise attack pattern CAPEC-19, CAPEC-35, CAPEC-448. In ATT&CK, summarise CAPEC-19, CAPEC-35, CAPEC-448.",
-    "record_count": 8,
+    "question": "In CAPEC, summarise attack pattern CAPEC-19, CAPEC-35, CAPEC-448.",
+    "record_count": 3,
     "records_exact": false,
-    "records_recall": 0.7222222222222222,
+    "records_recall": 0.16666666666666666,
     "sources": [
-      "attack",
       "capec"
     ],
     "unsupported": 0
@@ -9294,51 +8655,18 @@
     "bank": "federated",
     "case_id": "F-FAN-02",
     "claims": [
-      "CAPEC-13 (Subverting Environment Variable Values) has 3 taxonomy entries: capec:taxonomy:ATTACK:1562.003, capec:taxonomy:ATTACK:1574.006, capec:taxonomy:ATTACK:1574.007.",
       "CAPEC-13 (Subverting Environment Variable Values) has Abstraction: Detailed; Status: Stable.",
-      "CAPEC-640 (Inclusion of Code in Existing Process) has 4 taxonomy entries: capec:taxonomy:ATTACK:1505.005, capec:taxonomy:ATTACK:1574.006, capec:taxonomy:ATTACK:1574.013, capec:taxonomy:ATTACK:1620.",
       "CAPEC-640 (Inclusion of Code in Existing Process) has Abstraction: Detailed; Status: Stable.",
-      "Found 2 CAPEC record(s) for CAPEC-13, CAPEC-640; ATT&CK mappings: T1505.005, T1562.003, T1574.006, T1574.007, T1574.013.",
-      "Found 4 record(s) in MITRE ATT&CK including T1574.007, T1505.005, T1574.006 and more.",
-      "T1505.005 (Terminal Services DLL) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 1.0.",
-      "T1574.006 (Dynamic Linker Hijacking) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_remote_support: False; x_mitre_version: 3.0.",
-      "T1574.007 (Path Interception by PATH Environment Variable) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_remote_support: False; x_mitre_version: 2.0.",
-      "T1574.013 (KernelCallbackTable) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_remote_support: False; x_mitre_version: 2.0.",
-      "The identifier T1505.005 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1574.006 is corroborated across attack and capec (3 record(s) share it).",
-      "The identifier T1574.007 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1574.013 is corroborated across attack and capec (2 record(s) share it)."
+      "Found 2 CAPEC record(s): CAPEC-13, CAPEC-640."
     ],
     "entity_ids": [
       "CAPEC-13",
-      "CAPEC-640",
-      "T1505.005",
-      "T1574.006",
-      "T1574.007",
-      "T1574.013",
-      "capec:taxonomy:ATTACK:1505.005",
-      "capec:taxonomy:ATTACK:1562.003",
-      "capec:taxonomy:ATTACK:1574.006",
-      "capec:taxonomy:ATTACK:1574.007",
-      "capec:taxonomy:ATTACK:1574.013",
-      "capec:taxonomy:ATTACK:1620"
+      "CAPEC-640"
     ],
     "entity_ids_by_source": {
-      "attack": [
-        "T1505.005",
-        "T1574.006",
-        "T1574.007",
-        "T1574.013"
-      ],
       "capec": [
         "CAPEC-13",
-        "CAPEC-640",
-        "capec:taxonomy:ATTACK:1505.005",
-        "capec:taxonomy:ATTACK:1562.003",
-        "capec:taxonomy:ATTACK:1574.006",
-        "capec:taxonomy:ATTACK:1574.007",
-        "capec:taxonomy:ATTACK:1574.013",
-        "capec:taxonomy:ATTACK:1620"
+        "CAPEC-640"
       ]
     },
     "extra": [],
@@ -9378,19 +8706,27 @@
       "M1038",
       "M1040",
       "M1047",
-      "T1620"
+      "T1505.005",
+      "T1574.006",
+      "T1574.007",
+      "T1574.013",
+      "T1620",
+      "capec:taxonomy:ATTACK:1505.005",
+      "capec:taxonomy:ATTACK:1562.003",
+      "capec:taxonomy:ATTACK:1574.006",
+      "capec:taxonomy:ATTACK:1574.007",
+      "capec:taxonomy:ATTACK:1574.013",
+      "capec:taxonomy:ATTACK:1620"
     ],
     "queries": [
-      "MATCH (n:SubTechnique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
     "queries_exact": false,
-    "question": "In CAPEC, summarise attack pattern CAPEC-13, CAPEC-640. In ATT&CK, summarise CAPEC-13, CAPEC-640.",
-    "record_count": 6,
+    "question": "In CAPEC, summarise attack pattern CAPEC-13, CAPEC-640.",
+    "record_count": 2,
     "records_exact": false,
-    "records_recall": 0.631578947368421,
+    "records_recall": 0.10526315789473684,
     "sources": [
-      "attack",
       "capec"
     ],
     "unsupported": 0
@@ -9400,43 +8736,18 @@
     "bank": "federated",
     "case_id": "F-FAN-03",
     "claims": [
-      "CAPEC-37 (Retrieve Embedded Sensitive Data) has 2 taxonomy entries: capec:taxonomy:ATTACK:1005, capec:taxonomy:ATTACK:1552.004.",
       "CAPEC-37 (Retrieve Embedded Sensitive Data) has Abstraction: Detailed; Status: Draft.",
-      "CAPEC-639 (Probe System Files) has 5 taxonomy entries: capec:taxonomy:ATTACK:1552.003, capec:taxonomy:ATTACK:1552.004, capec:taxonomy:ATTACK:1552.006, capec:taxonomy:ATTACK:1039, capec:taxonomy:ATTACK:1552.001.",
       "CAPEC-639 (Probe System Files) has Abstraction: Detailed; Status: Stable.",
-      "Found 2 CAPEC record(s) for CAPEC-37, CAPEC-639; ATT&CK mappings: T1005, T1039, T1552.001, T1552.003, T1552.004.",
-      "Found 2 record(s) in MITRE ATT&CK including T1005, T1039.",
-      "T1005 (Data from Local System) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.8.",
-      "T1039 (Data from Network Shared Drive) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 1.5.",
-      "The identifier T1005 is corroborated across attack and capec (2 record(s) share it).",
-      "The identifier T1039 is corroborated across attack and capec (2 record(s) share it)."
+      "Found 2 CAPEC record(s): CAPEC-37, CAPEC-639."
     ],
     "entity_ids": [
       "CAPEC-37",
-      "CAPEC-639",
-      "T1005",
-      "T1039",
-      "capec:taxonomy:ATTACK:1005",
-      "capec:taxonomy:ATTACK:1039",
-      "capec:taxonomy:ATTACK:1552.001",
-      "capec:taxonomy:ATTACK:1552.003",
-      "capec:taxonomy:ATTACK:1552.004",
-      "capec:taxonomy:ATTACK:1552.006"
+      "CAPEC-639"
     ],
     "entity_ids_by_source": {
-      "attack": [
-        "T1005",
-        "T1039"
-      ],
       "capec": [
         "CAPEC-37",
-        "CAPEC-639",
-        "capec:taxonomy:ATTACK:1005",
-        "capec:taxonomy:ATTACK:1039",
-        "capec:taxonomy:ATTACK:1552.001",
-        "capec:taxonomy:ATTACK:1552.003",
-        "capec:taxonomy:ATTACK:1552.004",
-        "capec:taxonomy:ATTACK:1552.006"
+        "CAPEC-639"
       ]
     },
     "extra": [],
@@ -9479,22 +8790,28 @@
       "M1047",
       "M1051",
       "M1057",
+      "T1005",
+      "T1039",
       "T1552.001",
       "T1552.003",
       "T1552.004",
-      "T1552.006"
+      "T1552.006",
+      "capec:taxonomy:ATTACK:1005",
+      "capec:taxonomy:ATTACK:1039",
+      "capec:taxonomy:ATTACK:1552.001",
+      "capec:taxonomy:ATTACK:1552.003",
+      "capec:taxonomy:ATTACK:1552.004",
+      "capec:taxonomy:ATTACK:1552.006"
     ],
     "queries": [
-      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000",
-      "g.V().has(\"id\", within(ids)).project(\"ap\",\"tax\").by(elementMap()).by(__.out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\").elementMap().fold()).limit(1000)"
+      "g.V().has(\"id\", within(ids)).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
     ],
     "queries_exact": false,
-    "question": "In CAPEC, summarise attack pattern CAPEC-37, CAPEC-639. In ATT&CK, summarise CAPEC-37, CAPEC-639.",
-    "record_count": 4,
+    "question": "In CAPEC, summarise attack pattern CAPEC-37, CAPEC-639.",
+    "record_count": 2,
     "records_exact": false,
-    "records_recall": 0.43478260869565216,
+    "records_recall": 0.08695652173913043,
     "sources": [
-      "attack",
       "capec"
     ],
     "unsupported": 0

@@ -9,7 +9,8 @@ it held when the number was computed.
 | Artifact | Path (repo-relative) | Bytes | SHA-256 | What it is |
 |---|---|---|---|---|
 | Step-0 Arm-6 re-capture | `docs/evaluation/variants-2026-08-29/reference_2026-09-08.json` | 319942 | `sha256:d36411e12851049b3c4a957898d61cdcf47580ea3476daa30ec9f728dda98a68` | The 120 golden questions captured on 2026-09-08 with every LLM seam off. R0's reference. |
-| Gold-form round-trip | `docs/research/experiments/EXP-2026-09-014-hybrid-rewrite-stage/data/roundtrip_gold_forms.json` | 365711 | `sha256:c6b6800add8c33e4d6bbe519479ca5d9344d44c87906e207d5e778e732e7d291` | Per-case round-trip of all 120 slot-gold forms: the form, the rendered sentence, what it retrieved, and the diff against the reference. |
+| Gold-form round-trip | `docs/research/experiments/EXP-2026-09-014-hybrid-rewrite-stage/data/roundtrip_gold_forms.json` | 294151 | `sha256:119f9751dc59bc92f90c96b5b5c7ded59212258917688e56351b8215c7f540b6` | Per-case round-trip of all 120 slot-gold forms: the form, the rendered sentence, what it retrieved, and the diff against the reference. |
+| Deterministic bind rate | `docs/research/experiments/EXP-2026-09-014-hybrid-rewrite-stage/data/deterministic_bind_rate.json` | 1493 | `sha256:b3c038e5164cf60bf96a465f95e8500c821f6446be78bf6dd7028cb3da0f2e7e` | Per-tier slot-binding rate of the deterministic fill: how many questions bind every slot with no model involved, and which slots stay unbound. |
 
 Regenerate hashes with:
 

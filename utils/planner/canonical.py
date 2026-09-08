@@ -469,6 +469,29 @@ def render_for(
     return min(options, key=lambda s: _misreadings(s, form, cards))
 
 
+def _has_footing(form: IntentForm, card: SourceCardView) -> bool:
+    """Does this card recognise anything in the form?
+
+    A federated form carries one anchor and two datasets, and the second dataset
+    is reached *through the first one's answer* — it has no anchor of its own
+    yet. Rendering a sentence for it anyway produced "In ATT&CK, summarise
+    CAPEC-555", which is not a question about anything. A card earns a sentence
+    by knowing the anchor's identifier scheme or by owning a target label.
+    """
+    if any(card.has_label(l) for l in form.target_labels):
+        return True
+    if any(card.has_label(l) for l in form.anchor_labels):
+        return True
+    if form.anchor_titles and not form.anchors:
+        return True
+    # Whether an identifier is *this* dataset's business is the resolver's call,
+    # not a label inference. CAPEC answers a question anchored on `T1040`
+    # through its TaxonomyEntry seeds even though it has no Technique label, and
+    # inferring the label instead dropped the whole reverse-direction federated
+    # family. `_ids_in` is that ladder.
+    return bool(form.anchors and _ids_in(" ".join(form.anchors), card.dataset))
+
+
 def render(form: IntentForm, cards: dict[str, SourceCardView]) -> str:
     """Render ``form`` across every dataset it names, joined into one request.
 
@@ -480,10 +503,266 @@ def render(form: IntentForm, cards: dict[str, SourceCardView]) -> str:
     blocking = [s for s in form.unbound if s in _RENDER_REQUIRED]
     if blocking:
         raise FormError(f"cannot render a form with unbound slots: {blocking}")
-    datasets = [d for d in form.datasets if d in cards]
+    datasets = [d for d in form.datasets if d in cards and _has_footing(form, cards[d])]
     if not datasets:
         raise FormError(f"no live card for datasets {list(form.datasets)}")
     return " ".join(render_for(form, cards[d], cards) for d in datasets)
+
+
+# -- deterministic fill -----------------------------------------------------
+
+
+def _selected_datasets(
+    question: str, cards: dict[str, SourceCardView]
+) -> tuple[tuple[str, ...], dict[str, tuple[Any, ...]]]:
+    """Which sources the shipped router picks, and what each one matched.
+
+    This is the drafter's own selection, not a reimplementation of it. Routing
+    the rewrite stage differently from the stage it feeds would put a second
+    opinion about which catalogue a question belongs to into a pipeline whose
+    whole claim is that there is only one.
+    """
+    from .drafter import (
+        _distinctive_name_tokens,
+        _match_card,
+        _select_sources,
+        _tokens as _drafter_tokens,
+    )
+
+    tokens = _drafter_tokens(question)
+    claimed = _distinctive_name_tokens(cards)
+    scored = {
+        ds: _match_card(tokens, card, claimed=claimed, dataset=ds)
+        for ds, card in cards.items()
+    }
+    selected = _select_sources(scored)
+    ordered = tuple(sorted(selected, key=lambda ds: (-scored[ds][0], -scored[ds][1], ds)))
+
+    # What each source matched, asked again with the *source-naming* words taken
+    # out. Those words earn a source its routing point and must keep doing so —
+    # but they are not vocabulary, and letting them reach entities through the
+    # gloss index pulls in whatever they happen to brush against: `att` reaches
+    # ATT&CK's `Matrix` gloss, so every ATT&CK question came back with `Matrix`
+    # in its target labels. Same matcher, narrower question.
+    naming = set().union(*claimed.values()) if claimed else set()
+    vocabulary = {
+        ds: _match_card(tokens - naming, card, claimed=claimed, dataset=ds)
+        for ds, card in cards.items()
+    }
+    return ordered, vocabulary
+
+
+def _mode_for(intent: Any, question: str) -> str:
+    """Map the classified intent onto the form's three modes.
+
+    ``count`` is not an intent the classifier has, so it is read off the
+    question's own words; everything else is a projection of the closed intent
+    taxonomy, so the form cannot disagree with the plan about what was asked.
+    """
+    from .intent import Intent
+
+    if _COUNT_RE.search(question or ""):
+        return MODE_COUNT
+    label = getattr(intent, "label", None)
+    if label in {Intent.DEFINITIONAL, Intent.LOOKUP}:
+        return MODE_DESCRIBE
+    if label in {
+        Intent.ENUMERATION,
+        Intent.TRAVERSAL,
+        Intent.REMEDIATION,
+        Intent.CORRELATION,
+    }:
+        return MODE_ENUMERATE
+    return MODE_DESCRIBE
+
+
+_COUNT_RE = re.compile(r"\bhow\s+many\b|\bcount\s+(?:the\s+)?\w", re.IGNORECASE)
+
+
+def _ids_in(question: str, dataset: str) -> tuple[str, ...]:
+    """Identifiers the text cites, through the resolver's own per-dataset ladder.
+
+    :func:`utils.specialists.resolve.resolver._native_ids` is the shipped rule
+    for which identifier families a dataset owns and in what priority — CAPEC
+    reads CAPEC ids first, then CWE, then ATT&CK ids as taxonomy seeds, and it
+    is a priority, not a union. Reimplementing that here would give the rewrite
+    stage a second opinion about what an identifier is, which is the one thing
+    this design exists not to have.
+    """
+    from types import SimpleNamespace
+
+    from utils.specialists.resolve.resolver import _native_ids
+
+    return tuple(_native_ids(SimpleNamespace(text=question or "", seed_ids=()), dataset))
+
+
+def _labels_for_id(value: str, dataset: str, *, registry: Any = None) -> tuple[str, ...]:
+    """The label(s) ``value``'s identifier implies in ``dataset``.
+
+    The registry first, because its schemes are *learned* from each dataset's
+    canonical snapshot and so cover a catalogue nobody wrote a rule for; the
+    resolver's committed shapes second, because the registry keys on the
+    canonical id (``capec:attack-pattern:555``) while every question writes the
+    analyst-facing one (``CAPEC-555``).
+    """
+    if registry is None:
+        from utils.specialists.schema import get_registry
+
+        registry = get_registry()
+    learned = registry.labels_for_id(value, dataset=dataset)
+    if learned:
+        return tuple(sorted(learned))
+    from utils.specialists.resolve.resolver import infer_label
+
+    inferred = infer_label(value, dataset)
+    return (inferred,) if inferred else ()
+
+
+def _card_entities(
+    matched: Iterable[str], card: SourceCardView
+) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    """Split what the router matched into this card's labels and relationships."""
+    labels = tuple(sorted({e for e in matched if card.has_label(e)}))
+    relations = tuple(sorted({e for e in matched if card.has_relationship(e)}))
+    return labels, relations
+
+
+def deterministic_fill(
+    question: str,
+    cards: dict[str, SourceCardView],
+    intent: Any = None,
+    *,
+    registry: Any = None,
+) -> IntentForm:
+    """Bind every slot the shipped machinery can, and report the rest.
+
+    This is the "skip the model" path. Everything bound here is byte-reproducible
+    and free, and a tier-0 question should bind completely so the model is never
+    consulted for one.
+
+    **It never guesses.** The ranked name index is deliberately not consulted:
+    EXP-2026-08-020 measured its accept decision at 68% precision on a frozen
+    half and no threshold over the available signals could fix it, so a slot it
+    would have filled is left in ``unbound`` for Step 4's closed-choice stage
+    instead. Exact *complete-name* matches are a different kind of evidence —
+    a lookup, not a similarity score — and are used, but only when the text
+    contains exactly one, because "exact" is not "unique" and two readings are
+    an ambiguity to surface rather than a tie to break.
+    """
+    from .intent import DeterministicIntentClassifier
+
+    if intent is None:
+        intent = DeterministicIntentClassifier().classify(question, cards)
+    datasets, scored = _selected_datasets(question, cards)
+    mode = _mode_for(intent, question)
+
+    if not datasets:
+        return IntentForm(mode=mode, sources={SLOT_MODE: "intent"}).with_unbound(
+            SLOT_DATASETS, SLOT_ANCHORS, SLOT_ANCHOR_LABELS, SLOT_TARGET_LABELS,
+            SLOT_RELATION, SLOT_DIRECTION,
+        )
+
+    primary = datasets[0]
+    card = cards[primary]
+    sources: dict[str, str] = {SLOT_MODE: "intent", SLOT_DATASETS: "router"}
+
+    # -- anchors: ids first (the resolver's highest-authority tier), then a
+    #    complete name, then nothing.
+    anchors = _ids_in(question, primary)
+    anchor_titles: tuple[str, ...] = ()
+    anchor_labels: tuple[str, ...] = ()
+    if anchors:
+        sources[SLOT_ANCHORS] = "exact-id"
+        labels = {l for a in anchors for l in _labels_for_id(a, primary, registry=registry)}
+        anchor_labels = tuple(sorted(labels))
+        if anchor_labels:
+            sources[SLOT_ANCHOR_LABELS] = "id-scheme"
+    else:
+        from utils.specialists.schema.namesearch import exact_name_matches
+
+        # A complete-name match that *is* a schema word is not an entity the
+        # question named. "List ATT&CK software entries" contains the complete
+        # name "Software" — a real Software node — and anchoring on it turned a
+        # bounded scan into a lookup of one arbitrary tool. The resolver's own
+        # name extraction filters schema words for the same reason.
+        from utils.specialists.resolve import _schema_word_set
+
+        schema_words = _schema_word_set(card)
+        exact = [
+            c
+            for c in exact_name_matches(primary, question)
+            if c.name.strip().lower() not in schema_words
+        ]
+        if len(exact) == 1:
+            anchor_titles = (exact[0].name,)
+            anchor_labels = (exact[0].label,) if exact[0].label else ()
+            sources[SLOT_ANCHORS] = "exact-name"
+            if anchor_labels:
+                sources[SLOT_ANCHOR_LABELS] = "exact-name"
+        elif len(exact) > 1:
+            sources[SLOT_ANCHORS] = f"ambiguous: {len(exact)} complete names in the text"
+
+    # -- relation and target labels: whatever the router matched in this card,
+    #    minus the anchor's own label, which is where the question starts rather
+    #    than what it asks for.
+    matched = scored[primary][2]
+    labels, relations = _card_entities(matched, card)
+    target_labels = tuple(l for l in labels if l not in anchor_labels)
+    if target_labels:
+        sources[SLOT_TARGET_LABELS] = "card-vocabulary"
+    relation = relations[0] if len(relations) == 1 else None
+    if relation:
+        sources[SLOT_RELATION] = "card-vocabulary"
+    elif len(relations) > 1:
+        sources[SLOT_RELATION] = f"ambiguous: {len(relations)} relationship types matched"
+
+    # -- direction: the declared endpoints, never the analyst's verb.
+    direction = None
+    if relation and anchor_labels:
+        direction = direction_for(
+            anchor_labels[0],
+            relation,
+            target_labels[0] if target_labels else None,
+            primary,
+            registry=registry,
+        )
+        if direction:
+            sources[SLOT_DIRECTION] = "schema-registry"
+
+    form = IntentForm(
+        anchors=anchors,
+        anchor_labels=anchor_labels,
+        target_labels=target_labels,
+        relation=relation,
+        direction=direction,
+        mode=mode,
+        datasets=datasets,
+        anchor_titles=anchor_titles,
+        sources=sources,
+    )
+
+    from .intent import asks_for_bulk_scan
+
+    missing: list[str] = []
+    if not anchors and not anchor_titles and not asks_for_bulk_scan(question):
+        # An anchorless form is legitimate only when the question really is a
+        # scan. Otherwise it renders to "list the mitigations", which is a
+        # catalogue dump wearing a question's clothes — the I-11 failure class,
+        # and the one EXP-2026-08-020 measured returning all 558 CAPEC patterns
+        # for an invented anchor.
+        missing.append(SLOT_ANCHORS)
+    if (anchors or anchor_titles) and not anchor_labels:
+        missing.append(SLOT_ANCHOR_LABELS)
+    if mode is not MODE_DESCRIBE and not target_labels:
+        missing.append(SLOT_TARGET_LABELS)
+    if mode is not MODE_DESCRIBE and relation is None:
+        missing.append(SLOT_RELATION)
+    elif relation and direction is None:
+        # The relation is a word from this card, but not one the anchor's label
+        # carries in either direction. Reported, not rendered — see
+        # `form_from_slot_gold` for what emitting it anyway cost.
+        missing.append(SLOT_RELATION)
+    return form.with_unbound(*missing) if missing else form
 
 
 # -- the understanding-gold -------------------------------------------------

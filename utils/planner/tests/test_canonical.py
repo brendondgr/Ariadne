@@ -191,12 +191,25 @@ def test_a_scan_renders_without_an_anchor() -> None:
 
 
 def test_a_federated_form_renders_one_sentence_per_source_in_order() -> None:
+    """Both cards own ``Mitigation``, so both have footing and both get a
+    sentence, in the form's dataset order — which is the hop order."""
+    form = IntentForm(
+        anchors=("CAPEC-555",), anchor_labels=("AttackPattern",),
+        target_labels=("Mitigation",), mode=MODE_ENUMERATE,
+        datasets=("capec", "attack"),
+    )
+    rendered = render(form, CARDS)
+    assert rendered.index("In CAPEC,") < rendered.index("In ATT&CK Enterprise,")
+
+
+def test_a_source_with_no_footing_in_the_form_gets_no_sentence() -> None:
+    """"In ATT&CK, summarise CAPEC-555" is not a question about anything."""
     form = IntentForm(
         anchors=("CAPEC-555",), anchor_labels=("AttackPattern",),
         mode=MODE_DESCRIBE, datasets=("capec", "attack"),
     )
     rendered = render(form, CARDS)
-    assert rendered.index("In CAPEC,") < rendered.index("In ATT&CK Enterprise,")
+    assert rendered == "In CAPEC, describe attack pattern CAPEC-555."
 
 
 # -- what the renderer refuses to do ----------------------------------------
@@ -381,3 +394,137 @@ def test_slot_gold_records_where_every_slot_came_from() -> None:
     assert form.sources["relation"] == "matched from the template name"
     assert form.sources["mode"] == "template:technique_mitigations"
     assert form.sources["datasets"] == "bank:attack"
+
+
+# -- deterministic fill -----------------------------------------------------
+#
+# These exercise the real name index and schema registry against the canonical
+# snapshot, so they are skipped where that snapshot is absent (a fresh clone
+# before `--build`). The alternative — a fake index — would test the fake.
+
+import os  # noqa: E402
+from pathlib import Path  # noqa: E402
+
+import pytest as _pytest  # noqa: E402
+
+from utils.planner.canonical import deterministic_fill  # noqa: E402
+from utils.planner.cards import load_source_cards  # noqa: E402
+
+_REPO = Path(__file__).resolve().parents[3]
+_HAS_SNAPSHOT = (_REPO / "data" / "graphs" / "attack" / "canonical" / "nodes.jsonl").exists()
+needs_snapshot = _pytest.mark.skipif(
+    not _HAS_SNAPSHOT, reason="needs the canonical snapshot (run main.py --build)"
+)
+
+
+@_pytest.fixture(scope="module")
+def live_cards():
+    return load_source_cards()
+
+
+@needs_snapshot
+def test_tier0_wording_binds_every_slot(live_cards) -> None:
+    form = deterministic_fill(
+        "What mitigations does ATT&CK list for T1047 (Windows Management Instrumentation)?",
+        live_cards,
+    )
+    assert form.unbound == ()
+    assert form.anchors == ("T1047",)
+    assert form.anchor_labels == ("Technique",)
+    assert form.target_labels == ("Mitigation",)
+    assert form.relation == "MITIGATES"
+    assert form.direction == DIR_IN
+    assert form.mode == MODE_ENUMERATE
+    assert form.datasets == ("attack",)
+
+
+@needs_snapshot
+def test_a_synonym_verb_still_binds_the_relation_through_the_lexicon(live_cards) -> None:
+    """"defend against" is not a card word; the gloss stem reaches MITIGATES."""
+    form = deterministic_fill("Which ATT&CK mitigations defend against T1047?", live_cards)
+    assert form.relation == "MITIGATES"
+    assert form.anchors == ("T1047",)
+
+
+@needs_snapshot
+def test_an_exact_name_binds_the_anchor_as_a_title(live_cards) -> None:
+    form = deterministic_fill("What is Phishing?", live_cards)
+    assert form.anchors == ()
+    assert form.anchor_titles == ("Phishing",)
+    assert form.sources["anchors"] == "exact-name"
+
+
+@needs_snapshot
+def test_a_paraphrased_name_leaves_the_anchor_unbound(live_cards) -> None:
+    """The ranked index would answer this. It is deliberately not consulted."""
+    form = deterministic_fill(
+        "What countermeasures exist against abuse of Windows' built-in "
+        "management scripting interface?",
+        live_cards,
+    )
+    assert SLOT_ANCHORS in form.unbound
+    assert form.anchors == ()
+    assert form.anchor_titles == ()
+
+
+@needs_snapshot
+def test_how_many_reads_as_count(live_cards) -> None:
+    assert deterministic_fill("How many mitigations does T1047 have?", live_cards).mode == (
+        MODE_COUNT
+    )
+
+
+@needs_snapshot
+def test_a_schema_word_is_not_an_exact_name_anchor(live_cards) -> None:
+    """"Software" is a complete node name AND a label. It anchors nothing."""
+    form = deterministic_fill("List ATT&CK software entries (bounded scan).", live_cards)
+    assert form.anchor_titles == ()
+    assert form.target_labels == ("Software",)
+    assert SLOT_ANCHORS not in form.unbound  # a real scan may have no anchor
+
+
+@needs_snapshot
+def test_an_anchorless_non_scan_is_unbound_not_a_catalogue_dump(live_cards) -> None:
+    form = deterministic_fill("What are the mitigations for phishing attacks?", live_cards)
+    if not (form.anchors or form.anchor_titles):
+        assert SLOT_ANCHORS in form.unbound
+
+
+@needs_snapshot
+def test_source_naming_words_do_not_leak_into_the_target_labels(live_cards) -> None:
+    """`att` reaches ATT&CK's `Matrix` gloss; it must not become a target."""
+    form = deterministic_fill("What mitigations does ATT&CK list for T1047?", live_cards)
+    assert "Matrix" not in form.target_labels
+
+
+@needs_snapshot
+def test_a_relation_the_anchor_does_not_carry_is_reported_unbound(live_cards) -> None:
+    form = deterministic_fill("Which techniques does group G0016 use?", live_cards)
+    assert SLOT_RELATION in form.unbound
+    assert "has technique" not in render(form, live_cards)
+
+
+@needs_snapshot
+def test_the_flags_are_off_by_default() -> None:
+    from utils.planner.config import PlannerConfig
+
+    for var in ("ARIADNE_REWRITE", "ARIADNE_REWRITE_MODEL"):
+        os.environ.pop(var, None)
+    config = PlannerConfig.from_env()
+    assert config.rewrite_enabled is False
+    assert config.rewrite_model_enabled is False
+
+
+@needs_snapshot
+def test_the_flags_read_the_environment() -> None:
+    from utils.planner.config import PlannerConfig
+
+    os.environ["ARIADNE_REWRITE"] = "1"
+    os.environ["ARIADNE_REWRITE_MODEL"] = "true"
+    try:
+        config = PlannerConfig.from_env()
+        assert config.rewrite_enabled is True
+        assert config.rewrite_model_enabled is True
+    finally:
+        os.environ.pop("ARIADNE_REWRITE", None)
+        os.environ.pop("ARIADNE_REWRITE_MODEL", None)
