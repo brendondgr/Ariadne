@@ -43,7 +43,8 @@ DEFAULT_ROOT = "docs/evaluation/experiments/untruncated"
 # synthesis) with ONLY the un-truncation profile added, so C − baseline isolates
 # un-truncation, A − C isolates the composer, and B − C isolates LLM planning.
 ARMS = ("deterministic", "llm", "gold_llm", "llm_loop", "gold_loop_llm", "generic",
-        "llm_query", "merged", "generic_composed")
+        "llm_query", "merged", "generic_composed",
+        "rewrite_off", "rewrite_det", "rewrite_model")
 
 # -- the un-truncation profile ----------------------------------------------
 # Every one of these keys is read *at call time* by the bound it names, with the
@@ -203,6 +204,33 @@ def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[st
             "SYNTHESIS_LLM_ENABLED": "false",
             "CONVERSATION_LLM_ENABLED": "false",
         })
+    elif arm in ("rewrite_off", "rewrite_det", "rewrite_model"):
+        # EXP-2026-09-014. Three arms that differ from each other in exactly one
+        # variable: the REAL pipeline (planner included) with no language model
+        # anywhere, and the rewrite stage off / deterministic / model-assisted.
+        #
+        # `rewrite_off` is the control and it is NOT `deterministic`: that arm
+        # replays the authored plan and never runs the planner at all, so the
+        # stage under test would never execute in it. Comparing against it would
+        # measure gold-replay-vs-planner and call it the rewrite.
+        #
+        # `rewrite_det` fills the form from the shipped machinery alone and is
+        # byte-reproducible; `rewrite_model` additionally lets a model choose,
+        # from candidate lists it cannot add to, for the slots left unbound.
+        #
+        # The model here is NOT the drafter, the query builder or the composer:
+        # every one of those stays off. It picks indices out of lists, and the
+        # gate in `utils/planner/canonical.py` refuses anything else.
+        env.update({
+            "PLANNER_LLM_ENABLED": "false",
+            "SPECIALIST_LLM_ENABLED": "false",
+            "SYNTHESIS_LLM_ENABLED": "false",
+            "CONVERSATION_LLM_ENABLED": "false",
+            "ARIADNE_REWRITE": "0" if arm == "rewrite_off" else "1",
+            "ARIADNE_REWRITE_MODEL": "1" if arm == "rewrite_model" else "0",
+        })
+        if arm == "rewrite_model":
+            env["ARIADNE_LLM_MODEL"] = llm_model
     elif arm == "deterministic":
         # Reproducible mode: no LLM in planning, drafting, or synthesis.
         env.update({
@@ -210,6 +238,10 @@ def untruncated_env(*, arm: str, llm_model: str, llm_max_tokens: int) -> dict[st
             "SPECIALIST_LLM_ENABLED": "false",
             "SYNTHESIS_LLM_ENABLED": "false",
             "CONVERSATION_LLM_ENABLED": "false",
+            # Stated, not left unset: an arm that inherits the operator's `.env`
+            # flags is not the arm its name claims.
+            "ARIADNE_REWRITE": "0",
+            "ARIADNE_REWRITE_MODEL": "0",
         })
     else:
         # LLM planning + LLM synthesis. Every caller gets a generous budget: the
@@ -631,6 +663,48 @@ def run_llm(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
     }
 
 
+def run_rewrite(entry: dict, kind: str, _pool: Any) -> tuple[Any, Any, dict]:
+    """EXP-2026-09-014 — the real pipeline, no LLM in it, rewrite per the env.
+
+    Identical to :func:`run_llm` in what it drives; the arm is decided entirely
+    by the environment, and the LLM seams are all off. What it adds is the
+    rewrite provenance in ``run_meta``, so a scorer can report the rung that
+    answered without re-deriving it from the plan.
+    """
+    from utils.orchestration.main import PipelineRun, iter_pipeline
+
+    injected: dict[str, Any] | None = None
+    mode = entry.get("partial_mode")
+    if mode == "attack_down":
+        injected = {"attack": None}
+    elif mode == "capec_down":
+        injected = {"capec": None}
+
+    run = PipelineRun(question=entry["question"], mode="query")
+    plan = evidence = answer = None
+    for event, payload in iter_pipeline(
+        entry["question"], mode="query", use_llm=True, specialists=injected, run=run
+    ):
+        if event == "plan":
+            plan = payload.get("plan")
+        elif event == "evidence":
+            evidence = payload.get("evidence")
+        elif event == "answer":
+            plan = payload.get("plan") or plan
+            evidence = payload.get("evidence") or evidence
+            answer = payload.get("synthesized")
+    if answer is None or evidence is None:
+        raise RuntimeError(f"pipeline produced no answer (status={run.status!r})")
+    return evidence, answer, {
+        "planner": "deterministic",
+        "synthesis": "deterministic",
+        "rewrite": getattr(plan, "rewrite", None),
+        "observed_plan": _plan_dict(plan),
+        "exit_code": run.exit_code,
+        "status": run.status,
+    }
+
+
 # -- driver -----------------------------------------------------------------
 
 
@@ -650,6 +724,14 @@ RUNNERS = {
     # And again: this arm differs from `deterministic` only by an env flag the
     # query builders read, so it needs no driver of its own.
     "generic_composed": run_deterministic,
+    # EXP-2026-09-014's three arms all drive the REAL pipeline (planner
+    # included, no language model in it) and differ only by the two rewrite
+    # flags their env sets. `run_deterministic` would be wrong here: it replays
+    # the authored plan and never runs the planner, which is where the stage
+    # under test lives.
+    "rewrite_off": run_rewrite,
+    "rewrite_det": run_rewrite,
+    "rewrite_model": run_rewrite,
 }
 
 
@@ -694,7 +776,8 @@ def run_arm(
     # ARM B builds its own specialists inside iter_pipeline; the gold-replay arms
     # share a thread-local router set (ARM C keeps the .env LLM drafter, as the
     # baseline did; ARM A forces it off).
-    if arm in ("llm", "llm_loop", "gold_loop_llm", "generic"):
+    if arm in ("llm", "llm_loop", "gold_loop_llm", "generic",
+               "rewrite_off", "rewrite_det", "rewrite_model"):
         pool = None
     elif arm == "merged":
         pool = _MergedPool()

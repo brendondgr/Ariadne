@@ -265,3 +265,37 @@ exactly: optional, and omitted from `to_dict()` when absent so plan JSON with th
 flags off stays byte-identical to every captured baseline. No webfront change,
 as the plan anticipated.
 **Paper implication:** none.
+
+## 2026-09-08 — a new test module's import leaked `.env` into three unrelated tests
+**Impact:** found and fixed inside Step 6. Three `test_event_parity` tests failed
+whenever `test_variant_scoring.py` was collected first, and passed when it was
+not — the worst shape of test failure, because it looks like a flake.
+**Cause:** `scripts/variant_harness.py` calls `load_env()` at import time, so
+importing it from a test module loads the operator's `.env` — including the LLM
+seam flags — into the process for every test that runs afterwards. This is the
+same defect D-029 records on the API side, arriving from a different direction.
+**Resolution:** the test module snapshots `os.environ` around the import and
+restores it, so the module under test keeps its side effect and the test file
+cannot spread it. The harness itself is unchanged: its `load_env()` is correct
+for a script and wrong only for an importer.
+**Paper implication:** none, but it is the second instance of import-time
+`load_env` producing a wrong number rather than an error, and worth naming as a
+pattern rather than as two incidents.
+
+## 2026-09-08 — the deterministic rewrite is lossy at T1, and the plan's own example shows it
+**Impact:** a pre-registered risk rather than a defect. R1 may score **below** R0
+at T0–T2, and the protocol says so before the run.
+**Cause:** the canonical form is built from the slots the shipped machinery can
+bind, and a slot it cannot bind is a word the rewritten question no longer
+carries. "How do I defend against T1047?" canonicalises to "In ATT&CK, summarise
+technique T1047." — a description, not a remediation question — because
+`_REMEDIATION_RE` in `utils/planner/intent.py` reads `defen[sc]\w*` and `defend`
+ends in `d`. The raw question would have reached `MITIGATES` through the gloss
+index; the canonical one has thrown the word away.
+**Resolution:** Not patched. Adding a rule that keeps the raw question whenever
+the rewrite would score worse is fitting to the bank, and the honest response is
+to measure the loss and report it. Recorded in PROTOCOL.md under "What would
+falsify this".
+**Paper implication:** "canonicalise into the vocabulary the engine answers best"
+is not free. The rewrite is only safe where the form captures everything the
+question carried, and the per-tier numbers are what say where that holds.

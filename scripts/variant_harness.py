@@ -74,6 +74,19 @@ BASE_ENV: dict[str, str] = {
     "ORCH_MAX_HOPS": "5",
 }
 
+#: What each ``--rewrite`` mode means, as environment. ``off`` is stated rather
+#: than left unset on purpose: an arm that inherits a flag from the operator's
+#: ``.env`` is not the arm its name claims, and this file has been bitten by
+#: exactly that before (the import-time ``load_env`` leak, D-029).
+REWRITE_ENV: dict[str, dict[str, str]] = {
+    "off": {"ARIADNE_REWRITE": "0", "ARIADNE_REWRITE_MODEL": "0"},
+    "det": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "0"},
+    "model": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "1"},
+}
+
+#: Where the understanding-gold lives, relative to ``--out``.
+SLOT_GOLD_NAME = "slot_gold.json"
+
 BANKS: tuple[tuple[str, str], ...] = (
     ("attack", ATTACK_BANK_PATH),
     ("capec", CAPEC_BANK_PATH),
@@ -115,12 +128,14 @@ def capture_one(question: str, config: SynthesisConfig) -> dict[str, Any]:
     from utils.orchestration.main import PipelineRun, iter_pipeline
 
     run = PipelineRun(question=question, mode="query")
-    evidence = answer = None
+    evidence = answer = plan = None
     try:
         for event, payload in iter_pipeline(
             question, mode="query", use_llm=False, run=run, synthesis_config=config
         ):
-            if event == "evidence":
+            if event == "plan":
+                plan = payload.get("plan")
+            elif event == "evidence":
                 evidence = payload.get("evidence")
             elif event == "answer":
                 evidence = payload.get("evidence") or evidence
@@ -151,7 +166,7 @@ def capture_one(question: str, config: SynthesisConfig) -> dict[str, Any]:
         str(getattr(a, "reason", "") or getattr(a, "text", "") or a)
         for a in (getattr(answer, "abstentions", None) or [])
     )
-    return {
+    out: dict[str, Any] = {
         "entity_ids": sorted(ids),
         "entity_ids_by_source": {k: sorted(v) for k, v in sorted(per_source.items())},
         "queries": sorted(queries),
@@ -161,6 +176,13 @@ def capture_one(question: str, config: SynthesisConfig) -> dict[str, Any]:
         "abstentions": abstentions,
         "unsupported": len(getattr(evidence, "unsupported", []) or []),
     }
+    # Present only when the rewrite stage actually ran. With the flags off
+    # ``Plan.rewrite`` is ``None`` and this key never appears, so a capture is
+    # byte-identical to every one taken before the stage existed.
+    rewrite = getattr(plan, "rewrite", None)
+    if rewrite:
+        out["rewrite"] = rewrite
+    return out
 
 
 def gold_questions() -> list[dict[str, Any]]:
@@ -213,7 +235,7 @@ def cmd_capture(args: argparse.Namespace) -> int:
 
     errors = [r for r in rows if "error" in r]
     empty = [r for r in rows if not r.get("error") and not r.get("entity_ids")]
-    print(f"\n   wrote {path.relative_to(REPO)} in {time.monotonic() - started:.1f}s")
+    print(f"\n   wrote {_rel(path)} in {time.monotonic() - started:.1f}s")
     print(f"   {len(rows)} questions | {len(errors)} errors | {len(empty)} extracted nothing")
     for r in empty[:8]:
         print(f"     empty: {r['case_id']:12s} {r['question'][:60]}")
@@ -229,6 +251,19 @@ def cmd_capture(args: argparse.Namespace) -> int:
 #: records is a dump when the gold answer was one.
 _DUMP_FLOOR = 50
 _DUMP_RATIO = 10
+
+
+def _rel(path: Path) -> str:
+    """``path`` relative to the repo when it is inside it, else as given.
+
+    ``Path.relative_to`` raises for anything outside the tree, and it did — a
+    run that wrote its output to a scratch directory crashed *after* writing the
+    file, on the line that prints where it went.
+    """
+    try:
+        return str(path.relative_to(REPO))
+    except ValueError:
+        return str(path)
 
 
 def _jaccard(a: set[str], b: set[str]) -> float:
@@ -281,6 +316,72 @@ def score(variant: dict[str, Any], gold: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _slot_gold_index(out_dir: Path, name: str = SLOT_GOLD_NAME) -> dict[str, dict[str, Any]]:
+    path = out_dir / name
+    if not path.exists():
+        return {}
+    data = json.loads(path.read_text())
+    records = data["records"] if isinstance(data, dict) else data
+    return {str(r.get("case_id") or ""): r for r in records}
+
+
+def score_slots(row: dict[str, Any], gold: dict[str, Any] | None) -> dict[str, Any]:
+    """Per-slot accuracy of the *understanding*, against ``slot_gold.json``.
+
+    This is the metric that separates understanding from retrieval, and neither
+    of the two failures it isolates is visible in ``records_exact``:
+
+    * a form that is **right** but renders to a sentence the engine mishandles is
+      a renderer defect, and looks like a retrieval failure;
+    * a form that is **wrong** and still retrieves the gold — by dumping the
+      label the gold happens to be in — looks like a success. That is the I-11
+      failure class, and `catalogue_dump` is what pairs with this to catch it.
+
+    Every field is ``None`` when the stage did not run or the gold records no
+    slots, because a slot nobody claimed and a slot nobody asked about are
+    different things and averaging them together invents a number.
+    """
+    form = ((row.get("rewrite") or {}).get("form")) or {}
+    if not form or not gold:
+        return {
+            "slot_anchor": None, "slot_anchor_label": None, "slot_target_label": None,
+            "slot_relation": None, "form_exact": None, "slots_scored": 0,
+        }
+
+    def _match(got: Any, want: Any) -> bool | None:
+        want_set = {str(v).upper() for v in (want or ())}
+        if not want_set:
+            return None
+        return bool({str(v).upper() for v in (got or ())} & want_set)
+
+    cells = {
+        "slot_anchor": _match(form.get("anchors"), gold.get("anchors")),
+        "slot_anchor_label": _match(form.get("anchor_labels"), gold.get("anchor_labels")),
+        "slot_target_label": _match(form.get("target_labels"), gold.get("target_labels")),
+        "slot_relation": _match(
+            [form.get("relation")] if form.get("relation") else [],
+            [gold.get("relation")] if gold.get("relation") else [],
+        ),
+    }
+    scored = [v for v in cells.values() if v is not None]
+    cells["slots_scored"] = len(scored)
+    cells["form_exact"] = bool(scored) and all(scored)
+    return cells
+
+
+def _rewrite_fields(row: dict[str, Any]) -> dict[str, Any]:
+    """The provenance columns Step 7 reports mean and spread over."""
+    rewrite = row.get("rewrite") or {}
+    return {
+        "rung": rewrite.get("rung", "off"),
+        "model_consulted": rewrite.get("rung") in {"model", "abstain"}
+        and bool(rewrite.get("served_model")),
+        "cache_hit": bool(rewrite.get("cache_hit")),
+        "served_model": rewrite.get("served_model", ""),
+        "canonical_question": rewrite.get("canonical_question", ""),
+    }
+
+
 def cmd_compare(args: argparse.Namespace) -> int:
     out_dir = REPO / args.out
     gold_rows = json.loads((out_dir / args.reference).read_text())
@@ -295,29 +396,155 @@ def cmd_compare(args: argparse.Namespace) -> int:
     if args.limit:
         variants = variants[: args.limit]
 
+    slot_gold = _slot_gold_index(out_dir)
     config = SynthesisConfig.from_env()
-    print(f"== scoring {len(variants)} variants, {args.workers} workers")
+    repeats = max(1, int(getattr(args, "repeat", 1) or 1))
+    print(f"== scoring {len(variants)} variants, {args.workers} workers, "
+          f"rewrite={getattr(args, 'rewrite', 'off')}, {repeats} run(s)")
 
     def work(v: dict[str, Any]) -> dict[str, Any]:
         gold = gold_by_id.get(v["case_id"])
         if gold is None:
             return {**v, "error": "no reference for case_id"}
+        started = time.monotonic()
         got = capture_one(v["question"], config)
+        elapsed = round(time.monotonic() - started, 3)
         if "error" in got:
             return {**v, **got}
-        return {**v, **got, **score(got, gold)}
+        row = {**v, **got, **score(got, gold)}
+        row.update(_rewrite_fields(row))
+        row.update(score_slots(row, slot_gold.get(v["case_id"])))
+        # Kept in its own key and never compared: this module's opening note is
+        # that nothing time-varying is captured, and a whole day was once spent
+        # diffing `wall_s`. Step 7 reports it, no identity check reads it.
+        row["timing"] = {"latency_s": elapsed}
+        return row
 
-    rows: list[dict[str, Any]] = []
-    with ThreadPoolExecutor(max_workers=args.workers) as pool:
-        for i, row in enumerate(pool.map(work, variants), 1):
-            rows.append(row)
-            if i % 50 == 0:
-                print(f"   {i}/{len(variants)}")
+    all_rows: list[dict[str, Any]] = []
+    for run_index in range(repeats):
+        if repeats > 1:
+            print(f"== run {run_index + 1}/{repeats}")
+        rows: list[dict[str, Any]] = []
+        with ThreadPoolExecutor(max_workers=args.workers) as pool:
+            for i, row in enumerate(pool.map(work, variants), 1):
+                rows.append({**row, "run_index": run_index})
+                if i % 50 == 0:
+                    print(f"   {i}/{len(variants)}")
+        name = args.name if repeats == 1 else _numbered(args.name, run_index)
+        (out_dir / name).write_text(json.dumps(rows, indent=2, sort_keys=True) + "\n")
+        print(f"\n   wrote {_rel(out_dir / name)}")
+        report(rows)
+        all_rows.extend(rows)
 
-    (out_dir / args.name).write_text(json.dumps(rows, indent=2, sort_keys=True) + "\n")
-    print(f"\n   wrote {(out_dir / args.name).relative_to(REPO)}")
-    report(rows)
+    if getattr(args, "metrics", None):
+        path = Path(args.metrics)
+        if not path.is_absolute():
+            path = out_dir / path
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(aggregate(all_rows, repeats), indent=2, sort_keys=True) + "\n")
+        print(f"   wrote {path}")
     return 0
+
+
+def _numbered(name: str, index: int) -> str:
+    stem, _, ext = name.rpartition(".")
+    return f"{stem or name}.run{index + 1}.{ext or 'json'}"
+
+
+def aggregate(rows: list[dict[str, Any]], repeats: int) -> dict[str, Any]:
+    """Mean and spread per tier across repeats — the file every figure reads.
+
+    Spread is reported as the **population standard deviation across runs of the
+    same arm**, not as a confidence interval, because three runs is three runs.
+    Q2 has been open since August precisely because no LLM-in-the-loop arm had
+    ever been run twice; a single draw reported without its spread is what kept
+    it open.
+    """
+    scored = [r for r in rows if "records_exact" in r]
+    per_run: dict[int, list[dict[str, Any]]] = defaultdict(list)
+    for r in scored:
+        per_run[int(r.get("run_index") or 0)].append(r)
+
+    metrics = (
+        "records_exact", "records_recall", "queries_exact",
+        "claims_exact", "abstained", "wrong_entity", "catalogue_dump",
+    )
+    slots = ("slot_anchor", "slot_anchor_label", "slot_target_label", "slot_relation",
+             "form_exact")
+
+    out: dict[str, Any] = {"runs": repeats, "n_scored": len(scored), "tiers": {}}
+    tiers = sorted({str(r.get("tier", "?")) for r in scored})
+    for tier in tiers:
+        cells: dict[str, Any] = {}
+        for metric in metrics:
+            draws = []
+            for run_rows in per_run.values():
+                group = [r for r in run_rows if str(r.get("tier", "?")) == tier]
+                values = [r[metric] for r in group if r.get(metric) is not None]
+                if values:
+                    draws.append(sum(bool(v) if isinstance(v, bool) else v for v in values) / len(values))
+            cells[metric] = _spread(draws)
+        for slot in slots:
+            draws = []
+            for run_rows in per_run.values():
+                group = [r for r in run_rows if str(r.get("tier", "?")) == tier]
+                values = [r[slot] for r in group if r.get(slot) is not None]
+                if values:
+                    draws.append(sum(bool(v) for v in values) / len(values))
+            cells[slot] = _spread(draws)
+        # Recall with the dumps removed — the honest recall number, and a
+        # derivation rather than a row field, so it is computed here rather than
+        # looked up and silently found missing.
+        clean_draws = []
+        for run_rows in per_run.values():
+            group = [
+                r for r in run_rows
+                if str(r.get("tier", "?")) == tier
+                and r.get("records_recall") is not None
+                and not r.get("catalogue_dump")
+            ]
+            if group:
+                clean_draws.append(sum(r["records_recall"] for r in group) / len(group))
+        cells["records_recall_no_dump"] = _spread(clean_draws)
+
+        group_all = [r for r in scored if str(r.get("tier", "?")) == tier]
+        cells["n"] = len(group_all) // max(1, repeats)
+        cells["model_consulted"] = _spread([
+            sum(bool(r.get("model_consulted")) for r in run_rows
+                if str(r.get("tier", "?")) == tier)
+            / max(1, len([r for r in run_rows if str(r.get("tier", "?")) == tier]))
+            for run_rows in per_run.values()
+            if any(str(r.get("tier", "?")) == tier for r in run_rows)
+        ])
+        cells["cache_hit"] = _spread([
+            sum(bool(r.get("cache_hit")) for r in run_rows
+                if str(r.get("tier", "?")) == tier)
+            / max(1, len([r for r in run_rows if str(r.get("tier", "?")) == tier]))
+            for run_rows in per_run.values()
+            if any(str(r.get("tier", "?")) == tier for r in run_rows)
+        ])
+        latencies = [
+            (r.get("timing") or {}).get("latency_s")
+            for r in group_all
+            if (r.get("timing") or {}).get("latency_s") is not None
+        ]
+        cells["latency_s_mean"] = round(sum(latencies) / len(latencies), 3) if latencies else None
+        out["tiers"][tier] = cells
+
+    out["served_models"] = sorted({r.get("served_model", "") for r in scored} - {""})
+    out["rungs"] = dict(Counter(r.get("rung", "off") for r in scored))
+    return out
+
+
+def _spread(draws: list[float]) -> dict[str, Any] | None:
+    """``{mean, sd, n}`` over the per-run figures, or ``None`` when there are none."""
+    if not draws:
+        return None
+    mean = sum(draws) / len(draws)
+    if len(draws) == 1:
+        return {"mean": round(mean, 4), "sd": None, "n": 1}
+    variance = sum((d - mean) ** 2 for d in draws) / len(draws)
+    return {"mean": round(mean, 4), "sd": round(variance ** 0.5, 4), "n": len(draws)}
 
 
 def report(rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -417,11 +644,38 @@ def main() -> int:
     cmp_.add_argument("--limit", type=int, default=None)
     cmp_.add_argument("--split", choices=("tune", "report"), default=None,
                       help="score only one half of the frozen split")
+    cmp_.add_argument("--rewrite", choices=tuple(REWRITE_ENV), default="off",
+                      help="hybrid rewrite stage: off | det (deterministic fill "
+                           "only) | model (gated model fill for unbound slots)")
+    cmp_.add_argument("--llm-model", default=None,
+                      help="served alias for the model fill (records the WEIGHTS "
+                           "that answered, not this name)")
+    cmp_.add_argument("--llm-base-url", default=None)
+    cmp_.add_argument("--cache-dir", default=None,
+                      help="rewrite cache root; clear it between runs to measure "
+                           "model variance rather than cache variance")
+    cmp_.add_argument("--repeat", type=int, default=1,
+                      help="run the whole arm N times; each run is written "
+                           "separately and metrics.json reports mean and sd")
+    cmp_.add_argument("--metrics", default=None,
+                      help="write the aggregated per-tier metrics here")
     cmp_.set_defaults(func=cmd_compare)
 
     args = parser.parse_args()
     for key, value in BASE_ENV.items():
         os.environ[key] = value
+    # Arm environment, applied before anything reads a config. Stated in full
+    # rather than left unset: an arm that inherits a flag from the operator's
+    # `.env` is not the arm its name claims.
+    os.environ.update(REWRITE_ENV[getattr(args, "rewrite", "off")])
+    if getattr(args, "llm_model", None):
+        os.environ["ARIADNE_LLM_MODEL"] = args.llm_model
+        os.environ["PLANNER_LLM_MODEL"] = args.llm_model
+    if getattr(args, "llm_base_url", None):
+        os.environ["ARIADNE_LLM_BASE_URL"] = args.llm_base_url
+        os.environ["PLANNER_LLM_BASE_URL"] = args.llm_base_url
+    if getattr(args, "cache_dir", None):
+        os.environ["ARIADNE_REWRITE_CACHE_DIR"] = args.cache_dir
     preflight()
     return args.func(args)
 

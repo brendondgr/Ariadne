@@ -26,7 +26,7 @@ from __future__ import annotations
 import argparse
 import json
 import statistics
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
@@ -45,11 +45,18 @@ def main() -> None:
     parser.add_argument("--bank", type=Path, default=BANK)
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--arm", default="deterministic")
+    parser.add_argument(
+        "--rewrite", choices=("off", "det", "model"), default=None,
+        help="score the EXP-2026-09-014 arm for this rewrite mode "
+             "(shorthand for --arm rewrite_off|rewrite_det|rewrite_model)",
+    )
     parser.add_argument("--out", type=Path, default=None)
     parser.add_argument("--rescore-property-gold", action="store_true",
                         help="rematch property values by containment in the answer "
                              "(utils.evaluation.property_gold); records both figures")
     args = parser.parse_args()
+    if args.rewrite:
+        args.arm = f"rewrite_{args.rewrite}"
 
     bank = json.loads(args.bank.read_text())
     by_id = {q["id"]: q for q in bank["questions"]}
@@ -65,6 +72,11 @@ def main() -> None:
             continue
         coverage = (answer.get("deterministic_scores") or {}).get("coverage") or {}
         volume = answer.get("evidence_volume") or {}
+        # Which rung of the rewrite stage answered this question, straight off
+        # the artifact. Absent for every arm that predates the stage and for the
+        # off arm, which is what makes "the model was consulted on X%" a fact
+        # about this run rather than an assumption about the flag.
+        rewrite = (answer.get("run_meta") or {}).get("rewrite") or {}
         recall_before = coverage.get("coverage")
         recall = recall_before
         # Property reads were scored against a rule nothing could satisfy: the
@@ -90,6 +102,10 @@ def main() -> None:
                 "recall": recall,
                 "recall_before": recall_before,
                 "retrieved_nothing": not (volume.get("records") or volume.get("related")),
+                "rung": rewrite.get("rung", "off"),
+                "model_consulted": bool(rewrite.get("served_model")),
+                "cache_hit": bool(rewrite.get("cache_hit")),
+                "served_model": rewrite.get("served_model", ""),
             }
         )
 
@@ -112,8 +128,19 @@ def main() -> None:
     def slice_mean(pred) -> float | None:
         return mean([r["recall"] for r in answerable if pred(r)])
 
+    rungs = Counter(r["rung"] for r in rows)
     report = {
         "arm": args.arm,
+        "rewrite": {
+            "rungs": dict(sorted(rungs.items())),
+            "model_consulted": (
+                round(sum(r["model_consulted"] for r in rows) / len(rows), 4) if rows else None
+            ),
+            "cache_hit": (
+                round(sum(r["cache_hit"] for r in rows) / len(rows), 4) if rows else None
+            ),
+            "served_models": sorted({r["served_model"] for r in rows} - {""}),
+        },
         "property_gold_rescored": bool(args.rescore_property_gold),
         "questions": len(rows),
         "answerable": len(answerable),
