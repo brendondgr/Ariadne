@@ -961,6 +961,101 @@ def candidate_lists_all(
     }
 
 
+# -- the gate ---------------------------------------------------------------
+
+#: Why a form was refused. Recorded on the form so the answer record can say
+#: which rung declined and on what grounds, rather than only that it abstained.
+GATE_OK = "ok"
+
+
+@dataclass(frozen=True)
+class GateVerdict:
+    """The gate's decision about one filled form."""
+
+    passed: bool
+    reasons: tuple[str, ...] = ()
+
+    def to_dict(self) -> dict[str, Any]:
+        return {"passed": self.passed, "reasons": list(self.reasons)}
+
+
+def gate_form(
+    form: IntentForm,
+    lists: dict[str, CandidateLists],
+    cards: dict[str, SourceCardView],
+    *,
+    registry: Any = None,
+) -> GateVerdict:
+    """Is every value in ``form`` something it was *allowed* to contain?
+
+    This is what makes "closed choice" true rather than asserted. The prompt asks
+    the model to pick indices out of lists; nothing about a prompt guarantees it
+    did. So the form is checked against the same closed world afterwards, and a
+    form that fails is abstained on rather than repaired — a repaired form is a
+    guess wearing the deterministic path's clothes.
+
+    Four things are checked, and each corresponds to a way the LLM drafter and
+    the free-form query arm were measured going wrong:
+
+    - every **anchor** is on the candidate list for a dataset the form names;
+    - every **label** is declared by the card of a dataset the form names;
+    - every **relation** is declared by that card;
+    - the **direction** agrees with the card's endpoints for the relation.
+
+    A form the model never touched passes trivially, which is the point: the gate
+    is one predicate over forms, not a special case for model output.
+    """
+    reasons: list[str] = []
+    datasets = [d for d in form.datasets if d in cards]
+    if not datasets:
+        reasons.append(f"no live source for datasets {list(form.datasets)}")
+        return GateVerdict(False, tuple(reasons))
+
+    allowed_anchors = {
+        c.value.upper() for ds in datasets for c in (lists.get(ds) or CandidateLists(ds)).anchors
+    }
+    for anchor in form.anchors:
+        # An anchor the *deterministic* path bound comes from the resolver's own
+        # identifier ladder, which is a lookup and not a choice, so it needs no
+        # list. An anchor the model supplied does.
+        if form.sources.get(SLOT_ANCHORS, "").startswith("model") and (
+            anchor.upper() not in allowed_anchors
+        ):
+            reasons.append(f"anchor {anchor!r} is not on any candidate list")
+
+    for label in (*form.anchor_labels, *form.target_labels):
+        if not any(cards[ds].has_label(label) for ds in datasets):
+            reasons.append(f"label {label!r} is not declared by any selected source")
+
+    if form.relation:
+        if not any(cards[ds].has_relationship(form.relation) for ds in datasets):
+            reasons.append(
+                f"relation {form.relation!r} is not declared by any selected source"
+            )
+        elif form.direction is not None:
+            if form.direction not in DIRECTIONS:
+                reasons.append(f"direction {form.direction!r} is not a direction")
+            elif form.anchor_labels:
+                declared = direction_for(
+                    form.anchor_labels[0],
+                    form.relation,
+                    form.target_labels[0] if form.target_labels else None,
+                    datasets[0],
+                    registry=registry,
+                )
+                if declared is not None and declared != form.direction:
+                    reasons.append(
+                        f"direction {form.direction!r} contradicts the declared "
+                        f"endpoints of {form.relation!r} (which runs {declared!r} "
+                        f"from {form.anchor_labels[0]!r})"
+                    )
+
+    if form.mode not in MODES:
+        reasons.append(f"mode {form.mode!r} is not one of {list(MODES)}")
+
+    return GateVerdict(not reasons, tuple(reasons))
+
+
 # -- the understanding-gold -------------------------------------------------
 
 #: Bank name -> the datasets a question of that bank touches. The federated bank

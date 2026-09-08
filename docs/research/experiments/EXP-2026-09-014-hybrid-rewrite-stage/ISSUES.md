@@ -232,3 +232,18 @@ list rather than an error.
    entity.
 **Paper implication:** report recall@k as the ceiling it is, and say it is
 measured over the questions the deterministic pass left unbound, not over all.
+
+## 2026-09-08 — the model picks an index valid in the *other* source's list
+**Impact:** on questions where routing bound no source, both sources' lists are
+shown and a relation index valid only in the longer list is rejected. Observed on
+the first live smoke call: relation index 10 is a real CAPEC relationship and out
+of range in ATT&CK's nine.
+**Cause:** the lists are numbered per source, and nothing in the reply says which
+source block an index came from.
+**Resolution:** the prompt now states that all three indices must come from the
+same source block, and the gate catches it either way — the slot stays unbound
+and the form falls back rather than binding a relation from a catalogue the
+anchor does not live in. The rejection is recorded in the trace, so Step 7 can
+report how often it happens instead of guessing.
+**Paper implication:** report the per-slot rejection rate. "The gate refused 12%
+of relation picks" is a result about closed choice, not an inconvenience.
