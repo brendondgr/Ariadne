@@ -1,0 +1,91 @@
+# Filled by scripts/new_experiment.py. Every field below is required unless
+# marked optional. Do not delete a field you do not know — record it as null or
+# "unknown" and explain in ISSUES.md. Inventing a value is worse than admitting
+# a gap.
+id: EXP-2026-09-014
+slug: hybrid-rewrite-stage
+title: "Does a gated, closed-choice rewrite stage in front of the deterministic engine recover record identity on paraphrased questions without raising confident-and-wrong?"
+status: running           # planned | running | complete | failed | superseded
+date_started: 2026-09-08
+date_completed: null       # null until status is complete/failed
+authors: ["brendondgr"]
+
+purpose: >
+  EXP-2026-08-020 showed that the engine's 1.0000 on the 120 gold questions is a
+  property of their phrasing: keep the identifier and change a verb and record
+  identity falls to 0.50; drop the identifier, 0.24; paraphrase or describe the
+  entity, 0.0000 on 208 questions across every arm tried. This experiment adds one
+  stage in front of the engine that rewrites a question into a canonical tier-0
+  form in the source card's own vocabulary, filling what it can deterministically
+  and letting a model choose the rest **only from candidate lists built by the
+  shipped name index**, behind a gate that rejects anything off-list or off-card.
+  It answers whether that recovers T4/T5 record identity without raising the
+  confident-and-wrong rates the project exists to avoid.
+
+hypothesis: >
+  Stated before any model run, in PROTOCOL.md. Pre-registered ship rule: T4 and T5
+  records_exact both > 0.25 with every T6 metric no worse than Arm 6
+  (wrong_entity <= 0.1000, catalogue_dump <= 0.0667). See PROTOCOL.md.
+
+# --- Reproducibility block (all fields mandatory) ---
+code:
+  commit: 0b83b65d8adfd2179c8e56555a2b33a80f939cd8          # 40-char sha, or "unknown" for a back-filled experiment
+  branch: main
+  entrypoint: "uv run python scripts/variant_harness.py compare --out docs/evaluation/variants-2026-08-29 --reference reference_2026-09-08.json --rewrite {off,det,model}"
+  dirty: false            # uncommitted changes at run time? if true, explain in ISSUES.md
+config:
+  path: null               # repo-relative path, or null if the run takes no config file
+  hash: null               # sha256:... of that file
+data:
+  name: variant-bank-2026-08-29 + expansion-bank-572
+  version: "attack 19.0 / capec 3.9 (data/versions.json, downloaded 2026-09-08)"
+  split: "tune half for development; report half and bank-holdout.json read once at the end"
+  n_examples: 579
+  dvc_path: null           # this repository does not use DVC; leave null
+  hash: null               # md5:... or sha256:... of the dataset artifact
+seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+n_runs: 1
+environment:
+  python: "3.13"
+  lockfile: env/requirements.lock
+  container: null
+compute:
+  hardware: "local workstation; served model on the :9090 relay (vllm-0.21.0-bf3a75db)"
+  wall_clock_hours: 0.0
+  estimated_cost_usd: 0.0
+
+# --- LLM / agentic block (delete entirely if no model was in the loop) ---
+llm:
+  # Probed on 2026-09-08 with scripts/model_identity.py --json --date 2026-09-08
+  # against http://localhost:9090/v1. An alias is not a model (D-028).
+  model: "relay/qwen38-27B-v2@2026-09-08"
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 2048
+  prompt_files: []
+  prompt_hash: null
+  tool_schema_hash: null
+  total_input_tokens: null
+  total_output_tokens: null
+  nondeterminism_note: >
+    Provider-side nondeterminism remains even at temperature 0; results are
+    reported as mean ± std over n_runs. The full probe is in
+    data/model_identity_2026-09-08.json: `default-model` served qwen38-27B-v2
+    under system_fingerprint vllm-0.21.0-bf3a75db, and its advertised upstream
+    matched what actually served. `default-model-2`, `-3` and `-4` each returned
+    HTTP 502 and could not be identified at all, so the second-model arm (R3) is
+    unrun — see ISSUES.md.
+
+# --- Results block ---
+metrics:
+  primary: records_exact
+  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+baselines_compared: []
+statistical_test: null
+
+# --- Linkage ---
+supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+figures: []                # every name here must have a file in figures/ and vice versa
+supersedes: null
+superseded_by: null
+related: []
