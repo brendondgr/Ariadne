@@ -152,6 +152,14 @@ class Plan:
     # one). ``None`` until the classify node runs; omitted from ``to_dict`` when
     # absent so pre-intent plan JSON stays byte-identical to the baselines.
     intent: IntentClassification | None = None
+    # Which rung of the hybrid rewrite stage produced the request this plan was
+    # drafted from, and what it did: ``rung`` (off | deterministic | model |
+    # abstain), the served model, whether the pick came from cache, the filled
+    # form and the slots still unbound. ``None`` when the stage never ran, and
+    # omitted from ``to_dict`` when absent, so plan JSON with the flags off is
+    # byte-identical to every baseline captured before the stage existed —
+    # exactly the contract ``intent`` already keeps.
+    rewrite: dict[str, Any] | None = None
 
     def target_sources(self) -> set[str]:
         return {sq.source for sq in self.sub_questions}
@@ -198,6 +206,8 @@ class Plan:
         }
         if self.intent is not None:
             out["intent"] = self.intent.to_dict()
+        if self.rewrite is not None:
+            out["rewrite"] = dict(self.rewrite)
         return out
 
     @classmethod
@@ -212,6 +222,7 @@ class Plan:
             partial=bool(data.get("partial", False)),
             trace=list(data.get("trace", [])),
             intent=IntentClassification.from_dict(data.get("intent")),
+            rewrite=data.get("rewrite"),
         )
 
 

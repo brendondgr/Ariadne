@@ -83,7 +83,8 @@ class PlanningAgent:
 
             self._graph = (
                 build_planning_graph(
-                    self._drafter, self._cards, self._config.max_iterations, self._classifier
+                    self._drafter, self._cards, self._config.max_iterations,
+                    self._classifier, self._config,
                 ),
                 OrchestrationConfig.from_env(),
             )
@@ -98,7 +99,10 @@ class PlanningAgent:
             return degraded
         graph, orch = self._compiled()
         out = graph.invoke(
-            {"request": request, "live_view": live_view, "iteration": 0, "feedback": None},
+            {
+                "request": request, "original_request": request,
+                "live_view": live_view, "iteration": 0, "feedback": None,
+            },
             config={"recursion_limit": orch.recursion_limit},
         )
         # A declared join must reach the sub-questions it joins, or the specialist

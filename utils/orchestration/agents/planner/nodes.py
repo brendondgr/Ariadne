@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Planner subgraph nodes: draft, gate, finalize, degrade.
+"""Planner subgraph nodes: classify, canonicalize, draft, gate, finalize, degrade.
 
 Each node wraps the exact domain logic ``PlanningAgent.plan`` used to inline —
 the configured ``PlanDrafter``, the deterministic gate (``utils.planner.gate.
@@ -15,6 +15,7 @@ from typing import Any, Callable
 
 from utils.orchestration.state import PlanningState
 from utils.planner.cards import SourceCardView
+from utils.planner.config import PlannerConfig
 from utils.planner.degrade import degrade_to_partial
 from utils.planner.drafter import PlanDrafter
 from utils.planner.gate import evaluate
@@ -25,11 +26,21 @@ logger = logging.getLogger("ariadne.planner.agent")
 NodeFn = Callable[[PlanningState], dict[str, Any]]
 
 
+#: What the record says when the stage is switched off. A rung of ``off`` is
+#: not the same as a rung that ran and bound nothing, and the difference is the
+#: whole point of recording it.
+RUNG_OFF = "off"
+RUNG_DETERMINISTIC = "deterministic"
+RUNG_MODEL = "model"
+RUNG_ABSTAIN = "abstain"
+
+
 def build_nodes(
     drafter: PlanDrafter,
     cards: dict[str, SourceCardView],
     max_iterations: int,
     classifier: IntentClassifier,
+    config: PlannerConfig | None = None,
 ) -> dict[str, NodeFn]:
     """Return the planner subgraph's node functions, closed over collaborators."""
 
@@ -42,6 +53,77 @@ def build_nodes(
             intent.label, intent.confidence, intent.source,
         )
         return {"intent": intent}
+
+    def canonicalize(state: PlanningState) -> dict[str, Any]:
+        """Rewrite the request into the tier-0 question the engine answers best.
+
+        Between ``classify`` and ``draft`` on purpose: the deterministic fill
+        reads the classified intent to decide the mode, and everything after
+        this node — the drafter, the gate, the specialists, the composer — is
+        untouched and sees only a ``request`` string, exactly as it always has.
+
+        The request is replaced **only** when the form binds and renders. A form
+        with an outstanding slot, a render that cannot be built, and the flag
+        being off are all the same outcome here: the analyst's own words go
+        forward, which is today's behaviour, byte for byte.
+        """
+        original = state.get("original_request") or state["request"]
+        if config is None or not config.rewrite_enabled:
+            return {"rewrite_trace": {"rung": RUNG_OFF}, "original_request": original}
+
+        # Imported here rather than at module scope: the canonical module pulls
+        # in the name index and the schema registry, and the flag is off by
+        # default, so a run that never rewrites should never pay for them.
+        from utils.planner.canonical import FormError, deterministic_fill, render
+
+        form = deterministic_fill(original, cards, state.get("intent"))
+        trace: dict[str, Any] = {
+            "rung": RUNG_DETERMINISTIC,
+            "cache_hit": False,
+            "served_model": "",
+            "unbound": list(form.unbound),
+            "sources": dict(form.sources),
+        }
+
+        if not form.is_bound and config.rewrite_model_enabled:
+            from utils.planner import rewrite_llm
+
+            form, model_trace = rewrite_llm.fill(
+                original, form, cards, config.llm_settings(),
+                cache=rewrite_llm.RewriteCache(config.rewrite_cache_dir),
+            )
+            trace.update(model_trace)
+            trace["unbound"] = list(form.unbound)
+            trace["sources"] = dict(form.sources)
+
+        if not form.is_bound:
+            trace["rung"] = RUNG_ABSTAIN
+            trace.setdefault("rejected", []).append(
+                f"slots still unbound: {list(form.unbound)}"
+            )
+            return {
+                "rewrite_trace": trace, "original_request": original,
+                "intent_form": form.to_dict(),
+            }
+
+        try:
+            canonical = render(form, cards)
+        except FormError as exc:
+            trace["rung"] = RUNG_ABSTAIN
+            trace.setdefault("rejected", []).append(f"could not render: {exc}")
+            return {
+                "rewrite_trace": trace, "original_request": original,
+                "intent_form": form.to_dict(),
+            }
+
+        logger.info("rewrote via %s: %s", trace["rung"], canonical)
+        return {
+            "request": canonical,
+            "canonical_question": canonical,
+            "original_request": original,
+            "intent_form": form.to_dict(),
+            "rewrite_trace": trace,
+        }
 
     def draft(state: PlanningState) -> dict[str, Any]:
         iteration = int(state.get("iteration") or 0) + 1
@@ -79,6 +161,7 @@ def build_nodes(
         )
         plan.trace = list(state["trace"])
         plan.intent = state.get("intent")  # carry the classified intent onto the plan
+        plan.rewrite = _provenance(state)
         return {"plan": plan}
 
     def degrade(state: PlanningState) -> dict[str, Any]:
@@ -93,6 +176,7 @@ def build_nodes(
             max_iterations=max_iterations,
         )
         plan.intent = state.get("intent")  # even a degraded plan reports its intent
+        plan.rewrite = _provenance(state)
         return {"plan": plan}
 
     def route_after_gate(state: PlanningState) -> str:
@@ -104,9 +188,36 @@ def build_nodes(
 
     return {
         "classify": classify,
+        "canonicalize": canonicalize,
         "draft": draft,
         "gate": gate,
         "finalize": finalize,
         "degrade": degrade,
         "route_after_gate": route_after_gate,
     }
+
+
+def _provenance(state: PlanningState) -> dict[str, Any] | None:
+    """The rewrite block for the plan, or ``None`` when the stage never ran.
+
+    ``None`` rather than ``{"rung": "off"}`` for a run with the flag off, because
+    ``Plan.to_dict`` omits the key entirely then — and a plan JSON that gains a
+    field is a plan JSON that no longer matches the captured baselines. The
+    distinction the record needs is between a stage that ran and declined and a
+    stage that was not there, and that is what ``rung`` carries when it *is*
+    present.
+    """
+    trace = state.get("rewrite_trace")
+    if not trace or trace.get("rung") == RUNG_OFF:
+        return None
+    block = {k: v for k, v in trace.items() if v not in ((), [], {}, None, "")}
+    block["rung"] = trace.get("rung", RUNG_OFF)
+    original = state.get("original_request")
+    canonical = state.get("canonical_question")
+    if original:
+        block["original_question"] = original
+    if canonical:
+        block["canonical_question"] = canonical
+    if state.get("intent_form"):
+        block["form"] = state["intent_form"]
+    return block

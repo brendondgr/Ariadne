@@ -129,6 +129,15 @@ class PlanningState(TypedDict, total=False):
     # classify node and copied onto the final plan by finalize/degrade. Typed
     # ``Any`` to keep the state envelope free of the intent import.
     intent: Any
+    # The hybrid rewrite stage (`utils/planner/canonical.py`). ``request`` is
+    # what the drafter sees — the canonical sentence when the stage bound the
+    # form, the analyst's own words otherwise — and ``original_request`` is
+    # always what the analyst asked, so the two are never confused in a record.
+    # ``rewrite_trace`` names the rung that answered; it rides onto the plan.
+    original_request: str
+    canonical_question: str
+    intent_form: Any
+    rewrite_trace: dict[str, Any]
     plan: Plan  # the final (converged or degraded) plan
 
 

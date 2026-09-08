@@ -247,3 +247,21 @@ anchor does not live in. The rejection is recorded in the trace, so Step 7 can
 report how often it happens instead of guessing.
 **Paper implication:** report the per-slot rejection rate. "The gate refused 12%
 of relation picks" is a result about closed choice, not an inconvenience.
+
+## 2026-09-08 — the rewrite provenance rides the `plan` event, not a `context` event
+**Impact:** a deviation from the plan's Step 5, recorded rather than worked
+around. No functional difference to what the UI or a recorded answer can see.
+**Cause:** the plan says the trace is "copied into `run_meta.rewrite` on the
+answer (where `run_meta.synthesis` already lives)" and "emitted as a `context`
+SSE event next to the conversation node's `resolved_question`". Neither place
+exists as described. `SynthesizedAnswer` has no `run_meta` — the only `run_meta`
+in the tree is on the evaluation harness's artifacts — and the `context` event is
+emitted by the conversation layer *before* the pipeline runs, so it cannot carry
+something the planner has not produced yet.
+**Resolution:** the trace rides `Plan.rewrite`, which reaches the UI through the
+existing `plan` SSE event (`api/services/query.py` renders `plan.to_dict()`) and
+any recorded answer through the same dict. `Plan.intent` set the precedent
+exactly: optional, and omitted from `to_dict()` when absent so plan JSON with the
+flags off stays byte-identical to every captured baseline. No webfront change,
+as the plan anticipated.
+**Paper implication:** none.
