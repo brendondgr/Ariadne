@@ -55,3 +55,46 @@ sidecars, so it recorded 90 where there are 30 answers. The grader itself was
 never affected — `answer_files` excludes any name containing `.judgment`, a fix
 made earlier this month — so no figure is wrong. Only the recorded preflight
 number was. Fixed to count through the judge's own selector.
+
+## D4 — Headline values withdrawn; the "8 passes" include the pass being corrected
+
+**Date:** 2026-09-09 (record audit)
+
+A-1 (2026-08-31) says the reported −0.0334 / +0.0000 "should not be quoted",
+but until 2026-09-09 they were still the manifest's `metrics.values` and its
+`primary`. They are now in `metrics.withdrawn` (withdrawn_on 2026-08-31) and the
+A-1 order-corrected eight-pass values −0.0587 / −0.0520 (merged − federated)
+are in `values`; `primary` points at the bank-19 one. RESULTS A-2.
+
+Two caveats on the A-1 figures, established by recomputation from the
+sidecars on 2026-09-09: the "forward, 6 passes" means (−0.0565 / −0.0491)
+reproduce **only if the original `.c015` pass is one of the six** (five
+`.qwen38*` passes + `.c015`), i.e. the eight-pass figure includes the very pass
+"by a model that cannot be identified" that A-1 corrects for; and two of the
+`qwen38` passes (`r3`, `r4`) have n = 29 on one side, so bank 20's forward mean
+is −0.0490 paired / −0.0480 unpaired. Without `.c015` the seven-pass figures
+are −0.0610 / −0.0571. None of this changes A-1's reading; it is recorded so
+the eight-pass number is not mistaken for eight passes by a named model.
+
+The quotable cross-grader readings of the same contrast are EXP-2026-08-021
+(+0.0625 / +0.0567, five `qwen38-27B-v2` sessions, **generic − merged sign**)
+and EXP-2026-09-006 (+0.0608 / +0.0581 qwen; +0.0500 / +0.0400 gemma,
+saturated).
+
+## D5 — Provenance gaps closed in place
+
+**Date:** 2026-09-09
+
+`code.commit` was the 7-character `79e11b0`; it is now the full
+`79e11b0ed11e6566cd0ce8f931db3aaed73dbd45` (2026-08-21 11:55:01 −0400,
+"Correct the C-015 control", verified with `git log`). `llm.model` was
+`relay/skynet` with a truncated comment ("no model is in the loop for  or ");
+the `.c015` grader's served model is not recorded in any sidecar
+(`{"model": "skynet"}` only) and A-1 already calls it unidentified, so it is now
+`relay/unknown@2026-08-21`. `nondeterminism_note` was template text and now
+says what was actually done. `data/POINTERS.md` was the blank scaffold and is
+filled.
+
+Unrecorded dependency: EXP-2026-08-011 I-13 notes that the `describe` id-column
+widening (2026-08-22) is a behavioural change to the merged store measured
+here; every figure here predates it. EXP-2026-08-011 is added to `related`.

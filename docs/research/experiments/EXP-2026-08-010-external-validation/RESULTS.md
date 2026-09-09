@@ -142,3 +142,38 @@ remain. Widening the pinned `(t:Technique)` target would take overall recall to
 techniques for exactly those templates on purpose, and the two external
 benchmarks disagree with each other about which reading is right. A tested patch
 is kept at EXP-2026-08-012 `data/proposed-fix1-widen-target.patch`.
+
+## AMENDMENT A-1 (2026-09-09) — Manifest placeholders filled, pointers hashed, refinement by EXP-2026-08-012 recorded
+
+Written during the 2026-09-09 record audit. **No figure above changes**: all
+17 manifest values, the headline table, the by-benchmark table and the four
+zero families were re-scored offline from the stored answer files with
+`scripts/external_validation.py::score_cell` and reproduce exactly.
+
+**Manifest fields corrected in place (old → new), ISSUES I10:**
+
+| field | old | new | established by |
+|---|---|---|---|
+| `code.commit` | `fa4c941` | `fa4c94183832b0857dd8b83a7ac0c8f7cefa8d7f` | `git log` (2026-08-21 16:37:51 −0400); artifacts 16:38–17:21 |
+| `compute.hardware` | `<cpu/gpu, ram>` | `unknown` | never recorded |
+| `llm.model` | `<provider>/<model>@<version-or-date>` | `relay/unknown@2026-08-21` | `generic` and `llm` arms ran the relay alias `skynet`; served model unrecorded |
+| `llm.max_tokens` | 2048 | 16384 | `scripts/external_validation.py:155` |
+| `llm.nondeterminism_note` | template text | one run per arm, no std; model arms not repeated | this record |
+| `seeds` | `[]` | `[20260821]` | `metrics.json` `sample_seed` (the 60-item AttackQA draw) |
+| `related` | 007, 008, 009 | + `EXP-2026-08-012` | see below |
+
+**`data/metrics.json`** is a byte-identical copy of the sweep's `metrics.json`;
+it now also carries a top-level `manifest_metrics` object (the 17 manifest
+values, including `ariadne_minus_oracle_recall` −0.3027 = 0.6836 − 0.9863,
+which was previously only in `data/manifest_metrics.json`).
+
+**`data/POINTERS.md`** was the blank scaffold and now hashes the run directory,
+`state.json`, `metrics.json`, `REPORT.md` and the four answer directories
+(nothing has been added since the run).
+
+**Refinement, not supersession.** The "Superseding note" above already says
+EXP-2026-08-012 closed the four dead families (deterministic external recall
+0.6836 → 0.7633, families at ceiling 8 → 12 of 14). The figures here stand as
+the measurement of the system as it was on 2026-08-21 16:38 and remain the
+"before" side of every EXP-2026-08-012 delta; this experiment therefore keeps
+`status: complete` and names EXP-2026-08-012 in `related`.

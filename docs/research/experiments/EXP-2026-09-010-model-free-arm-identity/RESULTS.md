@@ -116,3 +116,80 @@ were excluded and 276 compared.**
   have no reason to think so and no evidence either way.
 - Two runs give identity or non-identity. They do **not** give a distribution over
   wordings, and no claim here depends on one.
+
+---
+
+## AMENDMENT A-1 (2026-09-09) — record repair: the manifest was a scaffold with results bolted on
+
+**What was wrong.** `manifest.yaml` carried `status: complete` with
+`date_completed: null`, `authors: []`, template prose in `purpose` and
+`hypothesis`, `code.entrypoint: "<exact command>"`, `data.*` placeholders
+with `n_examples: 0`, `compute.hardware: "<cpu/gpu, ram>"` with
+`wall_clock_hours: 0.0`, `llm.model: "<provider>/<model>@<version-or-date>"`
+with `max_tokens: 2048`, and `metrics.primary: identity_rate_content` — a
+name that is not a key in `metrics.values`. `data/POINTERS.md` was the empty
+template, `data/metrics.json` did not exist, and `ISSUES.md` was empty although
+`code.dirty: true`, `seeds: []`, three guard defects (PROTOCOL A-1..A-3) and a
+deliberate endpoint deviation are all ISSUES-shaped.
+
+**What is now recorded (old → new), and how each was established.**
+
+| field | was | is | established from |
+|---|---|---|---|
+| `date_completed` | `null` | `2026-09-07` | `b-try1` capture `finished` 2026-09-07T00:00:05 (`generic-rerun-state.json`); completion commit `e76eab1` 00:03 |
+| `authors` | `[]` | `[brendondgr]` | git author of `9e79114`, `0f2d81b`, `1bcf3bb`, `62d7097`, `e76eab1` |
+| `purpose`, `hypothesis` | template text | filled from PROTOCOL.md; H1–H3 quoted with outcomes | PROTOCOL.md (2026-09-06, before any run) and its amendments |
+| `code.entrypoint` | `<exact command>` | `arm_identity_check.py --workers 32` → `generic_identity_rerun.py` → `arm_identity_analyse.py` | the three scripts' docstrings |
+| `data.*` | placeholders, `n_examples: 0` | `bank-dev.json`, dev half, 284, `hash` = pre-flight sha256 | `run-state.json` and `generic-rerun-state.json` `preflight.bank_sha256`; re-hashed 2026-09-09, identical |
+| `compute.hardware` | placeholder | CPU-only deterministic arm; narrator on `:9090/default-model` (re-run) / `:4000/skynet` (first pair); 32 workers | `generic-rerun-state.json` `narrator`; PROTOCOL A-2; RESULTS Limits |
+| `compute.wall_clock_hours` | `0.0` | `1.1` | sum of the six recorded `elapsed_s` (3,896 s); the aborted `a-try2` attempt is unrecorded |
+| `llm.model` | placeholder | `relay/qwen38-27B-v2@2026-09-06` | `generic-rerun-state.json` `preflight.narrator`, read from the response envelope |
+| `llm.max_tokens` | `2048` (template) | `16384` | the context-overflow message quoted in PROTOCOL A-3 ("requested 16384 output tokens") |
+| `llm.nondeterminism_note` | template | states what was measured and what was excluded | this RESULTS |
+| `metrics.primary` | `identity_rate_content` (not a key) | `identity_rate_deterministic` | the headline row of the table above; `identity_rate_generic` is the second |
+| `related` | `[]` | `[EXP-2026-09-002, -005, -007, -009, -011]` | the single-draw `generic` figures this bears on, and the sibling seeded experiments |
+
+No value in `metrics.values` changed. The 2026-09-09 audit (verify-b6,
+`r010.py`) reproduced 284/284 (excluding `timing_ms` + `wall_s`), 2/284
+(excluding `timing_ms` only), and 276 / 133 / 0.4819 / 143 under the documented
+exclusion of the eight transient-failure answers, and confirmed
+`run_meta.synthesis` = `deterministic` / `llm (claim-grounded)` on the captures.
+
+**Pointers.** `data/POINTERS.md` now lists both capture trees and the bank
+file with bytes and SHA-256 as of 2026-09-09; neither tree has been written to
+since 2026-09-07 00:00. **Metrics file.** `data/metrics.json` created with every
+`metrics.values` entry, the deterministic comparison block from
+`run-state.json`, the final generic comparison block from
+`generic-rerun-state.json`, and the invalidated first pair labelled as such.
+
+## AMENDMENT A-2 (2026-09-09) — `data/identity-analysis.json` holds the invalidated first `generic` pair
+
+`data/identity-analysis.json` is titled as this experiment's analysis and its
+`generic` block reports 224/284 identical (0.7887), "DIFFERS IN A SCORED
+FIELD", with `answer.fallback_reason` differing on 60 answers. That is the
+**first** generic pair — `arm-identity-2026-09-06/{a,b}` — whose run B lost its
+narrator on 60 of 284 answers and which PROTOCOL A-2 records as `not_run`. The
+file was written by `scripts/arm_identity_analyse.py` at `1bcf3bb`
+(2026-09-06 19:38) and nothing in it said so. The figures this RESULTS and the
+manifest report for `generic` (276 compared, 133 identical, 0.4819,
+`answer.narrative` 143) come from the guarded re-run and live only in
+`data/generic-rerun-state.json`. Its `deterministic` block (2/284 → 284/284) is
+the reported result.
+
+The file is kept — it is the evidence for A-2 — and gains a
+`status_2026-09-09` field saying the above. Nothing else in it was changed.
+
+## AMENDMENT A-3 (2026-09-09) — the "~0.7 % per-answer rate → P = 0.134" line is unsourced
+
+§"Method notes" (lines 97–99) says the acceptance rule failed arithmetically
+because "at the observed ~0.7 % per-answer rate, P(a capture is perfect) =
+0.134". (1 − 0.007)^284 = 0.136, so the line is internally consistent, but no
+file in `data/` records a 0.7 % rate. What the manifest records is
+`transient_failure_rate_per_answer` **0.0176** (5 transient failures per
+capture, `generic-rerun-state.json` `corrupt_rate`), under which
+P(perfect capture) = (1 − 0.0176)^284 = **0.0065** — which makes the argument
+stronger, not weaker: demanding perfect captures was even less likely to
+succeed than the prose says. The 0.7 % figure is not corrected because its
+source cannot be established; it should not be quoted. The conclusion (exclude
+the failed answers rather than demand a perfect capture; 8 excluded, 276
+compared) is unaffected.

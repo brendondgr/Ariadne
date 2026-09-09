@@ -82,3 +82,32 @@ claim, and C-ABS role labelling). Remaining, tracked in
 **Not reproducible.** The pipeline configuration it graded no longer exists, and
 the judging step ran 120 external Sonnet 5 agents. The artifacts are archived
 and hashed in [`data/POINTERS.md`](data/POINTERS.md); treat them as the record.
+
+---
+
+# AMENDMENTS
+
+## AMENDMENT A-1 (2026-09-09) — The per-question verdicts were unpointed; one pointer description was wrong
+
+**What was wrong.** `data/POINTERS.md:9` described
+`docs/evaluation/archive/independent-eval.json` (453 bytes) as "Per-question
+verdicts". It holds only the aggregate scores. The per-question verdicts this
+experiment's every number is computed from are the 120 `*.judgment.json` files
+under `docs/evaluation/answers/`, which this record did not point at (they
+were hashed only under `EXP-2026-07-009`'s pointer table, where they were in
+turn mis-described as that run's judge output).
+
+**What is now correct.** The L9 description is corrected in place, and a row is
+added pointing at `docs/evaluation/answers` (1 543 550 bytes, tree hash
+`sha256:c0828b08…`, computed 2026-09-09 with
+`uv run python -m utils.research_record.hashing`). The B2 audit of 2026-09-09
+recomputed correctness 0.8946, completeness 0.8952, faithfulness 0.9558,
+groundedness 0.9575, verdicts 91 / 27 / 2 and 11 hallucination answers from
+exactly those 120 files; all reproduce.
+
+**Nothing else changes.** `status: superseded` and `superseded_by:
+EXP-2026-07-001` stand (the other side of that link is being set in
+`EXP-2026-07-001`'s manifest in the same repair pass). Note for readers: the
+superseding experiment carries a *lower* ID number — IDs were assigned when the
+record was back-filled on 2026-08-06 and do not follow chronology. This
+experiment (2026-07-20) precedes the seven-arm study (2026-07-26).

@@ -87,3 +87,34 @@ only 2 pairs, because the draw never asks one entity both ways.
 
 **Refuse to conclude:** that −0.0797 covers the whole bank. It covers the paired
 subset, which is what makes it unconfounded and also what limits it.
+
+## I-9 — 2026-09-09: seeds and lockfile
+
+`seeds: []` is accurate rather than an omission: the dev/holdout split is
+`sha256(spec_id)` parity, the two model-free arms are deterministic, and the
+grader and `llm_query` arm ran at temperature 0 with no seed parameter exposed
+by the relay. `environment.lockfile` pointed at `env/requirements.lock`, which
+was never written; set to `null` in A-1. The dependency set is `uv.lock` at
+`54dbfe0`.
+
+## I-10 — 2026-09-09: `score.json` was overwritten after this experiment read it
+
+**Impact:** the POINTERS hash for `docs/evaluation/composition/bank/score.json`
+stopped matching on 2026-09-08. The values this experiment quotes from it
+(0.4522 / 0.506 / 37 of 61 / dev 0.435 / holdout 0.4683) are unchanged in the
+rewritten file's `report` block, and the audit recomputed 37/61 from the
+`eeef322` rows.
+**Cause:** `a460fa2` (Hybrid Rewrite Stage 6/8) re-ran `scripts/score_bank.py`
+over the same answers with new provenance columns and wrote to the same path.
+**Resolution:** row re-hashed; the original blob
+(`sha256:6fb4eaf1168e7960065f912cdb2a220726ec1a5b035f00fac60c7652aa29e048`,
+233,633 B) is recoverable with `git show eeef322:docs/evaluation/composition/bank/score.json`.
+**Paper implication:** none.
+
+## 2026-09-09 — the morning report moved into the research record
+**Impact:** none on any number. The report this experiment points at,
+`2026-09-02-overnight-report.md`, lived in `docs/reports/`, a second report
+location outside `docs/research/` (noted above as "outside the research
+record"). On 2026-09-09 every file in `docs/reports/` moved to
+`docs/research/reports/` and that directory was removed; the POINTERS row's
+path is updated and its hash is unchanged.

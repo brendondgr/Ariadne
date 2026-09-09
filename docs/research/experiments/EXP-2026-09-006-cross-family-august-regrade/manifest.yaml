@@ -34,10 +34,10 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: 18dc0249a62856f72621e18871a7a3118a21a2d6          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: 514ddda8fcdb53d6fad9306c70e92a32dc3e5476          # A-1: was 18dc024 (the plan commit, 10:44); 514ddda (10:54) pre-registered this folder and added cross_family_regrade.py
   branch: main
   entrypoint: "uv run python scripts/cross_family_regrade.py --track {gemma,qwen} --phase c021 c022 c012 rest; then scripts/cross_family_rollup.py"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  dirty: true             # six commits landed during the 10:52-13:36 grading window (9bf0edb, 186622c, 91ac5ff, a6fc52a, 5cffc8b, bf8e5c9); see ISSUES I-8
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
@@ -52,11 +52,11 @@ seeds: []                  # [] means seeds were not recorded — say so in ISSU
 n_runs: 2   # two grading positions per grader, swapped
 environment:
   python: "3.13"
-  lockfile: env/requirements.lock
+  lockfile: null           # A-1: was env/requirements.lock, never written; dependencies are uv.lock at code.commit (ISSUES I-8)
   container: null
 compute:
   hardware: "two local vLLM instances on separate GPUs behind the :9090 relay; client-side only on this host"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 2.7    # A-1: was 0.0 (placeholder); first sidecar 2026-09-05 10:52, last 13:36 (1,320 sidecar mtimes)
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -104,7 +104,7 @@ metrics:
     c022_margin_bank20_gemma: {mean: 0.0400, std: 0.0, n: 30}
     between_family_mean_abs_offset: {mean: 0.0355, std: 0.0, n: 12}
     saturated_cells_gemma: {mean: 6.0, std: 0.0, n: 12}
-    grading_failures: {mean: 2.0, std: 0.0, n: 1338}        # both transient 400s; both cleared on retry
+    grading_failures: {mean: 2.0, std: 0.0, n: 1320}        # both transient 400s; both cleared on retry. A-1: n was 1338, which matches nothing on disk; 1,320 = the sidecars this experiment wrote (510 .g31 + 510 .g31p2 + 150 .q38b + 150 .q38bp2)
 baselines_compared: ["EXP-2026-08-021 five qwen sessions", "the unidentified August pass (retained as history, never as a baseline)"]
 statistical_test: "sign-stability of paired contrasts across grader families; ordering by pairwise rank with ties excluded in either grader"
 
@@ -113,4 +113,4 @@ supports_claims: [C-009, C-012, C-021, C-022]        # every ID here must exist 
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
 superseded_by: null
-related: [EXP-2026-08-007, EXP-2026-08-008, EXP-2026-08-009, EXP-2026-08-021, EXP-2026-08-022, EXP-2026-09-005]
+related: [EXP-2026-08-007, EXP-2026-08-008, EXP-2026-08-009, EXP-2026-08-021, EXP-2026-08-022, EXP-2026-09-005, EXP-2026-09-007]   # A-1: 007 spent the holdout after this gate, under D-029

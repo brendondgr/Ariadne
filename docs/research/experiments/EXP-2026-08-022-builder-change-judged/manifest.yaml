@@ -31,7 +31,7 @@ code:
   commit: bfac8cc3e933aaf61ca6ced3be81f7534cfcbaa0          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
   entrypoint: "experiment_untruncated --arm deterministic per bank, then judge_answers over both conditions per session; scripts/builder_change_judged.py"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  dirty: true             # scripts/builder_change_judged.py and this folder were uncommitted until 338ad90, after the four sessions (ISSUES 2026-09-09)
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
@@ -42,7 +42,7 @@ data:
   n_examples: 120
   dvc_path: null           # this repository does not use DVC; leave null
   hash: null               # md5:... or sha256:... of the dataset artifact
-seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+seeds: []                  # no seed: both answer conditions are LLM-free and byte-reproducible; the grader call has no seed parameter and runs at temperature 0 (ISSUES 2026-09-09)
 n_runs: 4   # three forward grading sessions plus one order-reversed
 environment:
   python: "3.13"
@@ -50,7 +50,7 @@ environment:
   container: null
 compute:
   hardware: "local vLLM relay, localhost:4000; answer generation is CPU-only and LLM-free"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 2.5    # was 0.0; new-builder answers from 17:45, sessions .bld1-.bld3 and .bldrev 17:57-20:17 on 2026-08-31, from file mtimes (A-1)
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -70,7 +70,7 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: difference_in_differences
+  primary: did_bank19
   values:
     did_bank19: {mean: 0.0019, std: 0.0172, n: 4}
     did_bank20: {mean: -0.0167, std: 0.0170, n: 4}

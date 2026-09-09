@@ -7,7 +7,7 @@ slug: variant-robustness
 title: "How much of the deterministic router's correctness survives paraphrase, and where does it break?"
 status: complete            # planned | running | complete | failed | superseded
 date_started: 2026-08-29
-date_completed: 2026-08-29       # null until status is complete/failed
+date_completed: 2026-08-31       # was 2026-08-29 (Arm 0 only); Arms 4-6 and Step 6 ran 2026-08-30 23:57 - 2026-08-31 11:39 and the last artifact (scored_arm6.json) was committed at 9f02dc6 on 2026-08-31 (A-1)
 authors: ["brendondgr"]
 
 purpose: >
@@ -31,7 +31,7 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: b040e185c97058445f039ae6dab20f1f45aa105f          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: 0ae78c1948adcd521aeeea5482b7b6d0ec809ad6          # the commit that introduced scored_arm0.json (Arm 0, the primary metric); was b040e185 ("2a/8", the authoring commit before Arm 0 ran). Each later arm's artifact-introducing commit is listed in RESULTS A-1 and ISSUES
   branch: main
   entrypoint: "uv run python scripts/variant_harness.py compare --out docs/evaluation/variants-2026-08-29"
   dirty: false            # uncommitted changes at run time? if true, explain in ISSUES.md
@@ -76,7 +76,7 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: records_exact
+  primary: records_exact_T4
   values:
     records_exact_T1: {mean: 0.4667, std: 0.0, n: 120}
     records_exact_T2: {mean: 0.4250, std: 0.0, n: 120}
@@ -110,4 +110,4 @@ supports_claims: ["C-001", "C-010", "C-021"]        # every ID here must exist i
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
 superseded_by: null
-related: []
+related: [EXP-2026-08-022, EXP-2026-09-014]   # 022 judges the 9f02dc6 builder change Arm 6 shipped; 09-014 re-uses this variant bank and re-captured the Arm 6 reference on 2026-09-08 (A-1)

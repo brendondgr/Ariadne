@@ -5,7 +5,7 @@
 id: EXP-2026-08-005
 slug: binding-direction-portability
 title: Is the blind holdout's directional loss a property of these templates, or of a missing schema-driven check?
-status: complete          # planned | running | complete | failed | superseded
+status: superseded        # set 2026-09-09 (RESULTS A-2): EXP-2026-08-006, 34 minutes later, replaced the 0.8952 blind headline on the same arm and bank with 1.0000
 date_started: 2026-08-18
 date_completed: 2026-08-18
 authors: ["brendondgr", "Claude Opus 5"]
@@ -29,10 +29,10 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: 63c2d2a48ab5d2b03601f9e3b834ed41a2d86b07          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: 63c2d2a48ab5d2b03601f9e3b834ed41a2d86b07          # 15:10:04; the artifacts (15:08–15:09) predate it by 1–2 min. 63c2d2a adds only a changelog line, so its code tree is 8ac1049's (15:07:50), the tree the run used (RESULTS A-1)
   branch: main
   entrypoint: "uv run python -m utils.evaluation.experiment_untruncated --arm deterministic [--bank utils/specialists/tests/golden/holdout_questions.json]"
-  dirty: false            # uncommitted changes at run time? if true, explain in ISSUES.md
+  dirty: false            # not verifiable from the artifacts — see ISSUES 2026-09-09 and RESULTS A-1
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
@@ -47,11 +47,11 @@ seeds: []                  # [] means seeds were not recorded — say so in ISSU
 n_runs: 1
 environment:
   python: "3.13"
-  lockfile: env/requirements.lock
+  lockfile: null             # was env/requirements.lock, which does not exist; the repository lockfile is uv.lock at root, not snapshotted per run (RESULTS A-1)
   container: null
 compute:
   hardware: "local workstation, CPU only; Neo4j + Gremlin in Docker"
-  wall_clock_hours: 0.01
+  wall_clock_hours: 0.002    # 1.9 + 1.1 s (fix runs) + 2.4 + 0.9 s (baseline runs) = 6.3 s from the four run manifests; was 0.01 (RESULTS A-1)
   estimated_cost_usd: 0.0
 
 # --- Results block ---
@@ -68,5 +68,5 @@ statistical_test: null
 supports_claims: [C-001, C-003, C-010, C-014]
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
-superseded_by: null
-related: [EXP-2026-08-001, EXP-2026-08-002, EXP-2026-08-003, EXP-2026-08-004, EXP-2026-07-011]
+superseded_by: EXP-2026-08-006   # set 2026-09-09 (RESULTS A-2)
+related: [EXP-2026-08-001, EXP-2026-08-002, EXP-2026-08-003, EXP-2026-08-004, EXP-2026-07-011, EXP-2026-08-006, EXP-2026-08-007]

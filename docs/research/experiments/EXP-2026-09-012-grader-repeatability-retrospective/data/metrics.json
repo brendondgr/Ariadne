@@ -1,0 +1,132 @@
+{
+ "experiment": "EXP-2026-09-012",
+ "source": "manifest, back-filled 2026-09-09; the cell means are data/recompute-audit.json (canonical; data/2026-09-07-recompute-audit.json is an earlier copy that still includes one contaminated cell, A-3); the 22-cell across-pass table in RESULTS.md was aggregated from those cells under the family rule stated in RESULTS A-2",
+ "manifest_metrics": {
+  "grader_repeatability_sd_median": {
+   "mean": 0.0066,
+   "std": 0.0,
+   "n": 22
+  },
+  "grader_repeatability_sd_mean": {
+   "mean": 0.0093,
+   "std": 0.0,
+   "n": 22
+  },
+  "grader_repeatability_sd_min": {
+   "mean": 0.0021,
+   "std": 0.0,
+   "n": 22
+  },
+  "grader_repeatability_sd_max": {
+   "mean": 0.0242,
+   "std": 0.0,
+   "n": 22
+  },
+  "cells_with_three_or_more_passes": {
+   "mean": 22.0,
+   "std": 0.0,
+   "n": 22
+  },
+  "grading_passes_analysed": {
+   "mean": 117.0,
+   "std": 0.0,
+   "n": 117
+  },
+  "sd_llm_query": {
+   "mean": 0.0218,
+   "std": 0.0,
+   "n": 2
+  },
+  "sd_merged": {
+   "mean": 0.0151,
+   "std": 0.0,
+   "n": 4
+  },
+  "sd_deterministic": {
+   "mean": 0.0073,
+   "std": 0.0,
+   "n": 7
+  },
+  "sd_generic": {
+   "mean": 0.0053,
+   "std": 0.0,
+   "n": 3
+  },
+  "sd_generic_composed": {
+   "mean": 0.0047,
+   "std": 0.0,
+   "n": 4
+  },
+  "cells_recomputed_total": {
+   "mean": 218.0,
+   "std": 0.0,
+   "n": 218
+  },
+  "cells_absent_from_manifests": {
+   "mean": 142.0,
+   "std": 0.0,
+   "n": 218
+  },
+  "quarantined_sidecars_excluded": {
+   "mean": 30.0,
+   "std": 0.0,
+   "n": 30
+  },
+  "grading_passes_recomputed_2026_09_09": {
+   "mean": 115.0,
+   "std": 0.0,
+   "n": 115
+  },
+  "sd_deterministic_recomputed_2026_09_09": {
+   "mean": 0.0068,
+   "std": 0.0,
+   "n": 7
+  }
+ },
+ "canonical_audit_file": "data/recompute-audit.json",
+ "cells_in_canonical_audit": {
+  "matched": 76,
+  "unmatched": 142
+ },
+ "recomputed_2026_09_09_under_inferred_rule": {
+  "rule": "suffix families: g31*/gem* -> gemma; cross* -> cross; unsuffixed/qw*/q/q1/q2/pass2 -> qwen; .c015/.c022rev1/.c022rev2 pooled as one family; .bld1/.bld2/.bld3/.bldrev pooled as one family; every other suffix its own name",
+  "cells": 22,
+  "passes": 115,
+  "median": 0.0066,
+  "mean": 0.0092,
+  "min": 0.0021,
+  "max": 0.0242,
+  "by_arm": {
+   "llm_query": {
+    "cells": 2,
+    "mean_sd": 0.0219,
+    "max": 0.0234
+   },
+   "merged": {
+    "cells": 4,
+    "mean_sd": 0.0152,
+    "max": 0.0242
+   },
+   "gold_loop_llm": {
+    "cells": 2,
+    "mean_sd": 0.0075,
+    "max": 0.009
+   },
+   "deterministic": {
+    "cells": 7,
+    "mean_sd": 0.0068,
+    "max": 0.0156
+   },
+   "generic": {
+    "cells": 3,
+    "mean_sd": 0.0053,
+    "max": 0.0084
+   },
+   "generic_composed": {
+    "cells": 4,
+    "mean_sd": 0.0047,
+    "max": 0.0072
+   }
+  }
+ }
+}

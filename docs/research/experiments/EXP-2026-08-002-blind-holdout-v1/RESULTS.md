@@ -148,3 +148,62 @@ cliff no longer rests on a question anyone can dismiss as broken; it rests on
 **Incidental, and consistent with C-009:** the local grader scored these two
 PARTIAL at 0.25 and 0.35 where Sonnet scored them INCORRECT at 0.10 and 0.02 —
 the same overstatement direction recorded elsewhere in the study.
+
+## AMENDMENT A-2 (2026-09-09) — Provenance repaired: an invented commit sha, a blank pointer table, no metrics file, a primary metric that named no key
+
+**What was wrong, and what is now correct.** Nothing was re-run; every number
+in this record was recomputed by the B2 audit of 2026-09-09 from the 30 + 30
+original `*.judgment.json` files and reproduced exactly (0.689, CI 0.550–0.817,
+17 CORRECT, 1 hallucination, 0.7093 excl. `H-SW-01`; 0.7083, CI 0.565–0.838,
+19 CORRECT, 0.7293 excl.).
+
+1. `manifest.yaml:27` recorded `code.commit:
+   ce3a2d2b7f0e6b0e9e4c9c9a2b0d3f5a7c1e8d94`. **No such object exists** — the
+   first seven characters are right and the remaining 33 were padded. The
+   commit is `ce3a2d2810ba5d2199d4fea18ac7824b6d9554bf` ("Holdout Execution
+   (7/8): Run and grade Arm F, and fix one compiler deviation", 2026-08-09
+   13:11 −0400, on `claude/holdout-execution-process-8d74cd`, merged in
+   `336d5ef`), verified with `git cat-file -e`. It is also the last commit to
+   touch `holdout_questions.json`. **Old → new** as stated.
+2. `data/POINTERS.md` was the blank scaffold (one empty row). It now lists
+   eight artifacts with hashes: `results.json`, `README.md`, `anchors.json`,
+   `authored.json`, `author-prompt.md`, the blind bank, and the two raw output
+   directories. The Arm A directory
+   (`docs/evaluation/experiments/holdout-v1/deterministic`) has **gained 60
+   files since this experiment ran**: 30 `*.judgment.local.json` and 30
+   `*.judgment.local.pre-qwen38.json`, dated 2026-08-31, written by
+   `EXP-2026-08-021`'s grader-calibration passes (that experiment's POINTERS
+   names the `pre-qwen38` set as its preserved Ornith-era calibration
+   artifacts). The 30 answer files and 30 original judgment files are dated
+   2026-08-09 and are the files the recomputation above used; the tree hash
+   recorded pins the directory as it now stands, sidecars included, and the
+   pointer row says so. The Arm F directory has no later files.
+3. `data/metrics.json` did not exist. Created, with `manifest_metrics` copied
+   from the manifest and the per-arm aggregates (CIs, Wilson intervals,
+   strata, categories, development comparison) read from `results.json`
+   rather than typed.
+4. `manifest.yaml:74` set `metrics.primary: correctness`, which is not a key
+   in `metrics.values`, so `INDEX.md` rendered this experiment as
+   "correctness (not recorded)". **Old:** `correctness` → **new:**
+   `arm_a_blind_correctness` (0.689), the figure the gate decision was taken
+   on.
+5. `manifest.yaml:49` `compute.wall_clock_hours` **0.16 → 0.154**: 1.0 s +
+   554.0 s from the run logs (ISSUES §4 explains why the per-arm
+   `manifest.json` files cannot confirm this — they were overwritten by the
+   two-case re-run).
+6. `manifest.yaml:54` named the Arm F pipeline model as "local/skynet
+   (gemma4-31B-mtp via vLLM)". Rewritten in the format
+   `docs/evaluation/README.md` prescribes — `relay/gemma4-31B-mtp@2026-08-09`
+   — with no change in substance: that is what was recorded at run time via
+   the relay, not verified from the serving side. The Author and judge fields
+   are unchanged.
+
+**Later work on this bank (refinement, no supersession).** `EXP-2026-08-003`
+(2026-08-10) ran Arm H against these 30 questions, and `EXP-2026-08-007`
+(2026-08-19) re-judged the same bank after the binding/direction and
+outer-join repairs: cascade **0.8367**, Arm H 0.8483, Arm F **0.9157** (its
+manifest values). Those are post-repair figures on a bank that had already
+diagnosed the repaired defect, and `EXP-2026-08-005` ISSUES says why such a
+number is a diagnostic rather than a headline; the 0.689 / 0.708 here remain
+the only blind pre-repair figures. Both experiments are added to `related`.
+`status: complete` and the null supersession links stand.

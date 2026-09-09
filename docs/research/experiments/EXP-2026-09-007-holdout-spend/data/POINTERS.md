@@ -1,17 +1,35 @@
 # POINTERS — EXP-2026-09-007
 
-Large artifacts live outside `docs/research/`, which must stay cloneable in
-seconds. This file is the only link between this experiment and its raw run
-output. **Every entry needs a hash** — the validator rejects a pointer without
-one, because a path alone does not tell you whether the file still holds what
-it held when the number was computed.
+Filled 2026-09-09 (A-5); the table was the unfilled template until then. Raw run
+output is gitignored and lives under `docs/evaluation/experiments/`; the
+`data/*.json` roll-ups in this folder are committed and are listed at the end so
+their hashes travel with the record. Directories carry a tree hash
+(`utils/research_record/hashing.py::sha256_tree`); regenerate with
+`uv run python -m utils.research_record.hashing <path>`.
 
 | Artifact | Path (repo-relative) | Bytes | SHA-256 | What it is |
-|---|---|---|---|---|
-| | | | | |
-
-Regenerate hashes with:
-
-```bash
-uv run python -m utils.research_record.hashing <path>
-```
+|---|---|---:|---|---|
+| holdout bank | `docs/evaluation/composition/bank/bank-holdout.json` | 620114 | `sha256:ad91872d708ea0cd48311319249b56d93e2abd13ce3d72efe886d1b8f70246f1` | the 288 sealed questions, cut from `bank.json` by `holdout_seal.py --write-bank`; question-set hash `812ab787…` is in `run-state.json` and `data.version` |
+| bank (full) | `docs/evaluation/composition/bank/bank.json` | 1188163 | `sha256:ad99afb18934bd7db233c292d235a4350c332114c357ea624123031ff0ab434e` | unchanged since the EXP-2026-09-002 preflight |
+| deterministic answers + judgments (gitignored) | `docs/evaluation/experiments/holdout-spend-2026-09-05/deterministic/answers` | 26556772 | `sha256:acab6b29aec8a06cdc22ad0c681bbbc507573c8009bac6ce348344fa21f94cb9` | 1,440 files: 288 answers (11:27) + 288 each `.judgment.qw` (16:28–17:15), `.qwp2` (19:10–20:09), `.gem` (13:37–14:21), `.gemp2` (2026-09-06 00:30–00:49). Recomputes 0.4862 [0.4529, 0.5201] and gemma 0.4320 exactly |
+| generic answers + judgments (gitignored) | `docs/evaluation/experiments/holdout-spend-2026-09-05/generic/answers` | 9158067 | `sha256:9ad02f8529d6cddf6787ba3705e3a65740a876bc4d23d3343467feab3bdbbfdf` | 1,440 files, same layout; answers 11:27–12:05. Recomputes 0.6546 [0.6218, 0.6875] and gemma 0.6464 exactly |
+| llm_query answers + judgments (gitignored) | `docs/evaluation/experiments/holdout-spend-2026-09-05/llm_query/answers` | 5231932 | `sha256:28596fcddf28e6033683d2453dacc88543be9ceb5e7c7a764c26767fdce90f4a` | 1,445 files: 288 answers (12:39–16:27, 13,912 s) + 288 each `.qw`, `.qwp2`, `.gem` (2026-09-06 00:03–00:30), `.gemp2` (2026-09-06 01:12–01:30) + 3 `.qw.error.txt` and 2 `.qwp2.error.txt` from retried calls (ISSUES I-2). Recomputes 0.4039 [0.3732, 0.4363] and gemma 0.3678 exactly |
+| pre-repair holdout answers (gitignored) | `docs/evaluation/experiments/expansion-2026-09-01/deterministic/answers` | 47007195 | `sha256:c523e069d0c29f3679810c98e1d1398f252e3b51ac564e0c2866f6ddd74d21d3` | the 2026-09-02 model-free run over all 572; its 288 holdout rows re-scored under the property-gold rule give `recall-deterministic-prerepair.json` (0.4911 / 0.4848; `recall_before` recovers the published old-scorer 0.4683) |
+| post-repair dev answers (gitignored) | `docs/evaluation/experiments/post-repair-2026-09-03/deterministic/answers` | 24872613 | `sha256:e3db4bb1c730efd64183249f8ac4d849d1777a1c026b5573e45208ea4f46440f` | EXP-2026-09-005's directory (now with later gemma sidecars, see that experiment's A-2); source of `dev_post` 0.5176 in `recall-summary.json` |
+| dev two-grader roll-up | `docs/evaluation/composition/bank/two-grader-judged.json` | 1379 | `sha256:73c965973d6a0723839d46c0b591f6a3d47ea43388157ca4ae6692bce2b9d3e0` | the six `dev_*` figures A-2 moved into this manifest (qwen 0.4946 / 0.6569 / 0.3781; gemma 0.4175 / 0.6659 / 0.3478; contrasts and CIs). Committed `e83ed62`, 2026-09-05 13:37 |
+| dev llm_query answers + judgments (gitignored) | `docs/evaluation/experiments/llm-query-split-2026-09-05/llm_query/answers` | 3108206 | `sha256:9bc9d4c721705de9fcff67ccc21193ed8f16b94cad745462a2beadada0cf0fba` | 1,420 files: 284 answers, qwen `.judgment`/`.pass2` (281 + 281, 3 + 3 `.error.txt`), gemma `.gemma`/`.gemma2` (284 + 284). The re-run of the dev `llm_query` arm at the settled budget behind `dev_qwen_llm_query` 0.3781 (n = 283) and `dev_gemma_llm_query` 0.3478 (A-5 §5, ISSUES I-8) |
+| seal | `scripts/holdout_seal.py` | 6544 | `sha256:9e912c7d40ddb4f1963651abdbdaefa01c32c8b50ecf9b1c30c5a8dbc1e9ca06` | asserts 0 holdout judgments, cuts and hashes the bank (as at HEAD) |
+| runner | `scripts/holdout_run.py` | 7204 | `sha256:e1e2ddc9e3c49bf427ec9f7023d8a543a1df09091e453caf5dcf2978fae47751` | runs the three arms, writes `run-state.json` (as at HEAD) |
+| judge driver | `scripts/holdout_judge.py` | 10780 | `sha256:c4d92ff765f1df1b2ec3ccd10c64268e13622a84c03ba1a7933e63f58046ac94` | two positions × two graders, writes `judge-state-*.json` (as at HEAD) |
+| judge | `utils/evaluation/judge_answers.py` | 21793 | `sha256:eb7c3edbe8cc8acb66e33a218cefc7dbb6656ee251933b6ae95b649ea0e196c1` | the grader prompt and sidecar writer; records `judge.served_model`, `judge.max_tokens`, `judge.position`, `fabricated_mapping` (as at HEAD) |
+| run state (committed) | `docs/research/experiments/EXP-2026-09-007-holdout-spend/data/run-state.json` | 905 | `sha256:3d4888f850e8512511cb6006434bbf5f444fa52726de5502b4cc105938ba716b` | arm wall times, store counts, holdout hash |
+| judge state, qwen (committed) | `docs/research/experiments/EXP-2026-09-007-holdout-spend/data/judge-state-qwen.json` | 2100 | `sha256:98adfa7dccb71000bb953a4b4ccae1d6d5711a145354c32586823caef4b2666a` | position-1 cells |
+| judge state, qwen p2 (committed) | `docs/research/experiments/EXP-2026-09-007-holdout-spend/data/judge-state-qwen2.json` | 789 | `sha256:a5c50641cc581604c9f8bf625505ad6ed288a5f822bda8025e788a6d3eb0cc5c` | position-2 cell with its two recorded failures (ISSUES I-2) |
+| judge state, gemma (committed) | `docs/research/experiments/EXP-2026-09-007-holdout-spend/data/judge-state-gemma.json` | 1116 | `sha256:8ec811889828ac8707cc8659534ea9e8c78a41581ae7986d58cba16b821144e9` | position 1 done, position 2 recorded `not_run` at 15:03 — superseded by the sidecars written 2026-09-06 (ISSUES I-3) |
+| roll-up, qwen only (committed, superseded) | `docs/research/experiments/EXP-2026-09-007-holdout-spend/data/judged-final.json` | 1389 | `sha256:9b1d38f4a24096129f1a56c61b1cbc4308c05292720b57cf31ee753dfb87ce00` | intermediate; carries the withdrawn 0.4031 / 0.0831 / 0.2515 / 0.2053 and declares its own `not_measured` (A-1) |
+| roll-up, gemma p1 (committed, superseded) | `docs/research/experiments/EXP-2026-09-007-holdout-spend/data/judged-gemma-p1.json` | 667 | `sha256:a8e775fdb92892c336a0022b5017463c937efe374f141ef5498dc74b9a9d252c` | position-1-only 0.4349 / 0.6402 / 0.2053 |
+| roll-up, two families (committed, current) | `docs/research/experiments/EXP-2026-09-007-holdout-spend/data/judged-two-family-final.json` | 1094 | `sha256:e23aad0e372415964580408123746b802e8a9b96d6e09699b066c44dc5a81e25` | the 3 × 2 × 2 instrument; every judged manifest value is read from here and reproduces from the sidecars |
+| recall, deterministic (committed) | `docs/research/experiments/EXP-2026-09-007-holdout-spend/data/recall-deterministic.json` | 129391 | `sha256:81f613438a35f55a6fc6fe9d96a3012927072ff724732a4fe060e93db1565565` | per-question holdout recall, post-repair |
+| recall, deterministic pre-repair (committed) | `docs/research/experiments/EXP-2026-09-007-holdout-spend/data/recall-deterministic-prerepair.json` | 129329 | `sha256:749de1056b75cd4a7d9061639085b74757eb89c810bba6e57196f3a984ac8f46` | the same questions from `expansion-2026-09-01`, re-scored |
+| recall, generic (committed) | `docs/research/experiments/EXP-2026-09-007-holdout-spend/data/recall-generic.json` | 128677 | `sha256:6fb957aec7f58197547248a1a5eb8ce3b05f576eb91526412eb1d58f417a41bb` | per-question holdout recall, generic arm |
+| recall summary (committed) | `docs/research/experiments/EXP-2026-09-007-holdout-spend/data/recall-summary.json` | 4904 | `sha256:dcd633ec5aeb4d2faf9c607caf846f7176b7ea4f09d0192fb8cc1545d28ae389` | pooled / reweighted, dev and holdout, pre and post; the only home of dev `0.4492` (EXP-2026-09-005 A-2) |

@@ -168,3 +168,56 @@ uv run python scripts/builder_change_judged.py \
   --new docs/evaluation/experiments/builderiso-b19-newbuilder \
   --suffixes .bld1 .bld2 .bld3 .bldrev
 ```
+
+---
+
+# AMENDMENTS
+
+## AMENDMENT A-1 (2026-09-09) — `data/metrics.json` created; answer-directory pointers re-pinned; wall clock, dirty tree and seeds recorded
+
+**`data/metrics.json` did not exist.** The manifest's seven values had no
+machine-readable source in the folder. The file now holds the verbatim `--out`
+of `scripts/builder_change_judged.py` for both banks, run 2026-09-09 over the
+pointed answers and judgments, plus a `derived` block for the pooled figures
+and a `manifest_metrics` copy. Everything reproduces exactly: per-session DiD
+[−0.0138, −0.0023, +0.0308, −0.0071] → **+0.0019 sd 0.0172** and [−0.0166,
++0.0033, −0.0100, −0.0434] → **−0.0167 sd 0.0170**, both sign-unstable; forward
+null control −0.0143/−0.0071/−0.0214 and +0.0033/−0.0133/0.0000 → **−0.0088**
+over six sessions; reversed +0.0071 / +0.0167 → **+0.0119**; regressions among
+byte-identical answers 8 + 7 = 15 of 87 → **0.1724**, among changed answers
+6 + 5 = 11 of 93 → **0.1183**; changed answers scoring 1.0 in the old `.bld1`
+pass 15 + 14 = **29** of 31.
+
+**Pointers.** The four answer-directory rows in `data/POINTERS.md` recorded a
+digest over the 30 answer files (`sha256:ecb8c1c2…`, `c9206758…`, `1310e640…`,
+`b790beb7…`), while the validator hashes a directory as a tree including every
+judgment sidecar — so they reported a mismatch although nothing had changed.
+Verified 2026-09-09: the 30-file digests still reproduce byte-for-byte for all
+four directories. The rows now carry tree hashes computed with
+`utils.research_record.hashing` (`sha256:e034f420…` 828,548 B; `e18d54a8…`
+607,473 B; `264c26e3…` 893,664 B; `ae336a06…` 694,890 B). The `bank2026*`
+trees include gradings from EXP-2026-08-008/009/021 and later passes
+(`.judgment.json`, `.c015`, `.cross`, `.g31`, `.g31p2`, `.qwen38…`); the
+`builderiso-*` trees hold only this experiment's `.bld1/.bld2/.bld3/.bldrev`
+sidecars. The sixteen judgment-set rows (glob paths) are unchanged and remain
+the stable pins.
+
+**Wall clock.** `compute.wall_clock_hours: 0.0`. From file mtimes on
+2026-08-31: new-builder answers 17:45–17:5x, `.bld1` 17:57–18:48, `.bld2`
+18:49–19:29, `.bld3` 19:29–19:53, `.bldrev` 19:54–20:17. **Old → new:** `0.0`
+→ `2.5`.
+
+**Dirty tree.** `code.dirty: true` with the ISSUES template empty.
+`code.commit` `bfac8cc` (17:47) precedes the run; `git show --stat 338ad90`
+(20:19) shows `scripts/builder_change_judged.py`, PROTOCOL, RESULTS and this
+folder entering the repository together after the four sessions — the script
+was uncommitted while it ran. The answer path was committed at `bfac8cc`
+(new) and at the pre-`9f02dc6` tree (old), both LLM-free. Recorded in ISSUES,
+with `seeds: []` (no seed parameter on the grader; both answer conditions are
+byte-reproducible).
+
+## AMENDMENT A-2 (2026-09-09) — the primary metric now names a recorded key
+
+`metrics.primary` was `difference_in_differences`, a descriptive label that matched no key in
+`metrics.values`, so `INDEX.md` and `CURRENT.md` rendered this experiment's
+headline as "not recorded". It now names `did_bank19` — the difference-in-differences on bank 19. No value changed.

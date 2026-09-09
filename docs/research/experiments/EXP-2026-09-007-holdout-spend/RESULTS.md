@@ -237,3 +237,125 @@ The per-arm confidence intervals in the table above ([0.6218, 0.6875] and the
 rest) remain unrecorded as manifest metrics. They are noted rather than fixed
 here: only the *contrast* intervals are quoted in the paper, and those were
 recorded under A-1.
+
+# AMENDMENT A-5 (2026-09-09) — Record repair: the body still quoted four withdrawn values, the max deviation was never corrected, the gemma coverage described no longer held, and the pointer and issue tables were empty
+
+Written from the 2026-09-09 audit (`verify-b5.md`), which recomputed every
+manifest figure from the 3,456 judgment sidecars under
+`docs/evaluation/experiments/holdout-spend-2026-09-05/` (positions averaged per
+case, then across cases; paired percentile bootstrap, 2,000 resamples, seed
+1729, `utils/evaluation/stats.py::bootstrap_ci`) and every model-free figure
+from `data/recall-*.json` — **all reproduced exactly, intervals included**.
+Nothing here changes a conclusion. What it changes is what this document says
+about itself, and what the manifest can prove.
+
+## 1. Stale text in the body — the values A-1 withdrew were still quoted
+
+A-1 (2026-09-07) corrected four manifest values and A-4 claimed to have
+corrected the body; A-4 fixed two cells of §1's arm table and left the rest.
+Each line below is left as written; this table is the correction.
+
+| line | body says | correct value (manifest; sidecars) |
+|---|---|---|
+| `:5-6` headline, `:30` H2 | "within **0.025**", "max 0.0250" | **0.0258** — `llm_query` 0.4039 − 0.3781 |
+| `:13` llm_query 95% CI | [0.3723, 0.4353] | **[0.3732, 0.4363]** — the quoted interval belongs to the withdrawn 0.4031 series in `judged-final.json` |
+| `:18` `generic − llm_query` | +0.2515 [+0.2039, +0.3006] | **+0.2507 [+0.2025, +0.2998]** |
+| `:19` `deterministic − llm_query` (C-012) | +0.0831 [+0.0366, +0.1320] | **+0.0822 [+0.0362, +0.1308]** |
+| `:64-66` gemma | "position 1 … 0.4349 and 0.6402, contrast +0.2053 [+0.1482, +0.2648]" | two positions: **0.4320 / 0.6464 / +0.2143 [+0.1637, +0.2659]**; the p1-only figures survive in `judged-gemma-p1.json` |
+| `:68-74` | "gemma never graded `llm_query`'s holdout answers … cannot be tested without a second gemma window" | the window came the same night: 576 `.gem`/`.gemp2` sidecars for `llm_query` written 2026-09-06 00:03–01:30; gemma `llm_query` **0.3678**, `deterministic − llm_query` **+0.0643 [−0.0080, +0.1333]**, `generic − llm_query` +0.2786 [+0.2113, +0.3445]. The family-sensitivity §4 says could not be tested *was* tested: C-012 is positive under gemma on the holdout and its interval spans zero, exactly as on dev — positive in all four measurements, significant in two of four under the interval criterion (qwen dev, qwen holdout), not three |
+| `:82-85` Limits | "The gemma half is position 1 only" | `.gemp2` exists for all three arms; the gemma figures are position-averaged like qwen's |
+| `:33` H5 | "see `data/judged-final.json`" | that file carries no fabricated-mapping count; see §3 |
+
+The manifest's `max_arm_deviation_from_dev` was **0.0250** until today —
+A-4 corrected the delta in the table and not the key derived from it. Changed
+to **0.0258** and the old value recorded under `metrics.withdrawn`.
+
+## 2. Withdrawn values, recorded as such
+
+The five values A-1/A-4 retired now sit in `metrics.withdrawn` (withdrawn
+2026-09-07): `llm_query_holdout` 0.4031, `deterministic_minus_llm_query_holdout`
+0.0831, `generic_minus_llm_query_holdout` 0.2515,
+`second_family_generic_minus_deterministic` 0.2053 (position-1-only),
+`max_arm_deviation_from_dev` 0.0250 — each `replaced_by` its current key
+(0.4039 / 0.0822 / 0.2507 / 0.2143 / 0.0258). The per-arm qwen intervals A-4
+noted as unrecorded are now manifest metrics: generic [0.6218, 0.6875],
+deterministic [0.4529, 0.5201], llm_query [0.3732, 0.4363] (all n = 288;
+recomputed 2026-09-09, the first two also in `judged-final.json`).
+
+## 3. H5 was never reported, and the judge's flag is not zero
+
+§2 says *"Five for five"* and H5's row says *"see `data/judged-final.json`"*,
+which holds no such count. H5 — *"zero fabricated mappings on the model-free
+arms"* — was therefore declared without a recorded measurement. Two things in
+the artifacts bear on it, both read on 2026-09-09:
+
+- `deterministic_scores.provenance.abstention_proof_ok` is **true in 288 of
+  288** answers of every arm (model-free; recorded as
+  `abstention_proof_ok_all_arms`).
+- The judge's own `fabricated_mapping` flag (`judge_answers.py:267`), summed
+  over both positions (n = 576 judgments per arm per grader):
+  `deterministic` **0** under qwen, **1** under gemma; `generic` **3** under
+  qwen, **3** under gemma; `llm_query` **0** under both. Recorded as six
+  `fabricated_mapping_flags_*` metrics.
+
+So the model-free discipline check passes and the grader-flag reading does
+**not** give zero on `generic` (0.5% of its judgments) or on one gemma reading
+of `deterministic`. Whether those seven flags are real cross-source assertions
+or grader misreads was not adjudicated and is not adjudicated here. The honest
+scoring of the pre-registration is **four of five held as measured; H5 is
+"holds on the model-free check, not zero on the judge flag, unadjudicated"**,
+and *"Five for five"* is withdrawn as a sentence (ISSUES I-4).
+
+## 4. Provenance
+
+- **Commit.** `code.commit` was `514ddda8…` — EXP-2026-09-006's pre-registration
+  commit (10:54:24), which adds `cross_family_regrade.py` and `holdout_seal.py`
+  but not this folder. This folder was created two minutes later at
+  **`2ed6de998c7ceb5d50a5880758cdef79189d8e14`** (*"Holdout (1/4): sealed, hashed
+  and pre-registered"*, 10:56:07); `code.commit` is set to it. The arms ran
+  11:27–16:27 and judging continued to 2026-09-06 01:30 under trees that moved
+  through `8bab0d8` (15:03), `2bddfd9` (21:41) and `bba225c` (22:02); `dirty:
+  true` is correct and ISSUES I-1 — which was the empty template — now says so.
+- **Date.** `date_completed` was 2026-09-05. The gemma position-2 sidecars are
+  dated 2026-09-06 00:30–01:30, `judged-two-family-final.json` was committed at
+  `81f12cb` (2026-09-06 03:28), and the manifest metrics were rewritten on
+  2026-09-07 (`2dfb73c`, `bcabfca`, `c687036`). Set to **2026-09-06**, the day
+  the last measurement landed; the 09-07 commits corrected the record, they did
+  not measure.
+- **LLM block.** `llm.model` was the literal scaffold placeholder
+  `<provider>/<model>@<version-or-date>` although both graders were named by
+  probe in every sidecar (`judge.served_model`); it now names
+  `relay/qwen38-27B-v2@2026-09-05` and `relay/gemma4-31B-mtp@2026-09-05` and
+  the `llm_query` arm's builder (ISSUES I-7). `max_tokens` 2048 → **32768**
+  (PROTOCOL:76; `judge.max_tokens` in every sidecar). `wall_clock_hours` 0.0 →
+  **14.1** (first answer 11:27 to last judgment 01:30 next day; `llm_query`
+  alone 13,912 s per `run-state.json`).
+- **Dev baseline outside the record.** PROTOCOL `:121` and the `dev_qwen_llm_query`
+  metric quote 0.3781 (0.3703 conditional on a query being built) as "the dev
+  half of the same bank, EXP-2026-09-005". EXP-2026-09-005 did **not** re-run
+  `llm_query` (its ISSUES I-5); 0.3781 comes from a separate dev re-run at the
+  settled budget, `llm-query-split-2026-09-05/llm_query/answers`, rolled up in
+  `docs/evaluation/composition/bank/two-grader-judged.json` (committed `e83ed62`,
+  2026-09-05 13:37). A-2 conceded the file was outside the record; the
+  directory and roll-up are now pointed (ISSUES I-8). The gemma dev figures
+  (0.4175 / 0.6659 / 0.3478) come from the same roll-up.
+- **C-021.** PROTOCOL `:33` quotes C-021 as 0.0483 (the pre-EXP-2026-09-006
+  value); RESULTS `:81` quotes +0.0322 (the named-grader value 006 recorded the
+  same day). Both are correct for their date; the quotable figure is 0.0322.
+- `environment.lockfile`: env/requirements.lock → null (never written; ISSUES
+  I-6).
+
+## 5. Pointers and issues
+
+`data/POINTERS.md` was the unfilled template: 864 answers, 3,456 judgment
+sidecars, `bank-holdout.json` and the dev-side sources were unpinned. Filled
+with 24 rows (three answer directories with their sidecar inventory and write
+times, the pre-repair and post-repair directories behind `recall-summary.json`,
+the dev roll-up and dev `llm_query` directory, the four scripts, and the eleven
+committed `data/*.json` files). `ISSUES.md` was the empty template; it now
+records the dirty tree (I-1), the two qwen position-2 judge failures and five
+`.error.txt` retries, all cleared (I-2), the gemma position-2 pass first
+recorded `not_run` and completed after the endpoint returned (I-3), the four
+wrong manifest values and the two stale-body episodes (I-4), the date (I-5),
+seeds and lockfile (I-6), the `llm_query` builder identity (I-7), and the dev
+baseline's provenance (I-8). `data/metrics.json` created from `metrics.values`.

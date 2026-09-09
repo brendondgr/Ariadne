@@ -186,3 +186,106 @@ the shipped pipeline budget.
 
 **Recommendation: leave both flags off.** The measured next steps, in the order
 the numbers rank them, are in OPEN_QUESTIONS.md.
+
+---
+
+## AMENDMENT A-1 (2026-09-09) — the recorded commit was the plan, not the code that ran
+
+**What was wrong.** `manifest.yaml` recorded `code.commit: 0b83b65d` with
+`dirty: false`. `0b83b65d` (2026-09-08 16:03, "Plan: hybrid rewrite stage")
+adds only `docs/plans/2026-09-08-hybrid-rewrite-stage.md` and a changelog
+line; its `scripts/variant_harness.py` contains none of `--rewrite`,
+`--llm-timeout-s` or `--pipeline-timeout-s`, the flags the manifest's own
+`entrypoint` uses. Those landed in `a460fa2` (17:22, `--rewrite`,
+`--llm-model`, `--cache-dir`, `--repeat`, `--metrics`) and `e0e1dcb` (19:22,
+`--llm-timeout-s`, `--pipeline-timeout-s`). `dirty: false` was true of the
+plan commit and said nothing about the runs.
+
+**What is now recorded.** `code.commit` → **`e0e1dcb5e6564683ec8bbfc6f03f21f0db916643`**,
+the last source change before the final R2/R3 runs. Established from file
+mtimes and the git log: `scored_R2_tune.run1.json` 19:44 → `scored_R3_tune.cached.json`
+20:30, all after `e0e1dcb` 19:22; the completion commit `e7ee893` (20:36)
+touches only data and docs (the eight `scored_R{2,3}_tune.*` files,
+`metrics_*.json`, RESULTS, manifest, DECISIONS, OPEN_QUESTIONS, INDEX,
+changelog), so no source edit made after `e0e1dcb` survived into the record.
+`dirty: false` is kept on that inference and labelled as an inference, not an
+observation (ISSUES.md). R0 and R1 (`scored_R0_tune.json` 17:23,
+`scored_R1_tune.json` 17:24) ran at `a460fa2`, before the timeout flags
+existed; they use no model and are unaffected by them.
+
+**Pointers and metrics file.** The 2026-09-09 audit (verify-b6, `r014.py`)
+verified all ten existing pointer hashes and byte counts, and regenerated
+`metrics_R2.json` / `metrics_R3.json` tier means, population sds and `draws`
+exactly from `metrics_R{2,3}_run{1,2,3}.json`, every per-tier metric in
+`metrics_R0.json` / `metrics_R1.json` from `scored_R{0,1}_tune.json`, and the
+`metrics_by_bank.json` rows from the scored files. Nothing in
+`metrics.values` changed; `metrics.primary` was `records_exact`, which is not a key
+in `values`, and now names `R2_T5_records_exact` (0.1635, the T5 figure the ship
+rule is decided on). `data/POINTERS.md` gains rows for everything a
+reported number reads that the original table only mentioned in prose: R2/R3
+runs 1–2 and the cached replays, the R3 240 s pilot, the R2 and R3 120 s
+runs 2–3 and cached replays, `variants.json`, `split.json`, `slot_gold.json`
+and the shipped `reference_arm6.json`. `data/metrics.json` created with every
+`metrics.values` entry, the per-tier `records_exact` blocks for R2 and R3, the
+per-run call-health blocks, and a map of which `metrics_*.json` file carries
+which arm.
+
+## AMENDMENT A-2 (2026-09-09) — R3 was run; the manifest note said it was not. R4 was not run; nothing said so
+
+**R3.** `llm.nondeterminism_note` said `default-model-2`, `-3` and `-4` "each
+returned HTTP 502 and could not be identified at all, so the second-model arm
+(R3) is unrun — see ISSUES.md". That was the first probe (16:06). The second
+probe six minutes later (`data/model_identity_2026-09-08.json`) identified
+`default-model-2` as `qwen38-27B-v2` under the same `system_fingerprint`
+(`vllm-0.21.0-bf3a75db`), ISSUES.md records the operator's confirmation that
+it is a second instance of the same checkpoint, and R3 was run three times
+plus a cached replay (`metrics_R3_run{1,2,3}.json`, `metrics_R3_cached.json`,
+`scored_R3_tune.*`) and is reported throughout this RESULTS as the
+cross-instance repeatability arm. The manifest field was corrected in place
+on 2026-09-09 to say so (old and new text both quoted in the field).
+
+**R4.** PROTOCOL.md §Setup defines **R4** — the 572-question expansion bank,
+dev and holdout, rewrite off / det / model, one run on whichever instance
+R2–R3 ranked first — and §Procedure gives its command
+(`experiment_untruncated --arm rewrite_off|rewrite_det|rewrite_model`,
+`score_bank.py --rewrite …`). **R4 was never run.** There is no
+`rewrite_*` directory under `docs/evaluation/experiments/`, no
+`rewrite_off` / `rewrite_model` arm in any bank artifact, no mention of R4 in
+this RESULTS, and no entry in DECISIONS.md or OPEN_QUESTIONS.md; RESULTS line
+10–11 says only that `bank-holdout.json` is "unread". Why it was not run is
+not recorded — the tune-half result had already failed the ship rule by a
+factor of 2–3, which is a sufficient reason, but it is not a recorded one.
+This is logged in ISSUES.md as a pre-registered arm dropped without a stated
+decision. **Open follow-up:** if the rewrite stage is ever re-evaluated
+(OPEN_QUESTIONS Q35–Q37), R4 on the expansion bank — with `rewrite_off` as the
+control, not `deterministic`, per PROTOCOL §Baselines — is the pre-registered
+measurement still owed; until then the expansion-bank half of this protocol
+is unmeasured and `data.name`'s "+ expansion-bank-572" describes the plan, not
+the data read.
+
+## AMENDMENT A-3 (2026-09-09) — three sentences the data does not support as written
+
+1. Line 108–109: "the two instances differ by at most **0.0063** on any
+   tier". On `records_exact`, R2 and R3 differ by 0.0063 at T4 and T5 and by
+   **0.0185 at T6** (0.1111 vs 0.0926, `metrics_R{2,3}.json`). 0.0063 is the
+   maximum over T1–T5; T6 (n=18) is the tier where R3's sd is non-zero
+   (0.0262), so the two figures are the same observation seen twice.
+2. Line 109: "**41–45** of 195 picks refused by the gate". `per_run_call_health`
+   gives `gate_rejected_picks` 43 / 44 / 42 for R2 and 41 / 40 / 41 for R3:
+   the range is **40–44**.
+3. The ship rule's T6 half (PROTOCOL lines 127–129: `wrong_entity` ≤ 0.1000
+   and `catalogue_dump` ≤ 0.0667, "no worse than Arm 6") is a bound R0 — the
+   no-rewrite control, which *is* the shipped Arm 6 configuration — already
+   fails on the tune half: R0 T6 `wrong_entity` **0.1111** and
+   `catalogue_dump` **0.1111** (2/18 each; lines 17 and 60 quote them). The
+   Arm 6 figures the rule was written against are EXP-2026-08-020's over the
+   full 120-question T6 set; on the 18-case tune slice the same configuration
+   sits above both thresholds. R2 passes the thresholds (0.0556 / 0.0371) and
+   R3 passes `wrong_entity` (0.0741) and `catalogue_dump` (0.0556; `metrics_R3.json`),
+   so the gate verdict is unaffected — but the rule as written compared the
+   candidate to a bound its own control does not meet, and the RESULTS did not
+   remark on it. It should be read as "no worse than Arm 6's published T6
+   figures", which is what it says, with the note that the tune-half control
+   is at 0.1111 on both.
+
+Prose above is left as written.

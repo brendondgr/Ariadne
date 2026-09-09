@@ -90,3 +90,58 @@ including a tie-break that was about to be reported as four reversals.
 - `composerfix-dev` versus `composerfix-holdout` is unpaired by construction —
   different questions — which is what the claim is about, not a defect.
 - Nothing here re-measures the *system*. No pipeline ran; no graph was read.
+
+---
+
+## AMENDMENT A-1 (2026-09-09) — Record repair: the pointer table was empty, and four bookkeeping fields were stale or placeholders
+
+Written from the 2026-09-09 audit (`verify-b5.md`), the sidecars, the two
+state files and `git log`. The audit re-ran `scripts/cross_family_rollup.py`
+(sidecars only, output to a scratch path) and diffed it against
+`data/rollup.json`: **no differences** — every mean, sd, pair accounting,
+verdict and dropout entry reproduces. No result changes.
+
+1. **Pointers.** `data/POINTERS.md` was the unfilled template. The 14 answer
+   directories this experiment graded (12 bank cells + `composerfix-dev` +
+   `composerfix-holdout`), the 1,320 sidecars it wrote, the five
+   EXP-2026-08-021 sidecars per bank answer it read, the two scripts and the
+   three committed `data/` files are now listed with hashes. The directories
+   are shared with other experiments' sidecars, so the tree hashes will move
+   whenever any pass writes there; each row says which files are this
+   experiment's.
+2. **`grading_failures.n`: 1338 → 1320.** 1,338 matches no count on disk.
+   This experiment wrote 510 `.g31` + 510 `.g31p2` + 150 `.q38b` + 150
+   `.q38bp2` = **1,320** sidecars (counted 2026-09-09); the two failures
+   (I-2) are 2 of those attempts, both cleared on retry. The origin of 1,338
+   is not recoverable (ISSUES I-9).
+3. **ISSUES I-2 and I-6 are mid-run snapshots.** I-2 says `H-SUB-01`'s
+   `.q38b` is *"outstanding; retry queued"*: the retry ran and
+   `H-SUB-01.judgment.q38b.json` exists (the `.error.txt` beside it is the
+   trace of the first attempt), which is what the manifest comment *"both
+   cleared on retry"* already said. I-6's counts — `.g31`/`.g31p2` n = 689,
+   `.q38b` n = 149 — were taken while the passes were running; final counts
+   are **1,020** and **150** (plus 150 `.q38bp2`). Both entries are left as
+   written.
+4. **`wall_clock_hours`: 0.0 → 2.7.** First sidecar written 2026-09-05
+   10:52, last 13:36. The qwen state file starts at 12:06 and reports
+   `attempted: 0` for three of its four cells because those sidecars already
+   existed — written before the per-track state file replaced the shared one
+   (I-4) — which is why the state files understate the window.
+5. **`code.commit`: 18dc024 → 514ddda.** `18dc0249…` (10:44:41) is the plan
+   commit (*"Plan the last two measurements"*); `514ddda8fcdb53d6fad9306c70e92a32dc3e5476`
+   (10:54:24) is the pre-registration that created this folder and
+   `scripts/cross_family_regrade.py`. `dirty: true` stays: six commits landed
+   inside the 10:52–13:36 window (`9bf0edb` 11:29, `186622c` 11:30, `91ac5ff`
+   11:57, `a6fc52a` 11:59, `5cffc8b` 12:24, `bf8e5c9` 13:14 — the ISSUES,
+   manifest and RESULTS of this experiment being written while it ran) and the
+   per-track state-file fix (I-4) was applied mid-run; the exact uncommitted
+   state at each cell's start is not recoverable (ISSUES I-8).
+6. **Later use.** EXP-2026-09-007 spent the holdout on 2026-09-05 after this
+   experiment's H1 failed, under DECISIONS D-029 (*"the holdout was judged
+   anyway, on the operator's explicit call, with the failure recorded and
+   travelling with the result"*). `related` gains EXP-2026-09-007. The gemma
+   track also graded the 284 dev `llm_query` answers in
+   `llm-query-split-2026-09-05` in the same window (state file); those are not
+   in this rollup and are pointed with that caveat.
+7. `environment.lockfile`: env/requirements.lock → null (never written;
+   ISSUES I-8). `data/metrics.json` created from `metrics.values`.

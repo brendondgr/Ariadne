@@ -1,0 +1,187 @@
+{
+ "experiment": "EXP-2026-09-009",
+ "source": "manifest, back-filled 2026-09-09 from data/judge-state.json (per-pass means and spreads) and data/run-state.json; every per-seed mean, family SD and the balanced SD reproduce from the sidecars under docs/evaluation/experiments/seeded-repeats-2026-09-06 (audit verify-b6, r009.py)",
+ "manifest_metrics": {
+  "across_seed_sd_balanced": {
+   "mean": 0.0089,
+   "std": 0.0,
+   "n": 3
+  },
+  "across_seed_sd_qwen": {
+   "mean": 0.0084,
+   "std": 0.0,
+   "n": 3
+  },
+  "across_seed_sd_gemma31": {
+   "mean": 0.0142,
+   "std": 0.0,
+   "n": 3
+  },
+  "llm_query_qwen_mean": {
+   "mean": 0.3912,
+   "std": 0.0084,
+   "n": 3
+  },
+  "llm_query_gemma31_mean": {
+   "mean": 0.7054,
+   "std": 0.0142,
+   "n": 3
+  },
+  "deterministic_minus_llm_query_qwen": {
+   "mean": 0.1012,
+   "std": 0.0,
+   "n": 284
+  },
+  "deterministic_minus_llm_query_gemma31": {
+   "mean": -0.2885,
+   "std": 0.0,
+   "n": 284
+  },
+  "gemma31_distinct_values_this_population": {
+   "mean": 2.0,
+   "std": 0.0,
+   "n": 852
+  },
+  "qwen_distinct_values_this_population": {
+   "mean": 17.0,
+   "std": 0.0,
+   "n": 851
+  },
+  "deterministic_minus_llm_query_qwen_vs_exp005_reference": {
+   "mean": 0.1034,
+   "std": 0.0,
+   "n": 284
+  },
+  "abstention_rate": {
+   "mean": 0.982,
+   "std": 0.0,
+   "n": 283
+  },
+  "gemma31_mean_on_abstentions": {
+   "mean": 0.7014,
+   "std": 0.0,
+   "n": 278
+  },
+  "qwen_mean_on_abstentions": {
+   "mean": 0.4023,
+   "std": 0.0,
+   "n": 278
+  },
+  "gemma31_repeat_sd_deterministic": {
+   "mean": 0.0033,
+   "std": 0.0,
+   "n": 10
+  },
+  "gemma31_repeat_sd_generic": {
+   "mean": 0.0084,
+   "std": 0.0,
+   "n": 9
+  },
+  "grading_failures": {
+   "mean": 1.0,
+   "std": 0.0,
+   "n": 1704
+  }
+ },
+ "per_pass_scores": {
+  "qwen-1729": {
+   "n": 284,
+   "mean": 0.3805,
+   "unparsed": 0,
+   "errors": 0
+  },
+  "qwen-20260906": {
+   "n": 284,
+   "mean": 0.3923,
+   "unparsed": 0,
+   "errors": 0
+  },
+  "qwen-424242": {
+   "n": 283,
+   "mean": 0.4009,
+   "unparsed": 0,
+   "errors": 1
+  },
+  "gemma31-424242": {
+   "n": 284,
+   "mean": 0.6972,
+   "unparsed": 0,
+   "errors": 0
+  },
+  "gemma31-20260906": {
+   "n": 284,
+   "mean": 0.7254,
+   "unparsed": 0,
+   "errors": 0
+  },
+  "gemma31-1729": {
+   "n": 284,
+   "mean": 0.6937,
+   "unparsed": 0,
+   "errors": 0
+  }
+ },
+ "spread": {
+  "qwen": {
+   "means": [
+    0.3805,
+    0.3923,
+    0.4009
+   ],
+   "sd": 0.0084,
+   "h2_holds": true,
+   "caveat": "within one family, position is confounded with seed; use the balanced estimate below for H2"
+  },
+  "gemma31": {
+   "means": [
+    0.6937,
+    0.7254,
+    0.6972
+   ],
+   "sd": 0.0142,
+   "h2_holds": true,
+   "caveat": "within one family, position is confounded with seed; use the balanced estimate below for H2"
+  },
+  "balanced": {
+   "means": [
+    0.5371,
+    0.5589,
+    0.5491
+   ],
+   "sd": 0.0089,
+   "h2_holds": true,
+   "method": "per-seed mean of the two families; counterbalancing gives every seed position sum 2, so the position effect cancels"
+  }
+ },
+ "served": {
+  "qwen": "qwen38-27B-v2",
+  "gemma31": "gemma4-31B-mtp"
+ },
+ "reference_figures": {
+  "note": "A-2: the qwen references RESULTS quotes are single position-0 pass means from post-repair-2026-09-03 (suffix none); EXP-2026-09-005's manifest records the two-position averages",
+  "post_repair_position0": {
+   "generic": 0.66,
+   "deterministic": 0.4924
+  },
+  "post_repair_pass2": {
+   "generic": 0.6537,
+   "deterministic": 0.4967
+  },
+  "exp005_manifest": {
+   "generic_judged": 0.6569,
+   "deterministic_judged": 0.4946
+  },
+  "gemma_multi_pass": {
+   "generic": {
+    "mean": 0.6698,
+    "sd": 0.0084,
+    "passes": 9
+   },
+   "deterministic": {
+    "mean": 0.4169,
+    "sd": 0.0033,
+    "passes": 10
+   }
+  }
+ }
+}

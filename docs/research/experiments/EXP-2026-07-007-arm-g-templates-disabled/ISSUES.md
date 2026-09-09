@@ -58,3 +58,28 @@ is G - F and the letters in that label are the wrong way round.
 **Resolution:** This record uses treated-minus-reference throughout, so the
 template effect is **G - F = -0.3568** and the planning effect is
 **B - C = -0.1185**. Both negative, both directly comparable.
+
+## 2026-09-09 — Audit: run date unsupported; arm described with the wrong planner; artifact commit recorded
+
+**Impact:** `date_started` / `date_completed: 2026-07-26` cannot be supported.
+The artifacts and the `generic` arm code first entered git in `a509f63` on
+2026-08-04 23:50 −0400 as previously untracked work (241 files per
+`01-overnight-safe-work.md` Task 1; run-log Task 1 at 2026-08-04T23:52), and
+no artifact carries a timestamp. The run lies between 2026-07-26 21:20 (Arm
+F's commit, which introduced the shared driver) and 2026-08-04 23:50. The dates
+are left as recorded because no exact date can be established. `code.commit`
+now holds `a509f63`, the artifact commit — an upper bound, not the run commit.
+Separately, the arm was recorded as LLM-planned; all 120 answers carry
+`run_meta.planner == "gold-plan (injected)"` (see RESULTS A-1 §1).
+
+**Cause:** The run was performed outside the committed history and its
+description was inherited from the arm tables rather than read from the
+harness or the artifacts.
+
+**Resolution:** RESULTS A-1 records the bounds, the corrected description and
+the supersession by EXP-2026-08-001. The manifest `purpose` was corrected in
+place; PROTOCOL.md:12 is left as written.
+
+**Paper implication:** Describe Arm G as authored-plan + generic primitives;
+give its date as "between 2026-07-26 and 2026-08-04"; do not quote −0.3568 as
+the cost of templates (C-003 is refuted; C-023 is the current claim).

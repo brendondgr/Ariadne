@@ -148,3 +148,69 @@ uv run python -m utils.evaluation.retrieval_coverage \
 uv run python -m utils.specialists.audit.binding_audit \
   --seed capec=CWE-1243 --seed capec=T1003
 ```
+
+---
+
+# AMENDMENTS
+
+## AMENDMENT A-1 (2026-09-09) — Pointers filled; lockfile, wall clock and commit timing corrected
+
+**What was wrong, and what is now correct.** Nothing was re-run. The B2 audit
+of 2026-09-09 re-ran `retrieval_coverage` over the four run directories and
+reproduced every retrieval number in §2 (blind 0.8952 / 26 / 5 / 216 vs
+0.7688 / 22 / 192 / 43, 4 improved 0 regressed 187 recovered; development
+1.0000 / 120 / 1061 both sides, 0 / 0). The binding-audit counts in §3 were
+not re-derived — they need the builders at `ec01fe7` and `8ac1049`, which have
+since changed.
+
+1. `data/POINTERS.md` was the blank scaffold. The four gitignored run
+   directories (`binding-fix-{dev,holdout}`, `binding-baseline-{dev,holdout}`,
+   all `deterministic/`, dated 2026-08-18 15:08–15:09, no judgment files then
+   or now) and the blind bank are now hashed. The development bank is
+   deliberately **not** hashed: two of its three files were modified by
+   `c10caaa` 35 minutes after the run, so the state that ran is
+   `8ac1049:utils/specialists/tests/golden/*`, not the working tree (ISSUES
+   2026-09-09).
+2. `manifest.yaml:50` `environment.lockfile: env/requirements.lock` — no such
+   path exists in the repository or this folder. **→ `null`**, with the note
+   every other experiment carries: the repository lockfile is `uv.lock` at
+   root and is not snapshotted per run.
+3. `manifest.yaml:54` `compute.wall_clock_hours: 0.01`. The four run
+   `manifest.json` files record 1.9 + 1.1 + 2.4 + 0.9 = 6.3 s. **→ 0.002.**
+4. `manifest.yaml:32` `code.commit: 63c2d2a…` (15:10:04) post-dates the
+   artifacts (15:08–15:09) by one to two minutes. `git show --stat 63c2d2a`
+   touches only `docs/changelog.jsonl`, so its code tree is identical to
+   `8ac1049` (15:07:50, "(4/7): Resolve direction from the schema, both
+   halves"), the last code commit before the run. The field is **kept** at
+   `63c2d2a` with that explanation beside it; `dirty: false` is not
+   verifiable from the artifacts and is annotated as such.
+
+## AMENDMENT A-2 (2026-09-09) — Superseded 34 minutes later by EXP-2026-08-006; the "not fixed" decision was taken
+
+**Supersession.** §4 and `ISSUES.md:21–33` say the templates keep the inner
+join "deliberately … not fixed. This is an operator decision", and price the
+decision at five identifiers in four cases. The decision was taken the same
+afternoon: `c10caaa` (2026-08-18 15:43, "Binding portability (6/7): Outer-join
+the template bridges, and keep the abstention") ported the outer join to
+`capec_maps_to` and `cwe_chain`, and `EXP-2026-08-006` (record commit
+`3c038d1`, 15:44) measured the default cascade at blind retrieval
+**0.8952 → 1.0000** with the development catalogue still at 1.0000. That is
+this experiment's blind headline replaced on the same arm and bank, so
+`manifest.yaml` now records `status: superseded`, `superseded_by:
+EXP-2026-08-006` (that manifest already carries `supersedes: EXP-2026-08-005`).
+The 0.8952 here stays in `metrics.values` as the measurement of the direction
+half alone, which is what §4 says it is.
+
+**Follow-ups closed.** §7 item 2 (port the outer join): `EXP-2026-08-006`.
+§7 item 1 (judge this arm on both banks): `EXP-2026-08-007` (2026-08-19)
+judged the repaired cascade at **0.8367** blind and 0.9839 on the development
+catalogue (its manifest's `blind_correctness_cascade` /
+`dev_correctness_cascade`), after both halves of the fix; no judged figure
+exists for the direction-only state measured here. Both experiments are added
+to `related`. §7 items 3 (holdout v2) and 4 (the three misroutes) are not
+closed by anything this amendment can cite.
+
+**What C-010 keeps from here.** The mechanism — identifier schemes learned
+from the snapshot, the three-valued binding check, direction resolved from the
+declared triples — is the part `CLAIMS.md` C-010 cites from this experiment,
+and it is unaffected by the supersession of the retrieval headline.

@@ -47,7 +47,7 @@ seeds: []                  # [] means seeds were not recorded — say so in ISSU
 n_runs: 1
 environment:
   python: "3.13"
-  lockfile: env/requirements.lock
+  lockfile: null           # A-1: was env/requirements.lock, never written; dependencies are uv.lock at code.commit (ISSUES I-6)
   container: null
 compute:
   hardware: "local workstation; Neo4j + TinkerPop in docker"
@@ -56,7 +56,7 @@ compute:
 
 # --- Results block ---
 metrics:
-  primary: mean_recall_on_affected_questions
+  primary: mean_recall_after     # A-1: was mean_recall_on_affected_questions, a name with no key in values
   values:
     mean_recall_before: {mean: 0.0816, std: null, n: 37}
     mean_recall_after: {mean: 0.1081, std: null, n: 37}
@@ -71,4 +71,4 @@ supports_claims: []        # sizes a defect; supports no claim directly
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
 superseded_by: null
-related: ["EXP-2026-09-001", "EXP-2026-09-002"]
+related: ["EXP-2026-09-001", "EXP-2026-09-002", "EXP-2026-09-004", "EXP-2026-09-005"]   # A-1: 004 found the routing defect behind this one; 005 re-compared the arms after both repairs

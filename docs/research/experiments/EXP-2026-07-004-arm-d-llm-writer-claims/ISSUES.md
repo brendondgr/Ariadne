@@ -38,3 +38,12 @@ over.
 **Paper implication:** No arm-to-arm delta in this study can be given a p-value
 as recorded. `statistical_test` is null and must stay null until the arms are
 re-run.
+
+## 2026-09-09 — Audit: artifact commit recorded as an upper bound
+
+**Impact:** `code.commit` now holds `3717442`, the commit that added all 240
+artifact files (2026-07-26 19:34 −0400). It bounds the run from above; the run
+commit itself was never captured.
+**Cause:** The study predates the research record.
+**Resolution:** RESULTS A-1 records the derivation.
+**Paper implication:** Cite `3717442` as the artifact commit, not the run.

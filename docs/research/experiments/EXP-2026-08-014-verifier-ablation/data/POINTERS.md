@@ -10,8 +10,10 @@ between this experiment and its raw run output, and every entry carries a hash.
 | Sweep metrics | `docs/evaluation/ablation-2026-08-23/metrics-deterministic.json` | 6151 | sha256:cf76868ee0ff726f50aa2dbbabe39f9c1e0ca820b12813dc934b66f6f434d7eb | Per-bank and per-gate counts for all five conditions, as the sweep emitted them |
 | Residual | `docs/evaluation/ablation-2026-08-23/residual-deterministic.json` | 3 | sha256:37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570 | The ambiguous claims a judge would have ruled on. Empty (`[]`) — no gate cut anything, so there is nothing to judge and the deferred half is closed rather than pending |
 
-`data/metrics.json` in this folder is a byte-identical copy of the first row, so
-the experiment is readable without leaving `docs/research/`.
+`data/metrics.json` in this folder is a copy of the first row plus a top-level
+`manifest_metrics` object added 2026-09-09 (RESULTS A-1) so that every manifest
+value is machine-readable from it; it was byte-identical to the sweep file
+before that addition, and every sweep key is unchanged.
 
 ## Reproducing
 

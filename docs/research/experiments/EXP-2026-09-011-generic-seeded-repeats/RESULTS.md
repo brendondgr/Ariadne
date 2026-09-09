@@ -182,3 +182,78 @@ wording variation `EXP-2026-09-010` measured does not reach the judged score, an
 the effect is an order of magnitude above its own noise. What changes is that the
 claim is made on six draws rather than three, at a less flattering and more
 defensible number.
+
+---
+
+## AMENDMENT A-2 (2026-09-09) — record repair: the three-seed SD is withdrawn from the manifest, and the scaffold fields are filled
+
+**The withdrawal.** A-1 above (2026-09-07) concluded "**the paper should
+quote 0.0074, not 0.0039**", but `manifest.yaml` kept
+`metrics.primary: balanced_across_seed_sd` = **0.0039** (three seeds) with
+`n_runs: 6`. On 2026-09-09 `balanced_across_seed_sd` was moved from
+`metrics.values` to `metrics.withdrawn` (`withdrawn_on: 2026-09-07`,
+`replaced_by: EXP-2026-09-011:six_seed_balanced_sd`) and `metrics.primary` now
+points at **`six_seed_balanced_sd`** = 0.0074. The three-seed value is not
+deleted — A-1 says it "stands as reported" as the figure H1–H3 were adjudicated
+against — but it is no longer a current value. `balanced_range` (0.0089) and
+`gap_over_3sd_ratio` (13.99) remain in `values` as descriptive of the
+pre-registered three-seed subset; their six-seed counterparts
+(`six_seed_balanced_range` 0.0224, `gap_over_3sd_ratio_six_seed` 7.31) are the
+quotable ones. `judgments_total` (1,704) is the three-seed count;
+`judgments_total_six_seed` (3,408, zero failures) is added beside it.
+
+One clarification on the headline: line 18 says the gap is "forty-one times"
+the spread and the manifest's `gap_over_3sd_ratio` is 13.99. Both are correct
+with different denominators — 0.1623 / 0.0039 = 41.6, 0.1623 / (3 × 0.0039) =
+13.9 — and the six-seed line 161 uses the 3×SD form (7.3:1).
+
+**What else was wrong.** `manifest.yaml` carried `status: complete` with
+`date_completed: null`, `authors: []`, template prose in `purpose` and
+`hypothesis`, `code.entrypoint: "<exact command>"`, `data.*` placeholders with
+`n_examples: 0`, `compute.hardware: "<cpu/gpu, ram>"` with
+`wall_clock_hours: 0.0`, and `llm.model: "<provider>/<model>@<version-or-date>"`
+with `max_tokens: 2048`. `data/POINTERS.md` was the empty template,
+`data/metrics.json` did not exist, and `ISSUES.md` was empty although
+`code.dirty: true` and PROTOCOL A-1 records two script defects.
+
+**What is now recorded (old → new), and how each was established.**
+
+| field | was | is | established from |
+|---|---|---|---|
+| `date_completed` | `null` | `2026-09-07` | last extension pass `finished` 12:59:59 (`judge-state-extension.json`); six-seed commit `e5453fd` 13:03 |
+| `authors` | `[]` | `[brendondgr]` | git author of `bc95277`, `112088b`, `923f5bd`, `e5453fd` |
+| `purpose`, `hypothesis` | template text | filled from PROTOCOL.md; H1–H3 quoted with three- and six-seed outcomes | PROTOCOL.md (2026-09-06) and A-1 |
+| `code.entrypoint` | `<exact command>` | `seeded_repeats.py --arm generic --workers 32` then `seeded_repeats_judge.py --arm generic --seeds preregistered`; `--extra-seeds` / `--seeds extension` for A-1 | the scripts (`--seeds` added at `228a700`, PROTOCOL A-1) |
+| `data.*` | placeholders, `n_examples: 0` | `bank-dev.json`, dev half, 284, `hash` = pre-flight sha256 | `run-state.json` `preflight.bank_sha256`; re-hashed 2026-09-09, identical |
+| `compute.hardware` | placeholder | narrator `:9090/default-model`; grading `default-model-2/-3/-4` then `default-model/-2`, all probed as qwen38-27B-v2; 32 workers | `run-state.json`, `judge-state.json`, `judge-state-extension.json` `served` |
+| `compute.wall_clock_hours` | `0.0` | `5.7` | generation `elapsed_s` sum 4,174 s; grading 00:59–02:47 and ~10:15–13:00 from the `finished` stamps and `wall_s` |
+| `llm.model` | placeholder | `relay/qwen38-27B-v2@2026-09-07` | every `served` entry in the three state files |
+| `llm.max_tokens` | `2048` (template) | `32768` | PROTOCOL.md `--llm-max-tokens 32768`; 32,768 per grading pass |
+| `metrics.primary` | `balanced_across_seed_sd` | `six_seed_balanced_sd` | A-1 |
+| `metrics.values.balanced_across_seed_sd` | `0.0039` | withdrawn (see above) | A-1 |
+| `metrics.values.judgments_total_six_seed` | absent | `3408` | 3,408 `*.judgment.q{1,2}.json` on disk, zero `.error` on the extension seeds |
+| `related` | `[]` | `[EXP-2026-08-022, EXP-2026-09-005, -007, -009, -010]` | the experiments this RESULTS quotes |
+
+**Pointers.** `data/POINTERS.md` lists the six-seed tree and the bank file
+with bytes and SHA-256 as of 2026-09-09; the tree has not been written to
+since 2026-09-07 12:59. **Metrics file.** `data/metrics.json` created with
+every `metrics.values` entry, the withdrawn block, the per-pass scores and
+spreads from both judge-state files, and the six balanced means. The
+2026-09-09 audit (verify-b6, `r011.py`) reproduced all twelve block means, the
+six balanced means, the 0.0039 / 0.0097 / 0.0074 SDs, both ranges, the
+−0.0111 block effect and both ratios exactly from the sidecars, with
+`served_model` = `qwen38-27B-v2` on every one of the 3,408.
+
+## AMENDMENT A-3 (2026-09-09) — 283 stale error sidecars on seed 1729, and what `errors: 283` in `judge-state.json` means
+
+`seed-1729/generic/answers/` holds **283 `*.judgment.q1.error.txt`** files
+beside its 284 `*.judgment.q1.json` judgments, and `data/judge-state.json`
+records `qwen1-1729: {n: 284, mean: 0.6646, errors: 283}`. The error files all
+read `judge call failed after 3 attempts: HTTP Error 502: Bad Gateway`: the
+first `.q1` pass on that seed hit a dead endpoint, was retried (the pass
+summary shows three attempts of 95 / 94 / … cases), and completed with all
+284 judgments written. The `.error.txt` files are leftovers of the failed
+attempt; `n: 284` is the count that grades, and every reported figure is
+computed over 284. No judgment is missing on any of the six seeds (3,408
+sidecars, none failed). Logged in ISSUES.md; the files are left in place
+because deleting raw output is not this record's to do.

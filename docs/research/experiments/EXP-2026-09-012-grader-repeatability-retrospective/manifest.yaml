@@ -7,57 +7,57 @@ slug: grader-repeatability-retrospective
 title: "How much does re-grading the same answers move the reported mean?"
 status: complete            # planned | running | complete | failed | superseded
 date_started: 2026-09-07
-date_completed: null       # null until status is complete/failed
-authors: []
+date_completed: 2026-09-07 # data/recompute-audit.json written 02:53:59; directory created and completed in one commit b3e4bf5 02:54 (A-1)
+authors: [brendondgr]      # git author of b3e4bf5
 
 purpose: >
-  One paragraph. What question does this answer, and which paper claim
-  does it support or refute?
+  How much does re-grading the same frozen answers with the same grader family
+  move the reported mean? Every judged figure in this record carries a
+  bootstrap interval over questions and none carries one over grading passes.
+  The project's repeat passes — family comparisons, position counterbalancing,
+  spot checks after fixes — are an unexploited replication study sitting in
+  docs/evaluation/experiments/**/answers/*.judgment*.json. No new judgment is
+  made: scripts/recompute_audit.py recomputes the mean of every (root, arm,
+  suffix) cell on disk, cells are grouped by (root, arm, grader family), and
+  the population SD across passes is taken for every group with >= 3 passes.
+  Outcome: median 0.0066, max 0.0242 over 22 cells; llm_query is the least
+  repeatably gradeable arm (~0.02, a fifth to a quarter of C-012's 0.0822
+  holdout margin). Written retrospectively on 2026-09-09 from PROTOCOL.md (A-1).
 
 hypothesis: >
-  Stated before the run. If exploratory, write "exploratory — no prior hypothesis".
+  exploratory — no prior hypothesis. Retrospective: the data existed before the
+  question was asked. What was fixed before any number was computed (PROTOCOL.md
+  §Method): family assignment by suffix, minimum 3 passes per cell, minimum 20
+  judgments per pass, population SD, no pooling across roots or arms.
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
   commit: fe45e686f12a4cf1c35d4f64ed9e9f4baaa585ad          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
-  entrypoint: "<exact command>"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  entrypoint: "uv run python scripts/recompute_audit.py --json docs/research/experiments/EXP-2026-09-012-grader-repeatability-retrospective/data/recompute-audit.json"   # cell means; the 22-cell across-pass aggregation was computed from that file by code that was not committed — see ISSUES.md
+  dirty: true             # scripts/recompute_audit.py was uncommitted when the audit JSON was written (committed in b3e4bf5, one minute later) — see ISSUES.md
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
 data:
-  name: <dataset>
-  version: <version>
-  split: <split>
-  n_examples: 0
+  name: "every judgment sidecar under docs/evaluation/experiments (**/answers/*.judgment*.json); no new data"
+  version: "the sidecar tree as of 2026-09-07 02:53 — 218 (root, arm, suffix) cells with >= 20 judgments, 30 quarantined sidecars excluded; the tree has since gained the EXP-2026-09-011 extension passes (A-3)"
+  split: "n/a — 22 (root, arm, family) cells with >= 3 passes are analysed; 142 of the 218 cells appear in no manifest"
+  n_examples: 22
   dvc_path: null           # this repository does not use DVC; leave null
-  hash: null               # md5:... or sha256:... of the dataset artifact
-seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
-n_runs: 1
+  hash: null               # the input is a tree that has changed since the analysis; its hash as of 2026-09-09 is in data/POINTERS.md
+seeds: []                  # no generation and no grading: a deterministic re-aggregation of existing sidecars (ISSUES.md)
+n_runs: 1                  # one analysis pass; the passes it aggregates are other experiments' runs
 environment:
   python: "3.13"
   lockfile: env/requirements.lock
   container: null
 compute:
-  hardware: "<cpu/gpu, ram>"
-  wall_clock_hours: 0.0
+  hardware: "cpu only, local workstation; no model in the loop"
+  wall_clock_hours: null   # not recorded; the audit JSON was written within a minute (02:52:40 and 02:53:59)
   estimated_cost_usd: 0.0
 
-# --- LLM / agentic block (delete entirely if no model was in the loop) ---
-llm:
-  model: "<provider>/<model>@<version-or-date>"
-  temperature: 0.0
-  top_p: 1.0
-  max_tokens: 2048
-  prompt_files: []
-  prompt_hash: null
-  tool_schema_hash: null
-  total_input_tokens: null
-  total_output_tokens: null
-  nondeterminism_note: >
-    Provider-side nondeterminism remains even at temperature 0; results
-    are reported as mean ± std over n_runs.
+# --- LLM / agentic block: deleted 2026-09-09 — no model was in the loop; every judgment analysed was made by another experiment (A-1) ---
 
 # --- Results block ---
 metrics:
@@ -77,6 +77,8 @@ metrics:
     cells_recomputed_total: {mean: 218.0, std: 0.0, n: 218}
     cells_absent_from_manifests: {mean: 142.0, std: 0.0, n: 218}
     quarantined_sidecars_excluded: {mean: 30.0, std: 0.0, n: 30}
+    grading_passes_recomputed_2026_09_09: {mean: 115.0, std: 0.0, n: 115}   # independent re-aggregation under the inferred family rule; the recorded 117 is not reproduced (A-2)
+    sd_deterministic_recomputed_2026_09_09: {mean: 0.0068, std: 0.0, n: 7}   # vs the recorded 0.0073; every other cell and arm figure reproduces (A-2)
 baselines_compared: []
 statistical_test: null
 
@@ -85,4 +87,4 @@ supports_claims: []        # every ID here must exist in ../../CLAIMS.md
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
 superseded_by: null
-related: []
+related: [EXP-2026-08-022, EXP-2026-09-007, EXP-2026-09-008, EXP-2026-09-009, EXP-2026-09-010, EXP-2026-09-011]   # position effect (08-022, 009, 011); C-012 margin (007); resolution collapse (008); generation-side variance (010, 011)

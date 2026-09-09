@@ -1,0 +1,90 @@
+{
+ "experiment": "EXP-2026-09-013",
+ "source": "manifest, back-filled 2026-09-09 from the five logs under logs/ (before-12way-events.log parsed per stream for the longest inter-frame gap; after-run{1,2}-12way.log summary lines read directly); the before figures were reproduced by the 2026-09-09 audit (verify-b6, r013.py)",
+ "manifest_metrics": {
+  "runs_exceeding_client_stall_budget_before": {
+   "mean": 5.0,
+   "std": 0.0,
+   "n": 1
+  },
+  "runs_exceeding_client_stall_budget_after_clean12way": {
+   "mean": 0.0,
+   "std": 0.0,
+   "n": 1
+  },
+  "runs_exceeding_client_stall_budget_after_run1_overlapped24way": {
+   "mean": 1.0,
+   "std": 0.0,
+   "n": 1
+  },
+  "runs_exceeding_client_stall_budget_after_both_runs": {
+   "mean": 0.5,
+   "std": 0.5,
+   "n": 2
+  },
+  "worst_socket_silence_s_before": {
+   "mean": 429.0,
+   "std": 0.0,
+   "n": 1
+  },
+  "worst_socket_silence_s_after_clean12way": {
+   "mean": 10.0,
+   "std": 0.0,
+   "n": 1
+  },
+  "worst_socket_silence_s_after_run1_overlapped24way": {
+   "mean": 434.6,
+   "std": 0.0,
+   "n": 1
+  },
+  "worst_socket_silence_s_after_both_runs": {
+   "mean": 222.3,
+   "std": 212.3,
+   "n": 2
+  },
+  "runs_completing_server_side_before": {
+   "mean": 12.0,
+   "std": 0.0,
+   "n": 1
+  },
+  "runs_completing_server_side_after": {
+   "mean": 12.0,
+   "std": 0.0,
+   "n": 2
+  }
+ },
+ "before_per_run_longest_silence_s": {
+  "7": 428.7,
+  "4": 240.1,
+  "6": 114.3,
+  "0": 111.2,
+  "1": 93.2,
+  "9": 86.9,
+  "8": 73.0,
+  "2": 54.4,
+  "11": 42.8,
+  "10": 41.1,
+  "3": 39.9,
+  "5": 13.9
+ },
+ "after_run1": {
+  "exceeding_90s": 1,
+  "of": 12,
+  "worst_silence_s": 434.6,
+  "note": "run 7; probe overlapped the tail of a previous 12-way probe (~24 streams)"
+ },
+ "after_run2": {
+  "exceeding_90s": 0,
+  "of": 12,
+  "worst_silence_s": 10.0,
+  "total_s_range": [
+   142.7,
+   335.4
+  ]
+ },
+ "solo_trace": {
+  "keepalive_frames": 24,
+  "cadence_s": 10.0,
+  "planner_stall_s": 240.05
+ }
+}

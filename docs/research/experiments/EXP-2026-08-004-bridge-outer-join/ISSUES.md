@@ -68,3 +68,18 @@ a solved problem.
 ## 2026-08-10 — Single run, one model, seeds unrecorded
 
 Same limitation as every arm of the study. `n = 30` on the blind set.
+
+## 2026-09-09 — The protocol was never written, and the pointers went stale in silence
+
+**Impact:** `PROTOCOL.md` stayed the scaffold template from 2026-08-10 until
+2026-09-09, so this experiment had no recorded question, metrics or procedure
+of its own; and both artifact-directory hashes stopped verifying on 2026-08-19
+when `EXP-2026-08-007` wrote its judgments into these directories, without
+this record noticing.
+
+**Resolution:** A retrospective protocol, labelled as such (RESULTS A-1).
+Directories re-hashed as they stand, with the recipe that proves the answers
+unchanged (RESULTS A-2). Not recoverable: a pre-registered protocol — the
+direction of the effect was known from `EXP-2026-08-003` §4 before the code
+changed, and the hypothesis in `manifest.yaml` is the only contemporaneous
+statement of intent.

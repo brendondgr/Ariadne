@@ -4,7 +4,7 @@
 id: EXP-2026-09-002
 slug: expansion-bank-judged
 title: On a bank covering every shape the sources support, do hand-written templates still hold?
-status: complete
+status: superseded       # A-1 (2026-09-09): headline arm comparison re-measured after the retrieval repairs by EXP-2026-09-005 (0.1642 -> 0.1623)
 date_started: 2026-09-02
 date_completed: 2026-09-03
 authors: ["brendondgr"]
@@ -40,15 +40,15 @@ config:
 data:
   name: Expansion bank (dev half) over ATT&CK Enterprise + CAPEC
   version: "attack-19.0 / capec-3.9 · bank v1"
-  split: dev              # 284 of 572; the 288-question holdout was untouched
-  n_examples: 284
+  split: "dev for the three judged arms (284 of 572); the model-free direction, anomaly and abstention metrics span all 572 incl. the sealed holdout — A-1"
+  n_examples: 284          # judged population; model-free metrics use 572 (A-1)
   dvc_path: null
   hash: sha256:ad99afb18934bd7db233c292d235a4350c332114c357ea624123031ff0ab434e
 seeds: []                  # the split is sha256(spec_id) parity, not a sampled draw
 n_runs: 1                  # D-010 still in force; two GRADING passes, one run per arm
 environment:
   python: "3.13"
-  lockfile: env/requirements.lock
+  lockfile: null           # A-1: was env/requirements.lock, never written; dependencies are uv.lock at code.commit (ISSUES I-9)
   container: null
 compute:
   hardware: "cpu only, local workstation; models served by a local relay on :9090"
@@ -82,13 +82,13 @@ metrics:
     judged_correctness_generic: {mean: 0.6576, std: 0.0, n: 284}        # 568 judgments
     judged_correctness_deterministic: {mean: 0.4934, std: 0.0, n: 284}  # 568 judgments
     judged_correctness_llm_query: {mean: 0.3712, std: 0.0, n: 283}      # 564 judgments; CONFOUNDED, see I-3
-    direction_paired_mean_delta: {mean: -0.0797, std: 0.4865, n: 20}    # se 0.1088; + means forward easier
+    direction_paired_mean_delta: {mean: -0.0797, std: 0.4865, n: 20}    # se 0.1088; + means forward easier. Population: 334 single-shape non-D0 questions = 166 dev + 168 holdout (A-1)
     direction_pairs_forward_higher: {mean: 3, std: 0.0, n: 20}
     direction_pairs_reverse_higher: {mean: 10, std: 0.0, n: 20}
     direction_pairs_tied: {mean: 7, std: 0.0, n: 20}
-    property_read_empty_query_rate: {mean: 1.0, std: 0.0, n: 63}        # 63/63 built a query, got no rows
-    containment_empty_query_rate: {mean: 1.0, std: 0.0, n: 68}
-    abstention_rate: {mean: 0.6066, std: 0.0, n: 61}                    # 37/61 returned nothing
+    property_read_empty_query_rate: {mean: 1.0, std: 0.0, n: 63}        # 63/63 built a query, got no rows. 63 = all D1 in the bank: 35 dev + 28 holdout (A-1); classifier had one reachable branch (EXP-2026-09-003 I-1)
+    containment_empty_query_rate: {mean: 1.0, std: 0.0, n: 68}          # 68 = containment-shape questions with recall < 1 over all 572: 35 dev + 33 holdout (A-1)
+    abstention_rate: {mean: 0.6066, std: 0.0, n: 61}                    # 37/61 returned nothing. 61 = all D0 in the bank: 36 dev + 25 holdout (A-1)
     abstention_anchor_only: {mean: 18, std: 0.0, n: 61}
     abstention_unrelated: {mean: 6, std: 0.0, n: 61}
     llm_query_empty_query_count: {mean: 153, std: 0.0, n: 284}          # the confound, measured
@@ -99,5 +99,5 @@ statistical_test: null     # no significance test; D-010 and ISSUES I-5
 supports_claims: [C-023, C-012]
 figures: []
 supersedes: null
-superseded_by: null
-related: [EXP-2026-09-001, EXP-2026-08-015, EXP-2026-08-011, EXP-2026-08-008, EXP-2026-08-022]
+superseded_by: EXP-2026-09-005   # A-1 (2026-09-09); 005 declared supersedes: EXP-2026-09-002 on 2026-09-03 and the back-link was missing
+related: [EXP-2026-09-001, EXP-2026-08-015, EXP-2026-08-011, EXP-2026-08-008, EXP-2026-08-022, EXP-2026-09-003, EXP-2026-09-004, EXP-2026-09-005]

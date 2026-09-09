@@ -126,3 +126,46 @@ outside an experiment. The recommendation is recorded in Q20.
   it is the standing `.env` value. A different timeout moves T1 and T5 together.
 * **Three repeats is a small n for a spread.** The sd figures are indicative,
   not confidence intervals.
+
+---
+
+# AMENDMENTS
+
+## AMENDMENT A-1 (2026-09-09) — `n_runs` was 1 for a three-repeat arm; "wall s" is summed latency, not wall clock; `data/metrics.json` restructured
+
+**`n_runs`.** `manifest.yaml:45` recorded `n_runs: 1` while the entrypoint ran
+`--repeats 3` and every LLM-arm value in `metrics.values` is a mean and sample
+sd over three runs (`n: 3`). OPEN_QUESTIONS Q34 flagged this. **Old → new:**
+`n_runs: 1` → `3`. The deterministic control ran once (it is byte-reproducible)
+and its values keep `n: 1`.
+
+**"wall s" is not wall clock.** `wall_s_total` in the sweep output is
+`sum(elapsed_s)` over the 120 per-question rows (`scripts/composer_arm_sweep.py`
+line 212), i.e. summed per-request latency at 16 concurrent workers, not elapsed
+time. So the "wall s" column of §"The headline", "116.3 s against a mean of
+7,815.8 s" in §T5, and the manifest's `wall_s_llm_arm` / `wall_s_deterministic_arm`
+are summed latencies. The **67× ratio is unaffected** (both sides are the same
+quantity). `compute.wall_clock_hours: 6.5` was Σ latency over the three LLM
+repeats (23,447.4 s → 6.5 h), not the time the run took; the elapsed time at 16
+workers was never recorded (EXP-2026-08-019 reports ≈398 s per w16 repeat for
+its seeded runs, which is the right order of magnitude but not this run).
+**Old → new:** `wall_clock_hours: 6.5` → `null`, with an ISSUES entry. The
+metric names `wall_s_*` are kept because they are the artifact's names; read
+them as summed latency.
+
+**`data/metrics.json`.** The sweep emitted a JSON *list* of four run objects, so
+the manifest's aggregates (33.6667, 0.6817, 565.3333, 98.6667, 7815.8) appeared
+nowhere in it — they are means the sweep never wrote. The file is now
+`{runs: [the four objects, unchanged], manifest_metrics: {...}}`. Verified
+2026-09-09 by recomputing from the run objects: unsupported 33/36/32 → 33.6667
+sd 2.0817; gold 0.6765/0.7045/0.6641 → 0.6817 sd 0.0207; claims 614/528/554 →
+565.3333 sd 44.1059; engaged 104/96/96 → 98.6667 sd 4.6188; wall_s 6739.5/
+8491.5/8216.4 → 7815.8 (sd 942.2 from the rounded inputs; the recorded 941.4 is
+a rounding difference and is left as recorded). No script reads this file
+(`make_arm_comparison.py` reads only the July arms), so nothing else changed.
+
+## AMENDMENT A-2 (2026-09-09) — the primary metric now names a recorded key
+
+`metrics.primary` was `unsupported_claims_cut_by_the_verifier`, a descriptive label that matched no key in
+`metrics.values`, so `INDEX.md` and `CURRENT.md` rendered this experiment's
+headline as "not recorded". It now names `unsupported_claims_llm_arm` — the mean number of claims the verifier cut per LLM-composer run. No value changed.

@@ -596,3 +596,121 @@ The bank is one arm (`deterministic`) on one metric (retrieval recall). It says
 nothing yet about the judged comparisons, about the LLM-planned arms, or about
 answer quality. Those are the next runs, and the holdout half stays sealed until
 the dev half has been written up.
+
+---
+
+## AMENDMENT A-6 (2026-09-09) — Record repair: the headline is superseded by A-1/A-2, eight pointers were stale, and the commit predated the code
+
+Written from the 2026-09-09 audit (`verify-b5.md`), the current
+`census.json`, `git log`/`git diff`, and `utils.research_record.hashing`. No
+number in this amendment is new; every one is read from an artifact named in
+`data/POINTERS.md`.
+
+### 1. The Headline section still quotes v1
+
+`RESULTS.md:8-9` and the table at `:11-22` were written before A-1 and A-2 and
+never updated: *"12 of the 33 edge types — 36.4%"*, *"Twenty-one edge types"*,
+23 node types, 10,098 nodes, 33 edge types, 34,954 edge instances, 23 of 74
+properties (31.1%). F-3 (`:67-68`) says *"every one of the 21 never-asked edge
+types … 13 of them carry 50 or more instances"*. A-1 C-1/C-3/C-4 and A-2
+corrected each of these lower down in this file. The current figures, read
+from `census.json` (`sha256:e2f55f82…`, `census_version: 2`):
+
+| Measure | Headline (v1) | Current (v2) | Where corrected |
+|---|---:|---:|---|
+| Edge types | 33 | **34** | A-1 C-4 |
+| Edge types reached | 12 (36.4%) | **12 (35.3%, 0.3529)** | A-1 C-4 |
+| Never-asked edge types | 21, 13 with ≥50 instances | **22, 12 with ≥50 instances** | A-1 C-4; this amendment |
+| Node types | 23 | **25** | A-1 C-1 |
+| Nodes (after exclusions) | 10,098 | **10,113** | A-2 (category/view exclusion, regenerated at `1dd69d9`) |
+| Edge instances | 34,954 | **34,952** | A-2 |
+| Edge instances reached | 23,294 (66.6%) | **23,294 (66.65%, 0.6665)** | this amendment |
+| Node properties reached | 23 of 74 (31.1%) | **16 of 83 (19.3%, 0.1928)** | A-1 C-3 |
+
+The reading at `:24-28` (instance coverage exceeds shape coverage because the
+categories sit on the three highest-volume edges) is unchanged. The text above
+is left as written; this table is the correction.
+
+### 2. Manifest values changed (old → new)
+
+- `metrics.values.edge_instance_coverage`: **0.6664 → 0.6665**. The recorded
+  value was the v1 ratio 23,294 / 34,954; the v2 census holds 34,952 instances
+  and its own `coverage.edge_instance_coverage` field says 0.6665.
+- `data.n_examples`: **10098 → 10113** (v2 node total).
+- New keys: `edge_instances_total` 34,952, `edge_instances_reached` 23,294,
+  `nodes_after_exclusions` 10,113, `never_asked_edge_types` 22,
+  `never_asked_edge_types_with_50_plus_instances` 12.
+- `metrics.withdrawn` added for the v1 figures this file's own A-1/A-2 retired:
+  `edge_type_coverage_v1` 0.3636, `edge_types_total_v1` 33, `node_types_v1` 23,
+  `nodes_after_exclusions_v1` 10,098, `property_coverage_v1` 0.3108,
+  `edge_instances_total_v1` 34,954 — each `replaced_by` the current key of the
+  same name.
+- `code.commit`: **8ab0d2ba… → eeef3228bcc51bd032a7246017f26f0830591cdc**;
+  `code.dirty`: **true → false**. The recorded commit (2026-08-31 21:49,
+  *"Fix the grading-order bias…"*) predates every line of census code — the
+  module first appears at `7812d54` (2026-09-01 16:01) — and could regenerate
+  nothing in this folder. `git diff --stat eeef322 -- <every present pointer
+  path>` is empty, so the tree at `eeef322` (Step 7, 2026-09-01 23:33, the
+  commit that also produced A-5's bank and scores) regenerates every artifact
+  listed. The intermediate states are `7812d54` (v1), `caec889`/`a61dedb`
+  (A-1), `1dd69d9` (A-2), `e2dbb64` (A-3), `eeef322` (A-5).
+- `environment.lockfile`: **env/requirements.lock → null** — the file was never
+  written (ISSUES I-9).
+- `related`: EXP-2026-09-002 added (see §5).
+
+### 3. Pointers: 8 of 17 stale, 1 missing, 9 rows added
+
+Eight hashes were the blobs at `a61dedb` (census.json, CENSUS.md,
+raw_graph.py, composition.py, test_composition.py, specs.json, report.json) or
+`585e7dc` (prepare_briefs.py). A-2's category-exclusion fix at `1dd69d9`
+regenerated the census and the spec pool; `eeef322` touched composition.py and
+prepare_briefs.py again. All eight are re-hashed as they stand (identical at
+`eeef322` and HEAD); the old hashes are kept in each row's description.
+
+`docs/evaluation/composition/authored/ingested.json` — the 42-brief Opus 5
+pilot the table pinned at 37,581 B, `sha256:659c1cd5…` — is gone. That hash is
+the `585e7dc` blob; the file was regenerated at `1dd69d9` and `e2dbb64` and
+**deleted at `eeef322`** when the full-bank ingest replaced it at
+`docs/evaluation/composition/bank/ingested.json` (5,836 lines, different
+content). EXP-2026-09-003 ISSUES I-5 describes this path as *"committed at
+eeef322"*; it was deleted there. The row now points at the successor, labelled
+as such, and ISSUES I-7 records where the pilot survives.
+
+Rows added for artifacts the amendments used and never pinned: the A-2/A-4
+probe (`docs/evaluation/composition/probe/{selection,bank,probe-report}.json`
+and the gitignored `probe-2026-09-01/deterministic/answers`, 80 files, from
+which the audit reproduced A-4's 0.4029 and 14 fully answered exactly);
+`scripts/reconcile_graph.py`; A-5's `bank.json`, the gitignored
+`expansion-2026-09-01/deterministic/answers` (572 files) and `score.json`; and
+`scripts/score_bank.py`. `score.json` was rewritten on 2026-09-08 by `a460fa2`
+(Hybrid Rewrite Stage 6/8 added a `rewrite` provenance block); its `report`
+block still carries 0.4522 / 0.5060 / 37 of 61 unchanged, and the row records
+the `eeef322` blob (`sha256:6fb4eaf1…`) as the file A-5 was computed from.
+
+A-2's *first* probe — 78 questions, recall 0.0706, controls 0.1944 — was
+overwritten in place by the corrected 80-question run and cannot be reproduced
+(ISSUES I-8). A-4's corrected figures reproduce.
+
+### 4. What did not change
+
+Every other manifest value reproduces from the current `census.json`
+(`edge_type_coverage` 12/34, `property_coverage` 16/83, 25 node types, 12
+facets, 1 cross-source edge type, 10 dangling references) and from
+`score.json@eeef322` (0.4522 / 0.5060 / 0.6066 over 572 questions). The
+conclusion is unchanged: the 16 categories reach 12 of 34 edge types.
+
+### 5. Stale prose overturned later
+
+A-5 §2 reports reverse easier than forward (0.5165 vs 0.4302) and records it as
+*"a tension, not resolved"*. EXP-2026-09-002 paired the contrast on shape (20
+shapes, 237 questions, mean −0.0797, sd 0.4865) and found no global sign; its
+RESULTS states that A-5's aggregate comparison is confounded by shape
+composition, which is what A-5 itself suspected. The paired figure is the one
+to quote. EXP-2026-09-002 also judged this bank (0.6576 / 0.4934) and
+EXP-2026-09-005 re-measured it after the retrieval repairs; A-5's model-free
+0.4522 remains the correct figure for what it measures and is not the quotable
+arm comparison.
+
+### 6. `data/metrics.json`
+
+Did not exist. Created 2026-09-09 from the manifest's `metrics.values`.

@@ -7,61 +7,83 @@ slug: grader-calibration
 title: "Which locally available models can resolve differences near the ceiling?"
 status: complete            # planned | running | complete | failed | superseded
 date_started: 2026-09-05
-date_completed: null       # null until status is complete/failed
-authors: []
+date_completed: 2026-09-06 # last calibration sidecar written 03:25:16 (state-gemma26.json); write-up committed 4eb9b91 20:37 (A-1)
+authors: [brendondgr]      # git author of 45f3226, 61e2838, 03570c4 and 4eb9b91
 
 purpose: >
-  One paragraph. What question does this answer, and which paper claim
-  does it support or refute?
+  Which locally available models can resolve differences near the ceiling? On
+  2026-09-05 gemma4-31B-mtp returned exactly 1.0 on all 150 composerfix answers,
+  and a grader with no spread reports a contrast of zero whatever is true. One
+  frozen 60-answer set (20 ceiling / 20 mid / 20 low) is graded by every healthy
+  local alias under one prompt and one 32,768-token budget, and each model gets
+  a pre-registered usable / not-usable verdict. It decides whether C-021 (the
+  co-authorship gap, +0.0322 under qwen38-27B-v2 and 0.0000 under
+  gemma4-31B-mtp) can get a second opinion from any local model, and it gates
+  the later phases of the 2026-09-06 overnight. Incidentally it closes the
+  never-tested LLM_THINKING_BUDGET=512 cap on the llm_query arm (30 paired
+  cases). Written retrospectively on 2026-09-09 from PROTOCOL.md (A-1).
 
 hypothesis: >
-  Stated before the run. If exploratory, write "exploratory — no prior hypothesis".
+  Pre-registered in PROTOCOL.md on 2026-09-06 00:05 before any judgment existed.
+  H1 gemma4-31B-mtp is saturated on the ceiling band (>=95% at exactly 1.0).
+  H2 qwen38-27B-v2 emits >=3 distinct values on the ceiling band. H3
+  gemma-4-26B-it is genuinely uncertain, the only unpredictable cell. H4 every
+  model separates the low band with sd > 0.20. usable_near_ceiling :=
+  fraction_at_1 < 0.95 AND distinct_values > 2. Outcome: all four held; H3
+  resolved as unusable, and the model also inverts the mid/low ordering.
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
   commit: ce1d95c6f6ebb3faf8b15d4b305ad5b179db948d          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
-  entrypoint: "<exact command>"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  entrypoint: "uv run python scripts/overnight_2026_09_06.py"   # phase A (calibration, three tracks) and phase D (thinking-cap probe) are this experiment; phases B/B2/B3 in the same driver graded EXP-2026-09-007's holdout answers and are recorded there
+  dirty: true             # the driver was first committed at 45f3226 (23:52), after the first calibration sidecar (23:51); see ISSUES.md
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
 data:
-  name: <dataset>
-  version: <version>
-  split: <split>
-  n_examples: 0
+  name: "calibration-2026-09-06: one frozen 60-answer set (20 ceiling / 20 mid / 20 low) drawn from composerfix-dev/deterministic, post-repair-2026-09-03/deterministic and llm-query-split-2026-09-05/llm_query; plus a 30-case slice of bank-dev.json for the thinking-cap probe"
+  version: "docs/evaluation/experiments/calibration-2026-09-06/selection.json, seed 20260906, frozen 2026-09-05"
+  split: "60 frozen answers (3 bands x 20); thinkcap probe 30 dev-bank cases paired on case id against llm-query-split-2026-09-05"
+  n_examples: 60
   dvc_path: null           # this repository does not use DVC; leave null
-  hash: null               # md5:... or sha256:... of the dataset artifact
-seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+  hash: sha256:6aa7161ff6ba16412a9b7bc738ccd69989db884a35dab6ace7e1d05305570e33   # selection.json
+seeds: []                  # grading is temperature 0 with no seed field; the thinkcap probe's generation seed was not recorded — see ISSUES.md
 n_runs: 1
 environment:
   python: "3.13"
   lockfile: env/requirements.lock
   container: null
 compute:
-  hardware: "<cpu/gpu, ram>"
-  wall_clock_hours: 0.0
+  hardware: "local workstation (client side only); graders served off-box: qwen38-27B-v2 on :9090/default-model (8 workers) and gemma4-31B-mtp on :9090/default-model-2 (24 workers), both vLLM; gemma-4-26B-it on :4000/local, llama.cpp (2 workers)"
+  wall_clock_hours: 3.6    # first sidecar 2026-09-05 23:51 to last 2026-09-06 03:25, three tracks concurrent; per-track elapsed_s sum to 4.35 h (state-*.json)
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
 llm:
-  model: "<provider>/<model>@<version-or-date>"
+  # Three graders, one manifest field. Each is named by the served_model string
+  # its own response envelope returned (state-*.json), never by the alias (D-028):
+  #   reference grader : relay/qwen38-27B-v2@2026-09-06   (alias default-model, :9090)
+  #   second family    : relay/gemma4-31B-mtp@2026-09-06  (alias default-model-2, :9090)
+  #   third candidate  : relay/gemma-4-26B-it@2026-09-06  (alias local, :4000 llama.cpp)
+  model: "relay/qwen38-27B-v2@2026-09-06"
   temperature: 0.0
   top_p: 1.0
-  max_tokens: 2048
+  max_tokens: 32768        # JUDGE_MAX_TOKENS in scripts/overnight_2026_09_06.py, identical for every model
   prompt_files: []
   prompt_hash: null
   tool_schema_hash: null
   total_input_tokens: null
   total_output_tokens: null
   nondeterminism_note: >
-    Provider-side nondeterminism remains even at temperature 0; results
-    are reported as mean ± std over n_runs.
+    Provider-side nondeterminism remains even at temperature 0. Every band was
+    graded once per model (n_runs 1); the sd values are across the 20 answers
+    of a band, not across repeat passes. The thinking-cap probe generated 30
+    answers once, at a 512-token thinking budget, on the qwen38-27B-v2 builder.
 
 # --- Results block ---
 metrics:
-  primary: ceiling_band_fraction_at_1
+  primary: models_usable_near_ceiling   # was ceiling_band_fraction_at_1, which is not a key in values; the verdict (1 of 3 graders usable) is the headline (A-1)
   values:
     ceiling_fraction_at_1_gemma31: {mean: 1.0, std: 0.0, n: 20}
     ceiling_fraction_at_1_gemma26: {mean: 0.95, std: 0.0, n: 20}
@@ -92,4 +114,4 @@ supports_claims: []        # every ID here must exist in ../../CLAIMS.md
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
 superseded_by: null
-related: []
+related: [EXP-2026-09-006, EXP-2026-09-007, EXP-2026-09-009]   # C-021 gap and saturated cells (006); holdout figures quoted (007); 009 extends the resolution-floor finding to a homogeneous low population

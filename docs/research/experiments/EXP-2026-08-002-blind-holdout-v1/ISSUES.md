@@ -77,3 +77,18 @@ on the interval, not on the point.
   unmeasured.
 - Human-authored questions. See the standing limitation.
 - Run-to-run variance. n_runs = 1.
+
+## 8. (2026-09-09) The judge harness script is not in the repository, and the Arm A output directory has grown
+
+`llm.prompt_files` lists `scratchpad/judge_holdout.mjs`; no such path exists in
+the repository, so the judging harness that drove the 60 Sonnet 5 agents is
+not recoverable from git. The verdicts it produced are (the `*.judgment.json`
+files and `results.json`, now hashed in `data/POINTERS.md`).
+
+Separately, `docs/evaluation/experiments/holdout-v1/deterministic/answers/`
+has held 60 additional grader sidecars (`*.judgment.local.json`,
+`*.judgment.local.pre-qwen38.json`) since 2026-08-31, written by
+`EXP-2026-08-021`. They are not this experiment's and must be excluded from any
+recomputation of its numbers; `utils.evaluation.retrieval_coverage` currently
+counts them as answer artifacts and reports n = 90 for that arm, which is a
+scorer hygiene defect rather than a record error. See RESULTS A-2.

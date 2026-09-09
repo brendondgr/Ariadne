@@ -3,8 +3,8 @@ id: EXP-2026-07-008
 slug: component-evaluation
 title: Component-level evaluation of the planner and both query specialists
 status: complete
-date_started: 2026-07-26
-date_completed: 2026-07-26
+date_started: 2026-07-07     # was 2026-07-26; corrected 2026-09-09 from the commit that generated the report (RESULTS A-1)
+date_completed: 2026-07-07   # was 2026-07-26; same basis
 authors: [brendondgr]
 
 purpose: >
@@ -19,7 +19,7 @@ hypothesis: >
   than a test of a prediction.
 
 code:
-  commit: unknown            # not captured; regenerable via the entrypoint
+  commit: 61657a9f73b317edd6c659f3cd81ac079e9f7bf8   # the commit that generated component-evaluation.{json,md} (2026-07-07 01:00 -0400); set 2026-09-09, RESULTS A-1
   branch: main
   entrypoint: "uv run main.py --component-eval"
   dirty: false               # unverifiable for a back-filled run
@@ -30,7 +30,7 @@ data:
   name: planner-corpus-and-specialist-gold
   version: "ATT&CK 19.0 / CAPEC 3.9"
   split: all
-  n_examples: 43
+  n_examples: 43             # planner corpus only; the specialist corpora (46 ATT&CK, 34 CAPEC) and 17 probes are in PROTOCOL/RESULTS — see A-1
   dvc_path: null
   hash: null
 seeds: []                    # deterministic scoring; no sampling involved
@@ -66,4 +66,4 @@ supports_claims: [C-007, C-008]
 figures: []
 supersedes: null
 superseded_by: null
-related: [EXP-2026-07-009]
+related: [EXP-2026-07-009, EXP-2026-08-016]   # 08-016 re-evidences the safety half at 240 probes (A-1)

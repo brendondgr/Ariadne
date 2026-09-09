@@ -41,5 +41,6 @@
  },
  "verdict": "NO locally available model except qwen38-27B-v2 can adjudicate a near-ceiling contrast. gemma4-31B-mtp emits ONE value there; gemma-4-26B-it emits TWO ({0.5, 1.0}). Neither can represent C-021's 0.0322 gap at all. This is why the claim rests on a single named grader, and it is a measurement rather than an apology.",
  "incomplete": "gemma-4-26B-it completed the ceiling band (20/20) and stalled on the mid band at 11/20. The :4000 llama.cpp endpoint stopped answering even a 16-token request for >400s. The ceiling band is the band the C-021 verdict depends on, so the verdict stands; the mid/low bands would have added context about its general behaviour and are recorded as not measured.",
- "criterion_preregistered": "fraction_at_1 < 0.95 AND distinct_values > 2, written in PROTOCOL.md before any judgment existed"
+ "criterion_preregistered": "fraction_at_1 < 0.95 AND distinct_values > 2, written in PROTOCOL.md before any judgment existed",
+ "incomplete_superseded_2026-09-09": "The 'incomplete' field above was written at 01:17 while gemma-4-26B-it was still running. The mid band later completed at n=18 (two cases failed at the endpoint, *.judgment.gemma26.error.txt) and the low band at n=20, finishing 03:25:16; state-gemma26.json holds the final per-band figures (mid 0.6239, low 0.6435) that RESULTS.md and manifest.yaml report. The mid/low bands were measured, not 'not measured'. See RESULTS.md A-3."
 }

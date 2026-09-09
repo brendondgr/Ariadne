@@ -126,3 +126,83 @@ uv run python -m utils.evaluation.answer_gap \
   --root docs/evaluation/experiments/holdout-v1 --arm gold_loop_llm \
   --judgment-root docs/evaluation/experiments/holdout-v1 --judgment-arm gold_loop_llm
 ```
+
+---
+
+# AMENDMENTS
+
+## AMENDMENT A-1 (2026-09-09) — PROTOCOL.md was the blank scaffold; the commit field named the record commit
+
+**What was wrong.** `PROTOCOL.md:1–52` was the unfilled template
+(`# PROTOCOL — EXP-2026-08-004 <title>` and placeholder prose); this
+experiment ran with no recorded protocol. It has been replaced by a
+retrospective protocol, marked as such in its first line, reconstructed from
+`docs/plans/arm-h-generic-primitives.md`, `manifest.yaml`'s hypothesis,
+`EXP-2026-08-003` §4/§7, the six "Bridge outer join" commits and this file.
+It records no prediction that was not already in the manifest.
+
+`manifest.yaml:29` recorded `code.commit: 93da6d4…` ("(5/6): Development
+catalogue shows no regression", 23:53), a record-side commit made after both
+runs. The manifest's own `dirty:` comment names the run commits: the blind run
+at `618bc20` (23:20; artifacts 23:28) and the development run at `1e8e16f`
+(23:34; artifacts 23:51), both verified with `git cat-file -e`. **Old:**
+`93da6d4…` → **new:** `618bc20e7faea6bcd12df553e442c447dcbdfff7`, the commit of
+the run behind the primary metric; the development run's commit is named in
+the comment beside it. `manifest.yaml:56` `llm.model` "local/skynet (Gemma 4
+31B)@unknown" → `relay/gemma-4-31B@2026-08-10`, the format
+`docs/evaluation/README.md` prescribes, as recorded at run time (the relay's
+August repoint date is unknown).
+
+## AMENDMENT A-2 (2026-09-09) — Both artifact directories gained judgment files on 2026-08-19; the answers are unchanged
+
+**What was wrong.** `data/POINTERS.md:3–9` recorded the two run directories at
+657 289 and 4 850 928 bytes with digests `e24f8d9e…` / `8e15ac27…` and stated
+"No judgment files exist for either run". Since 2026-08-19 the blind directory
+holds 30 `*.judgment.json` + 1 `*.judgment.error.txt` and the development
+directory 120 + 1, written by `EXP-2026-08-007`, which judged Arm H on exactly
+these outer-join artifacts (its POINTERS rows 38 and 40 point at
+`…-outer/generic/answers`). The directories are now 683 755 and 4 953 549
+bytes and hash differently.
+
+**What is now correct.** On 2026-09-09 the §8 recipe restricted to
+non-sidecar files (`find … -name '*.json' ! -name '*.judgment*'`) gives
+exactly `e24f8d9e…` / 657 289 bytes and `8e15ac27…` / 4 850 928 bytes — **the
+answer files are byte-identical to what was recorded**. Both rows are
+re-recorded with the tree hash of the directory as it now stands
+(`sha256:055240fd…`, `sha256:ba22ed41…`), the sidecars are named, and the
+exclusion recipe is kept in the file. The B2 audit re-ran
+`retrieval_coverage` (both sets, both pairings) and `answer_gap` over these
+directories and reproduced every number in §2 and §4.
+
+## AMENDMENT A-3 (2026-09-09) — Supersedes EXP-2026-08-003; the templates were fixed after all; Arm H has been judged
+
+**Supersession.** `manifest.yaml` now records `supersedes: EXP-2026-08-003`:
+this experiment replaced that one's blind headline (0.8952 → 1.0000) on the
+same arm and bank the same day, which `EXP-2026-08-003`'s own amendment
+already acknowledges. The reverse link is set there.
+
+**Stale prose.**
+
+* §5 fourth bullet and §7 item 3 ("The templates still have the inner-join
+  defect … deliberately not done"; "Decide on the templates") and
+  `ISSUES.md:3–17` ("Not fixed. This is an operator decision"): the decision
+  was taken eight days later. `EXP-2026-08-006` (2026-08-18) ported the same
+  outer join to `capec_maps_to` and `cwe_chain` on the default cascade and
+  measured blind retrieval 0.8952 → 1.0000 there too, re-cutting the
+  comparability baseline that this experiment declined to touch. Added to
+  `related`.
+* §5 first bullet, §7 item 1 ("Judge Arm H on both banks") and `ISSUES.md:26`
+  ("Arm H has never been judged on either bank"): done. `EXP-2026-08-007`
+  (2026-08-19) judged Arm H on these artifacts at **0.8483** blind (n = 30) and
+  **0.9692** on the development catalogue (n = 120) — its manifest's
+  `blind_correctness_generic` / `dev_correctness_generic` — against the
+  repaired cascade's 0.8367 / 0.9839. The precision cost the saturated
+  retrieval metric could not see (§5 second bullet) turned out not to
+  separate the arms under a judge. Added to `related`.
+* §7 item 2 (fix `under_enumeration` in the composer, 3 questions, 0.0883):
+  addressed by the composer fix in `EXP-2026-08-008` (2026-08-19), by that
+  experiment's title and scope; its figures are its own.
+
+**Numbers here: unchanged.** 1.0000 / 1.0000, 4 improved / 0 regressed, 950 →
+966 and 51 → 56 records, and the 0.0883 / 0.0417 decomposition stand as
+measured on 2026-08-10.

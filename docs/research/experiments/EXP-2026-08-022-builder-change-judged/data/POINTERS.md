@@ -6,12 +6,25 @@ deterministic arm has no model in it, so the two conditions differ only in
 builder revision. Each hash is the SHA-256 of the matching files concatenated
 in sorted path order; the commands are in [`../RESULTS.md`](../RESULTS.md) §8.
 
+The four answer-directory rows were re-pinned on 2026-09-09 (RESULTS A-1) with
+`utils.research_record.hashing` tree hashes, because the validator hashes a
+directory as a tree (path + content of every file) and the original rows
+recorded a digest over the 30 answer files only. The answer files are
+unchanged — their 30-file digests still reproduce, as noted per row. The tree
+hashes of the two `bank2026*` directories will move again whenever another
+experiment adds a grading pass beside those answers; the judgment-set rows
+below (glob paths) are the stable pins for this experiment's own gradings.
+
+`data/metrics.json` was created 2026-09-09 (A-1) from
+`scripts/builder_change_judged.py --out` over these files plus the manifest
+values.
+
 | Artifact | Path (repo-relative) | Bytes | SHA-256 | What it is |
 |---|---|---|---|---|
-| Answers, bank 19 | `docs/evaluation/experiments/bank20260819/deterministic/answers` | 505317 | sha256:ecb8c1c2ccc12a5b97a0a9102c1a405a9fce9802cbf1c505959a36f6d58b055d | 30 answers, old builder, pre-9f02dc6 |
-| Answers, bank 19 | `docs/evaluation/experiments/builderiso-b19-newbuilder/deterministic/answers` | 505955 | sha256:c92067583f682ddede7b9e1429de0e5102fee8baf6f1ebe449f34b0ff5c54550 | 30 answers, new builder, HEAD 2026-08-31 |
-| Answers, bank 20 | `docs/evaluation/experiments/bank20260820/deterministic/answers` | 588529 | sha256:1310e640db2be15a547303eb6d79ede69858d217088c54e71f5fec84fab2968f | 30 answers, old builder, pre-9f02dc6 |
-| Answers, bank 20 | `docs/evaluation/experiments/builderiso-b20-newbuilder/deterministic/answers` | 593309 | sha256:b790beb70f80cd46b4846f467dd0ec925dd5793b005d9e25b7f266dd27de71f3 | 30 answers, new builder, HEAD 2026-08-31 |
+| Answers, bank 19 (tree, re-hashed 2026-09-09, A-1) | `docs/evaluation/experiments/bank20260819/deterministic/answers` | 828548 | sha256:e034f420eb44ffe349146654dae18ce0e172b4e99aa7eff9dbddf9a909323d35 | 30 answers, old builder, pre-9f02dc6, plus 420 judgment sidecars from this and other experiments; the 30 answer files alone still digest to sha256:ecb8c1c2… (505317 B) |
+| Answers, bank 19 (tree, re-hashed 2026-09-09, A-1) | `docs/evaluation/experiments/builderiso-b19-newbuilder/deterministic/answers` | 607473 | sha256:e18d54a89e7e0460b5a7de1aad745f80fe25fc7d2f3d1544304b4d8dc8328b3e | 30 answers, new builder, HEAD 2026-08-31, plus this experiment's 120 judgment sidecars; the 30 answer files alone still digest to sha256:c9206758… (505955 B) |
+| Answers, bank 20 (tree, re-hashed 2026-09-09, A-1) | `docs/evaluation/experiments/bank20260820/deterministic/answers` | 893664 | sha256:264c26e3ffe0cdc9e2f715cb1ad6d3b5fde1e238d5302d7e695bc74bc8e112fa | 30 answers, old builder, pre-9f02dc6, plus 391 judgment sidecars from this and other experiments; the 30 answer files alone still digest to sha256:1310e640… (588529 B) |
+| Answers, bank 20 (tree, re-hashed 2026-09-09, A-1) | `docs/evaluation/experiments/builderiso-b20-newbuilder/deterministic/answers` | 694890 | sha256:ae336a0685fb93fa86dbd11e2b8e2e0f9d76291a0dcbb55e0f7c20bb48cfe624 | 30 answers, new builder, HEAD 2026-08-31, plus this experiment's 120 judgment sidecars; the 30 answer files alone still digest to sha256:b790beb7… (593309 B) |
 | Judgments `.bld1` | `docs/evaluation/experiments/bank20260819/deterministic/answers/*.judgment.bld1.json` | — | sha256:667339a7137c21810dd4411f321825fe1c4a5784e21812275190a8c080fb59a7 | bank 19 old, old graded first |
 | Judgments `.bld1` | `docs/evaluation/experiments/builderiso-b19-newbuilder/deterministic/answers/*.judgment.bld1.json` | — | sha256:70b838a1dc05b446ef7ffcf1b974b099ca6016cb45602844f122e297ab9e1b2b | bank 19 new, old graded first |
 | Judgments `.bld1` | `docs/evaluation/experiments/bank20260820/deterministic/answers/*.judgment.bld1.json` | — | sha256:acf6b1c7c231ae0a9416ffca36dcedfebce535f80939b403c8b47999ca0753e5 | bank 20 old, old graded first |

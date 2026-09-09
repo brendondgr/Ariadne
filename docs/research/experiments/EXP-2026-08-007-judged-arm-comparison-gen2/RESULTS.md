@@ -271,3 +271,67 @@ a proof one, and it is excluded from both rows above.
 - A grader that disagrees with itself on identical input is a threat to validity
   wherever a judged binary field carries a claim. The 0.0050 correctness spread
   recorded in §2 does not bound this, because it was measured on correctness.
+
+## AMENDMENT A-2 (2026-09-09) — Pointers re-hashed, the "before" pointer re-pointed, the grader model marked unknown, C-021 cross-referenced
+
+Written during the 2026-09-09 record audit. **No figure in §1–§8 or A-1
+changes.** All ten manifest values, the six arm roll-ups, the three-pass spread,
+the co-authorship gap and the paired delta were recomputed from the artifacts
+on 2026-09-09 and reproduce exactly (the paired delta and calibration only from
+the `.pre-qwen38` copies — see below).
+
+**1. Judgment-set hashes (POINTERS.md, "Judgment sets" table).** The six rows
+carried set digests (`sha256sum` over sorted `*.judgment.json` names +
+contents) that the validator cannot check; against the directories' tree hashes
+it reported all six as changed. Nothing was added to those directories after
+the record was committed (2026-08-19 12:29): the difference is the digest
+scheme. Old → new (path, old set digest → new tree hash as of 2026-09-09):
+
+| path | old (set digest, still verifies) | new (tree hash) |
+|---|---|---|
+| `outerjoin-holdout/deterministic/answers` | `f975b544…4549` | `1af3a518…dbfeb` |
+| `holdout-v1-generic-outer/generic/answers` | `711d7857…07d1` | `d97c1d3d…3af6c` |
+| `outerjoin-dev/deterministic/answers` | `a931d9a4…c639` | `4370c629…8dcae` |
+| `untruncated-generic-outer/generic/answers` | `7fe39982…0e34` | `dc4b659b…fa41c` |
+| `gen2-armf-holdout/gold_loop_llm/answers` | `1e2284ae…8aa3` | `84725efd…07704` |
+| `gen2-armf-dev/gold_loop_llm/answers` | `582e12ce…dcbb` | `8f182b5c…0f4f` |
+
+**2. The "before" pointer (POINTERS.md "Two caveats", old lines 44–51).** It
+said the before side of the paired delta lives in
+`docs/evaluation/experiments/holdout-v1/deterministic/answers/*.judgment.local.json`,
+"never overwritten". Those files **were** overwritten on 2026-08-31 by
+EXP-2026-08-021's regrade; the E0 pass survives as
+`*.judgment.local.pre-qwen38.json`. Old value: an un-hashed path that now yields
++0.1267 / r = 0.9612. New value: a tree-hashed row for the directory plus the set
+hash of the 30 `.pre-qwen38` files (`sha256:639dbf46…7b36`), which yield the
+recorded +0.1167 (CI 0.0333–0.2167), 10/3/17, r = 0.9275 exactly. Established
+by recomputation from both file sets during the audit and by the committed
+`overnight-2026-08-19/calibration.json` (r 0.9275, local mean 0.72). ISSUES §9.
+**+0.1167 and r = 0.9275 are not withdrawn.**
+
+**3. Manifest `llm.model`:** `"relay/skynet@qwen38-27B-awq"` →
+`"relay/unknown@2026-08-19"`. The sidecars record only the alias; the
+repository's model history (`docs/evaluation/README.md`) classifies the window
+as undetermined; the `awq` name rests on ISSUES §8's recollection alone. The
+`nondeterminism_note` sentence naming `qwen38-27B-awq` is likewise amended in
+place to say so, and `data/metrics.json` `judge.model` now reads
+`relay/unknown@2026-08-19 (sidecars record only the alias "skynet"; manifest
+previously said qwen38-27B-awq)`. ISSUES §10.
+
+**4. C-021 and EXP-2026-08-008.** §2's co-authorship gap 0.1472 (0.9839 − 0.8367)
+is valid as the **pre-composer-fix** measurement. EXP-2026-08-008, run the same
+day at commit 514fb9a3, re-measured the same two banks with the composer
+repaired and found **0.0483** (0.9833 − 0.9350); 0.0483 is the figure CLAIMS
+quotes for C-021. This experiment is refined, not superseded, by
+EXP-2026-08-008 (`related` now lists it); its other quotable descendants are
+EXP-2026-08-021 (the same blind answers regraded five times by a named model)
+and EXP-2026-09-006 (cross-family regrade) — both added to `related`.
+
+**5. A-1's corrected abstention-proof rates** (17/21 = 0.810, 10/20 = 0.500
+strict; 21/21 = 1.000, 14/20 = 0.700 lenient; C-MAP-NEG-01 excluded) were in
+RESULTS only; they are now in `data/metrics.json` under
+`abstention_proof_rate.a1_corrected`.
+
+Manifest fields changed by this amendment: `llm.model`, `llm.nondeterminism_note`
+(one sentence), `related` (+ EXP-2026-08-008, EXP-2026-08-021, EXP-2026-09-006).
+No metric value changed.

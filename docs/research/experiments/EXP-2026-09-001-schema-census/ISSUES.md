@@ -102,3 +102,48 @@ properties.
 Not fixed. Tightening needs a semantic notion of which labels a predicate could
 sensibly apply to, which is a judgement call worth making deliberately before the
 full bank rather than hastily now.
+
+## I-7 — 2026-09-09: the Opus 5 pilot `ingested.json` was deleted at `eeef322`
+
+**Impact:** POINTERS row 17 (37,581 B, `sha256:659c1cd5…`) has no target on
+disk. The recorded hash is the `585e7dc` blob. The file was regenerated at
+`1dd69d9` and `e2dbb64`, then deleted at `eeef322` when the full-bank ingest
+replaced it under `docs/evaluation/composition/bank/ingested.json` — a
+different file (572 questions, 180,507 B).
+**Cause:** Step 7 moved the ingest output to the bank directory and removed the
+pilot rather than keeping it beside the bank.
+**Resolution:** The pointer row now names the successor and says it is not the
+pilot. The pilot as hashed is recoverable with
+`git show 585e7dc:docs/evaluation/composition/authored/ingested.json`.
+EXP-2026-09-003 ISSUES I-5 calls this path "committed at eeef322"; it was
+deleted there.
+**Paper implication:** none; the pilot's 126 questions were a rendering check,
+not a measured result.
+
+## I-8 — 2026-09-09: A-2's first probe (0.0706 / 0.1944) is not reproducible
+
+**Impact:** the "first run" column of A-4's table cannot be recomputed. The
+78-question draw and its answers were overwritten in place by the corrected
+80-question run, which is what `probe-2026-09-01/deterministic/answers` and
+`docs/evaluation/composition/probe/` now hold (and which reproduces A-4's
+0.4029 exactly).
+**Cause:** the probe wrote to a fixed directory and the re-run did not archive.
+**Resolution:** Not resolved; recorded. The 0.0706 figure stands as written in
+A-2 and is not quoted anywhere as a result — its role was to show the harness
+was measuring itself.
+**Paper implication:** the first-probe numbers may be described but not cited.
+
+## I-9 — 2026-09-09: seeds, lockfile, and the original commit
+
+**Seeds.** `seeds: []` is correct rather than unrecorded: the census is a total
+enumeration of two pinned files with no sampling; the probe and bank draws
+(A-2, A-4, A-5) are keyed by `sha256(spec_id)` parity and the spec pool is
+enumerated, not sampled. Nothing in this folder depends on a random seed.
+
+**Lockfile.** `environment.lockfile` pointed at `env/requirements.lock`, which
+was never written for this or any September experiment. Set to `null` (A-6);
+the dependency set is the repository's `uv.lock` at `code.commit`.
+
+**Commit.** `code.commit` was `8ab0d2ba`, a commit that predates the census
+module by a day. Corrected to `eeef322` in A-6, established by an empty
+`git diff --stat eeef322` over every pointed path.

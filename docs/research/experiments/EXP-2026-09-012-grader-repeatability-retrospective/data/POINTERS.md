@@ -6,9 +6,23 @@ output. **Every entry needs a hash** — the validator rejects a pointer without
 one, because a path alone does not tell you whether the file still holds what
 it held when the number was computed.
 
+Filled 2026-09-09 (RESULTS.md A-1). This experiment reads a **tree**, not a
+run directory: every `*.judgment*.json` under `docs/evaluation/experiments`.
+The hash below is that tree as it stands on 2026-09-09 (25,318 judgment
+sidecars). It is **not** the tree the numbers were computed from on
+2026-09-07 02:53: EXP-2026-09-011's extension grading (2026-09-07 10:15–13:00)
+added 1,704 `.q1`/`.q2` sidecars under `seeded-repeats-generic-2026-09-06`,
+so two of the 218 audited cells now hold 1,704 judgments where the audit saw
+852 (RESULTS A-3). Nothing else under the tree is known to have changed; the
+stored output `data/recompute-audit.json` is the record of what was read.
+
 | Artifact | Path (repo-relative) | Bytes | SHA-256 | What it is |
 |---|---|---|---|---|
-| | | | | |
+| Judgment sidecar tree (input) | `docs/evaluation/experiments` | 401843103 | `sha256:c7b9993b1d90ed946710c4cdf3ad0fca0b6a2c4b8f422d1c139f463e5ad3d658` | Tree, as of 2026-09-09. Every `**/answers/*.judgment*.json` is a candidate cell; sidecars whose suffix itself contains `.judgment`, or that sit under a `_contaminated*` directory, are excluded (30 on 2026-09-07). Cells with fewer than 20 judgments are dropped. A future hash mismatch here means grading passes were added or removed since 2026-09-09, not that any recorded figure changed. |
+
+The canonical output is `data/recompute-audit.json` (inside `docs/research/`,
+no pointer needed). `data/2026-09-07-recompute-audit.json` is an earlier copy
+that still contains one contaminated cell and is kept for the record only.
 
 Regenerate hashes with:
 

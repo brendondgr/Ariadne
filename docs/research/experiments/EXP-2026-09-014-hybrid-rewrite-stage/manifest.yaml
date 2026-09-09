@@ -29,10 +29,10 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: 0b83b65d8adfd2179c8e56555a2b33a80f939cd8          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: e0e1dcb5e6564683ec8bbfc6f03f21f0db916643          # was 0b83b65d (the PLAN commit, which has none of the harness flags the entrypoint uses); e0e1dcb is the last source change before the final R2/R3 runs (19:43-20:30) and the completion commit e7ee893 touches no source file — A-1. R0/R1 (17:23-17:24) ran at a460fa2.
   branch: main
   entrypoint: "uv run python scripts/variant_harness.py compare --out docs/evaluation/variants-2026-08-29 --reference reference_2026-09-08.json --split tune --rewrite {off,det,model} --workers 32 --llm-timeout-s 900 --pipeline-timeout-s 900 --llm-model {default-model,default-model-2}"
-  dirty: false            # uncommitted changes at run time? if true, explain in ISSUES.md
+  dirty: false            # inferred, not observed: e7ee893 (20:36) commits only data and docs, so no source edit made between e0e1dcb and the runs survived; see ISSUES.md (A-1)
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
@@ -70,15 +70,18 @@ llm:
   nondeterminism_note: >
     Provider-side nondeterminism remains even at temperature 0; results are
     reported as mean ± std over n_runs. The full probe is in
-    data/model_identity_2026-09-08.json: `default-model` served qwen38-27B-v2
-    under system_fingerprint vllm-0.21.0-bf3a75db, and its advertised upstream
-    matched what actually served. `default-model-2`, `-3` and `-4` each returned
-    HTTP 502 and could not be identified at all, so the second-model arm (R3) is
-    unrun — see ISSUES.md.
+    data/model_identity_2026-09-08.json (the second of two, 16:12): `default-model`
+    and `default-model-2` both served qwen38-27B-v2 under system_fingerprint
+    vllm-0.21.0-bf3a75db, so R3 (default-model-2) is a cross-instance
+    repeatability arm of the same checkpoint, not a second model, and it was run
+    three times (metrics_R3_run{1,2,3}.json). `default-model-3` and `-4` returned
+    HTTP 502 in both probes and were not used. Until 2026-09-09 this note said
+    default-model-2 had returned 502 and R3 was unrun — that described the first
+    probe (16:06) only and was stale by the time R3 ran; corrected in A-2.
 
 # --- Results block ---
 metrics:
-  primary: records_exact
+  primary: R2_T5_records_exact   # was records_exact, which is not a key in values; the T5 figure against the 0.25 bar is the headline (A-1)
   # Read from data/metrics_R2.json and data/metrics_R3.json. R2 and R3 are the
   # two serving instances of the same checkpoint; R0 is the no-rewrite control.
   values:

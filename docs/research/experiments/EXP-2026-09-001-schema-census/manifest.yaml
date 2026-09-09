@@ -25,10 +25,10 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: 8ab0d2baab20317c3dca49a87ca7d312dacbbb68
+  commit: eeef3228bcc51bd032a7246017f26f0830591cdc   # A-6: was 8ab0d2ba (predates the census code); every pointed file is byte-identical to this tree
   branch: main
   entrypoint: "uv run python -m utils.specialists.evalset.schema_census"
-  dirty: true             # the census module is introduced by this experiment; see ISSUES I-1
+  dirty: false            # A-6: was true; `git diff --stat eeef322` over every pointed path is empty. v1 census was 7812d54; A-1 caec889/a61dedb; A-2 1dd69d9; A-3 e2dbb64; A-5 eeef322
 config:
   path: null
   hash: null
@@ -36,14 +36,14 @@ data:
   name: ATT&CK Enterprise + CAPEC pinned raw snapshot
   version: "attack-19.0 / capec-3.9"
   split: full
-  n_examples: 10098        # nodes after load-time exclusions
+  n_examples: 10113        # nodes after load-time exclusions; A-6: was 10098 (v1, before A-2's category exclusion)
   dvc_path: null
   hash: sha256:df520ea0775a57db7bff760145b02fed89290802913e056b7ed5970b02f3626a
 seeds: []                  # deterministic total enumeration; no sampling, so no seed
 n_runs: 1
 environment:
   python: "3.13"
-  lockfile: env/requirements.lock
+  lockfile: null           # A-6: was env/requirements.lock, a file that was never written; dependencies are the repository's uv.lock at code.commit (ISSUES I-9)
   container: null
 compute:
   hardware: "cpu only, local workstation"
@@ -55,7 +55,12 @@ metrics:
   primary: edge_type_coverage
   values:
     edge_type_coverage: {mean: 0.3529, std: 0.0, n: 1}  # v2 final; v1 said 0.3636, see A-1 C-4
-    edge_instance_coverage: {mean: 0.6664, std: 0.0, n: 1}
+    edge_instance_coverage: {mean: 0.6665, std: 0.0, n: 1}        # A-6: was 0.6664 (23,294/34,954, the v1 denominator); v2 is 23,294/34,952
+    edge_instances_total: {mean: 34952, std: 0.0, n: 1}              # A-6; v1 said 34954
+    edge_instances_reached: {mean: 23294, std: 0.0, n: 1}            # A-6
+    nodes_after_exclusions: {mean: 10113, std: 0.0, n: 1}            # A-6; v1 said 10098, see A-2
+    never_asked_edge_types: {mean: 22, std: 0.0, n: 1}               # A-6; v1 said 21 (F-3)
+    never_asked_edge_types_with_50_plus_instances: {mean: 12, std: 0.0, n: 1}  # A-6; v1 said 13 (F-3)
     property_coverage: {mean: 0.1928, std: 0.0, n: 1}   # v2; v1 said 0.3108, see A-1 C-3
     edge_types_total: {mean: 34, std: 0.0, n: 1}        # v2 final; v1 said 33, see A-1 C-4
     edge_types_reached: {mean: 12, std: 0.0, n: 1}
@@ -72,6 +77,49 @@ metrics:
     expansion_pooled_recall: {mean: 0.4522, std: 0.0, n: 1}        # A-5; draw artifact
     expansion_reweighted_recall: {mean: 0.5060, std: 0.0, n: 1}    # A-5; comparable figure
     expansion_abstention_rate: {mean: 0.6066, std: 0.0, n: 1}      # A-5; n=61
+  withdrawn:
+    edge_type_coverage_v1:
+      mean: 0.3636
+      std: null
+      n: 1
+      withdrawn_on: 2026-09-01
+      reason: "v1 headline, 12 of 33 (36.4%); A-1 C-4 found a 34th edge type (View -[HAS_MEMBER]-> Category), so the ratio is 12 of 34 (A-1, A-6)"
+      replaced_by: "EXP-2026-09-001:edge_type_coverage"
+    edge_types_total_v1:
+      mean: 33
+      std: null
+      n: 1
+      withdrawn_on: 2026-09-01
+      reason: "v1 count; categories keyed as CATEGORY-<n> dropped View -[HAS_MEMBER]-> Category (A-1 C-4)"
+      replaced_by: "EXP-2026-09-001:edge_types_total"
+    node_types_v1:
+      mean: 23
+      std: null
+      n: 1
+      withdrawn_on: 2026-09-01
+      reason: "v1 omitted the two referenced-but-undefined TaxonomyEntry labels (A-1 C-1)"
+      replaced_by: "EXP-2026-09-001:node_types"
+    nodes_after_exclusions_v1:
+      mean: 10098
+      std: null
+      n: 1
+      withdrawn_on: 2026-09-01
+      reason: "v1 node total; A-2 applied the retirement exclusion to categories and views and the census was regenerated at 1dd69d9 (A-2, A-6)"
+      replaced_by: "EXP-2026-09-001:nodes_after_exclusions"
+    property_coverage_v1:
+      mean: 0.3108
+      std: null
+      n: 1
+      withdrawn_on: 2026-09-01
+      reason: "v1 counted a property as reached if any category read a property of that name on any label; v2 restricts to reachable labels, 16 of 83 (A-1 C-3)"
+      replaced_by: "EXP-2026-09-001:property_coverage"
+    edge_instances_total_v1:
+      mean: 34954
+      std: null
+      n: 1
+      withdrawn_on: 2026-09-01
+      reason: "v1 instance total; the v2 census after A-2's exclusion fix holds 34,952 (A-6)"
+      replaced_by: "EXP-2026-09-001:edge_instances_total"
 baselines_compared: []
 statistical_test: null
 
@@ -80,4 +128,4 @@ supports_claims: [C-025]
 figures: []
 supersedes: null
 superseded_by: null
-related: [EXP-2026-08-005, EXP-2026-08-021]
+related: [EXP-2026-08-005, EXP-2026-08-021, EXP-2026-09-002]   # A-6: 09-002 judged this bank and paired the direction contrast A-5 left unresolved

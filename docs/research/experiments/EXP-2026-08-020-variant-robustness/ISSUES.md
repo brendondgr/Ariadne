@@ -67,3 +67,33 @@ Any entity whose name contains a schema word inherits this.
 This is the same species as the Q21 defect — routing decided by an alphabetical
 tiebreak — in a different function. Fix deferred to Arm 2 so that Arm 0 measures
 the shipped system.
+
+## I-3 — Seeds were not recorded, and none apply (2026-09-09)
+
+**Impact:** `seeds: []`. No number depends on a seed: the pipeline under test
+runs with every LLM seam off and is byte-reproducible (the reference was
+captured twice and matched), and the variant bank was authored by Sonnet in a
+single unseeded pass whose output is frozen in `variants.json` and hashed in
+POINTERS. Re-authoring would produce different variants; re-scoring the frozen
+bank reproduces every arm.
+**Resolution:** recorded. Nothing to fix.
+
+## I-4 — The arms ran at different commits; the manifest can name one (2026-09-09)
+
+**Impact:** `code.commit` now names `0ae78c1` (introduces `scored_arm0.json`,
+the primary metric). Later arms ran at later trees: Arms 1–2 `2b48a91`, Arm 3
+`a65bcd9`, Arm 4 `0dc748c`, Arm 5 `538d0c0`, Step 6 `f6893c8` / `446bc45` /
+`b8c3b99`, Arm 6 `9f02dc6` (RESULTS A-1). `date_completed` corrected
+2026-08-29 → 2026-08-31.
+**Cause:** the experiment was a running log over three days and the manifest was
+filled at Arm 0.
+**Resolution:** per-arm commits recorded here and in POINTERS; the manifest
+field carries the primary metric's commit.
+
+## I-5 — `wall_clock_hours: 1.6` covers Arm 0 only (2026-09-09)
+
+**Impact:** the field was recorded after Arm 0 and never revised. Elapsed time
+for the other six arms and the Step 6 sweeps is not recoverable (artifact
+mtimes span 2026-08-29 16:00–16:32, 2026-08-30 23:57 – 2026-08-31 00:13 and
+2026-08-31 11:39, but authoring and idle time between them are unknown).
+**Resolution:** left as recorded; read it as Arm 0's cost.

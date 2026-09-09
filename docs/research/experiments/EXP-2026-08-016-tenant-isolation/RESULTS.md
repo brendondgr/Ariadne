@@ -169,3 +169,45 @@ second half is not Q21 and is not fixed here.
 This is the C-010 limitation in miniature: the planner is card-driven but not
 schema-*scale*-independent, and generic vocabulary against a large schema remains
 its weakest surface.
+
+## AMENDMENT A-2 (2026-09-09) — A-1's post-fix routing numbers have no artifact; completion date inverted; `gate_bypasses_found` back-filled; a probe count restated
+
+**A-1 versus the pointed artifact.** A-1 (Q21 fix, commit `6ee9f6e`, 2026-08-24
+17:23) reports `attack_group` routed to `attack` with **1 record**, leak totals
+**unchanged at 1/14 probes, 5 records**, and "0 of 300 answers changed" over
+the ten catalogue banks. The only artifact this experiment points at,
+`docs/evaluation/isolation-2026-08-23/metrics.json`, was written at 14:02 —
+before the fix — and its `comparative.rows.attack_group` still reads routed
+`['identity']`, 0 records. `6ee9f6e` touched `drafter.py`, OPEN_QUESTIONS, the
+changelog and this RESULTS file only; no post-fix sweep output or catalogue
+re-run was written anywhere under version control (the catalogue run trees are
+gitignored). The manifest's leak values (568 / 5 / 3 / 1) are the pre-fix sweep
+and are what the artifact backs; A-1's claim that they are unchanged after the
+fix is recorded from prose and reproducible only by re-running
+`scripts/isolation_probes.py` at or after `6ee9f6e`. Recorded in ISSUES.
+
+**Date.** `manifest.yaml:10` had `date_completed: 2026-08-23` against
+`date_started: 2026-08-24`. Phase-2 metrics were written 2026-08-24 14:02 and
+committed at `f362d3c` 14:06; the `-2026-08-23` is the output-directory slug.
+**Old → new:** `2026-08-23` → `2026-08-24`.
+
+**`gate_bypasses_found = 15` was not in `data/metrics.json`.** None of the
+phase-1 figures are: `score_safety()` computes them live from the committed
+probe fixtures and never wrote a file. A `manifest_metrics` object holding all
+seven manifest values was added to `data/metrics.json`; the sweep keys are
+unchanged and `data/POINTERS.md` no longer calls the file a byte-identical copy.
+
+**Probe count.** §"Phase 1" line 8 says the suite went from "17 hand-written
+probes to 240 generated ones". The suite is **240 = 17 hand-written + 223
+generated** (`PROBES` per source 183 + 57, of which `generated_probes()`
+contributes 173 + 50; `accepted_by_design` 2 + 3 = 5). The 240 and the 15
+bypasses are unaffected.
+
+**Related.** EXP-2026-07-008 holds the original 17-probe safety measurement
+this phase refines; it is added to `related`.
+
+## AMENDMENT A-3 (2026-09-09) — the primary metric now names a recorded key
+
+`metrics.primary` was `leaked_records_by_selection_rule`, a descriptive label that matched no key in
+`metrics.values`, so `INDEX.md` and `CURRENT.md` rendered this experiment's
+headline as "not recorded". It now names `leaked_records_comparative_rule` — the leakage figure under the shipped comparative routing rule. No value changed.

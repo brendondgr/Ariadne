@@ -42,14 +42,14 @@ data:
   dvc_path: null           # this repository does not use DVC; leave null
   hash: null               # md5:... or sha256:... of the dataset artifact
 seeds: []                  # this run predates the pinned LLM seed; it is the UNSEEDED baseline and is reused as condition A of EXP-2026-08-019
-n_runs: 1
+n_runs: 3   # was 1 (Q34): the LLM arm ran --repeats 3 and every LLM-arm metric below is mean/sd over those 3 runs; the deterministic control ran once (A-1)
 environment:
   python: "3.13"
   lockfile: env/requirements.lock
   container: null
 compute:
   hardware: "local workstation; Neo4j + Gremlin in Docker; LLM served by the local relay"
-  wall_clock_hours: 6.5
+  wall_clock_hours: null   # was 6.5, which was the SUM of per-question latencies (wall_s_total, 23,447.4 s over the three LLM repeats) / 3600, not elapsed time; elapsed wall clock at 16 workers was never recorded (A-1, ISSUES)
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -69,7 +69,7 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: unsupported_claims_cut_by_the_verifier
+  primary: unsupported_claims_llm_arm
   values:
     unsupported_claims_llm_arm: {mean: 33.6667, std: 2.0817, n: 3}
     unsupported_claims_deterministic_arm: {mean: 0.0, std: 0.0, n: 1}

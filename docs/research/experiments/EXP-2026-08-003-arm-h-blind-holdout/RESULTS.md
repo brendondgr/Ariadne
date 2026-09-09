@@ -134,3 +134,65 @@ uv run python -m utils.evaluation.retrieval_coverage \
 The Gremlin fixture must be loaded before the run. It was empty at the start of
 this session and every CAPEC and federated question would have returned nothing;
 see `ISSUES.md`.
+
+---
+
+# AMENDMENTS
+
+> Two dated amendments of 2026-08-10 live at the foot of `ISSUES.md`. Numbered
+> amendments start here.
+
+## AMENDMENT A-1 (2026-09-09) — Pointer hash method and the model string
+
+**What was wrong.** `data/POINTERS.md:8` recorded the Arm H directory as
+`sha256:e1009d3a…`, the digest of the `find|cat|sha256sum` recipe in §8. The
+validator hashes directories with the repository's tree method
+(`utils.research_record.hashing`), which gives `sha256:8d799d5d…` for the same
+content, so the row failed as "changed after the number was recorded". It had
+not changed: on 2026-09-09 the §8 recipe over
+`docs/evaluation/experiments/holdout-v1-generic/generic/` still gives exactly
+`e1009d3a…` and 644 640 bytes; the directory holds 30 answers and
+`manifest.json`, dated 2026-08-10, and no judgment files. **Old:**
+`sha256:e1009d3a…` (recipe) → **new:** `sha256:8d799d5d3ff7…` (tree), with the
+method stated in the file. The B2 audit of 2026-09-09 re-ran
+`retrieval_coverage` and `answer_gap` over these artifacts and reproduced
+every number in §2–§4.
+
+`manifest.yaml:59` `llm.model` "local/skynet (Gemma 4 31B)@unknown" →
+`relay/gemma-4-31B@2026-08-10`, the format `docs/evaluation/README.md`
+prescribes; the model is the one recorded at run time, and that README's
+caveat — the relay's August repoint date is unknown — applies. `code.commit`
+`23d74eb` was HEAD when the artifacts were written (20:51–20:59; record commit
+`7bc4175` 21:04) and stands.
+
+## AMENDMENT A-2 (2026-09-09) — Superseded by EXP-2026-08-004; Arm H was judged; the §3 ceiling was exceeded
+
+**Supersession.** The 2026-08-10 amendment in `ISSUES.md` already records that
+`EXP-2026-08-004`, the same day, fixed the one defect §4 names and moved this
+arm on this bank from **0.8952 → 1.0000** (26/30 → 30/30, 0 regressions). That
+is the whole headline replaced on the same arm and bank, so `manifest.yaml`
+now records `status: superseded`, `superseded_by: EXP-2026-08-004` (the
+reverse link is set in that manifest). The 0.8952 stays in `metrics.values`
+as measured — it is the measurement that identified the defect, not a
+withdrawn value.
+
+**Stale prose.**
+
+* §1 / §2 / §5 / `ISSUES.md` "Arm H is not judged on this bank" and §7 item 2
+  ("Judge Arm H on this bank"): done. `EXP-2026-08-007` (2026-08-19) judged
+  Arm H on these 30 questions — on the outer-join artifacts of
+  `EXP-2026-08-004` — at **0.8483** (its manifest `blind_correctness_generic`),
+  level with the repaired cascade's 0.8367. Added to `related`.
+* §3 "If all four became perfect, Arm F's 0.708 would rise to at most
+  **0.838**": that arithmetic assumed only the four newly-covered questions
+  could improve. `EXP-2026-08-007` measured Arm F at **0.9157** on this bank
+  after the composer and retrieval repairs of 2026-08-18/19, which changed the
+  premise — the "45%" of loss on questions that retrieved completely (§3) was
+  addressable after all (`EXP-2026-08-004` §4 named it: under-enumeration,
+  0.0883, three questions), and §7 item 3 is closed by the composer fix in
+  `EXP-2026-08-008`. The ceiling was a bound under a stated assumption, not a
+  prediction, and §3 said so; it is recorded here as exceeded so nobody quotes
+  0.838 as a limit.
+* §7 item 1 ("Make the bridge an outer join … applies to the hand-written
+  templates too"): done for the generic branch in `EXP-2026-08-004` and for
+  the templates in `EXP-2026-08-006` (2026-08-18).

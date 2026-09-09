@@ -54,7 +54,7 @@ compute:
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
 llm:
-  model: "relay/skynet (grader and query writer); relay/local for bank authoring"
+  model: "relay/unknown@2026-08-19"   # was "relay/skynet (grader and query writer); relay/local for bank authoring" until 2026-09-09 — RESULTS A-1, ISSUES §8
   temperature: 0.0
   top_p: 1.0
   max_tokens: 8192
@@ -64,12 +64,14 @@ llm:
   total_input_tokens: null
   total_output_tokens: null
   nondeterminism_note: >
-    Provider-side nondeterminism remains even at temperature 0; results
-    are reported as mean ± std over n_runs.
+    Provider-side nondeterminism remains even at temperature 0. Each arm ran
+    once (n_runs 1) and was graded once; no std is reported. Grader variance is
+    bounded by EXP-2026-08-007's three-pass spread of 0.0050 on the same grader
+    the same night, not measured here. (Template text replaced 2026-09-09, A-1.)
 
 # --- Results block ---
 metrics:
-  primary: llm_query_vs_templates_fresh_bank
+  primary: fresh_llm_query
   values:
     composer_fix_paired_delta: {mean: 0.0983, std: null, n: 30}
     fresh_deterministic: {mean: 0.9467, std: null, n: 30}
@@ -88,4 +90,4 @@ supports_claims: [C-001, C-003, C-012, C-017, C-021]        # every ID here must
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
 superseded_by: null
-related: [EXP-2026-08-001, EXP-2026-08-003, EXP-2026-08-006]
+related: [EXP-2026-08-001, EXP-2026-08-003, EXP-2026-08-006, EXP-2026-08-007, EXP-2026-09-005, EXP-2026-09-007]   # 007/09-005/09-007 added 2026-09-09 (A-1): refinements

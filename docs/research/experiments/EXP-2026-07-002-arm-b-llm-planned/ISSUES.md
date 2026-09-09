@@ -58,3 +58,22 @@ arm's loss.
 
 **Paper implication:** The LLM-planned deficit is partly a latency artifact and
 should not be attributed wholly to planning quality.
+
+## 2026-09-09 — Audit: two prose counts do not reproduce; artifact commit recorded as an upper bound
+
+**Impact:** The entry above dated 2026-07-26 ("6 of 120 questions finish
+`partial`") is wrong on its count: the answer files carry **10**
+`run_meta.status == "partial"` cases and `failure_terminus` classes **4** as
+`pipeline_timeout`; no reading gives 6. RESULTS §6's "19 of 36" is on the
+stale 36 denominator (A-1 corrected it to 28) and has no recomputable basis in
+the artifacts. `code.commit` now holds `07e4de4`, the commit at which all 240
+artifact files were first on record; the run commit itself is unknown.
+
+**Cause:** Counts quoted from an earlier judge run or from notes, not from the
+committed artifacts; no per-arm commit captured.
+
+**Resolution:** RESULTS A-2 records the reproducible counts (10 / 4) and
+retires the 19. The entries above are left as written.
+
+**Paper implication:** Quote 10 partial-status answers and 4 timeout termini.
+Never quote "19 of 36". Cite `07e4de4` as the artifact commit, not the run.

@@ -42,7 +42,7 @@ data:
   dvc_path: null           # this repository does not use DVC; leave null
   hash: null               # md5:... or sha256:... of the dataset artifact
 seeds: [1729]              # the pinned LLM_SEED for conditions B and D; condition A ran before it existed
-n_runs: 1
+n_runs: 3   # was 1 (Q34): conditions B and D each ran --repeats 3 (A is EXP-2026-08-018's three unseeded repeats); every metric below is over 3 runs per condition (A-1)
 environment:
   python: "3.13"
   lockfile: env/requirements.lock
@@ -69,14 +69,14 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: gold_in_claims_sd_across_repeats
+  primary: gold_sd_unseeded_w16
   values:
     gold_sd_unseeded_w16: {mean: 0.0207, std: 0.0, n: 3}
     gold_sd_seeded_w16: {mean: 0.0212, std: 0.0, n: 3}
     gold_sd_seeded_w32: {mean: 0.0373, std: 0.0, n: 3}
     fallbacks_seeded_w16: {mean: 14.0, std: 4.58, n: 3}
     fallbacks_seeded_w32: {mean: 28.3, std: 4.04, n: 3}
-    per_question_latency_s_w16: {mean: 53.0, std: 6.5, n: 3}
+    per_question_latency_s_w16: {mean: 53.0, std: 6.6, n: 3}   # std was 6.5; recomputed 6.64 from 55.16/58.38/45.60 (A-1)
     per_question_latency_s_w32: {mean: 85.5, std: 0.9, n: 3}
     pearson_r_fallbacks_vs_gold: {mean: 0.6232, std: 0.0, n: 9}
 baselines_compared: [unseeded-w16 (EXP-2026-08-018)]

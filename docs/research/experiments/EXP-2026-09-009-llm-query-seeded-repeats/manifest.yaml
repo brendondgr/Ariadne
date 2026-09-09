@@ -7,32 +7,47 @@ slug: llm-query-seeded-repeats
 title: "Does the query-writing arm hold its sign across three seeded runs?"
 status: complete            # planned | running | complete | failed | superseded
 date_started: 2026-09-06
-date_completed: null       # null until status is complete/failed
-authors: []
+date_completed: 2026-09-06 # last grading pass finished 22:22:28 (judge-state.json); completion commit 40bebd3 22:26 (A-1)
+authors: [brendondgr]      # git author of c8ad1a7, 9f66921 and 40bebd3
 
 purpose: >
-  One paragraph. What question does this answer, and which paper claim
-  does it support or refute?
+  Does the query-writing arm (llm_query) hold its sign across seeded runs?
+  Every published llm_query figure rested on one draw, and C-012 (hand-written
+  templates beat a model writing the queries) has a holdout margin of 0.0822
+  (0.0831 as quoted when this was written; EXP-2026-09-007 A-1). If run-to-run
+  spread were of the same order, one draw would not have established the sign.
+  Three generations on the expansion-bank dev half (n=284, LLM_SEED 1729 /
+  20260906 / 424242), each graded by both local grader families in a
+  counterbalanced order, give the across-seed spread and test whether the
+  deterministic > llm_query ordering survives under both families. First kill
+  gate of the Phase 2 programme (Step 0.1). Written retrospectively on
+  2026-09-09 from PROTOCOL.md (A-1).
 
 hypothesis: >
-  Stated before the run. If exploratory, write "exploratory — no prior hypothesis".
+  Pre-registered in PROTOCOL.md on 2026-09-06 before any run. H1 the ordering
+  generic > deterministic > llm_query holds in all three runs under both
+  grader families. H2 across-seed SD of llm_query judged correctness is below
+  0.03. H3 deterministic - llm_query is positive in all three runs under both
+  families. Outcome: H2 holds (balanced SD 0.0089); H1 and H3 hold under
+  qwen38-27B-v2 (+0.1012) and fail under gemma4-31B-mtp (-0.2885), which
+  emitted two distinct values across 852 judgments on this population.
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
   commit: 26bd35254fd1b361acbc91e6b1323a2fa8089da9          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
-  entrypoint: "<exact command>"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  entrypoint: "uv run python scripts/seeded_repeats.py --workers 32 && uv run python scripts/seeded_repeats_judge.py --arm llm_query --workers 32"   # --arm was added to the judge on 2026-09-06 22:58 (1de8b53), after this experiment's passes, which ran with llm_query as the only arm
+  dirty: true             # as recorded at scaffold time; not verifiable after the fact — see ISSUES.md
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
 data:
-  name: <dataset>
-  version: <version>
-  split: <split>
-  n_examples: 0
+  name: "expansion bank, dev half (docs/evaluation/composition/bank/bank-dev.json)"
+  version: "sha256 a4ca6702… as asserted in pre-flight (data/run-state.json); the same file as EXP-2026-09-002, -005, -010 and -011"
+  split: "dev (284 of 572); the 288-question holdout is not used"
+  n_examples: 284
   dvc_path: null           # this repository does not use DVC; leave null
-  hash: null               # md5:... or sha256:... of the dataset artifact
+  hash: sha256:a4ca6702029cae7784574b0307b9f76d4718a039f3254f2c0ff708a2fa1a4119
 seeds: [1729, 20260906, 424242]   # pre-registered in PROTOCOL.md before any run
 n_runs: 3
 environment:
@@ -40,24 +55,31 @@ environment:
   lockfile: env/requirements.lock
   container: null
 compute:
-  hardware: "<cpu/gpu, ram>"
-  wall_clock_hours: 0.0
+  hardware: "local workstation; Neo4j + Gremlin in Docker; generation and qwen grading on :9090/default-model (qwen38-27B-v2, vLLM), gemma grading on :9090/default-model-2 (gemma4-31B-mtp), 32 workers"
+  wall_clock_hours: 4.4    # generation 17:57-19:07 (elapsed_s 1607 + 1485 + 1119, sequential), grading 19:34-22:22 (six passes, sequential); data/run-state.json, data/judge-state.json
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
 llm:
-  model: "<provider>/<model>@<version-or-date>"
+  # Generation and grader family 1 are the same served model; family 2 is named
+  # by its own response envelope (data/judge-state.json `served`), never the alias (D-028):
+  #   generation + family 1 : relay/qwen38-27B-v2@2026-09-06   (alias default-model, :9090)
+  #   family 2              : relay/gemma4-31B-mtp@2026-09-06  (alias default-model-2, :9090)
+  model: "relay/qwen38-27B-v2@2026-09-06"
   temperature: 0.0
   top_p: 1.0
-  max_tokens: 2048
+  max_tokens: 32768        # --llm-max-tokens 32768 for generation (scripts/seeded_repeats.py) and 32768 for every grading pass (PROTOCOL.md)
   prompt_files: []
   prompt_hash: null
   tool_schema_hash: null
   total_input_tokens: null
   total_output_tokens: null
   nondeterminism_note: >
-    Provider-side nondeterminism remains even at temperature 0; results
-    are reported as mean ± std over n_runs.
+    Provider-side nondeterminism remains even at temperature 0, and EXP-2026-08-019
+    showed that pinning the client seed does not reduce spread on a batched
+    server. The three runs vary the seed deliberately and record it; the
+    reported quantity is the across-run spread (n_runs 3), and a reader who
+    repeats this with these seeds should expect the distribution, not the values.
 
 # --- Results block ---
 metrics:
@@ -71,7 +93,8 @@ metrics:
     deterministic_minus_llm_query_qwen: {mean: 0.1012, std: 0.0, n: 284}
     deterministic_minus_llm_query_gemma31: {mean: -0.2885, std: 0.0, n: 284}
     gemma31_distinct_values_this_population: {mean: 2.0, std: 0.0, n: 852}
-    qwen_distinct_values_this_population: {mean: 15.0, std: 0.0, n: 851}
+    qwen_distinct_values_this_population: {mean: 17.0, std: 0.0, n: 851}   # pooled over all 851 usable qwen judgments (was 15, a per-seed count: 15/16/15 per seed) — A-4
+    deterministic_minus_llm_query_qwen_vs_exp005_reference: {mean: 0.1034, std: 0.0, n: 284}   # 0.4946 (EXP-2026-09-005 manifest, two-position average) - 0.3912; the 0.1012 above uses the single position-0 pass mean 0.4924 — A-2
     abstention_rate: {mean: 0.982, std: 0.0, n: 283}
     gemma31_mean_on_abstentions: {mean: 0.7014, std: 0.0, n: 278}
     qwen_mean_on_abstentions: {mean: 0.4023, std: 0.0, n: 278}
@@ -86,4 +109,4 @@ supports_claims: []        # every ID here must exist in ../../CLAIMS.md
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
 superseded_by: null
-related: []
+related: [EXP-2026-09-005, EXP-2026-09-007, EXP-2026-09-008, EXP-2026-09-010, EXP-2026-09-011]   # reference figures (005), holdout margin (007), distinct-values floor (008), deterministic identity (010), generic's own spread (011)

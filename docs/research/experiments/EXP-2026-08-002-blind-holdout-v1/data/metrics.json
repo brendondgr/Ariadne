@@ -1,0 +1,1291 @@
+{
+  "experiment": "EXP-2026-08-002",
+  "source": "manifest, back-filled 2026-09-09 from docs/evaluation/holdout-v1/results.json (produced by utils/evaluation/holdout_report.py from the per-case judgment files under docs/evaluation/experiments/holdout-v1/) — RESULTS A-2",
+  "bank": "utils/specialists/tests/golden/holdout_questions.json",
+  "n_questions": 30,
+  "seed": 20260805,
+  "author_model": "claude-fable-5 (high effort)",
+  "frozen_at": "freeze/holdout-v1 (974e85a494f020e218e8b73f193543c11ea0d292)",
+  "judge": "one independent Sonnet 5 agent per case per arm",
+  "malformed_question": {
+    "id": "H-SW-01",
+    "reason": "asks what techniques a SubTechnique implements — the §5 `software` category is phrased for a Software anchor while the stratum's population is techniques",
+    "handling": "kept verbatim; every figure is also reported excluding it"
+  },
+  "manifest_metrics": {
+    "arm_a_blind_correctness": {
+      "mean": 0.689,
+      "std": 0.0,
+      "n": 30
+    },
+    "arm_a_dev_correctness": {
+      "mean": 0.9972,
+      "std": 0.0,
+      "n": 120
+    },
+    "arm_f_blind_correctness": {
+      "mean": 0.7083,
+      "std": 0.0,
+      "n": 30
+    },
+    "arm_f_dev_correctness": {
+      "mean": 0.9957,
+      "std": 0.0,
+      "n": 120
+    },
+    "arm_a_blind_minus_dev": {
+      "mean": -0.3082,
+      "std": 0.0,
+      "n": 30
+    },
+    "arm_f_blind_minus_dev": {
+      "mean": -0.2874,
+      "std": 0.0,
+      "n": 30
+    },
+    "arm_a_federated_abstention_correctness": {
+      "mean": 0.825,
+      "std": 0.0,
+      "n": 4
+    },
+    "arm_f_federated_abstention_correctness": {
+      "mean": 0.875,
+      "std": 0.0,
+      "n": 4
+    },
+    "fabricated_mappings_both_arms": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 8
+    }
+  },
+  "wall_clock_s": {
+    "arm_a": 1.0,
+    "arm_f": 554.0,
+    "note": "from the run logs; the per-arm manifest.json files were overwritten by the 2-case deviation re-run (ISSUES §4)"
+  },
+  "arms": {
+    "A": {
+      "holdout_all": {
+        "n": 30,
+        "correctness": {
+          "mean": 0.689,
+          "ci95_low": 0.5503,
+          "ci95_high": 0.8167,
+          "method": "percentile bootstrap, 2000 resamples, seed 1729"
+        },
+        "correct_rate": {
+          "correct": 17,
+          "point": 0.5667,
+          "wilson95_low": 0.392,
+          "wilson95_high": 0.7262
+        },
+        "faithfulness": 0.9767,
+        "groundedness": 0.9933,
+        "completeness": 0.7443,
+        "verdicts": {
+          "CORRECT": 17,
+          "PARTIAL": 6,
+          "INCORRECT": 7
+        },
+        "hallucinations": 1,
+        "answers_with_hallucination": 1
+      },
+      "holdout_excluding_malformed": {
+        "n": 29,
+        "correctness": {
+          "mean": 0.7093,
+          "ci95_low": 0.5721,
+          "ci95_high": 0.8404,
+          "method": "percentile bootstrap, 2000 resamples, seed 1729"
+        },
+        "correct_rate": {
+          "correct": 17,
+          "point": 0.5862,
+          "wilson95_low": 0.4074,
+          "wilson95_high": 0.7449
+        },
+        "faithfulness": 0.9759,
+        "groundedness": 0.9931,
+        "completeness": 0.7631,
+        "verdicts": {
+          "CORRECT": 17,
+          "PARTIAL": 6,
+          "INCORRECT": 6
+        },
+        "hallucinations": 1,
+        "answers_with_hallucination": 1
+      },
+      "holdout_answerable": {
+        "n": 26,
+        "correctness": {
+          "mean": 0.6681,
+          "ci95_low": 0.5123,
+          "ci95_high": 0.8173,
+          "method": "percentile bootstrap, 2000 resamples, seed 1729"
+        },
+        "correct_rate": {
+          "correct": 14,
+          "point": 0.5385,
+          "wilson95_low": 0.3546,
+          "wilson95_high": 0.7124
+        },
+        "faithfulness": 0.9731,
+        "groundedness": 0.9923,
+        "completeness": 0.7435,
+        "verdicts": {
+          "CORRECT": 14,
+          "PARTIAL": 5,
+          "INCORRECT": 7
+        },
+        "hallucinations": 1,
+        "answers_with_hallucination": 1
+      },
+      "holdout_abstention_expected": {
+        "n": 4,
+        "correctness": {
+          "mean": 0.825,
+          "ci95_low": 0.475,
+          "ci95_high": 1.0,
+          "method": "percentile bootstrap, 2000 resamples, seed 1729"
+        },
+        "correct_rate": {
+          "correct": 3,
+          "point": 0.75,
+          "wilson95_low": 0.3006,
+          "wilson95_high": 0.9544
+        },
+        "faithfulness": 1.0,
+        "groundedness": 1.0,
+        "completeness": 0.75,
+        "verdicts": {
+          "CORRECT": 3,
+          "PARTIAL": 1,
+          "INCORRECT": 0
+        },
+        "hallucinations": 0,
+        "answers_with_hallucination": 0,
+        "abstained": 4,
+        "abstention_carries_query": 4,
+        "fabricated_mapping": 0
+      },
+      "holdout_by_stratum": {
+        "attack": {
+          "n": 12,
+          "correctness": {
+            "mean": 0.5683,
+            "ci95_low": 0.3358,
+            "ci95_high": 0.7933,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 5,
+            "point": 0.4167,
+            "wilson95_low": 0.1933,
+            "wilson95_high": 0.6805
+          },
+          "faithfulness": 0.95,
+          "groundedness": 0.9917,
+          "completeness": 0.6833,
+          "verdicts": {
+            "CORRECT": 5,
+            "PARTIAL": 3,
+            "INCORRECT": 4
+          },
+          "hallucinations": 1,
+          "answers_with_hallucination": 1
+        },
+        "capec": {
+          "n": 8,
+          "correctness": {
+            "mean": 0.6188,
+            "ci95_low": 0.3438,
+            "ci95_high": 0.8877,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 4,
+            "point": 0.5,
+            "wilson95_low": 0.2152,
+            "wilson95_high": 0.7848
+          },
+          "faithfulness": 0.9875,
+          "groundedness": 0.9875,
+          "completeness": 0.6725,
+          "verdicts": {
+            "CORRECT": 4,
+            "PARTIAL": 1,
+            "INCORRECT": 3
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "federated": {
+          "n": 10,
+          "correctness": {
+            "mean": 0.89,
+            "ci95_low": 0.72,
+            "ci95_high": 1.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 8,
+            "point": 0.8,
+            "wilson95_low": 0.4902,
+            "wilson95_high": 0.9433
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 0.875,
+          "verdicts": {
+            "CORRECT": 8,
+            "PARTIAL": 2,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        }
+      },
+      "holdout_by_category": {
+        "consequence": {
+          "n": 1,
+          "correctness": {
+            "mean": 0.15,
+            "ci95_low": 0.15,
+            "ci95_high": 0.15,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 0,
+            "point": 0.0,
+            "wilson95_low": 0.0,
+            "wilson95_high": 0.7935
+          },
+          "faithfulness": 0.9,
+          "groundedness": 0.9,
+          "completeness": 0.3,
+          "verdicts": {
+            "CORRECT": 0,
+            "PARTIAL": 0,
+            "INCORRECT": 1
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "cwe-chain": {
+          "n": 3,
+          "correctness": {
+            "mean": 0.6333,
+            "ci95_low": 0.3,
+            "ci95_high": 1.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 1,
+            "point": 0.3333,
+            "wilson95_low": 0.0615,
+            "wilson95_high": 0.7923
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 0.5833,
+          "verdicts": {
+            "CORRECT": 1,
+            "PARTIAL": 2,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "detection": {
+          "n": 2,
+          "correctness": {
+            "mean": 0.925,
+            "ci95_low": 0.9,
+            "ci95_high": 0.95,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 2,
+            "point": 1.0,
+            "wilson95_low": 0.3424,
+            "wilson95_high": 1.0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 1.0,
+          "verdicts": {
+            "CORRECT": 2,
+            "PARTIAL": 0,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "execution": {
+          "n": 1,
+          "correctness": {
+            "mean": 1.0,
+            "ci95_low": 1.0,
+            "ci95_high": 1.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 1,
+            "point": 1.0,
+            "wilson95_low": 0.2065,
+            "wilson95_high": 1.0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 1.0,
+          "verdicts": {
+            "CORRECT": 1,
+            "PARTIAL": 0,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "groups": {
+          "n": 2,
+          "correctness": {
+            "mean": 0.0,
+            "ci95_low": 0.0,
+            "ci95_high": 0.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 0,
+            "point": 0.0,
+            "wilson95_low": 0.0,
+            "wilson95_high": 0.6576
+          },
+          "faithfulness": 0.85,
+          "groundedness": 1.0,
+          "completeness": 0.0,
+          "verdicts": {
+            "CORRECT": 0,
+            "PARTIAL": 0,
+            "INCORRECT": 2
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "hierarchy": {
+          "n": 1,
+          "correctness": {
+            "mean": 0.15,
+            "ci95_low": 0.15,
+            "ci95_high": 0.15,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 0,
+            "point": 0.0,
+            "wilson95_low": 0.0,
+            "wilson95_high": 0.7935
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 0.33,
+          "verdicts": {
+            "CORRECT": 0,
+            "PARTIAL": 0,
+            "INCORRECT": 1
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "lookup": {
+          "n": 3,
+          "correctness": {
+            "mean": 0.55,
+            "ci95_low": 0.55,
+            "ci95_high": 0.55,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 0,
+            "point": 0.0,
+            "wilson95_low": 0.0,
+            "wilson95_high": 0.5615
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 0.8333,
+          "verdicts": {
+            "CORRECT": 0,
+            "PARTIAL": 3,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "mapping": {
+          "n": 2,
+          "correctness": {
+            "mean": 1.0,
+            "ci95_low": 1.0,
+            "ci95_high": 1.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 2,
+            "point": 1.0,
+            "wilson95_low": 0.3424,
+            "wilson95_high": 1.0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 1.0,
+          "verdicts": {
+            "CORRECT": 2,
+            "PARTIAL": 0,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "mitigations": {
+          "n": 2,
+          "correctness": {
+            "mean": 1.0,
+            "ci95_low": 1.0,
+            "ci95_high": 1.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 2,
+            "point": 1.0,
+            "wilson95_low": 0.3424,
+            "wilson95_high": 1.0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 1.0,
+          "verdicts": {
+            "CORRECT": 2,
+            "PARTIAL": 0,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "pattern-to-mitigation": {
+          "n": 4,
+          "correctness": {
+            "mean": 1.0,
+            "ci95_low": 1.0,
+            "ci95_high": 1.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 4,
+            "point": 1.0,
+            "wilson95_low": 0.5101,
+            "wilson95_high": 1.0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 1.0,
+          "verdicts": {
+            "CORRECT": 4,
+            "PARTIAL": 0,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "prerequisite": {
+          "n": 1,
+          "correctness": {
+            "mean": 0.1,
+            "ci95_low": 0.1,
+            "ci95_high": 0.1,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 0,
+            "point": 0.0,
+            "wilson95_low": 0.0,
+            "wilson95_high": 0.7935
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 0.25,
+          "verdicts": {
+            "CORRECT": 0,
+            "PARTIAL": 0,
+            "INCORRECT": 1
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "reverse-mapping": {
+          "n": 3,
+          "correctness": {
+            "mean": 1.0,
+            "ci95_low": 1.0,
+            "ci95_high": 1.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 3,
+            "point": 1.0,
+            "wilson95_low": 0.4385,
+            "wilson95_high": 1.0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 1.0,
+          "verdicts": {
+            "CORRECT": 3,
+            "PARTIAL": 0,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "software": {
+          "n": 2,
+          "correctness": {
+            "mean": 0.06,
+            "ci95_low": 0.02,
+            "ci95_high": 0.1,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 0,
+            "point": 0.0,
+            "wilson95_low": 0.0,
+            "wilson95_high": 0.6576
+          },
+          "faithfulness": 0.95,
+          "groundedness": 0.95,
+          "completeness": 0.1,
+          "verdicts": {
+            "CORRECT": 0,
+            "PARTIAL": 0,
+            "INCORRECT": 2
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "subtechnique": {
+          "n": 1,
+          "correctness": {
+            "mean": 0.75,
+            "ci95_low": 0.75,
+            "ci95_high": 0.75,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 0,
+            "point": 0.0,
+            "wilson95_low": 0.0,
+            "wilson95_high": 0.7935
+          },
+          "faithfulness": 0.8,
+          "groundedness": 1.0,
+          "completeness": 1.0,
+          "verdicts": {
+            "CORRECT": 0,
+            "PARTIAL": 1,
+            "INCORRECT": 0
+          },
+          "hallucinations": 1,
+          "answers_with_hallucination": 1
+        },
+        "tactics": {
+          "n": 1,
+          "correctness": {
+            "mean": 1.0,
+            "ci95_low": 1.0,
+            "ci95_high": 1.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 1,
+            "point": 1.0,
+            "wilson95_low": 0.2065,
+            "wilson95_high": 1.0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 1.0,
+          "verdicts": {
+            "CORRECT": 1,
+            "PARTIAL": 0,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "weakness": {
+          "n": 1,
+          "correctness": {
+            "mean": 1.0,
+            "ci95_low": 1.0,
+            "ci95_high": 1.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 1,
+            "point": 1.0,
+            "wilson95_low": 0.2065,
+            "wilson95_high": 1.0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 1.0,
+          "verdicts": {
+            "CORRECT": 1,
+            "PARTIAL": 0,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        }
+      },
+      "development": {
+        "source": "docs/evaluation/experiments/untruncated-fixed/deterministic",
+        "n": 120,
+        "correctness": {
+          "mean": 0.9972,
+          "ci95_low": 0.9943,
+          "ci95_high": 0.9995,
+          "method": "percentile bootstrap, 2000 resamples, seed 1729"
+        },
+        "correct_rate": {
+          "correct": 120,
+          "point": 1.0,
+          "wilson95_low": 0.969,
+          "wilson95_high": 1.0
+        },
+        "faithfulness": 0.9993,
+        "groundedness": 1.0,
+        "completeness": 1.0,
+        "verdicts": {
+          "CORRECT": 120,
+          "PARTIAL": 0,
+          "INCORRECT": 0
+        },
+        "hallucinations": 0,
+        "answers_with_hallucination": 0
+      },
+      "blind_minus_dev": -0.3082
+    },
+    "F": {
+      "holdout_all": {
+        "n": 30,
+        "correctness": {
+          "mean": 0.7083,
+          "ci95_low": 0.565,
+          "ci95_high": 0.8383,
+          "method": "percentile bootstrap, 2000 resamples, seed 1729"
+        },
+        "correct_rate": {
+          "correct": 19,
+          "point": 0.6333,
+          "wilson95_low": 0.4551,
+          "wilson95_high": 0.7813
+        },
+        "faithfulness": 0.97,
+        "groundedness": 0.9733,
+        "completeness": 0.758,
+        "verdicts": {
+          "CORRECT": 19,
+          "PARTIAL": 4,
+          "INCORRECT": 7
+        },
+        "hallucinations": 0,
+        "answers_with_hallucination": 0
+      },
+      "holdout_excluding_malformed": {
+        "n": 29,
+        "correctness": {
+          "mean": 0.7293,
+          "ci95_low": 0.5897,
+          "ci95_high": 0.8638,
+          "method": "percentile bootstrap, 2000 resamples, seed 1729"
+        },
+        "correct_rate": {
+          "correct": 19,
+          "point": 0.6552,
+          "wilson95_low": 0.4734,
+          "wilson95_high": 0.8006
+        },
+        "faithfulness": 0.9724,
+        "groundedness": 0.9759,
+        "completeness": 0.7772,
+        "verdicts": {
+          "CORRECT": 19,
+          "PARTIAL": 4,
+          "INCORRECT": 6
+        },
+        "hallucinations": 0,
+        "answers_with_hallucination": 0
+      },
+      "holdout_answerable": {
+        "n": 26,
+        "correctness": {
+          "mean": 0.6827,
+          "ci95_low": 0.5211,
+          "ci95_high": 0.8347,
+          "method": "percentile bootstrap, 2000 resamples, seed 1729"
+        },
+        "correct_rate": {
+          "correct": 16,
+          "point": 0.6154,
+          "wilson95_low": 0.4253,
+          "wilson95_high": 0.7757
+        },
+        "faithfulness": 0.9654,
+        "groundedness": 0.9692,
+        "completeness": 0.7592,
+        "verdicts": {
+          "CORRECT": 16,
+          "PARTIAL": 3,
+          "INCORRECT": 7
+        },
+        "hallucinations": 0,
+        "answers_with_hallucination": 0
+      },
+      "holdout_abstention_expected": {
+        "n": 4,
+        "correctness": {
+          "mean": 0.875,
+          "ci95_low": 0.625,
+          "ci95_high": 1.0,
+          "method": "percentile bootstrap, 2000 resamples, seed 1729"
+        },
+        "correct_rate": {
+          "correct": 3,
+          "point": 0.75,
+          "wilson95_low": 0.3006,
+          "wilson95_high": 0.9544
+        },
+        "faithfulness": 1.0,
+        "groundedness": 1.0,
+        "completeness": 0.75,
+        "verdicts": {
+          "CORRECT": 3,
+          "PARTIAL": 1,
+          "INCORRECT": 0
+        },
+        "hallucinations": 0,
+        "answers_with_hallucination": 0,
+        "abstained": 4,
+        "abstention_carries_query": 4,
+        "fabricated_mapping": 0
+      },
+      "holdout_by_stratum": {
+        "attack": {
+          "n": 12,
+          "correctness": {
+            "mean": 0.5792,
+            "ci95_low": 0.3374,
+            "ci95_high": 0.8167,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 6,
+            "point": 0.5,
+            "wilson95_low": 0.2538,
+            "wilson95_high": 0.7462
+          },
+          "faithfulness": 0.9417,
+          "groundedness": 0.9833,
+          "completeness": 0.65,
+          "verdicts": {
+            "CORRECT": 6,
+            "PARTIAL": 2,
+            "INCORRECT": 4
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "capec": {
+          "n": 8,
+          "correctness": {
+            "mean": 0.6562,
+            "ci95_low": 0.3375,
+            "ci95_high": 0.8938,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 5,
+            "point": 0.625,
+            "wilson95_low": 0.3057,
+            "wilson95_high": 0.8632
+          },
+          "faithfulness": 0.975,
+          "groundedness": 0.925,
+          "completeness": 0.76,
+          "verdicts": {
+            "CORRECT": 5,
+            "PARTIAL": 0,
+            "INCORRECT": 3
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "federated": {
+          "n": 10,
+          "correctness": {
+            "mean": 0.905,
+            "ci95_low": 0.765,
+            "ci95_high": 1.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 8,
+            "point": 0.8,
+            "wilson95_low": 0.4902,
+            "wilson95_high": 0.9433
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 0.886,
+          "verdicts": {
+            "CORRECT": 8,
+            "PARTIAL": 2,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        }
+      },
+      "holdout_by_category": {
+        "consequence": {
+          "n": 1,
+          "correctness": {
+            "mean": 0.15,
+            "ci95_low": 0.15,
+            "ci95_high": 0.15,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 0,
+            "point": 0.0,
+            "wilson95_low": 0.0,
+            "wilson95_high": 0.7935
+          },
+          "faithfulness": 0.9,
+          "groundedness": 0.5,
+          "completeness": 0.5,
+          "verdicts": {
+            "CORRECT": 0,
+            "PARTIAL": 0,
+            "INCORRECT": 1
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "cwe-chain": {
+          "n": 3,
+          "correctness": {
+            "mean": 0.6833,
+            "ci95_low": 0.5,
+            "ci95_high": 1.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 1,
+            "point": 0.3333,
+            "wilson95_low": 0.0615,
+            "wilson95_high": 0.7923
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 0.62,
+          "verdicts": {
+            "CORRECT": 1,
+            "PARTIAL": 2,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "detection": {
+          "n": 2,
+          "correctness": {
+            "mean": 0.95,
+            "ci95_low": 0.9,
+            "ci95_high": 1.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 2,
+            "point": 1.0,
+            "wilson95_low": 0.3424,
+            "wilson95_high": 1.0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 1.0,
+          "verdicts": {
+            "CORRECT": 2,
+            "PARTIAL": 0,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "execution": {
+          "n": 1,
+          "correctness": {
+            "mean": 1.0,
+            "ci95_low": 1.0,
+            "ci95_high": 1.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 1,
+            "point": 1.0,
+            "wilson95_low": 0.2065,
+            "wilson95_high": 1.0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 1.0,
+          "verdicts": {
+            "CORRECT": 1,
+            "PARTIAL": 0,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "groups": {
+          "n": 2,
+          "correctness": {
+            "mean": 0.0,
+            "ci95_low": 0.0,
+            "ci95_high": 0.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 0,
+            "point": 0.0,
+            "wilson95_low": 0.0,
+            "wilson95_high": 0.6576
+          },
+          "faithfulness": 0.75,
+          "groundedness": 1.0,
+          "completeness": 0.0,
+          "verdicts": {
+            "CORRECT": 0,
+            "PARTIAL": 0,
+            "INCORRECT": 2
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "hierarchy": {
+          "n": 1,
+          "correctness": {
+            "mean": 0.1,
+            "ci95_low": 0.1,
+            "ci95_high": 0.1,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 0,
+            "point": 0.0,
+            "wilson95_low": 0.0,
+            "wilson95_high": 0.7935
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 0.33,
+          "verdicts": {
+            "CORRECT": 0,
+            "PARTIAL": 0,
+            "INCORRECT": 1
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "lookup": {
+          "n": 3,
+          "correctness": {
+            "mean": 0.6167,
+            "ci95_low": 0.45,
+            "ci95_high": 0.9,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 1,
+            "point": 0.3333,
+            "wilson95_low": 0.0615,
+            "wilson95_high": 0.7923
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 0.8667,
+          "verdicts": {
+            "CORRECT": 1,
+            "PARTIAL": 2,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "mapping": {
+          "n": 2,
+          "correctness": {
+            "mean": 1.0,
+            "ci95_low": 1.0,
+            "ci95_high": 1.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 2,
+            "point": 1.0,
+            "wilson95_low": 0.3424,
+            "wilson95_high": 1.0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 1.0,
+          "verdicts": {
+            "CORRECT": 2,
+            "PARTIAL": 0,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "mitigations": {
+          "n": 2,
+          "correctness": {
+            "mean": 1.0,
+            "ci95_low": 1.0,
+            "ci95_high": 1.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 2,
+            "point": 1.0,
+            "wilson95_low": 0.3424,
+            "wilson95_high": 1.0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 1.0,
+          "verdicts": {
+            "CORRECT": 2,
+            "PARTIAL": 0,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "pattern-to-mitigation": {
+          "n": 4,
+          "correctness": {
+            "mean": 1.0,
+            "ci95_low": 1.0,
+            "ci95_high": 1.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 4,
+            "point": 1.0,
+            "wilson95_low": 0.5101,
+            "wilson95_high": 1.0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 1.0,
+          "verdicts": {
+            "CORRECT": 4,
+            "PARTIAL": 0,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "prerequisite": {
+          "n": 1,
+          "correctness": {
+            "mean": 0.1,
+            "ci95_low": 0.1,
+            "ci95_high": 0.1,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 0,
+            "point": 0.0,
+            "wilson95_low": 0.0,
+            "wilson95_high": 0.7935
+          },
+          "faithfulness": 0.9,
+          "groundedness": 0.9,
+          "completeness": 0.25,
+          "verdicts": {
+            "CORRECT": 0,
+            "PARTIAL": 0,
+            "INCORRECT": 1
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "reverse-mapping": {
+          "n": 3,
+          "correctness": {
+            "mean": 1.0,
+            "ci95_low": 1.0,
+            "ci95_high": 1.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 3,
+            "point": 1.0,
+            "wilson95_low": 0.4385,
+            "wilson95_high": 1.0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 1.0,
+          "verdicts": {
+            "CORRECT": 3,
+            "PARTIAL": 0,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "software": {
+          "n": 2,
+          "correctness": {
+            "mean": 0.05,
+            "ci95_low": 0.0,
+            "ci95_high": 0.1,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 0,
+            "point": 0.0,
+            "wilson95_low": 0.0,
+            "wilson95_high": 0.6576
+          },
+          "faithfulness": 0.9,
+          "groundedness": 0.9,
+          "completeness": 0.1,
+          "verdicts": {
+            "CORRECT": 0,
+            "PARTIAL": 0,
+            "INCORRECT": 2
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "subtechnique": {
+          "n": 1,
+          "correctness": {
+            "mean": 1.0,
+            "ci95_low": 1.0,
+            "ci95_high": 1.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 1,
+            "point": 1.0,
+            "wilson95_low": 0.2065,
+            "wilson95_high": 1.0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 1.0,
+          "verdicts": {
+            "CORRECT": 1,
+            "PARTIAL": 0,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "tactics": {
+          "n": 1,
+          "correctness": {
+            "mean": 1.0,
+            "ci95_low": 1.0,
+            "ci95_high": 1.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 1,
+            "point": 1.0,
+            "wilson95_low": 0.2065,
+            "wilson95_high": 1.0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 1.0,
+          "verdicts": {
+            "CORRECT": 1,
+            "PARTIAL": 0,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        },
+        "weakness": {
+          "n": 1,
+          "correctness": {
+            "mean": 1.0,
+            "ci95_low": 1.0,
+            "ci95_high": 1.0,
+            "method": "percentile bootstrap, 2000 resamples, seed 1729"
+          },
+          "correct_rate": {
+            "correct": 1,
+            "point": 1.0,
+            "wilson95_low": 0.2065,
+            "wilson95_high": 1.0
+          },
+          "faithfulness": 1.0,
+          "groundedness": 1.0,
+          "completeness": 1.0,
+          "verdicts": {
+            "CORRECT": 1,
+            "PARTIAL": 0,
+            "INCORRECT": 0
+          },
+          "hallucinations": 0,
+          "answers_with_hallucination": 0
+        }
+      },
+      "development": {
+        "source": "docs/evaluation/experiments/untruncated-goldloop/gold_loop_llm",
+        "n": 120,
+        "correctness": {
+          "mean": 0.9957,
+          "ci95_low": 0.989,
+          "ci95_high": 0.9996,
+          "method": "percentile bootstrap, 2000 resamples, seed 1729"
+        },
+        "correct_rate": {
+          "correct": 119,
+          "point": 0.9917,
+          "wilson95_low": 0.9543,
+          "wilson95_high": 0.9985
+        },
+        "faithfulness": 0.996,
+        "groundedness": 0.9992,
+        "completeness": 0.999,
+        "verdicts": {
+          "CORRECT": 119,
+          "PARTIAL": 1,
+          "INCORRECT": 0
+        },
+        "hallucinations": 3,
+        "answers_with_hallucination": 3
+      },
+      "blind_minus_dev": -0.2874
+    }
+  }
+}

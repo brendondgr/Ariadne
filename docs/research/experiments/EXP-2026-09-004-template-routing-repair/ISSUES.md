@@ -63,3 +63,11 @@ alone.
 
 Unchanged from EXP-2026-09-003 I-5: the dangling `POINTERS.md` path in
 EXP-2026-09-001, and the `ORCH_MAX_HOPS` pin.
+
+## I-7 — 2026-09-09: seeds and lockfile
+
+`seeds: []` is accurate: the deterministic arm takes no model and no random
+draw, and the 32 ids were selected by the protocol, not sampled.
+`environment.lockfile` pointed at `env/requirements.lock`, which was never
+written; set to `null` in A-1. The dependency set is `uv.lock` at `25a5bea`
+plus the uncommitted builder changes committed at `e741f44` (see `code.dirty`).

@@ -450,3 +450,77 @@ with that measurement in their docstrings.
 which was tolerable at step 7 and is not when it runs on every seedless
 question. A first-token prefilter — a name can only appear if its first word
 does — takes it to **0.067 ms per call** with identical results.
+
+---
+
+# AMENDMENTS
+
+## AMENDMENT A-1 (2026-09-09) — pointers filled, provenance brought up to the last arm, one table cell taken from the wrong arm, and a stale status line
+
+**Pointers.** `data/POINTERS.md` was the empty scaffold (one blank row) from
+2026-08-29 until 2026-09-09, although every artifact — seven `scored_arm*.json`,
+the references, the variant bank, the Step 6 split, sweeps and gold — is
+git-tracked under `docs/evaluation/variants-2026-08-29/`. The table now lists
+33 rows, each hashed with `utils.research_record.hashing` on 2026-09-09 and
+labelled with its introducing commit. Files committed there on 2026-09-08 by
+EXP-2026-09-014 (`reference_2026-09-08.json`, `scored_R*_tune*.json`) are not
+this experiment's and are excluded.
+
+**Provenance.** `manifest.yaml` was last edited 2026-08-31 11:40 without
+updating three fields:
+
+* `date_completed: 2026-08-29` covered Arm 0 only. Arms 4–6 and Step 6 ran
+  2026-08-30 23:57 – 2026-08-31 11:39 (artifact mtimes; commits `0dc748c`,
+  `538d0c0`, `b8c3b99`, `9f02dc6`). **Old → new:** `2026-08-29` → `2026-08-31`,
+  the date of the last artifact and its commit.
+* `code.commit: b040e185…` is "Variant Robustness (2a/8)" (16:06), the
+  authoring commit *before* Arm 0 ran. **Old → new:** → `0ae78c1948adcd52…`,
+  the commit that introduced `scored_arm0.json` (16:16), which is the primary
+  metric's artifact. The arms were not all run at one commit; each artifact's
+  introducing commit is: Arm 0 `0ae78c1`; Arms 1–2 `2b48a91`; Arm 3 `a65bcd9`;
+  Arm 4 `0dc748c`; Arm 5 `538d0c0`; Step 6 split/gold `f6893c8`, sweeps
+  `446bc45` / `b8c3b99`; Arm 6 `9f02dc6`. Recorded in ISSUES.
+* `compute.wall_clock_hours: 1.6` was recorded for Arm 0 and never revised; the
+  total across seven arms and Step 6 is not recoverable and the field is left
+  as recorded with that scope noted in ISSUES.
+
+**One table cell from the wrong arm.** §"Arms 4 and 5" › "The measured split"
+gives, in the `wrong_entity` column at **T4**, `0.1154 → 0.1635 → 0.1250` (A2 →
+ranked → exact). `arm4_steps12_plus_ranked.T4.wrong_entity` in
+`data/metrics.json` is **0.1538**; 0.1635 is *Arm 3's* T4 value. The derived
+cost line "ranked matching **+3 / +11**" is therefore Arm 3's tally; Arm 4
+against Arm 2 is **+3 right / +10 wrong** (T3 +1, T4 +4, T5 +4, T6 +1, from
+the tier rates × n). Recomputed 2026-09-09 from `data/metrics.json`; the
+`scored_arm4.json` tier rates reproduce that file. The conclusion —
+exact-name-only keeps the T3 gain and sheds almost all of the cost — is
+unchanged; "eleven-twelfths of the cost" reads as ten-elevenths.
+
+**Stale status line.** Line 3 still says "**Status: Arm 0 complete.**" The
+experiment is complete through Arm 6 and Step 6, as the sections below it
+record; the manifest says `complete`.
+
+**Unrecorded seeds.** `seeds: []` with no ISSUES entry. The system under test
+has no randomness (every seam off; the reference was captured twice and
+matched byte-for-byte), and the one model call — Sonnet authoring the variants
+— was a single unseeded pass whose output is frozen in `variants.json`. Now
+recorded in ISSUES.
+
+**`data/metrics.json`.** `arm6_net_right_vs_baseline = 18` and
+`arm6_net_wrong_vs_baseline = −8` are count differences derived from the Arm 6
+and Arm 0 tier rates and were never written by the harness; a
+`manifest_metrics` object now carries every manifest value. Verified: Σ over
+T1–T5 of (arm6 − arm0) `records_exact` counts = +18; Σ over T1–T6 of
+`wrong_entity` counts = −8.
+
+**Related work.** EXP-2026-08-022 judged the builder change Arm 6 shipped
+(`9f02dc6`) on the two fresh banks and found it invisible to the judge (DiD
+inside its own spread), which is consistent with those banks sitting at ceiling;
+EXP-2026-09-014 re-uses this variant bank, re-captured the Arm 6 reference on
+2026-09-08 and scores its rewrite stage against it. Both are added to
+`related`; nothing here is superseded.
+
+## AMENDMENT A-2 (2026-09-09) — the primary metric now names a recorded key
+
+`metrics.primary` was `records_exact`, a descriptive label that matched no key in
+`metrics.values`, so `INDEX.md` and `CURRENT.md` rendered this experiment's
+headline as "not recorded". It now names `records_exact_T4` — the tier at which record identity first reaches 0.0000. No value changed.

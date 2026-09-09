@@ -153,7 +153,9 @@
         "homo-out": 0.0,
         "multihop": 0.0,
         "unanswerable": 0.0
-      }
+      },
+      "stability_retry_spread": 0.0035,
+      "stability_retry_faithfulness": 0.9786
     },
     "deterministic": {
       "grader": "llm",
@@ -301,7 +303,8 @@
         }
       }
     },
-    "arm_gap": 0.47
+    "arm_gap": 0.47,
+    "withdrawn": "2026-08-22 per A-10; raw sweep_state overwritten (I-16); kept here as the only surviving record of the A-8 values"
   },
   "bank3_judged_after_fix": {
     "judge": "claude-sonnet, 12 independent agents, rubric verbatim",
@@ -502,5 +505,239 @@
       "bank3_after_I9": 0.7009,
       "bank3_after_I9_and_I11": 0.8175
     }
+  },
+  "manifest_metrics": {
+    "anchor_label_queried_rate": {
+      "mean": 0.037,
+      "std": 0.0,
+      "n": 27
+    },
+    "mitre_label_queried_on_a_graph_without_it": {
+      "mean": 12,
+      "std": 0.0,
+      "n": 27
+    },
+    "id_scheme_open_rate": {
+      "mean": 0.037,
+      "std": 0.0,
+      "n": 594
+    },
+    "id_scheme_false_mismatches": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 594
+    },
+    "abstention_with_proof_on_unanswerable": {
+      "mean": 0.0,
+      "std": 0.0,
+      "n": 2
+    },
+    "post_fix_retrieval_generic": {
+      "mean": 0.8519,
+      "std": 0.0,
+      "n": 27
+    },
+    "post_fix_retrieval_deterministic": {
+      "mean": 0.2778,
+      "std": 0.0,
+      "n": 27
+    },
+    "post_fix_arm_gap": {
+      "mean": 0.5741,
+      "std": 0.0,
+      "n": 27
+    },
+    "blind_retrieval_generic": {
+      "mean": 0.7857,
+      "std": 0.0,
+      "n": 28
+    },
+    "blind_retrieval_deterministic": {
+      "mean": 0.1964,
+      "std": 0.0,
+      "n": 28
+    },
+    "blind_arm_gap": {
+      "mean": 0.5893,
+      "std": 0.0,
+      "n": 28
+    },
+    "development_to_blind_drop_generic": {
+      "mean": 0.0662,
+      "std": 0.0,
+      "n": 28
+    },
+    "judged_faithfulness_generic": {
+      "mean": 0.9821,
+      "std": null,
+      "n": 28
+    },
+    "judged_faithfulness_deterministic": {
+      "mean": 0.8893,
+      "std": null,
+      "n": 28
+    },
+    "judged_unsupported_claim_rate_generic": {
+      "mean": 0.1071,
+      "std": 0.0,
+      "n": 28
+    },
+    "judged_unsupported_claim_rate_deterministic": {
+      "mean": 0.8214,
+      "std": null,
+      "n": 28
+    },
+    "judged_groundedness_generic": {
+      "mean": 0.9893,
+      "std": null,
+      "n": 28
+    },
+    "judged_evidence_sufficiency_generic": {
+      "mean": 0.6786,
+      "std": null,
+      "n": 28
+    },
+    "xmodel_faithfulness_generic_blind": {
+      "mean": 0.55,
+      "std": null,
+      "n": 26
+    },
+    "xmodel_faithfulness_deterministic_blind": {
+      "mean": 0.35,
+      "std": null,
+      "n": 25
+    },
+    "xmodel_arm_gap_faithfulness_blind": {
+      "mean": 0.2,
+      "std": null,
+      "n": 26
+    },
+    "xmodel_local_judge_overstatement_generic": {
+      "mean": 0.4321,
+      "std": null,
+      "n": 26
+    },
+    "xmodel_local_judge_overstatement_deterministic": {
+      "mean": 0.5393,
+      "std": null,
+      "n": 25
+    },
+    "bank3_judged_faithfulness_generic": {
+      "mean": 0.7009,
+      "std": null,
+      "n": 116
+    },
+    "bank3_judged_faithfulness_deterministic": {
+      "mean": 0.7094,
+      "std": null,
+      "n": 117
+    },
+    "bank3_judged_faithfulness_arm_gap": {
+      "mean": -0.0085,
+      "std": null,
+      "n": 116
+    },
+    "bank3_judged_sufficiency_generic": {
+      "mean": 0.3691,
+      "std": null,
+      "n": 116
+    },
+    "bank3_judged_sufficiency_deterministic": {
+      "mean": 0.2248,
+      "std": null,
+      "n": 117
+    },
+    "i9_fix_faithfulness_gain_generic": {
+      "mean": 0.1509,
+      "std": null,
+      "n": 116
+    },
+    "i9_fix_faithfulness_gain_deterministic": {
+      "mean": 0.3594,
+      "std": null,
+      "n": 117
+    },
+    "final_faithfulness_generic": {
+      "mean": 0.8175,
+      "std": null,
+      "n": 117
+    },
+    "final_faithfulness_deterministic": {
+      "mean": 0.9282,
+      "std": null,
+      "n": 117
+    },
+    "final_sufficiency_generic": {
+      "mean": 0.4731,
+      "std": null,
+      "n": 117
+    },
+    "final_sufficiency_deterministic": {
+      "mean": 0.2957,
+      "std": null,
+      "n": 117
+    },
+    "final_retrieval_recall_generic": {
+      "mean": 0.6923,
+      "std": null,
+      "n": 117
+    },
+    "final_retrieval_recall_deterministic": {
+      "mean": 0.114,
+      "std": null,
+      "n": 117
+    },
+    "final_retrieval_precision_generic": {
+      "mean": 0.1357,
+      "std": null,
+      "n": 105
+    },
+    "final_retrieval_precision_deterministic": {
+      "mean": 0.0572,
+      "std": null,
+      "n": 105
+    },
+    "final_records_per_answer_generic": {
+      "mean": 22.7,
+      "std": null,
+      "n": 105
+    }
+  },
+  "manifest_withdrawn": {
+    "gold_in_evidence_retrieval_generic": {
+      "mean": 0.0,
+      "n": 27,
+      "withdrawn_on": "2026-09-09",
+      "replaced_by": "EXP-2026-08-011:final_retrieval_recall_generic"
+    },
+    "gold_in_evidence_retrieval_deterministic": {
+      "mean": 0.0,
+      "n": 27,
+      "withdrawn_on": "2026-09-09",
+      "replaced_by": "EXP-2026-08-011:final_retrieval_recall_deterministic"
+    },
+    "arm_gap_generic_minus_deterministic": {
+      "mean": 0.0,
+      "n": 27,
+      "withdrawn_on": "2026-09-09",
+      "replaced_by": "none"
+    },
+    "bank3_retrieval_generic": {
+      "mean": 0.7877,
+      "n": 117,
+      "withdrawn_on": "2026-08-22",
+      "replaced_by": "EXP-2026-08-011:final_retrieval_recall_generic"
+    },
+    "bank3_retrieval_deterministic": {
+      "mean": 0.3177,
+      "n": 117,
+      "withdrawn_on": "2026-08-22",
+      "replaced_by": "EXP-2026-08-011:final_retrieval_recall_deterministic"
+    }
+  },
+  "i9_fix_faithfulness_gain": {
+    "generic": 0.1509,
+    "deterministic": 0.3594,
+    "derivation": "bank3_judged_after_fix minus cross_model_judging.bank2_blind (0.7009-0.5500, 0.7094-0.3500)"
   }
 }

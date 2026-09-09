@@ -51,3 +51,17 @@ verified claims.
 
 **Paper implication:** The 119/120 is one arithmetic slip, not a retrieval
 failure. Worth stating precisely if the arm is reported.
+
+## 2026-09-09 — Audit: artifact commit recorded as an upper bound; planner flag in metrics.json is the env value
+
+**Impact:** `code.commit` now holds `9e34b87`, the commit that added all 240
+artifact files (2026-07-26 21:20 −0400); the run commit itself was never
+captured. `data/metrics.json` `llm_posture.planner: "true"` records the env
+flag the harness set, while all 120 answers ran on the injected authored plan
+(`run_meta.planner == "gold-plan (injected)"`).
+**Cause:** The study predates the research record; the harness overrides the
+planner flag by injecting `_GoldPlanAgent` and the posture block copies the env.
+**Resolution:** RESULTS A-1 records both; a note field was added to
+`metrics.json`. The flag value is left so the file still mirrors the run env.
+**Paper implication:** Describe Arm F as authored-plan; cite `9e34b87` as the
+artifact commit, not the run; quote the A−F gap as 0.0016.

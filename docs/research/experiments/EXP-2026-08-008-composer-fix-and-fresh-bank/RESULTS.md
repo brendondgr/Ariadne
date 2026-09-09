@@ -143,3 +143,61 @@ uv run python -m utils.evaluation.experiment_untruncated --arm deterministic \
 uv run python -m utils.evaluation.judge_answers \
   --root docs/evaluation/experiments/composerfix-dev --arm deterministic --workers 12
 ```
+
+---
+
+# AMENDMENTS
+
+## AMENDMENT A-1 (2026-09-09) — Pointers re-hashed, the model marked unknown, the C-021 figure placed, refinements linked
+
+Written during the 2026-09-09 record audit. **No figure in §1–§8 changes**: all
+eight manifest values, the four fresh-bank roll-ups, `catalogue_after_fix`, the
+paired composer-fix delta (before 0.8367, after 0.9350, +0.0983, CI
+0.025–0.180, 10/2/18), the co-authorship figures 0.0483 / 0.0366 and the
+reader-adjusted 0.5739 were recomputed from the sidecars on 2026-09-09 and
+reproduce exactly.
+
+**1. `data/POINTERS.md` judgment-set rows.** Old: six set digests over
+`*.judgment.json` (`ab6126f1…`, `7a03a818…`, `c744c418…`, `668b5bb1…`,
+`8ff28c96…`, `ee50b56d…`), which still verify but which the validator flagged
+because it tree-hashes the directory. New: tree hashes as of 2026-09-09
+(`e034f420…`, `0219150f…`, `d88e7df4…`, `4034e679…`, `86490c6e…`,
+`d15b78a1…`) with each row naming the sidecars later experiments added. The
+answer files and this run's `.judgment.json` files are unchanged. ISSUES §7.
+
+**2. Manifest `llm.model`:** `"relay/skynet (grader and query writer); relay/local
+for bank authoring"` → `"relay/unknown@2026-08-19"`. The served model behind
+both aliases on 2026-08-19 is not recorded anywhere in the artifacts
+(sidecars carry only `"skynet"`) and the repository's model history marks the
+window undetermined. Roles, for the record: the relay `skynet` alias graded
+every answer and wrote the `llm_query` arm's queries; the `local` alias
+authored the fresh bank (ISSUES §3). ISSUES §8.
+
+**3. Manifest `llm.nondeterminism_note`:** was the unedited template sentence
+("results are reported as mean ± std over n_runs") for a study with n_runs = 1.
+Now states that each arm ran once and that grader variance is bounded by
+EXP-2026-08-007's three-pass spread 0.0050, not measured here.
+
+**4. C-021.** §4 says C-021's 0.1472 (EXP-2026-08-007) is "materially
+corrected" to **0.0483** by this experiment. To be precise about what that
+means for the record: 0.1472 remains valid as EXP-2026-08-007's
+pre-composer-fix measurement and is not withdrawn there; **0.0483 is the figure
+CLAIMS quotes for C-021**, from `coauthorship_gap_after_fix` here. This is a
+refinement, not a supersession — EXP-2026-08-007 is added to `related` here and
+carries the reciprocal note in its A-2.
+
+**5. Later refinements.** EXP-2026-09-005 (post-repair arm comparison) and
+EXP-2026-09-007 (holdout spend) re-measure the arm ordering this experiment
+first established on a fresh bank; both are added to `related`. Neither
+overturns a figure here.
+
+Manifest fields changed by this amendment: `llm.model`, `llm.nondeterminism_note`,
+`related` (+ EXP-2026-08-007, EXP-2026-09-005, EXP-2026-09-007). No metric value
+changed.
+
+## AMENDMENT A-2 (2026-09-09) — the primary metric now names a recorded key
+
+`metrics.primary` was `llm_query_vs_templates_fresh_bank`, a label for the comparison rather than a key in
+`metrics.values`, so `INDEX.md` and `CURRENT.md` rendered the headline as "not
+recorded". It now names `fresh_llm_query` — the query-writing arm's 0.5000 against the
+cascade's `fresh_deterministic` 0.9467 on the same 30 questions. No value changed.

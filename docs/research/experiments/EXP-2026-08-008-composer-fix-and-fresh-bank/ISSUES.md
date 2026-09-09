@@ -68,3 +68,33 @@ The grader's underlying point is nonetheless correct and is follow-up 3.
 
 Consistent with D-010. No arm-level variance estimate exists; the grader-level
 spread from EXP-2026-08-007 is not a substitute and is not presented as one.
+
+## 7. Pointer scheme replaced; raw directories have gained later sidecars
+
+**Date:** 2026-09-09 (record audit)
+
+The six judgment-set rows in `data/POINTERS.md` carried set digests the
+validator cannot check, and every one of the six directories has since gained
+grader sidecars written by later experiments (2026-08-20 `.cross`; 2026-08-21
+`.c015`, EXP-2026-08-009; 2026-08-31 `.qwen38*`, EXP-2026-08-021, and `.bld*`,
+EXP-2026-08-022; 2026-09-05 `.g31*` / `.q38b*`). The answer files and the
+`.judgment.json` sidecars this experiment's figures come from are unchanged
+(all recorded figures were recomputed from them on 2026-09-09 and reproduce
+exactly; the old set digests still verify). The rows are now tree hashes as of
+2026-09-09 and name what was added. Any later addition will show as a hash
+mismatch and must be recorded here.
+
+## 8. The grader's and the query writer's model is not determinable from the record
+
+**Date:** 2026-09-09
+
+The manifest carried `llm.model: "relay/skynet (grader and query writer);
+relay/local for bank authoring"` — two relay aliases, no model. Every
+`.judgment.json` sidecar of this run records only `{"model": "skynet"}`, and
+`docs/evaluation/README.md` §"The model behind `skynet`" classifies
+2026-08-19..21 as a window whose served model is undetermined. The `llm_query`
+arm's answers likewise record no model name. `llm.model` is now
+`relay/unknown@2026-08-19` (RESULTS A-1); the roles (grader, query writer,
+bank author via the `local` alias) are recorded there. The same answers
+re-graded by a named model are in EXP-2026-08-021 (`qwen38-27B-v2`, five
+passes) and EXP-2026-09-006.

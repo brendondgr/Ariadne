@@ -16,8 +16,13 @@ order; the command that reproduces it is in [`../RESULTS.md`](../RESULTS.md) §8
 **Reference passes compared against**, both produced 2026-08-19..21 by an
 **unidentified** model (`Q12`): `.judgment.json` (base) for the four
 `EXP-2026-08-008` arms, `.judgment.c015.json` for the `EXP-2026-08-009` pair.
-Each has **n = 1**; every offset in `RESULTS.md` §3 is a five-sample mean against
-a single sample.
+Each has **n = 1**. RESULTS.md §3 describes its offsets as five-sample means
+against a single sample; they are in fact the **pass-1** candidate-minus-reference
+offsets (RESULTS A-2, `data/metrics.json` › `h5_offsets` carries both bases).
+
+`data/metrics.json` was created 2026-09-09 (A-2) from `scripts/grader_repeats.py
+--out` over the files above, plus the calibration and H5 offsets recomputed from
+the sidecars, plus the manifest values.
 
 **Preserved before this experiment ran:** the Ornith-era calibration artifacts at
 `docs/evaluation/experiments/holdout-v1/deterministic/answers/*.judgment.local.pre-qwen38.json`

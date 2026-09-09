@@ -7,61 +7,85 @@ slug: model-free-arm-identity
 title: "Do the model-free arms actually repeat across runs?"
 status: complete            # planned | running | complete | failed | superseded
 date_started: 2026-09-06
-date_completed: null       # null until status is complete/failed
-authors: []
+date_completed: 2026-09-07 # second guarded generic capture finished 2026-09-07 00:00:05 (generic-rerun-state.json); completion commit e76eab1 00:03 (A-1)
+authors: [brendondgr]      # git author of 9e79114, 0f2d81b, 1bcf3bb, 62d7097 and e76eab1
 
 purpose: >
-  One paragraph. What question does this answer, and which paper claim
-  does it support or refute?
+  Do the arms the paper runs once — deterministic and generic — actually repeat
+  across runs? Thirty-six of forty-two experiments were n_runs 1, justified by
+  asserting those arms are model-free on the query path and therefore
+  deterministic; that assumption had never been measured and is what lets
+  C-023's single-draw figures be published. Each arm is run twice, back to
+  back, on the expansion-bank dev half (n=284) and the two captures are
+  compared field by field. Outcome: deterministic is content-identical
+  (284/284 after two clock keys); generic is NOT model-free — it narrates with
+  a language model (run_meta.synthesis "llm (claim-grounded)") and re-words
+  143 of 276 answers on a same-seed rerun — which made EXP-2026-09-011's
+  variance measurement necessary. Written retrospectively on 2026-09-09 from
+  PROTOCOL.md (A-1).
 
 hypothesis: >
-  Stated before the run. If exploratory, write "exploratory — no prior hypothesis".
+  Pre-registered in PROTOCOL.md on 2026-09-06 before any run. H1 deterministic
+  is byte-identical across the two runs modulo timing_ms. H2 generic is
+  byte-identical. H3 any difference is confined to key paths that carry no
+  scored content. Outcome: H1 as literally worded fails (2/284 under the
+  pre-registered exclusion; run_meta.wall_s is a second clock key) and holds in
+  intent (284/284 content-identical); H2 fails (133/276 identical); H3 fails
+  (answer.narrative is the field the grader reads). Amendments A-1..A-3 in
+  PROTOCOL.md record what the run found along the way.
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
   commit: c8ad1a7213b3c5a1e3df899651543730aa1ab7b9          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
-  entrypoint: "<exact command>"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  entrypoint: "uv run python scripts/arm_identity_check.py --workers 32 && uv run python scripts/generic_identity_rerun.py && uv run python scripts/arm_identity_analyse.py"   # first pair of both arms; guarded generic re-run (A-2); two-level analysis (A-1)
+  dirty: true             # the guarded re-run script changed twice while its attempts were in flight — see ISSUES.md
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
 data:
-  name: <dataset>
-  version: <version>
-  split: <split>
-  n_examples: 0
+  name: "expansion bank, dev half (docs/evaluation/composition/bank/bank-dev.json)"
+  version: "sha256 a4ca6702… as asserted in pre-flight (data/run-state.json, data/generic-rerun-state.json); the same file as EXP-2026-09-002, -005, -009 and -011"
+  split: "dev (284 of 572)"
+  n_examples: 284
   dvc_path: null           # this repository does not use DVC; leave null
-  hash: null               # md5:... or sha256:... of the dataset artifact
-seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+  hash: sha256:a4ca6702029cae7784574b0307b9f76d4718a039f3254f2c0ff708a2fa1a4119
+seeds: []                  # the runs did not record a seed; the pipeline's default LLM_SEED (1729) was presumably in effect for the narrator — see ISSUES.md
 n_runs: 2
 environment:
   python: "3.13"
   lockfile: env/requirements.lock
   container: null
 compute:
-  hardware: "<cpu/gpu, ram>"
-  wall_clock_hours: 0.0
+  hardware: "local workstation; Neo4j + Gremlin in Docker; deterministic arm CPU-only; generic's narrator on :9090/default-model (qwen38-27B-v2, vLLM) for the guarded re-run, on :4000/skynet for the invalidated first pair; 32 workers"
+  wall_clock_hours: 1.1    # sum of recorded elapsed_s: 6.5 + 4.4 (deterministic a/b) + 725.6 + 844.7 (first generic pair) + 1195.1 + 1119.4 (guarded re-run a/b) = 3896 s; the aborted a-try2 attempt is unrecorded
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
 llm:
-  model: "<provider>/<model>@<version-or-date>"
+  # Only generic's narrator (composition seam) calls a model; no model writes a
+  # query on either arm. Named from the response envelope (generic-rerun-state.json
+  # preflight.narrator), never the alias (D-028).
+  model: "relay/qwen38-27B-v2@2026-09-06"
   temperature: 0.0
   top_p: 1.0
-  max_tokens: 2048
+  max_tokens: 16384        # the narrator's output budget, read from the context-overflow message in PROTOCOL A-3 ("requested 16384 output tokens")
   prompt_files: []
   prompt_hash: null
   tool_schema_hash: null
   total_input_tokens: null
   total_output_tokens: null
   nondeterminism_note: >
-    Provider-side nondeterminism remains even at temperature 0; results
-    are reported as mean ± std over n_runs.
+    This experiment measures nondeterminism rather than averaging over it: two
+    captures per arm, compared exactly. deterministic is content-identical;
+    generic differs on answer.narrative in 143 of 276 compared answers at the
+    same seed. 8 of 284 generic answers were excluded for transient narrator
+    failures (5 per capture) and one deterministic context-overflow case was
+    kept because it is identical in both captures (PROTOCOL A-3).
 
 # --- Results block ---
 metrics:
-  primary: identity_rate_content
+  primary: identity_rate_deterministic   # was identity_rate_content, which is not a key in values (A-1)
   values:
     identity_rate_deterministic: {mean: 1.0, std: 0.0, n: 284}
     identity_rate_generic: {mean: 0.4819, std: 0.0, n: 276}
@@ -81,4 +105,4 @@ supports_claims: []        # every ID here must exist in ../../CLAIMS.md
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
 superseded_by: null
-related: []
+related: [EXP-2026-09-002, EXP-2026-09-005, EXP-2026-09-007, EXP-2026-09-009, EXP-2026-09-011]   # the single-draw generic figures this bears on (002, 005, 007); the sibling seeded experiments (009, 011)

@@ -1,6 +1,6 @@
 {
   "experiment": "EXP-2026-07-011",
-  "kind": "audit \u2014 not a measured run",
+  "kind": "audit — not a measured run",
   "source": "docs/evaluation/2026-07-26/portability.md",
   "template_counts": {
     "cypher_builder_literals": 17,
@@ -8,7 +8,8 @@
     "distinct_identifiers": 25,
     "note": "17 + 11 != 28: describe, describe_by_name and expand are declared in BOTH builders",
     "exercised_by_120q_bank": 19,
-    "derivation": "docs/plans/robustness/_overnight/derive_templates.py \u2014 AST parse, not prose"
+    "derivation": "docs/plans/robustness/_overnight/derive_templates.py — AST parse, not prose",
+    "status": "WITHDRAWN 2026-09-09 — counts of the 2026-08-04 tree; see current_derivation_2026_09_09 and RESULTS A-1"
   },
   "layers": {
     "fully_portable": [
@@ -29,5 +30,66 @@
       "the 120-question catalogue",
       "one id regex in failure_terminus.py"
     ]
+  },
+  "current_derivation_2026_09_09": {
+    "script": "docs/plans/robustness/_overnight/derive_templates.py (sha256:9991aedf2d61…, 6853 bytes, last changed b72eb23 2026-08-31)",
+    "generated_at_field_in_output": "2026-08-04 (the script hardcodes it; the run itself was 2026-09-09)",
+    "cypher_template_literals": 20,
+    "gremlin_template_literals": 14,
+    "shared_names": [
+      "ambiguous-name",
+      "describe",
+      "describe_by_name",
+      "expand",
+      "unanchored"
+    ],
+    "distinct_identifier_count": 29,
+    "dynamic_template_expressions_not_counted": [
+      "f'{noun}_software' -> group_software, campaign_software"
+    ],
+    "exercised_count": 20,
+    "exercised_but_not_a_builder_template": [
+      "boundary_refusal"
+    ],
+    "declared_but_not_exercised": [
+      "ambiguous-name",
+      "capec_facets",
+      "describe_by_name",
+      "expand",
+      "generic_bridge",
+      "generic_chain",
+      "generic_intersect",
+      "generic_neighbors",
+      "generic_walk",
+      "unanchored"
+    ],
+    "mitre_specific_by_the_audit_rule_applied_today": {
+      "literal_templates": 18,
+      "plus_f_string_generated": 20,
+      "note": "manual classification, not printed by the script: 29 minus 9 generic/card-driven (describe, describe_by_name, expand, label_scan, generic_bridge, generic_chain, generic_intersect, generic_neighbors, generic_walk) minus 2 refusal outcomes (ambiguous-name, unanchored); node_lookup, counted generic in the audit, no longer exists"
+    }
+  },
+  "manifest_metrics": {
+    "distinct_query_template_identifiers_current": {
+      "mean": 29.0,
+      "std": null,
+      "n": 1
+    },
+    "templates_exercised_by_the_bank_current": {
+      "mean": 20.0,
+      "std": null,
+      "n": 1
+    },
+    "mitre_specific_templates": {
+      "mean": 19.0,
+      "std": null,
+      "n": 1
+    }
+  },
+  "withdrawn": {
+    "distinct_query_templates": 25,
+    "templates_exercised_by_the_bank": 19,
+    "withdrawn_on": "2026-09-09",
+    "see": "manifest.yaml metrics.withdrawn; RESULTS A-1"
   }
 }

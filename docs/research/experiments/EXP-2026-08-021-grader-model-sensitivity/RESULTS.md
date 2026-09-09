@@ -219,3 +219,62 @@ uv run python scripts/grader_repeats.py \
   --suffixes .qwen38 .qwen38r2 .qwen38r3 .qwen38r4 .qwen38r5 \
   --contrast deterministic:llm_query --contrast generic_composed:merged
 ```
+
+---
+
+# AMENDMENTS
+
+## AMENDMENT A-2 (2026-09-09) — the H5 offsets are pass-1 offsets, not five-pass means; `data/metrics.json` created; entrypoint, wall clock and dirty tree recorded
+
+(A-1 is the pre-registration of the repeats in PROTOCOL.md; numbering continues from it.)
+
+**H5's basis.** §3 says "8 of 12 offsets survive" 2 × sd and lists the offsets
+(+0.037, +0.032, +0.023, +0.057, +0.010, +0.013; −0.027, −0.038; failing 0.003,
+0.011, 0.007, 0.005), and §5 and `data/POINTERS.md` say *"every offset in §3 is
+a five-sample mean against a single sample"*. The listed offsets are the
+**pass-1** candidate-minus-reference differences (`scripts/grader_sensitivity.py`
+with `--candidate-suffix .qwen38`; they match ISSUES I-4's ranges exactly), not
+five-pass means. Recomputed 2026-09-09 from the sidecars on the case set common
+to the reference and all five passes (`data/metrics.json` › `h5_offsets`):
+
+* pass-1 offsets against 2 × sd: **7 of 12** survive — the recorded eighth is
+  bank-20 `gold_loop_llm`, +0.0131 against 2 sd = 0.0132, a rounding-edge call
+  that fails on the unrounded values;
+* five-pass mean offsets against 2 × sd, which is what the prose describes:
+  **6 of 12** survive — bank-20 `llm_query` (+0.0310 < 0.0498) and bank-20
+  `gold_loop_llm` (+0.0043) drop out; bank-20 `generic_composed`'s five-pass
+  offset is +0.0066, i.e. positive rather than the negative the `.c015` row
+  implies, though it fails either way.
+
+The directional reading — every *surviving* base-pass offset positive, every
+surviving `.c015` offset negative — holds under both bases, so §3's conclusion
+that the two reference passes differ in direction stands and I-4 stands. The
+"8 of 12" and the sentence in §5/POINTERS do not; quote 7/12 (pass 1) or 6/12
+(five-pass) and say which. The manifest carries no value from this paragraph.
+
+**`data/metrics.json` did not exist.** The manifest's twelve values had no
+machine-readable source in the folder. The file now holds the verbatim `--out`
+of `scripts/grader_repeats.py` for both banks (run 2026-09-09 over the pointed
+judgment files; every cell mean, sd and n, both contrasts per bank, the H7
+component-sd sums and the per-pass error counts reproduce §2, §3 and §4
+exactly — sd range 0.0036–0.0249, 6 errors of 1,794), the calibration
+recomputed from `holdout-v1/deterministic/answers` (`.judgment.local` vs the
+Sonnet `.judgment.json`: r **0.9612**, mean delta **+0.0210**, verdict agreement
+0.7667; `.local.pre-qwen38`: r 0.9275, +0.031, 0.70 — both exactly as §1
+records), the H5 offsets above, and a `manifest_metrics` copy of the manifest.
+
+**Entrypoint.** `code.entrypoint` carried the scaffold placeholders `<bank>`
+and `<arm>`. Replaced with the concrete loop of §8 (two banks × six arms × five
+suffixes, then `grader_sensitivity.py` and `grader_repeats.py`).
+
+**Wall clock.** `compute.wall_clock_hours: 0.0`. From the judgment-file mtimes:
+calibration 11:04–11:07, pass 1 11:09–12:31, r2 12:32–14:02, r3 14:05–15:14,
+r4 15:15–16:26, r5 16:27–17:29, all on 2026-08-31 — **6.4 h** end to end.
+**Old → new:** `0.0` → `6.4`.
+
+**Dirty tree.** `code.dirty: true` had no ISSUES entry. `git show --stat
+ffbda84` shows `scripts/grader_repeats.py` first entering the repository with
+this folder, i.e. it was written and run against the `758813f` tree while
+uncommitted; the grader itself (`utils.evaluation.judge_answers`) was committed.
+Recorded as ISSUES I-9. `seeds: []` recorded as I-10 (no seed parameter exists
+on the grading call; temperature 0).

@@ -7,7 +7,7 @@ slug: holdout-spend
 title: "Spending the 288-question holdout: does the arm comparison hold on questions no repair had seen?"
 status: complete           # planned | running | complete | failed | superseded
 date_started: 2026-09-05
-date_completed: 2026-09-05       # null until status is complete/failed
+date_completed: 2026-09-06       # A-5: was 2026-09-05; gemma position-2 sidecars run to 2026-09-06 01:30 and the final two-family rollup was committed at 81f12cb (2026-09-06 03:28)
 authors: [brendondgr]
 
 purpose: >
@@ -28,10 +28,10 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: 514ddda8fcdb53d6fad9306c70e92a32dc3e5476          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: 2ed6de998c7ceb5d50a5880758cdef79189d8e14          # A-5: was 514ddda (EXP-2026-09-006's pre-registration); 2ed6de9 is the commit that sealed, hashed and pre-registered THIS folder (10:56:07)
   branch: main
   entrypoint: "scripts/holdout_seal.py --write-bank; scripts/holdout_run.py --arm deterministic generic llm_query; scripts/holdout_judge.py --grader qwen"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  dirty: true             # the arms ran 11:27-16:27 and judging ran to 2026-09-06 01:30 under trees that moved through 8bab0d8, 2bddfd9, bba225c; see ISSUES I-1
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
@@ -46,19 +46,19 @@ seeds: []                  # [] means seeds were not recorded — say so in ISSU
 n_runs: 2   # two grading positions, swapped
 environment:
   python: "3.13"
-  lockfile: env/requirements.lock
+  lockfile: null           # A-5: was env/requirements.lock, never written; dependencies are uv.lock at code.commit (ISSUES I-6)
   container: null
 compute:
   hardware: "local vLLM: qwen38-27B-v2 on two GPUs behind :9090; gemma4-31B-mtp until 16:00"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 14.1   # A-5: was 0.0 (placeholder); first answer 2026-09-05 11:27 to last judgment 2026-09-06 01:30, phases overlapping. llm_query arm alone 13,912 s (run-state.json)
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
 llm:
-  model: "<provider>/<model>@<version-or-date>"
+  model: "relay/qwen38-27B-v2@2026-09-05 (primary grader, both positions, served_model read from every sidecar; also the llm_query arm's builder behind :9090, not probed from the arm's own envelope — ISSUES I-7) + relay/gemma4-31B-mtp@2026-09-05 (second grader; position 1 on 2026-09-05, position 2 on 2026-09-06 after the endpoint returned)"   # A-5: was the scaffold placeholder
   temperature: 0.0
   top_p: 1.0
-  max_tokens: 2048
+  max_tokens: 32768        # A-5: was 2048 (scaffold default); both graders and the llm_query arm ran at 32768 (PROTOCOL:76; judge.max_tokens in every sidecar)
   prompt_files: []
   prompt_hash: null
   tool_schema_hash: null
@@ -113,7 +113,20 @@ metrics:
     generic_minus_deterministic_holdout: {mean: 0.1684, std: 0.0, n: 288}
     generic_minus_llm_query_holdout: {mean: 0.2507, std: 0.0, n: 288}
     deterministic_minus_llm_query_holdout: {mean: 0.0822, std: 0.0, n: 288}
-    max_arm_deviation_from_dev: {mean: 0.0250, std: 0.0, n: 3}
+    max_arm_deviation_from_dev: {mean: 0.0258, std: 0.0, n: 3}   # A-5: was 0.0250, derived from the withdrawn 0.4031; |0.4039 - 0.3781| = 0.0258
+    ci95_generic_holdout_qwen_lo: {mean: 0.6218, std: 0.0, n: 288}       # A-5: per-arm CIs, judged-final.json + recomputed 2026-09-09
+    ci95_generic_holdout_qwen_hi: {mean: 0.6875, std: 0.0, n: 288}
+    ci95_deterministic_holdout_qwen_lo: {mean: 0.4529, std: 0.0, n: 288}
+    ci95_deterministic_holdout_qwen_hi: {mean: 0.5201, std: 0.0, n: 288}
+    ci95_llm_query_holdout_qwen_lo: {mean: 0.3732, std: 0.0, n: 288}     # A-5: RESULTS:13 quoted [0.3723, 0.4353], the interval of the withdrawn 0.4031 series
+    ci95_llm_query_holdout_qwen_hi: {mean: 0.4363, std: 0.0, n: 288}
+    fabricated_mapping_flags_deterministic_qwen: {mean: 0, std: 0.0, n: 576}   # A-5 (H5): judge field `fabricated_mapping`, summed over both positions
+    fabricated_mapping_flags_deterministic_gemma: {mean: 1, std: 0.0, n: 576}
+    fabricated_mapping_flags_generic_qwen: {mean: 3, std: 0.0, n: 576}
+    fabricated_mapping_flags_generic_gemma: {mean: 3, std: 0.0, n: 576}
+    fabricated_mapping_flags_llm_query_qwen: {mean: 0, std: 0.0, n: 576}
+    fabricated_mapping_flags_llm_query_gemma: {mean: 0, std: 0.0, n: 576}
+    abstention_proof_ok_all_arms: {mean: 288, std: 0.0, n: 288}   # A-5 (H5): deterministic_scores.provenance.abstention_proof_ok true in 288/288 answers of each arm
     deterministic_deviation_from_dev: {mean: 0.0084, std: 0.0, n: 1}
     recall_pooled_deterministic_holdout: {mean: 0.5414, std: 0.0, n: 263}
     recall_reweighted_deterministic_holdout: {mean: 0.4865, std: 0.0, n: 263}
@@ -123,6 +136,42 @@ metrics:
     shapes_moved_of_34: {mean: 3.0, std: 0.0, n: 34}
     d6_template_lead_holdout: {mean: 0.3344, std: 0.0, n: 1}
     second_family_generic_minus_deterministic: {mean: 0.2143, std: 0.0, n: 288}
+  withdrawn:
+    llm_query_holdout_judged_final:
+      mean: 0.4031
+      std: null
+      n: 288
+      withdrawn_on: 2026-09-07
+      reason: "copied from data/judged-final.json, an intermediate roll-up that declared itself incomplete; recomputed from all 576 qwen sidecars as 0.4039 (A-1)"
+      replaced_by: "EXP-2026-09-007:llm_query_holdout"
+    deterministic_minus_llm_query_holdout_judged_final:
+      mean: 0.0831
+      std: null
+      n: 288
+      withdrawn_on: 2026-09-07
+      reason: "derived from the withdrawn 0.4031; recomputed as 0.0822 [0.0362, 0.1308] (A-1)"
+      replaced_by: "EXP-2026-09-007:deterministic_minus_llm_query_holdout"
+    generic_minus_llm_query_holdout_judged_final:
+      mean: 0.2515
+      std: null
+      n: 288
+      withdrawn_on: 2026-09-07
+      reason: "derived from the withdrawn 0.4031; recomputed as 0.2507 [0.2025, 0.2998] (A-1)"
+      replaced_by: "EXP-2026-09-007:generic_minus_llm_query_holdout"
+    second_family_generic_minus_deterministic_p1_only:
+      mean: 0.2053
+      std: null
+      n: 288
+      withdrawn_on: 2026-09-07
+      reason: "gemma position-1-only figure from judged-gemma-p1.json; the two-position value is 0.2143 [0.1637, 0.2659] (A-1)"
+      replaced_by: "EXP-2026-09-007:second_family_generic_minus_deterministic"
+    max_arm_deviation_from_dev_v1:
+      mean: 0.0250
+      std: null
+      n: 3
+      withdrawn_on: 2026-09-07
+      reason: "|0.4031 - 0.3781| from the withdrawn llm_query value; A-4 corrected the delta to +0.0258 and A-5 (2026-09-09) corrected the manifest key"
+      replaced_by: "EXP-2026-09-007:max_arm_deviation_from_dev"
 baselines_compared: ["EXP-2026-09-005 dev half, same grader, same protocol"]
 statistical_test: "paired percentile bootstrap, 2000 resamples, seed 1729, utils/evaluation/stats.py::bootstrap_ci"
 

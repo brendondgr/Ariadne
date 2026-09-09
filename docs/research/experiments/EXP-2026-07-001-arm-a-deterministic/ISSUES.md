@@ -64,3 +64,21 @@ are the *pre-fix* `untruncated/` figures, spliced next to post-fix correctness.
 count (839) and coverage (1.0000) are identical across both runs.
 
 **Paper implication:** Never mix rows across the pre- and post-fix runs.
+
+## 2026-09-09 — Audit: artifact commit recorded as an upper bound; judge-run splice unverifiable
+
+**Impact:** `code.commit` now holds `33e38ac`, the commit that added all 240
+artifact files (2026-07-26 14:31 −0400). It bounds the run from above; the
+commit the harness actually ran at was never captured and remains unknown.
+The 118 + 2 splice recorded above (2026-07-26) cannot be confirmed: every
+judgment file arrived in that single commit and none was changed later, so
+git shows one judge pass, not two.
+
+**Cause:** The study predates the research record; no per-arm commit or judge-run
+identifier was written into the artifacts.
+
+**Resolution:** Not resolvable retrospectively. RESULTS A-1 records what was
+established and how.
+
+**Paper implication:** Cite the artifact commit, never a run commit. Keep the
+"not from a single judge pass" caveat: the record cannot prove it either way.

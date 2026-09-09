@@ -38,13 +38,13 @@ config:
   hash: null
 data:
   name: ad-hoc analyst questions (12 fixed strings in the probe)
-  version: "sse_gap_probe.py @ 84936c3"
+  version: "utils/tests/sse_gap_probe.py as first committed in 31da134 (2026-09-07 17:15); the probe was uncommitted at run time and 84936c3 does not contain it (A-1)"
   split: n/a
   n_examples: 12
   dvc_path: null
   hash: null
 seeds: []                  # the pipeline pins LLM_SEED=1729; concurrency is the uncontrolled variable, see ISSUES.md
-n_runs: 1                  # per condition; the "after" condition was run twice, see RESULTS.md
+n_runs: 1                  # per condition; the "after" condition was run twice and the two runs are recorded under separate keys below (A-1)
 environment:
   python: "3.13"
   lockfile: env/requirements.lock
@@ -73,13 +73,22 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: runs_exceeding_client_stall_budget
+  primary: runs_exceeding_client_stall_budget_after_clean12way   # was runs_exceeding_client_stall_budget, not a key (A-1)
+  # The "after" condition has two probes. after-run2 is the clean 12-way run
+  # and the headline; after-run1 overlapped the tail of a previous probe (~24
+  # streams in flight) and its run 7 went silent 434.6 s. Until 2026-09-09 the
+  # *_after keys claimed n: 2 while quoting only the clean run (A-1).
   values:
     runs_exceeding_client_stall_budget_before: {mean: 5.0, std: 0.0, n: 1}
-    runs_exceeding_client_stall_budget_after: {mean: 0.0, std: 0.0, n: 2}
+    runs_exceeding_client_stall_budget_after_clean12way: {mean: 0.0, std: 0.0, n: 1}      # logs/after-run2-12way.log
+    runs_exceeding_client_stall_budget_after_run1_overlapped24way: {mean: 1.0, std: 0.0, n: 1}   # logs/after-run1-12way.log, run 7
+    runs_exceeding_client_stall_budget_after_both_runs: {mean: 0.5, std: 0.5, n: 2}
     worst_socket_silence_s_before: {mean: 429.0, std: 0.0, n: 1}
-    worst_socket_silence_s_after: {mean: 10.0, std: 0.0, n: 2}
+    worst_socket_silence_s_after_clean12way: {mean: 10.0, std: 0.0, n: 1}
+    worst_socket_silence_s_after_run1_overlapped24way: {mean: 434.6, std: 0.0, n: 1}
+    worst_socket_silence_s_after_both_runs: {mean: 222.3, std: 212.3, n: 2}
     runs_completing_server_side_before: {mean: 12.0, std: 0.0, n: 1}
+    runs_completing_server_side_after: {mean: 12.0, std: 0.0, n: 2}     # both after logs: 12/12 OK
 baselines_compared: []
 statistical_test: null
 

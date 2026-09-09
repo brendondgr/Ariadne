@@ -30,9 +30,9 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: 0e06ceef8bce9c1a4c33c5c20046d3a0ecf37fd5          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: 887c2cddb75d260ce32385d0c0b724b18051fcc5   # tree behind the surviving artifacts; was 0e06ceef (pre-registration, no builder) until 2026-09-09 — A-1, I5
   branch: fix/group-software-templates
-  entrypoint: "uv run python scripts/external_validation.py sweep --out docs/evaluation/external-2026-08-21-fixed"
+  entrypoint: "uv run python scripts/external_validation.py sweep --out docs/evaluation/external-2026-08-21-post-fix"   # was …-fixed, a directory that never existed (A-1)
   dirty: false
 config:
   path: null               # repo-relative path, or null if the run takes no config file
@@ -51,24 +51,26 @@ environment:
   lockfile: env/requirements.lock
   container: null
 compute:
-  hardware: "<cpu/gpu, ram>"
+  hardware: "unknown"   # never recorded (I5)
   wall_clock_hours: 1.1
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
 llm:
-  model: "<provider>/<model>@<version-or-date>"
+  model: "relay/unknown@2026-08-21"   # llm plan-free arm via the relay alias skynet; served model unrecorded (I5)
   temperature: 0.0
   top_p: 1.0
-  max_tokens: 2048
+  max_tokens: 16384   # scripts/external_validation.py:155; was 2048 (A-1)
   prompt_files: []
   prompt_hash: null
   tool_schema_hash: null
   total_input_tokens: null
   total_output_tokens: null
   nondeterminism_note: >
-    Provider-side nondeterminism remains even at temperature 0; results
-    are reported as mean ± std over n_runs.
+    Provider-side nondeterminism remains even at temperature 0. Each arm ran
+    once; the oracle and deterministic arms have no model in the loop and are
+    byte-reproducible; the llm arm was not repeated, so no std is reported.
+    (Template text replaced 2026-09-09, A-1.)
 
 # --- Results block ---
 metrics:

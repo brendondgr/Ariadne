@@ -23,10 +23,10 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: ed1acfae519ae737fa813acca5715a9ddde3ce83          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: a1e20f6a3283f910a928f9bdb63e9ec463ef5239          # A-2: was ed1acfae (19:56, the write-up commit); the arms ran 19:10:30-19:32:30 under this tree (19:10:13)
   branch: main
   entrypoint: "uv run python -m utils.evaluation.experiment_untruncated --arm {deterministic,generic} --bank docs/evaluation/composition/bank/bank-dev.json --root docs/evaluation/experiments/post-repair-2026-09-03 --workers 16, then judge_answers at position 1 and 2 per arm"
-  dirty: false            # arms and grading ran against the tree at a1e20f6
+  dirty: false            # arms and grading ran against the tree at a1e20f6; results were written up at ed1acfa
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
@@ -41,7 +41,7 @@ seeds: []                  # [] means seeds were not recorded — say so in ISSU
 n_runs: 1
 environment:
   python: "3.13"
-  lockfile: env/requirements.lock
+  lockfile: null           # A-2: was env/requirements.lock, never written; dependencies are uv.lock at code.commit (ISSUES I-7)
   container: null
 compute:
   hardware: "local workstation; Neo4j + TinkerPop in docker; local relay at :4000"
@@ -65,7 +65,7 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: judged_correctness_gap
+  primary: judged_gap            # A-2: was judged_correctness_gap, a name with no key in values
   values:
     deterministic_judged: {mean: 0.4946, std: null, n: 284}
     generic_judged: {mean: 0.6569, std: null, n: 284}
@@ -76,6 +76,7 @@ metrics:
     deterministic_recall_reweighted: {mean: 0.5199, std: null, n: 248}
     deterministic_judged_move_vs_prerepair: {mean: 0.0012, std: null, n: 284}
     deterministic_recall_move_vs_prerepair: {mean: 0.0684, std: null, n: 248}
+    deterministic_recall_prerepair_dev: {mean: 0.4492, std: null, n: 248}   # A-2: the baseline behind the 0.0684; lives in EXP-2026-09-007 data/recall-summary.json (pooled.dev_pre), now pointed (ISSUES I-8)
 baselines_compared: []
 statistical_test: null
 
@@ -84,4 +85,4 @@ supports_claims: ["C-023"]
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: "EXP-2026-09-002"
 superseded_by: null
-related: ["EXP-2026-09-001", "EXP-2026-09-002", "EXP-2026-09-003", "EXP-2026-09-004"]
+related: ["EXP-2026-09-001", "EXP-2026-09-002", "EXP-2026-09-003", "EXP-2026-09-004", "EXP-2026-09-007"]   # A-2: 007 repeats this comparison on the sealed holdout

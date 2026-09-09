@@ -31,3 +31,14 @@ empty population and the renderer prints 0.0 rather than n/a.
 
 **Paper implication:** Do not reproduce the by-tier table without the
 explanation; it invites a reviewer to read two zeroes as two failures.
+
+## 2026-09-09 — Run date was the record date, not the artifact date
+
+**Impact:** `date_started`/`date_completed` read 2026-07-26; the report they
+point at was committed 2026-07-19 (`14fd58f`) and carries no internal
+timestamp. Corrected to 2026-07-19 (RESULTS A-1). The exact run time within
+July is not recoverable; the commit date is an upper bound.
+
+**Also:** the `*.judgment.json` files under `docs/evaluation/answers` belong to
+`EXP-2026-07-010`, not to this run — the pointer description said otherwise and
+is corrected. Nothing numeric changes.

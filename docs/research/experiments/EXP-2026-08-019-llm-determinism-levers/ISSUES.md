@@ -13,3 +13,9 @@ tree at run time. An empty file is fine; a missing one is not.
 **Paper implication:** what must be stated in the paper because of this.
 
 -->
+
+## 2026-09-09 — "Wall clock per repeat 398 s / 321 s" is in no artifact
+**Impact:** the two elapsed-time figures in RESULTS §"Throughput" and the derived "19 % wall clock" cannot be reproduced from the record; the sweep writes only summed per-question latency (`wall_s_total`). The per-request latency (53.0 → 85.5 s, +61 %) and fallback (14.0 → 28.3) rows, which carry the finding, do reproduce. Also corrected: `n_runs` 1 → 3 (Q34) and `per_question_latency_s_w16.std` 6.5 → 6.6 (RESULTS A-1).
+**Cause:** elapsed time was read off the console and not written down.
+**Resolution:** not recoverable. Future sweeps should record start/end timestamps per run.
+**Paper implication:** do not quote 398 s / 321 s or the 19 %; quote the latency and fallback rows.

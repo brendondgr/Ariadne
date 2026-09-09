@@ -943,3 +943,58 @@ level — T6 `slot_anchor` is 0.0000 — not merely at the record level. And it 
 
 **Reversible.** Both flags exist and are documented; the decision is which
 default they carry, and the next experiment can change it on evidence.
+
+## D-033 — The record is repaired in place by amendment, gated on currency, and the raw sidecars are committed (2026-09-09)
+
+**Context.** A full audit of all 47 experiments on 2026-09-09 found every
+headline number reproducible from the artifacts (45 of 47 exactly; two only
+from copies the record did not reference) and the record's bookkeeping not:
+thirteen experiments with blank contract files, impossible commits or false
+descriptions; one `superseded_by` link among at least fourteen overturned
+headlines; withdrawn values still in manifests and therefore "traced" into the
+paper by a checker that asked whether a number existed, never whether it was
+current; claim rows that had become changelogs; 424 MB of raw output since
+9 August gitignored, so the September results reproduced only on one machine.
+
+**Options.**
+1. Re-run the affected experiments under the new protocol. Rejected: the
+   numbers were not the defect, and a re-run would have replaced a reproducible
+   record with a fresh one carrying the same bookkeeping gaps.
+2. Rewrite the experiment folders. Rejected: it violates the append-only rule
+   (D-008) and erases how each result got to where it is.
+3. Repair by amendment, add the checks that would have caught each defect, and
+   make currency — not only existence — a gated property. **Taken.**
+
+**Decision.**
+- Every correction to a completed experiment is an appended `AMENDMENT` naming
+  old → new; manifests and `data/` are corrected in place as the machine-readable
+  mirror of that amendment. A retracted value moves to `metrics.withdrawn` with
+  its replacement; it is never deleted.
+- Supersession is recorded in both manifests or in neither; six experiments
+  (`EXP-2026-07-007`, `-07-010`, `-07-011`, `-08-003`, `-08-005`, `-09-002`) are
+  `superseded`; refinements go in `related`.
+- `CURRENT.md` is generated from the manifests and is the only place a number is
+  quoted *from*. `make check-docs` fails any prose document that quotes a
+  withdrawn or superseded figure without its replacement; the pre-commit hook
+  runs it. The validator gains seven conditions (9–15).
+- The ledgers are split: `CLAIMS.md` holds one current row per claim,
+  `CLAIMS-HISTORY.md` every earlier row; answered questions move to
+  `OPEN_QUESTIONS-ANSWERED.md`.
+- The judgment sidecars and per-run roll-ups (≈21 MB) are committed; answer
+  bodies (≈320 MB) stay gitignored and hash-pinned. A hash whose path is absent
+  is skipped by the validator so a fresh clone still validates.
+- Six top-level documents fold into `docs/ARCHITECTURE.md`; three orphaned
+  files are deleted; every citing line, the docs-contract test and the
+  global-rules skill move in the same commit.
+- Four decisions were the operator's and were taken as recommended: delete
+  rather than archive the orphaned files; correct the paper's numbers; commit
+  sidecars only; flip the five whole-headline supersessions to `superseded`.
+
+**Consequences.** `n_runs` now means system runs (grading passes are not runs),
+so several manifests read lower than a reviewer might expect and the definition
+is in `AGENT_INSTRUCTIONS.md` §3.1. There is still no CI; the hook and
+`make check-record` are the gate, and the record says so where it once claimed
+otherwise. Arm G (`EXP-2026-07-007`) is now recorded as having run with the
+injected gold plan, which makes its contrast with Arm F cleaner than the July
+write-up described and its role in refuted C-003 smaller. Pre-cleanup tree:
+tag `pre-cleanup-2026-09-09`.

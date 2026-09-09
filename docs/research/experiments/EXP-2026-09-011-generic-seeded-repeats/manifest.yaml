@@ -7,61 +7,82 @@ slug: generic-seeded-repeats
 title: "How much does the primary result move across seeds?"
 status: complete            # planned | running | complete | failed | superseded
 date_started: 2026-09-06
-date_completed: null       # null until status is complete/failed
-authors: []
+date_completed: 2026-09-07 # extension grading finished 12:59:59 (judge-state-extension.json); six-seed commit e5453fd 13:03 (A-2)
+authors: [brendondgr]      # git author of bc95277, 112088b, 923f5bd and e5453fd
 
 purpose: >
-  One paragraph. What question does this answer, and which paper claim
-  does it support or refute?
+  How much does the primary result move across seeds? EXP-2026-09-010 A-2
+  established that the generic arm composes its answers with a language model,
+  so the paper's headline — generic 0.6546 on the holdout and the +0.1684 gap
+  over deterministic (EXP-2026-09-007), and the 0.1623 dev gap (EXP-2026-09-005)
+  — came from a single draw of a varying process with no variance estimate.
+  Three pre-registered seeded generations (1729 / 20260906 / 424242) on the
+  expansion-bank dev half, each graded twice by qwen38-27B-v2 in
+  counterbalanced blocks, measure the across-seed spread of the judged score;
+  A-1 added three more seeds (31337 / 8675309 / 271828). Outcome: the wording
+  moves (EXP-2026-09-010) but the score does not — balanced across-seed SD
+  0.0039 on three seeds, 0.0074 on six, against a 0.1623 gap. The paper quotes
+  0.0074. Written retrospectively on 2026-09-09 from PROTOCOL.md (A-2).
 
 hypothesis: >
-  Stated before the run. If exploratory, write "exploratory — no prior hypothesis".
+  Pre-registered in PROTOCOL.md on 2026-09-06 before any run. H1 generic >
+  deterministic (0.4946) in all runs. H2 across-seed SD of the balanced
+  estimate is below 0.03. H3 the +0.1684 holdout gap exceeds three times the
+  across-seed SD (falsified by SD >= 0.0561). Outcome: all three hold on three
+  seeds (SD 0.0039) and on six (SD 0.0074; lowest seed 0.6363; gap-to-3SD ratio
+  7.3:1 on the same-population 0.1623 gap).
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
   commit: 4eb9b91959e8370dadc599eb256b48bba7a2215d          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
-  entrypoint: "<exact command>"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  entrypoint: "uv run python scripts/seeded_repeats.py --arm generic --workers 32 && uv run python scripts/seeded_repeats_judge.py --arm generic --seeds preregistered --workers 32; then --extra-seeds and --seeds extension for A-1"
+  dirty: true             # the judge was edited between and during its sessions — see ISSUES.md
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
 data:
-  name: <dataset>
-  version: <version>
-  split: <split>
-  n_examples: 0
+  name: "expansion bank, dev half (docs/evaluation/composition/bank/bank-dev.json)"
+  version: "sha256 a4ca6702… as asserted in pre-flight (data/run-state.json); the same file as EXP-2026-09-002, -005, -009 and -010"
+  split: "dev (284 of 572); the holdout is not re-opened"
+  n_examples: 284
   dvc_path: null           # this repository does not use DVC; leave null
-  hash: null               # md5:... or sha256:... of the dataset artifact
-seeds: [1729, 20260906, 424242, 31337, 8675309, 271828]                  # [] means seeds were not recorded — say so in ISSUES.md
+  hash: sha256:a4ca6702029cae7784574b0307b9f76d4718a039f3254f2c0ff708a2fa1a4119
+seeds: [1729, 20260906, 424242, 31337, 8675309, 271828]   # first three pre-registered in PROTOCOL.md; last three added under PROTOCOL A-1 before the extension ran
 n_runs: 6
 environment:
   python: "3.13"
   lockfile: env/requirements.lock
   container: null
 compute:
-  hardware: "<cpu/gpu, ram>"
-  wall_clock_hours: 0.0
+  hardware: "local workstation; Neo4j + Gremlin in Docker; narrator on :9090/default-model (qwen38-27B-v2, vLLM); grading on :9090 default-model-2/-3/-4 (pre-registered seeds) and default-model/-2 (extension), every alias probed as qwen38-27B-v2; 32 workers"
+  wall_clock_hours: 5.7    # generation 4174 s over six seeds (run-state.json), pre-registered grading 00:59-02:47, extension grading ~10:15-13:00 (judge-state*.json)
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
 llm:
-  model: "<provider>/<model>@<version-or-date>"
+  # One served model for the narrator and for both grading blocks, probed from
+  # the response envelope at every launch (run-state.json, judge-state*.json `served`), never the alias (D-028).
+  model: "relay/qwen38-27B-v2@2026-09-07"
   temperature: 0.0
   top_p: 1.0
-  max_tokens: 2048
+  max_tokens: 32768        # --llm-max-tokens 32768 for generation (PROTOCOL.md); 32768 per grading pass
   prompt_files: []
   prompt_hash: null
   tool_schema_hash: null
   total_input_tokens: null
   total_output_tokens: null
   nondeterminism_note: >
-    Provider-side nondeterminism remains even at temperature 0; results
-    are reported as mean ± std over n_runs.
+    Provider-side nondeterminism remains even at temperature 0 (EXP-2026-08-019).
+    The seed is varied deliberately and recorded; the reported quantity is the
+    across-seed spread of the balanced (two-block) judged mean over n_runs 6.
+    The two grading blocks are the same grader in counterbalanced order, so the
+    ~0.01 grading-order effect cancels in the balanced estimate; the two seed
+    sets were graded in separate sessions hours apart (RESULTS A-1 Limits).
 
 # --- Results block ---
 metrics:
-  primary: balanced_across_seed_sd
+  primary: six_seed_balanced_sd   # was balanced_across_seed_sd (0.0039, three seeds), withdrawn per RESULTS A-1 — see A-2
   values:
     preregistered_minus_extension_mean: {mean: 0.0014, std: 0.0, n: 6}
     six_seed_balanced_sd: {mean: 0.0074, std: 0.0, n: 6}
@@ -85,7 +106,6 @@ metrics:
     q2_seed_1729: {mean: 0.6394, std: 0.0, n: 284}
     q2_seed_20260906: {mean: 0.6444, std: 0.0, n: 284}
     q2_seed_424242: {mean: 0.6394, std: 0.0, n: 284}
-    balanced_across_seed_sd: {mean: 0.0039, std: 0.0, n: 3}
     balanced_seed_1729: {mean: 0.6520, std: 0.0, n: 284}
     balanced_seed_20260906: {mean: 0.6448, std: 0.0, n: 284}
     balanced_seed_424242: {mean: 0.6431, std: 0.0, n: 284}
@@ -94,7 +114,16 @@ metrics:
     block_q2_mean: {mean: 0.6411, std: 0.0, n: 852}
     grading_order_effect: {mean: -0.0111, std: 0.0, n: 852}
     gap_over_3sd_ratio: {mean: 13.99, std: 0.0, n: 3}
-    judgments_total: {mean: 1704.0, std: 0.0, n: 1704}
+    judgments_total: {mean: 1704.0, std: 0.0, n: 1704}   # the three pre-registered seeds; see judgments_total_six_seed
+    judgments_total_six_seed: {mean: 3408.0, std: 0.0, n: 3408}   # six seeds x two blocks x 284, zero failures (A-2)
+  withdrawn:
+    balanced_across_seed_sd:
+      mean: 0.0039
+      std: null
+      n: 3
+      withdrawn_on: 2026-09-07
+      reason: "three-seed spread; RESULTS A-1 (2026-09-07) graded three further seeds, found the six-seed balanced SD 0.0074 (1.9x), and states that the paper should quote 0.0074, not 0.0039"
+      replaced_by: "EXP-2026-09-011:six_seed_balanced_sd"
 baselines_compared: []
 statistical_test: null
 
@@ -103,4 +132,4 @@ supports_claims: []        # every ID here must exist in ../../CLAIMS.md
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
 superseded_by: null
-related: []
+related: [EXP-2026-08-022, EXP-2026-09-005, EXP-2026-09-007, EXP-2026-09-009, EXP-2026-09-010]   # grading-order effect (08-022); the gap this bounds (005, 007); sibling seeded arm (009); the wording variance this measures the reach of (010)

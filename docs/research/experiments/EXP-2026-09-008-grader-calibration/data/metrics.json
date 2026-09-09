@@ -1,0 +1,215 @@
+{
+ "experiment": "EXP-2026-09-008",
+ "source": "manifest, back-filled 2026-09-09 from data/state-gemma31.json, data/state-gemma26.json, data/state-qwen.json (phase A per-band figures) and data/thinkcap-probe.json (phase D); every value reproduces from the sidecars under docs/evaluation/experiments/calibration-2026-09-06 and thinkcap-probe-2026-09-06 (audit verify-b6, r008.py / r008b.py)",
+ "manifest_metrics": {
+  "ceiling_fraction_at_1_gemma31": {
+   "mean": 1.0,
+   "std": 0.0,
+   "n": 20
+  },
+  "ceiling_fraction_at_1_gemma26": {
+   "mean": 0.95,
+   "std": 0.0,
+   "n": 20
+  },
+  "ceiling_fraction_at_1_qwen": {
+   "mean": 0.85,
+   "std": 0.0,
+   "n": 20
+  },
+  "ceiling_distinct_values_gemma31": {
+   "mean": 1.0,
+   "std": 0.0,
+   "n": 20
+  },
+  "ceiling_distinct_values_gemma26": {
+   "mean": 2.0,
+   "std": 0.0,
+   "n": 20
+  },
+  "ceiling_distinct_values_qwen": {
+   "mean": 3.0,
+   "std": 0.0,
+   "n": 20
+  },
+  "ceiling_mean_gemma31": {
+   "mean": 1.0,
+   "std": 0.0,
+   "n": 20
+  },
+  "ceiling_mean_gemma26": {
+   "mean": 0.975,
+   "std": 0.109,
+   "n": 20
+  },
+  "ceiling_mean_qwen": {
+   "mean": 0.98,
+   "std": 0.051,
+   "n": 20
+  },
+  "gemma26_mid_band_mean": {
+   "mean": 0.6239,
+   "std": 0.4091,
+   "n": 18
+  },
+  "gemma26_low_band_mean": {
+   "mean": 0.6435,
+   "std": 0.4501,
+   "n": 20
+  },
+  "gemma26_inversion_margin": {
+   "mean": 0.0196,
+   "std": 0.0,
+   "n": 1
+  },
+  "low_band_sd_qwen": {
+   "mean": 0.2629,
+   "std": 0.0,
+   "n": 20
+  },
+  "low_band_sd_gemma31": {
+   "mean": 0.3991,
+   "std": 0.0,
+   "n": 20
+  },
+  "low_band_sd_gemma26": {
+   "mean": 0.4501,
+   "std": 0.0,
+   "n": 20
+  },
+  "models_usable_near_ceiling": {
+   "mean": 1.0,
+   "std": 0.0,
+   "n": 3
+  },
+  "thinkcap512_records_retrieved": {
+   "mean": 0.0,
+   "std": 0.0,
+   "n": 30
+  },
+  "uncapped_records_retrieved": {
+   "mean": 3.0,
+   "std": 0.0,
+   "n": 30
+  },
+  "thinkcap512_gate_rejected": {
+   "mean": 28.0,
+   "std": 0.0,
+   "n": 30
+  },
+  "uncapped_gate_rejected": {
+   "mean": 4.0,
+   "std": 0.0,
+   "n": 30
+  }
+ },
+ "per_model_by_band": {
+  "gemma31": {
+   "served_model": "gemma4-31B-mtp",
+   "by_band": {
+    "ceiling": {
+     "n": 20,
+     "mean": 1.0,
+     "sd": 0.0,
+     "at_ceiling": 20,
+     "distinct_values": 1
+    },
+    "mid": {
+     "n": 20,
+     "mean": 0.425,
+     "sd": 0.4548,
+     "at_ceiling": 7,
+     "distinct_values": 3
+    },
+    "low": {
+     "n": 20,
+     "mean": 0.2385,
+     "sd": 0.3991,
+     "at_ceiling": 4,
+     "distinct_values": 4
+    }
+   },
+   "overall_sd": 0.4765,
+   "overall_distinct": 4,
+   "ceiling_band_saturated": true,
+   "ceiling_band_fraction_at_1": 1.0,
+   "usable_near_ceiling": false,
+   "ok": true
+  },
+  "gemma26": {
+   "served_model": "gemma-4-26B-it",
+   "by_band": {
+    "ceiling": {
+     "n": 20,
+     "mean": 0.975,
+     "sd": 0.109,
+     "at_ceiling": 19,
+     "distinct_values": 2
+    },
+    "mid": {
+     "n": 18,
+     "mean": 0.6239,
+     "sd": 0.4091,
+     "at_ceiling": 9,
+     "distinct_values": 5
+    },
+    "low": {
+     "n": 20,
+     "mean": 0.6435,
+     "sd": 0.4501,
+     "at_ceiling": 12,
+     "distinct_values": 5
+    }
+   },
+   "overall_sd": 0.3901,
+   "overall_distinct": 7,
+   "ceiling_band_saturated": false,
+   "ceiling_band_fraction_at_1": 0.95,
+   "usable_near_ceiling": false,
+   "ok": true
+  },
+  "qwen": {
+   "served_model": "qwen38-27B-v2",
+   "by_band": {
+    "ceiling": {
+     "n": 20,
+     "mean": 0.98,
+     "sd": 0.051,
+     "at_ceiling": 17,
+     "distinct_values": 3
+    },
+    "mid": {
+     "n": 20,
+     "mean": 0.5125,
+     "sd": 0.3301,
+     "at_ceiling": 4,
+     "distinct_values": 9
+    },
+    "low": {
+     "n": 20,
+     "mean": 0.3785,
+     "sd": 0.2629,
+     "at_ceiling": 1,
+     "distinct_values": 11
+    }
+   },
+   "overall_sd": 0.356,
+   "overall_distinct": 15,
+   "ceiling_band_saturated": false,
+   "ceiling_band_fraction_at_1": 0.85,
+   "usable_near_ceiling": true,
+   "ok": true
+  }
+ },
+ "thinkcap_probe": {
+  "paired_n": 30,
+  "capped_512": {
+   "records_gt_0": 0,
+   "gate_rejected": 28
+  },
+  "uncapped": {
+   "records_gt_0": 3,
+   "gate_rejected": 4
+  }
+ }
+}

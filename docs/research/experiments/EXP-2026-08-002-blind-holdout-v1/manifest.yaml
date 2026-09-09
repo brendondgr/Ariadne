@@ -24,7 +24,7 @@ hypothesis: >
 
 # --- Reproducibility block ---
 code:
-  commit: ce3a2d2b7f0e6b0e9e4c9c9a2b0d3f5a7c1e8d94
+  commit: ce3a2d2810ba5d2199d4fea18ac7824b6d9554bf   # corrected 2026-09-09 (RESULTS A-2): the recorded 40-char sha did not exist; this is "Holdout Execution (7/8)", 2026-08-09 13:11, verified with git cat-file -e
   branch: claude/holdout-execution-process-8d74cd
   entrypoint: "uv run python -m utils.evaluation.experiment_untruncated --arm {deterministic,gold_loop_llm} --bank utils/specialists/tests/golden/holdout_questions.json --root docs/evaluation/experiments/holdout-v1 --workers 4"
   dirty: false
@@ -46,12 +46,12 @@ environment:
   container: null
 compute:
   hardware: "local workstation, CPU; Neo4j and Gremlin in Docker; local vLLM relay"
-  wall_clock_hours: 0.16
+  wall_clock_hours: 0.154   # 1.0 s + 554.0 s from the run logs (ISSUES §4); was 0.16 (RESULTS A-2)
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block ---
 llm:
-  model: "author: anthropic/claude-fable-5 (high reasoning effort); judge: anthropic/claude-sonnet-5; Arm F pipeline: local/skynet (gemma4-31B-mtp via vLLM)"
+  model: "author: anthropic/claude-fable-5 (high reasoning effort); judge: anthropic/claude-sonnet-5; Arm F pipeline: relay/gemma4-31B-mtp@2026-08-09"   # pipeline model as recorded at run time via the relay; format per docs/evaluation/README.md (RESULTS A-2)
   temperature: 0.0
   top_p: 1.0
   max_tokens: 16384
@@ -71,7 +71,7 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: correctness
+  primary: arm_a_blind_correctness   # was "correctness", which is not a key in values (RESULTS A-2)
   values:
     arm_a_blind_correctness: {mean: 0.689, std: 0.0, n: 30}
     arm_a_dev_correctness: {mean: 0.9972, std: 0.0, n: 120}
@@ -94,4 +94,4 @@ supports_claims: ["C-013", "C-001", "C-014"]
 figures: []
 supersedes: null
 superseded_by: null
-related: ["EXP-2026-07-001", "EXP-2026-07-006", "EXP-2026-07-007"]
+related: ["EXP-2026-07-001", "EXP-2026-07-006", "EXP-2026-07-007", "EXP-2026-08-003", "EXP-2026-08-007"]   # 08-007 re-judged this bank post-repair (RESULTS A-2)

@@ -27,6 +27,9 @@ Fourteen conditions, each reported with the file that caused it:
 14. a pointer whose path exists and whose hash no longer matches
     (a path that does not exist on this machine is skipped, not failed —
     raw run output is gitignored and a fresh clone must still validate)
+15. a terminal experiment whose ``metrics.primary`` names no key in
+    ``metrics.values`` (the index and ``CURRENT.md`` would show "not recorded"
+    for an experiment that recorded plenty)
 
 Conditions 9–14 were added on 2026-09-09 after a full audit found that the
 first eight passed on 47 experiments of which thirteen had blank contract
@@ -56,7 +59,9 @@ from utils.research_record.paths import (
 _CLAIM_ID_RE = re.compile(r"\bC-\d{3}\b")
 _HASH_TOKEN_RE = re.compile(r"\b(sha256|md5):[0-9a-f]{32,64}\b")
 _PLACEHOLDER_RE = re.compile(r"<[a-z][^<>]{2,60}>|EXP-YYYY|YYYY-MM-DD")
-_NO_ARTIFACTS_RE = re.compile(r"no (external|large|raw) artifacts", re.IGNORECASE)
+# The statement must start a line and carry a reason — the template's own
+# "`No external artifacts: <why>`" instruction must not satisfy it.
+_NO_ARTIFACTS_RE = re.compile(r"^No (external|large|raw) artifacts:\s*(?!<)\S", re.IGNORECASE | re.MULTILINE)
 
 
 @dataclass(frozen=True)
@@ -95,7 +100,7 @@ def check_required_files(exp: Path) -> list[Finding]:
 
 
 def check_metrics(exp: Path, manifest: Manifest) -> list[Finding]:
-    """Condition 3 — a completed experiment that recorded no numbers."""
+    """Conditions 3 and 15 — a completed experiment recorded numbers, and its headline is one of them."""
     if manifest.status == "complete" and not manifest.metrics.values:
         return [
             Finding(
@@ -103,6 +108,16 @@ def check_metrics(exp: Path, manifest: Manifest) -> list[Finding]:
                 _rel(exp / "manifest.yaml"),
                 "status is 'complete' but metrics.values is empty — "
                 "a completed experiment recorded no numbers",
+            )
+        ]
+    primary = manifest.metrics.primary
+    if manifest.is_terminal and manifest.metrics.values and primary and primary not in manifest.metrics.values:
+        return [
+            Finding(
+                "primary-not-recorded",
+                _rel(exp / "manifest.yaml"),
+                f"metrics.primary is {primary!r} but no such key is in metrics.values — "
+                "name the key that holds the headline number",
             )
         ]
     return []

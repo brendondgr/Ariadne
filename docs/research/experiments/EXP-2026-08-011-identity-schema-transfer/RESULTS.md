@@ -585,3 +585,58 @@ sufficiency cost on both arms.
 Two retrieval mismatches recur where the queried device (`dc234`, `lap191`,
 `dc212`) never appears in its own evidence at all — a `DEVICE`-anchor failure
 distinct from I-11 and not yet diagnosed.
+
+## AMENDMENT A-11 (2026-09-09) — Unreproducible retrieval figures withdrawn, provenance and pointers filled, supersession of EXP-2026-07-011 recorded
+
+Written during the 2026-09-09 record audit. Every manifest value that has a
+surviving artifact was recomputed and reproduces exactly: A-1, A-5, A-6, A-7,
+A-9, A-10 and I-12 (see `data/POINTERS.md`). Two do not, because their raw
+state was overwritten by later runs into the same path (ISSUES I-16).
+
+**1. Withdrawn (manifest `metrics.withdrawn`).**
+
+| key | value | withdrawn_on | reason | replaced_by |
+|---|---|---|---|---|
+| `gold_in_evidence_retrieval_generic` | 0.0000 (n 27) | 2026-09-09 | `identity-2026-08-21/sweep_state.json` was overwritten by the post-fix run; not reproducible; A-1/A-10 supersede | `EXP-2026-08-011:final_retrieval_recall_generic` (0.6923) |
+| `gold_in_evidence_retrieval_deterministic` | 0.0000 (n 27) | 2026-09-09 | same | `EXP-2026-08-011:final_retrieval_recall_deterministic` (0.1140) |
+| `arm_gap_generic_minus_deterministic` | 0.0000 (n 27) | 2026-09-09 | derived from the two above | none |
+| `bank3_retrieval_generic` (A-8, never in `values`) | 0.7877 (n 117) | 2026-08-22 | `identity-bank3-2026-08-22/sweep_state.json` was overwritten by the post-I-11 run; A-10 says these are superseded | `EXP-2026-08-011:final_retrieval_recall_generic` |
+| `bank3_retrieval_deterministic` (A-8) | 0.3177 (n 117) | 2026-08-22 | same | `EXP-2026-08-011:final_retrieval_recall_deterministic` |
+
+`metrics.primary`: `gold_in_evidence_retrieval` (a prefix, not a key) →
+`final_retrieval_recall_generic`. §1's "0.0000 on both arms" and A-8's table
+stand as written; they are the history of the experiment, not its quotable
+figures.
+
+**2. `metrics.values` corrections.** `judged_faithfulness_generic`: `std: 0.0035`
+→ `null` (the 0.0035 was the spread between the reported session and the
+0.9786 stability retry — `identity-bank2-2026-08-22/judgments.json` `meta`;
+now recorded in `data/metrics.json` as `judged_blind_bank.generic.stability_retry_spread`).
+`i9_fix_faithfulness_gain_generic` 0.1509 and `_deterministic` 0.3594 were in
+the manifest only; they are 0.7009 − 0.5500 and 0.7094 − 0.3500 and are now in
+`data/metrics.json` under `manifest_metrics` together with every other manifest
+value.
+
+**3. Provenance (ISSUES I-17).** `code.commit` 2a7601f7… → 34e07df467be28e07ae0d05c0c9352c9fe68d839
+(the I-11 tree behind the A-10 primary figures). Per-figure trees, established
+from commit times against artifact mtimes: §1 0e06ceef… (18:04); A-1 and A-5
+74d027ed… (19:23); A-9 215c6def… (2026-08-22 10:36); A-10 34e07df4… (10:51);
+I-12 352d929b… (13:32). `date_completed` 2026-08-21 → 2026-08-22 (last
+manifest-bearing commit 89ad4c7, 2026-08-22 10:59; I-12 artifacts 13:32).
+`data.n_examples` 0 → 172. `compute.hardware` "unknown — recorded at run time"
+→ "unknown". `llm.model` "skynet (local, OpenAI-compatible) — exact served
+version recorded at run time" → "relay/unknown@2026-08-21 (bank 1–2 authoring,
+A-6 local judging); claude-sonnet agents (A-7/A-9/A-10 judging); claude-fable
+(bank 3 authoring)".
+
+**4. Supersession.** `supersedes`: null → `EXP-2026-07-011`. That audit
+supported C-010 by reading code; this experiment measures the same claim on a
+foreign schema, and A-4/§6 already restate C-010 on this experiment's evidence.
+EXP-2026-07-011's manifest carries the reciprocal `superseded_by` and
+`status: superseded`. `related` + EXP-2026-08-013 (built on bank 3 and the
+I-12 baseline).
+
+**5. Pointers.** `data/POINTERS.md` was the blank scaffold; it now hashes the
+three run directories, the three surviving sweep states, the two judgment files
+and the three Sonnet verdict files, and says which two states no longer hold
+what the record first computed from them.

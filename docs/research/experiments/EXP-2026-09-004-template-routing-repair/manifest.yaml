@@ -44,7 +44,7 @@ seeds: []                  # [] means seeds were not recorded — say so in ISSU
 n_runs: 1
 environment:
   python: "3.13"
-  lockfile: env/requirements.lock
+  lockfile: null           # A-1: was env/requirements.lock, never written; dependencies are uv.lock at code.commit (ISSUES I-7)
   container: null
 compute:
   hardware: "local workstation; Neo4j + TinkerPop in docker"
@@ -53,9 +53,9 @@ compute:
 
 # --- Results block ---
 metrics:
-  primary: mean_recall_on_affected_questions
+  primary: mean_recall_after     # A-1: was mean_recall_on_affected_questions, a name with no key in values
   values:
-    scorer_defect_worth_on_this_set: {mean: 0.185, std: 0.0, n: 32}
+    scorer_defect_worth_on_this_set: {mean: 0.185, std: null, n: 32}   # A-1: std was 0.0 where every sibling uses null; single measurement, no spread
     mean_recall_before: {mean: 0.0787, std: null, n: 32}
     mean_recall_after: {mean: 0.4059, std: null, n: 32}
     mean_recall_after_counting_graph_id_form: {mean: 0.5913, std: null, n: 32}
@@ -71,4 +71,4 @@ supports_claims: []        # sizes a defect; supports no claim directly
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
 superseded_by: null
-related: ["EXP-2026-09-001", "EXP-2026-09-002", "EXP-2026-09-003"]
+related: ["EXP-2026-09-001", "EXP-2026-09-002", "EXP-2026-09-003", "EXP-2026-09-005", "EXP-2026-09-007"]   # A-1: 005 and 007 carry I-2/I-3 forward as declared limitations

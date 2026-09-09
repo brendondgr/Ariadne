@@ -73,3 +73,34 @@ Four answers in the run scored credit this way, one of them at 0.1667. ISSUES I-
   the compound ones are not, and 7 of the 32 are compound.
 - That any of this moves the deterministic arm's 0.4934. This touched 32 dev
   questions, not the arm. The arm comparison is still to be run.
+
+---
+
+## AMENDMENT A-1 (2026-09-09) — Record repair: what reproduces, what does not, and two cosmetic manifest fixes
+
+Written from the 2026-09-09 audit (`verify-b5.md`). From the two pointed
+directories over the 32 ids the audit reproduced **0.0787 → 0.4059, 14
+improved** exactly, and confirmed the arithmetic behind the derived figures
+(0.4059 / 0.0787 = 5.16×; 0.5913 − 0.4059 = 0.1854 ≈ 0.185; prediction table
+rows 3 + 12 + 8 + 6 + 3 = 32; movers 3 + 8 + 3 = 14). No number changes.
+
+1. **`0.5913` is not independently reproducible from the answer files alone.**
+   It depends on re-implementing the scorer's id regex to accept the graph's
+   `capec:category:N` form (ISSUES I-3); the audit did not attempt it. It is
+   recorded as what the scorer would have said under that one change, and it
+   is the figure EXP-2026-09-005 and EXP-2026-09-007 quote as "worth 0.185 on
+   the subset measured".
+2. **Raw decreases = 1, reported regressions = 0.** The same `CAPEC-703` case
+   as in EXP-2026-09-003 fell 0.0196 → 0.0 for the reason ISSUES I-2 gives
+   (boilerplate credit removed). `questions_regressed: 0` is the reading this
+   file argues for at `:57-66`; a raw count would say 1.
+3. **Manifest.** `scorer_defect_worth_on_this_set.std`: 0.0 → null (cosmetic;
+   every sibling metric uses null for a single measurement).
+   `environment.lockfile`: env/requirements.lock → null (never written; ISSUES
+   I-7). `related` gains EXP-2026-09-005 and EXP-2026-09-007, which carry I-2
+   and I-3 forward as declared, unfixed limitations. `data/metrics.json`
+   created from `metrics.values`.
+
+4. **`metrics.primary`** named `mean_recall_on_affected_questions`, a key that does
+   not exist in `metrics.values`; it now names `mean_recall_after` (0.4059), the
+   as-scored headline.

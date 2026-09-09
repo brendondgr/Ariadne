@@ -5,7 +5,7 @@
 id: EXP-2026-07-007
 slug: arm-g-templates-disabled
 title: Arm G — generic primitives only, every hand-written template disabled
-status: complete
+status: superseded           # was complete; C-003 refuted, headline replaced by Arm H — set 2026-09-09 (RESULTS A-1)
 date_started: 2026-07-26
 date_completed: 2026-07-26
 authors: [brendondgr]
@@ -13,7 +13,9 @@ authors: [brendondgr]
 purpose: >
   One cell of the controlled seven-arm study isolating deterministic from
   LLM-based query planning over the 120-question golden catalogue, with
-  extraction and synthesis varied independently. Plan: LLM planner. Extract:
+  extraction and synthesis varied independently. Plan: authored gold replay
+  (corrected 2026-09-09 from "LLM planner" — see RESULTS A-1; the harness
+  injects the catalogue's plan for this arm). Extract:
   generic primitives + facet-chasing loop. Synthesize: LLM over verified claims. This arm is the evidence for the study's
   central finding that accuracy lives in the hand-written templates and that
   LLM planning is the dominant single regression.
@@ -24,7 +26,7 @@ hypothesis: >
   and this manifest does not invent one retrospectively.
 
 code:
-  commit: unknown            # per-arm commit was not captured at run time
+  commit: a509f63d92edf273cc0305a553a67143c29540f5   # artifact-introducing commit: a509f63 (2026-08-04 23:50 -0400) committed the previously untracked arm code and all 240 artifact files; the run commit itself was not captured — see RESULTS A-1
   branch: main
   entrypoint: "uv run python -m utils.evaluation.experiment_untruncated --arm generic --root docs/evaluation/experiments/untruncated-generic --workers 4"
   dirty: false               # unverifiable for a back-filled run; see ISSUES.md
@@ -84,5 +86,5 @@ statistical_test: null       # single run per arm; no test applied
 supports_claims: ["C-003"]
 figures: []
 supersedes: null
-superseded_by: null
-related: ["EXP-2026-07-001", "EXP-2026-07-002", "EXP-2026-07-003", "EXP-2026-07-004", "EXP-2026-07-005", "EXP-2026-07-006"]
+superseded_by: EXP-2026-08-001   # Arm H, the schema-derived generic arm; set 2026-09-09 (RESULTS A-1)
+related: ["EXP-2026-07-001", "EXP-2026-07-002", "EXP-2026-07-003", "EXP-2026-07-004", "EXP-2026-07-005", "EXP-2026-07-006", "EXP-2026-08-001", "EXP-2026-08-007"]

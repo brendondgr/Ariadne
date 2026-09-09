@@ -170,3 +170,66 @@ template, and its runs were not re-executed.
 recorded. Resampling found in ten draws a defect two fixed banks had hidden
 through six experiments, and the fix confirms it was real rather than a scoring
 artifact. That remains the strongest argument here.
+
+## AMENDMENT A-2 (2026-09-09) — the pre-fix catalogue numbers were still canonical in the manifest; date, sample size, model and pointers corrected
+
+**Withdrawn values.** A-1 superseded the catalogue row of §"The headline" on
+2026-08-24, but `manifest.yaml:70–72` and `data/metrics.json` still carried the
+pre-fix figures as current, and the `hypothesis` field (line 21) still reads
+*"H1 … HELD (−0.0100, upper bound exactly +0.0000)"*. The manifest now records:
+
+* `catalogue_templates` **0.9900 (sd 0.0225, n 10)** → withdrawn 2026-08-24,
+  replaced by `catalogue_templates_post_q22` = **1.0000 (sd 0.0000, n 10)**;
+* `catalogue_paired_difference` **−0.0100 (sd 0.0225, n 10)** — the value the
+  `primary` label `gold_in_evidence_templates_minus_generic` referred to on the
+  catalogue — → withdrawn 2026-08-24, replaced by
+  `catalogue_paired_difference_post_q22` = **0.0000 (sd 0.0000, n 10)**;
+* `primary` now names `catalogue_paired_difference_post_q22`.
+
+The hypothesis text is not rewritten; read H1 as *held, and the residual gap was
+a defect: after Q22 the gap is exactly 0.0000 and H1's interval question is
+moot because both arms sit at ceiling on every bank* (A-1). The identity
+values are unchanged.
+
+**The post-fix numbers have no surviving artifact.** A-1 reports a re-run "over
+the same ten banks, deterministic arm, same runner" giving 1.0000 sd 0.0000 and
+"15 of 300 answers changed". The Q22 commit `152639b` (2026-08-24 17:18) touched
+only RESULTS.md, CLAIMS/OPEN_QUESTIONS, `builder.py` and `normalizer.py`; the
+on-disk `catalogue/runs/**` trees are the *pre-fix* runs (no file newer than
+`catalogue/metrics.json`, 14:32, and rescoring bank 9006 / 9010 with
+`retrieval_coverage.score_arm` gives 0.9333 / 0.9667, the pre-fix values). So
+the post-Q22 values are recorded from A-1's prose and are reproducible only by
+re-running the sweep at or after `152639b`. Recorded in ISSUES I-4.
+
+**Sample size.** `manifest.yaml:40` said `n_examples: 483 # 300 catalogue + 183
+identity`. The ten identity banks hold 26 + 24 + 18 + 18 + 18 + 17 + 18 + 18 +
+18 + 18 = **193** questions (per-bank `n` in `identity/metrics.json`; counted
+again in each `bank.json`). **Old → new:** 483 → **493** (300 + 193).
+
+**Date.** `date_completed: 2026-08-23` preceded `date_started: 2026-08-24`. The
+banks were authored 2026-08-24 13:49–14:05, the folder committed at `c8a4a3e`
+14:34 and A-1 at `152639b` 17:18. **Old → new:** `2026-08-23` → `2026-08-24`.
+
+**Model.** `llm.model` was the alias `relay/skynet@2026-08-23`. Every
+`bank.json` records `author_model: "skynet …"` — the alias, not a model. The
+banks were authored on 2026-08-24, for which `docs/evaluation/README.md`
+§"The model behind skynet" records `MIRALABS/Ornith-1.5-35B-A3B-W4A16-SYM`
+(operator, from the serving side; the same model EXP-2026-08-018/019 identify
+later that day). **Old → new:** `relay/skynet@2026-08-23` →
+`relay/Ornith-1.5-35B-A3B-W4A16-SYM@2026-08-24`. The basis is the README era
+table, not a response envelope (ISSUES I-5). The Author is not in the answer
+path, so no reported number depends on this.
+
+**Pointers.** POINTERS rows 9–10 recorded *set digests* against the directory
+`docs/evaluation/variance-2026-08-23/`; the validator hashes a directory as a
+tree, so they could never verify. Both old digests (`sha256:6ac87b79…`,
+`sha256:f1b8bf75…`) still reproduce under their own definition (SHA-256 over
+sorted files of path bytes + contents), i.e. the banks are unchanged. Replaced
+by a tree hash over `banks/` (`sha256:89c0efc0…`, 621,212 B) and ten file
+hashes, one per identity `bank.json`, all computed with
+`utils.research_record.hashing` on 2026-09-09.
+
+**A count.** §"The headline" says "300 fresh anchors". `holdout_meta.anchor`
+over the 300 catalogue questions gives **299** distinct anchors: bank 9006
+draws one anchor twice within the bank. Cross-bank disjointness (0 overlapping
+pairs of 45) is unaffected.

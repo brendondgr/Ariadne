@@ -188,3 +188,57 @@ federation leads on **both** banks by ~0.05, consistently, in both grading order
 grader tested; the point estimate favours federation by about 0.05 and the
 question sample cannot resolve it.* Closing that needs more questions, not more
 grading — the one thing eight passes proved conclusively.
+
+## AMENDMENT A-2 (2026-09-09) — The withdrawn headline moved out of `values`; pointers and provenance filled
+
+Written during the 2026-09-09 record audit. This records in the manifest what
+A-1 already said in prose; it adds no new measurement.
+
+**1. Withdrawn values (manifest `metrics`).** A-1 retracted the reported
+figures but they were still the manifest's current values. Moved from
+`metrics.values` to `metrics.withdrawn`, `withdrawn_on: 2026-08-31`, reason
+"one grading pass by an unidentified model; the exact zero was an artifact (A-1)":
+
+| key | old (withdrawn) | replaced_by |
+|---|---|---|
+| `merged_minus_federated_bank20260819` | −0.0334 | `EXP-2026-09-006:c022_margin_bank19_qwen` |
+| `merged_minus_federated_bank20260820` | 0.0000 | `EXP-2026-09-006:c022_margin_bank20_qwen` |
+| `merged_minus_federated_mean` | −0.0167 | none |
+
+Added to `values` from A-1's "order-corrected, 8 passes" column (merged −
+federated): `merged_minus_federated_bank20260819_8pass_order_corrected` =
+**−0.0587** (n 30) and `merged_minus_federated_bank20260820_8pass_order_corrected`
+= **−0.0520** (n 30). `metrics.primary`: `merged_minus_federated_mean` →
+`merged_minus_federated_bank20260819_8pass_order_corrected`. The four per-arm
+cell means (0.9233 / 0.9367 / 0.9567 / 0.9367) stay in `values` as the `.c015`
+cells they are, labelled by comment. The same additions are mirrored in
+`data/metrics.json` under `manifest_metrics` and `amendment_a1`.
+
+How the eight-pass figures were established (recomputed 2026-09-09 from the
+sidecars): forward six passes = `.c015` + `.qwen38`, `r2`–`r5` → −0.0565 /
+−0.0491 (bank 20 paired; −0.0480 unpaired because `r3`/`r4` have n = 29);
+reversed two passes `.c022rev1`/`.c022rev2` → −0.0608 / −0.0550; the
+order-corrected figure is the mean of the forward and reversed means. Note that
+the six forward passes therefore **include** the `.c015` pass A-1 is correcting
+for; without it the seven-pass figures are −0.0610 / −0.0571 (ISSUES D4).
+
+**2. The quotable cross-grader readings of this contrast** are not in this
+experiment: EXP-2026-08-021 (+0.0625 / +0.0567 on banks 19 / 20, five
+`qwen38-27B-v2` sessions, reported with the **generic − merged** sign) and
+EXP-2026-09-006 (+0.0608 / +0.0581 qwen; +0.0500 / +0.0400 gemma, saturated).
+Both are added to `related`; this experiment is refined by them, not
+superseded — its conclusion (no demonstrable difference at n = 30; the point
+estimate favours federation by ~0.05) stands.
+
+**3. Provenance fields corrected in place** (ISSUES D5): `code.commit`
+`79e11b0` → `79e11b0ed11e6566cd0ce8f931db3aaed73dbd45`; `llm.model`
+`"relay/skynet"` → `"relay/unknown@2026-08-21"`; `llm.nondeterminism_note`
+template text → a statement of the one-pass design and the A-1 regrades;
+`related` + EXP-2026-08-011 (I-13 dependency), EXP-2026-08-021,
+EXP-2026-08-022 (the order-effect measurement A-1 cites), EXP-2026-09-006.
+
+**4. `data/POINTERS.md`** was the blank scaffold; it now names and hashes the
+three `merged-2026-08-21-v2/` files and the eight `answers/` directories, with
+the sidecars later passes added to each. All eight `.c015` cells (means, CIs,
+verdicts, faithfulness, hallucinating-answer counts, abstentions) reproduce
+exactly from those directories.

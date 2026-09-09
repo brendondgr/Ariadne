@@ -264,3 +264,30 @@ score "quality" was wrong in `EXP-2026-08-019`.
 across p1 → r5. A monotone trend across five passes on many cells is drift; an
 unordered scatter is noise. This is cheap — the data is already being collected —
 and it must be done before H5 is adjudicated.
+
+## I-9 — The tree was dirty because the aggregation script was written during the run (2026-09-09)
+
+**Impact:** none on the numbers. `code.commit` `758813f` is the tree the grading
+calls ran from; `scripts/grader_repeats.py` (and the RESULTS/ISSUES text) were
+uncommitted until `ffbda84`, which added them (`git show --stat ffbda84`). The
+grader module itself was committed at `758813f`.
+**Resolution:** recorded (RESULTS A-2).
+
+## I-10 — No seed, and none applies (2026-09-09)
+
+**Impact:** `seeds: []`. The grading call has no seed parameter and runs at
+temperature 0; what varies between passes is server-side batching, which is the
+quantity the five passes measure. The answers under grading are frozen and
+hashed in POINTERS.
+**Resolution:** recorded.
+
+## I-11 — §3's H5 offsets are pass-1 offsets, described as five-pass means (2026-09-09)
+
+**Impact:** "8 of 12 offsets survive 2 × sd" is 7 of 12 on the pass-1 basis the
+listed offsets actually use, and 6 of 12 on the five-pass-mean basis the prose
+describes (RESULTS A-2; both bases in `data/metrics.json` › `h5_offsets`). The
+directional conclusion and I-4 are unaffected; no manifest value is.
+**Cause:** the offsets were carried over from the pass-1 analysis when the
+repeats were added, and the basis sentence was written for the repeats.
+**Resolution:** amended, not rewritten.
+**Paper implication:** quote the count with its basis.

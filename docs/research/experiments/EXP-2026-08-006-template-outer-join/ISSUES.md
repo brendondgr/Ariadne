@@ -55,3 +55,22 @@ in the evidence.
 **Resolution:** reverted before commit, caught by diffing the recompiled bank
 rather than by review. Recorded because it is the exact failure mode that makes
 editing gold dangerous, and it happened on the first attempt.
+
+## 2026-09-09 — The pointer table was blank; the raw directories have since gained grader sidecars
+
+**Impact:** until 2026-09-09 `data/POINTERS.md` was the scaffold template and
+none of the five raw directories the numbers come from was named or hashed.
+Since the run, `outerjoin-holdout/` gained 90 `*.judgment*.json` files (30 each
+of `.judgment.json`, `.judgment.run2.json`, `.judgment.run3.json`) and
+`outerjoin-dev/` gained 120 `.judgment.json` files, all written 2026-08-19
+00:11–00:50 by EXP-2026-08-007's grading passes. The answer files and
+`manifest.json` in both directories are unchanged (mtime 2026-08-18 15:43).
+
+**Consequence for reproduction:** `utils/evaluation/retrieval_coverage.score_arm`
+excludes only names ending in `.judgment.json`, so re-running the committed
+scorer over `outerjoin-holdout` today reads the `.run2` / `.run3` sidecars as
+answers and reports n = 90. Exclude every `*.judgment*` file and all recorded
+numbers reproduce exactly (verified 2026-09-09 during the record audit).
+
+**Resolution:** the table now names and hashes all five directories as they are
+on 2026-09-09; the recorded numbers stand.

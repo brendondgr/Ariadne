@@ -289,5 +289,82 @@
   "superseded_first_pass": {
     "dir": "docs/evaluation/merged-2026-08-21",
     "why": "compared merged against `generic`, which also varies the composer \u2014 ISSUES.md D1"
+  },
+  "manifest_metrics": {
+    "merged_bank20260819": {
+      "mean": 0.9233,
+      "std": null,
+      "n": 30
+    },
+    "merged_bank20260820": {
+      "mean": 0.9367,
+      "std": null,
+      "n": 30
+    },
+    "generic_composed_bank20260819": {
+      "mean": 0.9567,
+      "std": null,
+      "n": 30
+    },
+    "generic_composed_bank20260820": {
+      "mean": 0.9367,
+      "std": null,
+      "n": 30
+    },
+    "merged_minus_federated_bank20260819_8pass_order_corrected": {
+      "mean": -0.0587,
+      "std": null,
+      "n": 30
+    },
+    "merged_minus_federated_bank20260820_8pass_order_corrected": {
+      "mean": -0.052,
+      "std": null,
+      "n": 30
+    }
+  },
+  "withdrawn_2026-08-31": {
+    "merged_minus_federated_bank20260819": -0.0334,
+    "merged_minus_federated_bank20260820": 0.0,
+    "merged_minus_federated_mean": -0.0167,
+    "reason": "A-1: one .c015 pass by an unidentified model; see manifest metrics.withdrawn"
+  },
+  "amendment_a1": {
+    "regraded_on": "2026-08-31",
+    "grader": "qwen38-27B-v2 via relay alias skynet (served_model recorded in sidecars)",
+    "calibration_pearson_r_vs_sonnet": 0.9612,
+    "forward_6_passes_merged_minus_federated": {
+      "bank20260819": -0.0565,
+      "bank20260820": -0.0491,
+      "passes": [
+        ".c015",
+        ".qwen38",
+        ".qwen38r2",
+        ".qwen38r3",
+        ".qwen38r4",
+        ".qwen38r5"
+      ],
+      "note": "includes the .c015 pass; bank20 is -0.0480 unpaired because r3/r4 have n=29 on one side"
+    },
+    "reversed_2_passes_merged_minus_federated": {
+      "bank20260819": -0.0608,
+      "bank20260820": -0.055,
+      "passes": [
+        ".c022rev1",
+        ".c022rev2"
+      ]
+    },
+    "order_effect": {
+      "bank20260819": 0.0043,
+      "bank20260820": 0.0059
+    },
+    "order_corrected_8_passes_merged_minus_federated": {
+      "bank20260819": -0.0587,
+      "bank20260820": -0.052
+    },
+    "without_c015_7_passes_merged_minus_federated": {
+      "bank20260819": -0.061,
+      "bank20260820": -0.0571,
+      "added": "2026-09-09 audit recomputation (A-2)"
+    }
   }
 }

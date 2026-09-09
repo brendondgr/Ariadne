@@ -471,3 +471,60 @@ the comparison. And a recorded-answer diff must be run at **concurrency 1**, or
 roughly 2 in 120 questions will differ for reasons that have nothing to do with
 the change under test — which is exactly how this investigation nearly recorded
 a false attribution.
+
+## I-16 — Two sweep states were overwritten in place; the headline and A-8 retrieval figures are not reproducible
+
+**Date:** 2026-09-09 (record audit)
+
+`scripts/identity_sweep.py --out <dir>` writes `sweep_state.json` into a fixed
+directory, and two later runs re-used the directory of an earlier one:
+
+| figure | recorded | file the record implies | what the file now holds |
+|---|---|---|---|
+| §1 headline, pre-fix retrieval, both arms | 0.0000 / 0.0000 (n = 27) | `identity-2026-08-21/sweep_state.json` | the **post-fix** run (mtime 2026-08-21 20:45, after 74d027e 19:23): 0.8519 / 0.2778 = A-1 |
+| A-8 bank 3 retrieval | 0.7877 / 0.3177 (n = 117) | `identity-bank3-2026-08-22/sweep_state.json` | the **post-I-11** run (mtime 2026-08-22 10:51, 34e07df): 0.6923 / 0.1140 = A-10 |
+
+Neither original state survives anywhere on disk or in git (the directories
+are gitignored). The headline figures are corroborated only by the commit that
+recorded them (0e06cee, "both arms retrieve nothing on a foreign schema",
+2026-08-21 18:04) and the A-8 figures by dff6a7e/89ad4c7 and by
+`data/metrics.json` `bank3_retrieval`, which was written from the state before
+it was overwritten. A-10's "before" row (0.7635 / 0.0783 / 135.1 and 0.3540 /
+0.0561 / 40.2) has the same status.
+
+**Resolution:** both pairs are moved to the manifest's `metrics.withdrawn`
+(RESULTS A-11). A-10 itself already said A-8's retrieval figures are
+superseded. The 0.0000 headline remains the narrative starting point of §1–§6
+and A-1; it is simply no longer a value the record can reproduce, and the
+quotable retrieval figures are A-10's. The other pre-fix descriptive values
+still in `values` (anchor-label rate 0.037, 12 MITRE-label queries, id-scheme
+open rate 0.037, zero false mismatches, abstention 0.0 on n = 2) come from the
+same overwritten state and survive only as the `arms` / `id_schemes` blocks of
+`data/metrics.json`.
+
+## I-17 — Provenance fields corrected in place
+
+**Date:** 2026-09-09
+
+`code.commit` was 2a7601f7 (2026-08-21 16:40, "Generate the result tables from
+the sweep" — the pre-registration tree, an EXP-2026-08-010 commit); no measured
+figure comes from it. The figures come from at least five later trees:
+0e06cee (§1 pre-fix), 74d027e (A-1 post-fix, A-5 bank 2), 215c6de (I-9, A-9),
+34e07df (I-11, A-10), 352d929 (I-12). `code.commit` is now 34e07df, the tree
+of the primary (A-10) figures; the others are listed in A-11. Whether the
+working tree was dirty at each run is unrecorded.
+
+`date_completed` was 2026-08-21 although A-5 … A-10 and the manifest values
+they supply were produced 2026-08-22 (commits dff6a7e 2026-08-21 20:55 through
+89ad4c7 2026-08-22 10:59; I-12's artifacts 13:32). Now 2026-08-22.
+
+`data.n_examples` was 0; it is 172 (27 + 28 + 117 authored questions).
+`compute.hardware` said "unknown — recorded at run time" and never was; it is
+`unknown`. `llm.model` named the alias `skynet` only; the served model behind
+it on 2026-08-21/22 is not recorded in any artifact (`docs/evaluation/README.md`
+marks the window undetermined), so it is `relay/unknown@2026-08-21` for the
+roles it filled (bank 1–2 authoring, A-6 judging), with the Sonnet agents
+(A-7, A-9, A-10) and Claude Fable (bank 3 authoring, I-10) named beside it.
+`judged_faithfulness_generic.std` was 0.0035, which is the two-session spread
+(0.9821 vs the 0.9786 stability retry), not a standard deviation; it is null
+and the spread is recorded in `data/metrics.json`.

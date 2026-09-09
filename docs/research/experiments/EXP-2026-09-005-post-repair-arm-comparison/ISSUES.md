@@ -72,3 +72,26 @@ The check that produced this correction is now in
 `scripts/overnight_two_track.py::preflight`, which asserts the precise property
 rather than the loose one and refuses to start if a holdout question has been
 judged.
+
+## I-7 — 2026-09-09: seeds and lockfile
+
+`seeds: []` is accurate: both arms take no model and no random draw; the grader
+ran at temperature 0 with no seed parameter exposed by the relay, and its
+position effect is handled by counterbalancing rather than seeding.
+`environment.lockfile` pointed at `env/requirements.lock`, which was never
+written; set to `null` in A-2. The dependency set is `uv.lock` at `a1e20f6`.
+
+## I-8 — 2026-09-09: the pre-repair recall baseline lived outside this experiment
+
+**Impact:** `deterministic_recall_move_vs_prerepair` (0.0684) subtracts a
+0.4492 that no file pointed by this experiment held; the `recall_before` column
+in `post-repair-deterministic.json` is a copy of `recall`, not the pre-repair
+value.
+**Cause:** the re-scoring of `expansion-2026-09-01` under the property-gold
+rule was run for EXP-2026-09-007's model-free half and written to that
+experiment's `data/recall-summary.json`, two days after this one was filed.
+**Resolution:** that file and the pre-repair answer directory are pointed here
+(A-2 §2) and the baseline is a manifest metric,
+`deterministic_recall_prerepair_dev`.
+**Paper implication:** none; the +0.0684 is unchanged. Quote it with both
+endpoints.

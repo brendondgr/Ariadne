@@ -49,3 +49,36 @@ This is a **regression and comparison instrument**. The interval it produces is
 an interval over *anchor* draws, not over the full space of ways an analyst might
 ask. A published headline figure still wants human-authored questions, which
 Q16 records as unobtainable rather than merely unpurchased.
+
+## I-4 — The post-Q22 catalogue re-run has no surviving artifact (2026-09-09)
+
+**Impact:** `catalogue_templates_post_q22` = 1.0000 and
+`catalogue_paired_difference_post_q22` = 0.0000 (RESULTS A-1, now the manifest's
+current values) are recorded from prose. The only sweep output on disk
+(`catalogue/metrics.json`, `catalogue/runs/**`) is the pre-fix run of 2026-08-24
+14:32; the Q22 commit `152639b` added no artifact. A-1's "15 of 300 answers
+changed" is likewise unreproducible from anything committed.
+**Cause:** the re-run overwrote nothing and wrote nowhere under version control.
+**Resolution:** not resolved. Re-running `scripts/variance_sweep.py --population
+catalogue` at any commit ≥ `152639b` reproduces the fixed figures (both arms are
+LLM-free given the committed banks). Until then the withdrawn pre-fix values in
+the manifest are the only artifact-backed catalogue numbers.
+**Paper implication:** quote the catalogue gap as 0.0000 after Q22 with the
+pre-fix −0.0100 as the defect that was found; state that the post-fix figure is
+a re-run recorded in the experiment's amendment.
+
+## I-5 — The Author model is identified from the README era table, not from the bank files (2026-09-09)
+
+**Impact:** `llm.model` = `relay/Ornith-1.5-35B-A3B-W4A16-SYM@2026-08-24`.
+Every `bank.json` records only `author_model: "skynet"`, the relay alias
+(D-028). The identification rests on `docs/evaluation/README.md`'s row for
+2026-08-24 (operator, serving side) and the bank mtimes (13:49–14:05 that day).
+**Cause:** the authoring path wrote the alias, never the served model.
+**Resolution:** recorded as the best-supported identification; no bank number
+depends on the Author's identity because both arms run LLM-free.
+**Paper implication:** none beyond the standing D-028 caveat.
+
+## 2026-09-09 — n_examples was 483; the identity banks hold 193 questions, not 183
+**Impact:** `data.n_examples` corrected 483 → 493 (RESULTS A-2). No metric changes; per-bank n was already correct in `metrics.json`.
+**Cause:** typed, not summed.
+**Resolution:** corrected in place.

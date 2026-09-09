@@ -409,3 +409,8 @@ def test_pointer_to_absent_path_is_skipped_not_failed(experiment: Path) -> None:
         f"| raw | `docs/evaluation/not-on-this-machine/` | 1 | sha256:{'b' * 64} | gitignored run output |\n"
     )
     assert "pointer-hash-mismatch" not in _checks(validate_experiment(experiment, claim_ids={"C-001"}))
+
+
+def test_primary_naming_no_recorded_value_fails(experiment: Path) -> None:
+    _edit_manifest(experiment, lambda m: m["metrics"].__setitem__("primary", "not-a-key"))
+    assert "primary-not-recorded" in _checks(validate_experiment(experiment, claim_ids={"C-001"}))

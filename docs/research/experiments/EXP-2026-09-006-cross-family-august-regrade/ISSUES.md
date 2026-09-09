@@ -152,3 +152,34 @@ arm-ordering reversal → hold, investigate, and write that up first*. It has be
 investigated and written up here. Whether that discharges the condition is a
 judgement call about an **irreversible** action, and it is recorded as a
 decision rather than taken silently under deadline pressure.
+
+## I-8 — 2026-09-09: `dirty: true`, explained; seeds; lockfile
+
+**Dirty tree.** `code.commit` is `514ddda` (10:54, pre-registration; A-1
+corrected it from the plan commit `18dc024`). Sidecars were written 10:52–13:36
+and six commits landed in that window (`9bf0edb`, `186622c`, `91ac5ff`,
+`a6fc52a`, `5cffc8b`, `bf8e5c9`), all of them this experiment's own ISSUES,
+manifest and RESULTS being recorded while it ran; the per-track state-file fix
+(I-4) was also applied mid-run before being committed. The grading code path
+(`scripts/cross_family_regrade.py` → `utils/evaluation/judge_answers.py`) is not
+touched by any of those commits, and the roll-up reads sidecars only, so the
+figures do not depend on which tree a cell started under. The exact
+uncommitted state at each cell's start is not recoverable and is not claimed.
+
+**Seeds.** `seeds: []` is accurate: nothing was re-run; both graders ran at
+temperature 0 with no seed parameter exposed by the relay. Position effects
+are handled by grading both positions, not by seeding.
+
+**Lockfile.** `environment.lockfile` pointed at `env/requirements.lock`, never
+written; set to `null` in A-1. Dependencies are `uv.lock` at `514ddda`.
+
+## I-9 — 2026-09-09: `grading_failures.n` was 1,338 and matches nothing
+
+**Impact:** the denominator of a bookkeeping metric; no result depends on it.
+**Cause:** unknown. The value was typed on 2026-09-05 while the run was in
+progress (`186622c`). Candidates — 1,320 sidecars + 18 something — do not
+resolve to any count in the state files or on disk.
+**Resolution:** set to 1,320, the number of sidecars this experiment wrote
+(510 `.g31`, 510 `.g31p2`, 150 `.q38b`, 150 `.q38bp2`; counted 2026-09-09).
+The two failures are 2 of those 1,320 attempts, both cleared on retry.
+**Paper implication:** none.

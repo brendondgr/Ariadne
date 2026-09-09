@@ -90,3 +90,49 @@ claim about *cost and constraint*, not about capability.
   premise, not for the conclusion.
 * **The count is of nodes, not of distinct edits.** One rule (`public_member_id`)
   produced 894 of them, so 1,083 measures reach, not complexity.
+
+---
+
+# AMENDMENTS
+
+## AMENDMENT A-1 (2026-09-09) — completion date inverted; the two federated input files were rebuilt and no longer match their pointers
+
+**Date.** `manifest.yaml:10` recorded `date_completed: 2026-08-23` against
+`date_started: 2026-08-24`. The count was committed at `889508f` on
+2026-08-24 14:10 (artifacts written 14:08–14:09); the `-2026-08-23` came from
+the sibling experiments' directory slugs. **Old → new:** `2026-08-23` →
+`2026-08-24`.
+
+**Pointers.** `data/POINTERS.md` lines 10–11 pinned the federated inputs at
+`data/graphs/attack/canonical/nodes.jsonl` (6,276,406 B,
+`sha256:1aaf504615ddd60a6119f1eaccee0f57531331462e16d818a75f1264a8940a38`)
+and `data/graphs/capec/canonical/nodes.jsonl` (1,778,465 B,
+`sha256:53725a891e7e42893a680569a9674f743003174afe12d494b310c90593cda863`).
+Both files were rebuilt on 2026-09-07 17:31 and now hash to
+`sha256:371147e271d4294a87a7eb58098cf1f4aaf0c026bc77054c2a5bf710208931e7` (6,945,959 B) and
+`sha256:6ddc9b258011c1011e0feeeec1755d36da95c1a8d3fb4de4b220ef40a9d396f4` (2,413,194 B). The originals
+are gitignored build artifacts and no copy survives, so the rows now pin the
+rebuilt files (re-hashed with `utils.research_record.hashing`) and the original
+hashes are kept here and in ISSUES.
+
+**What still reproduces, re-run on 2026-09-09.** The merged file
+(`data-merged/graphs/merged/canonical/nodes.jsonl`) is unchanged
+(`sha256:3f6f7be0…` verifies) and gives exactly the recorded census: 9,138
+nodes, 4,769 CAPEC-origin, **1,083** carrying `properties.attack_id`, of which
+**189** match `T\d+(\.\d+)?`; 1083/4769 = 0.2271, 1083/9138 = 0.1185. On the
+rebuilt federated files: ATT&CK 4,369 nodes, CAPEC **6,374** nodes, and **0**
+CAPEC-origin nodes carrying `attack_id` — the conclusion (federation rewrites
+nothing) holds on the current data.
+
+**Stale prose.** §"The count" line 10 says the federated condition holds "9,138
+(same two catalogues)". That was true when counted; on disk today the federated
+CAPEC catalogue has 6,374 nodes (10,743 total), so the federated denominator
+no longer matches the merged one. The manifest's `federated_nodes_rewritten`
+keeps `n: 9138` as the denominator at the time of the count; the recorded
+figures are the 2026-08-24 census and are not changed by this amendment.
+
+## AMENDMENT A-2 (2026-09-09) — the primary metric now names a recorded key
+
+`metrics.primary` was `nodes_carrying_a_property_upstream_does_not_ship`, a descriptive label that matched no key in
+`metrics.values`, so `INDEX.md` and `CURRENT.md` rendered this experiment's
+headline as "not recorded". It now names `merged_nodes_rewritten` — the count the title states. No value changed.

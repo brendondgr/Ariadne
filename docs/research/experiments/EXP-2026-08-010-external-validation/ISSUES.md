@@ -164,3 +164,19 @@ One intermediate check was also wrong and is worth naming: a substring test for
 `"T1055"` matches inside `"T1055.002"`, and briefly suggested the internal
 answers were passing on a technicality. The word-boundary extractor this
 experiment already ships settled it.
+
+## I10 — Scaffold placeholders and template text survived into the terminal manifest
+
+**Date:** 2026-09-09 (record audit)
+
+`compute.hardware` was the literal `<cpu/gpu, ram>` and `llm.model` the literal
+`<provider>/<model>@<version-or-date>`; `llm.max_tokens` said 2048 while
+`scripts/external_validation.py:155` runs the `generic` and `llm` arms with
+`llm_model="skynet", llm_max_tokens=16384`; `nondeterminism_note` was the
+template sentence; `code.commit` was the 7-character `fa4c941`; `seeds` was
+`[]` although `metrics.json` records `sample_seed: 20260821` for the AttackQA
+draw; `data/POINTERS.md` was the blank scaffold. All corrected in place and
+listed in RESULTS A-1. The hardware was never recorded and is `unknown`. The
+served model behind the `skynet` alias on 2026-08-21 is not recorded in any
+artifact (`docs/evaluation/README.md` marks the window undetermined), so
+`llm.model` is `relay/unknown@2026-08-21`.

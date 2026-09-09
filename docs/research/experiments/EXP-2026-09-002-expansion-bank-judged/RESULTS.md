@@ -205,3 +205,98 @@ uv run python scripts/builder_budget_probe.py    # the llm_query confound
 
 The `deterministic` and `generic` arms are byte-reproducible. The `llm_query`
 arm and both grading passes are not — they depend on a locally served model.
+
+---
+
+# AMENDMENT A-1 (2026-09-09) — The model-free metrics span the sealed holdout, the score pin broke, and this experiment is superseded
+
+Written from the 2026-09-09 audit (`verify-b5.md`), `bank.json`,
+`score.json`, `anomalies.json`, `direction.json`, the judged sidecars and
+`git log`. Nothing here changes the three judged arm figures, which the audit
+recomputed from the sidecars exactly (0.6576 / 0.4934 / 0.3712, gap 0.1642).
+
+## 1. The manifest says `split: dev`, `n_examples: 284`; the model-free metrics were computed over all 572 questions
+
+`data/POINTERS.md` names the same `score.json`, `direction.json` and
+`anomalies.json` that EXP-2026-09-001 A-5 produced from the **full** 572-question
+model-free run (`expansion-2026-09-01/deterministic/answers`, 572 files). Those
+files carry no split filter, and the populations behind four manifest metrics
+prove it:
+
+| metric | recorded n | what the n is | dev | holdout |
+|---|---:|---|---:|---:|
+| `abstention_rate` (37 of 61) | 61 | every D0 question in the bank | 36 | **25** |
+| `property_read_empty_query_rate` (63 of 63) | 63 | every D1 question in the bank | 35 | **28** |
+| `containment_empty_query_rate` (68 of 68) | 68 | every question on a `CONTAINMENT` shape (`scripts/anomaly_triage.py`) with recall < 1 | 35 | **33** |
+| `direction_paired_mean_delta` (20 shapes, 237 + 97 = 334 questions, ISSUES I-8) | 20 | every single-shape non-D0 question | 166 | **168** |
+
+Of the 24 abstention failures listed in `anomalies.json`, 14 are dev ids and
+10 are holdout ids. PROTOCOL.md `:80-82` lists tier counts of 61 / 63 / 77 /
+89 / 117 / 105 / 60 — which sum to **572**, not 284; the dev half is 36 / 35 /
+40 / 44 / 55 / 47 / 27.
+
+**What this does and does not change.** The three judged arm figures and the
+0.1642 gap are dev-only (568 judgments per arm over 284 cases) and are
+unaffected. The direction, anomaly and abstention findings are correct as
+computed, but their population is the whole bank, and the sentence at
+`RESULTS.md:191` — *"288 questions were sealed and stay sealed"* — and
+`PROTOCOL.md:78-79` are too strong in the same way EXP-2026-09-005 A-1 later
+conceded for the deterministic arm's model-free look: no holdout question was
+ever **judged** here, but the deterministic arm's model-free answers to all 288
+were read by these three analyses. The manifest's `data.split` now says so, and
+each affected metric carries its dev/holdout denominators in a comment.
+`n_examples` stays 284 because it describes the judged population the primary
+metric is computed over.
+
+## 2. The `score.json` pin
+
+`score.json` was rewritten on 2026-09-08 by `a460fa2` (Hybrid Rewrite Stage
+6/8): every row gained `rung` / `model_consulted` / `cache_hit` /
+`served_model` columns and the report gained a `rewrite` block. The file grew
+from 233,633 B (`sha256:6fb4eaf1…`, the `eeef322` blob this experiment read)
+to 302,627 B (`sha256:a3f779fc…`). The `report` values — 0.4522 / 0.506 / dev
+0.435 / holdout 0.4683 / 37 of 61 — are unchanged, and the audit reproduced
+37/61 from the `eeef322` rows. The row is re-hashed and records the original
+blob (ISSUES I-10).
+
+## 3. Superseded by EXP-2026-09-005
+
+EXP-2026-09-005's manifest has declared `supersedes: EXP-2026-09-002` since
+2026-09-03 and this manifest carried no back-link. Set on 2026-09-09:
+`superseded_by: EXP-2026-09-005`, `status: superseded`. The reason is the one
+005 states: *"The 0.1642 gap was measured against a baseline carrying three
+retrieval defects; repaired, the gap is 0.1623."* The three defects were sized
+by EXP-2026-09-003 (CAPEC anchor identity, 0.0816 → 0.1081 over 37 questions)
+and EXP-2026-09-004 (template routing, 0.0787 → 0.4059 over 32). EXP-2026-09-003
+ISSUES I-1 also records that the *"63 of 63"* property-read figure here *"was
+an artifact of a classifier with one reachable branch"*: every D1 failure was
+classified `query_built_returned_no_rows` because that was the only cause the
+triage could assign. The quotable arm comparison is now 005's 0.6569 / 0.4946 /
+0.1623 (dev) and EXP-2026-09-007's 0.6546 / 0.4862 / 0.1684 (holdout).
+`related` gains 09-003, 09-004 and 09-005.
+
+## 4. Smaller corrections
+
+- **Aggregation.** PROTOCOL.md `:96-97` defines the arm figure as *"the mean
+  over all judgments (568 per arm)"*. The recorded figures are means of
+  per-case means (both positions averaged per case, then across cases). The
+  two coincide for `deterministic` and `generic` (every case has two judgments)
+  and differ for `llm_query`: per-case **0.3712** (recorded) vs over-judgments
+  0.3723. The recorded convention is the one every later experiment uses.
+- **ISSUES I-7 ("283, not 284 … cause unexplained")** is explained by the
+  sidecars: two *different* cases failed in the two passes —
+  `D1-Campaign-description-C0005…::indirect` (p1) and
+  `D3-subtechnique-of-T1589…::formal` (p2) — so 282 + 282 = 564 judgments cover
+  283 cases with at least one judgment and 281 with two. The four
+  `.judgment.p{1,2}.error.txt` files are in the pointed directory.
+- **RESULTS.md `:57`** says *"16 826 / 16 326 reasoning chars"*;
+  `budget-probe.json` records **16,844** / 16,326.
+- **`environment.lockfile`**: `env/requirements.lock` → `null` (never written;
+  ISSUES I-9).
+
+## 5. Manifest changes, old → new
+
+`status` complete → superseded · `superseded_by` null → EXP-2026-09-005 ·
+`data.split` "dev" → the two-population statement above · `environment.lockfile`
+env/requirements.lock → null · `related` + [09-003, 09-004, 09-005] · comments
+on four metric lines. No metric value changed. `data/metrics.json` created.

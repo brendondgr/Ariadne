@@ -7,7 +7,7 @@ slug: identity-schema-transfer
 title: Does the schema-agnostic path work on a schema it has never seen?
 status: complete         # planned | running | complete | failed | superseded
 date_started: 2026-08-21
-date_completed: 2026-08-21
+date_completed: 2026-08-22   # was 2026-08-21; A-5..A-10 and I-12 are 2026-08-22 (A-11)
 authors: ["brendondgr"]
 
 purpose: >
@@ -38,7 +38,7 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: 2a7601f7f3933fe319111c00f732929279f65fa7
+  commit: 34e07df467be28e07ae0d05c0c9352c9fe68d839   # tree of the A-10 primary figures; was the pre-registration tree 2a7601f7 until 2026-09-09 — per-figure trees in A-11 / I-17
   branch: main
   entrypoint: "uv run python scripts/identity_sweep.py --out docs/evaluation/identity-2026-08-21"
   dirty: false
@@ -49,7 +49,7 @@ data:
   name: ReliaQuest identity catalog (real schema) + seeded synthetic tenant (instances)
   version: "catalog delivered 2026-08-21; tenant seed 20260821"
   split: blind — 30 questions drawn and authored against a schema no template was written for
-  n_examples: 0
+  n_examples: 172   # 27 + 28 + 117 authored questions; was 0 (A-11)
   dvc_path: null
   hash: null
 seeds: [20260821]
@@ -59,7 +59,7 @@ environment:
   lockfile: env/requirements.lock
   container: null
 compute:
-  hardware: "unknown — recorded at run time"
+  hardware: "unknown"   # never recorded (I-17)
   wall_clock_hours: 0.2
   estimated_cost_usd: 0.0
 
@@ -69,7 +69,7 @@ compute:
 # appears at exactly two points -- authoring the question bank (step 7) and
 # grading the persisted answers (step 9) -- and neither is in the answer path.
 llm:
-  model: "skynet (local, OpenAI-compatible) — exact served version recorded at run time"
+  model: "relay/unknown@2026-08-21 (bank 1–2 authoring, A-6 local judging); claude-sonnet agents (A-7/A-9/A-10 judging); claude-fable (bank 3 authoring)"   # served model behind the relay alias unrecorded (I-17)
   temperature: 0.0
   top_p: 1.0
   max_tokens: 32768
@@ -85,11 +85,11 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: gold_in_evidence_retrieval
+  primary: final_retrieval_recall_generic   # was gold_in_evidence_retrieval (a prefix) until 2026-09-09 — A-11
   values:
-    gold_in_evidence_retrieval_generic: {mean: 0.0, std: 0.0, n: 27}
-    gold_in_evidence_retrieval_deterministic: {mean: 0.0, std: 0.0, n: 27}
-    arm_gap_generic_minus_deterministic: {mean: 0.0, std: 0.0, n: 27}
+    # gold_in_evidence_retrieval_{generic,deterministic} 0.0 and the 0.0 arm gap
+    # were moved to metrics.withdrawn on 2026-09-09 (A-11, I-16). The pre-fix
+    # descriptive values below come from the same overwritten sweep state.
     anchor_label_queried_rate: {mean: 0.037, std: 0.0, n: 27}
     mitre_label_queried_on_a_graph_without_it: {mean: 12, std: 0.0, n: 27}
     id_scheme_open_rate: {mean: 0.037, std: 0.0, n: 594}
@@ -107,7 +107,7 @@ metrics:
     blind_arm_gap: {mean: 0.5893, std: 0.0, n: 28}
     development_to_blind_drop_generic: {mean: 0.0662, std: 0.0, n: 28}
     # --- JUDGED, blind bank, one session covering both arms (AMENDMENTS A-6).
-    judged_faithfulness_generic: {mean: 0.9821, std: 0.0035, n: 28}
+    judged_faithfulness_generic: {mean: 0.9821, std: null, n: 28}   # std was 0.0035 = two-session spread, not a std (A-11)
     judged_faithfulness_deterministic: {mean: 0.8893, std: null, n: 28}
     judged_unsupported_claim_rate_generic: {mean: 0.1071, std: 0.0, n: 28}
     judged_unsupported_claim_rate_deterministic: {mean: 0.8214, std: null, n: 28}
@@ -143,12 +143,48 @@ metrics:
     final_retrieval_precision_generic: {mean: 0.1357, std: null, n: 105}
     final_retrieval_precision_deterministic: {mean: 0.0572, std: null, n: 105}
     final_records_per_answer_generic: {mean: 22.7, std: null, n: 105}
+  withdrawn:
+    gold_in_evidence_retrieval_generic:
+      mean: 0.0
+      std: null
+      n: 27
+      withdrawn_on: 2026-09-09
+      reason: "original sweep_state path overwritten by the post-fix run; not reproducible; A-1/A-10 supersede (I-16)"
+      replaced_by: "EXP-2026-08-011:final_retrieval_recall_generic"
+    gold_in_evidence_retrieval_deterministic:
+      mean: 0.0
+      std: null
+      n: 27
+      withdrawn_on: 2026-09-09
+      reason: "original sweep_state path overwritten by the post-fix run; not reproducible; A-1/A-10 supersede (I-16)"
+      replaced_by: "EXP-2026-08-011:final_retrieval_recall_deterministic"
+    arm_gap_generic_minus_deterministic:
+      mean: 0.0
+      std: null
+      n: 27
+      withdrawn_on: 2026-09-09
+      reason: "derived from the two withdrawn pre-fix retrieval values (I-16)"
+      replaced_by: "none"
+    bank3_retrieval_generic:
+      mean: 0.7877
+      std: null
+      n: 117
+      withdrawn_on: 2026-08-22
+      reason: "A-8 figure; original sweep_state path overwritten by the post-I-11 run; A-10 supersedes (I-16)"
+      replaced_by: "EXP-2026-08-011:final_retrieval_recall_generic"
+    bank3_retrieval_deterministic:
+      mean: 0.3177
+      std: null
+      n: 117
+      withdrawn_on: 2026-08-22
+      reason: "A-8 figure; original sweep_state path overwritten by the post-I-11 run; A-10 supersedes (I-16)"
+      replaced_by: "EXP-2026-08-011:final_retrieval_recall_deterministic"
 baselines_compared: ["EXP-2026-08-008"]
 statistical_test: null
 
 # --- Linkage ---
 supports_claims: ["C-010", "C-014"]
 figures: []
-supersedes: null
+supersedes: EXP-2026-07-011   # set 2026-09-09 (A-11): the code-reading audit is replaced by this measurement
 superseded_by: null
-related: ["EXP-2026-07-011", "EXP-2026-08-008", "EXP-2026-08-009", "EXP-2026-08-010"]
+related: ["EXP-2026-07-011", "EXP-2026-08-008", "EXP-2026-08-009", "EXP-2026-08-010", "EXP-2026-08-013"]

@@ -154,3 +154,98 @@ It has no home in the outline yet and needs one. The draft
 on the grounds that TMLR's scope makes an evaluation-methodology result the part
 that fits and that it needs no external system to be interesting. That placement
 is still an open editorial decision.
+
+---
+
+## AMENDMENT A-1 (2026-09-09) — record repair: the manifest was a scaffold with results bolted on
+
+**What was wrong.** `manifest.yaml` carried `status: complete` with
+`date_completed: null`, `authors: []`, the template's placeholder prose in
+`purpose` and `hypothesis`, `code.entrypoint: "<exact command>"`, `data.name`
+/ `version` / `split` as `<dataset>` / `<version>` / `<split>` with
+`n_examples: 0`, `compute.hardware: "<cpu/gpu, ram>"` with
+`wall_clock_hours: 0.0`, and `llm.model: "<provider>/<model>@<version-or-date>"`
+with `max_tokens: 2048` — although every state file in `data/` records the
+served model and elapsed time. `data/POINTERS.md` was the empty template and
+`data/metrics.json` did not exist. `ISSUES.md` was empty although
+`code.dirty: true` and the RESULTS above document a measurement bug and an
+endpoint stall.
+
+**What is now recorded (old → new), and how each was established.**
+
+| field | was | is | established from |
+|---|---|---|---|
+| `date_completed` | `null` | `2026-09-06` | last calibration sidecar mtime 03:25:16 (`state-gemma26.json` `finished`); write-up commit `4eb9b91` 2026-09-06 20:37 |
+| `authors` | `[]` | `[brendondgr]` | git author of `45f3226`, `61e2838`, `03570c4`, `4eb9b91` |
+| `purpose`, `hypothesis` | template text | filled from PROTOCOL.md §Question/§Hypothesis, H1–H4 quoted | PROTOCOL.md (written 2026-09-06 00:05, before any judgment) |
+| `code.entrypoint` | `<exact command>` | `uv run python scripts/overnight_2026_09_06.py` | the driver's docstring; `phase_a()` is the calibration, `phase_d()` the thinking-cap probe |
+| `data.*` | placeholders, `n_examples: 0` | calibration-2026-09-06 (60 answers, `selection.json` seed 20260906) + 30-case thinkcap slice; `hash` = sha256 of `selection.json` | `selection.json`; PROTOCOL.md §Setup |
+| `compute.hardware` | placeholder | the three endpoints, worker counts and serving stacks | `ENDPOINTS` in the driver; PROTOCOL.md |
+| `compute.wall_clock_hours` | `0.0` | `3.6` | first sidecar 2026-09-05 23:51:07 → last 2026-09-06 03:25:16, three tracks concurrent; per-track `elapsed_s` sum to 4.35 h |
+| `llm.model` | placeholder | `relay/qwen38-27B-v2@2026-09-06`, with the two other graders named in a comment (`relay/gemma4-31B-mtp@2026-09-06`, `relay/gemma-4-26B-it@2026-09-06`) | `served_model` in `state-{qwen,gemma31,gemma26}.json`, read from the response envelope |
+| `llm.max_tokens` | `2048` (template) | `32768` | `JUDGE_MAX_TOKENS` in the driver; PROTOCOL.md "Same budget (32,768)" |
+| `llm.nondeterminism_note` | template | states n_runs 1 per band and that sd is across answers, not passes | the design |
+| `related` | `[]` | `[EXP-2026-09-006, EXP-2026-09-007, EXP-2026-09-009]` | the experiments this RESULTS quotes, and the one that extends it |
+| `metrics.primary` | `ceiling_band_fraction_at_1` (not a key in `values`) | `models_usable_near_ceiling` (1 of 3) | the headline verdict; the per-model `ceiling_fraction_at_1_*` keys hold the decisive numbers |
+
+**Pointers.** `data/POINTERS.md` now lists the calibration tree, its
+`selection.json`, the capped thinkcap run and the uncapped comparator, each
+with bytes and SHA-256 as of 2026-09-09 (`utils.research_record.hashing`).
+Nothing under those paths was written after 2026-09-06 03:26.
+`docs/evaluation/experiments/holdout-spend-2026-09-05` is deliberately not
+pointed: `data/state-gemma31.json` phases B/B2/B3 record 288 × 3 gemma
+judgments written there, but those are EXP-2026-09-007's holdout grading, run
+by the same overnight driver, and that experiment points at them.
+
+**Metrics file.** `data/metrics.json` created with every `metrics.values`
+entry copied from the manifest, plus the per-model per-band blocks from the
+three state files and the thinkcap counts, so that every manifest number is
+machine-readable from one file. The audit of 2026-09-09 (verify-b6, `r008.py`
+/ `r008b.py`) recomputed every mean, sd, at-1 count and distinct-value set from
+the sidecars and matched the manifest to 4 dp; nothing in `metrics.values`
+changed.
+
+**`supports_claims` stays `[]`.** This RESULTS is about what C-021 can rest
+on, but CLAIMS.md does not cite this experiment as evidence for any claim,
+and adding a link the ledger does not carry would be the ledger's edit to
+make, not this experiment's.
+
+## AMENDMENT A-2 (2026-09-09) — the holdout `llm_query` figure quoted above is superseded
+
+§"The finding nobody predicted" (RESULTS.md line 70) quotes the holdout as
+`llm_query` **0.4031** from `EXP-2026-09-007`, and
+`data/thinkcap-probe.json` `does_not_replace` repeated it. EXP-2026-09-007
+AMENDMENT A-1 (2026-09-07, after this write-up) recomputed all 3,456 holdout
+sidecars and corrected that manifest value to **0.4039** (the 0.4031 came from
+`judged-final.json`, a superseded roll-up). The other two holdout figures quoted
+on the same line — `generic` 0.6546 and `deterministic` 0.4862 — were already
+correct and are unchanged.
+
+The prose above is left as written. `data/thinkcap-probe.json` is a data file
+and was corrected in place: `does_not_replace` now reads `holdout 0.4039`
+(was `0.4031`), with a `corrected_2026-09-09` field naming the change. Nothing
+in this experiment's own metrics depends on the figure; the inversion argument
+("every arm scores inside 0.40–0.65") is unaffected.
+
+## AMENDMENT A-3 (2026-09-09) — two stale intermediates in `data/`, and where the correct values live
+
+1. **`data/ceiling-resolution.json` `incomplete` says the mid/low bands of
+   `gemma-4-26B-it` were "not measured".** That field was written at 01:17
+   while the llama.cpp track was still running (it had stalled at 11/20 on the
+   mid band). The track finished at 03:25:16 with mid **n=18** (two cases
+   failed at the endpoint and are on disk as `*.judgment.gemma26.error.txt`)
+   and low **n=20**; `data/state-gemma26.json` holds those final figures
+   (mid 0.6239, low 0.6435), and they are what the three-band table (line 44),
+   the Limits (line 141) and the manifest report. The inversion finding rests
+   on the measured bands, not on unmeasured ones. The JSON keeps the original
+   text verbatim and gains an `incomplete_superseded_2026-09-09` field saying
+   this.
+2. **`data/state-qwen.json` phase D records `with_evidence: 30`.** That is
+   the value the orchestrator's counter reported before the bug described at
+   lines 123–127 was found: it read `records or results`, and `results`
+   counts sub-question slots including failures. The true figure, read from
+   the 30 answers, is **0** with records > 0 and **28** gate-rejected
+   (`data/thinkcap-probe.json`, and the manifest's
+   `thinkcap512_records_retrieved` / `thinkcap512_gate_rejected`). The state
+   file keeps the value as written and gains a `with_evidence_note_2026-09-09`
+   field. Both are also logged in ISSUES.md.

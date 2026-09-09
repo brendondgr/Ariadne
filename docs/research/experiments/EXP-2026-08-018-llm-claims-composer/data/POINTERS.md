@@ -4,9 +4,13 @@
 |---|---|---:|---|
 | Sweep metrics | `docs/evaluation/composer-2026-08-24/metrics.json` | 421786 | sha256:6cdbc906b8fe9f36b6fce68f0671a6258c169ed6619277fb1fc9183bab4583cd |
 
-`data/metrics.json` here is a byte-identical copy. It carries every per-question
-row — composer used, fallback reason, claim and unsupported counts, gold overlap
-and wall clock — for all four runs.
+`data/metrics.json` here was a byte-identical copy until 2026-09-09; it is now
+`{runs: [the four sweep objects, unchanged], manifest_metrics: {...}}` so the
+manifest's aggregates are machine-readable (RESULTS A-1). It carries every
+per-question row — composer used, fallback reason, claim and unsupported counts,
+gold overlap and per-question latency — for all four runs. `wall_s_total` and
+the per-row `elapsed_s` are **summed per-question latencies**, not elapsed wall
+clock.
 
 ## Reproducing
 

@@ -1,0 +1,143 @@
+{
+ "experiment": "EXP-2026-09-010",
+ "source": "manifest, back-filled 2026-09-09 from data/run-state.json (deterministic pair) and data/generic-rerun-state.json (final generic pair); reproduced from the captures under docs/evaluation/experiments/arm-identity-2026-09-06 and arm-identity-rerun-2026-09-06 (audit verify-b6, r010.py)",
+ "manifest_metrics": {
+  "identity_rate_deterministic": {
+   "mean": 1.0,
+   "std": 0.0,
+   "n": 284
+  },
+  "identity_rate_generic": {
+   "mean": 0.4819,
+   "std": 0.0,
+   "n": 276
+  },
+  "deterministic_identical": {
+   "mean": 284.0,
+   "std": 0.0,
+   "n": 284
+  },
+  "generic_identical": {
+   "mean": 133.0,
+   "std": 0.0,
+   "n": 276
+  },
+  "generic_differing_narrative": {
+   "mean": 143.0,
+   "std": 0.0,
+   "n": 276
+  },
+  "generic_differing_retrieval": {
+   "mean": 0.0,
+   "std": 0.0,
+   "n": 276
+  },
+  "generic_excluded_transient": {
+   "mean": 8.0,
+   "std": 0.0,
+   "n": 284
+  },
+  "transient_failure_rate_per_answer": {
+   "mean": 0.0176,
+   "std": 0.0,
+   "n": 284
+  },
+  "deterministic_clock_keys_only": {
+   "mean": 2.0,
+   "std": 0.0,
+   "n": 2
+  },
+  "context_overflow_questions": {
+   "mean": 1.0,
+   "std": 0.0,
+   "n": 284
+  }
+ },
+ "deterministic_pair": {
+  "arm": "deterministic",
+  "run_a_answers": 284,
+  "run_b_answers": 284,
+  "compared": 284,
+  "only_in_a": [],
+  "only_in_b": [],
+  "identical": 2,
+  "differing": 282,
+  "identity_rate": 0.007,
+  "differing_paths": {
+   "run_meta.wall_s": 282
+  },
+  "paths_in_scored_fields": [],
+  "h3_holds": true,
+  "examples": [
+   {
+    "answer": "D0-Analytic-kill_chain_phase-AN0662-9c5459::formal.json",
+    "paths": [
+     "run_meta.wall_s"
+    ]
+   },
+   {
+    "answer": "D0-Analytic-kill_chain_phase-AN1955-53c2dd::indirect.json",
+    "paths": [
+     "run_meta.wall_s"
+    ]
+   },
+   {
+    "answer": "D0-Analytic-subtechnique-of-AN0749-d741a1::analyst.json",
+    "paths": [
+     "run_meta.wall_s"
+    ]
+   },
+   {
+    "answer": "D0-Analytic-subtechnique-of-AN1112-b87d8e::formal.json",
+    "paths": [
+     "run_meta.wall_s"
+    ]
+   },
+   {
+    "answer": "D0-AttackPattern-HAS_MEMBER-CAPEC-136-9dabb8::analyst.json",
+    "paths": [
+     "run_meta.wall_s"
+    ]
+   }
+  ]
+ },
+ "deterministic_content_identity_after_clock_keys": {
+  "identical": 284,
+  "compared": 284,
+  "clock_keys": [
+   "logic_flow.results.[].traces.[].detail.timing_ms",
+   "run_meta.wall_s"
+  ]
+ },
+ "generic_final_pair": {
+  "answers_seen": 284,
+  "excluded_transient": 8,
+  "excluded_cases": [
+   "D4-uses-kill_chain_phase-C0063-80f876::indirect.json",
+   "D5-mitigates-x_mitre_platforms-M1022-4689f4::indirect.json",
+   "D5-uses-x_mitre_platforms-C0026-552e24::analyst.json",
+   "D5-uses-x_mitre_platforms-C0029-6e5dcb::indirect.json",
+   "D5-uses-x_mitre_platforms-C0046-803292::analyst.json",
+   "D5-uses-x_mitre_platforms-C0046-803292::indirect.json",
+   "D5-uses-x_mitre_platforms-G0006-0eed87::analyst.json",
+   "D5-uses-x_mitre_platforms-G0006-0eed87::indirect.json"
+  ],
+  "compared": 276,
+  "identical": 133,
+  "identity_rate": 0.4819,
+  "differing_paths": {
+   "answer.narrative": 143
+  },
+  "paths_in_scored_fields": [
+   "answer.narrative"
+  ],
+  "h3_holds": false,
+  "verdict": "DIFFERS IN A SCORED FIELD"
+ },
+ "generic_first_pair_invalidated": {
+  "note": "PROTOCOL A-2: run B lost the narrator on 60/284 answers; recorded not_run. Kept in data/identity-analysis.json for the record.",
+  "identical_content": 224,
+  "compared": 284,
+  "identity_rate_content": 0.7887
+ }
+}

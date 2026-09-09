@@ -92,3 +92,34 @@ Neither is a regression. Both are the audit shrinking.
 because `POINTERS.md` files cite paths under `docs/evaluation/experiments/`,
 which is gitignored and exists only in the main checkout. Verified failing on
 the unmodified tree before any change here.
+
+## I5 — The recorded commit predates the fix; the entrypoint's output directory never existed
+
+**Date:** 2026-09-09 (record audit)
+
+`code.commit` was `0e06ceef…` (2026-08-21 18:04, the pre-registration tree, an
+EXP-2026-08-011 commit): `git grep _actor_software 0e06cee -- utils/specialists/cypher/builder.py`
+finds nothing — the builder this experiment ships first appears in `54cdb3a2…`
+(19:35, which also added `data/metrics.json`), and the Addendum's H5 figures
+were produced after the composer fix `887c2cdd…` (20:58); the surviving
+artifacts in `external-2026-08-21-post-fix/` are stamped 20:59–21:12 and the
+Addendum was committed as `209f980b…` (21:13). `code.commit` is now
+`887c2cddb75d260ce32385d0c0b724b18051fcc5`, the tree that produced every
+surviving artifact and reproduces every figure (headline and Addendum);
+`54cdb3a2…` is the tree the headline was first measured on.
+
+The entrypoint said `--out docs/evaluation/external-2026-08-21-fixed`; that
+directory does not exist and the answers live in
+`docs/evaluation/external-2026-08-21-post-fix/`, which has no `metrics.json`.
+The entrypoint is corrected. The Addendum's 0.8184 / 0.6934 and the "60 of 60
+internal answers byte-identical" figure had no machine-readable source in the
+record: the first two are now in `data/metrics.json` (`addendum_h5`, re-scored
+from the stored answers on 2026-09-09); the 60/60 figure rests on the RESULTS
+text and the recorded-answer regression diff run at the time, and no artifact
+of that diff survives.
+
+Placeholders `compute.hardware` (`<cpu/gpu, ram>`) and `llm.model`
+(`<provider>/<model>@<version-or-date>`), `max_tokens` 2048 (the llm arm ran
+the relay alias `skynet` at 16384 per `scripts/external_validation.py:155`) and
+the template `nondeterminism_note` are corrected; the hardware was never
+recorded and the served model behind the alias on 2026-08-21 is unrecorded.

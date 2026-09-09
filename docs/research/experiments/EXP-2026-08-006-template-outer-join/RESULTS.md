@@ -95,3 +95,44 @@ catch.
    precision question and retrieval cannot answer it.
 3. **Holdout v2**, before any blind figure is quoted.
 4. The composer's `under_enumeration` defect, unchanged by this work.
+
+## AMENDMENT A-1 (2026-09-09) — Pointers filled, supersession recorded, reproduction stated
+
+Written during the 2026-09-09 record audit. No number in §1–§6 changes.
+
+**What was wrong.** `data/POINTERS.md` was the blank scaffold (one empty row,
+no artifact, no hash), so nothing in the record tied the figures above to the
+raw runs they were computed from. The manifest also carried
+`supersedes: null` although this experiment replaces EXP-2026-08-005's blind
+headline (0.8952 → 1.0000 on the same 30 questions, same arm, same bank), and
+RESULTS has no reproduction section.
+
+**What is now correct.**
+
+* `data/POINTERS.md` lists the five raw directories with tree hashes taken
+  2026-09-09: `outerjoin-holdout` (after, blind), `outerjoin-dev` (after,
+  development), `binding-fix-holdout` and `binding-fix-dev` (before, from
+  EXP-2026-08-005) and `binding-baseline-holdout` (the 0.7688 origin of
+  `progression_blind`). The two `outerjoin-*` directories have gained
+  `*.judgment*.json` sidecars since the run (EXP-2026-08-007's grading passes,
+  2026-08-19); the answer files are unchanged and every figure in §1–§2 and in
+  `data/metrics.json` reproduces exactly from them once the sidecars are
+  excluded (audit recomputation with `utils/evaluation/retrieval_coverage.py`:
+  blind 1.0000 / 30 / 0 missing / 221 records; before 0.8952380952 / 26 / 5 /
+  216; paired 4 improved (H-CHN-02 +2, H-CHN-01, H-CTM-01, H-CTM-02 +1),
+  0 regressed; dev 1.0 / 1.0, 1079 / 1061 records; original 0.7687675, 22/30).
+  See ISSUES 2026-09-09 for the n = 90 trap in the committed scorer.
+* Manifest `supersedes`: `null` → `EXP-2026-08-005`. EXP-2026-08-005's
+  manifest carries the matching `superseded_by` and `status: superseded`. Its
+  0.8952 remains valid as the "before" row here.
+* Manifest `related`: EXP-2026-08-007 added — the judged follow-up §6 asks for,
+  which graded these very answer files.
+
+**Reproduction (the §8 the contract asks for).** Entrypoint as in the manifest:
+`uv run python -m utils.evaluation.experiment_untruncated --arm deterministic`
+for the development catalogue and the same with
+`--bank utils/specialists/tests/golden/holdout_questions.json` for the blind
+set, at commit `c10caaad2c5f6bbbde4ddee93a8e9ec2383ddedb`, against the live
+Neo4j + Gremlin stores (ATT&CK 19.0 / CAPEC 3.9). Score with
+`utils/evaluation/retrieval_coverage.py` against the directories in
+`data/POINTERS.md`.

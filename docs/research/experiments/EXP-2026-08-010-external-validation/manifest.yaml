@@ -32,7 +32,7 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: fa4c941                                   # the tree the run used
+  commit: fa4c94183832b0857dd8b83a7ac0c8f7cefa8d7f   # the tree the run used; expanded from fa4c941 on 2026-09-09 (A-1)
   branch: main
   entrypoint: "uv run python scripts/external_validation.py --out docs/evaluation/external-2026-08-21"
   dirty: false            # uncommitted changes at run time? if true, explain in ISSUES.md
@@ -46,31 +46,33 @@ data:
   n_examples: 182
   dvc_path: null
   hash: null
-seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
+seeds: [20260821]          # sample_seed of the 60-item AttackQA draw, from the sweep metrics.json (A-1)
 n_runs: 1
 environment:
   python: "3.13"
   lockfile: env/requirements.lock
   container: null
 compute:
-  hardware: "<cpu/gpu, ram>"
+  hardware: "unknown"   # never recorded (I10)
   wall_clock_hours: 0.52
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
 llm:
-  model: "<provider>/<model>@<version-or-date>"
+  model: "relay/unknown@2026-08-21"   # generic and llm arms via the relay alias skynet; served model unrecorded (I10)
   temperature: 0.0
   top_p: 1.0
-  max_tokens: 2048
+  max_tokens: 16384   # scripts/external_validation.py:155; was 2048 (A-1)
   prompt_files: []
   prompt_hash: null
   tool_schema_hash: null
   total_input_tokens: null
   total_output_tokens: null
   nondeterminism_note: >
-    Provider-side nondeterminism remains even at temperature 0; results
-    are reported as mean ± std over n_runs.
+    Provider-side nondeterminism remains even at temperature 0. Each arm ran
+    once; the oracle and deterministic arms have no model in the loop and are
+    byte-reproducible; the generic and llm arms were not repeated, so no std
+    is reported. (Template text replaced 2026-09-09, A-1.)
 
 # --- Results block ---
 metrics:
@@ -104,4 +106,4 @@ supports_claims: [C-003, C-012, C-013]
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
 superseded_by: null
-related: ["EXP-2026-08-007", "EXP-2026-08-008", "EXP-2026-08-009"]
+related: ["EXP-2026-08-007", "EXP-2026-08-008", "EXP-2026-08-009", "EXP-2026-08-012"]   # 012 added 2026-09-09 (A-1): the fix the superseding note names

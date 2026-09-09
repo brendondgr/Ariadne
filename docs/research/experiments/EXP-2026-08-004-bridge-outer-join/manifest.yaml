@@ -26,7 +26,7 @@ hypothesis: >
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: 93da6d407024128982cbc515261c8fb0b7c9a20f          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: 618bc20e7faea6bcd12df553e442c447dcbdfff7          # corrected 2026-09-09 (RESULTS A-1): the blind run's commit (23:20; artifacts 23:28). The development run was at 1e8e16f (23:34; artifacts 23:51). Was 93da6d4, the record-side commit (23:53)
   branch: main
   entrypoint: "uv run python -m utils.evaluation.experiment_untruncated --arm generic --bank utils/specialists/tests/golden/holdout_questions.json --root docs/evaluation/experiments/holdout-v1-generic-outer --workers 4"
   dirty: false            # clean tree at 618bc20 (blind) and 1e8e16f (development)
@@ -53,7 +53,7 @@ compute:
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
 llm:
-  model: "local/skynet (Gemma 4 31B)@unknown"
+  model: "relay/gemma-4-31B@2026-08-10"   # as recorded at run time; the relay's August repoint date is unknown — docs/evaluation/README.md (RESULTS A-1)
   temperature: 0.0
   top_p: 1.0
   max_tokens: 16384
@@ -79,6 +79,6 @@ statistical_test: null
 # --- Linkage ---
 supports_claims: [C-003, C-014]
 figures: []                # every name here must have a file in figures/ and vice versa
-supersedes: null
+supersedes: EXP-2026-08-003   # set 2026-09-09 (RESULTS A-3): replaces 003's 0.8952 headline on the same arm and bank
 superseded_by: null
-related: [EXP-2026-08-001, EXP-2026-08-002, EXP-2026-08-003]
+related: [EXP-2026-08-001, EXP-2026-08-002, EXP-2026-08-003, EXP-2026-08-006, EXP-2026-08-007]

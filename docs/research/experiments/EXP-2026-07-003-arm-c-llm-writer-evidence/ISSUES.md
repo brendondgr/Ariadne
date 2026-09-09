@@ -56,3 +56,12 @@ from different runs. This folder records the post-fix value only.
 run before publication. The qualitative finding survives either way: with
 extraction and synthesis held constant, LLM planning is still the dominant
 single effect. Tracked as a `partial` claim in `../../CLAIMS.md`.
+
+## 2026-09-09 — Audit: artifact commit recorded as an upper bound
+
+**Impact:** `code.commit` now holds `9e6ac34`, the commit at which all 240
+artifact files were first on record (2026-07-26 14:57 −0400). It bounds the
+run from above; the run commit itself was never captured.
+**Cause:** The study predates the research record.
+**Resolution:** RESULTS A-1 records the derivation.
+**Paper implication:** Cite `9e6ac34` as the artifact commit, not the run.

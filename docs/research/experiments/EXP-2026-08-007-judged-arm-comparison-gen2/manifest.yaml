@@ -55,7 +55,7 @@ compute:
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
 llm:
-  model: "relay/skynet@qwen38-27B-awq"
+  model: "relay/unknown@2026-08-19"   # was relay/skynet@qwen38-27B-awq until 2026-09-09; sidecars record only the alias — RESULTS A-2, ISSUES §10
   temperature: 0.0
   top_p: 1.0
   max_tokens: 8192
@@ -69,8 +69,10 @@ llm:
     report mean ± std over n_runs of the pipeline, this experiment measures
     grader variance directly: three judge passes over one fixed set of
     deterministic answers, spread 0.0050. The pipeline itself ran once per arm.
-    The relay's upstream for `skynet` was qwen38-27B-awq on the night of the
-    run; it is hot-swappable and is not pinned.
+    The relay's upstream for `skynet` on the night of the run was recorded
+    from recollection as qwen38-27B-awq (ISSUES §8); no artifact corroborates
+    it and the model is recorded as unknown (A-2, 2026-09-09). The alias is
+    hot-swappable and is not pinned.
 
 # --- Results block ---
 metrics:
@@ -97,4 +99,4 @@ supports_claims: [C-001, C-003, C-013, C-014, C-017, C-021]
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null
 superseded_by: null
-related: [EXP-2026-07-006, EXP-2026-07-010, EXP-2026-08-001, EXP-2026-08-004, EXP-2026-08-005]
+related: [EXP-2026-07-006, EXP-2026-07-010, EXP-2026-08-001, EXP-2026-08-004, EXP-2026-08-005, EXP-2026-08-008, EXP-2026-08-021, EXP-2026-09-006]   # 008/021/09-006 added 2026-09-09 (A-2): refinements, not supersession

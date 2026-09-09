@@ -80,3 +80,44 @@ was an over-attribution, not a measurement error.
   attributed separately until routing is repaired.
 - That anything here says whether the deterministic arm's 0.4934 moves. This
   experiment touched 37 dev questions, not the arm.
+
+---
+
+## AMENDMENT A-1 (2026-09-09) — Record repair: pointer label, hypothesis denominators, and one unexplained decrease
+
+Written from the 2026-09-09 audit (`verify-b5.md`), which reproduced every
+manifest value from the two pointed directories: mean coverage over the 37 ids
+**0.0816 → 0.1081**, 2 improved, 12 of 12 predicted survivors survived. No
+number changes.
+
+1. **Hypothesis denominators.** The manifest's `hypothesis` says *"47 cases
+   move … and 15 named cases do not"*; the metrics use n = 25 predicted movers
+   and n = 12 predicted survivors (25 + 12 = 37 = the re-run set). Both are
+   right about different populations: 47 and 15 are the plan's counts over the
+   whole bank (`docs/plans/2026-09-03-capec-anchor-resolution.md`), and 25 / 12
+   are the counts among the 37 dev questions this run re-answered — PROTOCOL.md
+   `:40` already states the latter. The hypothesis text is left as written.
+2. **Pointer label.** POINTERS row 2 called `expansion-2026-09-01` *"EXP-2026-09-002's
+   artifacts"*. That directory is EXP-2026-09-001 A-5's model-free run of
+   2026-09-02; 002's judged arms wrote to `expansion-judged-2026-09-01`. The two
+   hold identical coverage values for these 37 ids (the audit computed the
+   "before" mean from both: 0.0816 either way), so nothing numeric depends on
+   the label. Corrected in the row; hashes unchanged and re-verified.
+3. **One question went down, and the table does not say so.** Of the 37,
+   34 were unchanged, 2 improved and **one fell** — `D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-703…::formal`,
+   0.0196 → 0.0. EXP-2026-09-004 ISSUES I-2 explains it: the 0.0196 was credit
+   for an id the abstention boilerplate happened to name, so the decrease is
+   the removal of a false positive, not a regression. The `questions_improved: 2`
+   count is correct; a `questions_regressed` count would be 0 under 004's
+   reading and 1 by raw count.
+4. **ISSUES I-5** says EXP-2026-09-001's dangling pointer target
+   (`docs/evaluation/composition/authored/ingested.json`) was *"committed at
+   eeef322"*; it was **deleted** at `eeef322` (EXP-2026-09-001 A-6 / I-7).
+5. **Manifest.** `environment.lockfile`: env/requirements.lock → null (never
+   written; ISSUES I-6). `related` gains EXP-2026-09-004 (the routing defect
+   this experiment exposed) and EXP-2026-09-005 (the arm comparison after both
+   repairs). `data/metrics.json` created from `metrics.values`.
+
+6. **`metrics.primary`** named `mean_recall_on_affected_questions`, a key that does
+   not exist in `metrics.values`; it now names `mean_recall_after` (0.1081), the
+   headline cell of the table at the top of this file.

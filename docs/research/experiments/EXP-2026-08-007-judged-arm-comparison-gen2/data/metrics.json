@@ -11,7 +11,7 @@
     "judge_workers": 12
   },
   "judge": {
-    "model": "relay/skynet@qwen38-27B-awq",
+    "model": "relay/unknown@2026-08-19 (sidecars record only the alias \"skynet\"; manifest previously said qwen38-27B-awq)",
     "runner": "utils/evaluation/judge_answers.py",
     "calibration_vs_sonnet": {
       "n": 30,
@@ -47,7 +47,8 @@
     "worst": -0.15000000000000002,
     "before": "holdout-v1 deterministic, pre-fix answers, judged by E0's calibration pass",
     "after": "outerjoin-holdout deterministic, post-fix answers, judged by E1",
-    "note": "same 30 questions, same judge, same night; pairing removes the grader from the comparison"
+    "note": "same 30 questions, same judge, same night; pairing removes the grader from the comparison",
+    "before_files": "docs/evaluation/experiments/holdout-v1/deterministic/answers/*.judgment.local.pre-qwen38.json (A-2, 2026-09-09: the *.judgment.local.json originals were overwritten 2026-08-31)"
   },
   "arms": {
     "cascade_blind": {
@@ -259,6 +260,40 @@
     "generic_blind": {
       "abstained": 4,
       "carried": 2
+    },
+    "a1_corrected": {
+      "note": "A-1 (2026-08-23): four byte-identical abstention objects scored identically; C-MAP-NEG-01 excluded (coverage difference, not proof)",
+      "strict": {
+        "cascade_dev": {
+          "carried": 17,
+          "abstained": 21,
+          "rate": 0.81
+        },
+        "generic_dev": {
+          "carried": 10,
+          "abstained": 20,
+          "rate": 0.5
+        },
+        "gap": 0.31
+      },
+      "lenient": {
+        "cascade_dev": {
+          "carried": 21,
+          "abstained": 21,
+          "rate": 1.0
+        },
+        "generic_dev": {
+          "carried": 14,
+          "abstained": 20,
+          "rate": 0.7
+        },
+        "gap": 0.3
+      },
+      "as_originally_reported": {
+        "cascade_dev": 0.952,
+        "generic_dev": 0.55,
+        "gap": 0.402
+      }
     }
   },
   "answer_gap": {

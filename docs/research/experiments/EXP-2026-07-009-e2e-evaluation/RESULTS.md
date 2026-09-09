@@ -95,3 +95,50 @@ uv run main.py --e2e-eval --judge
 ```
 
 The four deterministic metrics reproduce exactly. The `--judge` scores do not.
+
+---
+
+# AMENDMENTS
+
+## AMENDMENT A-1 (2026-09-09) — Run date, judge-model string and one pointer description corrected
+
+**What was wrong.**
+
+1. `manifest.yaml:6–7` recorded `date_started: 2026-07-26` /
+   `date_completed: 2026-07-26`. That is the date of the standing-record commit
+   (`e938452`), not of the run. The pointed-at report
+   `docs/evaluation/e2e-evaluation.json` was last regenerated and committed in
+   `14fd58f` on 2026-07-19 22:36 −0400 (733 lines rewritten; earlier versions
+   on 2026-07-07 `efa7f4e` and 2026-07-08 `970a683`). The JSON carries no
+   timestamp of its own (`meta` holds only the ATT&CK/CAPEC versions), so the
+   commit date is the best available date and the run happened no later than
+   it. **Old:** `2026-07-26` → **new:** `2026-07-19` for both fields. Established
+   from `git log -- docs/evaluation/e2e-evaluation.json`.
+2. `manifest.yaml:47` recorded `llm.model: "vllm/gemma-4-31b@unknown"` with a
+   comment naming the relay alias. `docs/evaluation/README.md` §"The model
+   behind `skynet`" records the July-2026 served model as Gemma 4 31B
+   (quantisation never recorded). **Old:** `vllm/gemma-4-31b@unknown` →
+   **new:** `relay/gemma-4-31B@2026-07-19`, in the format that README
+   prescribes; the date is the artifact commit above. This is the judge only;
+   the pipeline's own model is the same alias.
+3. `data/POINTERS.md:10` described `docs/evaluation/answers` as "the 120
+   end-to-end answers and their judgments backing this report". The 120
+   `*.judgment.json` files in that directory are the Sonnet 5 cross-model
+   judgments of `EXP-2026-07-010` (keys `case_id, verdict, correctness, …`),
+   not this run's `--judge` verdicts, which exist only inside
+   `e2e-evaluation.json` under `e2e.overall.llm_judge.verdicts`. The
+   description is corrected in place; the hash
+   `sha256:c0828b08…` was re-verified today with
+   `utils.research_record.hashing` and is unchanged.
+
+**What is unchanged.** Every number. The B2 audit of 2026-09-09 recomputed all
+four deterministic metrics and the three judge scores from
+`e2e-evaluation.json` and reproduced them exactly (30/30, 10/10, 113/113,
+120/120; 0.9733 / 0.9342 / 0.9500). `code.commit` stays `unknown` (ISSUES
+2026-08-06).
+
+**Refinement link.** `EXP-2026-07-010` is the independent cross-model check on
+these same 120 answers and is the experiment that refines this one: its 0.8946
+correctness is the figure to quote beside, never instead of, the deterministic
+1.0s here. It is already in `related`; recorded here so the direction of
+refinement is explicit.

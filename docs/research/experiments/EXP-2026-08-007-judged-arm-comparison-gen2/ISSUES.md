@@ -145,3 +145,43 @@ upstream, but a future run of the same command may not get the same model.
 
 **Impact:** exact reproduction of these grades is not guaranteed. Calibration
 would have to be re-run to establish comparability.
+
+## 9. The "before" judgments were overwritten in place; the record reproduces only from a copy
+
+**Date:** 2026-09-09 (found during the record audit)
+
+The paired repair delta (+0.1167) and the calibration (r = 0.9275) use the E0
+calibration pass over `docs/evaluation/experiments/holdout-v1/deterministic/answers/*.judgment.local.json`.
+On 2026-08-31 11:04–11:07 EXP-2026-08-021 re-graded the same answers with
+`qwen38-27B-v2` **into the same filenames**, after copying the originals to
+`*.judgment.local.pre-qwen38.json` (11:03). The path this record pointed at
+until 2026-09-09 (POINTERS "Two caveats", un-hashed) therefore no longer holds
+the data: from the current files the delta is +0.1267 (CI 0.0200–0.2517,
+13/6/11, worst −0.50) and r = 0.9612. From the `.pre-qwen38` copies every
+recorded figure reproduces exactly (0.7200 / +0.1167 / 0.0333–0.2167 / 10/3/17 /
+−0.15 / r 0.9275 / +0.031 / 0.70), and the committed
+`overnight-2026-08-19/calibration.json` agrees.
+
+**Resolution:** POINTERS now points at the directory (tree-hashed) and gives
+the set hash of the 30 `.pre-qwen38` copies. The original path
+`*.judgment.local.json` no longer holds this experiment's data and must not be
+used to reproduce it. The figures are **not** withdrawn.
+
+## 10. The grader's model is not determinable from the record
+
+**Date:** 2026-09-09
+
+§8 above records the operator's recollection that `skynet` resolved to
+`qwen38-27B-awq` on the night of the run, and the manifest carried
+`relay/skynet@qwen38-27B-awq`. Every judgment sidecar written that night
+records only `{"model": "skynet"}` — no served-model field existed in the
+runner until 2026-08-31 — and no other artifact of the run names the upstream.
+`docs/evaluation/README.md` §"The model behind `skynet`" classifies the
+2026-08-19..21 window as **undetermined** and says which model graded these runs
+"is not determinable from the record" (OPEN_QUESTIONS Q12). The string
+`qwen38-27B-awq` appears nowhere else in the repository.
+
+**Resolution:** manifest `llm.model` is now `relay/unknown@2026-08-19` (RESULTS
+A-2). The recollection in §8 stands as a recollection. Quotable cross-grader
+readings of the same answers under a named model are EXP-2026-08-021 and
+EXP-2026-09-006.

@@ -381,3 +381,64 @@ generated with an isolated replication right — a separate experiment.
   inverse lookup and is not built.
 - CAPEC is reachable from ATT&CK by the existing key, so identity → attack →
   capec is expressible in principle. It has not been run.
+
+---
+
+# AMENDMENTS
+
+## AMENDMENT A-1 (2026-09-09) — Phase 2 status corrected, provenance fixed, manifest metrics completed, pointers hashed
+
+Written during the 2026-09-09 record audit. **No figure above changes.** Every
+phase-1, phase-1a, bridge no-regression and tri-bank figure was recomputed on
+2026-09-09 from the sweep states now hashed in `data/POINTERS.md` and
+reproduces exactly (one-source 0.7094 / 0.2194; pre-routing 0.6239 / 0.1254,
+80 of 117 routed beyond identity; post-routing and with-bridge 0.7094 / 0.2194
+with 0 differing; tri-bank 0.7724 / 0.3176 and every per-kind cell; 0 of 64
+gold leaks). Not recomputed: `golden_owning_source_not_routed` 14 → 2 and the
+7 → 1 bridge demo.
+
+**1. Stale status prose.** The opening status line ("Phase 2 (cross-source
+correlation) not started") and PROTOCOL "Phase 2 — cross-source correlation
+(not started)" were overtaken the same day by "Phase 2 — the declared bridge"
+and "Phase 2 measured — the tri-source bank" above. The current state is:
+phase 1 complete and its router defect fixed; phase 2 bridge declared, seeded
+and **measured** on the 64-question blind tri-source bank. The manifest status
+comment already said so.
+
+**2. Provenance (ISSUES 2026-09-09).** `code.commit`
+`544f978b56593a198bc5f9ccf9878d4e748d857e` → `4a97053d3756179f966a11e8bb90d38833ddecf2`;
+`code.dirty` false → true. Per-figure trees, from commit times against artifact
+mtimes: pre-routing 0.6239 / 0.1254 at 544f978 (artifacts 13:52–13:58); routing
+fix 9841b859… (14:45; sweeps 14:42–14:43); bridge declaration 95b8c91d… (15:53)
+and seeding 484bf0cb… (16:22; bridge sweeps 16:13–16:20); tri-bank 4a97053d…
+(16:54; sweep 16:42). Every post-fix run used a working tree committed minutes
+after it. `compute.hardware` "unknown — recorded at run time" → "unknown";
+`config.hash` null → `sha256:b06881859b847f9a984cf00f26110b55502ce2377d2737ac022f570f32f22d01`.
+
+**3. Manifest metrics.** Keys renamed to the `data/metrics.json` names (old →
+new, values unchanged): `retrieval_{generic,deterministic}_tri_source[ _<kind>]`
+→ `…_tri_source_prerouting[ _<kind>]`; `ids_per_question_*_tri_source` and
+`max_ids_*_tri_source` → `…_tri_source_prerouting`. Added from
+`data/metrics.json`: `retrieval_*_tri_source_postrouting` (0.7094 / 0.2194),
+`questions_differing_tri_vs_one_postrouting_*` (0 / 0),
+`routed_beyond_identity_*_postrouting` (0.0 / 0.0),
+`golden_owning_source_not_routed_{before,after}` (14 / 2 of 120),
+`retrieval_*_tri_source_bridge` (0.7094 / 0.2194),
+`questions_differing_tri_vs_one_with_bridge_*` (0 / 0),
+`edge_types_mapped_to_a_technique` 13 and `…_explicitly_not_a_technique` 8 (of
+21), `tribank_*_overall` (0.7724 / 0.3176, n 64), `tribank_*_bridge_technique`
+(0.8333 / 0.0, n 24), `…_bridge_mitigation` (0.3398 / 0.2081, n 16),
+`…_bridge_refusal` (1.0 / 0.4167, n 12), `…_identity_control` (1.0 / 1.0, n 12),
+`tribank_gold_identifier_leaks` 0. `metrics.primary`:
+`gold_in_evidence_retrieval` (a prefix, not a key) →
+`retrieval_generic_tri_source_postrouting`.
+
+**4. Discarded numbers now in ISSUES** (they were in RESULTS prose only): the
+invalid first run (`describe` 0.812 → 0.438, composition without the canonical
+tree), the removed partial-right control (first draw 0.8889), and the
+negative-anchor gold defect (`bridge-refusal` 0.8333 → 1.0000 on the gold fix
+alone).
+
+**5. `data/POINTERS.md`** was the blank scaffold and now hashes the five
+`identity-bank3-*-2026-08-22` sweep directories, the `tri-bank-2026-08-22`
+directory with its bank, gold and sweep state, and `data-tri/tri_manifest.json`.

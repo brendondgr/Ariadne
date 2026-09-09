@@ -47,3 +47,12 @@ pre-defect-fix run; the figures here come from `untruncated-loop2/`.
 **Resolution:** This folder points only at `untruncated-loop2/`. The pre-fix
 directory is kept for artifact-level comparison and must never be aggregated
 with post-fix arms.
+
+## 2026-09-09 — Audit: artifact commit recorded as an upper bound
+
+**Impact:** `code.commit` now holds `3717442`, the commit that added all 240
+artifact files (2026-07-26 19:34 −0400). It bounds the run from above; the run
+commit itself was never captured.
+**Cause:** The study predates the research record.
+**Resolution:** RESULTS A-1 records the derivation.
+**Paper implication:** Cite `3717442` as the artifact commit, not the run.

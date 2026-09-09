@@ -29,13 +29,13 @@ hypothesis: >
 
 # --- Reproducibility block ---
 code:
-  commit: 544f978b56593a198bc5f9ccf9878d4e748d857e
+  commit: 4a97053d3756179f966a11e8bb90d38833ddecf2   # the tri-bank record commit; was 544f978b (pre-fix, pre-bridge) until 2026-09-09 — A-1; per-figure trees in ISSUES
   branch: main
   entrypoint: "uv run python scripts/tri_compose.py && uv run python scripts/tri_sweep.py --out docs/evaluation/tri-bank-2026-08-22"
-  dirty: false
+  dirty: true    # every post-fix artifact predates the commit holding its code (A-1, ISSUES 2026-09-09)
 config:
   path: data-tri/tri_manifest.json
-  hash: null
+  hash: sha256:b06881859b847f9a984cf00f26110b55502ce2377d2737ac022f570f32f22d01   # as of 2026-09-09 (A-1)
 data:
   name: bank 3 (identity, Fable-authored, blind) run under two source configurations
   version: "bank 3 committed 2026-08-22; tenant seed 20260821"
@@ -50,7 +50,7 @@ environment:
   lockfile: env/requirements.lock
   container: "ariadne-neo4j (5456), ariadne-gremlin (6455), ariadne-neo4j-identity (5459)"
 compute:
-  hardware: "unknown — recorded at run time"
+  hardware: "unknown"   # never recorded (ISSUES 2026-09-09)
   wall_clock_hours: 0.6
   estimated_cost_usd: 0.0
 
@@ -82,7 +82,7 @@ llm:
 # single-source baseline is unmoved, which is the check that the new rule is
 # inert when there is nothing to choose between.
 metrics:
-  primary: gold_in_evidence_retrieval
+  primary: retrieval_generic_tri_source_postrouting   # was gold_in_evidence_retrieval (a prefix) until 2026-09-09 — A-1
   values:
     retrieval_generic_one_source: {mean: 0.7094, std: null, n: 117}
     retrieval_generic_one_source_facet_out: {mean: 0.75, std: null, n: 24}
@@ -92,18 +92,18 @@ metrics:
     retrieval_generic_one_source_describe: {mean: 0.8125, std: null, n: 16}
     retrieval_generic_one_source_multihop: {mean: 1.0, std: null, n: 1}
     retrieval_generic_one_source_unanswerable: {mean: 1.0, std: null, n: 12}
-    retrieval_generic_tri_source: {mean: 0.6239, std: null, n: 117}
-    retrieval_generic_tri_source_facet_out: {mean: 0.75, std: null, n: 24}
-    retrieval_generic_tri_source_facet_in: {mean: 0.5833, std: null, n: 24}
-    retrieval_generic_tri_source_homo_out: {mean: 0.55, std: null, n: 20}
-    retrieval_generic_tri_source_homo_in: {mean: 0.7, std: null, n: 20}
-    retrieval_generic_tri_source_describe: {mean: 0.8125, std: null, n: 16}
-    retrieval_generic_tri_source_multihop: {mean: 1.0, std: null, n: 1}
-    retrieval_generic_tri_source_unanswerable: {mean: 0.1667, std: null, n: 12}
+    retrieval_generic_tri_source_prerouting: {mean: 0.6239, std: null, n: 117}
+    retrieval_generic_tri_source_prerouting_facet_out: {mean: 0.75, std: null, n: 24}
+    retrieval_generic_tri_source_prerouting_facet_in: {mean: 0.5833, std: null, n: 24}
+    retrieval_generic_tri_source_prerouting_homo_out: {mean: 0.55, std: null, n: 20}
+    retrieval_generic_tri_source_prerouting_homo_in: {mean: 0.7, std: null, n: 20}
+    retrieval_generic_tri_source_prerouting_describe: {mean: 0.8125, std: null, n: 16}
+    retrieval_generic_tri_source_prerouting_multihop: {mean: 1.0, std: null, n: 1}
+    retrieval_generic_tri_source_prerouting_unanswerable: {mean: 0.1667, std: null, n: 12}
     ids_per_question_generic_one_source: {mean: 8.24, std: null, n: 117}
-    ids_per_question_generic_tri_source: {mean: 180.36, std: null, n: 117}
+    ids_per_question_generic_tri_source_prerouting: {mean: 180.36, std: null, n: 117}
     max_ids_generic_one_source: {mean: 54, std: null, n: 117}
-    max_ids_generic_tri_source: {mean: 2234, std: null, n: 117}
+    max_ids_generic_tri_source_prerouting: {mean: 2234, std: null, n: 117}
     routed_beyond_identity_generic: {mean: 0.6838, std: null, n: 117}
     retrieval_deterministic_one_source: {mean: 0.2194, std: null, n: 117}
     retrieval_deterministic_one_source_facet_out: {mean: 0.0, std: null, n: 24}
@@ -113,19 +113,45 @@ metrics:
     retrieval_deterministic_one_source_describe: {mean: 0.8125, std: null, n: 16}
     retrieval_deterministic_one_source_multihop: {mean: 0.6667, std: null, n: 1}
     retrieval_deterministic_one_source_unanswerable: {mean: 1.0, std: null, n: 12}
-    retrieval_deterministic_tri_source: {mean: 0.1254, std: null, n: 117}
-    retrieval_deterministic_tri_source_facet_out: {mean: 0.0, std: null, n: 24}
-    retrieval_deterministic_tri_source_facet_in: {mean: 0.0, std: null, n: 24}
-    retrieval_deterministic_tri_source_homo_out: {mean: 0.0, std: null, n: 20}
-    retrieval_deterministic_tri_source_homo_in: {mean: 0.0, std: null, n: 20}
-    retrieval_deterministic_tri_source_describe: {mean: 0.8125, std: null, n: 16}
-    retrieval_deterministic_tri_source_multihop: {mean: 0.6667, std: null, n: 1}
-    retrieval_deterministic_tri_source_unanswerable: {mean: 0.0833, std: null, n: 12}
+    retrieval_deterministic_tri_source_prerouting: {mean: 0.1254, std: null, n: 117}
+    retrieval_deterministic_tri_source_prerouting_facet_out: {mean: 0.0, std: null, n: 24}
+    retrieval_deterministic_tri_source_prerouting_facet_in: {mean: 0.0, std: null, n: 24}
+    retrieval_deterministic_tri_source_prerouting_homo_out: {mean: 0.0, std: null, n: 20}
+    retrieval_deterministic_tri_source_prerouting_homo_in: {mean: 0.0, std: null, n: 20}
+    retrieval_deterministic_tri_source_prerouting_describe: {mean: 0.8125, std: null, n: 16}
+    retrieval_deterministic_tri_source_prerouting_multihop: {mean: 0.6667, std: null, n: 1}
+    retrieval_deterministic_tri_source_prerouting_unanswerable: {mean: 0.0833, std: null, n: 12}
     ids_per_question_deterministic_one_source: {mean: 1.95, std: null, n: 117}
-    ids_per_question_deterministic_tri_source: {mean: 391.47, std: null, n: 117}
+    ids_per_question_deterministic_tri_source_prerouting: {mean: 391.47, std: null, n: 117}
     max_ids_deterministic_one_source: {mean: 2, std: null, n: 117}
-    max_ids_deterministic_tri_source: {mean: 2608, std: null, n: 117}
+    max_ids_deterministic_tri_source_prerouting: {mean: 2608, std: null, n: 117}
     routed_beyond_identity_deterministic: {mean: 0.6838, std: null, n: 117}
+    # --- added 2026-09-09 (A-1) from data/metrics.json: post-routing, bridge and tri-bank headline values
+    retrieval_generic_tri_source_postrouting: {mean: 0.7094, std: null, n: 117}
+    retrieval_deterministic_tri_source_postrouting: {mean: 0.2194, std: null, n: 117}
+    questions_differing_tri_vs_one_postrouting_generic: {mean: 0, std: null, n: 117}
+    questions_differing_tri_vs_one_postrouting_deterministic: {mean: 0, std: null, n: 117}
+    routed_beyond_identity_generic_postrouting: {mean: 0.0, std: null, n: 117}
+    routed_beyond_identity_deterministic_postrouting: {mean: 0.0, std: null, n: 117}
+    golden_owning_source_not_routed_before: {mean: 14, std: null, n: 120}
+    golden_owning_source_not_routed_after: {mean: 2, std: null, n: 120}
+    retrieval_generic_tri_source_bridge: {mean: 0.7094, std: null, n: 117}
+    retrieval_deterministic_tri_source_bridge: {mean: 0.2194, std: null, n: 117}
+    questions_differing_tri_vs_one_with_bridge_generic: {mean: 0, std: null, n: 117}
+    questions_differing_tri_vs_one_with_bridge_deterministic: {mean: 0, std: null, n: 117}
+    edge_types_mapped_to_a_technique: {mean: 13, std: null, n: 21}
+    edge_types_explicitly_not_a_technique: {mean: 8, std: null, n: 21}
+    tribank_generic_overall: {mean: 0.7724, std: null, n: 64}
+    tribank_generic_bridge_technique: {mean: 0.8333, std: null, n: 24}
+    tribank_generic_bridge_mitigation: {mean: 0.3398, std: null, n: 16}
+    tribank_generic_bridge_refusal: {mean: 1.0, std: null, n: 12}
+    tribank_generic_identity_control: {mean: 1.0, std: null, n: 12}
+    tribank_deterministic_overall: {mean: 0.3176, std: null, n: 64}
+    tribank_deterministic_bridge_technique: {mean: 0.0, std: null, n: 24}
+    tribank_deterministic_bridge_mitigation: {mean: 0.2081, std: null, n: 16}
+    tribank_deterministic_bridge_refusal: {mean: 0.4167, std: null, n: 12}
+    tribank_deterministic_identity_control: {mean: 1.0, std: null, n: 12}
+    tribank_gold_identifier_leaks: {mean: 0, std: null, n: 64}
 baselines_compared: ["EXP-2026-08-011"]
 statistical_test: null
 

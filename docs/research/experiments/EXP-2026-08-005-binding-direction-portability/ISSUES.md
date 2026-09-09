@@ -69,3 +69,24 @@ is right. It is also the argument for the guard's timid bias.
 
 **Impact:** `n_runs: 1`, seeds unrecorded, one snapshot, n=30 on the blind set.
 Consistent with every prior arm run in this repository and no better.
+
+## 2026-09-09 — No pointers for five weeks, a dangling lockfile, and a bank that moved under the run
+
+**Impact:** The four gitignored run directories behind every number here were
+unhashed from 2026-08-18 to 2026-09-09; `environment.lockfile` named a file
+that does not exist; `wall_clock_hours` was over-rounded by ~5×; and
+`code.commit` post-dates the artifacts by 1–2 minutes, so `dirty: false`
+cannot be confirmed (the commit adds only a changelog line, so the code tree
+that ran is `8ac1049`'s unless something uncommitted was present, which the
+artifacts cannot tell).
+
+**Also:** the development bank ran at `8ac1049`; `c10caaa` changed
+`capec_questions.json` (2 lines) and `federated_questions.json` (12 lines)
+35 minutes later, and later commits changed the banks further. The
+development figures here (1.0000, 1061 records both sides) are for the bank at
+`8ac1049`, retrievable with `git show 8ac1049:<path>`; no pointer to the
+current files is given because it would pin the wrong content.
+
+**Resolution:** RESULTS A-1. Not recoverable: the binding-audit inventory as
+an artifact (it was printed, not written), and a clean commit-to-artifact
+ordering.

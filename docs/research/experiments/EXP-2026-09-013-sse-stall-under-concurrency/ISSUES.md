@@ -45,3 +45,11 @@ started it. Chasing the trigger was deliberately not done.
 `supports_claims: []` is correct and not an omission. This is an engineering
 measurement of the web layer. It says nothing about federated retrieval quality
 and must not be cited as if it did.
+
+## 2026-09-09 — the after-condition aggregates excluded after-run1
+
+The manifest's `*_after` metrics claimed `n: 2` while quoting only the clean
+run; after-run1's own summary line is "1/12 exceeded … worst silence 434.6s".
+Replaced on 2026-09-09 by keys that name what they cover (`_clean12way`,
+`_run1_overlapped24way`, `_both_runs`); see RESULTS.md A-1. `data.version`
+was also wrong about which commit holds the probe (`31da134`, not `84936c3`).

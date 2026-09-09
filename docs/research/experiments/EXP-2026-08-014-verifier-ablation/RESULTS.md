@@ -92,3 +92,39 @@ measuring something.
   (PROTOCOL §6). Both produced a plausible zero. The reported zero survives only
   because `composer_used` is now counted per answer and reads
   `deterministic` for all 137.
+
+---
+
+# AMENDMENTS
+
+## AMENDMENT A-1 (2026-09-09) — completion date inverted, `answers_scored` back-filled, forward pointer to EXP-2026-08-018
+
+**What was wrong.** `manifest.yaml:10` recorded `date_completed: 2026-08-23`
+against `date_started: 2026-08-24`, so the experiment finished before it began.
+The `-2026-08-23` in the output directory slug (`docs/evaluation/ablation-2026-08-23`)
+was copied into the field. Established from the artifacts: both pointed files
+were written 2026-08-24 13:38–13:39 and the folder was committed at
+`95b8c003` on 2026-08-24 13:41. **Old → new:** `date_completed: 2026-08-23` →
+`2026-08-24`.
+
+**`data/metrics.json` did not carry `answers_scored`.** The manifest's
+`answers_scored = 137` is the sum of `composer_used.deterministic` over the four
+bank blocks (41 + 30 + 40 + 26), which the sweep never emitted as a single
+number, so the validator could not find it. A top-level `manifest_metrics`
+object copying the four manifest values was added to `data/metrics.json`; the
+sweep keys are untouched. `data/POINTERS.md` no longer describes the file as a
+byte-identical copy of `metrics-deterministic.json` (it was, until this
+addition; the pointed file itself is unchanged and its hash still verifies).
+
+**Forward pointer.** §"A second dead-code finding" says *"If the LLM composer is
+ever reconnected, this ablation must be re-run"*. EXP-2026-08-018 did exactly
+that on the same day: with `OpenAICompatibleComposer` reconnected the gates cut
+32–36 claims per run (mostly `correlated`), against the zero recorded here. The
+zero here stands as the deterministic-path result; the C-017 property is now
+testable and tested in 018. `related` gains `EXP-2026-08-018`.
+
+**A count that does not reproduce.** §"The finding that matters for C-017" says
+`utils/synthesis/tests/test_verifier_gates.py` holds "13 assertions". At HEAD
+the file has 9 `test_` functions and 29 `assert` statements; the figure 13
+cannot be reconstructed and should not be quoted. It does not bear on any
+number in the manifest.

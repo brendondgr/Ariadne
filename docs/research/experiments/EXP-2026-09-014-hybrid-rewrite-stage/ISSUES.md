@@ -358,3 +358,27 @@ arms answer "does the rewrite recover record identity", the 120 s arms answer
    otherwise retrieve**. The cached replay — where the rewrite is nearly free —
    recovers T1 to 0.4921, exactly the no-rewrite baseline, so the T1 "regression"
    attributed to the rewrite in the first analysis was the clock, not the method.
+
+## 2026-09-09 — pre-registered arm R4 (the 572-question expansion bank) was never run
+**Impact:** the expansion-bank half of PROTOCOL.md §Setup / §Procedure — dev
+and holdout, rewrite off / det / model, `rewrite_off` as the control — has no
+artifacts, no numbers and no recorded decision not to run it. Every figure in
+this experiment is from the 301-variant tune half.
+**Cause:** not recorded. The tune-half result had already failed the
+pre-registered ship rule by 2–3×; that is a sufficient reason but was not
+written down anywhere (RESULTS, DECISIONS D-032, OPEN_QUESTIONS Q35–Q37 are
+silent on R4).
+**Resolution:** not resolved. Recorded here and in RESULTS A-2 as an open
+follow-up: R4 is the measurement still owed if the stage is re-evaluated.
+**Paper implication:** the rewrite stage is characterised on the variant bank
+only; the expansion bank and its sealed holdout have not seen it.
+
+## 2026-09-09 — `code.commit` was the plan commit; corrected to the code that ran
+`0b83b65d` (the plan) → `e0e1dcb` (last source change before the final R2/R3
+runs; R0/R1 ran at `a460fa2`). `dirty: false` is an inference from `e7ee893`
+touching no source file, not an observation of the tree at 19:43–20:30. See
+RESULTS A-1.
+
+## 2026-09-09 — `llm.nondeterminism_note` said R3 was unrun
+It described the first identity probe only; the second probe identified
+`default-model-2` and R3 ran three times. Corrected in place; see RESULTS A-2.

@@ -31,3 +31,21 @@ in the Gremlin safety gate.
 **Paper implication:** The 100% block rate is the result of probing having
 already found and closed one hole — worth stating, since it is evidence the
 probe suite has teeth rather than evidence the gate was always perfect.
+
+## 2026-09-09 — Audit: the run is from 2026-07-07, not 2026-07-26; the re-run has not happened
+
+**Impact:** The manifest dates read 2026-07-26 (the seven-arm study's date)
+while both pointed-at files were generated in `61657a9` on 2026-07-07 and never
+touched since. Corrected in the manifest (both dates → 2026-07-07) and named in
+RESULTS A-1. The 2026-08-06 entry above asks for a re-run under the current
+protocol before publication; as of 2026-09-09 no re-run has landed. The safety
+half has meanwhile been re-measured at 240 probes by EXP-2026-08-016, which
+found 15 bypasses the 17-probe suite missed.
+
+**Cause:** The folder was back-filled on 2026-08-06 alongside the seven-arm
+study and inherited its date; the re-run was never scheduled.
+
+**Resolution:** Dates corrected; re-run still open.
+
+**Paper implication:** Date these numbers 2026-07-07 (ATT&CK 19.0 / CAPEC 3.9).
+Quote the 240/15 safety figures from EXP-2026-08-016, not 17/17.

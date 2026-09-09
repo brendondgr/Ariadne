@@ -4,7 +4,7 @@
 id: EXP-2026-07-011
 slug: portability-audit
 title: Portability audit — what survives a dataset that is not MITRE
-status: complete
+status: superseded   # set 2026-09-09 (RESULTS A-2): EXP-2026-08-011 measured what this audit only read, and the audit was optimistic
 date_started: 2026-07-26
 date_completed: 2026-07-26
 authors: [brendondgr]
@@ -30,9 +30,9 @@ config:
   hash: null
 data:
   name: ariadne-source-tree
-  version: "as at 2026-07-26"
+  version: "audit prose as at 2026-07-26 (e938452); template counts from the 2026-08-04 derivation (f87d145), re-derived 2026-09-09 — RESULTS A-1"
   split: null
-  n_examples: 25
+  n_examples: 29           # distinct template identifiers per the current derivation; was 25 (RESULTS A-1)
   dvc_path: null
   hash: null
 seeds: []
@@ -49,14 +49,30 @@ compute:
 metrics:
   primary: null
   values:
-    distinct_query_templates: {mean: 25.0, std: null, n: 1}
-    templates_exercised_by_the_bank: {mean: 19.0, std: null, n: 1}
-    mitre_specific_templates: {mean: 19.0, std: null, n: 1}
+    # Current derivation, docs/plans/robustness/_overnight/derive_templates.py run 2026-09-09 (RESULTS A-1).
+    distinct_query_template_identifiers_current: {mean: 29.0, std: null, n: 1}   # 20 Cypher + 14 Gremlin literals, 5 shared; excludes the one f-string expression
+    templates_exercised_by_the_bank_current: {mean: 20.0, std: null, n: 1}       # 19 builder templates + boundary_refusal, which is a bank label and not a builder template
+    mitre_specific_templates: {mean: 19.0, std: null, n: 1}   # the audit's manual classification (25 − 6 generic); see A-1 for what the same rule gives today
+  withdrawn:
+    distinct_query_templates:
+      mean: 25.0
+      std: null
+      n: 1
+      withdrawn_on: 2026-09-09
+      reason: "count of the 2026-08-04 tree; four generic_* templates were added by EXP-2026-08-001 (2026-08-09) and derive_templates.py was corrected in b72eb23 (2026-08-31) — the script now prints 29 (RESULTS A-1)"
+      replaced_by: "EXP-2026-07-011:distinct_query_template_identifiers_current"
+    templates_exercised_by_the_bank:
+      mean: 19.0
+      std: null
+      n: 1
+      withdrawn_on: 2026-09-09
+      reason: "the corrected script (b72eb23, 2026-08-31) counts 20 expected_template values across the three banks, of which boundary_refusal is not a builder template (RESULTS A-1)"
+      replaced_by: "EXP-2026-07-011:templates_exercised_by_the_bank_current"
 baselines_compared: []
 statistical_test: null
 
 supports_claims: [C-010]
 figures: []
 supersedes: null
-superseded_by: null
-related: [EXP-2026-07-001, EXP-2026-07-007]
+superseded_by: EXP-2026-08-011   # set 2026-09-09 (RESULTS A-2)
+related: [EXP-2026-07-001, EXP-2026-07-007, EXP-2026-08-011]

@@ -49,3 +49,10 @@ pointer in EXP-2026-09-001's `POINTERS.md`
 not tracked in HEAD). `test_pipeline.py::test_event_order_matches_streaming_contract`
 fails under the local `.env` pin `ORCH_MAX_HOPS=1` and passes at 5. Both were
 verified present before this work.
+
+## I-6 — 2026-09-09: seeds and lockfile
+
+`seeds: []` is accurate: the deterministic arm takes no model and no random
+draw, and the 37 ids were selected by the plan, not sampled.
+`environment.lockfile` pointed at `env/requirements.lock`, which was never
+written; set to `null` in A-1. The dependency set is `uv.lock` at `2432ce8`.
