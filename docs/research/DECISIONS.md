@@ -857,3 +857,89 @@ neutral when theirs is not, and the paper must answer it** — most plausibly th
 their ablation changes agent count as well as store topology, so the two are not
 measuring the same variable. That sentence belongs in the paper, not in this
 ledger.
+
+## D-031 — The rewrite stage sits in front of the engine, and the model selects rather than plans (2026-09-08)
+
+**Decision.** The hybrid rewrite stage is **one node between `classify` and
+`draft`** in the planner subgraph, and everything downstream — the drafter, the
+gate, the specialists, the composer — is untouched and still receives only a
+request string. Within that node, a model may **choose from candidate lists it
+cannot add to**, and may do nothing else.
+
+**Why the placement.** After `classify` because the deterministic fill reads the
+classified intent to pick the mode. Before `draft` because that keeps the
+byte-identity claim trivially true with the flag off — proved at every step of
+the build — and keeps the change reviewable: one node, one string.
+
+**Why "selects, never plans", and why it is enforced three times.** The two
+prior LLM-in-the-loop arms are the argument. The LLM drafter cost −0.1185
+against the deterministic one; the free-form query arm reached 0.50 record
+identity where the deterministic engine reaches 1.0000. Those failed because the
+model was allowed to *name* things — a source, a hop, an identifier. This seam
+cannot: the prompt asks for indices, `_pick` refuses anything that is not an
+`int` in range, and `gate_form` re-checks the finished form against the same
+closed world. Any one alone is an assertion; three make it a property. It is a
+measured property, not a claimed one — the gate refuses **41–45 of 195 picks per
+run (~22%)**, every run, in both arms.
+
+Direction is never the model's to choose. It is read from the card's declared
+endpoints, the only place it is knowable, and a relation whose direction cannot
+be resolved is refused rather than rendered.
+
+**Alternatives rejected.**
+- *Let the model emit the plan or the query.* Already measured, twice, and both
+  lost to the deterministic engine.
+- *Let the model return names instead of indices.* A name that happens to be on
+  the list is not a choice from the list, and accepting it makes the closed
+  world advisory. Rejected in code, not only in prose.
+- *Pass structured seeds straight to the drafter instead of a rendered
+  sentence.* A later optimisation. Rendering to a sentence is what makes the
+  stage testable on its own — `render(slot_gold)` must round-trip to the gold
+  records — and what keeps `utils/specialists/` untouched.
+
+## D-032 — `ARIADNE_REWRITE` and `ARIADNE_REWRITE_MODEL` stay OFF by default (2026-09-08)
+
+**Decision.** Both flags remain off. EXP-2026-09-014 pre-registered a ship rule
+before any arm ran — T4 and T5 `records_exact` both > 0.25, with T6
+`wrong_entity` ≤ 0.1000 and `catalogue_dump` ≤ 0.0667 — and the stage **misses
+it by a factor of two to three**: T4 0.0880 ± 0.0089, T5 0.1635 ± 0.0089.
+
+**What it did achieve, because the decision is not that the stage failed.** It is
+the first configuration in this record to move T4/T5 off 0.0000, where
+EXP-2026-08-020 found exactly zero across every arm it tried. It does so
+reproducibly (sd ≤ 0.0160 across three runs, and across two serving instances).
+It cuts catalogue dumps at every tier. Its negative control holds at the *slot*
+level — T6 `slot_anchor` is 0.0000 — not merely at the record level. And it is
++0.196 at T3.
+
+**Three things had to be true to ship and only one was.**
+1. The threshold. Missed.
+2. The negative controls. The T6 gate passed and improved — and it was the wrong
+   gate. `wrong_entity` roughly **doubles at T4 and T5**, the tiers the stage
+   helps (0.1321 → 0.2516, 0.1132 → 0.2453). The stage converts abstention into
+   answers and about half of the converted silence is wrong. Writing a gate that
+   watched only T6 is a mistake this ledger should own: a negative-control gate
+   belongs on every tier the change touches. See Q35.
+3. It must fit the shipped budget. It does not. The rewrite's model call is
+   charged against the same `PIPELINE_TIMEOUT_S=120` retrieval needs, and under
+   it the arm loses records it retrieves at 900 s. See Q37.
+
+**Alternatives rejected.**
+- *Ship it anyway on the strength of T4/T5 moving off zero.* Rejected. The rule
+  was written before the numbers precisely so this could not be argued after
+  them, and the T4/T5 confident-wrong doubling is the failure the project exists
+  to avoid.
+- *Relax the threshold to fit the result.* Rejected for the same reason. If 0.25
+  was the wrong bar, that is an argument to make before the next run, not after
+  this one.
+- *Ship the deterministic half (`ARIADNE_REWRITE` alone).* Tempting — R1 needs no
+  model and is +0.0784 at T3 with fewer dumps — but it is −0.0318 at T2 and 5
+  better / 3 worse case by case on 301 questions. That is not a shipping
+  margin, and it has not been through the recorded-answer regression on both
+  banks.
+- *Add a guard that refuses to rewrite federated questions.* Structurally
+  justified (Q36) and probably right, but proposing it after seeing the tune
+  half makes it post-hoc. It is recorded as a follow-up arm, not folded in.
+
+**Reversible.** Both flags exist and are documented; the decision is which
+default they carry, and the next experiment can change it on evidence.

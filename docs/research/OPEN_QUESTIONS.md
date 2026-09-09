@@ -81,6 +81,27 @@ say nothing about CAPEC or open-ended asks.
 
 ### Q2 — What is the variance on any of these numbers?
 
+**Status: the LLM-arm half is ANSWERED (2026-09-08, EXP-2026-09-014), and the
+answer is that the variance is small and that the question was measuring the
+wrong thing.** Two arms, two serving instances of the same checkpoint, three
+seeded runs each with the model cache cleared between them, on 301 variants:
+population sd across runs is **≤ 0.0160 on every tier of R2 and 0.0000 on all
+but one tier of R3**, and the two instances differ by at most 0.0063 anywhere.
+Seed 1729 is recorded; every graded call is temperature 0.
+
+The finding underneath it matters more than the number. The *first* attempt at
+the same arms swung 0.0755 ↔ 0.1509 at T5 between two runs, and none of that was
+the model: `ARIADNE_LLM_TIMEOUT_S=240` was dropping 31–38% of calls at 32-way
+concurrency, and `PIPELINE_TIMEOUT_S=120` was charging the rewrite's latency
+against the budget retrieval needed. **An LLM arm's spread is uninterpretable
+without its call-failure rate beside it**, and a spread measured against a bound
+is a measurement of the bound. Both are now recorded per run by
+`scripts/rewrite_aggregate.py`.
+
+What remains open here is the *other* arms: `llm_query`, `llm`, `gold_llm` have
+still never been run more than once, and this result does not transfer to them —
+it says the rewrite seam is reproducible, not that every seam is.
+
 **Why it matters:** Every arm is `n_runs: 1` with seeds unrecorded. The two
 headline deltas (−0.3568 and −0.1185) are differences of point estimates with no
 confidence interval, and `statistical_test` is null in all eleven manifests.
@@ -1805,3 +1826,77 @@ grading passes, and add a separate field if it must count both; (c) three seeded
 **Blocks:** A-tier item A5; B-tier item B4 — the single thing separating the
 project from a B-tier full paper. **From:** venue readiness scoring.
 **Cost:** (a) and (b) one day; (c) days of machine time.
+
+
+### Q35 — The rewrite stage buys T4/T5 record identity by doubling confident-and-wrong at the same tiers
+
+**Why it matters:** EXP-2026-09-014 is the first configuration in this record to
+move T4/T5 `records_exact` off 0.0000 — to 0.0880 and 0.1635, reproducibly. It
+does so by converting abstention into answers (T5 abstention 0.7736 → 0.4465),
+and **roughly half of the converted silence is an answer about the wrong
+entity**: T4 `wrong_entity` 0.1321 → 0.2516, T5 0.1132 → 0.2453. Catalogue dumps
+fall everywhere, so these are *specific* wrong answers rather than the
+catalogue — the worse failure for a system whose value proposition is not being
+confidently wrong.
+
+The pre-registered gate watched **T6 only**, where the stage is clean and
+improving (0.1111 → 0.0556). It should have watched the tiers where the stage
+does its work. That is a lesson about writing gates, not only about this stage.
+
+**What resolves it:** (a) a per-tier negative-control gate in any future ship
+rule, not a T6-only one; (b) whether the gate can be made to abstain on the
+specific picks that go wrong — the anchor slot is right 0.18–0.25 of the time at
+T4/T5 against a recall@5 ceiling of 0.45–0.57, so the chooser, not the list, is
+the constraint; (c) a decision about whether 0.16 right for 0.13 wrong is ever
+an acceptable trade here, which is a product question and not a measurement.
+**Blocks:** any future attempt to ship the rewrite stage. **From:**
+EXP-2026-09-014. **Cost:** (a) an hour; (b) days; (c) the operator's call.
+
+### Q36 — The five-slot intent form cannot express a federated question, and the understanding-gold does not specify one
+
+**Why it matters:** split by bank at the clean budget, every gain the rewrite
+makes is on **single-source** questions — unchanged at T1/T6, +0.023 at T2,
++0.243 at T3, +0.143 at T4, +0.229 at T5 — and federated questions get **none**
+of it (T4 and T5 stay at 0.0000) while paying −0.105 at T2. The form has one
+relation slot and a federated question is a chain, so the rewrite delivers the
+first hop and the second hop's records are gone. Compounding it,
+`slot_gold.json` records only an anchor for all 40 federated questions, so the
+failure could not be scored at the slot level even if the form could express it.
+
+Restricted to the single-source half the stage reaches 0.2286 at T5, against a
+pre-registered bar of 0.25 — close enough that the federated half is the
+difference between a stage that ships and one that does not.
+
+**What resolves it:** either (a) the form grows a second hop (`then: IntentForm`)
+and the understanding-gold grows the slots to score it — the two must happen
+together or the change is unmeasurable; or (b) the stage refuses to rewrite a
+question it cannot express, which is a structural predicate (≥2 datasets, one
+relation) rather than a fitted threshold, and federated questions pass through
+untouched. (b) is cheap, recovers the −0.105 at T2, and recovers no gain.
+**Blocks:** any federated figure from the rewrite stage; plausibly the ship
+decision itself. **From:** EXP-2026-09-014 (the limitation was recorded at its
+Step 1, before any arm ran). **Cost:** (b) an hour plus a re-run; (a) days, and
+a gold-authoring pass.
+
+### Q37 — A stage that adds latency inside a bounded pipeline cannot be measured without saying which budget it ran under
+
+**Why it matters:** the same arm, same weights, same canonical questions, scores
+T1 0.4180 under the shipped `PIPELINE_TIMEOUT_S=120` and 0.4921 at 900 s — and
+0.4921 is exactly the no-rewrite baseline, so the "regression" attributed to the
+rewrite was the clock. The proof is that **0 of 106 deterministic-rung rows
+differ across three runs while 20 model-rung rows with a byte-identical
+canonical question return different records**. This is the third distinct
+appearance of a bound producing a plausible wrong number rather than an error
+(after the import-time budget freeze and the ignored `.env` value in
+`llm_query`), and the second time the total-pipeline deadline has done it
+(EXP-2026-09-013).
+
+**What resolves it:** (a) record the pipeline budget and the call timeout in
+every manifest that has a model in the loop — `--llm-timeout-s` and
+`--pipeline-timeout-s` now put them in the command; (b) decide whether the
+rewrite's latency should be charged against the question's budget at all, or
+whether the stage should have its own; (c) if the stage is ever to ship, its
+cost must fit inside 120 s, and today it does not.
+**Blocks:** shipping the rewrite stage; the honest reading of any future LLM-arm
+figure. **From:** EXP-2026-09-014. **Cost:** (a) done; (b) a design decision;
+(c) unknown.
