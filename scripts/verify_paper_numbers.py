@@ -1,20 +1,25 @@
 #!/usr/bin/env python3
-"""Check that every number in the paper traces to an experiment manifest.
+"""Check that every number quoted in prose traces to a *current* experiment metric.
 
-**This closes a record defect rather than adding a feature.** The repository has
-claimed, in OUTLINE.md and in the draft's own appendix, that automated checks
-enforce "every number cites an EXP- id, no orphan numbers". An independent
-readiness audit on 2026-09-06 found that no such check exists: the structural
-validator never opens the paper and never looks at a number. This is that check.
+Two questions, asked of every numeric literal in a document:
 
-It is deliberately blunt. It extracts numeric literals from the LaTeX source and
-asks whether each appears as a metric value in some ``manifest.yaml``. That
-produces false alarms -- years, counts stated in prose, numbers quoted from other
-people's papers -- so the output is a **review list, not a gate**. A number that
-cannot be traced is a question to answer, not proof of an error.
+1. **Traceability** — does the number appear as a metric value in some
+   ``manifest.yaml``? A number that traces nowhere is a question, not a verdict
+   (years, counts in prose, figures quoted from other papers legitimately do not
+   trace), so untraced numbers are a review list.
+2. **Currency** — does it trace *only* to a value an experiment has since
+   withdrawn (``metrics.withdrawn``), or *only* to an experiment marked
+   ``superseded``? Then the prose is quoting a figure the record has retracted.
+   That is a defect, and with ``--gate`` it fails the run.
 
-    uv run python scripts/verify_paper_numbers.py
-    uv run python scripts/verify_paper_numbers.py --json out.json
+The second question is the one this repository had never asked. On 2026-09-09 a
+full audit found the withdrawn federated-versus-merged pair quoted as current in
+six documents, including the paper's abstract, while the first question reported
+"0 untraced". Traceability was checked; currency never was.
+
+    uv run python scripts/verify_paper_numbers.py              # the paper, review mode
+    uv run python scripts/verify_paper_numbers.py --docs       # every prose document that quotes results
+    uv run python scripts/verify_paper_numbers.py --docs --gate   # what the pre-commit hook runs
 """
 
 from __future__ import annotations
@@ -24,6 +29,7 @@ import glob
 import json
 import re
 import sys
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import yaml
@@ -32,46 +38,114 @@ REPO = Path(__file__).resolve().parents[1]
 PAPER = REPO / "docs/research/paper/tmlr/ariadne-tmlr.tex"
 EXPERIMENTS = REPO / "docs/research/experiments"
 
-#: Numbers that are never experiment metrics. Keeping this list short and
-#: explicit is better than a clever heuristic that silently excuses a real orphan.
+#: Prose that quotes results and must therefore quote *current* results.
+#: Anything under docs/research/experiments/ is exempt: an experiment's own
+#: RESULTS.md legitimately carries the numbers it later withdrew.
+PROSE_DOCS = (
+    "README.md",
+    "docs/research/CLAIMS.md",
+    "docs/research/OPEN_QUESTIONS.md",
+    # DECISIONS.md is a dated, append-only ADR log: an entry legitimately quotes
+    # the figure that was current on its date, so it is not scanned.
+    "docs/research/paper/OUTLINE.md",
+    "docs/research/paper/tmlr/ariadne-tmlr.tex",
+    "docs/research/paper/ARTIFACT_APPENDIX.md",
+    "docs/evaluation/README.md",
+    "docs/ARCHITECTURE.md",
+    "docs/goals.md",
+    "docs/purpose.md",
+    "docs/query-safety.md",
+)
+
+#: Numbers that are never experiment metrics.
 IGNORE = {
     "2026", "2025", "2024", "2021", "2017", "1729", "0.05", "0.95", "2000",
     "9090", "4000", "84000", "16384", "67617", "84001", "32768", "512",
 }
 
-#: Prose regions where numbers are quoted from OTHER people's work and cannot
-#: trace to our manifests. Matched as substrings of the surrounding line.
+#: Prose regions where numbers are quoted from OTHER people's work.
 FOREIGN_CONTEXT = ("SPLIT-RAG", "Hit-point", "arXiv", "PhantomBench",
                    "Deceptive Grounding", "QUINT", "TeBaQA", "SEMANTiCS",
-                   "WWW", "DOI", "TMLR", "OpenReview")
+                   "WWW", "DOI", "TMLR", "OpenReview", "FedV-KGQA", "EMNLP")
+
+#: A line carrying one of these words is *about* the withdrawal and may name
+#: the old figure — "−0.0334 was withdrawn on 31 August" is not a stale quote.
+RETRACTION_CONTEXT = re.compile(
+    r"withdraw|retract|supersed|superced|do not quote|must not be quoted|"
+    r"never quote|not quotable|no longer quot|artifact of|replaced by|"
+    r"corrected|instead of|was wrong|old figure|stale|historical|history",
+    re.IGNORECASE,
+)
 
 NUM = re.compile(r"(?<![\w.])(\d{1,3}(?:[,{]\d{3}\}?)+|\d+\.\d{2,4})(?![\w])")
 
 
-def manifest_values() -> dict[str, set[str]]:
-    """Every metric value in the record, mapped value -> {experiment ids}."""
-    index: dict[str, set[str]] = {}
+@dataclass
+class Source:
+    experiment: str
+    metric: str
+    status: str          # the experiment's status
+    withdrawn: bool      # True when the value is in metrics.withdrawn
+    replaced_by: str = ""
+
+    @property
+    def current(self) -> bool:
+        return not self.withdrawn and self.status != "superseded"
+
+
+@dataclass
+class Index:
+    by_form: dict[str, list[Source]] = field(default_factory=dict)
+
+    def add(self, form: str, src: Source) -> None:
+        self.by_form.setdefault(form, []).append(src)
+
+    def lookup(self, raw: str, line: str) -> list[Source]:
+        hit = self.by_form.get(raw) or self.by_form.get(raw.lstrip("0"))
+        if not hit and "." in raw:
+            hit = self.by_form.get(f"{float(raw):.4f}")
+        # A percentage in prose is the same measurement as a fraction in a
+        # manifest: 22.71% and 0.2271 are one number.
+        if not hit and "%" in line:
+            try:
+                hit = self.by_form.get(f"{float(raw) / 100:.4f}")
+            except ValueError:
+                pass
+        return hit or []
+
+
+def _forms(v: float | int) -> set[str]:
+    out = {f"{v}", f"{abs(v):.4f}", f"{abs(v):.3f}", f"{abs(v):.2f}"}
+    if float(v).is_integer():
+        out.add(f"{int(v)}")
+    return {f for f in out if f} | {f.lstrip("0") or "0" for f in out if f}
+
+
+def manifest_index() -> Index:
+    """Every metric value in the record — current and withdrawn — with its status."""
+    index = Index()
     for mf in sorted(glob.glob(str(EXPERIMENTS / "EXP-*" / "manifest.yaml"))):
         exp = Path(mf).parent.name
         try:
             m = yaml.safe_load(open(mf)) or {}
         except Exception:
             continue
-        vals = ((m.get("metrics") or {}).get("values") or {})
-        if not isinstance(vals, dict):
-            continue
-        for name, cell in vals.items():
-            if not isinstance(cell, dict):
+        status = str(m.get("status", "unknown"))
+        metrics = m.get("metrics") or {}
+        for bucket, withdrawn in (("values", False), ("withdrawn", True)):
+            cells = metrics.get(bucket) or {}
+            if not isinstance(cells, dict):
                 continue
-            for key in ("mean", "std", "n"):
-                v = cell.get(key)
-                if v is None:
+            for name, cell in cells.items():
+                if not isinstance(cell, dict):
                     continue
-                for form in (f"{v}", f"{abs(v):.4f}", f"{abs(v):.3f}",
-                             f"{abs(v):.2f}", f"{int(v)}" if float(v).is_integer() else ""):
-                    if form:
-                        index.setdefault(form.lstrip("0") or "0", set()).add(exp)
-                        index.setdefault(form, set()).add(exp)
+                src = Source(exp, name, status, withdrawn, str(cell.get("replaced_by", "")))
+                for key in ("mean", "std", "n"):
+                    v = cell.get(key)
+                    if v is None:
+                        continue
+                    for form in _forms(v):
+                        index.add(form, src)
     return index
 
 
@@ -79,72 +153,105 @@ def normalise(tok: str) -> str:
     return tok.replace(",", "").replace("{", "").replace("}", "")
 
 
-def main() -> int:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--json", default=None)
-    ap.add_argument("--paper", default=str(PAPER))
-    args = ap.parse_args()
-
-    paper = Path(args.paper)
-    if not paper.is_absolute():
-        paper = (REPO / paper).resolve()
-    if not paper.exists():
-        print(f"paper not found: {paper}")
-        return 2
-
-    index = manifest_values()
-    traced, orphan, foreign = [], [], []
-
-    for lineno, line in enumerate(paper.read_text().splitlines(), 1):
-        if line.lstrip().startswith("%"):
+def scan(doc: Path, index: Index) -> dict[str, list[dict]]:
+    """Classify every numeric literal in one document."""
+    traced, orphan, foreign, stale = [], [], [], []
+    is_tex = doc.suffix == ".tex"
+    for lineno, line in enumerate(doc.read_text(errors="replace").splitlines(), 1):
+        if is_tex and line.lstrip().startswith("%"):
             continue
         is_foreign = any(f in line for f in FOREIGN_CONTEXT)
+        is_retraction = bool(RETRACTION_CONTEXT.search(line))
         for tok in NUM.findall(line):
             raw = normalise(tok)
             if raw in IGNORE:
                 continue
-            hit = index.get(raw) or index.get(raw.lstrip("0"))
-            if not hit and "." in raw:
-                hit = index.get(f"{float(raw):.4f}")
-            # A percentage in prose is the same measurement as a fraction in a
-            # manifest. 22.71\% and 0.2271 are one number, and treating them as
-            # two manufactures orphans that are only a formatting difference.
-            if not hit and "%" in line:
-                try:
-                    hit = index.get(f"{float(raw) / 100:.4f}")
-                except ValueError:
-                    pass
-            row = {"line": lineno, "value": raw,
-                   "context": line.strip()[:110]}
-            if hit:
-                row["experiments"] = sorted(hit)[:3]
-                traced.append(row)
+            hits = index.lookup(raw, line)
+            row = {"line": lineno, "value": raw, "context": line.strip()[:110]}
+            if hits:
+                current = [h for h in hits if h.current]
+                row["experiments"] = sorted({h.experiment for h in hits})[:3]
+                # A superseded experiment's figure may be quoted as history when
+                # the line names the experiment; a withdrawn value only beside
+                # words that say it is withdrawn.
+                cited = any(
+                    not h.withdrawn and h.experiment[:15] in line for h in hits
+                )
+                if current or is_retraction or cited:
+                    traced.append(row)
+                else:
+                    h = hits[0]
+                    row["withdrawn_in"] = h.experiment
+                    row["metric"] = h.metric
+                    row["replaced_by"] = h.replaced_by or (
+                        "the successor experiment" if h.status == "superseded" else "")
+                    stale.append(row)
             elif is_foreign:
                 foreign.append(row)
             else:
                 orphan.append(row)
+    return {"traced": traced, "untraced": orphan, "foreign": foreign, "stale": stale}
 
-    try:
-        shown = paper.relative_to(REPO)
-    except ValueError:
-        shown = paper
-    print(f"document         : {shown}")
-    print(f"manifest values  : {len(index)} distinct numeric forms")
-    print(f"traced           : {len(traced)}")
-    print(f"quoted from others: {len(foreign)}  (not expected to trace)")
-    print(f"UNTRACED         : {len(orphan)}")
-    if orphan:
-        print("\n-- numbers with no manifest source (review, not a verdict) --")
-        for r in orphan[:40]:
-            print(f"  L{r['line']:<5} {r['value']:<12} {r['context']}")
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    ap.add_argument("--json", default=None, help="write the full classification here")
+    ap.add_argument("--paper", default=str(PAPER), help="document to check (default: the paper)")
+    ap.add_argument("--docs", action="store_true",
+                    help="check every prose document in PROSE_DOCS instead of one file")
+    ap.add_argument("--gate", action="store_true",
+                    help="exit 1 if any document quotes a withdrawn or superseded figure")
+    ap.add_argument("--quiet", action="store_true", help="print only stale findings")
+    args = ap.parse_args()
+
+    if args.docs:
+        docs = [REPO / d for d in PROSE_DOCS if (REPO / d).exists()]
+    else:
+        paper = Path(args.paper)
+        paper = paper if paper.is_absolute() else (REPO / paper).resolve()
+        if not paper.exists():
+            print(f"document not found: {paper}")
+            return 2
+        docs = [paper]
+
+    index = manifest_index()
+    report = {}
+    total_stale = 0
+    for doc in docs:
+        result = scan(doc, index)
+        shown = doc.relative_to(REPO)
+        report[str(shown)] = result
+        total_stale += len(result["stale"])
+        if not args.quiet:
+            print(f"document         : {shown}")
+            print(f"traced           : {len(result['traced'])}")
+            print(f"quoted from others: {len(result['foreign'])}  (not expected to trace)")
+            print(f"UNTRACED         : {len(result['untraced'])}  (review list, never a gate)")
+            print(f"STALE            : {len(result['stale'])}  (withdrawn or superseded figures quoted as current)")
+        for r in result["stale"]:
+            print(f"  STALE  {shown}:{r['line']:<5} {r['value']:<10} withdrawn in {r['withdrawn_in']} "
+                  f"({r['metric']}); quote {r['replaced_by'] or 'nothing — figure has no replacement'}")
+            print(f"         {r['context']}")
+        if not args.quiet and not args.docs and result["untraced"]:
+            print("\n-- numbers with no manifest source (review, not a verdict) --")
+            for r in result["untraced"][:40]:
+                print(f"  L{r['line']:<5} {r['value']:<12} {r['context']}")
+        if not args.quiet:
+            print()
+
+    print(f"manifest values  : {len(index.by_form)} distinct numeric forms "
+          f"({sum(1 for v in index.by_form.values() if any(s.withdrawn for s in v))} withdrawn forms)")
+    print(f"stale quotes     : {total_stale} across {len(docs)} document(s)")
 
     if args.json:
-        Path(args.json).write_text(json.dumps(
-            {"traced": traced, "untraced": orphan, "foreign": foreign}, indent=1) + "\n")
-        print(f"\nwritten -> {args.json}")
+        Path(args.json).write_text(json.dumps(report, indent=1) + "\n")
+        print(f"written -> {args.json}")
 
-    # Never a gate. An untraced number is a question, and the readiness audit
-    # found that claiming enforcement we do not have is itself the defect.
+    if args.gate and total_stale:
+        print("\nFAIL: a document quotes a figure the record has withdrawn. "
+              "Quote the replacement named in docs/research/CURRENT.md, or say on the "
+              "same line that the figure is withdrawn.", file=sys.stderr)
+        return 1
     return 0
 
 

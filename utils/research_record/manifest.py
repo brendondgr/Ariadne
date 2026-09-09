@@ -96,9 +96,29 @@ class MetricValue(_Base):
     n: int = Field(ge=1)
 
 
+class WithdrawnValue(_Base):
+    """A value this experiment once reported and has since retracted.
+
+    Withdrawn values are kept, not deleted: the history must stay readable and
+    a reader who meets the old number elsewhere must be able to find out why it
+    is old. ``replaced_by`` names where the quotable figure now lives —
+    ``EXP-2026-08-021:c022_margin_bank19`` — or ``none`` when there is no
+    replacement. The validator and ``verify_paper_numbers`` treat any prose that
+    quotes a withdrawn value without its replacement as stale.
+    """
+
+    mean: float
+    std: float | None = None
+    n: int = Field(ge=1)
+    withdrawn_on: _dt.date
+    reason: str = Field(min_length=1)
+    replaced_by: str = Field(min_length=1)
+
+
 class Metrics(_Base):
     primary: str | None = None
     values: dict[str, MetricValue] = Field(default_factory=dict)
+    withdrawn: dict[str, WithdrawnValue] = Field(default_factory=dict)
 
 
 class Manifest(_Base):

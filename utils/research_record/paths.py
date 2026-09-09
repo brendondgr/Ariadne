@@ -14,6 +14,7 @@ FIGURES_ROOT = RESEARCH_ROOT / "figures"
 
 INDEX_PATH = RESEARCH_ROOT / "INDEX.md"
 CLAIMS_PATH = RESEARCH_ROOT / "CLAIMS.md"
+CURRENT_PATH = RESEARCH_ROOT / "CURRENT.md"
 
 #: Files every experiment directory must carry (section 3).
 REQUIRED_FILES = ("manifest.yaml", "PROTOCOL.md", "RESULTS.md")

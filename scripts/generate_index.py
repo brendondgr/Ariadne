@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regenerate docs/research/INDEX.md. See `make index`.
+"""Regenerate docs/research/INDEX.md and docs/research/CURRENT.md. See `make index`.
 
 With --check, writes nothing and exits non-zero if the committed index is stale.
 That is the form CI uses.
@@ -13,8 +13,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from utils.research_record.index import render_index, write_index  # noqa: E402
-from utils.research_record.paths import INDEX_PATH, REPO_ROOT  # noqa: E402
+from utils.research_record.index import render_current, render_index, write_current, write_index  # noqa: E402
+from utils.research_record.paths import CURRENT_PATH, INDEX_PATH, REPO_ROOT  # noqa: E402
 
 
 def main() -> int:
@@ -25,20 +25,23 @@ def main() -> int:
         help="fail if INDEX.md is stale instead of rewriting it",
     )
     args = parser.parse_args()
-    rel = INDEX_PATH.relative_to(REPO_ROOT)
+    targets = ((INDEX_PATH, render_index, write_index), (CURRENT_PATH, render_current, write_current))
 
     if args.check:
-        current = INDEX_PATH.read_text() if INDEX_PATH.is_file() else None
-        if current == render_index():
-            print(f"{rel} is current")
-            return 0
-        print(f"{rel} is STALE — run `make index` and commit the result", file=sys.stderr)
-        return 1
+        stale = False
+        for path, render, _ in targets:
+            rel = path.relative_to(REPO_ROOT)
+            current = path.read_text() if path.is_file() else None
+            if current == render():
+                print(f"{rel} is current")
+            else:
+                print(f"{rel} is STALE — run `make index` and commit the result", file=sys.stderr)
+                stale = True
+        return 1 if stale else 0
 
-    if write_index():
-        print(f"{rel} regenerated")
-    else:
-        print(f"{rel} already current")
+    for path, _, write in targets:
+        rel = path.relative_to(REPO_ROOT)
+        print(f"{rel} regenerated" if write() else f"{rel} already current")
     return 0
 
 

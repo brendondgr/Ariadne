@@ -263,3 +263,149 @@ def test_load_manifest_names_the_offending_file(tmp_path: Path) -> None:
     bad.write_text("just a string")
     with pytest.raises(ManifestError, match="manifest.yaml"):
         load_manifest(bad)
+
+
+# --- conditions 9–14 (added 2026-09-09) ---------------------------------------
+#
+# Each of these exists because the first eight passed on 47 real experiments of
+# which thirteen carried blank contract files, impossible commits, or values
+# their own amendments had withdrawn.
+
+from utils.research_record.hashing import sha256_file  # noqa: E402
+from utils.research_record.manifest import Manifest  # noqa: E402
+from utils.research_record.validate import check_links  # noqa: E402
+
+
+def test_terminal_without_date_completed_fails(experiment: Path) -> None:
+    _edit_manifest(experiment, lambda m: m.__setitem__("date_completed", None))
+    assert "no-date-completed" in _checks(validate_experiment(experiment, claim_ids={"C-001"}))
+
+
+def test_date_completed_before_started_fails(experiment: Path) -> None:
+    _edit_manifest(experiment, lambda m: m.__setitem__("date_completed", _dt.date(1999, 12, 31)))
+    assert "date-order" in _checks(validate_experiment(experiment, claim_ids={"C-001"}))
+
+
+def test_scaffold_placeholder_in_terminal_manifest_fails(experiment: Path) -> None:
+    _edit_manifest(experiment, lambda m: m["compute"].__setitem__("hardware", "<cpu/gpu, ram>"))
+    findings = validate_experiment(experiment, claim_ids={"C-001"})
+    assert "placeholder" in _checks(findings)
+    assert any("compute.hardware" in f.detail for f in findings)
+
+
+def test_scaffold_placeholder_in_planned_manifest_passes(experiment: Path) -> None:
+    def mutate(m):
+        m["status"] = "planned"
+        m["date_completed"] = None
+        m["metrics"]["values"] = {}
+        m["compute"]["hardware"] = "<cpu/gpu, ram>"
+
+    _edit_manifest(experiment, mutate)
+    assert "placeholder" not in _checks(validate_experiment(experiment, claim_ids={"C-001"}))
+
+
+def test_empty_pointer_table_fails(experiment: Path) -> None:
+    pointers = experiment / "data" / "POINTERS.md"
+    pointers.write_text("| Artifact | Path | Bytes | SHA-256 | What it is |\n|---|---|---|---|---|\n")
+    assert "pointer-table-empty" in _checks(validate_experiment(experiment, claim_ids={"C-001"}))
+
+
+def test_no_external_artifacts_statement_passes(experiment: Path) -> None:
+    assert "pointer-table-empty" not in _checks(validate_experiment(experiment, claim_ids={"C-001"}))
+
+
+def test_missing_metrics_file_fails(experiment: Path) -> None:
+    (experiment / "data" / "metrics.json").unlink()
+    assert "metrics-file-missing" in _checks(validate_experiment(experiment, claim_ids={"C-001"}))
+
+
+def test_manifest_value_absent_from_metrics_file_fails(experiment: Path) -> None:
+    _edit_manifest(
+        experiment,
+        lambda m: m["metrics"]["values"].__setitem__("typed-not-read", {"mean": 0.4321, "std": None, "n": 1}),
+    )
+    findings = validate_experiment(experiment, claim_ids={"C-001"})
+    assert "metric-not-in-file" in _checks(findings)
+    assert any("typed-not-read" in f.detail for f in findings)
+
+
+def test_withdrawn_block_round_trips(experiment: Path) -> None:
+    def mutate(m):
+        m["metrics"]["withdrawn"] = {
+            "old-metric": {
+                "mean": 0.9,
+                "std": None,
+                "n": 1,
+                "withdrawn_on": _dt.date(2000, 1, 3),
+                "reason": "recomputed",
+                "replaced_by": "EXP-2000-01-001:demo-metric",
+            }
+        }
+
+    _edit_manifest(experiment, mutate)
+    manifest = load_manifest(experiment / "manifest.yaml")
+    assert manifest.metrics.withdrawn["old-metric"].replaced_by == "EXP-2000-01-001:demo-metric"
+    assert validate_experiment(experiment, claim_ids={"C-001"}) == []
+
+
+def test_withdrawn_block_requires_reason_and_replacement(experiment: Path) -> None:
+    def mutate(m):
+        m["metrics"]["withdrawn"] = {"old-metric": {"mean": 0.9, "n": 1, "withdrawn_on": _dt.date(2000, 1, 3)}}
+
+    _edit_manifest(experiment, mutate)
+    with pytest.raises(ManifestError):
+        load_manifest(experiment / "manifest.yaml")
+
+
+def _manifest_with(exp_id: str, **over) -> Manifest:
+    base = yaml.safe_load((VALID / "manifest.yaml").read_text())
+    base["id"] = exp_id
+    base.update(over)
+    return Manifest.model_validate(base)
+
+
+def test_one_way_supersession_link_fails() -> None:
+    a = _manifest_with("EXP-2000-01-001", supersedes="EXP-2000-01-002")
+    b = _manifest_with("EXP-2000-01-002")
+    findings = check_links({"EXP-2000-01-001": a, "EXP-2000-01-002": b})
+    assert "link-one-way" in {f.check for f in findings}
+
+
+def test_two_way_supersession_link_passes() -> None:
+    a = _manifest_with("EXP-2000-01-001", supersedes="EXP-2000-01-002")
+    b = _manifest_with("EXP-2000-01-002", superseded_by="EXP-2000-01-001", status="superseded")
+    assert check_links({"EXP-2000-01-001": a, "EXP-2000-01-002": b}) == []
+
+
+def test_link_to_unknown_experiment_fails() -> None:
+    a = _manifest_with("EXP-2000-01-001", related=["EXP-1999-01-001"])
+    assert "link-unresolved" in {f.check for f in check_links({"EXP-2000-01-001": a})}
+
+
+def test_superseded_status_needs_successor() -> None:
+    a = _manifest_with("EXP-2000-01-001", status="superseded")
+    assert "superseded-no-successor" in {f.check for f in check_links({"EXP-2000-01-001": a})}
+
+
+def test_pointer_hash_mismatch_fails(experiment: Path, monkeypatch) -> None:
+    artifact = experiment / "data" / "raw.txt"
+    artifact.write_text("v1")
+    monkeypatch.setattr("utils.research_record.validate.REPO_ROOT", experiment.parent)
+    rel = artifact.relative_to(experiment.parent)
+    pointers = experiment / "data" / "POINTERS.md"
+    pointers.write_text(
+        "| Artifact | Path | Bytes | SHA-256 | What it is |\n|---|---|---|---|---|\n"
+        f"| raw | `{rel}` | 2 | {sha256_file(artifact)} | raw |\n"
+    )
+    assert "pointer-hash-mismatch" not in _checks(validate_experiment(experiment, claim_ids={"C-001"}))
+    artifact.write_text("v2")
+    assert "pointer-hash-mismatch" in _checks(validate_experiment(experiment, claim_ids={"C-001"}))
+
+
+def test_pointer_to_absent_path_is_skipped_not_failed(experiment: Path) -> None:
+    pointers = experiment / "data" / "POINTERS.md"
+    pointers.write_text(
+        "| Artifact | Path | Bytes | SHA-256 | What it is |\n|---|---|---|---|---|\n"
+        f"| raw | `docs/evaluation/not-on-this-machine/` | 1 | sha256:{'b' * 64} | gitignored run output |\n"
+    )
+    assert "pointer-hash-mismatch" not in _checks(validate_experiment(experiment, claim_ids={"C-001"}))
