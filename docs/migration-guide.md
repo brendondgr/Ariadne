@@ -253,7 +253,8 @@ pattern verbatim.
 - **Config fields** — `SpecialistConfig` (`utils/specialists/config.py`)
   is a frozen dataclass holding, today, `neo4j_uri`/`neo4j_user`/`neo4j_password`
   and `gremlin_uri` alongside shared limits (`max_result_rows`,
-  `query_timeout_ms`, `max_retries`) and an optional LLM seam. A new backend
+  `query_timeout_ms`, `max_retries`, `expand_page_size`) and the
+  `llm_query_builder` baseline switch. A new backend
   needs its own URI (and auth fields, if required) added to this dataclass
   and to `from_env()` (`config.py`), which reads each field from an env
   var via `utils.config.env_str`/`env_int`.
@@ -296,6 +297,39 @@ correlate with ATT&CK or CAPEC on a shared id:
   (`utils/specialists/federation.py`, `dependency_map`/`execution_order`)
   and evidence bundling (`federation.py`) are dataset-agnostic — they
   read whichever join key resolves and need no changes for a new bridge.
+
+## The two non-template paths a new backend must also serve
+
+The four swap points above are described through the template builder, but the
+shipped builders route to two further query-construction paths, and a new
+backend's builder has to serve both or declare honestly that it does not.
+
+**Schema-derived primitives** (`utils/specialists/primitives/describe.py`,
+`utils/specialists/primitives/expand.py`). When no question-shape template
+applies, both existing builders fall through to `describe` (every property on
+an anchor node plus a bounded facet block — a count per relationship, direction
+and neighbour label, with real zeros folded in from the schema registry) and
+`expand` (one facet's members, paged, each with a bounded description and an
+explicit `truncated` flag). The primitives are backend-agnostic *contracts*: a
+`Facet` is a `(relationship, direction, neighbour label)` regardless of whether
+the edge is walked in Cypher or Gremlin. A new builder implements the two query
+shapes that satisfy them — see how `cypher/builder.py` and `gremlin/builder.py`
+each render an `ExpandRequest` — and its normalizer must populate
+`EvidenceRecord.facets` for a describe result. Both read the derived
+`utils/specialists/schema/` registry (`DatasetSchema`, `SchemaRegistry`), so the
+new dataset also needs its schema derived there; nothing in the primitives may
+carry catalogue-specific knowledge.
+
+**The LLM query builder** (`utils/specialists/llm_builder.py`,
+`SPECIALIST_LLM_QUERY_BUILDER=true`). The measured baseline hands a model the
+card's schema, the resolved seeds and the gate's constraints, and lets it write
+the query string; the factory in each backend's `specialist.py` swaps it in for
+the template builder when the flag is set. It is language-agnostic on the
+prompt side but needs the new backend's language named, and its output is only
+as safe as the new validator: the gate checks the query *string*, never the
+draft's template name, so the validator written in step 2a is what stands
+between a model-written query and the database. It stays off by default and
+exists to be measured against, not run.
 
 ## Validating the new specialist
 
@@ -428,5 +462,7 @@ codebase has no evidence for:
 | Corpus + e2e evaluation hookups | `utils/planner/evaluation/build_corpus.py`, `utils/evaluation/score_e2e.py`, `utils/evaluation/harness/{run_stage,contracts}.py` |
 | Unit + golden test suites | `utils/specialists/tests/` |
 | Gold-bank independent verification report | `utils/specialists/tests/golden/VERIFICATION.md` |
-| Existing specialist architecture doc (broader context) | `docs/specialist_agents.md` |
+| Schema-derived primitives + schema registry | `utils/specialists/primitives/`, `utils/specialists/schema/` |
+| LLM query builder (baseline path) | `utils/specialists/llm_builder.py` |
+| Pipeline architecture (broader context) | `docs/ARCHITECTURE.md` |
 | Source-card shape reference | `docs/source_cards.md` |

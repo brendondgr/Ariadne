@@ -43,8 +43,8 @@ Deliver a working demonstration that:
 
 | Status | Weeks | Phase | Task | Difficulty | Why it's needed |
 | :---: |-------|-------|------|------------|-----------------|
-| [~] | Wk 14–15 | Evaluation | Bug fixes, iteration, and documentation — address evaluation findings, harden edge cases, write technical docs covering source card format, agent interfaces, query safety constraints, and extending to a new query language (**documentation set delivered**: `source_cards.md`, `agent-interfaces.md`, `query-safety.md`, `migration-guide.md`; bug-fix and hardening half in progress) | Low | Documentation makes the prototype extensible and demonstrates that replacing a query specialist requires only four targeted changes. |
-| [ ] | Wk 15–16 | Pitch prep | Pitch preparation and final demo — build live demo script around credential-theft flow; prepare slides covering architecture, evaluation results, provenance output, and path to a ReliaQuest pilot; practice Q&A | Low | October ReliaQuest pitch is the primary deliverable. A polished end-to-end demo is the clearest proof the prototype meets the research goal. |
+| [x] | Wk 14–15 | Evaluation | Bug fixes, iteration, and documentation — address evaluation findings, harden edge cases, write technical docs covering source card format, agent interfaces, query safety constraints, and extending to a new query language (documentation set delivered: `source_cards.md`, `agent-interfaces.md`, `query-safety.md`, `migration-guide.md`, consolidated under `ARCHITECTURE.md` on 2026-09-09; the hardening half is the August–September experiment series recorded in `docs/research/`) | Low | Documentation makes the prototype extensible and demonstrates that replacing a query specialist requires only four targeted changes. |
+| [~] | Wk 15–16 | Pitch prep | Pitch preparation and final demo — build live demo script around credential-theft flow; prepare slides covering architecture, evaluation results, provenance output, and path to a ReliaQuest pilot; practice Q&A (**underway as of September 2026**: slide map, script and deck under `docs/pitch/`, per `docs/pitch/october-pitch-plan.md`) | Low | October ReliaQuest pitch is the primary deliverable. A polished end-to-end demo is the clearest proof the prototype meets the research goal. |
 
 **October ReliaQuest pitch:** Live demo, evaluation results, and future development roadmap presented.
 
@@ -84,6 +84,14 @@ Deliver a working demonstration that:
 - CAPEC-to-ATT&CK mapping recall
 - Provenance correctness
 - Analyst inspectability
+
+Three of these four (provenance correctness, analyst inspectability, and the
+no-fabrication property behind answer accuracy) are self-consistency checks by
+construction — they measure whether the outputs cohere with the system's own
+retrieved records and cannot fall below 1.0 without a defect
+(`docs/research/OPEN_QUESTIONS.md` Q8, relabelled as design guarantees); the
+primary metric is judge-scored correctness (`docs/research/DECISIONS.md` D-001),
+and the current figures are in `docs/research/CURRENT.md`.
 
 ## Ground Truth
 

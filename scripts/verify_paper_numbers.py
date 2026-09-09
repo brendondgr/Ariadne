@@ -53,8 +53,8 @@ PROSE_DOCS = (
     "docs/evaluation/README.md",
     "docs/ARCHITECTURE.md",
     "docs/goals.md",
-    "docs/purpose.md",
     "docs/query-safety.md",
+    "docs/pitch/october-pitch-plan.md",
 )
 
 #: Numbers that are never experiment metrics.

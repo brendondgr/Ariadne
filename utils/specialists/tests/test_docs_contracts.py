@@ -5,9 +5,9 @@ Two failure modes make docs worse than no docs: citing files that have moved,
 and describing wire shapes the code no longer emits. This suite pins both.
 
 ``DOCS`` is the contract set an external integrator reads (source cards, the
-four frozen seams, the safety model, the migration guide) plus the four
-documents that orient a newcomer (README, structure, purpose, goals, commands)
-and the evaluation indexes. ``MAINTAINED_DOCS`` adds every canonical skill.
+four frozen seams, the safety model, the migration guide) plus the documents
+that orient a newcomer (README, structure, architecture, goals, commands, the
+changelog guide) and the evaluation indexes. ``MAINTAINED_DOCS`` adds every canonical skill.
 
 ``docs/plans/`` is deliberately excluded: it is a dated historical record, and a
 plan that cites the tree as it stood when the plan was written is correct, not
@@ -36,13 +36,14 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 DOCS = (
     "README.md",
     "docs/structure.md",
-    "docs/purpose.md",
+    "docs/ARCHITECTURE.md",
     "docs/goals.md",
     "docs/commands.md",
     "docs/source_cards.md",
     "docs/agent-interfaces.md",
     "docs/query-safety.md",
     "docs/migration-guide.md",
+    "docs/CHANGELOG.md",
     "docs/evaluation/README.md",
     "docs/evaluation/experiments/README.md",
     "CONTRIBUTING.md",
@@ -60,7 +61,22 @@ AGENT_POINTER_DIRS = (".claude/skills", ".agents/skills")
 #: ``AGENT_INSTRUCTIONS.md`` is also excluded: it is the contract installed
 #: verbatim from its source, and its section 6 carries fenced *example* markdown
 #: (the README snippet to paste) whose links are illustrations, not citations.
-RESEARCH_EXCLUDED = ("audit-2026-08-03.md", "templates/", "AGENT_INSTRUCTIONS.md")
+#: ``experiments/`` (added 2026-09-09) and ``history/`` are excluded for the same
+#: reason as the audit: a completed experiment is an append-only record of what
+#: existed on its run date, and a raw artifact it cites may since have been
+#: deleted or overwritten — that fact belongs in the experiment's ISSUES.md and
+#: in its hashed POINTERS.md (which the research validator checks), not in a
+#: silent edit of RESULTS.md. ``OPEN_QUESTIONS-ANSWERED.md`` and
+#: ``CLAIMS-HISTORY.md`` are verbatim archives and are excluded likewise.
+RESEARCH_EXCLUDED = (
+    "audit-2026-08-03.md",
+    "templates/",
+    "AGENT_INSTRUCTIONS.md",
+    "experiments/",
+    "history/",
+    "OPEN_QUESTIONS-ANSWERED.md",
+    "CLAIMS-HISTORY.md",
+)
 
 
 def _skill_names() -> list[str]:

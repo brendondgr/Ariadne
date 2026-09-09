@@ -9,11 +9,10 @@ contract test in `utils/specialists/tests/test_seams.py`. This document describe
 shape of each seam, the invariant each seam test enforces, and what a
 consumer may safely depend on versus must not assume.
 
-All four contracts are declared integration-frozen in `docs/specialist_agents.md`:
-
-> Changes to these shapes require updating the seam tests deliberately.
-
-That is the change policy for everything below; see [Change policy](#change-policy).
+All four contracts are **integration-frozen**: changes to these shapes require
+updating the seam tests deliberately. That is the change policy for everything
+below; see [Change policy](#change-policy). Where each seam sits in the
+pipeline is described in [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 ## Overview
 
@@ -516,12 +515,8 @@ endpoints that survive in supported claims.
 
 ## Change policy
 
-These four contracts are declared **integration-frozen** in
-`docs/specialist_agents.md`:
-
-> Changes to these shapes require updating the seam tests deliberately.
-
-In practice this means: a new field, a changed default, an altered
+These four contracts are **integration-frozen** — changes to these shapes
+require updating the seam tests deliberately. In practice this means: a new field, a changed default, an altered
 omit-when-empty rule, or a changed derivation (e.g. how `partial` or
 `join_values` is computed) must land alongside an update to the matching
 test in `utils/specialists/tests/test_seams.py`, and — for seam 4 — the
@@ -548,6 +543,5 @@ make drift between the router, the CLI, and the API impossible.
 | Synthesis compose+verify entry point | `utils/synthesis/factory.py` |
 | Verification + reconciliation | `utils/synthesis/verifier.py`, `utils/synthesis/reconcile.py` |
 | All four seam contract tests | `utils/specialists/tests/test_seams.py` |
-| Integration-frozen declaration | `docs/specialist_agents.md` |
-| Related: conflicting-evidence detail | `docs/conflict-detection.md` |
+| Pipeline context for every seam (specialists §5, synthesis §7 incl. conflict detection) | `docs/ARCHITECTURE.md` |
 | Orchestration envelope (wraps, never redefines, these contracts) | `utils/orchestration/state.py` |

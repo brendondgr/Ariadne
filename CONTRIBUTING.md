@@ -24,6 +24,8 @@ make validate-research      # schema, linkage, figure, and pointer checks
 make index                  # regenerate docs/research/INDEX.md
 make figures                # regenerate every promoted figure and table
 make test-research          # the research-record test suite
+make check-docs             # gate: no prose document quotes a withdrawn or superseded figure
+make check-record           # the full gate: validator + index freshness + check-docs + docs contracts
 ```
 
 Regenerating figures needs `rsvg-convert` (`librsvg2-tools` on Fedora,
@@ -63,8 +65,12 @@ The pre-commit hook fails on all of these, so it is cheaper to know them:
    immediately — do not batch steps. **Do not `git push`** unless explicitly
    asked; this repository is worked locally.
 2. **Every change gets a `docs/changelog.jsonl` entry** — code, docs, config,
-   tests, skills, no exceptions. Two to four sentences on what changed and why.
+   tests, skills, no exceptions. Two to four sentences on what changed and why;
+   the pre-commit hook rejects a `summary` over 600 characters (see
+   [`docs/CHANGELOG.md`](docs/CHANGELOG.md)).
 3. **Web changes require `npm run build`** to verify compilation.
+   Prose that quotes a number requires `make check-docs` (and
+   `docs/research/CURRENT.md` read first).
 4. **Never duplicate agent instructions** outside `docs/skills/`. The `.claude/`,
    `.agents/`, and `.cursor/` folders are pointers only.
 5. Leave a branch merged and the tree clean when everything is functional.

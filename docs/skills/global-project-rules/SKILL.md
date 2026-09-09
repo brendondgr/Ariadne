@@ -12,7 +12,7 @@ Every agent working in this repository must read this skill first, then the rele
 Before making changes, read:
 
 1. This file
-2. `docs/purpose.md`
+2. `docs/ARCHITECTURE.md`
 3. `docs/goals.md`
 4. `docs/changelog.jsonl`
 5. The relevant skill under `docs/skills/`
@@ -23,7 +23,7 @@ Ariadne is a **federated agentic graph-database access prototype** for cybersecu
 
 | Layer | Location | Role |
 |-------|----------|------|
-| Project docs | `docs/purpose.md`, `docs/goals.md`, `docs/structure.md` | Mission, architecture, timeline, repo map |
+| Project docs | `docs/ARCHITECTURE.md`, `docs/goals.md`, `docs/structure.md`, `docs/commands.md` | Pipeline stages and their configuration, timeline, repo map, commands |
 | Research record | `docs/research/` | Every experiment, claim, decision, figure, and open question. The only place a research finding may live |
 | Agent skills | `docs/skills/` | Canonical agent instructions |
 | Python utilities | `utils/` | Domain-specific helpers (`download`, `kg_builder`, `graph_loader`, `infrastructure`, `planner`, `specialists`, `synthesis`, `evaluation`, `orchestration` — the LangGraph pipeline super-graph, `conversation` — the LangGraph conversational memory layer (persisted threads + router/validation/answer wrapping the pipeline), `launcher` — the app.py phases; `uv`, Python 3.13+) |
@@ -43,6 +43,7 @@ Supported agents: Claude Code (`.claude/skills/`), OpenAI Codex (`.agents/skills
 4. **Append-only records.** Never edit `docs/plans/` or `docs/research/audit-2026-08-03.md` in place — they are dated historical records; write a new file instead. Under `docs/research/`, the same rule binds **completed experiment folders**: once an experiment's `status` is `complete`, `failed`, or `superseded`, corrections go in a new experiment or an appended `AMENDMENTS` section, never a silent edit. It does **not** bind the living ledgers (`CLAIMS.md`, `DECISIONS.md`, `OPEN_QUESTIONS.md`, `RELATED_WORK.md`), generated files (`INDEX.md`, promoted figures and tables), or an in-progress experiment — those are meant to be updated. See `docs/research/DECISIONS.md` D-008.
 5. **Always** append a new entry to `docs/changelog.jsonl` for every change — no matter how small or what type (code, docs, config, tests, skills). No change ships without a changelog entry. Each entry is simplistic jsonl recording when the change was made and a high-level overview of what was changed and why (preferably 2-4 sentences AT MAX).
 6. If changes are made to the webfront, always ensure that `npm run build` are executed to ensure that everything compiles/runs correctly.
+7. **Before quoting any result, read `docs/research/CURRENT.md`; run `make check-docs` before committing prose that quotes a number.** A figure that CURRENT.md lists as withdrawn may only be quoted alongside its replacement.
 
 ## Research record (mandatory)
 

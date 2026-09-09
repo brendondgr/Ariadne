@@ -16,6 +16,8 @@ every value defaults to current behavior.
 | `python3 setup.py --no-launch` | Set everything up, print the commands, don't launch |
 | `python3 setup.py --fresh` | Re-run steps already marked done |
 | `python3 setup.py --skip-sync\|--skip-env\|--skip-inference\|--skip-data\|--skip-web` | Skip an individual step |
+| `python3 setup.py --no-browser` | Launch without opening a browser tab |
+| `python3 setup.py --prod` | Launch the workbench in production mode (`app.py --prod`) |
 
 Manual equivalent:
 
@@ -71,8 +73,10 @@ stale-state (backup + rebuild), transient (retry with backoff), or needs-human
 | `uv run main.py --query "…" --query-llm` | Same, with the LLM drafter for the planning stage |
 
 Without `--plan-llm` / `--query-llm`, and with `ARIADNE_LLM_ENABLED` unset, the
-whole path is deterministic. The specialists are deterministic either way — they
-compile hand-written query templates and never call an LLM.
+whole path is deterministic. The specialists compile card-validated templates
+and schema-derived primitives; the only way a model writes a query is the
+`SPECIALIST_LLM_QUERY_BUILDER` baseline switch, off by default (see
+[`ARCHITECTURE.md`](ARCHITECTURE.md) §5).
 
 ## Workbench
 
@@ -83,6 +87,7 @@ compile hand-written query templates and never call an LLM.
 | `uv run app.py --smoke full` / `--no-smoke` | Run a whole federated query at startup / skip the smoke query |
 | `uv run app.py --port N --api-port N --host 0.0.0.0` | Override ports and bind address |
 | `uv run app.py --verbose` / `--open` | Show raw child logs / open a browser when ready |
+| `uv run app.py --install` / `--skip-install` | Force `npm install` even if `web/node_modules` exists / never run it |
 | `cd web && npm run dev` | The web app alone (expects the API on `:16501`) |
 
 ## Evaluation
@@ -108,6 +113,22 @@ uv run python -m utils.evaluation.summarize_untruncated --root <root>
 ```
 
 See [`evaluation/README.md`](evaluation/README.md) for which report is current.
+
+## Research record (Makefile)
+
+The Makefile exists for the research record only; application commands stay on
+`main.py` / `app.py`.
+
+| Command | What it does |
+|---|---|
+| `make new-experiment SLUG=<slug>` | Scaffold an experiment folder with the next ID and the current commit |
+| `make validate-research` | Validate every experiment: schema, linkage, figures, pointers |
+| `make index` | Regenerate `docs/research/INDEX.md` and `CURRENT.md` from the manifests |
+| `make figures` | Regenerate every promoted figure and table |
+| `make test-research` | The research-record test suite |
+| `make verify-paper-numbers` | Review list: every number in the paper, traced / untraced / stale |
+| `make check-docs` | Gate: no prose document quotes a withdrawn or superseded figure |
+| `make check-record` | The full gate: validator, index freshness, stale-quote scan, docs contracts |
 
 ## Tests and builds
 
