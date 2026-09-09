@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Software-kill_chain_phase-S1182-2d6bd4::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.85,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and mentions the required anchor S1182, but it does not explicitly state that no tactics were found and does not show the executed query in the answer. The failed attack trace and zero records support the no-result claim, while the example identifiers T1566, M1017, and CAPEC-98 are not present in the evidence. No cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

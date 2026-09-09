@@ -1,0 +1,23 @@
+{
+ "case_id": "H-SW-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 7,
+ "gold_present": 7,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1080 has 12 used techniques, although the evidence shows 12 related USES entities including software and groups"
+ ],
+ "rationale": "The narrative states all seven expected software identifiers for T1080: S0132, S0133, S0260, S0386, S0458, S0575, and S0603. The evidence supports these as Software records related to T1080 via USES. The only minor unsupported phrasing is the claim that T1080 has 12 'used techniques,' since the related set also includes groups such as G0012, G0060, G1021, G1039, and G0047.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

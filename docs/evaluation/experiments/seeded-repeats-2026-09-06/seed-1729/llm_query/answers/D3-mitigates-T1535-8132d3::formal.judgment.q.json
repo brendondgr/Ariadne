@@ -1,0 +1,29 @@
+{
+ "case_id": "D3-mitigates-T1535-8132d3::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.8,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98",
+  "None of the live graph sources cover this request"
+ ],
+ "rationale": "The answer abstains instead of stating the expected mitigation M1054 for T1535, so it has zero completeness. Its no-records claim is supported by the empty-query failure and zero returned records, but it adds unsupported example identifiers T1566, M1017, and CAPEC-98. It does not show a successful executed query proving that no mapping exists, so it is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

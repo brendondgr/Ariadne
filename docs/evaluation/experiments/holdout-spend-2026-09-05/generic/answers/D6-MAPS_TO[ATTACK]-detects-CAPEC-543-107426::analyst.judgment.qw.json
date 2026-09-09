@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-detects-CAPEC-543-107426::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.8,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: the capec trace shows CAPEC-543 as a seed but says Technique is not modeled, and the attack sub-question was skipped, so no DET0347 is asserted. It therefore does not state the expected related identifier DET0347, leaving completeness at 0. The only unsupported identifiers are the illustrative T1566, M1017, and CAPEC-98, which slightly reduce faithfulness but do not create a fabricated mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "case_id": "H-LKP-02",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer reports one ATT&CK record but leaves the record blank, so it never states T1556.003 or Pluggable Authentication Modules. The evidence contains one empty record with primary_id and name blank, so the count/source statements are faithful but not complete. No cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

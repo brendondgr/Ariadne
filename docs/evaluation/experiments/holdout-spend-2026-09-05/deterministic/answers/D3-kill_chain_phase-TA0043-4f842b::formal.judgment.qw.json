@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-kill_chain_phase-TA0043-4f842b::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.255,
+ "gold_expected": 47,
+ "gold_present": 12,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer lists 12 technique identifiers returned for TA0043, including T1589, T1590, T1591, T1592, T1593, T1594, T1595, T1596, T1597, T1598, T1681, and T1682. These are all supported by the cited ATT&CK records, but the expected set contains 47 technique/subtechnique identifiers, so it omits 35 such as T1589.001, T1590.001, T1591.001, T1592.001, T1593.001, T1595.001, T1596.001, T1597.001, and T1598.001. It is therefore faithful and grounded but only partially complete.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

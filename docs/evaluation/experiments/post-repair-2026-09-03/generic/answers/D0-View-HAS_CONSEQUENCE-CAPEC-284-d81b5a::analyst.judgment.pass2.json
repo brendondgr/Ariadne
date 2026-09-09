@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-View-HAS_CONSEQUENCE-CAPEC-284-d81b5a::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains for CAPEC-284 and shows the executed CAPEC query that returned zero rows, matching the evidence. It states the required anchor CAPEC-284 and does not assert any consequences or cross-source mapping. The only unsupported items are illustrative example identifiers T1566, M1017, and CAPEC-98, so faithfulness is slightly reduced.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

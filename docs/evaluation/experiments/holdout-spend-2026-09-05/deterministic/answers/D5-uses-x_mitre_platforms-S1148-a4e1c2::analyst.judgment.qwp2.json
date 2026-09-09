@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S1148-a4e1c2::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes S1148 and all four expected SaaS-relevant techniques, T1119, T1195, T1213, and T1539, and the listed IDs are supported by the S1148 record. However, it presents all 24 related techniques, including non-gold items such as T1124 and T1105, rather than explicitly identifying the SaaS-applicable subset. Therefore it is faithful and complete but only partially correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

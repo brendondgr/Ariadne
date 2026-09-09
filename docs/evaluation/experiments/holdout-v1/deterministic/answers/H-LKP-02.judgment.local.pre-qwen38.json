@@ -1,0 +1,19 @@
+{
+ "case_id": "H-LKP-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies T1591.003 (Identify Business Tempo) and provides accurate metadata (stix_type: attack-pattern, x_mitre_is_subtechnique: True, x_mitre_version: 1.0, revoked: False, x_mitre_deprecated: False), all directly supported by the cited ATT&CK record. However, the question explicitly asks for a description of what the sub-technique involves, and the evidence contains a detailed description (gathering information on operational hours/days, times/dates of purchases and shipments, via phishing, social media, etc.) that the answer never states. The answer retrieves the record and reports its schema-level properties but omits the substantive description that was the actual ask.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

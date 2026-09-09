@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-ChildOf-HAS_EXAMPLE-CAPEC-22-4b913a::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.8,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 5,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains after the CAPEC specialist failed and no records were returned, but it does not state CAPEC-22 or any of the five expected example texts (Archangel Weblog, PHP, Java license, Servlet, ECB cookie, price watching). It also does not show the executed query, only the gate error, so the abstention is not fully self-proving. The extra example IDs T1566, M1017, and CAPEC-98 are not supported by the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

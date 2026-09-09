@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-uses-T1552.004-88380d::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.4,
+ "completeness": 0.0,
+ "gold_expected": 11,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only reports that 11 MITRE ATT&CK records were found and does not state the anchor T1552.004 or any expected software identifiers such as S0002, S0283, S0363, S0377, S0409, S0599, S0601, S0661, S0677, S1060, or S1196. The count is supported by the executed query result, but the question asks for the malware and tooling, not merely a record count. Because it is not an abstention and does not identify the requested entities, it is a non-answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

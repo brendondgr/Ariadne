@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-ChildOf-Abstraction-CAPEC-41-3f821e::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the required gold identifier CAPEC-134 as a ChildOf parent of CAPEC-41, but it also lists CAPEC-242 without explicitly applying the Standard-level abstraction filter. All stated facts are grounded in the CAPEC-41 record and its related entries, and no cross-source mapping is asserted. Therefore it is partial: complete on gold recall but overinclusive on the requested Standard-level set.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

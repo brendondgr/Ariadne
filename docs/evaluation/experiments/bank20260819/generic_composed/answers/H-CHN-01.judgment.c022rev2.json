@@ -1,0 +1,26 @@
+{
+ "case_id": "H-CHN-01",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source returned CAPEC-62 with no linked records, although the evidence shows related entries CWE-1275 and capec:taxonomy:WASC:09."
+ ],
+ "rationale": "The answer correctly identifies CAPEC-62 as the CAPEC pattern associated with CWE-1275 and abstains from asserting ATT&CK techniques, matching the expected no-correlation outcome. It also records the attack-source dependency skip because q1 produced no join values. Minor faithfulness deductions arise from the imprecise 'no linked records' phrasing, but no cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

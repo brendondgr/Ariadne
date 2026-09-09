@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Group-detects-G1018-44dc9d::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.6,
+ "groundedness": 0.4,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by saying no records were returned and notes an empty query, but it never states G1018 or that G1018 detects no techniques. The only gold identifier expected is G1018, so completeness is zero. The example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, though they are offered only as examples.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

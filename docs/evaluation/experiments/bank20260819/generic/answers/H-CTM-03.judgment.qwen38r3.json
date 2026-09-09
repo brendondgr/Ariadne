@@ -1,0 +1,21 @@
+{
+ "case_id": "H-CTM-03",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-140 and reports that the CAPEC query returned no linked ATT&CK technique records, matching expect_no_correlation. It also explains that the dependent ATT&CK mitigations sub-question was skipped because q1 produced no seed identifiers, matching expect_dependency_skip. No technique or mitigation identifiers are asserted, so there is no fabricated cross-source mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

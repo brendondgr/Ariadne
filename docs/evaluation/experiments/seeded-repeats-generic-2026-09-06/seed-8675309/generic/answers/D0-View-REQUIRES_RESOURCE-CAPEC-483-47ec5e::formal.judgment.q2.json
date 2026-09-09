@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-View-REQUIRES_RESOURCE-CAPEC-483-47ec5e::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.55,
+ "faithfulness": 0.85,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer correctly withholds a resource list because the CAPEC result for CAPEC-483 returned no records, but it does not explicitly state CAPEC-483 or show the executed query as proof. It also introduces unsupported example identifiers T1566, M1017, and CAPEC-98. Thus it is a supported abstention but incomplete relative to the required anchor identifier.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

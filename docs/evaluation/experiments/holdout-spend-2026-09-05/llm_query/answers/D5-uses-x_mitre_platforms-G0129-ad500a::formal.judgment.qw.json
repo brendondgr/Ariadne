@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0129-ad500a::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 73,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by stating that no records were returned and notes that the attack specialist failed with an empty query, so it does not assert G0129 or any expected techniques such as T1003, T1059, or T1566.001. It provides 0 of the 73 expected technique identifiers, but it avoids a fabricated mapping. The example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, slightly lowering faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

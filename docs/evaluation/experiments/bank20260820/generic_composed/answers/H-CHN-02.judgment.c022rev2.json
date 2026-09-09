@@ -1,0 +1,26 @@
+{
+ "case_id": "H-CHN-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-62 has 2 TaxonomyEntrys: CWE-306, capec:taxonomy:WASC:09"
+ ],
+ "rationale": "The answer lists all five expected CAPEC patterns (CAPEC-12, CAPEC-36, CAPEC-62, CAPEC-166, CAPEC-216) and correctly abstains on ATT&CK techniques because the attack sub-question was skipped after q1 returned no join values. It does not assert a CAPEC-to-ATT&CK mapping, matching expect_no_correlation. The only minor unsupported detail is calling both CWE-306 and capec:taxonomy:WASC:09 TaxonomyEntrys for CAPEC-62, since the record only explicitly labels WASC:09 as a TaxonomyEntry.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": null
+ }
+}

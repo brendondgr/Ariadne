@@ -1,0 +1,25 @@
+{
+ "case_id": "H-CHN-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Found 2 item(s) related to CWE-1275 in MITRE ATT&CK",
+  "The capec source returned CWE-1275 with no linked records",
+  "q1 produced no seed identifiers"
+ ],
+ "rationale": "The answer includes the expected CAPEC-62 identifier and notes that the attack source did not establish the requested mapping, which aligns with expect_no_correlation and the attack dependency skip. However, it overstates the CAPEC evidence as being found in MITRE ATT&CK and its capec abstention says no linked records were returned even though CAPEC-62 and capec:taxonomy:WASC:09 are present in the evidence. It does not assert a specific fabricated ATT&CK technique correlation, so completeness is full for the expected CAPEC-62 identifier.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

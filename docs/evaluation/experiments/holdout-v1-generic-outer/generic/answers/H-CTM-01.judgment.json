@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-01",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-603 (Blockage) with its documented properties (Abstraction: Standard, Status: Draft) and communicates that no ATT&CK techniques map to it by noting q1 produced no seed identifiers, matching the gold's expect_no_correlation. The mitigations sub-question is properly flagged as a dependency skip (q2 not executed because q1 returned no join values), satisfying the gold's expect_dependency_skip. All claims are grounded in the single cited CAPEC record with no fabricated cross-source mappings.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

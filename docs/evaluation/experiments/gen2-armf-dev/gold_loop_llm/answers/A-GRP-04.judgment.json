@@ -1,0 +1,21 @@
+{
+ "case_id": "A-GRP-04",
+ "verdict": "PARTIAL",
+ "correctness": 0.85,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 13,
+ "gold_present": 13,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "G1046 (narrative attributes the 13 techniques to Group G1046, but the evidence query used seed_ids [\"G1039\"])"
+ ],
+ "rationale": "The answer correctly lists all 13 gold techniques (T1005, T1020, T1027, T1039, T1046, T1080, T1082, T1083, T1102, T1119, T1199, T1202, T1537) that match the evidence records exactly. However, the narrative incorrectly states 'Group G1046' when the evidence query explicitly used seed_ids [\"G1039\"], introducing a faithfulness error in the group attribution. The technique identifiers and names are fully grounded in the cited ATT&CK records, making the core answer substantively correct despite the group label error.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

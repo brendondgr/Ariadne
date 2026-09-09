@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-CanFollow-HAS_PREREQUISITE-CAPEC-271-109948::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.6,
+ "groundedness": 0.3,
+ "completeness": 0.0,
+ "gold_expected": 5,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains after the CAPEC specialist failed with an empty query, so it never states CAPEC-271 or any of the five expected prerequisite texts. It is transparent rather than guessing, but it does not provide the expected CanFollow/HAS_PREREQUISITE neighbors. The only unsupported identifiers are the example T1566, M1017, and CAPEC-98, so faithfulness is reduced but no cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

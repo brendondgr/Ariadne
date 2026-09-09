@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-AttackPattern-HAS_MEMBER-CAPEC-136-9dabb8::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the required anchor CAPEC-136 and the supported related pattern CAPEC-248 as a ChildOf parent, but it does not explicitly state that CAPEC-136 contains no CAPEC attack patterns, which is the requested empty set. All asserted facts are grounded in the CAPEC records, and no cross-source mapping is fabricated. It is therefore partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

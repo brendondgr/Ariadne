@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-CanFollow-Likelihood_Of_Attack-CAPEC-234-6037d9::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.9,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the expected gold related pattern CAPEC-175 and correctly cites CAPEC-234's description, status, and related CAPEC entries. However, it lists all three CanFollow neighbors (CAPEC-100, CAPEC-175, CAPEC-242) instead of isolating only the Medium-likelihood predecessor requested. It is therefore partial: grounded and complete for the gold ID, but not fully filtered to the question's constraint.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

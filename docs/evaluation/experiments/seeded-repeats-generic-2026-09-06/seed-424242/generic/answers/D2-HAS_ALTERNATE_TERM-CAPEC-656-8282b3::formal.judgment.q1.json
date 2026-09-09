@@ -1,0 +1,28 @@
+{
+ "case_id": "D2-HAS_ALTERNATE_TERM-CAPEC-656-8282b3::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains instead of stating the expected alternate terms Vishing and VoIP Phishing for CAPEC-656, so it is partial rather than fully correct. Its no-records claim is supported by the empty capec result and the HAS_ALTERNATE_TERM gate error, but the example identifiers T1566, M1017, and CAPEC-98 are not present in the evidence. It does not assert a cross-source mapping, so fabricated_mapping is false.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

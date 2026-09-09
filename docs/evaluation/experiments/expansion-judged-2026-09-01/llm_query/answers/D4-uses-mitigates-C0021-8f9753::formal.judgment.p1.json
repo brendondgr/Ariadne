@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-uses-mitigates-C0021-8f9753::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.06,
+ "gold_expected": 17,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by saying no records were returned, which is supported by the evidence showing 0 records and 0 related items. It does not state the expected mitigations for C0021, except M1017 appears only as an example, so only 1 of the 17 expected mitigation IDs is present. T1566 and CAPEC-98 are unsupported example identifiers, but no cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

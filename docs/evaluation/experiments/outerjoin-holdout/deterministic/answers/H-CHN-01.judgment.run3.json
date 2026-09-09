@@ -1,0 +1,21 @@
+{
+ "case_id": "H-CHN-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 7,
+ "gold_present": 7,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-545 is said to have 3 TaxonomyEntrys including CWE-1243, but the evidence lists CWE-1243 as a related item rather than explicitly as a TaxonomyEntry."
+ ],
+ "rationale": "The answer states the expected CAPEC patterns CAPEC-116 and CAPEC-545 as linked to CWE-1243 and gives the corresponding ATT&CK techniques T1005 and T1555.001. It also includes the related ATT&CK mitigations M1027 and M1057, and the T1005/T1555.001 cross-source correlation is supported by CAPEC-545's ATTACK taxonomy entries. The only minor issue is calling CWE-1243 a TaxonomyEntry for CAPEC-545, which the records do not explicitly label.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

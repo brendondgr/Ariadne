@@ -1,0 +1,26 @@
+{
+ "case_id": "H-ABS-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.7,
+ "groundedness": 0.6,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98",
+  "The live ATT&CK/CAPEC graphs do not contain 'CAPEC' or 'Contradictory Destinations in Traffic Routing Schemes'"
+ ],
+ "rationale": "The answer abstains and shows the executed CAPEC query, so it is not a fabricated mapping, but it only states CAPEC-481 and omits the expected related CAPEC-161. The narrative also introduces unsupported example identifiers T1566, M1017, and CAPEC-98 and overstates the absence of 'CAPEC' or the name. Therefore it is partial with moderate faithfulness and groundedness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

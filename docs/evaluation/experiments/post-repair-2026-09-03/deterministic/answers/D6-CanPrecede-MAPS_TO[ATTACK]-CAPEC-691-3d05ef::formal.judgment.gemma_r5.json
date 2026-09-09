@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-691-3d05ef::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system navigated the 'CAN_PRECEDE' relationship in the wrong direction, identifying patterns that CAPEC-691 can precede (CAPEC-444, CAPEC-184) rather than those that precede it. As a result, it failed to identify the gold ATT&CK technique T1036.005.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

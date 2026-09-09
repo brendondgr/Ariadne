@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CWE-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.9,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer retrieves CAPEC-461 and its EXPLOITS_WEAKNESS neighbors CWE-290 and CWE-328, matching both expected gold identifiers in the records' related field. However, the narrative text merely echoes the question ('CAPEC-461 (Web Services API Signature Forgery Leveraging Hash Function Extension Weakness) exploit?') without explicitly naming the specific CWEs, so the prose articulation is weaker than the underlying retrieval. Per Rule 2, retrieval succeeded but the answer text does not clearly state the neighbors, warranting a partial rather than full credit.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

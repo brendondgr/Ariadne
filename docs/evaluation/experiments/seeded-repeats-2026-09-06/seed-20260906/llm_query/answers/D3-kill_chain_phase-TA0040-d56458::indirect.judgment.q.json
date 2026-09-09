@@ -1,0 +1,29 @@
+{
+ "case_id": "D3-kill_chain_phase-TA0040-d56458::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 34,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "None of the live graph sources cover this request",
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains after the attack specialist failed with an empty query, so it does not state any expected TA0040 techniques such as T1485, T1496, T1561, or T1667. It is supported in saying no records were returned, but the claim that no live graph sources cover the request and the example identifiers T1566, M1017, and CAPEC-98 are not evidenced. This makes it a partial abstention rather than a full answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

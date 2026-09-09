@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-REQUIRES_SKILL-CAPEC-201-7197b4::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-201 and notes a related Skill node, capec:attack-pattern:201:skill:1, but it does not state the expected skill text, \"To send serialized data messages with maliciously crafted schema.\" All stated claims are supported by the CAPEC-201 record and its related skill, so faithfulness and groundedness are high. Because the requested skill description is omitted, completeness is low despite the skill identifier being present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

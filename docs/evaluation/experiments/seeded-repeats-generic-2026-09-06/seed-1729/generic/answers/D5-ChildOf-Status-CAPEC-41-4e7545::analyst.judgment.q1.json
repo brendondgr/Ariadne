@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-ChildOf-Status-CAPEC-41-4e7545::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.95,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the expected broader pattern CAPEC-242, but it also lists CAPEC-134 and CAPEC-137 as ChildOf parents without explicitly applying the Stable-status filter requested. The evidence supports CAPEC-41's Draft status and its three related ChildOf patterns, so the statements are grounded, but the answer is over-inclusive for a Stable-only question. Therefore it is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

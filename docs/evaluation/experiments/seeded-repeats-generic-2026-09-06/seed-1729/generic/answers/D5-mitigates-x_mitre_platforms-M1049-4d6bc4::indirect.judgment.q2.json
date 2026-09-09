@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1049-4d6bc4::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 20,
+ "gold_present": 20,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states M1049 and all 20 expected technique identifiers, including T1027, T1059.005, T1566.003, and T1547.006. It is grounded in the M1049 MITIGATES record, but it reports 23 mitigated techniques rather than explicitly limiting the result to macOS-applicable techniques. The non-gold additions T1221, T1059.001, and T1027.012 make the answer over-inclusive for the macOS-specific question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

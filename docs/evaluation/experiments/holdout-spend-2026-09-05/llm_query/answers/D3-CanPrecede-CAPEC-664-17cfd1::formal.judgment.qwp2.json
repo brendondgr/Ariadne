@@ -1,0 +1,28 @@
+{
+ "case_id": "D3-CanPrecede-CAPEC-664-17cfd1::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.6,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 5,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by saying no records were returned, but it does not state any of the expected predecessors CAPEC-122, CAPEC-126, CAPEC-161, CAPEC-253, or CAPEC-309, nor the anchor CAPEC-664. Its failure note is grounded in the failed capec query, but the example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence. Because it does not assert a false mapping, it is partial rather than incorrect.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

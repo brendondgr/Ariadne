@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S1245-8027f0::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.85,
+ "faithfulness": 0.95,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 33,
+ "gold_present": 33,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1547.013 is included as a Windows-applicable technique",
+  "T1543.001 is included as a Windows-applicable technique"
+ ],
+ "rationale": "The answer names S1245 and all 33 expected Windows-applicable technique IDs, including T1005, T1048.003, T1547.001, and T1679. It also includes T1547.013 and T1543.001, which the evidence describes as Linux/macOS persistence techniques, so the Windows set is overinclusive. Thus it is complete on recall but only partially correct on the platform filter.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

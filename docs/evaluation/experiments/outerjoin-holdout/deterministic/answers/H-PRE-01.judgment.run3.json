@@ -1,0 +1,19 @@
+{
+ "case_id": "H-PRE-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.9,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-696 (Load Value Injection) with its Abstraction: Detailed and Status: Draft, but never states any of the three required skill records (capec:attack-pattern:696:skill:1, capec:attack-pattern:696:skill:2, capec:attack-pattern:696:skill:3) that constitute the preconditions and required resources the question explicitly asked for. The evidence clearly contained these three REQUIRES_SKILL neighbors with descriptive text about CPU microcode knowledge, binary/OS layout knowledge, and the ability to provoke faulting loads, yet the narrative omitted all of them.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

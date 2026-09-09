@@ -1,0 +1,19 @@
+{
+ "case_id": "H-LKP-03",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-321 (TCP Sequence Number Probe) and states its Abstraction (Detailed) and Status (Stable), both directly supported by the CAPEC record. However, the question specifically asks 'what does this attack pattern actually involve?' and the answer omits the description field that details the OS fingerprinting probe mechanism (sending probe packets to open ports and comparing sequence number generation). The single gold identifier is present, but the descriptive content that answers the 'what does it involve' question is missing.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

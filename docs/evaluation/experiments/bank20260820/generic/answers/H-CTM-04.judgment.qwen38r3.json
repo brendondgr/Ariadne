@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CTM-04",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1110.002 has 2 mitigated techniques: M1032 and M1027 (the evidence labels M1032 and M1027 as Mitigation, not Technique)"
+ ],
+ "rationale": "The answer correctly states the expected CAPEC-55 to T1110.002 mapping and lists both expected mitigations, M1027 and M1032. It is grounded in the provided CAPEC and ATT&CK records and includes the required cross-source corroboration for T1110.002. The only minor issue is the wording that calls M1027 and M1032 'mitigated techniques' rather than mitigations.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

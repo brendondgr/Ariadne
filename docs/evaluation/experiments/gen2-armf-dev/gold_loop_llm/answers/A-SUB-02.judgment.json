@@ -1,0 +1,21 @@
+{
+ "case_id": "A-SUB-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "URL cited as 'https://mitre.attack.org/techniques/T1055/005' but evidence shows 'https://attack.mitre.org/techniques/T1055/005'"
+ ],
+ "rationale": "The answer correctly states that T1055.012 (Process Hollowing) is a sub-technique of T1055 (Process Injection), which is the sole gold identifier expected. The evidence from the ATT&CK source directly supports this via the HAS_SUBTECHNIQUE relationship query returning T1055 as parent. A minor URL domain transposition (mitre.attack.org vs attack.mitre.org) is present but does not affect the core correctness of the answer.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

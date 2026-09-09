@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CHN-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states all five expected CAPEC patterns: CAPEC-12, CAPEC-36, CAPEC-62, CAPEC-166, and CAPEC-216. It also correctly abstains from asserting ATT&CK techniques, matching the expected no-correlation outcome. The abstention is supported by the shown query and skipped dependent attack sub-question, and no unsupported cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false
+ }
+}

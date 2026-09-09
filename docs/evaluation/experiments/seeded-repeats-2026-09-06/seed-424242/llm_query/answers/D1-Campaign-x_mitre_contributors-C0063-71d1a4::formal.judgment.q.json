@@ -1,0 +1,28 @@
+{
+ "case_id": "D1-Campaign-x_mitre_contributors-C0063-71d1a4::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by reporting no records and an empty query, which is supported by the evidence, but it never states the expected C0063 or Dragos Threat Intelligence. The example identifiers T1566, M1017, and CAPEC-98 are not present in the evidence, so they are minor unsupported assertions. No cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

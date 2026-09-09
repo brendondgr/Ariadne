@@ -1,0 +1,24 @@
+{
+ "case_id": "H-REV-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The expected result is that no CAPEC patterns reference T1219, so the answer should state an empty pattern set. Instead, it mainly describes the T1219 anchor and notes that T1219 appears in both CAPEC and ATT&CK records, without explicitly saying that no patterns reference it. The shared-identifier note is supported by the two T1219 records, but it is not a pattern mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

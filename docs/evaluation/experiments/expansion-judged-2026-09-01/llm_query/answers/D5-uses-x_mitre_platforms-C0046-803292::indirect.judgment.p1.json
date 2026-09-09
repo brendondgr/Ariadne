@@ -1,0 +1,29 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0046-803292::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 0.5,
+ "groundedness": 0.3,
+ "completeness": 0.0,
+ "gold_expected": 21,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98",
+  "None of the live graph sources cover this request"
+ ],
+ "rationale": "The answer abstains by saying no records were returned, but it does not state C0046 or any expected Windows techniques such as T1014, T1055, T1071.001, or T1690. The evidence only shows a failed attack query with an empty query and zero records, so the stronger claim that no live sources cover the request is not fully supported. The example identifiers T1566, M1017, and CAPEC-98 are not present in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "H-CTM-02",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The narrative says it could not find 'CAPEC', 'TCP Congestion Control Flag', or 'Probe' in the live graphs, but the evidence only shows a mapping query for CAPEC-325 returned no rows.",
+  "Example identifiers T1566, M1017, and CAPEC-98 are mentioned although they are not present in the evidence."
+ ],
+ "rationale": "The answer is an honest abstention that matches the expected no-correlation outcome for CAPEC-325 and shows the executed CAPEC query. It states the anchor identifier CAPEC-325 and explains that the ATT&CK mitigation sub-question was skipped due to missing seeds. Minor deductions are for the narrative's unsupported claim about name-based absence and the ungrounded example identifiers T1566, M1017, and CAPEC-98.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

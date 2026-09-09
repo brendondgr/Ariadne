@@ -1,0 +1,19 @@
+{
+ "case_id": "F-FAN-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 13,
+ "gold_present": 13,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states all 5 gold ATT&CK techniques (T1505.005, T1574.006, T1574.007, T1574.013, T1620) and all 6 gold mitigations (M1022, M1024, M1028, M1038, M1040, M1047), plus both CAPEC records (CAPEC-13, CAPEC-640). The cross-source correlations are properly evidenced: T1574.006 is the only technique shared by both CAPEC records, while T1505.005, T1574.013, and T1620 come exclusively from CAPEC-640, and T1574.007 from CAPEC-13. The sole non-gold identifier T1562.003 is evidence-supported as a CAPEC-13 mapping (Impair Command History Logging) and does not constitute a hallucination, though it falls outside the gold's 5-technique deduplicated union.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

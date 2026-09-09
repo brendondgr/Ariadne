@@ -1,0 +1,28 @@
+{
+ "case_id": "D3-CanPrecede-CAPEC-664-17cfd1::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 5,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows the executed CAPEC query, but the gold expects five predecessor patterns: CAPEC-122, CAPEC-126, CAPEC-161, CAPEC-253, and CAPEC-309. It states none of those, only the anchor CAPEC-664 in the abstention text, so completeness is low. The no-records claim is supported by the zero-row result, and the only unsupported identifiers are illustrative examples T1566, M1017, and CAPEC-98.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

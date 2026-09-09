@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Campaign-mitigates-C0046-56b839::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies C0046 (ArcaneDoor) and enumerates 27 related ATT&CK items, including T1556 and T1653, all present in the cited record. However, it reports 'related' items rather than explicitly stating which techniques C0046 mitigates, and it includes non-technique software S1188 and S1186. Because the expected related set is empty, the answer is grounded but only partially answers the mitigation question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

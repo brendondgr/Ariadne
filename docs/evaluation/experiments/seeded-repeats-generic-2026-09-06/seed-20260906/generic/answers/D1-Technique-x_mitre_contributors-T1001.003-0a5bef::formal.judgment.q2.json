@@ -1,0 +1,24 @@
+{
+ "case_id": "D1-Technique-x_mitre_contributors-T1001.003-0a5bef::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The expected contributor for T1001.003 is James Emery-Callcott, Emerging Threats Team, Proofpoint, which is present in the retrieved T1001.003 record's x_mitre_contributors, but the answer never states it. The answer only describes T1001.003 and lists related T1001 and TA0011, so it retrieves the anchor without answering the who-contributed question. All stated facts are supported by the cited T1001.003 record, but completeness is 0 for the single expected contributor identifier.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

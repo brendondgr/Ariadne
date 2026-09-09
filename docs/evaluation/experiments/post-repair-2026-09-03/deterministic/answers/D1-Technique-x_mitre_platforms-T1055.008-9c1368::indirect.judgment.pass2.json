@@ -1,0 +1,24 @@
+{
+ "case_id": "D1-Technique-x_mitre_platforms-T1055.008-9c1368::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies T1055.008 and restates its description and metadata, but it never states the requested platform Linux. The evidence record contains x_mitre_platforms: [\"Linux\"], so the answer retrieves the anchor without answering the platform question. All stated claims are supported by the cited T1055.008 record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

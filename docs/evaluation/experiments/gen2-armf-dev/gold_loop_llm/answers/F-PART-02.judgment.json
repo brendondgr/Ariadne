@@ -1,0 +1,19 @@
+{
+ "case_id": "F-PART-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-98 (Phishing) as the CAPEC pattern mapping to T1566, supported by the TaxonomyEntry capec:taxonomy:ATTACK:1566 and join values. It honestly abstains on the assets question, stating the attack source does not model 'Asset' entities, which matches the expected boundary behavior (expect_boundary: true). No fabricated cross-source correlations are asserted, and all claims are grounded in the retrieved records.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

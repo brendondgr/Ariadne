@@ -1,0 +1,23 @@
+{
+ "case_id": "H-LKP-04",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-588 has 11 ChildOf parents"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-588 (DOM-Based XSS) and provides a supported description from the CAPEC record, satisfying the single expected gold identifier. It also states supported metadata for CAPEC-588, including Status Stable and Abstraction Detailed. The extra claim that CAPEC-588 has 11 ChildOf parents is only partially supported because the evidence shows 11 related AttackPatterns reached via CHILD_OF but does not explicitly mark all of them as parents.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

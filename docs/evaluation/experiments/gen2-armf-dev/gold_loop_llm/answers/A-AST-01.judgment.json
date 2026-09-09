@@ -1,0 +1,23 @@
+{
+ "case_id": "A-AST-01",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer correctly identifies that the 'attack' source does not model 'Asset' (an ICS-only concept), satisfying the gold expectation of expect_boundary=true. The abstention honestly states no query was executed because the schema cannot express the question, and no cross-source mapping is fabricated. Minor deductions: the query field in the abstention is empty (no executed query shown as proof), and the narrative references T1566, M1017, and CAPEC-98 as generic examples not present in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

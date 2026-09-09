@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-ChildOf-HAS_CONSEQUENCE-CAPEC-628-fc295f::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.85,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: it reports no CAPEC records and shows the executed Gremlin query, so it does not fabricate a mapping. However, the expected related pattern Integrity Modify Data is not stated, and CAPEC-628 appears only as the seed in the abstention. The minor example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, but they are not central claims.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

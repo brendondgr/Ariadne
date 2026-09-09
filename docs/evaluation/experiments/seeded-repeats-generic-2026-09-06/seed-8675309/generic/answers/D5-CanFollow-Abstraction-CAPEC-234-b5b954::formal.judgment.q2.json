@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-CanFollow-Abstraction-CAPEC-234-b5b954::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-100, CAPEC-175, and CAPEC-242 are CanFollow predecessors of CAPEC-234"
+ ],
+ "rationale": "The answer includes the expected related identifiers CAPEC-175 and CAPEC-242, so completeness is full. However, it also includes CAPEC-100 and does not explicitly filter the result to the Meta abstraction level requested. The directional claim that these are predecessors is only weakly supported by the related CAN_FOLLOW records, so faithfulness is reduced.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

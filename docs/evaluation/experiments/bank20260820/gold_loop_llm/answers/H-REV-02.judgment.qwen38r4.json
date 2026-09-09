@@ -1,0 +1,21 @@
+{
+ "case_id": "H-REV-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The gold expectation is that no CAPEC patterns map to T1219 and the ATT&CK side is a dependency skip, so the expected identifier count is zero. The answer correctly abstains for CAPEC by showing the executed query and the zero-row result, while its T1219 facts are directly supported by the retrieved ATT&CK record. No CAPEC pattern identifiers or cross-source mappings are asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

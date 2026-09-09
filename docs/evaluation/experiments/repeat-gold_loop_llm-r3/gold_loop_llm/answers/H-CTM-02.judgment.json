@@ -1,0 +1,21 @@
+{
+ "case_id": "H-CTM-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Narrative cites 'RFC 1983' for ECN messaging but the CAPEC-325 evidence record states 'RFC 3168'"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-325 as the sole gold identifier and honestly abstains on the ATT&CK technique mapping, precisely matching the gold expectation of expect_no_correlation and attack dependency_skip. The capec abstention includes the full executed Gremlin query as proof, and the attack source skip is properly attributed to q1 producing no seed identifiers. The only minor faithfulness issue is the narrative citing RFC 1983 where the evidence record clearly states RFC 3168.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

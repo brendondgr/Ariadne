@@ -1,0 +1,23 @@
+{
+ "case_id": "A-AST-01",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer correctly identifies the boundary condition: the 'attack' source does not model 'Asset' (an ICS-only concept), so no query can express the question about T1047's target assets. The abstention is honest and supported by the logic_flow boundary step ('entities not modeled by the attack source: Asset'). Minor deductions for the narrative citing T1566, M1017, and CAPEC-98 as illustrative examples not present in the evidence, and for the empty query field in the abstention not showing an executed query as proof.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

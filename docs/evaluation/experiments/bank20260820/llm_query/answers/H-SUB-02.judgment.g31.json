@@ -1,0 +1,24 @@
+{
+ "case_id": "H-SUB-02",
+ "verdict": "CORRECT",
+ "correctness": 0.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 9,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system failed to retrieve any records for T1556 because the generated query was empty, as seen in the logic flow. It honestly abstained from providing a fabricated answer, which is rewarded as CORRECT per Rule 1, although it did not provide any of the 9 expected child techniques (T1556.001-T1556.009).",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

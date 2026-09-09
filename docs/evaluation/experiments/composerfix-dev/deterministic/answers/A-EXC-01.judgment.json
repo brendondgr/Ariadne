@@ -1,0 +1,19 @@
+{
+ "case_id": "A-EXC-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The question asks to confirm that retired technique T1002 is absent from the graph (excluded at load, must be empty). The answer correctly abstains, stating the attack source returned no matching records, and shows the exact executed Cypher query (MATCH (n:Technique) WHERE n.attack_id IN $ids ...) as proof. The gold expectation is an empty identifier set, and the answer matches this precisely with zero fabricated claims.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

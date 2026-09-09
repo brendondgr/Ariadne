@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-03",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 0.85,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly names CAPEC-62 as the seed identifier in the CAPEC abstention and honestly reports that the executed Gremlin query returned zero matching ATT&CK technique mappings, matching the gold's expect_no_correlation. The dependent ATT&CK mitigations sub-question is properly flagged as skipped because q1 produced no join values, matching the gold's expect_dependency_skip. The CAPEC abstention carries the full executed query as proof, satisfying the honest-abstention rule, and no fabricated cross-source correlation or unsupported identifier is asserted.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

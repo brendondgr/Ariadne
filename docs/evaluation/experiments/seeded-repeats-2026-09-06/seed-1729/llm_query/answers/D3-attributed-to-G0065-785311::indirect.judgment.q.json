@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-attributed-to-G0065-785311::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.8,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains after the attack specialist returned no records and reports an empty query, so it does not guess the expected campaign C0049. However, it never states the anchor G0065 or the expected related identifier C0049, so it is incomplete. Its no-records claim is supported by the failed trace, but the abstention is not a full answer to the campaign question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

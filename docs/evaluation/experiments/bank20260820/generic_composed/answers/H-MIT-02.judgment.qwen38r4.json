@@ -1,0 +1,23 @@
+{
+ "case_id": "H-MIT-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1573.002 has 2 mitigated techniques (M1031, M1020) rather than 2 mitigations"
+ ],
+ "rationale": "The answer states both expected mitigation identifiers, M1020 and M1031, for the anchor T1573.002. These are directly supported by the cited T1573.002 record, whose related entries are labeled Mitigation and typed MITIGATES. The only minor weakness is the wording 'mitigated techniques' instead of 'mitigations', but the required identifiers are present and grounded.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

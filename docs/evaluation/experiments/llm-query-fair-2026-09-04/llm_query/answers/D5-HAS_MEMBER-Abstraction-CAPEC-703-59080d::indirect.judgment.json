@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-HAS_MEMBER-Abstraction-CAPEC-703-59080d::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.8,
+ "groundedness": 0.65,
+ "completeness": 0.06,
+ "gold_expected": 16,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows an executed query, but it does not state the expected related CAPEC-125, CAPEC-130, CAPEC-131, CAPEC-148, CAPEC-165, CAPEC-169, CAPEC-184, CAPEC-227, CAPEC-438, CAPEC-439, CAPEC-441, CAPEC-560, CAPEC-607, CAPEC-690, or CAPEC-94. It only repeats CAPEC-703 in the quoted question and adds unsupported example identifiers T1566, M1017, and CAPEC-98. The abstention is grounded in the empty query result, but completeness is low because the gold set is missing.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

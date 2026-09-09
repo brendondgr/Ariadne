@@ -1,0 +1,19 @@
+{
+ "case_id": "H-GRP-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.7,
+ "groundedness": 0.3,
+ "completeness": 0.0,
+ "gold_expected": 5,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies that 5 ATT&CK records were retrieved for T1585, matching the gold count of 5 groups. However, it fails to name any of the expected group identifiers (G0025, G0094, G0117, G1003, G1052), stating only 'unknown.' The evidence confirms the Cypher query returned 5 rows but the normalize step failed because all records had empty primary_id and name fields, which the answer accurately reflects without resolving.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

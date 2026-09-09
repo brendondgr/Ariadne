@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-mitigates-CAPEC-13-3e7e41::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.8,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and correctly reflects that the CAPEC-13 sub-question returned no join values, but it does not state any of the expected mitigations M1022, M1028, M1038, or M1047. The abstentions have empty query fields, so they do not carry an executed query as proof. The only unsupported identifiers are the example IDs T1566, M1017, and CAPEC-98, which slightly reduce faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

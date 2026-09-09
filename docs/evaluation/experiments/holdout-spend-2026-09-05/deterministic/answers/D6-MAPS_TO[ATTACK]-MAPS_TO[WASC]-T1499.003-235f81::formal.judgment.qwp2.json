@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[WASC]-T1499.003-235f81::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The attack source doesn't establish this \u2014 it doesn't model the entities this question asks about, so no query was executed for: For T1499.003: the CAPEC attack patterns that correspond to it."
+ ],
+ "rationale": "The answer does surface CAPEC-130 as linked to T1499.003 via capec:taxonomy:ATTACK:1499.003, but it never states the expected WASC:10 mapping. It also says the attack source does not establish the CAPEC patterns, which is inconsistent with listing CAPEC-130. Therefore it is partial: it addresses the intermediate CAPEC relation but omits the requested WASC target.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

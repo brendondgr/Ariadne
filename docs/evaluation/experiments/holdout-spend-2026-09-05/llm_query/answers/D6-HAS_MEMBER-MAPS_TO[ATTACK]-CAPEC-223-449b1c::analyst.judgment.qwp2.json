@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-223-449b1c::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.85,
+ "groundedness": 0.75,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and reports that the CAPEC query for CAPEC-223 returned no records, which is supported by the shown execution trace. However, it omits the expected ATT&CK mapping T1110, so it only partially addresses the question. It does state CAPEC-223 in the abstention, but the unsupported example identifiers T1566, M1017, and CAPEC-98 slightly reduce faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

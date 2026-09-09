@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-ChildOf-Typical_Severity-CAPEC-41-577c04::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states that CAPEC-41 is a more specific case of CAPEC-242, which is the expected gold identifier. It also includes CAPEC-134 as a ChildOf parent, which is supported by the evidence but not explicitly tied to the requested High-severity constraint. Because the question asks specifically for High-severity attack patterns and the answer lists both parents without filtering, it is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

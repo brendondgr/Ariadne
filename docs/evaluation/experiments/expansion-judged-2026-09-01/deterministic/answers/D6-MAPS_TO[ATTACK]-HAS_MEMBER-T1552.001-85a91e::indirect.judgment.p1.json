@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1552.001-85a91e::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The attack source doesn't establish this",
+  "no query was executed for: For T1552.001: the CAPEC attack patterns that correspond to it"
+ ],
+ "rationale": "The answer mentions T1552.001 and several CAPEC records with taxonomy entries to 1552.001, but it omits the expected CAPEC-703 and never states the requested CAPEC views. It partially abstains by saying the attack source does not establish the mapping, but it also asserts many CAPEC-to-ATT&CK links, so it is not a clean abstention. Completeness is low because the gold identifier CAPEC-703 is absent.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

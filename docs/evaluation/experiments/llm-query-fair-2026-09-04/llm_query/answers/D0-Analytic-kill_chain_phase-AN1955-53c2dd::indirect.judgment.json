@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Analytic-kill_chain_phase-AN1955-53c2dd::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The executed attack query for AN1955 returned zero records, so the answer correctly abstains and shows the query. It states the required anchor AN1955 and asserts no tactic identifiers, matching the empty expected tactic set. No cross-source mapping is claimed; the only extra identifiers are generic examples (T1566, M1017, CAPEC-98) and are not asserted as answers.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

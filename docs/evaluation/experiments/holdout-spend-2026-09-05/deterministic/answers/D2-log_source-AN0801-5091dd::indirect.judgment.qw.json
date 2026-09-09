@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-log_source-AN0801-5091dd::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies and describes AN0801, but it never states the requested data components DC0069 or DC0090. The evidence only shows a MONITORS facet count of 2 to DataComponent without neighbor identifiers, and the narrative does not surface those expected components. All stated claims are supported by the AN0801 record, so the failure is omission rather than fabrication.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

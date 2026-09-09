@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CHN-01",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-62 (Cross Site Request Forgery) as the sole attack pattern for CWE-1275, satisfying the gold's must_include_ids requirement. It honestly abstains on the ATT&CK technique mapping, explicitly showing the executed Gremlin query as proof that no linked TaxonomyEntry records were returned, which aligns precisely with the gold's expect_no_correlation: true and expect_dependency_skip: true. No fabricated cross-source correlations are asserted, and all factual claims (Abstraction: Standard, Status: Draft, related CWE-1275) are directly supported by the CAPEC record properties.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

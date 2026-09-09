@@ -1,0 +1,23 @@
+{
+ "case_id": "A-AST-01",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer correctly identifies that 'Asset' is not modeled in the ATT&CK source (an ICS-only concept), satisfying the gold expectation of expect_boundary: true. The system honestly abstains rather than inventing an answer, with the boundary check confirming 'entities not modeled by the attack source: Asset' and the abstention referencing the question 'What assets does technique T1047 target?'. The only minor issues are the example identifiers T1566, M1017, and CAPEC-98 in the narrative that are not in the evidence (used as format examples, not answer claims), and the empty 'query' field in the abstention since no query was executed past the boundary check.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

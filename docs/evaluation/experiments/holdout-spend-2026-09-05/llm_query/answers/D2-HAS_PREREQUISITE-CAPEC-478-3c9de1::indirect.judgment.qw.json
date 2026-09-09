@@ -1,0 +1,28 @@
+{
+ "case_id": "D2-HAS_PREREQUISITE-CAPEC-478-3c9de1::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains after the CAPEC-478 query failed and returned no records, so it does not assert the expected prerequisite that the adversary must be able to write to the Windows Registry. It also does not state CAPEC-478 or show the full executed query, only an error fragment. The example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, reducing faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,29 @@
+{
+ "case_id": "D5-mitigates-x_mitre_impact_type-M1013-1a9df3::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.5,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "None of the live graph sources cover this request",
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and includes the failed M1013 query, but it does not state the expected technique T1496.003. It also asserts that no live graph sources cover the request, which is not supported because the attack specialist failed with a syntax error rather than returning a successful empty result. The unsupported example identifiers T1566, M1017, and CAPEC-98 further reduce faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

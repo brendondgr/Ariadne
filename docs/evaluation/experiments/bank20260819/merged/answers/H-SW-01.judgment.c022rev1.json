@@ -1,0 +1,26 @@
+{
+ "case_id": "H-SW-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.75,
+ "faithfulness": 0.65,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1134.003 has 5 used techniques: S0692, S0154, S1060, G1016, G1043"
+ ],
+ "rationale": "The answer states all expected software identifiers S0154, S0692, and S1060, so completeness is full. However, it also characterizes all five related entities, including groups G1016 and G1043, as 'used techniques' of T1134.003, which is not what the evidence supports. The evidence shows USES-related Software and Group entities, not five techniques.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

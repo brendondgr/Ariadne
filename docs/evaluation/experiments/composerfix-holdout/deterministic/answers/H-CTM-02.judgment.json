@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-40 as the sole gold identifier and honestly abstains on the ATT&CK mapping sub-question, showing the executed Gremlin query that returned no MAPS_TO edges to ATTACK TaxonomyEntry. The mitigations sub-question is properly skipped due to dependency on q1, matching the gold's expect_dependency_skip and expect_no_correlation expectations. No fabricated cross-source correlations or hallucinated identifiers are present.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

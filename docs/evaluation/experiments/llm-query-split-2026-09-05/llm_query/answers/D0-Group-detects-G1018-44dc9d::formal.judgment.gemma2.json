@@ -1,0 +1,31 @@
+{
+ "case_id": "D0-Group-detects-G1018-44dc9d::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "G1018 detects T1105",
+  "G1018 detects T1685",
+  "G1018 detects T1568",
+  "G1018 detects T1055",
+  "G1018 detects T1082",
+  "G1018 detects T1047"
+ ],
+ "rationale": "The question asks for techniques that G1018 detects. The system's query retrieves techniques that G1018 uses and that are detectable by some other entity (DetectionStrategy), then incorrectly asserts that G1018 is the entity doing the detecting. This is a fabricated mapping between G1018 and the techniques T1105, T1685, T1568, T1055, T1082, and T1047.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

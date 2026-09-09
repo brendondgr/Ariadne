@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-detects-subtechnique-of-DET0285-9c3f6d::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "DET0285 has 1 sub-technique: T1021.003 (evidence shows a DETECTS relation to T1021.003, not a HAS_SUBTECHNIQUE relation from DET0285)"
+ ],
+ "rationale": "The answer identifies DET0285 and the related detected subtechnique T1021.003, but it does not state the required parent technique T1021. It also overstates the relationship by saying DET0285 'has' T1021.003 as a sub-technique rather than detecting it. As a result, it is partial and only moderately grounded.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

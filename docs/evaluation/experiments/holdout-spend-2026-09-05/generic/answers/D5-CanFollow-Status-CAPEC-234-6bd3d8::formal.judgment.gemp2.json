@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-CanFollow-Status-CAPEC-234-6bd3d8::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies the gold entities CAPEC-175 and CAPEC-242. However, it also includes CAPEC-100 because it failed to filter for the 'Stable' status required by the question, although the provided evidence did not contain status information for the predecessors.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

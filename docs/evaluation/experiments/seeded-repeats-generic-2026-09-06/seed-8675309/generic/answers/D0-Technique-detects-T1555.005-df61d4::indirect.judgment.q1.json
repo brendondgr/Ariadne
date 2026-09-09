@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Technique-detects-T1555.005-df61d4::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states the anchor T1555.005 and the only DETECTS-related record, DET0597, which is supported by the evidence. However, it does not explicitly answer the question by saying that no ATT&CK techniques are detected, only that T1555.005 has a detection strategy. Because the expected related technique set is empty, the answer is close but not fully direct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

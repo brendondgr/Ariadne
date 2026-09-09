@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanPrecede-T1072-cb5c75::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer explicitly mentions T1072 and lists CAPEC-657 and CAPEC-187 as having T1072 taxonomy entries, but it omits the expected CAPEC-194 and never states preceding attack patterns. It also claims the attack source does not establish the mapping and that no query was executed, but it does not show the executed query as proof. Thus it partially addresses the CAPEC-to-T1072 relation while missing the gold CAPEC-194 and the predecessor part.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

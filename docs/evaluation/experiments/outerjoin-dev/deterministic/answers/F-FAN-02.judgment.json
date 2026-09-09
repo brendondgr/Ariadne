@@ -1,0 +1,19 @@
+{
+ "case_id": "F-FAN-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 0.95,
+ "gold_expected": 11,
+ "gold_present": 11,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies all 5 gold ATT&CK techniques (T1505.005, T1574.006, T1574.007, T1574.013, T1620) and all 6 gold mitigations (M1022, M1024, M1028, M1038, M1040, M1047). It properly identifies the overlap (T1574.006 shared by both CAPEC-13 and CAPEC-640) and presents the deduplicated union with per-technique mitigation mappings. The only minor deviation is including T1562.003, which is evidence-supported via CAPEC-13's taxonomy entries but falls outside the gold's expected 5-technique set.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

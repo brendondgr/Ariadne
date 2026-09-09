@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1195.002-f669d7::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The attack source doesn't establish this and no query was executed for the T1195.002-to-CAPEC correspondence"
+ ],
+ "rationale": "The answer mentions T1195.002 and CAPEC-98, but CAPEC-98 is only listed with T1566/T1598 and is not explicitly stated as corresponding to T1195.002. It also does not provide the requested 'can come before' patterns. The final abstention is partially supported by the retrieved CAPEC records, but the claim that the attack source does not establish the mapping is not tied to a specific executed query or record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,28 @@
+{
+ "case_id": "A-NEG-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer correctly reports that T9999 returned no records and includes the executed query as proof of the empty result. It does not invent a name or mapping for T9999, which satisfies the negative lookup requirement. The only unsupported items are the illustrative example identifiers T1566, M1017, and CAPEC-98, so faithfulness is slightly reduced.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

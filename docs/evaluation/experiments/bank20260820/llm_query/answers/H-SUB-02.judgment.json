@@ -1,0 +1,23 @@
+{
+ "case_id": "H-SUB-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.85,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 9,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly reports that no records were returned due to an empty query, which is fully supported by the evidence (0 records, 0 related, 3 failed gate attempts with 'empty query'). However, it fails to state any of the 9 expected sub-techniques (T1556.001 through T1556.009) or even T1556 by ID, only referencing 'Modify Authentication Process' by name. The mention of T1566, M1017, and CAPEC-98 as examples introduces identifiers not present in the evidence, though they are clearly labeled as illustrative rather than asserted.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

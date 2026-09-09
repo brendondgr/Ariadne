@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-ChildOf-HAS_ALTERNATE_TERM-CAPEC-384-69413a::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 5,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains instead of stating the five expected alternate terms for the parent pattern of CAPEC-384: Man-in-the-Middle / MITM, Monkey-in-the-Middle, Monster-in-the-Middle, On-path Attacker, and Person-in-the-Middle / PiTM. Its no-records claim is supported by the empty capec result, but the abstention does not carry the executed query and it mentions unsupported example ids T1566, M1017, and CAPEC-98. No cross-source mapping is fabricated, so it is a reasonable abstention with zero gold coverage.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

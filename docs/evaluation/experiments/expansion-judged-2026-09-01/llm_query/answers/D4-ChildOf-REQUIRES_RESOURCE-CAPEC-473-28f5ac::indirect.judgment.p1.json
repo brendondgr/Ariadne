@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-ChildOf-REQUIRES_RESOURCE-CAPEC-473-28f5ac::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an explicit abstention: it says no records were returned and notes the capec specialist's empty query, so it does not assert a mapping for CAPEC-473. It does not state CAPEC-473 or the two expected resource texts, so completeness is zero. The example IDs T1566, M1017, and CAPEC-98 are unsupported by the evidence, reducing faithfulness. Overall it is a query-backed abstention rather than a fabricated answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

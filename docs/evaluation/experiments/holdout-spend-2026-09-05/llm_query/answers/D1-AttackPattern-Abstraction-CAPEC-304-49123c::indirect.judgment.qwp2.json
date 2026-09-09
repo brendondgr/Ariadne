@@ -1,0 +1,28 @@
+{
+ "case_id": "D1-AttackPattern-Abstraction-CAPEC-304-49123c::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: it states that the CAPEC source did not establish the question and shows the executed query for CAPEC-304, which returned zero rows. It states CAPEC-304 but omits the expected related identifier Detailed, so completeness is partial. The only unsupported identifiers are the example ids T1566, M1017, and CAPEC-98 in the fallback narrative.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

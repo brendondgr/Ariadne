@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Campaign-x_mitre_analytic_refs-C0034-a648a4::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only says that 19 MITRE ATT&CK records were found and does not state C0034 or any analytic identifiers, so it does not answer which detection analytics implement the campaign. The count is supported by the executed query result, but the returned records are empty Campaign records rather than named analytics. Because it neither lists the expected anchor C0034 nor abstains with the query, it is a retrieval summary rather than a correct answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

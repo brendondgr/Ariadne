@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MITIGATION-T1195.002-962add::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.85,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 26,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and correctly reports that the execution returned no records for T1195.002, but it states none of the 26 expected mitigation texts. It does not fabricate a CAPEC-to-mitigation mapping, but the empty query and unsupported example identifiers T1566, M1017, and CAPEC-98 reduce faithfulness and groundedness. Because the gold expected 26 mitigation identifiers and the answer presents 0, it is partial rather than correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

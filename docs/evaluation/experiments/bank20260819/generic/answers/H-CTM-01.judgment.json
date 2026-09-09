@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-01",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states both gold identifiers: CAPEC-572 (Artificially Inflate File Sizes) and T1027.001 (Binary Padding), and properly establishes the cross-source correlation supported by the CAPEC record's join_values and related TaxonomyEntry (capec:taxonomy:ATTACK:1027.001). The only minor gap is not explicitly noting the absence of mitigations for T1027.001, though the evidence's empty related array for the ATT&CK record does support that absence. All claims are grounded in the cited records with no fabricated mappings or hallucinated identifiers.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

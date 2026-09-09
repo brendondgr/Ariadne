@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanFollow-CAPEC-390-754ead::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.5,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-665 is a predecessor of CAPEC-390"
+ ],
+ "rationale": "The answer correctly identifies the target entity (CAPEC-665) but incorrectly describes the relationship direction, calling it a 'predecessor' instead of a successor. This contradicts the 'CAN_FOLLOW' edge direction in the evidence and fails to explicitly answer which pattern the attacker moves to 'next'.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

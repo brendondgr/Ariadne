@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-kill_chain_phase-tactic_refs-T1578-9370d3::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The expected matrix identifier is enterprise-attack, and the answer explicitly states it while also naming T1578 and TA0112. The cited T1578 record contains related entries TA0112 and enterprise-attack, so the answer is supported by the evidence. The main weakness is that it says \u201crelated item(s)\u201d rather than explicitly saying enterprise-attack covers the tactic, but the required gold identifier is present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

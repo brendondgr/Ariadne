@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0045-aca0c6::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains and shows the executed query for Campaign C0045, and the evidence confirms that query returned 0 rows. However, it states none of the expected techniques T1016, T1059.006, T1105, or T1190, so completeness is zero. The only unsupported identifiers are the illustrative examples T1566, M1017, and CAPEC-98, which do not create a fabricated mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

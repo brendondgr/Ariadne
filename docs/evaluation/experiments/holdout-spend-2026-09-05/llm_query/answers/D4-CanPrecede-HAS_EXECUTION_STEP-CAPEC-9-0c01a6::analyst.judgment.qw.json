@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-CanPrecede-HAS_EXECUTION_STEP-CAPEC-9-0c01a6::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.25,
+ "gold_expected": 4,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: it states that the CAPEC query for CAPEC-9 returned no records and includes the executed query, which is supported by the evidence showing row_count 0. It names the anchor CAPEC-9 but omits the three expected execution-step texts (Find programs with elevated privileges, Find vulnerability in running program, Execute arbitrary code). The example identifiers T1566, M1017, and CAPEC-98 are not supported by the shown evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

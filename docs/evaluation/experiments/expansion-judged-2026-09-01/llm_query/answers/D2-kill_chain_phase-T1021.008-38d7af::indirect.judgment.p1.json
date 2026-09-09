@@ -1,0 +1,28 @@
+{
+ "case_id": "D2-kill_chain_phase-T1021.008-38d7af::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows the failed query for T1021.008, but it does not state the expected tactic TA0008 or the anchor T1021.008. It is therefore a reasonable no-record abstention rather than a full answer. The example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

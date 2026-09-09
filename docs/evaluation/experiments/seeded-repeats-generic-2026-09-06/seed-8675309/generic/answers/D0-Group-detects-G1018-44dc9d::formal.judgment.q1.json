@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Group-detects-G1018-44dc9d::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly anchors G1018/TA2541 and enumerates the 37 related ATT&CK records, including technique IDs such as T1105 and T1566.001, all tied to the cited G1018 record. However, it frames them as 'related' rather than explicitly stating which techniques G1018 detects, and it includes non-technique software such as S0434. This makes it faithful and complete for the expected anchor, but only partially responsive to the detection-specific question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

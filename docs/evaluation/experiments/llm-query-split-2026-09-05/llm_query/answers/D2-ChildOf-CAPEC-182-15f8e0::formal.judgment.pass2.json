@@ -1,0 +1,28 @@
+{
+ "case_id": "D2-ChildOf-CAPEC-182-15f8e0::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains and shows the executed CAPEC query, and the evidence shows zero returned records, so it is faithful and does not fabricate a mapping. However, the expected related pattern CAPEC-137 is not stated, while CAPEC-182 appears only as the queried anchor. The narrative also mentions unsupported example identifiers T1566, M1017, and CAPEC-98.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

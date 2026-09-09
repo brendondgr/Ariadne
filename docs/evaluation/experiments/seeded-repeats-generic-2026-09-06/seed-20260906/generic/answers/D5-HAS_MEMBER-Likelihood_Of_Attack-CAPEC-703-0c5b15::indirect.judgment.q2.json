@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-HAS_MEMBER-Likelihood_Of_Attack-CAPEC-703-0c5b15::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.14,
+ "gold_expected": 7,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows the executed CAPEC query that returned zero rows for seed CAPEC-703, so it is faithful to the evidence and does not fabricate a mapping. It states only the anchor CAPEC-703 and omits the six expected related patterns CAPEC-457, CAPEC-540, CAPEC-573, CAPEC-580, CAPEC-649, and CAPEC-65, so completeness is low. The narrative's example identifiers T1566, M1017, and CAPEC-98 are unsupported but peripheral.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

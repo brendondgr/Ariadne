@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[WASC]-T1499.003-235f81::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.6,
+ "groundedness": 0.65,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The attack source doesn't establish this and no query was executed for T1499.003 CAPEC patterns"
+ ],
+ "rationale": "The answer states T1499.003 and includes CAPEC-130 mapped to capec:taxonomy:ATTACK:1499.003, so it partially addresses the CAPEC side. It never states the expected WASC:10, which is the key external gold identifier. The final meta-claim that the attack source did not establish the mapping is not tied to a cited record, reducing faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

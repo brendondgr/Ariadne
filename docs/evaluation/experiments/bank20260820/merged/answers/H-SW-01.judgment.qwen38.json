@@ -1,0 +1,23 @@
+{
+ "case_id": "H-SW-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 13,
+ "gold_present": 13,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1546.003 has 25 used techniques, when the evidence shows 25 related USES neighbours that include Software, Group, and Campaign entities rather than only techniques"
+ ],
+ "rationale": "The answer states all 13 expected software identifiers for T1546.003: S0053, S0150, S0202, S0371, S0376, S0378, S0511, S0682, S0692, S1020, S1059, S1081, and S1085. It also includes non-software neighbours such as G0061, G0016, C0024, and C0023, and characterizes the 25 related items as 'used techniques,' which is not fully supported by the record labels. Therefore it is complete but only partially precise in answering the software-specific question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

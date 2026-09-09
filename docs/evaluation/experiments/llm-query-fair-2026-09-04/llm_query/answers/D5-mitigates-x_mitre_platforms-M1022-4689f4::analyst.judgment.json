@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1022-4689f4::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 43,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: it states that the attack source returned no records and shows the executed M1022 MITIGATES Technique query, which matches the zero-row evidence. It names the M1022 anchor but none of the 43 expected Windows technique identifiers, so completeness is 0. The only unsupported identifiers are the illustrative T1566, M1017, and CAPEC-98 examples.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-subtechnique-of-T1589-3f64fc::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer reports that 3 MITRE ATT&CK records were found, which is supported by the executed query's row_count=3, but it does not state the requested sub-technique identifiers T1589.001, T1589.002, or T1589.003. Because the question asks which sub-techniques sit under T1589, the count alone is only a weak partial answer. The normalized evidence records lack primary_id and name values, so the answer cannot be credited with presenting the gold identifiers.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

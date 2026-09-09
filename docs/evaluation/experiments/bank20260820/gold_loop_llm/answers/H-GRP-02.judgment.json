@@ -1,0 +1,19 @@
+{
+ "case_id": "H-GRP-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies all 5 gold groups (G0025 APT17, G0094 Kimsuky, G0117 Fox Kitten, G1003 Ember Bear, G1052 Contagious Interview) that use T1585 (Establish Accounts), matching the expected set exactly. The executed Cypher query 'MATCH (g:Group)-[:USES]->(t:Technique) WHERE t.attack_id IN $ids' directly answers the question, and every group name and ID is supported by the T1585 record's related entries in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-227-5f6f39::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.5,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies the relevant entity CAPEC-469. However, it describes the relationship incorrectly, stating that CAPEC-227 has a 'ChildOf parent: CAPEC-469', which implies CAPEC-469 is the parent, whereas the gold expectations and evidence indicate that CAPEC-469 is the more specific case (the child) of CAPEC-227.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

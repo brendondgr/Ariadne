@@ -1,0 +1,19 @@
+{
+ "case_id": "H-SW-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.85,
+ "groundedness": 0.2,
+ "completeness": 0.0,
+ "gold_expected": 7,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies that 7 records were retrieved, matching the gold count of 7 software identifiers (S0132, S0133, S0260, S0386, S0458, S0575, S0603), but fails to name any of them. The normalize step in the evidence shows all 7 records have empty primary_id and name fields, which the answer honestly reflects by calling them 'unknown.' However, the empty claims array means no specific software identifier is actually stated, making completeness zero despite successful retrieval of the correct number of records.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

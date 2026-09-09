@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-uses-C0061-32ed5d::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.27,
+ "gold_expected": 22,
+ "gold_present": 6,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states only six of the 22 expected C0061 technique neighbors: T1665, T1018, T1591, T1190, T1106, and T1033. These are all supported by the returned ATT&CK records, so the answer is faithful and grounded. However, it omits 16 gold techniques such as T1003.001, T1021.001, and T1543.003, making it only partially complete.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

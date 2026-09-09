@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-log_source-x_mitre_analytic_refs-DC0005-0c68b6::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains after an empty query and does not state any expected analytics DET0117, DET0151, or DET0399, nor the anchor DC0005. Its zero-record claim is supported by the failed attack specialist trace, but the example identifiers T1566, M1017, and CAPEC-98 are not in the evidence. Because it declines rather than guessing, it is partial rather than incorrect.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

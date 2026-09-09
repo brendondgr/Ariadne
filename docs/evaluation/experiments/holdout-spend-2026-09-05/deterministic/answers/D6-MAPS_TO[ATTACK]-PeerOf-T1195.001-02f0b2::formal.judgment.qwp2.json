@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-PeerOf-T1195.001-02f0b2::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The attack source does not establish the T1195.001-to-CAPEC correspondence"
+ ],
+ "rationale": "The answer mentions T1195.001 and many CAPEC records with ATT&CK taxonomy entries, but it never states the expected CAPEC-630 or clearly identifies peers of that pattern. It also says the attack source does not establish the correspondence and that no query was executed, but it does not show the executed query as proof. This makes the answer partially relevant and grounded, but incomplete for the requested gold identifier.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

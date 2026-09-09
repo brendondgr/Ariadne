@@ -1,0 +1,28 @@
+{
+ "case_id": "D1-Analytic-x_mitre_platforms-AN0307-86109b::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.7,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains after the AN0307 query fails and does not state the expected platform Linux. It is mostly faithful to the zero-record evidence, but the example identifiers T1566, M1017, and CAPEC-98 are not supported by the records. No cross-source mapping is fabricated, and completeness is zero because Linux is absent.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "case_id": "F-CTM-06",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 17,
+ "gold_present": 17,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1211 is labeled 'Exploitation for Stealth' in the narrative, but the visible CAPEC taxonomy entry for 1211 is 'Exploitation for Defensive Evasion' and the ATT&CK T1211 name is not explicitly shown."
+ ],
+ "rationale": "The answer states all three expected ATT&CK techniques (T1211, T1542.002, T1556) and all 13 expected mitigations (M1018, M1019, M1022, M1024, M1025, M1026, M1027, M1028, M1032, M1047, M1048, M1050, M1051). It also correctly correlates CAPEC-665 to those techniques, so completeness is full. The only minor faithfulness issue is the T1211 label 'Exploitation for Stealth,' which is not explicitly shown in the visible evidence.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

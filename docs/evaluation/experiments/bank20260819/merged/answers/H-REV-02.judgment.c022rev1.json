@@ -1,0 +1,26 @@
+{
+ "case_id": "H-REV-02",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-542 was found in MITRE ATT&CK"
+ ],
+ "rationale": "The answer states the expected CAPEC pattern CAPEC-542 and the ATT&CK anchor T1587.001, which satisfies the query. It is grounded in the CAPEC record linking T1587.001 to CAPEC-542 and the ATT&CK record for T1587.001. The minor source confusion in calling the CAPEC-542 item 'in MITRE ATT&CK' slightly reduces faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

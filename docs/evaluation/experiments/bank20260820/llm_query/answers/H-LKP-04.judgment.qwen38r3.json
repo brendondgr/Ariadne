@@ -1,0 +1,26 @@
+{
+ "case_id": "H-LKP-04",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The narrative says 'CAPEC' or 'Based XSS' were not found in the live ATT&CK/CAPEC graphs, but the evidence only shows a zero-row query for CAPEC-588.",
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains for CAPEC-588 and shows the executed query that returned no records, matching the evidence. It states the expected identifier CAPEC-588 in the abstention, so completeness is full. Minor unsupported narrative mentions of T1566, M1017, and CAPEC-98 reduce faithfulness and groundedness, but no cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

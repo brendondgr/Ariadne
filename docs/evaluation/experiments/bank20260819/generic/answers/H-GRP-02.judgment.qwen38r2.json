@@ -1,0 +1,23 @@
+{
+ "case_id": "H-GRP-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The claim that T1003.006 has 8 'used techniques' is imprecise because the evidence lists 8 related items via USES, including groups, software, and campaigns, not only techniques."
+ ],
+ "rationale": "The answer correctly states the anchor T1003.006 and all four expected groups: G0129, G1004, G1006, and G1053. It also correctly lists the additional related items S0002, C0027, C0014, and C0024 from the evidence. The only minor issue is calling all eight related items 'used techniques' when their labels include Group, Software, and Campaign.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

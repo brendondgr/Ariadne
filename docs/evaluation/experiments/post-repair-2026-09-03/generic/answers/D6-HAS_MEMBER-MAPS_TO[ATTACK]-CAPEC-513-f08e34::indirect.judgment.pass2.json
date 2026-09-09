@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-513-f08e34::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.8,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 17,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains rather than asserting a mapping, which avoids fabrication, but it states none of the expected ATT&CK technique identifiers such as T1078, T1110, T1134, T1499, or T1595. It also does not explicitly state CAPEC-513 in the user-facing answer, only capec:attack-pattern:513 in notes, and the abstention query field is empty even though traces show a rejected Gremlin query. The unsupported example identifiers T1566, M1017, and CAPEC-98 reduce faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

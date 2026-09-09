@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-kill_chain_phase-TA0042-f967b1::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.18,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.18,
+ "gold_expected": 50,
+ "gold_present": 9,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer lists nine top-level techniques returned for TA0042: T1583, T1584, T1585, T1586, T1587, T1588, T1608, T1650, and T1683. These are supported by the cited ATT&CK records, but the expected gold set also includes 41 subtechniques such as T1583.001, T1584.001, T1608.001, and T1683.001. Therefore the answer is faithful and grounded, but only partially complete.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

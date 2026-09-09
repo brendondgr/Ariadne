@@ -1,0 +1,29 @@
+{
+ "case_id": "D5-HAS_MEMBER-Abstraction-CAPEC-703-c62fab::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.6,
+ "groundedness": 0.4,
+ "completeness": 0.0,
+ "gold_expected": 12,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "None of the live graph sources cover this request",
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by reporting no records and an empty CAPEC query rather than asserting a mapping. It states none of the 12 expected related patterns, including CAPEC-158, CAPEC-163, CAPEC-177, CAPEC-191, CAPEC-457, CAPEC-552, CAPEC-57, CAPEC-648, CAPEC-649, CAPEC-65, CAPEC-692, and CAPEC-70. It also introduces unsupported example identifiers T1566, M1017, and CAPEC-98 and overstates that no live sources cover the request. Therefore it is partial: honest in abstaining but incomplete relative to the expected set.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

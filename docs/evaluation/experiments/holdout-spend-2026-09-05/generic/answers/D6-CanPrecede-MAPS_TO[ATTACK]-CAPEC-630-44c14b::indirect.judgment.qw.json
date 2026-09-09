@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-630-44c14b::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states and cites CAPEC-630, satisfying one expected identifier, but it does not state the expected related ATT&CK technique T1036.005. Its abstention is supported by the shown CAPEC query and the boundary note that Technique is not modeled, so it is not fabricated. Because it only partially covers the expected identifiers and does not fully answer the follow-on mapping question, it is partial.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

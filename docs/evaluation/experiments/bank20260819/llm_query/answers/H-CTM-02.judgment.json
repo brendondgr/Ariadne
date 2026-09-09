@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-02",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 0.8,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-325 as the queried entity, states that no ATT&CK technique mappings were found (matching the gold's expect_no_correlation), and explains the attack sub-question's dependency skip (matching expect_dependency_skip). The CAPEC abstention includes the executed Gremlin query as proof, satisfying the honest-abstention rule. No fabricated cross-source correlations are asserted.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

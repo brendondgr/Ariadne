@@ -1,0 +1,21 @@
+{
+ "case_id": "H-CSQ-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.9,
+ "groundedness": 0.7,
+ "completeness": 0.33,
+ "gold_expected": 3,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-594 and reports the two consequence impacts/scopes, but it does not state the required consequence identifiers capec:attack-pattern:594:consequence:1 and capec:attack-pattern:594:consequence:2. It therefore only partially answers the question, with 1 of 3 expected identifiers present. The reported impacts and scopes are supported by the two CAPEC consequence records, but grounding is weaker because the citations only reference CAPEC-594 rather than the consequence IDs.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

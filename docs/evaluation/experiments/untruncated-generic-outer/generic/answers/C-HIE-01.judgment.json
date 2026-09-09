@@ -1,0 +1,19 @@
+{
+ "case_id": "C-HIE-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states CAPEC-151 (Identity Spoofing) as a ChildOf parent of CAPEC-98 (Phishing), which is the sole gold-expected identifier. It additionally enumerates CAPEC-163, CAPEC-164, and CAPEC-656, all of which appear in the evidence as related records with type CHILD_OF, so no fabrication or hallucination is present. The query executed (generic_walk with in/out CHILD_OF) and the 4-row result confirm the enumeration is fully grounded.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

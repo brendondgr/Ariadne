@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-CanAlsoBe-CAPEC-23-7663ae::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system abstained from providing an answer because the graph retrieval failed to find the 'CanAlsoBe' relationship for CAPEC-23. Since the provided evidence contains no records and the system showed the failed queries, this is an honest abstention and is marked CORRECT per Rule 1, despite the absence of the gold entity CAPEC-165.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

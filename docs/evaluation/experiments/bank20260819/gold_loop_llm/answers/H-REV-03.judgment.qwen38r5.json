@@ -1,0 +1,23 @@
+{
+ "case_id": "H-REV-03",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1547.006 is under T1547"
+ ],
+ "rationale": "The answer states the expected CAPEC pattern CAPEC-552 and the ATT&CK record T1547.006, satisfying the gold identifiers. It is strongly grounded in the CAPEC-552 and T1547.006 records, including the shared T1547.006 join value. The only minor unsupported assertion is that T1547.006 is under T1547, which is not explicitly present in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

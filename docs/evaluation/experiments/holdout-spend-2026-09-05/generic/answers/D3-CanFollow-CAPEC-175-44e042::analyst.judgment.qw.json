@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanFollow-CAPEC-175-44e042::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-234 is described as a CanFollow predecessor of CAPEC-175, although the evidence only records a CAN_FOLLOW relation without explicit direction."
+ ],
+ "rationale": "The answer states the expected related identifier CAPEC-234 as the pattern that can follow CAPEC-175, satisfying the query. It also correctly cites CAPEC-175's name, description, Abstraction, and Status from the record. The minor unsupported term 'predecessor' slightly reduces faithfulness, but it does not change the correct identification of CAPEC-234.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

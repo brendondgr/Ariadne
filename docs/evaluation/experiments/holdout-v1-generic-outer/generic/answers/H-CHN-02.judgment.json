@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CHN-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-456 (Infected Memory) and CAPEC-679 (Exploitation of Improperly Configured or Implemented Memory Protections) as the two attack patterns exploiting CWE-1316, matching both gold identifiers. It also correctly states that no ATT&CK technique correlation is established, aligning with the gold's expect_no_correlation and expect_dependency_skip expectations. The only minor gap is that the abstention's query field is empty, so the executed query is not shown as proof of the skip.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

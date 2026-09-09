@@ -1,0 +1,21 @@
+{
+ "case_id": "H-GRP-01",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 19,
+ "gold_present": 19,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1012 has 119 used techniques (the related set includes Software, Campaign, and Group items, not only techniques)"
+ ],
+ "rationale": "The answer states anchor T1012 and enumerates all 19 expected group neighbors, including G0010, G0027, G0030, G0032, G0035, G0038, G0047, G0049, G0050, G0087, G0094, G0096, G0114, G0117, G0119, G0128, G1017, G1034, and G1043. It is grounded in the cited attack record T1012 and does not fabricate a cross-source mapping. Minor imprecision in calling all 119 related items 'used techniques' slightly reduces faithfulness, but completeness is full.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

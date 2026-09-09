@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-CanPrecede-Likelihood_Of_Attack-CAPEC-98-6fe779::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies all the gold-expected successors of CAPEC-98 (CAPEC-611, CAPEC-630, CAPEC-631, CAPEC-632). However, it fails to apply the 'likelihood of attack is Low' filter, as it lists all successors found in the evidence, including CAPEC-543 and CAPEC-89.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

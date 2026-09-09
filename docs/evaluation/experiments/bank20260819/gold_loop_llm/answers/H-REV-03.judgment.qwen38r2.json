@@ -1,0 +1,23 @@
+{
+ "case_id": "H-REV-03",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1547.006 is under T1547 (Boot or Logon Autostart Execution)"
+ ],
+ "rationale": "The answer states the expected CAPEC pattern CAPEC-552 and the ATT&CK record T1547.006, and it correctly ties them through the shared join value T1547.006. Most claims are directly supported by the cited CAPEC-552 and T1547.006 records, including the CAPEC mapping and taxonomy entry. The only minor unsupported detail is the explicit parent technique identifier T1547, which is not directly present in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

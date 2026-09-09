@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0046-803292::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.95,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 21,
+ "gold_present": 21,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states C0046 and all 21 expected Windows-applicable technique IDs, including T1014, T1020, T1036, T1037, T1040, T1041, T1055, T1059, T1070.004, T1071.001, T1082, T1102.003, T1119, T1133, T1140, T1190, T1556, T1557, T1653, T1685, and T1690. However, it reports 27 related items rather than explicitly filtering to Windows techniques, adding non-technique software S1188/S1186 and extra subtechniques such as T1583.006, T1583.003, T1587.001, and T1587.003. The claims are grounded in the C0046 ATT&CK record and do not assert unsupported cross-source mappings.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

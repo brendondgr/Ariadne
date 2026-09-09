@@ -1,0 +1,24 @@
+{
+ "case_id": "D1-Analytic-x_mitre_platforms-AN1549-acbfcf::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and shows the executed query, which returned no records, so it is grounded and does not fabricate a mapping. It mentions AN1549 but omits the expected platform Linux. It also treats the provided analytic identifier as a name to search rather than using it as an id, so it only partially addresses the question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

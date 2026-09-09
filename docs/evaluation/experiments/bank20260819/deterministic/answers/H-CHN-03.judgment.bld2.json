@@ -1,0 +1,25 @@
+{
+ "case_id": "H-CHN-03",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 29,
+ "gold_present": 29,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CWE-494 is described as a TaxonomyEntry in several CAPEC enumerations (e.g., CAPEC-662, CAPEC-186, CAPEC-187, CAPEC-691), although the visible evidence lists it as a related item rather than explicitly as a TaxonomyEntry."
+ ],
+ "rationale": "The answer states all 12 expected CAPEC patterns (CAPEC-184, CAPEC-185, CAPEC-186, CAPEC-187, CAPEC-533, CAPEC-538, CAPEC-657, CAPEC-662, CAPEC-691, CAPEC-692, CAPEC-693, CAPEC-695) and all 4 expected ATT&CK techniques (T1072, T1185, T1195.001, T1195.002), plus the 12 expected M identifiers and CWE-494. The cross-source correlations are grounded in CAPEC join_values to the same T identifiers and the retrieved ATT&CK records. Minor faithfulness deduction for calling CWE-494 a TaxonomyEntry in some enumerations.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true
+ }
+}

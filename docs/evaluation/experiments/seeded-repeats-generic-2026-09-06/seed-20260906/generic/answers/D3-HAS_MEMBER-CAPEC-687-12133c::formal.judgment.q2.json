@@ -1,0 +1,28 @@
+{
+ "case_id": "D3-HAS_MEMBER-CAPEC-687-12133c::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains and shows the executed CAPEC query that returned no records for CAPEC-687, but it does not state the expected related view CAPEC-683. The query traverses IN_VIEW even though the resolved relationship is MEMBER_OF, so the abstention is supported by the shown result but incomplete for the asked mapping. The example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

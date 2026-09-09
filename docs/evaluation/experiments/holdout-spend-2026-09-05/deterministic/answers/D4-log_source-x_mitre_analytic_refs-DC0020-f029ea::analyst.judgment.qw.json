@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-log_source-x_mitre_analytic_refs-DC0020-f029ea::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.04,
+ "gold_expected": 25,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states DC0020 and enumerates 29 AN analytics associated with it, which is supported by the evidence. However, it does not state the expected DET detection-strategy identifiers such as DET0009, DET0023, DET0062, DET0087, and DET0100, so it only partially answers the question. Its claims are grounded in the DC0020 record, but completeness is low because only DC0020 from the expected gold identifiers is present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

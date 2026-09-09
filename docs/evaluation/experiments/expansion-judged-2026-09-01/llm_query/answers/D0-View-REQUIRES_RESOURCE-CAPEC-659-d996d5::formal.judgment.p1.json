@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-View-REQUIRES_RESOURCE-CAPEC-659-d996d5::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly reports that no records were returned and its notes include the required anchor CAPEC-659, matching the empty expected resource set. However, the narrative does not explicitly state that CAPEC-659 requires no resources and it does not show the executed query in the answer itself. The unsupported example identifiers T1566, M1017, and CAPEC-98 reduce faithfulness and groundedness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

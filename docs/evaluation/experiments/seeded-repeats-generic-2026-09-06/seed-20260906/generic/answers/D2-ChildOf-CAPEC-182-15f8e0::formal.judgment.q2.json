@@ -1,0 +1,27 @@
+{
+ "case_id": "D2-ChildOf-CAPEC-182-15f8e0::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-178 is a ChildOf parent of CAPEC-182",
+  "CAPEC-174 is a ChildOf parent of CAPEC-182"
+ ],
+ "rationale": "The answer correctly states the expected parent CAPEC-137 for CAPEC-182 and cites the CAPEC-182 record. It also asserts CAPEC-178 and CAPEC-174 are ChildOf parents, but the evidence only shows them as CHILD_OF-related neighbors and CAPEC-182's description treats cross-site flashing as an example, so the parent enumeration is over-asserted. Therefore the gold relation is present, but the answer is only partially correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

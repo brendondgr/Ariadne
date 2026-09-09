@@ -1,0 +1,19 @@
+{
+ "case_id": "A-NEG-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The question asked for techniques of nonexistent group G9999 and expected an empty result. The answer correctly abstains, stating no records were returned, and includes the executed Cypher query (MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN $ids) as proof. The evidence confirms 0 rows with seed G9999, matching the expected empty set exactly.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CTM-04",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The phrase 'T1036.005 has 3 mitigated techniques: M1038, M1045, M1022' is imprecise; the evidence labels M1038, M1045, and M1022 as Mitigations, not techniques."
+ ],
+ "rationale": "The answer correctly identifies CAPEC-543's mapped ATT&CK technique T1036.005 and the associated mitigations M1022, M1038, and M1045. It also provides the required cross-source correlation between CAPEC-543 and T1036.005. The only minor issue is calling the mitigation IDs 'mitigated techniques' rather than mitigations.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

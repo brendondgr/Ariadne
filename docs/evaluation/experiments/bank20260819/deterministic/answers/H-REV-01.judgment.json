@@ -1,0 +1,19 @@
+{
+ "case_id": "H-REV-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.6,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies T1613 (Container and Resource Discovery) as the ATT&CK anchor and demonstrates the CAPEC source returned zero records via the executed Gremlin query (g.V().hasLabel(\"TaxonomyEntry\")...in(\"MAPS_TO\")). However, it never explicitly states the conclusion that no patterns reference T1613, nor does it address the gold expectation of an ATT&CK dependency_skip (i.e., T1613 is the technique itself, not referenced by a separate ATT&CK pattern). The CAPEC abstention is well-formed and carries the query as proof.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

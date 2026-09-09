@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-uses-uses-C0023-47ddc0::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.6,
+ "faithfulness": 0.9,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 35,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains by saying no records were returned, and the evidence shows zero records plus an empty query for the C0023 seed. It does not state C0023 or any expected technique IDs such as T1005, T1059.001, or T1573.001, so completeness is zero. The abstention is grounded in the failed attack result and empty query, with no fabricated cross-source mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

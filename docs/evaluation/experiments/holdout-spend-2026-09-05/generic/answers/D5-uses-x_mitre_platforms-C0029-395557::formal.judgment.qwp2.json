@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0029-395557::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 12,
+ "gold_present": 12,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes all 12 expected technique identifiers (T1005, T1056.001, T1059, T1070, T1071.004, T1082, T1095, T1105, T1190, T1205, T1505.003, T1685) and the anchor C0029. However, it presents them as part of 42 related items rather than explicitly identifying the Network Device-applicable subset. It is well grounded in the C0029 record, but overinclusive with non-gold software and subtechnique IDs such as S0488 and T1003.003.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

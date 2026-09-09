@@ -1,0 +1,23 @@
+{
+ "case_id": "H-ABS-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 0.67,
+ "gold_expected": 3,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "MITRE ATT&CK"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-206 and one expected related pattern, CAPEC-444, but omits the other expected related pattern, CAPEC-438. It also provides only a relation summary rather than the requested detailed, standard, and meta information. The claim that the item was found in MITRE ATT&CK is not supported by the shown CAPEC-sourced evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

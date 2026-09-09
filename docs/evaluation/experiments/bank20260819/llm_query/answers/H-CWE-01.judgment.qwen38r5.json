@@ -1,0 +1,21 @@
+{
+ "case_id": "H-CWE-01",
+ "verdict": "CORRECT",
+ "correctness": 0.5,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer honestly abstains for CAPEC-461 and shows the executed query, and the evidence shows row_count 0 for that query. It does not state the expected CWE-290 or CWE-328, so completeness is low despite the valid abstention. No unsupported cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

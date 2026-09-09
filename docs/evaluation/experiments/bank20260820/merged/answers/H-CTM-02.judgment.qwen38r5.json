@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CTM-02",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-412 is described as an ATT&CK record although the cited record is from the CAPEC source"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-412 and honestly reports that no mapped ATT&CK techniques were found, with the executed CAPEC query shown as evidence. It also correctly reports that the ATT&CK mitigations sub-question was skipped because q1 produced no usable seed identifiers. The only minor issue is calling CAPEC-412 an ATT&CK record, which is not supported by the CAPEC citation.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

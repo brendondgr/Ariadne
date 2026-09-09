@@ -1,0 +1,19 @@
+{
+ "case_id": "H-LKP-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies T1591.003 'Identify Business Tempo' and provides accurate metadata (stix_type: attack-pattern, x_mitre_is_subtechnique: True, x_mitre_version: 1.0), all grounded in the cited record. However, the question explicitly asks for a description of what the sub-technique involves, and the evidence contains a detailed description about adversaries gathering information on business tempo, operational hours, and purchase/shipment times \u2014 none of which appears in the answer text. This is a retrieval-to-answer gap: the record was found but the key descriptive content was not surfaced.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

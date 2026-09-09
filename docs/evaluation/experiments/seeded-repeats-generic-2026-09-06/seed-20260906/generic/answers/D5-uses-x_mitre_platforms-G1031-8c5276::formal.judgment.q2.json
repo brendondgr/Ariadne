@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G1031-8c5276::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the anchor G1031 and both expected container-applicable techniques T1059 and T1685, so the gold identifiers are present. However, it reports all 20 related items, including non-technique software S1017 and S1018 and subtechniques such as T1059.001, without explicitly selecting the techniques that apply to Containers. The statements are faithful and grounded in the G1031 record, but the lack of a direct container-applicability filter makes it partial.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

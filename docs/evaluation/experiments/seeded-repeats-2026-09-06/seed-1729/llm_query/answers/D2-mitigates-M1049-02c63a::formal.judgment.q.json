@@ -1,0 +1,28 @@
+{
+ "case_id": "D2-mitigates-M1049-02c63a::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.55,
+ "groundedness": 0.5,
+ "completeness": 0.04,
+ "gold_expected": 23,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "None of the live graph sources cover this request",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer reports an empty result and does not state the expected M1049-mitigated techniques such as T1027, T1059, T1564, or T1566. It mentions T1566 only as an example and also cites unsupported M1017 and CAPEC-98, so it is mostly an abstention rather than a complete answer. It does not show the executed query, and 'none of the live graph sources cover this request' overstates the empty-query failure.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

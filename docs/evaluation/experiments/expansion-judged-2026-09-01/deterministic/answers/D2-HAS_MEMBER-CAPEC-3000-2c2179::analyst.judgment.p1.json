@@ -1,0 +1,28 @@
+{
+ "case_id": "D2-HAS_MEMBER-CAPEC-3000-2c2179::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 0.14,
+ "gold_expected": 7,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows the executed query, but that query searched for AttackPattern nodes rather than the resolved View/MEMBER_OF/Category path for CAPEC-3000. It therefore does not state the expected related categories CAPEC-403, CAPEC-437, CAPEC-512, CAPEC-513, CAPEC-514, or CAPEC-515, and only mentions the anchor CAPEC-3000 inside the quoted question. The unsupported example identifiers T1566, M1017, and CAPEC-98 reduce faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

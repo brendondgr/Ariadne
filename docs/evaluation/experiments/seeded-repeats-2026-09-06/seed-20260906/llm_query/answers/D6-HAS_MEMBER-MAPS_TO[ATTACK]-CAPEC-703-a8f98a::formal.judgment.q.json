@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-703-a8f98a::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 50,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains instead of stating the expected ATT&CK techniques for CAPEC-703, and its abstention has an empty query rather than showing an executed query. It mentions T1566 only as an example and adds unsupported M1017 and CAPEC-98, while none of the 50 expected technique IDs are asserted as answers. No cross-source mapping is fabricated, but the answer provides almost none of the requested set.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

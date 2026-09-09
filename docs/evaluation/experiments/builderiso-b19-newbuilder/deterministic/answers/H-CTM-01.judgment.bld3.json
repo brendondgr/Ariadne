@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CTM-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states the required CAPEC-572 to T1027.001 correlation and cites both the CAPEC record and the ATT&CK record, so the expected identifiers are present and grounded. It does not explicitly state that no mitigations were found for T1027.001, which leaves the mitigations part of the question only implicitly addressed. No fabricated mapping or unsupported facts are present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false
+ }
+}

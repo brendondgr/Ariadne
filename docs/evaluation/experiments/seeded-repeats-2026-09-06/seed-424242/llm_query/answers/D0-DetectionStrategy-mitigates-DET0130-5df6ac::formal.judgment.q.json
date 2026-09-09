@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-DetectionStrategy-mitigates-DET0130-5df6ac::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The executed attack query for DET0130 returned zero Technique records, and the answer abstains while showing that query. The required gold identifier DET0130 is stated, and the expected technique set is empty, so the no-records response answers the question. The only unsupported details are the illustrative identifiers T1566, M1017, and CAPEC-98, which do not assert a DET0130-to-technique mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

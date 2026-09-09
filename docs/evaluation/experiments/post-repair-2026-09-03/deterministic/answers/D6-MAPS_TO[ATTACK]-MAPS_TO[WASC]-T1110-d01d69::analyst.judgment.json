@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[WASC]-T1110-d01d69::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.6,
+ "groundedness": 0.6,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-1, CAPEC-10, CAPEC-100, CAPEC-101, and CAPEC-102 are presented as the found CAPEC records despite the cited records being different CAPEC IDs",
+  "The attack source does not model the entities asked about, even though the answer also states CAPEC-112 maps to ATTACK:1110"
+ ],
+ "rationale": "The answer mentions T1110 and identifies CAPEC-112, along with related CAPEC entries mapped to T1110 subtechniques, but it never states the expected WASC:11 entry. It therefore partially addresses the CAPEC side of the question while missing the WASC target. The first claim is weakly grounded because the named CAPEC IDs do not match the cited CAPEC records, and the abstention language is somewhat contradictory to the CAPEC-112 mapping it also reports.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

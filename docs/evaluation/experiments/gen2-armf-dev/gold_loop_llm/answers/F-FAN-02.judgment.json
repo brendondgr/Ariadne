@@ -1,0 +1,19 @@
+{
+ "case_id": "F-FAN-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 13,
+ "gold_present": 13,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states all 5 gold ATT&CK technique IDs (T1505.005, T1574.006, T1574.007, T1574.013, T1620), all 6 gold mitigation IDs (M1022, M1024, M1028, M1038, M1040, M1047), and both CAPEC IDs (CAPEC-13, CAPEC-640). The cross-source correlations are directly supported by the CAPEC and ATT&CK records. The only minor issue is that the 'combined' list in section 1 omits T1620 (though it is clearly stated in the CAPEC-640 section, ATT&CK records, mitigations, and cross-source table) and includes T1562.003 (evidence-supported via CAPEC-13's related entries but not in the gold's expected set).",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

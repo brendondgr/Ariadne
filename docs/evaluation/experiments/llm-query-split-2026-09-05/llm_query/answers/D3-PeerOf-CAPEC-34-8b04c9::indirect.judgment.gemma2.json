@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-PeerOf-CAPEC-34-8b04c9::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system failed to retrieve the peer of CAPEC-34 (CAPEC-105) due to a Gremlin query error. However, per Rule 1, this honest abstention is not considered a wrong answer and is rewarded because the system avoided guessing and provided the failed query as proof.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

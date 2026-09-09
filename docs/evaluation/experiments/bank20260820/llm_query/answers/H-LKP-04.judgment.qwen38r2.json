@@ -1,0 +1,21 @@
+{
+ "case_id": "H-LKP-04",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The CAPEC query seeded with CAPEC-588 returned zero records, so the abstention is honest and includes the executed query. The answer states the expected identifier CAPEC-588 in the abstention, satisfying the single gold identifier. The narrative is slightly loose in referring to 'CAPEC' or 'Based XSS' rather than the exact retrieved record, but it does not assert a fabricated mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

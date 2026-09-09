@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-uses-T1204.001-24ba71::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 29,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only reports that 29 MITRE ATT&CK records were found for T1204.001, but it does not state any expected software identifiers such as S0198, S0367, S0435, or S9026. The count is supported by the 29-row result, so the statements are faithful, but they are not tied to specific named records. Because it never enumerates the malware or tools, it does not answer the question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

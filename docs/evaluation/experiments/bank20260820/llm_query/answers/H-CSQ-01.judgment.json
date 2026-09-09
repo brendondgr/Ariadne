@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CSQ-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.9,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer honestly abstains, reporting that the CAPEC source returned no records for CAPEC-674's consequences, and displays the executed query (g.V().hasLabel('AttackPattern').has('id', within(capecIds)).out('HAS_CONSEQUENCE').elementMap().limit(20000)). The evidence confirms 0 records with seed CAPEC-674 and a clean execution. However, the gold-expected consequence identifier capec:attack-pattern:674:consequence:1 is never stated in the answer, yielding a completeness of 0/1 and making this a partial rather than fully correct response.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

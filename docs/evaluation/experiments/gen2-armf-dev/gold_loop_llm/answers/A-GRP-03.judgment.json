@@ -1,0 +1,23 @@
+{
+ "case_id": "A-GRP-03",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 37,
+ "gold_present": 37,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "group G007 (should be G0007)",
+  "T1211 'Exploitation for Stealth' categorized under execution (actually defense evasion)",
+  "T1091 'Replication Through Removable Media' categorized under exfiltration (actually lateral movement/transfer)"
+ ],
+ "rationale": "The answer correctly lists all 37 techniques for G0007 (APT28), matching the full ex_gold set including all must_include_ids (T1003, T1005, T1014, T1025, T1030). Minor deductions for the group ID being written as 'G007' instead of 'G0007' and a few tactic categorizations in the narrative that don't align with ATT&CK's official mappings (e.g., T1211 under execution rather than defense evasion, T1091 under exfiltration rather than lateral movement). The core retrieval and enumeration are complete and accurate.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

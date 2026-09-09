@@ -1,0 +1,21 @@
+{
+ "case_id": "H-CHN-01",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-62 as the CAPEC pattern associated with CWE-1275 and abstains from asserting any ATT&CK technique, matching the expected no-correlation result. It shows the executed CAPEC query and explains that the ATT&CK sub-question was skipped because q1 produced no join values. The only minor weakness is the CAPEC abstention's 'no linked records' phrasing, since the record does include taxonomy entries, but it does not assert an unsupported ATT&CK mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

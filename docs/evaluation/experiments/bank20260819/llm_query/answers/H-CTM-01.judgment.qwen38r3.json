@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CTM-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The live ATT&CK/CAPEC graphs do not contain 'CAPEC' or 'Artificially Inflate File Sizes'."
+ ],
+ "rationale": "The answer abstains and shows that the CAPEC query for CAPEC-572 returned no records, but it never states the expected mapping T1027.001 or any mitigations. It does state the anchor CAPEC-572, so it is partial rather than fully correct. The unsupported claim that the name 'Artificially Inflate File Sizes' was not found slightly reduces faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

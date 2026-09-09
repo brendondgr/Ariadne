@@ -1,0 +1,19 @@
+{
+ "case_id": "H-EXE-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and displays the executed query (g.V().hasLabel(within(labels)).has('id', within(ids)).out('HAS_EXECUTION_STEP').elementMap().limit(20000)), which returned row_count 0. However, the gate trace explicitly flagged a binding mismatch: seed 'CAPEC-14' does not conform to the graph's ID scheme 'capec:attack-pattern:#', meaning the four expected step identifiers (capec:attack-pattern:14:step:1 through capec:attack-pattern:14:step:4) were present in the graph but never retrieved or stated. The abstention is honest and query-backed, but it masks a resolvable ID-format bug rather than reflecting a genuinely empty graph.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

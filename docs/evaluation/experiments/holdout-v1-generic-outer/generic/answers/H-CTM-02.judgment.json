@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-40 (Manipulating Writeable Terminal Devices) with its evidence-supported properties (Abstraction: Standard, Status: Draft) and honestly abstains on the ATT&CK mapping, which the gold explicitly expects to be absent (expect_no_correlation: true). The dependency skip for the mitigations sub-question (q2) is correctly attributed to q1 returning no join values, matching the gold's expect_dependency_skip: true. No fabricated cross-source correlations or hallucinated identifiers are present.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

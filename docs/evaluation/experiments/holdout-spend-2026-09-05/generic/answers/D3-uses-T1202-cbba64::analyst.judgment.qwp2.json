@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-uses-T1202-cbba64::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the anchor T1202 and both expected software neighbours S0193 and S0379, satisfying the gold set for malware/tools using Indirect Command Execution. It also lists G0032 and G1039, which are supported as related USES neighbours in the evidence but are groups rather than malware/tools, making the answer slightly overbroad. No unsupported cross-source mapping or hallucinated identifiers are present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

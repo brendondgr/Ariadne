@@ -1,0 +1,24 @@
+{
+ "case_id": "H-CTM-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states the expected CAPEC identifier, CAPEC-40, and abstains from asserting any ATT&CK mapping because the CAPEC query returned CAPEC-40 with no linked records. It also correctly skips the ATT&CK mitigation sub-question because q1 produced no join values, matching the expected dependency skip. The abstention includes the executed query for the mapping check, so it is a grounded honest abstention rather than a fabricated cross-source correlation.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

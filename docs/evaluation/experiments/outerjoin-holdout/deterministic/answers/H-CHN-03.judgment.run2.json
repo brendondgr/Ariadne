@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CHN-03",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 6,
+ "gold_present": 6,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies all 6 gold ATT&CK techniques (T1027.006, T1027.009, T1055.003, T1564.009, T1574.005, T1574.010) as the expected adversary techniques for CWE-270, properly tracing them through CAPEC-17, CAPEC-30, and CAPEC-35. All cross-source correlations are supported by the evidence (e.g., CAPEC-35 \u2192 T1027.006/T1027.009/T1564.009, CAPEC-30 \u2192 T1055.003, CAPEC-17 \u2192 T1574.005/T1574.010), and the mitigation details (M1013, M1018, M1040, M1047, M1048, M1049, M1052) are accurately stated. A minor deduction reflects that the initial summary line lists only 5 techniques before T1574.010 appears in the detailed enumeration and final corroboration statement.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

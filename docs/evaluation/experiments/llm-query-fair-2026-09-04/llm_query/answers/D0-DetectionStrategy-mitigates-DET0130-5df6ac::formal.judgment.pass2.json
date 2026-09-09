@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-DetectionStrategy-mitigates-DET0130-5df6ac::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The executed query for DET0130 returned zero technique rows, and the answer abstains while showing that exact query, so it correctly reports no established MITIGATES neighbors. It includes the required anchor DET0130 and does not assert any technique IDs as the answer. The illustrative IDs T1566, M1017, and CAPEC-98 are examples rather than claimed mappings, so no fabricated mapping is present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-227-5f6f39::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-469 is the parent of CAPEC-227"
+ ],
+ "rationale": "The answer states the expected gold identifier CAPEC-469 in relation to CAPEC-227, so completeness is full. However, it phrases CAPEC-469 as a 'ChildOf parent' of CAPEC-227 rather than as a more specific child case, which is directionally imprecise for the question. The evidence supports a CHILD_OF relation between CAPEC-227 and CAPEC-469, but not the explicit parent direction asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

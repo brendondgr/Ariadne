@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-uses-uses-C0023-47ddc0::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.37,
+ "gold_expected": 35,
+ "gold_present": 13,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer retrieves the five software records associated with C0023 (S0029, S0051, S0512, S0511, S0518) and lists supported technique IDs, but it states only 13 of the 34 expected technique IDs, including T1005, T1008, T1012, T1016, T1027, T1057, T1082, T1083, T1105, T1106, T1112, T1140, and T1570. It omits the expected subtechnique IDs such as T1021.002, T1027.002, T1059.001, T1071.001, T1102.001, T1136.002, T1218.011, T1543.003, T1546.003, T1547.001, T1568.002, T1569.002, and T1573.001, and it does not explicitly state C0023. The claims are faithful and grounded in the cited software records, but the answer is only partially complete.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

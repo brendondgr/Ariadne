@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-CanPrecede-Abstraction-CAPEC-600-1a0fa9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-600 has 11 CanPrecede successors (the evidence lists related CAN_PRECEDE entries but does not explicitly confirm direction)"
+ ],
+ "rationale": "The answer includes the expected gold identifier CAPEC-653 among the CanPrecede-related patterns for CAPEC-600 and cites the CAPEC-600 record. However, it lists 11 related patterns without explicitly filtering to Standard abstraction, so it overstates the answer set. The core retrieval is grounded, but the directional 'successors' claim is only weakly supported by the undirected related list.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

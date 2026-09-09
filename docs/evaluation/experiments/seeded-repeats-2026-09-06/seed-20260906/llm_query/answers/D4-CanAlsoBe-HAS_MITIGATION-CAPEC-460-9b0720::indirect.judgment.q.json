@@ -1,0 +1,29 @@
+{
+ "case_id": "D4-CanAlsoBe-HAS_MITIGATION-CAPEC-460-9b0720::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.6,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98",
+  "None of the live graph sources cover this request"
+ ],
+ "rationale": "The answer honestly abstains after the CAPEC specialist returned no records and notes the empty query, which is better than guessing. However, it does not state the expected CAPEC-460 mitigation text, so completeness is zero. It also introduces unsupported example identifiers T1566, M1017, and CAPEC-98, and overclaims that no live source covers the request rather than only that the empty query returned no records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

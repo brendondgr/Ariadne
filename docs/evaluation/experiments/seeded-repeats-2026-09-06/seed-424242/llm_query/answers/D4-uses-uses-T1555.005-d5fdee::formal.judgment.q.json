@@ -1,0 +1,29 @@
+{
+ "case_id": "D4-uses-uses-T1555.005-d5fdee::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.6,
+ "groundedness": 0.4,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98",
+  "None of the live graph sources cover this request"
+ ],
+ "rationale": "The answer abstains and reports no records, which is supported by evidence_volume records=0 and the empty-query failure. It does not state any expected group identifiers G0092, G0102, G0137, or G1052, nor the anchor T1555.005. It also does not show an executed query, and the example identifiers T1566, M1017, and CAPEC-98 are not in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

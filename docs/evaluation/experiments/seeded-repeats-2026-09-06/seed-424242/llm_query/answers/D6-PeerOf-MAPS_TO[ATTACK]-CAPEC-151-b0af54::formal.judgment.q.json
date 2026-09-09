@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-PeerOf-MAPS_TO[ATTACK]-CAPEC-151-b0af54::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.8,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and reports no records, which is supported by evidence_volume.records=0 and the q2 summary that the capec source does not model Technique. However, it does not show an executed query as proof because the abstention query is empty, and it omits all expected ATT&CK techniques T1211, T1542.002, and T1556 as well as the anchor CAPEC-151. It also introduces unsupported example identifiers T1566, M1017, and CAPEC-98, so it is only partially correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

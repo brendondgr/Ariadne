@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0029-b76bb7::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the expected technique T1059, but it presents all 13 campaign techniques (e.g., T1105, T1095, T1685) as the result for the Identity Provider question without explicitly naming C0029 or tying the extras to Identity Provider. The evidence supports the 13 returned technique records from the C0029 query, so the statements are grounded and faithful. Because the gold set is T1059 and it is stated, completeness is full, but the overbroad enumeration makes the answer partial.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

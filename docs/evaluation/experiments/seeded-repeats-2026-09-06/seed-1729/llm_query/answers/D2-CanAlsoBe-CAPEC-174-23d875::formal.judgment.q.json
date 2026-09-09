@@ -1,0 +1,29 @@
+{
+ "case_id": "D2-CanAlsoBe-CAPEC-174-23d875::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.65,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98",
+  "None of the live graph sources cover this request"
+ ],
+ "rationale": "The answer honestly reports that the CAPEC specialist returned no records and references the empty-query failure, but it does not state the expected related pattern CAPEC-460 or the anchor CAPEC-174. It also asserts unsupported example identifiers T1566, M1017, and CAPEC-98 and overstates source coverage. This makes it a grounded abstention rather than a complete answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

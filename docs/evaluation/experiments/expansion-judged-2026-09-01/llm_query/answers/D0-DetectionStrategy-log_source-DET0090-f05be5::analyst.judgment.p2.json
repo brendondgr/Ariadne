@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-DetectionStrategy-log_source-DET0090-f05be5::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only says that 3 records were found in MITRE ATT&CK and does not state DET0090 or any DataComponent identifiers. The evidence shows a query seeded on DET0090 returned 3 rows, but the normalized records are empty DetectionStrategy records rather than named data components. Because the answer neither lists the requested data components nor abstains with the query, it is incorrect.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

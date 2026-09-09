@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-PeerOf-MAPS_TO[ATTACK]-CAPEC-10-5c5370::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.85,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains rather than asserting the expected CAPEC-10 peer/technique mapping, but it does not state CAPEC-10, T1574.006, or T1574.007. Its abstention is mostly supported by the empty result set and CAPEC source failure, but the abstention query is empty and the narrative adds unsupported example identifiers. Therefore it is a weak partial abstention rather than a fully grounded correct answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

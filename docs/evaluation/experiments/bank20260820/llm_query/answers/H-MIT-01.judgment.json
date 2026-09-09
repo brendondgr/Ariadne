@@ -1,0 +1,19 @@
+{
+ "case_id": "H-MIT-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.8,
+ "groundedness": 0.4,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states only 'Found ATT&CK record : .' with an empty claims array and no formal abstention. The gold expects M1056 as the mitigation for T1592.001, but neither M1056 nor T1592.001 is explicitly named in the answer text. The evidence confirms the query returned 1 row but the record was empty (normalize step failed with 'record has neither a primary_id nor a name'), which the answer loosely mirrors without identifying the specific mitigation.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

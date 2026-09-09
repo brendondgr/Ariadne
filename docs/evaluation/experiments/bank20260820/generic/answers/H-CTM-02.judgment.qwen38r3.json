@@ -1,0 +1,21 @@
+{
+ "case_id": "H-CTM-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the expected identifier CAPEC-412 and correctly reports that the CAPEC query returned no linked ATT&CK technique records. It also correctly abstains on mitigations because the dependent ATT&CK sub-question was skipped after q1 produced no join values. No cross-source mapping is asserted, and the abstention includes the executed CAPEC query as evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

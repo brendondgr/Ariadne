@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0046-803292::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 21,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains after the attack specialist returned no records for campaign C0046, and the note that the query was empty is consistent with the evidence. It does not state any of the expected Windows technique IDs such as T1014, T1020, T1036, or T1690, so completeness is zero. Because it declines rather than guessing and does not assert an unsupported cross-source mapping, the abstention is acceptable.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D1-AttackPattern-Likelihood_Of_Attack-CAPEC-32-f6aa0b::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.95,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the anchor CAPEC-32 and its ChildOf-related patterns CAPEC-588, CAPEC-591, CAPEC-592, CAPEC-63, and CAPEC-242, all grounded in the CAPEC evidence. However, it never states the expected likelihood value High, so it only partially satisfies the gold expectations. It avoids hallucinating a likelihood, but it does not directly answer how likely the attack is.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

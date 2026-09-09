@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer honestly reports that the CAPEC query for CAPEC-572's MAPS_TO relationships returned 0 records and displays the executed Gremlin query as proof, satisfying the honest-abstention criteria. However, the gold expects T1027.001 (Obfuscated Files or Information: Archive via Utility) to be identified as the mapped ATT&CK technique, which the answer never states. CAPEC-572 is referenced in the abstention context, giving 1 of 2 gold identifiers present, but the core question about which techniques and mitigations apply remains unanswered.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

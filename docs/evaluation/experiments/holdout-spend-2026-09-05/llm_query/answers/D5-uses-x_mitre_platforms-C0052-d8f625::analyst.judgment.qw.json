@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0052-d8f625::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention and shows the executed query, so it is faithful to the zero-row evidence and does not fabricate a mapping. However, the expected techniques T1090.003 and T1190 are not stated, while only the anchor C0052 appears in the abstention text. The illustrative identifiers T1566, M1017, and CAPEC-98 are not supported by the shown records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

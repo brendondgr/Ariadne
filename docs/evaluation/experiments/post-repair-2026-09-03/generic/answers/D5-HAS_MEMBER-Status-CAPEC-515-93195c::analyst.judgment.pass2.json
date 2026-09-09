@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-HAS_MEMBER-Status-CAPEC-515-93195c::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 0.083,
+ "gold_expected": 12,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and explicitly shows the executed CAPEC query for seed CAPEC-515, which the evidence records as returning zero rows. It therefore does not assert any of the expected related patterns CAPEC-113, CAPEC-114, CAPEC-122, CAPEC-124, CAPEC-161, CAPEC-176, CAPEC-233, CAPEC-438, CAPEC-439, CAPEC-548, or CAPEC-607, and it only states the anchor CAPEC-515 by quoting the question. The abstention is supported by the empty result trace and carries the query, so it is an honest no-mapping response rather than a fabricated cross-source mapping. The only unsupported identifiers are the boilerplate examples T1566, M1017, and CAPEC-98.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

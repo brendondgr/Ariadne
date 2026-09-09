@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-HAS_MEMBER-Status-CAPEC-513-99bf58::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.04,
+ "gold_expected": 25,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest, query-backed abstention: it says the CAPEC source returned no matching records and shows the executed query. It mentions only the anchor CAPEC-513 in the quoted question and does not state any of the expected related patterns such as CAPEC-22, CAPEC-28, CAPEC-112, or CAPEC-607. Because the gold expects CAPEC-513 plus 24 related CAPEC identifiers, completeness is very low. The example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, slightly reducing faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

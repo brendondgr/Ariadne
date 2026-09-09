@@ -1,0 +1,21 @@
+{
+ "case_id": "H-CTM-03",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-62 and correctly abstains from asserting ATT&CK techniques or mitigations because q1 returned no join values and q2 was skipped. It cites CAPEC-62 and capec:taxonomy:WASC:09, and the CAPEC abstention includes the executed query, so no unsupported cross-source mapping is asserted. The only expected identifier, CAPEC-62, is present, satisfying the no-correlation expectation.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

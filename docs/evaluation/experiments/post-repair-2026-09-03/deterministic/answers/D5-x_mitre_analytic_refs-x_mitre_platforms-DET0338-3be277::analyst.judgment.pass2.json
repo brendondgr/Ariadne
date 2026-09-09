@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-x_mitre_analytic_refs-x_mitre_platforms-DET0338-3be277::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only reports the anchor DET0338 and its STIX properties; it never states the expected analytic AN0958 or any Container-applicable detection analytics. Because it does not abstain and does not address the requested HAS_ANALYTIC neighbors, it is incorrect despite being faithful and grounded. The expected gold identifier is AN0958, so completeness is 0.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

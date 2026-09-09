@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1195.002-f669d7::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017"
+ ],
+ "rationale": "The answer abstains and shows an executed CAPEC query that returned no records, but it does not assert CAPEC-98 as the pattern corresponding to T1195.002; it only mentions CAPEC-98 as an example identifier. Because the expected CAPEC-98 is stated, completeness is high, but the requested correspondence and predecessor relationship are not established, so correctness is partial. No cross-source mapping is fabricated, though T1566 and M1017 are unsupported example identifiers.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

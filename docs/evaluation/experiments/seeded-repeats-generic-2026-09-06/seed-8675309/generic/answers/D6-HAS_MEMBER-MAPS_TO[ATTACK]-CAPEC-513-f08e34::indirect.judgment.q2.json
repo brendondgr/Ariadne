@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-513-f08e34::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.85,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 17,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: evidence_volume shows 0 records and the capec q2 summary says Technique is not modeled, so no fabricated mapping is asserted. However, it does not state any of the expected ATT&CK techniques (T1036.003, T1078, T1110, T1134, T1195, T1217, T1491, T1498.001, T1499, T1499.003, T1499.004, T1528, T1539, T1548, T1557, T1592, T1595), and its abstention query is empty. The only unsupported identifiers are the illustrative T1566, M1017, and CAPEC-98, so it is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

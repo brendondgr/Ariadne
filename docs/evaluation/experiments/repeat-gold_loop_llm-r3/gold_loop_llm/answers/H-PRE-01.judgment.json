@@ -1,0 +1,19 @@
+{
+ "case_id": "H-PRE-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states that CAPEC-471 (Search Order Hijacking) requires the skill 'capec:attack-pattern:471:skill:1' (Ability to create a malicious library), which is the sole gold-expected identifier. The evidence record contains this as a REQUIRES_SKILL related entry, and the Gremlin query explicitly traverses that edge from the AttackPattern vertex. All narrative claims (description, Abstraction: Detailed, Status: Stable) are directly supported by the cited CAPEC record properties.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "case_id": "H-GRP-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly enumerates all four gold group identifiers\u2014G0129 (Mustang Panda), G1004 (LAPSUS$), G1006 (Earth Lusca), and G1053 (Storm-0501)\u2014as users of T1003.006 (DCSync). The evidence from the ATT&CK graph query (MATCH (g:Group)-[:USES]->(t) WHERE t.attack_id IN $ids) returned exactly these four rows, and the narrative descriptions match the record descriptions verbatim. No cross-source CAPEC mappings or unsupported identifiers are asserted.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

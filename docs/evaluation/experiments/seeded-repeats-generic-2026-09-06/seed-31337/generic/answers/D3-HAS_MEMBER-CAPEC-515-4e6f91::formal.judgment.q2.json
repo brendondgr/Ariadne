@@ -1,0 +1,28 @@
+{
+ "case_id": "D3-HAS_MEMBER-CAPEC-515-4e6f91::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.85,
+ "groundedness": 0.75,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains and shows the executed CAPEC query, which returned no records for CAPEC-515. It omits the expected view CAPEC-3000, stating only the anchor CAPEC-515 from the question. The narrative's example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, but no cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

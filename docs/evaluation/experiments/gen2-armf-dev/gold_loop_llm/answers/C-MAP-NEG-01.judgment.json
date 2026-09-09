@@ -1,0 +1,19 @@
+{
+ "case_id": "C-MAP-NEG-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The question asks which ATT&CK techniques CAPEC-116 (Excavation) maps to, with gold expecting an empty join result. The answer correctly identifies CAPEC-116 and states that the executed query returned no linked ATT&CK records, consistent with the evidence showing related: [] and a successful query execution. The abstention explicitly carries the Gremlin query as proof, satisfying the honest-abstention rule.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

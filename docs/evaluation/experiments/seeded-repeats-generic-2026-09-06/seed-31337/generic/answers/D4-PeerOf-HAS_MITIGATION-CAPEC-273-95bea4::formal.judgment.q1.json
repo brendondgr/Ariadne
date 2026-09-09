@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-PeerOf-HAS_MITIGATION-CAPEC-273-95bea4::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 13,
+ "gold_present": 13,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly anchors on CAPEC-273 and enumerates all 13 expected mitigation identifiers, capec:attack-pattern:273:mitigation:1 through capec:attack-pattern:273:mitigation:13, which map to the expected mitigation texts. However, it states them only as related-item IDs and does not explicitly present the mitigation descriptions or clearly frame them as mitigations of peer attack patterns such as CAPEC-33. This makes it grounded and mostly faithful, but only partially direct as an answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

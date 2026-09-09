@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-PeerOf-Typical_Severity-CAPEC-665-0183ee::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only states and describes CAPEC-665, the anchor pattern, and does not name the expected peer patterns CAPEC-148 or CAPEC-151. Its claims are supported by the retrieved CAPEC-665 record, but it never addresses the question about peer attack patterns with Medium typical severity. Because it omits both expected identifiers, it is incorrect rather than partial.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

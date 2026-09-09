@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1195.002-f669d7::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.75,
+ "groundedness": 0.55,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017"
+ ],
+ "rationale": "The answer abstains after a failed CAPEC query and does not assert that CAPEC-98 corresponds to T1195.002 or identify any preceding patterns. It does state CAPEC-98 in the fallback narrative and T1195.002 in the abstention, but the abstention query is empty and the unsupported example identifiers T1566 and M1017 reduce faithfulness. No cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

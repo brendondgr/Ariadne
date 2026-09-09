@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-HAS_MEMBER-Likelihood_Of_Attack-CAPEC-223-3531a3::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows the executed query, but that query searches AttackPattern ids rather than CAPEC-223's MEMBER_OF neighbors, so it fails to state the expected CAPEC-28. It does state the anchor CAPEC-223, giving partial completeness. The example identifiers T1566, M1017, and CAPEC-98 are not in the evidence, slightly reducing faithfulness and groundedness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

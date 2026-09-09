@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-03",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-140 as the sole gold identifier, accurately states that no ATT&CK techniques are mapped (matching expect_no_correlation: true), and properly explains the dependency skip for the mitigations sub-question (matching expect_dependency_skip: true). The capec abstention includes the executed Gremlin query as proof, and no cross-source correlation is fabricated beyond what the empty related array and join_values support.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

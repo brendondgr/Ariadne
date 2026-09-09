@@ -1,0 +1,19 @@
+{
+ "case_id": "H-SW-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.8,
+ "groundedness": 0.2,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies 3 ATT&CK records associated with T1134.003 but fails to name any specific software. The gold expects S0154, S0692, and S1060, none of which appear in the answer text. The evidence confirms the normalize step failed with empty primary_id and name fields, explaining why the answer can only report 'unknown' records rather than specific software identifiers.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

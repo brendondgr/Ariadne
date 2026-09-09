@@ -1,0 +1,23 @@
+{
+ "case_id": "H-MIT-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1031 and M1020 are described as 'mitigated techniques' although the evidence labels them as Mitigation"
+ ],
+ "rationale": "The answer directly answers the question by naming T1573.002 and both expected mitigations, M1031 and M1020. These identifiers are supported by the cited T1573.002 record and its MITIGATES-related entries. The minor wording issue is that M1031 and M1020 are called 'mitigated techniques' rather than mitigations, but the core mapping is correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

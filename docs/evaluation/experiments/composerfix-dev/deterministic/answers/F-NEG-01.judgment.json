@@ -1,0 +1,19 @@
+{
+ "case_id": "F-NEG-01",
+ "verdict": "CORRECT",
+ "correctness": 0.92,
+ "faithfulness": 0.95,
+ "groundedness": 0.92,
+ "completeness": 0.95,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-116 (Excavation) and honestly reports that the CAPEC-to-ATT&CK MAPS_TO join returned no linked TaxonomyEntry records, with the executed Gremlin query (g.V().hasLabel(\"AttackPattern\")...out(\"MAPS_TO\")...has(\"taxonomy_name\",\"ATTACK\")) shown as proof of the empty result. The ATT&CK mitigations sub-question was correctly skipped as a dependency on the empty q1 seed set, matching the gold expectation of expect_no_correlation and expect_dependency_skip. No fabricated ATT&CK technique identifiers or cross-source correlations are asserted.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

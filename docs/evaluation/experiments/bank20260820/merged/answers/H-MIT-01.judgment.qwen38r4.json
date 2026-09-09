@@ -1,0 +1,23 @@
+{
+ "case_id": "H-MIT-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1056 is phrased as a mitigated technique, while the evidence labels M1056 as a Mitigation"
+ ],
+ "rationale": "The answer states the expected mitigation identifier M1056 for anchor T1592.001, which is the gold expected identifier. The evidence record for T1592.001 includes a related M1056 Pre-compromise mitigation via MITIGATES, so the core answer is grounded. The only minor issue is the wording 'mitigated technique' for M1056, which is slightly imprecise because M1056 is a mitigation.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

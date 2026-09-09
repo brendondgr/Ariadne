@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CHN-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.9,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 45,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer honestly reports that no records were retrieved because the CAPEC specialist's query was empty (rejected 3 times by the pre-run gate), which cascaded to skip the dependent ATT&CK specialist. None of the 45 expected gold identifiers are stated: 40 CAPEC patterns (CAPEC-3, CAPEC-6, CAPEC-7, CAPEC-8, CAPEC-9, CAPEC-10, CAPEC-14, CAPEC-15, CAPEC-24, CAPEC-41, CAPEC-43, CAPEC-44, CAPEC-45, CAPEC-46, CAPEC-47, CAPEC-52, CAPEC-53, CAPEC-64, CAPEC-67, CAPEC-71, CAPEC-73, CAPEC-78, CAPEC-79, CAPEC-80, CAPEC-88, CAPEC-92, CAPEC-120, CAPEC-182, CAPEC-267), ATT&CK technique T1027, and related M1017, M1040, M1047, M1049. The abstention is valid and transparently shows the empty query as proof, but the root cause was a system error (LLM failed to generate a query) rather than a genuine absence of data in the graph, making this a partial credit case.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

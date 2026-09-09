@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[WASC]-T1498.001-8781ac::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The claim that the attack source doesn't establish the mapping for T1498.001"
+ ],
+ "rationale": "The answer successfully identifies the CAPEC attack patterns (CAPEC-125, CAPEC-482, CAPEC-528, CAPEC-666) that correspond to T1498.001. However, it fails to identify the WASC taxonomy entry (WASC:10) associated with them, and it contradictorily claims at the end that no mapping was found despite listing them in the narrative.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

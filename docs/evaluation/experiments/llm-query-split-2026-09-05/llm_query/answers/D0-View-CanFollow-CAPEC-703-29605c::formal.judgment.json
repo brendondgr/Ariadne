@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-View-CanFollow-CAPEC-703-29605c::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer correctly abstains by saying no records were returned, which is consistent with the empty expected neighbor set for CAPEC-703. However, it never states the required anchor identifier CAPEC-703, so completeness is low. It also introduces unsupported example identifiers T1566, M1017, and CAPEC-98, though it does not assert a cross-source mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-uses-uses-G0023-084ef4::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.95,
+ "groundedness": 0.85,
+ "completeness": 0.25,
+ "gold_expected": 4,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer honestly abstains and shows a clean query for G0023 that returned zero rows, so it is faithful and grounded in the evidence. It does not, however, state the expected techniques T1057, T1071.001, or T1083, and the shown query checks direct Group-USES->Technique rather than the software-mediated path implied by 'malware and tools employed by'. Therefore it is a partial answer: it identifies the anchor G0023 and avoids guessing, but it omits the gold technique identifiers.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

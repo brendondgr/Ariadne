@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-CanPrecede-Typical_Severity-CAPEC-631-068913::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the expected related identifier CAPEC-89 as a CanPrecede successor of CAPEC-631, but it also lists CAPEC-543 and never explicitly says that CAPEC-89 is rated Very High for typical severity. It therefore partially answers the query by identifying the expected successor without applying the requested severity filter. No unsupported cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

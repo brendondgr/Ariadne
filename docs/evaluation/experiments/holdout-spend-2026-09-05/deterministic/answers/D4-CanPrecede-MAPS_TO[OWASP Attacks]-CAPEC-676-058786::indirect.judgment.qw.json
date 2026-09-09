@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanPrecede-MAPS_TO[OWASP Attacks]-CAPEC-676-058786::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only states CAPEC-676 and its description/status, but the question asked for OWASP taxonomy entries for attack patterns that can lead into CAPEC-676. It never states the expected OWASP Attacks:Web Parameter Tampering mapping, so it is an anchor-only retrieval rather than an answer. All asserted facts are supported by the CAPEC-676 record, and no cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

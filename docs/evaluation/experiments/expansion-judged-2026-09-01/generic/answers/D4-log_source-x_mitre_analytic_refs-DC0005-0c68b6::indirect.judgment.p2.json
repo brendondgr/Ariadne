@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-log_source-x_mitre_analytic_refs-DC0005-0c68b6::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states DC0005 and includes all expected detection strategies DET0117, DET0151, and DET0399, along with related analytics such as AN0430 and AN0325. However, it presents them as a flat list of related items rather than explicitly saying which analytics rely on DC0005 and which strategy each analytic implements. This makes it faithful and identifier-complete, but only partially responsive to the requested relationship.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

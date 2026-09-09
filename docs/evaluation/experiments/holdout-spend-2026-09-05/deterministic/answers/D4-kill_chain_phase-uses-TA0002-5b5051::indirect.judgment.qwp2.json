@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-kill_chain_phase-uses-TA0002-5b5051::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.85,
+ "groundedness": 0.6,
+ "completeness": 0.01,
+ "gold_expected": 147,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest no-result abstention, but it only mentions TA0002 in the failure note and none of the expected group identifiers such as G0001, G0004, or G1055. It is largely faithful to the zero-record evidence, though the illustrative IDs T1566, M1017, and CAPEC-98 are not supported by the records. Because the abstention does not display the executed query in the answer text, it is partial rather than a fully proven CORRECT abstention.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,25 @@
+{
+ "case_id": "H-ABS-01",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.75,
+ "completeness": 0.33,
+ "gold_expected": 3,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: it states that the CAPEC source returned no matching records and includes the executed query, which matches the zero-row evidence for seed CAPEC-206. It does state CAPEC-206, but it omits the expected related identifiers CAPEC-438 and CAPEC-444, so completeness is low. The illustrative identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, but no cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

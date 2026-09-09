@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-uses-subtechnique-of-C0050-01ddb0::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 0.7,
+ "groundedness": 0.3,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstained by saying no records were returned, but it did not state any expected technique identifiers T1036, T1583, T1587, or T1588, nor the anchor C0050. The evidence only shows a failed attack specialist with an empty query, so the abstention is grounded in the failure rather than in retrieved records. The example identifiers T1566, M1017, and CAPEC-98 are not present in the evidence, causing minor faithfulness and groundedness deductions.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

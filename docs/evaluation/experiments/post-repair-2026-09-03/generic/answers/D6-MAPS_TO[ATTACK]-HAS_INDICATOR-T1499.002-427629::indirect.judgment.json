@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1499.002-427629::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.45,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and is supported by the empty CAPEC query result, but it only states the anchor T1499.002 and omits the expected CAPEC-related text about a large amount of data passed to an XML parser. It does not assert a fabricated cross-source mapping, but it offers unsupported example identifiers T1566, M1017, and CAPEC-98. This makes it a partial, grounded abstention rather than a complete answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

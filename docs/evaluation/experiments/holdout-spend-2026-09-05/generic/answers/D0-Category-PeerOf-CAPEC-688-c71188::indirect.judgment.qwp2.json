@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Category-PeerOf-CAPEC-688-c71188::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The CAPEC query seeded with CAPEC-688 executed cleanly and returned zero rows, so the answer's abstention that the source does not establish peers is supported. It states the required anchor CAPEC-688 in the abstention and includes the executed query, satisfying the honest-abstention rule. No peer identifiers were expected or asserted, so there is no fabricated mapping or hallucinated peer claim.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

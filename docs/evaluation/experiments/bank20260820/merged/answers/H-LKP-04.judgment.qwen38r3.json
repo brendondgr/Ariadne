@@ -1,0 +1,23 @@
+{
+ "case_id": "H-LKP-04",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-588 is called an ATT&CK record, while the cited evidence source is capec"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-588 as DOM-Based XSS and provides a substantial portion of the CAPEC description. It omits the later sentences distinguishing DOM-based XSS from other XSS attacks, so it is partial rather than fully complete. The only notable unsupported detail is labeling the CAPEC record as an ATT&CK record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

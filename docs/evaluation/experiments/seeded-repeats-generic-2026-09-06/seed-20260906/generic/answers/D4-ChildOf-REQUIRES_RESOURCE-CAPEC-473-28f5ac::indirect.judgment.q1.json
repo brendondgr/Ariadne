@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-ChildOf-REQUIRES_RESOURCE-CAPEC-473-28f5ac::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.6,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains rather than asserting the expected CAPEC-473 resources, namely 'A valid certificate request and a malicious certificate request with identical hash values' and 'Knowledge of a certificate authority that uses hashing algorithms with poor collision resistance'. The no-records claim is supported by the evidence volume and the attempted query is visible in the logic flow. However, it does not state CAPEC-473 or either expected resource, and it introduces unsupported example identifiers T1566, M1017, and CAPEC-98.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

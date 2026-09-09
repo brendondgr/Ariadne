@@ -1,0 +1,23 @@
+{
+ "case_id": "F-PART-04",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566 (generic example in narrative template, not in evidence)",
+  "M1017 (generic example in narrative template, not in evidence)",
+  "CAPEC-98 (generic example in narrative template, not in evidence)"
+ ],
+ "rationale": "The answer correctly demonstrates the expected degradation: CAPEC-555's producer (q1) is skipped due to the CAPEC source being down, and the dependent ATT&CK query (q2) degrades to a dependency abstention with an empty query proving no broad unseeded query was executed. All four gold expectations (capec.expect_skipped, attack.expect_dependency_skip, expect_no_correlation, expect_partial) are satisfied by the notes, abstention, empty claims, and partial_mode respectively.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

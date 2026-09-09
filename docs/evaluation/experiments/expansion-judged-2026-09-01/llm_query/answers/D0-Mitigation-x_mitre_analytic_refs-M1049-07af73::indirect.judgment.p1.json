@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Mitigation-x_mitre_analytic_refs-M1049-07af73::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.9,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only reports 76 ATT&CK records and does not state M1049 or any analytic identifiers, so it only partially addresses the request for detection analytics implementing M1049. The count is supported by the executed query's row_count, but the normalized records are empty and no analytic IDs are presented. Thus it is a retrieval summary rather than a complete, grounded answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

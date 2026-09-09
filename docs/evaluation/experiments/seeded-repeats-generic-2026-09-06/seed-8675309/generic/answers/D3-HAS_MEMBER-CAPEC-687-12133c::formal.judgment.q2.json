@@ -1,0 +1,28 @@
+{
+ "case_id": "D3-HAS_MEMBER-CAPEC-687-12133c::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.8,
+ "groundedness": 0.65,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows the executed CAPEC query, but it never states the expected view CAPEC-683. The query uses IN_VIEW while the task entities list MEMBER_OF, so the no-result abstention is not fully reliable for the gold mapping. It does mention the anchor CAPEC-687 in the abstention statement, and the unsupported example identifiers T1566, M1017, and CAPEC-98 slightly reduce faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

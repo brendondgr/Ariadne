@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanPrecede-HAS_EXECUTION_STEP-CAPEC-632-b7ba60::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.95,
+ "groundedness": 0.85,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly retrieves CAPEC-632 and lists related items including CAPEC-89, but it only states CAPEC-632's own execution steps (capec:attack-pattern:632:step:1, step:2, step:3). It does not state the four expected execution-step texts for the follow-on attack pattern. Thus it is grounded and partially relevant, but incomplete for the question asked.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

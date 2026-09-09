@@ -1,0 +1,23 @@
+{
+ "case_id": "H-MAP-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.8,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly reports that the capec specialist failed with a binding mismatch (CAPEC-645 vs capec:attack-pattern:#), yielding 0 records, which is faithful to the evidence. However, the gold-expected T1550.003 is never stated, and the narrative's example identifiers (T1566, M1017, CAPEC-98) appear without any evidence support. The abstention is functionally present but not formally declared (empty abstentions array), and the executed query is visible only in the logic_flow traces rather than in the answer text itself.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

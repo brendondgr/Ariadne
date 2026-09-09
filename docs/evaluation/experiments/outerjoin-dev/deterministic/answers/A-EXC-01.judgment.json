@@ -1,0 +1,19 @@
+{
+ "case_id": "A-EXC-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The question asks to look up retired technique T1002, which is explicitly expected to be empty (excluded at load). The answer correctly abstains, stating the attack source does not establish a match, and includes the full executed Cypher query (MATCH (n:Technique) WHERE n.attack_id IN $ids ...) that ran cleanly with row_count 0. The gold expectation is an empty identifier list, and the answer accurately reflects that no records were returned, making this a fully correct honest abstention with the query shown as proof.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-PeerOf-Likelihood_Of_Attack-CAPEC-665-a50fa5::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only states CAPEC-665 and describes that anchor record; it does not state the requested peer attack patterns CAPEC-148 or CAPEC-151. All stated facts about CAPEC-665 are supported by the cited CAPEC record, but the question asked for Medium-likelihood peer patterns, which are absent from the answer. Therefore it is grounded and faithful but incomplete and not answering the requested relation.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CHN-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states all five expected CAPEC patterns, CAPEC-12, CAPEC-36, CAPEC-62, CAPEC-166, and CAPEC-216, and ties each to CWE-306. It also indicates that no ATT&CK-side mapping was established and that the dependent ATT&CK sub-question was skipped, matching the expected no-correlation and dependency-skip behavior. The minor wording issue is the headline's \u201cfrom 2 source(s)\u201d phrasing, but the two source systems are present in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false
+ }
+}

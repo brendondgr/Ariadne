@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CHN-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.9,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly reports that the CAPEC query for CWE-1316 returned 0 records and displays the executed Gremlin query, constituting a valid abstention under Rule 1. However, the gold expects CAPEC-456 and CAPEC-679 to be identified as the attack patterns exploiting CWE-1316, and neither identifier appears anywhere in the answer, yielding 0/2 completeness. The narrative's illustrative id examples (T1566, M1017, CAPEC-98) are not grounded in the evidence but are clearly format demonstrations rather than substantive factual claims.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

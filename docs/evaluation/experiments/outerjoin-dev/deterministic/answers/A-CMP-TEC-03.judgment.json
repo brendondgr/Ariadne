@@ -1,0 +1,19 @@
+{
+ "case_id": "A-CMP-TEC-03",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 13,
+ "gold_present": 13,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly enumerates all 13 techniques used by campaign C0001 (Frankenstein): T1005, T1016, T1020, T1033, T1041, T1047, T1057, T1082, T1105, T1119, T1140, T1203, and T1221. Each identifier is cited to the ATT&CK source with a matching primary_id in the 13 evidence records returned by the Cypher query MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN $ids with seed C0001. No cross-source (CAPEC) mapping is asserted, and no technique beyond the evidence is included.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

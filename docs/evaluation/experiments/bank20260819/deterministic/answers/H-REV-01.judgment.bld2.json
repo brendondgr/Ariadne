@@ -1,0 +1,23 @@
+{
+ "case_id": "H-REV-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The expected result for T1613 is that no CAPEC patterns map to it, and the answer's CAPEC abstention shows the executed query returned no matching records. The ATT&CK claims about T1613 are directly supported by the retrieved T1613 record. No cross-source mapping is asserted, so the answer is faithful and complete for an empty gold set.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false
+ }
+}

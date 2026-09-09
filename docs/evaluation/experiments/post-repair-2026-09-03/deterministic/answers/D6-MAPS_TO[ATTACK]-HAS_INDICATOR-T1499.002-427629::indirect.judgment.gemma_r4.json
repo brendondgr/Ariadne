@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1499.002-427629::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The statement that no query was executed for T1499.002 despite the narrative listing multiple mappings for it."
+ ],
+ "rationale": "The answer successfully identifies several CAPEC patterns (CAPEC-469, 482, 488, 489, 528) that correspond to T1499.002. However, it fails to provide the specific indicator text ('A large amount of data is passed to the XML parser...') required by the gold expectations. There is also a contradictory claim at the end of the narrative stating that no query was executed for T1499.002.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

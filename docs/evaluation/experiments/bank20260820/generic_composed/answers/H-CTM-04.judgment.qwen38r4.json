@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CTM-04",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1032 and M1027 are described as 'mitigated techniques' although the evidence labels them as Mitigation records"
+ ],
+ "rationale": "The answer correctly states that CAPEC-55 maps to T1110.002 and that T1110.002 is associated with M1032 and M1027, satisfying the requested technique and mitigation query. All expected identifiers are present and tied to the cited CAPEC and ATT&CK records. The only minor issue is the wording 'mitigated techniques' for M1032 and M1027, which are labeled as mitigations in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

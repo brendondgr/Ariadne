@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CSQ-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.95,
+ "groundedness": 0.85,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-671 as the anchor but never states the expected consequence neighbor 'capec:attack-pattern:671:consequence:1', which is the direct answer to 'what can go wrong downstream.' The evidence volume contains this related Consequence record, but the narrative and claims only describe the anchor's properties (Abstraction: Detailed, Status: Draft) without traversing to or naming the consequence.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

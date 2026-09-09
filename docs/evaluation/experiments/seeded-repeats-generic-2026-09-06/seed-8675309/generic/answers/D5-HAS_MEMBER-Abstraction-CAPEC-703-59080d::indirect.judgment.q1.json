@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-HAS_MEMBER-Abstraction-CAPEC-703-59080d::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.85,
+ "completeness": 0.0,
+ "gold_expected": 15,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: it says the CAPEC source returned no records and includes the executed query for seed CAPEC-703, which matches the evidence row_count of 0. It does not state any of the expected related CAPEC identifiers such as CAPEC-125, CAPEC-130, or CAPEC-94, so completeness is 0. The only unsupported identifiers are the illustrative examples T1566, M1017, and CAPEC-98, which slightly reduce faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

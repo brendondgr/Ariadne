@@ -1,0 +1,19 @@
+{
+ "case_id": "H-LKP-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer honestly abstains, stating that CAPEC-136 (LDAP Injection) was not found in the CAPEC source, and displays the executed query (g.V().hasLabel(within(labels)).has('id', within(ids)).elementMap().limit(20000)). The evidence confirms 0 rows returned for seed CAPEC-136 with label AttackPattern. While the gold expected CAPEC-136 to be confirmed as an entity with name 'LDAP Injection', the identifier and name do appear in the abstention text, and the abstention is well-supported by the execution trace, warranting a partial credit rather than full correctness.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

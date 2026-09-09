@@ -1,0 +1,19 @@
+{
+ "case_id": "A-NEG-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The question asks to look up nonexistent technique T9999 and expects an empty result rather than an invented name. The answer correctly abstains, stating the attack source returned no matching records, and includes the full executed Cypher query (MATCH (n:Technique) WHERE n.attack_id IN $ids ...) as proof. The gold expectation is an empty identifier list, and the answer states no identifiers, matching perfectly.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

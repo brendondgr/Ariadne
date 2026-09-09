@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-PeerOf-T1491-997387::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.65,
+ "groundedness": 0.55,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The attack source doesn't establish a T1491-to-CAPEC mapping",
+  "No query was executed for T1491 CAPEC patterns"
+ ],
+ "rationale": "The answer mentions the expected CAPEC-665 and T1491, but it buries CAPEC-665 in a broad 558-record dump and says no query was executed for T1491. It does not explicitly state that CAPEC-665 corresponds to Defacement (T1491) or provide peers. The abstention is not fully supported by the gold expectation and lacks an executed query, so it is partial rather than correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

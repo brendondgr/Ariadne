@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-HAS_CONSEQUENCE-CAPEC-670-931783::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-670 and states that it has three consequence nodes, but it only lists capec:attack-pattern:670:consequence:1, capec:attack-pattern:670:consequence:2, and capec:attack-pattern:670:consequence:3. It does not state the expected consequence texts Access Control Gain Privileges, Confidentiality Modify Data Read Data, or Integrity Execute Unauthorized Commands, so it is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

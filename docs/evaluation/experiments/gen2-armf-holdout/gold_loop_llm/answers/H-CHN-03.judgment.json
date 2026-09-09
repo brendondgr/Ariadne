@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CHN-03",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 17,
+ "gold_present": 17,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies all 6 ATT&CK techniques (T1027.006, T1027.009, T1055.003, T1564.009, T1574.005, T1574.010), all 3 CAPEC patterns (CAPEC-17, CAPEC-30, CAPEC-35), the CWE-270 anchor, and all 7 mitigations (M1013, M1018, M1040, M1047, M1048, M1049, M1052). The cross-source correlation between CAPEC TaxonomyEntry links and ATT&CK technique records is properly established with citations to both sources. Minor faithfulness deduction for mitigation narrative descriptions that include specific details (e.g., API names like OpenProcess/WriteProcessMemory, Event ID 4688) not visible in the truncated evidence records.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

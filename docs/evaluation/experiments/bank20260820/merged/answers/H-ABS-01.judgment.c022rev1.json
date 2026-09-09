@@ -1,0 +1,26 @@
+{
+ "case_id": "H-ABS-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "MITRE ATT&CK"
+ ],
+ "rationale": "The answer states the expected identifiers CAPEC-481 and CAPEC-161, so completeness is high. However, it does not directly answer the question by saying CAPEC-481's entity type is AttackPattern; it only says CAPEC-481 has an AttackPattern CAPEC-161. The claim that the relation was found in MITRE ATT&CK is not supported by the shown CAPEC-sourced record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

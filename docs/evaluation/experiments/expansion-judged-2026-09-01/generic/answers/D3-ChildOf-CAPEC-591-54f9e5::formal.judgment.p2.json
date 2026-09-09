@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-591-54f9e5::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.75,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 9,
+ "gold_present": 9,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "All 11 related patterns are asserted as ChildOf parents of CAPEC-591, including CAPEC-63 and CAPEC-242, although the evidence only shows CHILD_OF relatedness without explicit direction."
+ ],
+ "rationale": "The answer states all nine expected more-specific CAPEC patterns: CAPEC-18, CAPEC-198, CAPEC-199, CAPEC-243, CAPEC-244, CAPEC-245, CAPEC-247, CAPEC-32, and CAPEC-86. It also includes CAPEC-63 and CAPEC-242 and labels the full set as ChildOf parents, which is over-inclusive and directionally imprecise for a question asking for more specific cases. The claims are grounded in the CAPEC-591 record and its related entries.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

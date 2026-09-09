@@ -1,0 +1,24 @@
+{
+ "case_id": "H-CHN-01",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 52,
+ "gold_present": 52,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states all 17 expected CAPEC pattern IDs, all 19 expected ATT&CK technique IDs, and all 16 expected mitigation IDs, so completeness is full. It also includes six additional T1562 subtechniques, but these are consistent with the reported 42 related items and 25 ATT&CK records, so they do not appear fabricated. Minor overbreadth in the cross-source correlation count slightly reduces faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true,
+  "position": null
+ }
+}

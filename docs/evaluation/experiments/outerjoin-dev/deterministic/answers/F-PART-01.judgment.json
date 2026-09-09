@@ -1,0 +1,19 @@
+{
+ "case_id": "F-PART-01",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-555 (Remote Services with Stolen Credentials) as mapping to T1021 via the TaxonomyEntry capec:taxonomy:ATTACK:1021, satisfying both gold identifiers. It honestly abstains on the attack side because Assets (ICS-only) are not modeled in the ATT&CK schema, as confirmed by the boundary step in the logic flow. No fabricated cross-source correlation is asserted, and all claims are grounded in the cited CAPEC record.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

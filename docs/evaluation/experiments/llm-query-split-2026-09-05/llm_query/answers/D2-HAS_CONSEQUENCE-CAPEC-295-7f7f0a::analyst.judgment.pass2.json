@@ -1,0 +1,28 @@
+{
+ "case_id": "D2-HAS_CONSEQUENCE-CAPEC-295-7f7f0a::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly reports that the CAPEC query for CAPEC-295 returned no records, but it does not state the expected consequence Confidentiality Other or the anchor id itself. It also does not show the executed query, only the 499 error, so the abstention is under-proven. The example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, though they are not mapped to CAPEC-295.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

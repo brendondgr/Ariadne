@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-CanPrecede-Abstraction-CAPEC-600-1a0fa9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.75,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-600 has 11 CanPrecede successors (the evidence lists 12 CAN_PRECEDE related rows without explicit direction)"
+ ],
+ "rationale": "The answer includes the expected related identifier CAPEC-653 and correctly states that CAPEC-600 has Standard abstraction. However, it lists all 11 unique CAN_PRECEDE neighbors rather than explicitly identifying which Standard-abstraction patterns can follow, so the Standard filter is only partially addressed. The evidence supports the listed CAPEC identifiers and CAPEC-600 properties, but not the successor direction for every related row.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "F-CWE-04",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.92,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 45,
+ "gold_present": 45,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1027 stated as appearing in 12 of 14 techniques; actual count from cited records is 11",
+  "M1032 stated as appearing in 11 techniques; actual count is 10",
+  "M1026 stated as appearing in 8 techniques; actual count is 6",
+  "Mitigation display names (e.g., M1013 = Application Developer Guidance, M1027 = Password Policies) are provided in the reference section but are not present in the cited evidence, which only lists the M-identifiers"
+ ],
+ "rationale": "The answer correctly identifies all 12 gold CAPEC patterns (CAPEC-49, CAPEC-55, CAPEC-70, CAPEC-509, CAPEC-555, CAPEC-560, CAPEC-561, CAPEC-565, CAPEC-600, CAPEC-644, CAPEC-645, CAPEC-652) linked to CWE-308, all 14 ATT&CK technique mappings (T1021, T1021.002, T1078, T1078.001, T1110.001\u2013T1110.004, T1114.002, T1133, T1550.002, T1550.003, T1558, T1558.003), and all 19 mitigation identifiers (M1013 through M1060). Cross-source correlations for all 14 technique identifiers are properly cited from both CAPEC and ATT&CK records, with no fabricated mappings. Minor deductions for mitigation display names not present in the cited evidence and small counting errors in the summary (M1027: stated 12, actual 11; M1026: stated 8, actual 6).",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

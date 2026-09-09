@@ -1,0 +1,19 @@
+{
+ "case_id": "H-EXE-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.95,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-26 and enumerates all three gold execution-step identifiers (capec:attack-pattern:26:step:1, capec:attack-pattern:26:step:2, capec:attack-pattern:26:step:3), achieving full completeness on the expected IDs. However, the question 'What are the execution steps?' asks for the content of those steps, and the answer only lists their IDs without stating the step descriptions that are present in the evidence (e.g., 'The adversary explores to gauge what level of access they have' for step 1). This makes the answer partial: it retrieves and names the steps but does not fully articulate what they are.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

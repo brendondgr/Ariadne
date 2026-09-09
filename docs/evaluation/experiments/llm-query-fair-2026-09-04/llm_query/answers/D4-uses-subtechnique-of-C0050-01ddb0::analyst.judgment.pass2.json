@@ -1,0 +1,29 @@
+{
+ "case_id": "D4-uses-subtechnique-of-C0050-01ddb0::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.7,
+ "groundedness": 0.3,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "None of the live graph sources cover this request",
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains rather than asserting techniques, but it does not state C0050 or any expected technique IDs T1036, T1583, T1587, T1588. It also fails to show the executed query, so the abstention is not fully proven by the evidence. The supported part is that the attack specialist returned zero records due to an empty query, while the generic examples and plural 'live graph sources' are not tied to the records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

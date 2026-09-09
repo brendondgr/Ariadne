@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Mitigation-x_mitre_analytic_refs-M1049-07af73::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.65,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly anchors M1049 and enumerates 122 related ATT&CK records, including DET0281/DET0115 and AN0784/AN0783, but it frames them as 'related' rather than specifically detection analytics and also includes non-analytic techniques such as T1027.015 and T1566.003. It therefore partially answers the question by stating the required M1049 and likely analytics, but does not cleanly isolate the analytics that implement the mitigation. The claims are tied to the cited M1049 record and the 122-related count, so faithfulness and groundedness remain high.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

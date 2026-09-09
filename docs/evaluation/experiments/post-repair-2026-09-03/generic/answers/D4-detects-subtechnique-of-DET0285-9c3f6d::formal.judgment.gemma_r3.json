@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-detects-subtechnique-of-DET0285-9c3f6d::formal",
+ "verdict": "PARTIAL",
+ "correctness": 1.0,
+ "faithfulness": 0.5,
+ "groundedness": 0.5,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1021",
+  "Remote Access Services",
+  "DET0285 has 1 sub-technique: T1021.003"
+ ],
+ "rationale": "The answer correctly identifies T1021 as the parent technique, but this information is not present in the provided evidence, which only links DET0285 to T1021.003. Additionally, the answer incorrectly asserts that DET0285 has a sub-technique, whereas the evidence states that DET0285 (a DetectionStrategy) detects T1021.003.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

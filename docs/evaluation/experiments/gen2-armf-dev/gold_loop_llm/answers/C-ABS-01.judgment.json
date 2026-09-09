@@ -1,0 +1,19 @@
+{
+ "case_id": "C-ABS-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-66 (SQL Injection) as the standard ancestor and CAPEC-248 (Command Injection) as the meta ancestor of CAPEC-7 (Blind SQL Injection), matching all three gold identifiers. The evidence record for CAPEC-7 lists both related patterns with the correct roles ('standard', 'meta') and abstractions, and the Gremlin query traversing CHILD_OF edges supports the hierarchical relationship. The only minor imprecision is the narrative's phrasing 'has two attack patterns,' which slightly mischaracterizes the ancestor relationship, but the concluding sentence correctly frames them as the standard and meta patterns CAPEC-7 belongs to.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

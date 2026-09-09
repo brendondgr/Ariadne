@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-ChildOf-HAS_EXAMPLE-CAPEC-22-4b913a::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.85,
+ "groundedness": 0.75,
+ "completeness": 0.0,
+ "gold_expected": 6,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention for CAPEC-22 and shows the executed query, so it is grounded and does not fabricate a mapping. However, the expected gold set contains six example texts, including the Archangel Weblog, PHP, Java binary, Servlet, ECB cookie, and price-watching examples, and the answer states none of them. The unsupported example identifiers T1566, M1017, and CAPEC-98 slightly reduce faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

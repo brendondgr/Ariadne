@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-CanFollow-MAPS_TO[ATTACK]-CAPEC-701-6e185a::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.33,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system successfully retrieved the anchor record CAPEC-701, but failed to identify the related attack patterns and their corresponding ATT&CK techniques (T1566, T1598). It provided an honest abstention by stating the source did not establish the mapping and showing the executed query.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

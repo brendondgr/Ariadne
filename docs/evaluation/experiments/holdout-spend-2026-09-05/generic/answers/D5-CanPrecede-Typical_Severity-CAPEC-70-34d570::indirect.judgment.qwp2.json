@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-CanPrecede-Typical_Severity-CAPEC-70-34d570::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly anchors on CAPEC-70 and includes the expected related identifiers CAPEC-560, CAPEC-600, and CAPEC-653. However, it lists all eight CanPrecede successors, including CAPEC-151, CAPEC-561, CAPEC-165, CAPEC-545, and CAPEC-549, rather than restricting the result to the High severity subset requested. All listed identifiers are supported by the CAPEC-70 related evidence, so the answer is faithful and complete on gold IDs but only partially answers the severity constraint.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

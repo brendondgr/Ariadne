@@ -1,0 +1,19 @@
+{
+ "case_id": "F-PART-01",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-555 (Remote Services with Stolen Credentials) as the CAPEC pattern mapping to T1021, citing the TaxonomyEntry capec:taxonomy:ATTACK:1021 as evidence. It honestly abstains on the attack side, noting the source does not model 'Asset' (boundary), which matches the gold expectation of expect_boundary: true. Both gold identifiers (CAPEC-555, T1021) are explicitly stated, and no unsupported cross-source correlation is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-HAS_MITIGATION-CAPEC-666-41e73a::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-666 and its two HAS_MITIGATION neighbors, capec:attack-pattern:666:mitigation:1 and capec:attack-pattern:666:mitigation:2. However, it only lists those mitigation IDs and does not state the expected mitigation texts, \"Disable Bluetooth when not being used.\" and \"When using Bluetooth, set it to hidden or non-discoverable mode.\" Therefore it is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

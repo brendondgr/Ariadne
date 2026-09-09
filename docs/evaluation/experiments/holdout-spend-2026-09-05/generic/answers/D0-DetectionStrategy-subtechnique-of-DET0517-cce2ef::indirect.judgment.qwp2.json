@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-DetectionStrategy-subtechnique-of-DET0517-cce2ef::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.5,
+ "groundedness": 0.6,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "DET0517 has sub-technique T1574.014"
+ ],
+ "rationale": "The answer correctly states the anchor DET0517 and identifies the related ATT&CK item T1574.014, which is present in the evidence. However, the evidence only shows a DETECTS relationship from DET0517 to T1574.014, not that DET0517 has or is a sub-technique of T1574.014. Because the question asks for the techniques of which DET0517 is a sub-technique, the answer is only partially responsive and overstates the supported relationship.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

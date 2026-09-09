@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-CanFollow-MAPS_TO[ATTACK]-CAPEC-701-6e185a::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system failed to retrieve the expected ATT&CK techniques (T1566, T1598) because the queries for patterns preceding CAPEC-701 failed due to an invalid relationship type ('CanPrecede'). While the system honestly abstained rather than guessing, it failed to provide the correct answer present in the gold expectations.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

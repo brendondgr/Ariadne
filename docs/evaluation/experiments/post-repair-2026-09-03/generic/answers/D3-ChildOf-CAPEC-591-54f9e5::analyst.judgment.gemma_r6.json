@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-591-54f9e5::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 1.0,
+ "faithfulness": 0.6,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 9,
+ "gold_present": 9,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The answer asserts that CAPEC-243, CAPEC-32, CAPEC-199, CAPEC-86, CAPEC-244, CAPEC-245, CAPEC-198, CAPEC-18, CAPEC-247, CAPEC-63, and CAPEC-242 are parents of CAPEC-591, whereas the evidence states they are children (CHILD_OF)."
+ ],
+ "rationale": "The answer correctly identifies all 9 gold identifiers (CAPEC-18, CAPEC-198, CAPEC-199, CAPEC-243, CAPEC-244, CAPEC-245, CAPEC-247, CAPEC-32, CAPEC-86) as more specific cases of CAPEC-591, and even includes two additional children found in the evidence. However, it incorrectly describes these children as 'parents' in the narrative, flipping the direction of the relationship.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

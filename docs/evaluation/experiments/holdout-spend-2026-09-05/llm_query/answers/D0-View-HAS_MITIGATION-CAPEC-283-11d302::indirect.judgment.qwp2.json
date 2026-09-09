@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-View-HAS_MITIGATION-CAPEC-283-11d302::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains for CAPEC-283 and shows the executed CAPEC query that returned zero rows, matching the empty expected mitigation set. It explicitly states CAPEC-283 in the abstention, satisfying the required identifier. The only weakness is the unsupported example identifiers T1566, M1017, and CAPEC-98 in the narrative, but no mitigation mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

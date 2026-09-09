@@ -1,0 +1,19 @@
+{
+ "case_id": "A-AST-02",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies the boundary condition: the ATT&CK source does not model the 'Asset' entity, so no query can express the question about T1490's target assets. T1490 is explicitly referenced in the abstention statement, and the answer honestly declines to assert rather than inventing target assets. The evidence (0 records, boundary trace showing 'entities not modeled by the attack source: Asset') fully supports the abstention, matching the gold expectation of expect_boundary: true.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0103-3eaf18::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer names G0103 and includes the expected related technique T1566.002, which is the key gold identifier. However, it presents all eight related items, including S0445, S0444, T1204.001, T1566.001, T1204.002, T1027.015, and T1027.013, rather than explicitly identifying which technique applies to Office Suite. All listed identifiers are supported by the cited G0103 record, so the main weakness is lack of explicit Office Suite filtering rather than unsupported claims.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

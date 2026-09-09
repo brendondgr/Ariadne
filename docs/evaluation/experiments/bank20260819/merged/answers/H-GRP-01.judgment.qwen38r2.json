@@ -1,0 +1,24 @@
+{
+ "case_id": "H-GRP-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 19,
+ "gold_present": 19,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1012 (Query Registry) has 119 used techniques",
+  "C0014 is one of T1012's used techniques"
+ ],
+ "rationale": "The answer includes all 19 expected group identifiers for T1012, including G0010, G0027, G0030, G0032, G0035, G0038, G0047, G0049, G0050, G0087, G0094, G0096, G0114, G0117, G0119, G0128, G1017, G1034, and G1043. It is therefore complete on the requested groups, but it mischaracterizes the 119 related items as 'used techniques' and includes non-group IDs such as S0172 and C0014. The evidence supports the related IDs and count, but not the claim that all of them are techniques.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

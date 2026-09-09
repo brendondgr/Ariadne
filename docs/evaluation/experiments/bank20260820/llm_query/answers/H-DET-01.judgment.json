@@ -1,0 +1,19 @@
+{
+ "case_id": "H-DET-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.8,
+ "groundedness": 0.3,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states 'Found 3 ATT&CK record(s) including unknown' but never names the expected identifier DET0191 or any specific data component or analytic. The evidence confirms 3 rows were returned but all failed normalization due to missing primary_id and name, so the 'unknown' characterization is faithful. The answer honestly reflects retrieval success but fails to translate it into an actual answer to the question about data components and analytics for T1127.002.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

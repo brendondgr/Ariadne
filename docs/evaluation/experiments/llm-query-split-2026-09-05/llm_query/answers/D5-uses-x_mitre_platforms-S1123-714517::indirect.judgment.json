@@ -1,0 +1,29 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S1123-714517::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.5,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "None of the live graph sources cover this request",
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by saying no records were returned, but it does not state S1123 or any expected Windows techniques T1140, T1205.002, T1559, or T1573.002. The evidence only shows an empty-query failure for the attack specialist, not a definitive absence of mappings, so the abstention is not fully honest. It avoids fabricated mappings but misses all gold identifiers.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

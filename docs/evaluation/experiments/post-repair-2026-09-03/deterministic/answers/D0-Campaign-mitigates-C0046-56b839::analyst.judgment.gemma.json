@@ -1,0 +1,43 @@
+{
+ "case_id": "D0-Campaign-mitigates-C0046-56b839::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.0,
+ "faithfulness": 0.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "C0046 mitigates T1556",
+  "C0046 mitigates T1653",
+  "C0046 mitigates T1685",
+  "C0046 mitigates T1690",
+  "C0046 mitigates T1041",
+  "C0046 mitigates T1020",
+  "C0046 mitigates T1059",
+  "C0046 mitigates T1055",
+  "C0046 mitigates T1036",
+  "C0046 mitigates T1190",
+  "C0046 mitigates T1140",
+  "C0046 mitigates T1082",
+  "C0046 mitigates T1040",
+  "C0046 mitigates T1119",
+  "C0046 mitigates T1133",
+  "C0046 mitigates T1014",
+  "C0046 mitigates T1557",
+  "C0046 mitigates T1037"
+ ],
+ "rationale": "The system was asked for techniques mitigated by C0046, but it executed a query for techniques that C0046 'USES'. It then incorrectly presented these 18 techniques (T1556, T1653, etc.) as the answer to the mitigation question, creating a fabricated mapping between the campaign and the techniques.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

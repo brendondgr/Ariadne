@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-uses-C0060-ae540c::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.23,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.23,
+ "gold_expected": 26,
+ "gold_present": 6,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states six expected techniques\u2014T1083, T1016, T1217, T1219, T1082, and T1047\u2014supported by the C0060 query, but omits 20 expected techniques such as T1036.008, T1059.001, and T1566.001. It is faithful and grounded because each listed technique is cited to an ATT&CK record returned for C0060. It is partial because it does not provide the full expected set and does not explicitly name C0060 in the answer text.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

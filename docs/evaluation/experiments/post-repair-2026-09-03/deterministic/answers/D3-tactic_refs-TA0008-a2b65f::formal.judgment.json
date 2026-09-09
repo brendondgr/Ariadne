@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-tactic_refs-TA0008-a2b65f::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies TA0008 (Lateral Movement) and provides a supported description, but it does not state the expected matrix/domain identifier enterprise-attack. The evidence contains x_mitre_domains: [\"enterprise-attack\"] and a Matrix HAS_TACTIC facet, but the narrative only says \"MITRE ATT&CK,\" which is not the specific expected matrix. Thus it is faithful and grounded, but incomplete for the question asked.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

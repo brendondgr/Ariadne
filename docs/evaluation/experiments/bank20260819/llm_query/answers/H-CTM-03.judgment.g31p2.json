@@ -1,0 +1,26 @@
+{
+ "case_id": "H-CTM-03",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The narrative claims the entity CAPEC-140 was not found, but the resolve step in the logic flow successfully identified the seed ID."
+ ],
+ "rationale": "The system correctly abstained from providing ATT&CK techniques and mitigations for CAPEC-140. Since the gold expectations specify that no correlation exists, the abstention is correct. The failure was caused by a technical Gremlin error during query execution rather than a lack of the entity in the graph.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

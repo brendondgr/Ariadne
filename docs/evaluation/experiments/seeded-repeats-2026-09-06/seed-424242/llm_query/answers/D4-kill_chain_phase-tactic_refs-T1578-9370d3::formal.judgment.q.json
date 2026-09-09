@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-kill_chain_phase-tactic_refs-T1578-9370d3::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.7,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains after the attack specialist returned no records and an empty query, so it does not guess the expected enterprise-attack matrix. It does not restate the anchor T1578, so gold_present is 0. The only unsupported identifiers are the illustrative examples T1566, M1017, and CAPEC-98, which are not asserted as relevant mappings.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

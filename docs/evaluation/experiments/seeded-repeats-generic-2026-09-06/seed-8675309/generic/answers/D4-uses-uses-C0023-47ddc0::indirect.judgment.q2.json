@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-uses-uses-C0023-47ddc0::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.09,
+ "gold_expected": 34,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly anchors C0023 and lists the five software neighbours S0029, S0051, S0512, S0511, and S0518, but it only states three of the 34 expected technique identifiers: T1027.003, T1102.002, and T1546.003. It does not map the remaining expected techniques to the individual malware/tool items, so it is partial. All listed items are supported by the C0023 record, so faithfulness and groundedness are high.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

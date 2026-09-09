@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-ChildOf-T1111-192368::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.5,
+ "groundedness": 0.4,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-10, CAPEC-100, CAPEC-101, and CAPEC-102 are named in the first claim but are not among that claim's cited CAPEC records",
+  "The attack source is asserted not to model the entities needed for T1111 without a cited T1111 record"
+ ],
+ "rationale": "The answer mentions T1111 and explicitly abstains by saying no query was executed for its CAPEC correspondences, but it never states the expected CAPEC-117 or CAPEC-157. It also lists many unrelated CAPEC-to-ATT&CK mappings, and its first claim names CAPEC-10/100/101/102 without matching citations. This makes it a partial, query-bearing abstention rather than a complete answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

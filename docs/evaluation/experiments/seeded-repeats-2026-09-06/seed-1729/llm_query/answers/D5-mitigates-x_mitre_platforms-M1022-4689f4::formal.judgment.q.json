@@ -1,0 +1,29 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1022-4689f4::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 0.5,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 43,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98",
+  "None of the live graph sources cover this request"
+ ],
+ "rationale": "The answer abstained by saying no records were returned, but it did not state M1022 or any expected technique IDs such as T1036, T1070, T1543, T1565, T1574, T1685, or T1686. The only identifiers it offered were non-gold examples T1566, M1017, and CAPEC-98, which are not supported by the shown evidence. The empty-query failure does not establish that the graph lacks the M1022-to-technique mappings, so the abstention is not fully query-grounded.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Analytic-kill_chain_phase-AN0662-9c5459::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains instead of guessing tactics for AN0662, and the notes show the attack specialist's query was rejected because Tactic.attack_id was bound to AN0662, an Analytic identifier. It states the required anchor AN0662 and no tactic identifiers, matching the empty expected related set. The unsupported example identifiers T1566, M1017, and CAPEC-98 slightly reduce faithfulness, but no cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Technique-detects-T1555.005-df61d4::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the anchor T1555.005 and accurately reports its record properties, but it does not explicitly answer the DETECTS question by saying that no detected technique identifiers were returned. The evidence contains only T1555.005 and an incoming DETECTS facet to DetectionStrategy, with no related technique IDs, so the response is faithful but only partially addresses the query. Gold expected is 1 (T1555.005) and the answer presents that identifier.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

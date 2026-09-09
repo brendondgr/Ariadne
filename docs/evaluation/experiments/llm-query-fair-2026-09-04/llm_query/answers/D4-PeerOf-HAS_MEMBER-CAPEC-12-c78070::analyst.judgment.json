@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-PeerOf-HAS_MEMBER-CAPEC-12-c78070::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.6,
+ "groundedness": 0.4,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by saying no records were returned, which is supported by the empty CAPEC result, but it does not state the expected peer identifiers CAPEC-225 or CAPEC-513. It also does not show the executed query as part of the abstention, so it is not a fully rewarded honest abstention. The only unsupported identifiers are the examples T1566, M1017, and CAPEC-98.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

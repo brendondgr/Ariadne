@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-uses-kill_chain_phase-C0063-80f876::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 15,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer lists 21 technique IDs such as T1529, T1113, and T1006, all present in the C0063 query records, but it does not state the campaign ID C0063 explicitly. It also omits all expected tactic IDs, including TA0001, TA0002, TA0003, TA0004, TA0005, TA0006, TA0007, TA0008, TA0009, TA0010, TA0011, TA0040, TA0042, TA0043, and TA0112. Thus it partially addresses the technique request but not the tactic-mapping request, with no unsupported cross-source mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

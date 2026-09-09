@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CTM-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states CAPEC-572 and its mapped ATT&CK technique T1027.001, and the cross-source correlation is supported by the CAPEC TaxonomyEntry and ATT&CK record. However, it does not explicitly address the requested mitigations, even though the mitigation query returned no mitigation records for T1027.001. All stated claims are grounded in the provided records, so the main gap is the missing explicit 'no mitigations' statement.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false
+ }
+}

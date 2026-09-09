@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-513-f08e34::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 17,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention rather than a guessed mapping: the capec evidence shows zero records and a boundary that Technique is not modeled, so it does not fabricate a correlation to T1036.003, T1078, T1110, or the other expected technique IDs. It states none of the expected gold identifiers, including CAPEC-513, so completeness is zero, but abstention is not a wrong answer when the source does not establish the mapping. The only unsupported items are the illustrative IDs T1566, M1017, and CAPEC-98.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

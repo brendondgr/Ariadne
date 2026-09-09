@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0029-6e5dcb::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 9,
+ "gold_present": 9,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes all nine expected network-device-targeting software identifiers: S1114, S1115, S1116, S1117, S1118, S1119, S1120, S1121, and S1123. However, it presents all 42 related items for C0029, including non-gold software such as S0488 and S0357 and many technique identifiers, rather than explicitly filtering to the requested malware/tools that target network devices. The statements are faithful and grounded in the C0029 record, but the answer is only partially direct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

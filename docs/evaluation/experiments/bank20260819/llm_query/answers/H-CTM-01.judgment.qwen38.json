@@ -1,0 +1,24 @@
+{
+ "case_id": "H-CTM-01",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The narrative claims it couldn't find 'CAPEC' or 'Artificially Inflate File Sizes' in the live graphs, but the shown evidence only demonstrates a no-result id query for CAPEC-572.",
+  "The narrative offers T1566, M1017, and CAPEC-98 as example ids, none of which appear in the evidence."
+ ],
+ "rationale": "The answer abstains and shows the executed CAPEC query for CAPEC-572 returning no rows, which matches the evidence. It does not assert the expected T1027.001 mapping or any mitigation, so it is an honest no-mapping response rather than a fabricated cross-source correlation. It states CAPEC-572 but omits T1027.001, so completeness is partial.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

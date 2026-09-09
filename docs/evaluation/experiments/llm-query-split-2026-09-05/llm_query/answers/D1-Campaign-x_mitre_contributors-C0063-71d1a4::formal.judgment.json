@@ -1,0 +1,28 @@
+{
+ "case_id": "D1-Campaign-x_mitre_contributors-C0063-71d1a4::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer correctly abstains and shows the executed C0063 query, but it omits the expected contributor Dragos Threat Intelligence. It states the anchor C0063, so it is partial rather than fully correct. The only unsupported identifiers are the generic examples T1566, M1017, and CAPEC-98, so faithfulness is slightly reduced.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

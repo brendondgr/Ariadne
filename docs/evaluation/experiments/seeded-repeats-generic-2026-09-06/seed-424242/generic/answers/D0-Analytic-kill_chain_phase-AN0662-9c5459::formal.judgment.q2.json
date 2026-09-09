@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Analytic-kill_chain_phase-AN0662-9c5459::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The executed attack query for AN0662 returned zero rows, so the abstention that AN0662 was not found is supported. The answer states the required identifier AN0662 and includes the query, making it an honest abstention rather than a guess. The only unsupported details are the example identifiers T1566, M1017, and CAPEC-98, which are not present in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

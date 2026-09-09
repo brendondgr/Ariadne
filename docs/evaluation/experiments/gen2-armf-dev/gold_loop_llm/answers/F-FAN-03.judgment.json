@@ -1,0 +1,21 @@
+{
+ "case_id": "F-FAN-03",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 15,
+ "gold_present": 15,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Early sentence states the combined ATT&CK mappings are T1005, T1039, T1552.001, T1552.003, T1552.004, omitting T1552.006 from the exhaustive union"
+ ],
+ "rationale": "The answer correctly identifies the deduplicated technique union T1005, T1039, T1552.001, T1552.003, T1552.004, T1552.006 and all expected mitigations M1015, M1017, M1022, M1027, M1028, M1041, M1047, M1051, M1057. Its only minor faithfulness issue is the early sentence that lists the combined mappings without T1552.006, though T1552.006 is later explicitly stated under CAPEC-639, ATT&CK records, and cross-source corroboration. Cross-source correlations are supported by CAPEC-37/CAPEC-639 taxonomy entries and ATT&CK records, so no fabricated mapping is present.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

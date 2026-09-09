@@ -1,0 +1,28 @@
+{
+ "case_id": "D2-REQUIRES_SKILL-CAPEC-699-cebddb::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.85,
+ "groundedness": 0.7,
+ "completeness": 0.33,
+ "gold_expected": 3,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains and shows the executed CAPEC query for CAPEC-699, but it does not state the two expected skill records about SDR use and computing hardware. It is mostly faithful to the zero-row evidence, though the example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence. Because it states only the anchor CAPEC-699 and omits both gold skills, it is partial rather than correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

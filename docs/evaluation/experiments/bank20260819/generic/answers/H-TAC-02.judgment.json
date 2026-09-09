@@ -1,0 +1,22 @@
+{
+ "case_id": "H-TAC-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "TA0112 description states 'defenders can't see, hear, or respond' but evidence says 'defenders can't see or trust'",
+  "TA0112 description states 'direct interference with security controls and monitoring' but evidence says 'direct interference with defensive systems'"
+ ],
+ "rationale": "The answer correctly identifies T1599 (Network Boundary Bridging) and states its single tactic TA0112 (Defense Impairment), which is exactly what the question asked. The gold expected identifier TA0112 is present and the T1599\u2192TA0112 mapping is supported by the evidence record. Minor faithfulness deductions apply because the TA0112 description in the narrative paraphrases the evidence text (e.g., 'see, hear, or respond' vs. 'see or trust'; 'security controls and monitoring' vs. 'defensive systems'), introducing small unsupported word substitutions.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

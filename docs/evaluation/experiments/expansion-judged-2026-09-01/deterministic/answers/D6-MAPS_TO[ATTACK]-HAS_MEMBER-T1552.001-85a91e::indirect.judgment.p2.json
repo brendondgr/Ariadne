@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1552.001-85a91e::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Found 558 CAPEC record(s) ... (+553 more)",
+  "ATT&CK mappings: T1001.002, T1003, T1005, T1007, T1012",
+  "The attack source doesn't establish this \u2014 it doesn't model the entities this question asks about"
+ ],
+ "rationale": "The answer states T1552.001 and lists CAPEC-639 and CAPEC-191 as having capec:taxonomy:ATTACK:1552.001, but it omits the expected CAPEC-703. It also never states the CAPEC views in which the corresponding patterns appear. The broad 558-record summary and meta-abstention are only weakly grounded, so the answer is partial rather than correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

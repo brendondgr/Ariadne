@@ -1,0 +1,29 @@
+{
+ "case_id": "D3-uses-T1608.005-77b30b::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.6,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "None of the live graph sources cover this request",
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and reports that no records were returned, which is supported by the empty result set, but it does not state the expected campaigns C0059 or C0060. It also overstates the failure by saying no live sources cover the request and introduces unsupported example identifiers T1566, M1017, and CAPEC-98. No cross-source mapping is fabricated, but completeness is zero because neither expected campaign is named.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-227-5f6f39::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.55,
+ "faithfulness": 0.85,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-227 has CAPEC-469 as a parent (direction of the CHILD_OF relation)"
+ ],
+ "rationale": "The answer states the expected related identifier CAPEC-469 and grounds it in the CAPEC-227 record, so the gold entity is present. However, it phrases the relation as \"CAPEC-227 has 1 ChildOf parent: CAPEC-469\" rather than explicitly identifying CAPEC-469 as a more specific case or child of CAPEC-227, making the answer only partially responsive. The direction assertion is not fully supported by the shown related record, but no cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

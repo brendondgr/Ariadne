@@ -1,0 +1,24 @@
+{
+ "case_id": "H-CHN-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 53,
+ "gold_present": 53,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The following 20 identifiers are corroborated across both the CAPEC and ATT&CK sources",
+  "All remaining 19 identifiers are each shared by 2 records across the CAPEC and ATT&CK sources"
+ ],
+ "rationale": "The answer states all 17 expected CAPEC patterns, including CAPEC-19, CAPEC-441, CAPEC-578, and all 19 expected ATT&CK techniques, including T1014, T1027.009, T1037, T1080, T1505.005, T1542.003, T1543, T1543.001, T1543.003, T1543.004, T1546.001, T1546.004, T1546.008, T1546.016, T1547, T1547.006, T1553.004, T1556.006, and T1574.011. It also includes the 16 expected ATT&CK mitigation identifiers and the CWE-284 relation. The main weakness is a minor unsupported count: the narrative says 20 corroborated identifiers while listing 19.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

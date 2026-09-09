@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-PeerOf-Likelihood_Of_Attack-CAPEC-665-a50fa5::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the expected peer identifiers CAPEC-148 and CAPEC-151, but it does so by listing all three PEER_OF neighbors of CAPEC-665, including CAPEC-458, rather than explicitly identifying which peers have Medium likelihood. All stated facts are supported by the CAPEC-665 record and its related entries, so the response is faithful and grounded but only partially answers the likelihood-filtered question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

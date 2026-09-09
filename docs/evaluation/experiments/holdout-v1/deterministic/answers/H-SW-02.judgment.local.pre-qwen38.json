@@ -1,0 +1,19 @@
+{
+ "case_id": "H-SW-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 0.01,
+ "gold_expected": 170,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies T1005 (Data from Local System) with accurate STIX properties (revoked: False, x_mitre_version: 1.8), but fails to enumerate any of the 169 expected software entities (e.g., S0009, S0011, S0012, S0106) that USE this technique. The evidence contains facet data confirming 169 Software neighbors via incoming USES relationships, yet the answer's 'related' array is empty and the narrative only describes the anchor technique's attributes without listing the specific software identifiers the question explicitly requested.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

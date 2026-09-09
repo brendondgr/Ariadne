@@ -1,0 +1,28 @@
+{
+ "case_id": "D1-AttackPattern-Typical_Severity-CAPEC-162-ac7ede::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by saying no records were returned, which is supported by the empty CAPEC result for CAPEC-162. It does not state the expected severity High or the anchor CAPEC-162, so completeness is zero. The example identifiers T1566, M1017, and CAPEC-98 are not in the evidence, but no cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

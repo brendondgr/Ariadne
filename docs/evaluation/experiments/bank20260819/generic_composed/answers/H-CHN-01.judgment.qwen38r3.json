@@ -1,0 +1,24 @@
+{
+ "case_id": "H-CHN-01",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-62 has two TaxonomyEntrys, including CWE-1275",
+  "the capec query returned no linked records for the sub-question"
+ ],
+ "rationale": "The answer identifies CAPEC-62 as the CAPEC pattern associated with CWE-1275 and correctly abstains from asserting any ATT&CK techniques, matching the expected no-correlation outcome. It also shows the executed CAPEC query and explains that the ATT&CK sub-question was skipped because q1 produced no seed identifiers. Minor faithfulness deductions are warranted for calling CWE-1275 a TaxonomyEntry and for the imprecise 'no linked records' phrasing, since the query did return CAPEC-62.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-DetectionStrategy-log_source-DET0090-f05be5::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.0,
+ "faithfulness": 1.0,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only reports that 3 MITRE ATT&CK records were found and does not state DET0090 or any DataComponent identifiers. The executed query targeted DET0090 through HAS_ANALYTIC and MONITORS, but the normalized records are empty DetectionStrategy entries with no related data components. Therefore it retrieves something but does not answer which data components DET0090 draws on.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

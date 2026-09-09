@@ -1,0 +1,29 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-PeerOf-T1195.002-0798c4::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98",
+  "couldn't find 'Compromise Software Supply Chain' or 'CAPEC' in the live capec and attack graphs"
+ ],
+ "rationale": "The answer abstains and reports zero records, which matches the evidence that the CAPEC query returned no rows and the attack sub-question was skipped, so it does not assert a fabricated mapping. It does not state the expected CAPEC-630, so completeness is zero, although it does mention T1195.002 in the abstention. The narrative's unsupported examples T1566, M1017, and CAPEC-98, plus the broader claim that neither the name nor CAPEC was found, cause modest faithfulness and groundedness deductions.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

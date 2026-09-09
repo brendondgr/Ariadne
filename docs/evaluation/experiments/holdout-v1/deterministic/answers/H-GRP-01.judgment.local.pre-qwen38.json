@@ -1,0 +1,19 @@
+{
+ "case_id": "H-GRP-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.9,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 11,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer honestly abstains, showing the executed Cypher query (MATCH (g:Group)-[:USES]->(t:Technique) WHERE g.attack_id IN $ids) and reporting 0 records, which the evidence confirms. However, the query filters on g.attack_id (a group ID property) with the seed T1550.002 (a technique ID), a likely construction error that caused it to miss all 11 expected groups: G0006, G0007, G0050, G0093, G0094, G0096, G0102, G0114, G0143, G1003, and G1016. The abstention is transparent and well-formed, but the underlying query targeted the wrong node property, making the 'no records' conclusion unreliable.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[WASC]-T1110-d01d69::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.65,
+ "groundedness": 0.65,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The attack source doesn't establish this",
+  "no query was executed for: For T1110: the CAPEC attack patterns that correspond to it"
+ ],
+ "rationale": "The answer states T1110 and identifies CAPEC-112, CAPEC-49, CAPEC-55, CAPEC-565, and CAPEC-600 as related to T1110 or its subtechniques, but it never states the required WASC:11 mapping. It also explicitly abstains by saying no query was executed for the T1110-to-CAPEC question, so it is partial rather than correct. The main unsupported meta-claims are that the attack source does not establish the requested entities and that no query was executed.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

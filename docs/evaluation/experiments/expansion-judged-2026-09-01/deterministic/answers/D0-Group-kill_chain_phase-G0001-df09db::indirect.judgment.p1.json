@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Group-kill_chain_phase-G0001-df09db::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 0.95,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The question asks for tactics associated with G0001, but the answer lists technique IDs T1189, T1203, T1553, T1078, T1566, T1560, T1190, T1005, and T1003 without naming any tactic IDs or the anchor G0001. The cited ATT&CK records support that these techniques were returned by the executed query, but they do not establish that they are the requested tactics. Thus the answer is grounded in retrieved records yet fails to state the expected identifier and answer the asked relation.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

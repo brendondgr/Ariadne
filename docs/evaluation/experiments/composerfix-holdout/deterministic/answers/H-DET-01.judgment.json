@@ -1,0 +1,19 @@
+{
+ "case_id": "H-DET-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states both gold identifiers: T1098.001 (Additional Cloud Credentials) and DET0531 (Detection Strategy for Additional Cloud Credentials in IaaS/IdP/SaaS), plus analytics AN1469, AN1470, AN1471. It addresses the 'established analytics or detection logic' portion of the question by naming these entities. However, it does not explicitly enumerate the specific log sources or data components to monitor (e.g., cloud account credential stores, SSH key pairs, OAuth app tokens, API key creation events), which the analytics descriptions in the evidence do detail. The answer is a valid retrieval-based identification but stops short of a full monitoring guidance answer.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

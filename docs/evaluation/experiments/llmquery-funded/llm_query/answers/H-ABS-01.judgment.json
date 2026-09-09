@@ -1,0 +1,23 @@
+{
+ "case_id": "H-ABS-01",
+ "verdict": "CORRECT",
+ "correctness": 0.7,
+ "faithfulness": 0.9,
+ "groundedness": 0.7,
+ "completeness": 0.33,
+ "gold_expected": 3,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains, reporting that CAPEC-206 was not found in the CAPEC graph, and the executed query (g.V().hasLabel(within(labels)).has('id', within(ids)).elementMap().limit(20000)) is shown as proof with the evidence confirming 0 records returned. The gold-expected related identifiers CAPEC-438 and CAPEC-444 are never mentioned, and the actual detailed/standard/meta information for CAPEC-206 is not provided. The narrative's illustrative example IDs (T1566, M1017, CAPEC-98) are not in the evidence but are clearly marked as format examples.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

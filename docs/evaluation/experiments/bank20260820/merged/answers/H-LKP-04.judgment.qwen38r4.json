@@ -1,0 +1,23 @@
+{
+ "case_id": "H-LKP-04",
+ "verdict": "PARTIAL",
+ "correctness": 0.75,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "ATT&CK record for CAPEC-588"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-588 as DOM-Based XSS and provides a supported portion of its description, including Abstraction and Status. However, it omits the later sentences in the CAPEC-588 description about timing and server-side filtering, so it is only partially complete as a description answer. The minor unsupported source label 'ATT&CK record' slightly reduces faithfulness because the cited record is from the CAPEC source.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

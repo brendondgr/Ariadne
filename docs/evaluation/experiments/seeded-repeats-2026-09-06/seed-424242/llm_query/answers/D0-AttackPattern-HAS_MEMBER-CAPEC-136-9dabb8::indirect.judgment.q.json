@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-AttackPattern-HAS_MEMBER-CAPEC-136-9dabb8::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.7,
+ "faithfulness": 0.8,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: it says no records were returned and notes that the capec specialist failed with an empty query, which matches the zero-record evidence for CAPEC-136. It does not explicitly state CAPEC-136 or that CAPEC-136 contains no patterns, so completeness is low. The example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, but they are not asserted as mappings.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

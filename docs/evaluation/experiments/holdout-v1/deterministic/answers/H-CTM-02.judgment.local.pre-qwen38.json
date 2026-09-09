@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-40 as the seed identifier and honestly abstains, stating that the CAPEC source's MAPS_TO query returned zero rows (no ATT&CK TaxonomyEntry correlation). The attack sub-question was properly skipped due to the q1 dependency, matching the gold's expect_no_correlation and expect_dependency_skip expectations. No ATT&CK technique IDs (e.g., T1566) or mitigation IDs (e.g., M1017) were fabricated, and the executed Gremlin query is shown as proof of the abstention.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

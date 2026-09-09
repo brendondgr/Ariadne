@@ -1,0 +1,21 @@
+{
+ "case_id": "H-REV-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The expected result is that no CAPEC attack patterns map to T1055.011, and the CAPEC query returned row_count 0. The answer states that the CAPEC source returned no matching records and includes the executed query, which satisfies the honest-abstention rule. It also grounds the T1055.011 ATT&CK record details in the attack evidence without asserting an unsupported cross-source mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

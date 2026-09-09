@@ -1,0 +1,24 @@
+{
+ "case_id": "H-CHN-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 37,
+ "gold_present": 37,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1017 description 'Educating employees and contractors on recognizing, reporting, and preventing cyber threats that rely on human interaction, such as phishing and social engineering' not explicitly in evidence records",
+  "M1040 description 'Using EDR and behavioral analysis to detect and block potentially malicious activities by analyzing process behavior, file access, API calls, and other endpoint events' not explicitly in evidence records",
+  "M1049 description 'Utilizing signatures, heuristics, and behavioral analysis to detect, block, and remediate malicious software across all endpoints' not explicitly in evidence records",
+  "M1047 description 'Recording activity and systematically reviewing and analyzing activity and system configurations to detect anomalies and identify potential threats' not explicitly in evidence records"
+ ],
+ "rationale": "The answer correctly identifies all 32 CAPEC patterns linked to CWE-697 (CAPEC-3, 6, 7, 8, 9, 10, 14, 15, 24, 41, 43, 44, 45, 46, 47, 52, 53, 64, 67, 71, 73, 78, 79, 80, 88, 92, 120, 182, 267), the ATT&CK technique T1027 (Obfuscated Files or Information), and the cross-source correlation via CAPEC-267 (Leverage Alternate Encoding) which maps to both CWE-697 and ATTACK:1027. All 4 related mitigations (M1017, M1040, M1047, M1049) are stated. The only minor deductions are for mitigation descriptions that draw on general ATT&CK knowledge rather than being explicitly present in the evidence records.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,23 @@
+{
+ "case_id": "H-MIT-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Summary calls M1022, M1018, and M1038 'mitigated techniques' rather than mitigations."
+ ],
+ "rationale": "The answer directly addresses the query by naming T1547.009 and all three expected mitigations, M1018, M1022, and M1038. The mitigation names and detailed descriptions are supported by the related records in the evidence. The only minor issue is the summary's wording, which refers to the M-IDs as 'mitigated techniques' instead of mitigations.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

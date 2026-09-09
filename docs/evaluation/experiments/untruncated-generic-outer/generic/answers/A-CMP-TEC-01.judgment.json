@@ -1,0 +1,21 @@
+{
+ "case_id": "A-CMP-TEC-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 10,
+ "gold_present": 10,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S0357 is listed as a technique, but the evidence labels it Software"
+ ],
+ "rationale": "The answer includes all ten expected technique identifiers T1046, T1047, T1090, T1102, T1105, T1133, T1190, T1530, T1572, and T1621, so completeness is full. It also enumerates subtechniques and S0357; S0357 is a Software record in the evidence, so the claim that all 29 related items are techniques is slightly overbroad. No cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

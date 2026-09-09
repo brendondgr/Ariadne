@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-uses-subtechnique-of-C0050-01ddb0::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows the executed query for Campaign C0050, and the evidence shows row_count 0, so it does not guess the expected techniques T1036, T1583, T1587, or T1588. It states none of the four gold technique identifiers, so completeness is zero. The only unsupported identifiers are illustrative examples T1566, M1017, and CAPEC-98, not a fabricated cross-source mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

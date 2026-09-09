@@ -1,0 +1,19 @@
+{
+ "case_id": "F-NEG-02",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-66 (SQL Injection) and its sole related item, capec:taxonomy:WASC:19, which is a WASC taxonomy entry rather than an ATT&CK technique, thereby satisfying the gold expectation of no correlation. The ATT&CK source is honestly abstained on because the dependent sub-question q1 produced no seed identifiers, and no fabricated cross-source mapping is asserted. The only minor weakness is that the abstention's query field is empty rather than carrying the executed CAPEC query as explicit proof, though that query is visible in the evidence volume.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

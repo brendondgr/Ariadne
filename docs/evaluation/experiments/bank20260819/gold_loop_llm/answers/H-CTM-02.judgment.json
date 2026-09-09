@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-02",
+ "verdict": "CORRECT",
+ "correctness": 0.92,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-325 (TCP Congestion Control Flag (ECN) Probe) as the sole CAPEC record and honestly abstains on the ATT&CK technique mapping, displaying the executed Gremlin query that returned CAPEC-325 with no linked TaxonomyEntry records. The ATT&CK mitigations sub-question is properly explained as skipped because the q1 dependency produced no seed identifiers, matching the gold's expect_no_correlation: true and expect_dependency_skip: true expectations. No fabricated cross-source correlation is asserted, and all factual claims (RFC 3168, Abstraction: Detailed, Status: Stable) are directly supported by the CAPEC record.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

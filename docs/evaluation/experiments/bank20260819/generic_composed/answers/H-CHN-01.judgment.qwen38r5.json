@@ -1,0 +1,24 @@
+{
+ "case_id": "H-CHN-01",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CWE-1275 is a TaxonomyEntry of CAPEC-62",
+  "the CAPEC query returned CAPEC-62 with no linked records"
+ ],
+ "rationale": "The answer correctly states CAPEC-62 as the CAPEC pattern associated with CWE-1275 and abstains from naming ATT&CK techniques, matching the expected no-correlation result. It provides the executed CAPEC query and explains the ATT&CK sub-question was skipped because q1 produced no join values. Minor unsupported phrasing includes calling CWE-1275 a TaxonomyEntry and saying the CAPEC result had no linked records, since the record did include related CWE-1275 and WASC:09.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

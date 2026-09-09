@@ -1,0 +1,27 @@
+{
+ "case_id": "H-GRP-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.65,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1003.006 has 8 used techniques",
+  "S0002, G1004, G1006, G1053, G0129, C0027, C0014, and C0024 are techniques used by T1003.006"
+ ],
+ "rationale": "The answer includes all four expected groups, G0129, G1004, G1006, and G1053, as related to T1003.006, so the core question is addressed. However, it describes the eight related entities as \u201cused techniques\u201d of T1003.006, while the evidence only shows USES-related neighbours that include software S0002 and campaigns C0027, C0014, and C0024. This makes the answer complete but imprecise and partly unsupported.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

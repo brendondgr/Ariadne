@@ -1,0 +1,28 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-227-5f6f39::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.6,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly reports that the capec specialist returned no records, which matches the empty result, but it never states the expected related pattern CAPEC-469 or the anchor CAPEC-227. The illustrative identifiers T1566, M1017, and CAPEC-98 are not present in the evidence, so they are minor unsupported assertions. No cross-source mapping is fabricated, but the gold set is completely missing, making the response only partial.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

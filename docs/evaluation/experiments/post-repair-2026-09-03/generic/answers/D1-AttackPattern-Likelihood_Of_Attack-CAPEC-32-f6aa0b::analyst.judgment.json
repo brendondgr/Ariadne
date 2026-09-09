@@ -1,0 +1,26 @@
+{
+ "case_id": "D1-AttackPattern-Likelihood_Of_Attack-CAPEC-32-f6aa0b::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-32 has 5 ChildOf parents (direction not explicitly shown; evidence only lists CHILD_OF-related IDs and facets show CHILD_OF in count 0/out count 3)"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-32 and states supported details such as its description, Abstraction, and Status. However, it never states the expected likelihood value 'High', which is the key answer to the question. It also lists CAPEC-591, CAPEC-588, CAPEC-592, CAPEC-63, and CAPEC-242 as ChildOf parents, which is only weakly supported because the evidence shows CHILD_OF-related IDs without explicit direction.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

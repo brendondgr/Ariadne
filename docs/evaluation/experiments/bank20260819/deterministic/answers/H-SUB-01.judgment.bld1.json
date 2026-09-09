@@ -1,0 +1,23 @@
+{
+ "case_id": "H-SUB-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the expected parent identifier T1055 (Process Injection) and also mentions T1055.002, which matches the evidence record. However, it phrases the relationship as a generic 'related item' rather than explicitly saying that T1055 is the parent technique of T1055.002. This makes it faithful and complete in identifiers, but only partially direct in answering the question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false
+ }
+}

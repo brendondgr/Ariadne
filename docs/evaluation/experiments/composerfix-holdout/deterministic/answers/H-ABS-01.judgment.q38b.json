@@ -1,0 +1,24 @@
+{
+ "case_id": "H-ABS-01",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the required anchor CAPEC-606 and both expected related hierarchy identifiers, CAPEC-620 and CAPEC-212. It is grounded in the CAPEC-606 record and its related AttackPattern entries, with standard/meta abstraction labels matching the evidence. It slightly under-explains the chain by saying CAPEC-606 has two AttackPatterns rather than explicitly stating CAPEC-606 -> CAPEC-620 -> CAPEC-212, but it still answers the hierarchy question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

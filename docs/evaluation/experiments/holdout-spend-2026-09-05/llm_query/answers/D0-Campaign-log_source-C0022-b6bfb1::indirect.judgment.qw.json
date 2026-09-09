@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Campaign-log_source-C0022-b6bfb1::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer correctly abstains because the executed attack query for C0022 returned no DataComponent records, and it includes the required identifier C0022. The abstention shows the executed query, satisfying the honest-abstention rule. The only unsupported items are the example identifiers T1566, M1017, and CAPEC-98 in the narrative, which are not tied to the evidence but are not asserted as the answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-01",
+ "verdict": "CORRECT",
+ "correctness": 0.92,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-603 as the anchor and reports no ATT&CK technique mappings, matching the gold expectation of expect_no_correlation: true. The dependent attack sub-question (mitigations) is properly skipped due to the empty seed from q1, matching expect_dependency_skip: true. The CAPEC abstention includes the full executed Gremlin query (g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids))...out(\"MAPS_TO\")...) as proof, satisfying the honest-abstention criteria under Rule 1.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

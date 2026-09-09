@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-REQUIRES_SKILL-CAPEC-201-7197b4::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-201 and its REQUIRES_SKILL neighbor capec:attack-pattern:201:skill:1, and all claims are supported by the provided CAPEC record. It is partial because it states only the skill identifier and omits the expected skill text 'To send serialized data messages with maliciously crafted schema.' No unsupported cross-source mapping or hallucinated identifiers are asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

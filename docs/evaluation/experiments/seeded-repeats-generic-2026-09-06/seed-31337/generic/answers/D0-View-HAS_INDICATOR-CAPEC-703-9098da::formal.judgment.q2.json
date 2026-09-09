@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-View-HAS_INDICATOR-CAPEC-703-9098da::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by reporting no records for the CAPEC-703 request, which is consistent with the empty expected indicator set. The trace shows the attempted HAS_INDICATOR query, so the abstention is grounded rather than a guess. It does not explicitly state CAPEC-703, so completeness is low, but it does not assert any indicator mapping. The only unsupported identifiers are the example ids T1566, M1017, and CAPEC-98.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

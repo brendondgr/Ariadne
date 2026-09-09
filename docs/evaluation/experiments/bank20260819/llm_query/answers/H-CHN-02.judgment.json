@@ -1,0 +1,22 @@
+{
+ "case_id": "H-CHN-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.9,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 34,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: the CAPEC abstention displays the full Gremlin query (g.V().hasLabel('Weakness').has('id', within(cwe)).in('EXPLOITS_WEAKNESS')...) that returned 0 rows, and the Attack abstention explains the sub-query was skipped due to the q1 dependency. However, the gold expects 34 specific identifiers \u2014 T1027, 29 CAPEC patterns (CAPEC-3, CAPEC-6, CAPEC-7, \u2026 CAPEC-267), and 4 mitigations (M1017, M1040, M1047, M1049) \u2014 none of which the answer states, yielding zero completeness. The narrative's illustrative IDs T1566 and CAPEC-98 are not supported by the evidence, constituting minor hallucinations.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

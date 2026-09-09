@@ -1,0 +1,19 @@
+{
+ "case_id": "F-NEG-04",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The gold expects an honest empty join: CAPEC-7 has no MAPS_TO edge to any ATT&CK TaxonomyEntry, and the dependent mitigations sub-question (q2) should be skipped. The answer's CAPEC abstention explicitly states the query 'returned CAPEC-7 with no linked records' and displays the full Gremlin query, while the attack abstention correctly notes q2 was skipped because q1 produced no seed identifiers. No ATT&CK technique identifier is asserted, matching the empty must_correlate set.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

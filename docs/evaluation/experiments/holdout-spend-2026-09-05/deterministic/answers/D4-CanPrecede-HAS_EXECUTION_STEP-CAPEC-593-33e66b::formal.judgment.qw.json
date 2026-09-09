@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanPrecede-HAS_EXECUTION_STEP-CAPEC-593-33e66b::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 0.8,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 13,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-593 and lists its own execution steps capec:attack-pattern:593:step:1, capec:attack-pattern:593:step:2, and capec:attack-pattern:593:step:3, but the question asks for execution steps of CAPEC patterns that can precede CAPEC-593. It omits all 13 expected step texts, such as '1 Exploit [Perform HTTP Request Smuggling attack]' and '2 Experiment [Cause differential HTTP responses by experimenting with identified HTTP Request vulnerabilities]'.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

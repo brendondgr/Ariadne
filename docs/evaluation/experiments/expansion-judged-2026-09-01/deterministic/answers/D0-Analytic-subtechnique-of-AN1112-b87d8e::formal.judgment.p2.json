@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Analytic-subtechnique-of-AN1112-b87d8e::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains instead of asserting a parent technique for AN1112, which is consistent with the empty expected neighbor set and the failed attack specialist. It does mention AN1112 in the failure note, so the required anchor is present. The illustrative identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, and the answer text does not itself show the executed query.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

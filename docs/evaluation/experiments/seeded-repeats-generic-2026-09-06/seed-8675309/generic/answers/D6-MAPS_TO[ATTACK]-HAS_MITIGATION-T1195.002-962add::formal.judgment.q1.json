@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MITIGATION-T1195.002-962add::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.85,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 26,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains for T1195.002 and shows a CAPEC query, but it states none of the 26 expected mitigation texts. It does mention T1195.002 and example identifiers T1566, M1017, and CAPEC-98, but it does not assert any cross-source mapping. Because the attack sub-question was skipped and the CAPEC query used empty ids, the abstention is honest but only partially grounded.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

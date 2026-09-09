@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-x_mitre_analytic_refs-x_mitre_platforms-DET0338-3be277::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the anchor DET0338 and the expected container-related analytic AN0958, but it presents all seven HAS_ANALYTIC neighbors (AN0954, AN0955, AN0956, AN0957, AN0958, AN0959, AN0960) rather than explicitly identifying AN0958 as the one applying to Containers. The enumerated identifiers are supported by the DET0338 record, so the statements are faithful and grounded, but the lack of an explicit container filter makes the answer only partially responsive.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

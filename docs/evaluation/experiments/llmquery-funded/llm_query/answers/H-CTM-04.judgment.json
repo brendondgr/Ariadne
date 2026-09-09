@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-04",
+ "verdict": "CORRECT",
+ "correctness": 0.7,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 5,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer is a valid honest abstention: the CAPEC specialist failed at the gate (binding mismatch: AttackPattern.id bound to ['CAPEC-543'] but expected format 'capec:attack-pattern:#'), and the dependent ATT&CK query was skipped. No gold identifiers (T1036.005, M1022, M1038, M1045, CAPEC-543) are stated, but the evidence confirms 0 records returned, making the 'not found' response well-justified per Rule 1. The abstention explicitly states 'no query was executed' for the attack source and the notes document the CAPEC gate rejection.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

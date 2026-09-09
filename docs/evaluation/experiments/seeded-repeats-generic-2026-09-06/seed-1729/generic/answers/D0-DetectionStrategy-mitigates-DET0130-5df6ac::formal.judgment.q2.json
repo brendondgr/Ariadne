@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-DetectionStrategy-mitigates-DET0130-5df6ac::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.55,
+ "faithfulness": 0.9,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly names DET0130 and identifies T1555.006, the only related ATT&CK sub-technique in the evidence. However, the evidence ties T1555.006 to DET0130 via DETECTS, not MITIGATES, and the answer says 'has' rather than explicitly answering the mitigation question. It is therefore partially correct and well-grounded, but not a full answer to the asked relation.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-uses-uses-T1555.005-d5fdee::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.6,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1555.005 has 12 related item(s) (evidence shows 24 related entries and the answer lists only 11 identifiers)"
+ ],
+ "rationale": "The answer anchors on T1555.005 and lists related ATT&CK items, but it does not state any of the expected groups G0092, G0102, G0137, or G1052. It lists non-gold groups such as G0027 and G1004, so it partially addresses the query but misses the requested group set. Faithfulness is reduced by the unsupported count of 12 related items versus the evidence\u2019s 24 related entries.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

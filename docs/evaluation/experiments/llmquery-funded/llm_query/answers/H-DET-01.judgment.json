@@ -1,0 +1,19 @@
+{
+ "case_id": "H-DET-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains, stating no records were found for T1589.001 and showing the executed Cypher query. The gold expectation identifies DET0813 as a neighbor that should have been retrieved, but the query path (SubTechnique<-DETECTS-DetectionStrategy-HAS_ANALYTIC->Analytic-MONITORS->DataComponent) returned 0 rows. The answer faithfully reports the empty result and does not fabricate any mappings, but it fails to state the expected identifier DET0813.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S1245-8027f0::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 33,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by reporting no records, which is supported by the empty result set, but it does not state S1245 or any of the 33 expected technique IDs such as T1005, T1016, and T1027.013. It also offers unsupported example identifiers T1566, M1017, and CAPEC-98 and does not show the executed query, so the abstention is not fully proven. Therefore it is partial: honest and mostly grounded, but incomplete relative to the expected Windows-applicable techniques.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

@@ -1,0 +1,23 @@
+{
+ "case_id": "A-AST-01",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer correctly identifies the boundary that ATT&CK does not model 'Asset' (the ICS-only concept), matching the gold expectation of expect_boundary: true. The abstention honestly states no records were returned and explains why no query could be expressed against the schema. Minor deductions for the empty query field (abstention does not carry an executed query) and the ungrounded example identifiers T1566, M1017, CAPEC-98 in the narrative filler.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "case_id": "A-GRP-04",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 13,
+ "gold_present": 13,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer enumerates all 13 techniques for G1039 (RedCurl), including every must_include_id (T1005, T1020, T1027, T1039, T1046) and all additional ex_gold techniques (T1080, T1082, T1083, T1102, T1119, T1199, T1202, T1537). The Cypher query in the logic_flow confirms the Group-[:USES]->Technique traversal returned exactly these 13 records, and each claim is individually cited to its primary_id. No cross-source (CAPEC) mapping is asserted and no identifier beyond the evidence is mentioned.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

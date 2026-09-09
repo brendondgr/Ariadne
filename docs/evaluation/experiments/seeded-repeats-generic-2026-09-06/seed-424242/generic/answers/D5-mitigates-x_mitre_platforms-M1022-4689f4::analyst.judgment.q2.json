@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1022-4689f4::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 43,
+ "gold_present": 43,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes all 43 expected Windows-related techniques, including T1036, T1543, T1569.002, and T1686.003, and ties them to M1022. However, it lists 60 total MITIGATES neighbours, adding non-Windows items such as T1574.004, T1548.006, and T1543.002, so it only partially addresses the Windows filter. No cross-source mapping is asserted, and the enumeration is grounded in the M1022 record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

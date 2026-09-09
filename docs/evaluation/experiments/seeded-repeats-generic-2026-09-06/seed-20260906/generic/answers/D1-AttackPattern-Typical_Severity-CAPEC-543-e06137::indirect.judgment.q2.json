@@ -1,0 +1,24 @@
+{
+ "case_id": "D1-AttackPattern-Typical_Severity-CAPEC-543-e06137::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-543 and provides supported CAPEC metadata and related attack patterns, but it never states the expected severity High. Because the question asks how severe CAPEC-543 is, the missing High makes this an anchor description rather than an answer. The CanPrecede and ChildOf enumerations are grounded in the retrieved CAPEC records, but they do not substitute for the requested severity.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,28 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-227-5f6f39::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.55,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and reports that no records were returned, which is supported by the empty-query failure trace. However, it does not state the expected narrower pattern CAPEC-469 or the anchor CAPEC-227, so it misses the gold identifier. The examples T1566, M1017, and CAPEC-98 are not supported by the evidence, and the claim that CAPEC could not be found is only weakly supported by a failed empty query.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

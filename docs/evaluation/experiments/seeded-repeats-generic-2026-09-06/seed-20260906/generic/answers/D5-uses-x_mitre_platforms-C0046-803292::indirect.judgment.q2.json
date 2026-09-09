@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0046-803292::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 21,
+ "gold_present": 21,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer lists all 21 expected Windows-applicable technique identifiers for C0046, including T1014, T1059, T1070.004, and T1690, so completeness is full. However, it presents all 27 related items rather than explicitly filtering to Windows-applicable techniques, adding non-gold items such as S1188, S1186, T1583.003, and T1587.001. All listed identifiers are supported by the cited C0046 record, so faithfulness is high, but the lack of an explicit Windows applicability statement makes it partial.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

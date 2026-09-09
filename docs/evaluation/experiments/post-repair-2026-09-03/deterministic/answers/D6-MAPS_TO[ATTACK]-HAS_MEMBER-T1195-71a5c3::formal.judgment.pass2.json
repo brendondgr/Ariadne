@@ -1,0 +1,30 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MEMBER-T1195-71a5c3::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.55,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 5,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-10",
+  "CAPEC-100",
+  "CAPEC-101",
+  "CAPEC-102",
+  "The first claim names CAPEC-1, CAPEC-10, CAPEC-100, CAPEC-101, and CAPEC-102 but cites CAPEC-661, CAPEC-121, CAPEC-662, CAPEC-122, CAPEC-123, CAPEC-124, CAPEC-663, and CAPEC-125"
+ ],
+ "rationale": "The answer mentions T1195 and many CAPEC records, but it does not state the expected CAPEC-262, CAPEC-437, CAPEC-513, CAPEC-515, or CAPEC-686, nor the CAPEC categories containing them. It partially abstains by saying the attack source does not establish the T1195-to-CAPEC mapping, but it does not show an executed query as proof. The first claim's text/citation mismatch for CAPEC-10, CAPEC-100, CAPEC-101, and CAPEC-102 reduces faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

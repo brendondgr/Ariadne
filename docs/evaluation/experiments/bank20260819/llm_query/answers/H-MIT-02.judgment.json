@@ -1,0 +1,19 @@
+{
+ "case_id": "H-MIT-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.75,
+ "groundedness": 0.4,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer executed a Cypher query targeting Mitigation nodes that MITIGATES SubTechnique T1547.009 and returned 3 rows, matching the expected gold count. However, the normalize step failed because all 3 records had empty primary_id and name fields, and none of the gold mitigation identifiers (M1018, M1022, M1038) are explicitly stated in the answer's claims or narrative. The answer is honest about the unknown quality but does not fully answer the question.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

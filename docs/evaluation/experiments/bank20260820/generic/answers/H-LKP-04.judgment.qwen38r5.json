@@ -1,0 +1,23 @@
+{
+ "case_id": "H-LKP-04",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-588 has 11 ChildOf parents"
+ ],
+ "rationale": "The answer states the required gold identifier CAPEC-588 and its name DOM-Based XSS, and it provides a supported description from the CAPEC record. It omits the latter sentences of the full description and overstates the ChildOf relation as 11 parents, although the evidence lists 11 ChildOf-related AttackPatterns without explicit parent direction. No cross-source mapping is asserted, and the main claims are tied to the cited CAPEC-588 record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

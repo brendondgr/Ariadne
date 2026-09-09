@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1110-6a5f44::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.7,
+ "groundedness": 0.75,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-1, CAPEC-10, CAPEC-100, CAPEC-101, CAPEC-102 are named as examples of the 558 CAPEC records although the cited claim lists different CAPEC IDs",
+  "T1001.002, T1003, T1005, T1007, T1012 are asserted as ATT&CK mappings for the 558 CAPEC records without corresponding T identifiers in the cited claim"
+ ],
+ "rationale": "The answer states T1110 and includes CAPEC-112 mapping to capec:taxonomy:ATTACK:1110, but it does not state the expected OWASP Attacks:Brute force attack. It also partially abstains on the T1110-to-CAPEC relation without showing an executed query, and its summary claim names unsupported CAPEC and T identifiers. Therefore it is partial rather than correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-CanPrecede-Abstraction-CAPEC-600-1a0fa9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The 10 non-gold successors (CAPEC-50, CAPEC-101, CAPEC-565, CAPEC-70, CAPEC-16, CAPEC-55, CAPEC-568, CAPEC-49, CAPEC-270, CAPEC-151) are presented as Standard-abstraction patterns that can follow CAPEC-600, but their Abstraction values are not shown in the evidence.",
+  "The related CAN_PRECEDE neighbors are asserted to be successors, although the executed query traverses both in- and out-edges and the records do not record direction."
+ ],
+ "rationale": "The answer includes the required related identifier CAPEC-653 and the anchor CAPEC-600, so completeness is full. However, it lists 11 unique CAN_PRECEDE neighbors as successors and implies they satisfy the Standard-abstraction filter, even though the evidence only shows Abstraction for CAPEC-600. This makes the answer partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

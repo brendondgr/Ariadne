@@ -1,0 +1,21 @@
+{
+ "case_id": "H-CSQ-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.6,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "no additional records, facets, or cross-source joins were found (evidence shows related consequence capec:attack-pattern:671:consequence:1)"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-671 as the anchor attack pattern with Abstraction: Detailed and Status: Draft, but fails to state the downstream consequence capec:attack-pattern:671:consequence:1 that the question explicitly asks about. The evidence clearly contains this consequence as a related record via the HAS_CONSEQUENCE edge, yet the answer claims 'no additional records...were found,' contradicting the evidence volume which reports related: 1.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

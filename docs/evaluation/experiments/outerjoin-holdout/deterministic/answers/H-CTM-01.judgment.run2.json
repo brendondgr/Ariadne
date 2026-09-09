@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-01",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-603 (Blockage) as the sole gold identifier and, via a specific Gremlin query (g.V().hasLabel(\"AttackPattern\")...out(\"MAPS_TO\")...has(\"taxonomy_name\",\"ATTACK\")), demonstrates that no linked ATT&CK TaxonomyEntry records exist, matching the gold's expect_no_correlation. The second sub-question on ATT&CK mitigations is properly skipped due to the empty seed set from q1, satisfying the gold's expect_dependency_skip. No fabricated cross-source correlations are asserted, and all stated properties (Abstraction: Standard, Status: Draft) are directly supported by the CAPEC record.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

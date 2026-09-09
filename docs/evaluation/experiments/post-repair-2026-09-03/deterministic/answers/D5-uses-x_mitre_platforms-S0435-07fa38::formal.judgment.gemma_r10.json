@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S0435-07fa38::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 14,
+ "gold_present": 14,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1059.003"
+ ],
+ "rationale": "The answer correctly identifies all 14 gold techniques (T1001.001, T1010, T1057, T1070.004, T1071.001, T1083, T1090, T1105, T1106, T1204.001, T1204.002, T1555, T1555.003, T1573.001). However, it fails to filter for the 'Linux' constraint, including T1059.003, which the evidence explicitly describes as a Windows technique.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

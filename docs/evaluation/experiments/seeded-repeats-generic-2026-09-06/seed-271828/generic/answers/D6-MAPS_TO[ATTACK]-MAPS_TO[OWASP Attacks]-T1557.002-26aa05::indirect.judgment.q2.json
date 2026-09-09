@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1557.002-26aa05::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.7,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains rather than asserting a mapping and shows a capec query that returned 0 records, which is supported by the evidence. It does not state T1557.002 or OWASP Attacks:Cache Poisoning, and the attack sub-question was skipped, so the abstention is honest but not fully anchored. The example identifiers T1566, M1017, and CAPEC-98 are not supported by the records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

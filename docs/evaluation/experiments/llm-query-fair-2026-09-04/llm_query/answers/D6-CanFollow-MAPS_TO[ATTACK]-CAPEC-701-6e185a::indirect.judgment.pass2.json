@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-CanFollow-MAPS_TO[ATTACK]-CAPEC-701-6e185a::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.75,
+ "groundedness": 0.5,
+ "completeness": 0.67,
+ "gold_expected": 3,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and correctly notes that the CAPEC specialist returned no records, but it does not show an executed query and the q1 failure was due to an unknown CanPrecede edge and a CAPEC-701 binding mismatch. It mentions CAPEC-701 in notes and T1566 only as an example, while omitting T1598 and the preceding attack patterns, so it is partial. The example identifiers T1566, M1017, and CAPEC-98 are not supported by the zero-record evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

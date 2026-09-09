@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-View-HAS_INDICATOR-CAPEC-703-9098da::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains for CAPEC-703 by reporting that no records were returned and that the CAPEC specialist failed, with the trace showing the attempted HAS_INDICATOR query. It does not assert any indicator relationship, so no fabricated mapping is made. It omits the required anchor id CAPEC-703 from the answer text and includes unsupported example ids T1566, M1017, and CAPEC-98.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

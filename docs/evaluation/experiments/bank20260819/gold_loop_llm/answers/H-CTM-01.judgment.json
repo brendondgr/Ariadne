@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-01",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies both gold identifiers: CAPEC-572 (Artificially Inflate File Sizes) and T1027.001 (Binary Padding), and establishes the cross-source correlation between the CAPEC record and the ATT&CK technique. The mitigation query returned T1027.001 with an empty related list, confirming no mitigations exist, and the answer does not fabricate any. The only minor gap is the absence of an explicit 'no mitigations found' statement, though this does not constitute an error.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

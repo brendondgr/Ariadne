@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Software-kill_chain_phase-S1182-2d6bd4::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains instead of guessing tactics and mentions the required anchor S1182 in the gate note, satisfying the only expected identifier. It does not assert any tactic mapping, so there is no fabricated cross-source correlation. However, the abstention does not show the executed query, and the example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-515-a96b85::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 0.14,
+ "gold_expected": 7,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source returned capec:category:515 with no linked records for CAPEC attack patterns"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-515 and enumerates its 24 CAPEC attack patterns, but it omits all expected ATT&CK techniques: T1078, T1195, T1195.003, T1200, T1491, and T1548. It abstains on the ATT&CK mapping, which is supported by the q2 trace, but one abstention incorrectly says the query returned no linked attack-pattern records despite 24 related records. Therefore it is partial: grounded on the CAPEC side, but incomplete on the requested ATT&CK correspondence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-ChildOf-T1111-192368::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.0,
+ "faithfulness": 0.5,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-158"
+ ],
+ "rationale": "The answer fails to identify the gold entities CAPEC-117 and CAPEC-157. It incorrectly identifies CAPEC-158 as a mapping for T1111 and then contradicts this by stating that the source does not establish the mapping. It also fails to address the second part of the question regarding broader attack patterns.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

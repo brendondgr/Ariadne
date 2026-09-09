@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CSQ-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-671 and its metadata (Abstraction: Detailed, Status: Draft), but fails to state the consequence identifier 'capec:attack-pattern:671:consequence:1' which directly answers 'what can go wrong downstream.' The evidence contains this neighbor in the related array of the CAPEC-671 record, but neither the narrative nor the claims reference it. This is a retrieval-success-but-incomplete-composition case: the graph traversal found the Consequence node, but the answer text only described the anchor AttackPattern.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

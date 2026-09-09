@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-ChildOf-Typical_Severity-CAPEC-41-577c04::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.75,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by saying no records were returned, and the evidence does show the CAPEC specialist failed with zero records. However, it does not state the expected related identifier CAPEC-242, and it only mentions CAPEC-41 in a failure note rather than as the answer. The unsupported example identifiers T1566, M1017, and CAPEC-98 reduce faithfulness, but no cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

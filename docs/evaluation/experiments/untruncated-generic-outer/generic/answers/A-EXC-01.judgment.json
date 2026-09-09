@@ -1,0 +1,19 @@
+{
+ "case_id": "A-EXC-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The question asked to look up retired technique T1002, which was explicitly expected to be empty (excluded at load). The answer correctly abstained, stating no records were returned, and included the full executed Cypher query as proof. The evidence confirms row_count of 0 with seed T1002 and summary 'No records found in ATT&CK for this query,' perfectly matching the expected empty result.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

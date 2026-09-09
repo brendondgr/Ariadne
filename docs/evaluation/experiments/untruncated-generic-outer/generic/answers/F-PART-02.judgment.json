@@ -1,0 +1,19 @@
+{
+ "case_id": "F-PART-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-98 (Phishing) as the CAPEC pattern mapping to T1566, supported by the TaxonomyEntry capec:taxonomy:ATTACK:1566 and the join_values in the evidence. The attack side honestly abstains because the source does not model the Asset entity type, matching the expected boundary condition (expect_boundary: true). No cross-source correlation is fabricated, and both gold identifiers (CAPEC-98, T1566) are explicitly stated.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

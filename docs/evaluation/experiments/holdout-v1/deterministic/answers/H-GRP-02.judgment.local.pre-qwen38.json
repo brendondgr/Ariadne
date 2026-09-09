@@ -1,0 +1,19 @@
+{
+ "case_id": "H-GRP-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer honestly abstains, stating the attack source returned no matching records for T1609, and displays the full executed Cypher query as proof. However, the expected gold identifier G0139 is never stated. The query filters on g.attack_id (group) with seed T1609 (a technique ID) rather than t.attack_id, indicating a query-construction flaw that caused the system to miss the G0139\u2013T1609 USES edge present in the gold.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

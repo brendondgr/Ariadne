@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S0038-ab3c32::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes S0038 and the expected related technique T1078, and the 21 listed techniques are all present in the S0038 evidence as USES neighbours. However, it only enumerates all used techniques and does not explicitly state that T1078 applies to Identity Provider, while the 20 additional techniques (e.g., T1090.001) are not shown to satisfy that filter. No unsupported cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

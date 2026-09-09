@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CTM-03",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-140 is described as an ATT&CK record although the cited record is from the capec source"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-140 and abstains from asserting mapped ATT&CK techniques or mitigations, matching the expected no-correlation and dependency-skip behavior. It shows the executed CAPEC query and notes that q1 returned no join values, so the ATT&CK mitigation sub-question was skipped. The main minor issue is calling CAPEC-140 an 'ATT&CK record' when the cited record is from the capec source.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

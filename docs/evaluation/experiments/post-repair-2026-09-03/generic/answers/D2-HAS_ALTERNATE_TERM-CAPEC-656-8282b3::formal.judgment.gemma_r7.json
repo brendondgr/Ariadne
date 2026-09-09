@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-HAS_ALTERNATE_TERM-CAPEC-656-8282b3::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system failed to retrieve the alternate names for CAPEC-656 (Vishing, VoIP Phishing) due to a technical error in the query gate. Per Rule 1, the system is rewarded for an honest abstention rather than guessing, and the failed query is documented in the logic flow.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

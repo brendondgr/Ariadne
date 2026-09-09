@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-703-a8f98a::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.8,
+ "groundedness": 0.6,
+ "completeness": 0.04,
+ "gold_expected": 51,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and is supported in saying the CAPEC specialist returned no records and that Technique is not modeled in the CAPEC card, but it does not state the expected ATT&CK technique set. It mentions only T1566 among the 50 expected techniques and references CAPEC-703 in the failure note, so completeness is very low. The unsupported example identifiers M1017 and CAPEC-98 slightly reduce faithfulness, but no cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

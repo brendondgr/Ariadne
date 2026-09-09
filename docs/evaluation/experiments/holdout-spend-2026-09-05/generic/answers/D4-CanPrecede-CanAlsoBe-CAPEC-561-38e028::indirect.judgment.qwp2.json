@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanPrecede-CanAlsoBe-CAPEC-561-38e028::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 1.0,
+ "groundedness": 0.85,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-561 and enumerates 13 related CAPEC attack patterns, but it omits the expected related pattern CAPEC-23. It therefore only partially answers the requested CanPrecede/CanAlsoBe traversal. All listed identifiers are grounded in the CAPEC-561 record's related list, and no cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

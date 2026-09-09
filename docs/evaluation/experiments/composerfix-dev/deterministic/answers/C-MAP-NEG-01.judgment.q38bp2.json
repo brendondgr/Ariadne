@@ -1,0 +1,24 @@
+{
+ "case_id": "C-MAP-NEG-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly treats CAPEC-116 as the anchor and reports no ATT&CK mappings through an explicit abstention. The abstention includes the executed query and states that no linked records were returned, matching the expected empty join. No ATT&CK technique identifiers are asserted, so no fabricated mapping occurs.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-ChildOf-MAPS_TO[ATTACK]-CAPEC-534-b72d8d::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly retrieves and cites CAPEC-534, but it does not state the expected related ATT&CK identifier T1195.003 or any more specific CAPEC attack patterns. Its abstentions are mostly grounded in the shown CAPEC result and schema boundary, though the first abstention\u2019s query only projects the seed and MAPS_TO TaxonomyEntry rather than directly traversing ChildOf. Therefore it is partial: it addresses the anchor and declines to guess, but omits the key gold related identifier.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

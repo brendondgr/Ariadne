@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-kill_chain_phase-uses-TA0008-35ef28::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.55,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.56,
+ "gold_expected": 104,
+ "gold_present": 58,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "a record with no primary_id/name has related item T1563"
+ ],
+ "rationale": "The answer lists 58 of the 104 expected software identifiers, including S0029, S0095, S0603, and S0367, along with related technique identifiers such as T1570, T1210, T1091, and T1080. It does not explicitly state TA0008 or present the techniques as a clear set under the tactic, so it only partially answers the question. The malformed empty-record claim for T1563 is a minor faithfulness/groundedness issue, but no cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

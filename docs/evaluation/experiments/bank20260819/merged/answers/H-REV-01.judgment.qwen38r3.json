@@ -1,0 +1,23 @@
+{
+ "case_id": "H-REV-01",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 0.85,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "T1613 is a cross-source correlation between CAPEC and ATT&CK"
+ ],
+ "rationale": "The question asks which patterns reference T1613, and the gold expectations indicate no CAPEC patterns and no cross-source correlation. The answer mainly describes the T1613 anchor and asserts that T1613 is corroborated or correlated across CAPEC and ATT&CK, but it does not state any pattern identifiers. The evidence shows two records sharing the identifier T1613, but not a mapping relationship, so the cross-source correlation claim is overreaching.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

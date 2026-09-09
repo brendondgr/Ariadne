@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-mitigates-M1039-053510::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies M1039 and quotes its description, but it does not state the expected mitigated techniques T1070.003 or T1690. The evidence only exposes MITIGATES facet counts to one SubTechnique and one Technique, not the neighbor IDs, and the answer does not use those facets. It is faithful to the M1039 record, but it describes the anchor rather than answering the technique question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

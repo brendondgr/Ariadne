@@ -1,0 +1,21 @@
+{
+ "case_id": "A-GRP-01",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.75,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 17,
+ "gold_present": 17,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The 115 related items are all called 'used techniques', but the evidence labels many S-prefixed items (e.g., S0029, S0552) as Software rather than Technique."
+ ],
+ "rationale": "The answer directly answers the G0016 technique query and states all 17 expected technique identifiers, including T1005, T1037, T1047, T1068, and T1078. It is grounded in the cited ATT&CK G0016 record and its 115 related neighbours. The main weakness is that it overgeneralizes the related list by calling software items such as S0029 and S0552 'techniques', so faithfulness is reduced.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

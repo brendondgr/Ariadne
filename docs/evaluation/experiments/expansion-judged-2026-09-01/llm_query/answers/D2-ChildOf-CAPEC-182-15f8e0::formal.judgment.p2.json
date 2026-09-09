@@ -1,0 +1,28 @@
+{
+ "case_id": "D2-ChildOf-CAPEC-182-15f8e0::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains instead of asserting that CAPEC-182 is a more specific case of CAPEC-137, and the evidence shows the capec specialist returned zero records after an empty-query gate failure. This makes the abstention honest and not a fabricated mapping, but it states neither CAPEC-182 nor the expected CAPEC-137, so completeness is zero. The example identifiers T1566, M1017, and CAPEC-98 are not in the evidence, slightly reducing faithfulness and groundedness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

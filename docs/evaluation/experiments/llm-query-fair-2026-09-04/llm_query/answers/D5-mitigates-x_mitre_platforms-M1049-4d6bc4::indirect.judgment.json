@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1049-4d6bc4::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.1,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.05,
+ "gold_expected": 20,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows the executed query, but the gold expects 20 macOS-applicable techniques mitigated by M1049. It only states T1566 as an example, so it captures 1 of 20 expected technique identifiers. It does not assert a false M1049-to-technique mapping, but it introduces unsupported example identifiers M1017 and CAPEC-98.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

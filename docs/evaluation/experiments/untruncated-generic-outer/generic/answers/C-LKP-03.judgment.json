@@ -1,0 +1,24 @@
+{
+ "case_id": "C-LKP-03",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-163 asserted as a ChildOf parent of CAPEC-98 but not shown in the visible evidence",
+  "CAPEC-164 asserted as a ChildOf parent of CAPEC-98 but not shown in the visible evidence",
+  "CAPEC-656 asserted as a ChildOf parent of CAPEC-98 but not shown in the visible evidence",
+  "CAPEC-151 asserted as a ChildOf parent of CAPEC-98 but not shown in the visible evidence"
+ ],
+ "rationale": "The answer directly satisfies the query by stating the single gold identifier CAPEC-98 with the expected properties Abstraction=Standard and Status=Draft. It also correctly enumerates supported neighbours such as CAPEC-701, CAPEC-186, CAPEC-631, and CAPEC-630. The main deduction is for the unsupported ChildOf parent list CAPEC-163, CAPEC-164, CAPEC-656, and CAPEC-151, which are not present in the shown records.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

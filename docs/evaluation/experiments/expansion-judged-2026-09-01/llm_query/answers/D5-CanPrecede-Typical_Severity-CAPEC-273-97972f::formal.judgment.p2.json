@@ -1,0 +1,29 @@
+{
+ "case_id": "D5-CanPrecede-Typical_Severity-CAPEC-273-97972f::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.55,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "None of the live graph sources cover this request",
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by saying no records were returned, and the notes do show the failed CAPEC query was empty. However, it does not state any of the expected related identifiers CAPEC-115, CAPEC-148, or CAPEC-154, and it overstates the failure as no live source covering the request. The unsupported example identifiers T1566, M1017, and CAPEC-98 reduce faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

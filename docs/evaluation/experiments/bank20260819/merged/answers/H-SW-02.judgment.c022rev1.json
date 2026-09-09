@@ -1,0 +1,26 @@
+{
+ "case_id": "H-SW-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 7,
+ "gold_present": 7,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1080 has 12 used techniques, including groups G0012, G0060, G1021, G1039, and G0047"
+ ],
+ "rationale": "The answer states all seven expected software identifiers S0132, S0133, S0260, S0386, S0458, S0575, and S0603 for T1080, so completeness is full. It is only partial because it frames the neighbours as 'used techniques' and includes non-software groups G0012, G0060, G1021, G1039, and G0047 rather than explicitly answering with software. The claims are grounded in the T1080 ATT&CK record, but the 'used techniques' wording is not fully supported by the labels.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

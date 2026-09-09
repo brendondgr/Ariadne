@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-HAS_MEMBER-Status-CAPEC-515-93195c::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0833,
+ "gold_expected": 12,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and explicitly shows the executed CAPEC query for seed CAPEC-515, and the evidence shows row_count 0 and no records, so the no-mapping claim is faithful. It does not state any of the expected related identifiers such as CAPEC-113, CAPEC-114, CAPEC-122, CAPEC-124, CAPEC-161, CAPEC-176, CAPEC-233, CAPEC-438, CAPEC-439, CAPEC-548, or CAPEC-607, so completeness is low. Because the shown result genuinely contains no mapping, the abstention is treated as correct rather than a guess.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

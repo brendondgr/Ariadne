@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanFollow-CAPEC-98-d9b3e3::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-98 has CanFollow predecessors (directional claim not specified in the evidence)"
+ ],
+ "rationale": "The answer states both expected related patterns, CAPEC-186 and CAPEC-701, for anchor CAPEC-98, so it is complete. It also asserts a directional 'predecessors' interpretation that the evidence only supports as undirected CAN_FOLLOW related records. No cross-source mapping is claimed, and all statements are tied to the CAPEC-98 record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

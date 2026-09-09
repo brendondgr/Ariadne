@@ -1,0 +1,23 @@
+{
+ "case_id": "H-MIT-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The claim describes M1051, M1047, M1038, M1017, and M1033 as 'mitigated techniques' although the evidence labels them as Mitigation."
+ ],
+ "rationale": "The answer directly answers the question by listing all five expected mitigations for T1176: M1051, M1047, M1038, M1017, and M1033. These identifiers match the MITIGATES neighbours in the provided T1176 evidence record. The only minor issue is the claim's wording 'mitigated techniques,' which is less precise than the evidence's Mitigation labels.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

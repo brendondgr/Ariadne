@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[WASC]-T1110-d01d69::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains instead of asserting that T1110 maps to CAPEC patterns or WASC:11, and the evidence shows zero records for the executed CAPEC query. It mentions T1110 in the attack abstention but does not state WASC:11, so only one expected identifier is present. The illustrative identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, but no cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "case_id": "F-REV-01",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.92,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "TA0006 (not explicitly shown in evidence records, only inferred from HAS_TECHNIQUE count of 2)"
+ ],
+ "rationale": "The answer correctly identifies all three CAPEC patterns (CAPEC-57, CAPEC-65, CAPEC-158) that map to T1040 and correctly names T1040 as 'Network Sniffing.' The cross-source correlation is well-supported by the join_values and TaxonomyEntry records in the evidence. The only minor issue is the assertion of TA0006, which is not explicitly present in the evidence records, though the HAS_TECHNIQUE count of 2 supports the existence of a second tactic.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-CanFollow-CAPEC-390-754ead::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-665 is described as a CanFollow predecessor of CAPEC-390, a direction not explicitly present in the evidence"
+ ],
+ "rationale": "The answer includes the anchor CAPEC-390 and the expected next pattern CAPEC-665, satisfying the gold set. Its description and properties are directly supported by the CAPEC-390 record, and the related CAPEC-665 entry is present in the evidence. The main weakness is the unsupported 'predecessor' direction for the CAN_FOLLOW relation, so it is correct but slightly unfaithful.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

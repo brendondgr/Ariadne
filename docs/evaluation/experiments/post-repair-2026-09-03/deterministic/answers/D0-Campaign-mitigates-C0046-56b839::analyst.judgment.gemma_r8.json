@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Campaign-mitigates-C0046-56b839::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The listed techniques (T1556, T1653, T1685, T1690, T1041, T1020, T1059, T1055, T1036, T1190, T1140, T1082, T1040, T1119, T1133, T1014, T1557, T1037) are mitigated by C0046"
+ ],
+ "rationale": "The question asks for techniques that C0046 mitigates, but the system executed a query for techniques that C0046 uses (using the [:USES] relationship). It then incorrectly presented these 18 'used' techniques as 'mitigated' techniques. Since C0046 is a Campaign and no mitigations were expected, the answer is incorrect.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

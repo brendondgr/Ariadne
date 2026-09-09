@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1049-4d6bc4::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 20,
+ "gold_present": 20,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states M1049 and includes all 20 expected related technique identifiers, such as T1027, T1059.005, and T1566.003. However, it presents 23 total mitigated techniques without explicitly addressing the macOS-applicability constraint. The extra identifiers T1221, T1059.001, and T1027.012 are supported by the M1049 record but are not part of the expected macOS set, so the answer is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

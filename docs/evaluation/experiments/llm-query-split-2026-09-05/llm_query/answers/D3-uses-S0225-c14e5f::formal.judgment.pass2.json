@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-uses-S0225-c14e5f::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only says that one unnamed MITRE ATT&CK record was found and does not state the expected campaign C0061. It also does not explicitly state the anchor tool S0225, even though the question asks for campaigns using that tool. The evidence shows one normalized record with empty primary_id and name, so the answer is faithful but not complete.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

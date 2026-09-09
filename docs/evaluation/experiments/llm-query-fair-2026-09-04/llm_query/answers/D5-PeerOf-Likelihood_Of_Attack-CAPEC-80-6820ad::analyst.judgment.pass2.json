@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-PeerOf-Likelihood_Of_Attack-CAPEC-80-6820ad::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by reporting no records and an empty CAPEC query, which is supported by the failed CAPEC result seeded with CAPEC-80. It does not state the expected peer CAPEC-71, so completeness is zero. The example identifiers T1566, M1017, and CAPEC-98 are not grounded in the evidence, but no cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

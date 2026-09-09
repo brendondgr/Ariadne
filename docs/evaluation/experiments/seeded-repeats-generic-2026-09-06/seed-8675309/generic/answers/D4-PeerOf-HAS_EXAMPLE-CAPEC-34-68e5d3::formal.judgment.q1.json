@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-PeerOf-HAS_EXAMPLE-CAPEC-34-68e5d3::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.8,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by saying no records were returned, which is supported by the empty evidence volume, but it does not state CAPEC-34 or the expected Microsoft Internet Explorer example text. The illustrative identifiers T1566, M1017, and CAPEC-98 are not supported by the shown records. Because it avoids guessing but misses the gold example, it is partial rather than correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

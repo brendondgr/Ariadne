@@ -1,0 +1,26 @@
+{
+ "case_id": "F-CWE-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 48,
+ "gold_present": 48,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CWE-522 is listed as a TaxonomyEntry in CAPEC records"
+ ],
+ "rationale": "The answer states all expected CAPEC identifiers (CAPEC-474, CAPEC-509, CAPEC-551, CAPEC-555, CAPEC-560, CAPEC-561, CAPEC-600, CAPEC-644, CAPEC-645, CAPEC-652) and CWE-522, all 12 expected ATT&CK techniques (T1021, T1021.002, T1078, T1110.004, T1114.002, T1133, T1543, T1550.002, T1550.003, T1552.004, T1558, T1558.003), and all 25 expected mitigations. The cross-source correlations are tied to CAPEC TaxonomyEntry join values and ATT&CK records, so no fabricated mapping is asserted. The only minor unsupported wording is treating CWE-522 as a TaxonomyEntry in the CAPEC enumerations.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

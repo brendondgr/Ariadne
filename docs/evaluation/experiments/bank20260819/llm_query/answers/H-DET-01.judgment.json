@@ -1,0 +1,19 @@
+{
+ "case_id": "H-DET-01",
+ "verdict": "CORRECT",
+ "correctness": 0.65,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer is a valid honest abstention per Rule 1: the system executed a Cypher query against the ATT&CK source traversing SubTechnique T1589.001 \u2190DETECTS\u2014 DetectionStrategy \u2014HAS_ANALYTIC\u2192 Analytic \u2014MONITORS\u2192 DataComponent, and the evidence confirms row_count 0 with no records returned. The gold entity DET0813 is not stated in the answer, so completeness is 0, but the abstention is fully supported by the evidence showing the query ran cleanly with zero matching rows. No fabricated cross-source mappings or hallucinated identifiers are present.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

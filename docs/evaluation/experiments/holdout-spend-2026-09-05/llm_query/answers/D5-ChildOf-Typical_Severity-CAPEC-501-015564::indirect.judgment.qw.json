@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-ChildOf-Typical_Severity-CAPEC-501-015564::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.75,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by saying no records were returned, which matches the empty capec result, but it never states the expected broader pattern CAPEC-173. It mentions CAPEC-501 only in the failure note, so it partially acknowledges the anchor without answering the requested relation. The abstention is not fully rewarded because the answer does not show the executed query and the failure was a gate error rather than proof that no mapping exists.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

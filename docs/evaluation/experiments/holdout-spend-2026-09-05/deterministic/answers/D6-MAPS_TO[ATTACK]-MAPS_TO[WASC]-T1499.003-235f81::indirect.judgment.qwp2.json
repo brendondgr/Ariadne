@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[WASC]-T1499.003-235f81::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.7,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer mentions T1499.003 and includes CAPEC-130 with capec:taxonomy:ATTACK:1499.003, but it never states the expected WASC:10 or cleanly isolates the CAPEC pattern(s) corresponding to T1499.003. It mostly enumerates many CAPEC-to-ATTACK taxonomy entries and then says the attack source does not establish the CAPEC correspondence. This is a partial, grounded abstention rather than a fabricated cross-source mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

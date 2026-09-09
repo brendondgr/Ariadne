@@ -1,0 +1,19 @@
+{
+ "case_id": "H-GRP-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.7,
+ "groundedness": 0.3,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The query correctly returned 3 rows corresponding to the expected groups G0032, G1036, and G1037 that use T1027.009, but the normalize step failed with 'record has neither a primary_id nor a name' for all three records. The answer narrative states 'Found 3 ATT&CK record(s) including unknown' and the claims array is empty, so no specific group identifier is ever stated. This is a retrieval success that fails at presentation: the right neighbours were found but the answer text never names them.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-PeerOf-MAPS_TO[ATTACK]-CAPEC-151-b0af54::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.8,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and reports that no records were returned, which is supported by the empty evidence volume and the capec specialist failure. However, it does not state CAPEC-151 or any of the expected ATT&CK techniques T1211, T1542.002, or T1556, so it only partially addresses the question. The abstention is not fully rewarded because it does not show an executed query, and it introduces unsupported example identifiers T1566, M1017, and CAPEC-98.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

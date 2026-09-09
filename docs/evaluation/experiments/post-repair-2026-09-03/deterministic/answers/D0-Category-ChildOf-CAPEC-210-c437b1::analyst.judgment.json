@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Category-ChildOf-CAPEC-210-c437b1::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The executed CAPEC query for CAPEC-210's CHILD_OF AttackPattern neighbors returned row_count 0, so the no-records abstention is honest. The answer names CAPEC-210 and includes the exact query, satisfying the abstention-with-proof rule. The only minor unsupported material is the generic example ids T1566, M1017, and CAPEC-98, which are not asserted as mappings.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "case_id": "A-NEG-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The question asked to look up nonexistent technique T9999 and return empty rather than invent. The answer correctly abstains, stating 'The attack source doesn't establish this' with the executed Cypher query (MATCH (n:Technique) WHERE n.attack_id IN $ids...) shown as proof. The evidence confirms row_count: 0 and empty_with_seeds: ['T9999'], matching the gold expectation of an empty result set. No identifiers were fabricated; the illustrative examples (T1566, M1017, CAPEC-98) are clearly marked 'e.g.' and not asserted as findings.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

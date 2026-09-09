@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-PeerOf-MAPS_TO[WASC]-CAPEC-33-60d908::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 1.0,
+ "groundedness": 0.95,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-33 and lists related items CAPEC-273 and WASC:26, but it does not state the expected WASC:27 mapping for the peer CAPEC-273. Its claims are supported by the provided CAPEC-33 record, so faithfulness is high, but completeness is low because the gold expected identifier WASC:27 is absent. This makes it a partial answer rather than a fully correct one.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

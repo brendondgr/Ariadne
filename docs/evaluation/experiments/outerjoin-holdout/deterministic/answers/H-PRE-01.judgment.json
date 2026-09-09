@@ -1,0 +1,19 @@
+{
+ "case_id": "H-PRE-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-696 (Load Value Injection) with Abstraction: Detailed and Status: Draft, but fails to state any of the three required skill records (capec:attack-pattern:696:skill:1, capec:attack-pattern:696:skill:2, capec:attack-pattern:696:skill:3) that constitute the preconditions and required resources. The evidence clearly contains these three REQUIRES_SKILL neighbors with descriptive text about CPU microcode knowledge, binary/OS layout knowledge, and faulting-load provocation ability, but the narrative only describes the anchor record's metadata without addressing the traversal results. This is a case where retrieval succeeded but the answer text did not surface the retrieved neighbours.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

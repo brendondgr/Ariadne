@@ -1,0 +1,28 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-591-54f9e5::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 9,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains after the CAPEC specialist failed, so it does not state CAPEC-591 or any expected variants such as CAPEC-18, CAPEC-198, CAPEC-199, CAPEC-243, CAPEC-244, CAPEC-245, CAPEC-247, CAPEC-32, or CAPEC-86. Its no-records claim is supported by the failed CAPEC result, but the abstention does not show the executed query and it mentions unsupported example identifiers T1566, M1017, and CAPEC-98. This makes it an honest but incomplete abstention rather than a correct answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

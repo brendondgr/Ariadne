@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CHN-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.9,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 53,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system honestly reports 0 records: the CAPEC query (g.V().has('Weakness','id',within(cweIds)).in('EXPLOITS_WEAKNESS')...) was executed and returned empty, and the ATT&CK sub-query was skipped due to its dependency on the empty CAPEC result. However, the gold clearly expects 20 ATT&CK techniques (T1014, T1543, T1546.001, T1547, T1553.004, T1574.011, etc.), 17 CAPEC patterns (CAPEC-19, CAPEC-441, CAPEC-502, CAPEC-550, CAPEC-578, etc.), and 16 mitigations (M1018, M1022, M1024, M1032, M1045, M1054, etc.) that the query failed to surface. The abstention is procedurally sound (query shown, honest reporting) but substantively incomplete relative to the gold.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

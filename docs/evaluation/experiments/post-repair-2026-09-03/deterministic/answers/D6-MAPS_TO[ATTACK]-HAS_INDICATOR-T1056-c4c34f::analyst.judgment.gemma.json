@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1056-c4c34f::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.0,
+ "faithfulness": 0.7,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The attack source doesn't establish this"
+ ],
+ "rationale": "The answer fails to identify the gold indicator 'Credential prompts that appear illegitimate or unexpected.' While the narrative dump contains CAPEC patterns that map to T1056 (CAPEC-569, CAPEC-654), the system explicitly claims the source does not establish the mapping, which is contradicted by its own retrieved records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "case_id": "H-CWE-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.333,
+ "gold_expected": 3,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-461 and the CAPEC source, but it does not state the expected CWE neighbors CWE-290 and CWE-328. Although the retrieved record contains both CWEs, the narrative only names the anchor, so it is partial rather than correct. No unsupported mappings or hallucinated identifiers are asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

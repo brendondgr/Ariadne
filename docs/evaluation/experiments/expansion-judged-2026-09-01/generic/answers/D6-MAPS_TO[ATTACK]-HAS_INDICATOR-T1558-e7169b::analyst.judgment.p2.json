@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1558-e7169b::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.17,
+ "gold_expected": 6,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and repeats the anchor T1558, but it does not state any of the five expected indicator strings, such as \"Authentication attempts use expired or invalid credentials\". Its capec abstention is supported by the shown zero-row query, and it does not assert a cross-source mapping, but the attack sub-question was skipped and the unanchored capec query does not establish the T1558-to-CAPEC relationship. The unsupported example identifiers T1566, M1017, and CAPEC-98 slightly reduce faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

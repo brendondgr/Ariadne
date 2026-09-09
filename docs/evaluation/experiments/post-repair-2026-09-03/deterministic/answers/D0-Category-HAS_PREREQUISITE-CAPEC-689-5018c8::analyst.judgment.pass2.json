@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Category-HAS_PREREQUISITE-CAPEC-689-5018c8::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies capec:category:689, the CAPEC-689 anchor, and its Draft status, both supported by the cited record. However, it does not explicitly state that CAPEC-689 has no HAS_PREREQUISITE neighbours, which is the actual question. The evidence shows related=[] and no prerequisite records, so the missing explicit no-prerequisites assertion makes it partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

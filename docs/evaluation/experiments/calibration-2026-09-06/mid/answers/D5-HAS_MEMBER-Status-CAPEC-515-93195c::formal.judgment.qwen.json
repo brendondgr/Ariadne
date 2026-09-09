@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-HAS_MEMBER-Status-CAPEC-515-93195c::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 11,
+ "gold_present": 11,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies capec:category:515 (CAPEC-515) as Hardware with Status Draft and includes all 11 gold related patterns: CAPEC-113, CAPEC-114, CAPEC-122, CAPEC-124, CAPEC-161, CAPEC-176, CAPEC-233, CAPEC-438, CAPEC-439, CAPEC-548, and CAPEC-607. However, it enumerates all 24 related attack patterns, including non-gold IDs such as CAPEC-148, CAPEC-440, CAPEC-151, CAPEC-441, CAPEC-116, CAPEC-624, CAPEC-188, CAPEC-26, CAPEC-154, CAPEC-74, CAPEC-192, CAPEC-212, and CAPEC-560, without explicitly filtering to the Draft attack patterns. The statements are supported by the cited CAPEC record, but the over-inclusive list makes the answer only partially correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

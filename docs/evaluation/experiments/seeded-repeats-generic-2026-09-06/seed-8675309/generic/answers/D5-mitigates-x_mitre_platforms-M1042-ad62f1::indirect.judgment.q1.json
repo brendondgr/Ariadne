@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1042-ad62f1::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly anchors on M1042 and enumerates its MITIGATES neighbours, including the expected SaaS-relevant identifiers T1059, T1098, T1098.001, and T1671. However, it lists all 71 mitigated techniques rather than explicitly identifying which of them are relevant to SaaS. It is therefore partial: complete on the gold identifiers and well grounded in the M1042 record, but not fully answering the SaaS-filtered question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

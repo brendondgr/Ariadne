@@ -1,0 +1,19 @@
+{
+ "case_id": "H-LKP-03",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer is a valid, evidence-backed abstention: the query g.V().has('id', within(ids)).hasLabel('AttackPattern') was executed with seed CAPEC-591 and returned 0 rows, which the answer accurately reports and shows. However, the gold expected CAPEC-591 to be stated as a confirmed entity with the name 'Reflected XSS,' and the answer only surfaces these identifiers within the quoted question text ('no matching records for: Give me a plain description of CAPEC-591 (Reflected XSS)') rather than as asserted findings. No fabricated cross-source mappings or unsupported identifiers are present.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Analytic-subtechnique-of-AN1112-b87d8e::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.8,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by saying no records were returned and notes the attack specialist's empty query, which is supported by the trace. It does not state AN1112 or explicitly assert that AN1112 has no sub-technique techniques, so completeness is low. The example identifiers T1566, M1017, and CAPEC-98 are not in the evidence, but no cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

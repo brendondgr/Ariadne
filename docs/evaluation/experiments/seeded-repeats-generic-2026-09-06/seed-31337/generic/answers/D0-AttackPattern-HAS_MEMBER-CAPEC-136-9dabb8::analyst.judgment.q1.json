@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-AttackPattern-HAS_MEMBER-CAPEC-136-9dabb8::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the required anchor CAPEC-136 and also reports a supported related pattern, CAPEC-248, via a CHILD_OF relation. However, it frames CAPEC-248 as a parent rather than explicitly answering that CAPEC-136 contains no child CAPEC attack patterns, which is the expected empty related set. Therefore it is faithful and grounded but only partially answers the containment question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

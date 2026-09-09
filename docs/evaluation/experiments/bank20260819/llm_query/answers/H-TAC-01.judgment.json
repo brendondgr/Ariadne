@@ -1,0 +1,23 @@
+{
+ "case_id": "H-TAC-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.3,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains, stating no records were returned, which aligns with the evidence (0 records, 0 related, empty query causing all 3 gate attempts to fail). It does not state the expected gold entity TA0002 or the seed T1059.005. The narrative introduces T1566, M1017, and CAPEC-98 as illustrative examples, none of which appear in the evidence, and the structured abstentions array is left empty despite the clear abstention in the headline.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

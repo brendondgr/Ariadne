@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-uses-S0501-b46ce5::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer reports only an unnamed MITRE ATT&CK record and does not state the expected threat group G0044. It also does not explicitly name the anchor S0501, so it fails to answer which groups use PipeMon. The statements are supported by the retrieved record, but the lack of the expected identifier makes the answer incorrect rather than an honest abstention.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

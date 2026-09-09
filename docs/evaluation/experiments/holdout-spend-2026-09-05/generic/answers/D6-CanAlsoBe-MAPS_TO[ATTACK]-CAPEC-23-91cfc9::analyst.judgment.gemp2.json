@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-CanAlsoBe-MAPS_TO[ATTACK]-CAPEC-23-91cfc9::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system successfully retrieved the anchor entity CAPEC-23, but failed to retrieve the related attack patterns and the corresponding ATT&CK technique T1036.003. Per Rule 1, it is rewarded for an honest abstention and providing the executed queries rather than guessing.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

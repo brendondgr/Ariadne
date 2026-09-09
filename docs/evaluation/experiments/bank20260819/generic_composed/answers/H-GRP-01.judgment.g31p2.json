@@ -1,0 +1,26 @@
+{
+ "case_id": "H-GRP-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.7,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 19,
+ "gold_present": 19,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The answer incorrectly labels the related groups and software as 'used techniques'"
+ ],
+ "rationale": "The answer successfully identifies all 19 gold groups (G0010, G0027, G0030, G0032, G0035, G0038, G0047, G0049, G0050, G0087, G0094, G0096, G0114, G0117, G0119, G0128, G1017, G1034, G1043) associated with T1012. However, it provides an unfiltered list of all 119 related entities and incorrectly refers to them as 'used techniques' rather than groups or software.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

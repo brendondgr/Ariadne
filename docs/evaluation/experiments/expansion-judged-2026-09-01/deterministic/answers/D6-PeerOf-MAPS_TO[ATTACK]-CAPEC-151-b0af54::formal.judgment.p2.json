@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-PeerOf-MAPS_TO[ATTACK]-CAPEC-151-b0af54::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-151 has no linked peer records"
+ ],
+ "rationale": "The answer correctly retrieves and cites CAPEC-151, but it never states the expected ATT&CK techniques T1211, T1542.002, or T1556. Its abstention is partially supported by the CAPEC record and the Technique-not-modeled boundary, but the shown query does not actually traverse PeerOf, so the no-peer claim is not fully grounded. Therefore it is a partial, abstaining answer rather than a complete correct one.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

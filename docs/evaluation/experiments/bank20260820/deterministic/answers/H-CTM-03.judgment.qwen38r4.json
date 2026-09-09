@@ -1,0 +1,21 @@
+{
+ "case_id": "H-CTM-03",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states CAPEC-62 and abstains from asserting any ATT&CK technique or mitigation mappings, matching the expected no-correlation and dependency-skip behavior. It provides the executed CAPEC MAPS_TO query as proof that no linked ATT&CK records were returned. It also explains that the ATT&CK mitigation sub-question was skipped because q1 produced no join values, so no fabricated cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

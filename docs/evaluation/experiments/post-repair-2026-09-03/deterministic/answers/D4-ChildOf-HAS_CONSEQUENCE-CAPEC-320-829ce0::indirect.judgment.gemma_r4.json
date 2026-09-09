@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-HAS_CONSEQUENCE-CAPEC-320-829ce0::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies the related entities by their IDs (CAPEC-312, capec:attack-pattern:320:consequence:1, and capec:attack-pattern:320:consequence:2) but fails to provide the descriptive names for the general pattern (Active OS Fingerprinting) or the consequences (Confidentiality Access Control Authorization Hide Activities, Confidentiality Read Data). The evidence provided to the system did not contain the gold names for the consequences, only the IDs.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

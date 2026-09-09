@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-subtechnique-of-T1589-3f64fc::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The executed query targets T1589's HAS_SUBTECHNIQUE neighbors and returns three rows, but the answer only says it found 3 records in MITRE ATT&CK. It never states the expected sub-technique identifiers T1589.001, T1589.002, or T1589.003, and it does not even restate the anchor T1589. Because it is not an abstention and does not name the requested sub-techniques, it does not answer the question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

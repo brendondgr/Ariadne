@@ -1,0 +1,19 @@
+{
+ "case_id": "H-LKP-03",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-321 (TCP Sequence Number Probe) and cites its Abstraction (Detailed) and Status (Stable), both directly supported by the evidence record. However, the question asks what the attack 'actually involves,' and the answer only surfaces metadata rather than the substantive description of the OS fingerprinting probe that tests TCP sequence number assignment by comparing generated sequence numbers to acknowledgement numbers. The single gold identifier is present, but the descriptive content that would fully answer the question is absent.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

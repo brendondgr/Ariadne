@@ -1,0 +1,25 @@
+{
+ "case_id": "H-CTM-03",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.55,
+ "groundedness": 0.6,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "CAPEC-62 has an ATT&CK mapping to capec:taxonomy:WASC:09",
+  "capec:taxonomy:WASC:09 is in MITRE ATT&CK",
+  "The CAPEC query returned CAPEC-62 with no linked records"
+ ],
+ "rationale": "The answer correctly states CAPEC-62 and correctly skips mitigations because q1 produced no seed identifiers. However, it treats capec:taxonomy:WASC:09 as an ATT&CK mapping, while the evidence only shows a CAPEC TaxonomyEntry related to CAPEC-62. It also says the CAPEC query returned no linked records despite the WASC:09 relation.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

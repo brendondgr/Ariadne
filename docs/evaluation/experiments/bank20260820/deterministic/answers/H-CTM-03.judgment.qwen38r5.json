@@ -1,0 +1,21 @@
+{
+ "case_id": "H-CTM-03",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-62 and abstains from asserting ATT&CK technique mappings because the CAPEC query returned no linked ATTACK taxonomy entries. It also correctly skips the ATT&CK mitigations sub-question due to the missing q1 seed identifiers, matching the expected dependency skip. No cross-source mapping is fabricated, and all stated CAPEC-62 properties are supported by the cited record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

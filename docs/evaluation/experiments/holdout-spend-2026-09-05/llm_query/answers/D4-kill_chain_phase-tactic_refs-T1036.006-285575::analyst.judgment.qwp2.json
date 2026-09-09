@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-kill_chain_phase-tactic_refs-T1036.006-285575::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains for the attack source and includes the executed query for T1036.006, which matches the evidence showing row_count 0 and no returned records. It does not state the expected enterprise-attack matrix, so completeness is 0. The only unsupported assertions are the illustrative identifiers T1566, M1017, and CAPEC-98, which are not present in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

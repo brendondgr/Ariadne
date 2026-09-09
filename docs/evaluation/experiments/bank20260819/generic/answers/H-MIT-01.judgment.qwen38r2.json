@@ -1,0 +1,23 @@
+{
+ "case_id": "H-MIT-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The claim calls M1051, M1047, M1038, M1017, and M1033 'mitigated techniques' although the evidence labels them as Mitigation."
+ ],
+ "rationale": "The answer directly answers the query by naming T1176 and all five expected mitigations: M1017, M1033, M1038, M1047, and M1051. The evidence record for T1176 contains exactly these MITIGATES neighbours, so completeness and groundedness are full. The only minor issue is the claim wording 'mitigated techniques' for M-identifiers, which are mitigations, so a small faithfulness deduction is applied.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

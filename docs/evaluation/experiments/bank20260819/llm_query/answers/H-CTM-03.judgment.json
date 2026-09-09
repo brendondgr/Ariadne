@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-03",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly reports that no records were returned and provides a reasonable dependency-skip abstention for the ATT&CK mitigations sub-question (q2 depends on q1). However, it never explicitly states CAPEC-140 as a confirmed entity in the graph, and the narrative's 'I couldn't find CAPEC' conflates a Gremlin query execution failure with a genuine absence of the entity. The gold expects CAPEC-140 to be identified with no ATT&CK correlation, but the answer's general 'nothing found' framing does not cleanly address either the techniques or mitigations parts of the question.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

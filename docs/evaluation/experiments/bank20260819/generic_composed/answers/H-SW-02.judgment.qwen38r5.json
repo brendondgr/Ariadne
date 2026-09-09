@@ -1,0 +1,23 @@
+{
+ "case_id": "H-SW-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 7,
+ "gold_present": 7,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1080 has 12 used techniques, including S0132, S0133, S0260, S0386, S0458, S0575, S0603, G0012, G0060, G1021, G1039, and G0047"
+ ],
+ "rationale": "The answer includes all seven expected software identifiers for T1080: S0132, S0133, S0260, S0386, S0458, S0575, and S0603. It also lists five group identifiers (G0012, G0060, G1021, G1039, G0047) and calls the 12 related entities 'used techniques,' which is imprecise because the T1080 record shows USES neighbours with Software and Group labels. Therefore the answer is substantively complete but slightly over-inclusive and not perfectly faithful.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

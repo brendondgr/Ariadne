@@ -1,0 +1,26 @@
+{
+ "case_id": "D1-Technique-x_mitre_remote_support-T1072-3101a1::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "C0018"
+ ],
+ "rationale": "The answer correctly cites T1072 and explicitly states x_mitre_remote_support=False, which is the expected gold value, but it leads with \"Yes\" despite that property being False, making the direct answer only partially correct. The related-item enumeration is mostly grounded in the T1072 record and q2 results, but C0018 is not explicitly visible in the provided evidence. No cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,29 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-ChildOf-T1111-192368::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.7,
+ "groundedness": 0.55,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-10",
+  "CAPEC-100",
+  "CAPEC-101",
+  "CAPEC-102"
+ ],
+ "rationale": "The answer mentions T1111 and abstains, saying the attack source does not establish the CAPEC correspondences, but it never states the expected CAPEC-117 or CAPEC-157. It also says no query was executed rather than showing an executed query, so the abstention is not fully proof-carrying. The many CAPEC-to-ATT&CK enumerations are mostly citation-backed, but the first claim names CAPEC-10, CAPEC-100, CAPEC-101, and CAPEC-102 without corresponding citations.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CTM-03",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.75,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566, M1017, and CAPEC-98 are offered as example IDs not present in the evidence"
+ ],
+ "rationale": "The answer correctly abstains on the CAPEC-62 mapping question and the dependent ATT&CK mitigation question, showing the executed CAPEC query and the dependency skip. It states the expected identifier CAPEC-62 in the abstention, matching the no-correlation expectation. Minor unsupported example identifiers and the broad 'couldn't find CAPEC' narrative slightly reduce faithfulness and groundedness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

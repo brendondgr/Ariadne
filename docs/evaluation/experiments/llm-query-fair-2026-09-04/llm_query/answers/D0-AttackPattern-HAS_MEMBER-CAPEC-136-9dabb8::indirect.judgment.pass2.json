@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-AttackPattern-HAS_MEMBER-CAPEC-136-9dabb8::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains because the CAPEC specialist failed and returned no records, so it does not assert a child-pattern mapping for CAPEC-136. It does not explicitly state CAPEC-136 or that it contains no CAPEC patterns, and it mentions unsupported example identifiers T1566, M1017, and CAPEC-98. The abstention is tied to the failed query note, but completeness is low because the expected anchor is not stated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

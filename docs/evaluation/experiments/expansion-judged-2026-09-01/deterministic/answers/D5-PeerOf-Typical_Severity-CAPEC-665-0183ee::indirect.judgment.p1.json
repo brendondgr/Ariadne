@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-PeerOf-Typical_Severity-CAPEC-665-0183ee::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only states CAPEC-665 and describes the anchor record, but it does not state the expected peer attack patterns CAPEC-148 or CAPEC-151. The evidence contains only the CAPEC-665 record, with a PEER_OF out count of 3 but no related peer records, so the answer is faithful and grounded but incomplete. Because it describes the anchor without answering which peer patterns have Medium severity, it is incorrect.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

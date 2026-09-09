@@ -1,0 +1,19 @@
+{
+ "case_id": "H-LKP-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.65,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies T1591.003 (Identify Business Tempo) and provides metadata (stix_type, x_mitre_is_subtechnique, x_mitre_version) plus related entities TA0043 and T1591, all grounded in the cited record. However, the question explicitly asks for a description of what the sub-technique involves, and the answer never quotes or paraphrases the description text present in the evidence (e.g., 'Adversaries may gather information about the victim's business tempo that can be used during targeting...'), so it addresses the anchor but not the core 'what does it involve' ask.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

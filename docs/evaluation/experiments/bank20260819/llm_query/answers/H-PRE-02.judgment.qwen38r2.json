@@ -1,0 +1,21 @@
+{
+ "case_id": "H-PRE-02",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer honestly abstains and shows the executed CAPEC query that returned no records for CAPEC-407, so it is not a fabricated mapping. It does not state the expected related identifier capec:attack-pattern:407:skill:1, so completeness is zero. The main claims are tied to the empty query result rather than general knowledge.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

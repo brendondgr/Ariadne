@@ -1,0 +1,23 @@
+{
+ "case_id": "H-REV-03",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1547"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-552 as the CAPEC pattern mapped to T1547.006 and also states the ATT&CK record T1547.006, satisfying the expected identifiers. Most claims are grounded in the CAPEC join_values/taxonomy entry and ATT&CK properties. The minor unsupported addition is the assertion that T1547.006 is under T1547, because the evidence shows subtechnique status and a taxonomy name but not the T1547 identifier itself.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

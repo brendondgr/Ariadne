@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-HAS_MITIGATION-CAPEC-188-d9dfd1::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-188 and reports one HAS_MITIGATION neighbor, capec:attack-pattern:188:mitigation:1, but it does not state the expected mitigation text 'Employ code obfuscation techniques to prevent the adversary from reverse engineering the targeted entity.' All claims are supported by the CAPEC-188 record and its related mitigation, so there is no fabrication. It is partial because it names the mitigation by id and count rather than the requested mitigation content.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-uses-S0233-8d63f4::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The expected threat group is G0065 for software S0233, but the answer only says it found one unnamed MITRE ATT&CK record. It never states G0065 or S0233, so it does not answer which group uses MURKYTOP. The evidence supports the count and unnamed-record claim, but the answer is uninformative and incomplete.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "case_id": "A-CMP-NEG-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The question asked for techniques of nonexistent campaign C9999, explicitly expecting an empty result. The answer correctly abstains, stating no records were found, and the abstention carries the full executed Cypher query (MATCH (c:Campaign)-[:USES]->(t:Technique) WHERE c.attack_id IN $ids) which the evidence confirms returned row_count 0. This is a textbook honest abstention that satisfies Rule 1: the graph genuinely contains no mapping, the system says so, and it shows the query it ran.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

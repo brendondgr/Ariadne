@@ -1,0 +1,23 @@
+{
+ "case_id": "H-GRP-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.75,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The answer characterizes the 23 related entities as 'used techniques' although the evidence only shows them as related entities with USES relations and labels them Software, Group, and Campaign."
+ ],
+ "rationale": "The answer includes all expected group identifiers G0032, G1036, and G1037 for T1027.009, so completeness is full. However, it frames the result as 23 'used techniques' and mixes in non-group IDs such as S0231, C0021, and C0057 without explicitly identifying the groups that use the technique. The statements are grounded in the T1027.009 record and its related list, but the 'used techniques' phrasing is a slight over-assertion.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

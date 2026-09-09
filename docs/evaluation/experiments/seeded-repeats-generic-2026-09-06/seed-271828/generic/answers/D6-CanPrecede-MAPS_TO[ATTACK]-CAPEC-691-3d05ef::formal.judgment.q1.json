@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-691-3d05ef::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.9,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies the anchor CAPEC-691 and its own mappings T1195.001 and T1195.002, but the question asks for ATT&CK techniques corresponding to CAPEC patterns that can precede CAPEC-691, whose expected target is T1036.005. It abstains on the second-hop sub-question but does not show an executed query for that abstention and does not state T1036.005. Its statements are mostly supported by the CAPEC-691 record and traces, but completeness is low because the expected technique is missing.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

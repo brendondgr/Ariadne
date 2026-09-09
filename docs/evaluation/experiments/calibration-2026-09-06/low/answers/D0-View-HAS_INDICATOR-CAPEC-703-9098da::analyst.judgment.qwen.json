@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-View-HAS_INDICATOR-CAPEC-703-9098da::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by reporting no records for CAPEC-703 and notes the failed CAPEC query, and it includes the required anchor CAPEC-703. It does not display the executed query in the answer and adds unsupported example identifiers T1566, M1017, and CAPEC-98. Thus it is partial: complete on the gold anchor but only partially faithful and grounded.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

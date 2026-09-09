@@ -1,0 +1,19 @@
+{
+ "case_id": "F-PART-04",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 0.9,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly demonstrates the dependency abstention pattern: CAPEC is skipped (noted as 'no specialist available for source capec'), and the ATT&CK sub-question (q2) abstains because its producer (q1, the CAPEC-555 mapping query) never ran. The empty query field confirms no broad unseeded query was executed, matching the gold expectations of expect_skipped for capec and expect_dependency_skip for attack. The narrative's mention of T1566, M1017, and CAPEC-98 are clearly illustrative examples rather than asserted findings.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

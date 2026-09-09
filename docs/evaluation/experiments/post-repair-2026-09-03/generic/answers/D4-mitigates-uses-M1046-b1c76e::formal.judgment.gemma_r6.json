@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-mitigates-uses-M1046-b1c76e::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer successfully retrieves the gold entity C0063 and includes it in the list of items related to M1046. However, it fails to synthesize the answer, providing a raw dump of 42 related entities (including techniques, groups, and software) without specifically identifying C0063 as the campaign that uses the mitigated techniques.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

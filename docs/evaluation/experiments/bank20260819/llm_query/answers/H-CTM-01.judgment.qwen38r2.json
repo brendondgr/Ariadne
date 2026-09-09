@@ -1,0 +1,26 @@
+{
+ "case_id": "H-CTM-01",
+ "verdict": "CORRECT",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98",
+  "The name 'Artificially Inflate File Sizes' was not found in the live graphs"
+ ],
+ "rationale": "The answer abstains and shows the executed CAPEC query for CAPEC-572, which returned no records, so it does not fabricate a mapping to T1027.001. It states CAPEC-572 but omits the expected T1027.001 and any mitigations, giving 1 of 2 gold identifiers. Minor unsupported examples T1566, M1017, and CAPEC-98 plus the name-search claim reduce faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

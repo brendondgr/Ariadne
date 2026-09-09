@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-ChildOf-Abstraction-CAPEC-41-3f821e::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the expected gold identifier CAPEC-134 as a ChildOf parent of CAPEC-41. It also includes CAPEC-242 and CAPEC-137, which are supported as related parents but are not explicitly filtered to the requested Standard abstraction level. Therefore the answer is grounded and complete for the gold set, but overinclusive for the question's Standard-only constraint.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

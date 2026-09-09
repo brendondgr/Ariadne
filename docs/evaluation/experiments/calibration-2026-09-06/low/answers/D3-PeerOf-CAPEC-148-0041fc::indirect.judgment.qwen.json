@@ -1,0 +1,28 @@
+{
+ "case_id": "D3-PeerOf-CAPEC-148-0041fc::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.8,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains after the CAPEC specialist failed on the unknown PeerOf relationship and reports no records, so it does not guess a peer. It does not state the expected peer CAPEC-665, and it only mentions unrelated example identifiers T1566, M1017, and CAPEC-98. The abstention is grounded in the shown failed query, but it is incomplete relative to the gold.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

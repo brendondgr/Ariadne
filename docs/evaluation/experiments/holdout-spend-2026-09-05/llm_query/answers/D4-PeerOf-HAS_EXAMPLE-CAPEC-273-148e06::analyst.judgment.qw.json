@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-PeerOf-HAS_EXAMPLE-CAPEC-273-148e06::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.25,
+ "gold_expected": 4,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains and shows the executed CAPEC query for CAPEC-273, but the gold expects three example texts tied to CVE-2005-2088, CVE-2020-8287, and CVE-2006-6276 that it does not state. It only states the anchor CAPEC-273, so it is partial rather than correct. The unsupported example ids T1566, M1017, and CAPEC-98 slightly reduce faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

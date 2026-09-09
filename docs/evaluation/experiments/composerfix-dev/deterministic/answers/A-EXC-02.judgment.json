@@ -1,0 +1,19 @@
+{
+ "case_id": "A-EXC-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The question asks to confirm that retired technique T1004 is empty (excluded at load). The answer correctly abstains, stating the attack source returned no matching records, and displays the full executed Cypher query as proof. The evidence confirms row_count 0, empty records array, and the assess step explicitly flags empty_with_seeds [\"T1004\"], matching the gold expectation of an empty result set with zero expected identifiers.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

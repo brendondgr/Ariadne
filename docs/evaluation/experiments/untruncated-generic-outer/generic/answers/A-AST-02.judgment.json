@@ -1,0 +1,19 @@
+{
+ "case_id": "A-AST-02",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies the boundary that the gold expectation requires: the ATT&CK source does not model the 'Asset' entity, so no query can express 'What assets does T1490 target?' The abstention from the 'attack' source explicitly states 'it doesn't model the entities this question asks about' and references T1490 by name. The evidence volume (0 records, 0 related) and the logic_flow boundary step ('entities not modeled by the attack source: Asset') fully support the abstention. No assets are invented, and the generic examples (T1566, M1017, CAPEC-98) in the narrative are clearly illustrative, not asserted as answers.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

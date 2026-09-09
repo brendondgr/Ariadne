@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-HAS_MEMBER-Abstraction-CAPEC-703-c62fab::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.077,
+ "gold_expected": 13,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is a clean abstention that shows the executed query and is supported by the zero-row CAPEC result, but the gold expected the 12 related patterns CAPEC-158, CAPEC-163, CAPEC-177, CAPEC-191, CAPEC-457, CAPEC-552, CAPEC-57, CAPEC-648, CAPEC-649, CAPEC-65, CAPEC-692, and CAPEC-70 in addition to CAPEC-703. It only restates CAPEC-703 and states none of the expected related identifiers, so completeness is low. The illustrative identifiers T1566, M1017, and CAPEC-98 are not in the evidence, causing a minor faithfulness deduction.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

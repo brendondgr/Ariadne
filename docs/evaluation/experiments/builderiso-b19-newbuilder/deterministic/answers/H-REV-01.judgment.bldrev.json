@@ -1,0 +1,23 @@
+{
+ "case_id": "H-REV-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The question asks for patterns referencing T1613, and the CAPEC query for T1613 returned zero rows, so the answer's no-mapping abstention is supported. The ATT&CK record T1613 is cited with matching properties, and no unsupported cross-source mapping is asserted. Because the gold expectation is no correlation and the abstention includes the executed query, this is an honest no-result answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false
+ }
+}

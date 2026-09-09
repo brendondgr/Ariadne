@@ -1,0 +1,19 @@
+{
+ "case_id": "F-NEG-06",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly retrieves CAPEC-18 and honestly reports that the MAPS_TO query returned no linked ATT&CK TaxonomyEntry records, matching the gold expect_no_join. It also correctly notes the attack mitigations sub-question was skipped because q1 produced no seed identifiers, matching expect_dependency_skip. No fabricated cross-source correlation or hallucinated technique identifier is present.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

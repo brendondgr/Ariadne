@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-HAS_MEMBER-REQUIRES_SKILL-CAPEC-118-7bef8f::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.85,
+ "groundedness": 0.75,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains and shows the executed CAPEC query, but that query only traverses REQUIRES_SKILL from CAPEC-118 and does not traverse MEMBER_OF to contained AttackPatterns, so it does not establish the expected skill texts. It mentions CAPEC-118 in the abstention but none of the four expected skill strings, so completeness is low. The example identifiers T1566, M1017, and CAPEC-98 are unsupported by the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

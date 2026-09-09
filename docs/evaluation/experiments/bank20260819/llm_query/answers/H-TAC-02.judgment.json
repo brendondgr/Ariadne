@@ -1,0 +1,19 @@
+{
+ "case_id": "H-TAC-02",
+ "verdict": "CORRECT",
+ "correctness": 0.75,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer is a valid honest abstention: the Cypher query for T1599's HAS_TACTIC neighbors executed cleanly (ok: true, row_count: 0) and the system reports no records while displaying the exact query. T1599 is referenced in the abstention statement, but the expected related tactic TA0112 is never stated, yielding 1-of-2 gold completeness. No fabricated cross-source mapping or unsupported identifiers are asserted.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

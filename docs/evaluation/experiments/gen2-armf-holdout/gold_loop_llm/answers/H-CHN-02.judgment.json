@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CHN-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies both gold CAPEC identifiers\u2014CAPEC-456 (Infected Memory) and CAPEC-679 (Exploitation of Improperly Configured or Implemented Memory Protections)\u2014as the attack patterns exploiting CWE-1316. It appropriately abstains on the ATT&CK technique mapping, citing that the capec source returned no linked ATT&CK records and the attack source's sub-question was skipped because q1 produced no seed identifiers, which aligns with the gold's expect_no_correlation and expect_dependency_skip expectations. The capec abstention includes the full executed Gremlin query as proof of the search.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

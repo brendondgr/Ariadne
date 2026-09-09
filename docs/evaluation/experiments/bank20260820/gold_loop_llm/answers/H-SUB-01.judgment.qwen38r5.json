@@ -1,0 +1,23 @@
+{
+ "case_id": "H-SUB-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566 has exactly one related (child) item"
+ ],
+ "rationale": "The answer directly states the requested relationship: T1566 is the parent technique and T1566.001 is the child subtechnique, which is supported by the ATT&CK record. The T1204 User Execution detail is also grounded in the T1566.001 description. The main weakness is the unsupported claim that T1566 has exactly one child, since the evidence only shows one returned related item rather than an exhaustive child list.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-CanPrecede-Likelihood_Of_Attack-CAPEC-98-6fe779::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-98 and includes all four expected related patterns: CAPEC-611, CAPEC-630, CAPEC-631, and CAPEC-632. However, it also lists CAPEC-543 and CAPEC-89, which are not in the expected Low-likelihood set, and it does not explicitly apply the Low likelihood constraint. The claims are grounded in the CAPEC-98 record and its related CAN_PRECEDE entries, but the overinclusive successor list makes the answer only partially correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

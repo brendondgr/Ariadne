@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CTM-03",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Headline says 1 question(s) the sources don't establish, while the abstentions list two sub-questions: CAPEC technique mapping and ATT&CK mitigations."
+ ],
+ "rationale": "The answer correctly identifies CAPEC-62 and reports that the CAPEC query returned no ATT&CK technique mappings, matching expect_no_correlation. It also correctly states the dependent ATT&CK mitigations sub-question was skipped because q1 produced no join values, satisfying expect_dependency_skip. The only minor unsupported detail is the headline's count of one unanswered question despite two abstentions.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

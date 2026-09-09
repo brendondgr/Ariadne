@@ -1,0 +1,21 @@
+{
+ "case_id": "H-CTM-03",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the required anchor CAPEC-140 and correctly abstains from asserting ATT&CK techniques or mitigations. The evidence shows q1 returned CAPEC-140 with no MAPS_TO TaxonomyEntry join values, and q2 was skipped due to that dependency. This matches the expected no-correlation and dependency-skip behavior, with no fabricated mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-HAS_MEMBER-Status-CAPEC-703-5106d7::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.65,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 28,
+ "gold_present": 28,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies capec:view:703 and enumerates all 46 member attack patterns, including the 28 expected Draft-related identifiers such as CAPEC-1, CAPEC-141, and CAPEC-98. However, it does not filter to only the Draft-marked patterns, instead also listing non-gold members such as CAPEC-312 and CAPEC-504. It is therefore partial: fully grounded and complete for the required identifiers, but not precise in answering which members are Draft.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

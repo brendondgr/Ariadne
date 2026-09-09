@@ -1,0 +1,29 @@
+{
+ "case_id": "D3-uses-T1204.001-24ba71::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.1,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 29,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98",
+  "None of the live graph sources cover this request"
+ ],
+ "rationale": "The answer abstained and reported no records, but the gold expects 29 software neighbors of T1204.001, including S0198 and S0367. It states none of those identifiers, so completeness is zero. The illustrative identifiers T1566, M1017, and CAPEC-98 are not in the evidence, and the claim that no live sources cover the request is only weakly supported by the single failed attack trace.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

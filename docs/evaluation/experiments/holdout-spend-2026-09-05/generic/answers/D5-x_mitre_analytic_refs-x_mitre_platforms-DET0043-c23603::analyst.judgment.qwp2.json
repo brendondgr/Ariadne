@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-x_mitre_analytic_refs-x_mitre_platforms-DET0043-c23603::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the expected macOS-relevant analytic AN0121 under DET0043, and its enumeration of AN0120, AN0119, AN0122, and AN0121 is supported by the cited DET0043 record. However, it does not explicitly state that AN0121 is the macOS-applicable analytic, and it presents all four related AttackObjects rather than filtering to macOS. Therefore it is partially correct: complete on the gold identifier but not fully targeted to the asked macOS applicability.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

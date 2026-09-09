@@ -1,0 +1,25 @@
+{
+ "case_id": "H-CTM-03",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.5,
+ "groundedness": 0.6,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "CAPEC-62 has an ATT&CK mapping to capec:taxonomy:WASC:09",
+  "capec:taxonomy:WASC:09 is in MITRE ATT&CK",
+  "CAPEC-62 returned with no linked records"
+ ],
+ "rationale": "The answer correctly states CAPEC-62 and correctly skips the ATT&CK mitigation sub-question because q1 produced no join values. However it overclaims that CAPEC-62 has an ATT&CK mapping to capec:taxonomy:WASC:09, which the evidence only shows as a CAPEC TaxonomyEntry, not an ATT&CK record. It also says the CAPEC query returned no linked records despite the related WASC:09 record, so the mapping is a fabricated cross-source assertion.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

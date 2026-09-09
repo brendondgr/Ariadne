@@ -1,0 +1,19 @@
+{
+ "case_id": "F-NEG-01",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 0.9,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies that CAPEC-116 (Excavation) produces no join values to any ATT&CK technique, and the dependent mitigations sub-question (q2) was skipped because its producer (q1) returned no seed identifiers. This matches the gold expectation of an honest empty result with no fabricated cross-source correlation. The only minor gap is that the answer does not explicitly assert 'CAPEC-116 maps to no ATT&CK techniques' as a direct statement, but the narrative and abstention make the empty result unambiguous.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

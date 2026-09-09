@@ -1,0 +1,21 @@
+{
+ "case_id": "H-CHN-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states all five expected CAPEC patterns: CAPEC-12, CAPEC-36, CAPEC-62, CAPEC-166, and CAPEC-216, each tied to CWE-306 in the evidence. It also correctly abstains on ATT&CK techniques, noting q1 returned no join values and q2 was skipped, which matches expect_no_correlation and expect_dependency_skip. The only minor weakness is the capec abstention wording, which could be read as saying the CAPEC source established nothing despite returning the five patterns.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

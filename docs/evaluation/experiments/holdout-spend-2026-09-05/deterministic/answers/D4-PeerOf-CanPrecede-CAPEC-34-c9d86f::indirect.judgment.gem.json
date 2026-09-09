@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-PeerOf-CanPrecede-CAPEC-34-c9d86f::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 6,
+ "gold_present": 6,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies all 6 gold identifiers (CAPEC-115, CAPEC-141, CAPEC-148, CAPEC-154, CAPEC-593, CAPEC-63) as successors of CAPEC-34. However, it fails to address the specific logic of the question, which asked for 'peers' of CAPEC-34 and the patterns that come after those peers, instead simply listing the direct successors of the anchor.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

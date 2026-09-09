@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-PeerOf-Likelihood_Of_Attack-CAPEC-665-a50fa5::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-665 and lists its PEER_OF neighbors, including the expected CAPEC-148 and CAPEC-151. However, it does not explicitly state that CAPEC-148 and CAPEC-151 have Medium likelihood, and it also includes CAPEC-458 without filtering by likelihood. All stated claims are supported by the CAPEC-665 record, so the failure is mainly incomplete answering rather than unsupported assertion.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

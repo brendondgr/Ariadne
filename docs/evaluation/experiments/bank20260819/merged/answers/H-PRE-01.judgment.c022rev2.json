@@ -1,0 +1,26 @@
+{
+ "case_id": "H-PRE-01",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.85,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "MITRE ATT&CK source attribution for the CAPEC-471 result"
+ ],
+ "rationale": "The answer correctly states that CAPEC-471 requires capec:attack-pattern:471:skill:1, which is the expected REQUIRES_SKILL neighbor in the evidence. The claim is grounded in the CAPEC record and its related skill identifier. The main unsupported detail is the phrase 'in MITRE ATT&CK,' since the cited evidence source is capec.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

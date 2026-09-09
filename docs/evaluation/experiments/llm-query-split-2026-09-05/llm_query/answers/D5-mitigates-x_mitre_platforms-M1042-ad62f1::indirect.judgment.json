@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1042-ad62f1::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.75,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains, which is consistent with evidence_volume showing records=0, but it does not state M1042 or the expected SaaS-relevant techniques T1059, T1098, T1098.001, and T1671. It also introduces unsupported example identifiers T1566, M1017, and CAPEC-98 and does not present an executed query, so it is only partial rather than a clean abstention.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

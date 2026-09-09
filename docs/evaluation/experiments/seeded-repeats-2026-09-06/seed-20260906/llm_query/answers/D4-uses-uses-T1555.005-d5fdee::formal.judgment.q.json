@@ -1,0 +1,29 @@
+{
+ "case_id": "D4-uses-uses-T1555.005-d5fdee::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.6,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98",
+  "None of the live graph sources cover this request"
+ ],
+ "rationale": "The answer abstains after an empty-query failure and does not state any of the expected groups G0092, G0102, G0137, or G1052 for T1555.005. It is partially acceptable because it reports no records rather than guessing, but it does not clearly present the executed query and adds unsupported example identifiers T1566, M1017, and CAPEC-98. No cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

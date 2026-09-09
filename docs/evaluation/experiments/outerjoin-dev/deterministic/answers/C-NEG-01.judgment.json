@@ -1,0 +1,23 @@
+{
+ "case_id": "C-NEG-01",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer correctly handles the negative lookup for CAPEC-99999 by abstaining with the executed Gremlin query as proof, matching the gold expectation of an empty result (expected: []). The only minor issues are the example identifiers T1566, M1017, and CAPEC-98 in the narrative that do not appear in the evidence, though they are clearly marked as illustrative examples ('e.g.') rather than findings for the queried entity.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

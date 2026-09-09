@@ -1,0 +1,19 @@
+{
+ "case_id": "H-MAP-01",
+ "verdict": "CORRECT",
+ "correctness": 0.6,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer honestly abstains, stating the capec source returned no matching records for CAPEC-480's ATT&CK mapping, and the executed query is shown as proof. The evidence confirms 0 records with a clean execution (ok: true, row_count: 0, empty_with_seeds: [CAPEC-480]). The gold entity T1611 is not stated, but per Rule 1, an honest abstention with query evidence is CORRECT rather than a failure, since the system reported what it genuinely retrieved without guessing.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

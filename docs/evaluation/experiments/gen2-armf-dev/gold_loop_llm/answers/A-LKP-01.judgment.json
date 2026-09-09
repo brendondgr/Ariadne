@@ -1,0 +1,21 @@
+{
+ "case_id": "A-LKP-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1021 named 'Remote Desktop Services' \u2014 the evidence confirms a parent Technique relationship via the HAS_SUBTECHNIQUE facet but does not explicitly state the name of T1021"
+ ],
+ "rationale": "The answer correctly identifies T1021.001 as 'Remote Desktop Protocol,' matching the gold expectation exactly. All field values (stix_type, x_mitre_is_subtechnique, x_mitre_version, x_mitre_platforms, revoked, x_mitre_deprecated) are directly supported by the evidence record. The only minor unsupported assertion is naming the parent technique T1021 as 'Remote Desktop Services,' which is not explicitly stated in the evidence (only the HAS_SUBTECHNIQUE relationship to a Technique is confirmed via the facet).",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-PeerOf-Likelihood_Of_Attack-CAPEC-80-32fe05::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies the expected peer CAPEC-64 of CAPEC-80 and supports that claim with the CAPEC record. It also lists CAPEC-71, which is supported as a peer, but it does not explicitly apply the requested High likelihood narrowing. Therefore it is partial: the gold identifier is present, but the answer is not fully targeted to the question's filter.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

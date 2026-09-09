@@ -1,0 +1,21 @@
+{
+ "case_id": "H-SW-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 169,
+ "gold_present": 169,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The narrative calls the 229 related items 'used techniques', but the evidence labels include Software, Group, and Campaign (e.g., S0645 Software, G1022 Group)."
+ ],
+ "rationale": "The answer states T1005 and all 169 expected software identifiers, including S0645, S0262, S0250, S0009, S9009, and S1063. However, it also overincludes non-software neighbors such as G1022, G0027, and C0022, and it labels the full set as 'used techniques,' which is not fully supported by the evidence labels. Thus it is complete but only partially precise.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

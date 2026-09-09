@@ -1,0 +1,25 @@
+{
+ "case_id": "H-CTM-03",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.55,
+ "groundedness": 0.6,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "capec:taxonomy:WASC:09 is an ATT&CK mapping",
+  "CAPEC-62 was found in MITRE ATT&CK",
+  "CAPEC-62 has no linked records"
+ ],
+ "rationale": "The answer correctly states the expected anchor CAPEC-62 and records the dependency skip for ATT&CK mitigations. However, it also asserts that CAPEC-62 has an ATT&CK mapping to capec:taxonomy:WASC:09, while the evidence only shows a CAPEC-source MAPS_TO relation to a CAPEC taxonomy entry. This makes the answer partial: the gold identifier is present, but the cross-source ATT&CK mapping is not supported.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

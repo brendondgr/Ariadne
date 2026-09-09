@@ -1,0 +1,29 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0006-0eed87::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.0,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 12,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98",
+  "None of the live graph sources cover this request"
+ ],
+ "rationale": "The answer abstains after an empty-query failure and does not state any of the expected APT1 macOS techniques, including T1005, T1007, T1016, T1036.005, T1049, T1057, T1087.001, T1119, T1135, T1560.001, T1566.001, or T1566.002. It also does not explicitly state G0006, and its only identifiers are unsupported examples such as T1566, M1017, and CAPEC-98. Because the expected gold set contains 12 techniques and the answer presents none, this is an unsupported abstention rather than a correct no-mapping answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

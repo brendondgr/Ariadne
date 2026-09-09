@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-HAS_MEMBER-Typical_Severity-CAPEC-118-908642::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.0,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Could not find 'Collect'",
+  "Could not find 'Analyze Information'",
+  "Could not find 'CAPEC'"
+ ],
+ "rationale": "The system failed to retrieve the three expected attack patterns (CAPEC-188, CAPEC-192, CAPEC-410) for category CAPEC-118. While it provided the query it executed, the narrative hallucinated that it could not find the 'CAPEC' source or the category name, despite the logic flow showing it successfully identified the source and the seed ID.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

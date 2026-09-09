@@ -1,0 +1,26 @@
+{
+ "case_id": "H-LKP-03",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-591 is an ATT&CK record"
+ ],
+ "rationale": "The answer states the required identifier CAPEC-591 and its name Reflected XSS, and it provides the plain description, Abstraction, and Status from the cited CAPEC record. The main unsupported claim is calling CAPEC-591 an ATT&CK record when the evidence source is capec. This is a minor faithfulness issue rather than a failure to answer the requested description.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

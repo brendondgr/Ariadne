@@ -1,0 +1,26 @@
+{
+ "case_id": "H-GRP-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1003.006 has 8 used techniques: S0002, G1004, G1006, G1053, G0129, C0027, C0014, C0024"
+ ],
+ "rationale": "The answer states all four expected group identifiers, G0129, G1004, G1006, and G1053, as related to T1003.006, so completeness is full. However, it frames the eight related items as \"used techniques\" and includes non-group entities such as S0002, C0027, C0014, and C0024, which makes the answer only partially direct to the question. No cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

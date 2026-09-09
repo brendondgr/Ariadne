@@ -1,0 +1,24 @@
+{
+ "case_id": "H-CHN-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec source returned CWE-306 with no linked records, although the evidence shows six related records including CAPEC-12, CAPEC-36, CAPEC-62, CAPEC-166, and CAPEC-216.",
+  "q1 produced no seed identifiers, while the evidence says q1 returned no join values but did return related CAPEC identifiers."
+ ],
+ "rationale": "The answer states all expected CAPEC patterns for CWE-306: CAPEC-12, CAPEC-36, CAPEC-62, CAPEC-166, and CAPEC-216, and it abstains on the ATT&CK side, matching the expected dependency skip. However, it also claims the capec source returned no linked records and that q1 produced no seed identifiers, which are not fully supported by the evidence. These inconsistencies make it partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

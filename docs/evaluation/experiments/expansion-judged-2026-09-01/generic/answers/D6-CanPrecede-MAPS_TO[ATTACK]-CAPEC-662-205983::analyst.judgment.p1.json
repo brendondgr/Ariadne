@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-CanPrecede-MAPS_TO[ATTACK]-CAPEC-662-205983::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 0.333,
+ "gold_expected": 3,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-662 is implied to be a preceding attack pattern for itself"
+ ],
+ "rationale": "The answer correctly states the anchor CAPEC-662 and honestly abstains on the missing ATT&CK technique retrieval, but it omits the expected techniques T1027 and T1587.001. It reports T1185, which is supported as CAPEC-662's own mapping, but that is not the requested correspondence for preceding patterns. The abstention does not show the executed query, and the narrative implies CAPEC-662 precedes itself without a CanPrecede record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

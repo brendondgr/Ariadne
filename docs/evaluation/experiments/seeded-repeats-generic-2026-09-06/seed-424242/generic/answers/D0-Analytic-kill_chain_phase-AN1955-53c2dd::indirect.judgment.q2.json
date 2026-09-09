@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Analytic-kill_chain_phase-AN1955-53c2dd::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The executed attack-source query for AN1955 returned zero records, so the answer honestly abstained and included the query as proof. It states the required anchor identifier AN1955 and does not assert any tactic neighbors, matching the empty expected neighbor set. No unsupported cross-source mapping or extra identifiers are claimed.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-603 (Blockage) and properly abstains on the ATT&CK mapping question, showing the executed Gremlin query that returned CAPEC-603 with no linked TaxonomyEntry records. The second abstention correctly explains the dependency skip for the mitigations sub-question since q1 produced no seed identifiers. All gold expectations are satisfied: CAPEC-603 is present, no cross-source correlation is fabricated, and the attack dependency skip is explicitly noted.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-227-5f6f39::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the expected related identifier CAPEC-469 alongside the anchor CAPEC-227, so the gold identifier is present. However, it describes CAPEC-469 as a ChildOf parent rather than a narrower child under CAPEC-227, which only partially answers the question. The evidence supports a CAPEC-227 to CAPEC-469 CHILD_OF relation, but the direction is not clearly framed as the requested narrower case.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

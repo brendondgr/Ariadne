@@ -1,0 +1,22 @@
+{
+ "case_id": "A-CMP-TEC-03",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 13,
+ "gold_present": 13,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "S0363 is listed as a technique, but the evidence labels it Software",
+  "The statement that C0001 used 28 techniques is not fully supported because the 28 related records include Software and SubTechnique labels"
+ ],
+ "rationale": "The answer states all 13 expected technique identifiers for C0001, including T1005, T1016, T1020, T1033, and T1041, so completeness is full. It is grounded in the C0001 record's USES neighbours, but it overgeneralizes by calling all 28 related items techniques, including S0363 (Software) and subtechniques.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

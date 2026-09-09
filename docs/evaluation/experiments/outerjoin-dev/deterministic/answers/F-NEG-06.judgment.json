@@ -1,0 +1,19 @@
+{
+ "case_id": "F-NEG-06",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly reports that CAPEC-18 (XSS Targeting Non-Script Elements) has no mapped ATT&CK techniques, matching the gold expectation of expect_no_correlation: true and must_correlate: []. The CAPEC abstention includes the full Gremlin query (g.V().hasLabel(\"AttackPattern\")...out(\"MAPS_TO\")...) as proof of the executed search, and the attack abstention correctly explains the dependency skip (q1 produced no seed identifiers) matching attack.expect_dependency_skip: true. No fabricated cross-source correlation is asserted, and all stated properties (Abstraction: Detailed, Status: Draft) are directly supported by the CAPEC-18 record in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

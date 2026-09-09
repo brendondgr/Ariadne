@@ -3,7 +3,13 @@
 #  overlays and version pins tracked — see the "# Data directories" block.
 #  A blanket `data/` here would shadow those negations, so it is omitted.)
 *.overlay.json
-docs/evaluation/experiments
+# Raw run output under docs/evaluation/experiments (decision 2026-09-09, D-033):
+# per-question ANSWER files stay out of git (~320 MB) and are pinned by hash in
+# each experiment's data/POINTERS.md; the per-question JUDGMENT sidecars
+# (*.judgment.*, ~21 MB) and every per-run roll-up are tracked, because they are
+# what every judged figure in the record is recomputed from.
+docs/evaluation/experiments/**/answers/*
+!docs/evaluation/experiments/**/answers/*.judgment.*
 
 # python/.gitignore
 

@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-PeerOf-MAPS_TO[ATTACK]-CAPEC-10-5c5370::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 0.33,
+ "gold_expected": 3,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The headline states 1 question(s) the sources don't establish, but the answer contains two abstentions."
+ ],
+ "rationale": "The answer identifies CAPEC-10 and grounds its description in the CAPEC record, but it does not state the expected ATT&CK techniques T1574.006 or T1574.007. It also does not name any peer CAPEC attack patterns, so the two-hop question is only partially addressed. The abstention is supported by the executed query and empty related set, though the headline's count of one unestablished question is inconsistent with the two abstentions.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

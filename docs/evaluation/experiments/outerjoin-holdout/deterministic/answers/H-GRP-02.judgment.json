@@ -1,0 +1,19 @@
+{
+ "case_id": "H-GRP-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies G0139 (TeamTNT) as the threat group observed using T1609 (Container Administration Command), directly answering the question. The evidence from the Cypher query (MATCH (g:Group)-[:USES]->(t:Technique)) confirms the relationship with 1 row returned, and the answer's enumeration claim 'T1609 has 1 Groups: G0139' is fully supported. All gold identifiers are present and properly cited to the attack source.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

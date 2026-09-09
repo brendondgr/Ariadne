@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0016-436db4::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.8,
+ "groundedness": 0.6,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "States that G0016 has 115 related items but enumerates only 107 identifiers in the answer text"
+ ],
+ "rationale": "The answer includes the required anchor G0016 and both expected related identifiers, S0677 (AADInternals) and S0684 (ROADTools). However, it presents a broad list of related ATT&CK items rather than directly identifying the malware/tools that apply to Identity Provider. It also has a minor count/enumeration mismatch by claiming 115 related items while listing 107.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

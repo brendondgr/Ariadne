@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Campaign-mitigates-C0046-56b839::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The answer implies that the 27 listed items (e.g., T1556, T1653) are mitigations for C0046, whereas the evidence shows they are techniques used by C0046."
+ ],
+ "rationale": "The question asks for techniques that C0046 mitigates, but the system retrieves and lists techniques that C0046 uses. The evidence contains no mitigation relationships for C0046, and the gold expectations confirm that no mitigations are expected.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

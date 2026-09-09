@@ -1,0 +1,21 @@
+{
+ "case_id": "H-CHN-02",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 30,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer is an honest abstention: it states that the CAPEC query for CWE-697 returned no matching records and shows the executed query. It does not assert any expected CAPEC identifiers such as CAPEC-3, CAPEC-6, or CAPEC-267, nor the expected ATT&CK technique T1027, so completeness is zero. The attack-source abstention is supported by the dependency on q1 producing no seed identifiers, and no unsupported cross-source mapping is claimed.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

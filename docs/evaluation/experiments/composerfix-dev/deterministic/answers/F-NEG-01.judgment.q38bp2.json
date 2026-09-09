@@ -1,0 +1,24 @@
+{
+ "case_id": "F-NEG-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly reports that the CAPEC-116 query returned the CAPEC-116 record with no linked ATTACK TaxonomyEntry records, and it skips the dependent ATT&CK mitigation query because q1 produced no join values. This matches the expected no-correlation case for CAPEC-116 and avoids asserting any ATT&CK technique or mitigation identifiers. The only stated facts are supported by the CAPEC-116 record and the shown query, so no fabricated mapping is present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

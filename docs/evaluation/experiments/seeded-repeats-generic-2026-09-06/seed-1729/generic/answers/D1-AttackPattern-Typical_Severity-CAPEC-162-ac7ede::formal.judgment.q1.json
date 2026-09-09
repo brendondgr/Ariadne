@@ -1,0 +1,26 @@
+{
+ "case_id": "D1-AttackPattern-Typical_Severity-CAPEC-162-ac7ede::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-162 has 2 ChildOf parents"
+ ],
+ "rationale": "The answer retrieves CAPEC-162 and its ChildOf neighbors CAPEC-77 and CAPEC-22, but it never states the expected severity High. The question asks how severe CAPEC-162 is, so describing the anchor and its related patterns does not answer the query. The only mild unsupported nuance is calling the two ChildOf neighbors 'parents', since the evidence lists ChildOf relations without explicit parent direction.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

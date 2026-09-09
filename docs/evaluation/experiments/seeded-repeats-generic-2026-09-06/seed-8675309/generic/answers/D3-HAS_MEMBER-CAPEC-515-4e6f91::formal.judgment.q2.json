@@ -1,0 +1,28 @@
+{
+ "case_id": "D3-HAS_MEMBER-CAPEC-515-4e6f91::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The expected CAPEC view is CAPEC-3000, but the answer only repeats the anchor CAPEC-515 in its abstention and does not state CAPEC-3000. The abstention is honest and includes the executed query, and the evidence shows zero records, so it is not a fabricated mapping. The narrative's example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, causing minor faithfulness and groundedness deductions.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

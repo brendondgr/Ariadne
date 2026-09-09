@@ -1,0 +1,23 @@
+{
+ "case_id": "H-LKP-04",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-588 has 11 ChildOf parents (the evidence shows 11 related nodes reached via CHILD_OF, not explicitly that all are parents)"
+ ],
+ "rationale": "The answer states the required CAPEC-588 (DOM-Based XSS) identifier and provides a supported description, but it omits the latter sentences of the full description. It also overstates the 11 related CAPEC nodes as ChildOf parents, which is only partially supported by the CHILD_OF traversal evidence. All gold identifiers are present, so completeness is full while correctness and faithfulness are reduced.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

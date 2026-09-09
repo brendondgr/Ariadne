@@ -1,0 +1,28 @@
+{
+ "case_id": "H-CTM-03",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.5,
+ "groundedness": 0.6,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "CAPEC-62 has 1 ATT&CK mapping: capec:taxonomy:WASC:09",
+  "The CAPEC query returned CAPEC-62 with no linked records",
+  "Found 1 item(s) related to CAPEC-62 in MITRE ATT&CK"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-62 and correctly skips the ATT&CK mitigation sub-question because q1 produced no join values. However, it overstates the CAPEC-only MAPS_TO relation to capec:taxonomy:WASC:09 as an ATT&CK mapping, which the evidence does not establish. This makes the answer partial: it states the required CAPEC-62 anchor but asserts a technique correlation that the gold expectations say should not be present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

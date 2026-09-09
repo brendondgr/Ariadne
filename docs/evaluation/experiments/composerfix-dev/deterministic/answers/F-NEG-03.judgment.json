@@ -1,0 +1,19 @@
+{
+ "case_id": "F-NEG-03",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 1.0,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies that CAPEC-3 has no mapped ATT&CK techniques (the MAPS_TO join returned no linked TaxonomyEntry records) and that the mitigations sub-question was skipped due to the dependency on q1 producing no seed identifiers. No specific ATT&CK technique identifiers are fabricated, matching the gold expectation of expect_no_correlation: true. The abstention explicitly shows the executed Gremlin query as proof of the honest empty result.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-HAS_MEMBER-Abstraction-CAPEC-703-59080d::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 15,
+ "gold_present": 15,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies the view CAPEC-703 and lists all 46 of its member attack patterns, which includes all 15 gold identifiers (such as CAPEC-125 and CAPEC-690). However, it fails to filter these patterns by the 'Meta level of abstraction' as requested, simply returning the entire membership of the view because the provided evidence lacked the abstraction level attribute.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

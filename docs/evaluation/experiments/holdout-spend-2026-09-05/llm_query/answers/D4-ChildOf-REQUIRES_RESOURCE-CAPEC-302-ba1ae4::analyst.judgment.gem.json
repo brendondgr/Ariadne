@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-REQUIRES_RESOURCE-CAPEC-302-ba1ae4::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system correctly abstained because the provided evidence (the query result) returned no records for CAPEC-302. It provided the executed query as proof, which according to the rules, is a correct response when the retrieved evidence is empty.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

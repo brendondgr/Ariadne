@@ -1,0 +1,28 @@
+{
+ "case_id": "D1-Analytic-description-AN0450-238a50::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and includes the executed query, and the evidence shows zero records for AN0450, so the abstention is honest rather than a guess. It states the queried identifier AN0450 but does not provide the expected description about detecting abnormal MFA activity. The only unsupported items are the illustrative identifiers T1566, M1017, and CAPEC-98, so no fabricated mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

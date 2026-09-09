@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-View-HAS_INDICATOR-CAPEC-703-9098da::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and explicitly names CAPEC-703 while showing the executed CAPEC query that returned zero rows, matching the empty expected neighbor set. It does not assert any indicator or cross-source mapping, so the only required identifier is present. The generic examples T1566, M1017, and CAPEC-98 are not tied to the evidence but do not change the abstention.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

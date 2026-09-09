@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-subtechnique-of-CAPEC-560-e943a6::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.2,
+ "gold_expected": 5,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains and states that no records were returned for CAPEC-560, but it does not state the expected related identifiers T1078.001, T1078.002, T1078.003, or T1078.004. It only states the anchor CAPEC-560, so completeness is low. The abstention query fields are empty, and the example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

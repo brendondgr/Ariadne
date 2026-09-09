@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-CanFollow-HAS_PREREQUISITE-CAPEC-234-c31225::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.85,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 6,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest no-evidence abstention because the CAPEC specialist failed and returned 0 records, but it does not state CAPEC-234 or any of the six expected prerequisite texts. It also does not show the executed query, only the HAS_PREREQUISITE gate error. The example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

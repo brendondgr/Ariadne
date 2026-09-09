@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-CanAlsoBe-HAS_CONSEQUENCE-CAPEC-248-02edba::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 6,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system correctly abstained from providing an answer because the graph retrieval failed due to an unknown relationship type 'CanAlsoBe' for CAPEC-248. Per Rule 1, this honest abstention is marked as CORRECT as it avoided hallucinating the 6 expected entities and provided the reason for failure in the notes and logic flow.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

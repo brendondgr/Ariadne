@@ -1,0 +1,24 @@
+{
+ "case_id": "D1-Analytic-x_mitre_platforms-AN1549-acbfcf::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.7,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and shows the executed query, and the evidence returned 0 records, so it does not assert an unsupported platform mapping. It states AN1549 but omits the expected related platform Linux, so completeness is partial. The example identifiers T1666, M1017, and CAPEC-98 are illustrative rather than asserted as the answer, so no major hallucination is recorded.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

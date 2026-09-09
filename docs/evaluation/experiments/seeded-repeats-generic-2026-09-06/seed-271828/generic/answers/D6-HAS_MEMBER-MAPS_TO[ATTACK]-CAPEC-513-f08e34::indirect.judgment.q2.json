@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-513-f08e34::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.9,
+ "groundedness": 0.55,
+ "completeness": 0.0,
+ "gold_expected": 17,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and reports that the capec source returned no records, which is supported by the empty result set and the q2 boundary note that Technique is not modeled. However, it does not state CAPEC-513 or any of the expected ATT&CK technique IDs, including T1036.003, T1078, T1110, T1134, T1195, T1217, T1491, T1498.001, T1499, T1499.003, T1499.004, T1528, T1539, T1548, T1557, T1592, and T1595. The abstention does not carry an executed query, so it is an honest but incomplete abstention rather than a full answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

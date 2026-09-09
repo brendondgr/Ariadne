@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-CanPrecede-HAS_ALTERNATE_TERM-CAPEC-607-ffe171::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows the executed CAPEC query, but it omits the expected related pattern 'Data Spill When information is handled by an information system of a classification/sensitivity for which the system has not been authorized to handle.' It mentions CAPEC-607 only as the seed/question anchor, not as a retrieved predecessor. The no-records claim is supported by row_count 0, but the query traverses out(CAN_PRECEDE) and does not retrieve the expected neighbor or alternate terms; the generic examples T1566, M1017, and CAPEC-98 are not evidenced.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

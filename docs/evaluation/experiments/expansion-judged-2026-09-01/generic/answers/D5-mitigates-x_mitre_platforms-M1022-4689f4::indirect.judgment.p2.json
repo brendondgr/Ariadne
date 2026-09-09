@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1022-4689f4::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.55,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 0.98,
+ "gold_expected": 43,
+ "gold_present": 42,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The 17 non-gold techniques (T1574.004, T1548.006, T1547.013, T1543.002, T1037.004, T1222.002, T1548.003, T1530, T1037.002, T1563.001, T1685.006, T1098.004, T1053.006, T1546.004, T1037.005, T1543.001, T1055.009) are presented as the Windows-applicable set.",
+  "M1022 has 60 mitigated techniques (only 59 identifiers listed)"
+ ],
+ "rationale": "The answer centers on M1022 and includes 42 of the 43 expected Windows-applicable technique identifiers, including T1036.005, T1547.003, and T1686.003, but omits T1037. It also over-includes non-gold items such as T1574.004, T1548.006, and T1547.013, and it states 60 techniques while listing only 59, so it is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

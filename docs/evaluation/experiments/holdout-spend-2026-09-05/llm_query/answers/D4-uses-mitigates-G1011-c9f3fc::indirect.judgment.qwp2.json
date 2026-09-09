@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-uses-mitigates-G1011-c9f3fc::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.46,
+ "gold_expected": 13,
+ "gold_present": 6,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the retrieved ATT&CK techniques T1203, T1597, T1102, and T1594 and their cited mitigations M1048, M1050, M1051, M1056, M1031, and M1021. It therefore presents 6 of the 13 expected mitigation identifiers, omitting M1017, M1018, M1038, M1040, M1047, M1049, and M1054. Its statements are supported by the cited records, but the missing expected mitigations make it partial.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

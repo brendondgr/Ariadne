@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-DetectionStrategy-mitigates-DET0130-5df6ac::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly names DET0130 and identifies T1555.006 as a related ATT&CK sub-technique, but the evidence only shows a DETECTS relation, not a MITIGATES relation. Because the gold expectation contains no related technique identifiers, the answer overstates the result by presenting T1555.006 as the answer rather than abstaining or saying no mitigated techniques. It is grounded in the DET0130 record but only partially answers the mitigation question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

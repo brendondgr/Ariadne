@@ -1,0 +1,28 @@
+{
+ "case_id": "D1-Technique-x_mitre_remote_support-T1072-3101a1::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains for T1072 and includes the executed Cypher query, while the evidence shows zero records, so the abstention is honest. It states the anchor T1072 but not the expected related value False, so completeness is partial. The only unsupported identifiers are the example ids T1566, M1017, and CAPEC-98, which are not asserted as relevant.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

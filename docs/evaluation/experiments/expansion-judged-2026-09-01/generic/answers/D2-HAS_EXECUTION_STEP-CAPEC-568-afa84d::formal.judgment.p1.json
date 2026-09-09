@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-HAS_EXECUTION_STEP-CAPEC-568-afa84d::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-568 and enumerates all five execution-step identifiers, capec:attack-pattern:568:step:1 through capec:attack-pattern:568:step:5, which are supported by the related records. It is partial because it does not state the expected step descriptions, such as Determine which user's credentials to capture, Deploy keylogger, Record keystrokes, Analyze data and determine credentials, and Use found credentials. All asserted facts are grounded in the CAPEC-568 record and its related execution steps.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

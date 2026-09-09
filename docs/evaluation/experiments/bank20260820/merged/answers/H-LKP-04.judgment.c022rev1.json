@@ -1,0 +1,26 @@
+{
+ "case_id": "H-LKP-04",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-588 is described as an ATT&CK record"
+ ],
+ "rationale": "The answer states the required identifier CAPEC-588 and its name DOM-Based XSS, and it provides the core description from the cited CAPEC record. It omits the later sentences about DOM-based timing and server-side filtering, and it slightly mislabels the CAPEC record as an ATT&CK record. No unsupported cross-source mapping is asserted, so the answer remains substantively correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

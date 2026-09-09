@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CSQ-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The consequence capec:attack-pattern:674:consequence:1 is described as the CAPEC-674 attack pattern description, although the evidence only provides that description for CAPEC-674, not for the consequence record."
+ ],
+ "rationale": "The answer states the required anchor CAPEC-674 and the sole expected consequence capec:attack-pattern:674:consequence:1, so it fully answers the question. The mapping is grounded in the CAPEC record's related HAS_CONSEQUENCE entry. A minor faithfulness deduction is warranted because the narrative attributes the CAPEC-674 description to the consequence record, which has no description in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

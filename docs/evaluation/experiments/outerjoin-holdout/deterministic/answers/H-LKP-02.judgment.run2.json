@@ -1,0 +1,19 @@
+{
+ "case_id": "H-LKP-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 0.5,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies T1591.003 (Identify Business Tempo) and provides accurate metadata (stix_type: attack-pattern, x_mitre_is_subtechnique: True, x_mitre_version: 1.0), all grounded in the cited attack record. However, the question specifically asks for a description of what the sub-technique involves, and the evidence contains a detailed description field (covering business tempo details like operational hours, purchase/shipment times, and elicitation methods via Phishing for Information) that the answer never quotes or paraphrases. The answer retrieves the record but fails to extract the description, making it a partial response that identifies the entity without answering the core 'what does it involve' question.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

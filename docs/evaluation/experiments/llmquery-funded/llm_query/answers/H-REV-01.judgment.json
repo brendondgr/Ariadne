@@ -1,0 +1,19 @@
+{
+ "case_id": "H-REV-01",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies T1613 (Container and Resource Discovery) in ATT&CK and honestly reports that no CAPEC patterns map to it, matching the gold expectations of expect_no_correlation: true and capec.expect_empty: true. The CAPEC abstention includes the executed Gremlin query (g.V().hasLabel('TaxonomyEntry')...in('MAPS_TO').hasLabel('AttackPattern')) as proof of the empty result, satisfying the honest-abstention rule. No fabricated cross-source mappings or unsupported identifiers are present.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

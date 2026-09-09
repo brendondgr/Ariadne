@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-CanFollow-MAPS_TO[ATTACK]-CAPEC-701-6e185a::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.8,
+ "groundedness": 0.5,
+ "completeness": 0.33,
+ "gold_expected": 3,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and mentions only T1566, but it does so as an example rather than as an answer, and it omits CAPEC-701 and T1598. The abstention does not carry an executed query because the abstention query is empty, even though a failed query is visible in the logic flow. It also introduces unsupported example identifiers M1017 and CAPEC-98, but it does not assert a fabricated cross-source mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

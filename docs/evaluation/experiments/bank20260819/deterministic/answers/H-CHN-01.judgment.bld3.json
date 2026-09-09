@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CHN-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the expected CAPEC-62 record and its relation to CWE-1275, while not asserting any ATT&CK technique identifiers. It also provides an honest abstention for the ATT&CK side, showing the executed CAPEC query and noting that the dependent ATT&CK sub-question was skipped because q1 returned no join values. This matches the expected no-correlation outcome.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false
+ }
+}

@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-View-HAS_INDICATOR-CAPEC-703-9098da::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.8,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention because the capec specialist returned 0 records, but it never states the expected anchor CAPEC-703. It does not include the executed query in the answer, only a gate-failure note, so the abstention is not fully proven. The example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, though no mapping from CAPEC-703 to indicators is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

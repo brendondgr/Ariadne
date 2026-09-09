@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CWE-01",
+ "verdict": "CORRECT",
+ "correctness": 0.5,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer is an honest abstention: the CAPEC source query (g.V().has('id', within(ids)).hasLabel('AttackPattern').out('EXPLOITS_WEAKNESS').hasLabel('Weakness')) executed cleanly with seed CAPEC-461 and returned 0 rows, as confirmed by the logic_flow traces (row_count: 0, empty_with_seeds: ['CAPEC-461']). Neither CWE-290 nor CWE-328 is stated, so completeness is 0/2, but the system correctly reports the empty result and displays the executed query in the abstention, satisfying the criteria for a rewarded honest abstention rather than a guess.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

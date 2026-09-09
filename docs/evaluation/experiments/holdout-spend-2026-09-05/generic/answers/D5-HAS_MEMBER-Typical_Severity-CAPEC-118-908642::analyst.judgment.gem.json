@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-HAS_MEMBER-Typical_Severity-CAPEC-118-908642::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system failed to retrieve the expected attack patterns (CAPEC-188, CAPEC-192, CAPEC-410) because the executed query returned no records in the provided evidence. According to Rule 1, an honest abstention that shows the executed query is considered a CORRECT answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

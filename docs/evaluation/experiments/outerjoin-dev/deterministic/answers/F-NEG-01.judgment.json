@@ -1,0 +1,19 @@
+{
+ "case_id": "F-NEG-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-116 (Excavation) and honestly reports that the executed query returned CAPEC-116 with no linked ATT&CK TaxonomyEntry records, matching the gold expectation of no correlation (must_correlate is empty, expect_no_join is true). The mitigations sub-question (q2) is properly noted as skipped because q1 produced no seed identifiers, satisfying the attack.expect_dependency_skip expectation. No fabricated cross-source mapping is asserted, and all stated facts (Abstraction: Meta, Status: Stable) are directly supported by the CAPEC record in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

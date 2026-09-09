@@ -1,0 +1,29 @@
+{
+ "case_id": "D3-HAS_MEMBER-CAPEC-248-c31848::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.6,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "None of the live graph sources cover this request",
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by reporting no records, which is supported by evidence_volume.records=0 and the capec 499 error, but it does not state the expected categories CAPEC-152 or CAPEC-513. It also fails to show the executed query, so the abstention is not fully rewarded under the no-mapping rule. The examples T1566, M1017, and CAPEC-98 are unsupported by the provided evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

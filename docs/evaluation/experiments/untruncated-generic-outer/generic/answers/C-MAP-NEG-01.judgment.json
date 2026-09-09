@@ -1,0 +1,19 @@
+{
+ "case_id": "C-MAP-NEG-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly retrieves CAPEC-116 (Excavation) with properties Status: Stable and Abstraction: Meta, and the evidence confirms join_values: [] and related: [], supporting the expected empty mapping. However, the narrative only describes the anchor record ('One CAPEC record was found for CAPEC-116') without explicitly stating that no ATT&CK technique mappings exist, which is precisely what the question asked for. The answer is in the right direction but does not fully address the mapping question, making it partial rather than correct.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

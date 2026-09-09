@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-detects-uses-DET0181-518063::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the expected software identifier S0603 (Stuxnet) and the anchor DET0181, but it presents them as generic related items rather than explicitly stating that S0603 uses the detected technique T1505.001. It also lists C0025, which is supported by the evidence but is a campaign rather than a malware/tool. All stated identifiers are grounded in the DET0181 record, so the answer is faithful but only partially direct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

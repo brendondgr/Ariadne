@@ -1,0 +1,22 @@
+{
+ "case_id": "F-CTM-01",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 26,
+ "gold_present": 26,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The claim 'Found 1 CAPEC record(s) for CAPEC-150; ATT&CK mappings: T1003, T1119, T1213, T1530, T1555' omits T1602, which is present in the CAPEC-150 evidence.",
+  "T1530 is named 'Data from Cloud Storage' in the answer, while the shown CAPEC taxonomy entry is 'Data from Cloud Storage Object'."
+ ],
+ "rationale": "The answer correctly correlates CAPEC-150 to T1003, T1119, T1213, T1530, T1555, and T1602, and lists all 20 expected mitigations (M1015, M1017, M1018, M1022, M1025, M1026, M1027, M1028, M1029, M1030, M1031, M1032, M1037, M1040, M1041, M1043, M1047, M1051, M1054, M1060). Minor faithfulness issues are the incomplete mapping claim omitting T1602 and the shortened T1530 name, but they do not change the overall correct answer.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-703-a8f98a::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.9,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 50,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains instead of stating the expected ATT&CK techniques for CAPEC-703, and it does not state CAPEC-703 itself. The evidence shows zero records and a failed q1 binding mismatch, so the abstention is mostly faithful but not fully query-carried. It mentions T1566 only as an example and does not assert any cross-source mapping, so no fabricated mapping is present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

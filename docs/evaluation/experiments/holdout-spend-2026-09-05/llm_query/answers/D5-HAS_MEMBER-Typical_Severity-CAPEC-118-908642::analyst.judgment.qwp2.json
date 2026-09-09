@@ -1,0 +1,29 @@
+{
+ "case_id": "D5-HAS_MEMBER-Typical_Severity-CAPEC-118-908642::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "I couldn't find 'Collect' or 'Analyze Information' or 'CAPEC' in the live capec graph",
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows the executed CAPEC query that returned zero rows, so it is an honest abstention rather than a guessed mapping. It does not state any of the expected related patterns CAPEC-188, CAPEC-192, or CAPEC-410, so completeness is zero. The main abstention is supported, but the narrative adds unsupported examples T1566, M1017, and CAPEC-98 and a broad not-found claim.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

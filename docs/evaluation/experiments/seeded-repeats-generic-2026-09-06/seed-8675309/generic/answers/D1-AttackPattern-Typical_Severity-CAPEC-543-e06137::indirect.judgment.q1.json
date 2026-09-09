@@ -1,0 +1,26 @@
+{
+ "case_id": "D1-AttackPattern-Typical_Severity-CAPEC-543-e06137::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-543 has 6 CanPrecede successors"
+ ],
+ "rationale": "The answer identifies CAPEC-543 and lists related CAPEC patterns, but it never states the expected severity value High. It therefore describes the anchor rather than answering the severity question. The CanPrecede enumeration is mostly grounded in the retrieved related records, though calling all six 'successors' is a slight directional overstatement.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

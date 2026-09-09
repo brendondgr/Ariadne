@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CHN-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer lists all five expected CAPEC patterns for CWE-306: CAPEC-12, CAPEC-36, CAPEC-62, CAPEC-166, and CAPEC-216. It also abstains on ATT&CK techniques, which matches the expected no-correlation and attack dependency-skip behavior. The CAPEC abstention includes the executed query, and no unsupported CAPEC-to-ATT&CK mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false
+ }
+}

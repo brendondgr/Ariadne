@@ -1,0 +1,27 @@
+{
+ "case_id": "D4-detects-subtechnique-of-DET0285-9c3f6d::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.7,
+ "groundedness": 0.65,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1021 and its name Remote Access Services are not explicitly present in the evidence; only T1021.003 is returned.",
+  "The answer says DET0285 has a sub-technique, whereas the evidence relation is DETECTS to T1021.003."
+ ],
+ "rationale": "The answer identifies the expected parent technique T1021 for the detected subtechnique T1021.003 associated with DET0285, so it is complete. However, the evidence only contains the DETECTS edge to T1021.003 and does not explicitly include a T1021 record or HAS_SUBTECHNIQUE edge, so the parent claim and the name Remote Access Services are only partially supported.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

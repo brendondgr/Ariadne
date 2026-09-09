@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0018-ebdb61::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes all four expected technique identifiers, T1016, T1049, T1082, and T1083, so completeness is full. However, it also presents T1203 and T1007 as part of the result set even though the evidence only shows Group-USES-Technique records and does not explicitly establish Network Devices applicability. The statements are grounded in the cited ATT&CK records, but the answer is overinclusive and does not explicitly tie the result to Network Devices.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

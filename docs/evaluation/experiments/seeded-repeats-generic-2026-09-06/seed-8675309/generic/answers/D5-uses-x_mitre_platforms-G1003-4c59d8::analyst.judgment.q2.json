@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G1003-4c59d8::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "the full 58-item enumeration beyond the visible related entries (e.g., T1071.004, S1187, S0598, S0689)"
+ ],
+ "rationale": "The answer includes the expected S1187 and anchor G1003, but it presents them as part of a broad 58-item related list rather than identifying which malware/tools apply to Network Devices. It therefore only partially answers the question. The claims are tied to the G1003 record, though the full enumeration is only partially visible in the truncated evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

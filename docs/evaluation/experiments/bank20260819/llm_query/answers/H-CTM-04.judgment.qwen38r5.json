@@ -1,0 +1,25 @@
+{
+ "case_id": "H-CTM-04",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 0.2,
+ "gold_expected": 5,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The CAPEC sub-query for CAPEC-543 returned zero rows and the answer shows that query, making this an honest abstention rather than a fabricated mapping to T1036.005. It states only the anchor CAPEC-543 and omits the expected technique T1036.005 and mitigations M1022, M1038, and M1045, so completeness is low. The example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, but they are not used as the answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

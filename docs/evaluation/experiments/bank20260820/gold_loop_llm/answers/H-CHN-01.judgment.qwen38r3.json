@@ -1,0 +1,24 @@
+{
+ "case_id": "H-CHN-01",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 53,
+ "gold_present": 53,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The cross-source corroboration section states 20 identifiers are corroborated, but only 19 are listed.",
+  "The claim that all remaining 19 identifiers are shared by 2 records is inconsistent with the displayed list, which has 18 remaining after T1543."
+ ],
+ "rationale": "The answer states all expected CAPEC patterns (CAPEC-19, CAPEC-441, ..., CAPEC-578) and all expected ATT&CK techniques (T1014, T1027.009, ..., T1574.011), plus the expected mitigations and CWE-284. The main unsupported fact is the count of 20 corroborated identifiers when the list contains 19, with T1543 as the only 3-record case. No fabricated cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

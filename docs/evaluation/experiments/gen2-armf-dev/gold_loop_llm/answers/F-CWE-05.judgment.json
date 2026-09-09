@@ -1,0 +1,21 @@
+{
+ "case_id": "F-CWE-05",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 32,
+ "gold_present": 32,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1027 appears for nine of ten techniques (all except T1133), although the answer's own mitigation list also omits M1027 for T1114.002"
+ ],
+ "rationale": "The answer states all eight expected CAPEC IDs (CAPEC-49, CAPEC-55, CAPEC-70, CAPEC-112, CAPEC-509, CAPEC-555, CAPEC-561, CAPEC-565), all ten ATT&CK techniques (T1021, T1021.002, T1078.001, T1110, T1110.001, T1110.002, T1110.003, T1114.002, T1133, T1558.003), and all 14 expected mitigations (M1018, M1021, M1026, M1027, M1030, M1032, M1035, M1036, M1037, M1041, M1042, M1047, M1051, M1060). It also ties the ten cross-source correlations to specific CAPEC records such as CAPEC-555, CAPEC-561, CAPEC-70, CAPEC-112, CAPEC-49, CAPEC-55, CAPEC-565, and CAPEC-509, so no mapping is fabricated. The main deduction is for the summary claim that M1027 covers nine of ten techniques, which is contradicted by its own list for T1114.002 as well as T1133.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

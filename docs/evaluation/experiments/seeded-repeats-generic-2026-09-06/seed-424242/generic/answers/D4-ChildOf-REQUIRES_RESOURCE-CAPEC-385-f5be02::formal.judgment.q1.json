@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-ChildOf-REQUIRES_RESOURCE-CAPEC-385-f5be02::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.8,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains by saying no records were returned, which is supported by the empty capec result, but it never states CAPEC-385 or the expected resource text about a man-in-the-middle proxy. The examples T1566, M1017, and CAPEC-98 are unsupported by the evidence. Because it does not assert a cross-source mapping, fabricated_mapping is false, but completeness is zero.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

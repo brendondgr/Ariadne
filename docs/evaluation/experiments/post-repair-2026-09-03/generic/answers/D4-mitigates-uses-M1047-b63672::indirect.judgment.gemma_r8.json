@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-mitigates-uses-M1047-b63672::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 46,
+ "gold_present": 46,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer successfully retrieves all the gold campaign identifiers (C0001 through C0063) and a large number of techniques related to M1047. However, it fails to answer the specific relational part of the question ('which campaigns have used each of those [techniques]'), providing a bulk dump of all related entities instead of a mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

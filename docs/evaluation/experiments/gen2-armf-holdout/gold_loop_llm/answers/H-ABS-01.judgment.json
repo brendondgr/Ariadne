@@ -1,0 +1,19 @@
+{
+ "case_id": "H-ABS-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly walks the hierarchy chain from CAPEC-606 (Weakening of Cellular Encryption, Detailed) through CAPEC-620 (Drop Encryption Level, Standard) to CAPEC-212 (Functionality Misuse, Meta). All three gold identifiers are explicitly stated with their correct abstraction levels, matching the evidence records. The only minor gap is that CAPEC-620 and CAPEC-212 appear in the narrative but not in the formal claims array with explicit citations, slightly reducing groundedness.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "case_id": "H-REV-01",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies T1613 (Container and Resource Discovery) from the ATT&CK record and honestly reports that the CAPEC query returned zero matching patterns, which is exactly what the gold expects (capec expect_empty: true, expect_no_correlation: true). The abstention explicitly includes the executed Gremlin query (g.V().hasLabel(\"TaxonomyEntry\")...in(\"MAPS_TO\")...), satisfying the honest-abstention-with-proof rule. No fabricated cross-source mappings or hallucinated CAPEC pattern identifiers are present.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

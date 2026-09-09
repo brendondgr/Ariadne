@@ -1,0 +1,23 @@
+{
+ "case_id": "H-GRP-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.85,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1003.006 has 8 used techniques (S0002, G1004, G1006, G1053, G0129, C0027, C0014, C0024)"
+ ],
+ "rationale": "The answer states all four expected group identifiers, G0129, G1004, G1006, and G1053, so completeness is full. However, it frames all eight related items as \"used techniques,\" while the evidence labels S0002 as Software and C0027, C0014, and C0024 as Campaigns. The claims are grounded in the T1003.006 record, but the group-specific answer is imprecise.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

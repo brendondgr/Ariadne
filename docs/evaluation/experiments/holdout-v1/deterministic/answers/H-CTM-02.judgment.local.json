@@ -1,0 +1,25 @@
+{
+ "case_id": "H-CTM-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The expected result is that CAPEC-40 has no ATT&CK mapping and the dependent ATT&CK mitigation sub-question is skipped. The answer states CAPEC-40, shows the clean CAPEC MAPS_TO query returning no records, and explains that the attack sub-question was not executed because q1 produced no seed identifiers. It does not assert an unsupported mapping; the only unsupported items are minor illustrative IDs in the narrative.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

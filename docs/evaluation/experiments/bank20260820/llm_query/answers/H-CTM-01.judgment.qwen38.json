@@ -1,0 +1,26 @@
+{
+ "case_id": "H-CTM-01",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 0.14,
+ "gold_expected": 7,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98",
+  "couldn't find 'CAPEC' or 'Infected Software' in the live ATT&CK/CAPEC graphs"
+ ],
+ "rationale": "The answer abstains and shows the executed CAPEC query for CAPEC-442, and the evidence contains zero records, so it does not assert the expected T1195.001/T1195.002 mappings or M1013/M1016/M1033/M1051 mitigations. It states only CAPEC-442, giving 1 of 7 expected identifiers. The unsupported examples T1566, M1017, and CAPEC-98, plus the broad claim that CAPEC/Infected Software was not found, slightly reduce faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

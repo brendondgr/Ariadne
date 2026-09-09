@@ -1,0 +1,23 @@
+{
+ "case_id": "H-GRP-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1003.006 has 8 used techniques, including S0002, C0027, C0014, and C0024"
+ ],
+ "rationale": "The answer states all four expected groups, G0129, G1004, G1006, and G1053, for T1003.006. However, it frames the eight related entities as 'used techniques' and includes non-group records S0002, C0027, C0014, and C0024, so it is not a clean answer to the groups-only question. The claims are tied to the cited T1003.006 record, but the 'used techniques' characterization is not fully supported by the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

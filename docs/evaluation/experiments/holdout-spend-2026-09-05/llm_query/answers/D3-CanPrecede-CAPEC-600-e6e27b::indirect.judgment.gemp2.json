@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-CanPrecede-CAPEC-600-e6e27b::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 8,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system failed to retrieve any of the 8 expected attack patterns (CAPEC-101, CAPEC-16, CAPEC-49, CAPEC-50, CAPEC-55, CAPEC-565, CAPEC-568, CAPEC-70) due to a schema error where the 'CanPrecede' relationship was not recognized. Although the system abstained honestly rather than hallucinating, it did not answer the question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

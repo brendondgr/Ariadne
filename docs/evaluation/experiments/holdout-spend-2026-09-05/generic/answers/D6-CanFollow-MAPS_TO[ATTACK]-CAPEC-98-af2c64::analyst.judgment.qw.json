@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-CanFollow-MAPS_TO[ATTACK]-CAPEC-98-af2c64::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-98 and its direct CAPEC-to-ATT&CK mappings T1566 and T1598, but it does not state any attack patterns that can follow CAPEC-98 or the expected T1195.002. It abstains on the dependent ATT&CK sub-questions without showing an executed query, so it is partial rather than a clean abstention. All asserted facts are grounded in the CAPEC-98 record, but the missing gold identifier T1195.002 limits completeness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

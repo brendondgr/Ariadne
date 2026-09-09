@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-uses-uses-T1555.005-d5fdee::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.4,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The executed query targeted T1555.005 and returned four group rows, but the answer only reports that four records were found in MITRE ATT&CK. It does not state the expected group identifiers G0092, G0102, G0137, or G1052, nor does it explicitly name T1555.005 in the answer text. The statements are supported by the execution summary, but the answer fails to identify the requested threat groups.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

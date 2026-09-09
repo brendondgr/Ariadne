@@ -1,0 +1,26 @@
+{
+ "case_id": "D1-AttackPattern-Likelihood_Of_Attack-CAPEC-32-f6aa0b::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "None of the live graph sources cover this request"
+ ],
+ "rationale": "The answer abstains by reporting that no records were returned, but it never states CAPEC-32 or the expected likelihood High. The evidence only shows a failed CAPEC query with a 499 reserved-parameter error, so the claim that no live source covers the request is only weakly supported. It is a reasonable fallback rather than a fabricated mapping, but it is incomplete and does not show the executed query.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

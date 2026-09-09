@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1021-8d7d67::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-555 corresponds to T1021"
+ ],
+ "rationale": "The answer fails to identify the correct mapping from T1021 to CAPEC-270 and provides no information about patterns that follow. Although it lists CAPEC-270 in a general dump of records, it does not link it to the anchor T1021. Furthermore, it incorrectly asserts a mapping to CAPEC-555 before ultimately abstaining from answering the question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

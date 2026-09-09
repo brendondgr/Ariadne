@@ -1,0 +1,29 @@
+{
+ "case_id": "D4-ChildOf-HAS_CONSEQUENCE-CAPEC-320-829ce0::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.5,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "I couldn't find 'CAPEC' in the live capec graph",
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by reporting no records, which is supported by evidence_volume records=0, but it does not show an executed query and overstates that it could not find CAPEC in the capec graph. It omits the expected related patterns Confidentiality Access Control Authorization Hide Activities and Confidentiality Read Data, and it does not explicitly state CAPEC-320. The example identifiers T1566, M1017, and CAPEC-98 are not present in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

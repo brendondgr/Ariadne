@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-mitigates-x_mitre_impact_type-M1013-1a9df3::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the required anchor M1013 and the expected related technique T1496.003, so the gold identifier is present. However, it lists all 17 MITIGATES neighbours of M1013 instead of explicitly identifying which of those techniques have an impact on Availability. This makes it partially responsive rather than fully correct, while remaining grounded in the cited M1013 record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

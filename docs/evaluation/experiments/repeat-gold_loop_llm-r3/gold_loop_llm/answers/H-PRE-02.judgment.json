@@ -1,0 +1,19 @@
+{
+ "case_id": "H-PRE-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.45,
+ "faithfulness": 0.9,
+ "groundedness": 0.55,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly names CAPEC-407 (Pretexting) but never states the required skill identifier capec:attack-pattern:407:skill:1 (strong inter-personal and communication skills), which is the direct answer to 'what is required.' The narrative introduces a '### 1.' section header but leaves it empty, so the retrieval succeeded while the answer text failed to surface the neighbour the question asked for.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "case_id": "H-MIT-01",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1054.005 (appears in narrative text but is not in the evidence; the correct ID per evidence is T1543.005)"
+ ],
+ "rationale": "The answer correctly identifies M1054 (Software Configuration) and M1018 (User Account Management) as the recommended mitigations for T1543.005 (Container Service), satisfying all three gold identifiers. The narrative contains a typographical error referencing 'T1054.005' instead of 'T1543.005,' but the structured claims correctly cite T1543.005 with proper attack-source attribution, and the evidence confirms both mitigation records as related neighbours of the seed technique.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

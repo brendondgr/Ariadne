@@ -1,0 +1,28 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-528-a0dcb5::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains, stating no records were returned and the CAPEC specialist failed, which is supported by the empty records and gate errors. It does not state the expected related CAPEC-147 or the anchor CAPEC-528, so completeness is zero. The abstention is grounded in the failed query traces, though the example identifiers T1566, M1017, and CAPEC-98 are not in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

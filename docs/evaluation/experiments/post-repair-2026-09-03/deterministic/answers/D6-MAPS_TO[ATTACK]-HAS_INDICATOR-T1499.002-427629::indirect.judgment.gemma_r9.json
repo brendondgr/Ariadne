@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1499.002-427629::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The claim that the attack source does not establish the mapping for T1499.002"
+ ],
+ "rationale": "The answer successfully identifies several CAPEC patterns (CAPEC-469, 482, 488, 489, 528) that correspond to T1499.002, but it fails to provide the specific indicator text for CAPEC-528 as required. Additionally, the answer contains a contradictory statement at the end claiming that the mapping was not established, despite having listed the mappings in the narrative.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

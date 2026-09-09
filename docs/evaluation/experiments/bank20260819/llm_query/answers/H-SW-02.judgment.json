@@ -1,0 +1,19 @@
+{
+ "case_id": "H-SW-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.85,
+ "groundedness": 0.3,
+ "completeness": 0.0,
+ "gold_expected": 7,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies 7 ATT&CK records matching T1080, aligning with the gold count of 7 software identifiers (S0132, S0133, S0260, S0386, S0458, S0575, S0603). However, the claims array is empty and no specific software ID is named, leaving completeness at 0/7. The evidence itself shows all 7 records with empty primary_id and name (labeled 'Technique' rather than 'Software'), so the 'unknown' characterization is faithful, but the answer never addresses which specific software was observed implementing T1080.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

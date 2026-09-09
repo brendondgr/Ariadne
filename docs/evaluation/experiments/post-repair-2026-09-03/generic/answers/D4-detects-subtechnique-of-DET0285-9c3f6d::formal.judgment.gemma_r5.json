@@ -1,0 +1,27 @@
+{
+ "case_id": "D4-detects-subtechnique-of-DET0285-9c3f6d::formal",
+ "verdict": "PARTIAL",
+ "correctness": 1.0,
+ "faithfulness": 0.5,
+ "groundedness": 0.5,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1021",
+  "DET0285 has a sub-technique"
+ ],
+ "rationale": "The answer correctly identifies T1021 as the parent technique of T1021.003, which is detected by DET0285. However, the provided evidence only links DET0285 to T1021.003 and does not contain the record for T1021 or the parent-child relationship. Additionally, the answer incorrectly asserts that the detection strategy DET0285 'has a sub-technique'.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

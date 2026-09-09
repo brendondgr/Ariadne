@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-HAS_PREREQUISITE-CAPEC-68-7a82c1::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains for CAPEC-68 and explicitly shows the executed query that returned row_count 0, so it is faithful and grounded in the provided evidence. It does not state any of the three expected prerequisite texts, so completeness is 0. Since the shown CAPEC result contains no prerequisite records, the abstention is an honest no-mapping answer rather than a fabricated mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-x_mitre_analytic_refs-x_mitre_platforms-DET0070-7b721d::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only reports the anchor DET0070 and its STIX metadata, but it never states the expected analytic AN0193 or any SaaS-applicable detection analytics. Its claims are supported by the single DET0070 record, so faithfulness and groundedness are high, but completeness is zero because the expected neighbor AN0193 is absent. Since it is not an abstention and does not show the executed query as proof, it is incorrect.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

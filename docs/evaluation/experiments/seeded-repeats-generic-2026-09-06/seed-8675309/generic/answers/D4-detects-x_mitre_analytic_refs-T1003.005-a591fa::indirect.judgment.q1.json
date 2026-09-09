@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-detects-x_mitre_analytic_refs-T1003.005-a591fa::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the expected analytics AN1417 and AN1418 along with T1003.005 and DET0513, so the required identifiers are present. However, it only says these items are related to T1003.005 and does not explicitly state that DET0513 is the detection strategy addressing the technique or that AN1417/AN1418 implement DET0513. All stated identifiers are supported by the cited T1003.005 record, so the main issue is under-specified mapping rather than fabrication.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

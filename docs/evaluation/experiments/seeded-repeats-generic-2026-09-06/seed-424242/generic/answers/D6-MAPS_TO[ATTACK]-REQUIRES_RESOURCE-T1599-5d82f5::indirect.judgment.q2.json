@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-REQUIRES_RESOURCE-T1599-5d82f5::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.55,
+ "faithfulness": 0.85,
+ "groundedness": 0.6,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows a CAPEC query that returned no records, so it does not assert a fabricated T1599-to-CAPEC mapping. It mentions T1599 in the attack abstention but does not state the expected CAPEC resource text about high privileges or boundary-device control. The only unsupported identifiers are the example ids T1566, M1017, and CAPEC-98.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

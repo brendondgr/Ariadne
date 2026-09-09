@@ -1,0 +1,23 @@
+{
+ "case_id": "H-MIT-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1031 and M1020 are called 'mitigated techniques' although the evidence labels them as Mitigation entities"
+ ],
+ "rationale": "The answer states the anchor T1573.002 and both expected mitigations M1031 and M1020, matching the MITIGATES neighbours in the evidence. The only minor issue is the wording 'mitigated techniques' for mitigation entities, so faithfulness is slightly reduced. No cross-source mapping is asserted and no abstention is used.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

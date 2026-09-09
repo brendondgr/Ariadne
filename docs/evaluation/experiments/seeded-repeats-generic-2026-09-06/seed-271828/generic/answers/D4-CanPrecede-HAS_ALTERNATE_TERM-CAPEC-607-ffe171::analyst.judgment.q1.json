@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-CanPrecede-HAS_ALTERNATE_TERM-CAPEC-607-ffe171::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly reports that the capec specialist failed and no records were returned, so it does not assert a false mapping for CAPEC-607. It omits the expected gold related text 'Data Spill When information is handled by an information system of a classification/sensitivity for which the system has not been authorized to handle.' and does not explicitly state CAPEC-607, so completeness is zero. The examples T1566, M1017, and CAPEC-98 are not supported by the evidence, and the answer itself shows only the gate failure rather than the executed query.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

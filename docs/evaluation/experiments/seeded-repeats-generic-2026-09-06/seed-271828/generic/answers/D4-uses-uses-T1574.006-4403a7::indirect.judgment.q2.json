@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-uses-uses-T1574.006-4403a7::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly anchors on T1574.006 and lists related software such as S0377, S0601, and S1220, but it omits the expected groups G0124, G0139, and G1048. It instead names non-gold groups G0143, G0106, and G0096 and does not map each software to its associated group. The statements are supported by the retrieved ATT&CK record, so it is faithful but incomplete.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

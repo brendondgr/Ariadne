@@ -1,0 +1,25 @@
+{
+ "case_id": "H-CHN-03",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 29,
+ "gold_present": 29,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1051, M1013, M1033, and M1016 are described with specific tools and practices (WSUS, ManageEngine, Ansible, STRIDE, Django, Spring Security, AppLocker, WDAC, Event ID 4688/11707, OSQuery, Wazuh, Nessus, OpenVAS, AWS Inspector, Azure Security Center, GCP SCC, OWASP ZAP, Burp Suite) not shown in the provided records.",
+  "M1018, M1017, M1015, and M1032 are described with specific tools and practices (AD, GPO, Okta, Azure AD, CyberArk, BeyondTrust, Thycotic, gamification, GPMC, PowerShell, AD Administrative Center, AWS IAM, TOTP, YubiKey, RSA SecurID, smart cards, Duo, Thales SafeNet, RADIUS/NPS) not shown in the provided records.",
+  "M1026, M1027, M1030, and M1029 are described with specific tools and practices (CyberArk, HashiCorp Vault, KeePass, Splunk, QRadar, Azure PIM, AWS IAM Roles, GCP IAP, LAPS, sudo, SELinux, AppArmor, pam_pwquality, pam_tally2/pam_faillock, pwunconv, Bitwarden, 1Password, LastPass, HIBP, NIST, Lynis, VLANs, firewalls, routers, DMZ, VPCs, subnets, security groups, AWS Transit Gateway, Azure VNet peering, SDN, Graylog, Security Onion, AWS S3, GCS, Azure Blob, Zeek, Suricata, TLS syslog, AWS S3 Object Lock, AES-256, TLS 1.2+, OpenSSL, BitLocker, LUKS) not shown in the provided records."
+ ],
+ "rationale": "The answer states all expected CAPEC patterns (CAPEC-184, CAPEC-185, CAPEC-186, CAPEC-187, CAPEC-533, CAPEC-538, CAPEC-657, CAPEC-662, CAPEC-691, CAPEC-692, CAPEC-693, CAPEC-695), all four ATT&CK techniques (T1072, T1185, T1195.001, T1195.002), and all 12 related mitigations, so completeness is full. The cross-source correlations for T1072, T1185, T1195.001, and T1195.002 are supported by the CAPEC records/claims shown. Faithfulness is reduced because the narrative adds detailed mitigation implementation facts, such as WSUS, AppLocker, Nessus, Azure AD, and Splunk, that are not visible in the provided records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

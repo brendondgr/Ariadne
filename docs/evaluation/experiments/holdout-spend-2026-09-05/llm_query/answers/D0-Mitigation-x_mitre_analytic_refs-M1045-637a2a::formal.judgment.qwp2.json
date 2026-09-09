@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Mitigation-x_mitre_analytic_refs-M1045-637a2a::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only reports that 25 MITRE ATT&CK records were found and does not state M1045 or any analytic identifiers, so it partially addresses the query by count but not by identity. The 25-record count is supported by the evidence summary, but the normalized records are empty Mitigation nodes rather than named analytics. No cross-source mapping is asserted, and no abstention is made.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

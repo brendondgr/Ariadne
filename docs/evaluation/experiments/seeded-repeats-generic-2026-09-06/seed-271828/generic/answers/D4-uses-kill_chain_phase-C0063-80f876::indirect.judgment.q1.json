@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-uses-kill_chain_phase-C0063-80f876::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 15,
+ "gold_present": 15,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly anchors on C0063 and states all 15 expected tactic identifiers, including TA0001-TA0011, TA0040, TA0042, TA0043, and TA0112. It also lists many technique identifiers such as T1529 and T1048.003, but presents them as a flat list of related items rather than explicitly mapping each technique to its tactics. Therefore it is faithful and complete on the expected gold identifiers, but only partially answers the requested per-technique tactic relationship.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

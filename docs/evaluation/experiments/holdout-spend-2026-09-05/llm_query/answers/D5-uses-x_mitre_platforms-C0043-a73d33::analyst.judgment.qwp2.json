@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0043-a73d33::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains for campaign C0043 and shows the executed query, but it does not state the expected related identifier S1144. The no-records claim is supported by the evidence, which returned 0 records, but completeness is 0 because the gold expected S1144 is absent. The only unsupported identifiers are the illustrative examples T1566, M1017, and CAPEC-98.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

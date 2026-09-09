@@ -1,0 +1,26 @@
+{
+ "case_id": "D1-AttackPattern-Likelihood_Of_Attack-CAPEC-32-f6aa0b::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-32 has 5 ChildOf parents (the evidence lists 5 unique ChildOf-related patterns but does not establish all as parents; q1 shows CHILD_OF in count 0 and out count 3)"
+ ],
+ "rationale": "The answer correctly retrieves and describes CAPEC-32, but it never states the expected likelihood value High. It instead lists ChildOf-related patterns, so it describes the anchor without answering the likelihood question. The ChildOf-parents phrasing is only weakly supported because the evidence does not clearly mark direction.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

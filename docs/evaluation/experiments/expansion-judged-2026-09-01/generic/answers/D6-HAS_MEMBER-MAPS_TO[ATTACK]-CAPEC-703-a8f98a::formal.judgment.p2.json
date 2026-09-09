@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-703-a8f98a::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.1,
+ "faithfulness": 0.85,
+ "groundedness": 0.6,
+ "completeness": 0.02,
+ "gold_expected": 50,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and only names T1566 from the expected 50 ATT&CK techniques, omitting identifiers such as T1014, T1036, and T1598. Its no-records and capec-does-not-model-Technique statements are supported by the empty results and q2 boundary, but the gold set shows the mapping exists, so it is partial. The abstention does not carry an executed query, and M1017/CAPEC-98 are unsupported example identifiers.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

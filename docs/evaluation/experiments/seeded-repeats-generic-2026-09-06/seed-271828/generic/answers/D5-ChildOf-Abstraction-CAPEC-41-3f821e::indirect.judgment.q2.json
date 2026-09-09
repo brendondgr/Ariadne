@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-ChildOf-Abstraction-CAPEC-41-3f821e::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the expected broader pattern CAPEC-134 for CAPEC-41, satisfying the core gold expectation. It also lists CAPEC-242 and CAPEC-137 as ChildOf parents, which are supported by the evidence but are not explicitly filtered to the requested Standard abstraction level. Because the answer includes extra broader patterns without clearly limiting the result to Standard-level patterns, it is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

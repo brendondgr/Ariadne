@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-CanPrecede-CAPEC-662-6c1e23::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system honestly abstained because the provided evidence (the graph query result) returned zero records for patterns preceding CAPEC-662. According to Rule 1, an honest abstention that shows the executed query is considered CORRECT when the retrieval fails to find the expected entities.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

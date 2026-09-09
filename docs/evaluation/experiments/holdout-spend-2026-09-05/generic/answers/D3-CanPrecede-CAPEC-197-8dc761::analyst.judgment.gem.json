@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-CanPrecede-CAPEC-197-8dc761::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies the entity CAPEC-228 and the relationship type 'CanPrecede'. However, it misidentifies the direction of the relationship, stating that CAPEC-228 is a successor of CAPEC-197 (meaning 197 precedes 228), whereas the gold expectation identifies it as a predecessor (meaning 228 precedes 197).",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

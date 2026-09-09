@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-uses-mitigates-G1011-c9f3fc::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 13,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer lists techniques T1203, T1597, T1102, and T1594, which are supported by the executed G1011 query, but it never states the expected mitigations M1017, M1018, M1021, M1031, M1038, M1040, M1047, M1048, M1049, M1050, M1051, M1054, or M1056. It also does not explicitly name G1011 in the answer text. Therefore it partially addresses the technique portion but omits the mitigation portion.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

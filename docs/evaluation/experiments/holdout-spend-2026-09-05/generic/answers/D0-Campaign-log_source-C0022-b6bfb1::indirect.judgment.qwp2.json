@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Campaign-log_source-C0022-b6bfb1::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies the anchor campaign C0022, but it does not state that the MONITORS query returned no DataComponent neighbours. The evidence contains only the C0022 record with an empty related list, so no data components are supported. It is faithful and grounded, but it only partially answers the question by reporting the record rather than the requested data components or their absence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

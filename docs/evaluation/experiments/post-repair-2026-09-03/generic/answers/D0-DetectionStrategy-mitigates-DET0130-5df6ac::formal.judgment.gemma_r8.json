@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-DetectionStrategy-mitigates-DET0130-5df6ac::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.5,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "T1555.006 is a sub-technique of DET0130"
+ ],
+ "rationale": "The system correctly retrieved T1555.006, which is the only entity related to DET0130 in the evidence. However, it hallucinated the relationship by calling T1555.006 a 'sub-technique' of the detection strategy and failed to distinguish between the 'detects' relationship found in the evidence and the 'mitigates' relationship requested in the question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,23 @@
+{
+ "case_id": "H-GRP-01",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.85,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1027.009 has 23 used techniques (the evidence records 23 related entities with USES, not that all are techniques)"
+ ],
+ "rationale": "The answer states all expected group identifiers G0032, G1036, and G1037 as related to T1027.009, so it satisfies the core query. It is slightly imprecise because it labels all 23 related items as 'used techniques' and includes non-group entities such as S0231 and C0021, but the cited record supports the listed USES relationships.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

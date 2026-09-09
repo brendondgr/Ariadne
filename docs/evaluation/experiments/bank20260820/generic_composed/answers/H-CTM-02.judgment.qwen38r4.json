@@ -1,0 +1,21 @@
+{
+ "case_id": "H-CTM-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states the expected CAPEC identifier, CAPEC-412, and honestly abstains from asserting ATT&CK techniques or mitigations. It supports the abstention with the executed CAPEC MAPS_TO query showing no linked records and explains that the ATT&CK mitigation sub-question was skipped because q1 returned no join values. This matches the gold expectation of no cross-source correlation and dependency skip.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,28 @@
+{
+ "case_id": "D3-kill_chain_phase-TA0040-d56458::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.8,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 34,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains after the attack specialist returned no records due to an empty query, so it does not fabricate a TA0040 mapping. However, it states none of the expected Impact techniques such as T1485, T1496, T1561, or T1667, and it does not explicitly state TA0040. The example identifiers T1566, M1017, and CAPEC-98 are not supported by the shown evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

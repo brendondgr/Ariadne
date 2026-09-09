@@ -1,0 +1,24 @@
+{
+ "case_id": "D1-Analytic-x_mitre_platforms-AN0307-86109b::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and shows the executed query, so it is faithful and does not fabricate a mapping. It mentions AN0307 only as the searched term and says no records were found, but it does not state the expected platform Linux. Because the gold expects a platform answer for AN0307, the response is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

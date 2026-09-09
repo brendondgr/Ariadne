@@ -1,0 +1,21 @@
+{
+ "case_id": "F-CWE-01",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 47,
+ "gold_present": 47,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Narrative states '12 of them carry at least one ATT&CK technique mapping' but the evidence supports only 10 CAPEC records with ATT&CK mappings (CAPEC-474, 560, 561, 652, 551, 600, 644, 555, 645, 509); CAPEC-50, 653, 102 have CWE-522 only"
+ ],
+ "rationale": "The answer correctly identifies all 10 gold CAPEC patterns (CAPEC-474, CAPEC-509, CAPEC-551, CAPEC-555, CAPEC-600, CAPEC-644, CAPEC-645, CAPEC-652, CAPEC-560, CAPEC-561), all 12 ATT&CK techniques (T1021, T1021.002, T1078, T1110.004, T1114.002, T1133, T1543, T1550.002, T1550.003, T1552.004, T1558, T1558.003), and all 25 mitigation identifiers (M1013 through M1060). All 12 cross-source CAPEC-to-ATT&CK correlations are individually supported by paired citations. The only minor faithfulness deduction is the narrative's claim that '12 of them carry at least one ATT&CK technique mapping' when the evidence supports 10 (the 3 unmapped records are CAPEC-50, CAPEC-653, CAPEC-102).",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

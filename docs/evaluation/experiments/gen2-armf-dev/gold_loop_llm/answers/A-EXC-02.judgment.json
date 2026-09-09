@@ -1,0 +1,19 @@
+{
+ "case_id": "A-EXC-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The question asks to confirm that retired technique T1004 is empty (excluded at load). The answer correctly abstains, stating the attack source doesn't establish this, and shows the full executed Cypher query (MATCH (n:Technique) WHERE n.attack_id IN $ids ...) which returned 0 rows. The gold expects an empty list of identifiers, and the answer matches this exactly with no fabricated claims.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

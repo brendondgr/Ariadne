@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-HAS_MEMBER-MAPS_TO[OWASP Attacks]-CAPEC-512-a54595::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 0.2,
+ "gold_expected": 5,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows the executed CAPEC query that returned zero rows, so it is faithful to the empty evidence. It mentions CAPEC-512 only by quoting the question and does not state the four expected OWASP entries, so completeness is low. The only unsupported identifiers are the example ids T1566, M1017, and CAPEC-98 in the narrative.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

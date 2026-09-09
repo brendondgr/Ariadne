@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Group-mitigates-G0103-d3cb64::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: it reports that the executed query for G0103 returned no records and shows that query. The only required gold identifier, G0103, is stated in the abstention statement, and the expected technique set is empty. The illustrative identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, but they do not create a fabricated mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

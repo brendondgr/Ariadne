@@ -1,0 +1,19 @@
+{
+ "case_id": "H-SW-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.85,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 11,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer confirms 11 ATT&CK records were retrieved, matching the gold count of 11 software identifiers (S0281, S0352, S0402, S0482, S0587, S0598, S0599, S0658, S1070, S1105, S9013), but the claims array is empty and no specific S-IDs are named. The evidence shows the normalize step failed with 'record has neither a primary_id nor a name,' explaining why the records appear as 'unknown.' This is a retrieval success that fails to surface the actual identifiers the question asked for.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

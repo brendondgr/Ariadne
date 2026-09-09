@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-ChildOf-HAS_CONSEQUENCE-CAPEC-320-829ce0::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.1,
+ "faithfulness": 0.5,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains after an empty CAPEC query and does not state the expected general patterns related to CAPEC-320, namely Confidentiality Access Control Authorization Hide Activities or Confidentiality Read Data. It is grounded in the zero-record evidence, but its examples T1566, M1017, and CAPEC-98 are not supported by the records. Therefore it is partial: an honest no-result abstention, but incomplete and slightly unfaithful.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

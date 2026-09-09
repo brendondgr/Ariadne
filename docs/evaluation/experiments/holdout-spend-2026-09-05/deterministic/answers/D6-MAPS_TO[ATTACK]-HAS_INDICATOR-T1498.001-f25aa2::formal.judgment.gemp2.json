@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1498.001-f25aa2::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.5,
+ "gold_expected": 4,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The attack source doesn't establish this \u2014 it doesn't model the entities this question asks about, so no query was executed for: For T1498.001: the CAPEC attack patterns that correspond to it."
+ ],
+ "rationale": "The answer successfully identifies CAPEC-528 and CAPEC-666 as corresponding to T1498.001, but it fails to provide the specific indicators requested in the question. Furthermore, the answer contains a contradictory concluding statement claiming that no mapping was established, despite the narrative listing several mappings for T1498.001.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

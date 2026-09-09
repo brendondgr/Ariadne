@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-HAS_MEMBER-HAS_CONSEQUENCE-CAPEC-703-fe4247::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.85,
+ "groundedness": 0.55,
+ "completeness": 0.0,
+ "gold_expected": 30,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by reporting no records and an empty CAPEC query, which is supported by the failed trace. It does not state CAPEC-703 or any of the 30 expected related pattern/consequence identifiers, so completeness is zero. The only unsupported assertions are the illustrative identifiers T1566, M1017, and CAPEC-98.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

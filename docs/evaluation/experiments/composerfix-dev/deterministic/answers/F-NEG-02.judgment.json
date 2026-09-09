@@ -1,0 +1,19 @@
+{
+ "case_id": "F-NEG-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 0.9,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-66 (SQL Injection) as the anchor and honestly reports that the executed query returned no linked ATT&CK technique records, matching the gold's expect_no_correlation: true and capec.expect_no_join: true. The mitigations sub-question is correctly marked as a dependency skip because q1 produced no seed identifiers, matching attack.expect_dependency_skip: true. The abstention for the capec source carries the full Gremlin query as proof of execution, and no fabricated cross-source correlation is asserted.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

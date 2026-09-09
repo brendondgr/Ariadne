@@ -1,0 +1,21 @@
+{
+ "case_id": "H-CHN-03",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.9,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and reports that no records were returned, which is supported by the empty capec query and skipped attack sub-question. It does not state the expected T1574.007 or T1574.009, nor the CAPEC-38 pattern that would establish the mapping. The abstention is not fully query-backed because the recorded query is empty, so it is partial rather than correct. No cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

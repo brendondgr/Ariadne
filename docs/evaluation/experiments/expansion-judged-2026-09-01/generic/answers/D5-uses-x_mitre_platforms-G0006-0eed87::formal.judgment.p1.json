@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0006-0eed87::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 12,
+ "gold_present": 12,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The narrative presents T1057, T1049, T1135, T1007, T1087.001, and T1560.001 as the explicit macOS-applicable techniques, while the full related list also includes T1005, T1016, T1036.005, T1119, T1566.001, and T1566.002."
+ ],
+ "rationale": "The answer anchors G0006 and includes all 12 expected macOS-related technique IDs in the full 40-item enumeration: T1005, T1007, T1016, T1036.005, T1049, T1057, T1087.001, T1119, T1135, T1560.001, T1566.001, and T1566.002. However, its explicit macOS list names only T1057, T1049, T1135, T1007, T1087.001, and T1560.001, so it only partially answers the question. The claims are tied to the G0006 record, but the filtered macOS assertion is not fully explicit for all expected IDs.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

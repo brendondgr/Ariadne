@@ -1,0 +1,26 @@
+{
+ "case_id": "H-MIT-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1176 has 5 mitigated techniques (the listed M identifiers are labeled Mitigation in the evidence, not Technique)"
+ ],
+ "rationale": "The answer states T1176 and all five expected mitigation identifiers: M1017, M1033, M1038, M1047, and M1051. These match the T1176 record's MITIGATES-related neighbours in the evidence. The only minor issue is the wording \"mitigated techniques,\" since the listed M identifiers are mitigations rather than techniques.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

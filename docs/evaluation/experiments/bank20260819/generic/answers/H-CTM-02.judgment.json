@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-325 as the sole gold identifier and honestly reports that no ATT&CK technique mapping was found (matching expect_no_correlation: true) and that the ATT&CK sub-question was skipped due to the dependency on q1 (matching expect_dependency_skip: true). The CAPEC abstention includes the executed Gremlin query as proof, satisfying the honest-abstention rule. No fabricated cross-source correlation is asserted, and all factual claims about CAPEC-325 (description, Abstraction: Detailed, Status: Stable) are directly supported by the single evidence record.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

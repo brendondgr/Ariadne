@@ -1,0 +1,19 @@
+{
+ "case_id": "F-NEG-05",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 0.95,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The gold expects an honest empty: CAPEC-16 has no MAPS_TO link to any ATT&CK TaxonomyEntry, and the mitigations sub-question (q2) is skipped due to the empty dependency on q1. The answer correctly states that the executed Gremlin query returned CAPEC-16 with no linked ATTACK records (join_values: [], related: []), and that q2 was skipped because q1 produced no seed identifiers. No fabricated cross-source correlation is asserted, and all factual claims (Abstraction: Detailed, Status: Draft) are directly supported by the CAPEC-16 record properties in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

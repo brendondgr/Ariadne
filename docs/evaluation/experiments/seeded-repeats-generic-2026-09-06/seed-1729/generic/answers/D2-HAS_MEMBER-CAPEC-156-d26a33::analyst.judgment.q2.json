@@ -1,0 +1,28 @@
+{
+ "case_id": "D2-HAS_MEMBER-CAPEC-156-d26a33::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 6,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The capec query seeded with CAPEC-156 ran successfully and returned zero rows, so the answer's abstention with the executed query is an honest no-mapping response. It does not state any of the six expected related patterns (CAPEC-148, CAPEC-151, CAPEC-154, CAPEC-173, CAPEC-416, CAPEC-690), so completeness is zero despite the correct abstention. The only unsupported items are generic example IDs in the narrative, not asserted mappings.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

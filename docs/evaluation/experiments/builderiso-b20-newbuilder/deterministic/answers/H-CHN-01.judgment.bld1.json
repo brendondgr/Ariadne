@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CHN-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 53,
+ "gold_present": 53,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states all 17 expected CAPEC patterns (CAPEC-19, CAPEC-441, ..., CAPEC-578) and all 19 expected ATT&CK techniques (T1014, T1027.009, ..., T1574.011), plus the 16 related methods and CWE-284. It also asserts the 19 cross-source correlations that match the gold must_correlate list, so the mapping question is answered. Extra CAPEC-578 taxonomy entries such as T1562.004 are cited but not presented as additional cross-source CWE-284 mappings, so no fabricated mapping is evident.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true
+ }
+}

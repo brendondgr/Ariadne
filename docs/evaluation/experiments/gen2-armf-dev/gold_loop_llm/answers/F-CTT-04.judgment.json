@@ -1,0 +1,19 @@
+{
+ "case_id": "F-CTT-04",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly traces the chain CAPEC-633 \u2192 T1134 (Access Token Manipulation) \u2192 TA0005 (Stealth) and TA0004 (Privilege Escalation), directly answering which tactics the mapped technique belongs to. All four gold identifiers (CAPEC-633, T1134, TA0004, TA0005) are explicitly stated in both the narrative and structured claims with proper source citations. The cross-source correlation on T1134 is supported by the CAPEC record's join_values and the ATT&CK record's primary_id, so no fabricated mapping exists.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

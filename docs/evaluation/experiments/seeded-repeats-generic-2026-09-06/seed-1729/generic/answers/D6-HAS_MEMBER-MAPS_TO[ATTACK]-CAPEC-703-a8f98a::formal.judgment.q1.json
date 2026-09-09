@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-703-a8f98a::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.8,
+ "groundedness": 0.6,
+ "completeness": 0.02,
+ "gold_expected": 50,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and reports no records, which is supported by evidence_volume records=0 and the capec boundary that Technique is not modeled, but it does not state the expected ATT&CK techniques for CAPEC-703. It only mentions T1566 as an example, so it captures 1 of 50 gold IDs such as T1014, T1036.001, and T1598.003. The abstention does not carry an executed query, and unsupported example IDs M1017 and CAPEC-98 slightly reduce faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

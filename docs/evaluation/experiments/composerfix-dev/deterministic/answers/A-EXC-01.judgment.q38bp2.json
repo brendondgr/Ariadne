@@ -1,0 +1,24 @@
+{
+ "case_id": "A-EXC-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The executed attack query for Technique T1002 returned row_count 0 and empty_with_seeds T1002, matching the expected empty result. The answer explicitly abstains and includes the executed query, so it is an honest abstention rather than a guess. No gold identifiers were expected, and the only extra identifiers in the narrative are illustrative examples, not asserted mappings.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

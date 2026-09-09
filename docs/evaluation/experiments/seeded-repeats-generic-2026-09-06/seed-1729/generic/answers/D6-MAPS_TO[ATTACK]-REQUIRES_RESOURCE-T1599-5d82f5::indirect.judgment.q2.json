@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-REQUIRES_RESOURCE-T1599-5d82f5::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.9,
+ "groundedness": 0.75,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer mentions T1599 in the attack abstention and honestly reports that no records were returned, but it does not state the expected CAPEC resource text or any corresponding attack patterns. The capec abstention includes an executed query, while the attack sub-question was skipped, so the abstention is only partially grounded. The illustrative identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, though they are not asserted as mappings.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

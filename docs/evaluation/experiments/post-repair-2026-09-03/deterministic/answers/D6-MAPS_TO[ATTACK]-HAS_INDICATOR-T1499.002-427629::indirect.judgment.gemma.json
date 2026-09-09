@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_INDICATOR-T1499.002-427629::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The claim that the source doesn't establish the mapping for T1499.002 is contradicted by the narrative which lists five such mappings."
+ ],
+ "rationale": "The answer successfully identifies the CAPEC attack patterns corresponding to T1499.002 (such as CAPEC-528, CAPEC-488, etc.), but it fails to provide the specific indicator text regarding the XML parser. Furthermore, the answer contains a contradiction where the narrative lists the mappings, but the concluding sentence claims the source does not establish them.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

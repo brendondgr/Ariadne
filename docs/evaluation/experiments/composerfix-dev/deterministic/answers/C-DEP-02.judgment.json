@@ -1,0 +1,19 @@
+{
+ "case_id": "C-DEP-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The question asked to look up deprecated CAPEC-106, which was excluded at load and expected to return empty. The answer correctly abstained, stating no matching records were found, and included the full executed Gremlin query with seed ID CAPEC-106 that returned 0 rows. This precisely matches the gold expectation of an empty result set.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

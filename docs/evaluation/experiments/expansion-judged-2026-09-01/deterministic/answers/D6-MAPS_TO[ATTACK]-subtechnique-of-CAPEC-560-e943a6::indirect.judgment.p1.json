@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-subtechnique-of-CAPEC-560-e943a6::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains instead of asserting a CAPEC-560 to ATT&CK mapping, and the evidence shows zero records plus a capec boundary failure for Technique and a skipped attack sub-question. It does not state any of the expected T1078.001, T1078.002, T1078.003, or T1078.004 sub-techniques, so completeness is zero, but the abstention is honest and carries the no-query evidence. The only unsupported identifiers are the illustrative T1566, M1017, and CAPEC-98 in the narrative.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1042-ad62f1::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes M1042 and all four expected SaaS-relevant techniques T1059, T1098, T1098.001, and T1671, but it presents the full 71-item MITIGATES list rather than explicitly selecting the SaaS-relevant subset. Its claims are tied to the M1042 ATT&CK record and the 71 related rows, with no unsupported cross-source mapping. It is therefore partial: complete on the gold identifiers but under-specified on the SaaS filter.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

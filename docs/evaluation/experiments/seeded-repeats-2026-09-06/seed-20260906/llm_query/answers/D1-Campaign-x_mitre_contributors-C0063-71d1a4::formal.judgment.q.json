@@ -1,0 +1,28 @@
+{
+ "case_id": "D1-Campaign-x_mitre_contributors-C0063-71d1a4::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains instead of asserting the expected related identifier Dragos Threat Intelligence for campaign C0063. The evidence shows zero records and a failed attack specialist with an empty query, so the no-result abstention is honest rather than a fabricated mapping. Completeness is low because the expected related identifier is not stated, and the example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

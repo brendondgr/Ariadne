@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-View-CanFollow-CAPEC-703-29605c::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The capec query seeded on CAPEC-703 executed successfully and returned row_count 0, so the abstention is honest. The answer includes CAPEC-703 in the abstention statement and query, satisfying the only required gold identifier. The illustrative ids T1566, M1017, and CAPEC-98 are not supported by the evidence but do not create a cross-source mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

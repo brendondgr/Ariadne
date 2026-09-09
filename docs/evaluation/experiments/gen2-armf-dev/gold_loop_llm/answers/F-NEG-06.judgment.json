@@ -1,0 +1,19 @@
+{
+ "case_id": "F-NEG-06",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies that CAPEC-18 has no established MAPS_TO edge to any ATT&CK TaxonomyEntry, matching the gold expectation of an honest empty join (must_correlate: [], expect_no_correlation: true). The CAPEC abstention explicitly displays the executed Gremlin query (g.V().hasLabel(\"AttackPattern\").has(\"id\",within(ids))...out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\")) as proof of the empty result. The ATT&CK mitigations sub-question is correctly noted as skipped due to the dependency on the empty q1 seed set, satisfying the expect_dependency_skip gold assertion.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

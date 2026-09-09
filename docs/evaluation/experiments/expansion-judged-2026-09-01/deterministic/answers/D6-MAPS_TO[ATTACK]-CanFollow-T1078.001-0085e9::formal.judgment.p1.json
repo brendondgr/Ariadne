@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1078.001-0085e9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.8,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The attack source doesn't establish this - it doesn't model the entities this question asks about",
+  "no query was executed for: For T1078.001: the CAPEC attack patterns that correspond to it"
+ ],
+ "rationale": "The answer states the required anchor T1078.001 and includes the gold identifier CAPEC-700, but it does not clearly connect CAPEC-700 to T1078.001 or to the follow relation asked for. It also lists CAPEC-70 as mapped to T1078.001, which is relevant but not the expected gold relation. The meta-abstention about the attack source not modeling the relation is not tied to a cited record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

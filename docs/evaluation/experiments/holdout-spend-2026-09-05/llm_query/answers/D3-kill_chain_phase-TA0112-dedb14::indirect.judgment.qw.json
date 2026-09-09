@@ -1,0 +1,28 @@
+{
+ "case_id": "D3-kill_chain_phase-TA0112-dedb14::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.6,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 57,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows the failed query for TA0112, but it does not state any expected technique IDs such as T1112, T1222, T1484, T1553, T1556, T1578, T1599, T1600, T1601, T1647, T1666, T1685, T1686, T1687, T1688, T1689, or T1690. It also mentions non-evidenced example identifiers T1566, M1017, and CAPEC-98. Because the query failed rather than returning an empty result, the abstention is reasonable but not fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

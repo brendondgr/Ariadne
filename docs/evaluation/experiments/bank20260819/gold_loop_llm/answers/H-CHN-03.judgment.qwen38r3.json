@@ -1,0 +1,29 @@
+{
+ "case_id": "H-CHN-03",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.65,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 29,
+ "gold_present": 29,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1051 is described as using WSUS, ManageEngine, and Ansible",
+  "M1013 is described as using STRIDE threat modeling and recommending Django or Spring Security",
+  "M1033 is described as using AppLocker/WDAC, Intune/SCCM/Jamf, and monitoring Event ID 4688/11707",
+  "M1016 is described as using Nessus/OpenVAS, AWS Inspector, Azure Security Center, GCP SCC, OWASP ZAP, and Burp Suite",
+  "M1032 is described as using YubiKey, RSA SecurID, Duo, and Thales SafeNet",
+  "M1027 is described as using pam_pwquality, pam_tally2/pam_faillock, HIBP, and Lynis",
+  "M1029 is described as using AWS S3 Object Lock, Zeek/Suricata, BitLocker, and LUKS"
+ ],
+ "rationale": "The answer states all expected CAPEC-184, CAPEC-185, CAPEC-186, CAPEC-187, CAPEC-533, CAPEC-538, CAPEC-657, CAPEC-662, CAPEC-691, CAPEC-692, CAPEC-693, and CAPEC-695, plus T1072, T1185, T1195.001, and T1195.002, and all expected M identifiers. The cross-source correlations for T1072, T1185, T1195.001, and T1195.002 are tied to CAPEC taxonomy entries and ATT&CK records. Faithfulness is reduced by many unsupported mitigation details, such as WSUS, AppLocker, Nessus, and YubiKey, that are not shown in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

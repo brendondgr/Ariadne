@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-CanFollow-CAPEC-700-51669a::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system failed to retrieve the gold identifiers CAPEC-560 and CAPEC-70 due to a query error involving unknown relationship types ('CanPrecede', 'CanFollow'). Per Rule 1, the system's honest abstention and disclosure of the failed query process is considered a correct response rather than a failure.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

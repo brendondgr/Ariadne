@@ -1,0 +1,25 @@
+{
+ "case_id": "H-CHN-03",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 29,
+ "gold_present": 29,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CWE-494 is described as a TaxonomyEntry for CAPEC-662, CAPEC-186, CAPEC-187, CAPEC-691, CAPEC-538, CAPEC-695, and CAPEC-657, while the visible evidence lists it as a related weakness"
+ ],
+ "rationale": "The answer states all 12 expected CAPEC patterns, CWE-494, the four ATT&CK techniques T1072, T1185, T1195.001, and T1195.002, and all 12 expected M identifiers. The cross-source correlations are supported by the CAPEC join_values and result summary, so no fabricated mapping is present. A minor faithfulness deduction is made for labeling CWE-494 as a TaxonomyEntry in several CAPEC claims.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 16384,
+  "escalated": true
+ }
+}

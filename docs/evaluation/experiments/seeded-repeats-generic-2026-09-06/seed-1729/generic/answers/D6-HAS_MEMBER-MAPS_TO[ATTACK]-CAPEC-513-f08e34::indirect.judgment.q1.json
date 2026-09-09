@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-513-f08e34::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.05,
+ "gold_expected": 18,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and references CAPEC-513 only indirectly as capec:attack-pattern:513, but it does not state any of the expected ATT&CK techniques such as T1036.003, T1078, T1110, T1134, or T1195. The abstention does not carry an executed query in its query field, even though the trace shows a failed generic_bridge query for the CAPEC-513 membership step. The example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, so the answer is only partially correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

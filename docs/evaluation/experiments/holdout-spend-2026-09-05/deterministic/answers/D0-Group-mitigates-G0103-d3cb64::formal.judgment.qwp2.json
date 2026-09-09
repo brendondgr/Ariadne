@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Group-mitigates-G0103-d3cb64::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: it states that the attack source returned no records and shows the executed query for seed G0103, matching the evidence row_count 0. It includes the required G0103 identifier and does not assert any technique or cross-source mapping. The only unsupported items are generic example identifiers T1566, M1017, and CAPEC-98, so faithfulness is slightly reduced.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

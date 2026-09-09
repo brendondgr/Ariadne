@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-PeerOf-HAS_EXAMPLE-CAPEC-64-c7a7e3::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly retrieves and cites CAPEC-64, but it only describes the anchor and does not state any PEER_OF neighbor or the expected example text about the IIS %c0%af/CVE-2000-0884 attack. Because the query asked for peers and their examples, the response is partial rather than correct. All stated facts are grounded in the CAPEC-64 record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

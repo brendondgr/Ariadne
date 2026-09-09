@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-HAS_MEMBER-Status-CAPEC-515-93195c::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 11,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system honestly abstained because the provided evidence (the query result) returned zero records. According to Rule 1, since the system reported the failure and provided the executed query, this is a correct response despite the gold expectations containing 11 identifiers (CAPEC-113, CAPEC-114, etc.) that the retrieval process failed to find.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

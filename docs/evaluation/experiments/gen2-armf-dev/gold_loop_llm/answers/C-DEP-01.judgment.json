@@ -1,0 +1,19 @@
+{
+ "case_id": "C-DEP-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The question asks to look up deprecated CAPEC-91 which is excluded at load and must return empty. The answer correctly abstains, stating 'No records were returned' and that the capec source 'doesn't establish this.' The abstention includes the full Gremlin query as proof of execution, and the evidence confirms row_count 0 with seed_ids ['CAPEC-91']. This is a textbook honest abstention that correctly identifies the empty result, satisfying the expect_empty gold assertion.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

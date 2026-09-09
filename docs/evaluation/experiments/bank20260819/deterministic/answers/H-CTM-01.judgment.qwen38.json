@@ -1,0 +1,21 @@
+{
+ "case_id": "H-CTM-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states CAPEC-572 and its mapped ATT&CK technique T1027.001, and the cross-source correlation is supported by the CAPEC TaxonomyEntry and ATT&CK record. It does not explicitly state that no mitigations were found for T1027.001, even though the mitigation query returned only the technique with empty related records. Therefore it is partial: all expected identifiers are present, but the mitigation part of the question is not directly addressed.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

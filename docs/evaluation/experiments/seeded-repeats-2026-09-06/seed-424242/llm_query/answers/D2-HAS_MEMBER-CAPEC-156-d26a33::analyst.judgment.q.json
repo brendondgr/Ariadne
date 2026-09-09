@@ -1,0 +1,29 @@
+{
+ "case_id": "D2-HAS_MEMBER-CAPEC-156-d26a33::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.6,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 6,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98",
+  "None of the live graph sources cover this request"
+ ],
+ "rationale": "The expected answer for CAPEC-156 should list the six related patterns CAPEC-148, CAPEC-151, CAPEC-154, CAPEC-173, CAPEC-416, and CAPEC-690, but the answer states no records and names none of them. It is an abstention tied to the empty-query failure, yet it overstates that no live source covers the request and adds unsupported example IDs. Therefore it is partial rather than correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

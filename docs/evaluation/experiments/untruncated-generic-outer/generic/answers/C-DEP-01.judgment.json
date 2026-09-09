@@ -1,0 +1,19 @@
+{
+ "case_id": "C-DEP-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The question asked for CAPEC-91, a deprecated node excluded at load, and the gold expectation is an empty result set. The answer correctly abstains, stating the capec source returned no matching records, and includes the full executed Gremlin query as proof. The evidence confirms row_count 0 with seed_ids [\"CAPEC-91\"], matching the answer's claim exactly.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

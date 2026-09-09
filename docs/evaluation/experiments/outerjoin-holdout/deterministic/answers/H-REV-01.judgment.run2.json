@@ -1,0 +1,19 @@
+{
+ "case_id": "H-REV-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies T1055.011 (Extra Window Memory Injection) and its properties, and properly abstains on the CAPEC source with the executed query shown (no CAPEC patterns map to T1055.011). However, it does not explicitly state that no ATT&CK attack patterns reference T1055.011, which is the core of the question. The gold expects no correlation (expect_no_correlation: true) and a dependency skip for ATT&CK, which the answer partially fulfills through the CAPEC abstention but not through an explicit ATT&CK statement.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

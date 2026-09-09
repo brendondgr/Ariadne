@@ -1,0 +1,19 @@
+{
+ "case_id": "C-MAP-NEG-01",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies that CAPEC-116 (Excavation) has no ATT&CK mappings, matching the gold expectation of an empty join (expect_no_join: true, expected: []). The abstention explicitly states 'no linked records for: Which ATT&CK techniques does CAPEC-116 map to?' and includes the executed Gremlin query as proof, satisfying Rule 1 for a correct honest abstention. The narrative's description of CAPEC-116's properties (Abstraction: Meta, Status: Stable) is faithful to the evidence record, though the mapping answer is carried by the abstention rather than the main narrative.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

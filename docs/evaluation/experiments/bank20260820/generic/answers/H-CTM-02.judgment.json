@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-412 (Pretexting via Customer Service) and honestly abstains on the ATT&CK technique mapping, showing the executed Gremlin query that returned CAPEC-412 with no linked TaxonomyEntry records. This precisely matches the gold expectations of expect_no_correlation: true and expect_dependency_skip: true for the mitigations sub-question, making it a well-formed honest abstention rather than a guess.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

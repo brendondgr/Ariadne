@@ -1,0 +1,19 @@
+{
+ "case_id": "A-SW-03",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 55,
+ "gold_present": 55,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly enumerates all 55 ATT&CK techniques used by S0266 (TrickBot), including T1027.002 (Software Packing), T1495 (Firmware Corruption), T1056.004 (Credential API Hooking), T1105 (Ingress Tool Transfer), and T1543.003 (Create or Modify System Process). The Cypher query MATCH (s:Software)-[:USES]->(t) was executed and returned exactly 55 rows, all of which the answer faithfully states. No gold identifier is omitted and no extraneous ID is introduced.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

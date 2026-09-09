@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-HAS_INDICATOR-CAPEC-108-f3d9eb::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states that CAPEC-108 is a ChildOf CAPEC-66, which is supported by the CAPEC record and its related entry. However, it does not state the expected indicator text, \"Too many false or invalid queries to the database, especially those caused by malformed input,\" or any other indicator. Therefore it partially answers the two-part question by identifying the parent attack pattern but omitting the indicator component.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,25 @@
+{
+ "case_id": "H-CHN-02",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 30,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: the CAPEC sub-query is shown and the trace shows row_count 0, while the ATT&CK sub-question was skipped for lack of seeds. It does not state T1027 or any expected CAPEC ids such as CAPEC-3, CAPEC-6, or CAPEC-267, so completeness is zero. The only unsupported specifics are the illustrative identifiers T1566, M1017, and CAPEC-98 in the narrative.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

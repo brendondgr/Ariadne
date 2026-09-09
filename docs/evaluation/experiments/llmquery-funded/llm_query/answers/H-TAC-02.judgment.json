@@ -1,0 +1,19 @@
+{
+ "case_id": "H-TAC-02",
+ "verdict": "CORRECT",
+ "correctness": 0.7,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system executed a Cypher query (MATCH (t:Technique)-[:HAS_TACTIC]-(tac:Tactic) WHERE t.attack_id = $technique_id) for T1599 and received 0 rows, then honestly abstained while displaying the full query as proof. T1599 is referenced in the abstention text, but TA0112 (the expected Command and Control tactic) is never stated. By Rule 1, a justified abstention that shows the executed query and matches the 0-record evidence is CORRECT, even though the gold neighbor TA0112 is absent from the answer text.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

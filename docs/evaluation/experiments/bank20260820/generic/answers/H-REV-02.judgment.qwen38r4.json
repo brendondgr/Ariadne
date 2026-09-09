@@ -1,0 +1,21 @@
+{
+ "case_id": "H-REV-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The expected result was that no CAPEC patterns map to T1219, and the answer explicitly reports that the CAPEC query returned no matching records while showing the executed query. It also correctly cites T1219 from ATT&CK, but that is ancillary to the mapping question. No CAPEC pattern identifiers are asserted, matching the empty gold expectation.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

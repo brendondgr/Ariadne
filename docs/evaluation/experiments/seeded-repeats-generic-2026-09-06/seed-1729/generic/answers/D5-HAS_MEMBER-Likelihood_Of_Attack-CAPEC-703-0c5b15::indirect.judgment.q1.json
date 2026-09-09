@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-HAS_MEMBER-Likelihood_Of_Attack-CAPEC-703-0c5b15::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.9,
+ "groundedness": 0.7,
+ "completeness": 0.14,
+ "gold_expected": 7,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and shows the executed query, but it only names CAPEC-703 and omits all six expected related patterns: CAPEC-457, CAPEC-540, CAPEC-573, CAPEC-580, CAPEC-649, and CAPEC-65. The zero-row result supports the abstention, but the gold expects those Low-likelihood neighbors, so the answer is only partially correct. It does not fabricate a cross-source mapping, though the generic example ids are not tied to the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

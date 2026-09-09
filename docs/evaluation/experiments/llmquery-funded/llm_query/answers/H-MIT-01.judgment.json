@@ -1,0 +1,19 @@
+{
+ "case_id": "H-MIT-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.85,
+ "groundedness": 0.3,
+ "completeness": 0.0,
+ "gold_expected": 5,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies 5 ATT&CK records but fails to name any of the expected mitigations M1017, M1033, M1038, M1047, or M1051. The evidence confirms the Cypher query returned 5 rows, but the normalize step failed because all records had empty primary_id and name fields, which the answer reflects by labeling them 'unknown.' The answer is a partial retrieval acknowledgment (correct count, correct source) rather than a substantive identification of the mitigations for T1176.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

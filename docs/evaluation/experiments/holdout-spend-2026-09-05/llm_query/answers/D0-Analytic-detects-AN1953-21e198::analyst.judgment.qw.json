@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Analytic-detects-AN1953-21e198::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: it states that the attack source returned no matching records and includes the executed query for AN1953, which matches the evidence showing zero rows. It states the required anchor AN1953 and does not assert any detected techniques, so it is complete for the expected empty technique set. The only unsupported items are the illustrative IDs T1566, M1017, and CAPEC-98 in the narrative.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

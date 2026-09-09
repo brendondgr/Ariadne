@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-CanFollow-MAPS_TO[ATTACK]-CAPEC-701-6e185a::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 0.33,
+ "gold_expected": 3,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Headline states only 1 question is not established, while the answer contains abstentions for both the CAPEC predecessor and ATT&CK technique subquestions."
+ ],
+ "rationale": "The answer correctly identifies CAPEC-701 and honestly abstains on the missing CAPEC predecessors and ATT&CK mappings, with a query shown for the first subquestion. It omits the expected ATT&CK techniques T1566 and T1598, so it only partially answers the two-hop question. No cross-source mapping is fabricated, but the headline's count of one unresolved question is not fully supported by the two abstentions.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

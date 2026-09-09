@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CTM-02",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.8,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The narrative says it couldn't find 'CAPEC' or 'TCP Congestion Control Flag' or 'Probe' in the live graphs, but the evidence only shows no MAPS_TO records for CAPEC-325."
+ ],
+ "rationale": "The answer correctly abstains for CAPEC-325, states the expected identifier, and shows the executed CAPEC query that returned no mapped ATT&CK techniques. It also correctly notes that the ATT&CK mitigation sub-question was skipped because q1 produced no seed identifiers. The main weakness is the narrative's broader claim about not finding the CAPEC/name, which is not directly supported by the shown evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

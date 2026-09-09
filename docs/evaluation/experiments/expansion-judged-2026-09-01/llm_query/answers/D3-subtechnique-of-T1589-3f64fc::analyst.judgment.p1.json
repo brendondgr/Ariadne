@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-subtechnique-of-T1589-3f64fc::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The question asks for the sub-techniques of T1589, specifically T1589.001, T1589.002, and T1589.003. The answer only says that 3 records were found in MITRE ATT&CK and does not state any of those identifiers. The evidence shows a query that returned 3 rows, but the normalized records are empty, so the answer is grounded in the count but incomplete in content.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

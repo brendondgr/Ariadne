@@ -1,0 +1,19 @@
+{
+ "case_id": "H-MIT-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly names both gold mitigations M1054 (Software Configuration) and M1018 (User Account Management) as related to T1543.005 (Container Service), directly answering the question. The evidence confirms the MITIGATES relationship via the Cypher query returning 2 rows, and the record's related array lists exactly M1054 and M1018. No cross-source or fabricated mappings are asserted; all claims are grounded in the single retrieved ATT&CK record.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "case_id": "H-CTM-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states CAPEC-325 and abstains from asserting any ATT&CK technique or mitigation identifiers, which matches the expected no-correlation case. The CAPEC abstention includes the executed MAPS_TO query, and the evidence shows CAPEC-325 with no related TaxonomyEntry or join values. The ATT&CK mitigation sub-question is properly reported as skipped because q1 produced no usable join values, so no fabricated cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

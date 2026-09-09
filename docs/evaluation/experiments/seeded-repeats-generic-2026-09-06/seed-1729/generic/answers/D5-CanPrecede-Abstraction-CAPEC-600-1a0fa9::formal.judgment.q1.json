@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-CanPrecede-Abstraction-CAPEC-600-1a0fa9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-600 has 11 CanPrecede successors (the evidence lists CAN_PRECEDE-related patterns but does not specify edge direction)"
+ ],
+ "rationale": "The answer includes the expected related identifier CAPEC-653 and correctly grounds CAPEC-600's Standard abstraction and Stable status. It also lists the other unique CAN_PRECEDE-related patterns (CAPEC-50, CAPEC-101, CAPEC-565, CAPEC-70, CAPEC-16, CAPEC-55, CAPEC-568, CAPEC-49, CAPEC-270, CAPEC-151), but it does not show that they are Standard-level successors, so it over-answers the Standard-abstraction constraint. The direction claim 'successors' is not fully specified by the evidence, though the identifiers themselves are present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

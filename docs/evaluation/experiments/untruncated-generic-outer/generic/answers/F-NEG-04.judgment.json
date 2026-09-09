@@ -1,0 +1,19 @@
+{
+ "case_id": "F-NEG-04",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-7 (Blind SQL Injection) and conveys that no ATT&CK techniques are mapped to it, as q1 returned empty join_values (no MAPS_TO edges). The ATT&CK mitigations sub-question (q2) is properly abstained due to its dependency on the empty q1 result, with the explanation that no seed identifiers were produced. No fabricated cross-source correlation or hallucinated identifiers are present; all stated properties (Abstraction: Detailed, Status: Draft) match the cited CAPEC record.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

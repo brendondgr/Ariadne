@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-subtechnique-of-T1558-d2d77e::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.4,
+ "completeness": 0.0,
+ "gold_expected": 5,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only says that five MITRE ATT&CK records were found; it does not state T1558 or any expected sub-technique identifiers such as T1558.001, T1558.002, T1558.003, T1558.004, or T1558.005. The evidence query returned five rows, but the normalized records have empty primary_id/name, and the narrative does not surface those IDs. It is therefore faithful to the retrieved count but incomplete and not a direct answer to the question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

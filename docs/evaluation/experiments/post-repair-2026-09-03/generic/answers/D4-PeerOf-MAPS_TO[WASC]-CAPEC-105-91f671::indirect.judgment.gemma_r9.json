@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-PeerOf-MAPS_TO[WASC]-CAPEC-105-91f671::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies CAPEC-34 as a related item (peer) of CAPEC-105, but it fails to identify the WASC taxonomy entry corresponding to that peer (WASC:25). Instead, it lists WASC:24, which is the mapping for the seed entity CAPEC-105 itself, not for the peer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

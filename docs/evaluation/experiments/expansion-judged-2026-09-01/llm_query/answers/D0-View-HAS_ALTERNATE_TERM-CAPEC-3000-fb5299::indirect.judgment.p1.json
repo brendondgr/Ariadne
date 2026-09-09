@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-View-HAS_ALTERNATE_TERM-CAPEC-3000-fb5299::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer correctly abstains for CAPEC-3000 and includes the executed query, matching the zero-record evidence. It states the required CAPEC-3000 identifier and does not assert any alternate-term mapping. The only unsupported items are the illustrative example ids T1566, M1017, and CAPEC-98, which are not claimed as related to CAPEC-3000.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

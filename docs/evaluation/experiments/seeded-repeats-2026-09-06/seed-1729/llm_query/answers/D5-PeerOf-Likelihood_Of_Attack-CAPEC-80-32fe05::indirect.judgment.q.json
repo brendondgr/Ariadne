@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-PeerOf-Likelihood_Of_Attack-CAPEC-80-32fe05::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.65,
+ "groundedness": 0.55,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by saying no records were returned, which is supported by the capec result having 0 records and an empty query. It does not state the expected peer CAPEC-64, and it does not restate the anchor CAPEC-80. The example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, but no cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

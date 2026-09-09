@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0046-803292::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 21,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "None of the live graph sources cover this request"
+ ],
+ "rationale": "The answer abstains, stating no records were returned, and it does not name any of the expected C0046 techniques such as T1014, T1020, T1036, or T1690. The zero-record result and the failed query in the notes support the abstention, but \"none of the live graph sources cover this request\" is a stronger claim than the syntax-error evidence. It shows the executed query, so the abstention is grounded, yet completeness is zero because no gold technique IDs are stated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

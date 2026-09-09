@@ -1,0 +1,21 @@
+{
+ "case_id": "H-ABS-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.85,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains, citing 0 records returned from the CAPEC source and showing the executed query (g.V().has('id', within(ids)).elementMap().limit(20000)), which is supported by the evidence. However, none of the 3 expected identifiers (CAPEC-206, CAPEC-438, CAPEC-444) are stated as findings, and the detailed, standard, and meta information explicitly requested is not provided. The narrative's illustrative mention of CAPEC-98 is not grounded in any evidence record.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

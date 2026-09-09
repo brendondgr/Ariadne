@@ -1,0 +1,24 @@
+{
+ "case_id": "H-CHN-01",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.65,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The capec query returned CWE-1275 with no linked records",
+  "The related items are in MITRE ATT&CK"
+ ],
+ "rationale": "The answer includes the required CAPEC-62 and does not assert any ATT&CK technique IDs, which matches the expected no-correlation outcome. It also records the attack-source dependency skip and shows the executed CAPEC query. The main weakness is the unsupported claim that the CAPEC query returned no linked records, even though the evidence shows CAPEC-62 and capec:taxonomy:WASC:09.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

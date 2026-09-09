@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-513-f08e34::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.6,
+ "groundedness": 0.75,
+ "completeness": 0.0,
+ "gold_expected": 17,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "capec:category:513 has no linked attack-pattern records",
+  "the capec source does not model ATT&CK technique entities"
+ ],
+ "rationale": "The answer correctly identifies capec:category:513 and enumerates its 52 CAPEC attack patterns, but it states none of the expected ATT&CK techniques such as T1036.003, T1078, T1110, T1134, T1195, T1217, T1491, T1498.001, T1499, T1499.003, T1499.004, T1528, T1539, T1548, T1557, T1592, or T1595. It therefore partially answers the first clause and abstains on the ATT&CK mapping. The abstention claiming no linked records for CAPEC-513 is contradicted by the 52 related records, reducing faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

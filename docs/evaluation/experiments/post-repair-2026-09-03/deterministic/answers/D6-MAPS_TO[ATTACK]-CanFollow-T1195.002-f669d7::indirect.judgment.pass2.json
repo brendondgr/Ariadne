@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1195.002-f669d7::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.75,
+ "groundedness": 0.65,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the anchor T1195.002 and includes CAPEC-98, but it buries CAPEC-98 in a broad CAPEC dump and maps it to T1598/T1566 rather than clearly establishing it as the expected relation to T1195.002. It also does not state which attack patterns can come before the corresponding patterns, so the second hop is missing. The abstention is explicit for the T1195.002 correspondence query, but the narrative still asserts many CAPEC-to-ATT&CK mappings without tying them to the asked predecessor relation.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

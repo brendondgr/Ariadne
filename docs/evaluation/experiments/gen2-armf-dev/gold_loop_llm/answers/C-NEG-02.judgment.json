@@ -1,0 +1,23 @@
+{
+ "case_id": "C-NEG-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The question expected an empty result for deprecated CAPEC-557 (excluded at load). The answer correctly abstained, stating no records were found, and provided the full executed Gremlin query as proof of the empty result. The evidence confirms row_count 0 with seed_ids [\"CAPEC-557\"], matching the expected empty set. The only minor issue is the narrative's example IDs (T1566, M1017, CAPEC-98) which are not in the evidence but are clearly presented as format examples rather than data claims.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

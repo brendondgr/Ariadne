@@ -1,0 +1,28 @@
+{
+ "case_id": "D1-Campaign-description-C0005-1dd7b2::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by saying no records were returned, but it does not state the expected identifier C0005 or the Operation Spalax description. It only notes that the query was empty rather than showing a concrete executed query, and it introduces unsupported example identifiers T1566, M1017, and CAPEC-98. This makes it a partial, non-guessing abstention rather than a full answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

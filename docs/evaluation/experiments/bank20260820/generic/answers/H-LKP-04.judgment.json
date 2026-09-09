@@ -1,0 +1,19 @@
+{
+ "case_id": "H-LKP-04",
+ "verdict": "PARTIAL",
+ "correctness": 0.75,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-588 (DOM-Based XSS) and provides its description, but truncates it by omitting the second paragraph about how DOM-based attacks differ from other XSS attacks (executing after page load, potentially never reaching the server, bypassing server-side filtering). The 11 ChildOf parents listed (CAPEC-198, CAPEC-199, CAPEC-243, CAPEC-32, CAPEC-244, CAPEC-86, CAPEC-245, CAPEC-18, CAPEC-247, CAPEC-63, CAPEC-242) are all supported by the q2 evidence. The gold identifier CAPEC-588 is present, giving full identifier completeness, but the truncated description prevents a fully correct answer.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

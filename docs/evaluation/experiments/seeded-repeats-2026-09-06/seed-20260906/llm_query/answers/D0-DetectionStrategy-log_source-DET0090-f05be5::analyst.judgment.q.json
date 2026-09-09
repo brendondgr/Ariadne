@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-DetectionStrategy-log_source-DET0090-f05be5::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The executed query seeded DET0090 and returned three rows, but the normalized evidence contains only empty DetectionStrategy records with no DataComponent identifiers. The answer reports only that 3 records were found in MITRE ATT&CK, so it partially addresses the query without naming DET0090 or any data components. The count is supported by the result summary, and no unsupported cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

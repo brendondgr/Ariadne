@@ -1,0 +1,28 @@
+{
+ "case_id": "D2-HAS_MEMBER-CAPEC-156-d26a33::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.7,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 6,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains around CAPEC-156 but does not state any of the expected contained patterns CAPEC-148, CAPEC-151, CAPEC-154, CAPEC-173, CAPEC-416, or CAPEC-690. It is grounded in the failed empty-query CAPEC result, but it does not show a meaningful executed query as proof of absence. The example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

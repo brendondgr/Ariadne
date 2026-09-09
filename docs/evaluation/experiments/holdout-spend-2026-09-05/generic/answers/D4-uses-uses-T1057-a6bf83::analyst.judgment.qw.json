@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-uses-uses-T1057-a6bf83::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.6,
+ "groundedness": 0.5,
+ "completeness": 0.24,
+ "gold_expected": 29,
+ "gold_present": 7,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "C0035",
+  "C0056",
+  "C0012"
+ ],
+ "rationale": "The answer anchors T1057 and lists many related software identifiers, but it only states 7 of the 29 expected campaign identifiers: C0001, C0006, C0007, C0014, C0015, C0024, and C0063. It also asserts non-gold campaign IDs such as C0035, C0056, and C0012, which are not visible in the provided related records. It does not explicitly tie the listed campaigns to the listed malware/tools, so it is only partially responsive.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

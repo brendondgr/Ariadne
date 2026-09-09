@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1078.001-0085e9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.55,
+ "groundedness": 0.6,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "CAPEC-70 has a taxonomy entry to capec:taxonomy:ATTACK:1078.001",
+  "The 558-record summary names CAPEC-1, CAPEC-10, CAPEC-100, CAPEC-101, and CAPEC-102 while the visible cited records are CAPEC-661, CAPEC-121, CAPEC-662, CAPEC-122, CAPEC-123, CAPEC-124, CAPEC-663, and CAPEC-125"
+ ],
+ "rationale": "The answer states the anchor T1078.001 and the gold-related identifier CAPEC-700, but it does not clearly assert that CAPEC-700 corresponds to T1078.001 or that it can follow the corresponding pattern. It instead ties T1078.001 to CAPEC-70 and ties CAPEC-700 to T1599, which makes the requested relation only partially addressed. The abstention is mixed because it says no query was executed for T1078.001 while still listing a CAPEC-70 mapping to T1078.001.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

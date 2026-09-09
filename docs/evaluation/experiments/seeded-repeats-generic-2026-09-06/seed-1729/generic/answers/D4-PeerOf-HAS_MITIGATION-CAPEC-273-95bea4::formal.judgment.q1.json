@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-PeerOf-HAS_MITIGATION-CAPEC-273-95bea4::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 13,
+ "gold_present": 13,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer anchors CAPEC-273 and enumerates all 13 expected mitigation identifiers, capec:attack-pattern:273:mitigation:1 through capec:attack-pattern:273:mitigation:13, which are present in the CAPEC-273 related records. However, it presents them as generic related items rather than explicitly stating the mitigation text strings, such as Configuration: Disable reuse of back-end connections, so it is partial rather than fully correct. All stated facts are supported by the cited CAPEC-273 record, and no unsupported cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

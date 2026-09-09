@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-CanFollow-CAPEC-700-51669a::analyst",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system failed to retrieve the gold entities (CAPEC-560 and CAPEC-70) because the generated queries used invalid relationship types. However, it honestly abstained from guessing and provided the failed queries in the logic flow, which is marked as CORRECT according to Rule 1.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

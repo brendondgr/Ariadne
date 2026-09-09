@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-HAS_MEMBER-Abstraction-CAPEC-703-c62fab::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 12,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an abstention: it reports that the CAPEC specialist returned no records and that the query was empty, which is supported by the logic flow. It does not state the expected CAPEC-703 anchor or any of the 12 expected related patterns, including CAPEC-158, CAPEC-163, CAPEC-177, CAPEC-191, CAPEC-457, CAPEC-552, CAPEC-57, CAPEC-648, CAPEC-649, CAPEC-65, CAPEC-692, and CAPEC-70. The only unsupported identifiers are the illustrative examples T1566, M1017, and CAPEC-98, so the answer is grounded but incomplete.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

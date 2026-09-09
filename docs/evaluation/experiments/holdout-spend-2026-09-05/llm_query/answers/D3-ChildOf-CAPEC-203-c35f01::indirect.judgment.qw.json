@@ -1,0 +1,28 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-203-c35f01::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.85,
+ "groundedness": 0.85,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: it shows the executed query and the evidence shows row_count 0 for seed CAPEC-203, so it does not fabricate a mapping. However it states none of the expected related patterns CAPEC-270, CAPEC-478, or CAPEC-51, so completeness is zero. The only unsupported identifiers are the illustrative examples T1566, M1017, and CAPEC-98.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

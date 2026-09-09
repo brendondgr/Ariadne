@@ -1,0 +1,29 @@
+{
+ "case_id": "D5-x_mitre_analytic_refs-x_mitre_platforms-DET0338-3be277::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "None of the live graph sources cover this request",
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by saying no records were returned, but it does not state the expected analytic AN0958 or the anchor DET0338. The evidence shows an empty failed query rather than a confirmed absence of mappings, so the negative claim is only partially supported. The example identifiers T1566, M1017, and CAPEC-98 are not present in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

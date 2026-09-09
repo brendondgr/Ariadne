@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Group-mitigates-G0103-d3cb64::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states G0103 and enumerates the eight related ATT&CK records returned for it, including S0445, S0444, T1027.015, T1204.001, T1566.001, T1566.002, T1204.002, and T1027.013. However, it describes them as 'related' rather than techniques that G0103 mitigates, and the evidence only shows USES relations, not MITIGATES. Thus it is faithful and grounded but only partially answers the mitigation question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

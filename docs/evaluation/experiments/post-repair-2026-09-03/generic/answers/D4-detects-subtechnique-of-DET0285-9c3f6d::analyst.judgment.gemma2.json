@@ -1,0 +1,26 @@
+{
+ "case_id": "D4-detects-subtechnique-of-DET0285-9c3f6d::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.7,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "DET0285 has 1 sub-technique: T1021.003"
+ ],
+ "rationale": "The answer correctly identifies T1021.003 as the technique detected by DET0285, but it fails to identify the parent technique T1021 as requested by the second part of the question. Additionally, it incorrectly claims that DET0285 'has' a sub-technique, whereas the evidence states it 'detects' one.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

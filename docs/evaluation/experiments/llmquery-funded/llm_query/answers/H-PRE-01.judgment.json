@@ -1,0 +1,19 @@
+{
+ "case_id": "H-PRE-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.9,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer honestly abstains, showing the Gremlin query g.V().has(\"id\", within(ids)).out(\"REQUIRES_SKILL\").elementMap() that executed cleanly but returned 0 records for seed CAPEC-471. However, the expected related entity capec:attack-pattern:471:skill:1 is never stated, so the question 'what does it require' is not actually answered. The abstention is well-formed per Rule 1 (query shown, ran cleanly, no records) but incomplete relative to the gold expectation.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

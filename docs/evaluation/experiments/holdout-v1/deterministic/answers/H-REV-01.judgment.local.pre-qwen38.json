@@ -1,0 +1,19 @@
+{
+ "case_id": "H-REV-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly retrieves and describes T1055.011 (Extra Window Memory Injection) and honestly abstains on CAPEC, showing the executed query that returned zero rows\u2014matching the gold expectation of empty CAPEC and no correlation. However, it never explicitly states that no attack patterns reference T1055.011, which is the direct question asked; the headline's '1 question(s) the sources don't establish' is vague and does not clearly answer the query. The anchor description is true but is retrieval, not the answer to 'which attack patterns reference' it.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

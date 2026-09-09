@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0029-6e5dcb::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.1,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 9,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and shows the executed query, so it avoids fabricating a mapping, but it states none of the expected software identifiers S1114, S1115, S1116, S1117, S1118, S1119, S1120, S1121, or S1123. It does mention C0029 in the abstention statement, but the expected related set is missing. The no-records claim is supported by the zero-row query result, though the gold expects nine network-device-targeting software records.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

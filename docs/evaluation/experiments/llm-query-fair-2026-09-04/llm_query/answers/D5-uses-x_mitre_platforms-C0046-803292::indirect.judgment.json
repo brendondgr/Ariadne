@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0046-803292::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 0.0,
+ "gold_expected": 21,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains and shows the executed query for C0046, but it does not state any of the 21 expected Windows techniques such as T1014, T1020, T1036, T1055, T1071.001, T1556, or T1690. It does mention C0046 in the abstention, but the expected technique set is absent. The only unsupported identifiers are the illustrative examples T1566, M1017, and CAPEC-98.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

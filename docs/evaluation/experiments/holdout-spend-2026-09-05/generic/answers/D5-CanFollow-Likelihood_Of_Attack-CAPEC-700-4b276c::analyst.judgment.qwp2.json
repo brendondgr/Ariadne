@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-CanFollow-Likelihood_Of_Attack-CAPEC-700-4b276c::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-70 as a predecessor of CAPEC-700, since the evidence shows a CAN_FOLLOW relation but not its direction"
+ ],
+ "rationale": "The answer states the expected gold identifier CAPEC-560 as a CanFollow predecessor of CAPEC-700. It also includes CAPEC-70, which is present in the evidence but not in the gold High-likelihood set, so it over-answers the likelihood constraint. The directional claim that both are predecessors is only weakly supported because the evidence lists CAN_FOLLOW neighbors without explicit direction.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

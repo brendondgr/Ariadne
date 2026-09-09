@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-attributed-to-uses-G0007-21ff8f::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.95,
+ "groundedness": 0.85,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer anchors G0007 and states S1205, one of the two expected related software identifiers, but omits S0108. It reports a broad set of G0007-related ATT&CK items rather than explicitly isolating malware/tools used by attributed campaigns. The statements are well grounded in the G0007 record, but completeness is only half because only one gold identifier is present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

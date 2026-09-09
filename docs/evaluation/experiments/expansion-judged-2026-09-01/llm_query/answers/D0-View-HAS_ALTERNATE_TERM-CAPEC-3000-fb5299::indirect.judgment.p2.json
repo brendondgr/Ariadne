@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-View-HAS_ALTERNATE_TERM-CAPEC-3000-fb5299::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer is an honest abstention: it states that the CAPEC source returned no matching records for CAPEC-3000 and includes the executed HAS_ALTERNATE_TERM query, matching the zero-row evidence. It names the required anchor CAPEC-3000 and does not assert any alternate terms or cross-source mappings. The generic example ids in the narrative are not claims about the query, so no substantive hallucination is counted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

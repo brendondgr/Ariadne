@@ -1,0 +1,19 @@
+{
+ "case_id": "H-GRP-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.85,
+ "groundedness": 0.3,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer retrieved 4 records matching the expected count for T1003.006 (DCSync) groups, but the normalize step failed for all records (empty primary_id and name), leaving them as 'unknown.' None of the gold group identifiers G0129, G1004, G1006, or G1053 are stated in the answer, and the claims array is empty. The answer is a weak assertion ('Found 4 ATT&CK record(s) including unknown and more') rather than a proper abstention, as it does not display the executed Cypher query as proof of the search performed.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

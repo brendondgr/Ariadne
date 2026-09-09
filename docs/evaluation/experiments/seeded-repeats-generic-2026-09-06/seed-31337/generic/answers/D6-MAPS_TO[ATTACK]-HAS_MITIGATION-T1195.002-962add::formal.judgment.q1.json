@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_MITIGATION-T1195.002-962add::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.8,
+ "groundedness": 0.75,
+ "completeness": 0.0,
+ "gold_expected": 26,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and cites a clean CAPEC query returning no AttackPattern records, but it does not show an anchored query from T1195.002 to CAPEC patterns; the attack sub-question is skipped due to a reversed dependency on q2. It states none of the 26 expected mitigation texts, while T1195.002 appears only in the abstention. The only unsupported identifiers are the example T1566, M1017, and CAPEC-98.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

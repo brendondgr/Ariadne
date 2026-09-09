@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-x_mitre_analytic_refs-DET0352-7381ea::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system failed to retrieve the expected analytic AN1000 for detection strategy DET0352. While it abstained from guessing, the abstention is not 'honest' in the context of the graph because the query failed due to a technical error ('empty query') rather than a genuine lack of data. Therefore, it failed to provide the gold identifier.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

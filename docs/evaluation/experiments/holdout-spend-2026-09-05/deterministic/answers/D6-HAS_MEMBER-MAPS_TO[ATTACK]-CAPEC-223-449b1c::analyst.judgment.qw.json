@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-HAS_MEMBER-MAPS_TO[ATTACK]-CAPEC-223-449b1c::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The executed query returned capec:category:223 with no linked records for CAPEC attack patterns, despite the evidence showing related CAPEC-28 and CAPEC-112"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-223 and its member attack patterns CAPEC-28 and CAPEC-112 from the CAPEC record. It does not state the expected ATT&CK technique T1110, instead abstaining because the CAPEC source does not model Technique. One abstention is unsupported because it says the query returned no linked attack-pattern records even though CAPEC-28 and CAPEC-112 are present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

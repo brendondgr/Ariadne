@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-227-5f6f39::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states CAPEC-227 and its description, satisfying the anchor requirement, but it never states the expected more specific child CAPEC-469 (HTTP DoS) that is present in the evidence. Thus it is partial rather than correct: it retrieves the anchor but does not answer which patterns are more specific. All stated claims are directly supported by the CAPEC-227 record, so no hallucination or fabricated mapping is present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

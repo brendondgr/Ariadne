@@ -1,0 +1,29 @@
+{
+ "case_id": "D4-detects-subtechnique-of-DET0285-9c3f6d::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.6,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "None of the live graph sources cover this request",
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and reports no records, which is supported by the empty result set, but it never states DET0285 or the expected T1021. The note about an empty query gives some proof of the executed query, while the stronger claim that no live sources cover the request and the example identifiers T1566, M1017, and CAPEC-98 are not evidenced. No cross-source mapping is asserted, so fabricated_mapping is false.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

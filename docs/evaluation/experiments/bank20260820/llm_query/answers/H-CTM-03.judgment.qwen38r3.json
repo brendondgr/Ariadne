@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CTM-03",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The narrative says it could not find 'CAPEC' or 'Cross Site Request Forgery' in the live graphs, but the shown evidence only establishes that the CAPEC-62 mapping query returned no records."
+ ],
+ "rationale": "The answer correctly treats CAPEC-62 as having no established ATT&CK technique mapping and skips the dependent ATT&CK mitigation query, matching the expected no-correlation and dependency-skip behavior. It states CAPEC-62 in the CAPEC abstention and includes the executed query as proof. The main weakness is the narrative's broader claim about not finding the CAPEC name, which is not directly supported by the shown query result.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

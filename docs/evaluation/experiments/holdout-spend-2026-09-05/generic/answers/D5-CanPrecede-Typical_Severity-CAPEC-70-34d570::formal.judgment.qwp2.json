@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-CanPrecede-Typical_Severity-CAPEC-70-34d570::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the expected High-severity successors CAPEC-560, CAPEC-600, and CAPEC-653, so it is complete for the gold set. However, it also lists CAPEC-151, CAPEC-561, CAPEC-165, CAPEC-545, and CAPEC-549 without applying the requested High-severity filter, making it over-inclusive. The listed identifiers are supported by the CAPEC-70 related evidence, but the answer does not explicitly state which ones satisfy the severity condition.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

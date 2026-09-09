@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-PeerOf-HAS_MITIGATION-CAPEC-273-95bea4::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 13,
+ "gold_present": 13,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer anchors CAPEC-273 and enumerates all 13 expected CAPEC-273 mitigation identifiers, capec:attack-pattern:273:mitigation:1 through capec:attack-pattern:273:mitigation:13, which correspond to the gold mitigation texts. It is partial because it presents them as generic related items rather than explicitly stating the mitigation descriptions or that they mitigate the peer attack patterns. It also includes supported but non-gold related items CAPEC-33 and CAPEC-273, and no cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "case_id": "F-NEG-05",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-16 as the anchor and, via the CAPEC abstention, establishes that the executed query returned CAPEC-16 with no linked ATT&CK records (satisfying expect_no_correlation and expect_no_join). The ATT&CK abstention correctly notes the dependency skip for mitigations since q1 produced no seed identifiers (satisfying expect_dependency_skip). No fabricated cross-source correlation is asserted, and all claims are grounded in the cited CAPEC-16 record.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CHN-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-62 has 2 TaxonomyEntrys: CWE-306 and capec:taxonomy:WASC:09"
+ ],
+ "rationale": "The answer states all five expected CAPEC patterns for CWE-306: CAPEC-12, CAPEC-36, CAPEC-62, CAPEC-166, and CAPEC-216. It also honestly abstains on the ATT&CK-technique side and shows the executed CAPEC query, matching the expected no-correlation/dependency-skip outcome. Minor faithfulness deductions come from calling both CWE-306 and capec:taxonomy:WASC:09 TaxonomyEntrys for CAPEC-62, and from the abstention wording that the CAPEC source does not establish the patterns even though it lists them.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

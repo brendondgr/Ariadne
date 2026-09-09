@@ -1,0 +1,19 @@
+{
+ "case_id": "F-NEG-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies that CAPEC-116 (Excavation) has no mapping to any ATT&CK technique, matching the gold expectation of expect_no_correlation and capec.expect_no_join. The honest abstention displays the executed Gremlin query (g.V().hasLabel(\"AttackPattern\")...out(\"MAPS_TO\")...has(\"taxonomy_name\",\"ATTACK\")) as proof of the empty result, and the ATT&CK mitigation sub-question is properly noted as skipped due to the dependency on the empty q1 seed set, satisfying attack.expect_dependency_skip.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

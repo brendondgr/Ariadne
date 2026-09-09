@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CHN-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-62 is described as having 2 TaxonomyEntrys, but the evidence only explicitly labels capec:taxonomy:WASC:09 as a TaxonomyEntry; CWE-306 appears as a related weakness."
+ ],
+ "rationale": "The answer states all five expected CAPEC patterns for CWE-306: CAPEC-12, CAPEC-36, CAPEC-62, CAPEC-166, and CAPEC-216. It also correctly abstains on ATT&CK techniques because the dependent attack query was skipped after q1 produced no join values. The only minor unsupported detail is calling CWE-306 a TaxonomyEntry for CAPEC-62, so faithfulness is slightly reduced.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-uses-mitigates-G1045-97f05f::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 0.73,
+ "gold_expected": 22,
+ "gold_present": 16,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer lists the five techniques returned for G1045 (T1686, T1136, T1572, T1190, T1040) and 16 of the 22 expected mitigations, including M1016, M1018, M1022, M1024, M1026, M1028, M1030, M1031, M1032, M1035, M1037, M1041, M1047, M1048, M1050, and M1051. It omits M1027, M1029, M1042, M1054, M1056, and M1057, and it does not explicitly state G1045/Salt Typhoon in the narrative, so it is partial rather than fully correct. All listed technique-mitigation pairs are supported by the cited ATT&CK records, with no fabricated cross-source mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CHN-01",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-62 (Cross Site Request Forgery) as the sole CAPEC pattern associated with CWE-1275, and accurately states that no ATT&CK technique identifiers are linked in the retrieved records. This precisely matches the gold expectation of expect_no_correlation: true with CAPEC-62 as the required CAPEC identifier. The dependent ATT&CK sub-question was properly noted as skipped due to no seed identifiers from q1, satisfying the expect_dependency_skip: true criterion.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

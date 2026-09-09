@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-uses-uses-G0045-12642a::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 0.9,
+ "groundedness": 0.7,
+ "completeness": 0.2,
+ "gold_expected": 153,
+ "gold_present": 30,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer anchors G0045 and lists 25 software items plus 46 technique IDs, but it only states 29 of the 152 expected technique identifiers, such as T1003.002, T1053.005, and T1074.001, while omitting many expected ones like T1001.001, T1027, and T1547.001. It does not explicitly map techniques to each malware/tool, so it only partially answers the requested relationship. The claims are grounded in the G0045 record, but completeness is low because most gold technique neighbors are absent.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

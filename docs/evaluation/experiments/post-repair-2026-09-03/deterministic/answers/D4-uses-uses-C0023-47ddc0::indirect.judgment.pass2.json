@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-uses-uses-C0023-47ddc0::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.85,
+ "groundedness": 0.75,
+ "completeness": 0.03,
+ "gold_expected": 35,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies C0023 and honestly abstains with the executed query, but the query only matches Campaign-[:USES]->Technique and does not traverse Software, so it does not establish the requested malware/tool technique mappings. It states none of the expected technique identifiers such as T1005, T1027, or T1573.001, and it does not name any malware or tooling. The abstention is grounded in the empty result, but it is incomplete relative to the gold set.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

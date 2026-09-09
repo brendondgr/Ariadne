@@ -1,0 +1,19 @@
+{
+ "case_id": "H-ABS-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.35,
+ "faithfulness": 1.0,
+ "groundedness": 0.7,
+ "completeness": 0.33,
+ "gold_expected": 3,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-606 (Weakening of Cellular Encryption) as Abstraction: Detailed, Status: Draft, but never states the two parent patterns CAPEC-620 (Drop Encryption Level, Standard) and CAPEC-212 (Functionality Misuse, Meta) that the evidence's related records explicitly provide. The question specifically asks to 'walk up the chain from the most specific pattern through its more general parents to the most abstract one,' which the answer does not accomplish. Retrieval succeeded (related records present in evidence) but the narrative text omits them entirely.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

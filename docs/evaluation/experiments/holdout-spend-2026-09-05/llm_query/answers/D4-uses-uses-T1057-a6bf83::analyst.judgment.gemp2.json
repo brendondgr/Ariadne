@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-uses-uses-T1057-a6bf83::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 29,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer successfully identifies a large number of malware and tools (S-IDs) associated with T1057, but it completely omits the second part of the question regarding the campaigns (C-IDs). None of the 29 expected gold campaign identifiers (e.g., C0001, C0004) are present in the response.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

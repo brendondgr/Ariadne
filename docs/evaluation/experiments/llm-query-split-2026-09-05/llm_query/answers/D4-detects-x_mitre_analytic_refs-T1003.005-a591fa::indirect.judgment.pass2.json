@@ -1,0 +1,29 @@
+{
+ "case_id": "D4-detects-x_mitre_analytic_refs-T1003.005-a591fa::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.5,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "None of the live graph sources cover this request",
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows the failed query, but it does not state T1003.005 or the expected analytics AN1417 and AN1418. Its zero-record claim is supported by the evidence, while the stronger 'none cover' claim and the example IDs T1566, M1017, and CAPEC-98 are not. This makes it a partial, honest no-result abstention rather than a complete answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

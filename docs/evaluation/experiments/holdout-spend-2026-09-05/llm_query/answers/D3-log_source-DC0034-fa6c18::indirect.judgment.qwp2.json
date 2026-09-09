@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-log_source-DC0034-fa6c18::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 40,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only reports that 40 records were found in MITRE ATT&CK and does not state any of the expected analytics that rely on DC0034, such as AN0013, AN0052, or AN2040. The count is supported by the evidence, but the question asks which analytics, so no gold identifiers are actually stated. No cross-source mapping is fabricated, but the answer is not an abstention and leaves the requested set unspecified.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

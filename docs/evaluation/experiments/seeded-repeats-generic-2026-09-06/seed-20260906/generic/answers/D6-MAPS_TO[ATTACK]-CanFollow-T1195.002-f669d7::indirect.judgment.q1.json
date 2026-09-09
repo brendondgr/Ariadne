@@ -1,0 +1,27 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanFollow-T1195.002-f669d7::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.75,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017"
+ ],
+ "rationale": "The answer abstains and shows a clean CAPEC query that returned no records, matching the zero-record evidence. It mentions CAPEC-98 only as an example and T1195.002 in the abstention, but does not assert the expected T1195.002 -> CAPEC-98 mapping. The unanchored query and skipped attack sub-question make the abstention honest rather than a fabricated cross-source correlation.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

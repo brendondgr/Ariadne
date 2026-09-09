@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-HAS_MEMBER-CAPEC-1000-8fae76::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.1,
+ "gold_expected": 10,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and shows the executed CAPEC query, and the evidence shows row_count 0 for seed CAPEC-1000, so it is grounded and not fabricated. The gold expected the anchor CAPEC-1000 plus nine related categories (CAPEC-118, CAPEC-152, CAPEC-156, CAPEC-172, CAPEC-210, CAPEC-223, CAPEC-225, CAPEC-255, CAPEC-262), but the answer states only CAPEC-1000 and none of the related categories. Thus it is a supported abstention but incomplete relative to the expected set.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

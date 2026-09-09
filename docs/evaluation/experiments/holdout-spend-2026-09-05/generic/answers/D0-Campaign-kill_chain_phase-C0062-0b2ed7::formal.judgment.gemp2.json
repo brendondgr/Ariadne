@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-Campaign-kill_chain_phase-C0062-0b2ed7::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 10,
+ "gold_present": 10,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "Stealth (TA0005)"
+ ],
+ "rationale": "The system correctly identified 10 ATT&CK tactics associated with the campaign C0062. The tactic IDs are grounded in the retrieval results (confirmed by the logic flow summary and the claims). The name 'Stealth' for TA0005 is a hallucination as the standard MITRE ATT&CK name for TA0005 is 'Inhibit Response Action'.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

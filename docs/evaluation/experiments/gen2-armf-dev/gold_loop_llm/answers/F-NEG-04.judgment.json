@@ -1,0 +1,19 @@
+{
+ "case_id": "F-NEG-04",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-7 (Blind SQL Injection) as the anchor and honestly states that no ATT&CK technique mapping exists, matching the gold expectation of expect_no_correlation: true. It properly notes the attack source dependency skip (expect_dependency_skip: true) since q1 returned no join values, and frames both gaps as abstentions with the executed Gremlin query shown as proof. No fabricated cross-source correlation is asserted, and all stated properties (Abstraction: Detailed, Status: Draft) are directly supported by the evidence record.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

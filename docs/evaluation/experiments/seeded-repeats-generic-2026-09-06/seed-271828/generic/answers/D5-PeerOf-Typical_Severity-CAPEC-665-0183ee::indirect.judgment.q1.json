@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-PeerOf-Typical_Severity-CAPEC-665-0183ee::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the anchor CAPEC-665 and lists its peers CAPEC-148, CAPEC-151, and CAPEC-458, which are supported by the CAPEC-665 record. It includes the expected gold peer identifiers CAPEC-148 and CAPEC-151, but it does not explicitly state that these peers have a typical severity of Medium. It also includes CAPEC-458 as a peer without applying the requested severity filter, so it is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

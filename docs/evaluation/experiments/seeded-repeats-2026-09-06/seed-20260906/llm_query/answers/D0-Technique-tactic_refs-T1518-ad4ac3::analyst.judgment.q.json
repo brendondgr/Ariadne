@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Technique-tactic_refs-T1518-ad4ac3::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.7,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: it states that no records were returned and notes the attack specialist's empty query, which matches the zero-record evidence for T1518. It does not assert any tactic neighbors, so no fabricated mapping is made. It does not explicitly restate T1518 and mentions unsupported example identifiers T1566, M1017, and CAPEC-98, which slightly reduces faithfulness and groundedness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "case_id": "H-REV-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The expected result was that no CAPEC patterns map to T1613 and that no cross-source correlation should be asserted. The answer retrieves T1613 from both sources and notes that the identifier is shared, which is supported by the evidence, but it does not explicitly state that no CAPEC patterns reference T1613. It therefore partially addresses the question by identifying the anchor and shared identifier rather than giving the expected empty/no-correlation answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

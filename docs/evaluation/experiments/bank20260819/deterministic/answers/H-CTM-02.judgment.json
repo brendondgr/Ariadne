@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-325 (the sole gold identifier) and honestly abstains on both ATT&CK techniques (no MAPS_TO records found, Gremlin query shown as proof) and mitigations (dependency skip because q1 produced no seed identifiers, so no query was executed). This aligns precisely with the gold expectations of expect_no_correlation=true and expect_dependency_skip=true, making the abstentions the correct answer rather than a failure.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

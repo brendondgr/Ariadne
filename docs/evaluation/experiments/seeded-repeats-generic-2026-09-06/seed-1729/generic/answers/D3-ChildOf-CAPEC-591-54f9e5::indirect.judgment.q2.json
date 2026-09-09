@@ -1,0 +1,26 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-591-54f9e5::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 9,
+ "gold_present": 9,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-591 has 11 ChildOf parents (the evidence shows 11 related CHILD_OF entries but does not explicitly mark all of them as parents)"
+ ],
+ "rationale": "The answer includes the anchor CAPEC-591 and all nine expected variants: CAPEC-18, CAPEC-198, CAPEC-199, CAPEC-243, CAPEC-244, CAPEC-245, CAPEC-247, CAPEC-32, and CAPEC-86. It is only partial because it frames the related set as \"ChildOf parents\" and also includes broader patterns CAPEC-63 and CAPEC-242 rather than explicitly identifying the more specific variants. The claims are grounded in the CAPEC-591 record and its related list, with no cross-source mapping asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

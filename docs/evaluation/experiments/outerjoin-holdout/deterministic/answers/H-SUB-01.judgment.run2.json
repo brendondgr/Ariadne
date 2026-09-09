@@ -1,0 +1,19 @@
+{
+ "case_id": "H-SUB-01",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies T1583 (Acquire Infrastructure) as the parent technique of T1583.003 (Virtual Private Server) and addresses the second part of the question by stating T1583 has 1 related item. Both gold identifiers (T1583.003 and T1583) are explicitly stated and grounded in the cited ATT&CK record. The only minor weakness is that 'has 1 related item' slightly overstates what the single-row query result proves, since the query was seeded on T1583.003 and would not surface other T1583 sub-techniques.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

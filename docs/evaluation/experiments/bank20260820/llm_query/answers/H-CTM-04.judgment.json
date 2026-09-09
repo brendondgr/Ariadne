@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-04",
+ "verdict": "CORRECT",
+ "correctness": 0.7,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer is an honest abstention: the CAPEC query seeded with CAPEC-55 was executed and returned 0 rows, and the dependent Attack query was skipped for lack of join values. The abstention explicitly states 'No records were returned' and carries the executed Gremlin query as proof. None of the four gold identifiers (CAPEC-55, T1110.002, M1027, M1032) appear in the answer text, so completeness is 0, but per Rule 1 the abstention is not a wrong answer.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-HAS_ALTERNATE_TERM-T1185-59182f::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.7,
+ "faithfulness": 0.65,
+ "groundedness": 0.65,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The attack source doesn't establish this and doesn't model the entities this question asks about"
+ ],
+ "rationale": "The answer retrieves CAPEC-662 and CAPEC-593 as mapped to T1185, but it never states the expected alternate names Boy in the Browser, Man in the Browser, or Man in the Mobile. It does include an explicit abstention showing the T1185 query, so it is not a pure guess, but the expected text set is absent. The main unsupported meta-claim is that the attack source does not establish the question.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

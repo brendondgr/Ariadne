@@ -1,0 +1,29 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-591-54f9e5::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.7,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 9,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "None of the live graph sources cover this request",
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: it reports that the CAPEC specialist returned no records and that the query was empty, which matches the evidence. However, it does not state any of the expected CAPEC-591 children, including CAPEC-18, CAPEC-32, CAPEC-86, CAPEC-198, CAPEC-199, CAPEC-243, CAPEC-244, CAPEC-245, or CAPEC-247. It also asserts that no live source covers the request and cites unsupported example IDs T1566, M1017, and CAPEC-98, so it is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

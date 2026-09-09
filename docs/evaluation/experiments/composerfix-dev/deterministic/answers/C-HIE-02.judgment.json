@@ -1,0 +1,19 @@
+{
+ "case_id": "C-HIE-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states that CAPEC-564 (Run Software at Logon) has one ChildOf parent: CAPEC-542 (Targeted Malware), which is exactly the gold-expected identifier. This claim is grounded in the CAPEC record's related entry (type: CHILD_OF, id: CAPEC-542) and the executed Gremlin traversal out(\"CHILD_OF\"). No hallucinations, fabricated cross-source mappings, or unsupported assertions are present.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,23 @@
+{
+ "case_id": "H-MIT-01",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.85,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "M1056 is phrased as a 'mitigated technique' although the cited record labels it as a Mitigation"
+ ],
+ "rationale": "The answer names the anchor T1592.001 and the expected mitigation M1056, satisfying the only gold neighbor. It is grounded in the T1592.001 record and its MITIGATES relation to M1056. The minor wording issue is that M1056 is called a 'mitigated technique' rather than a mitigation, so faithfulness is slightly reduced.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

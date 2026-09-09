@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-x_mitre_analytic_refs-DET0321-6c25bb::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.2,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only says that 4 records were found in MITRE ATT&CK and does not name DET0321 or the expected analytics AN0909, AN0910, AN0911, or AN0912. The evidence shows a query for DET0321 returned 4 rows, so the count is supported, but the requested identifiers are not stated. This makes it a weak partial answer rather than a correct identification of the analytics.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "case_id": "F-CTM-06",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 17,
+ "gold_present": 17,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1211 is named 'Exploitation for Stealth', but the CAPEC evidence names the related ATT&CK entry 'Exploitation for Defensive Evasion'"
+ ],
+ "rationale": "The answer states the required CAPEC-665 mappings to T1211, T1542.002, and T1556, and it lists all 13 expected mitigations (M1018, M1019, M1022, M1024, M1025, M1026, M1027, M1028, M1032, M1047, M1048, M1050, M1051). The cross-source correlations are supported by the CAPEC taxonomy entries and the matching ATT&CK records, so no fabricated mapping is present. The only minor unsupported detail is the T1211 label 'Exploitation for Stealth'.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

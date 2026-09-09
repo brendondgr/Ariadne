@@ -1,0 +1,21 @@
+{
+ "case_id": "H-SW-01",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 3,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only reports that three ATT&CK records were found and does not state any of the expected software identifiers S0154, S0692, or S1060. It is faithful to the evidence volume, which shows one source and three empty records, but it does not answer which software implements T1134.003. Because no expected software identifiers are stated, completeness is zero and the answer is incorrect rather than partial.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

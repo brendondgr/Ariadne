@@ -1,0 +1,28 @@
+{
+ "case_id": "D2-kill_chain_phase-T1021.008-38d7af::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains rather than asserting a tactic for T1021.008, and the evidence shows the attack specialist returned no records after an empty-query failure. The expected tactic TA0008 is not stated, so completeness is zero, but the abstention is supported by the shown empty-query note. The example identifiers T1566, M1017, and CAPEC-98 are unsupported by the evidence, though they are not used as a mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

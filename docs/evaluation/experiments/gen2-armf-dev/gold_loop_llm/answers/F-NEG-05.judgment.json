@@ -1,0 +1,19 @@
+{
+ "case_id": "F-NEG-05",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states that CAPEC-16 (Dictionary-based Password Attack) has no ATT&CK technique mapping, matching the gold expectation of expect_no_correlation: true and must_correlate: []. The capec abstention includes the executed Gremlin query (g.V().hasLabel(\"AttackPattern\")...out(\"MAPS_TO\")...) as proof of the empty result, and the attack source correctly skips due to q1's empty join values. No fabricated cross-source correlation or hallucinated identifier is present.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

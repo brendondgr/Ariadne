@@ -1,0 +1,28 @@
+{
+ "case_id": "D1-Technique-x_mitre_platforms-T1055.008-9c1368::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.75,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains instead of asserting the expected platform Linux for T1055.008, and the trace shows an empty attack query with zero records, so the abstention is honest. It does not state T1055.008 or Linux, so completeness is 0.0, but it does not fabricate a cross-source mapping. The only unsupported items are the example identifiers T1566, M1017, and CAPEC-98.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

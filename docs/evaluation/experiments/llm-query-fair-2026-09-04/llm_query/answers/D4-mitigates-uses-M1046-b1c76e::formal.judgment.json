@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-mitigates-uses-M1046-b1c76e::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer reports only that one unnamed MITRE ATT&CK record was found, without stating the mitigation M1046 or the expected campaign C0063. The executed query targeted M1046 and returned one row, but the normalized record had no primary_id or name, so the narrative does not answer which campaigns use the mitigated techniques. Because it does not abstain and does not name the required campaign identifier, it is incomplete and effectively incorrect.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

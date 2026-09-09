@@ -1,0 +1,22 @@
+{
+ "case_id": "H-CHN-03",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.85,
+ "groundedness": 0.4,
+ "completeness": 0.0,
+ "gold_expected": 28,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566 (cited as example in narrative, not present in evidence)",
+  "CAPEC-98 (cited as example in narrative, not present in evidence)"
+ ],
+ "rationale": "The answer is an honest abstention reporting that the CAPEC specialist failed (empty query rejected at gate three times) and the ATT&CK specialist was skipped due to its dependency on the failed q1. No gold identifiers are stated: none of the expected techniques (T1072, T1185, T1195.001, T1195.002), CAPEC patterns (CAPEC-184, 185, 186, 187, 533, 538, 657, 662, 691, 692, 693, 695), or mitigations (M1013, M1015, M1016, M1017, M1018, M1026, M1027, M1029, M1030, M1032, M1033, M1051) appear in the answer. The abstention's query field is empty, meaning it shows no executed query as proof, which falls short of the full abstention standard that requires showing the query that was run.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

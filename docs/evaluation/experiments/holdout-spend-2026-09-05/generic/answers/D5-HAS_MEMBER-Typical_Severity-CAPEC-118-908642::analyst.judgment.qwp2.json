@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-HAS_MEMBER-Typical_Severity-CAPEC-118-908642::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.8,
+ "groundedness": 0.75,
+ "completeness": 0.25,
+ "gold_expected": 4,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: it reports that the CAPEC query for CAPEC-118 returned no records and includes the executed query. It does not state the expected related patterns CAPEC-188, CAPEC-192, or CAPEC-410, so completeness is low. The only expected identifier it states is the anchor CAPEC-118, while the narrative examples T1566, M1017, and CAPEC-98 are not supported by the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

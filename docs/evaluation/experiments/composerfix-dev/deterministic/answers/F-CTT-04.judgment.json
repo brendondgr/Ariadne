@@ -1,0 +1,19 @@
+{
+ "case_id": "F-CTT-04",
+ "verdict": "CORRECT",
+ "correctness": 0.92,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly traces the two-hop path from CAPEC-633 (Token Impersonation) to T1134 (Access Token Manipulation) and identifies the two ATT&CK tactics: TA0004 (Privilege Escalation) and TA0005 (Stealth). All four gold identifiers (CAPEC-633, T1134, TA0004, TA0005) are explicitly stated in both the narrative and the structured claims. The cross-source correlation on T1134 is properly supported by the CAPEC record's join_values and the ATT&CK record's related items, with no fabricated mappings or hallucinated identifiers.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

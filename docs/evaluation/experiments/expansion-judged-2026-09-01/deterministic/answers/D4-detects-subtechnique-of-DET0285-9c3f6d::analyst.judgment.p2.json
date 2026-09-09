@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-detects-subtechnique-of-DET0285-9c3f6d::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.85,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains by reporting that no records were returned and that the attack specialist failed, which is supported by the empty evidence and the DET0285 binding-mismatch note. It does not state the expected related identifier T1021, so it omits the gold neighbor. It also does not carry the executed query in the abstention text, though the logic flow contains the failed Cypher draft.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

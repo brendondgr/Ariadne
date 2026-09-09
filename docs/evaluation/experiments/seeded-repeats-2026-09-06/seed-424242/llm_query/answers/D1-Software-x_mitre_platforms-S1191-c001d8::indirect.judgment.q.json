@@ -1,0 +1,28 @@
+{
+ "case_id": "D1-Software-x_mitre_platforms-S1191-c001d8::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains after the attack specialist returned no records for S1191, but it never states the expected platform Windows or the anchor S1191. It is mostly faithful to the empty result, though the example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence. Completeness is zero because no gold identifier is stated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

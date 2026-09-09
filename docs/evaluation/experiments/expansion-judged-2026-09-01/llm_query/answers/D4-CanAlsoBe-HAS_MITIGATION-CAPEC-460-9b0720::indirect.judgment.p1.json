@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-CanAlsoBe-HAS_MITIGATION-CAPEC-460-9b0720::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains after the CAPEC specialist failed with an empty query, so it avoids guessing a mitigation for CAPEC-460. It does not state CAPEC-460 or the expected mitigation text about context-dependent sanitization and Flash cookies. The example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, but no cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

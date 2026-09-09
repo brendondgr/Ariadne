@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-03",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-62 as the sole gold identifier, explicitly states no ATT&CK technique correlation exists (matching expect_no_correlation: true), and explains the mitigations query was skipped due to the dependency on q1 (matching expect_dependency_skip: true). The CAPEC abstention includes the executed Gremlin query as proof, and the WASC:09 taxonomy entry is the only related record cited. No fabricated cross-source mappings or hallucinated identifiers are present.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

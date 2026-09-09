@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-x_mitre_analytic_refs-x_mitre_platforms-DET0338-3be277::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows the executed query, so it avoids a fabricated mapping, but it omits the expected analytic AN0958. It does mention DET0338 in the abstention statement, giving partial completeness. The zero-row result supports the no-records claim, while the example identifiers T1566, M1017, and CAPEC-98 are not grounded in the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

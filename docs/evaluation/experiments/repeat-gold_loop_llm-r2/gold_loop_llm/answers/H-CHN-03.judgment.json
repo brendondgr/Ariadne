@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CHN-03",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 28,
+ "gold_present": 28,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies all 12 CAPEC patterns (CAPEC-184, 185, 186, 187, 533, 538, 657, 662, 691, 692, 693, 695), all 4 ATT&CK techniques (T1072, T1185, T1195.001, T1195.002), and all 12 mitigations (M1013, M1015, M1016, M1017, M1018, M1026, M1027, M1029, M1030, M1032, M1033, M1051). Cross-source correlations (e.g., CAPEC-662\u2192T1185, CAPEC-186\u2192T1195.002, CAPEC-187\u2192T1072, CAPEC-691\u2192T1195.001/T1195.002) are all supported by the evidence records. Minor faithfulness deduction for detailed mitigation descriptions (specific tool names like WSUS, Nessus, Okta, CyberArk) that go beyond what the evidence records explicitly contain.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

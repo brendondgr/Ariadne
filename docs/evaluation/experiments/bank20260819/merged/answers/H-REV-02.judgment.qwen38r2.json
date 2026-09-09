@@ -1,0 +1,23 @@
+{
+ "case_id": "H-REV-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-542 is described as being in MITRE ATT&CK rather than CAPEC"
+ ],
+ "rationale": "The answer identifies CAPEC-542 as the CAPEC pattern related to T1587.001 and also states the ATT&CK record T1587.001, satisfying the expected identifiers. The mapping is grounded in the CAPEC record's MAPS_TO related entry, and the cross-source correlation is supported by both records sharing T1587.001. Minor source wording makes CAPEC-542 sound like a MITRE ATT&CK item, so faithfulness is slightly reduced.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

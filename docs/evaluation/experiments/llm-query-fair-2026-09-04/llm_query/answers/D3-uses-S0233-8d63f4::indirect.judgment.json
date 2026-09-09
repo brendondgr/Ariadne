@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-uses-S0233-8d63f4::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer reports only that one unnamed MITRE ATT&CK record was found for S0233, but it never states the expected group G0065. It is faithful to the evidence because the query returned one row and normalization produced an empty record, but it does not answer which threat group used MURKYTOP. Since it does not abstain, the missing G0065 makes it incomplete rather than an honest abstention.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

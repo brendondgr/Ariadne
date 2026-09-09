@@ -1,0 +1,27 @@
+{
+ "case_id": "D4-mitigates-uses-M1047-b63672::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 0.6,
+ "groundedness": 0.5,
+ "completeness": 1.0,
+ "gold_expected": 46,
+ "gold_present": 46,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "855 related item(s) for M1047",
+  "M1047 is related to all listed T, G, S, and C identifiers"
+ ],
+ "rationale": "The answer names M1047 and includes all 46 expected campaign IDs, from C0001 through C0063, along with many technique IDs. However, it only says these items are related to M1047 rather than explicitly mapping each campaign to the techniques it used, so it partially answers the requested per-technique campaign relationship. The broad 855-item claim is only cited to M1047, making faithfulness and groundedness moderate.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

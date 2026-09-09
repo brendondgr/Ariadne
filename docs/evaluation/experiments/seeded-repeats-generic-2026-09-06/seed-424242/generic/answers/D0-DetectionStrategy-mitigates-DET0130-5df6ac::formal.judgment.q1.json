@@ -1,0 +1,26 @@
+{
+ "case_id": "D0-DetectionStrategy-mitigates-DET0130-5df6ac::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "DET0130 has 1 sub-technique: T1555.006"
+ ],
+ "rationale": "The answer correctly names DET0130 and identifies T1555.006 as a related ATT&CK item, but it frames the relationship as 'has' or 'related' rather than the requested mitigation relationship. The evidence only shows a DETECTS edge from DET0130 to T1555.006, not a MITIGATES edge, so the answer is partially responsive. It is grounded in the DET0130 record, but the 'has sub-technique' phrasing is a mild overstatement.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

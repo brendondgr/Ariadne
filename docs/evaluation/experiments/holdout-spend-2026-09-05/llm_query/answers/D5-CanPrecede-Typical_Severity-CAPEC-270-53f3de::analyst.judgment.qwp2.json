@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-CanPrecede-Typical_Severity-CAPEC-270-53f3de::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.25,
+ "faithfulness": 0.6,
+ "groundedness": 0.4,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by saying no records were returned, which is supported by the empty CAPEC result, but it omits the expected related pattern CAPEC-568 and does not mention the anchor CAPEC-270. Its example identifiers T1566, M1017, and CAPEC-98 are not present in the evidence, reducing faithfulness. No cross-source mapping is asserted, so there is no fabricated mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

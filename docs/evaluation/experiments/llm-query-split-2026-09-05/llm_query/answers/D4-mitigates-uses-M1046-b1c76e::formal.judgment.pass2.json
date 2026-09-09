@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-mitigates-uses-M1046-b1c76e::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The query targeted M1046 and its mitigated techniques, but the answer only states T1495 (Firmware Corruption) and never names the expected campaign C0063. The claim is faithful and grounded in the retrieved ATT&CK record, but it does not answer the campaign question. Therefore, completeness is zero and the answer is incorrect.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

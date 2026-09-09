@@ -1,0 +1,28 @@
+{
+ "case_id": "D2-HAS_MEMBER-CAPEC-156-d26a33::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 6,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows the executed CAPEC query, and the evidence shows row_count 0 for seed CAPEC-156, so the negative is faithful. However the gold expects six related attack patterns (CAPEC-148, CAPEC-151, CAPEC-154, CAPEC-173, CAPEC-416, CAPEC-690), none of which are stated, so completeness is zero. It only mentions the anchor CAPEC-156 and unsupported example ids T1566, M1017, CAPEC-98, so it is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

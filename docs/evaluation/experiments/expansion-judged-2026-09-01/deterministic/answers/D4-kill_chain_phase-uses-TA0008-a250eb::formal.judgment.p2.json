@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-kill_chain_phase-uses-TA0008-a250eb::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 0.6,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 19,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and states that no records were returned, but the gold expects 19 campaign identifiers such as C0002, C0014, and C0063 connected through TA0008. It states no campaign IDs, only TA0008 in the failure note, and adds unsupported example identifiers T1566, M1017, and CAPEC-98. The failed query does not prove that the graph genuinely contains no mapping, so the abstention is not fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

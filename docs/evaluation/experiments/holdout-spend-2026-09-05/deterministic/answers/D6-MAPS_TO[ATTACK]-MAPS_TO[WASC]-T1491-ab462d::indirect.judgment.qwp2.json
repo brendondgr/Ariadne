@@ -1,0 +1,26 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[WASC]-T1491-ab462d::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.6,
+ "groundedness": 0.5,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The attack source doesn't establish T1491-to-CAPEC mappings"
+ ],
+ "rationale": "The answer mentions T1491 and abstains by saying the attack source does not establish the CAPEC patterns, but it never states the expected WASC:12 mapping. It lists many CAPEC records and ATTACK taxonomy entries, but those are not tied to T1491 or WASC. Therefore it is partial: it identifies the anchor and acknowledges a gap, but omits the key expected related identifier.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

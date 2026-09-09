@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Technique-tactic_refs-T1518-ad4ac3::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.7,
+ "faithfulness": 0.7,
+ "groundedness": 0.6,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains rather than asserting tactic mappings for T1518, and its note that the attack specialist failed with an empty query matches the evidence of zero records. It does not fabricate a T1518-to-tactic mapping, but it introduces unsupported example identifiers T1566, M1017, and CAPEC-98. Because the expected tactic set is empty, the abstention is acceptable, though the missing explicit mention of T1518 slightly reduces directness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

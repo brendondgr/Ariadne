@@ -1,0 +1,23 @@
+{
+ "case_id": "H-GRP-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1003.006 (DCSync) has 8 used techniques: S0002, G1004, G1006, G1053, G0129, C0027, C0014, C0024"
+ ],
+ "rationale": "The answer correctly states all four expected groups, G0129, G1004, G1006, and G1053, as using T1003.006, which matches the evidence's USES neighbors. It also correctly includes the anchor T1003.006 and the non-group related items S0002, C0027, C0014, and C0024. The main minor issue is the claim that T1003.006 has eight 'used techniques,' when the evidence supports eight related entities with a USES relationship, not all of which are techniques.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

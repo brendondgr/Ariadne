@@ -1,0 +1,19 @@
+{
+ "case_id": "H-ABS-01",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer is an honest abstention from the CAPEC source, showing the executed query g.V().has(\"id\", within(ids)).elementMap().limit(20000) which returned 0 rows for seed CAPEC-481. The gold identifier CAPEC-161 (expected as a ChildOf neighbor) is not stated because the graph returned no records. Per Rule 1, this is a correct abstention that rewards the system for not guessing an entity type it could not verify.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

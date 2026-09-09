@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-detects-DET0189-278d85::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly states DET0189 and its supported STIX properties, but it never states the expected detected technique T1027.005. The evidence shows a DETECTS facet to a SubTechnique, yet the narrative omits the neighbor identifier. Thus it is faithful and grounded but only partially complete.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

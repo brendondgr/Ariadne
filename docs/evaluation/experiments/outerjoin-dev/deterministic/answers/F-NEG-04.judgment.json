@@ -1,0 +1,19 @@
+{
+ "case_id": "F-NEG-04",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 0.9,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-7 (Blind SQL Injection) as the anchor and honestly reports that the CAPEC-to-ATT&CK mapping query returned no linked technique records, matching the gold expectation of no correlation. The ATT&CK mitigations sub-question was properly skipped as a dependency on the empty q1 result, satisfying the expect_dependency_skip criterion. The abstention carries the executed Gremlin query as proof of the empty join.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

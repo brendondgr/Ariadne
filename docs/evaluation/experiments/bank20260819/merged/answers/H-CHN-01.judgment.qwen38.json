@@ -1,0 +1,24 @@
+{
+ "case_id": "H-CHN-01",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.65,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-related items are described as being in MITRE ATT&CK",
+  "The CAPEC query is said to have returned no linked records despite CAPEC-62 and capec:taxonomy:WASC:09"
+ ],
+ "rationale": "The answer correctly states CAPEC-62 as the required related CAPEC pattern and abstains from asserting ATT&CK techniques because the dependent attack sub-question had no seed identifiers. This matches the expected no-correlation outcome and the attack dependency skip. Minor faithfulness deductions are warranted for saying the CAPEC query returned no linked records and for placing CAPEC items in MITRE ATT&CK.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

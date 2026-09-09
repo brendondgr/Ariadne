@@ -1,0 +1,24 @@
+{
+ "case_id": "H-LKP-01",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "PRE expanded to Privilege Escalation",
+  "T1587.004 described as a tactic rather than only a subtechnique"
+ ],
+ "rationale": "The answer states the required identifier T1587.004 and names it Exploits, directly answering the describe-pattern question. It is grounded in the cited attack record for T1587.004, but it adds the expansion PRE = Privilege Escalation and calls the item a tactic, which are not explicit in the evidence. No cross-source mapping is asserted, so the minor unsupported phrasing does not make it incorrect.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

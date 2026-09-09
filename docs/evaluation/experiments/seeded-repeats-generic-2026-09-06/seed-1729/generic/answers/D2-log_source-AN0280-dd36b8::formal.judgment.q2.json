@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-log_source-AN0280-dd36b8::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.9,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains and shows the executed query, and the evidence reports zero rows for the AN0280 search, so it does not guess a mapping to DC0064. It states the anchor AN0280 but omits the expected data component DC0064, so completeness is partial. The abstention is supported by the no-records result, with only minor illustrative id examples beyond the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

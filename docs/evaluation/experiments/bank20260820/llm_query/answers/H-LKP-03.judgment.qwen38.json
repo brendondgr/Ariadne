@@ -1,0 +1,26 @@
+{
+ "case_id": "H-LKP-03",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The live ATT&CK/CAPEC graphs contain no 'CAPEC' or 'Reflected XSS'",
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows the executed CAPEC query for CAPEC-591, which the evidence supports with row_count=0 and no records. It states the single gold identifier CAPEC-591 in the abstention, so completeness is full. The narrative's broader no-find claim and example ids T1566, M1017, and CAPEC-98 are not supported by the shown evidence, reducing faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

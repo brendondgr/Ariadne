@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CHN-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "q1 produced no seed identifiers"
+ ],
+ "rationale": "The answer states all five expected CAPEC patterns: CAPEC-12, CAPEC-36, CAPEC-62, CAPEC-166, and CAPEC-216, and it abstains from asserting ATT&CK techniques, which matches the expected no-correlation and dependency-skip behavior. The claims are mostly grounded in the returned CAPEC records and the executed query. The only notable imprecision is saying q1 produced no seed identifiers when the evidence says it returned no join values.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "case_id": "H-REV-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.85,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The expected result is an empty set of CAPEC patterns referencing T1219, and the CAPEC query returned only the T1219 anchor with no related pattern neighbours. The answer correctly grounds the T1219 description and properties in the ATT&CK record, but it asserts a shared-identifier correlation between CAPEC and ATT&CK instead of stating that no patterns reference T1219. It therefore partially answers the query: it identifies the anchor and source records but does not clearly provide the requested pattern set.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

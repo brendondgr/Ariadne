@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-uses-mitigates-C0021-8f9753::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.7,
+ "groundedness": 0.6,
+ "completeness": 0.06,
+ "gold_expected": 17,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by saying no records were returned, which is supported by evidence_volume records=0 and the empty-query gate failure. It does not assert that any mitigation addresses C0021, so there is no fabricated mapping, but it mentions M1017 only as an example and also unsupported T1566 and CAPEC-98. The expected mitigation set contains 17 IDs and only M1017 is stated, so completeness is low, yet the query-backed abstention makes the answer correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

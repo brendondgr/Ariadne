@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-Campaign-x_mitre_analytic_refs-C0034-a648a4::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.6,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer correctly reports that the attack specialist returned no records for C0034, which matches the empty expected analytic set, but it does not explicitly state C0034 and overstates that no live source covers the request. The examples T1566, M1017, and CAPEC-98 are not supported by the evidence, and the abstention does not clearly show the executed query beyond noting it was empty.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

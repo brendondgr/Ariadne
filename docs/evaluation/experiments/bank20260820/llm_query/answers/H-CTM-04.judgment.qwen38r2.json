@@ -1,0 +1,25 @@
+{
+ "case_id": "H-CTM-04",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.85,
+ "groundedness": 0.85,
+ "completeness": 0.25,
+ "gold_expected": 4,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer honestly abstains after the CAPEC-55 query returned zero rows and shows that executed query, so it is not a fabricated mapping. It states only CAPEC-55 and omits T1110.002, M1027, and M1032, so completeness is low. The example identifiers T1566, M1017, and CAPEC-98 are not supported by the evidence, causing a small faithfulness and groundedness deduction.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

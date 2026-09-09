@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1042-ad62f1::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.7,
+ "groundedness": 0.75,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The answer presents all 71 M1042-mitigated techniques, including non-gold IDs such as T1595.003, T1218.014, T1127, T1021.001, and T1098.002, as the SaaS-relevant result set without explicit SaaS-relevance evidence."
+ ],
+ "rationale": "The answer includes M1042 and all four expected SaaS-relevant techniques T1059, T1098, T1098.001, and T1671, so completeness is full. However, it lists all 71 M1042-mitigated techniques rather than explicitly selecting the SaaS-relevant subset, making it only partially correct. The claims are grounded in the M1042 ATT&CK record, but the SaaS relevance of many extra IDs is not explicitly supported.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

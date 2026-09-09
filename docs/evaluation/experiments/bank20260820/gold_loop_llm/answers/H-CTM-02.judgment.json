@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CTM-02",
+ "verdict": "CORRECT",
+ "correctness": 0.92,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-412 (Pretexting via Customer Service) and honestly abstains on the ATT&CK technique mapping, showing the executed Gremlin query that returned CAPEC-412 with no linked TaxonomyEntry records. The ATT&CK mitigations sub-question is correctly noted as skipped due to the q1 dependency producing no seed identifiers, matching the gold expectations of expect_no_correlation: true and expect_dependency_skip: true. No fabricated cross-source mappings or hallucinated identifiers are present.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-G0018-ebdb61::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains after a failed attack query and does not state any of the expected techniques T1016, T1049, T1082, or T1083, nor the anchor G0018. It is supported in saying no records were returned, but the example identifiers T1566, M1017, and CAPEC-98 are not in the evidence. Because it does not show an executed query and omits all gold techniques, it is partial rather than correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

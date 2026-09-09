@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-detects-subtechnique-of-DET0285-9c3f6d::analyst",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.7,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains rather than asserting that DET0285 detects T1021, so it misses the expected related identifier T1021 and also does not explicitly state DET0285. The evidence only shows a failed attack query with an empty query and zero records, which supports the no-records abstention but not a successful no-mapping proof. The example identifiers T1566, M1017, and CAPEC-98 are not present in the evidence, though they are offered only as examples.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

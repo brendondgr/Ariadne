@@ -1,0 +1,26 @@
+{
+ "case_id": "H-CTM-03",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The claim that the system searched for the strings 'CAPEC', 'Bypassing of Intermediate Forms in Multiple', or 'Form Sets' is not supported by the evidence, which shows a query for the ID 'CAPEC-140'."
+ ],
+ "rationale": "The gold expectations specify that no correlation exists between CAPEC-140 and ATT&CK techniques or mitigations. The system correctly reported that no records were found, and the logic flow demonstrates the attempted query for CAPEC-140.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

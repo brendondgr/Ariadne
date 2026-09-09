@@ -1,0 +1,28 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-CanPrecede-T1491-cb32c3::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.85,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 6,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and reports zero records, but the expected CAPEC predecessors for T1491 are CAPEC-33, CAPEC-34, CAPEC-105, CAPEC-273, CAPEC-668, and CAPEC-701, none of which are stated. It is faithful to the shown zero-row capec query and the skipped attack sub-question, but the attack-side query for T1491 was never executed, so the abstention is not fully justified. The only unsupported identifiers are the illustrative T1566, M1017, and CAPEC-98.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

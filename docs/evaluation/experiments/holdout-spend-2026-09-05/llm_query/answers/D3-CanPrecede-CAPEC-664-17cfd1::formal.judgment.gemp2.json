@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-CanPrecede-CAPEC-664-17cfd1::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 5,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system failed to retrieve the expected preceding attack patterns (CAPEC-122, CAPEC-126, CAPEC-161, CAPEC-253, CAPEC-309) because the query engine did not recognize the 'CanPrecede' relationship. Per Rule 1, this honest abstention is marked CORRECT as it avoids guessing and provides the failed query traces.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D6-MAPS_TO[ATTACK]-MAPS_TO[OWASP Attacks]-T1110-6a5f44::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.75,
+ "groundedness": 0.7,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer mentions T1110 and lists CAPEC-112, CAPEC-49, CAPEC-55, CAPEC-565, and CAPEC-600 with capec:taxonomy:ATTACK:1110, 1110.001, 1110.002, 1110.003, and 1110.004, but it does not state the required OWASP Attacks:Brute force attack entry. It also says the attack source does not establish the T1110-to-CAPEC mapping, so it only partially answers the two-hop question. The claims are mostly tied to CAPEC citations, but the final abstention is not tied to a specific record.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

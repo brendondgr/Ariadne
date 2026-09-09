@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-C0046-803292::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 21,
+ "gold_present": 21,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states C0046 and all 21 expected Windows-related technique identifiers, including T1014, T1059, T1556, and T1690. However, it lists all 27 related items rather than explicitly filtering to Windows-applicable techniques, and it includes non-technique items such as S1188 and S1186 plus non-gold subtechniques such as T1583.003 and T1587.001. The claims are grounded in the cited C0046 record, but the Windows applicability is not explicitly tied to the evidence.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

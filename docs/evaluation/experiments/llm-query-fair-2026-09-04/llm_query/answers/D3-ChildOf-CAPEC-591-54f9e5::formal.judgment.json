@@ -1,0 +1,28 @@
+{
+ "case_id": "D3-ChildOf-CAPEC-591-54f9e5::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.7,
+ "faithfulness": 0.8,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 9,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains because the capec specialist returned no records, and it does not assert any of the expected CAPEC-18, CAPEC-198, CAPEC-199, CAPEC-243, CAPEC-244, CAPEC-245, CAPEC-247, CAPEC-32, or CAPEC-86. It does not explicitly state CAPEC-591, but the question supplies that anchor and the notes show the rejected empty query. The only unsupported identifiers are the example IDs T1566, M1017, and CAPEC-98, and no cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 65536,
+  "escalated": true,
+  "position": 1
+ }
+}

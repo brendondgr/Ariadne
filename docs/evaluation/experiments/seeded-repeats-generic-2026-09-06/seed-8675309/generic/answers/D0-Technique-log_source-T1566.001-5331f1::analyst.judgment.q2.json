@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Technique-log_source-T1566.001-5331f1::analyst",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer anchors T1566.001 and enumerates the five DataComponent identifiers DC0038, DC0032, DC0039, DC0082, and DC0078, which are the data components requested. It also lists DET0236 and AN0655/AN0656/AN0657 as related items, but it does not assert that those non-DataComponent records are data components, so the statements remain supported by the cited T1566.001 record. Completeness is high because all requested data-component identifiers are present, though the narrative frames them as general related items rather than explicitly filtering to DataComponent.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CHN-02",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 5,
+ "gold_present": 5,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-62 has 2 TaxonomyEntrys (CWE-306 is not labeled as a TaxonomyEntry in the evidence)"
+ ],
+ "rationale": "The answer states all five expected CAPEC patterns associated with CWE-306: CAPEC-12, CAPEC-36, CAPEC-62, CAPEC-166, and CAPEC-216. It also abstains from asserting ATT&CK technique mappings, which matches the expected no-correlation and dependency-skip behavior. The main minor issue is the unsupported characterization of both CWE-306 and capec:taxonomy:WASC:09 as TaxonomyEntrys for CAPEC-62.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "case_id": "H-EXE-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.7,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-26 and enumerates all three gold execution-step identifiers (capec:attack-pattern:26:step:1, capec:attack-pattern:26:step:2, capec:attack-pattern:26:step:3), satisfying the must_include_related requirement. However, the question 'What are the execution steps' asks for the content of each step, and the evidence provides detailed descriptions (e.g., Step 1: 'The adversary explores to gauge what level of access they have'; Step 3: 'A race condition occurs and is exploited by the adversary to abuse the target host') that the answer never conveys, leaving the response at the level of ID listing rather than substantive description.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

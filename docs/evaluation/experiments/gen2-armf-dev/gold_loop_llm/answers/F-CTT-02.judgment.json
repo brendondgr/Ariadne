@@ -1,0 +1,19 @@
+{
+ "case_id": "F-CTT-02",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly traces the full two-hop chain: CAPEC-49 \u2192 T1110.001 (Password Guessing) \u2192 TA0006 (Credential Access), directly answering which tactic the technique belongs to. All three gold identifiers (CAPEC-49, T1110.001, TA0006) are explicitly stated and each is tied to its cited source record. The cross-source correlation on T1110.001 is properly evidenced by both the CAPEC record's join_values and the ATT&CK record, with no fabricated mapping.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D3-tactic_refs-TA0008-a2b65f::indirect",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer reports one unnamed MITRE ATT&CK record but never states the expected matrix identifier enterprise-attack or the anchor TA0008. It is faithful to the single retrieved record, but it does not answer which matrices include the Lateral Movement tactic. Because no expected identifier is asserted and no explicit query-backed abstention is provided, it is incorrect.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

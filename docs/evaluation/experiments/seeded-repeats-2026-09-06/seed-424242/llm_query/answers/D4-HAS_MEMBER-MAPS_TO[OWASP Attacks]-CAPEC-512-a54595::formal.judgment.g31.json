@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-HAS_MEMBER-MAPS_TO[OWASP Attacks]-CAPEC-512-a54595::formal",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system honestly abstained because the retrieval process failed (empty query), and it correctly reported that no records were returned. Since the evidence volume was zero, any attempt to list the gold identifiers (OWASP Attacks:Content Spoofing, etc.) would have been a hallucination. The abstention is supported by the logic_flow showing the failed capec specialist queries.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

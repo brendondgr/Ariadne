@@ -1,0 +1,21 @@
+{
+ "case_id": "H-SW-01",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 0.8,
+ "groundedness": 0.2,
+ "completeness": 0.0,
+ "gold_expected": 13,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only reports that 13 ATT&CK records were found and does not state T1546.003 or any expected software identifiers such as S0053, S0150, S0202, S0371, S0376, S0378, S0511, S0682, S0692, S1020, S1059, S1081, or S1085. It is not an abstention because the abstentions field is empty, and the normalized records are empty enough that the answer cannot identify the software. The count of 13 is supported by the evidence, but no gold identifiers are present.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

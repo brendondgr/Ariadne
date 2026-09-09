@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-mitigates-M1049-02c63a::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.3,
+ "gold_expected": 23,
+ "gold_present": 7,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states seven expected technique identifiers: T1221, T1027, T1566, T1059, T1036, T1080, and T1564. It omits the remaining expected techniques, including T1027.002, T1027.009, T1036.008, T1059.001, T1059.005, T1059.006, T1547.006, T1564.012, T1566.001, and T1566.003. The stated records are supported by the cited ATT&CK evidence, but the answer is incomplete relative to the expected set.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

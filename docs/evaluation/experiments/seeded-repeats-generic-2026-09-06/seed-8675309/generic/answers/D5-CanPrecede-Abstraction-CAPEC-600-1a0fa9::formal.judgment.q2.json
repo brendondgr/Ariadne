@@ -1,0 +1,27 @@
+{
+ "case_id": "D5-CanPrecede-Abstraction-CAPEC-600-1a0fa9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.75,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The 11 unique CAN_PRECEDE neighbors are asserted as successors of CAPEC-600, although the evidence does not specify the direction of the CAN_PRECEDE edges.",
+  "The non-gold IDs CAPEC-50, CAPEC-101, CAPEC-565, CAPEC-70, CAPEC-16, CAPEC-55, CAPEC-568, CAPEC-49, CAPEC-270, and CAPEC-151 are implied to be Standard-abstraction successors of CAPEC-600, but their Abstraction values are not shown in the evidence."
+ ],
+ "rationale": "The answer includes the expected related identifier CAPEC-653 and the anchor CAPEC-600, and its description and Abstraction claims are grounded in the CAPEC-600 record. However, it lists 11 CanPrecede neighbors as the answer to a Standard-abstraction successor question, while the evidence only shows CAPEC-600's Abstraction and not the abstraction of the other IDs. This makes it complete for the gold identifier but overinclusive and only partially faithful to the asked constraint.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

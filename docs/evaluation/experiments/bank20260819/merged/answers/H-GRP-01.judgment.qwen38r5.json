@@ -1,0 +1,23 @@
+{
+ "case_id": "H-GRP-01",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.75,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 19,
+ "gold_present": 19,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1012 has 119 used techniques; the evidence shows 119 related entities that use T1012, including software, groups, and a campaign, not 119 techniques used by T1012."
+ ],
+ "rationale": "The answer lists all 19 expected group IDs for T1012: G0010, G0027, G0030, G0032, G0035, G0038, G0047, G0049, G0050, G0087, G0094, G0096, G0114, G0117, G0119, G0128, G1017, G1034, and G1043. It is grounded in the T1012 ATT&CK record, but the phrase 'has 119 used techniques' mischaracterizes the related USES neighbors as techniques used by T1012. No cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

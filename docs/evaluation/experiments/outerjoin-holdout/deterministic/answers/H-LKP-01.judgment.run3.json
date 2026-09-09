@@ -1,0 +1,19 @@
+{
+ "case_id": "H-LKP-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.95,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies T1036.010 as 'Masquerade Account Name' and provides accurate STIX metadata (revoked: False, x_mitre_is_subtechnique: True, x_mitre_version: 2.0), satisfying the single gold identifier. However, the question explicitly asks 'how does this technique actually work?' and the narrative never explains the mechanism present in the evidence (matching/approximating legitimate account names during Create Account, masquerading as service accounts, using generic names like 'admin' or 'root'). Retrieval succeeded but the answer text underutilizes the rich description available in the record, making it partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

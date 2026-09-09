@@ -1,0 +1,23 @@
+{
+ "case_id": "H-REV-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.7,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "A cross-source correlation between CAPEC and ATT&CK for T1219"
+ ],
+ "rationale": "The question asks which patterns reference T1219, and the gold expectation is that no CAPEC patterns should be returned and no correlation should be asserted. The answer correctly identifies the ATT&CK record T1219: Remote Access Tools, but it does not explicitly state that no CAPEC patterns reference it. It also asserts a cross-source correlation for T1219 between CAPEC and ATT&CK, which is an overclaim given the expected empty CAPEC result.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

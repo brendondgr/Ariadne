@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-uses-G0024-e4334c::formal",
+ "verdict": "INCORRECT",
+ "correctness": 0.1,
+ "faithfulness": 1.0,
+ "groundedness": 0.4,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer only reports that four MITRE ATT&CK records were found; it does not state G0024 or any expected software identifiers S0065, S0066, S0067, S0068. The evidence query returned four rows, but the normalized records are empty, so the count is faithful while the answer remains non-specific. It is not an abstention and does not assert a fabricated cross-source mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

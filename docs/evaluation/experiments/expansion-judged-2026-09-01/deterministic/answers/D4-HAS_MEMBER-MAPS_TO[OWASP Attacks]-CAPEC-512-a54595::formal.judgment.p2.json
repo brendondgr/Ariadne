@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-HAS_MEMBER-MAPS_TO[OWASP Attacks]-CAPEC-512-a54595::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows the executed query, but it searched AttackPattern id CAPEC-512 rather than traversing Category CAPEC-512 to member AttackPatterns and their MAPS_TO TaxonomyEntry neighbors. It states none of the expected OWASP entries: Content Spoofing, Man-in-the-middle attack, Resource Injection, and Traffic flood. The abstention is honest and not a fabricated mapping, but the unsupported example identifiers T1566, M1017, and CAPEC-98 slightly reduce faithfulness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

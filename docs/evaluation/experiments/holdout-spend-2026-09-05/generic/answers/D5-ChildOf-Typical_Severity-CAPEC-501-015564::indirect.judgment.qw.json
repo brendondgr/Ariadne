@@ -1,0 +1,24 @@
+{
+ "case_id": "D5-ChildOf-Typical_Severity-CAPEC-501-015564::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 1.0,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer states the expected broader pattern CAPEC-173 for CAPEC-501, but it also lists CAPEC-499 and CAPEC-117 without explicitly applying the requested Very High severity filter. All listed identifiers are supported by the CAPEC-501 related records, so the statements are faithful and grounded. Because the only expected gold identifier is present, completeness is full, but the unfiltered enumeration makes the answer only partially responsive.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

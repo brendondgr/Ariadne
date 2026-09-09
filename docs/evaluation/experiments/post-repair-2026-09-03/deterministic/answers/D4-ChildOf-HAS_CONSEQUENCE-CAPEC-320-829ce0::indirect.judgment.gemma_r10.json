@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-ChildOf-HAS_CONSEQUENCE-CAPEC-320-829ce0::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 2,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer identifies the related general pattern (CAPEC-312) and the consequences by their IDs, but it fails to provide the human-readable names of these entities (e.g., 'Active OS Fingerprinting' and the specific consequence names) as requested by the question. While it successfully retrieved the correct records, it did not extract the names from the evidence to fully answer the 'what' part of the query.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

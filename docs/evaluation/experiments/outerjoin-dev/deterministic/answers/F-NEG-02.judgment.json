@@ -1,0 +1,19 @@
+{
+ "case_id": "F-NEG-02",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-66 (SQL Injection) as the anchor and honestly reports that the executed Gremlin query (g.V().hasLabel(\"AttackPattern\")...out(\"MAPS_TO\").hasLabel(\"TaxonomyEntry\").has(\"taxonomy_name\",\"ATTACK\")) returned no linked ATT&CK technique records, satisfying the gold expectation of expect_no_correlation and expect_no_join. The dependent mitigations sub-question (q2) is properly skipped due to q1's empty seed set, matching expect_dependency_skip. No ATT&CK technique identifier is fabricated as a mapping, and all stated properties (Abstraction: Standard, Status: Draft) are directly supported by the CAPEC-66 evidence record.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

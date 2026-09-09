@@ -1,0 +1,24 @@
+{
+ "case_id": "D4-PeerOf-CanPrecede-CAPEC-34-c9d86f::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 6,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies the anchor CAPEC-34 and lists CAPEC-105 as a related pattern, but it omits all expected peer identifiers: CAPEC-115, CAPEC-141, CAPEC-148, CAPEC-154, CAPEC-593, and CAPEC-63. It also does not enumerate which attack patterns can come after each peer. Its statements are largely grounded in the CAPEC-34 record and related list, but completeness is zero relative to the expected peer set.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

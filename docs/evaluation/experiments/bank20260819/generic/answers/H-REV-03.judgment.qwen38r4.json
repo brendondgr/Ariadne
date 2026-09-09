@@ -1,0 +1,23 @@
+{
+ "case_id": "H-REV-03",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1547"
+ ],
+ "rationale": "The answer correctly states both expected identifiers: CAPEC-552 as the CAPEC pattern mapped to T1547.006 and T1547.006 as the ATT&CK record. The cross-source correlation is supported by the shared join value T1547.006 in both records, so it is not fabricated. A minor deduction is made for asserting the parent technique T1547, which is not explicitly present in the evidence beyond the subtechnique ID and taxonomy name.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "F-NEG-06",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly treats CAPEC-18 as the only retrieved record and reports no ATT&CK technique join values from the CAPEC MAPS_TO query. It also abstains on mitigations because q2 depended on q1 and q1 returned no seed identifiers, matching the expected dependency skip. No ATT&CK technique or mitigation identifiers are asserted, so there is no fabricated correlation.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

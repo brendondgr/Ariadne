@@ -1,0 +1,28 @@
+{
+ "case_id": "D0-View-REQUIRES_RESOURCE-CAPEC-659-d996d5::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.7,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer is an honest abstention: the CAPEC specialist failed on REQUIRES_RESOURCE for seed CAPEC-659 and returned no records, and the attempted query is visible in the trace. It does not explicitly name CAPEC-659 in the answer text and offers unsupported examples T1566, M1017, and CAPEC-98, so completeness and faithfulness are reduced. Because the expected resource set is empty and the abstention is query-backed, the verdict is correct rather than incorrect.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

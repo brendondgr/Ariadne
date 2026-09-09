@@ -1,0 +1,24 @@
+{
+ "case_id": "D1-Group-aliases-G0119-553f4e::indirect",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 0.0,
+ "gold_expected": 4,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The system honestly abstained because the retrieval process failed (empty query), and it explicitly stated that no records were returned. Since the evidence volume was empty, any attempt to name the aliases (DEV-0243, Evil Corp, Manatee Tempest, UNC2165) would have been a hallucination. The abstention is supported by the logic_flow showing the gate rejection.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma4-31B-mtp",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

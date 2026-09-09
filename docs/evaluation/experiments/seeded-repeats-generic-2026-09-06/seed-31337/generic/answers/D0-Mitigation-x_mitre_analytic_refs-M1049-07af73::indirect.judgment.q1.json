@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Mitigation-x_mitre_analytic_refs-M1049-07af73::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer includes the required anchor M1049 and enumerates 122 related ATT&CK identifiers, including DET0281 and AN0784, but it frames them as 'related' rather than explicitly stating which detection analytics implement M1049. It also mixes in non-analytic technique identifiers such as T1027.015 and T1566.003, so it only partially answers the requested analytics set. The statements are supported by the M1049 record and its related list, with no cross-source mapping asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 0
+ }
+}

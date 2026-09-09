@@ -1,0 +1,27 @@
+{
+ "case_id": "D1-AttackPattern-Likelihood_Of_Attack-CAPEC-151-06d586::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.75,
+ "groundedness": 0.8,
+ "completeness": 0.5,
+ "gold_expected": 2,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-151 has 27 CanPrecede successors",
+  "CAPEC-151 has 22 ChildOf parents"
+ ],
+ "rationale": "The answer identifies CAPEC-151 and lists related CAPEC patterns, but it never states the expected likelihood Medium, so it only partially answers the question. The CAPEC-151 description, Abstraction, and Status are supported by the shown record. The 27 CanPrecede and 22 ChildOf counts are not clearly supported by the visible facets, which show 18 in/0 out for CAN_PRECEDE and 5 in/0 out for CHILD_OF.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

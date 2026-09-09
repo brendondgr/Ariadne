@@ -1,0 +1,23 @@
+{
+ "case_id": "H-GRP-01",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.8,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 3,
+ "gold_present": 3,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1027.009 has 23 used techniques, although the evidence shows 23 related items with mixed labels including Software, Group, and Campaign"
+ ],
+ "rationale": "The answer states all expected group identifiers G0032, G1036, and G1037 among the related items for T1027.009, so it fully covers the gold groups. It is slightly imprecise because it calls all 23 related items 'used techniques' even though the evidence includes Software and Campaign entities. The claims are grounded in the T1027.009 record and no cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

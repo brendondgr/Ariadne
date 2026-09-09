@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-mitigates-x_mitre_platforms-M1042-ad62f1::indirect",
+ "verdict": "PARTIAL",
+ "correctness": 0.5,
+ "faithfulness": 0.85,
+ "groundedness": 0.8,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "The full 71-technique enumeration is asserted, but the visible evidence only displays a subset of the related records; the remaining IDs are supported mainly by the related count rather than individually shown records."
+ ],
+ "rationale": "The answer names M1042 and includes the four expected SaaS-relevant techniques T1059, T1098, T1098.001, and T1671. However, it lists all 71 MITIGATES neighbours instead of explicitly identifying which are relevant to SaaS, so it only partially answers the question. The MITIGATES enumeration is grounded in the M1042 record, and no cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

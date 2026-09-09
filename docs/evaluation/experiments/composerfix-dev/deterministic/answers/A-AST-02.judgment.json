@@ -1,0 +1,19 @@
+{
+ "case_id": "A-AST-02",
+ "verdict": "CORRECT",
+ "correctness": 0.9,
+ "faithfulness": 0.95,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The gold expectation is expect_boundary: true, requiring the answer to recognize that the ATT&CK source does not model the 'Asset' entity. The answer's abstention from the 'attack' source explicitly states it 'doesn't model the entities this question asks about' and references the specific T1490 question, with the empty query consistent with the boundary check (entities not in card: ['Asset']) preventing query execution. No asset identifiers are fabricated, and the illustrative IDs (T1566, M1017, CAPEC-98) in the narrative are clearly framed as format examples rather than claims.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

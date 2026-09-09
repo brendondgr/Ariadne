@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-Technique-log_source-T1566.001-5331f1::analyst",
+ "verdict": "INCORRECT",
+ "correctness": 0.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer is faithful in stating that 5 records were found, but it fails to answer the question 'Which data components...' because the retrieved records have empty names and IDs. Since the gold expectation for related entities is empty, completeness is 1.0, but correctness is 0.0.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "gemma-4-26B-it",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

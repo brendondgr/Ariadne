@@ -1,0 +1,24 @@
+{
+ "case_id": "D0-AttackPattern-HAS_MEMBER-CAPEC-136-9dabb8::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies and describes CAPEC-136, and all claims are supported by the cited CAPEC record. However, it does not explicitly state which CAPEC attack patterns CAPEC-136 contains; the evidence shows a CHILD_OF out facet count of 1 but no related IDs, and the answer neither lists a contained pattern nor asserts an empty set. Completeness is high only because the required identifier is the anchor CAPEC-136, but the requested containment question is only partially addressed.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

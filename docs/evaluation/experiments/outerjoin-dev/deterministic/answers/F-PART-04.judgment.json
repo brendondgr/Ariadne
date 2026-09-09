@@ -1,0 +1,21 @@
+{
+ "case_id": "F-PART-04",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 4,
+ "gold_present": 4,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566, M1017, CAPEC-98 mentioned as examples in narrative but not in evidence"
+ ],
+ "rationale": "The answer correctly identifies CAPEC as skipped (source down, 'no specialist available') and ATT&CK as a dependency abstention because its seed source q1 (CAPEC-555) never ran. The empty query string proves no broad unseeded query was executed, matching the gold expectations of expect_skipped for CAPEC and expect_dependency_skip for ATT&CK. The only minor issue is the generic narrative mentioning T1566, M1017, CAPEC-98 as illustrative examples, which are not in the evidence but are clearly marked as 'e.g.' rather than asserted claims.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

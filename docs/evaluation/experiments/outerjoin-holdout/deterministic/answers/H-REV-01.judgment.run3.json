@@ -1,0 +1,19 @@
+{
+ "case_id": "H-REV-01",
+ "verdict": "PARTIAL",
+ "correctness": 0.4,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.3,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies T1055.011 (Extra Window Memory Injection) as the anchor and accurately reports its properties (stix_type: attack-pattern, x_mitre_is_subtechnique: True, x_mitre_version: 2.0), all grounded in the ATT&CK record. It properly abstains on the CAPEC source, showing the executed Gremlin query and confirming no CAPEC patterns map to T1055.011. However, the gold expects no correlation (expect_no_correlation: true, must_correlate: []), meaning the answer should explicitly state that no attack patterns reference T1055.011. The narrative describes the anchor and notes the CAPEC gap but never directly answers the question 'Which attack patterns reference T1055.011?' with a definitive 'none found,' leaving the core finding implicit rather than stated.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

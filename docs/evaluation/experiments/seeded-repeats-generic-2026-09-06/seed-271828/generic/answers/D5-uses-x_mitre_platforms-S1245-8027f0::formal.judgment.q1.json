@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-uses-x_mitre_platforms-S1245-8027f0::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.85,
+ "faithfulness": 0.85,
+ "groundedness": 0.9,
+ "completeness": 1.0,
+ "gold_expected": 33,
+ "gold_present": 33,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1547.013 and T1543.001 are presented as Windows-applicable techniques"
+ ],
+ "rationale": "The answer lists all 33 expected Windows techniques, including T1005, T1048.003, and T1679, and is grounded in the S1245 record's USES neighbours. However, it states that S1245 has 35 used techniques and includes non-Windows T1547.013 and T1543.001, making it overinclusive for the Windows-specific question. It does not abstain and does not fabricate a cross-source mapping.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

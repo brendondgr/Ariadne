@@ -1,0 +1,23 @@
+{
+ "case_id": "H-CTM-03",
+ "verdict": "PARTIAL",
+ "correctness": 0.6,
+ "faithfulness": 0.55,
+ "groundedness": 0.6,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": true,
+ "hallucinations": [
+  "CAPEC-62 has 1 ATT&CK mapping: capec:taxonomy:WASC:09"
+ ],
+ "rationale": "The answer correctly identifies CAPEC-62 and skips the ATT&CK mitigation sub-question because q1 produced no seed identifiers, matching the expected dependency skip. However, it asserts that CAPEC-62 has an ATT&CK mapping to capec:taxonomy:WASC:09, while the evidence only shows a CAPEC-side MAPS_TO relation to a taxonomy entry, not an ATT&CK technique. Because the only required gold identifier is present and the mitigation abstention is shown, the answer is partial rather than fully correct.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

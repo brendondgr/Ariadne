@@ -1,0 +1,26 @@
+{
+ "case_id": "D5-CanPrecede-Abstraction-CAPEC-600-1a0fa9::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.8,
+ "faithfulness": 0.9,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 1,
+ "gold_present": 1,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "CAPEC-151 as a Standard-abstraction successor"
+ ],
+ "rationale": "The answer states the required successor CAPEC-653 and the anchor CAPEC-600, so the expected gold identifier is present. It also includes CAPEC-151, which is a CanPrecede neighbor in the evidence but is not shown to have Standard abstraction, making it an over-inclusion for the asked Standard-level filter. No cross-source mapping is asserted.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

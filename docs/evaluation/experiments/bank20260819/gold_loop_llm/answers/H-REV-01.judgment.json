@@ -1,0 +1,19 @@
+{
+ "case_id": "H-REV-01",
+ "verdict": "CORRECT",
+ "correctness": 0.85,
+ "faithfulness": 0.9,
+ "groundedness": 0.85,
+ "completeness": 1.0,
+ "gold_expected": 0,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The question asks which patterns reference T1613, and the gold expects an empty set (capec expect_empty: true, attack expect_dependency_skip: true, expect_no_correlation: true). The answer correctly states that CAPEC has no matching records for T1613 and shows the executed Gremlin query as proof of the empty result. The T1613 anchor description (name, version 1.1, Containers platform, attack-pattern type) is extra but factually supported by the evidence record, and the CAPEC abstention is properly formed with the query carried.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

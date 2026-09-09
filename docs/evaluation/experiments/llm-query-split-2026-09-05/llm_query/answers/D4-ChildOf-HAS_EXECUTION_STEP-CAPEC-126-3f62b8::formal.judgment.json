@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-ChildOf-HAS_EXECUTION_STEP-CAPEC-126-3f62b8::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.9,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 11,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains and shows the executed CAPEC query for CAPEC-126, and the evidence shows that query returned 0 rows, so the abstention is faithful to the shown result. However, the gold expects 11 execution-step records for more specific CAPEC-126 patterns, and the answer states none of them. It only mentions the anchor CAPEC-126 and illustrative identifiers T1566, M1017, and CAPEC-98, so it is a partial, query-backed abstention rather than a complete answer.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

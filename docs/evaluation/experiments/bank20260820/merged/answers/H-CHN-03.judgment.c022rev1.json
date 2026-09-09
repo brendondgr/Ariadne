@@ -1,0 +1,26 @@
+{
+ "case_id": "H-CHN-03",
+ "verdict": "CORRECT",
+ "correctness": 0.95,
+ "faithfulness": 0.9,
+ "groundedness": 0.95,
+ "completeness": 1.0,
+ "gold_expected": 7,
+ "gold_present": 7,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1574.007 and T1574.009 are described as having 'mitigated techniques' M1047, M1022, and M1038, while the cited ATT&CK records label those identifiers as mitigations."
+ ],
+ "rationale": "The answer identifies the expected ATT&CK techniques T1574.007 and T1574.009, includes CAPEC-38 as the related pattern, and lists the expected mitigations M1022, M1038, and M1047. Its cross-source correlation claims for T1574.007 and T1574.009 are supported by the CAPEC and ATT&CK records, though it does not explicitly spell out the CAPEC-38-to-technique path. The minor 'mitigated techniques' wording is the only unsupported phrasing.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 8192,
+  "escalated": false,
+  "position": null
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-detects-DET0891-39cda6::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.85,
+ "groundedness": 0.6,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer abstains by reporting no records for DET0891 and noting the failed empty query, which is supported by the evidence volume. It does not state the expected technique T1584.002, so it is partial rather than correct. The fallback is honest and mostly faithful, but it omits the requested technique and does not explicitly name DET0891 in the answer text.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 2
+ }
+}

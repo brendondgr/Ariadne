@@ -1,0 +1,19 @@
+{
+ "case_id": "H-REV-01",
+ "verdict": "CORRECT",
+ "correctness": 1.0,
+ "faithfulness": 1.0,
+ "groundedness": 1.0,
+ "completeness": 1.0,
+ "gold_expected": 2,
+ "gold_present": 2,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-650 (Upload a Web Shell to a Web Server) as the CAPEC pattern referencing T1505.003 (Web Shell), which are the two gold identifiers expected. The cross-source correlation is grounded in the evidence: the CAPEC record carries join_values [\"T1505.003\"] and a related TaxonomyEntry capec:taxonomy:ATTACK:1505.003, while the ATT&CK record confirms T1505.003 as a SubTechnique. No unsupported identifiers or facts are asserted.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

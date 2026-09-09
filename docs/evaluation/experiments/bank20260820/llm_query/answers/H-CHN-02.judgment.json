@@ -1,0 +1,19 @@
+{
+ "case_id": "H-CHN-02",
+ "verdict": "PARTIAL",
+ "correctness": 0.3,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 5,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly captures the dependency skip for the ATT&CK source (matching expect_dependency_skip) and the absence of cross-source correlation (matching expect_no_correlation). However, the CAPEC specialist failed with an empty query, so none of the five expected CAPEC patterns (CAPEC-12, CAPEC-36, CAPEC-62, CAPEC-166, CAPEC-216) were retrieved or stated, leaving the core of the question unanswered. The abstention is honest but carries no executed query as proof.",
+ "judge": {
+  "model": "skynet",
+  "runner": "utils/evaluation/judge_answers.py"
+ }
+}

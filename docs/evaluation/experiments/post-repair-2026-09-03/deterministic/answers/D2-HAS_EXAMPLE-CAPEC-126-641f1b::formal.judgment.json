@@ -1,0 +1,24 @@
+{
+ "case_id": "D2-HAS_EXAMPLE-CAPEC-126-641f1b::formal",
+ "verdict": "PARTIAL",
+ "correctness": 0.2,
+ "faithfulness": 1.0,
+ "groundedness": 0.8,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": false,
+ "abstention_carries_query": false,
+ "fabricated_mapping": false,
+ "hallucinations": [],
+ "rationale": "The answer correctly identifies CAPEC-126 and gives supported details about the Path Traversal attack pattern. However, it does not state the expected example instance text about the HTTP request to http://example/../../../../../etc/passwd, which is the actual answer to the question. The evidence only shows a HAS_EXAMPLE facet count for CAPEC-126, not the example record itself, and the answer does not abstain.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

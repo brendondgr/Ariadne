@@ -1,0 +1,28 @@
+{
+ "case_id": "D4-detects-subtechnique-of-DET0285-9c3f6d::indirect",
+ "verdict": "CORRECT",
+ "correctness": 0.8,
+ "faithfulness": 0.7,
+ "groundedness": 0.5,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains rather than asserting that DET0285 detects T1021, and it notes the attack specialist failed with an empty query, which is an honest no-record response. It does not state the expected T1021, so completeness is zero, but it does not fabricate a mapping. The illustrative identifiers T1566, M1017, and CAPEC-98 are not in the evidence, reducing faithfulness and groundedness.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}

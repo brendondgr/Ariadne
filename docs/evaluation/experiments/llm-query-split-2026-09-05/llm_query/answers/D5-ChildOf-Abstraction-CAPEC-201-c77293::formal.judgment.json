@@ -1,0 +1,28 @@
+{
+ "case_id": "D5-ChildOf-Abstraction-CAPEC-201-c77293::formal",
+ "verdict": "CORRECT",
+ "correctness": 0.6,
+ "faithfulness": 0.8,
+ "groundedness": 0.7,
+ "completeness": 0.0,
+ "gold_expected": 1,
+ "gold_present": 0,
+ "abstained": true,
+ "abstention_carries_query": true,
+ "fabricated_mapping": false,
+ "hallucinations": [
+  "T1566",
+  "M1017",
+  "CAPEC-98"
+ ],
+ "rationale": "The answer abstains by saying no records were returned, and the evidence shows the CAPEC specialist failed with zero records, so it does not guess the expected CAPEC-122. It does not state CAPEC-122 or the anchor CAPEC-201, so completeness is zero. The only unsupported items are the example identifiers T1566, M1017, and CAPEC-98, but no cross-source mapping is fabricated.",
+ "judge": {
+  "model": "skynet",
+  "alias": "skynet",
+  "served_model": "qwen38-27B-v2",
+  "runner": "utils/evaluation/judge_answers.py",
+  "max_tokens": 32768,
+  "escalated": false,
+  "position": 1
+ }
+}
