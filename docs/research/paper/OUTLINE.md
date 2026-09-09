@@ -58,7 +58,7 @@ languages — plus the question-set resource, conditional on `Q26`.
    architecture. Claim priority on *implementing and measuring*, nothing more.
 2. **Templates hold precision and provable abstention on the schema they were
    written for, and that advantage reverses.** Level with a schema-derived path
-   on ATT&CK/CAPEC (**−0.01** retrieval, judged indistinguishable); **−0.61**
+   on ATT&CK/CAPEC (retrieval gap exactly **0.0000** after the one defective template was repaired, `EXP-2026-08-015` A-1; judged indistinguishable); **−0.61**
    retrieval on a schema nobody wrote them for, where the template arm asserts
    unsupported content in **82%** of blind answers rather than declining.
    **This is the primary result and it replaces the refuted C-003.**
@@ -67,7 +67,11 @@ languages — plus the question-set resource, conditional on `Q26`.
    against the cascade's **0.9467** on the same unseen questions. The choice is
    not templates-versus-models; it is *authored* versus *derived* structure,
    with generation losing to both.
-4. **Federating buys no accuracy over merging** — **−0.0334** and **+0.0000** on
+4. **Federating buys no accuracy over merging** — merged minus federated
+   **−0.0587** and **−0.0520** over eight named grading passes (`EXP-2026-08-009`
+   A-1; the first pass's −0.0334 / +0.0000 is withdrawn, the exact zero was a
+   grader artifact), **−0.0500 / −0.0400** under a second family
+   (`EXP-2026-09-006`), every reading inside the ±0.06 sampling floor at n=30 —
    two blind sets, one variable, no model in either arm. What survives is
    structural and countable: merging required editing **1,083 of 9,138 nodes**;
    federation edited none, and a third graph that could not be copied at all was

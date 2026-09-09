@@ -4,7 +4,12 @@ Started early by design: the appendix is typically ~2 pages and assembles almost
 entirely from `manifest.yaml` + `PROTOCOL.md`, which is why those fields exist in
 the shape they do.
 
-**Status: draft. Not submittable — see Blockers.**
+**Status: draft, last touched 2026-08-18. Not submittable — see Blockers.**
+
+> ⚠️ **Dated snapshot (2026-09-09 note).** Written when the record held 21
+> experiments; it now holds 47 and the paper's argument has been rebuilt
+> ([`OUTLINE.md`](OUTLINE.md), rewritten 2026-08-31). Rebuild this appendix from
+> the manifests before any submission; do not extend it in place.
 
 ---
 

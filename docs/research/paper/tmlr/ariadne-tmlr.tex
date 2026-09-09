@@ -87,7 +87,9 @@ held-out questions. Templates nevertheless beat a model writing the queries
 ($+0.0822$), a result that is positive under both grader families and
 statistically solid under only one -- and we can say \emph{which} one only
 because the instrument was characterised first. Federating across two engines
-buys no accuracy over merging ($-0.0334$ and $+0.0000$), though building the
+buys no accuracy over merging (merged minus federated $-0.0587$ and $-0.0520$
+over eight named grading passes, inside the $\pm 0.06$ question-sampling floor
+at $n{=}30$), though building the
 merged store required rewriting $1{,}083$ of $9{,}138$ nodes while federation
 rewrote none. Finally, benchmarks co-authored with the system under test
 overstate it.
@@ -342,9 +344,12 @@ This result replaces a claim our own experiments refuted: we previously held tha
 the hand-written templates were where the accuracy lived.\claimref{C-003}
 
 On the catalogue the templates were written for, the two paths are
-indistinguishable. Across ten anchor-disjoint banks, templates score
-$0.99 \pm 0.0225$ and the schema-derived path $1.00 \pm 0.0000$; paired
-difference $-0.01 \pm 0.0225$.\expref{EXP-2026-08-015} Templates do not hold the
+indistinguishable. Across ten anchor-disjoint banks the schema-derived path
+retrieves every gold identifier on every bank ($1.0000$, zero variance); the
+templates first scored $0.99 \pm 0.0225$ against it (since corrected), and the whole of that gap
+was one defective template, whose repair takes the paired difference to exactly
+$0.0000$ on all ten banks.\expref{EXP-2026-08-015} The retrieval metric is
+saturated there and cannot separate the paths; templates do not hold the
 accuracy; on home ground they merely match it.
 
 On a schema nobody wrote templates for, the ordering does not narrow -- it
@@ -424,9 +429,16 @@ reporting the mean as though it meant something.
 \label{sec:federation}
 
 We built both conditions, changed one variable, and used no model in either arm.
-Merged minus federated judged correctness: $-0.0334$ on one blind bank,
-$+0.0000$ on a second; mean $-0.0167$.\expref{EXP-2026-08-009} Federating bought
-no accuracy. We state that as a result rather than working around
+Merged minus federated judged correctness, order-corrected over eight grading
+passes by a named grader: $-0.0587$ on one blind bank and $-0.0520$ on a
+second.\expref{EXP-2026-08-009} Under a second grader family the same answers
+read $-0.0500$ and $-0.0400$, the former an upper bound because that grader is
+saturated on the federated side.\expref{EXP-2026-09-006} Every reading is inside
+the $\pm 0.06$ question-sampling floor at $n{=}30$, so no difference is
+demonstrable in either direction. Our first pass, since withdrawn, reported $-0.0334$ and an
+exact $+0.0000$; that pass was graded by a model the relay could not name and the zero
+was an artifact of it, so those figures are withdrawn and the eight-pass values
+are the ones we quote. Federating bought no accuracy. We state that as a result rather than working around
 it.\claimref{C-015}
 
 What survives the null is structural and countable. Constructing the merged store
@@ -541,7 +553,7 @@ supports on the same population --- a ratio of $7.3$ to
 $1$.\expref{EXP-2026-09-011}
 
 We report six because three were not enough to say how small the spread is. The
-first three seeds gave $0.0039$; three further seeds, pre-committed before they
+first three seeds gave $0.0039$ (superseded by the pooled figure); three further seeds, pre-committed before they
 were graded, gave $0.0097$, and the pooled figure is $0.0074$ ---
 \textbf{nearly double the three-seed estimate}. The means of the two sets differ
 by $0.0014$, so this is dispersion being sampled better rather than two
@@ -707,11 +719,20 @@ checkable by a reviewer; we list them rather than wait to be asked.
       value lay inside what that field named --- so the error was disclosed when
       it was made and survived anyway, which locates the defect in the reading
       rather than the writing.
-\item One experiment is marked superseded, not six. Any statement about retaining
-      our mistakes must say one.
-\item Withdrawn figures remain in repository prose and must be retracted in place.
-\item Seeds are unrecorded on several runs; three seeded repeats of the
-      model-written-query arm are owed.
+\item[\textbf{closed}] Only one experiment was marked superseded although the
+      record had overturned six. On 2026-09-09 every supersession was recorded in
+      both manifests (six experiments now carry the status) and every figure an
+      experiment had withdrawn was moved to a \texttt{withdrawn} block naming its
+      replacement; the abstract's ``six experiments retained'' is now literally
+      true of the index.
+\item[\textbf{closed}] Withdrawn figures remained in repository prose. Retracted
+      in place on 2026-09-09; a stale-figure scan now runs before every commit
+      that touches prose, and fails on a withdrawn or superseded value quoted
+      without its replacement.
+\item[\textbf{closed}] Seeds were unrecorded on several runs and three seeded
+      repeats of the model-written-query arm were owed. The repeats were run
+      (across-seed spread $0.0089$).\expref{EXP-2026-09-009} Seeds remain
+      unrecorded on the July arms, which are historical.
 \item An internal protocol asserted that both the \texttt{deterministic} and
       \texttt{generic} arms were model-free and could therefore be run once. The
       artifacts contradict that for \texttt{generic}, whose composition seam

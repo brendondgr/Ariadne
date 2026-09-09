@@ -6,8 +6,10 @@ quoted out of the run that produced it.
 
 > 🛑 **This directory is the raw-artifact store, not the research record.**
 > Since 6 August the record of what was measured and what it means lives in
-> [`../research/`](../research/README.md) — 31 experiments, a claims ledger, a
-> decisions ledger, and two dated external audits. **Several conclusions below
+> [`../research/`](../research/README.md) — every experiment on record
+> ([`INDEX.md`](../research/INDEX.md)), a claims ledger, a decisions ledger, and
+> two dated external audits. Which figures are current is
+> [`CURRENT.md`](../research/CURRENT.md). **Several conclusions below
 > have been overturned by experiments recorded there**, in particular the arm
 > ordering: the claim that the hand-written templates hold the system's accuracy
 > is `refuted` in [`../research/CLAIMS.md`](../research/CLAIMS.md). Read the
