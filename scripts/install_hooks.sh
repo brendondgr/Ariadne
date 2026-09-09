@@ -39,7 +39,7 @@ for line in sys.stdin:
         print(f"[changelog] not JSON: {exc}", file=sys.stderr); bad += 1; continue
     n = len(entry.get("summary", ""))
     if n > 600:
-        print(f"[changelog] summary is {n} chars; the limit is 600 — move the detail to "detail" or to a plan/results file", file=sys.stderr); bad += 1
+        print(f"[changelog] summary is {n} chars; the limit is 600 — move the rest to the detail field or to a plan/results file", file=sys.stderr); bad += 1
 sys.exit(1 if bad else 0)'
 fi
 

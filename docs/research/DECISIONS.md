@@ -197,7 +197,7 @@ purge plan before that plan was deleted)
 **Context:** Documentation was written alongside a system that moved. Several
 load-bearing claims had stopped being true: the README sold an "agentic"
 federated system whose specialists are in fact fully deterministic template
-compilers, `docs/purpose.md` had the two specialists' roles **inverted** in its
+compilers, docs/purpose.md (since merged into `docs/ARCHITECTURE.md`, 2026-09-09) had the two specialists' roles **inverted** in its
 flagship example, the `SPECIALIST_LLM_*` config block it implied was live had
 zero read sites, and skill files pointed at a *web/src/* tree that no longer
 exists and a *utils/logger.py* that never did.

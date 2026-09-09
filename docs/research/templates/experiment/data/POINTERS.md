@@ -10,6 +10,10 @@ it held when the number was computed.
 |---|---|---|---|---|
 | | | | | |
 
+If this experiment reads no raw output outside `docs/research/`, delete the
+table and write one line: `No external artifacts: <why>` — the validator
+rejects an empty table on a completed experiment.
+
 Regenerate hashes with:
 
 ```bash

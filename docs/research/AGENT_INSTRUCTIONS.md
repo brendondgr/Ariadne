@@ -1,7 +1,9 @@
 # Instruction Set: Establish `docs/research/` as the Single Research Record
 
-> **Installed in Ariadne, 6 August 2026.** This is the contract, kept verbatim
-> from the source instruction set. The retrofit it describes is complete; what
+> **Installed in Ariadne, 6 August 2026; amended 9 September 2026** (validator
+> conditions 9–14, `metrics.withdrawn`, `CURRENT.md`, the split ledgers, the
+> stale-figure gate, and the `n_runs` definition — each marked in place).
+> This is the contract, kept from the source instruction set. The retrofit it describes is complete; what
 > remains binding is the *ongoing* contract — sections 1 (principles), 3 (the
 > experiment directory contract), 4 (figure standards), and 5 (the ledgers).
 > Sections 9 and 10 describe the one-time migration and are kept as the record
@@ -190,6 +192,14 @@ metrics:
   values:
     recall@10: {mean: 0.612, std: 0.008, n: 5}
     ndcg@10:   {mean: 0.441, std: 0.011, n: 5}
+  withdrawn:                       # values this experiment once reported and has retracted (2026-09-09)
+    recall@10_first_pass:
+      mean: 0.587
+      std: null
+      n: 5
+      withdrawn_on: 2026-08-31
+      reason: "graded by an unidentified model; recomputed in A-1"
+      replaced_by: "EXP-2026-08-001:recall@10"   # <EXP-ID>:<metric key>, or "none"
 baselines_compared: [BM25, dense-e5]
 statistical_test: "paired bootstrap, 10k resamples, p=0.03"
 
@@ -200,6 +210,12 @@ supersedes: null
 superseded_by: null
 related: [EXP-2026-07-004]
 ```
+
+**Field definitions that were ambiguous until 2026-09-09.**
+
+- `n_runs` counts **system runs** — how many times the pipeline under test was executed over the question set. Grading passes, grading positions and re-grades are *not* runs; record them in `statistical_test` or in the metric's own `n`. An LLM-free arm that was executed once has `n_runs: 1` even if it was graded five times.
+- `metrics.withdrawn` holds every value the experiment once reported in `metrics.values` and has since retracted by amendment. **A withdrawn value is moved, never deleted**, and `replaced_by` names the quotable figure. `CURRENT.md` lists every withdrawn value, and `make check-docs` fails on prose that quotes one as current.
+- `supersedes` / `superseded_by` are recorded in **both** manifests or in neither. `status: superseded` means the whole headline is replaced by the successor; an experiment merely *refined* by a later one stays `complete` and lists the later ID in `related`.
 
 ### 3.2 `PROTOCOL.md` — written *before* the run
 
@@ -250,6 +266,10 @@ Add a `make figures` (or `just figures`) target that regenerates every promoted 
 
 A script walks `experiments/*/manifest.yaml` and emits a table: ID · date · title · status · primary metric · claims supported · link. Regenerate on pre-commit and in CI. Hand-maintained indexes go stale within three weeks.
 
+### `CURRENT.md` — auto-generated, never hand-edited (added 2026-09-09)
+
+Generated with `INDEX.md` by `make index`. Three tables from the manifests: every withdrawn value with its replacement, every superseded experiment with its successor, and one current headline per experiment that is still the latest word. **Read it before quoting any number.** It cannot drift from the manifests because it is derived from them.
+
 ### `CLAIMS.md` — the paper's spine
 
 | ID | Claim (as it will appear in the paper) | Evidence (EXP IDs) | Artifact (fig/table) | Status |
@@ -269,7 +289,11 @@ Running bibliography with a one-line "how it differs from us" per entry, plus a 
 
 ### `OPEN_QUESTIONS.md`
 
-Every follow-up from every `RESULTS.md`, plus known weaknesses. This becomes future work and pre-empts reviewer objections.
+Every follow-up from every `RESULTS.md`, plus known weaknesses. This becomes future work and pre-empts reviewer objections. An answered question moves verbatim to `OPEN_QUESTIONS-ANSWERED.md` with the date and the experiment or decision that answered it, so the live file holds only what is open.
+
+### `CLAIMS-HISTORY.md`
+
+`CLAIMS.md` holds one short row per claim with the *current* figure. Every earlier version of a row, with its layered updates, lives verbatim under the claim's ID in `CLAIMS-HISTORY.md`, append-only. The first number a reader meets in `CLAIMS.md` is therefore always the newest.
 
 ---
 
@@ -333,11 +357,22 @@ Convention without enforcement decays. Implement all four:
 - a figure without a generating script in the same folder
 - any `data/` artifact pointer without a hash
 - a `supports_claims` ID absent from `CLAIMS.md`
-- a stale `INDEX.md`
+- a stale `INDEX.md` or `CURRENT.md`
+- **(added 2026-09-09)** a terminal experiment with `date_completed: null`, or completed before it started
+- **(added 2026-09-09)** a scaffold placeholder (`<...>`) surviving in a terminal manifest
+- **(added 2026-09-09)** a terminal experiment whose `data/POINTERS.md` table is empty and does not state "no external artifacts"
+- **(added 2026-09-09)** a terminal experiment without `data/metrics.json`, or whose manifest carries a number that appears nowhere in it
+- **(added 2026-09-09)** a `supersedes` / `superseded_by` link recorded in only one of the two manifests, a link to an experiment not on record, or `status: superseded` with no successor
+- **(added 2026-09-09)** a pointer whose path exists and whose hash no longer matches (absent paths are skipped, because raw run output is gitignored and a fresh clone must still validate)
 
-**7.4 CI.** A GitHub Actions job on every PR: run the validator, regenerate `INDEX.md` and fail if the diff is non-empty, regenerate promoted figures and fail on mismatch. Optionally, a bot comment that lists any experiment touched by the PR.
+The first eight were installed on 6 August 2026. The last six were added after a
+full audit on 2026-09-09 found the first eight passing on 47 experiments of
+which thirteen carried blank contract files, impossible commits, or values
+their own amendments had withdrawn.
 
-**7.5 Pre-commit hook.** Regenerate `INDEX.md`, run the validator on changed experiment folders.
+**7.4 CI.** There is no CI in this repository (see `OPEN_QUESTIONS-ANSWERED.md`, Q32). The pre-commit hook (7.5) and `make check-record` are the gate. Building CI remains open work.
+
+**7.5 Pre-commit hook.** `scripts/install_hooks.sh` installs it. On every commit: a changelog `summary` over 600 characters is rejected. On a commit touching `README.md` or `docs/`: `scripts/verify_paper_numbers.py --docs --gate` fails the commit if any prose document quotes a withdrawn or superseded figure. On a commit touching `docs/research/`: `INDEX.md` and `CURRENT.md` are regenerated and staged, and the validator runs on every touched experiment folder.
 
 **7.6 `.gitattributes` / `.gitignore`.** SVG and small JSON/CSV in git. Checkpoints, large parquet, and raw logs to DVC or LFS. Nothing above ~10 MB enters `docs/research/`.
 
@@ -354,35 +389,12 @@ Bake the venue requirements in from day one rather than scrambling at submission
 
 ---
 
-## 9. Migration procedure for an existing repository
+## 9–10. Migration procedure and acceptance criteria
 
-Execute in order; open a plan for approval before step 3.
-
-1. **Inventory.** Find every existing result: notebooks with output cells, `results/` dirs, `.csv`/`.json` metric dumps, plots in `assets/` or `images/`, benchmark numbers quoted in README or issues, evaluation numbers in commit messages, prior chat/report exports.
-2. **Triage.** For each: does it support a claim you intend to make? If yes → back-fill. If no → leave in place and note it.
-3. **Back-fill.** Create an experiment folder per recovered result. Mark unknown provenance honestly: `status: superseded`, `code.commit: unknown`, and an `ISSUES.md` line stating what could not be recovered. **Do not fabricate manifest fields.** A back-filled experiment with three known fields is more useful than one with ten invented ones.
-4. **Re-run what matters.** Any result destined for the paper that cannot be traced to a commit and a seed should be re-run under the new protocol. Everything else stays as historical record.
-5. **Install structure + templates + automation** (sections 2, 3, 7).
-6. **Amend docs** (section 6).
-7. **Seed `CLAIMS.md`** with the paper's intended claims, most marked unsupported. This immediately surfaces the real experiment backlog.
-8. **Turn on CI** and let it fail loudly on the next PR.
-
----
-
-## 10. Acceptance criteria
-
-The retrofit is complete when all of the following hold:
-
-- [ ] `docs/research/` exists with the full structure from section 2.
-- [ ] `make new-experiment SLUG=x` scaffolds a valid, validator-passing experiment.
-- [ ] `make validate-research` passes and fails correctly on a deliberately broken folder.
-- [ ] `make figures` regenerates every promoted figure with no diff.
-- [ ] `INDEX.md` is generated and current.
-- [ ] `CLAIMS.md` lists every intended paper claim with its evidence status.
-- [ ] At least one real experiment is fully recorded end to end as a worked example.
-- [ ] All pre-existing results are either back-filled or explicitly noted as unrecoverable.
-- [ ] README, CONTRIBUTING, and the agent instruction file point at `docs/research/`, with no other documentation rewritten.
-- [ ] CI enforces validation on every PR.
+The one-time retrofit these sections described was completed on 6 August 2026.
+Their text is kept verbatim as the record of what was done, in
+[`history/AGENT_INSTRUCTIONS-migration-2026-08.md`](history/AGENT_INSTRUCTIONS-migration-2026-08.md).
+Nothing in it is binding today.
 
 ---
 

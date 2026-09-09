@@ -34,7 +34,7 @@ data:
   dvc_path: null           # this repository does not use DVC; leave null
   hash: null               # md5:... or sha256:... of the dataset artifact
 seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
-n_runs: 1
+n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
 environment:
   python: "3.13"
   lockfile: env/requirements.lock
@@ -63,12 +63,13 @@ llm:
 metrics:
   primary: <metric name>
   values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
 baselines_compared: []
 statistical_test: null
 
 # --- Linkage ---
 supports_claims: []        # every ID here must exist in ../../CLAIMS.md
 figures: []                # every name here must have a file in figures/ and vice versa
-supersedes: null
+supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
 superseded_by: null
 related: []

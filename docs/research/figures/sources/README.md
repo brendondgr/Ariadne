@@ -9,7 +9,7 @@ make figures            # regenerate everything
 uv run python scripts/make_figures.py --check   # fail if any output is stale
 ```
 
-`--check` is what CI runs. If a generator no longer reproduces its committed
+`--check` is what `make check-record` should be extended to run; there is no CI. If a generator no longer reproduces its committed
 output byte-for-byte, the figure is stale and must not reach the paper.
 
 | Figure | Generator | Source experiment(s) |
