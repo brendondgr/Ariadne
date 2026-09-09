@@ -22,7 +22,7 @@ sys.path.insert(0, str(REPO))
 BANK = REPO / "docs/evaluation/composition/bank"
 POST = REPO / "docs/evaluation/experiments/post-repair-2026-09-03"
 SPLIT = REPO / "docs/evaluation/experiments/llm-query-split-2026-09-05"
-OUT_MD = REPO / "docs/reports/2026-09-05-full-report.md"
+OUT_MD = REPO / "docs/research/reports/2026-09-05-full-report.md"
 
 
 def load(path: Path):

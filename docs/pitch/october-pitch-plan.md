@@ -70,9 +70,9 @@ Backup slides (not in the 5 min): full comparison table; July study (as history)
 
 ## 5. Numbers policy (so nothing on a slide can be challenged)
 
-- Every number on a slide is traceable to a file in `docs/research/experiments/` or `docs/reports/`; the script cites the file per slide.
+- Every number on a slide is traceable to a file in `docs/research/experiments/` or `docs/research/reports/`; the script cites the file per slide.
 - Blind holdout figures (EXP-2026-09-007): quote the qwen38-27B-v2 grader as primary; say "two graders agree on the ordering."
-- The "4 s vs ~2 days / 40,000×" cost figure is from the 284-question development half (`docs/reports/2026-09-05-full-report.md`), not the holdout — the script says "the same 284 questions."
+- The "4 s vs ~2 days / 40,000×" cost figure is from the 284-question development half (`docs/research/reports/2026-09-05-full-report.md`), not the holdout — the script says "the same 284 questions."
 - Identity figures (EXP-2026-08-011, amendment A-10): retrieval recall 0.657 vs 0.127 (precision 0.136 vs 0.057) on 117 blind questions, **synthetic records conforming to ReliaQuest's real schema** — say "synthetic records" and "retrieval" out loud. Do not quote the superseded 0.7877 vs 0.3177.
 - Federation vs merging: say "no measurable accuracy difference; the difference is structural" — never "federation is more accurate."
 - July 0.9957: only in backup, labeled "development questions, July; does not transfer."

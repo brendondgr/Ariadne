@@ -19,7 +19,7 @@ sys.path.insert(0, str(REPO))
 RUNS = REPO / "docs/evaluation/experiments"
 EXPD = REPO / "docs/research/experiments/EXP-2026-09-008-grader-calibration/data"
 HOLD = RUNS / "holdout-spend-2026-09-05"
-OUT = REPO / "docs/reports/2026-09-06-overnight-report.md"
+OUT = REPO / "docs/research/reports/2026-09-06-overnight-report.md"
 BANDS = ("ceiling", "mid", "low")
 
 

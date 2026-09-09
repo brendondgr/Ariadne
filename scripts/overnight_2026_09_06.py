@@ -52,7 +52,7 @@ RUNS = REPO / "docs/evaluation/experiments"
 EXP = REPO / "docs/research/experiments"
 LOGS = REPO / "logs/overnight-2026-09-06"
 STATE_DIR = REPO / "docs/evaluation/composition/bank"
-REPORT_MD = REPO / "docs/reports/2026-09-06-overnight-report.md"
+REPORT_MD = REPO / "docs/research/reports/2026-09-06-overnight-report.md"
 
 CAL = RUNS / "calibration-2026-09-06"
 HOLD = RUNS / "holdout-spend-2026-09-05"

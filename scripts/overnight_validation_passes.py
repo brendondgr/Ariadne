@@ -204,7 +204,7 @@ def analyse(gemma_suffixes: list[str]) -> dict:
 
 
 def append_to_report(result: dict, sessions: list[str]) -> None:
-    md_path = REPO / "docs/reports/2026-09-04-overnight-report.md"
+    md_path = REPO / "docs/research/reports/2026-09-04-overnight-report.md"
     if not md_path.is_file():
         _log("no report to append to")
         return

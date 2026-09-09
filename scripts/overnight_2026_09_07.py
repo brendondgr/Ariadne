@@ -31,7 +31,7 @@ from utils.config import load_env  # noqa: E402
 
 load_env()
 
-OUT = REPO / "docs/reports/2026-09-07-overnight"
+OUT = REPO / "docs/research/reports/2026-09-07-overnight"
 STATE = OUT.with_suffix(".state.json")
 LOGS = REPO / "logs/overnight-2026-09-07"
 BASE = "http://localhost:9090/v1"

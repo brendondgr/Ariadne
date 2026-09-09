@@ -29,7 +29,7 @@ from pathlib import Path
 from typing import Any
 
 BANK_DIR = Path("docs/evaluation/composition/bank")
-REPORTS = Path("docs/reports")
+REPORTS = Path("docs/research/reports")
 
 
 def load(path: Path) -> Any:

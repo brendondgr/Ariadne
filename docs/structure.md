@@ -55,7 +55,6 @@ in [`commands.md`](commands.md); what each number means is in
 | `CHANGELOG.md`, `changelog.jsonl` | How to read the log; the log itself (one JSON line per change) |
 | `research/` | **The live research record**: `CURRENT.md`, `CLAIMS.md`, `DECISIONS.md`, `OPEN_QUESTIONS.md`, `RELATED_WORK.md`, `INDEX.md`, `experiments/EXP-*/` (manifest, protocol, results per experiment), `paper/`, `figures/`, `tables/`, `reports/`, dated audits |
 | `evaluation/` | Raw evaluation artifacts (answers, banks, per-arm runs); [`evaluation/README.md`](evaluation/README.md) says which are current and which are superseded |
-| `reports/` | Dated overnight and full-run reports (`.md` + `.pdf`) |
 | `plans/` | Dated implementation plans, kept as a historical record; `plans/robustness/` is the parallel-brief set |
 | `prompts/` | Saved prompts for positioning and venue-selection sweeps |
 | `pitch/` | October pitch plan, deck, script and preview |

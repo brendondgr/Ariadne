@@ -509,7 +509,7 @@ def rollup(state: dict[str, Any]) -> dict[str, Any]:
               "answered case id belongs to the holdout split. It stays sealed for a "
               "three-arm spend once the query-writing arm is settled."]
     md = "\n".join(lines) + "\n"
-    md_path = REPO / "docs/reports/2026-09-04-overnight-report.md"
+    md_path = REPO / "docs/research/reports/2026-09-04-overnight-report.md"
     md_path.write_text(md)
 
     # The Markdown is written first and unconditionally, so a PDF failure costs

@@ -142,7 +142,7 @@ class TestReport:
         monkeypatch.setattr(ot, "BANK_DIR", tmp_path)
         monkeypatch.setattr(ot, "POST_REPAIR", tmp_path / "absent")
         monkeypatch.setattr(ot, "LLM_FAIR", tmp_path / "absent2")
-        reports = tmp_path / "docs/reports"
+        reports = tmp_path / "docs/research/reports"
         reports.mkdir(parents=True)
         monkeypatch.setattr(ot, "REPO", tmp_path)
         state = _state()
@@ -163,7 +163,7 @@ class TestReport:
         monkeypatch.setattr(ot, "BANK_DIR", tmp_path)
         monkeypatch.setattr(ot, "POST_REPAIR", tmp_path / "absent")
         monkeypatch.setattr(ot, "LLM_FAIR", tmp_path / "absent2")
-        (tmp_path / "docs/reports").mkdir(parents=True)
+        (tmp_path / "docs/research/reports").mkdir(parents=True)
         monkeypatch.setattr(ot, "REPO", tmp_path)
         result = ot.rollup(_state())
         assert result["llm_query"] == {"status": "not_run"}

@@ -20,8 +20,8 @@ import yaml
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 
-OUT = REPO / "docs/reports/2026-09-07-overnight.md"
-STATE = REPO / "docs/reports/2026-09-07-overnight.state.json"
+OUT = REPO / "docs/research/reports/2026-09-07-overnight.md"
+STATE = REPO / "docs/research/reports/2026-09-07-overnight.state.json"
 GEN_ROOT = REPO / "docs/evaluation/experiments/seeded-repeats-generic-2026-09-06"
 SEEDS = ("1729", "20260906", "424242")
 #: Added 2026-09-07 under EXP-2026-09-011 A-1. Generated but not yet
@@ -185,7 +185,7 @@ def build() -> str:
     A("")
 
     # --- paper numbers --------------------------------------------------
-    pn = REPO / "docs/reports/2026-09-07-paper-numbers.json"
+    pn = REPO / "docs/research/reports/2026-09-07-paper-numbers.json"
     if pn.exists():
         d = json.loads(pn.read_text())
         A("## Paper number traceability")
