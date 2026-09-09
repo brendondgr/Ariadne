@@ -23,7 +23,7 @@ not.
 **The September overnight reports** (2026-09-02 … 09-07) were written by
 `scripts/morning_report.py`, `scripts/plain_report.py` and the
 `scripts/overnight_2026_09_0*.py` drivers, which read every figure from files
-on disk at render time; they moved here from a second, unindexed `docs/reports/`
+on disk at render time; they moved here from a second, unindexed docs/reports/
 directory on 2026-09-09.
 
 **Not every report is built here.** The 2026-08-26 novelty audit is an external
