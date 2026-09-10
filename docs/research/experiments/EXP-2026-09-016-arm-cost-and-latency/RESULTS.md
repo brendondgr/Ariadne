@@ -1,42 +1,76 @@
-# RESULTS — EXP-2026-09-016 <title>
+# RESULTS — EXP-2026-09-016, what each answering path costs
 
-## 1. Headline
+`Q38` is answered. The cost half of `C-012` now has a number, in two regimes,
+with the concurrency stated beside each.
 
-Two sentences. The number, and whether the hypothesis survived.
+---
 
-## 2. Results table
+## A-1 — Throughput, 284 development questions, 24 workers, one instance
 
-Generated from `data/metrics.json`, not typed. Mean ± std across seeds — never a
-single run without saying so. If `n_runs: 1`, state that here rather than
-letting a bare number imply a distribution.
+| path | wall clock | summed machine time | median per question | p95 | model calls | tokens | returned evidence |
+|---|---|---|---|---|---|---|---|
+| hand-written templates | 3.7 s | 0.02 h | 0.111 s | 1.840 s | 0 | 0 | 259 / 284 |
+| schema-derived | 14.0 s | 0.09 h | 1.018 s | 2.295 s | 0 | 0 | 198 / 284 |
+| model writes the query | **11,407.8 s** | **70.32 h** | **638.713 s** | 2,464.033 s | 413 | 5,818,658 | **96 / 284** |
 
-## 3. Figures
+The model arm spent 1.45 calls per question — it retries — and 5.8 million
+tokens, read off the transport by the meter rather than estimated.
 
-Each figure embedded with a one-line caption naming the script that produced it.
+`C-012`'s cost half is supported, and by a wide margin. It is also the first
+time the margin has had a number attached at a stated concurrency.
 
-## 4. Interpretation
+## A-2 — The published 40,000x figure does not survive being made like-for-like
 
-What this means for the paper's argument. Which claim in `../../CLAIMS.md` it
-moves, and in which direction.
+`docs/research/reports/2026-09-05-full-report.md` reports "about four seconds"
+against "roughly two days of machine time", a ratio of "about forty thousand
+times", and the October pitch names it as one of two numbers that must land.
 
-## 5. Threats to validity
+**The two-day half reproduces.** Summed machine time for the model arm is
+**2.93 days** tonight against that report's "roughly two days" — same quantity,
+same order, on a different night.
 
-Confounds, leakage, dataset artifacts, cost asymmetries in the comparison. The
-section reviewers read first. Be specific enough that someone could act on it.
+**The ratio does not, because it divides two different quantities.** Four
+seconds is the deterministic arm's *wall clock*; two days is the model arm's
+*summed machine time*. At 24 workers those differ by a factor of 24 before any
+real effect. Reconstructing that same construction on tonight's numbers gives
+**68,416x** — which confirms how the figure was formed and shows it is not
+stable.
 
-## 6. What surprised us
+Held to one quantity at a time, on the same 284 questions at the same
+concurrency on the same machine:
 
-The section that becomes the discussion. If nothing surprised you, the
-experiment was probably not worth running — say that too.
+| comparison | against hand-written | against schema-derived |
+|---|---|---|
+| wall clock | **3,083x** | 815x |
+| summed machine time | **2,923x** | 760x |
 
-## 7. Follow-ups
+**Recommendation for the pitch.** Quote **about three thousand times**, or say
+"three to four orders of magnitude" and move on. It is defensible under
+questioning, which forty thousand is not, and it is not a weaker claim in any
+way an audience will feel.
 
-Each becomes an entry in `../../OPEN_QUESTIONS.md`. Link them.
+## A-3 — The expensive path also answers far less often
 
-## 8. Reproduction
+| path | questions returning evidence |
+|---|---|
+| hand-written templates | 259 / 284 |
+| schema-derived | 198 / 284 |
+| model writes the query | 96 / 284 |
 
-The exact command that regenerates everything in this folder.
+Returning evidence is not the same as being correct, and this is not a
+correctness figure — `EXP-2026-09-005` and `-007` hold those. But it means the
+cost comparison understates the gap: the model arm is roughly three thousand
+times more expensive *and* comes back empty on two questions in three.
 
-```bash
-# command here
-```
+The honest sentence is "more expensive and less useful", not "more expensive".
+
+## A-4 — Reporting discipline
+
+The two regimes are reported apart, as pre-registered. No dollar figure is
+given: the models are served on hardware this project does not pay for per
+token, so seconds and tokens are the honest units and a dollar amount would be
+invented.
+
+`ISSUES.md` `I-1` records that this arm answers nothing at all, with no model
+call, if run without the settled configuration — the failure mode that would
+have produced a confident, plausible, entirely inverted cost table.

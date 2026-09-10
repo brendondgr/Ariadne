@@ -11,7 +11,7 @@ that a dead end is walked into once rather than twice.
 | ID | Date | Title | Status | Primary metric | Claims | Link |
 |---|---|---|---|---|---|---|
 | `EXP-2026-09-015` | 2026-09-09 | Can the relation slot be derived from the label pair instead of asked of the model? | running | slot_relation_T4 0.1304 ± 0.0000 (n=3) | — | [relation-slot-derivation](experiments/EXP-2026-09-015-relation-slot-derivation/) |
-| `EXP-2026-09-016` | 2026-09-09 | What does each way of answering actually cost, in seconds and in tokens? | running | <metric name> (not recorded) | — | [arm-cost-and-latency](experiments/EXP-2026-09-016-arm-cost-and-latency/) |
+| `EXP-2026-09-016` | 2026-09-09 | What does each way of answering actually cost, in seconds and in tokens? | running | cost_ratio_wall_clock_llm_query_over_deterministic 3083.2000 ± 0.0000 (n=284) | C-012, C-004 | [arm-cost-and-latency](experiments/EXP-2026-09-016-arm-cost-and-latency/) |
 | `EXP-2026-07-001` | 2026-07-26 | Arm A — fully deterministic pipeline (planning, extraction, synthesis) | complete | correctness 0.9972 (n=1) | C-001, C-004 | [arm-a-deterministic](experiments/EXP-2026-07-001-arm-a-deterministic/) |
 | `EXP-2026-07-002` | 2026-07-26 | Arm B — LLM planning with deterministic extraction and an LLM writer | complete | correctness 0.8505 (n=1) | C-002, C-003, C-016 | [arm-b-llm-planned](experiments/EXP-2026-07-002-arm-b-llm-planned/) |
 | `EXP-2026-07-003` | 2026-07-26 | Arm C — authored plan with an LLM writer reading raw evidence | complete | correctness 0.9690 (n=1) | C-002, C-005 | [arm-c-llm-writer-evidence](experiments/EXP-2026-07-003-arm-c-llm-writer-evidence/) |

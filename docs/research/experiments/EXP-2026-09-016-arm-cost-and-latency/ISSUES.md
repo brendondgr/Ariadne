@@ -84,3 +84,23 @@ its concurrency stated beside it, in both regimes. No attempt is made to
 reconcile it with the earlier figure or to reproduce that figure's conditions.
 If the ratio comes out materially below 40,000x, that is reported plainly and
 the pitch is told before October rather than in the room.
+
+## I-3 — 70 seconds of two-way contention at the start of the latency run
+
+The original driver began its own 40-question latency step at 03:36:07. The
+handoff that replaces it with the reduced 20-question sample killed the driver
+*shell* at 03:36:34, which orphaned rather than stopped its Python child. Both
+processes were briefly live and writing to the same root.
+
+Caught at 03:37:47 and the orphan killed. **No answer file had been written by
+either**, so nothing is contaminated — but the first question of the surviving
+run was contended for roughly 70 s of its execution, and single-user latency is
+precisely the number that contention corrupts.
+
+Handled by reporting the first observation's wall clock separately and checking
+it against the rest of the sample. If it is an outlier it is excluded and the
+exclusion is stated with its `n`; if it is not, nothing is removed.
+
+The underlying lesson is about `pkill` on a wrapper script: killing the shell
+leaves the work running, and a measurement that had already started would have
+been silently wrong rather than obviously broken.

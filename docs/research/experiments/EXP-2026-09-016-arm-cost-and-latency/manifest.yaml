@@ -49,7 +49,7 @@ environment:
   container: null
 compute:
   hardware: "two vLLM instances on separate GPUs; throughput at 24 workers, latency at 1"
-  wall_clock_hours: 0.0
+  wall_clock_hours: 3.17
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
@@ -61,23 +61,36 @@ llm:
   prompt_files: []
   prompt_hash: null
   tool_schema_hash: null
-  total_input_tokens: null
-  total_output_tokens: null
+  total_input_tokens: 360511
+  total_output_tokens: 5458147
   nondeterminism_note: >
     Provider-side nondeterminism remains even at temperature 0; results
     are reported as mean ± std over n_runs.
 
 # --- Results block ---
 metrics:
-  primary: <metric name>
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  primary: cost_ratio_wall_clock_llm_query_over_deterministic
+  values:
+    cost_ratio_machine_time_llm_query_over_deterministic: {mean: 2923.1, std: 0.0, n: 284}
+    cost_ratio_wall_clock_llm_query_over_deterministic: {mean: 3083.2, std: 0.0, n: 284}
+    cost_ratio_wall_clock_llm_query_over_generic: {mean: 814.8, std: 0.0, n: 284}
+    machine_hours_llm_query: {mean: 70.32, std: 0.0, n: 284}
+    median_s_per_question_llm_query: {mean: 638.713, std: 0.0, n: 284}
+    model_calls_llm_query: {mean: 413, std: 0.0, n: 284}
+    questions_with_evidence_deterministic: {mean: 259, std: 0.0, n: 284}
+    questions_with_evidence_generic: {mean: 198, std: 0.0, n: 284}
+    questions_with_evidence_llm_query: {mean: 96, std: 0.0, n: 284}
+    total_tokens_llm_query: {mean: 5818658, std: 0.0, n: 284}
+    wall_clock_s_deterministic: {mean: 3.7, std: 0.0, n: 284}
+    wall_clock_s_generic: {mean: 14.0, std: 0.0, n: 284}
+    wall_clock_s_llm_query: {mean: 11407.8, std: 0.0, n: 284}
   withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
-baselines_compared: []
+baselines_compared: ["EXP-2026-09-005"]
 statistical_test: null
 
 # --- Linkage ---
-supports_claims: []        # every ID here must exist in ../../CLAIMS.md
+supports_claims: ["C-012", "C-004"]
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
 superseded_by: null
-related: []
+related: ["EXP-2026-09-005", "EXP-2026-09-015"]
