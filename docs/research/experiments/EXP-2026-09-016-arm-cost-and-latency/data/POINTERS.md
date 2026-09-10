@@ -8,7 +8,7 @@ it held when the number was computed.
 
 | Artifact | Path (repo-relative) | Bytes | SHA-256 | What it is |
 |---|---|---|---|---|
-| | | | | |
+| Development bank | `docs/evaluation/composition/bank/bank-dev.json` | 573,495 | `sha256:a4ca6702029cae7784574b0307b9f76d4718a039f3254f2c0ff708a2fa1a4119` | the 284 questions all three paths answer; the holdout half was not read |
 
 If this experiment reads no raw output outside `docs/research/`, delete the
 table and write one line: `No external artifacts: <why>` — the validator
@@ -19,3 +19,8 @@ Regenerate hashes with:
 ```bash
 uv run python -m utils.research_record.hashing <path>
 ```
+
+
+Run output larger than this table lives in the session scratchpad and is **not**
+retained: the per-run metric files it produced are committed under `data/`, and
+every number in `RESULTS.md` is read from those.

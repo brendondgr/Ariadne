@@ -43,6 +43,7 @@ below.)
 | Q45 | Five CAPEC relationships are declared but not allowlisted; the generic arm scores 0.0000 on the 34 dev questions that need them | diagnostic 2026-09-09 | `C-023`'s margin; any generic-arm figure on CAPEC *(open)* |
 | Q46 | A metric moved 0.0503 between sessions while both sessions reported near-zero internal spread | EXP-2026-09-015 A-7 | every cross-session comparison; the error bars used throughout *(open)* |
 | Q47 | The `generic` arm silently runs model-free at the default timeout | EXP-2026-09-016 I-4 | audited: no published figure affected; the fragility is *(partly)* open |
+| Q48 | The judge counts the abstention template's example ids as fabricated claims, hardest on the arm that abstains most | EXP-2026-09-016 A-6 | any judge-derived hallucination figure *(open)* |
 
 ---
 
@@ -776,3 +777,36 @@ What remains open is the fragility, not a figure: nothing in the CLI, the arm
 definition or the shared runner sets the timeout that decides which arm runs,
 and getting it wrong is silent. The cheap guard is to assert a fallback-rate
 ceiling in the runner, which is a behaviour change and is not made tonight.
+
+### Q48 — The judge counts the abstention template's example ids as fabricated claims
+
+**Why it matters:** the deterministic abstention narrative ends *"…name it or
+give its id (e.g. T1566, M1017, or CAPEC-98)."* The LLM judge records those
+three illustrative identifiers in its `hallucinations` field. On
+`EXP-2026-09-016`'s `llm_query` dev run, 160 answers were flagged and **157 of
+the flags are exactly that trio**; every one of the 160 also abstained. Read
+literally, the arm "hallucinates on 57% of its answers" — it prints a help
+string.
+
+It is present in committed runs, and the share rises with how often an arm
+abstains:
+
+| run | judgments | flagged | of which the boilerplate ids |
+|---|---|---|---|
+| `EXP-2026-09-005` deterministic | 3,407 | 118 | 35 (30%) |
+| `EXP-2026-09-005` generic | 3,123 | 255 | 137 (54%) |
+| `EXP-2026-09-007` holdout generic | 1,152 | 186 | 128 (69%) |
+
+**The bias has a direction:** it penalises abstention, so it falls hardest on
+the generic arm, which wins `C-023`. Correcting it helps the winner, which is
+why it must be a recorded decision rather than a quiet fix.
+
+**Not affected:** `fabricated_mapping` is 0 across the run, and the "zero
+fabricated claims" line comes from the deterministic verifier, not this judge.
+
+**What resolves it:** either strip the example ids from the abstention narrative
+so nothing downstream can mistake them for claims, or have the judge ignore
+identifiers that appear inside a recognised abstention. The first is cleaner and
+changes shipped output; both need the recorded-answer regression. Then recount
+every judge-derived hallucination figure in the record. **From:**
+`EXP-2026-09-016` `A-6`. **Cost:** an hour, plus a recount.

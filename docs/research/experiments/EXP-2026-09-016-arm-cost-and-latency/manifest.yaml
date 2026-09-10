@@ -5,9 +5,9 @@
 id: EXP-2026-09-016
 slug: arm-cost-and-latency
 title: "What does each way of answering actually cost, in seconds and in tokens?"
-status: running            # planned | running | complete | failed | superseded
+status: complete            # planned | running | complete | failed | superseded
 date_started: 2026-09-09
-date_completed: null       # null until status is complete/failed
+date_completed: 2026-09-10
 authors: ["claude"]
 
 purpose: >
@@ -29,7 +29,7 @@ hypothesis: >
 code:
   commit: e5a47b6a3373c04ff9c99373af579bd60488dbd9          # 40-char sha, or "unknown" for a back-filled experiment
   branch: main
-  entrypoint: "<exact command>"
+  entrypoint: "ORCH_MAX_HOPS=5 SPECIALIST_LLM_TIMEOUT_S=4096 uv run python -m utils.evaluation.experiment_untruncated --arm {deterministic,generic,llm_query} --bank docs/evaluation/composition/bank/bank-dev.json --llm-max-tokens 32768 --llm-model default-model --workers {24 throughput, 1 latency}; then judge_answers --arm llm_query --model {default-model,default-model-2} --workers 16 over two halves"
   dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
 config:
   path: null               # repo-relative path, or null if the run takes no config file
@@ -71,6 +71,8 @@ llm:
 metrics:
   primary: cost_ratio_wall_clock_llm_query_over_deterministic
   values:
+    llm_query_judged_dev: {mean: 0.4043, std: null, n: 282}
+    judge_hallucination_flags_that_are_boilerplate: {mean: 157, std: null, n: 160}
     cost_ratio_machine_time_llm_query_over_deterministic: {mean: 2923.1, std: 0.0, n: 284}
     cost_ratio_wall_clock_llm_query_over_deterministic: {mean: 3083.2, std: 0.0, n: 284}
     cost_ratio_wall_clock_llm_query_over_generic: {mean: 814.8, std: 0.0, n: 284}

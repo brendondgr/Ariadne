@@ -88,7 +88,74 @@ Returning evidence is not correctness — `EXP-2026-09-005` and `-007` hold thos
 — but the cost comparison understates the gap. The honest sentence is "more
 expensive **and** less useful", not "more expensive".
 
-## A-5 — Reporting discipline
+## A-5 — The quality column, completed on one bank
+
+Graded 2026-09-10 by `relay/qwen38-27B-v2`, 16 workers on each of two instances,
+over this experiment's own saved answers.
+
+| path | judged correctness, dev n=284 |
+|---|---|
+| hand-written templates | 0.4946 |
+| schema-derived | 0.6569 |
+| model writes the query | **0.4043** (n=282) |
+
+The first two are already on record for these exact questions
+(`EXP-2026-09-005`); only the third was missing, which is why the cost table's
+quality column had been mixing banks.
+
+**It lands on top of the holdout figure.** `EXP-2026-09-007` reports 0.4039 for
+this arm on the 288 held-back questions. The development half returns 0.4043 —
+a difference of 0.0004, on a different question set, five days later, under a
+separately configured run. That is a stronger cross-check than anything this
+experiment set out to produce.
+
+So the honest one-line summary of the whole cost exercise:
+
+| path | cost against the hand-written path | judged correctness |
+|---|---|---|
+| hand-written templates | 1x | 0.4946 |
+| schema-derived | 144x | 0.6569 |
+| model writes the query | 1,408x | 0.4043 |
+
+**Two of 284 could not be graded**, both because the judge returned a reply
+missing every required field. Notably they are size-ranked 279th and 283rd of
+284 — among the *smallest* answers, not the largest. `EXP-2026-08-021` found its
+grading failures concentrated in the top 5% by size; this is the opposite, so
+the two are not the same phenomenon and neither is size-driven truncation.
+
+## A-6 — The judge counts the abstention template as fabrication
+
+Found while checking a figure before quoting it, and it is not confined to this
+experiment.
+
+The deterministic abstention narrative reads: *"If you meant a specific entity,
+name it or give its id (e.g. T1566, M1017, or CAPEC-98)."* The judge records
+those three illustrative identifiers in its `hallucinations` field. On this run,
+**160 answers were flagged and 157 of the flags are exactly that trio**; all 160
+also abstained.
+
+Taken at face value this arm "hallucinates on 57% of answers". It does not. It
+prints a help string.
+
+The artifact is present in committed runs too:
+
+| run | judgments | flagged | of which the boilerplate ids |
+|---|---|---|---|
+| `EXP-2026-09-005` deterministic | 3,407 | 118 | 35 (30%) |
+| `EXP-2026-09-005` generic | 3,123 | 255 | 137 (54%) |
+| `EXP-2026-09-007` holdout generic | 1,152 | 186 | 128 (69%) |
+
+**The bias has a direction.** It inflates hallucination counts in proportion to
+how often an arm abstains, so it falls hardest on the generic arm — the one that
+wins `C-023`. Correcting it would help the winner, which is exactly why it
+should be corrected deliberately and disclosed, not quietly.
+
+`fabricated_mapping` is clean at 0 across this run, and the pitch's
+"zero fabricated claims" line comes from the deterministic verifier rather than
+from this judge, so neither is affected. What is affected is any figure quoting
+this judge's hallucination count. Filed as `Q48`.
+
+## A-7 — Reporting discipline
 
 Regimes reported apart, as pre-registered. No dollar figure: the models are
 served on hardware this project does not pay for per token, so seconds and

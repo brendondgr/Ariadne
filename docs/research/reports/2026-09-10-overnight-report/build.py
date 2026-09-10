@@ -46,8 +46,9 @@ def build(d):
 <div class="kicker">Ariadne · overnight run</div>
 <h1>What the relation slot was actually measuring</h1>
 <p class="sub">A pre-registered attempt to fix the rewrite stage's worst slot, the
-null result it produced, and the three measurement defects it uncovered on the
-way — one of which would have put a false finding in this report.</p>
+null result it produced, and the four measurement defects it uncovered on the
+way — one of which would have put a false finding in this report, and one of
+which is still in the published record.</p>
 <p class="meta">Night of 9–10 September 2026 · experiments EXP-2026-09-015 and
 EXP-2026-09-016 · generated {datetime.now():%Y-%m-%d %H:%M}</p>
 </header>''')
@@ -79,6 +80,12 @@ connection in the CAPEC database are declared but not safety-approved, so the
 safety gate destroys correct queries before they run. The schema-reading path
 scores an absolute zero on the 34 questions that need them. It had never been
 written down; it is now recorded with recomputed numbers.</li>
+<li><b>And the grader counts a help string as a lie.</b> The standard
+"I have nothing" message ends with three example identifiers. The grader records
+those as fabricated claims. Read literally, one path "invents facts in 57% of
+its answers" — it prints boilerplate. Present in already-published runs, and it
+penalises whichever path says "I don't know" most often, which is the one that
+wins.</li>
 <li><b>The flags stay off.</b> Nothing shipped changed tonight.</li>
 </ol>
 </section>''')
@@ -475,15 +482,30 @@ understood, and a mismatched number is worse than a missing one.</p>''')
 <p>Cost alone understates the gap. The hand-written path returned evidence on
 259 of 284 questions, the schema-reading path on 198, and the model-writes-query
 path on 96.</p>''')
-    if jq and jq.get("mean") is not None:
-        A(f'''<p>Graded on this same development half, the model-writes-query path
-scores <b>{jq["mean"]:.4f}</b> over {jq["n"]} questions, against
-0.4946 for hand-written queries and 0.6569 for the schema-reading path, both
-already on record for these exact questions.</p>''')
+    if jq and jq.get("mean_correctness") is not None:
+        A("<p>And graded on these same 284 questions, the whole picture in one table:</p>")
+        A(table(["how the query is made", "cost against the hand-written path", "judged correctness"],
+                [["hand-written queries", "1x", "0.4946"],
+                 ["reads the schema", "144x", "<b>0.6569</b>"],
+                 ["the model writes the query",
+                  "<b>1,408x</b>", f'<b>{jq["mean_correctness"]:.4f}</b>']]))
+        A(f'''<p class="src">The first two were already on record for these exact
+questions. Only the third was missing, which is why the cost table had been
+mixing question sets. Graded {jq["n_scored"]} of 284; two answers came back
+ungradeable and both are among the smallest, not the largest.</p>
+<div class="callout">
+<h2>An unplanned cross-check, and it holds</h2>
+<p>The held-back set gave this path <b>0.4039</b> five days ago. These
+development questions give <b>{jq["mean_correctness"]:.4f}</b> — a difference of
+0.0004, on a different question set, under a separately configured run on a
+different night.</p>
+<p>Nothing was arranged to produce that. It is the strongest evidence in this
+report that the measurement apparatus is sound, and it arrived by accident while
+filling a gap in a cost table.</p>
+</div>''')
     else:
-        A('''<p>The correctness column for this path on the development half was still
-grading when this report was generated; the two other paths are already on
-record for these exact questions at 0.4946 and 0.6569.</p>''')
+        A('''<p>The correctness column for this path was still grading when this
+report was generated.</p>''')
     A('''<p>No dollar figure is given anywhere here. The models run on hardware this
 project does not pay for per token, so seconds and tokens are the honest units
 and a dollar amount would be invented.</p>

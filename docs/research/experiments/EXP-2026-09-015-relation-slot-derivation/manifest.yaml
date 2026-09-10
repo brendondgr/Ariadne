@@ -5,9 +5,9 @@
 id: EXP-2026-09-015
 slug: relation-slot-derivation
 title: "Can the relation slot be derived from the label pair instead of asked of the model?"
-status: running            # planned | running | complete | failed | superseded
+status: complete            # planned | running | complete | failed | superseded
 date_started: 2026-09-09
-date_completed: null       # null until status is complete/failed
+date_completed: 2026-09-10
 authors: ["claude"]
 
 purpose: >
@@ -29,7 +29,7 @@ hypothesis: >
 code:
   commit: c6bec80367723885072935649f3fb886b71a0000          # see ISSUES I-4: run 1 ran on this; runs 2 and 3 also carried e5a47b6a
   branch: main
-  entrypoint: "uv run python scripts/variant_harness.py compare --out docs/evaluation/variants-2026-08-29 --reference reference_2026-09-08.json --split tune --workers 32 --rewrite {off,det,model,model_ask} --llm-model {default-model,default-model-2} --llm-base-url http://localhost:9090/v1 --llm-timeout-s 900 --pipeline-timeout-s 900 --cache-dir <fresh per run>"
+  entrypoint: "uv run python scripts/variant_harness.py compare --out docs/evaluation/variants-2026-08-29 --reference reference_2026-09-08.json --split tune --workers 32 --rewrite model --llm-model default-model --llm-base-url http://localhost:9090/v1 --llm-timeout-s 900 --pipeline-timeout-s 900 --cache-dir cache-A2-r1 (a fresh directory per run; A2; A3 uses default-model-2, A4 uses --rewrite model_ask over A2 run 1 cache, A0/A1 use --rewrite off/det)"
   dirty: false            # the working tree was committed before each arm ran
 config:
   path: null               # repo-relative path, or null if the run takes no config file

@@ -158,7 +158,7 @@ def everything():
         "refusals_r2": refusals(REPO / "docs/evaluation/variants-2026-08-29/scored_R2_tune.run1.json"),
         "refusals_a2": refusals(REPO / "docs/evaluation/variants-2026-08-29/A2_run1"),
         "rungs_r2": rungs(REPO / "docs/evaluation/variants-2026-08-29/scored_R2_tune.run1.json"),
-        "judged_llm_query": judged(str(SCRATCH / "e016/throughput"), "llm_query"),
+        "judged_llm_query": load(E16 / "data/judged_llm_query_dev.json"),
         # Order matters: the right operand wins. throughput_matched holds the
         # deterministic and generic arms run at SPECIALIST_LLM_TIMEOUT_S=4096;
         # throughput holds their degraded 30 s counterparts (ISSUES I-4) and the
