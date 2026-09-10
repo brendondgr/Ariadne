@@ -289,3 +289,35 @@ the data read.
    is at 0.1111 on both.
 
 Prose above is left as written.
+
+## AMENDMENT A-4 (2026-09-10) — `slot_relation` was scored against edges the graph does not have
+
+**Raised by:** `EXP-2026-09-015` `I-1`. Nothing here is rewritten; this pointer
+is the amendment.
+
+This experiment reported `slot_relation` as the model's worst slot at every tier
+and drew a conclusion from that. `EXP-2026-09-015` rescored the same saved rows
+and found that **11 of the 36** `slot_gold.json` records carrying a full
+`(anchor_label, relation, target_label)` name a relation that is not declared
+between their own two labels — `Group -[HAS_TECHNIQUE]-> Technique` where the
+snapshot has `USES`, and three more of that shape. `score_slots` compares
+against the raw gold record, so a form naming the edge the graph actually has
+was scored wrong.
+
+Pooled over the graded rows of this experiment's own `R2` run 1:
+
+| reading | `slot_relation` |
+|---|---|
+| strict, as reported here | 0.4359 |
+| accepting any relation the snapshot declares between gold's own labels | 0.7179 |
+
+**No value is withdrawn.** This experiment's manifest carries no
+`slot_relation` metric, so nothing quotable rests on it. What is affected is the
+*prose* reading of the relation slot in `A-4` and in `ISSUES.md`: the slot is
+worse than the others, but by materially less than reported, and part of the gap
+is a property of the understanding-gold rather than of the stage.
+
+The repair-or-relax decision is `Q44` and is deliberately not taken here —
+editing an answer key after seeing a score is the move the split discipline
+exists to prevent. `scripts/rescore_slot_relation.py` reports both readings and
+edits nothing.
