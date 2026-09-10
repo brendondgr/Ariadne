@@ -40,6 +40,7 @@ below.)
 | Q36 | The five-slot intent form cannot express a federated question, and the understanding-gold does not specify one | EXP-2026-09-014 follow-ups | any federated figure from the rewrite stage; plausibly the ship decision *(open)* |
 | Q37 | A stage that adds latency inside a bounded pipeline cannot be measured without saying which budget it ran under | EXP-2026-09-014 follow-ups | shipping the rewrite stage; the honest reading of any future LLM-arm figure *(partly)* |
 | Q44 | The understanding-gold names edges the graph does not have | EXP-2026-09-015 | `EXP-2026-09-014`'s reading of the relation slot; any future slot-accuracy figure *(open)* |
+| Q45 | Five CAPEC relationships are declared but not allowlisted; the generic arm scores 0.0000 on the 34 dev questions that need them | diagnostic 2026-09-09 | `C-023`'s margin; any generic-arm figure on CAPEC *(open)* |
 
 ---
 
@@ -662,3 +663,52 @@ labels. The second is cheaper and the first is more honest; it is a decision,
 not a fix, because repairing gold after seeing a score is exactly the move the
 split discipline exists to prevent. **From:** `EXP-2026-09-015` I-1.
 **Cost:** an hour either way, plus a re-run.
+
+### Q45 — Five CAPEC relationships are declared but not allowlisted, and the generic arm pays for it
+
+**Why it matters:** `data/source_cards/capec.json` declares 21 relationship
+types and gives `safety.allowed_edge_patterns` for 16. The Gremlin validator
+treats a relationship missing from a *non-empty* allowlist as forbidden and
+rejects the query before it runs:
+
+```
+pre-run gate rejected all drafts:
+relationship 'HAS_ALTERNATE_TERM' has no allowed_edge_patterns in card
+```
+
+The five are `HAS_ALTERNATE_TERM`, `HAS_EXAMPLE`, `HAS_INDICATOR`,
+`HAS_PREREQUISITE` and `REQUIRES_RESOURCE`. Each has exactly one unambiguous
+endpoint pair in the canonical snapshot (`AttackPattern` to `AlternateTerm`,
+`Example`, `Indicator`, `Prerequisite`, `Resource`), so the allowlist entries
+are derivable rather than authorable.
+
+**The asymmetry is the point.** The rule lives only in
+`utils/specialists/gremlin/validator.py`; the Cypher validator has no equivalent
+(grep count 0). ATT&CK declares *zero* `allowed_edge_patterns` and is therefore
+unconstrained. So a card that is 16/21 complete is punished where one that is
+0/21 is not, and the punishment lands on the arm that builds its query from the
+schema at run time.
+
+**Measured**, on the 284-question dev half (`post-repair-2026-09-03` scores,
+recomputed 2026-09-10):
+
+| | on the 34 questions touching those five | on the other 250 |
+|---|---|---|
+| generic | **0.0000** | 0.6649 |
+| deterministic | 0.2076 | 0.5452 |
+
+An absolute zero, on the arm that leads everywhere else. Repairing it would move
+pooled generic dev recall from 0.5853 to between 0.6102 and 0.6649 depending on
+how many of the 34 then answer.
+
+**What resolves it:** either fill the five patterns *from the snapshot* rather
+than by hand, or — better — have the Gremlin validator fall back to the
+registry's derived triples when a card lags its data, so a stale card cannot
+silently forbid a real edge again. Both change shipped gate behaviour and so
+need the recorded-answer regression over both banks first.
+
+**Disclosure obligation.** `EXP-2026-09-005` repaired defects in the
+*deterministic* arm before comparing. This is the symmetric defect in the other
+direction, and fixing it widens a gap `C-023` already reports in the generic
+arm's favour. It must be reported as such, not as an incidental bug fix.
+**From:** diagnostic of 2026-09-09. **Cost:** an hour, plus the regression.
