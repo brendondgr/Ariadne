@@ -42,13 +42,38 @@ when the model rung is off, which is what a flag that ships off has to be.
 
 ## A-3 — Against the ship rule
 
-The rule was fixed before the first run. All three clauses had to hold.
+The rule was fixed before the first run. All three clauses had to hold. Figures
+are three-run means on instance A, against `EXP-2026-09-014`'s three-run means
+for the same arm.
+
+**`slot_relation` is identical to four decimals at every tier.** Not close —
+identical, across three runs on each side:
+
+| tier | EXP-2026-09-014 R2 | A2 | change |
+|---|---|---|---|
+| T1 | 0.2400 | 0.2400 | 0.0000 |
+| T2 | 0.2400 | 0.2400 | 0.0000 |
+| T3 | 0.3651 | 0.3651 | 0.0000 |
+| T4 | 0.1304 | 0.1304 | 0.0000 |
+| T5 | 0.2174 | 0.2174 | 0.0000 |
+| T6 | 0.7083 | 0.7083 | 0.0000 |
+
+**`wrong_entity` rises at three tiers**, including both paraphrase tiers:
+
+| tier | EXP-2026-09-014 R2 | A2 | change |
+|---|---|---|---|
+| T3 | 0.0588 | 0.0849 | **+0.0261** |
+| T4 | 0.2516 | 0.3019 | **+0.0503** |
+| T5 | 0.2453 | 0.2705 | **+0.0252** |
 
 | clause | outcome |
 |---|---|
-| 1. `slot_relation` rises on T3, T4, T5 | **failed** — unchanged on T4 and T5, down 0.0318 on T3 |
-| 2. `form_exact` rises on two of three | **failed** — unchanged on T4 and T5, down 0.0131 on T3 |
-| 3. `wrong_entity` does not rise anywhere | **failed** — T4 0.2642 → 0.3019, T5 0.2453 → 0.2830 |
+| 1. `slot_relation` rises on T3, T4, T5 | **failed** — identical at all three |
+| 2. `form_exact` rises on two of three | **failed** — identical at T4 and T5, down at T3 |
+| 3. `wrong_entity` does not rise anywhere | **failed** — up at T3, T4 and T5 |
+
+Zero benefit, measurable cost. Run-to-run spread is at most 0.0225 on any of
+these, and instance B agrees, so neither result is noise.
 
 Clause 3 failing is the one that was pre-registered as mattering. The derivation
 turns a relation the model would have got wrong into a relation the schema pins

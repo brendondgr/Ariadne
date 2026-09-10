@@ -69,10 +69,23 @@ llm:
 
 # --- Results block ---
 metrics:
-  primary: <metric name>
-  values: {}               # {metric: {mean: 0.0, std: 0.0, n: 1}} — must be non-empty when status: complete
+  primary: slot_relation_T4
+  values:
+    form_exact_T3: {mean: 0.2484, std: 0.0092, n: 3}
+    form_exact_T4: {mean: 0.0692, std: 0.0089, n: 3}
+    form_exact_T5: {mean: 0.1006, std: 0.0089, n: 3}
+    records_exact_T3: {mean: 0.4183, std: 0.0092, n: 3}
+    records_exact_T4: {mean: 0.0943, std: 0.0, n: 3}
+    records_exact_T4_instance_b: {mean: 0.0943, std: 0.0, n: 3}
+    records_exact_T5: {mean: 0.1698, std: 0.0, n: 3}
+    slot_relation_T3: {mean: 0.3651, std: 0.0225, n: 3}
+    slot_relation_T4: {mean: 0.1304, std: 0.0, n: 3}
+    slot_relation_T5: {mean: 0.2174, std: 0.0, n: 3}
+    wrong_entity_T3: {mean: 0.0849, std: 0.0092, n: 3}
+    wrong_entity_T4: {mean: 0.3019, std: 0.0, n: 3}
+    wrong_entity_T5: {mean: 0.2705, std: 0.0089, n: 3}
   withdrawn: {}            # values later retracted by amendment: {metric: {mean, std, n, withdrawn_on, reason, replaced_by}}
-baselines_compared: []
+baselines_compared: ["EXP-2026-09-014"]
 statistical_test: null
 
 # --- Linkage ---
@@ -80,4 +93,4 @@ supports_claims: []        # every ID here must exist in ../../CLAIMS.md
 figures: []                # every name here must have a file in figures/ and vice versa
 supersedes: null           # set in BOTH manifests or in neither; the validator checks symmetry
 superseded_by: null
-related: []
+related: ["EXP-2026-09-014", "EXP-2026-09-016"]
