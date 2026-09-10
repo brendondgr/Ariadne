@@ -157,20 +157,26 @@ model. "Model" means the model was asked to fill what was left. "Abstain" means
 the system declined rather than guess. Refusals fall and model-answered
 questions rise, which is the improvement the change was designed to produce.</p>''')
 
-    a2 = d.get("a2_runs") or []
+    a2 = d.get("a2") or (d.get("a2_runs") or [None])[0]
     if a2 and d.get("e14_r2"):
-        old, new_ = d["e14_r2"], a2[0]
+        old, new_ = d["e14_r2"], a2
+        def _cost(t):
+            a, b = D.cell(old, t, "wrong_entity"), D.cell(new_, t, "wrong_entity")
+            txt = delta(a, b)
+            return f"<b>{txt}</b>" if (a is not None and b is not None and b > a) else txt
         rows = [[t, f(D.cell(old, t, "slot_relation")), f(D.cell(new_, t, "slot_relation")),
                  delta(D.cell(old, t, "slot_relation"), D.cell(new_, t, "slot_relation")),
-                 f(D.cell(old, t, "form_exact")), f(D.cell(new_, t, "form_exact")),
-                 delta(D.cell(old, t, "form_exact"), D.cell(new_, t, "form_exact"))]
+                 delta(D.cell(old, t, "form_exact"), D.cell(new_, t, "form_exact")),
+                 _cost(t)]
                 for t in TIERS]
-        A("<p>And yet the accuracy of that slot is unchanged on five of six tiers, "
-          "and slightly worse on the sixth:</p>")
+        A("<p>And yet the accuracy of that slot is <b>identical to four decimal "
+          "places at every single tier</b> — not close, identical — while the "
+          "whole-form score is unchanged or slightly worse. The last column is the "
+          "price paid:</p>")
         A(table(["tier", "relationship before", "after", "change",
-                 "all five slots before", "after", "change"], rows))
-        A('''<p class="src">EXP-2026-09-014 run 1 against EXP-2026-09-015 run 1, same
-questions, same model, same settings.</p>
+                 "change in all-five-right", "change in confidently wrong"], rows))
+        A('''<p class="src">Three-run means on each side, same questions, same model, same
+settings. Run-to-run spread is at most 0.0225 on any cell above.</p>
 <p>The pre-registered condition for calling the idea wrong read: <i>if the
 relationship slot rises but the whole-form score does not, the relationship was
 not the binding constraint.</i> What happened is weaker still. It did not rise
@@ -179,11 +185,11 @@ about as often as the schema does.</p>
 <h3>The verdict, against the rule written before the run</h3>''')
         A(table(["the rule said the change is kept only if…", "what happened"],
                 [["the relationship slot rises at all three paraphrase tiers",
-                  "<b>failed</b> — unchanged at two, down at the third"],
+                  "<b>failed</b> — identical at all three"],
                  ["the whole-form score rises at two of the three",
-                  "<b>failed</b> — unchanged at two, down at the third"],
+                  "<b>failed</b> — identical at two, down at the third"],
                  ["confidently-wrong answers do not increase anywhere",
-                  "<b>failed</b> — up at both paraphrase tiers"]]))
+                  "<b>failed</b> — up at three tiers, both paraphrase tiers among them"]]))
         A('''<p>The third clause is the one the protocol singled out in advance as
 mattering most, and it failed for the reason the protocol predicted. Reading the
 relationship off two labels turns one kind of error into another: if the system

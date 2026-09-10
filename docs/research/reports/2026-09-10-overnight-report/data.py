@@ -124,6 +124,8 @@ def everything():
         "e14_r3": load(E14 / "data/metrics_R3.json"),
         "a0": load(E15 / "data/metrics_A0.json"),
         "a1": load(E15 / "data/metrics_A1.json"),
+        "a2": load(E15 / "data/metrics_A2.json"),
+        "a3": load(E15 / "data/metrics_A3.json"),
         "a2_runs": [d for d in a2 if d],
         "a3_runs": [d for d in a3 if d],
         "a4": load(E15 / "data/metrics_A4.json") or load(SCRATCH / "e015/metrics_A4.json"),
