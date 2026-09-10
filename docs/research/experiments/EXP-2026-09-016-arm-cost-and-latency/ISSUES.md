@@ -50,3 +50,37 @@ person to run this arm from the command line recognises what they are seeing.
 The arm itself is not changed tonight: making the runner refuse to start when a
 reasoning model is paired with a 2048-token budget is the right fix and it is a
 behaviour change, so it is filed rather than slipped in beside a measurement.
+
+## I-2 — The figure this experiment re-measures may not reproduce, and the setups differ
+
+Written **before** this experiment's own number exists, so the comparison cannot
+be arranged after the fact.
+
+The October pitch plan names *"4 s vs ~2 days, about forty thousand times"* as
+one of two numbers that must land in the room, sourced to
+`docs/research/reports/2026-09-05-full-report.md`. That report describes the
+`llm_query` side as having been **"split across two dedicated machines"**, and
+`scripts/holdout_run.py` pins that arm at 16 workers — so roughly **32-way**
+concurrency.
+
+This experiment runs it at **24-way on one instance**: *less* parallel. Yet the
+first 23 answers land at a median of 420 s each, a rate of about 110 questions
+per hour, which projects the full 284 at **under three hours** rather than two
+days.
+
+Three things could explain that, and they are not equivalent:
+
+1. The relay's read timeout was raised on 2026-09-09, on the operator's account.
+   The earlier run's fourth attempt used a 68-minute cut-off *with retries*, and
+   a retried question costs its budget more than once.
+2. Serving throughput may simply differ between the two nights — which is `Q46`
+   in another guise, and would mean a cost ratio is a figure with a date on it.
+3. The two runs may not be measuring the same quantity. "Two days of machine
+   time" is ambiguous between wall clock and summed per-question time; at 32-way
+   those differ by a factor of 32.
+
+**How this is handled.** The number reported here is the one measured here, with
+its concurrency stated beside it, in both regimes. No attempt is made to
+reconcile it with the earlier figure or to reproduce that figure's conditions.
+If the ratio comes out materially below 40,000x, that is reported plainly and
+the pitch is told before October rather than in the room.
