@@ -40,7 +40,7 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-from utils.planner.canonical import load_slot_gold, relations_between
+from utils.planner.canonical import load_slot_gold, neighbour_labels, relations_between
 
 TIERS = ("T0", "T1", "T2", "T3", "T4", "T5", "T6")
 
@@ -107,6 +107,25 @@ def score(rows_path: Path, gold_path: Path) -> dict[str, Any]:
         accept = allowed or {want}
         tally[tier]["graph_consistent"].append(str(got).upper() in accept)
 
+        # The same defect has a second surface. 14 gold label cells name
+        # `Technique`/`SubTechnique` on `capec` questions, where CAPEC has no
+        # such label: the gold is written in conceptual vocabulary and the edge
+        # that answers the question lands on CAPEC's own `TaxonomyEntry`. A
+        # target label counts here when it is one the snapshot actually reaches
+        # from gold's anchor label by gold's relation.
+        want_t = {str(v).upper() for v in (g.get("target_labels") or ())}
+        got_t = {str(v).upper() for v in (form.get("target_labels") or ())}
+        if want_t and got_t:
+            tally[tier]["target_label_strict"].append(bool(got_t & want_t))
+            reachable = {
+                lbl.upper()
+                for rel in (allowed or {want})
+                for lbl in neighbour_labels(str(als[0]), rel, None, datasets[0])
+            } if als and datasets else set()
+            tally[tier]["target_label_graph_consistent"].append(
+                bool(got_t & (want_t | reachable))
+            )
+
     out: dict[str, Any] = {"source": str(rows_path), "tiers": {}}
     for tier in TIERS:
         cells = tally.get(tier)
@@ -155,18 +174,21 @@ def main() -> int:
     )
     for run in doc["runs"]:
         print(f"\n{run['source']}")
-        print(f"{'tier':6}{'strict':>18}{'graph-consistent':>20}")
+        hdr = f"{'tier':6}{'relation':>32}{'target label':>32}"
+        print(hdr)
+        print(f"{'':6}{'strict':>16}{'graph-cons':>16}{'strict':>16}{'graph-cons':>16}")
+
+        def _line(name: str, cells: dict) -> str:
+            out = f"{name:6}"
+            for key in ("strict", "graph_consistent",
+                        "target_label_strict", "target_label_graph_consistent"):
+                c = cells.get(key)
+                out += f"{c['mean']:>16.4f}" if c else f"{'-':>16}"
+            return out
+
         for tier, cells in run["tiers"].items():
-            s, gcs = cells.get("strict", {}), cells.get("graph_consistent", {})
-            print(
-                f"{tier:6}{s.get('mean', 0):>12.4f} (n={s.get('n', 0):>2})"
-                f"{gcs.get('mean', 0):>14.4f} (n={gcs.get('n', 0):>2})"
-            )
-        p = run["pooled"]
-        print(
-            f"{'ALL':6}{p['strict']['mean']:>12.4f} (n={p['strict']['n']:>2})"
-            f"{p['graph_consistent']['mean']:>14.4f} (n={p['graph_consistent']['n']:>2})"
-        )
+            print(_line(tier, cells))
+        print(_line("ALL", run["pooled"]))
     return 0
 
 

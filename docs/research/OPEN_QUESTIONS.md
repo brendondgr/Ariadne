@@ -39,6 +39,7 @@ below.)
 | Q35 | The rewrite stage buys T4/T5 record identity by doubling confident-and-wrong at the same tiers | EXP-2026-09-014 follow-ups | any future attempt to ship the rewrite stage *(open)* |
 | Q36 | The five-slot intent form cannot express a federated question, and the understanding-gold does not specify one | EXP-2026-09-014 follow-ups | any federated figure from the rewrite stage; plausibly the ship decision *(open)* |
 | Q37 | A stage that adds latency inside a bounded pipeline cannot be measured without saying which budget it ran under | EXP-2026-09-014 follow-ups | shipping the rewrite stage; the honest reading of any future LLM-arm figure *(partly)* |
+| Q44 | The understanding-gold names edges the graph does not have | EXP-2026-09-015 | `EXP-2026-09-014`'s reading of the relation slot; any future slot-accuracy figure *(open)* |
 
 ---
 
@@ -641,3 +642,23 @@ on it, but the record still cannot say what produced those first passes.
 **What resolves it:** the serving side's logs for 19–21 August, if they exist;
 otherwise the record says "undetermined" permanently. **From:** archived Q12.
 **Cost:** an hour, or never.
+
+### Q44 — The understanding-gold names edges the graph does not have
+
+**Why it matters:** 11 of the 36 `slot_gold.json` records that carry a full
+`(anchor_label, relation, target_label)` name a relation undeclared between
+their own two labels — `Group -[HAS_TECHNIQUE]-> Technique` where the snapshot
+has `USES`, and three more of the same shape. `variant_harness.score_slots`
+compares against the raw gold, so a system answering the edge the graph
+actually has is scored wrong. Pooled `slot_relation` reads 0.4286 strict and
+0.7273 graph-consistent on the same rows (`EXP-2026-09-015`, A2 run 1), and
+`EXP-2026-09-014`'s conclusion that relation was the model's worst slot rests
+on the strict column.
+
+**What resolves it:** either repair the 11 records from the snapshot and re-run
+both experiments' slot scoring, or decide the gold stands and make
+`score_slots` accept any relation the snapshot declares between gold's own
+labels. The second is cheaper and the first is more honest; it is a decision,
+not a fix, because repairing gold after seeing a score is exactly the move the
+split discipline exists to prevent. **From:** `EXP-2026-09-015` I-1.
+**Cost:** an hour either way, plus a re-run.
