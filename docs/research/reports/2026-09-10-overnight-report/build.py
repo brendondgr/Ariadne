@@ -46,7 +46,8 @@ def build(d):
 <div class="kicker">Ariadne · overnight run</div>
 <h1>What the relation slot was actually measuring</h1>
 <p class="sub">A pre-registered attempt to fix the rewrite stage's worst slot, the
-null result it produced, and the two measurement defects it uncovered on the way.</p>
+null result it produced, and the three measurement defects it uncovered on the
+way — one of which would have put a false finding in this report.</p>
 <p class="meta">Night of 9–10 September 2026 · experiments EXP-2026-09-015 and
 EXP-2026-09-016 · generated {datetime.now():%Y-%m-%d %H:%M}</p>
 </header>''')
@@ -55,18 +56,24 @@ EXP-2026-09-016 · generated {datetime.now():%Y-%m-%d %H:%M}</p>
     A('''<section class="callout">
 <h2>The short version</h2>
 <ol>
-<li><b>The intended fix worked mechanically and changed nothing.</b> The relation
-slot can be read off the schema instead of guessed by the model, and it now is —
-but accuracy did not move, because the model was already picking a
-graph-consistent relation about as often.</li>
+<li><b>The intended fix worked mechanically and changed almost nothing.</b>
+Holding the model's own choices fixed and changing only how they are read, three
+numbers move out of twenty-four and the records returned are identical at every
+difficulty tier. The model was already picking a link the database agrees with,
+about as often as the schema does.</li>
 <li><b>The metric was scoring the answer key, not the system.</b> Eleven of the
 36 gold records that name a relation name one that does not exist between their
 own two labels. A system answering correctly was being marked wrong. This is the
 night's real finding.</li>
-<li><b>A second, independent measurement defect.</b> The arm that represents
-"let the AI write the query" silently answers nothing at its default settings,
-with no model call at all, while looking like a model that politely declined.
-Any cost figure taken from it would have been spectacularly wrong.</li>
+<li><b>The controlled test caught a harm that was not there.</b> Judged
+against last night, the change appeared to make confidently-wrong answers rise.
+Judged against the same model choices with the feature switched off, they fall.
+Something else moved between the two nights, and comparing sittings — which this
+project does routinely — is not safe.</li>
+<li><b>A further measurement defect.</b> The arm that represents "let the AI
+write the query" silently answers nothing at its default settings, with no model
+call at all, while looking like a model that politely declined. Any cost figure
+taken from it would have been spectacularly wrong.</li>
 <li><b>A third finding, carried in and now verified.</b> Five kinds of
 connection in the CAPEC database are declared but not safety-approved, so the
 safety gate destroys correct queries before they run. The schema-reading path
@@ -189,16 +196,16 @@ about as often as the schema does.</p>
                  ["the whole-form score rises at two of the three",
                   "<b>failed</b> — identical at two, down at the third"],
                  ["confidently-wrong answers do not increase anywhere",
-                  "<b>failed</b> — up at three tiers, both paraphrase tiers among them"]]))
+                  "<b>passed</b> — see below; this one needed the controlled test"]]))
         A('''<p>The third clause is the one the protocol singled out in advance as
-mattering most, and it failed for the reason the protocol predicted. Reading the
-relationship off two labels turns one kind of error into another: if the system
-misidentifies <i>both</i> what the question is about and what it wants back, the
-schema will confidently supply the connection between two wrong things. The
-result is a fluent, specific, wrong answer where before there was a refusal.
-That is the worst trade this project can make, and it is now measured rather
-than feared.</p>
-<p><b>So the change is not kept.</b> The switches stay off.</p>''')
+mattering most, and it is the one that needed the controlled test. Comparing
+against last night's run, confidently-wrong answers appear to <i>rise</i> by
+0.05. Comparing the same model choices with the feature on and off, they
+<b>fall</b> by 0.02. The apparent cost is not caused by the change, and §3b is
+about how that was caught.</p>
+<p><b>So the change is not kept</b> — but for the honest reason. It fails
+because it does not improve what it was built to improve, not because it costs
+something. The switches stay off.</p>''')
         fa = d.get("refusals_a2") or {}
         fr = d.get("refusals_r2") or {}
         A(f'''<h3>Where the refusals actually come from</h3>
@@ -216,6 +223,60 @@ change handles correctly by refusing rather than guessing. The other 36 are the
 system not knowing <i>what kind of thing</i> the question concerns. That is the
 label slots, and it is where the next attempt belongs.</p>''')
 
+
+    # ------------------------------------------ 3b. the controlled comparison
+    a4 = d.get("a4")
+    a2r1 = (d.get("a2_runs") or [None])[0]
+    if a4 and a2r1:
+        rows = []
+        moved = 0
+        for t in TIERS:
+            cells = [t]
+            for k, label in (("slot_relation", None), ("form_exact", None),
+                             ("wrong_entity", None), ("records_exact", None)):
+                on, off = D.cell(a2r1, t, k), D.cell(a4, t, k)
+                txt = f"{f(on)} / {f(off)}"
+                if on is not None and off is not None and abs(on - off) > 1e-9:
+                    txt = f"<b>{txt}</b>"
+                    moved += 1
+                cells.append(txt)
+            rows.append(cells)
+        A(f'''<section>
+<h2>3b · The controlled comparison, and the trap it caught</h2>
+<p>Everything above compares tonight against last night. That is not a
+controlled comparison — it compares two <i>sessions</i>, and a session contains
+more than one change.</p>
+<p>So the experiment was designed with a switch. The model's answers are
+cached, so the same {191} choices it actually made can be replayed and read
+<i>both ways</i>: once with the feature on, once with it off. Nothing else
+differs. Any gap is the feature and can be nothing else.</p>''')
+        A(table(["tier", "link (on / off)", "all five right (on / off)",
+                 "confidently wrong (on / off)", "records returned (on / off)"], rows))
+        A(f'''<p class="src">Bold cells are the ones that moved. {moved} of 24.</p>
+<div class="callout warn">
+<h2>The number that would have been published</h2>
+<p>Against last night, confidently-wrong answers at the hardest-but-one tier
+<i>rose</i> from 0.2516 to 0.3019 — a clear cost, and the reason to reject the
+change.</p>
+<p>Against the same model choices with the feature switched off, they
+<b>fall</b>, from 0.3208 to 0.3019. The feature <i>reduces</i> confidently-wrong
+answers. The apparent cost is something else entirely that moved between the two
+nights.</p>
+<p>Without the switch, this report would have stated a harm the change does not
+cause — with a straight face, and with three runs behind it.</p>
+</div>
+<h3>Which means a measurement habit here is unsound</h3>
+<p>Both nights report an internal spread of essentially zero on that number:
+every run within a night agrees. Yet the two nights differ by 0.05. Run-to-run
+spread within one sitting has been this project's error bar throughout, and here
+it understates the real variation more than fivefold.</p>
+<p>The known difference is that one of the two graph databases was found empty
+at the start of tonight and reloaded. The safety check that compares it to its
+pinned fingerprint passed, so the <i>contents</i> match; the <i>order</i> results
+come back in after a fresh load need not, and this system reads ordered results.
+That is a hypothesis. It is filed with the twenty-minute experiment that would
+settle it.</p>
+</section>''')
 
     # ----------------------------------------------------- 4. the real finding
     rs = d.get("rescore")
