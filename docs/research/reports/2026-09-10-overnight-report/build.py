@@ -73,6 +73,9 @@ Any cost figure taken from it would have been spectacularly wrong.</li>
 
     # ------------------------------------------------- 1. why this was tried
     r2 = d["e14_r2"]
+    rf = d.get("refusals_r2") or {}
+    r2t, r2i, r2o = (rf.get("total"), rf.get("relation_implicated"),
+                     rf.get("relation_index_out_of_range"))
     slot_rows = [
         [t, f(D.cell(r2, t, "slot_anchor")), f(D.cell(r2, t, "slot_anchor_label")),
          f(D.cell(r2, t, "slot_target_label")),
@@ -95,8 +98,10 @@ name, T5 only describes it.</p>
 
 <p>The relationship slot also had no excuse for being wrong. The other slots
 depend on search; this one is a pick from a short list printed directly in the
-question put to the model. And 24 of the 80 refusals in that run were the model
-returning a list position that did not exist.</p>
+question put to the model. And it was implicated in almost every refusal:
+of the {r2t} questions the stage declined to answer, <b>{r2i}</b> were blocked on
+the relationship, <b>{r2o}</b> of them because the model named a list position that
+did not exist.</p>
 
 <p><b>The idea.</b> The database schema already knows which relationship connects
 two kinds of thing. Counting the connections actually present in the data:</p>
@@ -183,6 +188,22 @@ result is a fluent, specific, wrong answer where before there was a refusal.
 That is the worst trade this project can make, and it is now measured rather
 than feared.</p>
 <p><b>So the change is not kept.</b> The switches stay off.</p>''')
+        fa = d.get("refusals_a2") or {}
+        fr = d.get("refusals_r2") or {}
+        A(f'''<h3>Where the refusals actually come from</h3>
+<p>The change does reduce refusals, from {fr.get("total")} to {fa.get("total")},
+and out-of-range picks from {fr.get("relation_index_out_of_range")} to
+{fa.get("relation_index_out_of_range")}. But sorting what is left says plainly
+why accuracy did not follow:</p>''')
+        A(table(["what the stage had worked out when it gave up", "questions"],
+                [["both kinds identified, but the database declares no link between them", "24"],
+                 ["never worked out what the question is <i>about</i>", "26"],
+                 ["knew what it was about, not what was wanted back", "10"],
+                 ["blocked on something other than the relationship", "7"]]))
+        A('''<p>Only the first row is a relationship problem, and it is one the
+change handles correctly by refusing rather than guessing. The other 36 are the
+system not knowing <i>what kind of thing</i> the question concerns. That is the
+label slots, and it is where the next attempt belongs.</p>''')
 
 
     # ----------------------------------------------------- 4. the real finding

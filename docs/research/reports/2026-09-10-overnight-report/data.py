@@ -7,7 +7,7 @@ import os
 import statistics
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = Path(__file__).resolve().parents[4]
 # Run-local working directory. Every figure in the committed report reads from
 # the experiment folders below; this is only a fallback for re-running the
 # generator on the machine that produced the runs, before the per-run files were
@@ -71,6 +71,28 @@ def rungs(rows_path):
     return {"rungs": counts, "relation_source": relation_source}
 
 
+def refusals(rows_path):
+    """Why the stage refused, from the saved rows. Counted, never remembered."""
+    rows = load(rows_path)
+    if not rows:
+        return None
+    total = 0
+    out_of_range = 0
+    relation_unbound = 0
+    for r in rows:
+        rw = r.get("rewrite") or {}
+        if rw.get("rung") != "abstain":
+            continue
+        total += 1
+        why = " ".join(rw.get("rejected") or [])
+        if "relation index" in why:
+            out_of_range += 1
+        if "relation" in why:
+            relation_unbound += 1
+    return {"total": total, "relation_index_out_of_range": out_of_range,
+            "relation_implicated": relation_unbound}
+
+
 def cost_manifests(root):
     """Per-arm wall clock and tokens from a cost run root."""
     out = {}
@@ -107,6 +129,8 @@ def everything():
         "a4": load(E15 / "data/metrics_A4.json") or load(SCRATCH / "e015/metrics_A4.json"),
         "rescore": load(E15 / "data/slot_rescore.json"),
         "rungs_a2": rungs(REPO / "docs/evaluation/variants-2026-08-29/A2_run1"),
+        "refusals_r2": refusals(REPO / "docs/evaluation/variants-2026-08-29/scored_R2_tune.run1.json"),
+        "refusals_a2": refusals(REPO / "docs/evaluation/variants-2026-08-29/A2_run1"),
         "rungs_r2": rungs(REPO / "docs/evaluation/variants-2026-08-29/scored_R2_tune.run1.json"),
         "cost_throughput": cost_manifests(SCRATCH / "e016/throughput"),
         "cost_latency": cost_manifests(SCRATCH / "e016/latency"),

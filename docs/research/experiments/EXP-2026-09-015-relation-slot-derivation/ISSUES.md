@@ -62,3 +62,36 @@ The mechanism does work: the derivation fires on 116 of 128 model-rung rows,
 abstentions fall from 80 to 67, and the model rung rises from 115 to 128. It is
 simply not where the loss was. The label slots are, and they were visible all
 along: `slot_anchor_label` 0.2201 and `slot_target_label` 0.4118 at T4.
+
+## I-3 — The protocol's refusal count was wrong; the corrected one is stronger
+
+`PROTOCOL.md` §1 says "24 of the 80 abstentions in that run were the model
+returning a relation index past the end of the list". That figure was carried
+across from a working note, not recomputed. Counted from
+`scored_R2_tune.run1.json` directly:
+
+| | protocol said | actually |
+|---|---|---|
+| abstentions | 80 | **85** |
+| of those, an out-of-range relation index | 24 | **31** |
+| of those, blocked on the relation slot at all | not stated | **78** |
+
+The protocol is **not edited** — it is a pre-registration and stands as written.
+The corrected counts point the same way, harder: 78 of 85 refusals had the
+relation slot unresolved, which is why the slot looked like the binding
+constraint. After the change: 67 refusals, 16 out-of-range, 60 still relation-
+blocked.
+
+Sorting those 67 is what settles the question. Of the 60 still blocked on the
+relation:
+
+| what the stage had resolved when it gave up | n |
+|---|---|
+| both labels bound, but the schema declares no edge between them | 24 |
+| no anchor label — it never established what the question is about | 26 |
+| anchor label but no target label | 10 |
+
+Only the first group is a relation problem, and the derivation handles it
+correctly by refusing rather than inventing an edge. The other 36 are label
+failures. That is the arithmetic behind `A-4`'s conclusion, and it is the case
+for a label-side intervention next.
