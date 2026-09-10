@@ -70,6 +70,14 @@ class PlannerConfig:
     # the 2026-09-08 plan re-proves against the captured reference.
     rewrite_enabled: bool = False
     rewrite_model_enabled: bool = False
+    #: Derive the relation slot from the (anchor label, target label) pair
+    #: instead of asking the model for it. On by default *within the model
+    #: rung* — the pair pins the relation for 16 of CAPEC's 17 declared label
+    #: pairs and all 19 of ATT&CK's, and EXP-2026-09-014 measured relation as
+    #: the model's worst slot. Set ``ARIADNE_REWRITE_DERIVE_RELATION=0`` to
+    #: restore the ask, which is how EXP-2026-09-015 ablates it against the
+    #: same cached picks. Inert unless ``rewrite_model_enabled``.
+    rewrite_derive_relation: bool = True
     #: Where the model's picks are cached, keyed by prompt version, served model
     #: and question. Unset means the process default (see rewrite_cache.py).
     rewrite_cache_dir: str | None = None
@@ -114,6 +122,8 @@ class PlannerConfig:
         rewrite_model_enabled = (
             os.environ.get("ARIADNE_REWRITE_MODEL", "").strip().lower() in _truthy
         )
+        _derive = os.environ.get("ARIADNE_REWRITE_DERIVE_RELATION", "").strip().lower()
+        rewrite_derive_relation = _derive not in {"0", "false", "no", "off"}
         # The LLM group resolves through utils.llm: PLANNER_LLM_* still wins when
         # set, but falls back to ARIADNE_LLM_* so one endpoint configures every
         # stage. With neither set this is exactly the previous default.
@@ -138,6 +148,7 @@ class PlannerConfig:
             intent_llm_enabled=intent_llm_enabled,
             rewrite_enabled=rewrite_enabled,
             rewrite_model_enabled=rewrite_model_enabled,
+            rewrite_derive_relation=rewrite_derive_relation,
             rewrite_cache_dir=env_str("ARIADNE_REWRITE_CACHE_DIR", "") or None,
             llm_base_url=llm.base_url,
             llm_model=llm.model,

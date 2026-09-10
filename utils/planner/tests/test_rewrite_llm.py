@@ -398,3 +398,58 @@ def test_a_resolved_direction_stops_being_outstanding() -> None:
     )
     assert form.direction == DIR_IN
     assert "direction" not in form.unbound
+
+
+# -- the relation is derived, not chosen (EXP-2026-09-015) ------------------
+
+
+def test_the_label_pair_derives_the_relation_and_the_model_is_not_asked() -> None:
+    """Technique + Mitigation pins MITIGATES; the model's index is irrelevant."""
+    form, rejected = apply_choice(
+        _open_form(), _choice(anchor=0, relation=1, target_label=0), _lists(), CARDS
+    )
+    assert form.relation == "MITIGATES"
+    assert form.sources["relation"] == "schema-registry"
+    assert rejected == []
+
+
+def test_an_out_of_range_relation_index_no_longer_blocks_a_pinned_pair() -> None:
+    """The dominant abstention cause: 24 of 80 were an index past the list."""
+    form, rejected = apply_choice(
+        _open_form(), _choice(anchor=0, relation=99, target_label=0), _lists(), CARDS
+    )
+    assert form.relation == "MITIGATES"
+    assert form.sources["relation"] == "schema-registry"
+    assert rejected == []
+
+
+def test_an_unpinned_pair_still_consults_the_model() -> None:
+    """No target label means nothing to derive from, so the index is read."""
+    form = IntentForm(mode=MODE_ENUMERATE, datasets=("attack",)).with_unbound(
+        SLOT_ANCHORS, SLOT_RELATION
+    )
+    filled, rejected = apply_choice(form, _choice(anchor=0, relation=0), _lists(), CARDS)
+    assert filled.relation == "MITIGATES"
+    assert filled.sources["relation"] == "model"
+    assert rejected == []
+
+
+def test_an_unpinned_pair_still_rejects_an_out_of_range_index() -> None:
+    form = IntentForm(mode=MODE_ENUMERATE, datasets=("attack",)).with_unbound(
+        SLOT_ANCHORS, SLOT_RELATION
+    )
+    _filled, rejected = apply_choice(form, _choice(anchor=0, relation=99), _lists(), CARDS)
+    assert any("not an index into the list" in r for r in rejected)
+
+
+def test_the_derivation_can_be_ablated_off() -> None:
+    """EXP-2026-09-015's control arm: same picks, the old interpretation."""
+    form, rejected = apply_choice(
+        _open_form(),
+        _choice(anchor=0, relation=1, target_label=0),
+        _lists(),
+        CARDS,
+        derive_relation=False,
+    )
+    assert form.sources.get("relation") != "schema-registry"
+    assert any("ATTRIBUTED_TO" in r for r in rejected) or form.relation == "ATTRIBUTED_TO"

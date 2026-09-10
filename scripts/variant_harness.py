@@ -79,9 +79,18 @@ BASE_ENV: dict[str, str] = {
 #: ``.env`` is not the arm its name claims, and this file has been bitten by
 #: exactly that before (the import-time ``load_env`` leak, D-029).
 REWRITE_ENV: dict[str, dict[str, str]] = {
-    "off": {"ARIADNE_REWRITE": "0", "ARIADNE_REWRITE_MODEL": "0"},
-    "det": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "0"},
-    "model": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "1"},
+    "off": {"ARIADNE_REWRITE": "0", "ARIADNE_REWRITE_MODEL": "0",
+            "ARIADNE_REWRITE_DERIVE_RELATION": "1"},
+    "det": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "0",
+            "ARIADNE_REWRITE_DERIVE_RELATION": "1"},
+    "model": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "1",
+              "ARIADNE_REWRITE_DERIVE_RELATION": "1"},
+    # EXP-2026-09-015's control: the model rung exactly as EXP-2026-09-014 ran
+    # it, with the relation asked for rather than derived from the label pair.
+    # Every value is written explicitly so an ambient variable cannot decide
+    # which arm ran.
+    "model_ask": {"ARIADNE_REWRITE": "1", "ARIADNE_REWRITE_MODEL": "1",
+                  "ARIADNE_REWRITE_DERIVE_RELATION": "0"},
 }
 
 #: Where the understanding-gold lives, relative to ``--out``.

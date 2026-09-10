@@ -619,3 +619,41 @@ def test_an_anchor_candidate_carries_enough_to_tell_it_apart(live_cards) -> None
     top = lists.anchors[0]
     assert top.value and top.name and top.label
     assert top.gloss and top.gloss.endswith((".", "!", "?"))
+
+
+# -- relation derivation from the label pair (EXP-2026-09-015) ---------------
+
+
+def test_relations_between_pins_a_declared_pair():
+    from utils.planner.canonical import relations_between
+
+    rels = relations_between("AttackPattern", "Prerequisite", "capec")
+    assert rels == ("HAS_PREREQUISITE",)
+
+
+def test_relations_between_is_empty_for_an_undeclared_pair():
+    from utils.planner.canonical import relations_between
+
+    assert relations_between("AttackPattern", "NoSuchLabel", "capec") == ()
+
+
+def test_relations_between_needs_both_labels():
+    from utils.planner.canonical import relations_between
+
+    assert relations_between("AttackPattern", None, "capec") == ()
+    assert relations_between("", "Prerequisite", "capec") == ()
+
+
+def test_relations_between_is_unknown_dataset_safe():
+    from utils.planner.canonical import relations_between
+
+    assert relations_between("AttackPattern", "Prerequisite", "nope") == ()
+
+
+def test_relations_between_reads_both_directions():
+    """The mirror pair resolves to the same relation, read from the other end."""
+    from utils.planner.canonical import relations_between
+
+    assert relations_between("Prerequisite", "AttackPattern", "capec") == (
+        "HAS_PREREQUISITE",
+    )

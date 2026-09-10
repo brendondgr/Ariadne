@@ -1109,6 +1109,46 @@ def direction_for(
     return None
 
 
+def relations_between(
+    anchor_label: str,
+    target_label: str | None,
+    dataset: str,
+    *,
+    registry: Any = None,
+) -> tuple[str, ...]:
+    """Relations the declared schema allows between two labels, either direction.
+
+    The mirror of :func:`neighbour_labels`. It exists because the relation slot
+    is the one the model is worst at and the one the graph already knows: given
+    an anchor label and a target label, CAPEC determines the relation for 16 of
+    its 17 label pairs and ATT&CK for all 19 of its own. Asking a model to guess
+    a value the schema pins is the same mistake as asking it to guess direction,
+    and :func:`direction_for` already refuses to make that one.
+
+    Returns every candidate, not a single answer, so the caller decides what to
+    do with an ambiguous pair. An empty result means the pair is not declared,
+    which is a finding about the labels, not a licence to fall back to a default.
+    """
+    if not anchor_label or not target_label:
+        return ()
+    if registry is None:
+        from utils.specialists.schema import get_registry
+
+        registry = get_registry()
+    schema = registry.dataset(dataset)
+    if schema is None:
+        return ()
+    return tuple(
+        sorted(
+            {
+                f.rel_type
+                for f in schema.label_facets(anchor_label)
+                if f.neighbour_label == target_label
+            }
+        )
+    )
+
+
 def neighbour_labels(
     anchor_label: str,
     relation: str,

@@ -48,6 +48,7 @@ from .canonical import (
     candidate_lists_all,
     direction_for,
     gate_form,
+    relations_between,
 )
 from .cards import SourceCardView
 from .llm_drafter import extract_json_object
@@ -324,6 +325,7 @@ def apply_choice(
     cards: dict[str, SourceCardView],
     *,
     registry: Any = None,
+    derive_relation: bool = True,
 ) -> tuple[IntentForm, list[str]]:
     """Fold ``choice`` into ``form``, and say what was rejected and why.
 
@@ -367,14 +369,6 @@ def apply_choice(
             filled.update({SLOT_ANCHORS, SLOT_ANCHOR_LABELS})
 
     lead = resolved_ds[0] if resolved_ds else (datasets[0] if datasets else "")
-    if SLOT_RELATION in form.unbound and choice.relation is not None and lead in lists:
-        candidate = _pick(lists[lead].relations, choice.relation)
-        if candidate is None:
-            rejected.append(f"relation index {choice.relation!r} is not an index into the list")
-        else:
-            relation = candidate.value
-            sources[SLOT_RELATION] = "model"
-            filled.add(SLOT_RELATION)
 
     if SLOT_TARGET_LABELS in form.unbound and choice.target_label is not None and lead in lists:
         candidate = _pick(lists[lead].labels, choice.target_label)
@@ -386,6 +380,38 @@ def apply_choice(
             target_labels = (candidate.value,)
             sources[SLOT_TARGET_LABELS] = "model"
             filled.add(SLOT_TARGET_LABELS)
+
+    # The relation is the model's worst slot and the schema's easiest fact. An
+    # anchor label and a target label pin it for 16 of CAPEC's 17 declared label
+    # pairs and for all 19 of ATT&CK's, so where the pair pins it the model is not
+    # asked; its index is consulted only when the pair is ambiguous or undeclared,
+    # and even then the pick must be one the pair allows. This is the rule
+    # ``direction`` has always followed, applied one slot over.
+    if SLOT_RELATION in form.unbound:
+        derived: tuple[str, ...] = ()
+        if derive_relation and anchor_labels and target_labels and lead:
+            derived = relations_between(
+                anchor_labels[0], target_labels[0], lead, registry=registry
+            )
+        if len(derived) == 1:
+            relation = derived[0]
+            sources[SLOT_RELATION] = "schema-registry"
+            filled.add(SLOT_RELATION)
+        elif choice.relation is not None and lead in lists:
+            candidate = _pick(lists[lead].relations, choice.relation)
+            if candidate is None:
+                rejected.append(
+                    f"relation index {choice.relation!r} is not an index into the list"
+                )
+            elif derived and candidate.value not in derived:
+                rejected.append(
+                    f"relation {candidate.value!r} is not declared between "
+                    f"{anchor_labels[0]!r} and {target_labels[0]!r}"
+                )
+            else:
+                relation = candidate.value
+                sources[SLOT_RELATION] = "model"
+                filled.add(SLOT_RELATION)
 
     mode = form.mode
     if choice.mode is not None:
@@ -492,7 +518,14 @@ def fill(
     trace["served_model"] = choice.served_model
     trace["why"] = choice.why
 
-    filled, rejected = apply_choice(form, choice, lists, cards, registry=registry)
+    filled, rejected = apply_choice(
+        form,
+        choice,
+        lists,
+        cards,
+        registry=registry,
+        derive_relation=bool(getattr(settings, "rewrite_derive_relation", True)),
+    )
     trace["rejected"] = rejected
     if choice.ambiguous:
         trace["rung"] = "abstain"
