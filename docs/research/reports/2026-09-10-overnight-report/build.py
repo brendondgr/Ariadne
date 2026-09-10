@@ -67,6 +67,11 @@ night's real finding.</li>
 "let the AI write the query" silently answers nothing at its default settings,
 with no model call at all, while looking like a model that politely declined.
 Any cost figure taken from it would have been spectacularly wrong.</li>
+<li><b>A third finding, carried in and now verified.</b> Five kinds of
+connection in the CAPEC database are declared but not safety-approved, so the
+safety gate destroys correct queries before they run. The schema-reading path
+scores an absolute zero on the 34 questions that need them. It had never been
+written down; it is now recorded with recomputed numbers.</li>
 <li><b>The flags stay off.</b> Nothing shipped changed tonight.</li>
 </ol>
 </section>''')
@@ -397,6 +402,44 @@ repeatability, not a comparison between models.</p>''')
                 for i, t in enumerate(TIERS)]
         A(table(["tier", "GPU one mean", "spread", "GPU two mean", "spread"], rows))
         A("</section>")
+
+    # ------------------------------------- 7b. the carried-in finding, verified
+    A('''<section>
+<h2>7b · A third finding, carried in from yesterday and now verified</h2>
+<p>Earlier in the same working session, before tonight's runs, a diagnostic of
+the schema-reading path turned up something that had never been written down.
+It was recomputed from source tonight rather than trusted, and both figures
+reproduced exactly.</p>
+<p>The CAPEC database's spec sheet lists 21 kinds of connection and gives
+safety rules for 16. The safety gate treats a connection missing from a
+partially-filled rule set as <i>forbidden</i>, and throws the query away before
+it ever runs:</p>
+<pre>pre-run gate rejected all drafts:
+relationship 'HAS_ALTERNATE_TERM' has no allowed_edge_patterns in card</pre>
+<p>The system builds the correct query and is not allowed to ask it.</p>''')
+    A(table(["", "on the 34 questions needing those five connections", "on the other 250"],
+            [["reads the database's own structure", "<b>0.0000</b>", "0.6649"],
+             ["hand-written queries", "0.2076", "0.5452"]]))
+    A('''<p class="src">Development half, 284 questions, recomputed 2026-09-10 from the
+post-repair scores.</p>
+<p>An absolute zero, on the approach that leads everywhere else. And the
+asymmetry is worse than it looks: the rule exists only for one of the two
+databases, and the <i>other</i> database's spec sheet lists no safety rules at
+all — so it is unconstrained. A spec sheet that is 16-of-21 complete is punished
+where one that is 0-of-21 is not.</p>
+<p>All five missing entries have exactly one possible answer in the data, so the
+repair is derivable rather than something anyone has to author. It would move
+the schema-reading path's development score from 0.585 to somewhere between
+0.610 and 0.665.</p>
+<div class="callout">
+<h2>Why this is not simply a bug to fix quietly</h2>
+<p>An earlier experiment repaired six defects in the <b>hand-written</b>
+approach before comparing the two, precisely so the comparison would be fair.
+This is the mirror-image defect, and repairing it widens a gap the project
+already reports in the schema-reading path's favour. It has to be published as
+that, not slipped in as a bug fix, or the comparison stops being trustworthy.</p>
+</div>
+</section>''')
 
     # ------------------------------------------------- 8. what it means
     A('''<section>
