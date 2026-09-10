@@ -25,6 +25,11 @@ not have.
 Both readings say the same thing: no effect. The mechanism fires; the accuracy
 does not move.
 
+The ablation (`A-7`) is sharper still. Holding the model's own picks fixed and
+changing only how they are read, **three cells move out of twenty-four** and
+`records_exact` is identical at every tier. The intervention is very nearly a
+no-op on the answers.
+
 ## A-2 — The controls hold
 
 `A0` (rewrite off) and `A1` (deterministic fill) reproduce `EXP-2026-09-014`'s
@@ -40,46 +45,30 @@ when the model rung is off, which is what a flag that ships off has to be.
 | T5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
 | T6 | 0.1111 | 0.1111 | 0.1111 | 0.1111 |
 
-## A-3 — Against the ship rule
+## A-3 — Against the ship rule, judged on the ablation
 
-The rule was fixed before the first run. All three clauses had to hold. Figures
-are three-run means on instance A, against `EXP-2026-09-014`'s three-run means
-for the same arm.
+**The before/after against `EXP-2026-09-014` is confounded and must not be used
+to judge the rule.** `A-7` shows why: on identical model picks the derivation
+moves `wrong_entity` at T4 by **−0.0189**, while the gap to `EXP-2026-09-014`'s
+run of the same arm is **+0.0503** in the other direction. Something other than
+the intervention moved between the two sessions, and the ablation is the only
+comparison that holds the model's choices fixed. It is what the protocol
+pre-registered as the causal claim, and it is what the rule is judged on here.
 
-**`slot_relation` is identical to four decimals at every tier.** Not close —
-identical, across three runs on each side:
-
-| tier | EXP-2026-09-014 R2 | A2 | change |
-|---|---|---|---|
-| T1 | 0.2400 | 0.2400 | 0.0000 |
-| T2 | 0.2400 | 0.2400 | 0.0000 |
-| T3 | 0.3651 | 0.3651 | 0.0000 |
-| T4 | 0.1304 | 0.1304 | 0.0000 |
-| T5 | 0.2174 | 0.2174 | 0.0000 |
-| T6 | 0.7083 | 0.7083 | 0.0000 |
-
-**`wrong_entity` rises at three tiers**, including both paraphrase tiers:
-
-| tier | EXP-2026-09-014 R2 | A2 | change |
-|---|---|---|---|
-| T3 | 0.0588 | 0.0849 | **+0.0261** |
-| T4 | 0.2516 | 0.3019 | **+0.0503** |
-| T5 | 0.2453 | 0.2705 | **+0.0252** |
-
-| clause | outcome |
+| clause | outcome on the ablation |
 |---|---|
-| 1. `slot_relation` rises on T3, T4, T5 | **failed** — identical at all three |
-| 2. `form_exact` rises on two of three | **failed** — identical at T4 and T5, down at T3 |
-| 3. `wrong_entity` does not rise anywhere | **failed** — up at T3, T4 and T5 |
+| 1. `slot_relation` rises on T3, T4, T5 | **failed** — T3 falls 0.3810 → 0.3333; T4 and T5 identical |
+| 2. `form_exact` rises on two of three | **failed** — T3 falls 0.2549 → 0.2353; T4 and T5 identical |
+| 3. `wrong_entity` does not rise anywhere | **passed** — T4 falls 0.3208 → 0.3019; every other tier identical |
 
-Zero benefit, measurable cost. Run-to-run spread is at most 0.0225 on any of
-these, and instance B agrees, so neither result is noise.
+**The change is still refused, but for the honest reason.** It fails on clauses
+1 and 2: it does not improve what it was built to improve. It does *not* cost
+what an earlier reading of these numbers suggested — clause 3, the one the
+protocol singled out as mattering most, passes.
 
-Clause 3 failing is the one that was pre-registered as mattering. The derivation
-turns a relation the model would have got wrong into a relation the schema pins
-from two labels the model may *also* have got wrong, and so it manufactures a
-confident wrong answer out of a pair of label errors. That is exactly the
-mechanism the protocol warned about, and it is now measured rather than feared.
+`records_exact` is identical at every tier under the ablation. The intervention
+is very nearly a no-op on the answers, which is the cleanest possible statement
+of the result.
 
 ## A-4 — The falsifier fired, one step earlier than written
 
@@ -123,3 +112,42 @@ lives inside the model rung and both flags ship off — `A-2` already showed the
 flag-off arms reproducing exactly. The token meter is inert because it
 accumulates usage from replies that have already been parsed and returned, and
 no branch reads it.
+
+## A-7 — The ablation, and why it is the only comparison that counts
+
+`A4` replays `A2` run 1's **own cached model choices** with the derivation
+switched off. The model is not consulted again; the same 191 picks are folded
+into a form twice and interpreted differently. Any difference is the
+derivation and can be nothing else.
+
+| tier | `slot_relation` on / off | `form_exact` on / off | `wrong_entity` on / off | `records_exact` on / off |
+|---|---|---|---|---|
+| T1 | 0.2400 / 0.2400 | 0.4603 / 0.4603 | 0.1270 / 0.1270 | 0.4444 / 0.4444 |
+| T2 | 0.2400 / 0.2400 | 0.4921 / 0.4921 | 0.1111 / 0.1111 | 0.4603 / 0.4603 |
+| T3 | **0.3333 / 0.3810** | **0.2353 / 0.2549** | 0.0980 / 0.0980 | 0.4118 / 0.4118 |
+| T4 | 0.1304 / 0.1304 | 0.0755 / 0.0755 | **0.3019 / 0.3208** | 0.0943 / 0.0943 |
+| T5 | 0.2174 / 0.2174 | 0.0943 / 0.0943 | 0.2830 / 0.2830 | 0.1698 / 0.1698 |
+| T6 | 0.7500 / 0.7500 | 0.0000 / 0.0000 | 0.0556 / 0.0556 | 0.1111 / 0.1111 |
+
+Three cells move out of twenty-four. The derivation costs 0.0477 of relation
+accuracy at T3, buys 0.0189 of `wrong_entity` at T4, and changes **nothing
+else, anywhere** — `records_exact` is identical at all six tiers.
+
+### The confound this exposes
+
+`wrong_entity` at T4 reads 0.2516 in `EXP-2026-09-014` and 0.3019 tonight, a gap
+of +0.0503 across sessions. The ablation says the derivation accounts for
+−0.0189 of movement, in the opposite direction. So something *between the two
+sessions* moved that figure, and it is not the intervention.
+
+The known difference is that the CAPEC Gremlin fixture was found empty at the
+start of this session and reloaded before the arms ran. Preflight verifies node
+and edge counts against the pinned manifest and passed, so the *contents* agree;
+traversal ordering after a fresh load need not. That is a hypothesis, not a
+finding, and it is filed as `Q46`.
+
+**The operational lesson stands regardless.** A before/after across sessions is
+not a controlled comparison in this system, however stable the within-session
+spread looks — and tonight's within-session spread was 0.0000 on the very cell
+that moved 0.0503 between sessions. Had the ablation not been pre-registered,
+this experiment would have reported a cost the intervention did not cause.

@@ -41,6 +41,7 @@ below.)
 | Q37 | A stage that adds latency inside a bounded pipeline cannot be measured without saying which budget it ran under | EXP-2026-09-014 follow-ups | shipping the rewrite stage; the honest reading of any future LLM-arm figure *(partly)* |
 | Q44 | The understanding-gold names edges the graph does not have | EXP-2026-09-015 | `EXP-2026-09-014`'s reading of the relation slot; any future slot-accuracy figure *(open)* |
 | Q45 | Five CAPEC relationships are declared but not allowlisted; the generic arm scores 0.0000 on the 34 dev questions that need them | diagnostic 2026-09-09 | `C-023`'s margin; any generic-arm figure on CAPEC *(open)* |
+| Q46 | A metric moved 0.0503 between sessions while both sessions reported near-zero internal spread | EXP-2026-09-015 A-7 | every cross-session comparison; the error bars used throughout *(open)* |
 
 ---
 
@@ -712,3 +713,28 @@ need the recorded-answer regression over both banks first.
 direction, and fixing it widens a gap `C-023` already reports in the generic
 arm's favour. It must be reported as such, not as an incidental bug fix.
 **From:** diagnostic of 2026-09-09. **Cost:** an hour, plus the regression.
+
+### Q46 — A metric moved 0.0503 between sessions with zero within-session spread
+
+**Why it matters:** `wrong_entity` at T4 reads 0.2516 in `EXP-2026-09-014` and
+0.3019 in `EXP-2026-09-015`, same arm, same model, same 301 questions. Both
+experiments report **sd 0.0000 or 0.0089** across their own three runs, so
+neither could have predicted the gap from its own variance. The ablation
+(`EXP-2026-09-015` `A-7`) shows the intervention accounts for −0.0189, in the
+opposite direction, so the gap is environmental.
+
+The known difference is that the CAPEC Gremlin fixture was empty at the start of
+the second session and was reloaded before its arms ran. Preflight verifies node
+and edge counts against the pinned manifest and passed, so contents agree;
+traversal ordering after a fresh load need not, and this system reads ordered
+results.
+
+**Why it is worth an entry rather than a shrug:** every cross-session comparison
+in this repository inherits it. Within-session spread has been used as the error
+bar throughout, and here it understates the true run-to-run difference by more
+than fivefold.
+
+**What resolves it:** re-run one arm of `EXP-2026-09-014` on tonight's tree with
+tonight's fixture and see whether it reproduces 0.2516 or 0.3019. If the latter,
+the fixture reload is the cause and every figure spanning a reload needs the
+caveat. **From:** `EXP-2026-09-015` `A-7`. **Cost:** one 20-minute arm.
