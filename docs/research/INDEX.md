@@ -11,6 +11,7 @@ that a dead end is walked into once rather than twice.
 | ID | Date | Title | Status | Primary metric | Claims | Link |
 |---|---|---|---|---|---|---|
 | `EXP-2026-09-015` | 2026-09-09 | <one line, the question this answers> | planned | <metric name> (not recorded) | — | [relation-slot-derivation](experiments/EXP-2026-09-015-relation-slot-derivation/) |
+| `EXP-2026-09-016` | 2026-09-09 | <one line, the question this answers> | planned | <metric name> (not recorded) | — | [arm-cost-and-latency](experiments/EXP-2026-09-016-arm-cost-and-latency/) |
 | `EXP-2026-07-001` | 2026-07-26 | Arm A — fully deterministic pipeline (planning, extraction, synthesis) | complete | correctness 0.9972 (n=1) | C-001, C-004 | [arm-a-deterministic](experiments/EXP-2026-07-001-arm-a-deterministic/) |
 | `EXP-2026-07-002` | 2026-07-26 | Arm B — LLM planning with deterministic extraction and an LLM writer | complete | correctness 0.8505 (n=1) | C-002, C-003, C-016 | [arm-b-llm-planned](experiments/EXP-2026-07-002-arm-b-llm-planned/) |
 | `EXP-2026-07-003` | 2026-07-26 | Arm C — authored plan with an LLM writer reading raw evidence | complete | correctness 0.9690 (n=1) | C-002, C-005 | [arm-c-llm-writer-evidence](experiments/EXP-2026-07-003-arm-c-llm-writer-evidence/) |
@@ -59,4 +60,4 @@ that a dead end is walked into once rather than twice.
 | `EXP-2026-08-005` | 2026-08-18 | Is the blind holdout's directional loss a property of these templates, or of a missing schema-driven check? | superseded → EXP-2026-08-006 | blind_gold_in_evidence 0.8952 (n=1) | C-001, C-003, C-010, C-014 | [binding-direction-portability](experiments/EXP-2026-08-005-binding-direction-portability/) |
 | `EXP-2026-09-002` | 2026-09-03 | On a bank covering every shape the sources support, do hand-written templates still hold? | superseded → EXP-2026-09-005 | judged_gap_generic_minus_deterministic 0.1642 ± 0.0000 (n=284) | C-023, C-012 | [expansion-bank-judged](experiments/EXP-2026-09-002-expansion-bank-judged/) |
 
-**48 experiment(s) on record.**
+**49 experiment(s) on record.**
