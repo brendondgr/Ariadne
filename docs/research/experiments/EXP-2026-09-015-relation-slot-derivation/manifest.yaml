@@ -4,53 +4,61 @@
 # a gap.
 id: EXP-2026-09-015
 slug: relation-slot-derivation
-title: <one line, the question this answers>
-status: planned            # planned | running | complete | failed | superseded
+title: "Can the relation slot be derived from the label pair instead of asked of the model?"
+status: running            # planned | running | complete | failed | superseded
 date_started: 2026-09-09
 date_completed: null       # null until status is complete/failed
-authors: []
+authors: ["claude"]
 
 purpose: >
-  One paragraph. What question does this answer, and which paper claim
-  does it support or refute?
+  EXP-2026-09-014 measured the rewrite stage per slot and found relation the
+  worst at every tier, with 31 of its 85 refusals caused by the model naming a
+  list position that did not exist. The canonical schema pins the relation for
+  16 of CAPEC's 17 declared label pairs and all 19 of ATT&CK's, so this asks
+  whether the slot needs a model at all. Bears on Q35 and on any future attempt
+  to ship the rewrite stage; carries no claim of its own.
 
 hypothesis: >
-  Stated before the run. If exploratory, write "exploratory — no prior hypothesis".
+  Deriving the relation from the (anchor label, target label) pair raises
+  slot_relation at T3, T4 and T5, raises form_exact at two of the three, and
+  does not raise wrong_entity at any tier. Pre-registered in PROTOCOL.md before
+  the first run, together with the falsifier: if slot_relation rises and
+  form_exact does not, the relation slot was not the binding constraint.
 
 # --- Reproducibility block (all fields mandatory) ---
 code:
-  commit: 14944a9d7ec300983faa26f9d34a67ed0a1e0115          # 40-char sha, or "unknown" for a back-filled experiment
+  commit: c6bec80367723885072935649f3fb886b71a0000          # see ISSUES I-4: run 1 ran on this; runs 2 and 3 also carried e5a47b6a
   branch: main
-  entrypoint: "<exact command>"
-  dirty: true             # uncommitted changes at run time? if true, explain in ISSUES.md
+  entrypoint: "uv run python scripts/variant_harness.py compare --out docs/evaluation/variants-2026-08-29 --reference reference_2026-09-08.json --split tune --workers 32 --rewrite {off,det,model,model_ask} --llm-model {default-model,default-model-2} --llm-base-url http://localhost:9090/v1 --llm-timeout-s 900 --pipeline-timeout-s 900 --cache-dir <fresh per run>"
+  dirty: false            # the working tree was committed before each arm ran
 config:
   path: null               # repo-relative path, or null if the run takes no config file
   hash: null               # sha256:... of that file
 data:
-  name: <dataset>
-  version: <version>
-  split: <split>
-  n_examples: 0
+  name: frozen variant bank (579 variants over the 120-question catalogue)
+  version: variants-2026-08-29
+  split: tune (301 of 579); the report half and bank-holdout.json were not read
+  n_examples: 301
   dvc_path: null           # this repository does not use DVC; leave null
-  hash: null               # md5:... or sha256:... of the dataset artifact
+  hash: sha256:d36411e12851049b3c4a957898d61cdcf47580ea3476daa30ec9f728dda98a68   # reference_2026-09-08.json
 seeds: []                  # [] means seeds were not recorded — say so in ISSUES.md
-n_runs: 1                  # SYSTEM runs over the question set — grading passes are not runs
+n_runs: 3                  # per model arm, per instance; cache cleared between them
 environment:
   python: "3.13"
   lockfile: env/requirements.lock
   container: null
 compute:
-  hardware: "<cpu/gpu, ram>"
+  hardware: "two vLLM instances on separate GPUs, 32-way concurrency each, 64 total"
   wall_clock_hours: 0.0
   estimated_cost_usd: 0.0
 
 # --- LLM / agentic block (delete entirely if no model was in the loop) ---
 llm:
-  model: "<provider>/<model>@<version-or-date>"
+  model: "relay/qwen38-27B-v2@2026-09-09"
   temperature: 0.0
   top_p: 1.0
-  max_tokens: 2048
-  prompt_files: []
+  max_tokens: 2048   # MIN_MAX_TOKENS in rewrite_llm; the picks are short
+  prompt_files: ["utils/planner/rewrite_llm.py"]   # PROMPT_VERSION rewrite-v1, unchanged from EXP-2026-09-014
   prompt_hash: null
   tool_schema_hash: null
   total_input_tokens: null

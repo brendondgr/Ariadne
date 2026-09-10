@@ -95,3 +95,21 @@ Only the first group is a relation problem, and the derivation handles it
 correctly by refusing rather than inventing an edge. The other 36 are label
 failures. That is the arithmetic behind `A-4`'s conclusion, and it is the case
 for a label-side intervention next.
+
+## I-4 — Two commits were live across the three runs, and the manifest records the first
+
+The arms launched at 23:12:55 on `c6bec803`, the commit that adds the
+derivation. `e5a47b6a` landed at 23:15 and touches `utils/llm/client.py` to add
+the token meter. Runs 2 and 3 are new processes, spawned at 23:37 and 23:59, so
+they imported the meter and run 1 did not.
+
+The meter **records and does not steer**: it accumulates `usage` from replies
+that have already been parsed and returned, and no branch reads it. Nothing else
+in `e5a47b6a` is on the rewrite path. The three runs are treated as one arm on
+that basis, and the per-tier figures support it — `records_exact` is identical
+across all three runs at T4, T5 and T6 and varies by at most 0.0196 elsewhere.
+
+The manifest records `c6bec803` because that is the commit the intervention is,
+and points here. Recorded because `EXP-2026-09-014`'s own `A-1` amendment was
+exactly this defect in the other direction: a manifest naming a commit that was
+not the code that ran.
