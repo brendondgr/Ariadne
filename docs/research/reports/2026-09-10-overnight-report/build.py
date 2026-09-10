@@ -389,16 +389,16 @@ a change in behaviour, so it does not get slipped in alongside a measurement.</p
 
     # ------------------------------------------------------- 6. cost
     ct, cl = d.get("cost_throughput") or {}, d.get("cost_latency") or {}
+    ct = d.get("cost_throughput") or {}
+    NAMES = {"deterministic": "hand-written queries",
+             "generic": "reads the schema (with a model planning and narrating)",
+             "llm_query": "the model writes the query"}
     A('''<section>
 <h2>6 · What each way of answering costs</h2>
-<p>Two numbers are reported separately, because collapsing them is how a cost
-claim becomes unfalsifiable. <b>Throughput</b> is what it costs to run the whole
-evaluation at full parallelism. <b>Single-user latency</b> is what one analyst
-waits for one question. A throughput figure divided by a question count is not
-the second number.</p>''')
-    NAMES = {"deterministic": "hand-written queries",
-             "generic": "reads the database's own structure",
-             "llm_query": "the AI writes the query"}
+<p>This was the second job of the night, and it closes a question the project
+has carried for months: the claim that hand-written queries beat letting the
+model write them <i>in correctness and in cost</i> had only ever measured
+correctness.</p>''')
     if ct:
         rows = []
         for arm in ("deterministic", "generic", "llm_query"):
@@ -406,49 +406,125 @@ the second number.</p>''')
             if not m:
                 continue
             tk = m.get("tokens") or {}
-            rows.append([NAMES.get(arm, arm), str(m.get("count")),
-                         f'{m.get("wall_s_total"):.1f} s' if m.get("wall_s_total") else "—",
-                         f'{m.get("wall_median"):.2f} s' if m.get("wall_median") is not None else "—",
-                         f'{m.get("wall_p95"):.2f} s' if m.get("wall_p95") is not None else "—",
+            rows.append([NAMES[arm],
+                         f'{m["wall_s_total"]:,.1f} s',
+                         f'{m["wall_median"]:.3f} s' if m.get("wall_median") is not None else "—",
                          f'{tk.get("calls", 0):,}',
-                         f'{tk.get("prompt_tokens", 0) + tk.get("completion_tokens", 0):,}'])
-        A("<h3>Throughput — all 284 development questions, 24 at a time</h3>")
-        A(table(["how the query is made", "questions", "total", "median per question",
-                 "95th percentile", "model calls", "tokens"], rows))
-        walls = [ct[a]["wall_s_total"] for a in ("deterministic", "generic", "llm_query")
-                 if ct.get(a) and ct[a].get("wall_s_total")]
-        if len(walls) >= 2 and min(walls) > 0:
+                         f'{tk.get("prompt_tokens",0)+tk.get("completion_tokens",0):,}',
+                         f'{m.get("records_nonzero")} / {m.get("count")}'])
+        A("<h3>All 284 development questions, 24 at a time, one machine</h3>")
+        A(table(["how the query is made", "total", "median per question",
+                 "model calls", "tokens", "questions that returned evidence"], rows))
+        det, gen, llm = ct.get("deterministic"), ct.get("generic"), ct.get("llm_query")
+        if det and gen and llm and det["wall_s_total"]:
             A(fig(charts.grouped_bars(
-                [NAMES.get(a, a) for a in ("deterministic", "generic", "llm_query") if ct.get(a)],
-                ["seconds to answer all 284 questions"],
-                {"seconds to answer all 284 questions":
-                 [ct[a]["wall_s_total"] for a in ("deterministic", "generic", "llm_query") if ct.get(a)]},
-                fmt="{:.0f}"),
-                "Total time for the same 284 questions, at the same parallelism",
-                "the run manifest of each arm"))
+                [NAMES[a] for a in ("deterministic", "generic", "llm_query")],
+                ["times slower than hand-written queries"],
+                {"times slower than hand-written queries":
+                 [ct[a]["wall_s_total"] / det["wall_s_total"] for a in
+                  ("deterministic", "generic", "llm_query")]}, fmt="{:.0f}x"),
+                "Cost of the same 284 questions, relative to the hand-written path",
+                "the run manifest of each arm; log-free, so the first bar is 1"))
+        A('''<div class="callout warn">
+<h2>The winning path is not free, and the deck should not imply it is</h2>
+<p>The middle row disables the hand-written queries but keeps a model planning
+and narrating, and keeps the multi-hop retrieval loop. It is the path that wins
+the project's headline comparison, and it costs <b>144 times</b> the
+hand-written one. Only the top row is genuinely model-free.</p>
+<p>"No AI ever writes a query" is true and is the stronger claim anyway. "No
+model at all" would not be, and an engineer who reads the repository will find
+the narrator.</p>
+</div>''')
     else:
         A("<p><i>Throughput run not yet complete.</i></p>")
-    if cl:
-        rows = []
-        for arm in ("deterministic", "generic", "llm_query"):
-            m = cl.get(arm)
-            if not m:
-                continue
-            rows.append([NAMES.get(arm, arm), str(m.get("count")),
-                         f'{m.get("wall_median"):.2f} s' if m.get("wall_median") is not None else "—",
-                         f'{m.get("wall_p95"):.2f} s' if m.get("wall_p95") is not None else "—"])
-        A("<h3>Single-user latency — 40 questions drawn in advance, one at a time</h3>")
-        A(table(["how the query is made", "questions", "median wait", "95th percentile"], rows))
-        A('''<p class="src">The 40 questions were drawn by fixed seed and written to
-disk before the first run, stratified so that cross-database questions are not
-missing from the sample.</p>''')
+
+    A('''<h3>The published cost figure divides two different quantities</h3>
+<p>The pitch names <i>"four seconds against roughly two days, about forty
+thousand times"</i> as one of two numbers that must land in the room.</p>
+<p><b>The two-day half reproduces.</b> Summed machine time for the
+model-writes-query path is 2.93 days here, against that report's "roughly two
+days".</p>
+<p><b>The ratio does not.</b> Four seconds is one path's <i>wall clock</i>; two
+days is another path's <i>summed machine time</i>. At 24 questions running at
+once those differ by 24x before any real effect exists. Held to one quantity at
+a time, on the same questions, same machine, same parallelism:</p>''')
+    A(table(["comparison", "ratio"],
+            [["model-writes-query ÷ hand-written, wall clock", "<b>1,408x</b>"],
+             ["model-writes-query ÷ hand-written, machine time", "<b>1,320x</b>"],
+             ["the published construction, reproduced here", "31,252x"]]))
+    A('''<p><b>Quote about a thousand times, or three orders of magnitude.</b> It
+survives an engineer asking "per question or in total, and at what
+concurrency?" Forty thousand does not.</p>''')
+
+    cl = d.get("cost_latency") or {}
+    if cl.get("llm_query") and cl.get("deterministic"):
+        A("<h3>What one analyst waits for one question</h3>")
+        A("<p>A total divided by a question count is not this number, which is why "
+          "it was measured separately: 20 questions drawn in advance, one at a time.</p>")
+        A(table(["how the query is made", "median wait", "95th percentile"],
+                [[NAMES[a], f'{cl[a]["wall_median"]:.3f} s',
+                  f'{cl[a]["wall_p95"]:.1f} s']
+                 for a in ("deterministic", "llm_query") if cl.get(a)]))
+        A('''<p>Three minutes of waiting per question, for the path that then returns
+evidence on one question in three. The middle path's latency cell is
+deliberately <b>not</b> reported: it ran before the timeout defect below was
+understood, and a mismatched number is worse than a missing one.</p>''')
+
+    jq = d.get("judged_llm_query")
+    A('''<h3>Expensive <i>and</i> less useful</h3>
+<p>Cost alone understates the gap. The hand-written path returned evidence on
+259 of 284 questions, the schema-reading path on 198, and the model-writes-query
+path on 96.</p>''')
+    if jq and jq.get("mean") is not None:
+        A(f'''<p>Graded on this same development half, the model-writes-query path
+scores <b>{jq["mean"]:.4f}</b> over {jq["n"]} questions, against
+0.4946 for hand-written queries and 0.6569 for the schema-reading path, both
+already on record for these exact questions.</p>''')
     else:
-        A("<p><i>Latency run not yet complete.</i></p>")
-    A('''<p>No dollar figure is given. The models are served on hardware this
+        A('''<p>The correctness column for this path on the development half was still
+grading when this report was generated; the two other paths are already on
+record for these exact questions at 0.4946 and 0.6569.</p>''')
+    A('''<p>No dollar figure is given anywhere here. The models run on hardware this
 project does not pay for per token, so seconds and tokens are the honest units
 and a dollar amount would be invented.</p>
-</section>''')
+</section>
 
+<section>
+<h2>6b · The defect that made the first cost table wrong</h2>
+<p>The schema-reading path silently becomes a different system depending on one
+environment variable that nothing in the command line, the path's own
+definition, or the shared runner ever sets.</p>''')
+    A(table(["same 284 questions, changing only how long a call may take",
+             "default, 30 seconds", "4,096 seconds"],
+            [["total time", "<b>14.0 s</b>", "<b>1,168.6 s</b>"],
+             ["successful model calls", "<b>0</b>", "<b>159</b>"],
+             ["tokens", "0", "817,238"],
+             ["answers carrying a fallback note", "<b>198 / 284</b>", "39 / 284"]]))
+    A('''<p>Eighty-three times faster, and not the same system. Every call times
+out, the pipeline quietly falls back to its model-free path, and finishes. No
+error appears anywhere. The only trace is a field on two answers in three that
+nobody reads unless they are looking for it.</p>
+<p>This is the same failure class as the one in §5 — a plausible wrong number
+rather than a crash — but it lands on the path carrying the project's headline
+result rather than on its baseline. My own first cost table reported that path
+at 14 seconds and zero model calls, and it was wrong.</p>
+<div class="callout">
+<h2>The obvious worry, checked rather than assumed</h2>
+<p>If that path can silently run as something else, were the published figures
+measured on the real thing? The check is a read of committed files, not a
+re-run: count how many saved answers carry the fallback note.</p>''')
+    A(table(["published run", "answers", "carrying a fallback note", "rate"],
+            [["post-repair development", "3,407", "122", "0.04"],
+             ["holdout", "1,440", "86", "0.06"],
+             ["expansion", "852", "19", "0.02"]]))
+    A('''<p>Against a broken reference of 0.70 and a healthy one of 0.14, all three
+sit at or below 0.06. <b>Their model seams were live. No published figure is
+affected</b>, and the headline comparison stands exactly as recorded.</p>
+<p>What remains is the fragility, not a number. The cheap guard is to make the
+runner refuse to start, or at least complain, when that rate goes high. That is
+a change in behaviour, so it was not made overnight beside a measurement.</p>
+</div>
+</section>''')
 
     # ---------------------------------------- 7. cross-instance repeatability
     a2, a3 = d.get("a2_runs") or [], d.get("a3_runs") or []

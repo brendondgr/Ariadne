@@ -93,6 +93,30 @@ def refusals(rows_path):
             "relation_implicated": relation_unbound}
 
 
+def judged(root, arm, suffix=".qwen"):
+    """Grade rate and mean correctness from the sidecars beside an arm's answers."""
+    import glob as _g
+    paths = _g.glob(f"{root}/{arm}/answers/*.judgment{suffix}.json")
+    if not paths:
+        return None
+    scores, verdicts = [], {}
+    for f in paths:
+        d = load(f) or {}
+        v = d.get("verdict") or d.get("label") or d.get("grade")
+        if v:
+            verdicts[str(v)] = verdicts.get(str(v), 0) + 1
+        for key in ("correctness", "score", "correct"):
+            if isinstance(d.get(key), (int, float)):
+                scores.append(float(d[key])); break
+        else:
+            if isinstance(v, str):
+                scores.append(1.0 if v.upper().startswith("CORRECT") else 0.0)
+    out = {"n": len(paths), "verdicts": verdicts}
+    if scores:
+        out["mean"] = round(sum(scores) / len(scores), 4)
+    return out
+
+
 def cost_manifests(root):
     """Per-arm wall clock and tokens from a cost run root."""
     out = {}
@@ -134,6 +158,12 @@ def everything():
         "refusals_r2": refusals(REPO / "docs/evaluation/variants-2026-08-29/scored_R2_tune.run1.json"),
         "refusals_a2": refusals(REPO / "docs/evaluation/variants-2026-08-29/A2_run1"),
         "rungs_r2": rungs(REPO / "docs/evaluation/variants-2026-08-29/scored_R2_tune.run1.json"),
-        "cost_throughput": cost_manifests(SCRATCH / "e016/throughput"),
+        "judged_llm_query": judged(str(SCRATCH / "e016/throughput"), "llm_query"),
+        # Order matters: the right operand wins. throughput_matched holds the
+        # deterministic and generic arms run at SPECIALIST_LLM_TIMEOUT_S=4096;
+        # throughput holds their degraded 30 s counterparts (ISSUES I-4) and the
+        # only llm_query run. The matched pair must override the degraded pair.
+        "cost_throughput": cost_manifests(SCRATCH / "e016/throughput")
+                           | cost_manifests(SCRATCH / "e016/throughput_matched"),
         "cost_latency": cost_manifests(SCRATCH / "e016/latency"),
     }
