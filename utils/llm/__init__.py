@@ -11,7 +11,14 @@ overrides still exist, and :mod:`utils.llm.types` for what every backend is
 normalized into.
 """
 
-from utils.llm.client import chat, discover_models, probe, sort_models
+from utils.llm.client import (
+    chat,
+    discover_models,
+    probe,
+    reset_token_meter,
+    sort_models,
+    token_meter,
+)
 from utils.llm.config import (
     STAGES,
     FieldError,
@@ -46,6 +53,8 @@ __all__ = [
     "ProbeResult",
     "Usage",
     "chat",
+    "reset_token_meter",
+    "token_meter",
     "discover_models",
     "env_key",
     "primary_env_keys",

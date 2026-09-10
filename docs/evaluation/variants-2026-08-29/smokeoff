@@ -1,0 +1,588 @@
+[
+  {
+    "abstained": false,
+    "abstentions": [],
+    "bank": "attack",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "A-MIT-01",
+    "catalogue_dump": false,
+    "claims": [
+      "Found 1 record in MITRE ATT&CK: Windows Management Instrumentation (T1047).",
+      "T1047 (Windows Management Instrumentation) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_remote_support: False; x_mitre_version: 1.6.",
+      "T1047 (Windows Management Instrumentation): Adversaries may abuse Windows Management Instrumentation (WMI) to execute malicious commands and payloads. WMI is designed for programmers and is the infrastructure for management data and operations on Windows systems.(Citation: WMI 1-3) WMI is an administration feature that provides a uniform environment to access Windows system components."
+    ],
+    "claims_exact": false,
+    "entity_ids": [
+      "T1047"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "T1047"
+      ]
+    },
+    "form_exact": null,
+    "gold_n": 5,
+    "gold_question": "What mitigations does ATT&CK list for T1047 (Windows Management Instrumentation)?",
+    "model_consulted": false,
+    "note": "kept id, swapped 'mitigations' for 'defend against'",
+    "queries": [
+      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000"
+    ],
+    "queries_exact": false,
+    "question": "How do I defend against T1047?",
+    "record_count": 1,
+    "records_exact": false,
+    "records_jaccard": 0.2,
+    "records_recall": 0.2,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [
+      "attack"
+    ],
+    "tier": "T1",
+    "timing": {
+      "latency_s": 1.226
+    },
+    "unsupported": 0,
+    "variant_n": 1,
+    "wrong_entity": false
+  },
+  {
+    "abstained": false,
+    "abstentions": [],
+    "bank": "attack",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "A-MIT-01",
+    "catalogue_dump": false,
+    "claims": [
+      "Found 1 record in MITRE ATT&CK: Windows Management Instrumentation (T1047).",
+      "T1047 (Windows Management Instrumentation) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_remote_support: False; x_mitre_version: 1.6.",
+      "T1047 (Windows Management Instrumentation): Adversaries may abuse Windows Management Instrumentation (WMI) to execute malicious commands and payloads. WMI is designed for programmers and is the infrastructure for management data and operations on Windows systems.(Citation: WMI 1-3) WMI is an administration feature that provides a uniform environment to access Windows system components."
+    ],
+    "claims_exact": false,
+    "entity_ids": [
+      "T1047"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "T1047"
+      ]
+    },
+    "form_exact": null,
+    "gold_n": 5,
+    "gold_question": "What mitigations does ATT&CK list for T1047 (Windows Management Instrumentation)?",
+    "model_consulted": false,
+    "note": "id-first fragment, minimal sentence shape",
+    "queries": [
+      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000"
+    ],
+    "queries_exact": false,
+    "question": "T1047 \u2014 what stops it?",
+    "record_count": 1,
+    "records_exact": false,
+    "records_jaccard": 0.2,
+    "records_recall": 0.2,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [
+      "attack"
+    ],
+    "tier": "T2",
+    "timing": {
+      "latency_s": 1.22
+    },
+    "unsupported": 0,
+    "variant_n": 1,
+    "wrong_entity": false
+  },
+  {
+    "abstained": true,
+    "abstentions": [
+      "Abstention(sub_question_id='q1', source='capec', statement=\"No entity named 'MITIGATION' or 'Windows Management Instrumentation' was found in the capec source. Check the name, or give its id (e.g. T1566, M1017, or CAPEC-98).\", query='g.V().hasLabel(\"AttackPattern\", \"View\", \"Category\").has(\"name\", TextP.regex(\"(?i).*(Windows.Management.Instrumentation).*\")).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)')"
+    ],
+    "bank": "attack",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "A-MIT-01",
+    "catalogue_dump": false,
+    "claims": [],
+    "claims_exact": false,
+    "entity_ids": [],
+    "entity_ids_by_source": {
+      "capec": []
+    },
+    "form_exact": null,
+    "gold_n": 5,
+    "gold_question": "What mitigations does ATT&CK list for T1047 (Windows Management Instrumentation)?",
+    "model_consulted": false,
+    "note": "id replaced with exact anchor name",
+    "queries": [
+      "g.V().hasLabel(\"AttackPattern\", \"View\", \"Category\").has(\"name\", TextP.regex(\"(?i).*(Windows.Management.Instrumentation).*\")).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
+    ],
+    "queries_exact": false,
+    "question": "What are the mitigations for Windows Management Instrumentation?",
+    "record_count": 0,
+    "records_exact": false,
+    "records_jaccard": 0.0,
+    "records_recall": 0.0,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [],
+    "tier": "T3",
+    "timing": {
+      "latency_s": 1.237
+    },
+    "unsupported": 0,
+    "variant_n": 0,
+    "wrong_entity": false
+  },
+  {
+    "abstained": true,
+    "abstentions": [],
+    "bank": "attack",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "A-MIT-01",
+    "catalogue_dump": false,
+    "claims": [],
+    "claims_exact": false,
+    "entity_ids": [],
+    "entity_ids_by_source": {},
+    "form_exact": null,
+    "gold_n": 5,
+    "gold_question": "What mitigations does ATT&CK list for T1047 (Windows Management Instrumentation)?",
+    "model_consulted": false,
+    "note": "paraphrases the name conceptually, no id/name/avoid words",
+    "queries": [],
+    "queries_exact": false,
+    "question": "What countermeasures exist against abuse of Windows' built-in management scripting interface?",
+    "record_count": 0,
+    "records_exact": false,
+    "records_jaccard": 0.0,
+    "records_recall": 0.0,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [],
+    "tier": "T4",
+    "timing": {
+      "latency_s": 1.189
+    },
+    "unsupported": 1,
+    "variant_n": 0,
+    "wrong_entity": false
+  },
+  {
+    "abstained": true,
+    "abstentions": [],
+    "bank": "attack",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "A-MIT-01",
+    "catalogue_dump": false,
+    "claims": [],
+    "claims_exact": false,
+    "entity_ids": [],
+    "entity_ids_by_source": {},
+    "form_exact": null,
+    "gold_n": 5,
+    "gold_question": "What mitigations does ATT&CK list for T1047 (Windows Management Instrumentation)?",
+    "model_consulted": false,
+    "note": "built purely from the description, no id/name/avoid words",
+    "queries": [],
+    "queries_exact": false,
+    "question": "How can I stop adversaries from abusing Windows' administrative scripting engine to run malicious commands on a host?",
+    "record_count": 0,
+    "records_exact": false,
+    "records_jaccard": 0.0,
+    "records_recall": 0.0,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [],
+    "tier": "T5",
+    "timing": {
+      "latency_s": 1.211
+    },
+    "unsupported": 1,
+    "variant_n": 0,
+    "wrong_entity": false
+  },
+  {
+    "abstained": true,
+    "abstentions": [
+      "Abstention(sub_question_id='q1', source='attack', statement=\"The attack source doesn't establish this \u2014 the executed query ran cleanly and returned no matching records for: In attack, identify MITIGATES, Matrix, Mitigation relevant to: What mitigations does ATT&CK list for T9999 (Quantum Keystroke Injection)?\", query='MATCH (t:Technique) WHERE t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 1000')"
+    ],
+    "bank": "attack",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "A-MIT-01",
+    "catalogue_dump": false,
+    "claims": [],
+    "claims_exact": false,
+    "entity_ids": [],
+    "entity_ids_by_source": {
+      "attack": []
+    },
+    "form_exact": null,
+    "gold_n": 5,
+    "gold_question": "What mitigations does ATT&CK list for T1047 (Windows Management Instrumentation)?",
+    "model_consulted": false,
+    "note": "negative control: invented technique id and name",
+    "queries": [
+      "MATCH (t:Technique) WHERE t.attack_id IN $ids OPTIONAL MATCH (t)<-[:MITIGATES]-(m:Mitigation) RETURN t.attack_id AS technique_id, t.name AS technique_name, m.attack_id AS mitigation_id, m.name AS mitigation_name LIMIT 1000"
+    ],
+    "queries_exact": true,
+    "question": "What mitigations does ATT&CK list for T9999 (Quantum Keystroke Injection)?",
+    "record_count": 0,
+    "records_exact": false,
+    "records_jaccard": 0.0,
+    "records_recall": 0.0,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [],
+    "tier": "T6",
+    "timing": {
+      "latency_s": 1.22
+    },
+    "unsupported": 0,
+    "variant_n": 0,
+    "wrong_entity": false
+  },
+  {
+    "abstained": false,
+    "abstentions": [],
+    "bank": "attack",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "A-MIT-02",
+    "catalogue_dump": false,
+    "claims": [
+      "Found 1 record in MITRE ATT&CK: Remote Desktop Protocol (T1021.001).",
+      "T1021.001 (Remote Desktop Protocol) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 1.4.",
+      "T1021.001 (Remote Desktop Protocol): Adversaries may use Valid Accounts to log into a computer using the Remote Desktop Protocol (RDP). The adversary may then perform actions as the logged-on user.\n\nRemote desktop is a common feature in operating systems. It allows a user to log into an interactive session with a system desktop graphical user interface on a remote system. Microsoft refers to its implementation of the Remote Desktop Protocol (RDP) as Remote Desktop Services (RDS).(Citation: TechNet Remote Desktop Services) \n\nAdversaries may connect to a remote system over RDP/RDS to expand access if the service is enabled and allows access to accounts with known credentials."
+    ],
+    "claims_exact": false,
+    "entity_ids": [
+      "T1021.001"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "T1021.001"
+      ]
+    },
+    "form_exact": null,
+    "gold_n": 9,
+    "gold_question": "What mitigations does ATT&CK list for T1021.001 (Remote Desktop Protocol)?",
+    "model_consulted": false,
+    "note": "kept id, swapped 'mitigations' for 'defend against'",
+    "queries": [
+      "MATCH (n:SubTechnique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000"
+    ],
+    "queries_exact": false,
+    "question": "What can I do to defend against T1021.001?",
+    "record_count": 1,
+    "records_exact": false,
+    "records_jaccard": 0.1111,
+    "records_recall": 0.1111,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [
+      "attack"
+    ],
+    "tier": "T1",
+    "timing": {
+      "latency_s": 1.209
+    },
+    "unsupported": 0,
+    "variant_n": 1,
+    "wrong_entity": false
+  },
+  {
+    "abstained": false,
+    "abstentions": [],
+    "bank": "attack",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "A-MIT-02",
+    "catalogue_dump": false,
+    "claims": [
+      "Found 1 record in MITRE ATT&CK: Remote Desktop Protocol (T1021.001).",
+      "T1021.001 (Remote Desktop Protocol) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: True; x_mitre_version: 1.4.",
+      "T1021.001 (Remote Desktop Protocol): Adversaries may use Valid Accounts to log into a computer using the Remote Desktop Protocol (RDP). The adversary may then perform actions as the logged-on user.\n\nRemote desktop is a common feature in operating systems. It allows a user to log into an interactive session with a system desktop graphical user interface on a remote system. Microsoft refers to its implementation of the Remote Desktop Protocol (RDP) as Remote Desktop Services (RDS).(Citation: TechNet Remote Desktop Services) \n\nAdversaries may connect to a remote system over RDP/RDS to expand access if the service is enabled and allows access to accounts with known credentials."
+    ],
+    "claims_exact": false,
+    "entity_ids": [
+      "T1021.001"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "T1021.001"
+      ]
+    },
+    "form_exact": null,
+    "gold_n": 9,
+    "gold_question": "What mitigations does ATT&CK list for T1021.001 (Remote Desktop Protocol)?",
+    "model_consulted": false,
+    "note": "id-first fragment, minimal sentence shape",
+    "queries": [
+      "MATCH (n:SubTechnique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000"
+    ],
+    "queries_exact": false,
+    "question": "T1021.001 \u2014 how do you stop it?",
+    "record_count": 1,
+    "records_exact": false,
+    "records_jaccard": 0.1111,
+    "records_recall": 0.1111,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [
+      "attack"
+    ],
+    "tier": "T2",
+    "timing": {
+      "latency_s": 1.224
+    },
+    "unsupported": 0,
+    "variant_n": 1,
+    "wrong_entity": false
+  },
+  {
+    "abstained": true,
+    "abstentions": [
+      "Abstention(sub_question_id='q1', source='capec', statement=\"No entity named 'MITIGATION' or 'Remote Desktop Protocol' was found in the capec source. Check the name, or give its id (e.g. T1566, M1017, or CAPEC-98).\", query='g.V().hasLabel(\"AttackPattern\", \"View\", \"Category\").has(\"name\", TextP.regex(\"(?i).*(Remote.Desktop.Protocol).*\")).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)')"
+    ],
+    "bank": "attack",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "A-MIT-02",
+    "catalogue_dump": false,
+    "claims": [],
+    "claims_exact": false,
+    "entity_ids": [],
+    "entity_ids_by_source": {
+      "capec": []
+    },
+    "form_exact": null,
+    "gold_n": 9,
+    "gold_question": "What mitigations does ATT&CK list for T1021.001 (Remote Desktop Protocol)?",
+    "model_consulted": false,
+    "note": "id replaced with exact anchor name",
+    "queries": [
+      "g.V().hasLabel(\"AttackPattern\", \"View\", \"Category\").has(\"name\", TextP.regex(\"(?i).*(Remote.Desktop.Protocol).*\")).project(\"node\",\"out\",\"in\").by(elementMap()).by(outE().project(\"rel\",\"label\").by(label()).by(inV().label()).fold()).by(inE().project(\"rel\",\"label\").by(label()).by(outV().label()).fold()).limit(1000)"
+    ],
+    "queries_exact": false,
+    "question": "What are the mitigations for Remote Desktop Protocol?",
+    "record_count": 0,
+    "records_exact": false,
+    "records_jaccard": 0.0,
+    "records_recall": 0.0,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [],
+    "tier": "T3",
+    "timing": {
+      "latency_s": 1.235
+    },
+    "unsupported": 0,
+    "variant_n": 0,
+    "wrong_entity": false
+  },
+  {
+    "abstained": true,
+    "abstentions": [
+      "Abstention(sub_question_id='q1', source='capec', statement=\"The capec source doesn't establish this \u2014 the executed query ran cleanly and returned no matching records for: In capec, identify AttackPattern, Category, Mitigation relevant to: What countermeasures exist against attackers leveraging a Windows host's built-in graphical login-sharing feature to control it over the network?\", query='g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).elementMap().limit(1000)')"
+    ],
+    "bank": "attack",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "A-MIT-02",
+    "catalogue_dump": false,
+    "claims": [],
+    "claims_exact": false,
+    "entity_ids": [],
+    "entity_ids_by_source": {
+      "capec": []
+    },
+    "form_exact": null,
+    "gold_n": 9,
+    "gold_question": "What mitigations does ATT&CK list for T1021.001 (Remote Desktop Protocol)?",
+    "model_consulted": false,
+    "note": "paraphrases the name conceptually, no id/name/avoid words",
+    "queries": [
+      "g.V().hasLabel(\"AttackPattern\").has(\"id\", within(ids)).elementMap().limit(1000)"
+    ],
+    "queries_exact": false,
+    "question": "What countermeasures exist against attackers leveraging a Windows host's built-in graphical login-sharing feature to control it over the network?",
+    "record_count": 0,
+    "records_exact": false,
+    "records_jaccard": 0.0,
+    "records_recall": 0.0,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [],
+    "tier": "T4",
+    "timing": {
+      "latency_s": 1.235
+    },
+    "unsupported": 0,
+    "variant_n": 0,
+    "wrong_entity": false
+  },
+  {
+    "abstained": true,
+    "abstentions": [],
+    "bank": "attack",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "A-MIT-02",
+    "catalogue_dump": false,
+    "claims": [],
+    "claims_exact": false,
+    "entity_ids": [],
+    "entity_ids_by_source": {},
+    "form_exact": null,
+    "gold_n": 9,
+    "gold_question": "What mitigations does ATT&CK list for T1021.001 (Remote Desktop Protocol)?",
+    "model_consulted": false,
+    "note": "built purely from the description, no id/name/avoid words",
+    "queries": [],
+    "queries_exact": false,
+    "question": "How can I stop an intruder who possesses valid credentials from leveraging a Windows machine's built-in feature for logging into and controlling its graphical session over the network, and then acting as that user?",
+    "record_count": 0,
+    "records_exact": false,
+    "records_jaccard": 0.0,
+    "records_recall": 0.0,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [],
+    "tier": "T5",
+    "timing": {
+      "latency_s": 1.215
+    },
+    "unsupported": 1,
+    "variant_n": 0,
+    "wrong_entity": false
+  },
+  {
+    "abstained": false,
+    "abstentions": [],
+    "bank": "attack",
+    "cache_hit": false,
+    "canonical_question": "",
+    "case_id": "A-MIT-05",
+    "catalogue_dump": false,
+    "claims": [
+      "Found 1 record in MITRE ATT&CK: OS Credential Dumping (T1003).",
+      "T1003 (OS Credential Dumping) has revoked: False; stix_type: attack-pattern; x_mitre_deprecated: False; x_mitre_is_subtechnique: False; x_mitre_version: 2.2.",
+      "T1003 (OS Credential Dumping): Adversaries may attempt to dump credentials to obtain account login and credential material, normally in the form of a hash or a clear text password. Credentials can be obtained from OS caches, memory, or structures.(Citation: Brining MimiKatz to Unix) Credentials can then be used to perform Lateral Movement and access restricted information.\n\nSeveral of the tools mentioned in associated sub-techniques may be used by both adversaries and professional security testers. Additional custom tools likely exist as well."
+    ],
+    "claims_exact": false,
+    "entity_ids": [
+      "T1003"
+    ],
+    "entity_ids_by_source": {
+      "attack": [
+        "T1003"
+      ]
+    },
+    "form_exact": null,
+    "gold_n": 10,
+    "gold_question": "What mitigations does ATT&CK list for T1003 (OS Credential Dumping)?",
+    "model_consulted": false,
+    "note": "kept id, swapped 'mitigations' for 'defend against'",
+    "queries": [
+      "MATCH (n:Technique) WHERE coalesce(n.attack_id, n.id) IN $ids OPTIONAL MATCH (n)-[r]-(m) WITH n, CASE WHEN m IS NULL THEN NULL ELSE type(r) END AS rel, CASE WHEN m IS NULL THEN NULL ELSE startNode(r) = n END AS outgoing, CASE WHEN m IS NULL THEN NULL ELSE head(labels(m)) END AS neighbour_label, count(m) AS cnt WITH n, collect(CASE WHEN rel IS NULL THEN NULL ELSE {rel: rel, outgoing: outgoing, label: neighbour_label, count: cnt} END) AS raw WITH n, [f IN raw WHERE f IS NOT NULL] AS facets RETURN coalesce(n.attack_id, n.id) AS id, n.name AS name, n.properties_json AS properties_json, facets AS facets LIMIT 1000"
+    ],
+    "queries_exact": false,
+    "question": "How do I defend against T1003?",
+    "record_count": 1,
+    "records_exact": false,
+    "records_jaccard": 0.1,
+    "records_recall": 0.1,
+    "run_index": 0,
+    "rung": "off",
+    "served_model": "",
+    "slot_anchor": null,
+    "slot_anchor_label": null,
+    "slot_relation": null,
+    "slot_target_label": null,
+    "slots_scored": 0,
+    "sources": [
+      "attack"
+    ],
+    "tier": "T1",
+    "timing": {
+      "latency_s": 1.231
+    },
+    "unsupported": 0,
+    "variant_n": 1,
+    "wrong_entity": false
+  }
+]

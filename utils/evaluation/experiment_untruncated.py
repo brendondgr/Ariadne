@@ -789,6 +789,11 @@ def run_arm(
 
     manifest: list[dict[str, Any]] = []
     total = len(work)
+    # Imported here, not at module scope: this module is imported by tooling that
+    # must not trigger utils.llm's config resolution as a side effect.
+    from utils.llm import reset_token_meter, token_meter
+
+    reset_token_meter()
     started = time.time()
     print(f"[{arm}] running {total} questions with {workers} workers…", file=sys.stderr)
     with ThreadPoolExecutor(max_workers=workers) as ex:
@@ -824,6 +829,12 @@ def run_arm(
         "ok": sum(1 for m in manifest if m.get("ok")),
         "workers": workers,
         "wall_s": round(time.time() - started, 1),
+        # Q38: C-012 claims templates beat a model writing the queries in
+        # correctness *and in cost*, and only the correctness half had a number.
+        # Read off the transport, not estimated. ``calls`` is reported beside the
+        # totals because a server that omits usage contributes zero tokens and a
+        # zero total must not read as "this arm spent nothing".
+        "tokens": token_meter(),
         "profile": {k: os.environ.get(k) for k in sorted(UNTRUNCATED_ENV)},
         "task_max_result_rows": TASK_MAX_RESULT_ROWS,
         "llm": {

@@ -27,6 +27,7 @@ while vLLM was still loading weights.
 from __future__ import annotations
 
 import logging
+import threading
 import time
 from typing import Any
 from urllib.parse import urlparse
@@ -58,6 +59,50 @@ PROBE_READ_TIMEOUT_S = 45.0
 def _host(settings: LLMSettings) -> str:
     parsed = urlparse(settings.base_url)
     return parsed.netloc or settings.base_url
+
+
+#: Process-wide token accounting. Every successful :func:`chat` adds to it, so
+#: the cost of a run is a fact read off the transport rather than an estimate
+#: reconstructed from question counts. Q38 asks for exactly this: C-012 claims
+#: templates beat a model writing the queries "in correctness *and in cost*",
+#: and until now only the correctness half had a number behind it.
+#:
+#: Every caller in this repository dispatches through a ThreadPoolExecutor in
+#: one process, so a lock is sufficient; a process pool would need its workers
+#: to report their own totals.
+_METER_LOCK = threading.Lock()
+_METER: dict[str, int] = {"calls": 0, "prompt_tokens": 0, "completion_tokens": 0}
+
+
+def token_meter() -> dict[str, int]:
+    """A snapshot of what this process has spent so far."""
+    with _METER_LOCK:
+        return dict(_METER)
+
+
+def reset_token_meter() -> dict[str, int]:
+    """Zero the meter and return what it held, so a run can be bracketed."""
+    global _METER
+    with _METER_LOCK:
+        previous = dict(_METER)
+        _METER = {"calls": 0, "prompt_tokens": 0, "completion_tokens": 0}
+        return previous
+
+
+def _record(result: ChatResult) -> None:
+    """Add one reply's usage to the meter. A server that omits usage adds zero.
+
+    Zero-filled usage is normal (see :class:`~utils.llm.types.Usage`), so a
+    total of 0 across a run means "the server never told us", not "no tokens
+    were spent" -- which is why ``calls`` is counted separately and reported
+    beside the totals.
+    """
+    with _METER_LOCK:
+        _METER["calls"] += 1
+        _METER["prompt_tokens"] += int(getattr(result.usage, "prompt_tokens", 0) or 0)
+        _METER["completion_tokens"] += int(
+            getattr(result.usage, "completion_tokens", 0) or 0
+        )
 
 
 def chat(
@@ -128,6 +173,7 @@ def chat(
             result.usage.prompt_tokens,
             result.usage.completion_tokens,
         )
+    _record(result)
     return result
 
 
