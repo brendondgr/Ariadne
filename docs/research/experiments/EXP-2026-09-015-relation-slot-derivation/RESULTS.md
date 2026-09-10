@@ -76,3 +76,25 @@ against the graph. `EXP-2026-09-014`'s reading of the relation slot — and this
 experiment's entire hypothesis — rested on the first number.
 
 Nothing was repaired. `Q44` carries the decision.
+
+## A-6 — The shipped path is byte-for-byte untouched
+
+Required before any builder-, normalizer- or router-adjacent change ships, and
+required here specifically because `utils/llm/client.py` is a module every model
+call in the repository passes through.
+
+```
+changed 0 of 120  |  better 0  worse 0  same 0  |  0 changed with no recorded gold
+gold recall over 66 scorable questions: 0.9161 -> 0.9161  (+0.0000)
+```
+
+Captured 2026-09-10 against `reference_2026-09-08.json`, scored independently on
+both sides against gold parsed from the pinned STIX and CAPEC bundles rather
+than against the earlier capture. Raw output in
+`data/recorded_answer_regression.txt`.
+
+Two changes were in scope. The rewrite-stage derivation is inert because it
+lives inside the model rung and both flags ship off — `A-2` already showed the
+flag-off arms reproducing exactly. The token meter is inert because it
+accumulates usage from replies that have already been parsed and returned, and
+no branch reads it.
