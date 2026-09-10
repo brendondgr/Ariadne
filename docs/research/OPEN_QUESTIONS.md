@@ -42,6 +42,7 @@ below.)
 | Q44 | The understanding-gold names edges the graph does not have | EXP-2026-09-015 | `EXP-2026-09-014`'s reading of the relation slot; any future slot-accuracy figure *(open)* |
 | Q45 | Five CAPEC relationships are declared but not allowlisted; the generic arm scores 0.0000 on the 34 dev questions that need them | diagnostic 2026-09-09 | `C-023`'s margin; any generic-arm figure on CAPEC *(open)* |
 | Q46 | A metric moved 0.0503 between sessions while both sessions reported near-zero internal spread | EXP-2026-09-015 A-7 | every cross-session comparison; the error bars used throughout *(open)* |
+| Q47 | The `generic` arm silently runs model-free at the default timeout | EXP-2026-09-016 I-4 | audited: no published figure affected; the fragility is *(partly)* open |
 
 ---
 
@@ -738,3 +739,40 @@ than fivefold.
 tonight's fixture and see whether it reproduces 0.2516 or 0.3019. If the latter,
 the fixture reload is the cause and every figure spanning a reload needs the
 caveat. **From:** `EXP-2026-09-015` `A-7`. **Cost:** one 20-minute arm.
+
+### Q47 — Which `generic` figures were measured with the model seams live?
+
+**Why it matters:** the `generic` arm enables LLM planning, an LLM specialist
+seam and the multi-hop loop. At the 30-second default read timeout every one of
+those calls times out silently, the pipeline falls back to its deterministic
+path, and the run completes 284 questions in 14 seconds with **zero** model
+calls instead of 1,169 seconds with 159. No error surfaces. The only trace is
+`fallback_reason`, set on 198 of 284 answers in the degraded run against 39 in
+the healthy one (`EXP-2026-09-016` `I-4`).
+
+`scripts/holdout_run.py` sets `SPECIALIST_LLM_TIMEOUT_S=4096` only inside
+`if arm == "llm_query"`, so a `generic` run through the shared script inherits
+whatever the environment holds. `EXP-2026-09-005`'s recorded entrypoint passes
+no timeout at all.
+
+**This does not say a published figure is wrong.** `EXP-2026-09-010` established
+that this arm's narrator does call a model, so at least that run was configured.
+It says the arm's identity turns on a variable nothing in the call path sets.
+
+**ANSWERED, 2026-09-10, in the good direction.** The audit was run against the
+committed answers of every `generic` run behind `C-023`:
+
+| run | answers | carrying a fallback reason | rate |
+|---|---|---|---|
+| `EXP-2026-09-005` post-repair dev | 3,407 | 122 | 0.04 |
+| `EXP-2026-09-007` holdout | 1,440 | 86 | 0.06 |
+| `EXP-2026-09-002` expansion | 852 | 19 | 0.02 |
+
+Against a degraded reference of 0.70 and a healthy one of 0.14, all three sit at
+or below 0.06. **Their model seams were live and no published figure is
+affected.** Data in `EXP-2026-09-016/data/generic_fallback_audit.json`.
+
+What remains open is the fragility, not a figure: nothing in the CLI, the arm
+definition or the shared runner sets the timeout that decides which arm runs,
+and getting it wrong is silent. The cheap guard is to assert a fallback-rate
+ceiling in the runner, which is a behaviour change and is not made tonight.

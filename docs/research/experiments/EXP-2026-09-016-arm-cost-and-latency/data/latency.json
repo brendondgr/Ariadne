@@ -1,0 +1,53 @@
+{
+  "deterministic": {
+    "n": 20,
+    "workers": 1,
+    "wall_total_s": 0.8,
+    "median_s": 0.006,
+    "mean_s": 0.041,
+    "min_s": 0.002,
+    "max_s": 0.633,
+    "p95_s": 0.083,
+    "tokens": {
+      "calls": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0
+    }
+  },
+  "generic": {
+    "n": 20,
+    "workers": 1,
+    "wall_total_s": 298.3,
+    "median_s": 10.941,
+    "mean_s": 14.916,
+    "min_s": 0.036,
+    "max_s": 47.391,
+    "p95_s": 40.499,
+    "tokens": {
+      "calls": 13,
+      "prompt_tokens": 29177,
+      "completion_tokens": 31408
+    }
+  },
+  "llm_query": {
+    "n": 20,
+    "workers": 1,
+    "wall_total_s": 5669.7,
+    "median_s": 182.012,
+    "mean_s": 283.487,
+    "min_s": 10.646,
+    "max_s": 1140.181,
+    "p95_s": 650.458,
+    "tokens": {
+      "calls": 34,
+      "prompt_tokens": 30006,
+      "completion_tokens": 495856
+    }
+  },
+  "ratios": {
+    "median_llm_over_deterministic": 30335.3,
+    "median_llm_over_generic": 16.6
+  },
+  "note_first_observation": "The first question of the llm_query run overlapped an orphaned process for ~70s (ISSUES I-3). It ranks 13th of 20 by wall clock, so it is not an outlier and nothing is excluded.",
+  "regime": "single-user latency, 1 worker, pre-registered 20-question stratified sample"
+}

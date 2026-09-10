@@ -1,37 +1,36 @@
 {
   "deterministic": {
     "n": 284,
-    "ok": 284,
     "workers": 24,
-    "wall_clock_s": 3.7,
-    "summed_machine_s": 86.6,
-    "median_s": 0.111,
-    "p95_s": 1.84,
+    "wall_clock_s": 8.1,
+    "summed_machine_s": 191.8,
+    "median_s": 0.211,
+    "p95_s": 4.962,
     "tokens": {
       "calls": 0,
       "prompt_tokens": 0,
       "completion_tokens": 0
     },
-    "questions_with_evidence": 259
+    "questions_with_evidence": 259,
+    "answers_with_a_fallback_reason": 0
   },
   "generic": {
     "n": 284,
-    "ok": 284,
     "workers": 24,
-    "wall_clock_s": 14.0,
-    "summed_machine_s": 333.1,
-    "median_s": 1.018,
-    "p95_s": 2.295,
+    "wall_clock_s": 1168.6,
+    "summed_machine_s": 25664.3,
+    "median_s": 70.823,
+    "p95_s": 240.188,
     "tokens": {
-      "calls": 0,
-      "prompt_tokens": 0,
-      "completion_tokens": 0
+      "calls": 159,
+      "prompt_tokens": 572180,
+      "completion_tokens": 245058
     },
-    "questions_with_evidence": 198
+    "questions_with_evidence": 198,
+    "answers_with_a_fallback_reason": 39
   },
   "llm_query": {
     "n": 284,
-    "ok": 284,
     "workers": 24,
     "wall_clock_s": 11407.8,
     "summed_machine_s": 253138.1,
@@ -42,14 +41,21 @@
       "prompt_tokens": 360511,
       "completion_tokens": 5458147
     },
-    "questions_with_evidence": 96
+    "questions_with_evidence": 96,
+    "answers_with_a_fallback_reason": 0
   },
   "ratios": {
-    "wall_clock_llm_query_over_deterministic": 3083.2,
-    "wall_clock_llm_query_over_generic": 814.8,
-    "machine_time_llm_query_over_deterministic": 2923.1,
-    "machine_time_llm_query_over_generic": 759.9,
-    "published_figure_construction_llm_summed_over_det_wall": 68415.7
+    "wall_llm_over_det": 1408.4,
+    "wall_gen_over_det": 144.3,
+    "wall_llm_over_gen": 9.8,
+    "machine_llm_over_det": 1319.8,
+    "published_construction_llm_summed_over_det_wall": 31251.6
   },
-  "regime": "throughput, 24 workers, one instance, dev half (284)"
+  "regime": "throughput, 24 workers, one instance, dev half (284), SPECIALIST_LLM_TIMEOUT_S=4096, ORCH_MAX_HOPS=5",
+  "degraded_generic_at_default_timeout": {
+    "note": "the same arm at the 30 s default: see ISSUES I-4",
+    "wall_clock_s": 14.0,
+    "calls": 0,
+    "answers_with_a_fallback_reason": 198
+  }
 }

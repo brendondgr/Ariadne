@@ -104,3 +104,56 @@ exclusion is stated with its `n`; if it is not, nothing is removed.
 The underlying lesson is about `pkill` on a wrapper script: killing the shell
 leaves the work running, and a measurement that had already started would have
 been silently wrong rather than obviously broken.
+
+## I-4 — The arm carrying `C-023` runs as a different arm at the default timeout
+
+**The most consequential thing this experiment found.**
+
+The `generic` arm is not model-free. Its env block in
+`utils/evaluation/experiment_untruncated.py` sets `PLANNER_LLM_ENABLED`,
+`SPECIALIST_LLM_ENABLED` and `SYNTHESIS_LLM_ENABLED` all true and turns on the
+multi-hop loop; only the hand-written templates are disabled. `CLAIMS.md`
+records this — `C-023` is `partial` partly because "the generic arm's narrator
+calls a model".
+
+Run it twice on the same 284 questions, changing only `SPECIALIST_LLM_TIMEOUT_S`:
+
+| | default (30 s) | 4096 s |
+|---|---|---|
+| wall clock | **14.0 s** | **1,168.6 s** |
+| successful model calls | **0** | **159** |
+| tokens | 0 | 817,238 |
+| answers carrying a fallback reason | **198 / 284** | 39 / 284 |
+
+Eighty-three times slower, and a different system. The served weights are a
+reasoning model; at 30 s **every** call times out, `LLMUnavailable` is raised,
+the pipeline falls back to its deterministic path and finishes. No error
+surfaces. The only trace is `fallback_reason` on two answers in three, a field
+nobody reads unless they are looking for it.
+
+This is the same failure class as `I-1` — a plausible wrong number rather than a
+crash — but it lands on the arm that carries the project's headline comparison
+rather than on its baseline.
+
+### What it does and does not imply
+
+It does **not** show that any published figure is wrong. `EXP-2026-09-010`
+established that this arm's narrator does call a model, so at least that run was
+configured well. `scripts/holdout_run.py` passes `SPECIALIST_LLM_TIMEOUT_S=4096`
+— but **only inside `if arm == "llm_query"`**, so a `generic` run through that
+same script inherits whatever the environment holds.
+
+What it does show is that the arm's identity depends on a variable that neither
+the CLI, the arm definition, nor the shared runner sets, and that getting it
+wrong is silent. Every `generic` figure in this repository should be checkable
+against the `fallback_reason` rate of its own saved answers, which is a cheap
+audit and has never been run.
+
+Filed as `Q47`.
+
+### Handled here
+
+Every arm in `A-1` ran at `SPECIALIST_LLM_TIMEOUT_S=4096`. The 30 s run is kept
+as the second column above rather than deleted, because it is the finding. The
+`generic` latency cell is dropped rather than reported, because it ran before
+this was understood and does not match its own throughput cell.
