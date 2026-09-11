@@ -86,3 +86,25 @@ step writes to its own `repair-after-step<n>-*` prefix.
 regenerate is itself a result worth having — the model-free arms are
 byte-reproducible from a clean checkout, which is what makes them usable as a
 control at all.
+
+## I-4 — Running the test suite rebuilds the canonical artifacts and staleness-locks the live stores
+
+**Impact:** none on any number. It cost two aborted variant captures.
+
+**Cause:** part of `utils/kg_builder/tests` writes into the real `data/` tree
+rather than a temporary one, rebuilding `data/graphs/<dataset>/canonical`. The
+rebuild is deterministic — `nodes.jsonl` and `relationships.jsonl` compare
+identical to the backup every time — but the manifest's hash changes, and
+`utils.graph_loader.preflight` compares the *runtime* manifest against it. So
+after any full test run, `scripts/variant_harness.py` aborts with
+`PreflightError: Stale runtime manifest`, for both datasets in turn.
+
+**Resolution:** not fixed here; it is a test-isolation defect outside this
+experiment's scope. The working rule for the remaining steps is to reload both
+stores before any harness capture that follows a test run:
+`uv run main.py --dataset attack --graph neo4j` and
+`uv run main.py --dataset capec --graph gremlin`.
+
+**Paper implication:** none. Worth noting that the preflight did its job — it
+refused to measure against a store it could not verify, which is the opposite of
+the silent-empty-store failure in `I-2`.

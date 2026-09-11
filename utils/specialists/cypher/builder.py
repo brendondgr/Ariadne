@@ -985,6 +985,51 @@ class CypherQueryBuilder:
                 merged.setdefault((anchor, prefix), None)
         return sorted(merged, key=lambda item: (len(item[1]), item[0])) or None
 
+    def _chain_route(
+        self, resolved: ResolvedTask
+    ) -> tuple[str, tuple[tuple[str, str], ...]] | None:
+        """The ordered route through the plan's labels, when it names one.
+
+        ``resolved.labels`` is ``[e for e in task.entities if card.has_label(e)]``,
+        so it preserves the plan's own ordering of the graph vocabulary. Three or
+        more labels in that list is a request to *visit them in order*, and
+        answering it with the shortest path from the anchor to each one
+        independently answers a different question — see ``chain_paths``.
+
+        Returns ``(root_label, ((rel, direction), ...))`` or ``None``.
+        """
+        from utils.specialists.schema import get_registry
+        from utils.specialists.schema.paths import chain_paths, relation_chain
+
+        labels = [label for label in resolved.labels if label]
+        rels = [rel for rel in resolved.relationships if rel]
+        if not labels or (len(labels) < 3 and len(rels) < 2):
+            return None
+        try:
+            registry = get_registry()
+        except Exception:  # noqa: BLE001 — no registry, no chaining
+            return None
+        if registry is None:
+            return None
+        # Named relationships first. They are the more specific statement, and
+        # they are the only one that can express the commonest two-hop shape in
+        # the bank, where the intermediate carries the same label as the anchor
+        # (`AttackPattern -CanAlsoBe-> AttackPattern -HAS_CONSEQUENCE->
+        # Consequence`): 27 of the 36 single-source two-hop development
+        # questions. The label route covers the rest.
+        route = relation_chain(
+            registry,
+            resolved.dataset,
+            labels[0],
+            rels,
+            wanted_labels=tuple(labels),
+        ) or chain_paths(
+            registry, resolved.dataset, labels, max_hops=_MAX_CHAIN_HOPS
+        )
+        if not route:
+            return None
+        return labels[0], tuple((rel, direction) for rel, direction, _ in route)
+
     def _generic_chain(self, resolved: ResolvedTask) -> QueryDraft | None:
         """Walk every declared path to every requested label, one row per hop.
 
@@ -1041,30 +1086,89 @@ class CypherQueryBuilder:
             )
             collected.append(f"h{i}")
 
+        # -- the chained route, when the plan named one ---------------------
+        #
+        # Three or more labels in plan order is a request to visit them in that
+        # order. The star blocks above cannot express it: they take the shortest
+        # route from the anchor to each label independently, so
+        # `Campaign -> Software -> Technique` is answered with the campaign's own
+        # techniques over the direct USES edge and the Software in the middle is
+        # never bound. One leg per consecutive pair binds every named label.
+        #
+        # Each leg is matched from the anchor with the preceding hops anonymous,
+        # rather than from the previous leg's variable: a `collect` closes the
+        # scope its input came from, and a shorter leg already retrieves that
+        # intermediate in its own right. The rows are the same; the block
+        # structure stays the one the star blocks already use.
+        chain = self._chain_route(resolved)
+        chain_collected: list[str] = []
+        if chain:
+            chain_root, legs = chain
+            chain_guard = f"n:{chain_root} OR NOT ({candidate_test})"
+            for i in range(1, len(legs) + 1):
+                pattern = []
+                for j, (rel, direction) in enumerate(legs[:i]):
+                    safe_rel = _safe_ident(rel, _SAFE_REL_RE, "relationship type")
+                    var = f"c{i - 1}" if j == i - 1 else ""
+                    arrow = (
+                        f"<-[:{safe_rel}]-"
+                        if direction == "in"
+                        else f"-[:{safe_rel}]->"
+                    )
+                    pattern.append(f"{arrow}({var})")
+                terminal = _safe_ident(legs[i - 1][0], _SAFE_REL_RE, "relationship type")
+                carry = ", ".join(["n", *collected, *chain_collected])
+                blocks.append(
+                    f"OPTIONAL MATCH (n){''.join(pattern)} WHERE {chain_guard} "
+                    f"WITH {carry}, "
+                    f"collect(DISTINCT {{m: c{i - 1}, r: '{terminal}'}}) AS k{i - 1}"
+                )
+                chain_collected.append(f"k{i - 1}")
+
         combined = " + ".join(collected)
+        if chain_collected:
+            chain_combined = " + ".join(chain_collected)
+            # The star is the FALLBACK, not an addition. A chained question that
+            # resolves rows must answer from them; unioning the two would keep
+            # the direct-edge records the chain exists to replace. `OPTIONAL
+            # MATCH` collects a one-element list holding a null when it matches
+            # nothing, so emptiness is tested after dropping those.
+            selection = (
+                f" WITH n, [x IN {chain_combined} WHERE x.m IS NOT NULL] AS chained, "
+                f"{combined} AS star "
+                "WITH n, CASE WHEN size(chained) = 0 THEN star ELSE chained END AS hops "
+            )
+        else:
+            selection = f" WITH n, {combined} AS hops "
+
         query = (
             "MATCH (n) WHERE coalesce(n.attack_id, n.id) IN $ids "
             + " ".join(blocks)
-            + f" WITH n, {combined} AS hops "
-            "UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop "
+            + selection
+            + "UNWIND (CASE WHEN size(hops) = 0 THEN [{m: null, r: null}] ELSE hops END) AS hop "
             "RETURN coalesce(n.attack_id, n.id) AS anchor_id, n.name AS anchor_name, "
             "labels(n)[0] AS anchor_label, "
             "coalesce(hop.m.attack_id, hop.m.id) AS neighbour_id, "
             "hop.m.name AS neighbour_name, "
             "labels(hop.m)[0] AS neighbour_label, hop.r AS rel_type"
         )
+        meta = {
+            "paths": [
+                f"{root}|" + "->".join(f"{r}:{d}" for r, d in path)
+                for root, path in paths
+            ],
+            "seed_ids": list(resolved.seed_ids),
+        }
+        if chain:
+            meta["chain"] = (
+                f"{chain[0]}|" + "->".join(f"{r}:{d}" for r, d in chain[1])
+            )
         return QueryDraft(
             query=query,
             params={"ids": list(resolved.seed_ids)},
             template="generic_chain",
             expected_nonempty=False,
-            meta={
-                "paths": [
-                    f"{root}|" + "->".join(f"{r}:{d}" for r, d in path)
-                    for root, path in paths
-                ],
-                "seed_ids": list(resolved.seed_ids),
-            },
+            meta=meta,
         )
 
     def _generic_neighbors(

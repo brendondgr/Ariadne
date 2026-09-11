@@ -912,6 +912,41 @@ class GremlinQueryBuilder:
     # it is used by the default cascade, so arms A-F and production are
     # unaffected — see utils/specialists/tests/test_generic_only_isolation.py.
 
+    def _chain_route(
+        self, resolved: ResolvedTask
+    ) -> tuple[str, tuple[tuple[str, str], ...]] | None:
+        """The ordered route through the plan's labels, when it names one.
+
+        ``resolved.labels`` preserves the plan's ordering of the graph
+        vocabulary, so three or more labels is a request to visit them in that
+        order. Returns ``(root_label, ((rel, direction), ...))`` or ``None``;
+        ``None`` leaves the star walk exactly as it was.
+        """
+        from utils.specialists.schema.paths import chain_paths, relation_chain
+
+        labels = [label for label in resolved.labels if label]
+        rels = [rel for rel in resolved.relationships if rel]
+        if not labels or (len(labels) < 3 and len(rels) < 2):
+            return None
+        registry = self._generic_registry(resolved)
+        if registry is None:
+            return None
+        # Named relationships first — see the Cypher builder's `_chain_route`
+        # for why: they are the only signal that can express a two-hop request
+        # whose intermediate carries the anchor's own label.
+        route = relation_chain(
+            registry,
+            resolved.dataset,
+            labels[0],
+            rels,
+            wanted_labels=tuple(labels),
+        ) or chain_paths(
+            registry, resolved.dataset, labels, max_hops=_MAX_WALK_HOPS
+        )
+        if not route:
+            return None
+        return labels[0], tuple((rel, direction) for rel, direction, _ in route)
+
     def _generic_registry(self, resolved: ResolvedTask) -> Any | None:
         """The derived schema registry, or ``None`` when it cannot be loaded."""
         from utils.specialists.schema import get_registry
@@ -1048,14 +1083,48 @@ class GremlinQueryBuilder:
             ]
             branch_specs.append((len(steps), f'{_guard(root)}.{".".join(steps)}'))
 
-        # Fit the traversal-step budget. Cheapest branches first, and anything
-        # dropped is named in meta — a silently truncated walk reads as a
-        # complete answer when it is not.
+        # -- the chained route, when the plan named one ---------------------
+        #
+        # `prefixes` comes from the shortest path to each requested label taken
+        # independently, which answers the wrong question whenever the request
+        # names an intermediate: "which techniques do this campaign's tools use"
+        # becomes the campaign's own techniques over the direct edge. One branch
+        # per leg of the ordered route binds every named label, and the shorter
+        # leg retrieves the intermediate in its own right rather than traversing
+        # past it. See `chain_paths`.
+        chain = self._chain_route(resolved)
+        chain_branches: set[str] = set()
+        if chain:
+            chain_root, legs = chain
+            for i in range(1, len(legs) + 1):
+                steps = [
+                    f'{"out" if direction == "out" else "in"}("{_edge(rel)}")'
+                    for rel, direction in legs[:i]
+                ]
+                branch = f'{_guard(chain_root)}.{".".join(steps)}'
+                chain_branches.add(branch)
+                branch_specs.append((len(steps), branch))
+
+        # Fit the traversal-step budget. Anything dropped is named in meta — a
+        # silently truncated walk reads as a complete answer when it is not.
+        #
+        # Chain legs are spent first and star branches compete for what is left.
+        # Without that, the budget's cheapest-first order drops the two-step leg
+        # that carries the answer in favour of one-step branches that do not,
+        # which is the defect this is here to repair. Within each group the
+        # cheapest still go first.
         budget = resolved.task.max_depth()
         branches: list[str] = []
         dropped: list[str] = []
+        seen_branches: set[str] = set()
         spent = 0
-        for cost, branch in sorted(branch_specs, key=lambda spec: spec[0]):
+        ordered = sorted(
+            branch_specs, key=lambda spec: (spec[1] not in chain_branches, spec[0])
+        )
+        for cost, branch in ordered:
+            if branch in seen_branches:
+                continue
+            seen_branches.add(branch)
             if spent + cost > budget:
                 dropped.append(branch)
                 continue
@@ -1093,6 +1162,12 @@ class GremlinQueryBuilder:
                 "seed_ids": list(resolved.seed_ids),
                 "bindings": _anchor_id_bindings(
                     resolved.seed_ids, resolved.primary_label() or ""
+                ),
+                **(
+                    {"chain": f"{chain[0]}|"
+                     + "->".join(f"{r}:{d}" for r, d in chain[1])}
+                    if chain
+                    else {}
                 ),
             },
         )

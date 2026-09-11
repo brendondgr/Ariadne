@@ -53,6 +53,15 @@ ever written under the `repair-reference-` prefix.
 | holdout, `deterministic` (gitignored) | `docs/evaluation/experiments/repair-after-step2-holdout/deterministic/answers` | 25556863 | `sha256:642210c7cf533c8506a726d1bbda20006df62039dfc99372d5f6ef9c48c6b57f` | 288 answers, 0 of 288 changed |
 | holdout, `generic_composed` (gitignored) | `docs/evaluation/experiments/repair-after-step2-holdout/generic_composed/answers` | 8257423 | `sha256:1b3f4efdd64ad011907f529ee21b0a3f47bb4ec8007c106c4f033d6862ce59ea` | 288 answers, mean gold coverage 0.688673, 45 changed cumulatively, coverage lost on none |
 
+## Step 3 — after the chained walk
+
+| Artifact | Path (repo-relative) | Bytes | SHA-256 | What it is |
+|---|---|---:|---|---|
+| dev, `deterministic` (gitignored) | `docs/evaluation/experiments/repair-after-step3-dev/deterministic/answers` | 22090772 | `sha256:ce0d266236bc2fee88f8bd25d7ed164914a663ad331fb868e6d6c37de1cff1d9` | 284 answers, 0 of 284 changed against the reference |
+| dev, `generic_composed` (gitignored) | `docs/evaluation/experiments/repair-after-step3-dev/generic_composed/answers` | 7391299 | `sha256:c6fd957b16e29758969768e717f42380edfc640265878130877f0e52beb3c401` | 284 answers, mean gold coverage 0.667281, 31 zero-record, coverage lost on none |
+| holdout, `deterministic` (gitignored) | `docs/evaluation/experiments/repair-after-step3-holdout/deterministic/answers` | 25556917 | `sha256:bdeed2105b7176d83f327a78f76b6f26f2f046124ffd8fb19d0762814d4f6859` | 288 answers, 0 of 288 changed |
+| holdout, `generic_composed` (gitignored) | `docs/evaluation/experiments/repair-after-step3-holdout/generic_composed/answers` | 8668190 | `sha256:a06a53e679b30d0bc7df34c0281ddae006087a6e2b5f09d446645cabf31a7b21` | 288 answers, mean gold coverage 0.706696, 28 zero-record, coverage lost on none |
+
 ## Inputs read from other experiments
 
 | Artifact | Path (repo-relative) | Bytes | SHA-256 | What it is |

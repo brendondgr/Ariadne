@@ -168,6 +168,80 @@ moved. The key is now emitted only when non-empty. An always-present new trace
 field turns the recorded-answer regression into noise, which is the check that
 would have caught a real regression.
 
+## Step 3 — two-hop questions are answered as a chain (complete, 2026-09-11)
+
+No model. `Q51`; the `chain` mechanism, 30.9% of the dev loss and the largest
+single one.
+
+Both builders resolved the shortest route from the anchor to each requested
+label **independently** and unioned the results around the seed. "Which
+techniques do campaign C0023's tools use" was therefore answered over the direct
+`Campaign -USES-> Technique` edge. C0023 has **no** techniques on that edge and
+**34** reachable through its five tools, so the answer was well-formed, cited,
+and about a different question.
+
+`chain_paths` routes between each *consecutive pair* of named labels and
+concatenates. `relation_chain` does the same from the named *relationships*,
+which is the only signal that can express the commonest shape in the bank —
+`AttackPattern -CanAlsoBe-> AttackPattern -HAS_CONSEQUENCE-> Consequence` names
+two hops and only two distinct labels, because the intermediate carries the
+anchor's own label. Both refuse to return a partial route, so a chain that
+cannot be resolved costs nothing and the star walk answers as before.
+
+In Cypher the star is a genuine **fallback**, selected by a `CASE` rather than
+unioned: a chained question that resolves rows must answer from them, and
+unioning would keep the direct-edge records the chain exists to replace. In
+Gremlin the chain legs are spent from the traversal budget first, because
+cheapest-first ordering drops the two-step leg that carries the answer in favour
+of one-step branches that do not.
+
+| | reference | Step 1 | Step 2 | Step 3 |
+|---|---:|---:|---:|---:|
+| dev `generic_composed` mean gold coverage | 0.599039 | 0.632121 | 0.654044 | **0.667281** |
+| dev zero-record (n=284) | 77 | 56 | 33 | **31** |
+| holdout mean gold coverage | 0.636105 | 0.667945 | 0.688673 | **0.706696** |
+| holdout zero-record (n=288) | 68 | 50 | 33 | **28** |
+
+Step 3 alone moved 22 dev answers, 18 of them in the `chain` slice, with
+coverage lost on none and nothing newly empty. Five went to perfect coverage:
+`Campaign USES Software Technique` from 0.11 and 0.18, `Technique USES Software
+Group` from 0.20 and 0.25, and `Technique HAS_SUBTECHNIQUE MITIGATES Mitigation`
+from 0.50. The slice's mean gold coverage rises from 0.3626 to 0.4298.
+
+### Two findings the measurement forced, both recorded rather than smoothed over
+
+**Guessing a direction is worse than not chaining.** `relation_chain` first
+broke ties towards `out`. That measured *worse than the label route alone* —
+seven dev questions lost gold coverage and the dev mean fell from 0.6655 to
+0.6534 — because a confidently wrong direction replaces a star branch that
+sometimes caught the answer by accident. The failing questions are all reverse
+asks: "which patterns are more specific cases of CAPEC-26" is inbound `ChildOf`,
+and the schema cannot say so, because a self-referential relationship reaches its
+own label either way. The chain now **abstains** on such a leg.
+
+That abstention has a cost worth stating plainly. Every CAPEC nature —
+`ChildOf`, `ParentOf`, `CanAlsoBe`, `CanPrecede`, `CanFollow`, `PeerOf` — is
+self-referential, so the 27 dev questions whose first hop is one of them are
+still unchained. **The `chain` mechanism's remaining loss is a direction problem,
+not a chaining problem**, which is consistent with the blind holdout's drop being
+concentrated in reverse-direction asks. It is not repaired here and belongs to
+`Q51`'s follow-up.
+
+**The gate attributed a label across a hop.** `hasLabel("Category")
+.in("MEMBER_OF").out("HAS_EXECUTION_STEP")` is a correct two-leg walk; the
+validator paired the *second* step with the nearest preceding `hasLabel` and
+rejected the draft on the grounds that a Category has no execution step — true,
+and not what that step is asking. Four dev questions had every draft refused. A
+label now anchors the next step only; an unknown anchor was already handled, so
+the edge type is still checked and the endpoint check is deferred to the next
+`hasLabel`. The 240 adversarial probes were re-run after this and still block at
+**1.0000**, 0 leaks, 0 breaches.
+
+**No regression.** `deterministic` byte-identical on both banks.
+`scripts/catalogue_regression.py`: 0 of 120 catalogue answers moved, gold recall
+0.9161 unchanged. 1,170 tests pass, with the same pre-existing `ORCH_MAX_HOPS`
+failure as Steps 1 and 2.
+
 ## Serving capacity for Steps 5–8
 
 Granted 2026-09-11: one endpoint, `default-model` on `:9090`, at **16
@@ -177,6 +251,6 @@ configuration, so Steps 6 and 7 are separate nights, and the `gemma4-31B`
 ordering pass is dropped for want of a second healthy endpoint. The final result
 will therefore rest on one grader family, which belongs in threats to validity.
 
-## Steps 3–8
+## Steps 4–8
 
 Not started.

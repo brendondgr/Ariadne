@@ -56,6 +56,16 @@ def _extract_edge_anchors(query: str) -> list[tuple[str, str, str]]:
     We parse the query left-to-right.  The anchor label is the most recent
     hasLabel("X") call before the out/in/both step.  This covers the primary
     shapes built by GremlinQueryBuilder.
+
+    **A label anchors the next step only.** After one traversal the traverser is
+    standing somewhere else, and the label it started from says nothing about
+    where it is now. Carrying the label forward made the validator reject
+    ``hasLabel("Category").in("MEMBER_OF").out("HAS_EXECUTION_STEP")`` — a
+    correct two-leg walk — on the grounds that a Category has no execution step,
+    which is true and not what the second step is asking. An unknown anchor is
+    already handled: `schema_reasons` skips the direction check rather than
+    guessing, so the edge type is still checked and the endpoint check is
+    deferred to the `hasLabel` that follows, if one does.
     """
     results: list[tuple[str, str, str]] = []
     # Find all hasLabel and out/in/both positions.
@@ -76,6 +86,9 @@ def _extract_edge_anchors(query: str) -> list[tuple[str, str, str]]:
             current_label = value
         elif kind in ("out", "in", "both"):
             results.append((kind, value, current_label))
+            # Consumed: the traverser has moved and the label no longer
+            # describes where it stands.
+            current_label = ""
     return results
 
 
