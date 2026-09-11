@@ -265,18 +265,26 @@ class QuerySpecialist:
                 draft = self.builder.build(resolved, feedback)
                 result = self.validator.validate(draft, self.card, limits)
                 gate_ms = round((time.perf_counter() - gate_started) * 1000, 3)
+                detail = {
+                    "attempt": attempt,
+                    "template": draft.template,
+                    "query": result.query,
+                    "injected": list(result.injected),
+                    "timing_ms": gate_ms,
+                }
+                if result.warnings:
+                    # Observations that did NOT change the verdict — a card that
+                    # lags the loaded graph shows up here instead of looking
+                    # like an absent edge (Q45). Present only when non-empty:
+                    # an always-emitted key would rewrite every answer's bytes
+                    # and turn the recorded-answer regression into noise.
+                    detail["warnings"] = list(result.warnings)
                 traces.append(
                     EvaluatorTrace(
                         "gate",
                         ok=result.ok,
                         reasons=list(result.reasons),
-                        detail={
-                            "attempt": attempt,
-                            "template": draft.template,
-                            "query": result.query,
-                            "injected": list(result.injected),
-                            "timing_ms": gate_ms,
-                        },
+                        detail=detail,
                     )
                 )
                 if not result.ok:

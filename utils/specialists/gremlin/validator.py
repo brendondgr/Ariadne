@@ -177,6 +177,63 @@ class GremlinValidator(BaseValidator):
 
         return reasons
 
+    def schema_warnings(self, query: str, card: Any) -> list[str]:
+        """Say when the card's allowlist disagrees with the loaded graph.
+
+        Q45. Five CAPEC edges the canonical snapshot carries were declared in the
+        card's relationship types and absent from its ``allowed_edge_patterns``.
+        `schema_reasons` treats a relationship with no pattern as forbidden — the
+        right default, since a missing pattern cannot be distinguished from a
+        deliberately excluded one — so 34 development questions were rejected
+        before they ran and the trace said only "no allowed_edge_patterns in
+        card". Read cold, that is indistinguishable from "this edge is not real".
+
+        This does not change the verdict, and must not. The card stays the sole
+        permission source; the registry only gets to say the gate and the data
+        disagree, so a lagging card is visible in the trace instead of looking
+        like an absent edge.
+        """
+        try:
+            from utils.specialists.schema import get_registry
+
+            registry = get_registry()
+        except Exception:  # noqa: BLE001 — no registry, no warning; never a verdict
+            return []
+        if registry is None:
+            return []
+        rel_types = frozenset(
+            gremlin_edge_label(r) for r in (card.relationship_types or ())
+        )
+        allowed = {
+            gremlin_edge_label(r): p
+            for r, p in (card.allowed_edge_patterns or {}).items()
+        }
+        dataset = getattr(card, "dataset", None) or getattr(card, "source", None)
+        warnings: list[str] = []
+        seen: set[tuple[str, str, str]] = set()
+        for direction, rel, anchor_label in _extract_edge_anchors(query):
+            if rel not in rel_types or allowed.get(rel):
+                continue
+            if not anchor_label or (direction, rel, anchor_label) in seen:
+                continue
+            seen.add((direction, rel, anchor_label))
+            try:
+                real = registry.facet_exists(
+                    anchor_label, rel, direction, None, dataset=dataset
+                )
+            except TypeError:
+                real = registry.facet_exists(anchor_label, rel, direction, None)
+            except Exception:  # a registry fault must never change a verdict
+                continue
+            if real:
+                warnings.append(
+                    f"card lags the graph: {rel!r} from {anchor_label!r} is "
+                    f"declared and observed in the loaded schema but has no "
+                    f"allowed_edge_patterns, so the gate rejects it. "
+                    f"Regenerate the source card."
+                )
+        return warnings
+
     def cap_reasons(
         self, query: str, card: Any, limits: dict[str, int]
     ) -> list[str]:

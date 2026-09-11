@@ -67,3 +67,92 @@ def test_build_schema_document_includes_dataset_metadata() -> None:
 
 def test_capec_canonical_labels_include_capec_object() -> None:
     assert capec_canonical_labels("AttackPattern") == ["AttackPattern", "CapecObject"]
+
+
+# -- the allowlist against the canonical snapshot ---------------------------
+#
+# Q45. `utils/specialists/gremlin/validator.py` treats a relationship missing
+# from a *non-empty* allowlist as forbidden, so a declared edge with no pattern
+# is rejected before its query runs. ATT&CK's allowlist is empty and therefore
+# unconstrained, which means the more completely specified catalogue is the one
+# that gets punished when this list falls behind. These two tests are what stop
+# that happening again.
+
+
+def _snapshot_edge_pairs() -> dict[str, set[tuple[str, str]]]:
+    """Endpoint label pairs the canonical CAPEC snapshot actually carries."""
+    import json
+    import pathlib
+
+    root = pathlib.Path(__file__).resolve().parents[3] / "data/graphs/capec/canonical"
+    nodes = root / "nodes.jsonl"
+    relationships = root / "relationships.jsonl"
+    if not nodes.exists() or not relationships.exists():
+        import pytest
+
+        pytest.skip("canonical CAPEC snapshot not built in this checkout")
+
+    label = {}
+    with nodes.open() as handle:
+        for line in handle:
+            node = json.loads(line)
+            label[node["id"]] = node["label"]
+    pairs: dict[str, set[tuple[str, str]]] = {}
+    with relationships.open() as handle:
+        for line in handle:
+            edge = json.loads(line)
+            pairs.setdefault(edge["type"], set()).add(
+                (label[edge["source_id"]], label[edge["target_id"]])
+            )
+    return pairs
+
+
+def test_every_declared_relationship_type_has_a_pattern() -> None:
+    """A declared edge with no pattern is a forbidden edge, not an open one."""
+    missing = sorted(CAPEC_RELATIONSHIP_TYPES - set(CAPEC_ALLOWED_EDGE_PATTERNS))
+    assert missing == [], (
+        f"declared but not allowlisted, so the gate will reject them: {missing}"
+    )
+    empty = sorted(k for k, v in CAPEC_ALLOWED_EDGE_PATTERNS.items() if not v)
+    assert empty == [], f"allowlisted with an empty pattern set: {empty}"
+
+
+def test_every_observed_edge_pair_is_allowlisted() -> None:
+    """The patterns are derived from the data, not from the edge's name.
+
+    The containment is one-way on purpose. Observed must be a subset of allowed,
+    which is the safety property: nothing the graph holds is rejected. The
+    reverse does not hold and should not be asserted — ``HAS_REFERENCE``
+    allowlists Category and View sources that the current snapshot happens not to
+    carry, and ``ParentOf`` is declared with zero observations. Demanding
+    equality would make a *smaller* dataset fail the test.
+    """
+    observed = _snapshot_edge_pairs()
+    unexpected = {
+        rel_type: sorted(pairs - CAPEC_ALLOWED_EDGE_PATTERNS.get(rel_type, frozenset()))
+        for rel_type, pairs in sorted(observed.items())
+        if pairs - CAPEC_ALLOWED_EDGE_PATTERNS.get(rel_type, frozenset())
+    }
+    assert unexpected == {}, (
+        "the snapshot carries endpoint pairs the allowlist forbids; the gate "
+        f"will reject real edges: {unexpected}"
+    )
+
+
+def test_the_five_edges_behind_q45_carry_their_observed_pair() -> None:
+    """Named individually, because these are the five Q45 is about."""
+    assert CAPEC_ALLOWED_EDGE_PATTERNS["HAS_PREREQUISITE"] == frozenset(
+        {("AttackPattern", "Prerequisite")}
+    )
+    assert CAPEC_ALLOWED_EDGE_PATTERNS["HAS_INDICATOR"] == frozenset(
+        {("AttackPattern", "Indicator")}
+    )
+    assert CAPEC_ALLOWED_EDGE_PATTERNS["HAS_EXAMPLE"] == frozenset(
+        {("AttackPattern", "Example")}
+    )
+    assert CAPEC_ALLOWED_EDGE_PATTERNS["REQUIRES_RESOURCE"] == frozenset(
+        {("AttackPattern", "Resource")}
+    )
+    assert CAPEC_ALLOWED_EDGE_PATTERNS["HAS_ALTERNATE_TERM"] == frozenset(
+        {("AttackPattern", "AlternateTerm")}
+    )

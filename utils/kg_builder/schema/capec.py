@@ -99,6 +99,27 @@ CAPEC_ALLOWED_EDGE_PATTERNS: dict[str, frozenset[tuple[str, str]]] = {
             ("View", "ExternalReference"),
         }
     ),
+    # Added 2026-09-11 (EXP-2026-09-018 Step 2, Q45). The five node labels these
+    # reach were added on 2026-09-01 and their edges were declared in
+    # CAPEC_DERIVED_RELATIONSHIP_TYPES at the same time, but no pattern was
+    # written here. `utils/specialists/gremlin/validator.py` treats a
+    # relationship missing from a *non-empty* allowlist as forbidden, so the
+    # gate rejected every draft touching them before it ran; ATT&CK's allowlist
+    # is empty and therefore unconstrained, which meant the more completely
+    # specified catalogue was the one being punished. 34 of the 284 development
+    # questions need one of these edges and the generic arm averaged 0.4287 on
+    # them, 19.9% of its judged loss.
+    #
+    # Each pair is the one the canonical snapshot actually carries
+    # (`data/graphs/capec/canonical/relationships.jsonl`), not one inferred from
+    # the edge's name; `utils/kg_builder/tests/test_capec_schema.py` asserts that
+    # every observed pair is allowlisted and that no declared type is left
+    # without a pattern, so this list cannot silently fall behind the data again.
+    "HAS_PREREQUISITE": frozenset({("AttackPattern", "Prerequisite")}),
+    "HAS_INDICATOR": frozenset({("AttackPattern", "Indicator")}),
+    "HAS_EXAMPLE": frozenset({("AttackPattern", "Example")}),
+    "REQUIRES_RESOURCE": frozenset({("AttackPattern", "Resource")}),
+    "HAS_ALTERNATE_TERM": frozenset({("AttackPattern", "AlternateTerm")}),
 }
 
 

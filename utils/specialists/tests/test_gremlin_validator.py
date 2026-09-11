@@ -8,6 +8,8 @@ traversal depth).  All assertions are deterministic.
 
 from __future__ import annotations
 
+from dataclasses import replace
+
 import pytest
 
 from utils.specialists.tests._fixtures import fixture_card
@@ -287,3 +289,72 @@ class TestDepthCap:
         result = _validate(validator, card, limits, query)
         assert not result.ok
         assert any("unknown relationship type" in r for r in result.reasons)
+
+
+# -- Q45: the card stays the permission source, and says so ------------------
+
+
+def _capec_card_without(rel: str):
+    """The CAPEC card with one relationship's allowlist entry removed.
+
+    Reproduces the state the card was in before 2026-09-11: the relationship is
+    declared, the graph carries it, and no pattern exists for it.
+    """
+    card = fixture_card("capec")
+    patterns = dict(card.allowed_edge_patterns or {})
+    patterns.pop(rel, None)
+    return replace(card, allowed_edge_patterns=patterns)
+
+
+def test_a_declared_edge_with_no_pattern_is_still_rejected() -> None:
+    """Fail-closed. A missing pattern cannot be told apart from an excluded one.
+
+    This is the safety property, and the warning below must not weaken it: if
+    the registry could grant permission the card withholds, the gate's policy
+    would live in whatever data happens to be loaded.
+    """
+    card = _capec_card_without("HAS_PREREQUISITE")
+    query = (
+        'g.V().hasLabel("AttackPattern").has("id", within(ids))'
+        '.out("HAS_PREREQUISITE").elementMap().limit(100)'
+    )
+    reasons = GremlinValidator().schema_reasons(query, card)
+
+    assert any("has no allowed_edge_patterns" in r for r in reasons)
+
+
+def test_a_lagging_card_is_named_in_the_trace_but_never_permitted() -> None:
+    """The gate says *why* it disagrees with the data, and still says no."""
+    card = _capec_card_without("HAS_PREREQUISITE")
+    query = (
+        'g.V().hasLabel("AttackPattern").has("id", within(ids))'
+        '.out("HAS_PREREQUISITE").elementMap().limit(100)'
+    )
+    validator = GremlinValidator()
+    warnings = validator.schema_warnings(query, card)
+
+    if not warnings:  # no derived registry in this checkout
+        pytest.skip("schema registry unavailable; the warning needs the loaded schema")
+    assert any("card lags the graph" in w for w in warnings)
+    assert any("HAS_PREREQUISITE" in w for w in warnings)
+    # And the verdict is unchanged.
+    assert validator.schema_reasons(query, card) != []
+
+
+def test_the_repaired_card_admits_all_five_q45_edges() -> None:
+    """With the patterns present, the five edges pass the schema check."""
+    card = fixture_card("capec")
+    for rel, target in (
+        ("HAS_PREREQUISITE", "Prerequisite"),
+        ("HAS_INDICATOR", "Indicator"),
+        ("HAS_EXAMPLE", "Example"),
+        ("REQUIRES_RESOURCE", "Resource"),
+        ("HAS_ALTERNATE_TERM", "AlternateTerm"),
+    ):
+        query = (
+            'g.V().hasLabel("AttackPattern").has("id", within(ids))'
+            f'.out("{rel}").hasLabel("{target}").elementMap().limit(100)'
+        )
+        assert GremlinValidator().schema_reasons(query, card) == [], rel
+        # A card that is not lagging produces no warning.
+        assert GremlinValidator().schema_warnings(query, card) == [], rel

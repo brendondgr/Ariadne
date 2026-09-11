@@ -36,6 +36,10 @@ class ValidationResult:
     params: dict[str, Any] = field(default_factory=dict)
     reasons: list[str] = field(default_factory=list)
     injected: list[str] = field(default_factory=list)
+    #: Observations that do NOT change the verdict. A warning exists so a gate
+    #: rejection can say *why the card disagrees with the data* without the data
+    #: ever becoming a permission — see `schema_warnings`.
+    warnings: list[str] = field(default_factory=list)
 
     def reason_text(self) -> str:
         return "; ".join(self.reasons)
@@ -81,12 +85,15 @@ class BaseValidator(ABC):
         reasons.extend(self.schema_reasons(query, card))
         reasons.extend(self.binding_reasons(draft, card))
         reasons.extend(self.cap_reasons(query, card, limits))
+        warnings = self.schema_warnings(query, card)
 
         if reasons:
-            return ValidationResult(False, query, draft.params, reasons, [])
+            return ValidationResult(False, query, draft.params, reasons, [], warnings)
 
         capped_query, injected = self.inject_caps(query, limits, card)
-        return ValidationResult(True, capped_query, draft.params, [], injected)
+        return ValidationResult(
+            True, capped_query, draft.params, [], injected, warnings
+        )
 
     # -- language-specific swap points -------------------------------------
 
@@ -101,6 +108,25 @@ class BaseValidator(ABC):
     @abstractmethod
     def schema_reasons(self, query: str, card: Any) -> list[str]:
         """Every label/edge (and direction) referenced must exist in the card."""
+
+    def schema_warnings(self, query: str, card: Any) -> list[str]:
+        """Observations about the schema that must NOT change the verdict.
+
+        The card is the permission source and stays the permission source. This
+        hook exists for the one case where that rule is expensive: when the card
+        lags the data, the gate rejects a real edge and the rejection reads as
+        though the edge does not exist. Q45 is exactly that — five CAPEC edges the
+        snapshot carries were absent from the card's allowlist, so 34 development
+        questions were refused before they ran, and nothing in the trace said the
+        edge was real.
+
+        A warning makes that visible without making the data a permission. The
+        alternative — falling back to the registry when the card has no pattern —
+        would move policy from a reviewed file to whatever happens to be loaded,
+        and a gate whose permissions come from the thing it is guarding is not a
+        gate. Default: no warnings.
+        """
+        return []
 
     @abstractmethod
     def inject_caps(

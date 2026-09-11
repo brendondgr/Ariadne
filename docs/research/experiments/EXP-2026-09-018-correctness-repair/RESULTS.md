@@ -106,6 +106,68 @@ suites. The one failure, `test_event_order_matches_streaming_contract`, fails
 identically on the pre-repair tree and passes under `ORCH_MAX_HOPS=5`; the
 committed `.env` pins it to 1. Pre-existing and unrelated.
 
+## Step 2 — the five declared CAPEC edges are allowlisted (complete, 2026-09-11)
+
+No model. `Q45`; the `capec` mechanism, 19.9% of the dev loss.
+
+Five relationships the canonical snapshot carries — `HAS_PREREQUISITE`,
+`HAS_INDICATOR`, `HAS_EXAMPLE`, `REQUIRES_RESOURCE`, `HAS_ALTERNATE_TERM` —
+were declared in the CAPEC card's relationship types and absent from its
+`allowed_edge_patterns`. The pre-run gate treats a relationship with no pattern
+as forbidden, which is the right default, so it rejected every draft touching
+them before it ran. ATT&CK's allowlist is empty and therefore unconstrained: the
+more completely specified catalogue was the one being punished.
+
+Each pattern is the endpoint pair the snapshot actually carries, not one
+inferred from the edge's name. Two new tests keep the list from falling behind
+again: every declared relationship type must have a non-empty pattern, and every
+endpoint pair observed in `data/graphs/capec/canonical/relationships.jsonl` must
+be allowlisted. The containment is deliberately one-way. Observed must be a
+subset of allowed, which is the safety property; the reverse is not asserted,
+because `HAS_REFERENCE` allowlists Category and View sources this snapshot does
+not happen to carry and `ParentOf` is declared with zero observations, so
+demanding equality would make a *smaller* dataset fail.
+
+**The gate stays fail-closed and the card stays the sole permission source.**
+The validator still rejects an edge with no pattern. It now also emits a
+*warning* — an observation that does not change the verdict — when the schema
+registry says the edge is real, so a lagging card is visible in the trace
+instead of reading as an absent edge. Granting permission from the registry was
+the alternative and was rejected: a gate whose permissions come from the thing
+it is guarding is not a gate.
+
+| | reference | after Step 1 | after Step 2 |
+|---|---:|---:|---:|
+| dev `generic_composed` mean gold coverage | 0.599039 | 0.632121 | **0.654044** |
+| dev zero-record (n=284) | 77 | 56 | **33** |
+| holdout mean gold coverage | 0.636105 | 0.667945 | **0.688673** |
+| holdout zero-record (n=288) | 68 | 50 | **33** |
+
+Step 2 alone changed **29** dev answers and **every one is in the `capec`
+slice**. Within that slice the zero-record count falls from 34 to 11 and mean
+gold coverage rises from 0.0000 to 0.1831. `H3` is about the *judged* mean and
+cannot be read without the judge; it is settled in Step 6.
+
+The 11 that still return nothing are not a residual of this defect. Four are D0
+questions asking a View for a `REQUIRES_RESOURCE` edge that a View does not
+have, where empty is the correct answer. The other seven are two-hop chains
+(`HAS_MEMBER > HAS_EXAMPLE`, `MAPS_TO > HAS_INDICATOR` and so on), which is
+`Q51` and Step 3.
+
+**No regression.** `deterministic` byte-identical on both banks. Coverage lost
+on no answer. The 240 adversarial gate probes still block at **1.0000** with 0
+leaks and 0 breaches across both sources (183 ATT&CK, 57 CAPEC), re-run because
+a gate changed. `scripts/catalogue_regression.py`: 0 of 120 catalogue answers
+moved, gold recall 0.9161 unchanged. 1,274 tests pass, with the same
+pre-existing `ORCH_MAX_HOPS` failure as Step 1.
+
+One thing was caught by the regression rather than by review. Adding a
+`warnings` key to every gate trace rewrote all 284 deterministic answers even
+though nothing about their behaviour changed, and the diff reported 282 of 284
+moved. The key is now emitted only when non-empty. An always-present new trace
+field turns the recorded-answer regression into noise, which is the check that
+would have caught a real regression.
+
 ## Serving capacity for Steps 5–8
 
 Granted 2026-09-11: one endpoint, `default-model` on `:9090`, at **16
@@ -115,6 +177,6 @@ configuration, so Steps 6 and 7 are separate nights, and the `gemma4-31B`
 ordering pass is dropped for want of a second healthy endpoint. The final result
 will therefore rest on one grader family, which belongs in threats to validity.
 
-## Steps 2–8
+## Steps 3–8
 
 Not started.
